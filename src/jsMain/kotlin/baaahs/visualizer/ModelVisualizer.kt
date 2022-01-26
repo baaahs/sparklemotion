@@ -7,6 +7,8 @@ import baaahs.util.Clock
 import external.IntersectionObserver
 import three.js.Group
 import three.js.Object3D
+import three_ext.OrbitControls
+import three_ext.TransformControls
 import three_ext.clear
 
 class ModelVisualizer(
@@ -15,6 +17,8 @@ class ModelVisualizer(
     simulationEnv: SimulationEnv,
     private val isEditing: Boolean
 ) : BaseVisualizer(clock) {
+    override val facade = Facade()
+
     var model: Model = model
         set(value) {
             field = value
@@ -25,8 +29,30 @@ class ModelVisualizer(
         set(value) {
             field?.let { groupVisualizer.findById(it.id)?.selected = false }
             value?.let { groupVisualizer.findById(it.id)?.selected = true }
+            transformControls.enabled = value != null
             field = value
         }
+
+    /** [TransformControls] must be created by [OrbitControls]. */
+    override val extensions get() = listOf(
+        extension { TransformControlsExtension() }
+    ) + super.extensions
+
+    inner class TransformControlsExtension : Extension(TransformControlsExtension::class) {
+        val transformControls by lazy {
+            TransformControls(camera, canvas).also {
+                it.space = "local"
+                it.enabled = false
+                realScene.add(it)
+            }
+        }
+
+        override fun attach() {
+            transformControls
+        }
+    }
+
+    private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
     private val groupVisualizer = GroupVisualizer("Model: ${model.name}", model.entities, simulationEnv)
         .also { scene.add(it.groupObj) }
@@ -40,6 +66,23 @@ class ModelVisualizer(
         addPrerenderListener {
             groupVisualizer.traverse { it.applyStyles() }
         }
+
+        val orbitControls = findExtension(OrbitControlsExtension::class).orbitControls
+        transformControls.addEventListener("dragging-changed") {
+            val isDragging = transformControls.dragging
+
+            orbitControls.enabled = !isDragging
+
+            if (!isDragging) {
+                selectedObject?.dispatchEvent(EventType.Transform)
+            }
+        }
+        transformControls.addEventListener("change") {
+            val entityVisualizer = transformControls.`object`?.entityVisualizer
+            entityVisualizer?.notifyChanged()
+            println("object = ${transformControls.`object`}")
+        }
+
     }
 
     fun findById(id: EntityId): Object3D? {
@@ -57,9 +100,19 @@ class ModelVisualizer(
     }
 
     override fun onSelectionChange(obj: Object3D?) {
-        selectedEntity = obj?.modelEntity
+        if (selectedEntity != null) {
+            transformControls.detach()
+        }
+
+        val newSelectedEntity = obj?.modelEntity
+        newSelectedEntity?.let { transformControls.attach(obj) }
+        selectedEntity = newSelectedEntity
+
         super.onSelectionChange(obj)
     }
+
+    override fun inUserInteraction(): Boolean =
+        super.inUserInteraction() || transformControls.dragging
 
     private fun findParentEntity(obj: Object3D?): Object3D? {
         var curObj = obj
@@ -70,6 +123,7 @@ class ModelVisualizer(
     }
 
     override fun release() {
+        transformControls.dispose()
         intersectionObserver.disconnect()
         super.release()
     }
@@ -79,6 +133,38 @@ class ModelVisualizer(
         groupVisualizer.updateChildren(entities) {
             it.isEditing = isEditing
         }
+    }
+
+    inner class Facade : BaseVisualizer.Facade() {
+        var moveSnap: Double?
+            get() = transformControls.translationSnap
+            set(value) {
+                transformControls.translationSnap = value
+            }
+
+        var rotateSnap: Double?
+            get() = transformControls.rotationSnap
+            set(value) {
+                transformControls.rotationSnap = value
+            }
+
+        var scaleSnap: Double?
+            get() = transformControls.scaleSnap
+            set(value) {
+                transformControls.scaleSnap = value
+            }
+
+        var transformMode: TransformMode
+            get() = TransformMode.find(transformControls.mode)
+            set(value) {
+                transformControls.mode = value.modeName
+            }
+
+        var transformInLocalSpace: Boolean
+            get() = transformControls.space == "local"
+            set(value) {
+                transformControls.space = if (value) "local" else "world"
+            }
     }
 }
 

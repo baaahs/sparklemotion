@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.document
+import baaahs.getBang
 import baaahs.mapper.JsMapperUi
 import baaahs.util.Clock
 import baaahs.util.Framerate
@@ -15,11 +16,11 @@ import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
-import three_ext.TransformControls
 import three_ext.clear
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.reflect.KClass
 
 class Visualizer(
     clock: Clock
@@ -140,7 +141,7 @@ open class BaseVisualizer(
     private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
-    private val camera: PerspectiveCamera =
+    protected val camera: PerspectiveCamera =
         PerspectiveCamera(45, 1.0, 0.1, 10000).apply {
             position.z = 1000.0
         }
@@ -149,29 +150,59 @@ open class BaseVisualizer(
     }
     protected val canvas = renderer.domElement
 
-    private val realScene = Scene()
+    protected val realScene = Scene()
     protected val scene = Group().also { realScene.add(it) }
 
-    protected val transformControls = TransformControls(camera, canvas).also {
-        it.space = "local"
-        realScene.add(it)
+    /**
+     * The order that these event listeners are registered matters; can't think of a
+     * better way to allow subclasses to inject listeners before ours.
+     */
+    protected open val extensions = listOf(
+        extension { SelectExtension() },
+        extension { OrbitControlsExtension() }
+    )
+    @Suppress("LeakingThis")
+    private val activeExtensions = extensions.associate { (key, factory) ->
+        key to factory()
     }
 
     init {
-        canvas.addEventListener("pointerdown", this::onMouseDown)
+        @Suppress("LeakingThis")
+        activeExtensions.values.forEach { it.attach() }
+    }
+
+    inner class SelectExtension : Extension(SelectExtension::class) {
+        override fun attach() {
+            canvas.addEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+        }
+
+        override fun release() {
+            canvas.removeEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+        }
     }
 
     private var orbitControlsActive = false
-    private val orbitControls = OrbitControls(camera, canvas).apply {
-        minPolarAngle = PI / 2 - .25 // radians
-        maxPolarAngle = PI / 2 + .25 // radians
+    inner class OrbitControlsExtension : Extension(OrbitControlsExtension::class) {
+        val orbitControls by lazy {
+            OrbitControls(camera, canvas).apply {
+                minPolarAngle = PI / 2 - .25 // radians
+                maxPolarAngle = PI / 2 + .25 // radians
 
-        enableDamping = false
-        enableKeys = false
+                enableDamping = false
+                enableKeys = false
 
-        addEventListener("start") { orbitControlsActive = true }
-        addEventListener("end") { orbitControlsActive = false }
+                addEventListener("start") { orbitControlsActive = true }
+                addEventListener("end") { orbitControlsActive = false }
+            }
+        }
+
+        override fun attach() {
+            orbitControls
+        }
+
+        fun update() = orbitControls.update()
     }
+    private val orbitControlsExtension = findExtension(OrbitControlsExtension::class)
 
     private val raycaster = Raycaster()
 
@@ -179,15 +210,8 @@ open class BaseVisualizer(
 
     protected var selectedObject: Object3D? = null
         set(value) {
-            field?.let {
-                it.dispatchEvent(EventType.Deselect)
-                transformControls.detach()
-            }
-
-            value?.let {
-                transformControls.attach(value)
-                it.dispatchEvent(EventType.Select)
-            }
+            field?.dispatchEvent(EventType.Deselect)
+            value?.dispatchEvent(EventType.Select)
 
             field = value
             onSelectionChange(value)
@@ -212,21 +236,6 @@ open class BaseVisualizer(
     }
 
     init {
-        transformControls.addEventListener("dragging-changed") {
-            val isDragging = transformControls.dragging
-
-            orbitControls.enabled = !isDragging
-
-            if (!isDragging) {
-                selectedObject?.dispatchEvent(EventType.Transform)
-            }
-        }
-        transformControls.addEventListener("change") {
-            val entityVisualizer = transformControls.`object`?.entityVisualizer
-            entityVisualizer?.notifyChanged()
-            println("object = ${transformControls.`object`}")
-        }
-
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
             if (resizeTaskId !== null) {
@@ -238,6 +247,10 @@ open class BaseVisualizer(
                 resize()
             }, resizeDelay)
         })
+    }
+
+    fun <T : Extension> findExtension(tClass: KClass<T>): T {
+        return activeExtensions.getBang(tClass, "visualizer extension") as T
     }
 
     fun addPrerenderListener(callback: () -> Unit) {
@@ -287,7 +300,7 @@ open class BaseVisualizer(
         obj?.dispatchEvent(EventType.Click)
     }
 
-    private fun inUserInteraction() = orbitControlsActive || transformControls.dragging
+    open fun inUserInteraction() = orbitControlsActive
 
     protected fun startRendering() {
         stopRendering = false
@@ -305,7 +318,7 @@ open class BaseVisualizer(
     }
 
     private fun pointAt(location: Vector3) {
-        orbitControls.target = location
+        orbitControlsExtension.orbitControls.target = location
         camera.lookAt(location)
     }
 
@@ -323,7 +336,7 @@ open class BaseVisualizer(
             camera.lookAt(scene.position)
         }
 
-        orbitControls.update()
+        orbitControlsExtension.update()
 
         val startTime = clock.now()
         renderer.render(realScene, camera)
@@ -359,9 +372,7 @@ open class BaseVisualizer(
     }
 
     open fun release() {
-        orbitControls.dispose()
-        transformControls.dispose()
-        canvas.removeEventListener("pointerdown", this::onMouseDown)
+        activeExtensions.values.reversed().forEach { it.release() }
     }
 
     interface FrameListener {
@@ -371,36 +382,6 @@ open class BaseVisualizer(
     open inner class Facade : baaahs.ui.Facade() {
         val canvas get() = this@BaseVisualizer.canvas
         val selectedObject get() = this@BaseVisualizer.selectedObject
-
-        var moveSnap: Double?
-            get() = transformControls.translationSnap
-            set(value) {
-                transformControls.translationSnap = value
-            }
-
-        var rotateSnap: Double?
-            get() = transformControls.rotationSnap
-            set(value) {
-                transformControls.rotationSnap = value
-            }
-
-        var scaleSnap: Double?
-            get() = transformControls.scaleSnap
-            set(value) {
-                transformControls.scaleSnap = value
-            }
-
-        var transformMode: TransformMode
-            get() = TransformMode.find(transformControls.mode)
-            set(value) {
-                transformControls.mode = value.modeName
-            }
-
-        var transformInLocalSpace: Boolean
-            get() = transformControls.space == "local"
-            set(value) {
-                transformControls.space = if (value) "local" else "world"
-            }
 
         var rotate: Boolean
             get() = this@BaseVisualizer.rotate
@@ -428,4 +409,15 @@ open class BaseVisualizer(
     companion object {
         private const val DEFAULT_REFRESH_DELAY = 50 // ms
     }
+}
+
+inline fun <reified T: Extension> extension(
+    noinline factory: () -> T
+): Pair<KClass<T>, () -> T> {
+    return T::class to factory
+}
+
+abstract class Extension(val key: KClass<out Extension>) {
+    open fun attach() {}
+    open fun release() {}
 }
