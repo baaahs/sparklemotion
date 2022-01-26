@@ -6,6 +6,8 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
 import baaahs.device.DeviceType
+import baaahs.dmx.LixadaMiniMovingHead
+import baaahs.dmx.Shenzarpy
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
@@ -260,6 +262,11 @@ sealed class Plugins private constructor(
         polymorphic(EntityMetadataProvider::class) {
             subclass(ConstEntityMetadataProvider::class, ConstEntityMetadataProvider.serializer())
             subclass(StrandCountEntityMetadataProvider::class, StrandCountEntityMetadataProvider.serializer())
+        }
+
+        polymorphic(MovingHeadAdapter::class) {
+            subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
+            subclass(Shenzarpy::class, Shenzarpy.serializer())
         }
     }
 

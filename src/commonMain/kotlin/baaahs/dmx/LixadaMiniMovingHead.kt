@@ -4,7 +4,10 @@ import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable @SerialName("LixadaMiniMovingHead")
 object LixadaMiniMovingHead : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 9 // TODO: ?
 
@@ -24,6 +27,9 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
     override val tiltFineChannel: Dmx.Channel? get() = null /*Channel.TILT_FINE*/
     override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f)
     override val tiltMotorSpeed: Float = 1f
+
+    override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
+        get() = MovingHeadAdapter.VisualizerInfo(2.5f, 2f, 3f, 1f)
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 

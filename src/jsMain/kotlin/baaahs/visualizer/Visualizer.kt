@@ -141,7 +141,7 @@ open class BaseVisualizer(
     private val frameListeners = mutableListOf<FrameListener>()
 
     private val camera: PerspectiveCamera =
-        PerspectiveCamera(45, 1.0, 1, 10000).apply {
+        PerspectiveCamera(45, 1.0, 0.1, 10000).apply {
             position.z = 1000.0
         }
     private val renderer = WebGLRenderer().apply {

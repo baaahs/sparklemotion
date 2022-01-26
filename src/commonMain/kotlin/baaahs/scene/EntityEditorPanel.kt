@@ -1,9 +1,6 @@
 package baaahs.scene
 
-import baaahs.model.Grid
-import baaahs.model.LightBar
-import baaahs.model.Model
-import baaahs.model.ObjGroup
+import baaahs.model.*
 import baaahs.ui.Icon
 import baaahs.ui.View
 import baaahs.visualizer.visualizerBuilder
@@ -33,6 +30,11 @@ object GridEditorPanel : EntityEditorPanel<Grid>("Grid") {
 object LightBarEditorPanel : EntityEditorPanel<LightBar>("Light Bar") {
     override fun getView(editingEntity: EditingEntity<out LightBar>): View =
         visualizerBuilder.getLightBarEditorView(editingEntity)
+}
+
+object MovingHeadEditorPanel : EntityEditorPanel<MovingHead>("Moving Head") {
+    override fun getView(editingEntity: EditingEntity<out MovingHead>): View =
+        visualizerBuilder.getMovingHeadEditorView(editingEntity)
 }
 
 object ObjModelEntityEditorPanel : EntityEditorPanel<ObjGroup>("Import") {

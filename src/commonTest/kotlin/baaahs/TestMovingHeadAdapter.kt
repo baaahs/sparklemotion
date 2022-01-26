@@ -24,6 +24,9 @@ class TestMovingHeadAdapter(
     override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f),
     override val tiltMotorSpeed: Float = 1f,
 
+    override val visualizerInfo: MovingHeadAdapter.VisualizerInfo =
+        MovingHeadAdapter.VisualizerInfo(5f, 3f, 9f, 3f),
+
     override val shutterChannel: Dmx.Channel = TestChannel(6)
 ) : MovingHeadAdapter {
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
