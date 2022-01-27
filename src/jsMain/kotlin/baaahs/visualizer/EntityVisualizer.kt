@@ -5,12 +5,10 @@ import baaahs.geom.toThreeEuler
 import baaahs.model.*
 import baaahs.scene.EditingEntity
 import baaahs.sim.SimulationEnv
-import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.visualizer.movers.MovingHeadVisualizer
-import three.js.Object3D
 
 @Suppress("LeakingThis")
 abstract class BaseEntityVisualizer<T : Model.Entity>(
@@ -51,29 +49,6 @@ abstract class BaseEntityVisualizer<T : Model.Entity>(
             true
         } else false
     }
-}
-
-actual interface EntityVisualizer<T : Model.Entity> : IObservable {
-    actual val entity: T
-    actual val title: String
-    actual var isEditing: Boolean
-    actual var mapperIsRunning: Boolean
-    actual var selected: Boolean
-    val obj: Object3D
-
-    fun notifyChanged()
-
-    /** Returns `true` if the three model has been updated to reflect `newEntity`. */
-    fun updateIfApplicable(newEntity: Model.Entity, callback: ((EntityVisualizer<*>) -> Unit)?): Boolean
-
-    fun findById(id: Int): EntityVisualizer<*>? =
-        if (entity.id == id) this else null
-
-    fun traverse(callback: (EntityVisualizer<*>) -> Unit) {
-        callback.invoke(this)
-    }
-
-    fun applyStyles()
 }
 
 actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {

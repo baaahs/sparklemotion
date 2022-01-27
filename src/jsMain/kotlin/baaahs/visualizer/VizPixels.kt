@@ -68,11 +68,11 @@ class VizPixels(
     })
 
     fun addTo(parent: VizObj) {
-        parent.add(VizObj(pixelsMesh))
+        parent.add(pixelsMesh)
     }
 
     fun removeFrom(parent: VizObj) {
-        parent.remove(VizObj(pixelsMesh))
+        parent.remove(pixelsMesh)
     }
 
     override fun get(i: Int): Color {

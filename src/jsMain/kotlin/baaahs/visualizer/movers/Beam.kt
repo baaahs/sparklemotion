@@ -2,7 +2,6 @@ package baaahs.visualizer.movers
 
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.visualizer.VizObj
 import three.js.Group
 import three.js.Object3D
 
@@ -26,8 +25,8 @@ class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
     private val primaryCone = Cone(movingHeadAdapter, ColorMode.Primary)
     private val secondaryCone = Cone(movingHeadAdapter, ColorMode.Secondary)
     private val cones = Group().also {
-        primaryCone.addTo(VizObj(it))
-        secondaryCone.addTo(VizObj(it))
+        primaryCone.addTo(it)
+        secondaryCone.addTo(it)
     }
 
     override val vizObj: Object3D
@@ -42,7 +41,7 @@ class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
 class RgbBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
     private val cone = Cone(movingHeadAdapter)
     private val cones = Group().also {
-        cone.addTo(VizObj(it))
+        cone.addTo(it)
     }
 
     override val vizObj: Object3D

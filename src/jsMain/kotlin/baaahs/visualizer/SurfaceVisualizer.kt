@@ -29,9 +29,8 @@ class SurfaceVisualizer(
     val geometry: Geometry get() = surfaceGeometry.geometry
     var vizPixels: VizPixels? = vizPixels
         set(value) {
-            val meshObj = VizObj(obj)
-            field?.removeFrom(meshObj)
-            value?.addTo(meshObj)
+            field?.removeFrom(obj)
+            value?.addTo(obj)
 
             field = value
         }
@@ -39,7 +38,7 @@ class SurfaceVisualizer(
     override val obj = Group().apply {
         println("New SurfaceVisualizer for ${entity.title}: vizPixels=$vizPixels")
         add(mesh)
-        vizPixels?.addTo(VizObj(this))
+        vizPixels?.addTo(this)
     }
 
     init { update(entity) }

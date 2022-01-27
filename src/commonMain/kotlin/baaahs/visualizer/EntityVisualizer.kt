@@ -6,14 +6,27 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.IObservable
 import baaahs.ui.View
 
-expect interface EntityVisualizer<T : Model.Entity> : IObservable {
+interface EntityVisualizer<T : Model.Entity> : IObservable {
     val entity: T
     val title: String
     var isEditing: Boolean
     var mapperIsRunning: Boolean
     var selected: Boolean
+    val obj: VizObj
 
-//    fun addTo(parent: VizObj)
+    fun notifyChanged()
+
+    /** Returns `true` if the three model has been updated to reflect `newEntity`. */
+    fun updateIfApplicable(newEntity: Model.Entity, callback: ((EntityVisualizer<*>) -> Unit)?): Boolean
+
+    fun findById(id: Int): EntityVisualizer<*>? =
+        if (entity.id == id) this else null
+
+    fun traverse(callback: (EntityVisualizer<*>) -> Unit) {
+        callback.invoke(this)
+    }
+
+    fun applyStyles()
 }
 
 interface VisualizerBuilder {
