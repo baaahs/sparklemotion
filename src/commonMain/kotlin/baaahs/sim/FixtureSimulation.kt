@@ -5,11 +5,11 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
-import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.ItemVisualizer
 
 interface FixtureSimulation {
     val mappingData: MappingSession.SurfaceData?
-    val entityVisualizer: EntityVisualizer<*>
+    val itemVisualizer: ItemVisualizer<*>
     val previewFixture: Fixture?
 
     fun launch()

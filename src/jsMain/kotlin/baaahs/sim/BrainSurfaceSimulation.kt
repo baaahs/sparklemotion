@@ -44,7 +44,7 @@ actual class BrainSurfaceSimulation actual constructor(
             )
         }
 
-    override val entityVisualizer: SurfaceVisualizer by lazy {
+    override val itemVisualizer: SurfaceVisualizer by lazy {
         SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
     }
 
@@ -64,15 +64,15 @@ actual class BrainSurfaceSimulation actual constructor(
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        entityVisualizer.vizPixels = VizPixels(
+        itemVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
-            entityVisualizer.surfaceGeometry.panelNormal,
+            itemVisualizer.surfaceGeometry.panelNormal,
             surface.transformation,
             fixtureConfig as PixelArrayDevice.Config
         )
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+        itemVisualizer.vizPixels?.readColors(reader)
     }
 }

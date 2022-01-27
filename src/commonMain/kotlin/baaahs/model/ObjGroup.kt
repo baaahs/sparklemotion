@@ -11,7 +11,7 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.ItemVisualizer
 import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
 
@@ -58,7 +58,7 @@ class ObjGroup(
 
     inner class ObjGroupSimulation(adapter: EntityAdapter) : FixtureSimulation {
         override val mappingData: MappingSession.SurfaceData? get() = null
-        override val entityVisualizer: EntityVisualizer<*> = createVisualizer(adapter)
+        override val itemVisualizer: ItemVisualizer<*> = createVisualizer(adapter)
         override val previewFixture: Fixture? get() = null
 
         override fun launch() {

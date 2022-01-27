@@ -18,7 +18,7 @@ class SurfaceVisualizer(
         lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
         Line(lineGeo, lineMaterial).apply {
             matrixAutoUpdate = false
-            entityVisualizer = this@SurfaceVisualizer
+            itemVisualizer = this@SurfaceVisualizer
             mesh.add(this)
         }
     }
@@ -34,19 +34,19 @@ class SurfaceVisualizer(
         }
 
     override val obj = Group().apply {
-        println("New SurfaceVisualizer for ${entity.title}: vizPixels=$vizPixels")
+        println("New SurfaceVisualizer for ${item.title}: vizPixels=$vizPixels")
         add(mesh)
         vizPixels?.addTo(this)
     }
 
-    init { update(entity) }
+    init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
         entityStyle.applyToMesh(mesh.material)
         entityStyle.applyToLine(lineMaterial)
     }
 
-    override fun isApplicable(newEntity: Model.Entity): Model.Surface? = null
+    override fun isApplicable(newItem: Any): Model.Surface? = null
 
     //    override fun addTo(parent: VizObj) {
 //        parent.add(VizObj(mesh))

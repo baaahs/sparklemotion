@@ -26,7 +26,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
-    val entityVisualizer = props.editingEntity.entityVisualizer
+    val entityVisualizer = props.editingEntity.itemVisualizer
 
     val handlePositionChange by handler(entityVisualizer, mutableEntity) { value: Vector3F ->
         entityVisualizer?.obj?.position?.copy(value.toVector3())

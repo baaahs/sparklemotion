@@ -11,7 +11,7 @@ import baaahs.sm.webapi.Problem
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.ItemVisualizer
 
 class MutableScene(
     baseScene: Scene
@@ -88,12 +88,12 @@ class EditingEntity<T : Model.Entity>(
     adapter: EntityAdapter,
     val onChange: () -> Unit
 ) : Observable() {
-    val entityVisualizer: EntityVisualizer<*>?
+    val itemVisualizer: ItemVisualizer<*>?
     val errors: List<String>
 
     init {
         val errors = arrayListOf<String>()
-        entityVisualizer = try {
+        itemVisualizer = try {
             val entityData = mutableEntity.build()
             val openEntity = entityData.open() as T
             openEntity.createVisualizer(adapter)

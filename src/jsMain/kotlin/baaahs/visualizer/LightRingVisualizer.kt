@@ -1,7 +1,6 @@
 package baaahs.visualizer
 
 import baaahs.model.LightRing
-import baaahs.model.Model
 import three.js.*
 import three_ext.clear
 
@@ -25,24 +24,24 @@ class LightRingVisualizer(
             field = value
         }
 
-    init { update(entity) }
+    init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
         entityStyle.applyToMesh(ringMesh.material)
     }
 
-    override fun isApplicable(newEntity: Model.Entity): LightRing? =
-        newEntity as? LightRing
+    override fun isApplicable(newItem: Any): LightRing? =
+        newItem as? LightRing
 
-    override fun update(newEntity: LightRing, callback: ((EntityVisualizer<*>) -> Unit)?) {
-        super.update(newEntity, callback)
+    override fun update(newItem: LightRing) {
+        super.update(newItem)
 
-        val center = newEntity.center
-        val normal = newEntity.planeNormal
+        val center = newItem.center
+        val normal = newItem.planeNormal
 
         val ringGeom = WireframeGeometry(RingGeometry(
-            innerRadius = newEntity.radius - 1,
-            outerRadius = newEntity.radius + 1,
+            innerRadius = newItem.radius - 1,
+            outerRadius = newItem.radius + 1,
             thetaSegments = 16, phiSegments = 1
         ))
 
@@ -59,8 +58,8 @@ class LightRingVisualizer(
         }))
 
         // TODO: Replace with arrow.
-        obj.add(Mesh(SphereGeometry(newEntity.radius / 20).apply {
-            translate(newEntity.radius, 0, 0)
+        obj.add(Mesh(SphereGeometry(newItem.radius / 20).apply {
+            translate(newItem.radius, 0, 0)
         }, MeshBasicMaterial().apply {
             color = Color(0xaa0000)
             opacity = .25

@@ -21,7 +21,7 @@ actual class MovingHeadSimulation actual constructor(
     private val dmxBufferReader = dmxUniverse.buffer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
     private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
 
-    override val entityVisualizer: MovingHeadVisualizer by lazy {
+    override val itemVisualizer: MovingHeadVisualizer by lazy {
         val visualizer = MovingHeadVisualizer(movingHead, adapter)
         dmxUniverse.listen {
             visualizer.receivedUpdate(adapterBuffer)
@@ -51,7 +51,7 @@ actual class MovingHeadSimulation actual constructor(
             dmxBufferReader[i] = reader.readByte()
         }
 
-        entityVisualizer.receivedUpdate(adapterBuffer)
+        itemVisualizer.receivedUpdate(adapterBuffer)
     }
 
     inner class PreviewTransport : Transport {
