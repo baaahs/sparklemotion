@@ -7,10 +7,10 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.model.*
 import baaahs.show.mutable.MutableDocument
-import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityVisualizer
 
 class MutableScene(
@@ -85,7 +85,7 @@ abstract class MutableEntity<T : Model.Entity>(
 class EditingEntity<T : Model.Entity>(
     val mutableEntity: MutableEntity<T>,
     val modelUnit: ModelUnit,
-    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter,
     val onChange: () -> Unit
 ) : Observable() {
     val entityVisualizer: EntityVisualizer<*>?
@@ -96,7 +96,7 @@ class EditingEntity<T : Model.Entity>(
         entityVisualizer = try {
             val entityData = mutableEntity.build()
             val openEntity = entityData.open() as T
-            openEntity.createVisualizer(simulationEnv)
+            openEntity.createVisualizer(adapter)
                 .also {
                     it.addObserver { notifyChanged() }
                 }

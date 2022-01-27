@@ -13,6 +13,7 @@ import baaahs.throttle
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -53,10 +54,11 @@ class ClientPreview(
             component<PixelArranger>(pixelArranger)
             component(visualizer)
         }
+        val adapter = EntityAdapter(simulationEnv)
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
-                entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
+                entity.createFixtureSimulation(simulationEnv, adapter)?.let { simulation ->
                     theVisualizer.add(simulation.entityVisualizer)
                     simulation.previewFixture
                 }

@@ -9,8 +9,7 @@ import baaahs.model.WtfMaths.cross
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightRingSimulation
 import baaahs.sim.SimulationEnv
-import baaahs.visualizer.EntityVisualizer
-import baaahs.visualizer.visualizerBuilder
+import baaahs.visualizer.EntityAdapter
 import kotlinx.serialization.Transient
 import kotlin.math.PI
 import kotlin.math.cos
@@ -60,11 +59,11 @@ class LightRing(
         return center + (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-        LightRingSimulation(this, simulationEnv)
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+        LightRingSimulation(this, simulationEnv, adapter)
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
-        visualizerBuilder.createLightRingVisualizer(this, simulationEnv)
+    override fun createVisualizer(adapter: EntityAdapter) =
+        adapter.createLightRingVisualizer(this)
 
     enum class PixelDirection {
         Clockwise,

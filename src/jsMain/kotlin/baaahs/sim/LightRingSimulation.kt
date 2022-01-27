@@ -8,13 +8,15 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightRing
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.LightRingVisualizer
 import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 
 actual class LightRingSimulation actual constructor(
     val lightRing: LightRing,
-    private val simulationEnv: SimulationEnv
+    private val simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     // Assuming circumference is in inches, specify 1.5 LEDs per inch, or about 60 per meter.
     private val pixelCount = (lightRing.circumference * 1.5f).toInt()
@@ -38,7 +40,7 @@ actual class LightRingSimulation actual constructor(
         )
 
     override val entityVisualizer: LightRingVisualizer
-            by lazy { LightRingVisualizer(lightRing, simulationEnv, vizPixels) }
+            by lazy { LightRingVisualizer(lightRing, vizPixels) }
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]

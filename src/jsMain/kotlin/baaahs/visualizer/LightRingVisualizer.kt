@@ -2,13 +2,11 @@ package baaahs.visualizer
 
 import baaahs.model.LightRing
 import baaahs.model.Model
-import baaahs.sim.SimulationEnv
 import three.js.*
 import three_ext.clear
 
 class LightRingVisualizer(
     lightRing: LightRing,
-    simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
     private val ringMesh: Mesh<WireframeGeometry, MeshBasicMaterial> = Mesh()

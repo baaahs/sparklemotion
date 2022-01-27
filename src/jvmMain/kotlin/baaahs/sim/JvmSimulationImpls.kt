@@ -6,10 +6,12 @@ import baaahs.model.LightRing
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.PixelArray
+import baaahs.visualizer.EntityAdapter
 
 actual class BrainSurfaceSimulation actual constructor(
     surface: Model.Surface,
-    simulationEnv: SimulationEnv
+    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
     override val entityVisualizer get() = TODO("not implemented")
@@ -19,7 +21,8 @@ actual class BrainSurfaceSimulation actual constructor(
 
 actual class LightBarSimulation actual constructor(
     pixelArray: PixelArray,
-    simulationEnv: SimulationEnv
+    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
     override val entityVisualizer get() = TODO("not implemented")
@@ -29,7 +32,8 @@ actual class LightBarSimulation actual constructor(
 
 actual class LightRingSimulation actual constructor(
     lightRing: LightRing,
-    simulationEnv: SimulationEnv
+    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
     override val entityVisualizer get() = TODO("not implemented")
@@ -39,7 +43,7 @@ actual class LightRingSimulation actual constructor(
 
 actual class MovingHeadSimulation actual constructor(
     movingHead: MovingHead,
-    simulationEnv: SimulationEnv
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData? = null
     override val entityVisualizer get() = TODO("not implemented")

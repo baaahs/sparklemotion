@@ -2,7 +2,6 @@ package baaahs.visualizer
 
 import baaahs.model.EntityId
 import baaahs.model.Model
-import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import external.IntersectionObserver
 import three.js.Group
@@ -14,7 +13,7 @@ import three_ext.clear
 class ModelVisualizer(
     model: Model,
     clock: Clock,
-    simulationEnv: SimulationEnv,
+    adapter: Adapter<Model.Entity>,
     private val isEditing: Boolean
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
@@ -54,7 +53,7 @@ class ModelVisualizer(
 
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
-    private val groupVisualizer = GroupVisualizer("Model: ${model.name}", model.entities, simulationEnv)
+    private val groupVisualizer = GroupVisualizer("Model: ${model.name}", model.entities, adapter)
         .also { scene.add(it.groupObj) }
 
     private val intersectionObserver = IntersectionObserver(callback = { entries ->
@@ -171,16 +170,14 @@ class ModelVisualizer(
 class GroupVisualizer(
     title: String,
     entities: List<Model.Entity>,
-    val simulationEnv: SimulationEnv
+    val adapter: Adapter<Model.Entity>
 ) {
     val groupObj: Group = Group().apply { name = title }
 
     private val entityVisualizers: MutableList<EntityVisualizer<*>> =
         entities.map { entity ->
-            entity.createVisualizer(simulationEnv).also { visualizer ->
-                val obj = visualizer.obj
-                obj.modelEntity = entity
-                groupObj.add(obj)
+            adapter.createVisualizer(entity).also {
+                groupObj.add(it.obj)
             }
         }.toMutableList()
 
@@ -201,7 +198,7 @@ class GroupVisualizer(
                 if (oldVisualizer != null && oldVisualizer.updateIfApplicable(newChild, callback)) {
                     oldVisualizer
                 } else {
-                    newChild.createVisualizer(simulationEnv)
+                    adapter.createVisualizer(newChild)
                 }
 
             entityVisualizers.add(visualizer)

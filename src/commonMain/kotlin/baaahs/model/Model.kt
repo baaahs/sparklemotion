@@ -9,6 +9,7 @@ import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
@@ -73,8 +74,8 @@ class Model(
         val problems: Collection<Problem>
         val id: EntityId
 
-        fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation?
-        fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*>
+        fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation?
+        fun createVisualizer(adapter: EntityAdapter): EntityVisualizer<out Entity>
 
         fun findEntityById(id: EntityId): Entity? =
             if (id == this.id) this else null
@@ -150,11 +151,11 @@ class Model(
 
         open fun allVertices(): Collection<Vector3F> = geometry.vertices
 
-        override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-            BrainSurfaceSimulation(this, simulationEnv)
+        override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+            BrainSurfaceSimulation(this, simulationEnv, adapter)
 
-        override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
-            visualizerBuilder.createSurfaceVisualizer(this, simulationEnv)
+        override fun createVisualizer(adapter: EntityAdapter) =
+            visualizerBuilder.createSurfaceVisualizer(this, adapter)
     }
 
     data class Line(

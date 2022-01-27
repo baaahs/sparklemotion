@@ -12,6 +12,7 @@ import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.coroutineExceptionHandler
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CompletableDeferred
@@ -54,6 +55,7 @@ class FixturesSimulator(
         component(wledsSimulator)
         component(visualizer)
     }
+    private val entityAdapter = EntityAdapter(simulationEnv)
     private lateinit var fixtureSimulations: Map<Model.Entity, FixtureSimulation>
 
     private val launchJob = coroutineScope.async(coroutineExceptionHandler) {
@@ -69,7 +71,7 @@ class FixturesSimulator(
 
         fixtureSimulations = buildMap {
             model!!.visit { entity ->
-                entity.createFixtureSimulation(simulationEnv)?.let { put(entity, it) }
+                entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { put(entity, it) }
             }
         }
 
