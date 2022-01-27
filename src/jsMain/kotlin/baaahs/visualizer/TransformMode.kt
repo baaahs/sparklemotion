@@ -13,10 +13,10 @@ enum class TransformMode(val modeName: String, val icon: Icon) {
     Move("translate", PanTool) {
         override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
 
-        override fun getGridSize(visualizer: ModelVisualizer.Facade): Double? =
+        override fun getGridSize(visualizer: ModelVisualEditor.Facade): Double? =
             visualizer.moveSnap
 
-        override fun setGridSize(visualizer: ModelVisualizer.Facade, value: Double?) {
+        override fun setGridSize(visualizer: ModelVisualEditor.Facade, value: Double?) {
             visualizer.moveSnap = value
         }
     },
@@ -27,10 +27,10 @@ enum class TransformMode(val modeName: String, val icon: Icon) {
 
         override fun getGridUnitAdornment(modelUnit: ModelUnit): String = "°"
 
-        override fun getGridSize(visualizer: ModelVisualizer.Facade): Double? =
+        override fun getGridSize(visualizer: ModelVisualEditor.Facade): Double? =
             visualizer.rotateSnap
 
-        override fun setGridSize(visualizer: ModelVisualizer.Facade, value: Double?) {
+        override fun setGridSize(visualizer: ModelVisualEditor.Facade, value: Double?) {
             visualizer.rotateSnap = value
         }
 
@@ -44,17 +44,17 @@ enum class TransformMode(val modeName: String, val icon: Icon) {
     Scale("scale", AspectRatio) {
         override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
 
-        override fun getGridSize(visualizer: ModelVisualizer.Facade): Double? =
+        override fun getGridSize(visualizer: ModelVisualEditor.Facade): Double? =
             visualizer.scaleSnap
 
-        override fun setGridSize(visualizer: ModelVisualizer.Facade, value: Double?) {
+        override fun setGridSize(visualizer: ModelVisualEditor.Facade, value: Double?) {
             visualizer.scaleSnap = value
         }
     };
 
     abstract fun getGridUnitAdornment(modelUnit: ModelUnit): String
-    abstract fun getGridSize(visualizer: ModelVisualizer.Facade): Double?
-    abstract fun setGridSize(visualizer: ModelVisualizer.Facade, value: Double?)
+    abstract fun getGridSize(visualizer: ModelVisualEditor.Facade): Double?
+    abstract fun setGridSize(visualizer: ModelVisualEditor.Facade, value: Double?)
     open fun toDisplayValue(size: Double) = size
     open fun fromDisplayValue(size: Double?) = size
     open val defaultGridSize: Double = 1.0

@@ -72,8 +72,24 @@ class SceneManager(
         val openScene get() = this@SceneManager.openScene
         val mutableScene get() = this@SceneManager.edit()
 
+        /** Ugh super janky. */
+        private var retainMutableDocument = false
+
+        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean) {
+            if (!retainMutableDocument)
+                this@SceneManager.mutableScene = null
+
+            super.onEdit(document, documentState, pushToUndoStack)
+        }
+
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {
-            onEdit(mutableDocument.build(), Unit, pushToUndoStack)
+            this@SceneManager.mutableScene = mutableDocument as MutableScene
+            retainMutableDocument = true
+            try {
+                onEdit(mutableDocument.build(), Unit, pushToUndoStack)
+            } finally {
+                retainMutableDocument = false
+            }
         }
 
         override fun onEdit(document: Scene, pushToUndoStack: Boolean) {
@@ -81,7 +97,7 @@ class SceneManager(
         }
 
         fun onEdit(pushToUndoStack: Boolean = true) {
-            this.onEdit(mutableScene.build(), pushToUndoStack)
+            onEdit(mutableScene, pushToUndoStack)
         }
     }
 }

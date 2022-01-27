@@ -1,7 +1,11 @@
 package baaahs.visualizer
 
+import baaahs.geom.toEulerAngle
 import baaahs.model.EntityId
 import baaahs.model.Model
+import baaahs.model.ModelData
+import baaahs.scene.EditingEntity
+import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import external.IntersectionObserver
 import three.js.Group
@@ -9,28 +13,27 @@ import three.js.Object3D
 import three_ext.OrbitControls
 import three_ext.TransformControls
 import three_ext.clear
+import three_ext.toVector3F
 
-class ModelVisualizer(
-    model: Model,
+class ModelVisualEditor(
+    private val mutableModel: MutableModel,
     clock: Clock,
-    adapter: Adapter<Model.Entity>,
-    private val isEditing: Boolean
+    private val adapter: EntityAdapter,
+    private val isEditing: Boolean,
+    private val onChange: () -> Unit
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
 
-    var model: Model = model
-        set(value) {
-            field = value
-            update(value)
-        }
+    private var modelData: ModelData = mutableModel.build()
+    var model: Model = modelData.open()
+        private set
 
-    var selectedEntity: Model.Entity? = null
-        set(value) {
-            field?.let { prior -> groupVisualizer.find { (it as? Model.Entity)?.id == prior.id }?.selected = false }
-            value?.let { new -> groupVisualizer.find{ (it as? Model.Entity)?.id == new.id }?.selected = true }
-            transformControls.enabled = value != null
-            field = value
-        }
+    var selectedEntity: Model.Entity?
+        get() = selectedObject?.modelEntity
+        set(value) { selectedObject = value?.let { findVisualizer(it)?.obj } }
+
+    var editingEntity: EditingEntity<*>? = null
+        private set
 
     /** [TransformControls] must be created by [OrbitControls]. */
     override val extensions get() = listOf(
@@ -40,7 +43,7 @@ class ModelVisualizer(
     inner class TransformControlsExtension : Extension(TransformControlsExtension::class) {
         val transformControls by lazy {
             TransformControls(camera, canvas).also {
-                it.space = "local"
+                it.space = "world"
                 it.enabled = false
                 realScene.add(it)
             }
@@ -72,16 +75,35 @@ class ModelVisualizer(
 
             orbitControls.enabled = !isDragging
 
+            println("${editingEntity?.mutableEntity?.title}: dragging-changed, dragging=${transformControls.dragging}; obj=${transformControls.`object`?.modelEntity?.title}")
             if (!isDragging) {
-                selectedObject?.dispatchEvent(EventType.Transform)
+                pushTransformationChange()
+                println("Push to undo stack!!!!!!!!!!!!!!!!!!!!!!")
+                editingEntity?.onChange()
             }
         }
-        transformControls.addEventListener("change") {
-            val entityVisualizer = transformControls.`object`?.itemVisualizer
-            entityVisualizer?.notifyChanged()
-            println("object = ${transformControls.`object`}")
-        }
+        transformControls.addEventListener("objectChange") {
+            println("${editingEntity?.mutableEntity?.title}: pushTransformationChange(${
+                if (!transformControls.dragging) "withUndo" else ""
+            }) because 'objectChange'; dragging = ${transformControls.dragging}")
+            pushTransformationChange()
 
+//            if (!transformControls.dragging) {
+//                println("Push to undo stack!!!!!!!!!!!!!!!!!!!!!!")
+//                editingEntity?.onChange()
+//            }
+        }
+    }
+
+    private fun pushTransformationChange() {
+        selectedObject?.let { selectedObj ->
+            editingEntity?.onTransformationChange(
+                selectedObj.position.toVector3F(),
+                selectedObj.rotation.toEulerAngle(),
+                selectedObj.scale.toVector3F()
+            )
+        }
+        selectedObject?.dispatchEvent(EventType.Transform)
     }
 
     fun findById(id: EntityId): Object3D? {
@@ -94,20 +116,36 @@ class ModelVisualizer(
         return entity
     }
 
+    private fun findVisualizer(entity: Model.Entity) =
+        groupVisualizer.find { (it as? Model.Entity)?.id == entity.id }
+
     override fun onObjectClick(obj: Object3D?) {
         super.onObjectClick(findParentEntity(obj))
     }
 
-    override fun onSelectionChange(obj: Object3D?) {
-        if (selectedEntity != null) {
+    override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
+//        println("onSelectionChange from ${priorObj?.modelEntity?.title} to ${obj?.modelEntity?.title}")
+        priorObj?.itemVisualizer?.selected = false
+        transformControls.detach()
+
+        obj?.itemVisualizer?.selected = true
+        selectedEntity = obj?.modelEntity
+
+        if (obj == null) {
             transformControls.detach()
+            transformControls.enabled = false
+        } else {
+            transformControls.attach(obj)
+            transformControls.enabled = true
         }
 
-        val newSelectedEntity = obj?.modelEntity
-        newSelectedEntity?.let { transformControls.attach(obj) }
-        selectedEntity = newSelectedEntity
+        editingEntity = selectedEntity?.let {
+            val mutableEntity = mutableModel.findById(it.id)
+                ?: error("No mutable entity for ${it.title}?")
+            EditingEntity(mutableEntity, mutableModel.units, adapter, onChange)
+        }
 
-        super.onSelectionChange(obj)
+        super.onSelectionChange(obj, priorObj)
     }
 
     override fun inUserInteraction(): Boolean =
@@ -121,17 +159,22 @@ class ModelVisualizer(
         return curObj
     }
 
+    fun refresh() {
+        val newData = mutableModel.build()
+        if (modelData != newData) {
+            modelData = newData
+            model = newData.open()
+
+            groupVisualizer.updateChildren(model.entities) {
+                it.isEditing = isEditing
+            }
+        }
+    }
+
     override fun release() {
         transformControls.dispose()
         intersectionObserver.disconnect()
         super.release()
-    }
-
-    private fun update(newModel: Model) {
-        val entities = newModel.entities
-        groupVisualizer.updateChildren(entities) {
-            it.isEditing = isEditing
-        }
     }
 
     inner class Facade : BaseVisualizer.Facade() {
@@ -177,6 +220,8 @@ class GroupVisualizer(
     private val itemVisualizers: MutableList<ItemVisualizer<*>> =
         entities.map { entity ->
             adapter.createVisualizer(entity).also {
+                it.obj.itemVisualizer = it
+                it.obj.modelEntity = entity
                 groupObj.add(it.obj)
             }
         }.toMutableList()
@@ -198,14 +243,15 @@ class GroupVisualizer(
                 if (oldVisualizer != null && oldVisualizer.updateIfApplicable(newChild)) {
                     oldVisualizer
                 } else {
-                    adapter.createVisualizer(newChild)
+                    adapter.createVisualizer(newChild).also {
+                        it.obj.itemVisualizer = it
+                        it.obj.modelEntity = newChild
+                    }
                 }
 
             itemVisualizers.add(visualizer)
             callback?.invoke(visualizer)
-            val obj = visualizer.obj
-            obj.modelEntity = newChild
-            groupObj.add(obj)
+            groupObj.add(visualizer.obj)
         }
     }
 

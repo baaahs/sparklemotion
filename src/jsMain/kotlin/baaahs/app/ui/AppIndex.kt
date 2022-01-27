@@ -68,7 +68,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    var appMode by state { AppMode.Show }
+    var appMode by state { AppMode.Scene }
     val handleAppModeChange by handler { newAppMode: AppMode ->
         appMode = newAppMode
     }

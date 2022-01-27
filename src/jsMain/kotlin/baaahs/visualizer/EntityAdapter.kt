@@ -8,10 +8,7 @@ actual class EntityAdapter(
     val simulationEnv: SimulationEnv
 ) : Adapter<Model.Entity> {
     override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
-        return entity.createVisualizer(this).also {
-            val obj = it.obj
-            obj.modelEntity = entity
-        } as ItemVisualizer<Model.Entity>
+        return entity.createVisualizer(this) as ItemVisualizer<Model.Entity>
     }
 
     actual fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar> =

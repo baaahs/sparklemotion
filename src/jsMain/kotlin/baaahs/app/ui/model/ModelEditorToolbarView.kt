@@ -6,7 +6,7 @@ import baaahs.model.EntityData
 import baaahs.model.ModelUnit
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import baaahs.visualizer.ModelVisualizer
+import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
 import external.react_draggable.Draggable
 import kotlinx.html.InputType
@@ -182,7 +182,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
 }
 
 external interface ModelEditorToolbarProps : Props {
-    var visualizer: ModelVisualizer.Facade
+    var visualizer: ModelVisualEditor.Facade
     var modelUnit: ModelUnit
     var onAddEntity: (entityData: EntityData) -> Unit
 }

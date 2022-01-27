@@ -3,7 +3,6 @@ package baaahs.app.ui.model
 import baaahs.app.ui.appContext
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
-import baaahs.geom.toEulerAngle
 import baaahs.geom.toThreeEuler
 import baaahs.scene.EditingEntity
 import baaahs.ui.on
@@ -18,13 +17,13 @@ import react.*
 import react.dom.header
 import react.dom.span
 import styled.inlineStyles
-import three_ext.toVector3F
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
+    observe(props.editingEntity.affineTransforms)
     val mutableEntity = props.editingEntity.mutableEntity
     val entityVisualizer = props.editingEntity.itemVisualizer
 
@@ -46,15 +45,13 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         props.editingEntity.onChange()
     }
 
-    entityVisualizer ?: return@xComponent
-    val obj3d = entityVisualizer.obj
 
     header { +"Transformation" }
     container(styles.transformEditSection on ContainerStyle.root) {
         header { +"Position:" }
 
         vectorEditor {
-            attrs.vector3F = obj3d.position.toVector3F()
+            attrs.vector3F = mutableEntity.position
             attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
             attrs.onChange = handlePositionChange
         }
@@ -64,7 +61,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         header { +"Rotation:" }
 
         rotationEditor {
-            attrs.eulerAngle = obj3d.rotation.toEulerAngle()
+            attrs.eulerAngle = mutableEntity.rotation
             attrs.adornment = buildElement { +"°" }
             attrs.onChange = handleRotationChange
         }
@@ -74,7 +71,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         header { +"Scale:" }
 
         vectorEditor {
-            attrs.vector3F = obj3d.scale.toVector3F()
+            attrs.vector3F = mutableEntity.scale
             attrs.adornment = buildElement {
                 span {
                     inlineStyles { fontSize = .7.em }

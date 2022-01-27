@@ -73,7 +73,7 @@ class Visualizer(
         scene.add(itemVisualizer.obj)
     }
 
-    override fun onSelectionChange(obj: Object3D?) {
+    override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
         val vizObj = findParentEntityVisualizer(obj)
 
         if (vizObj == null) {
@@ -87,7 +87,7 @@ class Visualizer(
             selectionSpan.innerText = "Selected: ${entityVisualizer.title}"
 //            entityVisualizer.obj.let { transformControls.attach(it) }
         }
-        super.onSelectionChange(obj)
+        super.onSelectionChange(obj, priorObj)
     }
 
     private fun findParentEntityVisualizer(obj: Object3D?): Object3D? {
@@ -210,14 +210,17 @@ open class BaseVisualizer(
 
     protected var selectedObject: Object3D? = null
         set(value) {
-            field?.dispatchEvent(EventType.Deselect)
+            if (field == value) return
+
+            val oldValue = field
+            oldValue?.dispatchEvent(EventType.Deselect)
             value?.dispatchEvent(EventType.Select)
 
             field = value
-            onSelectionChange(value)
+            onSelectionChange(value, oldValue)
         }
 
-    open fun onSelectionChange(obj: Object3D?) {
+    open fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
         facade.notifyChanged()
     }
 
