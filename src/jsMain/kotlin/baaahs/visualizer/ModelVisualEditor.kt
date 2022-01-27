@@ -16,7 +16,7 @@ import three_ext.clear
 import three_ext.toVector3F
 
 class ModelVisualEditor(
-    private val mutableModel: MutableModel,
+    var mutableModel: MutableModel,
     clock: Clock,
     private val adapter: EntityAdapter,
     private val isEditing: Boolean,

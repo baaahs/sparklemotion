@@ -59,11 +59,10 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         selectedTab = tab
     }
 
-    val mutableScene = props.sceneManager.mutableScene
-
-    val handleEdit by handler(mutableScene) {
+    val handleEdit by handler {
         props.sceneManager.onEdit()
     }
+    val mutableScene = props.sceneManager.mutableScene
 
     mapperAppContext.Provider {
         attrs.value = myAppContext
