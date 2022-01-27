@@ -44,7 +44,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val lastSelectedEntity = ref<Model.Entity>(null)
 
     val mutableModel = props.mutableScene.model
-    val visualizer = memo(mutableModel, entityAdapter, props.onEdit) {
+    val visualizer = memo(entityAdapter, props.onEdit) {
         ModelVisualEditor(mutableModel, appContext.clock, entityAdapter, true) {
             props.onEdit()
         }.also {
@@ -52,6 +52,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                 it.selectedEntity = lastSelectedEntity.current
             }
         }
+    }
+    if (visualizer.mutableModel !== mutableModel) {
+        visualizer.mutableModel = mutableModel
     }
     visualizer.refresh()
 
