@@ -99,8 +99,8 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         add(container)
         add(strandsGroup)
         add(pixels)
-        vizPixels?.addTo(VizObj(this))
-    }
+        vizPixels?.addTo(this)
+    } as Object3D
 
     abstract fun getPixelLocations(): List<Vector3F>
     abstract fun getSegments(): List<PolyLine.Segment>

@@ -54,7 +54,7 @@ actual class Cone actual constructor(
     private val cones = listOf(inner, outer)
 
     actual fun addTo(parent: VizObj) {
-        cones.forEach { cone -> parent.add(VizObj(cone)) }
+        cones.forEach { cone -> parent.add(cone) }
     }
 
     actual fun update(state: State) {

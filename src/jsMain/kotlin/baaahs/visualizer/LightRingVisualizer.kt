@@ -14,7 +14,7 @@ class LightRingVisualizer(
     private val ringMesh: Mesh<WireframeGeometry, MeshBasicMaterial> = Mesh()
     private val ringMaterial = MeshBasicMaterial()
 
-    override val obj: Object3D = Object3D()
+    override val obj = Object3D()
 
     private var parent: VizObj? = null
     var vizPixels : VizPixels? = vizPixels
