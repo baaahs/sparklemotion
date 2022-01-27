@@ -86,10 +86,14 @@ class EditingEntity<T : Model.Entity>(
     val mutableEntity: MutableEntity<T>,
     val modelUnit: ModelUnit,
     adapter: EntityAdapter,
-    val onChange: () -> Unit
+    private val onChange: () -> Unit
 ) : Observable() {
     val itemVisualizer: ItemVisualizer<*>?
     val errors: List<String>
+
+    val affineTransforms = Observable()
+
+    var lastEntityData = mutableEntity.build()
 
     init {
         val errors = arrayListOf<String>()
@@ -105,6 +109,36 @@ class EditingEntity<T : Model.Entity>(
             null
         }
         this.errors = errors
+    }
+
+    fun onTransformationChange(
+        position: Vector3F,
+        rotation: EulerAngle,
+        scale: Vector3F
+    ) {
+        if (
+            position != mutableEntity.position
+            || rotation != mutableEntity.rotation
+            || scale != mutableEntity.scale)
+        {
+            println("onTransformationChange ${mutableEntity.title} position = $position")
+
+            mutableEntity.position = position
+            mutableEntity.rotation = rotation
+            mutableEntity.scale = scale
+            affineTransforms.notifyChanged()
+        }
+    }
+
+    fun onChange() {
+        val newEntityData = mutableEntity.build()
+        if (newEntityData != lastEntityData) {
+            onChange.invoke()
+
+            lastEntityData = newEntityData
+        } else {
+            println("Ignoring onChange() of unchanged ${mutableEntity.title}")
+        }
     }
 }
 

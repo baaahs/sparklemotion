@@ -18,7 +18,6 @@ class SurfaceVisualizer(
         lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
         Line(lineGeo, lineMaterial).apply {
             matrixAutoUpdate = false
-            itemVisualizer = this@SurfaceVisualizer
             mesh.add(this)
         }
     }

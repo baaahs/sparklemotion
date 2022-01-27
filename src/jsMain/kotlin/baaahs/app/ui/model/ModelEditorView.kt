@@ -1,9 +1,6 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
-import baaahs.geom.EulerAngle
-import baaahs.geom.Vector3F
-import baaahs.geom.toThreeEuler
 import baaahs.model.EntityData
 import baaahs.model.Model
 import baaahs.scene.EditingEntity
@@ -29,19 +26,10 @@ import react.RHandler
 import react.dom.div
 import react.dom.header
 import react.useContext
-import three.js.Object3D
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
-
-    val mutableModel = props.mutableScene.model
-    val modelData = mutableModel.build()
-    var modelRebuilt = false
-    val currentOpenModel = memo(modelData) {
-        modelRebuilt = true
-        modelData.open()
-    }
 
     val entityAdapter = memo {
         EntityAdapter(
@@ -53,14 +41,19 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         )
     }
 
-    val visualizer = memo(entityAdapter) {
-        ModelVisualizer(currentOpenModel, appContext.clock, entityAdapter, true)
-    }
-    val visualizerParentEl = ref<Element>()
+    val lastSelectedEntity = ref<Model.Entity>(null)
 
-    if (modelRebuilt) {
-        visualizer.model = currentOpenModel
+    val mutableModel = props.mutableScene.model
+    val visualizer = memo(mutableModel, entityAdapter, props.onEdit) {
+        ModelVisualEditor(mutableModel, appContext.clock, entityAdapter, true) {
+            props.onEdit()
+        }.also {
+            if (lastSelectedEntity.current != null) {
+                it.selectedEntity = lastSelectedEntity.current
+            }
+        }
     }
+    visualizer.refresh()
 
     val handleAddEntity by handler(mutableModel, props.onEdit) { newEntityData: EntityData ->
         val newMutableEntity = newEntityData.edit()
@@ -68,25 +61,39 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         props.onEdit()
     }
 
-    var selectedEntity by state<MutableEntity<*>?> { null }
-    val handleListItemSelect by handler { mutableEntity: MutableEntity<*>? ->
-        selectedEntity = mutableEntity
+    val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
+    lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
+
+    val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity<*>? ->
         visualizer.selectedEntity =
             mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
+        lastSelectedEntity.current = mutableEntity?.id?.let { visualizer.model.findEntityById(it) }
+        forceRender()
     }
 
-    onMount {
+    val visualizerParentEl = ref<Element>()
+    onMount(visualizer) {
         val parent = visualizerParentEl.current as HTMLDivElement
         parent.insertBefore(visualizer.facade.canvas, null)
         visualizer.resize()
 
         val observer = visualizer.facade.addObserver {
-            selectedEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
+            forceRender()
         }
 
+        val currentVisualizer = visualizer
         withCleanup {
-            parent.removeChild(visualizer.facade.canvas)
+            parent.removeChild(currentVisualizer.facade.canvas)
             observer.remove()
+        }
+    }
+
+    val editingEntity = visualizer.editingEntity
+    memo(selectedMutableEntity, mutableModel.units, entityAdapter, props.onEdit) {
+        selectedMutableEntity?.let { selected ->
+            EditingEntity(selected, mutableModel.units, entityAdapter) {
+                props.onEdit()
+            }
         }
     }
 
@@ -94,22 +101,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
-    val editingEntity = memo(selectedEntity, mutableModel.units, entityAdapter, props.onEdit) {
-        selectedEntity?.let { selected ->
-            EditingEntity(selected, mutableModel.units, entityAdapter) {
-                props.onEdit()
-            }
-        }
-    }
-
     fun <T : Model.Entity> EditingEntity<T>.renderEditorPanels(builder: RBuilder) {
         val entity = this@renderEditorPanels
 
         with(mutableEntity) {
-            val visualization = visualizer.findById(id)
-                ?: error("found no Object3D for $id ($title / ${this::class.simpleName})")
-            val transformation = Transformation(this, visualization)
-            entity.addObserver { transformation.onChange() }
             with (builder) {
                 getEditorPanels().forEach { editorPanel ->
                     with (editorPanel.getView(entity)) { render() }
@@ -127,7 +122,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                     mutableModel.entities.forEach { mutableEntity ->
                         entityListItem {
                             attrs.mutableEntity = mutableEntity
-                            attrs.selectedMutableEntity = selectedEntity
+                            attrs.selectedMutableEntity = selectedMutableEntity
                             attrs.onSelect = handleListItemSelect
                         }
                     }
@@ -158,31 +153,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                     }
                 }
             }
-        }
-    }
-}
-
-class Transformation(
-    private val entity: MutableEntity<*>,
-    private val visualization: Object3D,
-    private var position: Vector3F = entity.position,
-    private var rotation: EulerAngle = entity.rotation,
-    private var scale: Vector3F = entity.scale
-) {
-    fun onChange() {
-        if (entity.position != position) {
-            position = entity.position
-            visualization.position.copy(position.toVector3())
-        }
-
-        if (entity.rotation != rotation) {
-            rotation = entity.rotation
-            visualization.rotation = rotation.toThreeEuler()
-        }
-
-        if (entity.scale != scale) {
-            scale = entity.scale
-            visualization.scale.copy(scale.toVector3())
         }
     }
 }

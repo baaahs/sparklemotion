@@ -15,7 +15,6 @@ class ObjGroupVisualizer(
 
     private val boxHelperMaterial = LineDashedMaterial()
     private val boxHelper = Box3Helper(Box3(), Color("#22BB66")).also { helper ->
-        helper.itemVisualizer = this@ObjGroupVisualizer
         helper.updateWithPadding(.02)
         helper.material = boxHelperMaterial
         obj.add(helper)

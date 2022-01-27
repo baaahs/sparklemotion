@@ -62,7 +62,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     val mutableScene = props.sceneManager.mutableScene
 
     val handleEdit by handler(mutableScene) {
-        props.sceneManager.onEdit(mutableScene)
+        props.sceneManager.onEdit()
     }
 
     mapperAppContext.Provider {

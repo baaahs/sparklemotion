@@ -35,7 +35,7 @@ class Model(
         ?: error("Unknown model surface \"$name\".")
 
     fun findEntityById(id: EntityId) =
-        entities.firstNotNullOf { it.findEntityById(id) }
+        entities.firstNotNullOfOrNull { it.findEntityById(id) }
 
     val modelBounds by lazy {
         boundingBox(entities.flatMap { entity ->
@@ -105,7 +105,7 @@ class Model(
 
         override fun findEntityById(id: EntityId): Entity? =
             super.findEntityById(id)
-                ?: entities.firstNotNullOf { it.findEntityById(id) }
+                ?: entities.firstNotNullOfOrNull { it.findEntityById(id) }
 
         override fun visit(callback: (Entity) -> Unit) {
             super.visit(callback).also {
