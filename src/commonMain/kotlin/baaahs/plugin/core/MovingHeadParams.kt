@@ -21,6 +21,7 @@ data class MovingHeadParams(
     fun send(buffer: MovingHead.Buffer) {
         buffer.pan = pan
         buffer.tilt = tilt
+        // TODO: Not all moving heads have a color wheel, some use RGB.
         buffer.colorWheelPosition = colorWheel
         buffer.dimmer = dimmer
     }

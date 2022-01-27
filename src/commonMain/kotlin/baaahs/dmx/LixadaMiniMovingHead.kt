@@ -70,6 +70,6 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
             }
 
         override var colorWheelPosition: Float get() = error("not supported")
-            set(_) = TODO("not implemented")
+            set(_) {}
     }
 }
