@@ -29,7 +29,7 @@ class Visualizer(
 
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
 
-    var selectedEntity: EntityVisualizer<*>?
+    var selectedEntity: ItemVisualizer<*>?
         get() = this@Visualizer.selectedEntity
         set(value) {
             this@Visualizer.selectedEntity = value
@@ -46,11 +46,11 @@ class Visualizer(
             }
         }
 
-    private val entityVisualizers = arrayListOf<EntityVisualizer<*>>()
+    private val itemVisualizers = arrayListOf<ItemVisualizer<*>>()
 
     init {
         addPrerenderListener {
-            entityVisualizers.forEach { it.applyStyles() }
+            itemVisualizers.forEach { it.applyStyles() }
         }
     }
 
@@ -68,9 +68,9 @@ class Visualizer(
         stopRendering()
     }
 
-    fun add(entityVisualizer: EntityVisualizer<*>) {
-        entityVisualizers.add(entityVisualizer)
-        scene.add(entityVisualizer.obj)
+    fun add(itemVisualizer: ItemVisualizer<*>) {
+        itemVisualizers.add(itemVisualizer)
+        scene.add(itemVisualizer.obj)
     }
 
     override fun onSelectionChange(obj: Object3D?) {
@@ -80,7 +80,7 @@ class Visualizer(
             selectionSpan.style.display = "none"
             selectionSpan.innerText = ""
         } else {
-            val entityVisualizer = vizObj.entityVisualizer!!
+            val entityVisualizer = vizObj.itemVisualizer!!
             entityVisualizer.selected = true
             console.log("Selecting ${entityVisualizer.title}")
             selectionSpan.style.display = "inherit"
@@ -92,7 +92,7 @@ class Visualizer(
 
     private fun findParentEntityVisualizer(obj: Object3D?): Object3D? {
         var curObj = obj
-        while (curObj != null && curObj.entityVisualizer == null) {
+        while (curObj != null && curObj.itemVisualizer == null) {
             curObj = curObj.parent
         }
         return curObj
@@ -112,8 +112,8 @@ class Visualizer(
             }
 
 
-        fun select(entityVisualizer: EntityVisualizer<*>) {
-            this@Visualizer.selectedEntity = entityVisualizer
+        fun select(itemVisualizer: ItemVisualizer<*>) {
+            this@Visualizer.selectedEntity = itemVisualizer
         }
     }
 }

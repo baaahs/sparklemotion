@@ -1,7 +1,5 @@
 package baaahs.visualizer
 
-import baaahs.model.EntityId
-import baaahs.model.Model
 import baaahs.model.ObjGroup
 import baaahs.util.three.addPadding
 import three.js.*
@@ -17,34 +15,33 @@ class ObjGroupVisualizer(
 
     private val boxHelperMaterial = LineDashedMaterial()
     private val boxHelper = Box3Helper(Box3(), Color("#22BB66")).also { helper ->
-        helper.entityVisualizer = this@ObjGroupVisualizer
+        helper.itemVisualizer = this@ObjGroupVisualizer
         helper.updateWithPadding(.02)
         helper.material = boxHelperMaterial
         obj.add(helper)
     }
 
-    init { update(entity) }
+    init { update(item) }
 
-    override fun findById(id: EntityId): EntityVisualizer<*>? =
-        super.findById(id) ?: groupVisualizer.findById(id)
+    override fun find(predicate: (Any) -> Boolean): ItemVisualizer<*>? =
+        super.find(predicate) ?: groupVisualizer.find(predicate)
 
     override fun applyStyle(entityStyle: EntityStyle) {
         entityStyle.applyToLine(boxHelperMaterial)
     }
 
-    override fun traverse(callback: (EntityVisualizer<*>) -> Unit) {
+    override fun traverse(callback: (ItemVisualizer<*>) -> Unit) {
         super.traverse(callback)
         groupVisualizer.traverse(callback)
     }
 
-    override fun isApplicable(newEntity: Model.Entity): ObjGroup? =
-        newEntity as? ObjGroup
+    override fun isApplicable(newItem: Any): ObjGroup? =
+        newItem as? ObjGroup
 
-    override fun update(newEntity: ObjGroup, callback: ((EntityVisualizer<*>) -> Unit)?) {
-        super.update(newEntity, callback)
-        groupVisualizer.updateChildren(newEntity.entities) {
-            it.obj.objGroupName = newEntity.title
-            callback?.invoke(it)
+    override fun update(newItem: ObjGroup) {
+        super.update(newItem)
+        groupVisualizer.updateChildren(newItem.entities) {
+            it.obj.objGroupName = newItem.title
         }
         boxHelper.updateWithPadding(.02)
     }
@@ -64,6 +61,6 @@ var Object3D.objGroupName: String?
     get() = userData["objGroupName"] as String?
     set(value) { userData["objGroupName"] = value }
 
-var Object3D.entityVisualizer: EntityVisualizer<*>?
-    get() = userData["entityVisualizer"] as EntityVisualizer<*>?
+var Object3D.itemVisualizer: ItemVisualizer<*>?
+    get() = userData["entityVisualizer"] as ItemVisualizer<*>?
     set(value) { userData["entityVisualizer"] = value }

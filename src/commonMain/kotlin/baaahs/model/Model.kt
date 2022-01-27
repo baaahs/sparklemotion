@@ -10,7 +10,7 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.EntityVisualizer
+import baaahs.visualizer.ItemVisualizer
 import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
 
@@ -75,7 +75,7 @@ class Model(
         val id: EntityId
 
         fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation?
-        fun createVisualizer(adapter: EntityAdapter): EntityVisualizer<out Entity>
+        fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<out Entity>
 
         fun findEntityById(id: EntityId): Entity? =
             if (id == this.id) this else null

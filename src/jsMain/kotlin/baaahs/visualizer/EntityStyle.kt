@@ -5,7 +5,7 @@ import three.js.*
 enum class EntityStyle {
     /** Default is always applied first. */
     Default {
-        override fun appliesTo(entityVisualizer: EntityVisualizer<*>) =
+        override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
             true
 
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
@@ -37,8 +37,8 @@ enum class EntityStyle {
         }
     },
     Editing {
-        override fun appliesTo(entityVisualizer: EntityVisualizer<*>) =
-            entityVisualizer.isEditing
+        override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
+            itemVisualizer.isEditing
 
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
             material.color.set(0xaaaaaa)
@@ -65,8 +65,8 @@ enum class EntityStyle {
         }
     },
     Selected {
-        override fun appliesTo(entityVisualizer: EntityVisualizer<*>) =
-            entityVisualizer.selected
+        override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
+            itemVisualizer.selected
 
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
             (material.color as Color).multiplyScalar(1.2)
@@ -83,7 +83,7 @@ enum class EntityStyle {
         }
     },
     ParentSelected {
-        override fun appliesTo(entityVisualizer: EntityVisualizer<*>) =
+        override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
             false // TODO entityVisualizer.parentSelected?
 
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
@@ -96,8 +96,8 @@ enum class EntityStyle {
         }
     },
     MapperRunning {
-        override fun appliesTo(entityVisualizer: EntityVisualizer<*>) =
-            entityVisualizer.mapperIsRunning
+        override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
+            itemVisualizer.mapperIsRunning
 
         override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
             material.transparent = true
@@ -110,7 +110,7 @@ enum class EntityStyle {
         }
     };
 
-    abstract fun appliesTo(entityVisualizer: EntityVisualizer<*>): Boolean
+    abstract fun appliesTo(itemVisualizer: ItemVisualizer<*>): Boolean
     open fun applyToLine(material: LineDashedMaterial, use: Use? = null) {}
     open fun applyToMesh(material: MeshBasicMaterial, use: Use? = null) {}
     open fun applyToPoints(material: PointsMaterial, use: Use? = null) {}
@@ -121,9 +121,9 @@ enum class EntityStyle {
     }
 
     companion object {
-        fun applyStyles(entityVisualizer: EntityVisualizer<*>, block: (EntityStyle) -> Unit) {
+        fun applyStyles(itemVisualizer: ItemVisualizer<*>, block: (EntityStyle) -> Unit) {
             values().forEach {
-                if (it.appliesTo(entityVisualizer)) block.invoke(it)
+                if (it.appliesTo(itemVisualizer)) block.invoke(it)
             }
         }
     }

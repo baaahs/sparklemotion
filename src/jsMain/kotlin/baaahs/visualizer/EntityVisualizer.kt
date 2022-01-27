@@ -11,10 +11,10 @@ import baaahs.visualizer.movers.MovingHeadVisualizer
 
 @Suppress("LeakingThis")
 abstract class BaseEntityVisualizer<T : Model.Entity>(
-    override var entity: T
-) : Observable(), EntityVisualizer<T> {
+    override var item: T
+) : Observable(), ItemVisualizer<T> {
     override val title: String
-        get() = entity.title
+        get() = item.title
 
     override var isEditing: Boolean = false
     override var mapperIsRunning: Boolean = false
@@ -26,47 +26,33 @@ abstract class BaseEntityVisualizer<T : Model.Entity>(
         EntityStyle.applyStyles(this) { applyStyle(it) }
     }
 
-    abstract fun isApplicable(newEntity: Model.Entity): T?
+    override fun update(newItem: T) {
+        item = newItem
 
-    open fun update(newEntity: T, callback: ((EntityVisualizer<*>) -> Unit)? = null) {
-        entity = newEntity
-
-        obj.name = newEntity.title
-        obj.position.copy(newEntity.position.toVector3())
-        obj.rotation.copy(newEntity.rotation.toThreeEuler())
-        obj.scale.copy(newEntity.scale.toVector3())
-
-        callback?.invoke(this)
-    }
-
-    override fun updateIfApplicable(newEntity: Model.Entity, callback: ((EntityVisualizer<*>) -> Unit)?): Boolean {
-        if (newEntity == entity) return true
-
-        val tEntity = isApplicable(newEntity)
-        return if (tEntity != null) {
-            update(tEntity, callback)
-            true
-        } else false
+        obj.name = newItem.title
+        obj.position.copy(newItem.position.toVector3())
+        obj.rotation.copy(newItem.rotation.toThreeEuler())
+        obj.scale.copy(newItem.scale.toVector3())
     }
 }
 
 actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
-    override fun createLightBarVisualizer(lightBar: LightBar, adapter: EntityAdapter): EntityVisualizer<LightBar> =
+    override fun createLightBarVisualizer(lightBar: LightBar, adapter: EntityAdapter): ItemVisualizer<LightBar> =
         LightBarVisualizer(lightBar, adapter)
 
-    override fun createLightRingVisualizer(lightRing: LightRing, adapter: EntityAdapter): EntityVisualizer<LightRing> =
+    override fun createLightRingVisualizer(lightRing: LightRing, adapter: EntityAdapter): ItemVisualizer<LightRing> =
         LightRingVisualizer(lightRing)
 
-    override fun createMovingHeadVisualizer(movingHead: MovingHead, adapter: EntityAdapter): EntityVisualizer<MovingHead> =
+    override fun createMovingHeadVisualizer(movingHead: MovingHead, adapter: EntityAdapter): ItemVisualizer<MovingHead> =
         MovingHeadVisualizer(movingHead, adapter)
 
-    override fun createObjGroupVisualizer(objGroup: ObjGroup, adapter: EntityAdapter): EntityVisualizer<ObjGroup> =
+    override fun createObjGroupVisualizer(objGroup: ObjGroup, adapter: EntityAdapter): ItemVisualizer<ObjGroup> =
         ObjGroupVisualizer(objGroup, adapter)
 
-    override fun createPolyLineVisualizer(polyLine: PolyLine, adapter: EntityAdapter): EntityVisualizer<PolyLine> =
+    override fun createPolyLineVisualizer(polyLine: PolyLine, adapter: EntityAdapter): ItemVisualizer<PolyLine> =
         PolyLineVisualizer(polyLine)
 
-    override fun createSurfaceVisualizer(surface: Model.Surface, adapter: EntityAdapter): EntityVisualizer<Model.Surface> =
+    override fun createSurfaceVisualizer(surface: Model.Surface, adapter: EntityAdapter): ItemVisualizer<Model.Surface> =
         SurfaceVisualizer(surface, SurfaceGeometry(surface))
 
     override fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View = renderWrapper {

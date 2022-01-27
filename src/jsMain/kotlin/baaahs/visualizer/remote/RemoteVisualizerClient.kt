@@ -49,7 +49,7 @@ class RemoteVisualizerClient(
             fixtureSimulations = openScene?.let { scene ->
                 scene.model.allEntities.mapNotNull { entity ->
                     entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { simulation ->
-                        val entityVisualizer = simulation.entityVisualizer
+                        val entityVisualizer = simulation.itemVisualizer
                         visualizer.add(entityVisualizer)
                         entity.name to simulation
                     }

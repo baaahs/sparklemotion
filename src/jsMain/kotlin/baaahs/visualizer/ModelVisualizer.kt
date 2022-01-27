@@ -26,8 +26,8 @@ class ModelVisualizer(
 
     var selectedEntity: Model.Entity? = null
         set(value) {
-            field?.let { groupVisualizer.findById(it.id)?.selected = false }
-            value?.let { groupVisualizer.findById(it.id)?.selected = true }
+            field?.let { prior -> groupVisualizer.find { (it as? Model.Entity)?.id == prior.id }?.selected = false }
+            value?.let { new -> groupVisualizer.find{ (it as? Model.Entity)?.id == new.id }?.selected = true }
             transformControls.enabled = value != null
             field = value
         }
@@ -77,7 +77,7 @@ class ModelVisualizer(
             }
         }
         transformControls.addEventListener("change") {
-            val entityVisualizer = transformControls.`object`?.entityVisualizer
+            val entityVisualizer = transformControls.`object`?.itemVisualizer
             entityVisualizer?.notifyChanged()
             println("object = ${transformControls.`object`}")
         }
@@ -174,34 +174,34 @@ class GroupVisualizer(
 ) {
     val groupObj: Group = Group().apply { name = title }
 
-    private val entityVisualizers: MutableList<EntityVisualizer<*>> =
+    private val itemVisualizers: MutableList<ItemVisualizer<*>> =
         entities.map { entity ->
             adapter.createVisualizer(entity).also {
                 groupObj.add(it.obj)
             }
         }.toMutableList()
 
-    fun findById(id: EntityId): EntityVisualizer<*>? =
-        entityVisualizers.firstNotNullOfOrNull { it.findById(id) }
+    fun find(predicate: (Any) -> Boolean): ItemVisualizer<*>? =
+        itemVisualizers.firstNotNullOfOrNull { it.find(predicate) }
 
     fun updateChildren(
         entities: List<Model.Entity>,
-        callback: ((EntityVisualizer<*>) -> Unit)? = null
+        callback: ((ItemVisualizer<*>) -> Unit)? = null
     ) {
-        val oldChildren = entityVisualizers.associateBy { it.entity.id }
-        entityVisualizers.clear()
+        val oldChildren = ArrayList(itemVisualizers)
+        itemVisualizers.clear()
         groupObj.clear()
 
-        entities.forEach { newChild ->
-            val oldVisualizer = oldChildren[newChild.id]
+        entities.forEachIndexed { index, newChild ->
+            val oldVisualizer = oldChildren.getOrNull(index)
             val visualizer =
-                if (oldVisualizer != null && oldVisualizer.updateIfApplicable(newChild, callback)) {
+                if (oldVisualizer != null && oldVisualizer.updateIfApplicable(newChild)) {
                     oldVisualizer
                 } else {
                     adapter.createVisualizer(newChild)
                 }
 
-            entityVisualizers.add(visualizer)
+            itemVisualizers.add(visualizer)
             callback?.invoke(visualizer)
             val obj = visualizer.obj
             obj.modelEntity = newChild
@@ -209,8 +209,8 @@ class GroupVisualizer(
         }
     }
 
-    fun traverse(callback: (EntityVisualizer<*>) -> Unit) {
-        entityVisualizers.forEach { it.traverse(callback) }
+    fun traverse(callback: (ItemVisualizer<*>) -> Unit) {
+        itemVisualizers.forEach { it.traverse(callback) }
     }
 }
 

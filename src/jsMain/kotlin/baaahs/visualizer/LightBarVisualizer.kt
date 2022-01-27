@@ -2,7 +2,6 @@ package baaahs.visualizer
 
 import baaahs.geom.Vector3F
 import baaahs.model.LightBar
-import baaahs.model.Model
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
@@ -15,23 +14,23 @@ class LightBarVisualizer(
     adapter: EntityAdapter,
     vizPixels: VizPixels? = null
 ) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
-    init { update(entity) }
+    init { update(item) }
 
     // TODO!!!
     val pixelCount_UNKNOWN_BUSTED = 100
 
-    override fun isApplicable(newEntity: Model.Entity): LightBar? =
-        newEntity as? LightBar
+    override fun isApplicable(newItem: Any): LightBar? =
+        newItem as? LightBar
 
     override fun getPixelLocations(): List<Vector3F> =
-        entity.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
+        item.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
 
     override fun getSegments(): List<PolyLine.Segment> =
-        listOf(PolyLine.Segment(entity.startVertex, entity.endVertex, pixelCount_UNKNOWN_BUSTED))
+        listOf(PolyLine.Segment(item.startVertex, item.endVertex, pixelCount_UNKNOWN_BUSTED))
 
     override fun updateContainer(container: Box3Helper, pixelLocations: Array<Vector3>) {
-        val vector = entity.endVertex - entity.startVertex
-        val center = entity.startVertex + vector / 2f
+        val vector = item.endVertex - item.startVertex
+        val center = item.startVertex + vector / 2f
         val length = vector.length()
         val normal = vector.normalize()
 
@@ -55,24 +54,24 @@ class LightBarVisualizer(
 class PolyLineVisualizer(
     polyLine: PolyLine
 ) : PixelArrayVisualizer<PolyLine>(polyLine) {
-    init { update(entity) }
+    init { update(item) }
 
-    override fun isApplicable(newEntity: Model.Entity): PolyLine? =
-        newEntity as? PolyLine
+    override fun isApplicable(newItem: Any): PolyLine? =
+        newItem as? PolyLine
 
     override fun getPixelLocations(): List<Vector3F> =
-        entity.segments.flatMap {
+        item.segments.flatMap {
             it.calculatePixelLocations()
         }
 
     override fun getSegments(): List<PolyLine.Segment> =
-        entity.segments
+        item.segments
 
     override fun addPadding(container: Box3Helper) {
-        container.box.min.x -= entity.xPadding
-        container.box.max.x += entity.xPadding
-        container.box.min.y -= entity.yPadding
-        container.box.max.y += entity.yPadding
+        container.box.min.x -= item.xPadding
+        container.box.max.x += item.xPadding
+        container.box.min.y -= item.yPadding
+        container.box.max.y += item.yPadding
     }
 }
 
@@ -121,8 +120,8 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         addPadding(container)
     }
 
-    override fun update(newEntity: T, callback: ((EntityVisualizer<*>) -> Unit)?) {
-        super.update(newEntity, callback)
+    override fun update(newItem: T) {
+        super.update(newItem)
 
         val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
         updateContainer(container, pixelLocations)

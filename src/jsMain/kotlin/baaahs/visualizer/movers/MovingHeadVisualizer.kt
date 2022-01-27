@@ -1,13 +1,11 @@
 package baaahs.visualizer.movers
 
-import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityStyle
-import baaahs.visualizer.EntityVisualizer
 import three.js.*
 import three_ext.clear
 import three_ext.set
@@ -32,14 +30,14 @@ class MovingHeadVisualizer(
         }
     )
 
-    init { update(entity) }
+    init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
         // TODO
     }
 
-    override fun isApplicable(newEntity: Model.Entity): MovingHead? =
-        newEntity as? MovingHead
+    override fun isApplicable(newItem: Any): MovingHead? =
+        newItem as? MovingHead
 
     private fun updateCanGeometry(visualizerInfo: MovingHeadAdapter.VisualizerInfo) {
         moverCan.geometry =
@@ -48,15 +46,15 @@ class MovingHeadVisualizer(
         moverCan.position.y = visualizerInfo.canLength / 2.0 - visualizerInfo.canLengthInFrontOfLight.toDouble()
     }
 
-    override fun update(newEntity: MovingHead, callback: ((EntityVisualizer<*>) -> Unit)?) {
-        super.update(newEntity, callback)
+    override fun update(newItem: MovingHead) {
+        super.update(newItem)
 
         holder.clear()
 
-        updateCanGeometry(entity.adapter.visualizerInfo)
+        updateCanGeometry(item.adapter.visualizerInfo)
         holder.add(moverCan)
 
-        beam = Beam.selectFor(newEntity.adapter)
+        beam = Beam.selectFor(newItem.adapter)
         holder.add(beam.vizObj)
     }
 
@@ -65,9 +63,9 @@ class MovingHeadVisualizer(
         beam.update(state)
         moverCan.rotation.set(
             Euler(
-                entity.adapter.panRange.scale(state.pan),
+                item.adapter.panRange.scale(state.pan),
                 0f,
-                entity.adapter.tiltRange.scale(state.tilt)
+                item.adapter.tiltRange.scale(state.tilt)
             )
         )
 

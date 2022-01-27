@@ -103,7 +103,7 @@ class FixturesSimulator(
 
     fun addToVisualizer() {
         fixtureSimulations.values.forEach {
-            visualizer.add(it.entityVisualizer)
+            visualizer.add(it.itemVisualizer)
         }
     }
 

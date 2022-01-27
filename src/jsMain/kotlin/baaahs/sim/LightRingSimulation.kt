@@ -39,7 +39,7 @@ actual class LightRingSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) },
         )
 
-    override val entityVisualizer: LightRingVisualizer
+    override val itemVisualizer: LightRingVisualizer
             by lazy { LightRingVisualizer(lightRing, vizPixels) }
 
     val wledSimulator by lazy {
@@ -63,7 +63,7 @@ actual class LightRingSimulation actual constructor(
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        entityVisualizer.vizPixels = VizPixels(
+        itemVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             LightBarSimulation.pixelVisualizationNormal,
             lightRing.transformation,
@@ -72,7 +72,7 @@ actual class LightRingSimulation actual constructor(
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+        itemVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {

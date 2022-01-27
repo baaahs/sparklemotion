@@ -35,7 +35,7 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
-    override val entityVisualizer: PixelArrayVisualizer<*> by lazy {
+    override val itemVisualizer: PixelArrayVisualizer<*> by lazy {
         when (pixelArray) {
             is LightBar -> LightBarVisualizer(pixelArray, adapter, vizPixels)
             is PolyLine -> PolyLineVisualizer(pixelArray)
