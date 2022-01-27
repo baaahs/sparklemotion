@@ -32,6 +32,8 @@ import baaahs.shows.FakeShowPlayer
 import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Time
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.EntityVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -97,9 +99,9 @@ class FakeModelEntity(
     override val transformation: Matrix4F
         get() = Matrix4F.identity
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv) = TODO("not implemented")
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter) = TODO("not implemented")
 
-    override fun createVisualizer(simulationEnv: SimulationEnv) = TODO("not implemented")
+    override fun createVisualizer(adapter: EntityAdapter): EntityVisualizer<Model.Entity> = TODO("not implemented")
 }
 
 fun testModelSurface(

@@ -5,7 +5,6 @@ import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
-import baaahs.sim.SimulationEnv
 import baaahs.util.three.addPadding
 import three.js.*
 import three_ext.clear
@@ -13,9 +12,9 @@ import three_ext.set
 
 class LightBarVisualizer(
     lightBar: LightBar,
-    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter,
     vizPixels: VizPixels? = null
-) : PixelArrayVisualizer<LightBar>(lightBar, simulationEnv, vizPixels) {
+) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
     init { update(entity) }
 
     // TODO!!!
@@ -54,9 +53,8 @@ class LightBarVisualizer(
 }
 
 class PolyLineVisualizer(
-    polyLine: PolyLine,
-    simulationEnv: SimulationEnv
-) : PixelArrayVisualizer<PolyLine>(polyLine, simulationEnv) {
+    polyLine: PolyLine
+) : PixelArrayVisualizer<PolyLine>(polyLine) {
     init { update(entity) }
 
     override fun isApplicable(newEntity: Model.Entity): PolyLine? =
@@ -80,7 +78,6 @@ class PolyLineVisualizer(
 
 abstract class PixelArrayVisualizer<T : PixelArray>(
     pixelArray: T,
-    simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<T>(pixelArray) {
     //    private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()

@@ -13,7 +13,8 @@ import baaahs.visualizer.*
 
 actual class LightBarSimulation actual constructor(
     val pixelArray: PixelArray,
-    private val simulationEnv: SimulationEnv
+    private val simulationEnv: SimulationEnv,
+    private val adapter: EntityAdapter
 ) : FixtureSimulation {
 
     private val pixelLocations by lazy { pixelArray.calculatePixelLocalLocations(59) }
@@ -36,8 +37,8 @@ actual class LightBarSimulation actual constructor(
 
     override val entityVisualizer: PixelArrayVisualizer<*> by lazy {
         when (pixelArray) {
-            is LightBar -> LightBarVisualizer(pixelArray, simulationEnv, vizPixels)
-            is PolyLine -> PolyLineVisualizer(pixelArray, simulationEnv)
+            is LightBar -> LightBarVisualizer(pixelArray, adapter, vizPixels)
+            is PolyLine -> PolyLineVisualizer(pixelArray)
             else -> error("unsupported?")
         }
     }

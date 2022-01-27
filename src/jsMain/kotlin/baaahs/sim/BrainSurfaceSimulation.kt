@@ -14,7 +14,8 @@ import three_ext.toVector3F
 
 actual class BrainSurfaceSimulation actual constructor(
     private val surface: Model.Surface,
-    private val simulationEnv: SimulationEnv
+    private val simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
     private val surfaceGeometry by lazy { SurfaceGeometry(surface) }
 
@@ -44,7 +45,7 @@ actual class BrainSurfaceSimulation actual constructor(
         }
 
     override val entityVisualizer: SurfaceVisualizer by lazy {
-        SurfaceVisualizer(surface, surfaceGeometry, simulationEnv, vizPixels)
+        SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
     }
 
     override val previewFixture: Fixture by lazy {

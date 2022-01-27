@@ -10,6 +10,7 @@ import baaahs.mapper.MappingSession
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityVisualizer
 import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
@@ -52,12 +53,12 @@ class ObjGroup(
         listOfNotNull(loaderError)
             .map { Problem("Import error: $name", loaderError?.message ?: "Unknown error.") }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-        ObjGroupSimulation(simulationEnv)
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+        ObjGroupSimulation(adapter)
 
-    inner class ObjGroupSimulation(simulationEnv: SimulationEnv) : FixtureSimulation {
+    inner class ObjGroupSimulation(adapter: EntityAdapter) : FixtureSimulation {
         override val mappingData: MappingSession.SurfaceData? get() = null
-        override val entityVisualizer: EntityVisualizer<*> = createVisualizer(simulationEnv)
+        override val entityVisualizer: EntityVisualizer<*> = createVisualizer(adapter)
         override val previewFixture: Fixture? get() = null
 
         override fun launch() {
@@ -65,6 +66,6 @@ class ObjGroup(
         }
     }
 
-    override fun createVisualizer(simulationEnv: SimulationEnv): EntityVisualizer<*> =
-        visualizerBuilder.createObjGroupVisualizer(this, simulationEnv)
+    override fun createVisualizer(adapter: EntityAdapter) =
+        visualizerBuilder.createObjGroupVisualizer(this, adapter)
 }

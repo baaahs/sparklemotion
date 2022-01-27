@@ -1,13 +1,11 @@
 package baaahs.visualizer
 
 import baaahs.model.Model
-import baaahs.sim.SimulationEnv
 import three.js.*
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,
     val surfaceGeometry: SurfaceGeometry,
-    private val simulationEnv: SimulationEnv,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<Model.Surface>(surface) {
     private val mesh = Mesh(surfaceGeometry.geometry, MeshBasicMaterial()).apply {

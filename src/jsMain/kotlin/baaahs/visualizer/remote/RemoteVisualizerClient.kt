@@ -11,6 +11,7 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -37,6 +38,7 @@ class RemoteVisualizerClient(
         component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
         component(visualizer)
     }
+    private val entityAdapter = EntityAdapter(simulationEnv)
 
     private lateinit var fixtureSimulations: Map<String, FixtureSimulation>
     private lateinit var tcpConnection: Network.TcpConnection
@@ -46,7 +48,7 @@ class RemoteVisualizerClient(
             val openScene = sceneManager.facade.openScene
             fixtureSimulations = openScene?.let { scene ->
                 scene.model.allEntities.mapNotNull { entity ->
-                    entity.createFixtureSimulation(simulationEnv)?.let { simulation ->
+                    entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { simulation ->
                         val entityVisualizer = simulation.entityVisualizer
                         visualizer.add(entityVisualizer)
                         entity.name to simulation

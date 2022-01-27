@@ -43,16 +43,18 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         modelData.open()
     }
 
-    val simulationEnv = memo {
-        SimulationEnv {
-            component(appContext.clock)
-            component(FakeDmxUniverse())
-            component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
-        }
+    val entityAdapter = memo {
+        EntityAdapter(
+            SimulationEnv {
+                component(appContext.clock)
+                component(FakeDmxUniverse())
+                component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
+            }
+        )
     }
 
-    val visualizer = memo(simulationEnv) {
-        ModelVisualizer(currentOpenModel, appContext.clock, simulationEnv, true)
+    val visualizer = memo(entityAdapter) {
+        ModelVisualizer(currentOpenModel, appContext.clock, entityAdapter, true)
     }
     val visualizerParentEl = ref<Element>()
 
@@ -92,9 +94,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
-    val editingEntity = memo(selectedEntity, mutableModel.units, simulationEnv, props.onEdit) {
+    val editingEntity = memo(selectedEntity, mutableModel.units, entityAdapter, props.onEdit) {
         selectedEntity?.let { selected ->
-            EditingEntity(selected, mutableModel.units, simulationEnv) {
+            EditingEntity(selected, mutableModel.units, entityAdapter) {
                 props.onEdit()
             }
         }

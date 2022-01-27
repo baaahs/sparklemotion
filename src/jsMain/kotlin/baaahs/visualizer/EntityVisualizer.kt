@@ -4,7 +4,6 @@ import baaahs.app.ui.model.*
 import baaahs.geom.toThreeEuler
 import baaahs.model.*
 import baaahs.scene.EditingEntity
-import baaahs.sim.SimulationEnv
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
@@ -52,23 +51,23 @@ abstract class BaseEntityVisualizer<T : Model.Entity>(
 }
 
 actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
-    override fun createLightBarVisualizer(lightBar: LightBar, simulationEnv: SimulationEnv): EntityVisualizer<LightBar> =
-        LightBarVisualizer(lightBar, simulationEnv)
+    override fun createLightBarVisualizer(lightBar: LightBar, adapter: EntityAdapter): EntityVisualizer<LightBar> =
+        LightBarVisualizer(lightBar, adapter)
 
-    override fun createLightRingVisualizer(lightRing: LightRing, simulationEnv: SimulationEnv): EntityVisualizer<LightRing> =
-        LightRingVisualizer(lightRing, simulationEnv)
+    override fun createLightRingVisualizer(lightRing: LightRing, adapter: EntityAdapter): EntityVisualizer<LightRing> =
+        LightRingVisualizer(lightRing)
 
-    override fun createMovingHeadVisualizer(movingHead: MovingHead, simulationEnv: SimulationEnv): EntityVisualizer<MovingHead> =
-        MovingHeadVisualizer(movingHead, simulationEnv)
+    override fun createMovingHeadVisualizer(movingHead: MovingHead, adapter: EntityAdapter): EntityVisualizer<MovingHead> =
+        MovingHeadVisualizer(movingHead, adapter)
 
-    override fun createObjGroupVisualizer(objGroup: ObjGroup, simulationEnv: SimulationEnv): EntityVisualizer<ObjGroup> =
-        ObjGroupVisualizer(objGroup, simulationEnv)
+    override fun createObjGroupVisualizer(objGroup: ObjGroup, adapter: EntityAdapter): EntityVisualizer<ObjGroup> =
+        ObjGroupVisualizer(objGroup, adapter)
 
-    override fun createPolyLineVisualizer(polyLine: PolyLine, simulationEnv: SimulationEnv): EntityVisualizer<PolyLine> =
-        PolyLineVisualizer(polyLine, simulationEnv)
+    override fun createPolyLineVisualizer(polyLine: PolyLine, adapter: EntityAdapter): EntityVisualizer<PolyLine> =
+        PolyLineVisualizer(polyLine)
 
-    override fun createSurfaceVisualizer(surface: Model.Surface, simulationEnv: SimulationEnv): EntityVisualizer<Model.Surface> =
-        SurfaceVisualizer(surface, SurfaceGeometry(surface), simulationEnv)
+    override fun createSurfaceVisualizer(surface: Model.Surface, adapter: EntityAdapter): EntityVisualizer<Model.Surface> =
+        SurfaceVisualizer(surface, SurfaceGeometry(surface))
 
     override fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View = renderWrapper {
         titleAndDescriptionEditor {

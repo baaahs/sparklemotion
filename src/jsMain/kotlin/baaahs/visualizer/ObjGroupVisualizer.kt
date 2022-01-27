@@ -3,17 +3,16 @@ package baaahs.visualizer
 import baaahs.model.EntityId
 import baaahs.model.Model
 import baaahs.model.ObjGroup
-import baaahs.sim.SimulationEnv
 import baaahs.util.three.addPadding
 import three.js.*
 import three_ext.expandByObjectLocal
 
 class ObjGroupVisualizer(
     objGroup: ObjGroup,
-    simulationEnv: SimulationEnv
+    adapter: EntityAdapter
 ) : BaseEntityVisualizer<ObjGroup>(objGroup) {
     override val obj: Object3D = Group()
-    private val groupVisualizer = GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, simulationEnv)
+    private val groupVisualizer = GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
         .also { obj.add(it.groupObj) }
 
     private val boxHelperMaterial = LineDashedMaterial()

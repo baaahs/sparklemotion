@@ -3,9 +3,9 @@ package baaahs.visualizer.movers
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityStyle
 import baaahs.visualizer.EntityVisualizer
 import three.js.*
@@ -14,7 +14,7 @@ import three_ext.set
 
 class MovingHeadVisualizer(
     movingHead: MovingHead,
-    simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : BaseEntityVisualizer<MovingHead>(movingHead) {
     private var beam: Beam = Beam.selectFor(movingHead.adapter)
 
@@ -22,7 +22,7 @@ class MovingHeadVisualizer(
     override val obj: Object3D
         get() = holder
 
-    private val clock = simulationEnv[Clock::class]
+    private val clock = adapter.simulationEnv[Clock::class]
     private val physicalModel = PhysicalModel(movingHead.adapter, clock)
 
     private val moverCan = Mesh(
