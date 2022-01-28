@@ -23,17 +23,12 @@ class MovingHeadVisualizer(
     private val clock = adapter.simulationEnv[Clock::class]
     private val physicalModel = PhysicalModel(movingHead.adapter, clock)
 
-    private val moverCan = Mesh(
-        CylinderBufferGeometry(),
-        MeshMatcapMaterial().apply {
-            color.set(0x444444)
-        }
-    )
+    private val moverCan = Mesh(CylinderBufferGeometry(), EntityStyle.meshMaterial())
 
     init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        // TODO
+        entityStyle.applyToMesh(moverCan.material, EntityStyle.Use.FixtureHardware)
     }
 
     override fun isApplicable(newItem: Any): MovingHead? =

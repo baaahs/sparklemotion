@@ -12,7 +12,6 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -176,5 +175,5 @@ class MovingHead(
         MovingHeadSimulation(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
-        visualizerBuilder.createMovingHeadVisualizer(this, adapter)
+        adapter.createMovingHeadVisualizer(this)
 }

@@ -10,8 +10,9 @@ class ObjGroupVisualizer(
     adapter: EntityAdapter
 ) : BaseEntityVisualizer<ObjGroup>(objGroup) {
     override val obj: Object3D = Group()
-    private val groupVisualizer = GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
-        .also { obj.add(it.groupObj) }
+    private val groupVisualizer =
+        GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
+            .also { obj.add(it.groupObj) }
 
     private val boxHelperMaterial = LineDashedMaterial()
     private val boxHelper = Box3Helper(Box3(), Color("#22BB66")).also { helper ->
@@ -26,7 +27,7 @@ class ObjGroupVisualizer(
         super.find(predicate) ?: groupVisualizer.find(predicate)
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToLine(boxHelperMaterial)
+        entityStyle.applyToLine(boxHelperMaterial, EntityStyle.Use.GroupOutline)
     }
 
     override fun traverse(callback: (ItemVisualizer<*>) -> Unit) {
@@ -39,9 +40,7 @@ class ObjGroupVisualizer(
 
     override fun update(newItem: ObjGroup) {
         super.update(newItem)
-        groupVisualizer.updateChildren(newItem.entities) {
-            it.obj.objGroupName = newItem.title
-        }
+        groupVisualizer.updateChildren(newItem.entities)
         boxHelper.updateWithPadding(.02)
     }
 
@@ -55,10 +54,6 @@ class ObjGroupVisualizer(
         box.addPadding(amount)
     }
 }
-
-var Object3D.objGroupName: String?
-    get() = userData["objGroupName"] as String?
-    set(value) { userData["objGroupName"] = value }
 
 var Object3D.itemVisualizer: ItemVisualizer<*>?
     get() = userData["entityVisualizer"] as ItemVisualizer<*>?

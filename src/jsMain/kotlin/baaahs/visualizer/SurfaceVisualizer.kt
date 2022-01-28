@@ -41,8 +41,8 @@ class SurfaceVisualizer(
     init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToMesh(mesh.material)
-        entityStyle.applyToLine(lineMaterial)
+        entityStyle.applyToMesh(mesh.material, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
     }
 
     override fun isApplicable(newItem: Any): Model.Surface? = null

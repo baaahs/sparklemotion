@@ -8,8 +8,13 @@ class LightRingVisualizer(
     lightRing: LightRing,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
-    private val ringMesh: Mesh<WireframeGeometry, MeshBasicMaterial> = Mesh()
+    private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
     private val ringMaterial = MeshBasicMaterial()
+
+    private val lineMaterial = LineDashedMaterial()
+    private val pixel0IndicatorMaterial = MeshBasicMaterial()
+
+    private val pixelsPreview = PixelsPreview()
 
     override val obj = Object3D()
 
@@ -27,7 +32,11 @@ class LightRingVisualizer(
     init { update(item) }
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToMesh(ringMesh.material)
+        entityStyle.applyToMesh(ringMesh.material, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToMesh(pixel0IndicatorMaterial, EntityStyle.Use.LightStrandHint)
+
+        pixelsPreview.applyStyle(entityStyle)
     }
 
     override fun isApplicable(newItem: Any): LightRing? =
@@ -39,11 +48,11 @@ class LightRingVisualizer(
         val center = newItem.center
         val normal = newItem.planeNormal
 
-        val ringGeom = WireframeGeometry(RingGeometry(
+        val ringGeom = RingGeometry(
             innerRadius = newItem.radius - 1,
             outerRadius = newItem.radius + 1,
             thetaSegments = 16, phiSegments = 1
-        ))
+        )
 
         Rotator(three_ext.vector3FacingForward, normal.toVector3())
             .rotate(ringGeom)
@@ -51,21 +60,26 @@ class LightRingVisualizer(
         with(center) { ringGeom.translate(x, y, z) }
 
         obj.clear()
-        obj.add(LineSegments(ringGeom, LineBasicMaterial().apply {
-            color = Color(0xffccaa)
-            opacity = .25
-            transparent = true
-        }))
+        obj.add(ringMesh)
+        obj.add(pixelsPreview)
+
+        val pixelLocations = newItem.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
 
         // TODO: Replace with arrow.
-        obj.add(Mesh(SphereGeometry(newItem.radius / 20).apply {
-            translate(newItem.radius, 0, 0)
-        }, MeshBasicMaterial().apply {
-            color = Color(0xaa0000)
-            opacity = .25
-            transparent = true
-        }))
+        pixelLocations.firstOrNull()?.let { pixel0 ->
+            obj.add(Mesh(SphereGeometry(newItem.radius / 20).apply {
+                translate(pixel0.x, pixel0.y, pixel0.z)
+            }, pixel0IndicatorMaterial))
+        }
         ringMesh.geometry = ringGeom
         ringMesh.material = ringMaterial
+
+        pixelsPreview.setLocations(pixelLocations.map { it.toVector3() }.toTypedArray())
     }
+
+    companion object {
+        // TODO!!!
+        const val pixelCount_UNKNOWN_BUSTED = 100
+    }
+
 }

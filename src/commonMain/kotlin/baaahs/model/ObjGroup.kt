@@ -12,7 +12,6 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
-import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
 
 class ObjGroup(
@@ -67,5 +66,5 @@ class ObjGroup(
     }
 
     override fun createVisualizer(adapter: EntityAdapter) =
-        visualizerBuilder.createObjGroupVisualizer(this, adapter)
+        adapter.createObjGroupVisualizer(this)
 }

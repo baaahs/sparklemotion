@@ -19,7 +19,6 @@ class ModelVisualEditor(
     var mutableModel: MutableModel,
     clock: Clock,
     private val adapter: EntityAdapter,
-    private val isEditing: Boolean,
     private val onChange: () -> Unit
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
@@ -56,8 +55,9 @@ class ModelVisualEditor(
 
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
-    private val groupVisualizer = GroupVisualizer("Model: ${model.name}", model.entities, adapter)
-        .also { scene.add(it.groupObj) }
+    private val groupVisualizer =
+        GroupVisualizer("Model: ${model.name}", model.entities, adapter)
+            .also { scene.add(it.groupObj) }
 
     private val intersectionObserver = IntersectionObserver(callback = { entries ->
         val isVisible = entries.any { it.isIntersecting }
@@ -128,8 +128,12 @@ class ModelVisualEditor(
         priorObj?.itemVisualizer?.selected = false
         transformControls.detach()
 
-        obj?.itemVisualizer?.selected = true
-        selectedEntity = obj?.modelEntity
+        val itemVisualizer = obj?.itemVisualizer
+        val modelEntity = obj?.modelEntity
+        val mutableEntity = modelEntity?.let { mutableModel.findById(it.id) }
+
+        itemVisualizer?.selected = true
+        selectedEntity = modelEntity
 
         if (obj == null) {
             transformControls.detach()
@@ -139,10 +143,13 @@ class ModelVisualEditor(
             transformControls.enabled = true
         }
 
-        editingEntity = selectedEntity?.let {
-            val mutableEntity = mutableModel.findById(it.id)
-                ?: error("No mutable entity for ${it.title}?")
-            EditingEntity(mutableEntity, mutableModel.units, adapter, onChange)
+        editingEntity = obj?.let {
+            EditingEntity(
+                mutableEntity ?: error("No mutable entity for selection?"),
+                mutableModel.units,
+                itemVisualizer ?: error("No visualizer for selection?"),
+                onChange
+            )
         }
 
         super.onSelectionChange(obj, priorObj)
@@ -165,9 +172,7 @@ class ModelVisualEditor(
             modelData = newData
             model = newData.open()
 
-            groupVisualizer.updateChildren(model.entities) {
-                it.isEditing = isEditing
-            }
+            groupVisualizer.updateChildren(model.entities)
         }
     }
 
@@ -229,10 +234,7 @@ class GroupVisualizer(
     fun find(predicate: (Any) -> Boolean): ItemVisualizer<*>? =
         itemVisualizers.firstNotNullOfOrNull { it.find(predicate) }
 
-    fun updateChildren(
-        entities: List<Model.Entity>,
-        callback: ((ItemVisualizer<*>) -> Unit)? = null
-    ) {
+    fun updateChildren(entities: List<Model.Entity>) {
         val oldChildren = ArrayList(itemVisualizers)
         itemVisualizers.clear()
         groupObj.clear()
@@ -250,7 +252,6 @@ class GroupVisualizer(
                 }
 
             itemVisualizers.add(visualizer)
-            callback?.invoke(visualizer)
             groupObj.add(visualizer.obj)
         }
     }

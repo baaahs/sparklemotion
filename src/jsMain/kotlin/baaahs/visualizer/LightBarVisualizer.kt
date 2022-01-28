@@ -7,17 +7,58 @@ import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
 import three.js.*
 import three_ext.clear
+import three_ext.plus
 import three_ext.set
+import three_ext.toVector3F
+
+class Container(
+    val box: Box3,
+    val position: Vector3? = null,
+    val rotation: Quaternion? = null,
+    val scale: Vector3? = null,
+    val bar: Boolean = false
+) {
+    val min = box.min.toVector3F()
+    val max = box.max.toVector3F()
+    val size = max - min
+    val offset = (size * .5 + min).toVector3()
+
+    fun createOutline(material: LineDashedMaterial) =
+        Box3Helper(box).apply {
+            this.material = material
+            applyTransforms(this)
+            position.set(position + offset)
+        }
+
+    fun createMesh(material: MeshBasicMaterial): Mesh<BoxGeometry, MeshBasicMaterial> {
+        val geom = BoxGeometry(size.x, size.y, size.z)
+
+        return Mesh(geom, material).apply {
+            applyTransforms(this)
+
+            if (bar) {
+                position.add(Vector3(0, 0, -.5))
+            } else {
+                position.add(offset)
+            }
+        }
+    }
+
+    private fun applyTransforms(obj: Object3D) {
+        position?.let { obj.position.set(it) }
+        rotation?.let { obj.rotation.setFromQuaternion(it) }
+        scale?.let { obj.scale.set(it) }
+    }
+}
 
 class LightBarVisualizer(
     lightBar: LightBar,
     adapter: EntityAdapter,
     vizPixels: VizPixels? = null
 ) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
-    init { update(item) }
-
-    // TODO!!!
-    val pixelCount_UNKNOWN_BUSTED = 100
+    init {
+        update(item)
+    }
 
     override fun isApplicable(newItem: Any): LightBar? =
         newItem as? LightBar
@@ -28,33 +69,46 @@ class LightBarVisualizer(
     override fun getSegments(): List<PolyLine.Segment> =
         listOf(PolyLine.Segment(item.startVertex, item.endVertex, pixelCount_UNKNOWN_BUSTED))
 
-    override fun updateContainer(container: Box3Helper, pixelLocations: Array<Vector3>) {
+    override fun addPadding(box: Box3) {
+        box.addPadding(.02)
+    }
+
+    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
+        val box = Box3()
         val vector = item.endVertex - item.startVertex
         val center = item.startVertex + vector / 2f
         val length = vector.length()
         val normal = vector.normalize()
 
-        container.box.setFromPoints(
+        box.setFromPoints(
             arrayOf(
                 Vector3(-.5, -.5, -length / 2f + .5),
                 Vector3(.5, .5, length / 2f + .5)
             )
         )
+        box.translate(center.toVector3())
+        box.translate(Vector3(0, 0, -1))
 
         val quaternion = Quaternion().setFromUnitVectors(
             Vector3F.facingForward.toVector3(),
             normal.toVector3()
         )
-        container.position.set(center)
-        container.rotation.setFromQuaternion(quaternion)
-        container.scale.set(Vector3F.unit3d)
+
+        return Container(box, center.toVector3(), quaternion, bar = true)
+    }
+
+    companion object {
+        // TODO!!!
+        const val pixelCount_UNKNOWN_BUSTED = 100
     }
 }
 
 class PolyLineVisualizer(
     polyLine: PolyLine
 ) : PixelArrayVisualizer<PolyLine>(polyLine) {
-    init { update(item) }
+    init {
+        update(item)
+    }
 
     override fun isApplicable(newItem: Any): PolyLine? =
         newItem as? PolyLine
@@ -67,71 +121,75 @@ class PolyLineVisualizer(
     override fun getSegments(): List<PolyLine.Segment> =
         item.segments
 
-    override fun addPadding(container: Box3Helper) {
-        container.box.min.x -= item.xPadding
-        container.box.max.x += item.xPadding
-        container.box.min.y -= item.yPadding
-        container.box.max.y += item.yPadding
+    override fun addPadding(box: Box3) {
+        box.min.x -= item.xPadding
+        box.max.x += item.xPadding
+        box.min.y -= item.yPadding
+        box.max.y += item.yPadding
+    }
+
+    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
+        val box = Box3()
+        box.setFromPoints(pixelLocations)
+        addPadding(box)
+        return Container(box)
     }
 }
 
 abstract class PixelArrayVisualizer<T : PixelArray>(
     pixelArray: T,
-    vizPixels: VizPixels? = null
+    private val vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<T>(pixelArray) {
     //    private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()
-    private val containerMaterial = LineDashedMaterial()
-    private val containerBox = Box3()
-    private val container = Box3Helper(containerBox).apply { material = containerMaterial }
+    private val containerOutlineMaterial = EntityStyle.lineMaterial()
+    private val containerMaterial = EntityStyle.meshMaterial()
 
-    private val strandsGroup = Group()
-    private val strandsMaterial = LineDashedMaterial()
+    private val strandGroup = Group()
+    private val strandMaterial = EntityStyle.lineMaterial()
+    private val strandHintMaterial = EntityStyle.meshMaterial()
 
-    private val pixelsGeometry = BufferGeometry()
-    private val pixelsMaterial = PointsMaterial()
-    private val pixels = Points(pixelsGeometry, pixelsMaterial)
+    private val pixelsPreview = PixelsPreview()
 
-    override val obj = Group().apply {
-        add(container)
-        add(strandsGroup)
-        add(pixels)
-        vizPixels?.addTo(this)
-    } as Object3D
+    override val obj = Group()
 
     abstract fun getPixelLocations(): List<Vector3F>
     abstract fun getSegments(): List<PolyLine.Segment>
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToLine(containerMaterial)
-        strandsGroup.children.forEach {
-            it as ArrowHelper
-            entityStyle.applyToLine(it.line.material, EntityStyle.Use.Strand)
-            entityStyle.applyToMesh(it.cone.material, EntityStyle.Use.Strand)
-        }
-        entityStyle.applyToPoints(pixelsMaterial)
+        entityStyle.applyToLine(containerOutlineMaterial, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToMesh(containerMaterial, EntityStyle.Use.BacklitSurface)
+
+        entityStyle.applyToLine(strandMaterial, EntityStyle.Use.LightStrand)
+        entityStyle.applyToMesh(strandHintMaterial, EntityStyle.Use.LightStrandHint)
+
+        pixelsPreview.applyStyle(entityStyle)
     }
 
-    open fun addPadding(container: Box3Helper) {
-        container.box.addPadding(.02)
-    }
+    abstract fun addPadding(box: Box3)
 
-    open fun updateContainer(container: Box3Helper, pixelLocations: Array<Vector3>) {
-        container.box.setFromPoints(pixelLocations)
-        addPadding(container)
-    }
+    abstract fun calculateContainer(pixelLocations: Array<Vector3>): Container
 
     override fun update(newItem: T) {
         super.update(newItem)
 
         val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
-        updateContainer(container, pixelLocations)
+        val container = calculateContainer(pixelLocations)
+        val containerOutline = container.createOutline(containerOutlineMaterial)
+        val containerMesh = container.createMesh(containerMaterial)
 
-        strandsGroup.clear()
+        obj.clear()
+        obj.add(containerOutline)
+        obj.add(containerMesh)
+        obj.add(strandGroup)
+        obj.add(pixelsPreview)
+        vizPixels?.addTo(obj)
+
+        strandGroup.clear()
         getSegments().forEach { segment ->
             val vector = segment.endVertex - segment.startVertex
             val normal = vector.normalize()
             val length = vector.length()
-            strandsGroup.add(
+            strandGroup.add(
                 ArrowHelper(
                     normal.toVector3(),
                     segment.startVertex.toVector3(),
@@ -139,10 +197,13 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
                     0x228822,
                     length / segment.pixelCount,
                     length / segment.pixelCount
-                )
+                ).apply {
+                    line.material = strandMaterial
+                    cone.material = strandHintMaterial
+                }
             )
         }
 
-        pixelsGeometry.setFromPoints(pixelLocations)
+        pixelsPreview.setLocations(pixelLocations)
     }
 }
