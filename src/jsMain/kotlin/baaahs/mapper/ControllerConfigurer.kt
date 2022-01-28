@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.app.ui.appContext
 import baaahs.ui.xComponent
 import materialui.components.paper.paper
 import materialui.components.table.table
@@ -15,8 +16,8 @@ import react.RHandler
 import react.useContext
 
 private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
-    val adminContext = useContext(mapperAppContext)
-    val adminClient = adminContext.sceneEditorClient
+    val appContext = useContext(appContext)
+    val adminClient = appContext.sceneEditorClient
     observe(adminClient)
 
     paper {

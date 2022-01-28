@@ -69,7 +69,7 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-model", isStatic 
         flexDirection = FlexDirection.column
         top = 10.px
         left = 10.px
-        backgroundColor = theme.palette.background.paper.withAlpha(.25)
+        backgroundColor = theme.palette.background.paper.withAlpha(.8)
     }
 
     val propertiesPane by css {
