@@ -58,7 +58,7 @@ object ControllersManagerSpec : Spek({
         val fixtureListener by value { FakeFixtureListener() }
         val sceneMonitor by value { SceneMonitor(scene) }
         val controllersManager by value {
-            ControllersManager(controllerManagers, mappingManager, sceneMonitor, fixtureListener)
+            ControllersManager(controllerManagers, mappingManager, sceneMonitor, listOf(fixtureListener))
         }
 
         context("when model and mapping data haven't loaded yet") {
@@ -296,7 +296,10 @@ class FakeController(
 
     inner class FakeTransport : Transport {
         override val name: String get() = this@FakeController.name
+        override val controllerId: ControllerId
+            get() = ControllerId("FAKE", "fake")
         override fun deliverBytes(byteArray: ByteArray) {}
+
         override fun deliverComponents(
             componentCount: Int,
             bytesPerComponent: Int,

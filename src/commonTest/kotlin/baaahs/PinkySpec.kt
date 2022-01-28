@@ -80,7 +80,7 @@ object PinkySpec : Spek({
         }
         val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
         val controllersManager by value {
-            ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, fixtureManager)
+            ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, listOf(fixtureManager))
         }
 
         val renderAndSendFrame by value {

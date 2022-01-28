@@ -1,10 +1,17 @@
 package baaahs.models
 
+import baaahs.controller.SacnManager
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
+import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.mapper.ControllerId
+import baaahs.mapper.FixtureMapping
+import baaahs.mapper.SacnTransportConfig
 import baaahs.model.LightRing
 import baaahs.model.LightRingData
 import baaahs.model.ModelData
 import baaahs.model.ModelUnit
+import baaahs.scene.FixtureMappingData
 import kotlin.math.PI
 
 private val lightRings = listOf(
@@ -47,6 +54,53 @@ val honchoModelData = ModelData(
     lightRings.map { it.createEntityData() },
     units = ModelUnit.Inches
 )
+
+val controllerId = ControllerId(
+    SacnManager.controllerTypeName,
+    "sacn-main"
+)
+val pixelFormat = PixelArrayDevice.PixelFormat.GRB8 // ... could be RGB8 or GRB8.
+
+fun generateFixtureMappingData(): List<FixtureMappingData> {
+    return lightRings.map { config ->
+        val startChannel = (config.startingUniverse - 1) * 512
+        val endChannel = startChannel + config.pixelCount * pixelFormat.channelsPerPixel
+
+        FixtureMappingData(
+            controllerId.shortName(), // TODO: shortName? or ID?
+            config.name, // TODO: name? or ID?
+            config.createEntity().deviceType,
+            PixelArrayDevice.Config(
+                config.pixelCount,
+                pixelFormat,
+                pixelArrangement = LinearSurfacePixelStrategy()
+            ),
+            SacnTransportConfig(startChannel, endChannel)
+        )
+    }
+}
+
+fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
+    return mapOf(
+        controllerId to
+                lightRings.map { config ->
+                    val startChannel = (config.startingUniverse - 1) * 512
+                    val endChannel = startChannel + config.pixelCount * pixelFormat.channelsPerPixel
+
+                    FixtureMapping(
+                        config.createEntity(),
+                        config.pixelCount,
+                        null,
+                        PixelArrayDevice.Config(
+                            config.pixelCount,
+                            pixelFormat,
+                            pixelArrangement = LinearSurfacePixelStrategy()
+                        ),
+                        SacnTransportConfig(startChannel, endChannel)
+                    )
+                }
+    )
+}
 
 private val Number.m: Float get() = toFloat() * 100f / 2.54f
 

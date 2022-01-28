@@ -2,6 +2,8 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.ui.xComponent
+import com.soywiz.klock.DateFormat
+import com.soywiz.klock.DateTime
 import materialui.components.paper.paper
 import materialui.components.table.table
 import materialui.components.tablebody.tableBody
@@ -15,12 +17,13 @@ import react.RBuilder
 import react.RHandler
 import react.useContext
 
-private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
+private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)
-    val adminClient = appContext.sceneEditorClient
-    observe(adminClient)
+    val sceneEditorClient = appContext.sceneEditorClient
+    observe(sceneEditorClient)
 
     paper {
+        appContext.plugins.controllers
         typographyH4 { +"Brains" }
 
         table {
@@ -36,7 +39,7 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
             }
 
             tableBody {
-                adminClient.brains.values
+                sceneEditorClient.brains.values
                     .sortedBy { it.id.uuid }
                     .forEach { brainData ->
                         tableRow {
@@ -67,7 +70,7 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
             }
 
             tableBody {
-                adminClient.dmxDevices.values
+                sceneEditorClient.dmxDevices.values
                     .sortedBy { it.id }
                     .forEach { dmxInfo ->
                         tableRow {
@@ -83,17 +86,20 @@ private val ControllerConfigurer = xComponent<DeviceConfigurerProps>("Controller
             }
 
             tableBody {
-                adminClient.sacnDevices.values
+                sceneEditorClient.sacnDevices.values
                     .sortedBy { it.id }
                     .forEach { wledDevice ->
                         tableRow {
+                            val onlineSince = DateTime(wledDevice.onlineSince)
+                                .toString(DateFormat.FORMAT2)
+
                             tdCell { +wledDevice.id }
                             tdCell { +"—" }
                             tdCell { +"sACN" }
                             tdCell { +"—" }
                             tdCell { +"—" }
                             tdCell { +"—" }
-                            tdCell { +"Online since ${wledDevice.onlineSince}" }
+                            tdCell { +"Online since ${onlineSince}" }
                         }
                     }
             }
@@ -105,4 +111,4 @@ external interface DeviceConfigurerProps : Props {
 }
 
 fun RBuilder.deviceConfigurer(handler: RHandler<DeviceConfigurerProps>) =
-    child(ControllerConfigurer, handler = handler)
+    child(ControllerConfigurerView, handler = handler)

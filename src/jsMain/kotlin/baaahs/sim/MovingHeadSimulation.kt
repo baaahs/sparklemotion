@@ -4,6 +4,7 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.mapper.ControllerId
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.visualizer.EntityAdapter
@@ -59,6 +60,9 @@ actual class MovingHeadSimulation actual constructor(
 
         override val name: String
             get() = movingHead.name
+
+        override val controllerId: ControllerId
+            get() = TODO("not implemented")
 
         override fun deliverBytes(byteArray: ByteArray) {
             for (i in byteArray.indices) {

@@ -80,6 +80,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         }
 
         tabPanel(PageTabs.Fixtures, selectedTab) {
+            fixtureConfigurer {}
         }
 
         tabPanel(PageTabs.Surface_Mapping, selectedTab) {

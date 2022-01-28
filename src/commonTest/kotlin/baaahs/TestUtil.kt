@@ -122,7 +122,7 @@ fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 val TestModel = modelForTest(listOf(testModelSurface("Panel")))
 val TestModelData = ModelData("Test Model", listOf(testModelSurfaceData("Panel")))
 fun testScene(model: Model = TestModel) = OpenScene(model)
-fun testSceneData(model: ModelData = TestModelData) = Scene(model, emptyMap(), emptyMap())
+fun testSceneData(model: ModelData = TestModelData) = Scene(model)
 
 fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())

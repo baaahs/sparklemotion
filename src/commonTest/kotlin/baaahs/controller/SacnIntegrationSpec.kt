@@ -32,7 +32,7 @@ object SacnIntegrationSpec : Spek({
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val mappingManager by value { FakeMappingManager(mappings) }
         val controllersManager by value {
-            ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(testScene()), listener)
+            ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(testScene()), listOf(listener))
         }
         val configs by value { mapOf<String, ControllerConfig>() }
 

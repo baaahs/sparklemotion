@@ -19,7 +19,7 @@ class MutableScene(
     val controllers = baseScene.controllers
         .mapValues { (_, v) -> MutableControllerConfig(v) }.toMutableMap()
     val fixtures = baseScene.fixtures
-        .mapValues { (_, v) -> MutableFixture(v) }.toMutableMap()
+        .map { data -> MutableFixture(data) }.toMutableList()
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         TODO("not implemented")
@@ -33,14 +33,14 @@ class MutableScene(
         return Scene(
             model.build(),
             controllers.mapValues { (_, v) -> v.controllerConfig },
-            fixtures.mapValues { (_, v) -> v.fixture }
+            fixtures.map { it.fixture }
         )
     }
 }
 
 class MutableControllerConfig(var controllerConfig: ControllerConfig)
 
-class MutableFixture(var fixture: FixtureConfigNew)
+class MutableFixture(var fixture: FixtureMappingData)
 
 class MutableModel(baseModel: ModelData) {
     var title = baseModel.title

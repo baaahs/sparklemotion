@@ -30,6 +30,9 @@ class DirectDmxController(private val device: Dmx.Device) : Controller {
 
         override val name: String
             get() = "DMX Transport"
+        override val controllerId: ControllerId
+            get() = this@DirectDmxController.controllerId
+        override val config: TransportConfig? = transportConfig
 
         override fun deliverBytes(byteArray: ByteArray) {
             byteArray.forEachIndexed { i, byte -> buffer[i] = byte }
