@@ -104,6 +104,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     showManager.show!!, editIntent, webClient.toolchain.withCache("Edit Session")
                 )
             }
+
+            this.sceneEditorClient = props.sceneEditorClient
         }
     }
 

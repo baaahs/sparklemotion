@@ -2,8 +2,6 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.di.*
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.scene.SceneMonitor
@@ -61,11 +59,6 @@ private fun launchUi(appName: String?) {
         val koin = webAppInjector.koin
 
         val app = when (appName) {
-            "Mapper" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule().getModule()))
-                koin.createScope<MapperUi>().get<JsMapperUi>()
-            }
-
             "Monitor" -> {
                 koin.loadModules(listOf(JsAdminWebClientModule().getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()

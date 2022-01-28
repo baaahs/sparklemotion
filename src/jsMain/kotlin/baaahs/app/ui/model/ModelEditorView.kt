@@ -14,10 +14,14 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
+import kotlinx.css.em
+import kotlinx.css.padding
 import materialui.components.formcontrol.enums.FormControlMargin
 import materialui.components.formcontrol.formControl
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
+import materialui.components.paper.enums.PaperStyle
+import materialui.components.paper.paper
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.Props
@@ -25,7 +29,9 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.header
+import react.dom.i
 import react.useContext
+import styled.inlineStyles
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
@@ -110,7 +116,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         }
     }
 
-    div(+styles.editorPanes) {
+    paper(styles.editorPanes on PaperStyle.root) {
         div(+styles.navigatorPane) {
             header { +"Navigator" }
 
@@ -143,10 +149,17 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             header { +"Properties" }
 
             div(+styles.propertiesPaneContent) {
-                editingEntity?.let {
-                    formControl {
-                        attrs.margin = FormControlMargin.dense
-                        it.renderEditorPanels(this)
+                if (editingEntity == null) {
+                    div {
+                        inlineStyles { padding(1.em) }
+                        i { +"Maybe click on something, why don't ya?" }
+                    }
+                } else {
+                    editingEntity.let {
+                        formControl {
+                            attrs.margin = FormControlMargin.dense
+                            it.renderEditorPanels(this)
+                        }
                     }
                 }
             }

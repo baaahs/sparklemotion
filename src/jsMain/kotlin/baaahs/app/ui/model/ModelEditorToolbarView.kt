@@ -22,6 +22,8 @@ import materialui.components.inputadornment.enums.InputAdornmentPosition
 import materialui.components.listitemtext.listItemText
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
+import materialui.components.paper.enums.PaperStyle
+import materialui.components.paper.paper
 import materialui.components.popover.enums.PopoverOriginHorizontal
 import materialui.components.popover.enums.PopoverOriginVertical
 import materialui.components.popover.horizontal
@@ -35,7 +37,6 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
-import react.dom.div
 import react.dom.header
 import kotlin.collections.set
 
@@ -95,7 +96,9 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     Draggable {
         attrs.handle = ".handle"
 
-        div(+styles.visualizerToolbar) {
+        paper(styles.visualizerToolbar on PaperStyle.root) {
+            attrs.elevation = 5
+
             header("handle") { +"Tools" }
 
             container {

@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.app.ui.AllStyles
 import baaahs.app.ui.Styles
 import baaahs.app.ui.model.modelEditor
 import baaahs.client.SceneEditorClient
@@ -8,18 +7,15 @@ import baaahs.client.document.SceneManager
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
-import kotlinext.js.jsObject
 import kotlinx.html.hidden
 import materialui.components.appbar.appBar
 import materialui.components.appbar.enums.AppBarPosition
-import materialui.components.cssbaseline.cssBaseline
 import materialui.components.tab.tab
 import materialui.components.tabs.tabs
 import materialui.styles.createMuiTheme
 import materialui.styles.muitheme.options.palette
 import materialui.styles.palette.PaletteType
 import materialui.styles.palette.options.type
-import materialui.styles.themeprovider.themeProvider
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
@@ -45,15 +41,6 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     val clock = memo { JsClock }
     val plugins = props.sceneEditorClient.plugins
 
-    val myAppContext = memo(theme) {
-        jsObject<MapperAppContext> {
-            this.sceneEditorClient = props.sceneEditorClient
-            this.plugins = plugins
-            this.allStyles = AllStyles(theme)
-            this.clock = clock
-        }
-    }
-
     var selectedTab by state { PageTabs.Model }
     val handleChangeTab by handler { _: Event, tab: PageTabs ->
         selectedTab = tab
@@ -64,48 +51,41 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     }
     val mutableScene = props.sceneManager.mutableScene
 
-    mapperAppContext.Provider {
-        attrs.value = myAppContext
+    div(+Styles.adminRoot) {
+        appBar {
+            attrs.position = AppBarPosition.relative
 
-        themeProvider(theme) {
-            cssBaseline {}
+            tabs {
+                attrs.value = selectedTab
+                attrs.onChange = handleChangeTab.asDynamic()
 
-            div(+Styles.adminRoot) {
-                appBar {
-                    attrs.position = AppBarPosition.relative
-
-                    tabs {
-                        attrs.value = selectedTab
-                        attrs.onChange = handleChangeTab.asDynamic()
-
-                        PageTabs.values().forEach { tab ->
-                            tab {
-                                attrs.label { +tab.name.replace("_", " ") }
-                                attrs.value = tab.asDynamic()
-                            }
-                        }
+                PageTabs.values().forEach { tab ->
+                    tab {
+                        attrs.label { +tab.name.replace("_", " ") }
+                        attrs.value = tab.asDynamic()
                     }
                 }
+            }
+        }
 
-                tabPanel(PageTabs.Model, selectedTab) {
-                    modelEditor {
-                        attrs.mutableScene = mutableScene
-                        attrs.onEdit = handleEdit
-                    }
-                }
+        tabPanel(PageTabs.Model, selectedTab) {
+            modelEditor {
+                attrs.mutableScene = mutableScene
+                attrs.onEdit = handleEdit
+            }
+        }
 
-                tabPanel(PageTabs.Controllers, selectedTab) {
-                    deviceConfigurer {}
-                }
+        tabPanel(PageTabs.Controllers, selectedTab) {
+            deviceConfigurer {}
+        }
 
-                tabPanel(PageTabs.Fixtures, selectedTab) {
-                }
+        tabPanel(PageTabs.Fixtures, selectedTab) {
+        }
 
-                tabPanel(PageTabs.Surface_Mapping, selectedTab) {
-                    mapperApp {
-                        attrs.mapperUi = props.mapperUi
-                    }
-                }
+        tabPanel(PageTabs.Surface_Mapping, selectedTab) {
+            mapperAppWrapper {
+                attrs.sceneEditorClient = props.sceneEditorClient
+                attrs.mapperUi = props.mapperUi
             }
         }
     }

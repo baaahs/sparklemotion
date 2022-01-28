@@ -5,6 +5,7 @@ import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.editor.EditIntent
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
+import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
@@ -39,4 +40,7 @@ external interface AppContext {
     var notifier: Notifier.Facade
 
     var openEditor: (EditIntent) -> Unit
+
+    // Scene editing:
+    var sceneEditorClient: SceneEditorClient.Facade
 }
