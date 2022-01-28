@@ -172,6 +172,8 @@ class BrainManager(
 
         override val name: String
             get() = "Brain ${brainId.uuid} at $brainAddress"
+        override val controllerId: ControllerId
+            get() = brainId.asControllerId()
 
         override fun deliverBytes(byteArray: ByteArray) {
             val pixelCount = byteArray.size / 3

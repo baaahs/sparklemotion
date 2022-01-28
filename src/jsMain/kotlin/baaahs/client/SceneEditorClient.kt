@@ -3,6 +3,7 @@ package baaahs.client
 import baaahs.PubSub
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
+import baaahs.fixtures.FixtureInfo
 import baaahs.plugin.ClientPlugins
 import baaahs.sm.brain.BrainInfo
 import baaahs.sm.webapi.Topics
@@ -21,6 +22,7 @@ class SceneEditorClient(
     private val brains by subscribeProperty(pubSub, Topics.brains, emptyMap()) { facade.notifyChanged() }
     private val dmxDevices by subscribeProperty(pubSub, Topics.dmxDevices, emptyMap()) { facade.notifyChanged() }
     private val sacnDevices by subscribeProperty(pubSub, Topics.sacnDevices, emptyMap()) { facade.notifyChanged() }
+    private val fixtures by subscribeProperty(pubSub, Topics.fixtures, emptyList()) { facade.notifyChanged() }
 
     inner class Facade : baaahs.ui.Facade() {
         val plugins: ClientPlugins
@@ -34,6 +36,9 @@ class SceneEditorClient(
 
         val sacnDevices: Map<String, SacnDevice>
             get() = this@SceneEditorClient.sacnDevices
+
+        val fixtures: List<FixtureInfo>
+            get() = this@SceneEditorClient.fixtures
     }
 
     fun onClose() {

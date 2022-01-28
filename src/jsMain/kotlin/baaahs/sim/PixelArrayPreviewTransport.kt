@@ -4,12 +4,16 @@ import baaahs.Color
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.mapper.ControllerId
 import baaahs.visualizer.VizPixels
 
 class PixelArrayPreviewTransport(
     override val name: String,
     private val vizPixels: VizPixels
 ) : Transport {
+    override val controllerId: ControllerId
+        get() = TODO("not implemented")
+
     override fun deliverBytes(byteArray: ByteArray) {
         val buf = ByteArrayReader(byteArray)
         for (i in vizPixels.indices) {

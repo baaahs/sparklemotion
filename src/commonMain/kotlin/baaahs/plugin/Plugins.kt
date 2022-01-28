@@ -16,6 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.mapper.SacnTransportConfig
+import baaahs.mapper.TransportConfig
 import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
@@ -267,6 +269,10 @@ sealed class Plugins private constructor(
         polymorphic(MovingHeadAdapter::class) {
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
+        }
+
+        polymorphic(TransportConfig::class) {
+            subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
         }
     }
 

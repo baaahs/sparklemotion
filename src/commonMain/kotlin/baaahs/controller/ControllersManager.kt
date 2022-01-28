@@ -16,7 +16,7 @@ class ControllersManager(
     private val controllerManagers: List<ControllerManager>,
     private val mappingManager: MappingManager,
     private val sceneProvider: SceneProvider,
-    private val fixtureListener: FixtureListener
+    private val fixtureListeners: List<FixtureListener>
 ) : FrameListener {
     private val byType = controllerManagers.associateBy { it.controllerType }
     private var deferFixtureRefresh = false
@@ -177,7 +177,7 @@ class ControllersManager(
 
     private fun fixturesChanged(added: List<Fixture> = emptyList(), removed: List<Fixture> = emptyList()) {
         if (added.isNotEmpty() || removed.isNotEmpty())
-            fixtureListener.fixturesChanged(added, removed)
+            fixtureListeners.forEach { it.fixturesChanged(added, removed) }
     }
 
     private class LiveController(

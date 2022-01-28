@@ -11,6 +11,7 @@ import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxManagerImpl
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
+import baaahs.fixtures.FixturePublisher
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
@@ -126,10 +127,14 @@ interface PinkyModule : KModule {
                         get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
                     )
                 }
+                scoped { FixturePublisher(get()) }
                 scoped {
                     ControllersManager(
                         get(named("ControllerManagers")), get(), get(),
-                        get<FixtureManager>()
+                        listOf(
+                            get<FixtureManager>(),
+                            get<FixturePublisher>(),
+                        )
                     )
                 }
                 scoped { ShaderLibraryManager(get(), get()) }

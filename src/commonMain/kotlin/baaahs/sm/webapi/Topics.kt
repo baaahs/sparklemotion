@@ -4,6 +4,7 @@ import baaahs.PinkyState
 import baaahs.PubSub
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
+import baaahs.fixtures.FixtureInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
@@ -33,6 +34,9 @@ object Topics {
 
     val sacnDevices =
         PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
+
+    val fixtures =
+        PubSub.Topic("fixtures", ListSerializer(FixtureInfo.serializer()))
 
     val showProblems =
         PubSub.Topic("showProblems", ListSerializer(Problem.serializer()))
