@@ -15,7 +15,7 @@ enum class EntityStyle {
             material.visible = true
             material.opacity = .5
 
-            if (use == Use.Strand) {
+            if (use == Use.LightStrand) {
                 material.color.set(0x001100)
             }
         }
@@ -27,8 +27,10 @@ enum class EntityStyle {
             material.visible = true
             material.opacity = 1
 
-            if (use == Use.Strand) {
-                material.color.set(0x226622)
+            when (use) {
+                Use.LightStrand -> material.color.set(0x226622)
+                Use.FixtureHardware -> material.color.set(0x444444)
+                else -> {}
             }
         }
 
@@ -44,7 +46,7 @@ enum class EntityStyle {
             material.color.set(0xaaaaaa)
             material.linewidth = 3
 
-            if (use == Use.Strand) {
+            if (use == Use.LightStrand) {
                 material.color.set(0x226622)
             }
         }
@@ -53,15 +55,17 @@ enum class EntityStyle {
             material.color.set(0x222222)
             material.side = FrontSide
 
-            if (use == Use.Strand) {
-                material.color.set(0x226622)
+            if (use == Use.LightStrandHint) {
+                material.color.set(0x662222)
+                material.transparent = true
+                material.opacity = .5
             }
         }
 
         override fun applyToPoints(material: PointsMaterial, use: Use?) {
             material.color.set(0x222288)
             material.visible = true
-            material.opacity = 1
+            material.opacity = .5
         }
     },
     Selected {
@@ -75,7 +79,10 @@ enum class EntityStyle {
 
         override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
             material.color.multiplyScalar(1.2)
-//            material.color.set(0x443322)
+
+            if (use == Use.LightStrandHint) {
+                material.color.multiplyScalar(1.5)
+            }
         }
 
         override fun applyToPoints(material: PointsMaterial, use: Use?) {
@@ -116,8 +123,12 @@ enum class EntityStyle {
     open fun applyToPoints(material: PointsMaterial, use: Use? = null) {}
 
     enum class Use {
-        Container,
-        Strand
+        BacklitSurface,
+        LightStrand,
+        LightStrandHint,
+        GroupOutline,
+        Pixel,
+        FixtureHardware
     }
 
     companion object {
@@ -126,5 +137,9 @@ enum class EntityStyle {
                 if (it.appliesTo(itemVisualizer)) block.invoke(it)
             }
         }
+
+        fun meshMaterial(): MeshBasicMaterial = MeshBasicMaterial()
+        fun lineMaterial(): LineDashedMaterial = LineDashedMaterial()
+        fun pointsMaterial(): PointsMaterial = PointsMaterial()
     }
 }

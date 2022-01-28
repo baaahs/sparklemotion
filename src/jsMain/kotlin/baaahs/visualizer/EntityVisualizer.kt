@@ -7,7 +7,6 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
-import baaahs.visualizer.movers.MovingHeadVisualizer
 
 @Suppress("LeakingThis")
 abstract class BaseEntityVisualizer<T : Model.Entity>(
@@ -37,24 +36,6 @@ abstract class BaseEntityVisualizer<T : Model.Entity>(
 }
 
 actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
-    override fun createLightBarVisualizer(lightBar: LightBar, adapter: EntityAdapter): ItemVisualizer<LightBar> =
-        LightBarVisualizer(lightBar, adapter)
-
-    override fun createLightRingVisualizer(lightRing: LightRing, adapter: EntityAdapter): ItemVisualizer<LightRing> =
-        LightRingVisualizer(lightRing)
-
-    override fun createMovingHeadVisualizer(movingHead: MovingHead, adapter: EntityAdapter): ItemVisualizer<MovingHead> =
-        MovingHeadVisualizer(movingHead, adapter)
-
-    override fun createObjGroupVisualizer(objGroup: ObjGroup, adapter: EntityAdapter): ItemVisualizer<ObjGroup> =
-        ObjGroupVisualizer(objGroup, adapter)
-
-    override fun createPolyLineVisualizer(polyLine: PolyLine, adapter: EntityAdapter): ItemVisualizer<PolyLine> =
-        PolyLineVisualizer(polyLine)
-
-    override fun createSurfaceVisualizer(surface: Model.Surface, adapter: EntityAdapter): ItemVisualizer<Model.Surface> =
-        SurfaceVisualizer(surface, SurfaceGeometry(surface))
-
     override fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View = renderWrapper {
         titleAndDescriptionEditor {
             attrs.editingEntity = editingEntity

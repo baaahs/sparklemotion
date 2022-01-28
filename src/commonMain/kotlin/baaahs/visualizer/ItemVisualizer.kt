@@ -42,13 +42,6 @@ interface ItemVisualizer<T: Any> : IObservable {
 }
 
 interface VisualizerBuilder {
-    fun createLightBarVisualizer(lightBar: LightBar, adapter: EntityAdapter): ItemVisualizer<LightBar>
-    fun createLightRingVisualizer(lightRing: LightRing, adapter: EntityAdapter): ItemVisualizer<LightRing>
-    fun createMovingHeadVisualizer(movingHead: MovingHead, adapter: EntityAdapter): ItemVisualizer<MovingHead>
-    fun createObjGroupVisualizer(objGroup: ObjGroup, adapter: EntityAdapter): ItemVisualizer<ObjGroup>
-    fun createPolyLineVisualizer(polyLine: PolyLine, adapter: EntityAdapter): ItemVisualizer<PolyLine>
-    fun createSurfaceVisualizer(surface: Model.Surface, adapter: EntityAdapter): ItemVisualizer<Model.Surface>
-
     fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View
     fun getTransformEditorView(editingEntity: EditingEntity<out Model.Entity>): View
     fun getGridEditorView(editingEntity: EditingEntity<out Grid>): View

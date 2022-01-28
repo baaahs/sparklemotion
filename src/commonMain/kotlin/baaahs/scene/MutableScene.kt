@@ -9,8 +9,6 @@ import baaahs.model.*
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.ui.Observable
-import baaahs.ui.addObserver
-import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
 
 class MutableScene(
@@ -85,31 +83,12 @@ abstract class MutableEntity<T : Model.Entity>(
 class EditingEntity<T : Model.Entity>(
     val mutableEntity: MutableEntity<T>,
     val modelUnit: ModelUnit,
-    adapter: EntityAdapter,
+    val itemVisualizer: ItemVisualizer<*>,
     private val onChange: () -> Unit
 ) : Observable() {
-    val itemVisualizer: ItemVisualizer<*>?
-    val errors: List<String>
-
     val affineTransforms = Observable()
 
     var lastEntityData = mutableEntity.build()
-
-    init {
-        val errors = arrayListOf<String>()
-        itemVisualizer = try {
-            val entityData = mutableEntity.build()
-            val openEntity = entityData.open() as T
-            openEntity.createVisualizer(adapter)
-                .also {
-                    it.addObserver { notifyChanged() }
-                }
-        } catch (e: Exception) {
-            errors.add(e.message ?: "Unknown error.")
-            null
-        }
-        this.errors = errors
-    }
 
     fun onTransformationChange(
         position: Vector3F,

@@ -9,7 +9,6 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightBarSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.Transient
 
 class Grid(
@@ -95,7 +94,7 @@ open class PolyLine(
         LightBarSimulation(this, simulationEnv, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
-        visualizerBuilder.createPolyLineVisualizer(this, adapter)
+        adapter.createPolyLineVisualizer(this)
 
     data class Segment(
         val startVertex: Vector3F,
