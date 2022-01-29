@@ -31,7 +31,8 @@ fun Vector3.toVector3F(): Vector3F =
     Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
 
 
-val vector3FacingForward = Vector3F.facingForward.toVector3()
+val vector3FacingForward get() =
+    Vector3F.facingForward.toVector3()
 
 operator fun Euler.plus(other: Euler): Euler = Euler(
     x.toDouble() + other.x.toDouble(),
