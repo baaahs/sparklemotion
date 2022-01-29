@@ -2,7 +2,6 @@ package baaahs.controller
 
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model

@@ -4,7 +4,6 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
 import baaahs.geom.Vector3F
 import baaahs.getBang
-import baaahs.mapper.ControllerId
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.scene.SceneProvider
@@ -123,7 +122,7 @@ class ControllersManager(
             val fixture = Fixture(
                 modelEntity, pixelCount, pixelLocations,
                 fixtureConfig,
-                "${modelEntity?.name ?: "???"}@${controller.controllerId.shortName()}",
+                "${modelEntity?.name ?: "???"}@${controller.controllerId.name()}",
                 controller.createTransport(modelEntity, fixtureConfig, transportConfig, pixelCount)
             )
 

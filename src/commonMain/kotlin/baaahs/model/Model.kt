@@ -1,9 +1,9 @@
 package baaahs.model
 
+import baaahs.controller.ControllerId
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.*
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation

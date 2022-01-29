@@ -1,10 +1,10 @@
 package baaahs.sim
 
 import baaahs.Color
+import baaahs.controller.ControllerId
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.visualizer.VizPixels
 
 class PixelArrayPreviewTransport(

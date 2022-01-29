@@ -41,7 +41,7 @@ private val FixtureConfigurerView = xComponent<FixtureConfigurerProps>("FixtureC
                         tableRow {
                             tdCell { +fixtureInfo.name }
                             tdCell { +(fixtureInfo.entityId ?: "Anonymous") }
-                            tdCell { +fixtureInfo.controllerId.shortName() }
+                            tdCell { +fixtureInfo.controllerId.name() }
                             tdCell { +fixtureInfo.transportConfig.toString() }
                             tdCell { +"?" }
 //                            tdCell { +fixtureInfo.pixelCount.toString() }

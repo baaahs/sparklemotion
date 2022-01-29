@@ -1,6 +1,6 @@
 package baaahs.mapping
 
-import baaahs.mapper.ControllerId
+import baaahs.controller.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
@@ -42,7 +42,7 @@ class MappingManagerImpl(
         if (openScene == null) {
             sessionMappingResults = null
         } else {
-            sessionMappingResults = storage.loadMappingData(openScene.model)
+            sessionMappingResults = storage.loadMappingData(openScene)
             dataHasLoaded = true
         }
         notifyChanged()

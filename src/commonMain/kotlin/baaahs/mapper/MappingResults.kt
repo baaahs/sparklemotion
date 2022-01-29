@@ -1,16 +1,11 @@
 package baaahs.mapper
 
+import baaahs.controller.ControllerId
 import baaahs.dmx.DmxTransportConfig
-import baaahs.model.Model
+import baaahs.scene.OpenScene
 import baaahs.util.Logger
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class ControllerId(val controllerType: String, val id: String) {
-    fun shortName(): String = "$controllerType:$id"
-}
-
-class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) {
+class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSession>) {
     val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
 
     init {
@@ -20,7 +15,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                 val entityName = entityData.entityName
 
                 try {
-                    val modelEntity = model.getEntity(entityName)
+                    val modelEntity = scene.model.getEntity(entityName)
                     if (modelEntity == null)
                         logger.warn { "Unknown model entity \"$entityName\"." }
 
@@ -44,7 +39,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
             }
         }
 
-        model.generateFixtureMappings().forEach { (controllerId, fixtureMappings) ->
+        scene.fixtures.forEach { (controllerId, fixtureMappings) ->
             fixtureMappings.forEach { fixtureMapping ->
                 add(controllerId, fixtureMapping)
             }

@@ -22,7 +22,7 @@ class SceneEditorClient(
     private val brains by subscribeProperty(pubSub, Topics.brains, emptyMap()) { facade.notifyChanged() }
     private val dmxDevices by subscribeProperty(pubSub, Topics.dmxDevices, emptyMap()) { facade.notifyChanged() }
     private val sacnDevices by subscribeProperty(pubSub, Topics.sacnDevices, emptyMap()) { facade.notifyChanged() }
-    private val fixtures by subscribeProperty(pubSub, Topics.fixtures, emptyList()) { facade.notifyChanged() }
+    private val fixtures by subscribeProperty(pubSub, Topics.createFixtures(plugins), emptyList()) { facade.notifyChanged() }
 
     inner class Facade : baaahs.ui.Facade() {
         val plugins: ClientPlugins

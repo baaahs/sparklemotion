@@ -1,10 +1,10 @@
 package baaahs.models
 
+import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
 import baaahs.model.LightRing
@@ -67,7 +67,7 @@ fun generateFixtureMappingData(): List<FixtureMappingData> {
         val endChannel = startChannel + config.pixelCount * pixelFormat.channelsPerPixel
 
         FixtureMappingData(
-            controllerId.shortName(), // TODO: shortName? or ID?
+            controllerId.name(), // TODO: shortName? or ID?
             config.name, // TODO: name? or ID?
             config.createEntity().deviceType,
             PixelArrayDevice.Config(

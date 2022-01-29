@@ -8,11 +8,15 @@ import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
-import baaahs.mapper.*
+import baaahs.mapper.FixtureMapping
+import baaahs.mapper.MappingSession
+import baaahs.mapper.SacnTransportConfig
+import baaahs.mapper.SessionMappingResults
 import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
+import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
@@ -27,6 +31,9 @@ object SacnIntegrationSpec : Spek({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }
+        val controllers by value { mapOf<String, ControllerConfig>() }
+        val fixtures by value { mapOf<ControllerId, List<FixtureMapping>>() }
+        val scene by value { OpenScene(model, controllers, fixtures) }
         val sacnManager by value { SacnManager(link, TestRig().server, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
@@ -175,7 +182,7 @@ object SacnIntegrationSpec : Spek({
                 )
 
             }
-            val mappingData by value { SessionMappingResults(model, listOf(mappingSession)) }
+            val mappingData by value { SessionMappingResults(scene, listOf(mappingSession)) }
 
             it("transforms it into FixtureConfigs") {
                 val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))

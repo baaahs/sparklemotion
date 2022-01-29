@@ -1,13 +1,17 @@
 package baaahs.fixtures
 
 import baaahs.PubSub
-import baaahs.mapper.ControllerId
+import baaahs.controller.ControllerId
 import baaahs.mapper.TransportConfig
+import baaahs.plugin.Plugins
 import baaahs.sm.webapi.Topics
 import kotlinx.serialization.Serializable
 
-class FixturePublisher(private val pubSub: PubSub.Server) : FixtureListener {
-    private val fixturesChannel = pubSub.openChannel(Topics.fixtures, emptyList()) {}
+class FixturePublisher(
+    pubSub: PubSub.Server,
+    plugins: Plugins
+) : FixtureListener {
+    private val fixturesChannel = pubSub.openChannel(Topics.createFixtures(plugins), emptyList()) {}
     private val fixtures = mutableMapOf<Fixture, FixtureInfo>()
 
     override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {

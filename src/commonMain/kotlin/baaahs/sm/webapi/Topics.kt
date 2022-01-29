@@ -8,6 +8,7 @@ import baaahs.fixtures.FixtureInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
+import baaahs.plugin.Plugins
 import baaahs.sm.brain.BrainInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -35,8 +36,8 @@ object Topics {
     val sacnDevices =
         PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
 
-    val fixtures =
-        PubSub.Topic("fixtures", ListSerializer(FixtureInfo.serializer()))
+    fun createFixtures(plugins: Plugins) =
+        PubSub.Topic("fixtures", ListSerializer(FixtureInfo.serializer()), plugins.serialModule)
 
     val showProblems =
         PubSub.Topic("showProblems", ListSerializer(Problem.serializer()))

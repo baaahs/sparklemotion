@@ -5,13 +5,13 @@ import baaahs.Pinky
 import baaahs.PubSub
 import baaahs.controller.BaseControllerManager
 import baaahs.controller.Controller
+import baaahs.controller.ControllerId
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
