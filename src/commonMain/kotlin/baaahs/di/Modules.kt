@@ -39,6 +39,7 @@ import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.util.Clock
+import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -101,7 +102,9 @@ interface PinkyModule : KModule {
                 scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
                 scoped<Job>(pinkyJob) { SupervisorJob() }
                 scoped(pinkyContext) {
-                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) + get<Job>(pinkyJob)
+                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
+                            get<Job>(pinkyJob) +
+                            coroutineExceptionHandler
                 }
                 scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
                 scoped<PubSub.Endpoint> { get<PubSub.Server>() }
@@ -127,7 +130,7 @@ interface PinkyModule : KModule {
                         get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
                     )
                 }
-                scoped { FixturePublisher(get()) }
+                scoped { FixturePublisher(get(), get()) }
                 scoped {
                     ControllersManager(
                         get(named("ControllerManagers")), get(), get(),

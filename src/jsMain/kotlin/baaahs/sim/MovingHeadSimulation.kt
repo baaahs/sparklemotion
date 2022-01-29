@@ -1,10 +1,10 @@
 package baaahs.sim
 
+import baaahs.controller.ControllerId
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.visualizer.EntityAdapter

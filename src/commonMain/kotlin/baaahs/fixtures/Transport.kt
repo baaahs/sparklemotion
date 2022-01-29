@@ -1,7 +1,7 @@
 package baaahs.fixtures
 
+import baaahs.controller.ControllerId
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.TransportConfig
 
 interface Transport {

@@ -3,6 +3,7 @@ package baaahs.controllers
 import baaahs.*
 import baaahs.controller.BaseControllerManager
 import baaahs.controller.Controller
+import baaahs.controller.ControllerId
 import baaahs.controller.ControllersManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
@@ -13,7 +14,6 @@ import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.mapping.MappingManager

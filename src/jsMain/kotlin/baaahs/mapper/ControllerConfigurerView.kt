@@ -90,16 +90,21 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                     .sortedBy { it.id }
                     .forEach { wledDevice ->
                         tableRow {
-                            val onlineSince = DateTime(wledDevice.onlineSince)
-                                .toString(DateFormat.FORMAT2)
-
                             tdCell { +wledDevice.id }
                             tdCell { +"—" }
                             tdCell { +"sACN" }
                             tdCell { +"—" }
                             tdCell { +"—" }
                             tdCell { +"—" }
-                            tdCell { +"Online since ${onlineSince}" }
+                            tdCell {
+                                if (wledDevice.onlineSince != null) {
+                                    val onlineSince = DateTime(wledDevice.onlineSince * 1000)
+                                        .toString(DateFormat.FORMAT1)
+                                    +"Online since $onlineSince"
+                                } else {
+                                    +"Offline"
+                                }
+                            }
                         }
                     }
             }

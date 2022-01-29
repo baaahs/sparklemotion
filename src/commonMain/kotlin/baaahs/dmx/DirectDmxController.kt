@@ -1,10 +1,10 @@
 package baaahs.dmx
 
 import baaahs.controller.Controller
+import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model

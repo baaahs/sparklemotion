@@ -4,7 +4,6 @@ import baaahs.PubSub
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SacnTransportConfig
 import baaahs.mapper.TransportConfig
@@ -188,7 +187,7 @@ class SacnManager(
         val address: String,
         override val fixtureMapping: FixtureMapping?,
         val universeCount: Int,
-        val onlineSince: Time
+        val onlineSince: Time?
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
         private val channels = ByteArray(channelsPerUniverse * universeCount)
@@ -320,7 +319,7 @@ data class SacnDevice(
     val id: String,
     val address: String?,
     val pixelCount: Int?,
-    val onlineSince: Time
+    val onlineSince: Time?
 )
 
 @Serializable

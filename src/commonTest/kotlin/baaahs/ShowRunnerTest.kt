@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.controller.ControllerId
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManagerImpl
@@ -10,7 +11,6 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.Storage
 import baaahs.net.TestNetwork
 import baaahs.scene.SceneMonitor

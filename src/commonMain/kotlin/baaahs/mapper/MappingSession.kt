@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
@@ -33,7 +34,8 @@ data class MappingSession(
         val screenAngle: Float? = null,
         val channels: Channels? = null
     ) {
-        val controllerId: ControllerId get() =
+        val controllerId: ControllerId
+            get() =
             ControllerId(controllerType ?: BrainManager.controllerTypeName, brainId)
         val entityName: String get() = panelName
 

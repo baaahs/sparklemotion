@@ -4,8 +4,8 @@ import baaahs.PinkyConfig
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryIndexFile
-import baaahs.model.Model
 import baaahs.plugin.Plugins
+import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
@@ -51,9 +51,9 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         fs.saveFile(file, imageData)
     }
 
-    suspend fun loadMappingData(model: Model): SessionMappingResults {
+    suspend fun loadMappingData(scene: OpenScene): SessionMappingResults {
         val sessions = arrayListOf<MappingSession>()
-        val path = fs.resolve("mapping", model.name)
+        val path = fs.resolve("mapping", scene.model.name)
         fs.listFiles(path).forEach { dir ->
             fs.listFiles(dir)
                 .sortedBy { it.name }
@@ -62,7 +62,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
                     sessions.add(loadMappingSession(f))
                 }
         }
-        return SessionMappingResults(model, sessions)
+        return SessionMappingResults(scene, sessions)
     }
 
     suspend fun loadMappingSession(name: String): MappingSession {
@@ -74,7 +74,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         val mappingJson = fs.loadFile(f)
         val mappingSession = plugins.json.decodeFromString(MappingSession.serializer(), mappingJson!!)
         mappingSession.surfaces.forEach { surface ->
-            logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.shortName()})" }
+            logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.name()})" }
         }
         return mappingSession
     }
