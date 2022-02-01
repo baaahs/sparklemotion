@@ -1,21 +1,18 @@
 package baaahs.visualizer.movers
 
 import baaahs.model.MovingHead
-import baaahs.model.MovingHeadAdapter
 import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityStyle
-import three.js.*
+import three.js.Group
+import three.js.Object3D
 import three_ext.clear
-import three_ext.set
 
 class MovingHeadVisualizer(
     movingHead: MovingHead,
     adapter: EntityAdapter
 ) : BaseEntityVisualizer<MovingHead>(movingHead) {
-    private var beam: Beam = Beam.selectFor(movingHead.adapter)
-
     private val holder = Group()
     override val obj: Object3D
         get() = holder
@@ -23,46 +20,31 @@ class MovingHeadVisualizer(
     private val clock = adapter.simulationEnv[Clock::class]
     private val physicalModel = PhysicalModel(movingHead.adapter, clock)
 
-    private val moverCan = Mesh(CylinderBufferGeometry(), EntityStyle.meshMaterial())
+    private val sharpyVisualizer = SharpyVisualizer(movingHead.adapter)
 
-    init { update(item) }
+    init {
+        update(item)
+    }
 
     override fun applyStyle(entityStyle: EntityStyle) {
-        entityStyle.applyToMesh(moverCan.material, EntityStyle.Use.FixtureHardware)
+        sharpyVisualizer.applyStyle(entityStyle)
     }
 
     override fun isApplicable(newItem: Any): MovingHead? =
         newItem as? MovingHead
-
-    private fun updateCanGeometry(visualizerInfo: MovingHeadAdapter.VisualizerInfo) {
-        moverCan.geometry =
-            CylinderBufferGeometry(visualizerInfo.canRadius, visualizerInfo.canRadius, visualizerInfo.canLength)
-
-        moverCan.position.y = visualizerInfo.canLength / 2.0 - visualizerInfo.canLengthInFrontOfLight.toDouble()
-    }
 
     override fun update(newItem: MovingHead) {
         super.update(newItem)
 
         holder.clear()
 
-        updateCanGeometry(item.adapter.visualizerInfo)
-        holder.add(moverCan)
-
-        beam = Beam.selectFor(newItem.adapter)
-        holder.add(beam.vizObj)
+        sharpyVisualizer.updateGeometry(item.adapter.visualizerInfo)
+        holder.add(sharpyVisualizer.group)
     }
 
     internal fun receivedUpdate(buffer: MovingHead.Buffer) {
         val state = physicalModel.update(buffer)
-        beam.update(state)
-        moverCan.rotation.set(
-            Euler(
-                item.adapter.panRange.scale(state.pan),
-                0f,
-                item.adapter.tiltRange.scale(state.tilt)
-            )
-        )
 
+        sharpyVisualizer.update(state)
     }
 }

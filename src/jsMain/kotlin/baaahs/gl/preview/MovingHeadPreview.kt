@@ -12,6 +12,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import kotlin.math.roundToInt
+
+private val Float.short: String
+    get() = try {
+        ((this * 100).roundToInt() / 100.0).toString()
+    } catch(e: Exception) {
+        this.toString()
+    }
 
 class MovingHeadPreview(
     canvas2d: HTMLCanvasElement,
@@ -76,22 +84,31 @@ class MovingHeadPreview(
             context2d.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
 
             context2d.fillStyle = "#ffffff"
-            context2d.fillText("Fixture\tPan\tTilt\tColor\tDimmer", 3.0, 15.0)
+            tabs("Fixture", "Pan", "Tilt", "Color Wheel", "Dimmer", 15.0)
             var y = 30.0
 
             renderTargets.forEach { (movingHead, renderTarget) ->
                 val params = (renderTarget.fixtureResults as MovingHeadParams.ResultBuffer.FixtureResults)
                     .movingHeadParams
 
-                context2d.fillText(
-                    "${movingHead.name}\t${params.pan}\t${params.tilt}\t${params.colorWheel}\t${params.dimmer}",
-                    3.0, y
+                tabs(
+                    movingHead.name,
+                    params.pan.short, params.tilt.short, params.colorWheel.short, params.dimmer.short,
+                    y
                 )
                 y += 15.0
             }
         }
 
         window.requestAnimationFrame { render() }
+    }
+
+    private fun tabs(col0: String, col1: String, col2: String, col3: String, col4: String, y: Double) {
+        context2d.fillText(col0, 3.0, y)
+        context2d.fillText(col1, 50.0, y)
+        context2d.fillText(col2, 100.0, y)
+        context2d.fillText(col3, 150.0, y)
+        context2d.fillText(col4, 200.0, y)
     }
 
     override fun resize(width: Int, height: Int) {
