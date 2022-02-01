@@ -12,7 +12,9 @@ object PhysicsModelSpec: Spek({
             TestMovingHeadAdapter(
                 panMotorSpeed = 2f,
                 tiltMotorSpeed = 1f,
-                colorWheelMotorSpeed = 1f
+                colorWheelMotorSpeed = 1f,
+                panRange = 0f..1f,
+                tiltRange = 0f..1f
             )
         }
         val dmxUniverse by value { FakeDmxUniverse() }

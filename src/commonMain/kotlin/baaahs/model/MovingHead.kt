@@ -12,6 +12,9 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.movers.clamp
+import baaahs.visualizer.movers.scale
+import baaahs.visualizer.movers.unscale
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -87,16 +90,25 @@ class MovingHead(
 
     abstract class BaseBuffer(private val adapter: MovingHeadAdapter) : Buffer {
         override var pan: Float
-            get() = getFloat(adapter.panChannel, adapter.panFineChannel)
-            set(value) = setFloat(adapter.panChannel, adapter.panFineChannel, value)
+            get() = with(adapter) {
+                panRange.scale(getFloat(panChannel, panFineChannel))
+            }
+            set(value) = with(adapter) {
+                setFloat(panChannel, panFineChannel, panRange.unscale(panRange.clamp(value)))
+            }
 
         override var tilt: Float
-            get() = getFloat(adapter.tiltChannel, adapter.tiltFineChannel)
-            set(value) = setFloat(adapter.tiltChannel, adapter.tiltFineChannel, value)
+            get() = with(adapter) {
+                tiltRange.scale(getFloat(tiltChannel, tiltFineChannel))
+            }
+            set(value) = with(adapter) {
+                setFloat(tiltChannel, tiltFineChannel, tiltRange.unscale(tiltRange.clamp(value)))
+            }
 
         override var dimmer: Float
             get() = getFloat(adapter.dimmerChannel)
-            set(value) = setFloat(adapter.dimmerChannel, value)
+            set(value) = setFloat(adapter.dimmerChannel, (0f..1f).clamp(value))
+
         override var shutter: Int
             get() = dmxBuffer[adapter.shutterChannel].toInt()
             set(value) { dmxBuffer[adapter.shutterChannel] = value.toByte() }

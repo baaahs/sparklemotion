@@ -188,10 +188,11 @@ interface MutableGroupEntity {
 class MutableMovingHeadData(
     baseMovingHeadData: MovingHeadData
 ) : MutableEntity<MovingHead>(baseMovingHeadData) {
+    var baseDmxChannel: Int = baseMovingHeadData.baseDmxChannel
     var adapter: MovingHeadAdapter = baseMovingHeadData.adapter
 
     override fun build(): EntityData =
-        MovingHeadData(title, description, position, rotation, scale, id, adapter)
+        MovingHeadData(title, description, position, rotation, scale, id, baseDmxChannel, adapter)
 
     override fun getEditorPanels(): List<EntityEditorPanel<in MovingHead>> =
         listOf(

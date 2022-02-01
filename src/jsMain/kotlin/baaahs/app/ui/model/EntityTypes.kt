@@ -42,7 +42,7 @@ object LightRingEntityType : EntityType {
 object MovingHeadEntityType : EntityType {
     override val title: String = "Moving Head"
 
-    override fun createNew(): EntityData = MovingHeadData("New Moving Head")
+    override fun createNew(): EntityData = MovingHeadData("New Moving Head", baseDmxChannel = 1)
 }
 
 //object SurfaceEntityType : EntityType {

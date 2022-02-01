@@ -3,6 +3,7 @@ package baaahs.visualizer.movers
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.EntityStyle
 import three.js.*
+import kotlin.math.PI
 
 class SharpyVisualizer(
     private val adapter: MovingHeadAdapter
@@ -66,8 +67,10 @@ class SharpyVisualizer(
     }
 
     fun update(state: State) {
-        armature.rotation.y = adapter.panRange.scale(state.pan)
-        can.rotation.x = -adapter.tiltRange.scale(state.tilt)
+        // When tilt is at minimum, start pan 0 degrees at right, per convention.
+        val rotationOffset = (PI / 2).toFloat()
+        armature.rotation.y = state.pan + rotationOffset
+        can.rotation.x = -state.tilt
 
         beam.update(state)
     }

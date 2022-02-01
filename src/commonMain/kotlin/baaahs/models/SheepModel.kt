@@ -16,13 +16,15 @@ val sheepModelData = ModelData(
             "leftEye",
             "Left Eye",
             Vector3F(-11f, 202.361f, -24.5f),
-            EulerAngle(0.0, 0.15708, 1.5708)
+            EulerAngle(0.0, 0.15708, 1.5708),
+            baseDmxChannel = 1
         ),
         MovingHeadData(
             "rightEye",
             "Right Eye",
             Vector3F(-11f, 202.361f, 27.5f),
-            EulerAngle(0.0, -0.15708, 1.5708)
+            EulerAngle(0.0, -0.15708, 1.5708),
+            baseDmxChannel = 17
         )
     ),
     ModelUnit.Inches
