@@ -17,6 +17,8 @@ import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
 import three_ext.clear
+import three_ext.set
+import three_ext.toVector3F
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -145,6 +147,8 @@ open class BaseVisualizer(
         PerspectiveCamera(45, 1.0, 0.1, 10000).apply {
             position.z = 1000.0
         }
+    private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
+    private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
     private val renderer = WebGLRenderer().apply {
         localClippingEnabled = true
     }
@@ -226,8 +230,8 @@ open class BaseVisualizer(
 
     init {
         realScene.add(camera)
-        realScene.add(GridHelper())
-        realScene.add(AxesHelper())
+        realScene.add(ambientLight)
+        realScene.add(directionalLight)
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
@@ -236,9 +240,7 @@ open class BaseVisualizer(
             MeshBasicMaterial().apply { color.set(0xff0000) }
         ).apply { name = "Origin dot" }
         realScene.add(originDot)
-    }
 
-    init {
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
             if (resizeTaskId !== null) {
@@ -340,6 +342,9 @@ open class BaseVisualizer(
         }
 
         orbitControlsExtension.update()
+
+        directionalLight.position.set(camera.position)
+        directionalLight.position.y *= 0.125
 
         val startTime = clock.now()
         renderer.render(realScene, camera)

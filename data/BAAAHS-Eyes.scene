@@ -1,0 +1,38 @@
+{
+  "model": {
+    "title": "BAAAHS Eyes",
+    "entities": [
+      {
+        "type": "MovingHead",
+        "title": "leftEye",
+        "description": "Left Eye",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -50
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      {
+        "type": "MovingHead",
+        "title": "rightEye",
+        "description": "Right Eye",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 50
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      }
+    ],
+    "units": "Inches"
+  }
+}

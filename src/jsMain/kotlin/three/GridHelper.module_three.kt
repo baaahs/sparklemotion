@@ -5,6 +5,7 @@ package three.js
 
 open external class GridHelper : LineSegments<dynamic, dynamic> {
     constructor()
+    constructor(size: Number = definedExternally)
     constructor(size: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: Color = definedExternally)
     constructor(size: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: String = definedExternally)
     constructor(size: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: Number = definedExternally)

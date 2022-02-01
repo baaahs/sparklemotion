@@ -2,6 +2,13 @@ package baaahs.visualizer
 
 import three.js.*
 
+val Material.color: Color
+    get() = when (this) {
+        is MeshBasicMaterial -> color
+        is MeshLambertMaterial -> color
+        else -> error("No color for this material!")
+    }
+
 enum class EntityStyle {
     /** Default is always applied first. */
     Default {
@@ -20,7 +27,7 @@ enum class EntityStyle {
             }
         }
 
-        override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
+        override fun applyToMesh(material: Material, use: Use?) {
             material.color.set(0x222222)
             material.side = FrontSide
             material.transparent = false
@@ -51,7 +58,7 @@ enum class EntityStyle {
             }
         }
 
-        override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
+        override fun applyToMesh(material: Material, use: Use?) {
             material.color.set(0x222222)
             material.side = FrontSide
 
@@ -77,7 +84,7 @@ enum class EntityStyle {
             material.linewidth = 5
         }
 
-        override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
+        override fun applyToMesh(material: Material, use: Use?) {
             material.color.multiplyScalar(1.2)
 
             if (use == Use.LightStrandHint) {
@@ -99,14 +106,14 @@ enum class EntityStyle {
             material.gapSize = 1
         }
 
-        override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
+        override fun applyToMesh(material: Material, use: Use?) {
         }
     },
     MapperRunning {
         override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
             itemVisualizer.mapperIsRunning
 
-        override fun applyToMesh(material: MeshBasicMaterial, use: Use?) {
+        override fun applyToMesh(material: Material, use: Use?) {
             material.transparent = true
             material.opacity = .2
         }
@@ -119,7 +126,7 @@ enum class EntityStyle {
 
     abstract fun appliesTo(itemVisualizer: ItemVisualizer<*>): Boolean
     open fun applyToLine(material: LineDashedMaterial, use: Use? = null) {}
-    open fun applyToMesh(material: MeshBasicMaterial, use: Use? = null) {}
+    open fun applyToMesh(material: Material, use: Use? = null) {}
     open fun applyToPoints(material: PointsMaterial, use: Use? = null) {}
 
     enum class Use {

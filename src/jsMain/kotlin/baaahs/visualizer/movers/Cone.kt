@@ -1,13 +1,12 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
-import baaahs.geom.Vector3F
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.VizObj
 import baaahs.visualizer.toVector3
 import three.js.*
-import three_ext.set
-import three_ext.vector3FacingForward
+import three_ext.toVector3F
+import kotlin.math.PI
 
 actual class Cone actual constructor(
     private val movingHeadAdapter: MovingHeadAdapter,
@@ -15,7 +14,7 @@ actual class Cone actual constructor(
 ) {
     private val coneLength = 1000.0
 
-    private val clipPlane = Plane(Vector3F.facingForward.toVector3(), 0)
+    private val clipPlane = Plane(Vector3(0, 0, Float.MAX_VALUE), 0)
 
     private val innerBaseOpacity = .75
     private val innerMaterial = MeshBasicMaterial().apply {
@@ -23,14 +22,16 @@ actual class Cone actual constructor(
         side = DoubleSide
         transparent = true
         opacity = innerBaseOpacity
-        depthTest = false
         if (colorMode.isClipped) {
             clippingPlanes = arrayOf(clipPlane)
         }
     }
     private val visualizerInfo = movingHeadAdapter.visualizerInfo
     private val innerGeometry = CylinderGeometry(visualizerInfo.lensRadius * .4, 20, coneLength, openEnded = true)
-        .also { it.translate(0.0, -coneLength / 2 - visualizerInfo.canLengthInFrontOfLight, 0.0) }
+        .also {
+            it.translate(0.0, -coneLength / 2 - visualizerInfo.canLength / 2, 0.0)
+            it.rotateX(PI)
+        }
     private val inner = Mesh(innerGeometry, innerMaterial)
 
     private val outerBaseOpacity = .4
@@ -40,18 +41,24 @@ actual class Cone actual constructor(
         transparent = true
         opacity = outerBaseOpacity
         blending = AdditiveBlending
-        depthTest = false
         if (colorMode.isClipped) {
             clippingPlanes = arrayOf(clipPlane)
         }
     }
     private val outerGeometry = CylinderGeometry(visualizerInfo.lensRadius, 50, coneLength, openEnded = true)
-        .also { it.translate(0.0, -coneLength / 2 - visualizerInfo.canLengthInFrontOfLight, 0.0) }
+        .also {
+            it.translate(0.0, -coneLength / 2 - visualizerInfo.canLength / 2, 0.0)
+            it.rotateX(PI)
+        }
     private val outer = Mesh(outerGeometry, outerMaterial)
 
     private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
     private val materials = listOf(innerMaterial, outerMaterial)
     private val cones = listOf(inner, outer)
+
+    init {
+        update(State())
+    }
 
     actual fun addTo(parent: VizObj) {
         cones.forEach { cone -> parent.add(cone) }
@@ -60,16 +67,28 @@ actual class Cone actual constructor(
     actual fun update(state: State) {
         setColor(colorMode.getColor(movingHeadAdapter, state), state.dimmer)
 
-        val rotation = Euler(
-            movingHeadAdapter.panRange.scale(state.pan),
-            0f,
-            movingHeadAdapter.tiltRange.scale(state.tilt)
-        )
-
         // `0` indicates just the primary color, `.5` indicates a 50/50 mix, and `1.` indicates
         // just the adjacent color.
-        val colorSplit = (state.colorWheelPosition * movingHeadAdapter.colorWheelColors.size) % 1f
-        setRotation(rotation, colorSplit)
+        if (colorMode.isClipped) {
+            val colorSplit = (state.colorWheelPosition * movingHeadAdapter.colorWheelColors.size) % 1f
+            val start = Vector3(
+                0,
+                visualizerInfo.canLength,
+                visualizerInfo.lensRadius * (colorSplit - .5)
+            )
+            val end = Vector3(
+                0,
+                coneLength,
+                50 * (colorSplit - .5)
+            )
+
+            outer.updateWorldMatrix(updateParents = true, updateChildren = false)
+            val normal = (end.toVector3F() - start.toVector3F()).normalize().toVector3()
+            normal.set(normal.x, -normal.z, normal.y)
+            if (colorMode == ColorMode.Secondary) normal.negate()
+            clipPlane.setFromNormalAndCoplanarPoint(normal, start)
+            clipPlane.applyMatrix4(outer.matrixWorld)
+        }
     }
 
     private fun setColor(color: Color, dimmer: Float) {
@@ -77,21 +96,6 @@ actual class Cone actual constructor(
             material.color.set(color.rgb)
             material.opacity = baseOpacity * dimmer
             material.visible = dimmer > .01f
-        }
-    }
-
-    private fun setRotation(rotation: Euler, colorSplit: Float) {
-        val aim = rotation
-        cones.forEach { cone ->
-            cone.rotation.set(aim)
-        }
-
-        if (colorMode.isClipped) {
-            aim.y = aim.y.toDouble() + (1f - colorSplit - .5f) * .25f
-            val planeRotation = aim
-            val normal = vector3FacingForward.applyEuler(planeRotation)
-            if (colorMode == ColorMode.Secondary) normal.negate()
-            clipPlane.setFromNormalAndCoplanarPoint(normal, Vector3(0, 0, 0))
         }
     }
 }
