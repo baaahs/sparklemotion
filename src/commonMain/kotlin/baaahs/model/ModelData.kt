@@ -75,6 +75,7 @@ data class MovingHeadData(
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     @Transient override val id: EntityId = Model.Entity.nextId(),
+    val baseDmxChannel: Int, // TODO: Remove this! Should come from mapping data.
     @Polymorphic
     val adapter: MovingHeadAdapter = Shenzarpy
 
@@ -83,7 +84,7 @@ data class MovingHeadData(
         MutableMovingHeadData(this)
 
     override fun open(): Model.Entity =
-        MovingHead(title, description, position, rotation, scale, 0, adapter, id)
+        MovingHead(title, description, position, rotation, scale, baseDmxChannel, adapter, id)
 }
 
 @Serializable @SerialName("LightBar")

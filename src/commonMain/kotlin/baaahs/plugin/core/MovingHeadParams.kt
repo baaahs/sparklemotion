@@ -13,7 +13,9 @@ import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RGBA
 
 data class MovingHeadParams(
+    /** In radians. */
     val pan: Float,
+    /** In radians. */
     val tilt: Float,
     val colorWheel: Float,
     val dimmer: Float
