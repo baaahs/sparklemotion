@@ -68,6 +68,7 @@ class Visualizer(
     fun add(itemVisualizer: ItemVisualizer<*>) {
         itemVisualizers.add(itemVisualizer)
         scene.add(itemVisualizer.obj)
+        sceneNeedsUpdate = true
     }
 
     override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
@@ -149,8 +150,9 @@ open class BaseVisualizer(
     }
     protected val canvas = renderer.domElement
 
-    protected val realScene = Scene()
+    protected val realScene = Scene().apply { autoUpdate = false }
     protected val scene = Group().also { realScene.add(it) }
+    protected var sceneNeedsUpdate = true
 
     /**
      * The order that these event listeners are registered matters; can't think of a
@@ -342,6 +344,10 @@ open class BaseVisualizer(
         directionalLight.position.y *= 0.125
 
         val startTime = clock.now()
+        if (sceneNeedsUpdate) {
+            realScene.updateMatrixWorld()
+            sceneNeedsUpdate = false
+        }
         renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 

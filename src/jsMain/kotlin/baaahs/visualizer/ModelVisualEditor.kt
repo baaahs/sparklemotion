@@ -56,8 +56,10 @@ class ModelVisualEditor(
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
     private val groupVisualizer =
-        GroupVisualizer("Model: ${model.name}", model.entities, adapter)
-            .also { scene.add(it.groupObj) }
+        GroupVisualizer("Model: ${model.name}", model.entities, adapter).also {
+            scene.add(it.groupObj)
+            sceneNeedsUpdate = true
+        }
 
     private val intersectionObserver = IntersectionObserver(callback = { entries ->
         val isVisible = entries.any { it.isIntersecting }
