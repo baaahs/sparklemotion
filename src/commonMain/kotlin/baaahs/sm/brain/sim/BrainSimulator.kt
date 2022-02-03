@@ -170,8 +170,6 @@ class BrainSimulator(
                     PingMessage(pongData, true)
                 )
             }
-
-            delay(10)
         }
     }
 

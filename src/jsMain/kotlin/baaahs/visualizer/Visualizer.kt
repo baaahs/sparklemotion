@@ -18,7 +18,6 @@ import three.js.*
 import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
-import three_ext.toVector3F
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -31,11 +30,7 @@ class Visualizer(
 
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
 
-    var selectedEntity: ItemVisualizer<*>?
-        get() = this@Visualizer.selectedEntity
-        set(value) {
-            this@Visualizer.selectedEntity = value
-        }
+    var selectedEntity: ItemVisualizer<*>? = null
 
     private var container: HTMLElement? = null
         set(value) {

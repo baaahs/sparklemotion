@@ -29,13 +29,14 @@ import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 
-class JsSimPlatformModule : JsPlatformModule(FakeNetwork()) {
+class JsSimPlatformModule(fakeNetwork: FakeNetwork) : JsPlatformModule(fakeNetwork) {
     override val Scope.mediaDevices: MediaDevices
         get() = FakeMediaDevices(get(), RealMediaDevices())
 }
 
 class JsSimulatorModule(
     private val sceneMonitor_: SceneMonitor,
+    private val fakeNetwork_: FakeNetwork,
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
     private val pinkyMainDispatcher_: CoroutineDispatcher,
@@ -52,6 +53,8 @@ class JsSimulatorModule(
                 name = "Browser Data"
             )
         }
+    override val Scope.fakeNetwork: FakeNetwork
+        get() = fakeNetwork_
 
     override fun getModule(): Module {
         return super.getModule().apply {
