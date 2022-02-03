@@ -22,6 +22,7 @@ interface DeviceType {
     val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
     val defaultConfig: FixtureConfig
+    val defaultPixelCount: Int? get() = null
     val serialModule: SerializersModule get() = SerializersModule {}
 
     fun createResultStorage(renderResults: RenderResults): ResultStorage

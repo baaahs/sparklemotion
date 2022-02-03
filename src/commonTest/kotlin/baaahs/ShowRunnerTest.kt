@@ -1,6 +1,6 @@
 package baaahs
 
-import baaahs.controller.ControllerId
+import baaahs.controller.Controller
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManagerImpl
@@ -289,7 +289,7 @@ class ShowRunnerTest {
         override val name: String = "Fake Transport",
         private val fn: (byteArray: ByteArray) -> Unit
     ) : Transport {
-        override val controllerId: ControllerId
+        override val controller: Controller
             get() = TODO("not implemented")
 
         override fun deliverBytes(byteArray: ByteArray) {

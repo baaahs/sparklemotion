@@ -6,6 +6,8 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
 import baaahs.device.DeviceType
+import baaahs.dmx.DirectDmxControllerConfig
+import baaahs.dmx.DirectDmxTransportConfig
 import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
 import baaahs.getBang
@@ -502,6 +504,12 @@ sealed class Plugins private constructor(
         val serialModule = SerializersModule {
             polymorphic(ControllerConfig::class) {
                 subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
+                subclass(DirectDmxControllerConfig::class, DirectDmxControllerConfig.serializer())
+            }
+
+            polymorphic(TransportConfig::class) {
+                subclass(DirectDmxTransportConfig::class, DirectDmxTransportConfig.serializer())
+                subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
             }
         }
     }

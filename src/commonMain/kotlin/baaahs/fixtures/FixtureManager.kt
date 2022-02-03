@@ -7,6 +7,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.plugin.Plugins
 import baaahs.show.live.ActivePatchSet
+import baaahs.sm.server.FrameListener
 import baaahs.timeSync
 import baaahs.util.Logger
 import baaahs.visualizer.remote.RemoteVisualizerServer
@@ -19,6 +20,8 @@ interface FixtureListener {
 interface FixtureManager : FixtureListener {
     val facade: FixtureManagerImpl.Facade
 
+    fun addFrameListener(frameListener: FrameListener)
+    fun removeFrameListener(frameListener: FrameListener)
     fun activePatchSetChanged(activePatchSet: ActivePatchSet)
     fun hasActiveRenderPlan(): Boolean
     fun maybeUpdateRenderPlans(): Boolean
@@ -36,7 +39,7 @@ class FixtureManagerImpl(
     override val facade = Facade()
 
     private val renderTargets: MutableMap<Fixture, FixtureRenderTarget> = initialRenderTargets.toMutableMap()
-    private val frameListeners: MutableList<() -> Unit> = arrayListOf()
+    private val frameListeners: MutableList<FrameListener> = arrayListOf()
     private val changedFixtures = mutableListOf<FixturesChanges>()
 
     private var currentActivePatchSet: ActivePatchSet = ActivePatchSet.Empty
@@ -46,8 +49,12 @@ class FixtureManagerImpl(
 
     private val remoteVisualizers = RemoteVisualizers()
 
-    fun addFrameListener(callback: () -> Unit) {
-        frameListeners.add(callback)
+    override fun addFrameListener(frameListener: FrameListener) {
+        frameListeners.add(frameListener)
+    }
+
+    override fun removeFrameListener(frameListener: FrameListener) {
+        frameListeners.remove(frameListener)
     }
 
     fun getRenderTargets_ForTestOnly(): Map<Fixture, RenderTarget> {
@@ -78,12 +85,13 @@ class FixtureManagerImpl(
     private fun getFixtureCount(): Int = renderTargets.size
 
     override fun sendFrame() {
+        frameListeners.forEach { it.beforeFrame() }
         renderTargets.values.forEach { renderTarget ->
             // TODO(tom): The send might return an error, at which point this fixture should be nuked
             // from the list of fixtures. I'm not quite sure the best way to do that so I'm leaving this note.
             renderTarget.sendFrame(remoteVisualizers)
         }
-        frameListeners.forEach { it.invoke() }
+        frameListeners.forEach { it.afterFrame() }
     }
 
     private fun addFixture(fixture: Fixture) {

@@ -208,8 +208,8 @@ class SacnManager(
 
         inner class SacnTransport(transportConfig: SacnTransportConfig?) : Transport {
             override val name: String get() = id
-            override val controllerId: ControllerId
-                get() = this@SacnController.controllerId
+            override val controller: Controller
+                get() = this@SacnController
             override val config: TransportConfig? = transportConfig
             private val startChannel = transportConfig?.startChannel ?: 0
             private val endChannel = transportConfig?.endChannel

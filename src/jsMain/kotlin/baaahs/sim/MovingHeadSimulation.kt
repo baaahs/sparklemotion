@@ -1,6 +1,7 @@
 package baaahs.sim
 
-import baaahs.controller.ControllerId
+import baaahs.controller.Controller
+import baaahs.controller.NullController
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
@@ -61,8 +62,8 @@ actual class MovingHeadSimulation actual constructor(
         override val name: String
             get() = movingHead.name
 
-        override val controllerId: ControllerId
-            get() = TODO("not implemented")
+        override val controller: Controller
+            get() = NullController
 
         override fun deliverBytes(byteArray: ByteArray) {
             for (i in byteArray.indices) {

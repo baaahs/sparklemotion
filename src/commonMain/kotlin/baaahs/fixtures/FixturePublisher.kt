@@ -20,7 +20,7 @@ class FixturePublisher(
             fixtures[it] = FixtureInfo(
                 it.name,
                 it.modelEntity?.name, // TODO: name vs id?
-                it.transport.controllerId,
+                it.transport.controller.controllerId,
                 it.transport.config
             )
         }

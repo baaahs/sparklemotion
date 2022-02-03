@@ -8,6 +8,7 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.TransportConfig
 import baaahs.model.ModelData
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
@@ -55,6 +56,7 @@ data class FixtureMappingData(
     val controllerId: String,
     val entityId: String? = null,
 //    val controllerConfig: FixtureControllerConfig? = null,
+    @Contextual
     val deviceType: DeviceType = PixelArrayDevice,
     val deviceConfig: FixtureConfig? = null,
     val transportConfig: TransportConfig? = null

@@ -67,8 +67,7 @@ class ClientStageManager(
 
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
-                    gadget.state.putAll(json)
-                    gadget.changed()
+                    gadget.applyState(json)
                     checkForChanges()
                 }
             }
