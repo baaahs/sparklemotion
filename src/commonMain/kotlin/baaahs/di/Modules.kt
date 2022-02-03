@@ -167,9 +167,10 @@ abstract class WebClientModule : KModule {
 
 interface SimulatorModule : KModule {
     val Scope.fs: Fs
+    val Scope.fakeNetwork: FakeNetwork
 
     override fun getModule(): Module = module {
-        single { FakeNetwork() }
+        single { fakeNetwork }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

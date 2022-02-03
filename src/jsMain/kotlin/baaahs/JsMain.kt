@@ -5,6 +5,7 @@ import baaahs.di.*
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.scene.SceneMonitor
+import baaahs.sim.FakeNetwork
 import baaahs.sim.HostedWebApp
 import baaahs.sim.ui.SimulatorAppProps
 import baaahs.sim.ui.SimulatorAppView
@@ -83,7 +84,8 @@ private fun launchSimulator(
     val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
 
     val pinkyAddress = JsPlatform.myAddress
-    val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
+    val fakeNetwork = FakeNetwork()
+    val bridgeNetwork = BrowserNetwork(pinkyAddress, Ports.PINKY)
     val pinkySettings = PinkySettings()
     val sceneMonitor = SceneMonitor()
 
@@ -92,8 +94,11 @@ private fun launchSimulator(
 
         modules(
             PluginsModule(Pluggables.plugins).getModule(),
-            JsSimPlatformModule().getModule(),
-            JsSimulatorModule(sceneMonitor, network, pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing).getModule(),
+            JsSimPlatformModule(fakeNetwork).getModule(),
+            JsSimulatorModule(
+                sceneMonitor, fakeNetwork, bridgeNetwork,
+                pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing
+            ).getModule(),
             JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main).getModule(),
             JsUiWebClientModule().getModule(),
 //            JsAdminWebClientModule(modelProvider).getModule(),
