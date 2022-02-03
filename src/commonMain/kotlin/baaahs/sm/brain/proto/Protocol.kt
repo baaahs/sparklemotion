@@ -219,5 +219,5 @@ open class Message(val type: Type) {
     open fun serialize(writer: ByteArrayWriter) {
     }
 
-    open fun size(): Int = 127
+    open fun size(): Int = 8192
 }
