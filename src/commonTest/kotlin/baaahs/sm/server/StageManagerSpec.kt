@@ -190,6 +190,12 @@ object StageManagerSpec : Spek({
                             // Ignore.
                         }
 
+                        override fun addFrameListener(frameListener: FrameListener) {
+                        }
+
+                        override fun removeFrameListener(frameListener: FrameListener) {
+                        }
+
                         override fun maybeUpdateRenderPlans(): Boolean {
                             // Ignore.
                             return true
@@ -320,6 +326,8 @@ open class StubFixtureManager : FixtureManager {
     override val facade: FixtureManagerImpl.Facade
         get() = TODO("not implemented")
 
+    override fun addFrameListener(frameListener: FrameListener):Unit = TODO("not implemented")
+    override fun removeFrameListener(frameListener: FrameListener):Unit = TODO("not implemented")
     override fun activePatchSetChanged(activePatchSet: ActivePatchSet):Unit = TODO("not implemented")
     override fun hasActiveRenderPlan(): Boolean = TODO("not implemented")
     override fun maybeUpdateRenderPlans(): Boolean = TODO("not implemented")

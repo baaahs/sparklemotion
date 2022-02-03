@@ -1,7 +1,7 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
-import baaahs.dmx.DmxTransportConfig
+import baaahs.dmx.DirectDmxTransportConfig
 import baaahs.scene.OpenScene
 import baaahs.util.Logger
 
@@ -24,7 +24,7 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                     val pixelCount = entityData.pixelCount ?: pixelLocations?.size
                     val transportConfig = when (controllerId.controllerType) {
                         "SACN" -> entityData.channels?.let { SacnTransportConfig(it.start, it.end) }
-                        "DMX" -> entityData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "DMX" -> entityData.channels?.let { DirectDmxTransportConfig(it.start, it.end) }
                         else -> null
                     }
 

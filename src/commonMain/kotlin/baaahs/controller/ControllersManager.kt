@@ -106,9 +106,11 @@ class ControllersManager(
                 ?: defaultMapping?.fixtureConfig
                 ?: error("huh? no device config")
 
-            // TODO: These really only apply to PixelArrayDevices.
+            // TODO: These really only apply to PixelArrayDevices,
+            // TODO: and should live in fixtureConfig.
             val pixelCount = mapping.pixelCount
                 ?: defaultMapping?.pixelCount
+                ?: modelEntity?.deviceType?.defaultPixelCount
                 ?: 0
 
             val pixelLocations = mapping.pixelLocations

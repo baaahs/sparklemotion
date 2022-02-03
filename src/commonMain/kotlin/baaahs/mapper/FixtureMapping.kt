@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.model.Model
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 class FixtureMapping(
@@ -20,7 +21,7 @@ class FixtureMapping(
 
 interface TransportConfig
 
-@Serializable
+@Serializable @SerialName("SACN")
 data class SacnTransportConfig(
     val startChannel: Int,
     val endChannel: Int,
