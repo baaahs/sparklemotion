@@ -60,6 +60,7 @@ class SharpyVisualizer(
                 translate(0, -(canLength / 2 + wideGap + armWidth + narrowGap + baseSize.y / 2), 0)
             }
         }
+        group.updateMatrixWorld()
     }
 
     fun applyStyle(entityStyle: EntityStyle) {
@@ -73,6 +74,8 @@ class SharpyVisualizer(
         can.rotation.x = -state.tilt
 
         beam.update(state)
+
+        group.updateMatrixWorld()
     }
 
 }
