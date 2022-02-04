@@ -26,7 +26,7 @@ class FixtureRenderTarget(
     val fixtureResults = resultStorage.getFixtureResults(fixture, pixel0Index)
 
     override fun sendFrame(remoteVisualizers: RemoteVisualizers) {
-        fixtureResults.send(fixture.modelEntity, remoteVisualizers)
+        fixtureResults.send(remoteVisualizers)
     }
 
     override fun release() {

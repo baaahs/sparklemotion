@@ -4,7 +4,6 @@ import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
 import baaahs.gl.result.FixtureResults
 import baaahs.gl.result.ResultBuffer
-import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 
 interface ResultStorage {
@@ -27,7 +26,7 @@ interface ResultStorage {
 
         override fun getFixtureResults(fixture: Fixture, bufferOffset: Int): FixtureResults {
             return object : FixtureResults(bufferOffset, fixture.pixelCount) {
-                override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
+                override fun send(remoteVisualizers: RemoteVisualizers) {
                     TODO("not implemented")
                 }
             }
