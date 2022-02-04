@@ -101,8 +101,8 @@ object ModelSpec : Spek({
             context("with light rings") {
                 override(model) {
                     fakeModel(
-                        LightRing("bar1", "bar2", center = v1, radius = 1f, planeNormal = Vector3F.facingForward),
-                        LightRing("bar2", "bar2", center = v2, radius = 1f, planeNormal = Vector3F.facingForward)
+                        LightRing("bar1", "bar2", position = v1, radius = 1f, planeNormal = Vector3F.facingForward),
+                        LightRing("bar2", "bar2", position = v2, radius = 1f, planeNormal = Vector3F.facingForward)
                     )
                 }
 

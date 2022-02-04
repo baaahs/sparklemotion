@@ -21,7 +21,6 @@ class LightRing(
     override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
     override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation scale?
     override val scale: Vector3F = Vector3F.unit3d, // TODO: Represent using transformation rotation.
-    val center: Vector3F = Vector3F.origin,
     val radius: Float,
     val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
@@ -56,7 +55,7 @@ class LightRing(
         }
         val (v1, v2) = pixelPlotVectors
         val a = 2 * PI * (pI / count.toDouble()) + firstPixelRadians
-        return center + (v1 * cos(a) + v2 * sin(a)) * radius
+        return (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =

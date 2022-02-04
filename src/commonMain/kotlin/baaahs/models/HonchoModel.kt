@@ -117,7 +117,7 @@ private data class LightRingConfig(
     fun createEntity(firstPixelRadians: Float, pixelDirection: LightRing.PixelDirection) =
         LightRing(
             name, name,
-            center = Vector3F(centerX - 7.m, centerY, 0f),
+            position = Vector3F(centerX - 7.m, centerY, 0f),
             radius = (circumference / PI).toFloat(),
             planeNormal = Vector3F.facingForward,
             firstPixelRadians = firstPixelRadians,
@@ -126,7 +126,7 @@ private data class LightRingConfig(
 
     fun createEntityData() = LightRingData(
         name, null,
-        center = Vector3F(centerX - 7.m, centerY, 0f),
+        position = Vector3F(centerX - 7.m, centerY, 0f),
         radius = (circumference / PI).toFloat(),
         planeNormal = Vector3F.facingForward,
         firstPixelRadians = firstPixelRadians.toFloat(),

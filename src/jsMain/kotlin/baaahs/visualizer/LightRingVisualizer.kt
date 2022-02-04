@@ -45,7 +45,6 @@ class LightRingVisualizer(
     override fun update(newItem: LightRing) {
         super.update(newItem)
 
-        val center = newItem.center
         val normal = newItem.planeNormal
 
         val ringGeom = RingGeometry(
@@ -56,8 +55,6 @@ class LightRingVisualizer(
 
         Rotator(three_ext.vector3FacingForward, normal.toVector3())
             .rotate(ringGeom)
-
-        with(center) { ringGeom.translate(x, y, z) }
 
         obj.clear()
         obj.add(ringMesh)
