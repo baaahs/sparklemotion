@@ -26,7 +26,8 @@ interface MappingManager : IObservable {
 class MappingManagerImpl(
     private val storage: Storage,
     private val sceneProvider: SceneProvider,
-    private val coroutineScope: CoroutineScope = GlobalScope
+    private val coroutineScope: CoroutineScope = GlobalScope,
+    private val backupMappingManager: MappingManager? = null
 ) : Observable(), MappingManager {
     private var sessionMappingResults: SessionMappingResults? = null
     override var dataHasLoaded: Boolean = false
@@ -35,6 +36,8 @@ class MappingManagerImpl(
         sceneProvider.addObserver(fireImmediately = true) {
             coroutineScope.launch { onSceneChange(sceneProvider.openScene) }
         }
+
+        backupMappingManager?.start()
     }
 
     private suspend fun onSceneChange(openScene: OpenScene?) {
@@ -52,7 +55,11 @@ class MappingManagerImpl(
         val results = sessionMappingResults
             ?: error("Mapping results requested before available.")
 
-        return results.dataForController(controllerId)
+        return results.dataForController(controllerId).let {
+            it.ifEmpty {
+                backupMappingManager?.findMappings(controllerId) ?: emptyList()
+            }
+        }
     }
 
     override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {

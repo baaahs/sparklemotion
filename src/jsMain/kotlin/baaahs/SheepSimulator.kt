@@ -39,14 +39,9 @@ class SheepSimulator(
         pinky = pinkyScope.get()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
 
-        launch { fixturesSimulator.generateMappingData() }
-
         launch { pinky.startAndRun() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
-        fixturesSimulator.launchControllers()
-        fixturesSimulator.addToVisualizer()
-
         facade.notifyChanged()
     }
 

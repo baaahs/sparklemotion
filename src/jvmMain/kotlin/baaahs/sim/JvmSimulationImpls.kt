@@ -16,7 +16,7 @@ actual class BrainSurfaceSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
-    override fun launch():Unit = TODO("not implemented")
+    override fun start():Unit = TODO("not implemented")
 }
 
 actual class LightBarSimulation actual constructor(
@@ -27,7 +27,7 @@ actual class LightBarSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
-    override fun launch():Unit = TODO("not implemented")
+    override fun start():Unit = TODO("not implemented")
 }
 
 actual class LightRingSimulation actual constructor(
@@ -38,7 +38,7 @@ actual class LightRingSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
-    override fun launch():Unit = TODO("not implemented")
+    override fun start():Unit = TODO("not implemented")
 }
 
 actual class MovingHeadSimulation actual constructor(
@@ -48,5 +48,5 @@ actual class MovingHeadSimulation actual constructor(
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
-    override fun launch():Unit = TODO("not implemented")
+    override fun start():Unit = TODO("not implemented")
 }

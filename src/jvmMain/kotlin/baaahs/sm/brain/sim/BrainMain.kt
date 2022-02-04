@@ -12,6 +12,8 @@ import baaahs.util.globalLaunch
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
@@ -41,7 +43,9 @@ class BrainMain(private val args: Args) {
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brainSimulator = BrainSimulator(brainId, network, JvmPixelsDisplay(2000), SystemClock)
+        val brainSimulator = BrainSimulator(
+            brainId, network, JvmPixelsDisplay(2000), SystemClock, CoroutineScope(Dispatchers.Main)
+        )
 
         val mySurface = if (args.anonymous) {
             null
@@ -55,7 +59,7 @@ class BrainMain(private val args: Args) {
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
         mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
-        brainSimulator.run()
+        brainSimulator.start()
     }
 
     class Args(parser: ArgParser) {

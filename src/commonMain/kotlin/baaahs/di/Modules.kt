@@ -79,6 +79,7 @@ interface PinkyModule : KModule {
     val Scope.firmwareDaddy: FirmwareDaddy
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
+    val Scope.backupMappingManager: MappingManager? get() = null
     val Scope.dmxDriver: Dmx.Driver
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
@@ -123,7 +124,9 @@ interface PinkyModule : KModule {
                 scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
-                scoped<MappingManager> { MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext))) }
+                scoped<MappingManager> {
+                    MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext)), backupMappingManager)
+                }
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
                     listOf(

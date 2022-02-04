@@ -7,6 +7,7 @@ import baaahs.net.BrowserNetwork
 import baaahs.scene.SceneMonitor
 import baaahs.sim.FakeNetwork
 import baaahs.sim.HostedWebApp
+import baaahs.sim.SimMappingManager
 import baaahs.sim.ui.SimulatorAppProps
 import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
@@ -88,6 +89,7 @@ private fun launchSimulator(
     val bridgeNetwork = BrowserNetwork(pinkyAddress, Ports.PINKY)
     val pinkySettings = PinkySettings()
     val sceneMonitor = SceneMonitor()
+    val simMappingManager = SimMappingManager()
 
     val injector = koinApplication {
         logger(KoinLogger())
@@ -97,9 +99,10 @@ private fun launchSimulator(
             JsSimPlatformModule(fakeNetwork).getModule(),
             JsSimulatorModule(
                 sceneMonitor, fakeNetwork, bridgeNetwork,
-                pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing
+                pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing,
+                simMappingManager
             ).getModule(),
-            JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main).getModule(),
+            JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager).getModule(),
             JsUiWebClientModule().getModule(),
 //            JsAdminWebClientModule(modelProvider).getModule(),
         )

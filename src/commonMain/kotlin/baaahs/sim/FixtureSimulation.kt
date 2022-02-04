@@ -12,7 +12,8 @@ interface FixtureSimulation {
     val itemVisualizer: ItemVisualizer<*>
     val previewFixture: Fixture?
 
-    fun launch()
+    fun start() {}
+    fun stop() {}
 
     fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
         // No-op by default.

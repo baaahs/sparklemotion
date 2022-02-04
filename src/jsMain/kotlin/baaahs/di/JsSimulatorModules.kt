@@ -9,6 +9,7 @@ import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.ResourcesFs
+import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -23,7 +24,6 @@ import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import org.koin.core.Koin
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
@@ -41,7 +41,8 @@ class JsSimulatorModule(
     private val pinkyAddress_: Network.Address,
     private val pinkyMainDispatcher_: CoroutineDispatcher,
     private val pixelDensity: Float = 0.2f,
-    private val pixelSpacing: Float = 2f
+    private val pixelSpacing: Float = 2f,
+    private val simMappingManager: SimMappingManager
 ) : SimulatorModule {
     override val Scope.fs: Fs
         get() {
@@ -60,15 +61,16 @@ class JsSimulatorModule(
         return super.getModule().apply {
             single { Visualizer(get()) }
             single<SceneProvider> { sceneMonitor_ }
+            single { simMappingManager }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
             single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             single { (plugins: Plugins) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
-                    get(named(SimulatorModule.Qualifier.PinkyFs)),
-                    get(named(SimulatorModule.Qualifier.MapperFs)),
-                    get(), plugins, get(), CoroutineScope(pinkyMainDispatcher_)
+                    get(),
+                    get(),
+                    get()
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
@@ -80,7 +82,8 @@ class JsSimulatorModule(
 class JsSimPinkyModule(
     private val sceneMonitor_: SceneMonitor,
     private val pinkySettings_: PinkySettings,
-    private val pinkyMainDispatcher_: CoroutineDispatcher
+    private val pinkyMainDispatcher_: CoroutineDispatcher,
+    private val simMappingManager: SimMappingManager
 ) : PinkyModule {
     override val Scope.serverPlugins: ServerPlugins
         get() = get<SimulatorPlugins>().openServerPlugins(get())
@@ -94,6 +97,8 @@ class JsSimPinkyModule(
         get() = pinkyMainDispatcher_
     override val Scope.pinkyLink: Network.Link
         get() = get(named(SimulatorModule.Qualifier.PinkyLink))
+    override val Scope.backupMappingManager: MappingManager
+        get() = simMappingManager
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.renderManager: RenderManager
@@ -102,4 +107,8 @@ class JsSimPinkyModule(
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor
         get() = sceneMonitor_
+
+    override fun getModule(): Module {
+        return super.getModule()
+    }
 }
