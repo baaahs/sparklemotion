@@ -31,8 +31,6 @@ actual class MovingHeadSimulation actual constructor(
         visualizer
     }
 
-    private val buffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
-
     override val previewFixture: Fixture by lazy {
         Fixture(
             movingHead,

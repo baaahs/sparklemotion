@@ -80,7 +80,10 @@ data class MovingHeadParams(
                 val channels = ByteArray(size)
                 movingHeadParams.send(adapter.newBuffer(Dmx.Buffer(channels)))
                 transport.deliverBytes(channels)
-                remoteVisualizers.sendFrameData(entity) { out -> out.writeBytes(channels) }
+                remoteVisualizers.sendFrameData(entity) { out ->
+                    out.writeShort(channels.size)
+                    out.writeBytes(channels)
+                }
             }
         }
     }
