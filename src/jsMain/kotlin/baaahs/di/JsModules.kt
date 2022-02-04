@@ -14,7 +14,6 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.Mapper
-import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -83,28 +82,8 @@ open class JsUiWebClientModule : WebClientModule() {
     }
 }
 
-class JsAdminWebClientModule : KModule {
+class JsMonitorWebClientModule : KModule {
     override fun getModule(): Module = module {
-        scope<MapperUi> {
-            scoped { get<Network>().link("mapper") }
-            scoped { PluginContext(get(), get()) }
-            scoped { PubSub.Client(get(), pinkyAddress(), Ports.PINKY_UI_TCP) }
-            scoped<PubSub.Endpoint> { get<PubSub.Client>() }
-            scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
-            scoped<Plugins> { get<ClientPlugins>() }
-            scoped { PubSub.Client(get(), get(named(WebClientModule.Qualifier.PinkyAddress)), Ports.PINKY_UI_TCP) }
-            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
-            scoped { SceneMonitor() }
-            scoped<SceneProvider> { get<SceneMonitor>() }
-            scoped { SceneEditorClient(get(), get()) }
-            scoped {
-                JsMapperUi(get(), get()).also {
-                    // This has side-effects on mapperUi. Ugly.
-                    Mapper(get(), get(), it, get(), pinkyAddress(), get())
-                }
-            }
-        }
-
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
             scoped { PluginContext(get(), get()) }
@@ -112,9 +91,13 @@ class JsAdminWebClientModule : KModule {
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
+            scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped { SceneMonitor() }
             scoped<SceneProvider> { get<SceneMonitor>() }
+            scoped { FileDialog() }
+            scoped<IFileDialog> { get<FileDialog>() }
+            scoped { Notifier(get()) }
             scoped { Visualizer(get()) }
             scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
             scoped { MonitorUi(get(), get()) }

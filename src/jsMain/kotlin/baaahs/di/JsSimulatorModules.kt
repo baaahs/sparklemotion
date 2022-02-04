@@ -39,7 +39,6 @@ class JsSimulatorModule(
     private val fakeNetwork_: FakeNetwork,
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
-    private val pinkyMainDispatcher_: CoroutineDispatcher,
     private val pixelDensity: Float = 0.2f,
     private val pixelSpacing: Float = 2f,
     private val simMappingManager: SimMappingManager
@@ -68,9 +67,7 @@ class JsSimulatorModule(
             single { (plugins: Plugins) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
-                    get(),
-                    get(),
-                    get()
+                    get(), get(), get()
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
