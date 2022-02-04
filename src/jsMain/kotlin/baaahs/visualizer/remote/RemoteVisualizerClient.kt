@@ -18,7 +18,6 @@ import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FixtureInfo
 import baaahs.visualizer.remote.RemoteVisualizerServer.Opcode.FrameData
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 
 class RemoteVisualizerClient(
@@ -27,8 +26,7 @@ class RemoteVisualizerClient(
     private val visualizer: Visualizer,
     sceneManager: SceneManager,
     clock: Clock,
-    private val plugins: Plugins,
-    coroutineScope: CoroutineScope = GlobalScope
+    private val plugins: Plugins
 ) :
     Network.WebSocketListener, CoroutineScope by MainScope() {
 

@@ -62,7 +62,7 @@ private fun launchUi(appName: String?) {
 
         val app = when (appName) {
             "Monitor" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule().getModule()))
+                koin.loadModules(listOf(JsMonitorWebClientModule().getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()
             }
 
@@ -99,19 +99,17 @@ private fun launchSimulator(
             JsSimPlatformModule(fakeNetwork).getModule(),
             JsSimulatorModule(
                 sceneMonitor, fakeNetwork, bridgeNetwork,
-                pinkyAddress, Dispatchers.Main, pixelDensity, pixelSpacing,
-                simMappingManager
+                pinkyAddress, pixelDensity, pixelSpacing, simMappingManager
             ).getModule(),
             JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager).getModule(),
             JsUiWebClientModule().getModule(),
-//            JsAdminWebClientModule(modelProvider).getModule(),
+            JsMonitorWebClientModule().getModule(),
         )
     }.koin
 
     val simulator = injector.get<SheepSimulator>(parameters = { parametersOf(injector) })
 
     val hostedWebApp = when (val app = queryParams["app"] ?: "UI") {
-        "Mapper" -> simulator.createMapperApp()
         "Monitor" -> simulator.createMonitorApp()
         "UI" -> simulator.createWebClientApp()
         else -> throw UnsupportedOperationException("unknown app $app")

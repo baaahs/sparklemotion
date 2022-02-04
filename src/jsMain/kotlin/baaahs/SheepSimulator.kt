@@ -2,8 +2,6 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.io.Fs
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
 import baaahs.sim.FakeNetwork
 import baaahs.sim.FixturesSimulator
@@ -46,7 +44,6 @@ class SheepSimulator(
     }
 
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
-    fun createMapperApp(): JsMapperUi = getKoin().createScope<MapperUi>().get()
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
 
     private suspend fun cleanUpBrowserStorage(fs: Fs) {
@@ -71,7 +68,6 @@ class SheepSimulator(
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
-                launchItem("Mapper") { createMapperApp() },
                 launchItem("Monitor") { createMonitorApp() }
             )
     }
