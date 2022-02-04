@@ -27,12 +27,13 @@ val demoModelData = ModelData(
             Model.Entity.nextId(),
             20, 25, 1f, 1f
         ),
-        LightRingData("Light Ring", null,
+        LightRingData(
+            "Light Ring", null,
             Vector3F(-40f, -25f, 5f),
             EulerAngle(1.0, .5, .25),
             Vector3F.unit3d,
             Model.Entity.nextId(),
-            Vector3F.origin, 24f, Vector3F.facingForward
+            24f, Vector3F.facingForward
         )
     ),
     units = ModelUnit.Inches

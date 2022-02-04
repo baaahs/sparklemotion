@@ -259,7 +259,6 @@ class MutableGridData(
 class MutableLightRingData(
     baseLightRing: LightRingData
 ) : MutableEntity<LightRing>(baseLightRing) {
-    var center = baseLightRing.center
     var radius = baseLightRing.radius
     var planeNormal = baseLightRing.planeNormal
     var firstPixelRadians = baseLightRing.firstPixelRadians
@@ -268,13 +267,13 @@ class MutableLightRingData(
     override fun build(): EntityData =
         LightRingData(
             title, description, position, rotation, scale, id,
-            center, radius, planeNormal, firstPixelRadians, pixelDirection
+            radius, planeNormal, firstPixelRadians, pixelDirection
         )
 
-    override fun getEditorPanels() =
+    override fun getEditorPanels(): List<EntityEditorPanel<in LightRing>> =
         listOf(
             TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel
-//            custom EditorPanel(this)
+            TransformEntityEditorPanel,
+            LightRingEditorPanel
         )
 }
