@@ -33,7 +33,7 @@ val demoModelData = ModelData(
             EulerAngle(1.0, .5, .25),
             Vector3F.unit3d,
             Model.Entity.nextId(),
-            24f, Vector3F.facingForward
+            24f
         )
     ),
     units = ModelUnit.Inches

@@ -62,7 +62,6 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
         rotationEditor {
             attrs.eulerAngle = mutableEntity.rotation
-            attrs.adornment = buildElement { +"°" }
             attrs.onChange = handleRotationChange
         }
     }

@@ -119,7 +119,6 @@ private data class LightRingConfig(
             name, name,
             position = Vector3F(centerX - 7.m, centerY, 0f),
             radius = (circumference / PI).toFloat(),
-            planeNormal = Vector3F.facingForward,
             firstPixelRadians = firstPixelRadians,
             pixelDirection = pixelDirection
         )
@@ -128,7 +127,6 @@ private data class LightRingConfig(
         name, null,
         position = Vector3F(centerX - 7.m, centerY, 0f),
         radius = (circumference / PI).toFloat(),
-        planeNormal = Vector3F.facingForward,
         firstPixelRadians = firstPixelRadians.toFloat(),
         pixelDirection = pixelDirection
     )

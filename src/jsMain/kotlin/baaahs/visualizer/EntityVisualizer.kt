@@ -60,6 +60,12 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
         }
     }
 
+    override fun getLightRingEditorView(editingEntity: EditingEntity<out LightRing>): View = renderWrapper {
+        lightRingEditor {
+            attrs.editingEntity = editingEntity
+        }
+    }
+
     override fun getMovingHeadEditorView(editingEntity: EditingEntity<out MovingHead>): View = renderWrapper {
         movingHeadEditor {
             attrs.editingEntity = editingEntity

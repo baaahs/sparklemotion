@@ -45,16 +45,11 @@ class LightRingVisualizer(
     override fun update(newItem: LightRing) {
         super.update(newItem)
 
-        val normal = newItem.planeNormal
-
         val ringGeom = RingGeometry(
             innerRadius = newItem.radius - 1,
             outerRadius = newItem.radius + 1,
             thetaSegments = 16, phiSegments = 1
         )
-
-        Rotator(three_ext.vector3FacingForward, normal.toVector3())
-            .rotate(ringGeom)
 
         obj.clear()
         obj.add(ringMesh)
