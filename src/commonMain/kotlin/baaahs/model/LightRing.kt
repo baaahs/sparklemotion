@@ -22,7 +22,6 @@ class LightRing(
     override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation scale?
     override val scale: Vector3F = Vector3F.unit3d, // TODO: Represent using transformation rotation.
     val radius: Float,
-    val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
     @Transient override val id: EntityId = Model.Entity.nextId()
@@ -41,7 +40,7 @@ class LightRing(
 
     // For calculating pixel positions around a circle, given planeNormal.
     private val pixelPlotVectors by lazy {
-        val v3 = planeNormal.normalize()
+        val v3 = Vector3F.facingForward
         val v1 = Vector3F(v3.z, 0f, -v3.x).normalize()
         val v2 = v3.cross(v1)
         v1 to v2

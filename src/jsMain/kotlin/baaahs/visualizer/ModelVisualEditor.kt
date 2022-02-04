@@ -23,6 +23,10 @@ class ModelVisualEditor(
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
 
+    init {
+        realScene.autoUpdate = true
+    }
+
     private var modelData: ModelData = mutableModel.build()
     var model: Model = modelData.open()
         private set

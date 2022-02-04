@@ -46,6 +46,7 @@ interface VisualizerBuilder {
     fun getTransformEditorView(editingEntity: EditingEntity<out Model.Entity>): View
     fun getGridEditorView(editingEntity: EditingEntity<out Grid>): View
     fun getLightBarEditorView(editingEntity: EditingEntity<out LightBar>): View
+    fun getLightRingEditorView(editingEntity: EditingEntity<out LightRing>): View
     fun getMovingHeadEditorView(editingEntity: EditingEntity<out MovingHead>): View
     fun getObjModelEditorView(editingEntity: EditingEntity<out ObjGroup>): View
 }

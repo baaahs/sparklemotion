@@ -101,12 +101,7 @@
           "y": 0.5,
           "z": 0.25
         },
-        "radius": 24,
-        "planeNormal": {
-          "x": 0,
-          "y": 0,
-          "z": 1
-        }
+        "radius": 24
       },
       {
         "type": "MovingHead",

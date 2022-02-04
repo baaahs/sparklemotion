@@ -260,14 +260,13 @@ class MutableLightRingData(
     baseLightRing: LightRingData
 ) : MutableEntity<LightRing>(baseLightRing) {
     var radius = baseLightRing.radius
-    var planeNormal = baseLightRing.planeNormal
     var firstPixelRadians = baseLightRing.firstPixelRadians
     var pixelDirection = baseLightRing.pixelDirection
 
     override fun build(): EntityData =
         LightRingData(
             title, description, position, rotation, scale, id,
-            radius, planeNormal, firstPixelRadians, pixelDirection
+            radius, firstPixelRadians, pixelDirection
         )
 
     override fun getEditorPanels(): List<EntityEditorPanel<in LightRing>> =

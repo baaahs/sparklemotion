@@ -167,7 +167,6 @@ data class LightRingData(
     override val scale: Vector3F = Vector3F.unit3d,
     @Transient override val id: EntityId = Model.Entity.nextId(),
     val radius: Float = 1f,
-    val planeNormal: Vector3F = Vector3F.facingForward,
     val firstPixelRadians: Float = 0f,
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
 ) : EntityData {
@@ -175,7 +174,10 @@ data class LightRingData(
         MutableLightRingData(this)
 
     override fun open(): Model.Entity =
-        LightRing(title, description, position, rotation, scale, radius, planeNormal, firstPixelRadians, pixelDirection, id)
+        LightRing(
+            title, description, position, rotation, scale, radius, firstPixelRadians,
+            pixelDirection, id
+        )
 }
 
 /** For use only in tests for now! */
