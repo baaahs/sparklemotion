@@ -27,16 +27,18 @@ interface Dmx {
     class Buffer(
         private val channels: ByteArray,
         private val baseChannel: Int = 0,
-        val channelCount: Int = channels.size
+        private val channelCount: Int = channels.size
     ) {
-        operator fun get(channel: Channel): Byte = get(channel.offset)
+        operator fun get(channel: Channel): Byte =
+            get(channel.offset)
 
         operator fun get(index: Int): Byte {
             boundsCheck(index)
             return channels[baseChannel + index]
         }
 
-        operator fun set(channel: Channel, value: Byte) = set(channel.offset, value)
+        operator fun set(channel: Channel, value: Byte) =
+            set(channel.offset, value)
 
         operator fun set(index: Int, value: Byte) {
             boundsCheck(index)

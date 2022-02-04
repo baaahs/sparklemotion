@@ -43,16 +43,20 @@ class RemoteVisualizerClient(
 
     init {
         sceneManager.facade.addObserver(fireImmediately = true) {
+            visualizer.facade.clear()
+
             val openScene = sceneManager.facade.openScene
-            fixtureSimulations = openScene?.let { scene ->
-                scene.model.allEntities.mapNotNull { entity ->
-                    entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { simulation ->
-                        val entityVisualizer = simulation.itemVisualizer
-                        visualizer.add(entityVisualizer)
-                        entity.name to simulation
+            fixtureSimulations = buildMap {
+                openScene?.let { scene ->
+                    scene.model.visit { entity ->
+                        entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { simulation ->
+                            val entityVisualizer = simulation.itemVisualizer
+                            visualizer.add(entityVisualizer)
+                            put(entity.name, simulation)
+                        }
                     }
-                }.associate { it }
-            } ?: emptyMap()
+                }
+            }
         }
 
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)
