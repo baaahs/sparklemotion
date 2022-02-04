@@ -3,7 +3,6 @@ package baaahs.app.ui.model
 import baaahs.app.ui.appContext
 import baaahs.model.EntityData
 import baaahs.model.Model
-import baaahs.scene.EditingEntity
 import baaahs.scene.MutableEntity
 import baaahs.scene.MutableScene
 import baaahs.sim.FakeDmxUniverse
@@ -74,7 +73,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
 
-    val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity<*>? ->
+    val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity? ->
         visualizer.selectedEntity =
             mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
         lastSelectedEntity.current = mutableEntity?.id?.let { visualizer.model.findEntityById(it) }
@@ -102,18 +101,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
     useResizeListener(visualizerParentEl) {
         visualizer.resize()
-    }
-
-    fun <T : Model.Entity> EditingEntity<T>.renderEditorPanels(builder: RBuilder) {
-        val entity = this@renderEditorPanels
-
-        with(mutableEntity) {
-            with (builder) {
-                getEditorPanels().forEach { editorPanel ->
-                    with (editorPanel.getView(entity)) { render() }
-                }
-            }
-        }
     }
 
     paper(styles.editorPanes on PaperStyle.root) {
@@ -158,7 +145,10 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                     editingEntity.let {
                         formControl {
                             attrs.margin = FormControlMargin.dense
-                            it.renderEditorPanels(this)
+
+                            editingEntity.getEditorPanelViews().forEach {
+                                with(it) { render() }
+                            }
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
-import baaahs.model.*
-import baaahs.scene.EditingEntity
+import baaahs.model.Model
+import baaahs.scene.*
 import baaahs.ui.IObservable
 import baaahs.ui.View
 
@@ -42,13 +42,13 @@ interface ItemVisualizer<T: Any> : IObservable {
 }
 
 interface VisualizerBuilder {
-    fun getTitleAndDescEditorView(editingEntity: EditingEntity<out Model.Entity>): View
-    fun getTransformEditorView(editingEntity: EditingEntity<out Model.Entity>): View
-    fun getGridEditorView(editingEntity: EditingEntity<out Grid>): View
-    fun getLightBarEditorView(editingEntity: EditingEntity<out LightBar>): View
-    fun getLightRingEditorView(editingEntity: EditingEntity<out LightRing>): View
-    fun getMovingHeadEditorView(editingEntity: EditingEntity<out MovingHead>): View
-    fun getObjModelEditorView(editingEntity: EditingEntity<out ObjGroup>): View
+    fun getTitleAndDescEditorView(editingEntity: EditingEntity<out MutableEntity>): View
+    fun getTransformEditorView(editingEntity: EditingEntity<out MutableEntity>): View
+    fun getGridEditorView(editingEntity: EditingEntity<out MutableGridData>): View
+    fun getLightBarEditorView(editingEntity: EditingEntity<out MutableLightBarData>): View
+    fun getLightRingEditorView(editingEntity: EditingEntity<out MutableLightRingData>): View
+    fun getMovingHeadEditorView(editingEntity: EditingEntity<out MutableMovingHeadData>): View
+    fun getObjModelEditorView(editingEntity: EditingEntity<out MutableObjModel>): View
 }
 
 expect val visualizerBuilder: VisualizerBuilder

@@ -2,7 +2,6 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.getBang
-import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableMovingHeadData
@@ -27,7 +26,7 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val mutableEntity = props.editingEntity.mutableEntity as MutableMovingHeadData
+    val mutableEntity = props.editingEntity.mutableEntity
 
     val handleAdapterChange by eventHandler(mutableEntity) {
         mutableEntity.adapter = MovingHeadAdapter.all.getBang(it.target.value, "adapter") as MovingHeadAdapter
@@ -59,7 +58,7 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
 }
 
 external interface MovingHeadEditorProps : Props {
-    var editingEntity: EditingEntity<out MovingHead>
+    var editingEntity: EditingEntity<out MutableMovingHeadData>
 }
 
 fun RBuilder.movingHeadEditor(handler: RHandler<MovingHeadEditorProps>) =

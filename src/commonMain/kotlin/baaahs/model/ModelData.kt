@@ -44,7 +44,7 @@ sealed interface EntityData {
     val scale: Vector3F
     @Transient val id: EntityId
 
-    fun edit(): MutableEntity<*>
+    fun edit(): MutableEntity
     fun open(): Model.Entity
 }
 
@@ -61,7 +61,7 @@ data class ObjModelData(
     @Polymorphic
     val metadata: EntityMetadataProvider? = null
 ) : EntityData {
-    override fun edit(): MutableEntity<ObjGroup> = MutableObjModel(this)
+    override fun edit(): MutableEntity = MutableObjModel(this)
 
     override fun open(): ObjGroup =
         ObjGroup(title, description, position, rotation, scale, metadata, objData, objDataIsFileRef, id)
@@ -80,7 +80,7 @@ data class MovingHeadData(
     val adapter: MovingHeadAdapter = Shenzarpy
 
 ) : EntityData {
-    override fun edit(): MutableEntity<MovingHead> =
+    override fun edit(): MutableEntity =
         MutableMovingHeadData(this)
 
     override fun open(): Model.Entity =
@@ -98,7 +98,7 @@ data class LightBarData(
     val startVertex: Vector3F,
     val endVertex: Vector3F
 ) : EntityData {
-    override fun edit(): MutableEntity<LightBar> =
+    override fun edit(): MutableEntity =
         MutableLightBarData(this)
 
     override fun open(): Model.Entity =
@@ -115,7 +115,7 @@ data class PolyLineData(
     @Transient override val id: EntityId = Model.Entity.nextId(),
     val segments: List<SegmentData>
 ) : EntityData {
-    override fun edit(): MutableEntity<PolyLine> =
+    override fun edit(): MutableEntity =
         MutablePolyLineData(this)
 
     override fun open(): Model.Entity =
@@ -139,7 +139,7 @@ data class GridData(
     val direction: Direction = Direction.ColumnsThenRows,
     val zigZag: Boolean = false
 ) : EntityData {
-    override fun edit(): MutableEntity<Grid> = MutableGridData(this)
+    override fun edit(): MutableEntity = MutableGridData(this)
 
     enum class Direction(val title: String) {
         ColumnsThenRows("Columns then Rows"),
@@ -170,7 +170,7 @@ data class LightRingData(
     val firstPixelRadians: Float = 0f,
     val pixelDirection: LightRing.PixelDirection = LightRing.PixelDirection.Clockwise
 ) : EntityData {
-    override fun edit(): MutableEntity<LightRing> =
+    override fun edit(): MutableEntity =
         MutableLightRingData(this)
 
     override fun open(): Model.Entity =
@@ -192,7 +192,7 @@ data class SurfaceDataForTest(
     val expectedPixelCount: Int? = null,
     val vertices: List<Vector3F> = emptyList()
 ) : EntityData {
-    override fun edit(): MutableEntity<LightRing> =
+    override fun edit(): MutableEntity =
         TODO("MutableSurfaceDataForTest not implemented yet!")
 
     override fun open(): Model.Entity =

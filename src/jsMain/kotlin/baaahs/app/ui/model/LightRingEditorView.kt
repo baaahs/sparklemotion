@@ -25,7 +25,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val mutableEntity = props.editingEntity.mutableEntity as MutableLightRingData
+    val mutableEntity = props.editingEntity.mutableEntity
 
     val handleRadiusChange by handler(mutableEntity) { radius: Float ->
         mutableEntity.radius = radius
@@ -85,7 +85,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
 }
 
 external interface LightRingEditorProps : Props {
-    var editingEntity: EditingEntity<out LightRing>
+    var editingEntity: EditingEntity<out MutableLightRingData>
 }
 
 fun RBuilder.lightRingEditor(handler: RHandler<LightRingEditorProps>) =

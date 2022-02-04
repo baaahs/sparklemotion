@@ -1,7 +1,6 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
-import baaahs.model.Grid
 import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
@@ -29,7 +28,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val mutableEntity = props.editingEntity.mutableEntity as MutableGridData
+    val mutableEntity = props.editingEntity.mutableEntity
 
     val handleDirectionChange by eventHandler(mutableEntity) {
         mutableEntity.direction = GridData.Direction.valueOf(it.target.value)
@@ -111,7 +110,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 }
 
 external interface GridEditorProps : Props {
-    var editingEntity: EditingEntity<out Grid>
+    var editingEntity: EditingEntity<out MutableGridData>
 }
 
 fun RBuilder.gridEditor(handler: RHandler<GridEditorProps>) =

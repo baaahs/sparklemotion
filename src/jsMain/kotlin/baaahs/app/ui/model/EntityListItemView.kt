@@ -45,9 +45,9 @@ private val EntityListItemView: FunctionComponent<EntityListItemProps> = xCompon
 }
 
 external interface EntityListItemProps : Props {
-    var mutableEntity: MutableEntity<*>
-    var selectedMutableEntity: MutableEntity<*>?
-    var onSelect: (MutableEntity<*>) -> Unit
+    var mutableEntity: MutableEntity
+    var selectedMutableEntity: MutableEntity?
+    var onSelect: (MutableEntity) -> Unit
 }
 
 fun RBuilder.entityListItem(handler: RHandler<EntityListItemProps>) =
