@@ -9,6 +9,7 @@ import baaahs.model.*
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.ui.Observable
+import baaahs.ui.View
 import baaahs.visualizer.ItemVisualizer
 
 class MutableScene(
@@ -51,19 +52,19 @@ class MutableModel(baseModel: ModelData) {
         return ModelData(title, entities.map { it.build() }, units)
     }
 
-    fun findById(id: EntityId): MutableEntity<*>? =
+    fun findById(id: EntityId): MutableEntity? =
         entities.firstNotNullOfOrNull { it.findById(id) }
 
 }
 
-abstract class MutableEntity<T : Model.Entity>(
+abstract class MutableEntity(
     override var title: String,
     var description: String?,
     var position: Vector3F,
     var rotation: EulerAngle,
     var scale: Vector3F,
     val id: EntityId
-) : MutableEditable<T> {
+) : MutableEditable<Model.Entity> {
     constructor(baseEntity: EntityData) : this(
         baseEntity.title, baseEntity.description,
         baseEntity.position, baseEntity.rotation, baseEntity.scale,
@@ -72,16 +73,17 @@ abstract class MutableEntity<T : Model.Entity>(
 
     abstract fun build(): EntityData
 
-    open fun findById(id: EntityId): MutableEntity<*>? =
+    open fun findById(id: EntityId): MutableEntity? =
         if (this.id == id) this else null
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> =
         emptyList()
-    abstract fun getEditorPanels(): List<EntityEditorPanel<in T>>
+
+    abstract fun getEditorPanels(): List<EntityEditorPanel<out MutableEntity>>
 }
 
-class EditingEntity<T : Model.Entity>(
-    val mutableEntity: MutableEntity<T>,
+class EditingEntity<T : MutableEntity>(
+    val mutableEntity: T,
     val modelUnit: ModelUnit,
     val itemVisualizer: ItemVisualizer<*>,
     private val onChange: () -> Unit
@@ -119,11 +121,14 @@ class EditingEntity<T : Model.Entity>(
             println("Ignoring onChange() of unchanged ${mutableEntity.title}")
         }
     }
+
+    fun getEditorPanelViews(): List<View> =
+        mutableEntity.getEditorPanels().map { it.getView(this as EditingEntity<Nothing>) }
 }
 
 class MutableObjModel(
     baseObjModel: ObjModelData
-) : MutableEntity<ObjGroup>(baseObjModel), MutableGroupEntity {
+) : MutableEntity(baseObjModel), MutableGroupEntity {
     var objData: String = baseObjModel.objData
         set(value) { field = value; loader = null }
 
@@ -151,28 +156,26 @@ class MutableObjModel(
             null
         }
 
-    override val children: MutableList<MutableEntity<*>> get() =
+    override val children: MutableList<MutableEntity> get() =
         (getLoader()?.allEntities ?: emptyList()).map {
-            object : MutableEntity<Model.Surface>(it.title, null, Vector3F.origin, EulerAngle.identity, Vector3F.origin, Model.Entity.nextId()) {
+            object : MutableEntity(it.title, null, Vector3F.origin, EulerAngle.identity, Vector3F.origin, Model.Entity.nextId()) {
                 override fun build(): EntityData {
                     return SurfaceDataForTest(it.title)
                 }
 
-                override fun getEditorPanels(): List<EntityEditorPanel<in Model.Surface>> {
-                    return emptyList()
-                }
+                override fun getEditorPanels(): List<EntityEditorPanel<in MutableEntity>> =
+                    emptyList()
             }
         }.toMutableList()
 
     override fun build(): ObjModelData =
         ObjModelData(title, description, position, rotation, scale, id, objData, objDataIsFileRef, metadata)
 
-    override fun getEditorPanels(): List<EntityEditorPanel<in ObjGroup>> =
-        listOf(
-            TitleAndDescEntityEditorPanel,
-            TransformEntityEditorPanel,
-            ObjModelEntityEditorPanel
-        )
+    override fun getEditorPanels() = listOf(
+        TitleAndDescEntityEditorPanel,
+        TransformEntityEditorPanel,
+        ObjModelEntityEditorPanel
+    )
 
     fun reloadFile() {
         loader = null
@@ -182,19 +185,19 @@ class MutableObjModel(
 }
 
 interface MutableGroupEntity {
-    val children: MutableList<MutableEntity<*>>
+    val children: MutableList<MutableEntity>
 }
 
 class MutableMovingHeadData(
     baseMovingHeadData: MovingHeadData
-) : MutableEntity<MovingHead>(baseMovingHeadData) {
+) : MutableEntity(baseMovingHeadData) {
     var baseDmxChannel: Int = baseMovingHeadData.baseDmxChannel
     var adapter: MovingHeadAdapter = baseMovingHeadData.adapter
 
     override fun build(): EntityData =
         MovingHeadData(title, description, position, rotation, scale, id, baseDmxChannel, adapter)
 
-    override fun getEditorPanels(): List<EntityEditorPanel<in MovingHead>> =
+    override fun getEditorPanels() =
         listOf(
             TitleAndDescEntityEditorPanel,
             TransformEntityEditorPanel,
@@ -204,14 +207,14 @@ class MutableMovingHeadData(
 
 class MutableLightBarData(
     baseLightBar: LightBarData
-) : MutableEntity<LightBar>(baseLightBar) {
+) : MutableEntity(baseLightBar) {
     var startVertex = baseLightBar.startVertex
     var endVertex = baseLightBar.endVertex
 
     override fun build(): EntityData =
         LightBarData(title, description, position, rotation, scale, id, startVertex, endVertex)
 
-    override fun getEditorPanels(): List<EntityEditorPanel<in LightBar>> =
+    override fun getEditorPanels() =
         listOf(
             TitleAndDescEntityEditorPanel,
             TransformEntityEditorPanel,
@@ -221,7 +224,7 @@ class MutableLightBarData(
 
 class MutablePolyLineData(
     basePolyLine: PolyLineData
-) : MutableEntity<PolyLine>(basePolyLine) {
+) : MutableEntity(basePolyLine) {
     var segments = basePolyLine.segments
 
     override fun build(): EntityData =
@@ -237,7 +240,7 @@ class MutablePolyLineData(
 
 class MutableGridData(
     baseGridData: GridData
-) : MutableEntity<Grid>(baseGridData) {
+) : MutableEntity(baseGridData) {
     var rows = baseGridData.rows
     var columns = baseGridData.columns
     var rowGap = baseGridData.rowGap
@@ -248,7 +251,7 @@ class MutableGridData(
     override fun build(): EntityData =
         GridData(title, description, position, rotation, scale, id, rows, columns, rowGap, columnGap, direction, zigZag)
 
-    override fun getEditorPanels(): List<EntityEditorPanel<in Grid>> =
+    override fun getEditorPanels() =
         listOf(
             TitleAndDescEntityEditorPanel,
             TransformEntityEditorPanel,
@@ -258,7 +261,7 @@ class MutableGridData(
 
 class MutableLightRingData(
     baseLightRing: LightRingData
-) : MutableEntity<LightRing>(baseLightRing) {
+) : MutableEntity(baseLightRing) {
     var radius = baseLightRing.radius
     var firstPixelRadians = baseLightRing.firstPixelRadians
     var pixelDirection = baseLightRing.pixelDirection
@@ -269,7 +272,7 @@ class MutableLightRingData(
             radius, firstPixelRadians, pixelDirection
         )
 
-    override fun getEditorPanels(): List<EntityEditorPanel<in LightRing>> =
+    override fun getEditorPanels() =
         listOf(
             TitleAndDescEntityEditorPanel,
             TransformEntityEditorPanel,

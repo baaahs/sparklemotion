@@ -2,7 +2,6 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.geom.Vector3F
-import baaahs.model.LightBar
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightBarData
 import baaahs.ui.on
@@ -17,7 +16,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val mutableEntity = props.editingEntity.mutableEntity as MutableLightBarData
+    val mutableEntity = props.editingEntity.mutableEntity
 
     val handleStartVertexChange by handler(mutableEntity) { position: Vector3F ->
         mutableEntity.startVertex = position
@@ -70,7 +69,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
 }
 
 external interface LightBarEditorProps : Props {
-    var editingEntity: EditingEntity<out LightBar>
+    var editingEntity: EditingEntity<out MutableLightBarData>
 }
 
 fun RBuilder.lightBarEditor(handler: RHandler<LightBarEditorProps>) =

@@ -1,48 +1,47 @@
 package baaahs.scene
 
-import baaahs.model.*
 import baaahs.ui.Icon
 import baaahs.ui.View
 import baaahs.visualizer.visualizerBuilder
 
-abstract class EntityEditorPanel<T : Model.Entity>(
+abstract class EntityEditorPanel<T : MutableEntity>(
     val title: String? = null,
     val icon: Icon? = null
 ) {
     abstract fun getView(editingEntity: EditingEntity<out T>): View
 }
 
-object TitleAndDescEntityEditorPanel : EntityEditorPanel<Model.Entity>() {
-    override fun getView(editingEntity: EditingEntity<out Model.Entity>): View =
+object TitleAndDescEntityEditorPanel : EntityEditorPanel<MutableEntity>() {
+    override fun getView(editingEntity: EditingEntity<out MutableEntity>): View =
         visualizerBuilder.getTitleAndDescEditorView(editingEntity)
 }
 
-object TransformEntityEditorPanel : EntityEditorPanel<Model.Entity>("Transformation") {
-    override fun getView(editingEntity: EditingEntity<out Model.Entity>): View =
+object TransformEntityEditorPanel : EntityEditorPanel<MutableEntity>("Transformation") {
+    override fun getView(editingEntity: EditingEntity<out MutableEntity>): View =
         visualizerBuilder.getTransformEditorView(editingEntity)
 }
 
-object GridEditorPanel : EntityEditorPanel<Grid>("Grid") {
-    override fun getView(editingEntity: EditingEntity<out Grid>): View =
+object GridEditorPanel : EntityEditorPanel<MutableGridData>("Grid") {
+    override fun getView(editingEntity: EditingEntity<out MutableGridData>): View =
         visualizerBuilder.getGridEditorView(editingEntity)
 }
 
-object LightBarEditorPanel : EntityEditorPanel<LightBar>("Light Bar") {
-    override fun getView(editingEntity: EditingEntity<out LightBar>): View =
+object LightBarEditorPanel : EntityEditorPanel<MutableLightBarData>("Light Bar") {
+    override fun getView(editingEntity: EditingEntity<out MutableLightBarData>): View =
         visualizerBuilder.getLightBarEditorView(editingEntity)
 }
 
-object LightRingEditorPanel : EntityEditorPanel<LightRing>("Light Ring") {
-    override fun getView(editingEntity: EditingEntity<out LightRing>): View =
+object LightRingEditorPanel : EntityEditorPanel<MutableLightRingData>("Light Ring") {
+    override fun getView(editingEntity: EditingEntity<out MutableLightRingData>): View =
         visualizerBuilder.getLightRingEditorView(editingEntity)
 }
 
-object MovingHeadEditorPanel : EntityEditorPanel<MovingHead>("Moving Head") {
-    override fun getView(editingEntity: EditingEntity<out MovingHead>): View =
+object MovingHeadEditorPanel : EntityEditorPanel<MutableMovingHeadData>("Moving Head") {
+    override fun getView(editingEntity: EditingEntity<out MutableMovingHeadData>): View =
         visualizerBuilder.getMovingHeadEditorView(editingEntity)
 }
 
-object ObjModelEntityEditorPanel : EntityEditorPanel<ObjGroup>("Import") {
-    override fun getView(editingEntity: EditingEntity<out ObjGroup>): View =
+object ObjModelEntityEditorPanel : EntityEditorPanel<MutableObjModel>("Import") {
+    override fun getView(editingEntity: EditingEntity<out MutableObjModel>): View =
         visualizerBuilder.getObjModelEditorView(editingEntity)
 }

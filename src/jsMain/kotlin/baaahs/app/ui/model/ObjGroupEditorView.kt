@@ -2,7 +2,6 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
-import baaahs.model.ObjGroup
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableObjModel
 import baaahs.ui.on
@@ -33,7 +32,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val mutableEntity = props.editingEntity.mutableEntity as MutableObjModel
+    val mutableEntity = props.editingEntity.mutableEntity
 
     val handleIsFileClick by eventHandler(mutableEntity, props.editingEntity) {
         mutableEntity.objDataIsFileRef = (it.target as HTMLInputElement).checked
@@ -106,7 +105,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 }
 
 external interface ObjGroupEditorProps : Props {
-    var editingEntity: EditingEntity<out ObjGroup>
+    var editingEntity: EditingEntity<out MutableObjModel>
 }
 
 fun RBuilder.objGroupEditor(handler: RHandler<ObjGroupEditorProps>) =
