@@ -100,10 +100,8 @@ class EditingEntity<T : MutableEntity>(
         if (
             position != mutableEntity.position
             || rotation != mutableEntity.rotation
-            || scale != mutableEntity.scale)
-        {
-            println("onTransformationChange ${mutableEntity.title} position = $position")
-
+            || scale != mutableEntity.scale
+        ) {
             mutableEntity.position = position
             mutableEntity.rotation = rotation
             mutableEntity.scale = scale
@@ -117,8 +115,6 @@ class EditingEntity<T : MutableEntity>(
             onChange.invoke()
 
             lastEntityData = newEntityData
-        } else {
-            println("Ignoring onChange() of unchanged ${mutableEntity.title}")
         }
     }
 
