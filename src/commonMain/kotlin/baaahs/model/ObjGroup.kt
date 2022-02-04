@@ -60,7 +60,7 @@ class ObjGroup(
         override val itemVisualizer: ItemVisualizer<*> = createVisualizer(adapter)
         override val previewFixture: Fixture? get() = null
 
-        override fun launch() {
+        override fun start() {
             // No-op.
         }
     }

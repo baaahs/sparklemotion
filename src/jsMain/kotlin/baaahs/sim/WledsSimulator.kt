@@ -26,7 +26,7 @@ class WledsSimulator(
         val fakeWledDevice = FakeWledDevice(link, id, vizPixels)
         fakeWledDevices.add(fakeWledDevice)
 
-        wledScope.launch { randomDelay(1000); fakeWledDevice.run() }
+        wledScope.launch { randomDelay(1000); fakeWledDevice.start() }
 
         return fakeWledDevice
     }
@@ -36,14 +36,21 @@ class WledsSimulator(
     }
 }
 
-class FakeWledDevice(link: FakeNetwork.FakeLink, val id: String, val pixels: Pixels) {
-    init {
-        link.mdns.register(id, "_wled", "_tcp", 80)
+class FakeWledDevice(
+    private val link: FakeNetwork.FakeLink,
+    val id: String,
+    val pixels: Pixels
+) {
+    private lateinit var mdnsService: Network.MdnsRegisteredService
+    private lateinit var udpSocket: Network.UdpSocket
+
+    fun start() {
+        mdnsService = link.mdns.register(id, "_wled", "_tcp", 80)
 
         val fakeHttpServer = link.startHttpServer(80) as FakeNetwork.FakeLink.FakeHttpServer
 
         fakeHttpServer.httpGetResponses["json"] =
-            /** language=json*/
+                /** language=json*/
             """
               {
                 "state": {
@@ -67,7 +74,7 @@ class FakeWledDevice(link: FakeNetwork.FakeLink, val id: String, val pixels: Pix
               }
             """.trimIndent().encodeToByteArray()
 
-        link.listenUdp(SacnLink.sAcnPort, object : Network.UdpListener {
+        udpSocket = link.listenUdp(SacnLink.sAcnPort, object : Network.UdpListener {
             override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 val dataFrame = SacnLink.readDataFrame(bytes)
                 val channelOffset = (dataFrame.universe - 1) * SacnManager.channelsPerUniverse
@@ -86,7 +93,8 @@ class FakeWledDevice(link: FakeNetwork.FakeLink, val id: String, val pixels: Pix
         })
     }
 
-    fun run() {
-        // No-op.
+    fun stop() {
+//        link.close(udpSocket)
+        link.mdns.unregister(mdnsService)
     }
 }

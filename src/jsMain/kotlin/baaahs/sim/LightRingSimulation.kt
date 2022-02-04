@@ -58,8 +58,12 @@ actual class LightRingSimulation actual constructor(
         )
     }
 
-    override fun launch() {
-        wledSimulator.run()
+    override fun start() {
+        wledSimulator.start()
+    }
+
+    override fun stop() {
+        wledSimulator.stop()
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {

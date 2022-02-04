@@ -7,8 +7,10 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
+import baaahs.randomDelay
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.sim.BrainSimulatorManager
+import baaahs.util.globalLaunch
 import baaahs.visualizer.*
 import three_ext.toVector3F
 
@@ -59,8 +61,15 @@ actual class BrainSurfaceSimulation actual constructor(
         )
     }
 
-    override fun launch() {
-        brain.run {}
+    override fun start() {
+        globalLaunch {
+            randomDelay(1000)
+            brain.start()
+        }
+    }
+
+    override fun stop() {
+        brain.stop()
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {

@@ -44,9 +44,6 @@ actual class MovingHeadSimulation actual constructor(
         )
     }
 
-    override fun launch() {
-    }
-
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         val channelCount = reader.readShort().toInt()
         repeat(channelCount) { i ->
