@@ -136,8 +136,17 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     }
 
     val title by css {
-        display = Display.flex
-        flexDirection = FlexDirection.row
+        display = Display.inlineBlock
+    }
+
+    val titleHeader by css {
+        position = Position.absolute
+        top = 0.em
+        fontSize = .6.em
+    }
+
+    val inactive by css {
+
     }
 
     val problemBadge by css {

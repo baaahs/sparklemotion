@@ -43,12 +43,12 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 
     var showModifiedWarning by state { false }
 
-    val handleFormSubmit = callback { _: Event ->
+    val handleFormSubmit = callback(props.editableManager) { _: Event ->
         if (props.editableManager.isModified()) {
             props.editableManager.applyChanges()
         }
     }
-    val handleDrawerClose = callback { _: Event ->
+    val handleDrawerClose = callback(props.editableManager) { _: Event ->
         if (props.editableManager.isModified()) {
             showModifiedWarning = true
         } else {
@@ -56,11 +56,11 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
         }
     }
 
-    val handleUndo = callback { _: Event -> props.editableManager.undo() }
-    val handleRedo = callback { _: Event -> props.editableManager.redo() }
+    val handleUndo = callback(props.editableManager) { _: Event -> props.editableManager.undo() }
+    val handleRedo = callback(props.editableManager) { _: Event -> props.editableManager.redo() }
 
-    val handleClose = callback { _: Event -> props.editableManager.close() }
-    val handleApply = callback { _: Event -> props.editableManager.applyChanges() }
+    val handleClose = callback(props.editableManager) { _: Event -> props.editableManager.close() }
+    val handleApply = callback(props.editableManager) { _: Event -> props.editableManager.applyChanges() }
 
     val editorPanels = props.editableManager.dialogPanels
     val selectedPanel = props.editableManager.selectedPanel
@@ -159,7 +159,7 @@ val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") 
 }
 
 external interface EditableManagerUiProps : Props {
-    var editableManager: ShowEditableManager
+    var editableManager: EditableManager<*>
 }
 
 fun RBuilder.editableManagerUi(handler: RHandler<EditableManagerUiProps>) =

@@ -22,13 +22,13 @@ class MutableScene(
     val fixtures = baseScene.fixtures
         .map { data -> MutableFixture(data) }.toMutableList()
 
-    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
-        TODO("not implemented")
-    }
-
-    override fun isChanged(originalDocument: Scene): Boolean {
-        TODO("not implemented")
-    }
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = listOf(
+        ScenePropertiesEditorPanel(
+            editableManager,
+            SceneTitlePropsEditor(this),
+            ModelUnitsPropsEditor(this)
+        )
+    )
 
     override fun build(): Scene {
         return Scene(

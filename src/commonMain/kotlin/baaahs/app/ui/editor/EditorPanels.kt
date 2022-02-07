@@ -6,6 +6,7 @@ import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
+import baaahs.scene.MutableScene
 import baaahs.show.live.ShaderInstanceResolver
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
@@ -27,8 +28,6 @@ data class GenericPropertiesEditorPanel(
 
     override val title: String
         get() = "Properties"
-    override val listSubhead: String?
-        get() = null
     override val icon: Icon
         get() = CommonIcons.Settings
 
@@ -42,8 +41,6 @@ data class PatchHolderEditorPanel(
 ) : DialogPanel {
     override val title: String
         get() = "Patches"
-    override val listSubhead: String?
-        get() = null
     override val icon: Icon
         get() = CommonIcons.Patch
 
@@ -157,6 +154,9 @@ interface EditorPanelViews {
     fun forVisualizer(editableManager: EditableManager<*>, mutableVisualizerControl: MutableVisualizerControl): View
 
     fun forTitleComponent(editableManager: EditableManager<*>, mutablePatchHolder: MutablePatchHolder): View
+
+    fun forSceneTitleComponent(editableManager: EditableManager<*>, mutableScene: MutableScene): View
+    fun forModelUnitsComponent(editableManager: EditableManager<*>, mutableScene: MutableScene): View
 }
 
 val editorPanelViews by lazy { getEditorPanelViews() }

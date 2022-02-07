@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.settings.UiSettings
+import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
@@ -68,7 +69,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    var appMode by state { AppMode.Scene }
+    var appMode by state { AppMode.Show }
     val handleAppModeChange by handler { newAppMode: AppMode ->
         appMode = newAppMode
     }
@@ -77,11 +78,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
-    val editableManager by state {
-        ShowEditableManager { newShow ->
-            showManager.onEdit(newShow)
-        }
-    }
+    val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
+    val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jsObject<AppContext> {
@@ -103,6 +101,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 editableManager.openEditor(
                     showManager.show!!, editIntent, webClient.toolchain.withCache("Edit Session")
                 )
+            }
+
+            this.openSceneEditor = { editIntent ->
+                sceneEditableManager.openEditor(sceneManager.scene!!, editIntent)
             }
 
             this.sceneEditorClient = props.sceneEditorClient
@@ -296,7 +298,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 renderDialog?.invoke(this)
 
                 editableManagerUi {
-                    attrs.editableManager = editableManager
+                    attrs.editableManager =
+                        when (appMode) {
+                            AppMode.Show -> editableManager
+                            AppMode.Scene -> sceneEditableManager
+                        }
                 }
 
                 prompt?.let {

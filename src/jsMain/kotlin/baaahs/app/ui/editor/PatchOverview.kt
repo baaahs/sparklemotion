@@ -85,7 +85,7 @@ val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
         newPatchMenuAnchor = null
         showShaderLibraryDialog = true
     }
-    val handleShaderLibrarySelect = callback { shader: Shader? ->
+    val handleShaderLibrarySelect = callback(props.mutablePatch, props.editableManager) { shader: Shader? ->
         showShaderLibraryDialog = false
 
         if (shader != null) {

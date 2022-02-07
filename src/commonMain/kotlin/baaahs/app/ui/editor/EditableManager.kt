@@ -10,6 +10,8 @@ import kotlin.math.max
 abstract class EditableManager<T>(
     private val onApply: (T) -> Unit
 ) : Facade() {
+    abstract val uiTitle: String
+
     internal val undoStack = UndoStack<DocAndEditIntent<T>>()
     private var appliedDocument: T? = null
     internal var session: Session? = null

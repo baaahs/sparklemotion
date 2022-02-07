@@ -6,8 +6,8 @@ import baaahs.ui.View
 
 interface DialogPanel {
     val title: String
-    val listSubhead: String?
-    val icon: Icon?
+    val listSubhead: String? get() = null
+    val icon: Icon? get() = null
     val problemLevel: Severity? get() = null
 
     fun getNestedDialogPanels(): List<DialogPanel> = emptyList()
