@@ -7,6 +7,9 @@ import baaahs.show.mutable.MutableDocument
 class SceneEditableManager(
     onApply: (Scene) -> Unit
 ) : EditableManager<Scene>(onApply) {
+    override val uiTitle: String
+        get() = (session?.mutableDocument as? MutableScene)?.title ?: ""
+
     fun openEditor(baseDocument: Scene, editIntent: EditIntent) {
         val session = SceneSession(baseDocument, MutableScene(baseDocument), editIntent)
         openEditor(session)

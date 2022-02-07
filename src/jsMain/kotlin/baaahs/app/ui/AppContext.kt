@@ -40,6 +40,7 @@ external interface AppContext {
     var notifier: Notifier.Facade
 
     var openEditor: (EditIntent) -> Unit
+    var openSceneEditor: (EditIntent) -> Unit
 
     // Scene editing:
     var sceneEditorClient: SceneEditorClient.Facade

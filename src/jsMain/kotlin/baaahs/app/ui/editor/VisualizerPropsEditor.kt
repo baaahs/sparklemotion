@@ -53,7 +53,7 @@ private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("Visu
                     attrs.value(props.mutableVisualizerControl.rotate)
                     attrs.onChangeFunction = {
                         val value = (it.target as HTMLInputElement).value
-                        props.mutableVisualizerControl.rotate = value.asDynamic()
+                        props.mutableVisualizerControl.rotate = value.toBoolean()
                         props.editableManager.onChange()
                     }
                 }

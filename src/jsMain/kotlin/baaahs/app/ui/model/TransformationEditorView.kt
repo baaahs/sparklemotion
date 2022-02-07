@@ -8,15 +8,12 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.on
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
-import kotlinx.css.em
-import kotlinx.css.fontSize
 import kotlinx.html.unsafe
 import materialui.components.container.container
 import materialui.components.container.enums.ContainerStyle
 import react.*
 import react.dom.header
 import react.dom.span
-import styled.inlineStyles
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
     val appContext = useContext(appContext)
@@ -73,8 +70,8 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
             attrs.vector3F = mutableEntity.scale
             attrs.adornment = buildElement {
                 span {
-                    inlineStyles { fontSize = .7.em }
-                    attrs.unsafe { +"&#x2715;" }
+//                    attrs.entity(Entities.times)
+                    attrs.unsafe { +"&#xd7;" }
                 }
             }
             attrs.onChange = handleScaleChange

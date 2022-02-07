@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.problemBadge
+import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
@@ -31,10 +32,7 @@ import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.b
-import react.dom.div
-import react.dom.h4
-import react.dom.i
+import react.dom.*
 import react.useContext
 import styled.inlineStyles
 
@@ -52,6 +50,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
+    }
+    val handleSceneEditButtonClick = callback {
+        appContext.openSceneEditor(SceneEditIntent())
     }
 
     val handleUndo by eventHandler(documentManager) { documentManager.undo() }
@@ -89,26 +90,32 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
             }
 
             typographyH6(themeStyles.title on TypographyStyle.root) {
-                show?.let {
+                div(+themeStyles.titleHeader) { +"Show:" }
+
+                if (show != null) {
                     b {
                         +show.title
                         showManager.file?.let { attrs["title"] = it.toString() }
                     }
-                    if (showManager.isUnsaved) i { +" (Unsaved)" }
 
+                    if (showManager.isUnsaved) i { +" (Unsaved)" }
                     problemBadge(show, themeStyles.problemBadge)
 
                     if (props.appMode == AppMode.Show && editMode) {
-                        div(+themeStyles.editButton) {
+                        span(+themeStyles.editButton) {
                             icon(materialui.icons.Edit)
                             attrs.onClickFunction = handleShowEditButtonClick.withEvent()
                         }
                     }
+                } else {
+                    i { +"None" }
                 }
+            }
 
-                if (show != null && scene != null) +" | "
+            typographyH6(themeStyles.title on TypographyStyle.root) {
+                div(+themeStyles.titleHeader) { +"Scene:" }
 
-                scene?.let {
+                if (scene != null) {
                     b {
                         +scene.title
                         sceneManager.file?.let { attrs["title"] = it.toString() }
@@ -116,11 +123,13 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (sceneManager.isUnsaved) i { +" (Unsaved)" }
 
                     if (props.appMode == AppMode.Scene && editMode) {
-                        div(+themeStyles.editButton) {
+                        span(+themeStyles.editButton) {
                             icon(materialui.icons.Edit)
-                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                            attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
                         }
                     }
+                } else {
+                    i { +"None" }
                 }
             }
 

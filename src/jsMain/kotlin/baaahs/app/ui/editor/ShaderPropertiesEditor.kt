@@ -38,7 +38,7 @@ val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderProp
     val shaderInstance = props.mutableShaderInstance
     val editingShader = props.editingShader
 
-    val handleUpdate by handler(props.mutableShaderInstance) { block: MutableShaderInstance.() -> Unit ->
+    val handleUpdate by handler(props.mutableShaderInstance, props.editableManager) { block: MutableShaderInstance.() -> Unit ->
         props.mutableShaderInstance.block()
         props.editableManager.onChange()
     }

@@ -41,6 +41,11 @@ class ShowEditIntent : EditIntent {
         mutableDocument
 }
 
+class SceneEditIntent : EditIntent {
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> =
+        mutableDocument
+}
+
 data class ControlEditIntent(internal val controlId: String) : EditIntent {
     private lateinit var mutableEditable: MutableControl
 

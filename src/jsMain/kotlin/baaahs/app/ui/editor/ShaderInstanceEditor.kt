@@ -57,7 +57,7 @@ val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstance
         selectedTab = value
     }
 
-    val editingShader = memo(props.mutableShaderInstance) {
+    val editingShader = memo(props.editableManager, props.mutableShaderInstance) {
         val newEditingShader =
             EditingShader(
                 props.editableManager.currentMutableDocument as MutableShow,

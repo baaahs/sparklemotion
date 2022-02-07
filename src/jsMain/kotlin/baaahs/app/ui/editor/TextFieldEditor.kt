@@ -29,7 +29,7 @@ val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { prop
         }
     }
 
-    val handleKeyDown by eventHandler(props.editableManager) { event: Event ->
+    val handleKeyDown by eventHandler(handleBlur) { event: Event ->
         if (event.asDynamic().keyCode == 13) {
             handleBlur(event)
         }
