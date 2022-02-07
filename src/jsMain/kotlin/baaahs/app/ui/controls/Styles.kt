@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
 import baaahs.ui.descendants
 import baaahs.ui.name
@@ -19,7 +20,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val buttonGroupCard by css {
         display = Display.flex
-        backgroundColor = Color.transparent
         overflowY = Overflow.scroll
 
         descendants(this@Styles, ::controlButton) {
@@ -102,15 +102,16 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
         position = Position.relative
         marginRight = 0.em
-        backgroundColor = Color.transparent
 
         hover {
             child(".${editButton.name}") {
                 opacity = .7
+                filter = "drop-shadow(0px 0px 2px black)"
             }
 
             child(".${dragHandle.name}") {
                 opacity = 1
+                filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
             }
         }
@@ -145,14 +146,17 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.relative
         width = 150.px
         minHeight = 75.px
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
             child(".${editButton.name}") {
                 opacity = .7
+                filter = "drop-shadow(0px 0px 2px black)"
             }
 
             child(".${dragHandle.name}") {
                 opacity = 1
+                filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
             }
         }

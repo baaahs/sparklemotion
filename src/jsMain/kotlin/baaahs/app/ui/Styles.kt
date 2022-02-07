@@ -393,7 +393,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
                 color = Color.black.withAlpha(.5),
                 borderRadius = 3.px
             )
-            transform { scale(.9) }
+            margin = ".5em"
         }
 
         descendants(ControlsStyles, ControlsStyles::editButton) {

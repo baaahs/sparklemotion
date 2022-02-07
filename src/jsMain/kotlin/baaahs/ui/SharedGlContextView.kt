@@ -1,6 +1,7 @@
 package baaahs.ui
 
 import baaahs.app.ui.AppGlContext
+import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.appContext
 import baaahs.app.ui.appGlContext
 import kotlinext.js.jsObject
@@ -83,5 +84,6 @@ private object SharedGlContextStyles : StyleSheet("ui-SharedGlContext", isStatic
         width = 100.pct
         height = 100.pct
         pointerEvents = PointerEvents.none
+        zIndex = StyleConstants.Layers.sharedGlCanvas
     }
 }
