@@ -9,7 +9,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 
-val ColorPickerControl = xComponent<ColorPickerControlProps>("ColorPickerControl") { props ->
+private val ColorPickerControlView = xComponent<ColorPickerControlProps>("ColorPickerControl") { props ->
     val colorPickerControl = props.colorPickerControl
 
     div(+props.colorPickerControl.inUseStyle) {
@@ -27,4 +27,4 @@ external interface ColorPickerControlProps : Props {
 }
 
 fun RBuilder.colorPickerControl(handler: RHandler<ColorPickerControlProps>) =
-    child(ColorPickerControl, handler = handler)
+    child(ColorPickerControlView, handler = handler)

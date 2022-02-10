@@ -11,7 +11,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-val Vacuity = xComponent<VacuityProps>("Vacuity") { props ->
+private val VacuityView = xComponent<VacuityProps>("Vacuity") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
 
@@ -53,4 +53,4 @@ external interface VacuityProps : Props {
 }
 
 fun RBuilder.vacuity(handler: RHandler<VacuityProps>) =
-    child(Vacuity, handler = handler)
+    child(VacuityView, handler = handler)

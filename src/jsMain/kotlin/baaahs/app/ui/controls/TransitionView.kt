@@ -24,7 +24,7 @@ import react.dom.div
 import react.useContext
 import styled.inlineStyles
 
-val Transition = xComponent<TransitionProps>("Transition") { props ->
+private val Transition = xComponent<TransitionProps>("Transition") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
 

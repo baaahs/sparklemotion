@@ -26,7 +26,7 @@ import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 
-private val ButtonGroup = xComponent<ButtonGroupProps>("SceneList") { props ->
+private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
 
     val buttonGroupControl = props.buttonGroupControl
@@ -173,4 +173,4 @@ external interface ButtonGroupProps : Props {
 }
 
 fun RBuilder.buttonGroup(handler: RHandler<ButtonGroupProps>) =
-    child(ButtonGroup, handler = handler)
+    child(ButtonGroupView, handler = handler)

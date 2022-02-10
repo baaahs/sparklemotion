@@ -11,7 +11,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 
-private val SliderControl = xComponent<SliderControlProps>("SliderControl") { props ->
+private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
     val sliderControl = props.sliderControl
     val title = sliderControl.slider.title
 //    val channel = props.sliderControl.channel
@@ -62,4 +62,4 @@ external interface SliderControlProps : Props {
 }
 
 fun RBuilder.sliderControl(handler: RHandler<SliderControlProps>) =
-    child(SliderControl, handler = handler)
+    child(SliderControlView, handler = handler)

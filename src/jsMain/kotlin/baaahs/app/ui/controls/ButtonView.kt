@@ -22,7 +22,7 @@ import react.dom.div
 import react.useContext
 import materialui.components.button.button as muiButton
 
-private val Button = xComponent<ButtonProps>("Button") { props ->
+private val ButtonView = xComponent<ButtonProps>("Button") { props ->
     val appContext = useContext(appContext)
 
     val buttonControl = props.buttonControl
@@ -105,4 +105,4 @@ external interface ButtonProps : Props {
 }
 
 fun RBuilder.button(handler: RHandler<ButtonProps>) =
-    child(Button, handler = handler)
+    child(ButtonView, handler = handler)
