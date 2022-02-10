@@ -30,6 +30,10 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
     }
 
     card(Styles.controlBox on PaperStyle.root) {
+        with (props.control.getView(props.controlProps)) {
+            render()
+        }
+
         props.draggableProvided?.let { draggableProvided ->
             ref = draggableProvided.innerRef
             copyFrom(draggableProvided.draggableProps)
@@ -50,10 +54,6 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
                 copyFrom(draggableProvided.dragHandleProps)
                 icon(materialui.icons.DragIndicator)
             }
-        }
-
-        with (props.control.getView(props.controlProps)) {
-            render()
         }
     }
 }

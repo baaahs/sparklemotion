@@ -52,7 +52,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         right = 2.px
         bottom = (-2).px + 2.em
-        zIndex = 1
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         child("svg") {
             width = .75.em
@@ -64,7 +64,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         right = .5.em
         top = .5.em
-        zIndex = 1
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         opacity = .75
         filter = "drop-shadow( 2px 2px 2px rgba(0, 0, 0, .7))"
     }
@@ -94,7 +94,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         right = 2.px
         bottom = (-2).px
-        zIndex = 1
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
     }
 
     val controlBox by css {
