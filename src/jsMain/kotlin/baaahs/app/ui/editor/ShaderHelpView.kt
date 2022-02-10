@@ -3,7 +3,6 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
-import baaahs.show.mutable.EditingShader
 import baaahs.ui.markdown
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -30,7 +29,7 @@ import react.dom.span
 import react.useContext
 import styled.StyleSheet
 
-private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp") { props ->
+private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = true) { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderHelp
 
@@ -134,7 +133,6 @@ class ShaderHelpStyles(
 }
 
 external interface ShaderHelpProps : Props {
-    var editingShader: EditingShader
 }
 
 fun RBuilder.shaderHelp(handler: RHandler<ShaderHelpProps>) =

@@ -1,9 +1,6 @@
 package baaahs.app.ui.editor
 
-import acex.AceEditor
-import acex.Annotation
-import acex.Modes
-import acex.Selection
+import acex.*
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
 import baaahs.show.mutable.EditingShader
@@ -43,10 +40,17 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         Document(props.editingShader.id, props.editingShader.mutableShader.src)
     }
 
+    val lastSelection = ref<dynamic>()
+
     onChange("AceEditor", props.editingShader, aceEditor) {
         val editor = aceEditor?.editor ?: return@onChange
 
         val editingShader = props.editingShader
+
+        // Restore selection if we have a new editor for the same shader.
+        if (lastSelection.current != null) {
+            editor.selection.fromJSON(lastSelection.current.unsafeCast<SavedSelection>())
+        }
 
         fun setAnnotations() {
             val lineCount = editor.getSession().getLength().toInt()
@@ -89,7 +93,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
         shaderRefactor?.onCursorChange(selection)
-        Unit
+        lastSelection.current = selection.toJSON()
     }
 
     var refactorMenuAnchor by state<EventTarget?> { null }

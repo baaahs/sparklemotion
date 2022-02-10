@@ -57,7 +57,9 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
         selectedTab = value
     }
 
-    val editingShader = memo(props.editableManager, props.mutableShaderInstance) {
+    // props.mutableShaderInstance.id is included here so we re-memoize if we have a different instance
+    // from before; this happens after clicking "Apply" when the whole mutable document is regenerated.
+    val editingShader = memo(props.editableManager, props.mutableShaderInstance, props.mutableShaderInstance.id) {
         val newEditingShader =
             EditingShader(
                 props.editableManager.currentMutableDocument as MutableShow,
@@ -131,7 +133,6 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
                         attrs.editingShader = editingShader
                     }
                     PageTabs.Help -> shaderHelp {
-                        attrs.editingShader = editingShader
                     }
                 }
             }
