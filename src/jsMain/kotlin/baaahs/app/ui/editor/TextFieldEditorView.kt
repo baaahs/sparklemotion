@@ -13,7 +13,7 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 
-val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
+private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
     val valueOnUndoStack = ref(props.getValue())
 
     val handleChange by eventHandler(props.setValue, props.editableManager) { event: Event ->

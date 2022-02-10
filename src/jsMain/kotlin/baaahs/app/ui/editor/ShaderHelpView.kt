@@ -30,8 +30,7 @@ import react.dom.span
 import react.useContext
 import styled.StyleSheet
 
-
-val ShaderHelp = xComponent<ShaderHelpProps>("ShaderHelp") { props ->
+private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderHelp
 
@@ -139,4 +138,4 @@ external interface ShaderHelpProps : Props {
 }
 
 fun RBuilder.shaderHelp(handler: RHandler<ShaderHelpProps>) =
-    child(ShaderHelp, handler = handler)
+    child(ShaderHelpView, handler = handler)

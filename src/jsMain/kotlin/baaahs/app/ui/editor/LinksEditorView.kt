@@ -25,7 +25,7 @@ import react.RHandler
 import react.dom.b
 import react.dom.code
 
-val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
+private val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)
 
     val lastShaderInputPorts = ref<List<InputPort>>()

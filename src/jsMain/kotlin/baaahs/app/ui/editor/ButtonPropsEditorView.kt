@@ -16,7 +16,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 
-private val buttonPropsEditor =
+private val ButtonPropsEditorView =
     xComponent<ButtonPropsEditorProps>("ButtonPropsEditor") { props ->
         div(+EditableStyles.propertiesSection) {
             formControl {
@@ -54,4 +54,4 @@ external interface ButtonPropsEditorProps : Props {
 }
 
 fun RBuilder.buttonPropsEditor(handler: RHandler<ButtonPropsEditorProps>) =
-    child(buttonPropsEditor, handler = handler)
+    child(ButtonPropsEditorView, handler = handler)

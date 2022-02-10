@@ -13,7 +13,7 @@ import react.RHandler
 import react.dom.div
 import styled.StyleSheet
 
-val GadgetsPreview = xComponent<GadgetsPreviewProps>("GadgetsPreview") { props ->
+private val GadgetsPreviewView = xComponent<GadgetsPreviewProps>("GadgetsPreview") { props ->
     var mutableControls by state {
         props.editingShader.gadgets.toTypedArray()
     }
@@ -57,4 +57,4 @@ external interface GadgetsPreviewProps : Props {
 }
 
 fun RBuilder.gadgetsPreview(handler: RHandler<GadgetsPreviewProps>) =
-    child(GadgetsPreview, handler = handler)
+    child(GadgetsPreviewView, handler = handler)

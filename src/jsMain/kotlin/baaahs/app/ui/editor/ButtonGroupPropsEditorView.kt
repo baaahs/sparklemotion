@@ -16,7 +16,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 
-private val buttonGroupPropsEditor =
+private val ButtonGroupPropsEditorView =
     xComponent<ButtonGroupPropsEditorProps>("ButtonGroupPropsEditor") { props ->
         div(+EditableStyles.propertiesSection) {
             textFieldEditor {
@@ -62,4 +62,4 @@ external interface ButtonGroupPropsEditorProps : Props {
 }
 
 fun RBuilder.buttonGroupPropsEditor(handler: RHandler<ButtonGroupPropsEditorProps>) =
-    child(buttonGroupPropsEditor, handler = handler)
+    child(ButtonGroupPropsEditorView, handler = handler)

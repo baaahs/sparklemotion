@@ -18,7 +18,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 
-private val visualizerPropsEditor = xComponent<VisualizerPropsEditorProps>("VisualizerPropsEditor") { props ->
+private val VisualizerPropsEditorView = xComponent<VisualizerPropsEditorProps>("VisualizerPropsEditor") { props ->
 
     div(+EditableStyles.propertiesSection) {
         formControl {
@@ -69,4 +69,4 @@ external interface VisualizerPropsEditorProps : Props {
 }
 
 fun RBuilder.visualizerPropsEditor(handler: RHandler<VisualizerPropsEditorProps>) =
-    child(visualizerPropsEditor, handler = handler)
+    child(VisualizerPropsEditorView, handler = handler)

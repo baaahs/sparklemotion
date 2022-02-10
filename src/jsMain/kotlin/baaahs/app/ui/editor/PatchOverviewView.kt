@@ -36,7 +36,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
+private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
     val appContext = useContext(appContext)
     val styles = EditableStyles
     val toolchain = (props.editableManager.session!! as ShowEditableManager.ShowSession).toolchain
