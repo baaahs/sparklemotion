@@ -16,7 +16,7 @@ import react.RBuilder
 import react.RHandler
 import react.useContext
 
-val Visualizer = xComponent<VisualizerProps>("Visualizer") { props ->
+private val VisualizerView = xComponent<VisualizerProps>("Visualizer") { props ->
     val appContext = useContext(appContext)
 
     val sceneManager = appContext.sceneManager
@@ -63,4 +63,4 @@ external interface VisualizerProps : Props {
 }
 
 fun RBuilder.visualizer(handler: RHandler<VisualizerProps>) =
-    child(Visualizer, handler = handler)
+    child(VisualizerView, handler = handler)

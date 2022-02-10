@@ -19,7 +19,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
+private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
 
     val control = props.control
