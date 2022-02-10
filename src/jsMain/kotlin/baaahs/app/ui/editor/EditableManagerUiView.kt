@@ -33,7 +33,7 @@ import react.RHandler
 import react.dom.div
 import react.dom.form
 
-val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
+private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     observe(props.editableManager)
 
 //    val handleTitleChange = baaahs.ui.callback(props.mutablePatchHolder) { event: Event ->

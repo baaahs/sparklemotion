@@ -41,7 +41,7 @@ private enum class PageTabs {
     Properties, Ports, Gadgets, Help
 }
 
-val ShaderInstanceEditor = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
+private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
@@ -213,4 +213,4 @@ external interface ShaderInstanceEditorProps : Props {
 }
 
 fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =
-    child(ShaderInstanceEditor, handler = handler)
+    child(ShaderInstanceEditorView, handler = handler)

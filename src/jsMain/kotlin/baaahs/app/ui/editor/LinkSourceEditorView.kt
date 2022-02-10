@@ -23,7 +23,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
 
-val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { props ->
+private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderEditor
 

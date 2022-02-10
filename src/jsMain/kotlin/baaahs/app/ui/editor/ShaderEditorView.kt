@@ -34,7 +34,7 @@ import react.dom.div
 import react.useContext
 import styled.inlineStyles
 
-val ShaderEditor = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
+private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val appContext = useContext(appContext)
     var aceEditor by state<AceEditor?> { null }
     val styles = appContext.allStyles.editor
@@ -163,4 +163,4 @@ external interface ShaderEditorProps : Props {
 }
 
 fun RBuilder.shaderEditor(handler: RHandler<ShaderEditorProps>) =
-    child(ShaderEditor, handler = handler)
+    child(ShaderEditorView, handler = handler)

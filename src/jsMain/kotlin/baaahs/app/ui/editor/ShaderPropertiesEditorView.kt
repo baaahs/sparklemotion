@@ -31,7 +31,7 @@ import react.dom.br
 import react.dom.div
 import react.useContext
 
-val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
+private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 

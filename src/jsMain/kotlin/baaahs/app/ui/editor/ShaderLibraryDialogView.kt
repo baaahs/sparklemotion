@@ -34,7 +34,7 @@ import react.dom.div
 import react.useContext
 import styled.inlineStyles
 
-val ShaderLibraryDialog = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
+private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
     val appContext = useContext(appContext)
     val shaderLibraries = appContext.webClient.shaderLibraries
     val toolchain = appContext.toolchain.withCache("Shader Library")
@@ -141,4 +141,4 @@ external interface ShaderLibraryDialogProps : Props {
 }
 
 fun RBuilder.shaderLibraryDialog(handler: RHandler<ShaderLibraryDialogProps>) =
-    child(ShaderLibraryDialog, handler = handler)
+    child(ShaderLibraryDialogView, handler = handler)

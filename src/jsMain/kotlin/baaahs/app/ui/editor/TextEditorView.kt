@@ -25,7 +25,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-val TextEditor = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
+private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
 
     val rootEl = ref<Element>()
@@ -125,4 +125,4 @@ external interface TextEditorProps : Props {
 }
 
 fun RBuilder.textEditor(handler: RHandler<TextEditorProps>) =
-    child(TextEditor, handler = handler)
+    child(TextEditorView, handler = handler)
