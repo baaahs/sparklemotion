@@ -6,7 +6,7 @@ actual interface Icon
 
 actual interface DialogHolder {
     actual fun showDialog(view: View)
-    actual fun showMenuDialog(title: String, options: List<DialogMenuOption>)
+    actual fun showMenuDialog(title: String, options: List<DialogMenuItem>)
     actual fun closeDialog()
 }
 
