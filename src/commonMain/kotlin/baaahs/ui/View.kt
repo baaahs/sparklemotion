@@ -6,23 +6,21 @@ expect interface Icon
 
 expect interface DialogHolder {
     fun showDialog(view: View)
-    fun showMenuDialog(title: String, options: List<DialogMenuOption>)
+    fun showMenuDialog(title: String, options: List<DialogMenuItem>)
     fun closeDialog()
 }
 
-interface DialogMenuOption {
-    val title: String
-    val onSelect: () -> Unit
+sealed interface DialogMenuItem {
+    object Divider : DialogMenuItem
 
-    object Divider : DialogMenuOption {
-        override val title: String get() = TODO("not implemented")
-        override val onSelect: () -> Unit get() = TODO("not implemented")
-    }
+    data class Header(
+        val title: String
+    ) : DialogMenuItem
 
     data class Option(
-        override val title: String,
-        override val onSelect: () -> Unit
-    ) : DialogMenuOption
+        val title: String,
+        val onSelect: () -> Unit
+    ) : DialogMenuItem
 }
 
 @Deprecated("Find something nicer.")

@@ -4,6 +4,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
+import baaahs.ui.DialogMenuItem.*
 import kotlinx.html.js.onClickFunction
 import materialui.components.dialog.dialog
 import materialui.components.dialogcontent.dialogContent
@@ -13,6 +14,7 @@ import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
+import materialui.components.listsubheader.listSubheader
 import materialui.icon
 import react.Props
 import react.RBuilder
@@ -35,11 +37,11 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
             documentManager.onNew(object : DialogHolder {
                 override fun showDialog(view: View) {
                     renderDialog = {
-                        with (view) { render() }
+                        with(view) { render() }
                     }
                 }
 
-                override fun showMenuDialog(title: String, options: List<DialogMenuOption>) {
+                override fun showMenuDialog(title: String, options: List<DialogMenuItem>) {
                     showDialog {
                         dialog {
                             attrs.open = true
@@ -47,16 +49,25 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
 
                             dialogTitle { +title }
                             dialogContent {
-                                options.forEach { option ->
-                                    if (option is DialogMenuOption.Divider) {
-                                        divider {}
-                                    } else {
-                                        list {
-                                            listItem {
-                                                attrs.button = true
-                                                attrs.onClickFunction = option.onSelect.withEvent()
-                                                listItemText {
-                                                    attrs.primary { +option.title }
+                                list {
+                                    options.forEach { option ->
+                                        when (option) {
+                                            is Divider -> {
+                                                divider {}
+                                            }
+                                            is Header -> {
+                                                listSubheader {
+                                                    attrs.disableGutters = true
+                                                    +option.title
+                                                }
+                                            }
+                                            is Option -> {
+                                                listItem {
+                                                    attrs.button = true
+                                                    attrs.onClickFunction = option.onSelect.withEvent()
+                                                    listItemText {
+                                                        attrs.primary { +option.title }
+                                                    }
                                                 }
                                             }
                                         }
@@ -67,7 +78,9 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
                     }
                 }
 
-                override fun closeDialog() { renderDialog = null }
+                override fun closeDialog() {
+                    renderDialog = null
+                }
             })
         }
     }

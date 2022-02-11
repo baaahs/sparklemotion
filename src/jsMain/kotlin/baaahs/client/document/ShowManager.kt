@@ -18,8 +18,9 @@ import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Topics
 import baaahs.ui.DialogHolder
-import baaahs.ui.DialogMenuOption.Divider
-import baaahs.ui.DialogMenuOption.Option
+import baaahs.ui.DialogMenuItem
+import baaahs.ui.DialogMenuItem.Divider
+import baaahs.ui.DialogMenuItem.Option
 
 class ShowManager(
     pubSub: PubSub.Client,
@@ -57,8 +58,9 @@ class ShowManager(
         }
 
         dialogHolder.showMenuDialog("New ${documentType.title}…", listOf(
-            Option("Blank") { makeNew { null } },
+            Option("Empty Show") { makeNew { null } },
             Divider,
+            DialogMenuItem.Header("From Template:"),
             Option("Sample template") {
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
             },

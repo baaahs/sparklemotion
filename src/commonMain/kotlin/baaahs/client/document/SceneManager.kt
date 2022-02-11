@@ -15,8 +15,9 @@ import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
 import baaahs.show.mutable.MutableDocument
 import baaahs.ui.DialogHolder
-import baaahs.ui.DialogMenuOption.Divider
-import baaahs.ui.DialogMenuOption.Option
+import baaahs.ui.DialogMenuItem
+import baaahs.ui.DialogMenuItem.Divider
+import baaahs.ui.DialogMenuItem.Option
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 
@@ -50,6 +51,7 @@ class SceneManager(
         dialogHolder.showMenuDialog("New ${documentType.title}…", listOf(
             Option("Empty Scene") { makeNew { null } },
             Divider,
+            DialogMenuItem.Header("From Template:"),
             Option("BAAAHS") {
                 makeNew {
                     val file = resourcesFs.resolve("BAAAHS.scene")
