@@ -55,5 +55,5 @@ object ImportEntityType : EntityType {
     override val title: String = "Imported Model"
     override val addNewTitle: String get() = "Import..."
 
-    override fun createNew(): EntityData = ObjModelData("New OBJ", objData = "", objDataIsFileRef = false)
+    override fun createNew(): EntityData = ImportedEntityData("New OBJ", objData = "", objDataIsFileRef = false)
 }

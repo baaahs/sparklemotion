@@ -7,8 +7,8 @@ import baaahs.model.*
 val demoModelData = ModelData(
     "Decom2019",
     listOf(
-//        ObjModelData("A Panels", null, Matrix4F.identity, "decom-2019-panels.obj", true),
-        ObjModelData("B Panels", null,
+//        ImportData("A Panels", null, Matrix4F.identity, "decom-2019-panels.obj", true),
+        ImportedEntityData("B Panels", null,
             Vector3F(170f, 0f, 0f),
             EulerAngle(1.0, .5, .25),
             objData = "decom-2019-panels.obj", objDataIsFileRef = true,

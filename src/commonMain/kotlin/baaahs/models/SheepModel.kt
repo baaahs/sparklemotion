@@ -7,7 +7,7 @@ import baaahs.model.*
 val sheepModelData = ModelData(
     "BAAAHS",
     listOf(
-        ObjModelData(
+        ImportedEntityData(
             "Decom2019", null,
             objData = "baaahs-model.obj", objDataIsFileRef = true,
             metadata = StrandCountEntityMetadataProvider.openResource("baaahs-panel-info.txt")

@@ -1,29 +1,25 @@
-package baaahs.model
+package baaahs.model.importers
 
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
-import baaahs.model.Model.*
+import baaahs.model.Importer
+import baaahs.model.Model
 import baaahs.util.Logger
 
-class ObjModelLoader(
-    objText: String,
-    objName: String = "OBJ file",
-    private val expectedPixelCount: (name: String) -> Int? = { null }
-) {
-    private val vertices: List<Vector3F>
-    private val surfaces: List<Surface>
+object ObjImporter : Importer {
+    private val logger = Logger<ObjImporter>()
 
-    val allEntities: List<Surface> get() = surfaces
-    val geomVertices: List<Vector3F> get() = vertices
-    val errors: List<Error>
-
-    init {
+    fun import(
+        objText: String,
+        objName: String = "OBJ file",
+        expectedPixelCount: (name: String) -> Int? = { null }
+    ): Importer.Results {
         val allVertices: MutableList<Vector3F> = mutableListOf()
-        val geometry = Geometry(allVertices)
+        val geometry = Model.Geometry(allVertices)
         var objBuilder: ObjBuilder? = null
-        val errors = arrayListOf<Error>()
+        val errors = arrayListOf<Importer.Error>()
 
-        val surfaces: MutableList<Surface> = mutableListOf()
+        val surfaces: MutableList<Model.Surface> = mutableListOf()
         fun buildSurface() {
             objBuilder?.let { builder ->
                 surfaces.add(builder.build())
@@ -32,7 +28,7 @@ class ObjModelLoader(
         }
 
         fun addError(message: String, lineNumber: Int) {
-            errors.add(Error(message, lineNumber + 1))
+            errors.add(Importer.Error(message, lineNumber + 1))
         }
 
         objText
@@ -61,7 +57,7 @@ class ObjModelLoader(
                     }
                     "g", "o" -> {
                         buildSurface()
-                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry)
+                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, expectedPixelCount)
                     }
                     "f" -> {
                         val vertIs = try {
@@ -70,7 +66,7 @@ class ObjModelLoader(
                             addError("Vertex indices must be integers: $line", lineNumber)
                             return@forEachIndexed
                         }
-                        if (vertIs.size != 3)  {
+                        if (vertIs.size != 3) {
                             addError("A face must have three vertices: $line", lineNumber)
                             return@forEachIndexed
                         }
@@ -88,7 +84,7 @@ class ObjModelLoader(
                             }
                         }
 
-                        currentObjBuilder.faces.add(Face(geometry, vertIs[0], vertIs[1], vertIs[2]))
+                        currentObjBuilder.faces.add(Model.Face(geometry, vertIs[0], vertIs[1], vertIs[2]))
                     }
                     "l" -> {
                         val vertIs = try {
@@ -102,7 +98,7 @@ class ObjModelLoader(
                             addError("No current object.", lineNumber)
                             return@forEachIndexed
                         }
-                        currentObjBuilder.lines.add(Line(geometry, vertIs))
+                        currentObjBuilder.lines.add(Model.Line(geometry, vertIs))
                     }
                 }
             }
@@ -110,46 +106,43 @@ class ObjModelLoader(
         buildSurface()
 
         logger.debug { "$objName has ${surfaces.size} panels and ${allVertices.size} vertices" }
-        this.vertices = allVertices
-        this.surfaces = surfaces
-        this.errors = errors
+
+        return Results(surfaces, allVertices, errors)
     }
 
-    private inner class ObjBuilder(val name: String, val geometry: Geometry) {
-        val faces = mutableListOf<Face>()
-        val lines = mutableListOf<Line>()
+    private class ObjBuilder(val name: String, val geometry: Model.Geometry, val expectedPixelCount: (name: String) -> Int?) {
+        val faces = mutableListOf<Model.Face>()
+        val lines = mutableListOf<Model.Line>()
 
-        fun build(): Surface =
-            Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
+        fun build(): Model.Surface =
+            Model.Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
     }
 
-    data class Error(
-        val message: String,
-        val lineNumber: Int?
-    )
+    class Results(
+        override val entities: List<Model.Entity>,
+        override val vertices: List<Vector3F>,
+        override val errors: List<Importer.Error>
+    ) : Importer.Results
 
-    companion object {
-        fun doImport(
-            objData: String,
-            objDataIsFileRef: Boolean,
-            title: String,
-            expectedPixelCount: (name: String) -> Int? = { null }
-        ): ObjModelLoader {
-            val data = if (objDataIsFileRef) getResource(objData) else objData
-            val name = if (objDataIsFileRef) objData else title
-            return ObjModelLoader(data, name, expectedPixelCount)
-        }
 
-        @Deprecated("No! Should come from an FS somehow!")
-        fun load(
-            resourceName: String,
-            expectedPixelCount: (name: String) -> Int?
-        ): ObjModelLoader {
-            logger.debug { "Loading model data from $resourceName..." }
-            val objText = getResource(resourceName)
-            return ObjModelLoader(objText, resourceName, expectedPixelCount)
-        }
+    fun doImport(
+        objData: String,
+        objDataIsFileRef: Boolean,
+        title: String,
+        expectedPixelCount: (name: String) -> Int? = { null }
+    ): Importer.Results {
+        val data = if (objDataIsFileRef) getResource(objData) else objData
+        val name = if (objDataIsFileRef) objData else title
+        return import(data, name, expectedPixelCount)
+    }
 
-        private val logger = Logger<ObjModelLoader>()
+    @Deprecated("No! Should come from an FS somehow!")
+    fun load(
+        resourceName: String,
+        expectedPixelCount: (name: String) -> Int?
+    ): Importer.Results {
+        logger.debug { "Loading model data from $resourceName..." }
+        val objText = getResource(resourceName)
+        return import(objText, resourceName, expectedPixelCount)
     }
 }

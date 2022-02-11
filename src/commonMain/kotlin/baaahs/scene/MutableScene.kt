@@ -6,6 +6,7 @@ import baaahs.app.ui.editor.MutableEditable
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.model.*
+import baaahs.model.importers.ObjImporter
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 
@@ -79,30 +80,30 @@ abstract class MutableEntity(
     abstract fun getEditorPanels(): List<EntityEditorPanel<out MutableEntity>>
 }
 
-class MutableObjModel(
-    baseObjModel: ObjModelData
-) : MutableEntity(baseObjModel), MutableGroupEntity {
-    var objData: String = baseObjModel.objData
-        set(value) { field = value; loader = null }
+class MutableImportedEntity(
+    baseImportedEntityData: ImportedEntityData
+) : MutableEntity(baseImportedEntityData), MutableGroupEntity {
+    var objData: String = baseImportedEntityData.objData
+        set(value) { field = value; importerResults = null }
 
-    var objDataIsFileRef: Boolean = baseObjModel.objDataIsFileRef
-        set(value) { field = value; loader = null }
+    var objDataIsFileRef: Boolean = baseImportedEntityData.objDataIsFileRef
+        set(value) { field = value; importerResults = null }
 
-    var metadata: EntityMetadataProvider? = baseObjModel.metadata
-        set(value) { field = value; loader = null }
+    var metadata: EntityMetadataProvider? = baseImportedEntityData.metadata
+        set(value) { field = value; importerResults = null }
 
-    private var loader: ObjModelLoader? = null
+    private var importerResults: Importer.Results? = null
     private var importFail: Exception? = null
-    val problems get() = (getLoader()?.errors ?: emptyList()).map { Problem("", it.message) } +
+    val problems get() = (getImporterResults()?.errors ?: emptyList()).map { Problem("", it.message) } +
             listOfNotNull(importFail).map { Problem("", it.message) }
 
-    private fun getLoader(): ObjModelLoader? =
-        loader ?: try {
+    private fun getImporterResults(): Importer.Results? =
+        importerResults ?: try {
             importFail = null
-            ObjModelLoader.doImport(objData, objDataIsFileRef, title) {
+            ObjImporter.doImport(objData, objDataIsFileRef, title) {
                 metadata?.getMetadataFor(this.build())?.expectedPixelCount
             }.also {
-                loader = it
+                importerResults = it
             }
         } catch (e: Exception) {
             importFail = e
@@ -110,7 +111,7 @@ class MutableObjModel(
         }
 
     override val children: MutableList<MutableEntity> get() =
-        (getLoader()?.allEntities ?: emptyList()).map {
+        (getImporterResults()?.entities ?: emptyList()).map {
             object : MutableEntity(it.title, null, Vector3F.origin, EulerAngle.identity, Vector3F.origin, Model.Entity.nextId()) {
                 override fun build(): EntityData {
                     return SurfaceDataForTest(it.title)
@@ -121,19 +122,19 @@ class MutableObjModel(
             }
         }.toMutableList()
 
-    override fun build(): ObjModelData =
-        ObjModelData(title, description, position, rotation, scale, id, objData, objDataIsFileRef, metadata)
+    override fun build(): ImportedEntityData =
+        ImportedEntityData(title, description, position, rotation, scale, id, objData, objDataIsFileRef, metadata)
 
     override fun getEditorPanels() = listOf(
         TitleAndDescEntityEditorPanel,
         TransformEntityEditorPanel,
-        ObjModelEntityEditorPanel
+        ImportedEntityEditorPanel
     )
 
     fun reloadFile() {
-        loader = null
+        importerResults = null
         importFail = null
-        getLoader()
+        getImporterResults()
     }
 }
 

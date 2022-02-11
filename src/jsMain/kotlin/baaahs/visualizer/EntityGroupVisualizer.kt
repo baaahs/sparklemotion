@@ -1,14 +1,15 @@
 package baaahs.visualizer
 
-import baaahs.model.ObjGroup
+import baaahs.model.ImportedEntityGroup
+import baaahs.model.Model
 import baaahs.util.three.addPadding
 import three.js.*
 import three_ext.expandByObjectLocal
 
-class ObjGroupVisualizer(
-    objGroup: ObjGroup,
+class EntityGroupVisualizer(
+    objGroup: Model.EntityGroup,
     adapter: EntityAdapter
-) : BaseEntityVisualizer<ObjGroup>(objGroup) {
+) : BaseEntityVisualizer<Model.EntityGroup>(objGroup) {
     override val obj: Object3D = Group()
     private val groupVisualizer =
         GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
@@ -35,10 +36,10 @@ class ObjGroupVisualizer(
         groupVisualizer.traverse(callback)
     }
 
-    override fun isApplicable(newItem: Any): ObjGroup? =
-        newItem as? ObjGroup
+    override fun isApplicable(newItem: Any): ImportedEntityGroup? =
+        newItem as? ImportedEntityGroup
 
-    override fun update(newItem: ObjGroup) {
+    override fun update(newItem: Model.EntityGroup) {
         super.update(newItem)
         groupVisualizer.updateChildren(newItem.entities)
         boxHelper.updateWithPadding(.02)

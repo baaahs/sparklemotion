@@ -3,7 +3,7 @@
     "title": "BAAAHS",
     "entities": [
       {
-        "type": "ObjModel",
+        "type": "Import",
         "title": "Decom2019",
         "description": null,
         "objData": "baaahs-model.obj",

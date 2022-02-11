@@ -3,7 +3,7 @@
     "title": "Demo",
     "entities": [
       {
-        "type": "ObjModel",
+        "type": "Import",
         "title": "B Panels",
         "description": null,
         "position": {

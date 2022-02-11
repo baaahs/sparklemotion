@@ -48,7 +48,7 @@ interface VisualizerBuilder {
     fun getLightBarEditorView(editingEntity: EditingEntity<out MutableLightBarData>): View
     fun getLightRingEditorView(editingEntity: EditingEntity<out MutableLightRingData>): View
     fun getMovingHeadEditorView(editingEntity: EditingEntity<out MutableMovingHeadData>): View
-    fun getObjModelEditorView(editingEntity: EditingEntity<out MutableObjModel>): View
+    fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntity>): View
 }
 
 expect val visualizerBuilder: VisualizerBuilder

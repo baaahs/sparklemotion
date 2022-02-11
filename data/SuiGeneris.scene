@@ -3,7 +3,7 @@
     "title": "SuiGeneris",
     "entities": [
       {
-        "type": "ObjModel",
+        "type": "Import",
         "title": "sui-generis.obj",
         "description": null,
         "objData": "sui-generis.obj",
