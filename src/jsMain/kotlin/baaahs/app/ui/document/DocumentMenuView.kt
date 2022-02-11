@@ -3,11 +3,13 @@ package baaahs.app.ui.document
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
-import baaahs.ui.DialogHolder
-import baaahs.ui.View
-import baaahs.ui.withEvent
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import kotlinx.html.js.onClickFunction
+import materialui.components.dialog.dialog
+import materialui.components.dialogcontent.dialogContent
+import materialui.components.dialogtitle.dialogTitle
+import materialui.components.divider.divider
+import materialui.components.list.list
 import materialui.components.listitem.listItem
 import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
@@ -36,6 +38,35 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
                         with (view) { render() }
                     }
                 }
+
+                override fun showMenuDialog(title: String, options: List<DialogMenuOption>) {
+                    showDialog {
+                        dialog {
+                            attrs.open = true
+                            attrs.onClose = { _, _ -> closeDialog() }
+
+                            dialogTitle { +title }
+                            dialogContent {
+                                options.forEach { option ->
+                                    if (option is DialogMenuOption.Divider) {
+                                        divider {}
+                                    } else {
+                                        list {
+                                            listItem {
+                                                attrs.button = true
+                                                attrs.onClickFunction = option.onSelect.withEvent()
+                                                listItemText {
+                                                    attrs.primary { +option.title }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 override fun closeDialog() { renderDialog = null }
             })
         }

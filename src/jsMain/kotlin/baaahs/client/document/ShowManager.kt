@@ -18,13 +18,8 @@ import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Topics
 import baaahs.ui.DialogHolder
-import kotlinx.html.js.onClickFunction
-import materialui.components.dialog.dialog
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemtext.listItemText
+import baaahs.ui.DialogMenuOption.Divider
+import baaahs.ui.DialogMenuOption.Option
 
 class ShowManager(
     pubSub: PubSub.Client,
@@ -53,60 +48,30 @@ class ShowManager(
     override suspend fun onNew(dialogHolder: DialogHolder) {
         if (!confirmCloseIfUnsaved()) return
 
-        dialogHolder.showDialog {
-            dialog {
-                attrs.open = true
-                attrs.onClose = { _, _ -> dialogHolder.closeDialog() }
-
-                dialogTitle { +"New ${documentType.title}…" }
-                dialogContent {
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                launch { onNew() }
-                                dialogHolder.closeDialog()
-                            }
-                            listItemText {
-                                attrs.primary { +"Blank" }
-                            }
-                        }
-                    }
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                launch {
-                                    onNew(SampleData.createSampleShow(withHeadlightsMode = true).getShow())
-                                }
-                                dialogHolder.closeDialog()
-                            }
-                            listItemText {
-                                attrs.primary { +"Sample template" }
-                            }
-                        }
-                    }
-                    list {
-                        listItem {
-                            attrs.button = true
-                            attrs.onClickFunction = { _ ->
-                                launch {
-                                    val file = resourcesFs.resolve("Honcho.sparkle")
-                                    val show = Storage(resourcesFs, toolchain.plugins).loadShow(file)
-                                        ?.copy(title = "New ${documentType.title}")
-                                        ?: error("Couldn't find show")
-                                    onNew(show)
-                                    dialogHolder.closeDialog()
-                                }
-                            }
-                            listItemText {
-                                attrs.primary { +"Fancy template" }
-                            }
-                        }
-                    }
-                }
+        fun makeNew(build: suspend () -> Show?) {
+            launch {
+                val newShow = build()
+                onNew(newShow)
+                dialogHolder.closeDialog()
             }
         }
+
+        dialogHolder.showMenuDialog("New ${documentType.title}…", listOf(
+            Option("Blank") { makeNew { null } },
+            Divider,
+            Option("Sample template") {
+                makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
+            },
+            Option("Fancy template") {
+                makeNew {
+                    val file = resourcesFs.resolve("Honcho.sparkle")
+                    Storage(resourcesFs, toolchain.plugins).loadShow(file)
+                        ?.copy(title = "New ${documentType.title}")
+                        ?: error("Couldn't find show")
+
+                }
+            }
+        ))
     }
 
     override suspend fun onDownload() {

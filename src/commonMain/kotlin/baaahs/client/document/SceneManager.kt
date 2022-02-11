@@ -6,6 +6,8 @@ import baaahs.app.ui.UiActions
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
 import baaahs.io.RemoteFsSerializer
+import baaahs.io.resourcesFs
+import baaahs.mapper.Storage
 import baaahs.plugin.Plugins
 import baaahs.scene.MutableScene
 import baaahs.scene.OpenScene
@@ -13,6 +15,8 @@ import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
 import baaahs.show.mutable.MutableDocument
 import baaahs.ui.DialogHolder
+import baaahs.ui.DialogMenuOption.Divider
+import baaahs.ui.DialogMenuOption.Option
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 
@@ -35,7 +39,50 @@ class SceneManager(
     override suspend fun onNew(dialogHolder: DialogHolder) {
         if (!confirmCloseIfUnsaved()) return
 
-        onNew(Scene.Empty)
+        fun makeNew(build: suspend () -> Scene?) {
+            launch {
+                val newScene = build()
+                onNew(newScene)
+                dialogHolder.closeDialog()
+            }
+        }
+
+        dialogHolder.showMenuDialog("New ${documentType.title}…", listOf(
+            Option("Empty Scene") { makeNew { null } },
+            Divider,
+            Option("BAAAHS") {
+                makeNew {
+                    val file = resourcesFs.resolve("BAAAHS.scene")
+                    Storage(resourcesFs, plugins).loadScene(file)?.let {
+                        it.copy(model = it.model.copy(title = "New Scene"))
+                    } ?: error("Couldn't find scene")
+                }
+            },
+            Option("Demo") {
+                makeNew {
+                    val file = resourcesFs.resolve("Demo.scene")
+                    Storage(resourcesFs, plugins).loadScene(file)?.let {
+                        it.copy(model = it.model.copy(title = "New Scene"))
+                    } ?: error("Couldn't find scene")
+                }
+            },
+            Option("Honcho") {
+                makeNew {
+                    val file = resourcesFs.resolve("Honcho.scene")
+                    Storage(resourcesFs, plugins).loadScene(file)?.let {
+                        it.copy(model = it.model.copy(title = "New Scene"))
+                    } ?: error("Couldn't find scene")
+                }
+            },
+            Option("Playa2021") {
+                makeNew {
+                    val file = resourcesFs.resolve("Playa2021.scene")
+                    Storage(resourcesFs, plugins).loadScene(file)?.let {
+                        it.copy(model = it.model.copy(title = "New Scene"))
+                    } ?: error("Couldn't find scene")
+                }
+            }
+        ))
     }
 
     override suspend fun onDownload() {
