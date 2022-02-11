@@ -3,7 +3,7 @@
     "title": "Decom2019",
     "entities": [
       {
-        "type": "ObjModel",
+        "type": "Import",
         "title": "Decom2019",
         "description": null,
         "objData": "decom-2019-panels.obj",

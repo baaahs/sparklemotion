@@ -6,7 +6,7 @@ import baaahs.model.*
 val decom2019ModelData = ModelData(
     "Decom2019",
     listOf(
-        ObjModelData(
+        ImportedEntityData(
             "Decom2019",
             null,
             objData = "decom-2019-panels.obj",

@@ -7,6 +7,7 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.mapper.MappingSession
+import baaahs.model.importers.ObjImporter
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
@@ -14,7 +15,7 @@ import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
 import kotlinx.serialization.Transient
 
-class ObjGroup(
+class ImportedEntityGroup(
     override val name: String,
     override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
@@ -28,29 +29,29 @@ class ObjGroup(
 ) : Model.BaseEntity(), Model.EntityGroup {
     override val deviceType: DeviceType get() = PixelArrayDevice // TODO
 
-    private val loader: ObjModelLoader?
-    private val loaderError: Exception?
+    private val importerResults: Importer.Results?
+    private val importerError: Exception?
     init {
-        val x = try {
-            ObjModelLoader.doImport(objData, objDataIsFileRef, title) {
+        val results = try {
+            ObjImporter.doImport(objData, objDataIsFileRef, title) {
                 metadata?.getMetadataFor(this)?.expectedPixelCount
             } to null
         } catch (e: Exception) {
             null to e
         }
-        loader = x.first
-        loaderError = x.second
+        importerResults = results.first
+        importerError = results.second
     }
 
-    override val bounds: Pair<Vector3F, Vector3F> = boundingBox(loader?.geomVertices ?: emptyList())
-    override val entities: List<Model.Entity> = loader?.allEntities ?: emptyList()
+    override val bounds: Pair<Vector3F, Vector3F> = boundingBox(importerResults?.vertices ?: emptyList())
+    override val entities: List<Model.Entity> = importerResults?.entities ?: emptyList()
     // .map { it.transform(transformation) }
 
     override val problems: Collection<Problem> =
-        (loader?.errors ?: emptyList())
+        (importerResults?.errors ?: emptyList())
             .map { Problem("Import error: $name", it.message) } +
-        listOfNotNull(loaderError)
-            .map { Problem("Import error: $name", loaderError?.message ?: "Unknown error.") }
+        listOfNotNull(importerError)
+            .map { Problem("Import error: $name", importerError?.message ?: "Unknown error.") }
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
         ObjGroupSimulation(adapter)
@@ -66,5 +67,5 @@ class ObjGroup(
     }
 
     override fun createVisualizer(adapter: EntityAdapter) =
-        adapter.createObjGroupVisualizer(this)
+        adapter.createEntityGroupVisualizer(this)
 }

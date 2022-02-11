@@ -48,8 +48,8 @@ sealed interface EntityData {
     fun open(): Model.Entity
 }
 
-@Serializable @SerialName("ObjModel")
-data class ObjModelData(
+@Serializable @SerialName("Import")
+data class ImportedEntityData(
     override val title: String,
     override val description: String? = null,
     override val position: Vector3F = Vector3F.origin,
@@ -61,10 +61,10 @@ data class ObjModelData(
     @Polymorphic
     val metadata: EntityMetadataProvider? = null
 ) : EntityData {
-    override fun edit(): MutableEntity = MutableObjModel(this)
+    override fun edit(): MutableEntity = MutableImportedEntity(this)
 
-    override fun open(): ObjGroup =
-        ObjGroup(title, description, position, rotation, scale, metadata, objData, objDataIsFileRef, id)
+    override fun open(): ImportedEntityGroup =
+        ImportedEntityGroup(title, description, position, rotation, scale, metadata, objData, objDataIsFileRef, id)
 }
 
 @Serializable @SerialName("MovingHead")

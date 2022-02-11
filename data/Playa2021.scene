@@ -3,7 +3,7 @@
     "title": "Playa2021",
     "entities": [
       {
-        "type": "ObjModel",
+        "type": "Import",
         "title": "playa-2021-panels.obj",
         "description": null,
         "objData": "playa-2021-panels.obj",

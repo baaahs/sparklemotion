@@ -254,7 +254,7 @@ sealed class Plugins private constructor(
         }
 
         polymorphic(EntityData::class) {
-            subclass(ObjModelData::class, ObjModelData.serializer())
+            subclass(ImportedEntityData::class, ImportedEntityData.serializer())
             subclass(MovingHeadData::class, MovingHeadData.serializer())
             subclass(LightBarData::class, LightBarData.serializer())
             subclass(PolyLineData::class, PolyLineData.serializer())

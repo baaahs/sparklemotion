@@ -3,6 +3,7 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.model.importers.ObjImporter
 import baaahs.only
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -12,8 +13,8 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-class ObjModelLoaderSpec : Spek({
-    describe<ObjModelLoader> {
+class ObjImporterSpec : Spek({
+    describe<ObjImporter> {
         val objData by value {
             """
                 v 0 48 0
@@ -30,13 +31,13 @@ class ObjModelLoaderSpec : Spek({
                 l 4 1
             """.trimIndent()
         }
-        val loader by value { ObjModelLoader(objData) }
+        val loader by value { ObjImporter.import(objData) }
 
         it("imports simple OBJ data") {
-            expect(loader.allEntities).size.toEqual(1)
-            val surface = loader.allEntities.only()
+            expect(loader.entities).size.toEqual(1)
+            val surface = loader.entities.only()
             expect(surface.name).toEqual("Panel 1")
-            expect(surface.faces.map { it.vertices.toList() }).containsExactly(
+            expect((surface as Model.Surface).faces.map { it.vertices.toList() }).containsExactly(
                 listOf(
                     Vector3F(x = 0.0, y = 48.0, z = 0.0),
                     Vector3F(x = 48.0, y = 120.0, z = 0.0),
@@ -62,12 +63,12 @@ class ObjModelLoaderSpec : Spek({
             }
 
             it("creates no entities") {
-                expect(loader.allEntities).isEmpty()
+                expect(loader.entities).isEmpty()
             }
 
             it("lists errors") {
                 expect(loader.errors).containsExactly(
-                    ObjModelLoader.Error("A vertex must have three coordinates: v 1 2", 1)
+                    Importer.Error("A vertex must have three coordinates: v 1 2", 1)
                 )
             }
         }
