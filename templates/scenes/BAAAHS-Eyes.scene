@@ -1,0 +1,79 @@
+{
+  "model": {
+    "title": "BAAAHS Eyes",
+    "entities": [
+      {
+        "type": "MovingHead",
+        "title": "leftEye",
+        "description": "Left Eye",
+        "baseDmxChannel": 1,
+        "position": {
+          "x": -100,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      {
+        "type": "MovingHead",
+        "title": "rightEye",
+        "description": "Right Eye",
+        "baseDmxChannel": 17,
+        "position": {
+          "x": 100,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      }
+    ],
+    "units": "Inches"
+  },
+  "controllers": {
+    "DMX:directDmx": {
+      "type": "DirectDMX"
+    }
+  },
+  "fixtures": [
+    {
+      "controllerId": "DMX:dmx-simulator",
+      "entityId": "leftEye",
+      "deviceType": "MovingHead",
+      "deviceConfig": {
+        "type": "MovingHead",
+        "adapter": {
+          "type": "Shenzarpy"
+        }
+      },
+      "transportConfig": {
+        "type": "DirectDMX",
+        "startChannel": 1,
+        "endChannel": 16
+      }
+    },
+    {
+      "controllerId": "DMX:dmx-simulator",
+      "entityId": "rightEye",
+      "deviceType": "MovingHead",
+      "deviceConfig": {
+        "type": "MovingHead",
+        "adapter": {
+          "type": "Shenzarpy"
+        }
+      },
+      "transportConfig": {
+        "type": "DirectDMX",
+        "startChannel": 17,
+        "endChannel": 33
+      }
+    }
+  ]
+}

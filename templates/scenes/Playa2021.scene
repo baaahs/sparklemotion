@@ -1,0 +1,34 @@
+{
+  "model": {
+    "title": "Playa2021",
+    "entities": [
+      {
+        "type": "Import",
+        "title": "playa-2021-panels.obj",
+        "description": null,
+        "objData": "playa-2021-panels.obj",
+        "objDataIsFileRef": true,
+        "metadata": {
+          "type": "baaahs.model.ConstEntityMetadataProvider",
+          "pixelCount": 960
+        }
+      },
+      {
+        "type": "Grid",
+        "title": "grid",
+        "description": null,
+        "position": {
+          "x": -24.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rows": 7,
+        "columns": 11,
+        "rowGap": 1.0,
+        "columnGap": 1.0,
+        "zigZag": true
+      }
+    ],
+    "units": "Inches"
+  }
+}
