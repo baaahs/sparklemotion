@@ -59,6 +59,12 @@ class RealFs(
             Files.isDirectory(resolve(file))
         }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) =
+        withContext(Dispatchers.IO) {
+            Files.move(resolve(fromFile), resolve(toFile))
+            Unit
+        }
+
     override suspend fun delete(file: Fs.File) =
         withContext(Dispatchers.IO) {
             Files.delete(resolve(file))

@@ -25,6 +25,10 @@ class ResourcesFs : BaseFakeFs() {
         throw UnsupportedOperationException("Resources filesystem is read-only.")
     }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) {
+        throw UnsupportedOperationException("Resources filesystem is read-only.")
+    }
+
     override suspend fun delete(file: Fs.File) {
         throw UnsupportedOperationException("Resources filesystem is read-only.")
     }

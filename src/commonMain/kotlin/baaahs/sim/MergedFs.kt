@@ -39,6 +39,14 @@ class MergedFs(
             ?: baseFs.isDirectory(file)
     }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) {
+        overlayFses.forEach {
+            if (it.exists(fromFile)) it.renameFile(fromFile, toFile)
+        }
+
+        if (baseFs.exists(fromFile)) baseFs.renameFile(fromFile, toFile)
+    }
+
     override suspend fun delete(file: Fs.File) {
         overlayFses.forEach {
             if (it.exists(file)) it.delete(file)

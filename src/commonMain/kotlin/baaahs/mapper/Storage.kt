@@ -3,12 +3,14 @@ package baaahs.mapper
 import baaahs.PinkyConfig
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
+import baaahs.io.resourcesFs
 import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
+import baaahs.sim.MergedFs
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
@@ -112,7 +114,8 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun listShaderLibraries(): List<Fs.File> {
-        return resolve("shader-libraries").listFiles()
+        return MergedFs(fs, resourcesFs)
+            .resolve("shader-libraries").listFiles()
             .also { println("shader libraries: $it") }
             .filter { it.libraryIndexFile().exists() }
             .also { println("shader libraries with index: $it") }

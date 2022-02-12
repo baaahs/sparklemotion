@@ -104,7 +104,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         Unit
     }
 
-    onChange("selected fs/dir", currentDir) {
+    onChange("selected fs/dir", request, currentDir) {
         currentDir?.let { currentDir ->
             val job = globalLaunch {
                 filesInDir = currentDir.listFiles()

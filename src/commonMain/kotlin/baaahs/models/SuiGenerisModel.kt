@@ -9,8 +9,8 @@ val suiGenerisModelData = ModelData(
     "SuiGeneris",
     listOf(
         ImportedEntityData(
-            "sui-generis.obj", null,
-            objData = "sui-generis.obj", objDataIsFileRef = true,
+            "templates/scenes/sui-generis.obj", null,
+            objData = "templates/scenes/sui-generis.obj", objDataIsFileRef = true,
             metadata = ConstEntityMetadataProvider(16 * 60)
         )
     ),

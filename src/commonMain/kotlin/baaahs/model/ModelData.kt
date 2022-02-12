@@ -5,6 +5,7 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.io.getResource
+import baaahs.model.importers.ObjImporter
 import baaahs.scene.*
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
@@ -63,8 +64,21 @@ data class ImportedEntityData(
 ) : EntityData {
     override fun edit(): MutableEntity = MutableImportedEntity(this)
 
-    override fun open(): ImportedEntityGroup =
-        ImportedEntityGroup(title, description, position, rotation, scale, metadata, objData, objDataIsFileRef, id)
+    override fun open(): ImportedEntityGroup {
+        var importFail: Exception? = null
+        val importerResults = try {
+            ObjImporter.doImport(objData, objDataIsFileRef, title) {
+                metadata?.getMetadataFor(this)?.expectedPixelCount
+            }
+        } catch (e: Exception) {
+            importFail = e
+            null
+        }
+
+        return ImportedEntityGroup(
+            title, description, position, rotation, scale, importerResults, importFail, id
+        )
+    }
 }
 
 @Serializable @SerialName("MovingHead")

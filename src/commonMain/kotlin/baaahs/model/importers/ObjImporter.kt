@@ -135,14 +135,4 @@ object ObjImporter : Importer {
         val name = if (objDataIsFileRef) objData else title
         return import(data, name, expectedPixelCount)
     }
-
-    @Deprecated("No! Should come from an FS somehow!")
-    fun load(
-        resourceName: String,
-        expectedPixelCount: (name: String) -> Int?
-    ): Importer.Results {
-        logger.debug { "Loading model data from $resourceName..." }
-        val objText = getResource(resourceName)
-        return import(objText, resourceName, expectedPixelCount)
-    }
 }

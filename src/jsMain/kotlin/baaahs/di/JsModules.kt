@@ -59,7 +59,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage"))  }
+            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { ClientStageManager(get(), get(), get()) }

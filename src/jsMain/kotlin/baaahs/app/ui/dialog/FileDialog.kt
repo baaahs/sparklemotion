@@ -28,15 +28,15 @@ class FileDialog : Observable(), IFileDialog {
     }
 
     override suspend fun onSelect(file: Fs.File) {
-        channel.send(file)
         fileRequest = null
         notifyChanged()
+        channel.send(file)
     }
 
     override suspend fun onCancel() {
-        channel.send(null)
         fileRequest = null
         notifyChanged()
+        channel.send(null)
     }
 
     fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {

@@ -8,8 +8,8 @@ val playa2021ModelData = ModelData(
     "Playa2021",
     listOf(
         ImportedEntityData(
-            "playa-2021-panels.obj", null,
-            objData = "playa-2021-panels.obj", objDataIsFileRef = true,
+            "templates/scenes/playa-2021-panels.obj", null,
+            objData = "templates/scenes/playa-2021-panels.obj", objDataIsFileRef = true,
             metadata = ConstEntityMetadataProvider(16 * 60)
         ),
         GridData(

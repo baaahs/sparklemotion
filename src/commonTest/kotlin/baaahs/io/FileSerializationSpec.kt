@@ -125,6 +125,10 @@ class FakeRemoteFsBackend : RemoteFsBackend {
         TODO("not implemented")
     }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) {
+        TODO("not implemented")
+    }
+
     override suspend fun delete(file: Fs.File) {
         TODO("not implemented")
     }

@@ -7,7 +7,6 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.mapper.MappingSession
-import baaahs.model.importers.ObjImporter
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
@@ -21,27 +20,13 @@ class ImportedEntityGroup(
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
-    metadata: EntityMetadataProvider?,
-    objData: String,
-    objDataIsFileRef: Boolean,
+    private var importerResults: Importer.Results?,
+    private var importerError: Exception?,
     @Transient
     override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), Model.EntityGroup {
     override val deviceType: DeviceType get() = PixelArrayDevice // TODO
 
-    private val importerResults: Importer.Results?
-    private val importerError: Exception?
-    init {
-        val results = try {
-            ObjImporter.doImport(objData, objDataIsFileRef, title) {
-                metadata?.getMetadataFor(this)?.expectedPixelCount
-            } to null
-        } catch (e: Exception) {
-            null to e
-        }
-        importerResults = results.first
-        importerError = results.second
-    }
 
     override val bounds: Pair<Vector3F, Vector3F> = boundingBox(importerResults?.vertices ?: emptyList())
     override val entities: List<Model.Entity> = importerResults?.entities ?: emptyList()
