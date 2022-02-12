@@ -2,7 +2,6 @@ package baaahs.gl.result
 
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
-import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RED
 
@@ -34,6 +33,6 @@ object FloatResultType : FloatsResultType<FloatResultType.ResultBuffer>(
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Float = buffer[pixelOffset + pixelIndex]
 
-        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) = TODO("FloatFixtureResults.send() not implemented")
+        override fun send(remoteVisualizers: RemoteVisualizers) = TODO("FloatFixtureResults.send() not implemented")
     }
 }

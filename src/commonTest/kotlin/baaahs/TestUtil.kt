@@ -8,6 +8,8 @@ import baaahs.fixtures.DeviceTypeRenderPlan
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
+import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
@@ -16,17 +18,22 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
+import baaahs.model.EntityId
 import baaahs.model.Model
-import baaahs.model.MovingHead
+import baaahs.model.ModelData
+import baaahs.model.SurfaceDataForTest
+import baaahs.scene.OpenScene
+import baaahs.scene.Scene
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import baaahs.sim.FixtureSimulation
 import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Time
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.ItemVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -81,38 +88,44 @@ class FakeClock(var time: Time = 0.0) : Clock {
 class FakeModelEntity(
     override val name: String,
     override val deviceType: DeviceType = PixelArrayDevice,
-    override val description: String = name
-) : Model.Entity {
+    override val description: String = name,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
+    override val id: EntityId = Model.Entity.nextId()
+) : Model.BaseEntity() {
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
+    override val transformation: Matrix4F
+        get() = Matrix4F.identity
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation {
-        TODO("not implemented")
-    }
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter) = TODO("not implemented")
+
+    override fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<Model.Entity> = TODO("not implemented")
 }
 
-class TestModelSurface(
+fun testModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
-    private val vertices: Collection<Vector3F> = emptyList()
-) : Model.Surface(name, name, PixelArrayDevice, expectedPixelCount, emptyList(), emptyList()) {
-    override fun allVertices(): Collection<Vector3F> = vertices
-}
+    vertices: List<Vector3F> = emptyList()
+) = Model.Surface(name, name, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices))
 
-fun fakeModel(vararg entities: Model.Entity) = ModelForTest(entities.toList())
-fun fakeModel(entities: List<Model.Entity>) = ModelForTest(entities)
+fun testModelSurfaceData(
+    name: String,
+    expectedPixelCount: Int? = 1,
+    vertices: List<Vector3F> = emptyList()
+) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
 
-object TestModel : ModelForTest(listOf(TestModelSurface("Panel")))
+fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
+fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
-open class ModelForTest(private val entities: List<Entity>) : Model() {
-    constructor(vararg entities: Entity) : this(entities.toList())
+val TestModel = modelForTest(listOf(testModelSurface("Panel")))
+val TestModelData = ModelData("Test Model", listOf(testModelSurfaceData("Panel")))
+fun testScene(model: Model = TestModel) = OpenScene(model)
+fun testSceneData(model: ModelData = TestModelData) = Scene(model)
 
-    override val name: String = "Test Model"
-    override val movingHeads: List<MovingHead> get() = entities.filterIsInstance<MovingHead>()
-    override val allSurfaces: List<Surface> get() = entities.filterIsInstance<Surface>()
-    override val allEntities: List<Entity> get() = entities
-    override val geomVertices: List<Vector3F> = emptyList()
-}
+fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
+fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))
@@ -120,7 +133,7 @@ class TestRenderContext(
     val model = fakeModel(modelEntities.toList())
     val deviceType = modelEntities.map { it.deviceType }.distinct().only("device type")
     val gl = FakeGlContext()
-    val renderEngine = ModelRenderEngine(gl, model, deviceType, minTextureWidth = 1,)
+    val renderEngine = ModelRenderEngine(gl, deviceType, minTextureWidth = 1,)
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 

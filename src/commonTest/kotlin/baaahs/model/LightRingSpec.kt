@@ -3,7 +3,6 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
-import baaahs.model.LightRing.Companion.facingForward
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -12,14 +11,10 @@ import kotlin.math.abs
 
 class LightRingSpec : Spek({
     describe<LightRing> {
-        val lightRing by value {
-            LightRing(
-                "", "", Vector3F.origin, 1f, facingForward
-            )
-        }
+        val lightRing by value { LightRing("ring", radius = 1f) }
 
-        it("should create pixels at the right spot") {
-            expect(lightRing.calculatePixelLocations(4).map { it.round() }).toEqual(
+        it("should create pixels at the right spots") {
+            expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
                 listOf(
                     Vector3F(1f, 0f, 0f),
                     Vector3F(0f, -1f, 0f),
@@ -30,15 +25,10 @@ class LightRingSpec : Spek({
         }
 
         context("starting at 12:00") {
-            override(lightRing) {
-                LightRing(
-                    "", "", Vector3F.origin, 1f, facingForward,
-                    firstPixelRadians = (PI / 2).toFloat()
-                )
-            }
+            override(lightRing) { LightRing("ring", radius = 1f, firstPixelRadians = (PI / 2).toFloat()) }
 
-            it("should create pixels at the right spot") {
-                expect(lightRing.calculatePixelLocations(4).map { it.round() }).toEqual(
+            it("should create pixels at the right spots") {
+                expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
                     listOf(
                         Vector3F(0f, 1f, 0f),
                         Vector3F(1f, 0f, 0f),
@@ -51,14 +41,11 @@ class LightRingSpec : Spek({
 
         context("counterclockwise") {
             override(lightRing) {
-                LightRing(
-                    "", "", Vector3F.origin, 1f, facingForward,
-                    pixelDirection = LightRing.PixelDirection.Counterclockwise
-                )
+                LightRing("ring", radius = 1f, pixelDirection = LightRing.PixelDirection.Counterclockwise)
             }
 
-            it("should create pixels at the right spot") {
-                expect(lightRing.calculatePixelLocations(4).map { it.round() }).toEqual(
+            it("should create pixels at the right spots") {
+                expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
                     listOf(
                         Vector3F(1f, 0f, 0f),
                         Vector3F(0f, 1f, 0f),

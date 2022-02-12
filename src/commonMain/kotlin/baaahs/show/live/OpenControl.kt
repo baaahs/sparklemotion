@@ -1,7 +1,7 @@
 package baaahs.show.live
 
-import baaahs.app.ui.ControlEditIntent
-import baaahs.app.ui.EditIntent
+import baaahs.app.ui.editor.ControlEditIntent
+import baaahs.app.ui.editor.EditIntent
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
@@ -17,7 +17,7 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {}
+    fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl

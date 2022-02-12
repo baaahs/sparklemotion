@@ -1,16 +1,18 @@
 package baaahs.show.mutable
 
-import baaahs.*
-import baaahs.app.ui.MutableEditable
+import baaahs.SparkleMotion
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
+import baaahs.getBang
+import baaahs.getValue
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.patch.PatchResolver
 import baaahs.gl.shader.OpenShader
+import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenPatchHolder
@@ -19,20 +21,20 @@ import baaahs.show.live.ShaderInstanceResolver
 import baaahs.util.CacheBuilder
 import baaahs.util.UniqueIds
 
-interface EditHandler {
-    fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean = true)
-    fun onShowEdit(show: Show, pushToUndoStack: Boolean = true)
-    fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean = true)
+interface EditHandler<T, TState> {
+    fun onEdit(mutableDocument: MutableDocument<T>, pushToUndoStack: Boolean = true)
+    fun onEdit(document: T, pushToUndoStack: Boolean = true)
+    fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean = true)
 }
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
-) : MutableEditable {
+) : MutableEditable<Show> {
     protected abstract val mutableShow: MutableShow
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
             PatchHolderEditorPanel(editableManager, this)
@@ -145,9 +147,16 @@ abstract class MutablePatchHolder(
     }
 }
 
+interface MutableDocument<T> : MutableEditable<T> {
+    fun build(): T
+
+    fun isChanged(originalDocument: T): Boolean =
+        originalDocument != build()
+}
+
 class MutableShow(
     baseShow: Show
-) : MutablePatchHolder(baseShow), MutableEditable {
+) : MutablePatchHolder(baseShow), MutableDocument<Show> {
     override val mutableShow: MutableShow get() = this
 
     internal val layouts = MutableLayouts(baseShow.layouts)
@@ -200,10 +209,6 @@ class MutableShow(
         return this
     }
 
-    fun isChanged(baseShow: Show): Boolean {
-        return baseShow != getShow()
-    }
-
     fun build(showBuilder: ShowBuilder): Show {
         return Show(
             title,
@@ -219,6 +224,8 @@ class MutableShow(
     }
 
     fun getShow() = build(ShowBuilder())
+
+    override fun build(): Show = getShow()
 
     fun findControl(controlId: String): MutableControl =
         controls.getBang(controlId, "control")
@@ -253,8 +260,8 @@ class MutableShow(
     fun findShaderInstance(id: String): MutableShaderInstance =
         shaderInstances.getBang(id, "shader instance")
 
-    fun commit(editHandler: EditHandler) {
-        editHandler.onShowEdit(this)
+    fun commit(editHandler: EditHandler<Show, ShowState>) {
+        editHandler.onEdit(this)
     }
 
     companion object {
@@ -353,7 +360,7 @@ class MutablePatch {
         mutableShaderInstances.remove(mutableShaderInstance)
     }
 
-    fun getEditorPanel(editableManager: EditableManager) =
+    fun getEditorPanel(editableManager: EditableManager<*>) =
         PatchEditorPanel(editableManager, this)
 }
 

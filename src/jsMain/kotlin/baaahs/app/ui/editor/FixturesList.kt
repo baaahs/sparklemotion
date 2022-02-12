@@ -17,7 +17,7 @@ import react.RHandler
 import react.dom.br
 import react.dom.header
 
-val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
+private val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
     list(EditableStyles.tabsList on ListStyle.root) {
         header {
             +"Fixtures"
@@ -55,7 +55,7 @@ val FixturesList = xComponent<FixturesListProps>("FixturesList") { props ->
 }
 
 external interface FixturesListProps : Props {
-    var editableManager: EditableManager
+    var editableManager: EditableManager<*>
     var mutablePatchHolder: MutablePatchHolder
 }
 

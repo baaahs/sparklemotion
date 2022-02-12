@@ -1,22 +1,24 @@
 package baaahs.sm.brain.sim
 
 import baaahs.Color
-import baaahs.Pluggables
-import baaahs.doRunBlocking
+import baaahs.io.RealFs
+import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.JvmNetwork
+import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Pixels
 import baaahs.util.SystemClock
+import baaahs.util.globalLaunch
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.Graphics
+import java.io.File
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -31,38 +33,41 @@ fun main(args: Array<String>) {
 }
 
 class BrainMain(private val args: Args) {
-    fun run() {
-        val model = Pluggables.loadModel(args.model)
+    fun run() = globalLaunch {
+        val fs = RealFs("Files", File(".").toPath())
+        val storage = Storage(fs, Plugins.safe(Plugins.dummyContext))
+        val sceneFile = fs.resolve(args.scene ?: error("No scene specified."))
+        val model = storage.loadScene(sceneFile)
+            ?.open()?.model
+            ?: error("No such scene file: \"$sceneFile\"")
 
         val network = JvmNetwork()
         val brainId = args.brainId ?: JvmNetwork.myAddress.toString()
-        val brainSimulator = BrainSimulator(brainId, network, JvmPixelsDisplay(2000), SystemClock)
+        val brainSimulator = BrainSimulator(
+            brainId, network, JvmPixelsDisplay(2000), SystemClock, CoroutineScope(Dispatchers.Main)
+        )
 
         val mySurface = if (args.anonymous) {
             null
-        } else if (args.surfaceName == null) {
-            if (Random.nextBoolean()) model.allSurfaces.random() else null
+        } else if (args.entityName == null) {
+            if (Random.nextBoolean())
+                model.allEntities.filterIsInstance<Model.Surface>().random()
+            else null
         } else {
-            model.allSurfaces.find { it.name == args.surfaceName }
-                ?: throw IllegalArgumentException("unknown surface \"${args.surfaceName}")
+            args.entityName?.let { model.findEntityByName(it) }
         }
         println("I'll be ${mySurface?.name ?: "anonymous"}!")
         mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
-        GlobalScope.launch { brainSimulator.run() }
-
-        doRunBlocking {
-            delay(200000L)
-        }
+        brainSimulator.start()
     }
 
     class Args(parser: ArgParser) {
-        val model by parser.option(ArgType.String, shortName = "m")
-            .default(Pluggables.defaultModel)
+        val scene by parser.option(ArgType.String)
 
         val brainId by parser.option(ArgType.String, description = "brain ID")
 
-        val surfaceName by parser.option(ArgType.String, description = "surface name")
+        val entityName by parser.option(ArgType.String, description = "entity name")
 
         val anonymous by parser.option(ArgType.Boolean, description = "anonymous surface")
             .default(false)

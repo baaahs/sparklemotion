@@ -47,6 +47,8 @@ object MovingHeadDevice : DeviceType {
         )
     override val defaultConfig: FixtureConfig
         get() = Config(Shenzarpy)
+    override val defaultPixelCount: Int
+        get() = 1
     override val serialModule: SerializersModule
         get() = SerializersModule {
             polymorphic(FixtureConfig::class) {
@@ -61,7 +63,7 @@ object MovingHeadDevice : DeviceType {
 
     override fun toString(): String = id
 
-    @Serializable @SerialName("baaahs.Core:MovingHeadDevice")
+    @Serializable @SerialName("MovingHead")
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice

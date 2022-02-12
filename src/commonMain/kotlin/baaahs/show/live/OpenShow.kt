@@ -1,20 +1,13 @@
 package baaahs.show.live
 
 import baaahs.ShowPlayer
-import baaahs.ShowState
 import baaahs.control.OpenButtonControl
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.RenderPlan
 import baaahs.getBang
-import baaahs.gl.data.Feed
-import baaahs.gl.patch.PatchResolver
-import baaahs.gl.render.FixtureRenderTarget
-import baaahs.gl.render.RenderManager
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.mutable.MutableShow
+import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
-import baaahs.sm.webapi.ShowProblem
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -76,10 +69,10 @@ class OpenShow(
                 .sortedBy { it.title }
         }
 
-    val allProblems: List<ShowProblem>
+    val allProblems: List<Problem>
         get() = buildList {
             addAll(missingPlugins.map { desc ->
-                ShowProblem(
+                Problem(
                     "Missing plugin \"${desc.title}\".",
                     "Some things may not work properly.",
                     severity = Severity.WARN
@@ -102,11 +95,8 @@ class OpenShow(
     fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
         MutableShow(show).apply(block)
 
-    fun activePatchSet(): ActivePatchSet {
-        val builder = ActivePatchSetBuilder(this)
-        addTo(builder, 0)
-        return builder.build()
-    }
+    fun buildActivePatchSet(): ActivePatchSet =
+        ActivePatchSet.build(this, allDataSources, feeds)
 
     override fun onRelease() {
         openContext.release()
@@ -146,58 +136,6 @@ class OpenShow(
     companion object {
         private val logger = Logger("OpenShow")
     }
-}
-
-data class ActivePatchSet(
-    internal val activePatches: List<OpenPatch>,
-    private val allDataSources: Map<String, DataSource>,
-    private val feeds: Map<DataSource, Feed>
-) {
-    fun createRenderPlan(
-        renderManager: RenderManager,
-        renderTargets: Collection<FixtureRenderTarget>
-    ): RenderPlan {
-        val patchResolution = PatchResolver(renderTargets, this, renderManager)
-        return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->
-            feeds.getBang(dataSource, "data feed")
-        }
-    }
-
-    fun forFixture(fixture: Fixture): List<OpenPatch> =
-        activePatches.filter { patch -> patch.matches(fixture) }
-
-    companion object {
-        val Empty = ActivePatchSet(emptyList(), emptyMap(), emptyMap())
-    }
-}
-
-class ActivePatchSetBuilder(private val openShow: OpenShow) {
-    private val items = arrayListOf<Item>()
-    private var nextSerial = 0
-
-    fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String = "") {
-        items.add(Item(patchHolder, depth, layoutContainerId, nextSerial++))
-    }
-
-    fun build(): ActivePatchSet {
-        return ActivePatchSet(
-            items.sortedWith(
-                compareBy<Item> { it.depth }
-                    .thenBy { it.layoutContainerId }
-                    .thenBy { it.serial }
-            ).map { it.patchHolder }
-                .flatMap { it.patches },
-            openShow.allDataSources,
-            openShow.feeds
-        )
-    }
-
-    private data class Item(
-        val patchHolder: OpenPatchHolder,
-        val depth: Int,
-        val layoutContainerId: String,
-        val serial: Int
-    )
 }
 
 abstract class OpenShowVisitor {

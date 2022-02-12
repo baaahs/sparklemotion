@@ -1,25 +1,25 @@
-package baaahs.app.ui
+package baaahs.app.ui.editor
 
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.app.ui.editor.EditableManager
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.show.live.ControlDisplay
 import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableDocument
 import baaahs.show.mutable.MutableShow
 
 interface Editable {
     val title: String
 }
 
-interface MutableEditable {
+interface MutableEditable<T> {
     val title: String
-    fun getEditorPanels(editableManager: EditableManager): List<DialogPanel>
+    fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel>
 }
 
 interface EditIntent {
-    fun findMutableEditable(mutableShow: MutableShow): MutableEditable
+    fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*>
 
     /**
      * If a mutation might have changed how we should look up the editable, a new
@@ -37,15 +37,20 @@ interface EditIntent {
 }
 
 class ShowEditIntent : EditIntent {
-    override fun findMutableEditable(mutableShow: MutableShow): MutableEditable =
-        mutableShow
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> =
+        mutableDocument
+}
+
+class SceneEditIntent : EditIntent {
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> =
+        mutableDocument
 }
 
 data class ControlEditIntent(internal val controlId: String) : EditIntent {
     private lateinit var mutableEditable: MutableControl
 
-    override fun findMutableEditable(mutableShow: MutableShow): MutableEditable {
-        mutableEditable = mutableShow.findControl(controlId)
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> {
+        mutableEditable = (mutableDocument as MutableShow).findControl(controlId)
         return mutableEditable
     }
 
@@ -65,9 +70,10 @@ abstract class AddToContainerEditIntent<T: MutableControl> : EditIntent {
 
     abstract fun addToContainer(mutableShow: MutableShow, mutableControl: T)
 
-    override fun findMutableEditable(mutableShow: MutableShow): MutableEditable {
-        mutableEditable = createControl(mutableShow)
-        addToContainer(mutableShow, mutableEditable)
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> {
+        mutableDocument as MutableShow
+        mutableEditable = createControl(mutableDocument)
+        addToContainer(mutableDocument, mutableEditable)
         return mutableEditable
     }
 

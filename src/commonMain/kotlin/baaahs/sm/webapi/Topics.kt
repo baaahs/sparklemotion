@@ -4,10 +4,13 @@ import baaahs.PinkyState
 import baaahs.PubSub
 import baaahs.controller.SacnDevice
 import baaahs.dmx.DmxInfo
+import baaahs.fixtures.FixtureInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
+import baaahs.plugin.Plugins
 import baaahs.sm.brain.BrainInfo
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.nullable
@@ -33,8 +36,11 @@ object Topics {
     val sacnDevices =
         PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
 
+    fun createFixtures(plugins: Plugins) =
+        PubSub.Topic("fixtures", ListSerializer(FixtureInfo.serializer()), plugins.serialModule)
+
     val showProblems =
-        PubSub.Topic("showProblems", ListSerializer(ShowProblem.serializer()))
+        PubSub.Topic("showProblems", ListSerializer(Problem.serializer()))
 
     val movingHeadPresets =
         PubSub.Topic(
@@ -50,21 +56,24 @@ object Topics {
         )
 
     class Commands(serialModule: SerializersModule) {
-        val newShow = PubSub.CommandPort(
-            "pinky/newShow", NewShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val switchToShow = PubSub.CommandPort(
-            "pinky/switchToShow", SwitchToShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveShow = PubSub.CommandPort(
-            "pinky/saveShow", SaveShowCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveAsShow = PubSub.CommandPort(
-            "pinky/saveAsShow", SaveAsShowCommand.serializer(), Unit.serializer(), serialModule
-        )
         val searchShaderLibraries = PubSub.CommandPort(
             "pinky/shaderLibraries/search",
             SearchShaderLibraries.serializer(), SearchShaderLibraries.Response.serializer(), serialModule
+        )
+    }
+
+    class DocumentCommands<T>(documentType: String, tSerializer: KSerializer<T>, serialModule: SerializersModule) {
+        val newCommand = PubSub.CommandPort(
+            "pinky/$documentType/new", NewCommand.serializer(tSerializer), Unit.serializer(), serialModule
+        )
+        val switchToCommand = PubSub.CommandPort(
+            "pinky/$documentType/switchTo", SwitchToCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveCommand = PubSub.CommandPort(
+            "pinky/$documentType/save", SaveCommand.serializer(), Unit.serializer(), serialModule
+        )
+        val saveAsCommand = PubSub.CommandPort(
+            "pinky/$documentType/saveAs", SaveAsCommand.serializer(), Unit.serializer(), serialModule
         )
     }
 }

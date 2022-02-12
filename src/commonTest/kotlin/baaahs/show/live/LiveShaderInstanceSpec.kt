@@ -10,8 +10,8 @@ import baaahs.plugin.PluginRef
 import baaahs.show.ShaderChannel
 import baaahs.show.UnknownDataSource
 import baaahs.show.live.LiveShaderInstance.*
+import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
-import baaahs.sm.webapi.ShowProblem
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -68,7 +68,7 @@ object LiveShaderInstanceSpec : Spek({
                     println("problems: ${instance.problems}")
                     expect(instance.problems.map { it.copy(id = "") })
                         .contains(
-                            ShowProblem(
+                            Problem(
                                 "Result content type is unknown for shader \"${instance.title}\".",
                                 severity = Severity.ERROR, id = ""
                             )
@@ -94,7 +94,7 @@ object LiveShaderInstanceSpec : Spek({
                     println("problems: ${instance.problems}")
                     expect(instance.problems.map { it.copy(id = "") })
                         .contains(
-                            ShowProblem(
+                            Problem(
                                 "Unresolved data source for shader \"${instance.title}\".",
                                 "Missing plugin.",
                                 severity = Severity.WARN, id = ""

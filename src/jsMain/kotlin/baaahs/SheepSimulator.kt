@@ -1,21 +1,12 @@
 package baaahs
 
 import baaahs.client.WebClient
-import baaahs.io.Fs
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.MapperUi
 import baaahs.monitor.MonitorUi
-import baaahs.net.BrowserNetwork
-import baaahs.sim.FakeNetwork
-import baaahs.sim.FixturesSimulator
-import baaahs.sim.HostedWebApp
-import baaahs.sim.Launcher
-import baaahs.util.JsPlatform
+import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
 import org.koin.core.parameter.parametersOf
@@ -37,32 +28,37 @@ class SheepSimulator(
 
     suspend fun start() = coroutineScope {
         val pinkyScope = getKoin().createScope<Pinky>()
-        launch { cleanUpBrowserStorage(pinkyScope.get<Fs>()) }
+        launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
 
-        fixturesSimulator.generateMappingData()
-
         launch { pinky.startAndRun() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
-        fixturesSimulator.launchControllers()
-        fixturesSimulator.addToVisualizer()
-
         facade.notifyChanged()
-
-        delay(200000L)
     }
 
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
-    fun createMapperApp(): JsMapperUi = getKoin().createScope<MapperUi>().get()
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
 
-    private suspend fun cleanUpBrowserStorage(fs: Fs) {
+    private suspend fun cleanUpBrowserStorage() {
+        val fs = BrowserSandboxFs("BrowserSandboxFs")
+
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->
             file.delete()
+        }
+
+        // [2022-02-10] Move show and scene files in / to /data.
+        fs.resolve().listFiles().forEach { file ->
+            if (
+                file.name.endsWith(".sparkle")
+                || file.name.endsWith(".scene")
+                || file.name == "config.json"
+            ) {
+                file.renameTo(file.parent!!.resolve("data").resolve(file.name))
+            }
         }
     }
 
@@ -81,7 +77,6 @@ class SheepSimulator(
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
-                launchItem("Mapper") { createMapperApp() },
                 launchItem("Monitor") { createMonitorApp() }
             )
     }

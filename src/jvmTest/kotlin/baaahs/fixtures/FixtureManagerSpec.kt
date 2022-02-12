@@ -16,6 +16,8 @@ import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.model.Model
 import baaahs.only
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
 import baaahs.show.Shader
 import baaahs.show.live.FakeOpenShader
@@ -33,12 +35,12 @@ object FixtureManagerSpec : Spek({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
-        val renderManager by value { RenderManager(model) { FakeGlContext() } }
+        val renderManager by value { RenderManager { FakeGlContext() } }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:
-        val fixtureManager by value { FixtureManager(renderManager, testPlugins(), renderTargets) }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, testPlugins(), renderTargets) }
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
@@ -83,7 +85,7 @@ object FixtureManagerSpec : Spek({
                 }
 
                 val openShow by value {
-                    object : ShowOpener(testToolchain, show, FakeShowPlayer(model)) {
+                    object : ShowOpener(testToolchain, show, FakeShowPlayer(SceneMonitor(OpenScene(model)))) {
                         override fun openShader(shader: Shader): OpenShader {
                             val contentType = when (shader.title) {
                                 "Pea Soup" -> fogginess
@@ -95,7 +97,7 @@ object FixtureManagerSpec : Spek({
                     }.openShow()
                 }
 
-                val activePatchSet by value { openShow.activePatchSet() }
+                val activePatchSet by value { openShow.buildActivePatchSet() }
 
                 beforeEachTest {
                     fixtureManager.activePatchSetChanged(activePatchSet)

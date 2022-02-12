@@ -13,12 +13,13 @@ import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.net.Network
 import baaahs.plugin.Plugins
-import baaahs.scene.SceneManager
+import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.sim.FakeNetwork
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.BrainHelloMessage
+import baaahs.sm.server.DocumentService
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.sm.webapi.Topics
@@ -45,7 +46,6 @@ class Pinky(
     override val coroutineContext: CoroutineContext,
     val toolchain: Toolchain,
     val stageManager: StageManager,
-    private val sceneManager: SceneManager,
     private val controllersManager: ControllersManager,
     val brainManager: BrainManager,
     private val shaderLibraryManager: ShaderLibraryManager,
@@ -57,6 +57,10 @@ class Pinky(
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
         stageManager.switchTo(newShow, file = file)
+    }
+
+    fun switchToScene(newScene: Scene?, file: Fs.File? = null) {
+        stageManager.switchToScene(newScene, file)
     }
 
     val address: Network.Address get() = link.myAddress
@@ -73,6 +77,8 @@ class Pinky(
         httpServer.listenWebSocket("/ws/visualizer") {
             fixtureManager.newRemoteVisualizerServer()
         }
+
+        fixtureManager.addFrameListener(controllersManager)
     }
 
     private var keepRunning = true
@@ -124,11 +130,11 @@ class Pinky(
                     try {
                         stageManager.renderAndSendNextFrame()
                     } catch (e: Exception) {
-//                        logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
+                        logger.error(e) { "Error rendering frame for ${stageManager.facade.currentShow?.title}"}
                         if (e is CompilationException) {
                             e.source?.let { logger.info { it } }
                         }
-//                        delay(1000)
+                        delay(1000)
                     }
                 }
                 facade.notifyChanged()
@@ -145,10 +151,22 @@ class Pinky(
         return CoroutineScope(coroutineContext).launch {
             CoroutineScope(coroutineContext).launch {
                 launch { firmwareDaddy.start() }
+
                 mappingResultsLoaderJob = launch { mappingManager.start() }
-                launch { loadConfig() }
+
                 launch { shaderLibraryManager.start() }
-                launch { sceneManager.onStart() }
+
+                launch {
+                    val config = storage.loadConfig()
+
+                    config?.runningScenePath?.let { path ->
+                        launch { stageManager.sceneDocumentService.load(path) }
+                    }
+
+                    config?.runningShowPath?.let { path ->
+                        launch { stageManager.showDocumentService.load(path) }
+                    }
+                }
             }.join()
 
             brainManager.listenForMapperMessages { message ->
@@ -165,9 +183,23 @@ class Pinky(
             }
 
             // This needs to go last-ish, otherwise we start getting network traffic too early.
-            launch { controllersManager.start() }
+            controllersManager.start()
 
             updatePinkyState(PinkyState.Running)
+        }
+    }
+
+    private suspend fun <T> DocumentService<T, *>.load(path: String) {
+        val file = storage.resolve(path)
+        try {
+            val doc = load(file)
+            if (doc == null) {
+                reportError("No ${documentType.title.lowercase()} found at $file.")
+            } else {
+                switchTo(doc, file = file)
+            }
+        } catch (e: Exception) {
+            reportError("Failed to load ${documentType.title.lowercase()} at $path", e)
         }
     }
 
@@ -226,10 +258,6 @@ class Pinky(
 //        }
     }
 
-    internal suspend fun renderAndSendNextFrame() {
-        stageManager.renderAndSendNextFrame()
-    }
-
     private fun disableDmx() {
         dmxManager.allOff()
     }
@@ -241,26 +269,14 @@ class Pinky(
         }
     }
 
-    suspend fun loadConfig() {
-        val config = storage.loadConfig()
-        config?.runningShowPath?.let { lastRunningShowPath ->
-            val lastRunningShowFile = storage.resolve(lastRunningShowPath)
-            try {
-                val show = storage.loadShow(lastRunningShowFile)
-                if (show == null) {
-                    logger.warn { "No show found at $lastRunningShowPath" }
-                } else {
-                    switchTo(show, file = lastRunningShowFile)
-                }
-            } catch (e: Exception) {
-                reportError("Failed to load show at $lastRunningShowPath", e)
-            }
+    private fun reportError(message: String, e: Exception? = null) {
+        if (e == null) {
+            logger.error { message }
+            serverNotices.add(message)
+        } else {
+            logger.error(e) { message }
+            serverNotices.add(message, e.message, e.stackTraceToString())
         }
-    }
-
-    private fun reportError(message: String, e: Exception) {
-        logger.error(e) { message }
-        serverNotices.add(message, e.message, e.stackTraceToString())
     }
 
     companion object {
@@ -271,7 +287,7 @@ class Pinky(
         val stageManager: StageManager.Facade
             get() = this@Pinky.stageManager.facade
 
-        val fixtureManager : FixtureManager.Facade
+        val fixtureManager
             get() = this@Pinky.fixtureManager.facade
 
         val networkStats: NetworkStats
@@ -289,7 +305,8 @@ class Pinky(
 
 @Serializable
 data class PinkyConfig(
-    val runningShowPath: String?
+    val runningShowPath: String? = null,
+    val runningScenePath: String? = null
 )
 
 data class PinkySettings(

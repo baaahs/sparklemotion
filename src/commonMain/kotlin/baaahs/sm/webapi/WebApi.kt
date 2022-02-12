@@ -4,7 +4,6 @@ import baaahs.app.ui.CommonIcons
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibrary
 import baaahs.randomId
-import baaahs.show.Show
 import baaahs.ui.Icon
 import kotlinx.serialization.Serializable
 
@@ -14,16 +13,16 @@ data class ClientData(
 )
 
 @Serializable
-class NewShowCommand(val template: Show? = null)
+class NewCommand<T>(val template: T? = null)
 
 @Serializable
-class SwitchToShowCommand(val file: Fs.File?)
+class SwitchToCommand(val file: Fs.File?)
 
 @Serializable
-class SaveShowCommand
+class SaveCommand
 
 @Serializable
-class SaveAsShowCommand(val file: Fs.File)
+class SaveAsCommand(val file: Fs.File)
 
 @Serializable
 class SearchShaderLibraries(val terms: String) {
@@ -32,14 +31,14 @@ class SearchShaderLibraries(val terms: String) {
 }
 
 @Serializable
-data class ShowProblem(
+data class Problem(
     val title: String,
     val message: String? = null,
     val severity: Severity = Severity.ERROR,
     val id: String = randomId("error")
 )
 
-fun Collection<ShowProblem>.severity() = maxOfOrNull { it.severity }
+fun Collection<Problem>.severity() = maxOfOrNull { it.severity }
 
 enum class Severity(val icon: Icon) {
     INFO(CommonIcons.Info),

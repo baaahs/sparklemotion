@@ -3,9 +3,7 @@ package baaahs.show.live
 import baaahs.camelize
 import baaahs.control.OpenButtonGroupControl
 import baaahs.getBang
-import baaahs.show.DataSource
-import baaahs.show.Layouts
-import baaahs.show.Panel
+import baaahs.show.*
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -16,7 +14,7 @@ import baaahs.util.Logger
 
 class ControlDisplay(
     internal val show: OpenShow,
-    internal val editHandler: EditHandler,
+    internal val editHandler: EditHandler<Show, ShowState>,
     internal val dragNDrop: DragNDrop
 ) {
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
@@ -59,7 +57,7 @@ class ControlDisplay(
             }
         }.visitShow(show)
 
-        val activePatchSet = show.activePatchSet()
+        val activePatchSet = show.buildActivePatchSet()
         val activeDataSources = mutableSetOf<DataSource>()
         activePatchSet.activePatches.forEach { activePatch ->
             activePatch.shaderInstances.forEach { shaderInstance ->

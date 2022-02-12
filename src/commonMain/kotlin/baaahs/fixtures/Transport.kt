@@ -1,9 +1,14 @@
 package baaahs.fixtures
 
+import baaahs.controller.Controller
+import baaahs.controller.NullController
 import baaahs.io.ByteArrayWriter
+import baaahs.mapper.TransportConfig
 
 interface Transport {
     val name: String
+    val controller: Controller
+    val config: TransportConfig? get() = null
 
     fun deliverBytes(byteArray: ByteArray)
     fun deliverComponents(
@@ -13,9 +18,10 @@ interface Transport {
     )
 }
 
-object NullTransport : Transport {
-    override val name: String
-        get() = "Null Transport"
+open class NullTransport(
+    override val name: String = "Null Transport",
+    override val controller: Controller = NullController
+) : Transport {
 
     override fun deliverBytes(byteArray: ByteArray) {
         // No-op.
@@ -28,4 +34,6 @@ object NullTransport : Transport {
     ) {
         // No-op.
     }
+
+    companion object : NullTransport("Null Transport", NullController)
 }

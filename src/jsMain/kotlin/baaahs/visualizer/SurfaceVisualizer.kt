@@ -1,56 +1,57 @@
 package baaahs.visualizer
 
+import baaahs.model.Model
 import three.js.*
 
 class SurfaceVisualizer(
+    private val surface: Model.Surface,
     val surfaceGeometry: SurfaceGeometry,
     vizPixels: VizPixels? = null
-) : EntityVisualizer {
-    override val title: String get() = surfaceGeometry.name
-    override var mapperIsRunning: Boolean = false
-        set(isRunning) {
-            field = isRunning
-            faceMaterial.transparent = !isRunning
-        }
+) : BaseEntityVisualizer<Model.Surface>(surface) {
+    private val mesh = Mesh(surfaceGeometry.geometry, MeshBasicMaterial()).apply {
+        name = "Surface: ${surfaceGeometry.name}"
+    }
 
-    override var selected: Boolean = false
-        set(value) {
-            lineMaterial.linewidth = if (value) 3 else 1
-            lineMaterial.needsUpdate = true
-            field = value
+    private val lineMaterial = LineDashedMaterial()
+    private val lines: List<Line<*, LineDashedMaterial>> = surfaceGeometry.lines.map { line ->
+        val lineGeo = Geometry()
+        lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
+        Line(lineGeo, lineMaterial).apply {
+            matrixAutoUpdate = false
+            mesh.add(this)
         }
+    }
 
-    private val lineMaterial = LineBasicMaterial().apply { color.set(0xaaaaaa) }
-    private var faceMaterial = MeshBasicMaterial().apply { color.set(0x222222) }
-    private val mesh = Mesh(surfaceGeometry.geometry, this.faceMaterial)
-    private val lines: List<Line<*, *>>
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: Geometry get() = surfaceGeometry.geometry
-    private var vizScene: VizScene? = null
     var vizPixels: VizPixels? = vizPixels
         set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
-            }
+            field?.removeFrom(obj)
+            value?.addTo(obj)
 
             field = value
         }
 
-    init {
-        this.faceMaterial.side = FrontSide
-        this.faceMaterial.transparent = false
-
-        mesh.asDynamic().name = "Surface: ${surfaceGeometry.name}"
-
-        this.lines = surfaceGeometry.lines.map { line -> Line(line, lineMaterial) }
-
+    override val obj = Group().apply {
+        println("New SurfaceVisualizer for ${item.title}: vizPixels=$vizPixels")
+        add(mesh)
+        vizPixels?.addTo(this)
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(this.mesh))
-        lines.forEach { line -> scene.add(VizObj(line)) }
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    init { update(item) }
+
+    override fun applyStyle(entityStyle: EntityStyle) {
+        entityStyle.applyToMesh(mesh.material, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
     }
+
+    override fun isApplicable(newItem: Any): Model.Surface? = null
+
+    //    override fun addTo(parent: VizObj) {
+//        parent.add(VizObj(mesh))
+//        mesh.updateMatrixWorld(true)
+////        lines.forEach { line -> parent.add(VizObj(line)) }
+////        vizPixels?.addTo(parent)
+//        this.parent = parent
+//    }
 }

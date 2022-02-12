@@ -2,6 +2,7 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.device.PixelArrayDevice
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
@@ -19,6 +20,7 @@ import kotlin.random.Random
 class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
+    val transformation: Matrix4F,
     val pixelArrayConfig: PixelArrayDevice.Config? = null
 ) : Pixels {
     override val size = positions.size
@@ -41,7 +43,7 @@ class VizPixels(
         vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
         vertexColorBufferAttr.usage = DynamicDrawUsage
 
-        val rotator = Rotator(Vector3(0, 0, 1), normal)
+        val rotator = Rotator(vector3FacingForward, normal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
             PlaneBufferGeometry(pixelDimension(), pixelDimension()).apply {
                 rotator.rotate(this)
@@ -65,12 +67,12 @@ class VizPixels(
         map = roundLightTx
     })
 
-    fun addToScene(scene: VizScene) {
-        scene.add(VizObj(pixelsMesh))
+    fun addTo(parent: VizObj) {
+        parent.add(pixelsMesh)
     }
 
-    fun removeFromScene(scene: VizScene) {
-        scene.remove(VizObj(pixelsMesh))
+    fun removeFrom(parent: VizObj) {
+        parent.remove(pixelsMesh)
     }
 
     override fun get(i: Int): Color {
@@ -116,10 +118,10 @@ class VizPixels(
         val panelGeom = surfaceVisualizer.geometry.clone()
         val pixGeom = pixGeometry.clone()
 
-        val straightOnNormal = Vector3(0, 0, 1)
+        val facingForward = vector3FacingForward
 
         // Rotate to straight on.
-        val rotator = Rotator(surfaceVisualizer.panelNormal, straightOnNormal)
+        val rotator = Rotator(surfaceVisualizer.panelNormal, facingForward)
         rotator.rotate(panelGeom)
         rotator.rotate(pixGeom)
 

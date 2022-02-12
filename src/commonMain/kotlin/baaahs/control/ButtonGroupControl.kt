@@ -59,7 +59,7 @@ data class MutableButtonGroupControl(
         return control
     }
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(
                 editableManager,
@@ -134,7 +134,7 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSetBuilder, panel: Panel, depth: Int) {
+    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
         buttons.forEach { it.addTo(activePatchSetBuilder, panel, depth + 1) }
     }
 

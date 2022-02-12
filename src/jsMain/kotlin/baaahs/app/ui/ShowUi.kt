@@ -24,7 +24,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
     onChange("show/state", props.show, props.show.getEnabledSwitchState(), props.editMode, appContext.dragNDrop) {
         controlDisplay = ControlDisplay(
-            props.show, appContext.webClient, appContext.dragNDrop
+            props.show, appContext.showManager, appContext.dragNDrop
         )
 
         withCleanup {
@@ -34,7 +34,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
     val genericControlProps = ControlProps(
         props.onShowStateChange,
-        props.editMode,
+        props.editMode != false,
         controlDisplay
     )
 
@@ -47,7 +47,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.layout = currentLayout
             attrs.controlDisplay = controlDisplay
             attrs.controlProps = genericControlProps
-            attrs.editMode = props.editMode
+            attrs.editMode = props.editMode != false
         }
 
         portal {
@@ -55,7 +55,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                 attrs.controlDisplay = controlDisplay
                 attrs.controlProps = genericControlProps
                 attrs.show = props.show
-                attrs.editMode = props.editMode
+                attrs.editMode = props.editMode != false
             }
         }
     }
@@ -63,7 +63,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
 external interface ShowUiProps : Props {
     var show: OpenShow
-    var editMode: Boolean
+    var editMode: Boolean?
     var onShowStateChange: () -> Unit
 }
 

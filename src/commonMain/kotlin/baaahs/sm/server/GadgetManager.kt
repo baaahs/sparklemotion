@@ -5,8 +5,6 @@ import baaahs.GadgetDataSerializer
 import baaahs.PubSub
 import baaahs.ui.Observable
 import baaahs.util.Clock
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class GadgetManager(
@@ -23,10 +21,8 @@ class GadgetManager(
         val channel = pubSub.publish(topic, gadget.state) { updated ->
             lastUserInteraction = clock.now()
 
-            CoroutineScope(coroutineContext).launch {
-                gadget.state.putAll(updated)
-                notifyChanged()
-            }
+            gadget.applyState(updated)
+            notifyChanged()
         }
         val gadgetChannelListener: (Gadget) -> Unit = { channel.onChange(it.state) }
         gadget.listen(gadgetChannelListener)

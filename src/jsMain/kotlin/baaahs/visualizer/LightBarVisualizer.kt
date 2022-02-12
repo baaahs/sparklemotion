@@ -1,64 +1,209 @@
 package baaahs.visualizer
 
+import baaahs.geom.Vector3F
+import baaahs.model.LightBar
 import baaahs.model.PixelArray
-import three.js.BoxGeometry
-import three.js.Mesh
-import three.js.MeshNormalMaterial
-import three.js.Vector3
+import baaahs.model.PolyLine
+import baaahs.util.three.addPadding
+import three.js.*
+import three_ext.clear
+import three_ext.plus
+import three_ext.set
+import three_ext.toVector3F
 
-class LightBarVisualizer(
-    pixelArray: PixelArray,
-    vizPixels: VizPixels? = null
-) : EntityVisualizer {
-    override val title: String = pixelArray.name
-    override var mapperIsRunning: Boolean = false
+class Container(
+    val box: Box3,
+    val position: Vector3? = null,
+    val rotation: Quaternion? = null,
+    val scale: Vector3? = null,
+    val bar: Boolean = false
+) {
+    val min = box.min.toVector3F()
+    val max = box.max.toVector3F()
+    val size = max - min
+    val offset = (size * .5 + min).toVector3()
 
-    override var selected: Boolean = false
-        set(value) {
-            boxMesh.material.wireframeLinewidth = if (value) 3 else 1
-            boxMesh.material.needsUpdate = true
-            field = value
+    fun createOutline(material: LineDashedMaterial) =
+        Box3Helper(box).apply {
+            this.material = material
+            applyTransforms(this)
+            position.set(position + offset)
         }
 
-    private var vizScene: VizScene? = null
-    var vizPixels : VizPixels? = vizPixels
-        set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+    fun createMesh(material: MeshBasicMaterial): Mesh<BoxGeometry, MeshBasicMaterial> {
+        val geom = BoxGeometry(size.x, size.y, size.z)
+
+        return Mesh(geom, material).apply {
+            applyTransforms(this)
+
+            if (bar) {
+                position.add(Vector3(0, 0, -.5))
+            } else {
+                position.add(offset)
             }
-
-            field = value
         }
-
-    private val boxMesh: Mesh<BoxGeometry, MeshNormalMaterial>
-
-    init {
-        val bounds = pixelArray.bounds
-        val startVertex = bounds.first
-        val endVertex = bounds.second
-        val normal = endVertex.minus(startVertex).normalize()
-
-        // TODO: This is wrong.
-        val width = endVertex.x - startVertex.x
-        val length = endVertex.y - startVertex.y
-
-        val boxGeom = BoxGeometry(width, length, 1)
-        boxGeom.translate(width / 2, length / 2, 0)
-
-        Rotator(Vector3(0, 1, 0), normal.toVector3())
-            .rotate(boxGeom)
-
-        with(startVertex) { boxGeom.translate(x, y, z) }
-
-        boxMesh = Mesh(boxGeom, MeshNormalMaterial().apply {
-            wireframe = true
-        })
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(boxMesh))
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    private fun applyTransforms(obj: Object3D) {
+        position?.let { obj.position.set(it) }
+        rotation?.let { obj.rotation.setFromQuaternion(it) }
+        scale?.let { obj.scale.set(it) }
+    }
+}
+
+class LightBarVisualizer(
+    lightBar: LightBar,
+    adapter: EntityAdapter,
+    vizPixels: VizPixels? = null
+) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
+    init {
+        update(item)
+    }
+
+    override fun isApplicable(newItem: Any): LightBar? =
+        newItem as? LightBar
+
+    override fun getPixelLocations(): List<Vector3F> =
+        item.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
+
+    override fun getSegments(): List<PolyLine.Segment> =
+        listOf(PolyLine.Segment(item.startVertex, item.endVertex, pixelCount_UNKNOWN_BUSTED))
+
+    override fun addPadding(box: Box3) {
+        box.addPadding(.02)
+    }
+
+    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
+        val box = Box3()
+        val vector = item.endVertex - item.startVertex
+        val center = item.startVertex + vector / 2f
+        val length = vector.length()
+        val normal = vector.normalize()
+
+        box.setFromPoints(
+            arrayOf(
+                Vector3(-.5, -.5, -length / 2f + .5),
+                Vector3(.5, .5, length / 2f + .5)
+            )
+        )
+        box.translate(center.toVector3())
+        box.translate(Vector3(0, 0, -1))
+
+        val quaternion = Quaternion().setFromUnitVectors(
+            Vector3F.facingForward.toVector3(),
+            normal.toVector3()
+        )
+
+        return Container(box, center.toVector3(), quaternion, bar = true)
+    }
+
+    companion object {
+        // TODO!!!
+        const val pixelCount_UNKNOWN_BUSTED = 100
+    }
+}
+
+class PolyLineVisualizer(
+    polyLine: PolyLine
+) : PixelArrayVisualizer<PolyLine>(polyLine) {
+    init {
+        update(item)
+    }
+
+    override fun isApplicable(newItem: Any): PolyLine? =
+        newItem as? PolyLine
+
+    override fun getPixelLocations(): List<Vector3F> =
+        item.segments.flatMap {
+            it.calculatePixelLocations()
+        }
+
+    override fun getSegments(): List<PolyLine.Segment> =
+        item.segments
+
+    override fun addPadding(box: Box3) {
+        box.min.x -= item.xPadding
+        box.max.x += item.xPadding
+        box.min.y -= item.yPadding
+        box.max.y += item.yPadding
+    }
+
+    override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
+        val box = Box3()
+        box.setFromPoints(pixelLocations)
+        addPadding(box)
+        return Container(box)
+    }
+}
+
+abstract class PixelArrayVisualizer<T : PixelArray>(
+    pixelArray: T,
+    private val vizPixels: VizPixels? = null
+) : BaseEntityVisualizer<T>(pixelArray) {
+    //    private val mesh: Mesh<BoxGeometry, MeshBasicMaterial> = Mesh()
+    private val containerOutlineMaterial = EntityStyle.lineMaterial()
+    private val containerMaterial = EntityStyle.meshMaterial()
+
+    private val strandGroup = Group()
+    private val strandMaterial = EntityStyle.lineMaterial()
+    private val strandHintMaterial = EntityStyle.meshMaterial()
+
+    private val pixelsPreview = PixelsPreview()
+
+    override val obj = Group()
+
+    abstract fun getPixelLocations(): List<Vector3F>
+    abstract fun getSegments(): List<PolyLine.Segment>
+
+    override fun applyStyle(entityStyle: EntityStyle) {
+        entityStyle.applyToLine(containerOutlineMaterial, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToMesh(containerMaterial, EntityStyle.Use.BacklitSurface)
+
+        entityStyle.applyToLine(strandMaterial, EntityStyle.Use.LightStrand)
+        entityStyle.applyToMesh(strandHintMaterial, EntityStyle.Use.LightStrandHint)
+
+        pixelsPreview.applyStyle(entityStyle)
+    }
+
+    abstract fun addPadding(box: Box3)
+
+    abstract fun calculateContainer(pixelLocations: Array<Vector3>): Container
+
+    override fun update(newItem: T) {
+        super.update(newItem)
+
+        val pixelLocations = getPixelLocations().map { it.toVector3() }.toTypedArray()
+        val container = calculateContainer(pixelLocations)
+        val containerOutline = container.createOutline(containerOutlineMaterial)
+        val containerMesh = container.createMesh(containerMaterial)
+
+        obj.clear()
+        obj.add(containerOutline)
+        obj.add(containerMesh)
+        obj.add(strandGroup)
+        obj.add(pixelsPreview)
+        vizPixels?.addTo(obj)
+
+        strandGroup.clear()
+        getSegments().forEach { segment ->
+            val vector = segment.endVertex - segment.startVertex
+            val normal = vector.normalize()
+            val length = vector.length()
+            strandGroup.add(
+                ArrowHelper(
+                    normal.toVector3(),
+                    segment.startVertex.toVector3(),
+                    length,
+                    0x228822,
+                    length / segment.pixelCount,
+                    length / segment.pixelCount
+                ).apply {
+                    line.material = strandMaterial
+                    cone.material = strandHintMaterial
+                }
+            )
+        }
+
+        pixelsPreview.setLocations(pixelLocations)
     }
 }

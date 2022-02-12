@@ -3,6 +3,8 @@ package baaahs.app.ui.editor
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableVisualizerControl
+import baaahs.model.ModelUnit
+import baaahs.scene.MutableScene
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShaderInstance
@@ -15,7 +17,7 @@ import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forGenericPropertiesPanel(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         propsEditors: List<PropsEditor>
     ): View = renderWrapper {
         propsEditors.forEachIndexed { index, editorPanelComponent ->
@@ -32,7 +34,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forPatchHolder(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
         fixturesList {
@@ -42,7 +44,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forPatch(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutablePatch: MutablePatch
     ): View = renderWrapper {
         patchOverview {
@@ -52,7 +54,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forShaderInstance(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutablePatch: MutablePatch,
         mutableShaderInstance: MutableShaderInstance
     ): View =
@@ -65,7 +67,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         }
 
     override fun forButton(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutableButtonControl: MutableButtonControl
     ) = renderWrapper {
         buttonPropsEditor {
@@ -75,7 +77,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forButtonGroup(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutableButtonGroupControl: MutableButtonGroupControl
     ) = renderWrapper {
         buttonGroupPropsEditor {
@@ -85,7 +87,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forVisualizer(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutableVisualizerControl: MutableVisualizerControl
     ) = renderWrapper {
         visualizerPropsEditor {
@@ -95,7 +97,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     }
 
     override fun forTitleComponent(
-        editableManager: EditableManager,
+        editableManager: EditableManager<*>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
         div(+EditableStyles.propertiesSection) {
@@ -106,6 +108,38 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 attrs.getValue = { mutablePatchHolder.title }
                 attrs.setValue = { value -> mutablePatchHolder.title = value }
                 attrs.editableManager = editableManager
+            }
+        }
+    }
+
+    override fun forSceneTitleComponent(
+        editableManager: EditableManager<*>,
+        mutableScene: MutableScene
+    ): View = renderWrapper {
+        div(+EditableStyles.propertiesSection) {
+            textFieldEditor {
+                attrs.label = "Title"
+
+                attrs.getValue = { mutableScene.title }
+                attrs.setValue = { value -> mutableScene.title = value }
+                attrs.editableManager = editableManager
+            }
+        }
+    }
+
+    override fun forModelUnitsComponent(
+        editableManager: EditableManager<*>,
+        mutableScene: MutableScene
+    ): View = renderWrapper {
+        div(+EditableStyles.propertiesSection) {
+            betterSelect<ModelUnit> {
+                attrs.label = "Unit"
+                attrs.values = ModelUnit.values().toList()
+                attrs.value = mutableScene.model.units
+                attrs.onChange = { value ->
+                    mutableScene.model.units = value
+                    editableManager.onChange()
+                }
             }
         }
     }

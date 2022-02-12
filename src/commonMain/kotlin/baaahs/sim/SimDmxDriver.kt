@@ -31,6 +31,14 @@ class FakeDmxUniverse : Dmx.Universe() {
         updateListeners()
     }
 
+    fun buffer(baseChannel: Int, channelCount: Int): Dmx.Buffer {
+        return Dmx.Buffer(channels, baseChannel, channelCount)
+    }
+
+    fun listen(listener: () -> Unit) {
+        listeners.add { listener.invoke() }
+    }
+
     fun listen(baseChannel: Int, channelCount: Int, listener: (Dmx.Buffer) -> Unit): Dmx.Buffer {
         return Dmx.Buffer(channels, baseChannel, channelCount).also {
             listeners.add { listener.invoke(it) }

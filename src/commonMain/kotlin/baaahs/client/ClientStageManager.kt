@@ -2,9 +2,10 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
-import baaahs.model.Model
+import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
 import kotlinx.serialization.json.JsonElement
@@ -12,13 +13,13 @@ import kotlinx.serialization.json.JsonElement
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    model: Model
-) : BaseShowPlayer(toolchain, model) {
+    sceneProvider: SceneProvider
+) : BaseShowPlayer(toolchain, sceneProvider) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
-        get() = openShow!!.activePatchSet()
+        get() = openShow!!.buildActivePatchSet()
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
@@ -66,8 +67,7 @@ class ClientStageManager(
 
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
-                    gadget.state.putAll(json)
-                    gadget.changed()
+                    gadget.applyState(json)
                     checkForChanges()
                 }
             }

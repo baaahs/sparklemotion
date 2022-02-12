@@ -1,13 +1,13 @@
 package baaahs.show.migration
 
-import baaahs.show.ShowMigrator
+import baaahs.show.DataMigrator
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
 @Suppress("ClassName")
-object V1_UpdateDataSourceRefs : ShowMigrator.Migration(1) {
+object V1_UpdateDataSourceRefs : DataMigrator.Migration(1) {
     private val dataSourceTypeMap = mapOf(
         "baaahs.plugin.CorePlugin.Resolution" to "baaahs.Core:Resolution",
         "baaahs.plugin.CorePlugin.PreviewResolution" to "baaahs.Core:PreviewResolution",

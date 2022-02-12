@@ -2,20 +2,22 @@ package baaahs.shows
 
 import baaahs.Gadget
 import baaahs.ShowPlayer
-import baaahs.ShowState
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.testToolchain
 import baaahs.gl.withCache
 import baaahs.model.ModelInfo
+import baaahs.scene.SceneMonitor
+import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 
 class FakeShowPlayer(
-    override val modelInfo: ModelInfo = ModelInfo.Empty,
+    override val sceneProvider: SceneProvider = SceneMonitor(ModelInfo.EmptyScene),
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
     val feeds = mutableMapOf<DataSource, Feed>()

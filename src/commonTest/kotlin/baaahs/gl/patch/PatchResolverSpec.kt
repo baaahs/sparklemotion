@@ -87,7 +87,7 @@ object PatchResolverSpec : Spek({
             val show = mutableShow.build(ShowBuilder())
             ShowOpener(testToolchain, show, FakeShowPlayer()).openShow()
         }
-        val linkedPatch by value { generateLinkedPatch(show.allDataSources, show.activePatchSet()) }
+        val linkedPatch by value { generateLinkedPatch(show.allDataSources, show.buildActivePatchSet()) }
 
         fun clickButton(id: String) {
             (show.allControls.associateBy { it.id }.getBang(id, "control") as OpenButtonControl)
@@ -502,7 +502,7 @@ object PatchResolverSpec : Spek({
 
 private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedPatch {
     val model = TestModel
-    val renderManager = RenderManager(model) { FakeGlContext() }
+    val renderManager = RenderManager { FakeGlContext() }
     val fixture = model.allEntities.first()
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture))
     val patchResolution = PatchResolver(listOf(renderTarget), activePatchSet, renderManager)

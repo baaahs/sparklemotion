@@ -71,7 +71,7 @@ object PixelArrayDevice : DeviceType {
 
     override fun toString(): String = id
 
-    @Serializable @SerialName("baaahs.Core:PixelArrayDevice")
+    @Serializable @SerialName("PixelArray")
     data class Config(
         val pixelCount: Int? = null,
         val pixelFormat: PixelFormat,

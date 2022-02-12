@@ -1,28 +1,29 @@
 package baaahs.sm.server
 
 import baaahs.*
-import baaahs.controller.ControllersManager
+import baaahs.doc.SceneDocumentType
+import baaahs.doc.ShowDocumentType
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.PubSubRemoteFsServerBackend
-import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
-import baaahs.model.ModelInfo
+import baaahs.scene.OpenScene
+import baaahs.scene.Scene
+import baaahs.scene.SceneChangeListener
+import baaahs.scene.SceneMonitor
 import baaahs.show.DataSource
 import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
-import baaahs.sm.webapi.NewShowCommand
 import baaahs.sm.webapi.Topics
 import baaahs.ui.addObserver
 import baaahs.util.Clock
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.modules.SerializersModule
+import baaahs.util.globalLaunch
 
 class StageManager(
     toolchain: Toolchain,
@@ -31,24 +32,21 @@ class StageManager(
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
     private val clock: Clock,
-    modelInfo: ModelInfo,
     private val gadgetManager: GadgetManager,
-    private val controllersManager: ControllersManager,
-    private val serverNotices: ServerNotices
-) : BaseShowPlayer(toolchain, modelInfo) {
+    private val serverNotices: ServerNotices,
+    private val sceneMonitor: SceneMonitor
+) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
 
     private val fsSerializer = storage.fsSerializer
+    private var gadgetsChanged: Boolean = false
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
 
         gadgetManager.addObserver {
-            if (!gadgetsChangedJobEnqueued) {
-                onGadgetChange()
-                gadgetsChangedJobEnqueued = false
-            }
+            gadgetsChanged = true
         }
     }
 
@@ -56,35 +54,16 @@ class StageManager(
     private val clientData =
         pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
 
-    private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
+    internal val showDocumentService = ShowDocumentService()
+    internal val sceneDocumentService = SceneDocumentService()
 
-    private val showEditSession = ShowEditSession(fsSerializer)
-    private val showEditorStateChannel: PubSub.Channel<ShowEditorState?> =
-        pubSub.publish(
-            ShowEditorState.createTopic(toolchain.plugins, fsSerializer),
-            showEditSession.getShowEditState()
-        ) { incoming ->
-            val newShow = incoming?.show
-            val newShowState = incoming?.showState
-            val newIsUnsaved = incoming?.isUnsaved ?: false
-            switchTo(
-                newShow, newShowState, showEditSession.showFile,
-                newIsUnsaved, fromClientUpdate = true
-            )
-        }
+    private var openScene: OpenScene? = null
 
-    private var gadgetsChangedJobEnqueued: Boolean = false
+    private val frameListeners = mutableListOf<FrameListener>()
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgetManager.registerGadget(id, gadget)
         super.registerGadget(id, gadget, controlledDataSource)
-    }
-
-    private fun onGadgetChange() {
-        showRunner?.onSelectedPatchesChanged()
-
-        // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
-        if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
     override fun <T : Gadget> useGadget(id: String): T {
@@ -105,131 +84,205 @@ class StageManager(
     }
 
     fun switchTo(
-        newShow: Show?,
-        newShowState: ShowState? = null,
-        file: Fs.File? = null,
-        isUnsaved: Boolean = file == null,
-        fromClientUpdate: Boolean = false
+        newShow: Show?, newShowState: ShowState? = null, file: Fs.File? = null
     ) {
-        val newShowRunner = newShow?.let {
-            val openShow = openShow(newShow, newShowState)
-            ShowRunner(newShow, newShowState, openShow, clock, renderManager, fixtureManager) { problems ->
-                this.showProblems.onChange(problems)
+        showDocumentService.switchTo(newShow, newShowState, file)
+    }
+
+    fun switchToScene(newScene: Scene?, file: Fs.File? = null) {
+        sceneDocumentService.switchTo(newScene, null, file)
+    }
+
+    private fun updateRunningScenePath(file: Fs.File?) {
+        globalLaunch {
+            storage.updateConfig {
+                copy(runningScenePath = file?.fullPath)
             }
         }
-
-        showRunner?.release()
-        releaseUnused()
-
-        showRunner = newShowRunner
-        showEditSession.show = newShowRunner?.show
-        showEditSession.showFile = file
-        showEditSession.showIsUnsaved = isUnsaved
-
-        updateRunningShowPath(file)
-
-        notifyOfShowChanges(fromClientUpdate)
     }
 
     private fun updateRunningShowPath(file: Fs.File?) {
-        GlobalScope.launch {
+        globalLaunch {
             storage.updateConfig {
                 copy(runningShowPath = file?.fullPath)
             }
         }
     }
 
-    internal fun notifyOfShowChanges(fromClientUpdate: Boolean = false) {
-        if (!fromClientUpdate) {
-            showEditorStateChannel.onChange(showEditSession.getShowEditState())
-        }
-
-        facade.notifyChanged()
-    }
-
-    suspend fun renderAndSendNextFrame(dontProcrastinate: Boolean = true) {
+    suspend fun renderAndSendNextFrame(doHousekeepingFirst: Boolean = false) {
         showRunner?.let { showRunner ->
             // Unless otherwise instructed, = generate and send the next frame right away,
             // then perform any housekeeping tasks immediately afterward, to avoid frame lag.
-            if (dontProcrastinate) housekeeping()
+            if (doHousekeepingFirst) housekeeping()
 
-            controllersManager.beforeFrame()
+            frameListeners.forEach { it.beforeFrame() }
             if (showRunner.renderNextFrame()) {
                 fixtureManager.sendFrame()
             }
-            controllersManager.afterFrame()
+            frameListeners.forEach { it.afterFrame() }
 
-            if (!dontProcrastinate) housekeeping()
+            if (!doHousekeepingFirst) housekeeping()
         }
     }
 
     private fun housekeeping() {
-        if (showRunner!!.housekeeping()) facade.notifyChanged()
+        if (gadgetsChanged) {
+            showRunner?.onSelectedPatchesChanged()
+            gadgetsChanged = false
+        }
+
+        // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
+        if (showRunner?.housekeeping() == true) facade.notifyChanged()
     }
 
     fun shutDown() {
         showRunner?.release()
-        showEditorStateChannel.unsubscribe()
+        showDocumentService.release()
     }
 
     fun logStatus() {
         renderManager.logStatus()
     }
 
-    inner class ShowEditSession(remoteFsSerializer: RemoteFsSerializer) {
-        var show: Show? = null
-        var showFile: Fs.File? = null
-        var showIsUnsaved: Boolean = false
+    inner class ShowDocumentService : DocumentService<Show, ShowState>(
+        pubSub, storage,
+        ShowState.createTopic(
+            toolchain.plugins.serialModule,
+            fsSerializer
+        ),
+        Show.serializer(),
+        fsSerializer,
+        toolchain.plugins.serialModule,
+        ShowDocumentType
+    ) {
+        private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
-        init {
-            val commands = Topics.Commands(SerializersModule {
-                include(remoteFsSerializer.serialModule)
-                include(toolchain.plugins.serialModule)
-            })
-            pubSub.listenOnCommandChannel(commands.newShow) { command -> handleNewShow(command) }
-            pubSub.listenOnCommandChannel(commands.switchToShow) { command -> handleSwitchToShow(command.file) }
-            pubSub.listenOnCommandChannel(commands.saveShow) { command -> handleSaveShow() }
-            pubSub.listenOnCommandChannel(commands.saveAsShow) { command ->
-                val saveAsFile = storage.resolve(command.file.fullPath)
-                handleSaveAsShow(saveAsFile)
-                updateRunningShowPath(saveAsFile)
-            }
+        override fun createDocument(): Show = buildEmptyShow()
+
+        override suspend fun load(file: Fs.File): Show? {
+            return storage.loadShow(file)
         }
 
-        private suspend fun handleNewShow(command: NewShowCommand) {
-            switchTo(command.template ?: buildEmptyShow())
+        override suspend fun save(file: Fs.File, document: Show) {
+            storage.saveShow(file, document)
         }
 
-        private suspend fun handleSwitchToShow(file: Fs.File?) {
-            if (file != null) {
-                switchTo(storage.loadShow(file), file = file, isUnsaved = false)
-            } else {
-                switchTo(null, null, null)
-            }
+        override fun onFileChanged(saveAsFile: Fs.File) {
+            updateRunningShowPath(saveAsFile)
         }
 
-        private suspend fun handleSaveShow() {
-            showFile?.let { showFile ->
-                show?.let { show -> saveShow(showFile, show) }
-            }
-        }
-
-        private suspend fun handleSaveAsShow(showAsFile: Fs.File) {
-            show?.let { show -> saveShow(showAsFile, show) }
-        }
-
-        private suspend fun saveShow(file: Fs.File, show: Show) {
-            storage.saveShow(file, show)
-            showFile = file
-            showIsUnsaved = false
-            notifyOfShowChanges()
-        }
-
-        fun getShowEditState(): ShowEditorState? {
+        override fun getDocumentState(): DocumentState<Show, ShowState>? {
             return showRunner?.let { showRunner ->
-                show?.withState(showRunner.getShowState(), showIsUnsaved, showFile)
+                document?.withState(showRunner.getShowState(), isUnsaved, file)
             }
         }
+
+        override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {
+            super.notifyOfDocumentChanges(fromClientUpdate)
+            facade.notifyChanged()
+        }
+
+        override fun switchTo(
+            newDocument: Show?,
+            newState: ShowState?,
+            file: Fs.File?,
+            isUnsaved: Boolean,
+            fromClientUpdate: Boolean
+        ) {
+            val newShowRunner = newDocument?.let {
+                val openShow = openShow(newDocument, newState)
+                ShowRunner(newDocument, newState, openShow, clock, renderManager, fixtureManager) { problems ->
+                    showProblems.onChange(problems)
+                }
+            }
+
+            showRunner?.release()
+            releaseUnused()
+
+            showRunner = newShowRunner
+            super.switchTo(newDocument, newState, file, isUnsaved, fromClientUpdate)
+
+            updateRunningShowPath(file)
+
+            notifyOfDocumentChanges(fromClientUpdate)
+        }
+    }
+
+    inner class SceneDocumentService : DocumentService<Scene, Unit>(
+        pubSub, storage,
+        Scene.createTopic(
+            toolchain.plugins.serialModule,
+            fsSerializer
+        ),
+        Scene.serializer(),
+        fsSerializer,
+        toolchain.plugins.serialModule,
+        SceneDocumentType
+    ) {
+        override fun createDocument(): Scene = Scene.Empty
+
+        override suspend fun load(file: Fs.File): Scene? {
+            return storage.loadScene(file)
+        }
+
+        override suspend fun save(file: Fs.File, document: Scene) {
+            storage.saveScene(file, document)
+        }
+
+        override fun onFileChanged(saveAsFile: Fs.File) {
+            updateRunningScenePath(saveAsFile)
+        }
+
+        override fun getDocumentState(): DocumentState<Scene, Unit>? {
+            return document?.let { DocumentState(it, Unit, false, null) }
+        }
+
+        override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {
+            super.notifyOfDocumentChanges(fromClientUpdate)
+            facade.notifyChanged()
+        }
+
+        private fun List<SceneChangeListener>.notify() {
+            forEach { listener -> listener(this@StageManager.openScene) }
+        }
+
+        override fun switchTo(
+            newDocument: Scene?,
+            newState: Unit?,
+            file: Fs.File?,
+            isUnsaved: Boolean,
+            fromClientUpdate: Boolean
+        ) {
+//            val newShowRunner = newDocument?.let {
+//                val openShow = openShow(newDocument, newState)
+//                ShowRunner(newDocument, newState, openShow, clock, renderManager, fixtureManager) { problems ->
+//                    showProblems.onChange(problems)
+//                }
+//            }
+
+//            showRunner?.release()
+//            releaseUnused()
+
+//            showRunner = newShowRunner
+            super.switchTo(newDocument, newState, file, isUnsaved, fromClientUpdate)
+
+            updateRunningScenePath(file)
+
+            val newOpenScene = newDocument?.open()
+            this@StageManager.openScene = newOpenScene
+            sceneMonitor.onChange(newOpenScene)
+
+            notifyOfDocumentChanges(fromClientUpdate)
+        }
+    }
+
+    fun addFrameListener(listener: FrameListener): FrameListener {
+        frameListeners.add(listener)
+        return listener
+    }
+
+    fun removeFrameListener(listener: FrameListener) {
+        frameListeners.remove(listener)
     }
 
     inner class Facade : baaahs.ui.Facade() {
@@ -237,6 +290,20 @@ class StageManager(
             get() = this@StageManager.showRunner?.show
 
         val currentRenderPlan: RenderPlan?
-            get() = this@StageManager.fixtureManager.currentRenderPlan
+            get() = this@StageManager.fixtureManager.facade.currentRenderPlan
+
+        val openScene: OpenScene?
+            get() = this@StageManager.openScene
+
+        fun addFrameListener(listener: FrameListener) =
+            this@StageManager.addFrameListener(listener)
+
+        fun removeFrameListener(listener: FrameListener) =
+            this@StageManager.removeFrameListener(listener)
     }
+}
+
+interface FrameListener {
+    fun beforeFrame()
+    fun afterFrame()
 }

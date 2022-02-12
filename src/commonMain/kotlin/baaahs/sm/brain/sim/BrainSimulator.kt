@@ -10,16 +10,15 @@ import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class BrainSimulator(
     val id: String,
     private val network: Network,
     private val pixels: Pixels,
-    private val clock: Clock
+    private val clock: Clock,
+    private val coroutineScope: CoroutineScope
 ) : Network.UdpListener {
     val facade = Facade()
 
@@ -33,6 +32,8 @@ class BrainSimulator(
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
     private val state: State = State.Unknown
+    private var keepRunning = true
+    private var job: Job? = null
 
     private val frameChannel = Channel<IncomingFrame>(Channel.CONFLATED) {
         logger.warn { "[$id]: Skipped frame!" }
@@ -40,12 +41,21 @@ class BrainSimulator(
 
     enum class State { Unknown, Link, Online }
 
-    suspend fun run() {
+    fun start() {
         link = network.link("brain")
         udpSocket = link.listenFragmentingUdp(Ports.BRAIN, this)
 
-        GlobalScope.launch { handleFrames() }
-        sendHello()
+        keepRunning = true
+        job = coroutineScope.launch {
+            coroutineScope.launch { handleFrames() }
+            coroutineScope.launch { sendHello() }
+        }
+    }
+
+    fun stop() {
+        keepRunning = false
+        job?.cancel()
+        job = null
     }
 
     private suspend fun reset() {
@@ -69,7 +79,7 @@ class BrainSimulator(
     }
 
     private suspend fun sendHello() {
-        while (true) {
+        while (keepRunning) {
             val elapsedSinceMessage = clock.now() - (lastInstructionsReceivedAt ?: 0.0)
             if (elapsedSinceMessage > 100) {
                 if (lastInstructionsReceivedAt != null) {
@@ -135,7 +145,7 @@ class BrainSimulator(
     }
 
     private suspend fun handleFrames() {
-        while (true) {
+        while (keepRunning) {
             val incomingFrame = frameChannel.receive()
             val reader = incomingFrame.reader
 
@@ -170,8 +180,6 @@ class BrainSimulator(
                     PingMessage(pongData, true)
                 )
             }
-
-            delay(10)
         }
     }
 

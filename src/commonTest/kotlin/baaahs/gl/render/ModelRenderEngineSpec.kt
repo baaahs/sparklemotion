@@ -1,7 +1,8 @@
 package baaahs.gl.render
 
-import baaahs.*
+import baaahs.describe
 import baaahs.device.DeviceType
+import baaahs.englishize
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.NullTransport
@@ -12,6 +13,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.shader.InputPort
+import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.*
 import baaahs.show.Shader
@@ -19,6 +21,7 @@ import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -37,7 +40,7 @@ object ModelRenderEngineSpec : Spek({
         val deviceType by value { DeviceTypeForTest(dataSource) }
         val maxFramebufferWidth by value { 64 }
         val renderEngine by value {
-            ModelRenderEngine(gl, TestModel, deviceType, minTextureWidth = 1, maxFramebufferWidth)
+            ModelRenderEngine(gl, deviceType, minTextureWidth = 1, maxFramebufferWidth)
         }
         val texture by value { gl.textures.only("texture") }
 

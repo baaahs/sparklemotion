@@ -8,7 +8,6 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
@@ -20,58 +19,29 @@ import baaahs.util.Logger
 
 class PatchResolver(
     renderTargets: Collection<RenderTarget>,
-    activePatchSet: ActivePatchSet,
+    private val activePatchSet: ActivePatchSet,
     private val renderManager: RenderManager
-) : BasePatchResolver(renderTargets, activePatchSet) {
-    override fun buildProgram(
-        linkedPatch: LinkedPatch,
-        deviceType: DeviceType,
-        feedResolver: FeedResolver
-    ) = try {
-        renderManager.compile(deviceType, linkedPatch, feedResolver)
-    } catch (e: GlslException) {
-        logger.error(e) { "Error preparing program" }
-        if (e is CompilationException) {
-            e.source?.let { ShowRunner.logger.info { it } }
-        }
-
-        renderManager.compile(
-            deviceType, GuruMeditationError(deviceType).linkedPatch, feedResolver
-        )
-    }
-
-    companion object {
-        private val logger = Logger<PatchResolver>()
-
-        fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
-    }
-}
-
-abstract class BasePatchResolver(
-    renderTargets: Collection<RenderTarget>,
-    private val activePatchSet: ActivePatchSet
 ) {
-    val portDiagrams =
-        renderTargets
-            .groupBy { it.fixture.deviceType }
-            .mapValues { (_, renderTargets) ->
-                val patchSetsByKey = mutableMapOf<String, PatchSet>()
-                val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
+    val portDiagrams = renderTargets
+        .groupBy { it.fixture.deviceType }
+        .mapValues { (_, renderTargets) ->
+            val patchSetsByKey = mutableMapOf<String, PatchSet>()
+            val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
-                renderTargets.forEach { renderTarget ->
-                    val patchSet = activePatchSet.forFixture(renderTarget.fixture)
-                    val key = patchSet.joinToString(":") { it.serial.toString(16) }
+            renderTargets.forEach { renderTarget ->
+                val patchSet = activePatchSet.forFixture(renderTarget.fixture)
+                val key = patchSet.joinToString(":") { it.serial.toString(16) }
 
-                    patchSetsByKey[key] = patchSet
-                    renderTargetsByPatchSetKey.getOrPut(key) { mutableListOf() }
-                        .add(renderTarget)
-                }
-
-                patchSetsByKey.map { (key, patchSet) ->
-                    PortDiagram(patchSet) to
-                            renderTargetsByPatchSetKey[key]!! as List<RenderTarget>
-                }
+                patchSetsByKey[key] = patchSet
+                renderTargetsByPatchSetKey.getOrPut(key) { mutableListOf() }
+                    .add(renderTarget)
             }
+
+            patchSetsByKey.map { (key, patchSet) ->
+                PortDiagram(patchSet) to
+                        renderTargetsByPatchSetKey[key]!! as List<RenderTarget>
+            }
+        }
 
     fun createRenderPlan(
         dataSources: Map<String, DataSource>,
@@ -97,11 +67,28 @@ abstract class BasePatchResolver(
         )
     }
 
-    abstract fun buildProgram(
+    private fun buildProgram(
         linkedPatch: LinkedPatch,
         deviceType: DeviceType,
         feedResolver: FeedResolver
-    ): GlslProgram
+    ) = try {
+        renderManager.compile(deviceType, linkedPatch, feedResolver)
+    } catch (e: GlslException) {
+        logger.error(e) { "Error preparing program" }
+        if (e is CompilationException) {
+            e.source?.let { ShowRunner.logger.info { it } }
+        }
+
+        renderManager.compile(
+            deviceType, GuruMeditationError(deviceType).linkedPatch, feedResolver
+        )
+    }
+
+    companion object {
+        private val logger = Logger<PatchResolver>()
+
+        fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
+    }
 }
 
 private typealias PatchSet = List<OpenPatch>

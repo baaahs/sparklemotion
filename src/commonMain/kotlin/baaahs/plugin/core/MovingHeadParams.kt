@@ -7,13 +7,14 @@ import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.result.FloatsResultType
-import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RGBA
 
 data class MovingHeadParams(
+    /** In radians. */
     val pan: Float,
+    /** In radians. */
     val tilt: Float,
     val colorWheel: Float,
     val dimmer: Float
@@ -21,6 +22,7 @@ data class MovingHeadParams(
     fun send(buffer: MovingHead.Buffer) {
         buffer.pan = pan
         buffer.tilt = tilt
+        // TODO: Not all moving heads have a color wheel, some use RGB.
         buffer.colorWheelPosition = colorWheel
         buffer.dimmer = dimmer
     }
@@ -67,17 +69,18 @@ data class MovingHeadParams(
         ) : baaahs.gl.result.FixtureResults(pixelOffset, pixelCount) {
             val movingHeadParams get() = this@ResultBuffer[pixelOffset]
 
-            override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
-                val transport = fixture.transport
+            private val movingHead = fixture.modelEntity as MovingHead
+            private val adapter = movingHead.adapter
+            private val channels = ByteArray(adapter.dmxChannelCount)
+            private val movingHeadBuffer = adapter.newBuffer(Dmx.Buffer(channels))
 
-                val movingHead = fixture.modelEntity as MovingHead
-                val adapter = movingHead.adapter
-
-                val size = adapter.dmxChannelCount
-                val channels = ByteArray(size)
-                movingHeadParams.send(adapter.newBuffer(Dmx.Buffer(channels)))
-                transport.deliverBytes(channels)
-                remoteVisualizers.sendFrameData(entity) { out -> out.writeBytes(channels) }
+            override fun send(remoteVisualizers: RemoteVisualizers) {
+                movingHeadParams.send(movingHeadBuffer)
+                fixture.transport.deliverBytes(channels)
+                remoteVisualizers.sendFrameData(movingHead) { out ->
+                    out.writeShort(channels.size)
+                    out.writeBytes(channels)
+                }
             }
         }
     }

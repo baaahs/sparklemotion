@@ -1,10 +1,9 @@
 package baaahs
 
-import baaahs.controller.ControllersManager
-import baaahs.controllers.FakeMappingManager
+import baaahs.controller.Controller
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.Transport
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
@@ -13,8 +12,8 @@ import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.Storage
-import baaahs.models.SheepModel
 import baaahs.net.TestNetwork
+import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -44,18 +43,17 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(SheepModel.Panel("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(testModelSurface("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(SheepModel.Panel("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        Fixture(testModelSurface("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
     private val dmxEvents = mutableListOf<String>()
-    private val sheepModel = SheepModel().apply { surfaces = emptyList() }
     private lateinit var stageManager: StageManager
-    private lateinit var fixtureManager: FixtureManager
+    private lateinit var fixtureManager: FixtureManagerImpl
 
     @BeforeTest
     fun setUp() {
@@ -64,17 +62,16 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
-        val model = TestModel
-        val renderManager = RenderManager(model) { fakeGlslContext }
+        val renderManager = RenderManager { fakeGlslContext }
         val plugins = testPlugins()
-        fixtureManager = FixtureManager(renderManager, plugins)
+        fixtureManager = FixtureManagerImpl(renderManager, plugins)
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
-            FakeClock(), sheepModel, GadgetManager(server, FakeClock(), dispatcher),
-            ControllersManager(emptyList(), FakeMappingManager(), model, fixtureManager),
-            ServerNotices(server, dispatcher)
+            FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
+            ServerNotices(server, dispatcher), SceneMonitor()
         )
         stageManager.switchTo(SampleData.sampleShow)
+        stageManager.switchToScene(testSceneData())
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()
         surface2Messages.clear()
@@ -84,7 +81,7 @@ class ShowRunnerTest {
     @Test
     @Ignore // TODO
     fun whenNoKnownSurfaces_shouldStillCreateShow() = doRunBlocking {
-        stageManager.renderAndSendNextFrame()
+        stageManager.renderAndSendNextFrame(true)
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(0)
     }
@@ -92,12 +89,12 @@ class ShowRunnerTest {
     @Test
     fun shouldRenderShow() = doRunBlocking {
         fixtureManager.fixturesChanged(listOf(surface1Fixture, surface2Fixture), emptyList())
-        stageManager.renderAndSendNextFrame()
+        stageManager.renderAndSendNextFrame(true)
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(1)
         expect(surface2Messages.size).toBe(1)
 
-        stageManager.renderAndSendNextFrame()
+        stageManager.renderAndSendNextFrame(true)
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(2)
         expect(surface2Messages.size).toBe(2)
@@ -150,36 +147,36 @@ class ShowRunnerTest {
 
     @Test
     fun inNoProcrastinationMode_whenSurfacesAreAddedOrRemoved_shouldUpdateShowAfterNextFrame() = doRunBlocking {
-        stageManager.renderAndSendNextFrame() // No surfaces so no show created, nothing rendered.
+        stageManager.renderAndSendNextFrame(true) // No surfaces so no show created, nothing rendered.
         expect(renderTargets.size).toBe(0)
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Create a new show with one surface and render to it.
+        stageManager.renderAndSendNextFrame(true) // Create a new show with one surface and render to it.
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(1)
 
-        stageManager.renderAndSendNextFrame() // Render again.
+        stageManager.renderAndSendNextFrame(true) // Render again.
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(2)
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Add another surface, render to both.
+        stageManager.renderAndSendNextFrame(true) // Add another surface, render to both.
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(3)
         expect(surface2Messages.size).toBe(1)
 
-        stageManager.renderAndSendNextFrame() // Render again to both.
+        stageManager.renderAndSendNextFrame(true) // Render again to both.
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(4)
         expect(surface2Messages.size).toBe(2)
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
-        stageManager.renderAndSendNextFrame() // Remove the first surface and render to only the second.
+        stageManager.renderAndSendNextFrame(true) // Remove the first surface and render to only the second.
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(4)
         expect(surface2Messages.size).toBe(3)
 
-        stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
+        stageManager.renderAndSendNextFrame(true) // Render another frame on the remaining surface.
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(4)
         expect(surface2Messages.size).toBe(4)
@@ -190,28 +187,28 @@ class ShowRunnerTest {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Render a frame.
+        stageManager.renderAndSendNextFrame(true) // Render a frame.
         expect(renderTargets.size).toBe(1)
         expect(surface1Messages.size).toBe(1)
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Prior show renders a frame, new show is created with two surfaces.
+        stageManager.renderAndSendNextFrame(true) // Prior show renders a frame, new show is created with two surfaces.
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(2)
         expect(surface2Messages.size).toBe(0)
 
-        stageManager.renderAndSendNextFrame() // Render a frame with the new show.
+        stageManager.renderAndSendNextFrame(true) // Render a frame with the new show.
         expect(renderTargets.size).toBe(2)
         expect(surface1Messages.size).toBe(3)
         expect(surface2Messages.size).toBe(1)
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
-        stageManager.renderAndSendNextFrame() // Render another frame on both surfaces, then recreate the show with new surfaces.
+        stageManager.renderAndSendNextFrame(true) // Render another frame on both surfaces, then recreate the show with new surfaces.
         expect(renderTargets.size).toBe(3)
         expect(surface1Messages.size).toBe(4)
         expect(surface2Messages.size).toBe(2)
 
-        stageManager.renderAndSendNextFrame() // Render another frame on the remaining surface.
+        stageManager.renderAndSendNextFrame(true) // Render another frame on the remaining surface.
         expect(renderTargets.size).toBe(3)
         expect(surface1Messages.size).toBe(4)
         expect(surface2Messages.size).toBe(3)
@@ -222,7 +219,7 @@ class ShowRunnerTest {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Create show and request gadgets.
+        stageManager.renderAndSendNextFrame(true) // Create show and request gadgets.
         expect(renderTargets.size).toBe(1)
 
         val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
@@ -230,7 +227,7 @@ class ShowRunnerTest {
         originalSlider.position = 0.5f
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
+        stageManager.renderAndSendNextFrame(true) // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
@@ -242,7 +239,7 @@ class ShowRunnerTest {
 //        renderSurfaces.supportsSurfaceChange = false
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Create show and request gadgets.
+        stageManager.renderAndSendNextFrame(true) // Create show and request gadgets.
         expect(renderTargets.size).toBe(1)
 
         expect(serverNetwork.packetsToSend.size).toBe(0)
@@ -252,7 +249,7 @@ class ShowRunnerTest {
         originalSlider.position = 0.5f
 
         fixtureManager.fixturesChanged(listOf(surface2Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Recreate show and restore gadget state.
+        stageManager.renderAndSendNextFrame(true) // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
         val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
@@ -263,7 +260,7 @@ class ShowRunnerTest {
     fun shouldUpdateDmxAfterEveryFrame() = doRunBlocking {
         expect(dmxEvents).isEmpty()
 
-        stageManager.renderAndSendNextFrame()
+        stageManager.renderAndSendNextFrame(true)
 
         expect(dmxEvents).containsExactly("dmx frame sent")
     }
@@ -277,21 +274,24 @@ class ShowRunnerTest {
     @Test
     fun whenSurfaceIsReAddedAndNewBufferIsRegistered_shouldHaveForgottenAboutOldOne() = doRunBlocking {
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Creates show and registers a buffer for surface1.
+        stageManager.renderAndSendNextFrame(true) // Creates show and registers a buffer for surface1.
 
         fixtureManager.fixturesChanged(emptyList(), listOf(surface1Fixture))
-        stageManager.renderAndSendNextFrame() // Removes old buffer for surface1.
+        stageManager.renderAndSendNextFrame(true) // Removes old buffer for surface1.
 
         fixtureManager.fixturesChanged(listOf(surface1Fixture), emptyList())
-        stageManager.renderAndSendNextFrame() // Creates new buffer for surface1.
+        stageManager.renderAndSendNextFrame(true) // Creates new buffer for surface1.
 
-        stageManager.renderAndSendNextFrame() // Renders frame, expect no exceptions due to too many buffers.
+        stageManager.renderAndSendNextFrame(true) // Renders frame, expect no exceptions due to too many buffers.
     }
 
     class FakeTransport(
         override val name: String = "Fake Transport",
         private val fn: (byteArray: ByteArray) -> Unit
     ) : Transport {
+        override val controller: Controller
+            get() = TODO("not implemented")
+
         override fun deliverBytes(byteArray: ByteArray) {
             fn(byteArray)
         }

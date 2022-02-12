@@ -1,51 +1,54 @@
 package baaahs.sim
 
+import baaahs.controller.Controller
+import baaahs.controller.NullController
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
-import baaahs.util.Clock
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
 actual class MovingHeadSimulation actual constructor(
     private val movingHead: MovingHead,
-    private val simulationEnv: SimulationEnv
+    private val adapter: EntityAdapter
 ) : FixtureSimulation {
-    private val dmxUniverse = simulationEnv[FakeDmxUniverse::class]
+    private val dmxUniverse = adapter.simulationEnv[FakeDmxUniverse::class]
 
     override val mappingData: MappingSession.SurfaceData?
         get() = null
 
-    override val entityVisualizer: MovingHeadVisualizer by lazy {
-        val clock = simulationEnv[Clock::class]
-        MovingHeadVisualizer(movingHead, clock, dmxUniverse)
-    }
+    private val dmxBufferReader = dmxUniverse.buffer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
+    private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
 
-    private val buffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
+    override val itemVisualizer: MovingHeadVisualizer by lazy {
+        val visualizer = MovingHeadVisualizer(movingHead, adapter)
+        dmxUniverse.listen {
+            visualizer.receivedUpdate(adapterBuffer)
+        }
+        visualizer
+    }
 
     override val previewFixture: Fixture by lazy {
         Fixture(
             movingHead,
             1,
-            listOf(movingHead.origin),
+            listOf(movingHead.position),
             movingHead.deviceType.defaultConfig,
             movingHead.name,
             PreviewTransport()
         )
     }
 
-    override fun launch() {
-    }
-
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         val channelCount = reader.readShort().toInt()
         repeat(channelCount) { i ->
-            buffer[i] = reader.readByte()
+            dmxBufferReader[i] = reader.readByte()
         }
 
-        entityVisualizer.receivedDmxFrame()
+        itemVisualizer.receivedUpdate(adapterBuffer)
     }
 
     inner class PreviewTransport : Transport {
@@ -53,6 +56,9 @@ actual class MovingHeadSimulation actual constructor(
 
         override val name: String
             get() = movingHead.name
+
+        override val controller: Controller
+            get() = NullController
 
         override fun deliverBytes(byteArray: ByteArray) {
             for (i in byteArray.indices) {

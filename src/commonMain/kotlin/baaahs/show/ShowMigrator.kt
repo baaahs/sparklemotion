@@ -1,14 +1,31 @@
 package baaahs.show
 
-import baaahs.show.migration.AllMigrations
+import baaahs.scene.Scene
+import baaahs.show.migration.AllSceneMigrations
+import baaahs.show.migration.AllShowMigrations
 import baaahs.show.migration.toJsonObj
 import baaahs.util.Logger
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
 
-object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
-    private val allMigrations = AllMigrations
-    private val currentVersion = allMigrations.maxOf { it.toVersion }
-    private const val versionKey = "version"
+object ShowMigrator : DataMigrator<Show>(Show.serializer(), AllShowMigrations)
+object SceneMigrator : DataMigrator<Scene>(Scene.serializer(), AllSceneMigrations)
+
+abstract class DataMigrator<T : Any>(
+    tSerializer: KSerializer<T>,
+    private val migrations: List<Migration>
+) : JsonTransformingSerializer<T>(tSerializer) {
+    init {
+        val versionDupes = migrations.groupBy { it.toVersion }
+            .filter { (_, matching) -> matching.size > 1 }
+            .map { (version, _) -> version }
+            .sortedBy { it }
+        if (versionDupes.isNotEmpty()) {
+            throw Error("Duplicate migrations for version(s): ${versionDupes.joinToString(", ")}")
+        }
+    }
+    private val currentVersion = migrations.maxOf { it.toVersion }
+    private val versionKey = "version"
 
     override fun transformDeserialize(element: JsonElement): JsonElement {
         if (element !is JsonObject) return element
@@ -24,10 +41,10 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
 
         logger.debug { "Migrating from v$fromVersion:\n$newJson" }
 
-        allMigrations.forEach { migration ->
+        migrations.forEach { migration ->
             if (fromVersion < migration.toVersion) {
                 logger.info {
-                    "Migrating show from $fromVersion to ${migration.toVersion} (${migration::class.simpleName})."
+                    "Migrating from $fromVersion to ${migration.toVersion} (${migration::class.simpleName})."
                 }
                 newJson = migration.migrate(newJson)
             }
@@ -49,5 +66,5 @@ object ShowMigrator : JsonTransformingSerializer<Show>(Show.serializer()) {
         abstract fun migrate(from: JsonObject): JsonObject
     }
 
-    private val logger = Logger<ShowMigrator>()
+    private val logger = Logger<DataMigrator<*>>()
 }

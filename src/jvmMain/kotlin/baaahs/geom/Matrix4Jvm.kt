@@ -1,22 +1,89 @@
 package baaahs.geom
 
-import com.jogamp.opengl.math.Quaternion
+import kotlinx.serialization.Serializable
+import org.joml.Matrix4f as NativeMatrix4F
+import org.joml.Matrix4fc as NativeMatrix4FC
+import org.joml.Quaternionf as NativeQuaternionF
+import org.joml.Vector3f as NativeVector3F
 
-actual fun createMatrixWithPositionAndOrientation(origin: Vector3F, heading: Vector3F): Matrix4 {
-    val quaternion = Quaternion()
-    quaternion.setFromEuler(floatArrayOf(heading.x, heading.y, heading.z))
+@Serializable(Matrix4FSerializer::class)
+actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
+    actual constructor(elements: FloatArray?) : this(
+        NativeMatrix4F().also { if (elements != null) it.set(elements) }
+    )
 
-    val matrix = com.jogamp.opengl.math.Matrix4()
-    quaternion.toMatrix(matrix.matrix, 0)
+    actual val elements: FloatArray
+        get() = nativeMatrix.get(FloatArray(16))
+    actual val position: Vector3F
+        get() = nativeMatrix.getTranslation(NativeVector3F()).toVector3F()
+    actual val translation: Vector3F
+        get() = position
+    actual val rotation: EulerAngle
+        get() = NativeQuaternionF().setFromUnnormalized(nativeMatrix)
+            .getEulerAnglesXYZ(NativeVector3F())
+            .toEulerAngle()
+    actual val scale: Vector3F
+        get() = nativeMatrix.getScale(NativeVector3F()).toVector3F()
 
-    // TODO: for some reason this doesn't match the results from JS?
-//    matrix.translate(origin.x, origin.y, origin.z)
-
-    matrix.matrix.apply {
-        this[3*4 + 0] = origin.x
-        this[3*4 + 1] = origin.y
-        this[3*4 + 2] = origin.z
+    actual operator fun times(matrix: Matrix4F): Matrix4F {
+        val dest = NativeMatrix4F()
+        nativeMatrix.mul(matrix.nativeMatrix, dest)
+        return Matrix4F(dest)
     }
 
-    return Matrix4(matrix.matrix.map { it.toDouble() }.toDoubleArray())
+    actual fun transform(vector: Vector3F): Vector3F {
+        return vector.toNativeVector3F().mulProject(nativeMatrix).toVector3F()
+    }
+
+
+    actual fun withTranslation(translation: Vector3F): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).translation(translation.x, translation.y, translation.z)
+        )
+    }
+
+    actual fun withRotation(rotation: EulerAngle): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).rotationXYZ(
+                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat())
+        )
+    }
+
+    actual fun withScale(scale: Vector3F): Matrix4F {
+        return Matrix4F(
+            NativeMatrix4F(nativeMatrix).scaling(translation.x, translation.y, translation.z)
+        )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Matrix4F) return false
+        return nativeMatrix == other.nativeMatrix
+    }
+
+    override fun hashCode(): Int {
+        return nativeMatrix.hashCode()
+    }
+
+    actual companion object {
+        actual val identity: Matrix4F = Matrix4F()
+
+        actual fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F {
+            val nativeMatrix = NativeMatrix4F()
+            nativeMatrix.setTranslation(position.x, position.y, position.z)
+            nativeMatrix.setRotationXYZ(
+                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+            )
+            return Matrix4F(nativeMatrix)
+        }
+    }
 }
+
+private fun Vector3F.toNativeVector3F() =
+    NativeVector3F(x, y, z)
+
+private fun org.joml.Vector3f.toVector3F() =
+    Vector3F(x, y, z)
+
+private fun org.joml.Vector3f.toEulerAngle() =
+    EulerAngle(this[0].toDouble(), this[1].toDouble(), this[2].toDouble())

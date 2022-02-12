@@ -1,7 +1,8 @@
 package baaahs.mapper
 
+import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureConfig
-import baaahs.geom.Matrix4
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.sm.brain.BrainManager
@@ -12,7 +13,7 @@ import kotlinx.serialization.Serializable
 data class MappingSession(
     val startedAt: Double,
     val surfaces: List<SurfaceData>, // TODO: rename to items?
-    val cameraMatrix: Matrix4? = null,
+    val cameraMatrix: Matrix4F? = null,
     val baseImage: String? = null,
     val version: Int = 0,
     val savedAt: Double = DateTime.nowUnix(),
@@ -33,7 +34,8 @@ data class MappingSession(
         val screenAngle: Float? = null,
         val channels: Channels? = null
     ) {
-        val controllerId: ControllerId get() =
+        val controllerId: ControllerId
+            get() =
             ControllerId(controllerType ?: BrainManager.controllerTypeName, brainId)
         val entityName: String get() = panelName
 

@@ -1,16 +1,14 @@
 package baaahs.sim
 
-import baaahs.doRunBlocking
-import baaahs.getValue
-import baaahs.io.Fs
 import baaahs.mapper.MappingSession
-import baaahs.mapper.Storage
+import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.plugin.Plugins
+import baaahs.scene.SceneProvider
 import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
+import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
 
@@ -26,60 +24,67 @@ import baaahs.visualizer.Visualizer
  */
 class FixturesSimulator(
     private val visualizer: Visualizer,
-    private val model: Model,
+    sceneProvider: SceneProvider,
     network: Network,
     private val dmxUniverse: FakeDmxUniverse,
-    private val fs: Fs,
-    private val mapperFs: FakeFs,
     private val clock: Clock,
-    private val plugins: Plugins,
-    private val pixelArranger: PixelArranger
+    private val pixelArranger: PixelArranger,
+    private val simMappingManager: SimMappingManager
 ) {
     val facade = Facade()
 
     private val brainSimulatorManager = BrainSimulatorManager(network, clock)
     private val wledsSimulator = WledsSimulator(network)
 
-    private val fixtureSimulations by lazy {
-        val simulationEnv = SimulationEnv {
-            component(brainSimulatorManager)
-            component(clock)
-            component(dmxUniverse)
-            component(pixelArranger)
-            component(wledsSimulator)
-            component(visualizer)
-        }
-
-        model.allEntities.sortedBy(Model.Entity::name).map { entity ->
-            entity.createFixtureSimulation(simulationEnv)
-        }
+    private val simulationEnv = SimulationEnv {
+        component(brainSimulatorManager)
+        component(clock)
+        component(dmxUniverse)
+        component(pixelArranger)
+        component(wledsSimulator)
+        component(visualizer)
     }
+    private val entityAdapter = EntityAdapter(simulationEnv)
+    private var fixtureSimulations: Map<Model.Entity, FixtureSimulation> = emptyMap()
 
-    fun generateMappingData() {
-        val mappingSession = MappingSession(
-            clock.now(),
-            fixtureSimulations.mapNotNull { it.mappingData },
-            null,
-            null,
-            notes = "Simulated mapping session"
-        )
+    init {
+        sceneProvider.addBeforeChangeListener { newOpenScene ->
+            fixtureSimulations.values.forEach { oldFixtureSimulator ->
+                oldFixtureSimulator.stop()
+            }
+            visualizer.facade.clear()
 
-        doRunBlocking {
-            val mappingSessionPath = Storage(mapperFs, plugins).saveSession(mappingSession)
-            val mappingDataPath = fs.resolve("mapping", model.name, "simulated", mappingSessionPath.name)
-            mapperFs.renameFile(mappingSessionPath, mappingDataPath)
-        }
-    }
+            fixtureSimulations =
+                if (newOpenScene == null) {
+                    emptyMap()
+                } else {
+                    buildMap {
+                        newOpenScene.model.visit { entity ->
+                            entity.createFixtureSimulation(simulationEnv, entityAdapter)
+                                ?.let { put(entity, it) }
+                        }
+                    }
+                }
 
-    fun launchControllers() {
-        fixtureSimulations.forEach { fixtureSimulation ->
-            fixtureSimulation.launch()
-        }
-    }
+            fixtureSimulations.values.forEach {
+                it.start()
+                visualizer.add(it.itemVisualizer)
+            }
 
-    fun addToVisualizer() {
-        fixtureSimulations.forEach {
-            visualizer.addEntityVisualizer(it.entityVisualizer)
+            simMappingManager.mappingData =
+                newOpenScene?.let {
+                    SessionMappingResults(
+                        newOpenScene, listOf(
+                            MappingSession(
+                                clock.now(),
+                                fixtureSimulations.values.mapNotNull { it.mappingData },
+                                null,
+                                null,
+                                notes = "Simulated mapping session"
+                            )
+                        )
+                    )
+                }
         }
     }
 

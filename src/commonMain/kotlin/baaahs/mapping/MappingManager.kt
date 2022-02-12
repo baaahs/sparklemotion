@@ -1,12 +1,17 @@
 package baaahs.mapping
 
-import baaahs.mapper.ControllerId
+import baaahs.controller.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
-import baaahs.model.Model
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneProvider
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.ui.addObserver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 interface MappingManager : IObservable {
     val dataHasLoaded: Boolean
@@ -20,14 +25,29 @@ interface MappingManager : IObservable {
 
 class MappingManagerImpl(
     private val storage: Storage,
-    private val model: Model,
+    private val sceneProvider: SceneProvider,
+    private val coroutineScope: CoroutineScope = GlobalScope,
+    private val backupMappingManager: MappingManager? = null
 ) : Observable(), MappingManager {
     private var sessionMappingResults: SessionMappingResults? = null
-    override val dataHasLoaded: Boolean
-        get() = sessionMappingResults != null
+    override var dataHasLoaded: Boolean = false
 
     override suspend fun start() {
-        sessionMappingResults = storage.loadMappingData(model)
+        sceneProvider.addObserver(fireImmediately = true) {
+            coroutineScope.launch { onSceneChange(sceneProvider.openScene) }
+        }
+
+        backupMappingManager?.start()
+    }
+
+    private suspend fun onSceneChange(openScene: OpenScene?) {
+        dataHasLoaded = false
+        if (openScene == null) {
+            sessionMappingResults = null
+        } else {
+            sessionMappingResults = storage.loadMappingData(openScene)
+            dataHasLoaded = true
+        }
         notifyChanged()
     }
 
@@ -35,7 +55,11 @@ class MappingManagerImpl(
         val results = sessionMappingResults
             ?: error("Mapping results requested before available.")
 
-        return results.dataForController(controllerId)
+        return results.dataForController(controllerId).let {
+            it.ifEmpty {
+                backupMappingManager?.findMappings(controllerId) ?: emptyList()
+            }
+        }
     }
 
     override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {

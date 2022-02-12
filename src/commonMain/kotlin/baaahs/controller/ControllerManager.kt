@@ -6,8 +6,28 @@ import baaahs.scene.ControllerConfig
 interface ControllerManager {
     val controllerType: String
 
-    fun start(controllerListener: ControllerListener)
+    fun addListener(controllerListener: ControllerListener)
+    fun removeListener(controllerListener: ControllerListener)
     fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>)
+    fun start()
     fun stop()
     fun logStatus()
+}
+
+abstract class BaseControllerManager(
+    override val controllerType: String
+) : ControllerManager {
+    private val listeners: MutableList<ControllerListener> = mutableListOf()
+
+    override fun addListener(controllerListener: ControllerListener) {
+        listeners.add(controllerListener)
+    }
+
+    override fun removeListener(controllerListener: ControllerListener) {
+        listeners.remove(controllerListener)
+    }
+
+    fun notifyListeners(block: ControllerListener.() -> Unit) {
+        listeners.forEach(block)
+    }
 }

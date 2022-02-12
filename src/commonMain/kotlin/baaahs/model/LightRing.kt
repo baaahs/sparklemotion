@@ -2,30 +2,35 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.model.WtfMaths.cross
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightRingSimulation
 import baaahs.sim.SimulationEnv
+import baaahs.visualizer.EntityAdapter
+import kotlinx.serialization.Transient
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 class LightRing(
     override val name: String,
-    override val description: String,
-    val center: Vector3F,
+    override val description: String? = null,
+    override val position: Vector3F = Vector3F.origin, // TODO: Represent using transformation translation.
+    override val rotation: EulerAngle = EulerAngle.identity, // TODO: Represent using transformation scale?
+    override val scale: Vector3F = Vector3F.unit3d, // TODO: Represent using transformation rotation.
     val radius: Float,
-    val planeNormal: Vector3F,
     val firstPixelRadians: Float = 0f,
-    val pixelDirection: PixelDirection = PixelDirection.Clockwise
-) : Model.Entity, LinearPixelArray {
+    val pixelDirection: PixelDirection = PixelDirection.Clockwise,
+    @Transient override val id: EntityId = Model.Entity.nextId()
+) : Model.BaseEntity(), LinearPixelArray {
     override val deviceType: DeviceType
         get() = PixelArrayDevice
 
     override val bounds: Pair<Vector3F, Vector3F>
-        get() = boundingBox(calculatePixelLocations(4)) // This oughta cover it, right?
+        get() = boundingBox(calculatePixelLocalLocations(4)) // This oughta cover it, right?
 
     val circumference: Float
         get() = (radius * PI).toFloat()
@@ -35,33 +40,32 @@ class LightRing(
 
     // For calculating pixel positions around a circle, given planeNormal.
     private val pixelPlotVectors by lazy {
-        val v3 = planeNormal.normalize()
+        val v3 = Vector3F.facingForward
         val v1 = Vector3F(v3.z, 0f, -v3.x).normalize()
         val v2 = v3.cross(v1)
         v1 to v2
     }
 
     /** A light ring's pixels are evenly spaced along its circumference. */
-    override fun calculatePixelLocation(index: Int, count: Int): Vector3F {
+    override fun calculatePixelLocalLocation(index: Int, count: Int): Vector3F {
         val pI = when (pixelDirection) {
             PixelDirection.Clockwise -> if (index == 0) 0 else count - index
             PixelDirection.Counterclockwise -> index
         }
         val (v1, v2) = pixelPlotVectors
         val a = 2 * PI * (pI / count.toDouble()) + firstPixelRadians
-        return center + (v1 * cos(a) + v2 * sin(a)) * radius
+        return (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv): FixtureSimulation =
-        LightRingSimulation(this, simulationEnv)
+    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+        LightRingSimulation(this, simulationEnv, adapter)
+
+    override fun createVisualizer(adapter: EntityAdapter) =
+        adapter.createLightRingVisualizer(this)
 
     enum class PixelDirection {
         Clockwise,
         Counterclockwise
-    }
-
-    companion object {
-        val facingForward = Vector3F(0f, 0f, 1f)
     }
 }
 

@@ -1,12 +1,12 @@
 package baaahs.glsl
 
 import baaahs.TestModel
-import baaahs.TestModelSurface
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.model.LightBar
 import baaahs.model.Model
+import baaahs.testModelSurface
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -18,7 +18,7 @@ object LinearSurfacePixelStrategySpec : Spek({
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {
             val entity by value<Model.Entity> {
-                TestModelSurface(
+                testModelSurface(
                     "zyx", vertices = listOf(
                         Vector3F(1f, 1f, 1f),
                         Vector3F(2f, 2f, 1f),
@@ -38,7 +38,7 @@ object LinearSurfacePixelStrategySpec : Spek({
             }
 
             context("for LinearPixelArray entities") {
-                override(entity) { LightBar("", "", Vector3F.origin, Vector3F.unit3d) }
+                override(entity) { LightBar("", "", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d) }
 
                 it("interpolates along its entire length") {
                     expect(strategy.forKnownEntity(3, entity, TestModel))

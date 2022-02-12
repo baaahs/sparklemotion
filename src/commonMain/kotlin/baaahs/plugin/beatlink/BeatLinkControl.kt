@@ -37,7 +37,7 @@ class MutableBeatLinkControl : MutableControl {
 
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> {
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return emptyList()
     }
 

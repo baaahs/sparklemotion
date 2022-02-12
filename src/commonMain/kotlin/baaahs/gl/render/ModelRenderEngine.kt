@@ -11,7 +11,6 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedPatch
 import baaahs.gl.result.ResultBuffer
 import baaahs.gl.result.ResultType
-import baaahs.model.ModelInfo
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
@@ -20,7 +19,6 @@ import kotlin.math.min
 
 class ModelRenderEngine(
     gl: GlContext,
-    private val modelInfo: ModelInfo,
     private val deviceType: DeviceType,
     private val minTextureWidth: Int = 16,
     private val maxFramebufferWidth: Int = fbMaxPixWidth,
@@ -67,7 +65,7 @@ class ModelRenderEngine(
             fixture
         )
         val renderTarget = FixtureRenderTarget(
-            fixture, nextRectOffset, rects, modelInfo, fixture.pixelCount, nextPixelOffset, resultStorage
+            fixture, nextRectOffset, rects, fixture.pixelCount, nextPixelOffset, resultStorage
         )
         nextPixelOffset += fixture.pixelCount
         nextRectOffset += rects.size
