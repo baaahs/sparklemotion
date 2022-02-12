@@ -26,6 +26,8 @@ interface Fs {
         return file.isDirectory ?: error("Is $file a directory? Answer unclear.")
     }
 
+    suspend fun renameFile(fromFile: File, toFile: File)
+
     suspend fun delete(file: File)
 
     @Serializable
@@ -53,6 +55,7 @@ interface Fs {
         suspend fun write(content: String, allowOverwrite: Boolean) = fs.saveFile(this, content, allowOverwrite)
         suspend fun exists(): Boolean = fs.exists(this)
         suspend fun isDir(): Boolean = fs.isDirectory(this)
+        suspend fun renameTo(toFile: File) = fs.renameFile(this, toFile)
         suspend fun delete(): Unit = fs.delete(this)
 
         fun isWithin(parent: File): Boolean {

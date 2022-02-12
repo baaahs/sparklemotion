@@ -9,7 +9,7 @@ val decom2019ModelData = ModelData(
         ImportedEntityData(
             "Decom2019",
             null,
-            objData = "decom-2019-panels.obj",
+            objData = "templates/scenes/decom-2019-panels.obj",
             objDataIsFileRef = true,
             metadata = ConstEntityMetadataProvider(16 * 60)
         ),

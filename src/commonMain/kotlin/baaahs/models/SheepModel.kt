@@ -9,8 +9,8 @@ val sheepModelData = ModelData(
     listOf(
         ImportedEntityData(
             "Decom2019", null,
-            objData = "baaahs-model.obj", objDataIsFileRef = true,
-            metadata = StrandCountEntityMetadataProvider.openResource("baaahs-panel-info.txt")
+            objData = "templates/scenes/baaahs-model.obj", objDataIsFileRef = true,
+            metadata = StrandCountEntityMetadataProvider.openResource("templates/scenes/baaahs-panel-info.txt")
         ),
         MovingHeadData(
             "leftEye",

@@ -51,9 +51,8 @@ class ShowManager(
 
         fun makeNew(build: suspend () -> Show?) {
             launch {
-                val newShow = build()
-                onNew(newShow)
                 dialogHolder.closeDialog()
+                onNew(build())
             }
         }
 
@@ -65,15 +64,16 @@ class ShowManager(
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
             },
             Option("Fancy template") {
-                makeNew {
-                    val file = resourcesFs.resolve("Honcho.sparkle")
-                    Storage(resourcesFs, toolchain.plugins).loadShow(file)
-                        ?.copy(title = "New ${documentType.title}")
-                        ?: error("Couldn't find show")
-
-                }
+                makeNew { fromResources("Honcho.sparkle") }
             }
         ))
+    }
+
+    private suspend fun fromResources(fileName: String): Show {
+        val file = resourcesFs.resolve("templates", "shows", fileName)
+        return Storage(resourcesFs, toolchain.plugins).loadShow(file)
+            ?.copy(title = "New ${documentType.title}")
+            ?: error("Couldn't find show")
     }
 
     override suspend fun onDownload() {

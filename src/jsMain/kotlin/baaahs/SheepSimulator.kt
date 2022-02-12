@@ -1,12 +1,8 @@
 package baaahs
 
 import baaahs.client.WebClient
-import baaahs.io.Fs
 import baaahs.monitor.MonitorUi
-import baaahs.sim.FakeNetwork
-import baaahs.sim.FixturesSimulator
-import baaahs.sim.HostedWebApp
-import baaahs.sim.Launcher
+import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
 import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
@@ -32,7 +28,7 @@ class SheepSimulator(
 
     suspend fun start() = coroutineScope {
         val pinkyScope = getKoin().createScope<Pinky>()
-        launch { cleanUpBrowserStorage(pinkyScope.get<Fs>()) }
+        launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
@@ -46,10 +42,23 @@ class SheepSimulator(
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
 
-    private suspend fun cleanUpBrowserStorage(fs: Fs) {
+    private suspend fun cleanUpBrowserStorage() {
+        val fs = BrowserSandboxFs("BrowserSandboxFs")
+
         // [2021-03-13] Delete old 2019-era show files.
         fs.resolve("shaders").listFiles().forEach { file ->
             file.delete()
+        }
+
+        // [2022-02-10] Move show and scene files in / to /data.
+        fs.resolve().listFiles().forEach { file ->
+            if (
+                file.name.endsWith(".sparkle")
+                || file.name.endsWith(".scene")
+                || file.name == "config.json"
+            ) {
+                file.renameTo(file.parent!!.resolve("data").resolve(file.name))
+            }
         }
     }
 

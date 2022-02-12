@@ -5,14 +5,12 @@ import baaahs.PubSub
 import baaahs.app.ui.UiActions
 import baaahs.client.Notifier
 import baaahs.doc.SceneDocumentType
+import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
 import baaahs.plugin.Plugins
-import baaahs.scene.MutableScene
-import baaahs.scene.OpenScene
-import baaahs.scene.Scene
-import baaahs.scene.SceneMonitor
+import baaahs.scene.*
 import baaahs.show.mutable.MutableDocument
 import baaahs.ui.DialogHolder
 import baaahs.ui.DialogMenuItem
@@ -42,9 +40,9 @@ class SceneManager(
 
         fun makeNew(build: suspend () -> Scene?) {
             launch {
-                val newScene = build()
-                onNew(newScene)
                 dialogHolder.closeDialog()
+                val scene = build()?.withInlinedImports()
+                onNew(scene)
             }
         }
 
@@ -52,40 +50,37 @@ class SceneManager(
             Option("Empty Scene") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
-            Option("BAAAHS") {
-                makeNew {
-                    val file = resourcesFs.resolve("BAAAHS.scene")
-                    Storage(resourcesFs, plugins).loadScene(file)?.let {
-                        it.copy(model = it.model.copy(title = "New Scene"))
-                    } ?: error("Couldn't find scene")
-                }
-            },
-            Option("Demo") {
-                makeNew {
-                    val file = resourcesFs.resolve("Demo.scene")
-                    Storage(resourcesFs, plugins).loadScene(file)?.let {
-                        it.copy(model = it.model.copy(title = "New Scene"))
-                    } ?: error("Couldn't find scene")
-                }
-            },
-            Option("Honcho") {
-                makeNew {
-                    val file = resourcesFs.resolve("Honcho.scene")
-                    Storage(resourcesFs, plugins).loadScene(file)?.let {
-                        it.copy(model = it.model.copy(title = "New Scene"))
-                    } ?: error("Couldn't find scene")
-                }
-            },
-            Option("Playa2021") {
-                makeNew {
-                    val file = resourcesFs.resolve("Playa2021.scene")
-                    Storage(resourcesFs, plugins).loadScene(file)?.let {
-                        it.copy(model = it.model.copy(title = "New Scene"))
-                    } ?: error("Couldn't find scene")
-                }
-            }
+            Option("BAAAHS") { makeNew { sceneFromResources("BAAAHS.scene") } },
+            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
+            Option("Honcho") { makeNew { sceneFromResources("Honcho.scene") } },
+            Option("Playa2021") { makeNew { sceneFromResources("Playa2021.scene") } }
         ))
     }
+
+    // Cheating here, since opening a Scene happens synchronously, we can't use file operations.
+    // Need to figure out how to handle that.
+    private suspend fun Scene.withInlinedImports(): Scene {
+        return edit()
+            .apply {
+                model.entities.forEachIndexed { index, mutableEntity ->
+                    if (mutableEntity is MutableImportedEntity && mutableEntity.objDataIsFileRef) {
+                        mutableEntity.objData = fileFromResources(mutableEntity.objData).read()
+                            ?: error("Couldn't find ${mutableEntity.objData} in resources.")
+                        mutableEntity.objDataIsFileRef = false
+                    }
+                }
+            }.build()
+    }
+
+    private suspend fun sceneFromResources(fileName: String): Scene {
+        val file = fileFromResources(fileName)
+        return Storage(resourcesFs, plugins).loadScene(file)?.let {
+            it.copy(model = it.model.copy(title = "New Scene"))
+        } ?: error("Couldn't find scene")
+    }
+
+    private fun fileFromResources(fileName: String): Fs.File =
+        resourcesFs.resolve("templates", "scenes", fileName)
 
     override suspend fun onDownload() {
         UiActions.downloadScene(document!!, plugins)

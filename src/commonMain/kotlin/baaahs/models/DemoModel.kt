@@ -11,7 +11,7 @@ val demoModelData = ModelData(
         ImportedEntityData("B Panels", null,
             Vector3F(170f, 0f, 0f),
             EulerAngle(1.0, .5, .25),
-            objData = "decom-2019-panels.obj", objDataIsFileRef = true,
+            objData = "templates/scenes/decom-2019-panels.obj", objDataIsFileRef = true,
             metadata = ConstEntityMetadataProvider(16 * 60)
         ),
         LightBarData("bar 1", "Vertical between Panel 1 and 2",

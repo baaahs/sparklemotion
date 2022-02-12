@@ -8,7 +8,6 @@ import baaahs.dmx.Dmx
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
-import baaahs.io.ResourcesFs
 import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
@@ -45,11 +44,9 @@ class JsSimulatorModule(
 ) : SimulatorModule {
     override val Scope.fs: Fs
         get() {
-            val resourcesFs = ResourcesFs()
             return MergedFs(
-                BrowserSandboxFs("Browser Data"),
+                BrowserSandboxFs("Browser Data", "data"),
                 get(named(SimulatorModule.Qualifier.MapperFs)),
-                resourcesFs,
                 name = "Browser Data"
             )
         }
