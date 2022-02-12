@@ -1,5 +1,6 @@
 package baaahs.plugin.sound_analysis
 
+import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.ui.Icon
 import baaahs.ui.View
@@ -11,7 +12,7 @@ class SoundAnalysisSettingsPanel(
     override val listSubhead: String
         get() = "Plugins"
     override val icon: Icon?
-        get() = null
+        get() = CommonIcons.SoundAnalysisControl
 
     override fun getView(): View = soundAnalysisViews.forSettingsPanel()
 }

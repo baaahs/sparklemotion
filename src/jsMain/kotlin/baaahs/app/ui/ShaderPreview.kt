@@ -28,7 +28,6 @@ import react.dom.div
 import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
-import kotlin.collections.set
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
@@ -47,10 +46,20 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
     val previewContainer = helper.container
+    val sceneManager = appContext.sceneManager
+    observe(sceneManager)
+    val model = sceneManager.openScene?.model
+//    var model by state { sceneManager.openScene?.model }
+//    onMount {
+//        val listener = sceneManager.addSceneChangeListener { newScene ->
+//            model = newScene?.model
+//        }
+//        withCleanup { sceneManager.removeSceneChangeListener(listener) }
+//    }
 
     var gl by state<GlContext?> { null }
 
-    onMount(canvasParent.current, previewContainer) {
+    onMount(canvasParent.current, previewContainer, shaderPreview) {
         canvasParent.current?.let { parent ->
             parent.insertBefore(previewContainer, parent.firstChild)
         }
@@ -62,35 +71,43 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         withCleanup { canvasParent.current?.removeChild(previewContainer) }
     }
 
-    onChange("shader type", helper, shaderType) {
-        val preview = helper.bootstrap(appContext.webClient.model, preRenderHook)
-        gl = preview.renderEngine.gl
+    onChange("shader type", helper, shaderType, model) {
+        model?.let { model ->
+            val preview = helper.bootstrap(model, preRenderHook)
+            gl = preview.renderEngine.gl
 
-        val intersectionObserver = IntersectionObserver(callback = { entries ->
-            if (entries.any { it.isIntersecting }) {
-                preview.start()
-            } else {
-                preview.stop()
+            val intersectionObserver = IntersectionObserver(callback = { entries ->
+                if (entries.any { it.isIntersecting }) {
+                    preview.start()
+                } else {
+                    preview.stop()
+                }
+            })
+            intersectionObserver.observe(previewContainer)
+
+            shaderPreview = preview
+
+            withCleanup {
+                intersectionObserver.disconnect()
+                preview.destroy()
             }
-        })
-        intersectionObserver.observe(previewContainer)
-
-        shaderPreview = preview
-
-        withCleanup {
-            intersectionObserver.disconnect()
-            preview.destroy()
         }
     }
 
     onMount(helper, gl) {
-        withCleanup { gl?.let { helper.release(it) } }
+        // 'gl' here is a state getter, so its value may have changed by the time we get to the cleanup.
+        // Save it off so we're using the same value.
+        val currentGl = gl
+
+        withCleanup {
+            currentGl?.let { helper.release(it) }
+        }
     }
 
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.model)
+                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.sceneProvider)
         }
     }
 
@@ -116,7 +133,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
                 ShaderBuilder.State.Success -> {
                     shaderPreview?.setProgram(it.glslProgram)
 
-                    if (props.dumpShader) {
+                    if (props.dumpShader == true) {
                         println(
                             "Shader: ${it.glslProgram?.title} (${it.state})\n\n" +
                                     "${it.glslProgram?.fragShader?.source}"
@@ -253,7 +270,7 @@ external interface ShaderPreviewProps : Props {
     var height: LinearDimension?
     var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
-    var dumpShader: Boolean
+    var dumpShader: Boolean?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

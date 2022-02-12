@@ -1,6 +1,6 @@
 package baaahs.show
 
-import baaahs.app.ui.Editable
+import baaahs.app.ui.editor.Editable
 
 interface PatchHolder : Editable {
     override val title: String

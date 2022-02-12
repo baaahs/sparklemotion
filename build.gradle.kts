@@ -245,7 +245,6 @@ tasks.named<ProcessResources>("jsProcessResources") {
         include("core/lib/css/blueprint.css")
         include("icons/lib/css/blueprint-icons.css")
     }
-    from("data") { include("Honcho.sparkle") } // for template
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/js/main"))
@@ -253,7 +252,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn(webpackTask)
+//    dependsOn(webpackTask)
 
     from("build/distributions") { include("sparklemotion.js") }
 

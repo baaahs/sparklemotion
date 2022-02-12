@@ -1,16 +1,11 @@
 package baaahs.mapper
 
-import baaahs.dmx.DmxTransportConfig
-import baaahs.model.Model
+import baaahs.controller.ControllerId
+import baaahs.dmx.DirectDmxTransportConfig
+import baaahs.scene.OpenScene
 import baaahs.util.Logger
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class ControllerId(val controllerType: String, val id: String) {
-    fun shortName(): String = "$controllerType:$id"
-}
-
-class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>) {
+class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSession>) {
     val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
 
     init {
@@ -20,7 +15,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                 val entityName = entityData.entityName
 
                 try {
-                    val modelEntity = model.getEntity(entityName)
+                    val modelEntity = scene.model.findEntityByNameOrNull(entityName)
                     if (modelEntity == null)
                         logger.warn { "Unknown model entity \"$entityName\"." }
 
@@ -29,7 +24,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
                     val pixelCount = entityData.pixelCount ?: pixelLocations?.size
                     val transportConfig = when (controllerId.controllerType) {
                         "SACN" -> entityData.channels?.let { SacnTransportConfig(it.start, it.end) }
-                        "DMX" -> entityData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "DMX" -> entityData.channels?.let { DirectDmxTransportConfig(it.start, it.end) }
                         else -> null
                     }
 
@@ -44,7 +39,7 @@ class SessionMappingResults(model: Model, mappingSessions: List<MappingSession>)
             }
         }
 
-        model.generateFixtureMappings().forEach { (controllerId, fixtureMappings) ->
+        scene.fixtures.forEach { (controllerId, fixtureMappings) ->
             fixtureMappings.forEach { fixtureMapping ->
                 add(controllerId, fixtureMapping)
             }

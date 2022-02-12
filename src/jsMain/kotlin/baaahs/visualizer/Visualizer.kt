@@ -1,25 +1,36 @@
 package baaahs.visualizer
 
 import baaahs.document
+import baaahs.getBang
 import baaahs.mapper.JsMapperUi
-import baaahs.model.Model
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.window
+import kotlinext.js.jsObject
+import kotlinx.css.hyphenize
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
-import kotlin.collections.set
+import three_ext.clear
+import three_ext.set
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.reflect.KClass
 
-class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusListener {
-    val facade = Facade()
+class Visualizer(
+    clock: Clock
+) : BaseVisualizer(clock) {
+    override val facade = Facade()
+
+    private val selectionSpan = document.createElement("span") as HTMLSpanElement
+
+    var selectedEntity: ItemVisualizer<*>? = null
 
     private var container: HTMLElement? = null
         set(value) {
@@ -32,14 +43,93 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             }
         }
 
-    var stopRendering: Boolean = false
+    private val itemVisualizers = arrayListOf<ItemVisualizer<*>>()
+
+    init {
+        addPrerenderListener {
+            itemVisualizers.forEach { it.applyStyles() }
+        }
+    }
+
+    private fun containerAttached() {
+        container!!.appendChild(canvas)
+        container!!.appendChild(selectionSpan)
+
+        resize()
+        startRendering()
+    }
+
+    private fun containerWillDetach() {
+        container?.removeChild(canvas)
+        container?.removeChild(selectionSpan)
+        stopRendering()
+    }
+
+    fun add(itemVisualizer: ItemVisualizer<*>) {
+        itemVisualizers.add(itemVisualizer)
+        scene.add(itemVisualizer.obj)
+        sceneNeedsUpdate = true
+    }
+
+    override fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
+        val vizObj = findParentEntityVisualizer(obj)
+
+        if (vizObj == null) {
+            selectionSpan.style.display = "none"
+            selectionSpan.innerText = ""
+        } else {
+            val entityVisualizer = vizObj.itemVisualizer!!
+            entityVisualizer.selected = true
+            console.log("Selecting ${entityVisualizer.title}")
+            selectionSpan.style.display = "inherit"
+            selectionSpan.innerText = "Selected: ${entityVisualizer.title}"
+//            entityVisualizer.obj.let { transformControls.attach(it) }
+        }
+        super.onSelectionChange(obj, priorObj)
+    }
+
+    private fun findParentEntityVisualizer(obj: Object3D?): Object3D? {
+        var curObj = obj
+        while (curObj != null && curObj.itemVisualizer == null) {
+            curObj = curObj.parent
+        }
+        return curObj
+    }
+
+    public override fun stopRendering() {
+        super.stopRendering()
+    }
+
+    inner class Facade : BaseVisualizer.Facade() {
+        val selectedEntity get() = this@Visualizer.selectedEntity
+
+        var container: HTMLElement?
+            get() = this@Visualizer.container
+            set(value) {
+                this@Visualizer.container = value
+            }
+
+
+        fun select(itemVisualizer: ItemVisualizer<*>) {
+            this@Visualizer.selectedEntity = itemVisualizer
+        }
+    }
+}
+
+open class BaseVisualizer(
+    private val clock: Clock
+) : JsMapperUi.StatusListener {
+    open val facade = Facade()
+
+    private var stopRendering: Boolean = false
     var rotate: Boolean = false
 
-    var mapperIsRunning = false
+    private var mapperIsRunning = false
         set(isRunning) {
             field = isRunning
 
-            entityVisualizers.forEach { it.mapperIsRunning = isRunning }
+            // TODO: still should do this somehow...
+//            entityVisualizers.values.forEach { it.mapperIsRunning = isRunning }
 
             if (isRunning) {
                 rotate = false
@@ -49,62 +139,104 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
-    private var controls: OrbitControls? = null
-    private val camera: PerspectiveCamera =
-        PerspectiveCamera(45, 1.0, 1, 10000).apply {
+    protected val camera: PerspectiveCamera =
+        PerspectiveCamera(45, 1.0, 0.1, 10000).apply {
             position.z = 1000.0
         }
-    private val scene: Scene = Scene()
+    private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
+    private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
     private val renderer = WebGLRenderer().apply {
         localClippingEnabled = true
     }
-    private val geom = Geometry()
+    protected val canvas = renderer.domElement
 
-    private val pointMaterial = PointsMaterial().apply { color.set(0xffffff) }
+    protected val realScene = Scene().apply { autoUpdate = false }
+    protected val scene = Group().also { realScene.add(it) }
+    protected var sceneNeedsUpdate = true
 
-    private val raycaster = Raycaster()
-    private var mouse: Vector2? = null
-    private val originDot: Mesh<*, *>
-
-    private val entityVisualizers = arrayListOf<EntityVisualizer>()
-    private val sceneObjs = mutableMapOf<Number, EntityVisualizer>()
-    private val selectionSpan = document.createElement("span") as HTMLSpanElement
-    private var selectedEntity: EntityVisualizer? = null
-        set(value) {
-            field?.let {
-                console.log("Deselecting ${it.title}")
-                it.selected = false
-            }
-            field = value
-
-            if (value == null) {
-                selectionSpan.style.display = "none"
-                selectionSpan.innerText = ""
-            } else {
-                console.log("Selecting ${value.title}")
-                selectionSpan.style.display = "inherit"
-                selectionSpan.innerText = "Selected: ${value.title}"
-            }
-
-            facade.selectedEntity = value
-            facade.notifyChanged()
-        }
+    /**
+     * The order that these event listeners are registered matters; can't think of a
+     * better way to allow subclasses to inject listeners before ours.
+     */
+    protected open val extensions = listOf(
+        extension { SelectExtension() },
+        extension { OrbitControlsExtension() }
+    )
+    @Suppress("LeakingThis")
+    private val activeExtensions = extensions.associate { (key, factory) ->
+        key to factory()
+    }
 
     init {
-        scene.add(camera)
+        @Suppress("LeakingThis")
+        activeExtensions.values.forEach { it.attach() }
+    }
+
+    inner class SelectExtension : Extension(SelectExtension::class) {
+        override fun attach() {
+            canvas.addEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+        }
+
+        override fun release() {
+            canvas.removeEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+        }
+    }
+
+    private var orbitControlsActive = false
+    inner class OrbitControlsExtension : Extension(OrbitControlsExtension::class) {
+        val orbitControls by lazy {
+            OrbitControls(camera, canvas).apply {
+                minPolarAngle = PI / 2 - .25 // radians
+                maxPolarAngle = PI / 2 + .25 // radians
+
+                enableDamping = false
+                enableKeys = false
+
+                addEventListener("start") { orbitControlsActive = true }
+                addEventListener("end") { orbitControlsActive = false }
+            }
+        }
+
+        override fun attach() {
+            orbitControls
+        }
+
+        fun update() = orbitControls.update()
+    }
+    private val orbitControlsExtension = findExtension(OrbitControlsExtension::class)
+
+    private val raycaster = Raycaster()
+
+    private val originDot: Mesh<*, *>
+
+    protected var selectedObject: Object3D? = null
+        set(value) {
+            if (field == value) return
+
+            val oldValue = field
+            oldValue?.dispatchEvent(EventType.Deselect)
+            value?.dispatchEvent(EventType.Select)
+
+            field = value
+            onSelectionChange(value, oldValue)
+        }
+
+    open fun onSelectionChange(obj: Object3D?, priorObj: Object3D?) {
+        facade.notifyChanged()
+    }
+
+    init {
+        realScene.add(camera)
+        realScene.add(ambientLight)
+        realScene.add(directionalLight)
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
         originDot = Mesh(
-            SphereBufferGeometry(1, 32, 32),
+            SphereBufferGeometry(1, 16, 16),
             MeshBasicMaterial().apply { color.set(0xff0000) }
-        )
-        scene.add(originDot)
-
-        // convert from SheepModel to THREE
-        model.geomVertices.forEach { v ->
-            geom.vertices.asDynamic().push(Vector3(v.x, v.y, v.z))
-        }
+        ).apply { name = "Origin dot" }
+        realScene.add(originDot)
 
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
@@ -119,29 +251,8 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         })
     }
 
-    private fun containerAttached() {
-        container!!.appendChild(renderer.domElement)
-        container!!.appendChild(selectionSpan)
-        container!!.addEventListener("pointerdown", this::onMouseDown)
-
-        controls = OrbitControls(camera, container!!).apply {
-            minPolarAngle = PI / 2 - .25 // radians
-            maxPolarAngle = PI / 2 + .25 // radians
-
-            enableKeys = false
-        }
-
-        resize()
-        startRender()
-    }
-
-    private fun containerWillDetach() {
-        container?.removeChild(renderer.domElement)
-        container?.removeChild(selectionSpan)
-        container?.removeEventListener("pointerdown", this::onMouseDown)
-        controls?.dispose()
-        stopRendering = true
-        controls = null
+    fun <T : Extension> findExtension(tClass: KClass<T>): T {
+        return activeExtensions.getBang(tClass, "visualizer extension") as T
     }
 
     fun addPrerenderListener(callback: () -> Unit) {
@@ -160,73 +271,63 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         frameListeners.remove(frameListener)
     }
 
-    fun onMouseDown(event: Event) {
-        event as MouseEvent
+    private fun onMouseDown(event: Event) {
+        if (inUserInteraction()) return
 
-        container?.let {
-            mouse = Vector2(
-                (event.clientX.toDouble() / it.offsetWidth) * 2 - 1,
-                -(event.clientY.toDouble() / it.offsetHeight) * 2 + 1
-            )
+        event as MouseEvent
+        val bounds = (event.target as? HTMLCanvasElement)?.getBoundingClientRect()
+        bounds?.let {
+            val x = (event.clientX - bounds.x) / bounds.width
+            val y = (event.clientY - bounds.y) / bounds.height
+            val mouseClick = Vector2(x * 2 - 1, -y * 2 + 1)
+
+            raycaster.setFromCamera(mouseClick, camera)
+            val intersections = raycaster.intersectObject(scene, true)
+            onObjectClick(intersections.toList())
         }
     }
 
-    fun addEntityVisualizer(entityVisualizer: EntityVisualizer) {
-        entityVisualizer.addTo(VizScene(object : SceneListener {
-            override fun add(obj: Object3D) {
-                obj.name = entityVisualizer.title
-                sceneObjs[obj.id] = entityVisualizer
-                scene.add(obj)
-            }
-
-            override fun remove(obj: Object3D) {
-                scene.remove(obj)
-                sceneObjs.remove(obj.id)
-            }
-        }))
-
-        entityVisualizers.add(entityVisualizer)
+    protected open fun onObjectClick(intersections: List<Intersection>) {
+        intersections.firstOrNull()?.let { intersection ->
+            val obj = intersection.`object`
+            console.log("Found intersection with ${obj.name} at ${intersection.distance}.")
+            onObjectClick(obj)
+            return
+        }
+        onObjectClick(null)
     }
 
-    private fun startRender() {
-        pointAtModel()
+    protected open fun onObjectClick(obj: Object3D?) {
+        selectedObject = obj
+        obj?.dispatchEvent(EventType.Click)
+    }
 
+    open fun inUserInteraction() = orbitControlsActive
+
+    protected fun startRendering() {
         stopRendering = false
         requestAnimationFrame()
     }
 
-    private fun pointAtModel() {
-        geom.computeBoundingSphere()
-        scene.add(Points(geom, pointMaterial))
-        val target = geom.boundingSphere!!.center.clone()
-        controls?.target = target
-        camera.lookAt(target)
+    protected open fun stopRendering() {
+        stopRendering = true
+    }
+
+    private fun pointAtCenter() {
+        val center = Vector3()
+        Box3().expandByObject(scene).getCenter(center)
+        pointAt(center)
+    }
+
+    private fun pointAt(location: Vector3) {
+        orbitControlsExtension.orbitControls.target = location
+        camera.lookAt(location)
     }
 
     fun render() {
         if (stopRendering) return
 
         prerenderListeners.forEach { value -> value.invoke() }
-
-        mouse?.let { mouseClick ->
-            mouse = null
-            raycaster.setFromCamera(mouseClick, camera)
-            val intersections = raycaster.intersectObjects(scene.children, false)
-            var acceptedIntersection = false
-            intersections.forEach { intersection ->
-                val intersectedObject = intersection.`object`
-                console.log("Found intersection with ${intersectedObject.name} at ${intersection.distance}.")
-                if (!acceptedIntersection) {
-                    sceneObjs[intersectedObject.id]?.let {
-                        selectedEntity = it
-                        acceptedIntersection = true
-                    }
-                }
-            }
-            if (intersections.isEmpty()) {
-                selectedEntity = null
-            }
-        }
 
         if (!mapperIsRunning && rotate) {
             val rotSpeed = .01
@@ -237,13 +338,20 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
             camera.lookAt(scene.position)
         }
 
-        controls?.update()
+        orbitControlsExtension.update()
+
+        directionalLight.position.set(camera.position)
+        directionalLight.position.y *= 0.125
 
         val startTime = clock.now()
-        renderer.render(scene, camera)
+        if (sceneNeedsUpdate) {
+            realScene.updateMatrixWorld()
+            sceneNeedsUpdate = false
+        }
+        renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
 
-        frameListeners.forEach { f -> f.onFrameReady(scene, camera) }
+        frameListeners.forEach { f -> f.onFrameReady(realScene, camera) }
 
         requestAnimationFrame()
     }
@@ -257,15 +365,14 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
     private val resizeDelay = 100
 
     fun resize() {
-        container?.let {
-            val canvas = renderer.domElement
-            canvas.width = it.offsetWidth
-            canvas.height = it.offsetHeight
+        (canvas.parentElement as? HTMLElement)?.let { parent ->
+            canvas.width = parent.offsetWidth
+            canvas.height = parent.offsetHeight
 
-            camera.aspect = it.offsetWidth.toDouble() / it.offsetHeight
+            camera.aspect = parent.offsetWidth.toDouble() / parent.offsetHeight
             camera.updateProjectionMatrix()
 
-            renderer.setSize(it.offsetWidth, it.offsetHeight, updateStyle = false)
+            renderer.setSize(parent.offsetWidth, parent.offsetHeight, updateStyle = false)
         }
     }
 
@@ -273,32 +380,53 @@ class Visualizer(model: Model, private val clock: Clock) : JsMapperUi.StatusList
         mapperIsRunning = isRunning
     }
 
+    open fun release() {
+        activeExtensions.values.reversed().forEach { it.release() }
+    }
+
     interface FrameListener {
-        @JsName("onFrameReady")
         fun onFrameReady(scene: Scene, camera: Camera)
     }
 
-    inner class Facade : baaahs.ui.Facade() {
-        var container: HTMLElement?
-            get() = this@Visualizer.container
-            set(value) {
-                this@Visualizer.container = value
-            }
+    open inner class Facade : baaahs.ui.Facade() {
+        val canvas get() = this@BaseVisualizer.canvas
+        val selectedObject get() = this@BaseVisualizer.selectedObject
 
         var rotate: Boolean
-            get() = this@Visualizer.rotate
+            get() = this@BaseVisualizer.rotate
             set(value) {
-                this@Visualizer.rotate = value
+                this@BaseVisualizer.rotate = value
             }
-
-        var selectedEntity: EntityVisualizer? = null
 
         val framerate = Framerate()
 
-        fun resize() = this@Visualizer.resize()
+        fun clear() = scene.clear()
+        fun resize() = this@BaseVisualizer.resize()
+    }
+
+    fun Object3D.dispatchEvent(eventType: EventType) {
+        dispatchEvent(jsObject { type = eventType.name.hyphenize().lowercase() })
+    }
+
+    enum class EventType {
+        Select,
+        Deselect,
+        Click,
+        Transform
     }
 
     companion object {
         private const val DEFAULT_REFRESH_DELAY = 50 // ms
     }
+}
+
+inline fun <reified T: Extension> extension(
+    noinline factory: () -> T
+): Pair<KClass<T>, () -> T> {
+    return T::class to factory
+}
+
+abstract class Extension(val key: KClass<out Extension>) {
+    open fun attach() {}
+    open fun release() {}
 }

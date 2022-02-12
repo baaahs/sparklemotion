@@ -95,8 +95,11 @@ abstract class Gadget {
      * Applies initial state.
      */
     fun applyState(newState: Map<String, JsonElement>) {
+        val priorState = HashMap(state)
         state.putAll(newState)
-        changed()
+
+        if (state != priorState)
+            changed()
     }
 
     private class Listener(val callback: GadgetListener, var enabled: Boolean = true)

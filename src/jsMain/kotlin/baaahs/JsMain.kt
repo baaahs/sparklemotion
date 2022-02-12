@@ -2,26 +2,22 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.di.*
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.MapperUi
-import baaahs.model.Model
-import baaahs.model.ObjModel
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
+import baaahs.scene.SceneMonitor
+import baaahs.sim.FakeNetwork
 import baaahs.sim.HostedWebApp
+import baaahs.sim.SimMappingManager
 import baaahs.sim.ui.SimulatorAppProps
 import baaahs.sim.ui.SimulatorAppView
 import baaahs.sim.ui.WebClientWindowView
 import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
-import baaahs.util.ConsoleFormatters
-import baaahs.util.JsPlatform
+import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
-import baaahs.util.KoinLogger
-import baaahs.util.Logger
 import kotlinext.js.jsObject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.promise
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
@@ -39,17 +35,16 @@ fun main(args: Array<String>) {
     println("args = $args, mode = $mode")
 
     val queryParams = decodeQueryParams(document.location!!)
-    val model = Pluggables.loadModel(queryParams["model"] ?: Pluggables.defaultModel)
 
-    GlobalScope.launch {
+    globalLaunch {
         when (mode) {
-            "Simulator" -> launchSimulator(model, queryParams)
-            else -> launchUi(mode, model)
+            "Simulator" -> launchSimulator(queryParams)
+            else -> launchUi(mode)
         }
     }
 }
 
-private fun launchUi(appName: String?, model: Model) {
+private fun launchUi(appName: String?) {
     tryCatchAndShowErrors {
         val pinkyAddress = JsPlatform.myAddress
         val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
@@ -66,19 +61,13 @@ private fun launchUi(appName: String?, model: Model) {
         val koin = webAppInjector.koin
 
         val app = when (appName) {
-            "Mapper" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule(model).getModule()))
-                (model as? ObjModel)?.load()
-                koin.createScope<MapperUi>().get<JsMapperUi>()
-            }
-
             "Monitor" -> {
-                koin.loadModules(listOf(JsAdminWebClientModule(model).getModule()))
+                koin.loadModules(listOf(JsMonitorWebClientModule().getModule()))
                 koin.createScope<MonitorUi>().get<MonitorUi>()
             }
 
             "UI" -> {
-                koin.loadModules(listOf(JsUiWebClientModule(model).getModule()))
+                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
                 koin.createScope<WebClient>().get<WebClient>()
             }
 
@@ -90,33 +79,37 @@ private fun launchUi(appName: String?, model: Model) {
 }
 
 private fun launchSimulator(
-    model: Model,
     queryParams: Map<String, String>
 ) {
     val pixelDensity = queryParams.getOrElse("pixelDensity") { "0.2" }.toFloat()
     val pixelSpacing = queryParams.getOrElse("pixelSpacing") { "3" }.toFloat()
 
     val pinkyAddress = JsPlatform.myAddress
-    val network = BrowserNetwork(pinkyAddress, Ports.PINKY)
+    val fakeNetwork = FakeNetwork()
+    val bridgeNetwork = BrowserNetwork(pinkyAddress, Ports.PINKY)
     val pinkySettings = PinkySettings()
+    val sceneMonitor = SceneMonitor()
+    val simMappingManager = SimMappingManager()
 
     val injector = koinApplication {
         logger(KoinLogger())
 
         modules(
             PluginsModule(Pluggables.plugins).getModule(),
-            JsSimPlatformModule().getModule(),
-            JsSimulatorModule(model, network, pinkyAddress, pixelDensity, pixelSpacing).getModule(),
-            JsSimPinkyModule(model, pinkySettings).getModule(),
-            JsUiWebClientModule(model).getModule(),
-            JsAdminWebClientModule(model).getModule(),
+            JsSimPlatformModule(fakeNetwork).getModule(),
+            JsSimulatorModule(
+                sceneMonitor, fakeNetwork, bridgeNetwork,
+                pinkyAddress, pixelDensity, pixelSpacing, simMappingManager
+            ).getModule(),
+            JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager).getModule(),
+            JsUiWebClientModule().getModule(),
+            JsMonitorWebClientModule().getModule(),
         )
     }.koin
 
     val simulator = injector.get<SheepSimulator>(parameters = { parametersOf(injector) })
 
     val hostedWebApp = when (val app = queryParams["app"] ?: "UI") {
-        "Mapper" -> simulator.createMapperApp()
         "Monitor" -> simulator.createMonitorApp()
         "UI" -> simulator.createWebClientApp()
         else -> throw UnsupportedOperationException("unknown app $app")
@@ -141,7 +134,7 @@ private fun launchSimulator(
 }
 
 private fun HostedWebApp.launchApp() {
-    GlobalScope.launch {
+    globalLaunch {
         onLaunch()
 
         val contentDiv = document.getElementById("content")

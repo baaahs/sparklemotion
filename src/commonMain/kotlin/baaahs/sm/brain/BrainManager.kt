@@ -3,16 +3,15 @@ package baaahs.sm.brain
 import baaahs.Color
 import baaahs.Pinky
 import baaahs.PubSub
+import baaahs.controller.BaseControllerManager
 import baaahs.controller.Controller
-import baaahs.controller.ControllerListener
-import baaahs.controller.ControllerManager
+import baaahs.controller.ControllerId
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
@@ -27,7 +26,6 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import baaahs.util.asMillis
-import baaahs.visualizer.remote.RemoteVisualizers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
@@ -46,12 +44,8 @@ class BrainManager(
     private val clock: Clock,
     pubSub: PubSub.IServer,
     coroutineContext: CoroutineContext
-) : ControllerManager {
-    override val controllerType: String
-        get() = controllerTypeName
-
+) : BaseControllerManager(controllerTypeName) {
     private var isStartedUp = false
-    private lateinit var controllerListener: ControllerListener
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
     private val udpSocket = link.listenFragmentingUdp(Ports.PINKY, object : Network.UdpListener {
@@ -69,8 +63,6 @@ class BrainManager(
     })
 
     internal val activeBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
-    private val pendingBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
-    private val remoteVisualizers = RemoteVisualizers()
 
     private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
 
@@ -81,8 +73,7 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun start(controllerListener: ControllerListener) {
-        this.controllerListener = controllerListener
+    override fun start() {
         isStartedUp = true
     }
 
@@ -125,7 +116,7 @@ class BrainManager(
 
         val controller = BrainController(brainAddress, brainId, isSimulatedBrain, msg)
         activeBrains[brainId] = controller
-        controllerListener.onAdd(controller)
+        notifyListeners { onAdd(controller) }
 
         brainData.toMutableMap().apply {
             this[msg.brainId] = BrainInfo(
@@ -181,6 +172,8 @@ class BrainManager(
 
         override val name: String
             get() = "Brain ${brainId.uuid} at $brainAddress"
+        override val controller: Controller
+            get() = brainController
 
         override fun deliverBytes(byteArray: ByteArray) {
             val pixelCount = byteArray.size / 3
@@ -225,7 +218,7 @@ class BrainManager(
             } catch (e: Exception) {
                 // Couldn't send to Brain? Schedule to remove it.
                 hadException = true
-                controllerListener.onError(brainController)
+                notifyListeners { onError(brainController) }
                 //                pendingBrains[brainId] = this
 
                 logger.error(e) { "Error sending to $brainId, will take offline" }

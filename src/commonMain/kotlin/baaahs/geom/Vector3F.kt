@@ -3,6 +3,7 @@ package baaahs.geom
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.Serializable
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -36,12 +37,20 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return Vector3F(x * invLength, y * invLength, z * invLength)
     }
 
+    fun abs(): Vector3F {
+        return Vector3F(abs(x), abs(y), abs(z))
+    }
+
     fun length(): Float {
         return sqrt(lengthSquared().toDouble()).toFloat()
     }
 
     private fun lengthSquared(): Float {
         return x * x + y * y + z * z
+    }
+
+    fun transform(transformation: Matrix4F): Vector3F {
+        return transformation.transform(this)
     }
 
     fun serialize(writer: ByteArrayWriter) {
@@ -54,6 +63,7 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         val origin = Vector3F(0f, 0f, 0f)
         val unit3d = Vector3F(1f, 1f, 1f)
         val unitNormal = unit3d.normalize()
+        val facingForward = Vector3F(0f, 0f, 1f)
 
         fun parse(reader: ByteArrayReader) =
             Vector3F(reader.readFloat(), reader.readFloat(), reader.readFloat())

@@ -58,7 +58,7 @@ class MutableXyPadControl(
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager): List<DialogPanel> = emptyList()
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = emptyList()
 
     override fun build(showBuilder: ShowBuilder): XyPadControl {
         return XyPadControl(

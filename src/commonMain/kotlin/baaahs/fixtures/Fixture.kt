@@ -7,7 +7,8 @@ import baaahs.model.Model
 /**
  * Represents a controllable lighting fixture.
  *
- * May or may not be associated with a [Model.Entity].
+ * May or may not be associated with a [Model.Entity]. Note that there may be more than
+ * one fixture for any given entity.
  *
  * TODO: Fixture shouldn't contain references to pixels, those only make sense for
  * TODO: [PixelArrayDevice] fixtures, so pixel data should live in their [FixtureConfig].

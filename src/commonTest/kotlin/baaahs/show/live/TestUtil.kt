@@ -1,6 +1,5 @@
 package baaahs.show.live
 
-import baaahs.ShowState
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
@@ -32,22 +31,22 @@ fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap(
 fun fakeShader(title: String, type: ShaderType = PaintShader) =
     type.newShaderFromTemplate().apply { this.title = title }.build()
 
-class FakeEditHandler : EditHandler {
+class FakeEditHandler : EditHandler<Show, ShowState> {
     val calls = arrayListOf<List<Any>>()
     lateinit var updatedShow: Show
 
-    override fun onShowEdit(mutableShow: MutableShow, pushToUndoStack: Boolean) {
-        calls.add(listOf(mutableShow, pushToUndoStack))
-        updatedShow = mutableShow.getShow()
+    override fun onEdit(mutableDocument: MutableDocument<Show>, pushToUndoStack: Boolean) {
+        calls.add(listOf(mutableDocument, pushToUndoStack))
+        updatedShow = mutableDocument.build()
     }
 
-    override fun onShowEdit(show: Show, pushToUndoStack: Boolean) {
-        onShowEdit(show, ShowState(emptyMap()), pushToUndoStack)
+    override fun onEdit(document: Show, pushToUndoStack: Boolean) {
+        onEdit(document, ShowState(emptyMap()), pushToUndoStack)
     }
 
-    override fun onShowEdit(show: Show, showState: ShowState, pushToUndoStack: Boolean) {
-        calls.add(listOf(show, showState, pushToUndoStack))
-        updatedShow = show
+    override fun onEdit(document: Show, documentState: ShowState, pushToUndoStack: Boolean) {
+        calls.add(listOf(document, documentState, pushToUndoStack))
+        updatedShow = document
     }
 }
 

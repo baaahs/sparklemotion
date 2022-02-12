@@ -1,6 +1,7 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
@@ -14,6 +15,7 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.UpdateMode
+import baaahs.ui.addObserver
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -42,17 +44,23 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
         get() = ContentType.ModelInfo
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+        val sceneProvider = showPlayer.sceneProvider
+
         return object : Feed, RefCounted by RefCounter() {
+            var center: Vector3F? = null
+            var extents: Vector3F? = null
+            val listener = sceneProvider.addObserver(fireImmediately = true) {
+                val model = it.openScene?.model
+                center = model?.center
+                extents = model?.extents
+            }
+
             private val varPrefix = getVarName(id)
 
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    val modelInfo = showPlayer.modelInfo
-                    val center by lazy { modelInfo.center }
-                    val extents by lazy { modelInfo.extents }
-
                     return object : ProgramFeed {
-                        override val updateMode: UpdateMode get() = UpdateMode.ONCE
+                        override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
                         val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")
 
@@ -60,11 +68,15 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
                             get() = centerUniform != null && extentsUniform != null
 
                         override fun setOnProgram() {
-                            centerUniform?.set(center)
-                            extentsUniform?.set(extents)
+                            center?.let { centerUniform?.set(it) }
+                            extents?.let { extentsUniform?.set(it) }
                         }
                     }
                 }
+            }
+
+            override fun release() {
+                sceneProvider.removeObserver(listener)
             }
         }
     }

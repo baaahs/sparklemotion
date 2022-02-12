@@ -1,7 +1,6 @@
 package baaahs.glsl
 
 import baaahs.geom.Vector3F
-import baaahs.model.LinearPixelArray
 import baaahs.model.Model
 import baaahs.model.ModelInfo
 import baaahs.model.PixelArray
@@ -52,7 +51,7 @@ class LinearSurfacePixelStrategy(
 ) : SurfacePixelStrategy {
     override fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F> {
         if (entity is PixelArray) {
-            return entity.calculatePixelLocations(pixelCount)
+            return entity.calculatePixelLocalLocations(pixelCount)
         }
 
         // Generate pixel locations along a line from one vertex to the surface's center.

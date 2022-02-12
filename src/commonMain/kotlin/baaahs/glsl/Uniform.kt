@@ -1,9 +1,6 @@
 package baaahs.glsl
 
-import baaahs.geom.Matrix4
-import baaahs.geom.Vector2F
-import baaahs.geom.Vector3F
-import baaahs.geom.Vector4F
+import baaahs.geom.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.Kgl
@@ -17,10 +14,11 @@ interface Uniform {
     fun set(x: Float, y: Float)
     fun set(x: Float, y: Float, z: Float)
     fun set(x: Float, y: Float, z: Float, w: Float)
-    fun set(matrix: Matrix4)
+    fun set(matrix: Matrix4F)
     fun set(vector2F: Vector2F)
     fun set(vector3F: Vector3F)
     fun set(vector4F: Vector4F)
+    fun set(eulerAngle: EulerAngle)
     fun set(textureUnit: GlContext.TextureUnit)
 }
 
@@ -36,13 +34,15 @@ class UniformImpl internal constructor(
     override fun set(x: Float, y: Float, z: Float) = withProgram { uniform3f(uniformLocation, x, y, z) }
     override fun set(x: Float, y: Float, z: Float, w: Float) = withProgram { uniform4f(uniformLocation, x, y, z, w) }
 
-    override fun set(matrix: Matrix4) = withProgram {
+    override fun set(matrix: Matrix4F) = withProgram {
         uniformMatrix4fv(uniformLocation, false, matrix.elements.map { it.toFloat() }.toFloatArray())
     }
 
     override fun set(vector2F: Vector2F) = set(vector2F.x, vector2F.y)
     override fun set(vector3F: Vector3F) = set(vector3F.x, vector3F.y, vector3F.z)
     override fun set(vector4F: Vector4F) = set(vector4F.x, vector4F.y, vector4F.z, vector4F.w)
+    override fun set(eulerAngle: EulerAngle) =
+        set(eulerAngle.xRad.toFloat(), eulerAngle.yRad.toFloat(), eulerAngle.zRad.toFloat())
 
     override fun set(textureUnit: GlContext.TextureUnit) = textureUnit.setUniform(this)
 

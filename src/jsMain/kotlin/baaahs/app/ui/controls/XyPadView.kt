@@ -21,8 +21,7 @@ import react.useRef
 import styled.StyleSheet
 import styled.inlineStyles
 
-
-val XyPad = xComponent<XyPadProps>("XyPad") { props ->
+private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val padSize = Vector2F(200f, 200f)
     val knobSize = Vector2F(20f, 20f)
     val helper = memo(padSize, knobSize, props.xyPadControl) {
@@ -191,4 +190,4 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
 }
 
 fun RBuilder.xyPad(handler: RHandler<XyPadProps>) =
-    child(XyPad, handler = handler)
+    child(XyPadView, handler = handler)

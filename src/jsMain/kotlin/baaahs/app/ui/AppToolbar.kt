@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
-import baaahs.ShowEditorState
 import baaahs.app.ui.controls.problemBadge
+import baaahs.app.ui.editor.SceneEditIntent
+import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
-import baaahs.util.UndoStack
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
@@ -32,42 +32,51 @@ import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.b
-import react.dom.div
-import react.dom.h4
-import react.dom.i
+import react.dom.*
 import react.useContext
-import styled.css
-import styled.styledDiv
+import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val themeStyles = appContext.allStyles.appUi
-    val webClient = appContext.webClient
+    val showManager = appContext.showManager
+    observe(showManager)
+
+    val sceneManager = appContext.sceneManager
+    observe(sceneManager)
+    val scene = sceneManager.scene
+
+    val documentManager = props.appMode.getDocumentManager(appContext)
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
     }
+    val handleSceneEditButtonClick = callback {
+        appContext.openSceneEditor(SceneEditIntent())
+    }
 
-    val undoStack = props.undoStack
-    val handleUndo by eventHandler(undoStack) {
-        undoStack.undo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
+    val handleUndo by eventHandler(documentManager) { documentManager.undo() }
+    val handleRedo by eventHandler(documentManager) { documentManager.redo() }
+
+    val handleSave by eventHandler(documentManager) {
+        appContext.notifier.launchAndReportErrors {
+            documentManager.onSave()
         }
     }
 
-    val handleRedo by eventHandler(undoStack) {
-        undoStack.redo().also { (show, showState) ->
-            webClient.onShowEdit(show, showState, pushToUndoStack = false)
+    val handleSaveAs by eventHandler(documentManager) {
+        appContext.notifier.launchAndReportErrors {
+            documentManager.onSaveAs()
         }
     }
 
-    val show = webClient.openShow
-    val showProblemsSeverity = webClient.showProblems.map { it.severity }.maxOrNull()
+    val show = showManager.openShow
+    val showProblemsSeverity = showManager.showProblems.map { it.severity }.maxOrNull()
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
+    val editMode = props.editMode == true || props.appMode == AppMode.Scene
 
     appBar(themeStyles.appToolbar on AppBarStyle.root) {
         attrs.position = AppBarPosition.relative
@@ -81,36 +90,63 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
             }
 
             typographyH6(themeStyles.title on TypographyStyle.root) {
-                show?.let {
+                div(+themeStyles.titleHeader) { +"Show:" }
+
+                if (show != null) {
                     b {
                         +show.title
-                        webClient.showFile?.let { attrs["title"] = it.toString() }
+                        showManager.file?.let { attrs["title"] = it.toString() }
                     }
-                    if (webClient.showIsModified) i { +" (Unsaved)" }
+
+                    if (showManager.isUnsaved) i { +" (Unsaved)" }
+                    problemBadge(show, themeStyles.problemBadge)
+
+                    if (props.appMode == AppMode.Show && editMode) {
+                        span(+themeStyles.editButton) {
+                            icon(materialui.icons.Edit)
+                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                        }
+                    }
+                } else {
+                    i { +"None" }
                 }
+            }
 
-                show?.let { problemBadge(show, themeStyles.problemBadge) }
+            typographyH6(themeStyles.title on TypographyStyle.root) {
+                div(+themeStyles.titleHeader) { +"Scene:" }
 
-                if (show != null && props.editMode) {
-                    div(+themeStyles.editButton) {
-                        icon(materialui.icons.Edit)
-                        attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                if (scene != null) {
+                    b {
+                        +scene.title
+                        sceneManager.file?.let { attrs["title"] = it.toString() }
                     }
+                    if (sceneManager.isUnsaved) i { +" (Unsaved)" }
+
+                    if (props.appMode == AppMode.Scene && editMode) {
+                        span(+themeStyles.editButton) {
+                            icon(materialui.icons.Edit)
+                            attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
+                        }
+                    }
+                } else {
+                    i { +"None" }
                 }
             }
 
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
             div(+themeStyles.appToolbarActions) {
-                styledDiv {
-                    if (!props.editMode && !webClient.showIsModified) css { opacity = 0 }
-                    css {
+                div {
+                    inlineStyles {
+                        if (!editMode && !documentManager.isUnsaved) {
+                            opacity = 0
+                        }
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
                     iconButton {
                         icon(materialui.icons.Undo)
-                        attrs.disabled = !undoStack.canUndo()
+                        attrs.disabled = !documentManager.canUndo
                         attrs.onClickFunction = handleUndo
 
                         typographyH6 { +"Undo" }
@@ -118,23 +154,23 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     iconButton {
                         icon(materialui.icons.Redo)
-                        attrs.disabled = !undoStack.canRedo()
+                        attrs.disabled = !documentManager.canRedo
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }
                     }
 
-                    if (webClient.showFile == null) {
+                    if (!documentManager.isLoaded) {
                         iconButton {
                             icon(materialui.icons.FileCopy)
-                            attrs.onClickFunction = props.onSaveShowAs.withEvent()
+                            attrs.onClickFunction = handleSaveAs
                             typographyH6 { +"Save As…" }
                         }
                     } else {
                         iconButton {
                             icon(materialui.icons.Save)
-                            attrs.disabled = !webClient.showIsModified
-                            attrs.onClickFunction = props.onSaveShow.withEvent()
+                            attrs.disabled = !documentManager.isUnsaved
+                            attrs.onClickFunction = handleSave
                             typographyH6 { +"Save" }
                         }
                     }
@@ -166,7 +202,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                         dialogTitle { +"Show Problems" }
                         dialogContent(+themeStyles.showProblemsDialogContent) {
-                            webClient.showProblems.sortedByDescending { it.severity }.forEach { problem ->
+                            showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
                                 val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
                                 div(iconClass) { icon(problem.severity.icon) }
                                 div {
@@ -187,15 +223,13 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     }
 }
 
-private val Severity.cssClass get() = name.toLowerCase() + "Severity"
+private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
-    var editMode: Boolean
+    var appMode: AppMode
+    var editMode: Boolean?
     var onEditModeChange: () -> Unit
     var onMenuButtonClick: () -> Unit
-    var undoStack: UndoStack<ShowEditorState>
-    var onSaveShow: () -> Unit
-    var onSaveShowAs: () -> Unit
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =

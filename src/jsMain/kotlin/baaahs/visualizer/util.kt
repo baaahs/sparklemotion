@@ -28,6 +28,10 @@ class Rotator(val from: Vector3, val to: Vector3) {
         vectors.forEach { it.applyMatrix4(matrix) }
     }
 
+    fun rotate(box3: Box3) {
+        box3.applyMatrix4(matrix)
+    }
+
     fun invert(): Rotator = Rotator(to, from)
 }
 

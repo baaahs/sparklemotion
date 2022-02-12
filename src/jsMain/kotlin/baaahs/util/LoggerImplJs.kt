@@ -14,10 +14,10 @@ actual fun logEnabled(id: String, level: LogLevel): Boolean = level >= LoggerCon
 
 private fun logMessage(level: LogLevel, message: String, exception: Throwable?) {
     when (level) {
-        LogLevel.DEBUG -> console.asDynamic().debug(message, exception)
-        LogLevel.INFO -> console.info(message, exception)
-        LogLevel.WARN -> console.warn(message, exception)
-        LogLevel.ERROR -> console.error(message, exception)
+        LogLevel.DEBUG -> console.asDynamic().debug(message, exception?.stackTraceToString())
+        LogLevel.INFO -> console.info(message, exception?.stackTraceToString())
+        LogLevel.WARN -> console.warn(message, exception?.stackTraceToString())
+        LogLevel.ERROR -> console.error(message, exception?.stackTraceToString())
     }
 }
 

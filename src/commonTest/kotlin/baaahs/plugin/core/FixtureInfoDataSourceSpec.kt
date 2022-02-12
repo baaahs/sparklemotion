@@ -3,6 +3,7 @@ package baaahs.plugin.core
 import baaahs.TestMovingHeadAdapter
 import baaahs.TestRenderContext
 import baaahs.describe
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.model.MovingHead
@@ -16,8 +17,7 @@ object FixtureInfoDataSourceSpec : Spek({
     describe<FixtureInfoDataSource> {
         val movingHead by value {
             MovingHead(
-                "test", "Test", 1, TestMovingHeadAdapter(),
-                Vector3F.origin, Vector3F.origin
+                "test", "Test", baseDmxChannel = 1, adapter = TestMovingHeadAdapter()
             )
         }
 
@@ -50,12 +50,15 @@ object FixtureInfoDataSourceSpec : Spek({
             val glProgram = testRenderContext.gl.findProgram(program.id)
 
             val originUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.origin")
-            expect(originUniform.asVector3F()).toEqual(movingHead.origin)
+            expect(originUniform.asVector3F()).toEqual(movingHead.position)
 
             val headingUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.heading")
-            expect(headingUniform.asVector3F()).toEqual(movingHead.heading)
+            expect(headingUniform.asEulerAngle()).toEqual(movingHead.rotation)
         }
     }
 })
 
-fun Iterable<Float>.asVector3F() = with(iterator()) { Vector3F(next(), next(), next()) }
+fun Iterable<Float>.asVector3F() =
+    with(iterator()) { Vector3F(next(), next(), next()) }
+fun Iterable<Float>.asEulerAngle() =
+    with(iterator()) { EulerAngle(next().toDouble(), next().toDouble(), next().toDouble()) }

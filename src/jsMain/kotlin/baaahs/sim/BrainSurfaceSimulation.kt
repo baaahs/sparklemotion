@@ -4,26 +4,29 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
-import baaahs.geom.toVector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
+import baaahs.randomDelay
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.sim.BrainSimulatorManager
+import baaahs.util.globalLaunch
 import baaahs.visualizer.*
+import three_ext.toVector3F
 
 actual class BrainSurfaceSimulation actual constructor(
-    val surface: Model.Surface,
-    private val simulationEnv: SimulationEnv
+    private val surface: Model.Surface,
+    private val simulationEnv: SimulationEnv,
+    adapter: EntityAdapter
 ) : FixtureSimulation {
-    val surfaceGeometry by lazy { SurfaceGeometry(surface) }
+    private val surfaceGeometry by lazy { SurfaceGeometry(surface) }
 
-    val pixelPositions by lazy {
+    private val pixelPositions by lazy {
         val pixelArranger = simulationEnv[PixelArranger::class]
         pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
     }
 
-    val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal) }
+    private val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal, surface.transformation) }
 
     val brain by lazy {
         val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
@@ -43,7 +46,9 @@ actual class BrainSurfaceSimulation actual constructor(
             )
         }
 
-    override val entityVisualizer: SurfaceVisualizer by lazy { SurfaceVisualizer(surfaceGeometry, vizPixels) }
+    override val itemVisualizer: SurfaceVisualizer by lazy {
+        SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
+    }
 
     override val previewFixture: Fixture by lazy {
         Fixture(
@@ -56,19 +61,27 @@ actual class BrainSurfaceSimulation actual constructor(
         )
     }
 
-    override fun launch() {
-        brain.run {}
+    override fun start() {
+        globalLaunch {
+            randomDelay(1000)
+            brain.start()
+        }
+    }
+
+    override fun stop() {
+        brain.stop()
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        entityVisualizer.vizPixels = VizPixels(
+        itemVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
-            entityVisualizer.surfaceGeometry.panelNormal,
+            itemVisualizer.surfaceGeometry.panelNormal,
+            surface.transformation,
             fixtureConfig as PixelArrayDevice.Config
         )
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+        itemVisualizer.vizPixels?.readColors(reader)
     }
 }

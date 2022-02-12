@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.app.ui.editor.AddControlToPanelBucket
 import baaahs.getBang
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay

@@ -3,8 +3,8 @@ package baaahs
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.FixtureManager
-import baaahs.geom.Matrix4
+import baaahs.fixtures.FixtureManagerImpl
+import baaahs.geom.Matrix4F
 import baaahs.gl.RootToolchain
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
@@ -14,13 +14,13 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
-import baaahs.models.SheepModel
 import baaahs.net.FragmentingUdpSocket
 import baaahs.net.Network
 import baaahs.net.TestNetwork
 import baaahs.plugin.beatlink.BeatData
 import baaahs.plugin.beatlink.BeatSource
-import baaahs.scene.SceneManager
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
@@ -52,56 +52,53 @@ object PinkySpec : Spek({
         val clientAddress by value { TestNetwork.Address("client") }
         val clientPort = 1234
 
-        val panel17 = SheepModel.Panel("17")
-        val model = ModelForTest(listOf(panel17))
+        val panel17 by value { testModelSurface("17") }
+        val model by value { modelForTest(listOf(panel17)) }
 
         val fakeFs by value { FakeFs() }
         val plugins by value { testPlugins() }
         val storage by value { Storage(fakeFs, plugins) }
         val link by value { network.link("pinky") }
+        val renderManager by value { fakeGlslContext.runInContext { RenderManager { fakeGlslContext } } }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
+        val toolchain by value { RootToolchain(plugins) }
+        val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }
+        val coroutineScope by value { CoroutineScope(ImmediateDispatcher) }
+        val pubSub by value { PubSub.Server(httpServer, coroutineScope) }
+        val clock by value { FakeClock() }
+        val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
+        val brainManager by value {
+            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher)
+        }
+        val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
+        val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
+        val stageManager by value {
+            StageManager(
+                toolchain, renderManager, pubSub, storage, fixtureManager, clock,
+                gadgetManager, serverNotices, sceneMonitor
+            )
+        }
+        val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
+        val controllersManager by value {
+            ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, listOf(fixtureManager))
+        }
+
+        val renderAndSendFrame by value {
+            { doRunBlocking { stageManager.renderAndSendNextFrame(true) } }
+        }
+        
         val pinky by value {
-            val httpServer = link.startHttpServer(Ports.PINKY_UI_TCP)
-            val pubSub = PubSub.Server(httpServer, CoroutineScope(ImmediateDispatcher))
-            val renderManager = fakeGlslContext.runInContext { RenderManager(model) { fakeGlslContext } }
             val fakeDmxUniverse = FakeDmxUniverse()
-            val toolchain = RootToolchain(plugins)
-            val fixtureManager = FixtureManager(renderManager, plugins)
-            val clock = FakeClock()
-            val gadgetManager = GadgetManager(pubSub, clock, ImmediateDispatcher)
             val dmxManager = object : DmxManager {
-                override fun allOff() = TODO("not implemented")
+                override fun allOff() = error("not implemented")
 
                 override val dmxUniverse: Dmx.Universe get() = fakeDmxUniverse
             }
 
-            val brainManager = BrainManager(
-                PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher
-            )
-            val mappingManager = MappingManagerImpl(storage, model)
-            val controllersManager = ControllersManager(listOf(brainManager), mappingManager, model, fixtureManager)
-            val serverNotices = ServerNotices(pubSub, ImmediateDispatcher)
-            val stageManager = StageManager(
-                toolchain, renderManager, pubSub, storage, fixtureManager, clock, model,
-                gadgetManager, controllersManager, serverNotices
-            )
-            val sceneManager = SceneManager(storage, controllersManager)
             Pinky(
-                clock,
-                PermissiveFirmwareDaddy(),
-                plugins,
-                storage,
-                link,
-                httpServer,
-                pubSub,
-                dmxManager,
-                mappingManager,
-                fixtureManager,
-                ImmediateDispatcher,
-                toolchain,
-                stageManager,
-                sceneManager,
-                controllersManager,
-                brainManager,
+                clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
+                dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
+                stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(storage, pubSub),
                 Pinky.NetworkStats(),
                 PinkySettings(),
@@ -109,7 +106,6 @@ object PinkySpec : Spek({
             )
         }
         val pinkyLink by value { network.links.only() }
-        val fixtureManager by value { pinky.fixtureManager }
         val renderTargets by value { fixtureManager.getRenderTargets_ForTestOnly() }
 
         val panelMappings by value { emptyList<Pair<BrainId, Model.Surface>>() }
@@ -131,7 +127,7 @@ object PinkySpec : Spek({
                     val mappingSessionPath = storage.saveSession(
                         MappingSession(
                             0.0, listOf(surfaceData),
-                            Matrix4(doubleArrayOf()), null, notes = "Simulated pixels"
+                            Matrix4F.identity, null, notes = "Simulated pixels"
                         )
                     )
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
@@ -147,7 +143,7 @@ object PinkySpec : Spek({
             beforeEachTest {
                 pinkyUdpReceive(clientAddress, clientPort, brainHelloMessage.toBytes())
                 pinky.updateFixtures()
-                doRunBlocking { pinky.renderAndSendNextFrame() }
+                renderAndSendFrame()
             }
 
             describe("which are unmapped") {
@@ -169,27 +165,23 @@ object PinkySpec : Spek({
                 override(panelMappings) { listOf(BrainId("brain1") to panel17) }
 
                 context("for which Pinky has a mapping") {
-                    override(brainHelloMessage) { BrainHelloMessage("brain1", null) }
+                    override(brainHelloMessage) {
+                        BrainHelloMessage("brain1", null)
+                    }
 
-                    it("should notify show") {
+                    it("should send pixels to the brain") {
                         val packetTypes = pinkyLink.packetsToSend.map { Type.get(it.data[FragmentingUdpSocket.headerSize]) }
                         expect(packetTypes).containsExactly(Type.BRAIN_PANEL_SHADE)
                     }
 
-                    it("should send pixels to the brain") {
-                        println(pinky)
-                        val fixture = renderTargets.keys.only()
-                        expect(fixture.modelEntity).toBe(panel17)
-                    }
-
                     context("then when the brain re-sends its hello with its newfound mapping") {
                         it("should cause no changes") {
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
 
-                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.title).toBytes())
                             pinky.updateFixtures()
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
+                            renderAndSendFrame()
                             expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
                             expect(fixture.modelEntity).toBe(panel17)
@@ -198,30 +190,30 @@ object PinkySpec : Spek({
 
                     context("in the case of a brain race condition") {
                         it("should notify show") {
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
 
                             // Remap to 17L...
-                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.title).toBytes())
                             // ... but a packet also made it through identifying brain1 as unmapped.
                             pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", null).toBytes())
                             pinky.updateFixtures()
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
+                            renderAndSendFrame()
 
                             // Pinky should have sent out another BrainMappingMessage message; todo: verify that!
 
-                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.title).toBytes())
                             pinky.updateFixtures()
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
+                            renderAndSendFrame()
 
                             expect(renderTargets.size).toBe(1)
                             expect(renderTargets.keys.only().modelEntity).toBe(panel17)
 
-                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.name).toBytes())
+                            pinkyUdpReceive(clientAddress, clientPort, BrainHelloMessage("brain1", panel17.title).toBytes())
                             pinky.updateFixtures()
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
-                            doRunBlocking { pinky.renderAndSendNextFrame() }
+                            renderAndSendFrame()
+                            renderAndSendFrame()
                             expect(renderTargets.size).toBe(1)
                             val fixture = renderTargets.keys.only()
                             expect(fixture.modelEntity).toBe(panel17)
@@ -229,9 +221,6 @@ object PinkySpec : Spek({
                     }
                 }
             }
-
-
-
         }
     }
 })

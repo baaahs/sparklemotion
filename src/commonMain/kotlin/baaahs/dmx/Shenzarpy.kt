@@ -4,7 +4,10 @@ import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable @SerialName("Shenzarpy")
 object Shenzarpy : MovingHeadAdapter {
     override val dmxChannelCount: Int get() = 16
 
@@ -20,13 +23,18 @@ object Shenzarpy : MovingHeadAdapter {
     override val panFineChannel: Dmx.Channel get() = Channel.PAN_FINE
     override val panRange: ClosedRange<Float> =
         toRadians(0f)..toRadians(540f)
+    /** Time required to move from panRange.start to panRange.end, in seconds. */
     override val panMotorSpeed: Float = 2.54f
 
     override val tiltChannel: Dmx.Channel get() = Channel.TILT
     override val tiltFineChannel: Dmx.Channel get() = Channel.TILT_FINE
     override val tiltRange: ClosedRange<Float> =
         toRadians(-126f)..toRadians(126f)
+    /** Time required to move from tiltRange.start to tiltRange.end, in seconds. */
     override val tiltMotorSpeed: Float = 1.3f
+
+    override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
+        get() = MovingHeadAdapter.VisualizerInfo(5f, 3f, 9f, 3f)
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 

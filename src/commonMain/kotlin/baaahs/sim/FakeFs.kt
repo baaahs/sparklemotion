@@ -23,6 +23,10 @@ class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
         saveFile(file, content.encodeToByteArray(), allowOverwrite)
     }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) {
+        files[toFile.fullPath] = files.remove(fromFile.fullPath)!!
+    }
+
     override suspend fun delete(file: Fs.File) {
         files.remove(file.fullPath)
     }
@@ -34,10 +38,6 @@ class FakeFs(override val name: String = "FakeFs") : BaseFakeFs() {
         }
         files[path] = content
     }
-
-    fun renameFile(from: Fs.File, to: Fs.File) {
-        files[to.fullPath] = files.remove(from.fullPath)!!
-    }
 }
 
 abstract class BaseFakeFs : Fs {
@@ -45,8 +45,12 @@ abstract class BaseFakeFs : Fs {
 
     override suspend fun listFiles(directory: Fs.File): List<Fs.File> {
         val prefix = if (directory.isRoot) "" else "${directory.fullPath}/"
+        return listFiles(directory, prefix)
+    }
+
+    protected fun listFiles(directory: Fs.File, prefix: String): List<Fs.File> {
         val entries = keys
-            .filter { directory.isRoot || it.startsWith(prefix) }
+            .filter { it.startsWith(prefix) }
             .map {
                 val inPath = it.substring(prefix.length)
                 val slash = inPath.indexOf('/')

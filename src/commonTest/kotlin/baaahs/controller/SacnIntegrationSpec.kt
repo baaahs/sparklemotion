@@ -8,10 +8,16 @@ import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
-import baaahs.mapper.*
+import baaahs.mapper.FixtureMapping
+import baaahs.mapper.MappingSession
+import baaahs.mapper.SacnTransportConfig
+import baaahs.mapper.SessionMappingResults
 import baaahs.model.LightBar
+import baaahs.model.Model
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
+import baaahs.scene.OpenScene
+import baaahs.scene.SceneMonitor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -24,17 +30,22 @@ import org.spekframework.spek2.style.specification.describe
 object SacnIntegrationSpec : Spek({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
-        val model by value { ModelForTest(entity("bar1"), entity("bar2")) }
+        val model by value { modelForTest(entity("bar1"), entity("bar2")) }
+        val controllers by value { mapOf<String, ControllerConfig>() }
+        val fixtures by value { mapOf<ControllerId, List<FixtureMapping>>() }
+        val scene by value { OpenScene(model, controllers, fixtures) }
         val sacnManager by value { SacnManager(link, TestRig().server, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
-        val mappingManager by value { FakeMappingManager().also { it.data.putAll(mappings); it.dataHasLoaded = true } }
-        val controllersManager by value { ControllersManager(listOf(sacnManager), mappingManager, TestModel, listener) }
+        val mappingManager by value { FakeMappingManager(mappings) }
+        val controllersManager by value {
+            ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(testScene()), listOf(listener))
+        }
         val configs by value { mapOf<String, ControllerConfig>() }
 
         beforeEachTest {
-            sacnManager.onConfigChange(configs)
             controllersManager.start()
+            sacnManager.onConfigChange(configs)
         }
 
         context("with no declared controllers") {
@@ -171,7 +182,7 @@ object SacnIntegrationSpec : Spek({
                 )
 
             }
-            val mappingData by value { SessionMappingResults(model, listOf(mappingSession)) }
+            val mappingData by value { SessionMappingResults(scene, listOf(mappingSession)) }
 
             it("transforms it into FixtureConfigs") {
                 val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))
@@ -189,20 +200,20 @@ object SacnIntegrationSpec : Spek({
 })
 
 private fun fixtureMapping(
-    model: ModelForTest,
+    model: Model,
     entityName: String,
     baseChannel: Int,
     pixelCount: Int,
     componentsStartAtUniverseBoundaries: Boolean
 ) =
     FixtureMapping(
-        model.findEntity(entityName), pixelCount, null,
+        model.findEntityByName(entityName), pixelCount, null,
         transportConfig = SacnTransportConfig(
             baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries
         )
     )
 
-fun entity(name: String) = LightBar(name, name, Vector3F.origin, Vector3F.unit3d)
+fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
 
 class PixelColors(private val startingAt: Int, private val count: Int) {
     val bytes get() =

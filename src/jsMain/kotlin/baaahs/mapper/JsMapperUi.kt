@@ -1,26 +1,29 @@
 package baaahs.mapper
 
 import baaahs.MediaDevices
-import baaahs.admin.AdminClient
+import baaahs.client.SceneEditorClient
+import baaahs.client.document.SceneManager
 import baaahs.context2d
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.getValue
 import baaahs.imaging.*
-import baaahs.imaging.Image
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Observable
 import baaahs.ui.value
 import baaahs.util.Logger
+import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
 import baaahs.window
 import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.css.px
-import org.w3c.dom.*
+import org.w3c.dom.CanvasImageSource
+import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
@@ -29,10 +32,8 @@ import react.createElement
 import react.dom.br
 import react.dom.i
 import three.js.*
-import three_ext.CameraControls
-import three_ext.Float32BufferAttribute
+import three_ext.*
 import three_ext.Matrix4
-import three_ext.plus
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -58,7 +59,8 @@ class MapperStatus : Observable() {
 }
 
 class JsMapperUi(
-    private val adminClient: AdminClient,
+    private val sceneEditorClient: SceneEditorClient,
+    private val sceneManager: SceneManager,
     private val statusListener: StatusListener? = null
 ) : Observable(), MapperUi, HostedWebApp {
     private lateinit var listener: MapperUi.Listener
@@ -71,16 +73,16 @@ class JsMapperUi(
     }
 
     // Bounds of mapper container.
-    var browserDimen = Dimen(512, 384)
+    private var browserDimen = Dimen(512, 384)
 
     // Bounds of area used for mapping.
-    var containerDimen = browserDimen
+    private var containerDimen = browserDimen
 
     // Actual dimensions coming from the camera.
-    var lastCamImageDimen = browserDimen
+    private var lastCamImageDimen = browserDimen
 
     // Best-fit dimensions of mapping area and camera image.
-    var viewportDimen = browserDimen
+    private var viewportDimen = browserDimen
 
     private val clock = Clock()
 
@@ -95,7 +97,7 @@ class JsMapperUi(
     val wireframe = Object3D()
 
     private val selectedSurfaces = mutableListOf<PanelInfo>()
-    var uiLocked: Boolean by notifyOnChange(false)
+    private var uiLocked: Boolean by notifyOnChange(false)
 
     private lateinit var ui2dCanvas: HTMLCanvasElement
 
@@ -114,7 +116,7 @@ class JsMapperUi(
     var pauseButtonEnabled by notifyOnChange(true)
     var playButtonEnabled by notifyOnChange(true)
 
-    private val modelSurfaceInfos = mutableMapOf<Model.Surface, PanelInfo>()
+    private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
     private var cameraZRotation = 0f
@@ -206,7 +208,7 @@ class JsMapperUi(
     private fun selectSurfacesMatching(pattern: String) {
         selectedSurfaces.forEach { it.deselect() }
         selectedSurfaces.clear()
-        selectedSurfaces.addAll(modelSurfaceInfos.values.filter { it.surface.name.contains(pattern, true) })
+        selectedSurfaces.addAll(entityDepictions.values.filter { it.surface.name.contains(pattern, true) })
         selectedSurfaces.forEach { it.select() }
         notifyChanged()
     }
@@ -216,7 +218,7 @@ class JsMapperUi(
 
         if (command.startsWith("g", ignoreCase = true) || command.startsWith("/")) {
             val surfaceName = command.substring(1).trim()
-            goToSurface(surfaceName.toUpperCase())
+            goToSurface(surfaceName.uppercase())
         }
     }
 
@@ -236,9 +238,10 @@ class JsMapperUi(
     }
 
     override fun render(): ReactElement {
-        return createElement(MapperIndexView, jsObject<MapperIndexViewProps> {
-            adminClient = this@JsMapperUi.adminClient.facade
+        return createElement(SceneEditorView, jsObject {
+            sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
             mapperUi = this@JsMapperUi
+            sceneManager = this@JsMapperUi.sceneManager.facade
         })
     }
 
@@ -250,7 +253,7 @@ class JsMapperUi(
         statusListener?.mapperStatusChanged(false)
 
         listener.onClose()
-        adminClient.onClose()
+        sceneEditorClient.onClose()
     }
 
     fun onResize(width: Int, height: Int) {
@@ -289,60 +292,21 @@ class JsMapperUi(
         height = dimen.height
     }
 
-    private fun HTMLElement.resize(dimen: Dimen) {
-        style.width = dimen.width.px.toString()
-        style.height = dimen.height.px.toString()
-    }
-
     override fun addWireframe(model: Model) {
-        val vertices = model.geomVertices.map { v -> Vector3(v.x, v.y, v.z) }.toTypedArray()
-        model.allSurfaces.forEach { surface ->
-            val geom = Geometry()
-            geom.vertices = vertices
+        model.allEntities
+            .groupBy { (it as? Model.EntityWithGeometry)?.geometry }
+            .forEach { (geometry, entities) ->
+                val vertices = geometry?.vertices
+                    ?.map { v -> Vector3(v.x, v.y, v.z) }
+                    ?.toTypedArray()
 
-            val faceNormalAcc = Vector3()
-            val panelFaces = surface.faces.map { face ->
-                val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
-
-                // just compute this face's normal
-                geom.faces = arrayOf(face3)
-                geom.computeFaceNormals()
-                faceNormalAcc.add(face3.normal)
-
-                face3
+                entities.forEach { entity ->
+                    // TODO: Add wireframe depiction for other entity types.
+                    if (entity is Model.Surface) {
+                        entityDepictions[entity] = createEntityDepiction(entity, vertices)
+                    }
+                }
             }
-            val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
-
-            val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
-            val mesh = Mesh(geom, panelMaterial)
-            mesh.asDynamic().name = surface.name
-            uiScene.add(mesh)
-
-            val lineMaterial = LineBasicMaterial().apply {
-                color = Color(0f, 1f, 0f)
-                linewidth = 2.0
-            }
-
-            // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
-            surface.lines.forEach { line ->
-                val lineGeom = BufferGeometry()
-                lineGeom.setFromPoints(line.vertices.map { pt ->
-                    Vector3(
-                        pt.x,
-                        pt.y,
-                        pt.z
-                    ) + surfaceNormal
-                }.toTypedArray())
-                wireframe.add(Line(lineGeom, lineMaterial))
-            }
-
-            geom.faces = panelFaces.toTypedArray()
-            geom.computeFaceNormals()
-            geom.computeVertexNormals()
-
-            modelSurfaceInfos[surface] =
-                PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
-        }
 
         uiScene.add(wireframe)
 
@@ -355,14 +319,60 @@ class JsMapperUi(
         uiControls.fitToBox(boundingBox, false)
     }
 
+    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>?): PanelInfo {
+        val surface = entity
+
+        if (vertices == null) error("No vertices for surface ${entity.name}!")
+        val geom = Geometry()
+        geom.vertices = vertices
+
+        val faceNormalAcc = Vector3()
+        val panelFaces = surface.faces.map { face ->
+            val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
+
+            // just compute this face's normal
+            geom.faces = arrayOf(face3)
+            geom.computeFaceNormals()
+            faceNormalAcc.add(face3.normal)
+
+            face3
+        }
+        val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
+
+        val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
+        val mesh = Mesh(geom, panelMaterial)
+        mesh.asDynamic().name = surface.name
+        uiScene.add(mesh)
+
+        val lineMaterial = LineBasicMaterial().apply {
+            color = Color(0f, 1f, 0f)
+            linewidth = 2.0
+        }
+
+        // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
+        surface.lines.forEach { line ->
+            val lineGeom = BufferGeometry()
+            lineGeom.setFromPoints(line.vertices.map { pt ->
+                pt.toVector3() + surfaceNormal
+            }.toTypedArray())
+            wireframe.add(Line(lineGeom, lineMaterial))
+        }
+
+        geom.faces = panelFaces.toTypedArray()
+        geom.computeFaceNormals()
+        geom.computeVertexNormals()
+
+        return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
+    }
+
     inner class PanelInfo(
         val surface: Model.Surface,
         val faces: List<Face3>,
         val mesh: Mesh<*, *>,
         val geom: Geometry,
-        val lineMaterial: LineBasicMaterial
-    ) : MapperUi.SurfaceViz {
-        override val modelSurface: Model.Surface
+        private val lineMaterial: LineBasicMaterial
+    ) : MapperUi.EntityDepiction {
+        override val entity: Model.Entity
             get() = surface
 
         private val pixelsGeom = BufferGeometry()
@@ -389,7 +399,7 @@ class JsMapperUi(
                 return vectors
             }
 
-        val vertices: Set<Vector3>
+        private val vertices: Set<Vector3>
             get() {
                 val v = mutableSetOf<Vector3>()
                 for (face in faces) {
@@ -400,7 +410,7 @@ class JsMapperUi(
                 return v
             }
 
-        val _boundingBox: Box3 by lazy {
+        private val _boundingBox: Box3 by lazy {
             val boundingBox = Box3()
             for (vertex in vertices) {
                 boundingBox.expandByPoint(vertex)
@@ -410,9 +420,9 @@ class JsMapperUi(
 
         val boundingBox get() = _boundingBox.clone()
 
-        private val rotator by lazy { Rotator(surfaceNormal, Vector3(0, 0, 1)) }
+        private val rotator by lazy { Rotator(surfaceNormal, vector3FacingForward) }
 
-        fun toSurfaceNormal(point: Vector3): Vector3 {
+        private fun toSurfaceNormal(point: Vector3): Vector3 {
             rotator.rotate(point); return point
         }
 
@@ -451,7 +461,7 @@ class JsMapperUi(
 
         val isMultiFaced get() = faces.size > 1
 
-        val _surfaceNormal: Vector3 by lazy {
+        private val _surfaceNormal: Vector3 by lazy {
             val faceNormalSum = Vector3()
             var totalArea = 0f
             for (face in faces) {
@@ -493,7 +503,7 @@ class JsMapperUi(
             updatePixels()
         }
 
-        fun updatePixels() {
+        private fun updatePixels() {
             if (pixelsInScene) {
                 val positions = Array((maxPixel + 1) * 3) { 0f }
                 (0 until maxPixel).forEach { i ->
@@ -518,8 +528,8 @@ class JsMapperUi(
         uiLocked = false
     }
 
-    override fun getAllSurfaceVisualizers(): List<MapperUi.SurfaceViz> {
-        return modelSurfaceInfos.values.toList()
+    override fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction> {
+        return entityDepictions.values.toList()
     }
 
     override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
@@ -528,7 +538,7 @@ class JsMapperUi(
         val screenCenter = screenBox.center
         val cameraOrientation = CameraOrientation.from(uiCamera)
 
-        modelSurfaceInfos.forEach { (panel, panelInfo) ->
+        entityDepictions.forEach { (entity, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
             val dirToCamera = uiCamera.position.clone().sub(panelPosition)
             dirToCamera.normalize()
@@ -539,7 +549,7 @@ class JsMapperUi(
                 val panelBoundingBox = panelInfo.boundingBox.project(uiCamera)
                 val panelBoxOnScreen = calcBoundingBoxOnScreen(panelBoundingBox, screenCenter)
                 panelInfo.boxOnScreen = panelBoxOnScreen
-                if (panelBoxOnScreen.asDynamic().intersectsBox(screenBox)) {
+                if (panelBoxOnScreen.intersectsBox(screenBox)) {
                     val region = MediaDevices.Region(
                         panelBoxOnScreen.min.x.roundToInt(),
                         panelBoxOnScreen.min.y.roundToInt(),
@@ -547,7 +557,7 @@ class JsMapperUi(
                         panelBoxOnScreen.max.y.roundToInt(),
                         viewportDimen
                     )
-                    visibleSurfaces.add(VisibleSurface(panel, region, panelInfo, cameraOrientation))
+                    visibleSurfaces.add(VisibleSurface(entity, region, panelInfo, cameraOrientation))
                 }
             }
         }
@@ -556,7 +566,7 @@ class JsMapperUi(
     }
 
     inner class VisibleSurface(
-        override val modelSurface: Model.Surface,
+        override val entity: Model.Entity,
         override val boxOnScreen: MediaDevices.Region,
         val panelInfo: PanelInfo,
         cameraOrientation: CameraOrientation
@@ -589,14 +599,14 @@ class JsMapperUi(
             raycaster.setFromCamera(uv.toVector2(), camera)
             var intersections = raycaster.intersectObject(panelInfo.mesh, false)
             if (intersections.isEmpty()) {
-                logger.warn { "Couldn't find point in ${modelSurface.name}, searching in scene..." }
+                logger.warn { "Couldn't find point in ${entity.name}, searching in scene..." }
                 intersections = raycaster.intersectObject(uiScene, true)
                 console.log("Found intersections: ", intersections)
             }
-            if (intersections.isNotEmpty()) {
-                return intersections.first()
+            return if (intersections.isNotEmpty()) {
+                intersections.first()
             } else {
-                return null
+                null
             }
         }
 
@@ -613,11 +623,11 @@ class JsMapperUi(
         }
     }
 
-    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4, override val aspect: Double) :
+    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4F, override val aspect: Double) :
         MapperUi.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
-                matrix.fromArray(cameraMatrix.elements)
+                matrix.fromArray(cameraMatrix.elements.toDoubleArray())
                 // Get back position/rotation/scale attributes.
                 matrix.asDynamic().decompose(position, quaternion, scale)
                 updateMatrixWorld()
@@ -627,7 +637,7 @@ class JsMapperUi(
         companion object {
             fun from(camera: PerspectiveCamera): CameraOrientation {
                 return CameraOrientation(
-                    baaahs.geom.Matrix4(camera.matrix.toArray()),
+                    baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
                     camera.aspect.toDouble()
                 )
             }
@@ -650,7 +660,7 @@ class JsMapperUi(
         val intersections = raycaster.intersectObject(uiScene, true)
         return if (intersections.isNotEmpty()) {
             val intersect = intersections.first()
-            visibleSurfaces.find { it.modelSurface.name == intersect.`object`.name }
+            visibleSurfaces.find { it.entity.name == intersect.`object`.name }
         } else {
             null
         }
@@ -787,10 +797,6 @@ class JsMapperUi(
         notifyChanged()
     }
 
-    private fun HTMLButtonElement.enabled(isEnabled: Boolean) {
-        style.opacity = if (isEnabled) "1" else ".5"
-    }
-
     fun clickedStart() {
         listener.onStart()
     }
@@ -802,7 +808,7 @@ class JsMapperUi(
     fun clickedGoToSurface() {
         val surfaceName = window.prompt("Surface:")
         if (surfaceName != null && surfaceName.isNotEmpty()) {
-            goToSurface(surfaceName.toUpperCase())
+            goToSurface(surfaceName.uppercase())
         }
     }
 
@@ -814,9 +820,9 @@ class JsMapperUi(
     }
 
     private fun goToSurface(name: String) {
-        val surface = modelSurfaceInfos.keys.find { it.name == name }
+        val surface = entityDepictions.keys.find { it.name == name }
         if (surface != null) {
-            val panelInfo = modelSurfaceInfos[surface]!!
+            val panelInfo = entityDepictions[surface]!!
             panelInfo.geom.computeBoundingBox()
             val surfaceCenter = panelInfo.center
             val surfaceNormal = panelInfo.surfaceNormal
@@ -842,8 +848,6 @@ class JsMapperUi(
         internal val logger = Logger<JsMapperUi>()
     }
 }
-
-private fun Vector3.toVector3F() = Vector3F(x.toFloat(), y.toFloat(), z.toFloat())
 
 private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
 

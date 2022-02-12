@@ -2,60 +2,76 @@ package baaahs.visualizer
 
 import baaahs.model.LightRing
 import three.js.*
+import three_ext.clear
 
 class LightRingVisualizer(
     lightRing: LightRing,
     vizPixels: VizPixels? = null
-) : EntityVisualizer {
-    override val title: String = lightRing.name
-    override var mapperIsRunning: Boolean = false
+) : BaseEntityVisualizer<LightRing>(lightRing) {
+    private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
+    private val ringMaterial = MeshBasicMaterial()
 
-    override var selected: Boolean = false
-        set(value) {
-            ringMesh.material.wireframeLinewidth = if (value) 3 else 1
-            ringMesh.material.needsUpdate = true
-            field = value
-        }
+    private val lineMaterial = LineDashedMaterial()
+    private val pixel0IndicatorMaterial = MeshBasicMaterial()
 
-    private var vizScene: VizScene? = null
+    private val pixelsPreview = PixelsPreview()
+
+    override val obj = Object3D()
+
+    private var parent: VizObj? = null
     var vizPixels : VizPixels? = vizPixels
         set(value) {
-            vizScene?.let { scene ->
-                field?.removeFromScene(scene)
-                value?.addToScene(scene)
+            parent?.let { parent ->
+                field?.removeFrom(parent)
+                value?.addTo(parent)
             }
 
             field = value
         }
 
-    private val ringMesh: Mesh<RingGeometry, MeshBasicMaterial>
+    init { update(item) }
 
-    init {
-        val center = lightRing.center
-        val normal = lightRing.planeNormal
+    override fun applyStyle(entityStyle: EntityStyle) {
+        entityStyle.applyToMesh(ringMesh.material, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
+        entityStyle.applyToMesh(pixel0IndicatorMaterial, EntityStyle.Use.LightStrandHint)
+
+        pixelsPreview.applyStyle(entityStyle)
+    }
+
+    override fun isApplicable(newItem: Any): LightRing? =
+        newItem as? LightRing
+
+    override fun update(newItem: LightRing) {
+        super.update(newItem)
 
         val ringGeom = RingGeometry(
-            innerRadius = lightRing.radius - 1,
-            outerRadius = lightRing.radius + 1,
+            innerRadius = newItem.radius - 1,
+            outerRadius = newItem.radius + 1,
             thetaSegments = 16, phiSegments = 1
         )
 
-        Rotator(Vector3(0, 0, 1), normal.toVector3())
-            .rotate(ringGeom)
+        obj.clear()
+        obj.add(ringMesh)
+        obj.add(pixelsPreview)
 
-        with(center) { ringGeom.translate(x, y, z) }
+        val pixelLocations = newItem.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
 
-        ringMesh = Mesh(ringGeom, MeshBasicMaterial().apply {
-            color = Color(0x4444FF)
-            opacity = .25
-            transparent = true
-            wireframe = true
-        })
+        // TODO: Replace with arrow.
+        pixelLocations.firstOrNull()?.let { pixel0 ->
+            obj.add(Mesh(SphereGeometry(newItem.radius / 20).apply {
+                translate(pixel0.x, pixel0.y, pixel0.z)
+            }, pixel0IndicatorMaterial))
+        }
+        ringMesh.geometry = ringGeom
+        ringMesh.material = ringMaterial
+
+        pixelsPreview.setLocations(pixelLocations.map { it.toVector3() }.toTypedArray())
     }
 
-    override fun addTo(scene: VizScene) {
-        scene.add(VizObj(ringMesh))
-        vizPixels?.addToScene(scene)
-        vizScene = scene
+    companion object {
+        // TODO!!!
+        const val pixelCount_UNKNOWN_BUSTED = 100
     }
+
 }

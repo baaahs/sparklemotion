@@ -17,7 +17,7 @@ abstract class RenderEngine(val gl: GlContext) {
 
     val stats = Stats()
 
-    fun cachedEngineFeed(feed: Feed): EngineFeed {
+    private fun cachedEngineFeed(feed: Feed): EngineFeed {
         return engineFeeds.getOrPut(feed) { bindFeed(feed) }
     }
 
@@ -72,7 +72,10 @@ abstract class RenderEngine(val gl: GlContext) {
     fun release() {
         gl.runInContext {
             onRelease()
-            engineFeeds.values.forEach { it.release() }
+            engineFeeds.forEach { (feed, engineFeed) ->
+                engineFeed.release()
+                feed.release()
+            }
         }
     }
 

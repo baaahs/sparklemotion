@@ -24,19 +24,15 @@ fun Vector2F.toPolar(): Polar {
 
 // rad in [-π, π] range
 // return degree in [0, 1] range
-fun rad2deg(rad: Float): Float {
-    return ((rad + PI) / (2 * PI)).toFloat()
-}
+fun rad2unit(rad: Float): Float = ((rad + PI) / (2 * PI)).toFloat()
 
 // degree in [0, 1] range
 // return rad in [-π, π] range
-fun deg2rad(deg: Float): Float {
-    return ((deg * (2 * PI)) - PI).toFloat()
-}
+fun unit2rad(deg: Float): Float = ((deg * (2 * PI)) - PI).toFloat()
 
 fun Polar.toColor(alpha: Float = 1f): Color {
     return Color.HSB(
-        hue = rad2deg(phi),
+        hue = rad2unit(phi),
         saturation = r,
         brightness = 1.0f
     ).toRGB(alpha)
@@ -46,7 +42,7 @@ fun Color.toPolar(): Polar {
     // Convert the color to polar coordinates
     val hsb = toHSB()
     val deg = if (hsb.hue.isNaN()) 0f else hsb.hue; // hue will be NaN for white :-/
-    val phi = deg2rad(deg)
+    val phi = unit2rad(deg)
     val r = hsb.saturation
     return Polar(r, phi)
 }

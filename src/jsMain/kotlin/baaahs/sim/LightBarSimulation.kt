@@ -1,7 +1,6 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
@@ -9,19 +8,22 @@ import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
 import baaahs.model.PixelArray
-import baaahs.visualizer.LightBarVisualizer
-import baaahs.visualizer.VizPixels
-import baaahs.visualizer.toVector3
-import three.js.Vector3
+import baaahs.model.PolyLine
+import baaahs.visualizer.*
 
 actual class LightBarSimulation actual constructor(
     val pixelArray: PixelArray,
-    private val simulationEnv: SimulationEnv
+    private val simulationEnv: SimulationEnv,
+    private val adapter: EntityAdapter
 ) : FixtureSimulation {
 
-    private val pixelLocations by lazy { pixelArray.calculatePixelLocations(59) }
+    private val pixelLocations by lazy { pixelArray.calculatePixelLocalLocations(59) }
     private val vizPixels by lazy {
-        VizPixels(pixelLocations.map { it.toVector3() }.toTypedArray(), pixelVisualizationNormal)
+        VizPixels(
+            pixelLocations.map { it.toVector3() }.toTypedArray(),
+            pixelVisualizationNormal,
+            pixelArray.transformation
+        )
     }
 
     override val mappingData: MappingSession.SurfaceData
@@ -33,7 +35,13 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
         )
 
-    override val entityVisualizer: LightBarVisualizer by lazy { LightBarVisualizer(pixelArray, vizPixels) }
+    override val itemVisualizer: PixelArrayVisualizer<*> by lazy {
+        when (pixelArray) {
+            is LightBar -> LightBarVisualizer(pixelArray, adapter, vizPixels)
+            is PolyLine -> PolyLineVisualizer(pixelArray)
+            else -> error("unsupported?")
+        }
+    }
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]
@@ -51,23 +59,28 @@ actual class LightBarSimulation actual constructor(
         )
     }
 
-    override fun launch() {
-        wledSimulator.run()
+    override fun start() {
+        wledSimulator.start()
+    }
+
+    override fun stop() {
+        wledSimulator.stop()
     }
 
     override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        entityVisualizer.vizPixels = VizPixels(
-            pixelLocations.map { it.toVector3() }.toTypedArray(),
-            pixelVisualizationNormal,
-            fixtureConfig as PixelArrayDevice.Config
-        )
+//        entityVisualizer.vizPixels = VizPixels(
+//            pixelLocations.map { it.toVector3() }.toTypedArray(),
+//            pixelVisualizationNormal,
+//            pixelArray.transformation,
+//            fixtureConfig as PixelArrayDevice.Config
+//        )
     }
 
     override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        entityVisualizer.vizPixels?.readColors(reader)
+//        entityVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {
-        val pixelVisualizationNormal = Vector3(0, 0, 1)
+        val pixelVisualizationNormal = three_ext.vector3FacingForward
     }
 }

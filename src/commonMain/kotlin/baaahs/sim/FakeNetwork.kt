@@ -37,6 +37,7 @@ class FakeNetwork(
     var packetLossRate: Float = .05f
     var packetsReceived: Int = 0
     var packetsDropped: Int = 0
+    var packetsQueued: Int = 0
 
     private fun sendPacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
     private fun receivePacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
@@ -171,16 +172,18 @@ class FakeNetwork(
                 udpListener: Network.UdpListener,
                 bytes: ByteArray
             ) {
+                packetsQueued++
                 coroutineScope.launch {
                     networkDelay()
 
                     if (!receivePacketShouldSucceed()) {
-                        packetsDropped++.updates(facade)
+                        packetsDropped++
                     } else {
-                        packetsReceived++.updates(facade)
+                        packetsReceived++
 
                         udpListener.receive(fromAddress, fromPort, bytes)
                     }
+                    packetsQueued--.updates(facade)
                 }
             }
         }
@@ -223,6 +226,7 @@ class FakeNetwork(
             set(value) { this@FakeNetwork.packetLossRate = value }
         val packetsReceived: Int get() = this@FakeNetwork.packetsReceived
         val packetsDropped: Int get() = this@FakeNetwork.packetsDropped
+        val packetsQueued: Int get() = this@FakeNetwork.packetsQueued
     }
 
     @Suppress("unused")

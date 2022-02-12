@@ -1,17 +1,20 @@
 package baaahs.dmx
 
 import baaahs.controller.Controller
+import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.ControllerId
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
+import baaahs.scene.ControllerConfig
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 class DirectDmxController(private val device: Dmx.Device) : Controller {
     override val controllerId: ControllerId
-        get() = ControllerId("DMX", device.id)
+        get() = ControllerId(controllerType, device.id)
     override val fixtureMapping: FixtureMapping?
         get() = null
     private val universe = device.asUniverse()
@@ -21,15 +24,19 @@ class DirectDmxController(private val device: Dmx.Device) : Controller {
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
         pixelCount: Int
-    ): Transport = object : Transport {
+    ): Transport = DirectDmxTransport(transportConfig as DirectDmxTransportConfig)
+
+    inner class DirectDmxTransport(private val transportConfig: DirectDmxTransportConfig) : Transport {
         private val buffer = run {
-            transportConfig as DmxTransportConfig
             val (start, end) = transportConfig
-            universe.writer(start, end - start)
+            universe.writer(start, end - start + 1)
         }
 
         override val name: String
             get() = "DMX Transport"
+        override val controller: Controller
+            get() = this@DirectDmxController
+        override val config: TransportConfig = transportConfig
 
         override fun deliverBytes(byteArray: ByteArray) {
             byteArray.forEachIndexed { i, byte -> buffer[i] = byte }
@@ -54,14 +61,31 @@ class DirectDmxController(private val device: Dmx.Device) : Controller {
         }
     }
 
+    override fun afterFrame() {
+        universe.sendFrame()
+    }
+
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
+
+    companion object {
+        val controllerType = "DMX"
+    }
 }
+
+@Serializable
+@SerialName("DirectDMX")
+class DirectDmxControllerConfig(
+    override val controllerType: String = DirectDmxController.controllerType,
+    override val title: String = "Direct DMX"
+) : ControllerConfig
 
 /**
  * @param startChannel Zero-based.
  * @param endChannel Zero-based.
  */
-data class DmxTransportConfig(
+@Serializable
+@SerialName("DirectDMX")
+data class DirectDmxTransportConfig(
     val startChannel: Int,
     val endChannel: Int
 ) : TransportConfig

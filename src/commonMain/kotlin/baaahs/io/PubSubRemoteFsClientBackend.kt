@@ -51,6 +51,10 @@ class PubSubRemoteFsClientBackend(
         return reply.exists
     }
 
+    override suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File) {
+        sendCommand<RemoteFsOp.Response>(RemoteFsOp.RenameFile(fromFile, toFile))
+    }
+
     override suspend fun delete(file: Fs.File) {
         sendCommand<RemoteFsOp.Response>(RemoteFsOp.Delete(file))
     }
@@ -95,6 +99,15 @@ sealed class RemoteFsOp {
     }
 
     @Serializable
+    @SerialName("RenameFile")
+    class RenameFile(val fromFile: Fs.File, val toFile: Fs.File) : RemoteFsOp() {
+        override suspend fun perform(): Response {
+            fromFile.renameTo(toFile)
+            return Response.RenameFileResponse()
+        }
+    }
+
+    @Serializable
     @SerialName("Delete")
     class Delete(val file: Fs.File) : RemoteFsOp() {
         override suspend fun perform(): Response {
@@ -108,27 +121,31 @@ sealed class RemoteFsOp {
     sealed class Response {
         @Serializable
         @SerialName("ListFiles")
-        class ListFilesResponse(val files: List<Fs.File>) : RemoteFsOp.Response()
+        class ListFilesResponse(val files: List<Fs.File>) : Response()
 
         @Serializable
         @SerialName("LoadFile")
-        class LoadFileResponse(val contents: String?) : RemoteFsOp.Response()
+        class LoadFileResponse(val contents: String?) : Response()
 
         @Serializable
         @SerialName("SaveFile")
-        class SaveFileResponse() : RemoteFsOp.Response()
+        class SaveFileResponse() : Response()
 
         @Serializable
         @SerialName("Exists")
-        class ExistsResponse(val exists: Boolean) : RemoteFsOp.Response()
+        class ExistsResponse(val exists: Boolean) : Response()
 
         @Serializable
         @SerialName("IsDirectory")
-        class IsDirectoryResponse(val exists: Boolean) : RemoteFsOp.Response()
+        class IsDirectoryResponse(val exists: Boolean) : Response()
+
+        @Serializable
+        @SerialName("RenameFile")
+        class RenameFileResponse() : Response()
 
         @Serializable
         @SerialName("Delete")
-        class DeleteResponse() : RemoteFsOp.Response()
+        class DeleteResponse() : Response()
     }
 }
 

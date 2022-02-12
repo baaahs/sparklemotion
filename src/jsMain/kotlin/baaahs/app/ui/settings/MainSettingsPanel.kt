@@ -3,7 +3,10 @@ package baaahs.app.ui.settings
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.ui.*
+import baaahs.ui.View
+import baaahs.ui.renderWrapper
+import baaahs.ui.withEvent
+import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.divider.divider
 import materialui.components.formcontrollabel.formControlLabel
@@ -21,10 +24,6 @@ class MainSettingsPanel(
 ) : DialogPanel {
     override val title: String
         get() = "Main"
-    override val listSubhead: String?
-        get() = null
-    override val icon: Icon?
-        get() = null
 
     override fun getView(): View = renderWrapper {
         mainSettingsPanel {

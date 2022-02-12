@@ -3,7 +3,6 @@ package baaahs.gl.result
 import baaahs.fixtures.Fixture
 import baaahs.geom.Vector4F
 import baaahs.gl.GlContext
-import baaahs.model.Model
 import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.GL_RGBA
 
@@ -36,7 +35,7 @@ object Vec4ResultType : FloatsResultType<Vec4ResultType.ResultBuffer>(4, GL_RGBA
     ) : FixtureResults(pixelOffset, pixelCount) {
         operator fun get(pixelIndex: Int): Vector4F = buffer[pixelOffset + pixelIndex]
 
-        override fun send(entity: Model.Entity?, remoteVisualizers: RemoteVisualizers) {
+        override fun send(remoteVisualizers: RemoteVisualizers) {
             TODO("Vec4FixtureResults.send() not implemented")
         }
     }

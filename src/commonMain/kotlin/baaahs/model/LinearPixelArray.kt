@@ -3,11 +3,17 @@ package baaahs.model
 import baaahs.geom.Vector3F
 
 interface LinearPixelArray : PixelArray {
-    fun calculatePixelLocation(index: Int, count: Int): Vector3F
+    /**
+     * Calculates the location of a single pixel in the local space of this entity.
+     *
+     * Transformations indicated by [Model.Entity.position], [Model.Entity.rotation],
+     * and [Model.Entity.scale] should *NOT* be applied.
+     */
+    fun calculatePixelLocalLocation(index: Int, count: Int): Vector3F
 
-    override fun calculatePixelLocations(expectedPixelCount: Int): List<Vector3F> {
+    override fun calculatePixelLocalLocations(expectedPixelCount: Int): List<Vector3F> {
         return (0 until expectedPixelCount).map { i ->
-            calculatePixelLocation(i, expectedPixelCount)
+            calculatePixelLocalLocation(i, expectedPixelCount)
         }
     }
 }
@@ -15,5 +21,11 @@ interface LinearPixelArray : PixelArray {
 interface PlacedPixelArray : PixelArray
 
 interface PixelArray : Model.Entity {
-    fun calculatePixelLocations(expectedPixelCount: Int): List<Vector3F>
+    /**
+     * Calculates the locations of all pixels in the local space of this entity.
+     *
+     * Transformations indicated by [Model.Entity.position], [Model.Entity.rotation],
+     * and [Model.Entity.scale] should *NOT* be applied.
+     */
+    fun calculatePixelLocalLocations(expectedPixelCount: Int): List<Vector3F>
 }

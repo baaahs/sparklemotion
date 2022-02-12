@@ -3,39 +3,22 @@ package baaahs.visualizer.movers
 import baaahs.Color
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
-import baaahs.visualizer.EntityVisualizer
-import baaahs.visualizer.VizScene
+import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
+import kotlin.math.max
+import kotlin.math.min
 
-class MovingHeadVisualizer(
-    private val movingHead: MovingHead,
-    private val clock: Clock,
-    private val dmxUniverse: FakeDmxUniverse,
-    private val beam: Beam = Beam.selectFor(movingHead)
-) : EntityVisualizer {
-    override val title: String
-        get() = movingHead.name
-    override var mapperIsRunning: Boolean = false
-    override var selected: Boolean = false // TODO: Show that the device is selected.
-
-    private val buffer = run {
-        val dmxBufferReader = dmxUniverse.listen(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount) {
-            receivedDmxFrame()
-        }
-        movingHead.adapter.newBuffer(dmxBufferReader)
-    }
-
+class PhysicalModel(
+    private val adapter: MovingHeadAdapter,
+    private val clock: Clock
+) {
+    var currentState = State()
+        private set
     private var lastUpdate = clock.now()
-    private var currentState = State()
     private var momentumState = State()
 
-    override fun addTo(scene: VizScene) {
-        beam.addTo(scene)
-    }
-
-    internal fun receivedDmxFrame() {
+    fun update(buffer: MovingHead.Buffer): State {
         val now = clock.now()
         val elapsed = (now - lastUpdate).toFloat()
 
@@ -46,26 +29,32 @@ class MovingHeadVisualizer(
             buffer.dimmer
         )
 
-        val attainableState = currentState.moveToward(momentumState, requestedState, movingHead.adapter, elapsed)
-        beam.update(attainableState)
-
+        val attainableState = currentState.moveToward(momentumState, requestedState, adapter, elapsed)
         lastUpdate = now
         currentState = attainableState
         momentumState = requestedState
+
+        return attainableState
     }
 }
 
 enum class ColorMode(
     val isClipped: Boolean,
-    val getColor: MovingHead.(State) -> Color
+    val getColor: MovingHeadAdapter.(State) -> Color
 ) {
     Rgb(false, { state -> state.color }),
-    Primary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition) }),
-    Secondary(true, { state -> this.adapter.colorAtPosition(state.colorWheelPosition, next = true) })
+    Primary(true, { state -> this.colorAtPosition(state.colorWheelPosition) }),
+    Secondary(true, { state -> this.colorAtPosition(state.colorWheelPosition, next = true) })
 }
 
 fun ClosedRange<Float>.scale(value: Float) =
     (endInclusive - start) * value + start
+
+fun ClosedRange<Float>.unscale(value: Float) =
+    (value - start) / (endInclusive - start)
+
+fun ClosedRange<Float>.clamp(value: Float) =
+    max(min(value, endInclusive), start)
 
 val ClosedRange<Float>.diff
     get() =
@@ -77,8 +66,8 @@ fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): C
     return colorWheelColors[colorIndex].color
 }
 
-expect class Cone(movingHead: MovingHead, colorMode: ColorMode = ColorMode.Rgb) {
-    fun addTo(scene: VizScene)
+expect class Cone(movingHeadAdapter: MovingHeadAdapter, colorMode: ColorMode = ColorMode.Rgb) {
+    fun addTo(parent: VizObj)
 
     fun update(state: State)
 }

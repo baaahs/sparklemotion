@@ -6,6 +6,10 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.SacnControllerConfig
 import baaahs.device.DeviceType
+import baaahs.dmx.DirectDmxControllerConfig
+import baaahs.dmx.DirectDmxTransportConfig
+import baaahs.dmx.LixadaMiniMovingHead
+import baaahs.dmx.Shenzarpy
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
@@ -14,6 +18,9 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.mapper.SacnTransportConfig
+import baaahs.mapper.TransportConfig
+import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.show.DataSource
@@ -245,6 +252,30 @@ sealed class Plugins private constructor(
             subclass(LinearSurfacePixelStrategy::class, LinearSurfacePixelStrategy.serializer())
             subclass(RandomSurfacePixelStrategy::class, RandomSurfacePixelStrategy.serializer())
         }
+
+        polymorphic(EntityData::class) {
+            subclass(ImportedEntityData::class, ImportedEntityData.serializer())
+            subclass(MovingHeadData::class, MovingHeadData.serializer())
+            subclass(LightBarData::class, LightBarData.serializer())
+            subclass(PolyLineData::class, PolyLineData.serializer())
+            subclass(GridData::class, GridData.serializer())
+            subclass(LightRingData::class, LightRingData.serializer())
+            subclass(SurfaceDataForTest::class, SurfaceDataForTest.serializer())
+        }
+
+        polymorphic(EntityMetadataProvider::class) {
+            subclass(ConstEntityMetadataProvider::class, ConstEntityMetadataProvider.serializer())
+            subclass(StrandCountEntityMetadataProvider::class, StrandCountEntityMetadataProvider.serializer())
+        }
+
+        polymorphic(MovingHeadAdapter::class) {
+            subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
+            subclass(Shenzarpy::class, Shenzarpy.serializer())
+        }
+
+        polymorphic(TransportConfig::class) {
+            subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
+        }
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
@@ -473,6 +504,12 @@ sealed class Plugins private constructor(
         val serialModule = SerializersModule {
             polymorphic(ControllerConfig::class) {
                 subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
+                subclass(DirectDmxControllerConfig::class, DirectDmxControllerConfig.serializer())
+            }
+
+            polymorphic(TransportConfig::class) {
+                subclass(DirectDmxTransportConfig::class, DirectDmxTransportConfig.serializer())
+                subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
             }
         }
     }

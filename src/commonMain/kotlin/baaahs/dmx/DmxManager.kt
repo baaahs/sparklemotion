@@ -1,8 +1,7 @@
 package baaahs.dmx
 
 import baaahs.PubSub
-import baaahs.controller.ControllerListener
-import baaahs.controller.ControllerManager
+import baaahs.controller.BaseControllerManager
 import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
 import baaahs.sim.FakeDmxUniverse
@@ -20,14 +19,10 @@ class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
     pubSub: PubSub.Server,
     private val fakeDmxUniverse: FakeDmxUniverse // For fallback.
-) : DmxManager, ControllerManager {
-    override val controllerType: String
-        get() = "DMX"
-
+) : BaseControllerManager("DMX"), DmxManager {
     private var deviceData by publishProperty(pubSub, Topics.dmxDevices, emptyMap())
     private val attachedDevices = findAttachedDevices()
     override val dmxUniverse = findDmxUniverse(attachedDevices)
-    private var controllerListener: ControllerListener? = null
 
     init {
         deviceData = attachedDevices.map { device ->
@@ -35,10 +30,11 @@ class DmxManagerImpl(
         }.associateBy { it.id }
     }
 
-    override fun start(controllerListener: ControllerListener) {
-        this.controllerListener = controllerListener
+    override fun start() {
         if (attachedDevices.isNotEmpty()) {
-            attachedDevices.forEach { device -> controllerListener.onAdd(DirectDmxController(device)) }
+            attachedDevices.forEach { device ->
+                notifyListeners { onAdd(DirectDmxController(device)) }
+            }
         }
     }
 

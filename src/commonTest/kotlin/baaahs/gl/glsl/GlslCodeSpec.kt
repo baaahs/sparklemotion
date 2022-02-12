@@ -241,6 +241,66 @@ object GlslCodeSpec : Spek({
                     )
             }
 
+            it("should match structs with the same fields") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHead",
+                        GlslType.Field("pan", GlslType.Float),
+                        GlslType.Field("tilt", GlslType.Float),
+                    )
+                )).toBe(true)
+            }
+
+            it("should match structs with the same fields out of order") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHead",
+                        GlslType.Field("tilt", GlslType.Float),
+                        GlslType.Field("pan", GlslType.Float),
+                    )
+                )).toBe(true)
+            }
+
+            it("should not match structs with the same fields but different types") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHead",
+                        GlslType.Field("pan", GlslType.Float),
+                        GlslType.Field("tilt", GlslType.Vec2),
+                    )
+                )).toBe(false)
+            }
+
+            it("should not match structs with a different name") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHeadz",
+                        GlslType.Field("pan", GlslType.Float),
+                        GlslType.Field("tilt", GlslType.Float),
+                    )
+                )).toBe(false)
+            }
+
+            it("should not match structs with a subset of fields") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHead",
+                        GlslType.Field("pan", GlslType.Float),
+                    )
+                )).toBe(false)
+            }
+
+            it("should match structs with a superset of fields") {
+                expect(struct.glslType.matches(
+                    GlslType.Struct(
+                        "MovingHead",
+                        GlslType.Field("pan", GlslType.Float),
+                        GlslType.Field("tilt", GlslType.Float),
+                        GlslType.Field("dimmer", GlslType.Float),
+                    )
+                )).toBe(true)
+            }
+
             context("also declaring a variable") {
                 override(text) {
                     """

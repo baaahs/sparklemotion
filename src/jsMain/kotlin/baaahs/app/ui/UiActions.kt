@@ -1,35 +1,55 @@
 package baaahs.app.ui
 
-import baaahs.document
+import baaahs.doc.FileType
 import baaahs.plugin.Plugins
+import baaahs.scene.Scene
+import baaahs.show.SceneMigrator
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
-import baaahs.window
 import baaahs.util.encodeURIComponent
+import baaahs.window
 import kotlinext.js.jsObject
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLAnchorElement
 import org.w3c.files.Blob
 
-object UiActions {
-    fun downloadShow(show: Show, plugins: Plugins) {
-        val filename = "${show.title}.sparkle"
+actual object UiActions {
+    actual fun downloadShow(show: Show, plugins: Plugins) {
+        val type = FileType.Show
+        val filename = "${show.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"
-        val showJson = Json(plugins.json) {
-            prettyPrint = true
-        }.encodeToString(ShowMigrator, show)
+        doDownload(filename, show, ShowMigrator, contentType, plugins)
+    }
+
+    actual fun downloadScene(scene: Scene, plugins: Plugins) {
+        val type = FileType.Scene
+        val filename = "${scene.title}${type.extension}"
+        val contentType = "application/json;charset=utf-8;"
+        doDownload(filename, scene, SceneMigrator, contentType, plugins)
+    }
+
+    private fun <T: Any> doDownload(
+        filename: String,
+        document: T,
+        serializer: KSerializer<T>,
+        contentType: String,
+        plugins: Plugins
+    ) {
+        val json = Json(plugins.json) { prettyPrint = true }
+        val docJson = json.encodeToString(serializer, document)
         val navigator = window.navigator
         if (navigator.asDynamic()?.msSaveOrOpenBlob != null) {
-            val blob = Blob(arrayOf(showJson), jsObject { type = contentType })
+            val blob = Blob(arrayOf(docJson), jsObject { this.type = contentType })
             navigator.asDynamic().msSaveOrOpenBlob(blob, filename);
         } else {
-            val a = document.createElement("a") as HTMLAnchorElement
+            val a = baaahs.document.createElement("a") as HTMLAnchorElement
             a.download = filename;
-            a.href = "data:${contentType},${encodeURIComponent(showJson)}"
+            a.href = "data:${contentType},${encodeURIComponent(docJson)}"
             a.target = "_blank"
-            document.body!!.appendChild(a)
+            baaahs.document.body!!.appendChild(a)
             a.click()
-            document.body!!.removeChild(a)
+            baaahs.document.body!!.removeChild(a)
         }
     }
 }

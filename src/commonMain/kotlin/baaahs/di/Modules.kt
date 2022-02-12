@@ -1,12 +1,17 @@
 package baaahs.di
 
-import baaahs.*
+import baaahs.MediaDevices
+import baaahs.Pinky
+import baaahs.PinkySettings
+import baaahs.PubSub
 import baaahs.controller.ControllersManager
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxManagerImpl
 import baaahs.fixtures.FixtureManager
+import baaahs.fixtures.FixtureManagerImpl
+import baaahs.fixtures.FixturePublisher
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
@@ -15,8 +20,6 @@ import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.mapping.MappingManagerImpl
-import baaahs.model.Model
-import baaahs.model.ModelInfo
 import baaahs.model.ModelManager
 import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
@@ -24,7 +27,8 @@ import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
-import baaahs.scene.SceneManager
+import baaahs.scene.SceneMonitor
+import baaahs.scene.SceneProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
@@ -35,6 +39,7 @@ import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.util.Clock
+import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -74,14 +79,14 @@ interface PinkyModule : KModule {
     val Scope.firmwareDaddy: FirmwareDaddy
     val Scope.pinkyMainDispatcher: CoroutineDispatcher
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
+    val Scope.backupMappingManager: MappingManager? get() = null
     val Scope.dmxDriver: Dmx.Driver
-    val Scope.model: Model
     val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
+    val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
 
     override fun getModule(): Module {
         val pinkyContext = named("PinkyContext")
-        val pinkyMainDispatcher = named("PinkyMainDispatcher")
         val pinkyJob = named("PinkyJob")
         val fallbackDmxUniverse = named("Fallback")
 
@@ -98,34 +103,46 @@ interface PinkyModule : KModule {
                 scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
                 scoped<Job>(pinkyJob) { SupervisorJob() }
                 scoped(pinkyContext) {
-                    get<CoroutineDispatcher>(pinkyMainDispatcher) + get<Job>(pinkyJob)
+                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
+                            get<Job>(pinkyJob) +
+                            coroutineExceptionHandler
                 }
                 scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
                 scoped<PubSub.Endpoint> { get<PubSub.Server>() }
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
-                scoped<ModelInfo> { get<Model>() }
                 scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
-                scoped { model }
                 scoped { renderManager }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
-                scoped { FixtureManager(get(), get()) }
+                scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(), get(pinkyMainDispatcher), get()) }
-                scoped { SceneManager(get(), get()) }
-                scoped<MappingManager> { MappingManagerImpl(get(), get()) }
+                scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
+                scoped { sceneMonitor }
+                scoped<SceneProvider> { get<SceneMonitor>() }
+                scoped<MappingManager> {
+                    MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext)), backupMappingManager)
+                }
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
                     listOf(
                         get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
                     )
                 }
-                scoped { ControllersManager(get(named("ControllerManagers")), get(), get(), get<FixtureManager>()) }
+                scoped { FixturePublisher(get(), get()) }
+                scoped {
+                    ControllersManager(
+                        get(named("ControllerManagers")), get(), get(),
+                        listOf(
+                            get<FixtureManager>(),
+                            get<FixturePublisher>(),
+                        )
+                    )
+                }
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }
@@ -133,11 +150,15 @@ interface PinkyModule : KModule {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
-                        get(), get(), get(), get(), get(), get(), get()
+                        get(), get(), get(), get(), get(), get()
                     )
                 }
             }
         }
+    }
+
+    companion object {
+        val pinkyMainDispatcher = named("PinkyMainDispatcher")
     }
 }
 
@@ -148,12 +169,11 @@ abstract class WebClientModule : KModule {
 }
 
 interface SimulatorModule : KModule {
-    val Scope.model: Model
     val Scope.fs: Fs
+    val Scope.fakeNetwork: FakeNetwork
 
     override fun getModule(): Module = module {
-        single { FakeNetwork() }
-        single { model }
+        single { fakeNetwork }
         single(named(Qualifier.PinkyFs)) { fs }
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }

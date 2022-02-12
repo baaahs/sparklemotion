@@ -21,8 +21,11 @@ class TestMovingHeadAdapter(
 
     override val tiltChannel: Dmx.Channel = TestChannel(3),
     override val tiltFineChannel: Dmx.Channel = TestChannel(4),
-    override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f),
+    override val tiltRange: ClosedRange<Float> = toRadians(-135f)..toRadians(135f),
     override val tiltMotorSpeed: Float = 1f,
+
+    override val visualizerInfo: MovingHeadAdapter.VisualizerInfo =
+        MovingHeadAdapter.VisualizerInfo(5f, 3f, 9f, 3f),
 
     override val shutterChannel: Dmx.Channel = TestChannel(6)
 ) : MovingHeadAdapter {

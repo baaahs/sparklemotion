@@ -14,7 +14,7 @@ actual fun doRunBlocking(block: suspend () -> Unit) {
         }
 }
 
-val resourcesBase = document["resourcesBase"]
+val resourcesBase: String get() = document["resourcesBase"]
 
 actual val internalTimerClock: Clock = JsClock
 

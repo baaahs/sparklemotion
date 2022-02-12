@@ -1,8 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.ShaderEditorStyles
+import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
+import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
@@ -23,8 +25,10 @@ class AllStyles(val theme: MuiTheme) {
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
+    val modelEditor by lazy { ModelEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
+    val shaderHelp by lazy { ShaderHelpStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)
@@ -99,11 +103,22 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     }
 
     val appRoot by css {
-        height = 100.vh
+        display = Display.grid
+        gridTemplateRows = GridTemplateRows("4em minmax(0, 1fr)")
+
+        position = Position.absolute
     }
 
     val appDrawerOpen by css {}
     val appDrawerClosed by css {}
+
+    val appContent by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        within(appDrawerOpen) { mixIn(drawerOpenShift) }
+        within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
 
     val appToolbar by css {
         mixIn(theme.mixins.toolbar)
@@ -118,12 +133,20 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val appToolbarActions by css {
         display = Display.flex
-        transform { translateY(0.75.em) }
     }
 
     val title by css {
-        display = Display.flex
-        flexDirection = FlexDirection.row
+        display = Display.inlineBlock
+    }
+
+    val titleHeader by css {
+        position = Position.absolute
+        top = 0.em
+        fontSize = .6.em
+    }
+
+    val inactive by css {
+
     }
 
     val problemBadge by css {
@@ -171,18 +194,6 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         transform.translateY(1.em)
     }
 
-    val appContent by css {
-        display = Display.flex
-        flexDirection = FlexDirection.column
-        top = 3.em
-        left = 0.px
-        width = 100.pct
-        height = 100.pct - 3.em
-
-        within(appDrawerOpen) { mixIn(drawerOpenShift) }
-        within(appDrawerClosed) { mixIn(drawerClosedShift) }
-    }
-
     val appDrawer by css {
         position = Position.absolute
         width = drawerWidth
@@ -205,6 +216,10 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         justifyContent = JustifyContent.flexEnd
     }
 
+    val appModeTab by css {
+        minWidth = 0.px
+    }
+
     val noShowLoadedPaper by css {
         height = 100.pct
         display = Display.flex
@@ -219,7 +234,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 }
 
 object Styles : StyleSheet("app-ui", isStatic = true) {
-    val root by css {
+    val adminRoot by css {
         display = Display.flex
 
         top = 0.px
@@ -230,6 +245,11 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         display = Display.flex
         flexDirection = FlexDirection.column
         overflow = Overflow.hidden
+    }
+
+    val adminTabPanel by css {
+        overflow = Overflow.hidden
+        grow(Grow.GROW_SHRINK)
     }
 
     val showLayout by css {
