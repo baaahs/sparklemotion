@@ -62,7 +62,7 @@ data class ImportedEntityData(
     @Polymorphic
     val metadata: EntityMetadataProvider? = null
 ) : EntityData {
-    override fun edit(): MutableEntity = MutableImportedEntity(this)
+    override fun edit(): MutableEntity = MutableImportedEntityGroup(this)
 
     override fun open(): ImportedEntityGroup {
         var importFail: Exception? = null

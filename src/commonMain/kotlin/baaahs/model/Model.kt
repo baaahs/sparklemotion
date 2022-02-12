@@ -18,23 +18,24 @@ class Model(
     val entities: List<Entity>,
     val units: ModelUnit = ModelUnit.default
 ) : ModelInfo {
+    @Deprecated("Find all model entities some other way, like with visit().")
     val allEntities: List<Entity> =
         entities.flatMap { entity ->
             entity.containedEntities
             if (entity is EntityGroup) listOf(entity) + entity.entities else listOf(entity)
         }
 
-    private val allEntitiesByName: Map<String, Entity> by lazy { allEntities.associateBy { it.name } }
-
     val problems get() = buildList { visit { addAll(it.problems) } }
 
-    fun getEntity(name: String) = allEntitiesByName[name]
+    fun findEntityByNameOrNull(name: String) =
+        entities.firstNotNullOfOrNull { it.findByNameOrNull(name) }
 
-    fun findEntity(name: String) = getEntity(name)
-        ?: error("Unknown model surface \"$name\".")
+    fun findEntityByName(name: String) =
+        findEntityByNameOrNull(name)
+            ?: error("Unknown model entity \"$name\".")
 
     fun findEntityById(id: EntityId) =
-        entities.firstNotNullOfOrNull { it.findEntityById(id) }
+        entities.firstNotNullOfOrNull { it.findById(id) }
 
     val modelBounds by lazy {
         boundingBox(entities.flatMap { entity ->
@@ -76,8 +77,11 @@ class Model(
         fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation?
         fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<out Entity>
 
-        fun findEntityById(id: EntityId): Entity? =
+        fun findById(id: EntityId): Entity? =
             if (id == this.id) this else null
+
+        fun findByNameOrNull(name: String): Entity? =
+            if (name == this.name) this else null
 
         fun visit(callback: (Entity) -> Unit) = callback(this)
 
@@ -102,9 +106,13 @@ class Model(
         override val containedEntities: List<Entity>
             get() = super.containedEntities + entities.flatMap { it.containedEntities }
 
-        override fun findEntityById(id: EntityId): Entity? =
-            super.findEntityById(id)
-                ?: entities.firstNotNullOfOrNull { it.findEntityById(id) }
+        override fun findById(id: EntityId): Entity? =
+            super.findById(id)
+                ?: entities.firstNotNullOfOrNull { it.findById(id) }
+
+        override fun findByNameOrNull(name: String): Entity? =
+            super.findByNameOrNull(name)
+                ?: entities.firstNotNullOfOrNull { it.findByNameOrNull(name) }
 
         override fun visit(callback: (Entity) -> Unit) {
             super.visit(callback).also {

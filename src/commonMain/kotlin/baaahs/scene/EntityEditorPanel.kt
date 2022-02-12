@@ -41,7 +41,7 @@ object MovingHeadEditorPanel : EntityEditorPanel<MutableMovingHeadData>("Moving 
         visualizerBuilder.getMovingHeadEditorView(editingEntity)
 }
 
-object ImportedEntityEditorPanel : EntityEditorPanel<MutableImportedEntity>("Import") {
-    override fun getView(editingEntity: EditingEntity<out MutableImportedEntity>): View =
+object ImportedEntityEditorPanel : EntityEditorPanel<MutableImportedEntityGroup>("Import") {
+    override fun getView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View =
         visualizerBuilder.getImportedEntityEditorView(editingEntity)
 }

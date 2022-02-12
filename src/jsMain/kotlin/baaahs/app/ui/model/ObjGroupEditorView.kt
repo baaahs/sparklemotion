@@ -3,7 +3,7 @@ package baaahs.app.ui.model
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingEntity
-import baaahs.scene.MutableImportedEntity
+import baaahs.scene.MutableImportedEntityGroup
 import baaahs.ui.on
 import baaahs.ui.value
 import baaahs.ui.xComponent
@@ -105,7 +105,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 }
 
 external interface ObjGroupEditorProps : Props {
-    var editingEntity: EditingEntity<out MutableImportedEntity>
+    var editingEntity: EditingEntity<out MutableImportedEntityGroup>
 }
 
 fun RBuilder.objGroupEditor(handler: RHandler<ObjGroupEditorProps>) =
