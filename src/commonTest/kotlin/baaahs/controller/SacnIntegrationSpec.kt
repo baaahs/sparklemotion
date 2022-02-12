@@ -207,7 +207,7 @@ private fun fixtureMapping(
     componentsStartAtUniverseBoundaries: Boolean
 ) =
     FixtureMapping(
-        model.findEntity(entityName), pixelCount, null,
+        model.findEntityByName(entityName), pixelCount, null,
         transportConfig = SacnTransportConfig(
             baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries
         )

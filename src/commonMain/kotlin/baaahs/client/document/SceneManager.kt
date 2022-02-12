@@ -63,7 +63,7 @@ class SceneManager(
         return edit()
             .apply {
                 model.entities.forEachIndexed { index, mutableEntity ->
-                    if (mutableEntity is MutableImportedEntity && mutableEntity.objDataIsFileRef) {
+                    if (mutableEntity is MutableImportedEntityGroup && mutableEntity.objDataIsFileRef) {
                         mutableEntity.objData = fileFromResources(mutableEntity.objData).read()
                             ?: error("Couldn't find ${mutableEntity.objData} in resources.")
                         mutableEntity.objDataIsFileRef = false

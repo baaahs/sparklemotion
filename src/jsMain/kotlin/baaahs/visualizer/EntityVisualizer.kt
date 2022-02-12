@@ -72,7 +72,7 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
         }
     }
 
-    override fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntity>): View = renderWrapper {
+    override fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View = renderWrapper {
         objGroupEditor {
             attrs.editingEntity = editingEntity
         }

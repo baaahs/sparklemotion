@@ -15,7 +15,7 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                 val entityName = entityData.entityName
 
                 try {
-                    val modelEntity = scene.model.getEntity(entityName)
+                    val modelEntity = scene.model.findEntityByNameOrNull(entityName)
                     if (modelEntity == null)
                         logger.warn { "Unknown model entity \"$entityName\"." }
 

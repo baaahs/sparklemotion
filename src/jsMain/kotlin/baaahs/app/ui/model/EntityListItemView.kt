@@ -2,7 +2,7 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.scene.MutableEntity
-import baaahs.scene.MutableGroupEntity
+import baaahs.scene.MutableEntityGroup
 import baaahs.ui.on
 import baaahs.ui.xComponent
 import kotlinx.html.js.onMouseDownFunction
@@ -30,7 +30,7 @@ private val EntityListItemView: FunctionComponent<EntityListItemProps> = xCompon
 
         listItemText { +mutableEntity.title }
 
-        if (mutableEntity is MutableGroupEntity) {
+        if (mutableEntity is MutableEntityGroup) {
             list(styles.entityList on ListStyle.root) {
                 mutableEntity.children.forEach { child ->
                     entityListItem {

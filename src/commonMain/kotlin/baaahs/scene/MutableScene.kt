@@ -13,7 +13,9 @@ import baaahs.sm.webapi.Problem
 class MutableScene(
     baseScene: Scene
 ) : MutableDocument<Scene> {
-    override var title = baseScene.title
+    override var title
+        get() = model.title
+        set(value) { model.title = value }
     val model = MutableModel(baseScene.model)
     val controllers = baseScene.controllers
         .mapValues { (_, v) -> MutableControllerConfig(v) }.toMutableMap()
@@ -53,26 +55,50 @@ class MutableModel(baseModel: ModelData) {
     fun findById(id: EntityId): MutableEntity? =
         entities.firstNotNullOfOrNull { it.findById(id) }
 
+    /** @return `true` if `mutableEntity` was found and deleted. */
+    fun delete(mutableEntity: MutableEntity): Boolean =
+        if (entities.remove(mutableEntity)) true else {
+            entities.any { it.delete(mutableEntity) }
+        }
 }
 
-abstract class MutableEntity(
-    override var title: String,
-    var description: String?,
-    var position: Vector3F,
-    var rotation: EulerAngle,
-    var scale: Vector3F,
+abstract class MutableEntity : MutableEditable<Model.Entity> {
+    constructor(baseEntity: EntityData) {
+        this.title = baseEntity.title
+        this.description = baseEntity.description
+        this.position = baseEntity.position
+        this.rotation = baseEntity.rotation
+        this.scale = baseEntity.scale
+        this.id = baseEntity.id
+    }
+
+    constructor(
+        title: String, description: String?,
+        position: Vector3F, rotation: EulerAngle, scale: Vector3F,
+        id: EntityId
+    ) {
+        this.title = title
+        this.description = description
+        this.position = position
+        this.rotation = rotation
+        this.scale = scale
+        this.id = id
+    }
+
+    override var title: String
+    var description: String?
+    var position: Vector3F
+    var rotation: EulerAngle
+    var scale: Vector3F
     val id: EntityId
-) : MutableEditable<Model.Entity> {
-    constructor(baseEntity: EntityData) : this(
-        baseEntity.title, baseEntity.description,
-        baseEntity.position, baseEntity.rotation, baseEntity.scale,
-        baseEntity.id
-    )
 
     abstract fun build(): EntityData
 
     open fun findById(id: EntityId): MutableEntity? =
         if (this.id == id) this else null
+
+    /** @return `true` if `mutableEntity` was found and deleted. */
+    open fun delete(mutableEntity: MutableEntity): Boolean = false
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> =
         emptyList()
@@ -80,9 +106,24 @@ abstract class MutableEntity(
     abstract fun getEditorPanels(): List<EntityEditorPanel<out MutableEntity>>
 }
 
-class MutableImportedEntity(
+abstract class MutableEntityGroup(
+    baseEntityData: EntityData
+): MutableEntity(baseEntityData) {
+    abstract val children: MutableList<MutableEntity>
+
+    override fun findById(id: EntityId): MutableEntity? =
+        super.findById(id)
+            ?: children.firstNotNullOfOrNull { it.findById(id) }
+
+    override fun delete(mutableEntity: MutableEntity): Boolean =
+        if (children.remove(mutableEntity)) true else {
+            children.any { it.delete(mutableEntity) }
+        }
+}
+
+class MutableImportedEntityGroup(
     baseImportedEntityData: ImportedEntityData
-) : MutableEntity(baseImportedEntityData), MutableGroupEntity {
+) : MutableEntityGroup(baseImportedEntityData) {
     var objData: String = baseImportedEntityData.objData
         set(value) { field = value; importerResults = null }
 
@@ -136,10 +177,6 @@ class MutableImportedEntity(
         importFail = null
         getImporterResults()
     }
-}
-
-interface MutableGroupEntity {
-    val children: MutableList<MutableEntity>
 }
 
 class MutableMovingHeadData(

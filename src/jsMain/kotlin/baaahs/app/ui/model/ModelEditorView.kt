@@ -7,20 +7,22 @@ import baaahs.scene.MutableEntity
 import baaahs.scene.MutableScene
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
-import baaahs.ui.addObserver
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import kotlinx.css.em
 import kotlinx.css.padding
+import kotlinx.html.js.onClickFunction
+import materialui.components.button.enums.ButtonColor
 import materialui.components.formcontrol.enums.FormControlMargin
 import materialui.components.formcontrol.formControl
+import materialui.components.iconbutton.iconButton
 import materialui.components.list.enums.ListStyle
 import materialui.components.list.list
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
+import materialui.icon
+import materialui.icons.Delete
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.Props
@@ -64,12 +66,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
     visualizer.refresh()
 
-    val handleAddEntity by handler(mutableModel, props.onEdit) { newEntityData: EntityData ->
-        val newMutableEntity = newEntityData.edit()
-        mutableModel.entities.add(newMutableEntity)
-        props.onEdit()
-    }
-
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
 
@@ -78,6 +74,18 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             mutableEntity?.let { visualizer.findById(it.id)?.modelEntity }
         lastSelectedEntity.current = mutableEntity?.id?.let { visualizer.model.findEntityById(it) }
         forceRender()
+    }
+
+    val handleAddEntity by handler(mutableModel, props.onEdit) { newEntityData: EntityData ->
+        val newMutableEntity = newEntityData.edit()
+        mutableModel.entities.add(newMutableEntity)
+        props.onEdit()
+    }
+
+    val handleDeleteEntity by handler(mutableModel, selectedMutableEntity) {
+        selectedMutableEntity?.let { mutableModel.delete(it) }
+        visualizer.selectedEntity = null
+        props.onEdit()
     }
 
     val visualizerParentEl = ref<Element>()
@@ -148,6 +156,15 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                             editingEntity.getEditorPanelViews().forEach {
                                 with(it) { render() }
+                            }
+
+                            header { +"Actions" }
+
+                            iconButton {
+                                attrs.onClickFunction = handleDeleteEntity.withEvent()
+                                attrs.color = ButtonColor.secondary
+                                icon(Delete)
+                                +"Delete Entity"
                             }
                         }
                     }
