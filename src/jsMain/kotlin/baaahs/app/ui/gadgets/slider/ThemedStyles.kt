@@ -2,12 +2,10 @@ package baaahs.app.ui.gadgets.slider
 
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.paper
-import materialui.styles.palette.primary
+import mui.material.styles.Theme
 import styled.StyleSheet
 
-class ThemedStyles(val theme: MuiTheme) : StyleSheet("app-ui-gadgets-Slider", isStatic = true) {
+class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isStatic = true) {
     private val indicatorColor = Color("#00FF28")
 
     val slider by css {

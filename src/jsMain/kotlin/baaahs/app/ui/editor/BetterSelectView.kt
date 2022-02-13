@@ -1,18 +1,11 @@
 package baaahs.app.ui.editor
 
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrol.formControl
-import materialui.components.inputlabel.enums.InputLabelStyle
-import materialui.components.inputlabel.inputLabel
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.ReactElement
+import kotlinx.js.jso
+import mui.material.*
+import react.*
+import react.dom.html.ReactHTML
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") { props ->
@@ -27,28 +20,27 @@ private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") 
         event.stopPropagation()
     }
 
-    formControl {
+    FormControl {
         props.label?.let { label ->
-            inputLabel(ControlsStyles.inputLabel on InputLabelStyle.root) {
-                attrs.component = "legend"
+            InputLabel {
+                attrs.classes = jso { this.root = -ControlsStyles.inputLabel }
+                attrs.component = ReactHTML.legend
                 +label
             }
         }
+        Select {
+            this as RElementBuilder<SelectProps<Int>> // TODO: yuck, not this.
 
-        select {
             attrs.displayEmpty = true
             attrs.value = props.values.indexOf(props.value)
-            val renderValueSelected = anyProps.renderValueSelected
-            if (renderValueSelected != null) {
-                attrs.renderValue(renderValueSelected)
-            }
-            attrs.onChangeFunction = handleChange
+            attrs.renderValue = anyProps.renderValueSelected
+            attrs.onChange = handleChange
 
             props.values.forEachIndexed { index, option ->
-                menuItem {
+                MenuItem {
                     attrs.dense = true
-                    attrs["value"] = index
-                    listItemText {
+                    attrs.value = index.toString()
+                    ListItemText {
                         val renderValueOption = anyProps.renderValueOption
                         if (renderValueOption != null) {
                             child(renderValueOption.invoke(option))
@@ -65,8 +57,8 @@ private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") 
 external interface BetterSelectProps<T: Any?> : Props {
     var label: String?
     var values: List<T>
-    var renderValueOption: ((T) -> ReactElement)?
-    var renderValueSelected: ((T) -> ReactElement)?
+    var renderValueOption: ((T) -> ReactNode)?
+    var renderValueSelected: ((T) -> ReactNode)?
     var value: T
     var onChange: (T) -> Unit
 }

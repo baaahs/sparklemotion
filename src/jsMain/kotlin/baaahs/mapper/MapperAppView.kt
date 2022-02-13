@@ -2,11 +2,12 @@ package baaahs.mapper
 
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
+import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.tabIndex
+import mui.material.Button
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import react.*
@@ -60,32 +61,32 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         attrs.tabIndex = "-1" // So we can receive key events.
 
         div(+styles.controls) {
-            button { +"Start"; attrs.onClickFunction = { uiActions.clickedStart.withEvent() } }
-            button { +"▲"; attrs.onClickFunction = { wireframe.position.y += 10 } }
-            button { +"▼"; attrs.onClickFunction = { wireframe.position.y -= 10 } }
-//            button { i(classes="fas fa-crosshairs"); attrs.onClickFunction = { target() } }
-            button {
+            Button { +"Start"; attrs.onClick = { uiActions.clickedStart.withEvent() } }
+            Button { +"▲"; attrs.onClick = { wireframe.position.y += 10 } }
+            Button { +"▼"; attrs.onClick = { wireframe.position.y -= 10 } }
+//            Button { i(classes="fas fa-crosshairs"); attrs.onClick = { target() } }
+            Button {
                 i(classes = "fas fa-play") {}
                 attrs.disabled = !ui.playButtonEnabled
-                attrs.onClickFunction = uiActions.clickedPlay.withEvent()
+                attrs.onClick = uiActions.clickedPlay.withMouseEvent()
             }
-            button {
+            Button {
                 i(classes = "fas fa-pause") {}
                 attrs.disabled = !ui.pauseButtonEnabled
-                attrs.onClickFunction = uiActions.clickedPause.withEvent()
+                attrs.onClick = uiActions.clickedPause.withMouseEvent()
             }
-            button {
+            Button {
                 i(classes = "fas fa-redo") {}
                 attrs.disabled = ui.redoFn != null
-                attrs.onClickFunction = uiActions.clickedRedo.withEvent()
+                attrs.onClick = uiActions.clickedRedo.withMouseEvent()
             }
-            button {
+            Button {
                 i(classes = "fas fa-stop") {}
-                attrs.onClickFunction = uiActions.clickedStop.withEvent()
+                attrs.onClick = uiActions.clickedStop.withMouseEvent()
             }
-            button {
+            Button {
                 i(classes = "fas fa-sign-in-alt") {}
-                attrs.onClickFunction = uiActions.clickedGoToSurface.withEvent()
+                attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
             }
 
             select {

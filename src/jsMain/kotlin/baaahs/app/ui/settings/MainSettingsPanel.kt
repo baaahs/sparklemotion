@@ -3,21 +3,9 @@ package baaahs.app.ui.settings
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.ui.View
-import baaahs.ui.renderWrapper
-import baaahs.ui.withEvent
-import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.divider.divider
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.switches.switch
-import materialui.components.typography.typographyH6
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.useContext
+import baaahs.ui.*
+import mui.material.*
+import react.*
 
 class MainSettingsPanel(
     private var changeUiSettings: ((UiSettings) -> UiSettings) -> Unit
@@ -47,48 +35,48 @@ private val MainSettingsPanelView = xComponent<MainSettingsPanelProps>("MainSett
     }
 
 
-    list {
-        listItem {
-            formControlLabel {
-                attrs.control {
-                    switch {
+    List {
+        ListItem {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
                         attrs.checked = uiSettings.darkMode
-                        attrs.onChangeFunction = handleDarkModeChange.withEvent()
+                        attrs.onChange = handleDarkModeChange.withTChangeEvent()
                     }
                 }
-                attrs.label { typographyH6 { +"Dark Mode" } }
+                attrs.label = buildElement { typographyH6 { +"Dark Mode" } }
             }
         }
     }
 
-    divider {}
+    Divider {}
 
-    list {
-        listItem {
-            formControlLabel {
-                attrs.control {
-                    switch {
+    List {
+        ListItem {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
                         attrs.checked = uiSettings.renderButtonPreviews
-                        attrs.onChangeFunction = handleRenderButtonPreviewsChange.withEvent()
+                        attrs.onChange = handleRenderButtonPreviewsChange.withTChangeEvent()
                     }
                 }
-                attrs.label { typographyH6 { +"Render Button Previews" } }
+                attrs.label = buildElement { typographyH6 { +"Render Button Previews" } }
             }
         }
     }
 
-    divider {}
+    Divider {}
 
-    list {
-        listItem {
-            formControlLabel {
-                attrs.control {
-                    switch {
+    List {
+        ListItem {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
                         attrs.checked = uiSettings.useSharedContexts
-                        attrs.onChangeFunction = handleUseSharedContextsChange.withEvent()
+                        attrs.onChange = handleUseSharedContextsChange.withTChangeEvent()
                     }
                 }
-                attrs.label { typographyH6 { +"Use Shared Contexts" } }
+                attrs.label = buildElement { typographyH6 { +"Use Shared Contexts" } }
             }
         }
     }

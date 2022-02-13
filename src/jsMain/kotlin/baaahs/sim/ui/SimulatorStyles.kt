@@ -4,12 +4,11 @@ import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.down
-import materialui.styles.muitheme.MuiTheme
+import mui.system.Breakpoint
+import mui.system.Theme
 import styled.StyleSheet
 
-class ThemedSimulatorStyles(val theme: MuiTheme) : StyleSheet("sim-ui-themed", isStatic = true) {
+class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isStatic = true) {
     val menuBar by css {
         display = Display.flex
         justifyContent = JustifyContent.spaceBetween
@@ -22,7 +21,7 @@ class ThemedSimulatorStyles(val theme: MuiTheme) : StyleSheet("sim-ui-themed", i
         }
     }
 
-    val global = CssBuilder().apply {
+    val global = baaahs.ui.xCssBuilder().apply {
         ".mosaic-window-toolbar" {
             important(::display, Display.none)
         }

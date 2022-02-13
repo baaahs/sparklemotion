@@ -1,23 +1,20 @@
 package baaahs.ui
 
+import csstype.ClassName
 import external.DroppableProvided
 import external.copyFrom
-import kotlinx.css.CssBuilder
-import kotlinx.css.LinearDimension
-import kotlinx.css.RuleSet
-import kotlinx.css.StyledElement
-import kotlinx.html.DIV
-import materialui.components.typography.TypographyElementBuilder
-import materialui.components.typography.TypographyProps
-import materialui.components.typography.enums.TypographyStyle
-import materialui.components.typography.enums.TypographyVariant
-import materialui.components.typography.typography
+import kotlinx.css.*
+import mui.material.Typography
+import mui.material.TypographyProps
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.RBuilder
-import react.ReactElement
+import react.RElementBuilder
+import react.ReactNode
 import react.dom.RDOMBuilder
+import react.dom.events.*
 import react.dom.setProp
 import styled.StyleSheet
 import kotlin.reflect.KProperty
@@ -29,7 +26,7 @@ fun <T> nuffin(): T = null as T
 fun <T> List<T>.replace(index: Int, newValueBlock: (T) -> T): List<T> =
     mapIndexed { i, item -> if (i == index) newValueBlock(item) else item }
 
-fun String.asTextNode(): ReactElement = asDynamic()
+fun String.asTextNode(): ReactNode = ReactNode(this)
 
 fun Array<*>.truncateStrings(length: Int): List<String?> {
     return map { it?.toString()?.truncate(length) }
@@ -46,20 +43,50 @@ fun String?.truncate(length: Int): String? {
 @Suppress("UNCHECKED_CAST")
 fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
 
+@Suppress("UNCHECKED_CAST")
+fun Function<*>.withMouseEvent(): MouseEventHandler<*> =
+    this as MouseEventHandler<*>
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Element> Function<*>.withTMouseEvent(): ((MouseEvent<T, *>, dynamic) -> Unit)? =
+    this as ((MouseEvent<T, *>, dynamic) -> Unit)?
+
+@Suppress("UNCHECKED_CAST")
+fun Function<*>.withChangeEvent(): ChangeEventHandler<*> =
+    this as ChangeEventHandler<*>
+
+@Suppress("UNCHECKED_CAST")
+fun Function<*>.withFormEvent(): FormEventHandler<*> =
+    this as FormEventHandler<*>
+
+@Suppress("UNCHECKED_CAST")
+fun <T : Element> Function<*>.withTChangeEvent(): (event: ChangeEvent<T>, checked: Boolean) -> Unit =
+    this as (event: ChangeEvent<T>, checked: Boolean) -> Unit
+
 val EventTarget?.value: String
         get() = asDynamic().value as String
 
 val EventTarget?.checked: Boolean
         get() = (this as HTMLInputElement).checked
 
+fun xCssBuilder(
+    indent: String = "",
+    allowClasses: Boolean = true,
+    parent: RuleContainer? = null,
+    isHolder: Boolean = false,
+    isStyledComponent: Boolean = false,
+): CssBuilder = CssBuilderImpl(indent, allowClasses, parent, isHolder, isStyledComponent)
+
 val RuleSet.name: String
-    get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")
+    get() = baaahs.ui.xCssBuilder().apply { +this@name }.classes.joinToString(" ")
 
 val RuleSet.selector: String
     get() = ".$name"
 
 operator fun RuleSet.unaryPlus(): String = name
+operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
 infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
+infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
@@ -86,7 +113,7 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
 }
 
 fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
-    return CssBuilder().apply { block() }
+    return baaahs.ui.xCssBuilder().apply { block() }
 }
 
 fun <T> StyledElement.important(property: KProperty<T>, value: T) {
@@ -98,29 +125,70 @@ fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
     copyFrom(droppableProvided.droppableProps)
 }
 
-inline fun RBuilder.typographySubtitle1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
-        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
-    attrs.variant = TypographyVariant.subtitle1
-    block()
+fun RElementBuilder<*>.install(droppableProvided: DroppableProvided) {
+    ref = droppableProvided.innerRef
+    copyFrom(droppableProvided.droppableProps)
 }
 
-inline fun RBuilder.typographySubtitle2(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
-        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
-    attrs.variant = TypographyVariant.subtitle2
-    block()
-}
+inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h1"
+        block()
+    }
 
-inline fun RBuilder.typographyBody1(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
-        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
-    attrs.variant = TypographyVariant.body1
-    block()
-}
+inline fun RBuilder.typographyH2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h2"
+        block()
+    }
 
-inline fun RBuilder.typographyBody2(vararg classMap: Pair<TypographyStyle, String>, crossinline block: TypographyElementBuilder<DIV, TypographyProps>.() -> Unit)
-        = typography(*classMap, factory = { DIV(mapOf(), it) }) {
-    attrs.variant = TypographyVariant.body2
-    block()
-}
+inline fun RBuilder.typographyH3(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h3"
+        block()
+    }
+
+inline fun RBuilder.typographyH4(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h4"
+        block()
+    }
+
+inline fun RBuilder.typographyH5(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h5"
+        block()
+    }
+
+inline fun RBuilder.typographyH6(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "h6"
+        block()
+    }
+
+inline fun RBuilder.typographySubtitle1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography { //    (*classMap, factory = { DIV(mapOf(), it) })
+        attrs.variant = "subtitle1"
+        block()
+    }
+
+inline fun RBuilder.typographySubtitle2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography { // (*classMap, factory = { DIV(mapOf(), it) }) {
+        attrs.variant = "subtitle2"
+        block()
+    }
+
+inline fun RBuilder.typographyBody1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "body1"
+        block()
+    }
+
+inline fun RBuilder.typographyBody2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
+    Typography {
+        attrs.variant = "body2"
+        block()
+    }
 
 fun LinearDimension.inPixels(): Int {
     return when {

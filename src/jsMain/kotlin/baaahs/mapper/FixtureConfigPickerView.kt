@@ -6,10 +6,10 @@ import baaahs.device.FixtureType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureConfig
 import baaahs.ui.asTextNode
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
+import mui.material.Card
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -28,7 +28,8 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
     val fixtureConfig = props.mutableFixtureConfig
 
-    card(styles.configCardOuter on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { this.root = -styles.configCardOuter }
         attrs.elevation = 4
 
         betterSelect<FixtureType?> {
@@ -40,7 +41,8 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
         }
 
         if (fixtureConfig != null) {
-            card(styles.configCardInner on PaperStyle.root) {
+            Card {
+                attrs.classes = jso { this.root = -styles.configCardInner }
                 with(fixtureConfig.getEditorView(props.editingController)) { render() }
             }
         }

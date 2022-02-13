@@ -14,10 +14,8 @@ import baaahs.ui.xComponent
 import baaahs.util.Time
 import baaahs.util.useResizeListener
 import baaahs.window
-import kotlinext.js.jsObject
-import materialui.styles.palette.PaletteType
-import materialui.styles.palette.type
-import materialui.useTheme
+import kotlinx.js.jso
+import mui.material.styles.useTheme
 import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
@@ -61,8 +59,8 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
         Unit
     }
 
-    val setOptions = memo { jsObject<IAceOptions> { autoScrollEditorIntoView = true } }
-    val editorProps = memo { jsObject<IEditorProps> { `$blockScrolling` = true } }
+    val setOptions = memo { jso<IAceOptions> { autoScrollEditorIntoView = true } }
+    val editorProps = memo { jso<IEditorProps> { `$blockScrolling` = true } }
 
     onChange("debouncer", props.onChange, props.debounceSeconds) {
         val interval = window.setInterval({
@@ -81,9 +79,10 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     }
 
 
-    val theme = props.theme ?: when (useTheme().palette.type) {
-        PaletteType.light -> Themes.github
-        PaletteType.dark -> Themes.tomorrowNightBright
+    val theme = props.theme ?: when (val mode = useTheme<mui.material.styles.Theme>().palette.mode) {
+        "light" -> Themes.github
+        "dark" -> Themes.tomorrowNightBright
+        else -> error("Huh? Unknown palette mode $mode.")
     }
 
     div(+Styles.textEditor) {

@@ -3,8 +3,10 @@ package baaahs.ui
 import baaahs.util.Logger
 import baaahs.window
 import org.w3c.dom.events.Event
+import react.ComponentType
 import react.MutableRefObject
 import react.Props
+import react.dom.events.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -16,9 +18,9 @@ fun <P : Props> xComponent(
     name: String,
     isPure: Boolean = false,
     func: XBuilder.(props: P) -> Unit
-): react.FunctionComponent<P> {
+): ComponentType<P> {
     val logger = Logger(name)
-    val component = react.functionComponent(name) { props: P ->
+    val component = react.fc(name) { props: P ->
         val xBuilder = XBuilder(logger)
         xBuilder.func(props)
         this.childList.addAll(xBuilder.childList)
@@ -155,17 +157,37 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun <T : Function<*>> namedHandler(name: String, vararg watch: Any?, block: T) =
         _handler(name, watch, block)
 
-    fun <T : Function<*>> handler(vararg watch: Any?, block: T): ReadOnlyProperty<Any?, T> {
-        return ReadOnlyProperty { _, property ->
+    fun <T : Function<*>> handler(vararg watch: Any?, block: T): ReadOnlyProperty<Any?, T> =
+        ReadOnlyProperty { _, property ->
             _handler(property.name, watch, block)
         }
-    }
 
-    fun eventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, (Event) -> Unit> {
-        return ReadOnlyProperty { _, property ->
-            _handler(property.name, watch) { event: Event -> block(event) }
-        }
-    }
+    fun eventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, (Event) -> Unit> =
+        handler(*watch, block = block)
+
+    fun changeEventHandler(vararg watch: Any?, block: ChangeEventHandler<*>): ReadOnlyProperty<Any?, ChangeEventHandler<*>> =
+        handler(*watch, block = block)
+
+    fun focusEventHandler(vararg watch: Any?, block: FocusEventHandler<*>): ReadOnlyProperty<Any?, FocusEventHandler<*>> =
+        handler(*watch, block = block)
+
+    fun formEventHandler(vararg watch: Any?, block: FormEventHandler<*>): ReadOnlyProperty<Any?, FormEventHandler<*>> =
+        handler(*watch, block = block)
+
+    fun keyboardEventHandler(vararg watch: Any?, block: KeyboardEventHandler<*>): ReadOnlyProperty<Any?, KeyboardEventHandler<*>> =
+        handler(*watch, block = block)
+
+    fun mouseEventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, MouseEventHandler<*>> =
+        handler(*watch, block = { block.invoke(it as Event) })
+
+    fun switchEventHandler(vararg watch: Any?, block: (event: ChangeEvent<*>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: ChangeEvent<*>, checked: Boolean) -> Unit> =
+        handler(*watch, block = block)
+
+    fun syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit> =
+        handler(*watch, block = block)
+
+    fun <T> newEventHandler(vararg watch: Any?, block: EventHandler<T>): ReadOnlyProperty<Any?, EventHandler<T>> =
+        handler(*watch, block = block)
 
     fun <T> eventHandler(valueInitializer: () -> T): ReadWriteProperty<Any?, T> = state(valueInitializer)
 

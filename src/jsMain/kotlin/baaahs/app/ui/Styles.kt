@@ -11,18 +11,15 @@ import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.down
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.contrastText
-import materialui.styles.palette.dark
-import materialui.styles.transitions.create
-import materialui.styles.transitions.sharp
+import kotlinx.js.jso
+import materialui.createTransition
+import mui.material.styles.Theme
+import mui.system.Breakpoint
 import styled.StyleSheet
 import styled.injectGlobal
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
-class AllStyles(val theme: MuiTheme) {
+class AllStyles(val theme: Theme) {
     val themeStyles = ThemeStyles(theme)
     val appUi by lazy { themeStyles }
     val editor by lazy { baaahs.ui.editor.Styles(theme) }
@@ -61,17 +58,17 @@ private fun linearRepeating(
     """.trimIndent()
 }
 
-class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = true) {
+class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true) {
     private val drawerWidth = 260.px
 
     val help by css {
 
     }
 
-    val global = CssBuilder().apply {
+    val global = baaahs.ui.xCssBuilder().apply {
         "header" {
-            color = theme.palette.primary.contrastText
-            backgroundColor = theme.palette.primary.dark
+            color = Color(theme.palette.primary.contrastText)
+            backgroundColor = Color(theme.palette.primary.dark)
             fontSize = 0.875.rem
             fontWeight = FontWeight.w600
             lineHeight = LineHeight("48px")
@@ -86,7 +83,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
                 right = 1.em
 
                 child("a") {
-                    color = theme.palette.primary.contrastText
+                    color = Color(theme.palette.primary.contrastText)
                 }
             }
         }
@@ -94,18 +91,18 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     private val drawerClosedShift = partial {
         transform { translateX(0.px) }
-        theme.transitions.create("transform") {
+        transition = theme.createTransition("transform", options = jso {
             easing = theme.transitions.easing.sharp
-                duration = theme.transitions.duration.enteringScreen
-        }
+            duration = theme.transitions.duration.enteringScreen
+        })
     }
 
     private val drawerOpenShift = partial {
         transform { translateX(drawerWidth) }
-        transition = theme.transitions.create("transform") {
+        transition = theme.createTransition("transform", options = jso {
             easing = theme.transitions.easing.sharp
             duration = theme.transitions.duration.leavingScreen
-        }
+        })
     }
 
     val appRoot by css {
@@ -224,7 +221,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appDrawerHeader by css {
         display = Display.flex
         alignItems = Align.center
-        padding = theme.spacing(0, 1)
+        padding = theme.spacing.asDynamic().invoke(0, 1)
         rules.addAll(theme.mixins.toolbar.rules)
         theme.mixins.toolbar
         justifyContent = JustifyContent.flexEnd
@@ -483,7 +480,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.scroll
     }
 
-    val global = CssBuilder().apply {
+    val global = baaahs.ui.xCssBuilder().apply {
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
             pointerEvents = PointerEvents.auto

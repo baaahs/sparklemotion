@@ -10,20 +10,11 @@ import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
 import baaahs.ui.asTextNode
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.title
-import materialui.components.chip.chip
-import materialui.components.chip.enums.ChipColor
-import materialui.components.chip.enums.ChipVariant
-import materialui.components.expansionpanel.enums.ExpansionPanelStyle
-import materialui.components.expansionpanel.expansionPanel
-import materialui.components.expansionpaneldetails.expansionPanelDetails
-import materialui.components.expansionpanelsummary.expansionPanelSummary
-import materialui.icon
-import materialui.icons.ExpandMore
+import kotlinx.js.jso
+import mui.icons.material.ExpandMore
+import mui.material.*
 import react.*
 import react.dom.i
 
@@ -48,14 +39,15 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
 
 
     var expanded by state { props.initiallyOpen ?: false }
-    val toggleExpanded by eventHandler { expanded = !expanded }
+    val toggleExpanded by mouseEventHandler { expanded = !expanded }
 
-    expansionPanel(styles.expansionPanelRoot on ExpansionPanelStyle.root) {
+    Accordion {
+        attrs.classes = jso { this.root = -styles.expansionPanelRoot }
         attrs.expanded = expanded
 
-        expansionPanelSummary {
-            attrs.expandIcon { icon(ExpandMore) }
-            attrs.onClickFunction = toggleExpanded
+        AccordionSummary {
+            attrs.expandIcon = ExpandMore.create()
+            attrs.onClick = toggleExpanded
 
             if (!expanded) {
                 val entityName = props.mutableFixtureMapping.entityId
@@ -76,31 +68,32 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             +" | "
             val fixturePreview = props.fixturePreview
             if (fixturePreview is FixturePreviewError) {
-                chip {
+                Chip {
                     attrs.color = ChipColor.secondary
                     attrs.variant = ChipVariant.outlined
-                    attrs.label { +"Error: ${fixturePreview.e.message}" }
+                    attrs.label = buildElement { +"Error: ${fixturePreview.e.message}" }
                 }
             } else {
                 fixturePreview.fixtureConfig.summary().forEach { (title, value) ->
-                    chip {
+                    Chip {
                         attrs.variant = ChipVariant.outlined
                         attrs.title = title
-                        attrs.label { +(value ?: "?") }
+                        attrs.label = buildElement { +(value ?: "?") }
                     }
                 }
                 +" | "
                 fixturePreview.transportConfig.summary().forEach { (title, value) ->
-                    chip {
+                    Chip {
                         attrs.variant = ChipVariant.outlined
                         attrs.title = title
-                        attrs.label { +(value ?: "?") }
+                        attrs.label = buildElement { +(value ?: "?") }
                     }
                 }
             }
         }
 
-        expansionPanelDetails(+styles.expansionPanelDetails) {
+        AccordionDetails {
+            attrs.classes = jso { this.root = -styles.expansionPanelDetails }
             fixtureConfigPicker {
                 attrs.editingController = props.editingController
                 attrs.mutableFixtureConfig = props.mutableFixtureMapping.fixtureConfig

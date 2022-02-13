@@ -3,22 +3,11 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import materialui.components.checkbox.checkbox
-import materialui.components.divider.divider
-import materialui.components.formcontrol.formControl
-import materialui.components.listitem.enums.ListItemStyle
-import materialui.components.listitem.listItem
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.listsubheader.listSubheader
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import materialui.components.typography.typography
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
@@ -55,21 +44,23 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
     var showAdvanced by state { false }
     val showAdvancedCheckbox = ref<HTMLElement>()
     val anyAdvanced = linkOptions.any { it.isAdvanced }
-    val handleToggleShowAdvanced by eventHandler { event: Event ->
+    val handleToggleShowAdvanced by mouseEventHandler { event: Event ->
         showAdvanced = !showAdvanced
         event.stopPropagation()
     }
 
-    formControl {
-        select {
+    FormControl {
+        Select {
+            this as RElementBuilder<SelectProps<LinkOption>> // todo: yuck
+
             attrs.value = selected
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
             }
-            attrs.renderValue<LinkOption> {
-                buildElement { typography { +it.title } }
+            attrs.renderValue = {
+                buildElement { Typography { +it.title } }
             }
-            attrs.onChangeFunction = handleChange
+            attrs.onChange = handleChange
             attrs.disabled = props.editingShader.isBuilding()
 
             var dividerGroup: String? = null
@@ -78,33 +69,35 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
 
                 if (dividerGroup != option.groupName) {
                     if (dividerGroup != null) {
-                        divider {}
+                        Divider {}
                     }
-                    option.groupName?.let { listSubheader { +it } }
+                    option.groupName?.let { ListSubheader { +it } }
                     dividerGroup = option.groupName
                 }
 
-                menuItem {
+                MenuItem {
                     attrs.dense = true
-                    attrs["value"] = option
-                    listItemIcon { icon(option.icon) }
-                    listItemText { +option.title }
+                    attrs.value = option.asDynamic() // TODO: yuck
+                    ListItemIcon { icon(option.icon) }
+                    ListItemText { +option.title }
                 }
             }
 
             if (anyAdvanced) {
-                divider {}
+                Divider {}
 
-                listItem(styles.showAdvancedMenuItem on ListItemStyle.root) {
-                    checkbox {
+                ListItem {
+                    attrs.classes = jso { this.root = -styles.showAdvancedMenuItem }
+
+                    Checkbox {
                         ref = showAdvancedCheckbox
                         attrs.checked = showAdvanced
-                        attrs.onClickFunction = handleToggleShowAdvanced
+                        attrs.onClick = handleToggleShowAdvanced
                     }
-                    attrs.onClickFunction = handleToggleShowAdvanced
+                    attrs.onClick = handleToggleShowAdvanced
 
-                    listItemText {
-                        attrs.onClickFunction = handleToggleShowAdvanced
+                    ListItemText {
+                        attrs.onClick = handleToggleShowAdvanced
                         +"Show Advanced"
                     }
                 }

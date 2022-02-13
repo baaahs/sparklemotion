@@ -7,17 +7,15 @@ import baaahs.scene.EditingController
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
-import baaahs.ui.on
+import baaahs.ui.typographyH5
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.button.enums.ButtonStyle
-import materialui.components.card.card
-import materialui.components.container.container
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.typography.typographyH5
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.Card
+import mui.material.Container
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -42,14 +40,14 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     val editingController = EditingController(mutableControllerConfig, props.onEdit)
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
-    val handleNewFixtureMappingClick by eventHandler(mutableControllerConfig, props.onEdit) {
+    val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
         val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureConfig = PixelArrayDevice.Config()))
         mutableControllerConfig.fixtures.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
     }
 
-    container {
+    Container {
         typographyH5 {
             +mutableControllerConfig.title.ifBlank { "Untitled" }
             +" — ${mutableControllerConfig.controllerMeta.controllerTypeName}"
@@ -60,7 +58,8 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         with(it) { render() }
     }
 
-    card(styles.defaultConfigs on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { this.root = -styles.defaultConfigs }
         attrs.elevation = 4
 
         header {
@@ -97,11 +96,12 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         }
     }
 
-    button(styles.button on ButtonStyle.root) {
+    Button {
+        attrs.classes = jso { this.root = -styles.button }
         attrs.color = ButtonColor.secondary
-        attrs.onClickFunction = handleNewFixtureMappingClick
+        attrs.onClick = handleNewFixtureMappingClick
 
-        icon(materialui.icons.AddCircleOutline)
+        icon(mui.icons.material.AddCircleOutline)
         +"New…"
     }
 }

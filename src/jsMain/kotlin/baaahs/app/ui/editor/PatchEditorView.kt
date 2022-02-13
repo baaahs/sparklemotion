@@ -10,31 +10,17 @@ import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.components.checkbox.checkbox
-import materialui.components.divider.divider
-import materialui.components.listitemtext.listItemText
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
-import materialui.components.popover.enums.PopoverOriginHorizontal
-import materialui.components.popover.enums.PopoverOriginVertical
-import materialui.components.popover.horizontal
-import materialui.components.popover.vertical
-import materialui.components.tab.enums.TabStyle
-import materialui.components.tab.tab
-import materialui.components.tabs.enums.TabsStyle
-import materialui.components.tabs.tabs
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.*
+import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
-import react.useContext
 
 private enum class PageTabs {
     Patch, Ports, Gadgets, Help
@@ -46,8 +32,8 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
 
     val toolchain = memo { appContext.toolchain.withCache("Editor") }
 
-    var settingsMenuAnchor by state<EventTarget?> { null }
-    val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target!! }
+    var settingsMenuAnchor by state<Element?> { null }
+    val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target as Element? }
     val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
     var selectedTab by state { PageTabs.Patch }
@@ -78,39 +64,41 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     }
 
     var autoAdjustGadgets by state { true }
-    val handleToggleAutoAdjustGadgets by eventHandler { _: Event ->
+    val handleToggleAutoAdjustGadgets by mouseEventHandler {
         autoAdjustGadgets = !autoAdjustGadgets
         settingsMenuAnchor = null
     }
 
     var fullRange by state { false }
-    val handleToggleFullRange by eventHandler { _: Event ->
+    val handleToggleFullRange by mouseEventHandler {
         autoAdjustGadgets = true
         fullRange = !fullRange
         settingsMenuAnchor = null
     }
 
-    val handleDefaultsClick by eventHandler { _: Event ->
+    val handleDefaultsClick by mouseEventHandler {
         autoAdjustGadgets = false
         editingShader.gadgets.forEach { gadget -> gadget.openControl.resetToDefault() }
         settingsMenuAnchor = null
     }
 
-    var showDiagnosticsAnchor by state<EventTarget?> { null }
-    val handleShowDiagnosticsClick by eventHandler { _: Event ->
+    var showDiagnosticsAnchor by state<Element?> { null }
+    val handleShowDiagnosticsClick by mouseEventHandler {
         showDiagnosticsAnchor = settingsMenuAnchor
         settingsMenuAnchor = null
     }
 
     div(+shaderEditorStyles.propsAndPreview) {
         div(+shaderEditorStyles.propsTabsAndPanels) {
-            tabs(shaderEditorStyles.tabsContainer on TabsStyle.flexContainer) {
+            Tabs {
+                attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
                 attrs.value = selectedTab
                 attrs.onChange = handleChangeTab.asDynamic()
-                attrs["orientation"] = "vertical"
+                attrs.orientation = Orientation.vertical
                 PageTabs.values().forEach { tab ->
-                    tab(shaderEditorStyles.tab on TabStyle.root) {
-                        attrs.label { +tab.name }
+                    Tab {
+                        attrs.classes = jso { this.root = -shaderEditorStyles.tab }
+                        attrs.label = buildElement { +tab.name }
                         attrs.value = tab.asDynamic()
                     }
                 }
@@ -151,7 +139,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
             div(+shaderEditorStyles.settingsMenuAffordance) {
                 attrs.onClickFunction = showSettingsMenu
 
-                icon(materialui.icons.Settings)
+                icon(mui.icons.material.Settings)
             }
         }
     }
@@ -160,39 +148,39 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
         attrs.editingShader = editingShader
     }
 
-    menu {
-        attrs.anchorEl(settingsMenuAnchor)
-        attrs.anchorOrigin {
-            horizontal(PopoverOriginHorizontal.left)
-            vertical(PopoverOriginVertical.bottom)
+    Menu {
+        attrs.anchorEl = { settingsMenuAnchor!! }
+        attrs.anchorOrigin = jso {
+            horizontal = "left"
+            vertical = "bottom"
         }
         attrs.open = settingsMenuAnchor != null
         attrs.onClose = hideSettingsMenu
 
-        menuItem {
-            attrs.onClickFunction = handleToggleAutoAdjustGadgets
-            checkbox { attrs.checked = autoAdjustGadgets }
-            listItemText { +"Auto-Adjust Gadgets" }
+        MenuItem {
+            attrs.onClick = handleToggleAutoAdjustGadgets
+            Checkbox { attrs.checked = autoAdjustGadgets }
+            ListItemText { +"Auto-Adjust Gadgets" }
         }
 
-        menuItem {
-            attrs.onClickFunction = handleToggleFullRange
-            checkbox { attrs.checked = fullRange }
-            listItemText { +"Full Range" }
+        MenuItem {
+            attrs.onClick = handleToggleFullRange
+            Checkbox { attrs.checked = fullRange }
+            ListItemText { +"Full Range" }
         }
 
-        divider {}
+        Divider {}
 
-        menuItem {
-            attrs.onClickFunction = handleDefaultsClick
-            listItemText { +"Reset to Defaults" }
+        MenuItem {
+            attrs.onClick = handleDefaultsClick
+            ListItemText { +"Reset to Defaults" }
         }
 
-        divider {}
+        Divider {}
 
-        menuItem {
-            attrs.onClickFunction = handleShowDiagnosticsClick
-            listItemText { +"Show Diagnostics…" }
+        MenuItem {
+            attrs.onClick = handleShowDiagnosticsClick
+            ListItemText { +"Show Diagnostics…" }
         }
     }
 

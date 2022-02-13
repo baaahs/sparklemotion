@@ -15,10 +15,10 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
 import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
-import kotlinext.js.jsObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
+import kotlinx.js.jso
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
@@ -116,7 +116,7 @@ private fun launchSimulator(
     }
     hostedWebApp.onLaunch()
 
-    val props = jsObject<SimulatorAppProps> {
+    val props = jso<SimulatorAppProps> {
         this.simulator = simulator.facade
         this.hostedWebApp = hostedWebApp
     }
@@ -138,7 +138,7 @@ private fun HostedWebApp.launchApp() {
         onLaunch()
 
         val contentDiv = document.getElementById("content")!!
-        render(createElement(WebClientWindowView, jsObject {
+        render(createElement(WebClientWindowView, jso {
             this.hostedWebApp = this@launchApp
         }), contentDiv)
     }
@@ -150,7 +150,7 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     } catch (e: Exception) {
         val container = document.getElementById("content")
             ?: document.getElementById("app")!!
-        render(createElement(ErrorDisplay, jsObject {
+        render(createElement(ErrorDisplay, jso {
             this.error = e.asDynamic()
             this.componentStack = e.stackTraceToString().let {
                 if (it.contains("@webpack-internal:")) {

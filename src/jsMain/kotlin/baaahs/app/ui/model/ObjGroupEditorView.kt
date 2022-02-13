@@ -4,28 +4,12 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
-import baaahs.ui.checked
-import baaahs.ui.on
-import baaahs.ui.value
-import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.title
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.iconbutton.iconButton
-import materialui.components.switches.switch
-import materialui.components.textfield.textField
+import baaahs.ui.*
+import kotlinx.js.jso
 import materialui.icon
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.dom.br
-import react.dom.header
-import react.dom.li
-import react.dom.ul
-import react.useContext
+import mui.material.*
+import react.*
+import react.dom.*
 
 private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor") { props ->
     val appContext = useContext(appContext)
@@ -34,37 +18,38 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
 
-    val handleIsFileClick by eventHandler(mutableEntity, props.editingEntity) {
+    val handleIsFileClick by changeEventHandler(mutableEntity, props.editingEntity) {
         mutableEntity.objDataIsFileRef = it.target.checked
         props.editingEntity.onChange()
     }
 
-    val handleObjDataChange by eventHandler(mutableEntity, props.editingEntity) {
+    val handleObjDataChange by formEventHandler(mutableEntity, props.editingEntity) {
         mutableEntity.objData = it.target.value
         props.editingEntity.onChange()
     }
 
-    val handleReloadClick by eventHandler(mutableEntity) {
+    val handleReloadClick by mouseEventHandler(mutableEntity) {
         mutableEntity.reloadFile()
         forceRender()
     }
 
     header { +"OBJ Import" }
 
-    container(styles.propertiesEditSection on ContainerStyle.root) {
-        formControlLabel {
-            attrs.control {
-                switch {
+    Container {
+        attrs.classes = jso { this.root = -styles.propertiesEditSection }
+        FormControlLabel {
+            attrs.control = buildElement {
+                Switch {
                     attrs.checked = mutableEntity.objDataIsFileRef
-                    attrs.onChangeFunction = handleIsFileClick
+                    attrs.onChange = handleIsFileClick.withTChangeEvent()
                 }
             }
-            attrs.label { +"From File" }
+            attrs.label = buildElement { +"From File" }
         }
 
         if (mutableEntity.objDataIsFileRef) {
-            iconButton {
-                attrs.onClickFunction = handleReloadClick
+            IconButton {
+                attrs.onClick = handleReloadClick
                 attrs.title = "Reload"
                 icon(CommonIcons.Reload)
             }
@@ -72,24 +57,24 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 
         br {}
         if (mutableEntity.objDataIsFileRef) {
-            textField {
+            TextField {
                 attrs.fullWidth = true
-                attrs.onChangeFunction = handleObjDataChange
+                attrs.onChange = handleObjDataChange
                 attrs.value(mutableEntity.objData)
-                attrs.label { +"File" }
+                attrs.label = buildElement { +"File" }
             }
         } else {
-            textField {
+            TextField {
                 attrs.fullWidth = true
                 attrs.multiline = true
                 attrs.rows = 6
-                attrs.onChangeFunction = handleObjDataChange
+                attrs.onChange = handleObjDataChange
                 attrs.value(mutableEntity.objData)
-                attrs.label { +"OBJ Data" }
+                attrs.label = buildElement { +"OBJ Data" }
             }
         }
 
-        container {
+        Container {
             if (mutableEntity.problems.isEmpty()) {
                 +"Imported ${mutableEntity.children.size} surfaces."
             } else {

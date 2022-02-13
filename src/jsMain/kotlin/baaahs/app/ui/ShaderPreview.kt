@@ -16,11 +16,11 @@ import baaahs.util.useResizeListener
 import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import materialui.components.typography.enums.TypographyDisplay
-import materialui.components.typography.typography
 import materialui.icon
+import mui.material.Typography
+import mui.system.sx
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.events.EventTarget
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -36,7 +36,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
 
     val canvasParent = ref<HTMLDivElement>()
     var shaderPreview by state<ShaderPreview?> { null }
-    var errorPopupAnchor by state<EventTarget?> { null }
+    var errorPopupAnchor by state<Element?> { null }
     val preRenderHook = ref({})
 
     val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
@@ -186,13 +186,15 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             ShaderBuilder.State.Errors -> {
                 div(+ShaderPreviewStyles.errorBox) {
                     attrs.onClickFunction = { event ->
-                        errorPopupAnchor = event.currentTarget
+                        errorPopupAnchor = event.currentTarget as Element?
                         event.stopPropagation()
                     }
 
-                    icon(materialui.icons.Warning)
-                    typography {
-                        attrs.display = TypographyDisplay.block
+                    icon(mui.icons.material.Warning)
+                    Typography {
+                        attrs.sx {
+                            display = csstype.Display.block
+                        }
                         +"Preview failed."
                     }
                 }

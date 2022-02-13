@@ -35,4 +35,4 @@ external interface EnabledResizeOptions {
         set(value) = definedExternally
 }
 
-typealias TileRenderer<T> = (t: T, path: Array<String /* 'first' | 'second' */>) -> ReactElement
+typealias TileRenderer<T> = (t: T, path: Array<String /* 'first' | 'second' */>) -> ReactElement<*>

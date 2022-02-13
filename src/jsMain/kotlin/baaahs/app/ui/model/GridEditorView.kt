@@ -4,24 +4,12 @@ import baaahs.app.ui.appContext
 import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
-import baaahs.ui.checked
-import baaahs.ui.on
-import baaahs.ui.value
-import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import materialui.components.switches.switch
-import react.Props
-import react.RBuilder
-import react.RHandler
+import baaahs.ui.*
+import kotlinx.js.jso
+import mui.material.*
+import react.*
 import react.dom.br
 import react.dom.header
-import react.useContext
 
 private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props ->
     val appContext = useContext(appContext)
@@ -35,25 +23,26 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
         props.editingEntity.onChange()
     }
 
-    val handleZigZagChange by eventHandler(mutableEntity) {
+    val handleZigZagChange by changeEventHandler(mutableEntity) {
         mutableEntity.zigZag = it.target.checked
         props.editingEntity.onChange()
     }
 
     header { +"Grid" }
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         with(styles) {
-            formControlLabel {
-                attrs.label { +"Direction" }
-                attrs.control {
-                    select {
-                        attrs.value(mutableEntity.direction.name)
-                        attrs.onChangeFunction = handleDirectionChange
+            FormControlLabel {
+                attrs.label = buildElement { +"Direction" }
+                attrs.control = buildElement {
+                    Select<SelectProps<String>> {
+                        attrs.value = mutableEntity.direction.name
+                        attrs.onChange = handleDirectionChange
 
                         GridData.Direction.values().forEach { direction ->
-                            menuItem {
+                            MenuItem {
                                 attrs.value = direction.name
-                                listItemText { +direction.title }
+                                ListItemText { +direction.title }
                             }
                         }
                     }
@@ -62,14 +51,14 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
             br {}
 
-            formControlLabel {
-                attrs.control {
-                    switch {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
                         attrs.checked = mutableEntity.zigZag
-                        attrs.onChangeFunction = handleZigZagChange
+                        attrs.onChange = handleZigZagChange.withTChangeEvent()
                     }
                 }
-                attrs.label { +"Zig Zag" }
+                attrs.label = buildElement { +"Zig Zag" }
             }
 
             br {}

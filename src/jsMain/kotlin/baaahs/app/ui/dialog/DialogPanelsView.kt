@@ -4,52 +4,49 @@ import baaahs.app.ui.PatchHolderEditorHelpText
 import baaahs.app.ui.controls.problemBadge
 import baaahs.ui.*
 import external.ErrorBoundary
-import kotlinx.html.js.onClickFunction
-import materialui.components.list.enums.ListStyle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.listsubheader.enums.ListSubheaderStyle
-import materialui.components.listsubheader.listSubheader
+import kotlinx.js.jso
 import materialui.icon
-import react.FunctionComponent
+import mui.material.*
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.header
 
-private val DialogPanelsView: FunctionComponent<DialogPanelsProps> = xComponent("DialogPanels") { props ->
+private val DialogPanelsView = xComponent<DialogPanelsProps>("DialogPanels") { props ->
     var selectedPanel by state { props.selectedPanel ?: props.panels.firstOrNull() }
     val showSelectedPanel = if (props.onSelectPanel == null) selectedPanel else props.selectedPanel
 
     fun RBuilder.recursingList(dialogPanels: List<DialogPanel>) {
-        list(DialogStyles.tabsList on ListStyle.root) {
+        List {
+            attrs.classes = jso { this.root = -DialogStyles.tabsList }
             var previousListSubhead: String? = null
             dialogPanels.forEach { dialogPanel ->
                 dialogPanel.listSubhead?.let { subhead ->
                     if (previousListSubhead != subhead) {
-                        listSubheader(DialogStyles.tabsSubheader on ListSubheaderStyle.root) { +subhead }
+                        ListSubheader {
+                            attrs.classes = jso { this.root = -DialogStyles.tabsSubheader }
+                            +subhead
+                        }
                         previousListSubhead = subhead
                     }
                 }
 
-                listItem {
-                    attrs.button = true
+                ListItemButton {
                     attrs.selected = showSelectedPanel == dialogPanel
-                    attrs.onClickFunction = {
+                    attrs.onClick = {
                         props.onSelectPanel?.invoke(dialogPanel)
                         selectedPanel = dialogPanel
                     }
 
                     dialogPanel.icon?.let {
-                        listItemIcon(+DialogStyles.tabsListItemIcon) {
+                        ListItemIcon {
+                            attrs.classes = jso { this.root = -DialogStyles.tabsListItemIcon }
                             icon(it)
                         }
                     }
 
-                    listItemText {
+                    ListItemText {
                         +dialogPanel.title
                     }
 

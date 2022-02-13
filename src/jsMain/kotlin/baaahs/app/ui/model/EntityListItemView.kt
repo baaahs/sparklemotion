@@ -3,35 +3,34 @@ package baaahs.app.ui.model
 import baaahs.app.ui.appContext
 import baaahs.scene.MutableEntity
 import baaahs.scene.MutableEntityGroup
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onMouseDownFunction
-import materialui.components.list.enums.ListStyle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemtext.listItemText
+import kotlinx.js.jso
+import mui.material.List
+import mui.material.ListItemButton
+import mui.material.ListItemText
 import react.*
 
-private val EntityListItemView: FunctionComponent<EntityListItemProps> = xComponent("EntityListItem") { props ->
+private val EntityListItemView: ComponentType<EntityListItemProps> = xComponent("EntityListItem") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
 
     val mutableEntity = props.mutableEntity
-    val handleClick by eventHandler(props.onSelect, mutableEntity) {
+    val handleClick by mouseEventHandler(props.onSelect, mutableEntity) {
         props.onSelect(mutableEntity)
         it.stopPropagation()
     }
 
-    listItem {
-        attrs.button = true
+    ListItemButton {
         attrs.selected = mutableEntity == props.selectedMutableEntity
 //        attrs.onClickFunction = handleClick
-        attrs.onMouseDownFunction = handleClick
+        attrs.onMouseDown = handleClick
 
-        listItemText { +mutableEntity.title }
+        ListItemText { +mutableEntity.title }
 
         if (mutableEntity is MutableEntityGroup) {
-            list(styles.entityList on ListStyle.root) {
+            List {
+                attrs.classes = jso { this.root = -styles.entityList }
                 mutableEntity.children.forEach { child ->
                     entityListItem {
                         attrs.mutableEntity = child
