@@ -8,24 +8,20 @@ import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
 import baaahs.ui.*
+import csstype.FlexDirection
+import csstype.ident
 import external.Direction
 import external.draggable
 import external.droppable
 import kotlinx.css.*
-import kotlinx.html.js.onClickFunction
-import materialui.components.iconbutton.enums.IconButtonStyle
-import materialui.components.iconbutton.iconButton
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
+import kotlinx.js.jso
 import materialui.icon
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
+import mui.material.*
+import org.w3c.dom.Element
 import react.*
 import react.dom.div
+import react.dom.events.MouseEvent
+import react.dom.events.MouseEventHandler
 import react.dom.header
 import styled.inlineStyles
 
@@ -35,12 +31,12 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     var currentTabIndex by state { 0 }
     val currentTab = props.layout.tabs.getBounded(currentTabIndex)
 
-    val editModeStyle =
-        if (props.editMode) Styles.editModeOn else Styles.editModeOff
+    val editMode = props.editMode == true
+    val editModeStyle = if (editMode) Styles.editModeOn else Styles.editModeOff
 
-    val handleAddButtonClick = memo { mutableMapOf<String, (Event) -> Unit>() }
+    val handleAddButtonClick = memo { mutableMapOf<String, MouseEventHandler<*>>() }
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
-    var showAddMenuForAnchorEl by state<EventTarget?> { null }
+    var showAddMenuForAnchorEl by state<Element?> { null }
 
     sharedGlContext {
         div(+Styles.showLayout) {
@@ -72,22 +68,25 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
             currentTab?.areas?.distinct()?.forEach { panelId ->
                 val panel = props.show.layouts.panels.getBang(panelId, "panel")
-                paper(Styles.layoutPanelPaper on PaperStyle.root) {
-                    inlineStyles {
-                        put("gridArea", panelId)
+                Paper {
+                    attrs.classes = jso { root = -Styles.layoutPanelPaper }
+                    attrs.sx = jso {
+                        gridArea = ident(panelId)
                         // TODO: panel flow direction could change here.
                         flexDirection = FlexDirection.column
                     }
 
                     header { +panel.title }
 
-                    paper(Styles.layoutPanel and editModeStyle on PaperStyle.root) {
+                    Paper {
+                        attrs.classes = jso { root = -Styles.layoutPanel and editModeStyle }
+
                         props.controlDisplay.render(panel) { panelBucket ->
                             droppable({
                                 this.droppableId = panelBucket.dropTargetId
                                 this.type = panelBucket.type
                                 this.direction = Direction.horizontal.name
-                                this.isDropDisabled = !props.editMode
+                                this.isDropDisabled = !editMode
                             }) { droppableProvided, _ ->
                                 buildElement {
                                     val style = if (Styles.controlSections.size > panelBucket.section.depth)
@@ -106,7 +105,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                             draggable({
                                                 this.key = draggableId
                                                 this.draggableId = draggableId
-                                                this.isDragDisabled = !props.editMode
+                                                this.isDragDisabled = !editMode
                                                 this.index = index
                                             }) { draggableProvided, _ ->
                                                 buildElement {
@@ -121,14 +120,15 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
                                         child(droppableProvided.placeholder)
 
-                                        iconButton(+Styles.addToSectionButton on IconButtonStyle.root) {
-                                            attrs.onClickFunction = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
-                                                { event: Event ->
+                                        IconButton {
+                                            attrs.classes = jso { root = -Styles.addToSectionButton }
+                                            attrs.onClick = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
+                                                { event: MouseEvent<*, *> ->
                                                     showAddMenuFor = panelBucket
-                                                    showAddMenuForAnchorEl = event.target
+                                                    showAddMenuForAnchorEl = event.currentTarget
                                                 }
-                                            }.withEvent()
-                                            icon(materialui.icons.AddCircleOutline)
+                                            }
+                                            icon(mui.icons.material.AddCircleOutline)
                                         }
                                     }
                                 }
@@ -141,22 +141,21 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     }
 
     showAddMenuFor?.let { panelBucket ->
-        menu {
-            attrs.getContentAnchorEl = null
-            attrs.anchorEl(showAddMenuForAnchorEl)
+        Menu {
+            attrs.anchorEl = { showAddMenuForAnchorEl!! }
             attrs.open = true
-            attrs.onClose = { _, _ -> showAddMenuFor = null }
+            attrs.onClose = { showAddMenuFor = null }
 
             appContext.plugins.addControlMenuItems.forEach { addControlMenuItem ->
-                menuItem {
-                    attrs.onClickFunction = {
+                MenuItem {
+                    attrs.onClick = {
                         val editIntent = AddControlToPanelBucket(panelBucket, addControlMenuItem.createControlFn)
                         appContext.openEditor(editIntent)
                         showAddMenuFor = null
                     }
 
-                    listItemIcon { icon(addControlMenuItem.icon) }
-                    listItemText { +addControlMenuItem.label }
+                    ListItemIcon { icon(addControlMenuItem.icon) }
+                    ListItemText { +addControlMenuItem.label }
                 }
             }
         }
@@ -175,7 +174,7 @@ external interface ShowLayoutProps : Props {
     var layout: Layout
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
-    var editMode: Boolean
+    var editMode: Boolean?
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =

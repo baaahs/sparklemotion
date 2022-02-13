@@ -7,22 +7,19 @@ import baaahs.show.mutable.MutableTab
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import mui.material.ListItemText
+import mui.material.MenuItem
+import mui.material.Select
+import mui.material.SelectProps
+import react.*
 import react.dom.div
-import react.useContext
+import react.dom.events.FormEvent
 
 val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
-    val handlePanelAreaChange by eventHandler { event: Event ->
+    val handlePanelAreaChange by formEventHandler() { event: FormEvent<*> ->
         val panel = props.layouts.panels.getBang(event.target.value, "panel")
         props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = panel
         props.onChange()
@@ -30,16 +27,17 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
     }
 
     div(+styles.gridAreaEditor) {
-        select {
+        Select {
+            this as RElementBuilder<SelectProps<String>>
             val currentPanel = props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex]
             val panelId = props.layouts.panels.entries.find { (_, panel) -> panel == currentPanel }!!.key
-            attrs.value(panelId)
-            attrs.onChangeFunction = handlePanelAreaChange
+            attrs.value = panelId
+            attrs.onChange = handlePanelAreaChange
 
             props.layouts.panels.entries.sortedBy { (_, v) -> v.title }.forEach { (panelId, panel) ->
-                menuItem {
+                MenuItem {
                     attrs.value = panelId
-                    listItemText { +panel.title }
+                    ListItemText { +panel.title }
                 }
             }
         }

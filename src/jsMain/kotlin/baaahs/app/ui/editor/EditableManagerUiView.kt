@@ -4,35 +4,11 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
 import baaahs.ui.*
-import external.ErrorBoundary
-import kotlinx.css.Grow
-import kotlinx.css.em
-import kotlinx.css.grow
-import kotlinx.css.paddingLeft
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.drawer.drawer
-import materialui.components.drawer.enums.DrawerAnchor
-import materialui.components.drawer.enums.DrawerStyle
-import materialui.components.drawer.enums.DrawerVariant
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.iconbutton.enums.IconButtonStyle
-import materialui.components.iconbutton.iconButton
-import materialui.components.link.link
-import materialui.components.portal.portal
-import materialui.components.snackbar.snackbar
-import materialui.components.switches.switch
-import materialui.components.typography.typographyH6
+import kotlinx.js.jso
 import materialui.icon
-import materialui.lab.components.alert.alert
-import materialui.lab.components.alert.enums.AlertSeverity
-import materialui.lab.components.alerttitle.alertTitle
+import mui.base.Portal
+import mui.material.*
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
@@ -60,7 +36,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
             props.editableManager.applyChanges()
         }
     }
-    val handleDrawerClose = callback(props.editableManager) { _: Event ->
+    val handleDrawerClose = callback(props.editableManager) { _: Event, reason: String ->
         if (props.editableManager.isModified()) {
             showModifiedWarning = true
         } else {
@@ -68,43 +44,46 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
         }
     }
 
-    val handleUndo = callback(props.editableManager) { _: Event -> props.editableManager.undo() }
-    val handleRedo = callback(props.editableManager) { _: Event -> props.editableManager.redo() }
+    val handleUndo by mouseEventHandler(props.editableManager) { props.editableManager.undo() }
+    val handleRedo by mouseEventHandler(props.editableManager) { props.editableManager.redo() }
 
-    val handleClose = callback(props.editableManager) { _: Event -> props.editableManager.close() }
-    val handleApply = callback(props.editableManager) { _: Event -> props.editableManager.applyChanges() }
+    val handleClose by mouseEventHandler(props.editableManager) { props.editableManager.close() }
+    val handleApply by mouseEventHandler(props.editableManager) { props.editableManager.applyChanges() }
 
     val editorPanels = props.editableManager.dialogPanels
     val selectedPanel = props.editableManager.selectedPanel
 
-    portal {
+    Portal {
         form {
             attrs.onSubmitFunction = handleFormSubmit
 
-            drawer(styles.drawer on DrawerStyle.paper) {
+            Drawer {
+                attrs.classes = jso { this.paper = -styles.drawer }
                 attrs.anchor = DrawerAnchor.bottom
                 attrs.variant = DrawerVariant.temporary
                 attrs.elevation
                 attrs.open = props.editableManager.isEditing()
                 attrs.onClose = handleDrawerClose
 
-                dialogTitle(+DialogStyles.dialogTitle) {
-                    attrs.disableTypography = true
+                DialogTitle {
+                    attrs.classes = jso { this.root = -DialogStyles.dialogTitle }
                     typographyH6 { +"Editing ${props.editableManager.uiTitle}" }
 
                     div(+DialogStyles.dialogTitleButtons) {
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(materialui.icons.Undo)
+                        IconButton {
+                            attrs.classes = jso { this.root = -Styles.buttons }
+                            icon(mui.icons.material.Undo)
                             attrs.disabled = !props.editableManager.canUndo()
-                            attrs.onClickFunction = handleUndo
+                            attrs.onClick = handleUndo
 
                             typographyH6 { +"Undo" }
                         }
 
-                        iconButton(Styles.buttons on IconButtonStyle.root) {
-                            icon(materialui.icons.Redo)
+                        IconButton {
+                            attrs.classes = jso { this.root = -Styles.buttons }
+                            icon(mui.icons.material.Redo)
                             attrs.disabled = !props.editableManager.canRedo()
-                            attrs.onClickFunction = handleRedo
+                            attrs.onClick = handleRedo
 
                             typographyH6 { +"Redo" }
                         }
@@ -130,7 +109,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                     }
                 }
 
-                dialogActions {
+                DialogActions {
                     if (editorPanels.size == 1) {
                         formControlLabel {
                             inlineStyles {
@@ -150,27 +129,26 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             attrs.label { +"Expand" }
                         }
                     }
-
                     if (showModifiedWarning) {
-                        snackbar {
+                        Snackbar {
                             attrs.open = true
                             attrs.onClose = { _, _ -> showModifiedWarning = false }
 
-                            alert {
-                                attrs.severity = AlertSeverity.error
+                            Alert {
+                                attrs.severity = AlertColor.error
                                 attrs.onClose = { showModifiedWarning = false }
 
-                                alertTitle {
-                                    link {
-                                        attrs.onClickFunction = {
+                                AlertTitle {
+                                    Link {
+                                        attrs.onClick = {
                                             props.editableManager.applyChanges()
                                             props.editableManager.close()
                                         }
                                         +"Apply changes and close"
                                     }
                                     +" or "
-                                    link {
-                                        attrs.onClickFunction = {
+                                    Link {
+                                        attrs.onClick = {
                                             props.editableManager.close()
                                         }
                                         +"abandon changes and close"
@@ -181,21 +159,21 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                         }
                     }
 
-                    button {
+                    Button {
                         if (props.editableManager.isModified()) {
                             +"Abandon Changes"
                         } else {
                             +"Close"
                         }
                         attrs.color = ButtonColor.secondary
-                        attrs.onClickFunction = handleClose
+                        attrs.onClick = handleClose
                     }
 
-                    button {
+                    Button {
                         +"Apply"
                         attrs.disabled = !props.editableManager.isModified()
                         attrs.color = ButtonColor.primary
-                        attrs.onClickFunction = handleApply
+                        attrs.onClick = handleApply
                     }
                 }
             }

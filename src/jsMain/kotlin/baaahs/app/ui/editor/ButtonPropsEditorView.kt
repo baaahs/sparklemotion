@@ -4,44 +4,37 @@ import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrol.formControl
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.formlabel.formLabel
-import materialui.components.radio.radio
-import materialui.components.radiogroup.radioGroup
-import org.w3c.dom.HTMLInputElement
-import react.Props
-import react.RBuilder
-import react.RHandler
+import mui.material.*
+import react.*
 import react.dom.div
+import react.dom.events.ChangeEvent
+import react.dom.html.ReactHTML
 
 private val ButtonPropsEditorView =
     xComponent<ButtonPropsEditorProps>("ButtonPropsEditor") { props ->
         div(+EditableStyles.propertiesSection) {
-            formControl {
-                formLabel {
-                    attrs.component = "legend"
+            FormControl {
+                FormLabel {
+                    attrs.component = ReactHTML.legend
                     +"Button Type"
                 }
 
-                radioGroup {
-                    attrs.value(props.mutableButtonControl.activationType.name)
-                    attrs.onChangeFunction = {
-                        val value = (it.target as HTMLInputElement).value
+                RadioGroup {
+                    attrs.value = props.mutableButtonControl.activationType.name
+                    attrs.onChange = { _: ChangeEvent<*>, value: String ->
                         props.mutableButtonControl.activationType = ButtonControl.ActivationType.valueOf(value)
                         props.editableManager.onChange()
                     }
 
-                    formControlLabel {
+                    FormControlLabel {
                         attrs.value = "Toggle"
-                        attrs.control { radio {} }
-                        attrs.label { +"Toggle" }
+                        attrs.control = Radio.create()
+                        attrs.label = buildElement { +"Toggle" }
                     }
-                    formControlLabel {
+                    FormControlLabel {
                         attrs.value = "Momentary"
-                        attrs.control { radio {} }
-                        attrs.label { +"Momentary" }
+                        attrs.control = Radio.create()
+                        attrs.label = buildElement { +"Momentary" }
                     }
                 }
             }

@@ -6,7 +6,7 @@ import baaahs.sim.ui.FakeClientDeviceProps
 import baaahs.ui.ErrorDisplay
 import baaahs.util.Logger
 import baaahs.window
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import react.ReactElement
 import react.createElement
 import react.dom.render
@@ -25,8 +25,8 @@ object Launcher {
         } catch (e: Exception) {
             logger.error(e) { "Failed to launch $name." }
             object : HostedWebApp {
-                override fun render(): ReactElement =
-                    createElement(ErrorDisplay, jsObject {
+                override fun render(): ReactElement<*> =
+                    createElement(ErrorDisplay, jso {
                         this.error = e.asDynamic()
                         this.componentStack = e.stackTraceToString()
                         this.resetErrorBoundary = { window.location.reload() }
@@ -36,7 +36,7 @@ object Launcher {
             }
         }
 
-        val props = jsObject<FakeClientDeviceProps> {
+        val props = jso<FakeClientDeviceProps> {
             this.name = name
             width = 1024
             height = 768

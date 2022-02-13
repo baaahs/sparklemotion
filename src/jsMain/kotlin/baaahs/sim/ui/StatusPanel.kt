@@ -2,13 +2,14 @@ package baaahs.sim.ui
 
 import baaahs.SheepSimulator
 import baaahs.ui.unaryPlus
+import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.switches.switch
+import mui.material.FormControlLabel
+import mui.material.Switch
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.buildElement
 import react.dom.div
 
 val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
@@ -21,24 +22,24 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
 
     div {
         div(+SimulatorStyles.statusPanelToolbar) {
-            formControlLabel {
-                attrs.control {
-                    switch {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
                         attrs.checked = isConsoleOpen
-                        attrs.onChangeFunction = handleIsConsoleOpenChange
+                        attrs.onChange = handleIsConsoleOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label { +"Open" }
+                attrs.label = buildElement { +"Open" }
             }
 
-            formControlLabel {
-                attrs.control {
-                    switch {
+            FormControlLabel {
+                attrs.control =  buildElement {
+                    Switch {
                         attrs.checked = isGlslPaletteOpen
-                        attrs.onChangeFunction = handleIsGlslPaletteOpenChange
+                        attrs.onChange = handleIsGlslPaletteOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label { +"Show GLSL" }
+                attrs.label = buildElement { +"Show GLSL" }
             }
         }
 

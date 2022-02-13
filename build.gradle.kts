@@ -155,12 +155,14 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMui}")
 
                 implementation(npm("camera-controls", "^1.25.3"))
 
-                implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
-                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
-                implementation(npm("@material-ui/icons", "~4.9.1"))
+//                implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
+//                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
+//                implementation(npm("@material-ui/icons", "~4.9.1"))
 
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
@@ -184,7 +186,13 @@ kotlin {
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
-                implementation(npm("material-ui-search-bar", "1.0.0"))
+//                implementation(npm("material-ui-search-bar", "1.0.0"))
+
+                implementation(npm("@mui/material", "^5.5.1"))
+                implementation(npm("@mui/lab", "^5.0.0-alpha.73"))
+                implementation(npm("@mui/icons-material", "^5.5.1"))
+                implementation(npm("@emotion/react", "^11.8.2"))
+                implementation(npm("@emotion/styled", "^11.8.1"))
             }
         }
         @Suppress("UNUSED_VARIABLE")

@@ -1,28 +1,23 @@
 package baaahs.ui
 
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onKeyUpFunction
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.dialog.dialog
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.formcontrol.enums.FormControlMargin
-import materialui.components.textfield.textField
+import mui.material.*
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.buildElement
+import react.dom.events.ChangeEvent
+import react.dom.events.KeyboardEvent
+import react.dom.events.MouseEvent
+import react.dom.html.InputType
+import react.dom.onChange
 
 val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val prompt = props.prompt
     val value = ref(prompt.defaultValue)
     var isInvalidMessage by state { prompt.isValid(value.current!!) }
 
-    val handleChange by eventHandler(prompt) { event: Event ->
+    val handleChange by changeEventHandler(prompt) { event: ChangeEvent<*> ->
         val newValue = event.target.value
         value.current = newValue
         isInvalidMessage = prompt.isValid(newValue)
@@ -33,35 +28,35 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleCancelClick by eventHandler(props.onClose, prompt.onCancel) { event: Event ->
+    val handleCancelClick by mouseEventHandler(props.onClose, prompt.onCancel) { event: Event ->
         props.onClose()
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleSubmitClick by eventHandler(props.onClose, prompt.onSubmit) { event: Event ->
+    val handleSubmitClick by mouseEventHandler(props.onClose, prompt.onSubmit) { event: Event ->
         props.onClose()
         prompt.onSubmit(value.current!!)
         event.stopPropagation()
     }
 
-    val handleKeyUp by eventHandler(prompt) { event: Event ->
+    val handleKeyUp by keyboardEventHandler(prompt) { event: KeyboardEvent<*> ->
         if (event.asDynamic().key == "Enter" && isInvalidMessage == null) {
-            handleSubmitClick(event)
+            handleSubmitClick(event.unsafeCast<MouseEvent<*, *>>())
         }
     }
 
-    dialog {
+    Dialog {
         attrs.open = true
         attrs.onClose = handleDialogClose
 
-        dialogTitle { +prompt.title }
-        dialogContent {
+        DialogTitle { +prompt.title }
+        DialogContent {
             +prompt.description
 
-            textField {
+            TextField {
                 attrs.autoFocus = true
                 attrs.margin = FormControlMargin.dense
-                attrs.label { +prompt.fieldLabel }
+                attrs.label = buildElement { +prompt.fieldLabel }
                 attrs.type = InputType.text
                 attrs.fullWidth = true
                 attrs.defaultValue(value.current!!)
@@ -69,21 +64,21 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
                     attrs.error = true
                     attrs.helperText = it.asTextNode()
                 }
-                attrs.onKeyUpFunction = handleKeyUp
-                attrs.onChangeFunction = handleChange
+                attrs.onKeyUp = handleKeyUp
+                attrs.onChange = handleChange.withFormEvent()
             }
         }
 
-        dialogActions {
-            button {
+        DialogActions {
+            Button {
                 attrs.color = ButtonColor.primary
-                attrs.onClickFunction = handleCancelClick
+                attrs.onClick = handleCancelClick
                 +(prompt.cancelButtonLabel ?: "Cancel")
             }
-            button {
+            Button {
                 attrs.color = ButtonColor.primary
                 attrs.disabled = isInvalidMessage != null
-                attrs.onClickFunction = handleSubmitClick
+                attrs.onClick = handleSubmitClick
                 +(prompt.submitButtonLabel ?: "Submit")
             }
         }

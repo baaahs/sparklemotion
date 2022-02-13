@@ -8,22 +8,18 @@ import baaahs.ui.Styles
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinext.js.jsObject
 import kotlinx.css.left
 import kotlinx.css.px
 import kotlinx.css.top
 import kotlinx.html.js.onClickFunction
-import materialui.components.divider.divider
-import materialui.components.listitemtext.listItemText
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
-import materialui.components.popover.enums.PopoverOriginHorizontal
-import materialui.components.popover.enums.PopoverOriginVertical
-import materialui.components.popover.horizontal
-import materialui.components.popover.vertical
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.Divider
+import mui.material.ListItemText
+import mui.material.Menu
+import mui.material.MenuItem
+import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -55,7 +51,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         fun setAnnotations() {
             val lineCount = editor.getSession().getLength().toInt()
             val annotations = editingShader.shaderBuilder.glslErrors.map { error ->
-                jsObject<Annotation> {
+                jso<Annotation> {
                     row = (error.row).boundedBy(1 until lineCount) - 1
                     column = 0
                     text = error.message
@@ -96,11 +92,11 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         lastSelection.current = selection.toJSON()
     }
 
-    var refactorMenuAnchor by state<EventTarget?> { null }
-    val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target }
+    var refactorMenuAnchor by state<Element?> { null }
+    val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target as Element? }
     val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
-    val extractUniform = callback(shaderRefactor) { _: Event ->
+    val handleExtractUniform by mouseEventHandler(shaderRefactor) {
         hideRefactorMenu(null, null)
         shaderRefactor?.onExtract()
         Unit
@@ -125,36 +121,36 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
                 inlineStyles { top = y.px; left = x.px }
                 attrs.onClickFunction = showRefactorMenu
 
-                icon(materialui.icons.MoreHoriz)
+                icon(mui.icons.material.MoreHoriz)
             }
         }
 
         if (refactorMenuAnchor != null) {
-            menu {
-                attrs.anchorEl(refactorMenuAnchor)
-                attrs.anchorOrigin {
-                    horizontal(PopoverOriginHorizontal.left)
-                    vertical(PopoverOriginVertical.top)
+            Menu {
+                attrs.anchorEl = { refactorMenuAnchor!! }
+                attrs.anchorOrigin = jso {
+                    horizontal = "left"
+                    vertical = "top"
                 }
                 attrs.open = true
                 attrs.onClose = hideRefactorMenu
 
                 shaderRefactor?.let {
                     it.extractionCandidate?.let { extraction ->
-                        menuItem {
-                            attrs.onClickFunction = extractUniform
+                        MenuItem {
+                            attrs.onClick = handleExtractUniform
 
-                            listItemText { +"Extract ${extraction.text}…" }
+                            ListItemText { +"Extract ${extraction.text}…" }
                         }
                     }
                 }
 
-                divider {}
+                Divider {}
 
-                menuItem {
+                MenuItem {
                     attrs.disabled = true
 
-                    listItemText { +"Rename…" }
+                    ListItemText { +"Rename…" }
                 }
             }
         }

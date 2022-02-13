@@ -2,19 +2,18 @@ package baaahs.app.ui.editor
 
 import baaahs.control.ButtonGroupControl
 import baaahs.control.MutableButtonGroupControl
+import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrol.formControl
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.inputlabel.inputLabel
-import materialui.components.radio.radio
-import materialui.components.radiogroup.radioGroup
+import mui.material.*
 import org.w3c.dom.HTMLInputElement
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.create
 import react.dom.div
+import react.dom.events.ChangeEvent
+import react.dom.html.ReactHTML
 
 private val ButtonGroupPropsEditorView =
     xComponent<ButtonGroupPropsEditorProps>("ButtonGroupPropsEditor") { props ->
@@ -30,25 +29,24 @@ private val ButtonGroupPropsEditorView =
         }
 
         div(+EditableStyles.propertiesSection) {
-            formControl {
-                inputLabel {
-                    attrs.component = "legend"
+            FormControl {
+                InputLabel {
+                    attrs.component = ReactHTML.legend
                     +"Direction"
                 }
 
-                radioGroup {
-                    attrs.value(props.mutableButtonGroupControl.direction.name)
-                    attrs.onChangeFunction = {
-                        val value = (it.target as HTMLInputElement).value
+                RadioGroup {
+                    attrs.value = props.mutableButtonGroupControl.direction.name
+                    attrs.onChange = { _: ChangeEvent<HTMLInputElement>, value: String ->
                         props.mutableButtonGroupControl.direction = ButtonGroupControl.Direction.valueOf(value)
                         props.editableManager.onChange()
                     }
 
                     ButtonGroupControl.Direction.values().forEach {
-                        formControlLabel {
+                        FormControlLabel {
                             attrs.value = it.name
-                            attrs.control { radio {} }
-                            attrs.label { +it.name }
+                            attrs.control = Radio.create()
+                            attrs.label = it.name.asTextNode()
                         }
                     }
                 }

@@ -10,12 +10,12 @@ import external.mosaic.MosaicParent
 import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
 import external.mosaic.mosaic
-import kotlinext.js.jsObject
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.down
-import materialui.styles.createMuiTheme
+import kotlinx.js.jso
+import mui.material.styles.createTheme
+import mui.system.Breakpoint
 import react.*
 import react.dom.div
+import react.dom.html.ReactHTML
 import styled.injectGlobal
 
 enum class SimulatorWindows {
@@ -31,12 +31,12 @@ external interface SimulatorContext {
 }
 
 val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
-    val theme = createMuiTheme {}
+    val theme = createTheme(jso {})
     val simulatorStyles = ThemedSimulatorStyles(theme)
     injectGlobal(simulatorStyles.global)
 
     val mySimulatorContext = memo {
-        jsObject<SimulatorContext> {
+        jso<SimulatorContext> {
             this.styles = simulatorStyles
         }
     }
@@ -48,17 +48,17 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
 
     var currentNode by state<MosaicParent<SimulatorWindows>> {
         if (small) {
-            jsObject {
+            jso {
                 direction = "column"
                 splitPercentage = 20
                 first = SimulatorWindows.Visualizer
                 second = SimulatorWindows.UI
             }
         } else {
-            jsObject {
+            jso {
                 direction = "row"
                 splitPercentage = 15
-                first = jsObject<MosaicParent<SimulatorWindows>> {
+                first = jso<MosaicParent<SimulatorWindows>> {
                     direction = "column"
                     splitPercentage = 50
                     first = SimulatorWindows.Visualizer
@@ -88,7 +88,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                     // TODO: Ugh, are there more idiomatic ways to do any of this? Yes! buildElement {}
 
                     createElement(MosaicWindow,
-                        jsObject<MosaicWindowProps<SimulatorWindows>> {
+                        jso<MosaicWindowProps<SimulatorWindows>> {
                             this.draggable = false
                             this.title = window.name
                             this.path = path
@@ -102,15 +102,15 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                         },
 
                         createElement(
-                            "div", jsObject() { asDynamic()["className"] = +SimulatorStyles.windowContainer },
+                            ReactHTML.div, jso { asDynamic()["className"] = +SimulatorStyles.windowContainer },
                             when (window) {
-                                SimulatorWindows.Visualizer -> createElement(ModelSimulationView, jsObject {
+                                SimulatorWindows.Visualizer -> createElement(ModelSimulationView, jso {
                                     this.simulator = props.simulator
                                 })
-                                SimulatorWindows.Console -> createElement(StatusPanelView, jsObject {
+                                SimulatorWindows.Console -> createElement(StatusPanelView, jso {
                                     this.simulator = props.simulator
                                 })
-                                SimulatorWindows.UI -> createElement(WebClientWindowView, jsObject {
+                                SimulatorWindows.UI -> createElement(WebClientWindowView, jso {
                                     this.hostedWebApp = props.hostedWebApp
                                 })
                             }

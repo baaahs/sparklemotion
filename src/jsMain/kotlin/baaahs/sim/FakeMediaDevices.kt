@@ -6,7 +6,7 @@ import baaahs.imaging.Image
 import baaahs.imaging.WebGlImage
 import baaahs.visualizer.BaseVisualizer
 import baaahs.visualizer.Visualizer
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import three.js.Camera
 import three.js.PerspectiveCamera
 import three.js.Scene
@@ -48,7 +48,7 @@ class FakeMediaDevices(
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, BaseVisualizer.FrameListener {
         // offscreen renderer for virtual camera:
-        var camRenderer = WebGLRenderer(jsObject { preserveDrawingBuffer = true}).apply {
+        var camRenderer = WebGLRenderer(jso { preserveDrawingBuffer = true}).apply {
             setSize(width, height)
         }
 

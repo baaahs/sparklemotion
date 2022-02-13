@@ -10,23 +10,14 @@ import baaahs.window
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
-import kotlinx.html.js.onClickFunction
-import materialui.components.table.enums.TablePadding
-import materialui.components.table.table
-import materialui.components.tablebody.tableBody
-import materialui.components.tablecell.tdCell
-import materialui.components.tablecell.thCell
-import materialui.components.tablehead.tableHead
-import materialui.components.tablerow.tableRow
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.contrastText
-import materialui.styles.palette.main
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.get
+import mui.material.*
+import mui.material.styles.Theme
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.*
+import react.dom.code
+import react.dom.pre
+import react.dom.span
 import react.useContext
 import styled.StyleSheet
 
@@ -34,27 +25,26 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderHelp
 
-    table {
-        attrs.padding = TablePadding.dense
-        setProp("stickyHeader", true)
+    Table {
+        attrs.stickyHeader = true
 
-        tableHead {
-            tableRow {
-                thCell { +"Data Source" }
-                thCell { +"Description" }
-                thCell { +"Content Type" }
+        TableHead {
+            TableRow {
+                TableCell { +"Data Source" }
+                TableCell { +"Description" }
+                TableCell { +"Content Type" }
             }
         }
 
-        tableBody {
+        TableBody {
             appContext.plugins.dataSourceBuilders.withPlugin
                 .filterNot { (_, v) -> v.internalOnly }
                 .sortedBy { (_, v) -> v.title }
                 .forEach { (plugin, dataSourceBuilder) ->
-                    tableRow {
-                        tdCell { +dataSourceBuilder.title }
+                    TableRow {
+                        TableCell { +dataSourceBuilder.title }
                         val contentType = dataSourceBuilder.contentType
-                        tdCell {
+                        TableCell {
                             markdown { +dataSourceBuilder.description }
                             div(+styles.codeContainer) {
                                 pre(+styles.code) {
@@ -102,7 +92,7 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                 }
                             }
                         }
-                        tdCell { code { +contentType.id } }
+                        TableCell { code { +contentType.id } }
                     }
                 }
         }
@@ -110,14 +100,14 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
 }
 
 class ShaderHelpStyles(
-    private val theme: MuiTheme
+    private val theme: Theme
 ) : StyleSheet("app-ui-editor-ShaderHelp", isStatic = true) {
     val codeContainer by css {
         position = Position.relative
-        color = theme.palette.info.contrastText
-        backgroundColor = theme.palette.info.main
+        color = Color(theme.palette.info.contrastText)
+        backgroundColor = Color(theme.palette.info.main)
         padding = 0.5.em.value
-        border = "2px inset ${theme.palette.info.main.value}"
+        border = "2px inset ${theme.palette.info.main}"
     }
 
     val code by css {
@@ -156,7 +146,7 @@ class ShaderHelpStyles(
     }
 
     val comment by css {
-        color = theme.palette.info.contrastText.withAlpha(.75)
+        color = Color(theme.palette.info.contrastText).withAlpha(.75)
     }
 }
 

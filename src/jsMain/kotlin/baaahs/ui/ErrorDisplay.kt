@@ -1,24 +1,24 @@
 package baaahs.ui
 
 import baaahs.window
+import csstype.vh
 import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.role
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonVariant
-import materialui.components.container.container
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.Button
+import mui.material.ButtonVariant
+import mui.material.Container
+import mui.material.Paper
 import org.w3c.dom.HTMLElement
 import react.Props
 import react.dom.*
-import react.functionComponent
+import react.dom.aria.AriaRole
+import react.fc
 import styled.inlineStyles
 
-val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
+val ErrorDisplay = fc<ErrorDisplayProps> { props ->
     val guruMediationBox = react.useRef<HTMLElement>(null)
 
     react.useEffect {
@@ -36,21 +36,18 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
         blink()
     }
 
-    container {
-        inlineStyles {
+    Container {
+        attrs.sx = jso {
             height = 100.vh
         }
-        attrs.role = "alert"
-        inlineStyles {
-            height = 100.vh
-        }
+        attrs.role = AriaRole.alert
 
         div(+Styles.guruMeditationErrorContainer) {
             div(+Styles.guruMeditationErrorBox) {
                 ref = guruMediationBox
 
                 span(+Styles.guruMeditationErrorIcon) {
-                    icon(materialui.icons.NotificationImportant)
+                    icon(mui.icons.material.NotificationImportant)
                 }
 
                 div {
@@ -66,9 +63,9 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
                 }
 
                 if (props.resetErrorBoundary != null) {
-                    button {
+                    Button {
                         attrs.variant = ButtonVariant.outlined
-                        attrs.onClickFunction = { props.resetErrorBoundary?.invoke() }
+                        attrs.onClick = { props.resetErrorBoundary?.invoke() }
 
                         +"Press to retry."
                     }
@@ -76,7 +73,8 @@ val ErrorDisplay = functionComponent<ErrorDisplayProps> { props ->
             }
         }
 
-        paper(+Styles.guruMeditationErrorStackTrace on PaperStyle.root) {
+        Paper {
+            attrs.classes = jso { this.root = -Styles.guruMeditationErrorStackTrace }
             attrs.elevation = 5
 
             h3 {

@@ -4,7 +4,7 @@ import baaahs.document
 import baaahs.sim.HostedWebApp
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
@@ -22,8 +22,8 @@ class MonitorUi(
         visualizer.render()
     }
 
-    override fun render(): ReactElement {
-        return createElement(MonitorPage::class.react, jsObject {
+    override fun render(): ReactElement<*> {
+        return createElement(MonitorPage::class.react, jso {
             this.containerDiv = container
             this.visualizer = this@MonitorUi.visualizer
         })

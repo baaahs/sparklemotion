@@ -7,24 +7,23 @@ import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
-import baaahs.ui.*
+import baaahs.ui.install
+import baaahs.ui.unaryMinus
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import external.Direction
 import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
-import materialui.components.card.card
-import materialui.components.iconbutton.iconButton
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
 import materialui.icon
-import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
-import materialui.lab.components.togglebutton.toggleButton
-import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupOrientation
-import materialui.lab.components.togglebuttongroup.enums.ToggleButtonGroupStyle
-import materialui.lab.components.togglebuttongroup.toggleButtonGroup
+import mui.material.*
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.events.MouseEvent
 
 private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
@@ -56,7 +55,9 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
         event.preventDefault()
     }
 
-    card(Styles.buttonGroupCard on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { root = -Styles.buttonGroupCard }
+
         droppable({
             if (dropTarget != null) {
                 droppableId = dropTarget.dropTargetId
@@ -69,14 +70,16 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
             isDropDisabled = !editMode
         }) { sceneDropProvided, _ ->
             buildElement {
-                toggleButtonGroup(
-                    ToggleButtonGroupStyle.root to buttonGroupControl.direction
-                        .decode(Styles.horizontalButtonList, Styles.verticalButtonList).name
-                ) {
+                ToggleButtonGroup {
+                    attrs.classes = jso {
+                        root = -buttonGroupControl.direction
+                            .decode(Styles.horizontalButtonList, Styles.verticalButtonList)
+                    }
+
                     install(sceneDropProvided)
 
                     attrs.orientation = buttonGroupControl.direction
-                        .decode(ToggleButtonGroupOrientation.horizontal, ToggleButtonGroupOrientation.vertical)
+                        .decode(Orientation.horizontal, Orientation.vertical)
                     attrs.exclusive = true
 //                    attrs.value = props.selected // ... but this is busted.
 //                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
@@ -104,11 +107,11 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                                             attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                         }
 
-                                        icon(materialui.icons.Edit)
+                                        icon(mui.icons.material.Edit)
                                     }
                                     div(+Styles.dragHandle) {
                                         copyFrom(sceneDragProvided.dragHandleProps)
-                                        icon(materialui.icons.DragIndicator)
+                                        icon(mui.icons.material.DragIndicator)
                                     }
 
                                     if (shaderForPreview != null) {
@@ -119,17 +122,17 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                                         }
                                     }
 
-                                    toggleButton {
+                                    ToggleButton {
                                         if (showPreview) {
-                                            attrs.classes(
-                                                Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
-                                                Styles.buttonSelectedWhenPreview on SelectedStyle.selected
-                                            )
+                                            attrs.classes = jso {
+                                                root = -Styles.buttonLabelWhenPreview
+                                                selected = -Styles.buttonSelectedWhenPreview
+                                            }
                                         }
 
                                         attrs.value = index.toString()
                                         attrs.selected = buttonControl.isPressed
-                                        attrs.onClickFunction = {
+                                        attrs.onClick = { _: MouseEvent<HTMLElement, *>, _: dynamic ->
                                             buttonGroupControl.clickOn(index)
                                             onShowStateChange()
                                         }
@@ -147,9 +150,9 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                     child(sceneDropProvided.placeholder)
 
                     if (editMode) {
-                        iconButton {
-                            icon(materialui.icons.AddCircleOutline)
-                            attrs.onClickFunction = { _: Event ->
+                        IconButton {
+                            icon(mui.icons.material.AddCircleOutline)
+                            attrs.onClick = {
                                 appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
                             }
                         }

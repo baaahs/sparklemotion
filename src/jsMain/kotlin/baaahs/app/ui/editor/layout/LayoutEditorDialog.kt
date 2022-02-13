@@ -11,42 +11,27 @@ import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import kotlinext.js.jsObject
-import kotlinx.css.Float
-import kotlinx.css.float
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
+import csstype.ClassName
+import csstype.Float
+import kotlinx.js.jso
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.button.enums.ButtonSize
-import materialui.components.dialog.dialog
-import materialui.components.dialog.enums.DialogMaxWidth
-import materialui.components.dialog.enums.DialogStyle
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogcontenttext.dialogContentText
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.iconbutton.iconButton
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.listsubheader.enums.ListSubheaderStyle
-import materialui.components.listsubheader.listSubheader
-import materialui.components.textfield.textField
 import materialui.icon
-import materialui.lab.components.togglebutton.toggleButton
+import mui.material.*
+import mui.system.Breakpoint
+import mui.system.sx
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.events.FormEvent
+import react.dom.events.MouseEvent
 import react.dom.i
+import react.dom.onChange
 import react.useContext
-import styled.inlineStyles
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -95,7 +80,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { baaahs.window.clearInterval(interval) }
     }
 
-    val handleApply = callback(props.onApply) { _: Event ->
+    val handleApply by mouseEventHandler(props.onApply) {
         if (showCode) {
             val layoutsMap = getLayoutsFromJson()
             mutableLayouts.formats.clear()
@@ -107,9 +92,9 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         props.onApply(mutableShow)
     }
 
-    val handlePanelsClick by eventHandler { _: Event -> currentFormat = null }
+    val handlePanelsClick by mouseEventHandler { currentFormat = null }
     val handleLayoutClicks = memo(mutableLayouts.formats.keys) {
-        mutableLayouts.formats.keys.associateWith { { _: Event -> currentFormat = it } }
+        mutableLayouts.formats.keys.associateWith { { _: MouseEvent<*, *> -> currentFormat = it } }
     }
 
     val handleGridChange by handler(handleApply) {
@@ -117,58 +102,55 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         props.onApply(mutableShow)
     }
 
-    val handleShowCodeButton =
-        callback { _: Event -> showCode = !showCode }
+    val handleShowCodeButton by mouseEventHandler { showCode = !showCode }
+    val handleClose = callback(props.onClose) { _: Event, _: String -> props.onClose() }
+    val handleCancel by mouseEventHandler(props.onClose) { props.onClose() }
 
-    val handleClose =
-        callback(props.onClose) { _: Event, _: String -> props.onClose() }
-
-    val handleCancel =
-        callback(props.onClose) { _: Event -> props.onClose() }
-
-    dialog(DraggablePaper.handleClassName on DialogStyle.paper) {
+    Dialog {
+        attrs.classes = jso { this.paper = ClassName(DraggablePaperHandleClassName) }
         attrs.open = props.open
-        attrs.maxWidth = DialogMaxWidth.lg
+        attrs.maxWidth = Breakpoint.lg
         attrs.onClose = handleClose
-        attrs.paperComponent(DraggablePaper::class)
+        attrs.PaperComponent = DraggablePaper
 
-        dialogTitle {
+        DialogTitle {
             +"Edit Layout…"
 
-            toggleButton {
-                inlineStyles {
+            ToggleButton {
+                attrs.sx {
                     float = Float.right
                 }
                 attrs.selected = showCode
-                attrs["size"] = ButtonSize.small.name
-                attrs.onClickFunction = handleShowCodeButton
-                icon(materialui.icons.Code)
+                attrs.size = Size.small
+                attrs.onClick = handleShowCodeButton.withTMouseEvent()
+                icon(mui.icons.material.Code)
             }
         }
 
-        dialogContent {
-            dialogContentText(null) {
+        DialogContent {
+            DialogContentText {
                 +"Eventually we'll support tabs, and different layouts for phones/tablets/etc."
             }
 
             div(+styles.outerContainer) {
-                list {
-                    listItem {
-                        attrs.button = true
+                List {
+                    ListItemButton {
                         attrs.selected = currentFormat == null
-                        attrs.onClickFunction = handlePanelsClick
+                        attrs.onClick = handlePanelsClick
 
-                        listItemText { +"Panels" }
+                        ListItemText { +"Panels" }
                     }
 
-                    listSubheader(styles.listSubheader on ListSubheaderStyle.root) { +"Formats:" }
+                    ListSubheader {
+                        attrs.classes = jso { this.root = -styles.listSubheader }
+                        +"Formats:"
+                    }
                     mutableLayouts.formats.forEach { (id, layout) ->
-                        listItem {
-                            attrs.button = true
+                        ListItemButton {
                             attrs.selected = currentFormat == id
-                            attrs.onClickFunction = handleLayoutClicks[id]!!
+                            attrs.onClick = handleLayoutClicks[id]!!
 
-                            listItemText {
+                            ListItemText {
                                 val mediaQuery = layout.mediaQuery
                                 if (mediaQuery == null) {
                                     i { +"Default" }
@@ -177,8 +159,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                         }
                     }
 
-                    listItem {
-                        attrs.button = true
+                    ListItemButton {
                         attrs.disabled = true
                         +"New Format…"
                     }
@@ -199,10 +180,10 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                 this.onChange = { _, _ -> changed.current = true }
                                 defaultValue = jsonStr
                                 name = "LayoutEditorWindow"
-                                setOptions = jsObject {
+                                setOptions = jso {
                                     autoScrollEditorIntoView = true
                                 }
-                                editorProps = jsObject {
+                                editorProps = jso {
                                     `$blockScrolling` = true
                                 }
                             }
@@ -210,18 +191,18 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                     } else {
                         val showFormat = currentFormat
                         if (showFormat == null) {
-                            list {
+                            List {
                                 mutableLayouts.panels.forEach { (panelId, panel) ->
-                                    listItem {
-                                        listItemIcon { icon(CommonIcons.Layout) }
-                                        textField {
+                                    ListItem {
+                                        ListItemIcon { icon(CommonIcons.Layout) }
+                                        TextField {
                                             attrs.autoFocus = false
                                             attrs.fullWidth = true
 //                                        attrs.label { +panel.title }
                                             attrs.value = panel.title
 
                                             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
-                                            attrs.onChangeFunction = { event: Event ->
+                                            attrs.onChange = { event: FormEvent<HTMLDivElement> ->
                                                 panel.title = event.target.value
                                                 props.onApply(mutableShow)
                                             }
@@ -230,21 +211,20 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
 //                                        attrs.onBlurFunction = handleBlur
 //                                        attrs.onKeyDownFunction = handleKeyDown
                                         }
-                                        iconButton {
-                                            attrs.onClickFunction = { _: Event ->
+                                        IconButton {
+                                            attrs.onClick = {
                                                 if (baaahs.window.confirm("Delete panel \"${panel.title}\"? This might be bad news if anything is still placed in it.")) {
                                                     mutableLayouts.panels.remove(panelId)
                                                     props.onApply(mutableShow)
                                                 }
                                             }
-                                            icon(materialui.icons.Delete)
+                                            icon(mui.icons.material.Delete)
                                         }
                                     }
                                 }
 
-                                listItem {
-                                    attrs.button = true
-                                    attrs.onClickFunction = { _: Event ->
+                                ListItemButton {
+                                    attrs.onClick = {
                                         appContext.prompt(
                                             Prompt(
                                                 "Create New Panel",
@@ -269,8 +249,8 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                             )
                                         )
                                     }
-                                    listItemIcon { icon(CommonIcons.Add) }
-                                    listItemText { +"New Panel…" }
+                                    ListItemIcon { icon(CommonIcons.Add) }
+                                    ListItemText { +"New Panel…" }
                                 }
                             }
                         } else {
@@ -285,17 +265,17 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             }
         }
 
-        dialogActions {
-            button {
+        DialogActions {
+            Button {
                 +"Cancel"
                 attrs.color = ButtonColor.secondary
-                attrs.onClickFunction = handleCancel
+                attrs.onClick = handleCancel
             }
-            button {
+            Button {
                 +"Apply"
                 attrs.disabled = errorMessage != null
                 attrs.color = ButtonColor.primary
-                attrs.onClickFunction = handleApply
+                attrs.onClick = handleApply
             }
         }
     }

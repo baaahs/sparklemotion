@@ -4,10 +4,10 @@ import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.scaleX
 import kotlinx.css.properties.transform
-import materialui.styles.muitheme.MuiTheme
+import mui.material.styles.Theme
 import styled.StyleSheet
 
-class MapperStyles(val theme: MuiTheme) : StyleSheet("mapper", isStatic = true) {
+class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val green = Color("#00ff00")
     
     val screen by css {

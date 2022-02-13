@@ -5,35 +5,18 @@ import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
+import csstype.ClassName
 import kotlinx.css.opacity
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
-import materialui.components.appbar.appBar
-import materialui.components.appbar.enums.AppBarPosition
-import materialui.components.appbar.enums.AppBarStyle
-import materialui.components.button.enums.ButtonColor
-import materialui.components.dialog.dialog
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.iconbutton.enums.IconButtonEdge
-import materialui.components.iconbutton.iconButton
-import materialui.components.link.enums.LinkStyle
-import materialui.components.link.link
-import materialui.components.switches.switch
-import materialui.components.toolbar.toolbar
-import materialui.components.typography.enums.TypographyStyle
-import materialui.components.typography.typographyH6
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.*
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.*
-import react.useContext
 import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
@@ -55,17 +38,17 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         appContext.openSceneEditor(SceneEditIntent())
     }
 
-    val handleUndo by eventHandler(documentManager) { documentManager.undo() }
-    val handleRedo by eventHandler(documentManager) { documentManager.redo() }
-    val handleSync by eventHandler(documentManager) { documentManager.sync() }
+    val handleUndo by mouseEventHandler(documentManager) { documentManager.undo() }
+    val handleRedo by mouseEventHandler(documentManager) { documentManager.redo() }
+    val handleSync by mouseEventHandler(documentManager) { documentManager.sync() }
 
-    val handleSave by eventHandler(documentManager) {
+    val handleSave by mouseEventHandler(documentManager) {
         appContext.notifier.launchAndReportErrors {
             documentManager.onSave()
         }
     }
 
-    val handleSaveAs by eventHandler(documentManager) {
+    val handleSaveAs by mouseEventHandler(documentManager) {
         appContext.notifier.launchAndReportErrors {
             documentManager.onSaveAs()
         }
@@ -79,18 +62,20 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
     val editMode = props.editMode == true || props.appMode == AppMode.Scene
 
-    appBar(themeStyles.appToolbar on AppBarStyle.root) {
+    AppBar {
+        attrs.classes = jso { this.root = -themeStyles.appToolbar }
         attrs.position = AppBarPosition.relative
 
-        toolbar {
-            iconButton {
-                attrs.color = ButtonColor.inherit
+        Toolbar {
+            IconButton {
+                attrs.color = IconButtonColor.inherit
                 attrs.edge = IconButtonEdge.start
-                attrs.onClickFunction = props.onMenuButtonClick.withEvent()
-                icon(materialui.icons.Menu)
+                attrs.onClick = props.onMenuButtonClick.withMouseEvent()
+                icon(mui.icons.material.Menu)
             }
 
-            typographyH6(themeStyles.title on TypographyStyle.root) {
+            typographyH6 {
+                attrs.classes = jso { this.root = -themeStyles.title }
                 div(+themeStyles.titleHeader) { +"Show:" }
 
                 if (show != null) {
@@ -104,7 +89,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     if (props.appMode == AppMode.Show && editMode) {
                         span(+themeStyles.editButton) {
-                            icon(materialui.icons.Edit)
+                            icon(mui.icons.material.Edit)
                             attrs.onClickFunction = handleShowEditButtonClick.withEvent()
                         }
                     }
@@ -113,7 +98,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 }
             }
 
-            typographyH6(themeStyles.title on TypographyStyle.root) {
+            typographyH6 {
+                attrs.classes = jso { this.root = -themeStyles.title }
+
                 div(+themeStyles.titleHeader) { +"Scene:" }
 
                 if (scene != null) {
@@ -125,7 +112,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
                     if (props.appMode == AppMode.Scene && editMode) {
                         span(+themeStyles.editButton) {
-                            icon(materialui.icons.Edit)
+                            icon(mui.icons.material.Edit)
                             attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
                         }
                     }
@@ -145,74 +132,76 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
-                    iconButton {
-                        icon(materialui.icons.Undo)
+                    IconButton {
+                        icon(mui.icons.material.Undo)
                         attrs.disabled = !documentManager.canUndo
-                        attrs.onClickFunction = handleUndo
+                        attrs.onClick = handleUndo
 
                         typographyH6 { +"Undo" }
                     }
 
-                    iconButton {
-                        icon(materialui.icons.Redo)
+                    IconButton {
+                        icon(mui.icons.material.Redo)
                         attrs.disabled = !documentManager.canRedo
-                        attrs.onClickFunction = handleRedo
+                        attrs.onClick = handleRedo
 
                         typographyH6 { +"Redo" }
                     }
 
                     if (props.appMode == AppMode.Scene) {
-                        iconButton {
-                            icon(materialui.icons.Sync)
+                        IconButton {
+                            icon(mui.icons.material.Sync)
                             attrs.disabled = documentManager.isSynched
-                            attrs.onClickFunction = handleSync
+                            attrs.onClick = handleSync
 
                             typographyH6 { +"Sync" }
                         }
                     }
 
                     if (!documentManager.isLoaded) {
-                        iconButton {
-                            icon(materialui.icons.FileCopy)
-                            attrs.onClickFunction = handleSaveAs
+                        IconButton {
+                            icon(mui.icons.material.FileCopy)
+                            attrs.onClick = handleSaveAs
                             typographyH6 { +"Save As…" }
                         }
                     } else {
-                        iconButton {
-                            icon(materialui.icons.Save)
+                        IconButton {
+                            icon(mui.icons.material.Save)
                             attrs.disabled = !documentManager.isUnsaved
-                            attrs.onClickFunction = handleSave
+                            attrs.onClick = handleSave
                             typographyH6 { +"Save" }
                         }
                     }
 
-                    formControlLabel {
-                        attrs.control {
-                            switch {
+                    FormControlLabel {
+                        attrs.control = buildElement {
+                            Switch {
                                 attrs.checked = props.editMode
-                                attrs.onChangeFunction = props.onEditModeChange.withEvent()
+                                attrs.onChange = props.onEditModeChange.withTChangeEvent()
                             }
                         }
-                        attrs.label { typographyH6 { +"Design Mode" } }
+                        attrs.label = buildElement { typographyH6 { +"Design Mode" } }
                     }
                 }
 
                 div(+themeStyles.appToolbarProblemsIcon) {
                     if (showProblemsSeverity != null) {
-                        val iconClass = showProblemsSeverity.cssClass
-                        link(iconClass on LinkStyle.root) {
-                            attrs.onClickFunction = toggleProblems.withEvent()
+                        val iconClass = ClassName(showProblemsSeverity.cssClass)
+                        Link {
+                            attrs.classes = jso { this.root = iconClass }
+                            attrs.onClick = toggleProblems.withMouseEvent()
                             icon(showProblemsSeverity.icon)
                         }
                     }
                 }
                 if (showProblemsDialogIsOpen) {
-                    dialog {
+                    Dialog {
                         attrs.open = true
                         attrs.onClose = closeProblems
 
-                        dialogTitle { +"Show Problems" }
-                        dialogContent(+themeStyles.showProblemsDialogContent) {
+                        DialogTitle { +"Show Problems" }
+                        DialogContent {
+                            attrs.classes = jso { root = -themeStyles.showProblemsDialogContent }
                             showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
                                 val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
                                 div(iconClass) { icon(problem.severity.icon) }

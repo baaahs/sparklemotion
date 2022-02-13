@@ -1,16 +1,12 @@
 package baaahs.sim.ui
 
 import baaahs.Pinky
-import baaahs.ui.and
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.react_draggable.Draggable
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
-import materialui.components.portal.portal
-import materialui.components.typography.typographyH6
+import kotlinx.js.jso
 import materialui.icon
+import mui.base.Portal
+import mui.material.Paper
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -22,17 +18,18 @@ import react.dom.pre
 val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslPalette") { props ->
     observe(props.pinky.stageManager)
 
-    portal {
+    Portal {
         Draggable {
             val randomStyleForHandle = "PinkyPanelHandle"
             attrs.handle = ".$randomStyleForHandle"
 
             div(+Styles.glslCodeSheet) {
                 div(+Styles.dragHandle and randomStyleForHandle) {
-                    icon(materialui.icons.DragIndicator)
+                    icon(mui.icons.material.DragIndicator)
                 }
 
-                paper(Styles.glslCodePaper on PaperStyle.root) {
+                Paper {
+                    attrs.classes = jso { this.root = -Styles.glslCodePaper }
                     attrs.elevation = 3
 
                     typographyH6 { +"Generated GLSL" }

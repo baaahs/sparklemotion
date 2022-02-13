@@ -83,7 +83,7 @@
 .mosaic-drop-target {
   position: relative;
 }
-.mosaic-drop-target.drop-target-hover .drop-target-container {
+.mosaic-drop-target.drop-target-hover .drop-target-Container {
   display: block;
 }
 .mosaic-drop-target.mosaic > .drop-target-container .drop-target.left {
@@ -98,7 +98,7 @@
 .mosaic-drop-target.mosaic > .drop-target-container .drop-target.top {
   bottom: calc(100% -  10px );
 }
-.mosaic-drop-target .drop-target-container {
+.mosaic-drop-target .drop-target-Container {
   position: absolute;
   top: 0;
   right: 0;
