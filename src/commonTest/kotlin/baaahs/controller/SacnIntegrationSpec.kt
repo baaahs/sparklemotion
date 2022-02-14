@@ -34,7 +34,7 @@ object SacnIntegrationSpec : Spek({
         val controllers by value { mapOf<String, ControllerConfig>() }
         val fixtures by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val scene by value { OpenScene(model, controllers, fixtures) }
-        val sacnManager by value { SacnManager(link, TestRig().server, ImmediateDispatcher, FakeClock()) }
+        val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val mappings by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val mappingManager by value { FakeMappingManager(mappings) }

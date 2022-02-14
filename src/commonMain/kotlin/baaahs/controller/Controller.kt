@@ -6,10 +6,13 @@ import baaahs.fixtures.Transport
 import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
+import baaahs.util.Time
+import kotlinx.serialization.Serializable
 
 /** A Controller represents a physical device directly connected to one or more fixtures. */
 interface Controller {
     val controllerId: ControllerId
+    val state: ControllerState
     val fixtureMapping: FixtureMapping?
 
     fun createTransport(entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int): Transport
@@ -23,6 +26,16 @@ open class NullController(
     override val controllerId: ControllerId,
     override val fixtureMapping: FixtureMapping?
 ) : Controller {
+    override val state: ControllerState =
+        State("Null Controller", "N/A", 0.0)
+
+    @Serializable
+    class State(
+        override val title: String,
+        override val address: String?,
+        override val onlineSince: Time?
+    ) : ControllerState()
+
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,

@@ -2,14 +2,13 @@ package baaahs.sm.webapi
 
 import baaahs.PinkyState
 import baaahs.PubSub
-import baaahs.controller.SacnDevice
-import baaahs.dmx.DmxInfo
+import baaahs.controller.ControllerId
+import baaahs.controller.ControllerState
 import baaahs.fixtures.FixtureInfo
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
 import baaahs.plugin.Plugins
-import baaahs.sm.brain.BrainInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -27,14 +26,11 @@ object Topics {
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
 
-    val brains =
-        PubSub.Topic("brains", MapSerializer(String.serializer(), BrainInfo.serializer()))
-
-    val dmxDevices =
-        PubSub.Topic("dmx/devices", MapSerializer(String.serializer(), DmxInfo.serializer()))
-
-    val sacnDevices =
-        PubSub.Topic("sacn/devices", MapSerializer(String.serializer(), SacnDevice.serializer()))
+    fun createControllerStates(plugins: Plugins) =
+        PubSub.Topic(
+            "controllers", MapSerializer(ControllerId.serializer(), ControllerState.serializer()),
+            plugins.serialModule
+        )
 
     fun createFixtures(plugins: Plugins) =
         PubSub.Topic("fixtures", ListSerializer(FixtureInfo.serializer()), plugins.serialModule)

@@ -1,10 +1,7 @@
 package baaahs.controllers
 
 import baaahs.*
-import baaahs.controller.BaseControllerManager
-import baaahs.controller.Controller
-import baaahs.controller.ControllerId
-import baaahs.controller.ControllersManager
+import baaahs.controller.*
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
@@ -22,6 +19,7 @@ import baaahs.scene.ControllerConfig
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.ui.Observable
+import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
 import ch.tutteli.atrium.api.fluent.en_GB.size
@@ -275,10 +273,6 @@ class FakeControllerManager(
         TODO("not implemented")
     }
 
-    override fun logStatus() {
-        TODO("not implemented")
-    }
-
     class Config(
         override val controllerType: String,
         override val title: String,
@@ -297,6 +291,11 @@ class FakeController(
     override val fixtureMapping: FixtureMapping? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
+    override val state: ControllerState = object : ControllerState() {
+        override val title: String get() = TODO("not implemented")
+        override val address: String get() = TODO("not implemented")
+        override val onlineSince: Time get() = TODO("not implemented")
+    }
     val transport = FakeTransport()
     override val controllerId: ControllerId = ControllerId(type, name)
     override fun createTransport(

@@ -4,12 +4,12 @@ import baaahs.Gadget
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.controller.ControllerState
+import baaahs.controller.NullController
 import baaahs.controller.SacnControllerConfig
+import baaahs.controller.SacnManager
 import baaahs.device.DeviceType
-import baaahs.dmx.DirectDmxControllerConfig
-import baaahs.dmx.DirectDmxTransportConfig
-import baaahs.dmx.LixadaMiniMovingHead
-import baaahs.dmx.Shenzarpy
+import baaahs.dmx.*
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
@@ -29,6 +29,7 @@ import baaahs.show.UnknownDataSource
 import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.sim.BridgeClient
+import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import baaahs.util.Time
@@ -510,6 +511,13 @@ sealed class Plugins private constructor(
             polymorphic(TransportConfig::class) {
                 subclass(DirectDmxTransportConfig::class, DirectDmxTransportConfig.serializer())
                 subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
+            }
+
+            polymorphic(ControllerState::class) {
+                subclass(BrainManager.State::class, BrainManager.State.serializer())
+                subclass(DirectDmxController.State::class, DirectDmxController.State.serializer())
+                subclass(SacnManager.State::class, SacnManager.State.serializer())
+                subclass(NullController.State::class, NullController.State.serializer())
             }
         }
     }

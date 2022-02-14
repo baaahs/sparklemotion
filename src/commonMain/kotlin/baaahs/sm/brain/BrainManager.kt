@@ -6,6 +6,7 @@ import baaahs.PubSub
 import baaahs.controller.BaseControllerManager
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
+import baaahs.controller.ControllerState
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
@@ -17,11 +18,9 @@ import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
-import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
@@ -63,8 +62,6 @@ class BrainManager(
     })
 
     internal val activeBrains: MutableMap<BrainId, BrainController> = mutableMapOf()
-
-    private var brainData by publishProperty(pubSub, Topics.brains, emptyMap())
 
     val brainCount: Int
         get() = activeBrains.size
@@ -114,32 +111,22 @@ class BrainManager(
             return
         }
 
-        val controller = BrainController(brainAddress, brainId, isSimulatedBrain, msg)
+        val controller = BrainController(brainAddress, brainId, isSimulatedBrain)
         activeBrains[brainId] = controller
         notifyListeners { onAdd(controller) }
-
-        brainData.toMutableMap().apply {
-            this[msg.brainId] = BrainInfo(
-                brainId, brainAddress.asString(), null, 0, 0,
-                BrainInfo.Status.Online, clock.now()
-            )
-        }
-        brainData
-    }
-
-    override fun logStatus() {
-        logger.info { "Sending to $brainCount brains." }
     }
 
     inner class BrainController(
         private val brainAddress: Network.Address,
         private val brainId: BrainId,
         private val isSimulatedBrain: Boolean,
-        private val msg: BrainHelloMessage
+        private val startedAt: Time = clock.now()
     ) : Controller {
         override val controllerId: ControllerId
             get() = brainId.asControllerId()
 
+        override val state: ControllerState
+            get() = State(brainId.uuid, brainAddress.asString(), startedAt)
         override val fixtureMapping: FixtureMapping
             get() = FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig)
 
@@ -156,6 +143,13 @@ class BrainManager(
             return listOf(FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig))
         }
     }
+
+    @Serializable
+    data class State(
+        override val title: String,
+        override val address: String?,
+        override val onlineSince: Time?
+    ) : ControllerState()
 
     inner class BrainTransport(
         private val brainController: BrainController,

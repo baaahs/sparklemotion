@@ -1,11 +1,9 @@
 package baaahs.dmx
 
-import baaahs.PubSub
 import baaahs.controller.BaseControllerManager
-import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
 import baaahs.sim.FakeDmxUniverse
-import baaahs.sm.webapi.Topics
+import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.serialization.Serializable
 
@@ -17,23 +15,16 @@ interface DmxManager {
 
 class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
-    pubSub: PubSub.Server,
-    private val fakeDmxUniverse: FakeDmxUniverse // For fallback.
+    private val clock: Clock,
+    private val fakeDmxUniverse: FakeDmxUniverse // For fallback.){}
 ) : BaseControllerManager("DMX"), DmxManager {
-    private var deviceData by publishProperty(pubSub, Topics.dmxDevices, emptyMap())
     private val attachedDevices = findAttachedDevices()
     override val dmxUniverse = findDmxUniverse(attachedDevices)
-
-    init {
-        deviceData = attachedDevices.map { device ->
-            DmxInfo(device.id, device.name, "DMX USB", null)
-        }.associateBy { it.id }
-    }
 
     override fun start() {
         if (attachedDevices.isNotEmpty()) {
             attachedDevices.forEach { device ->
-                notifyListeners { onAdd(DirectDmxController(device)) }
+                notifyListeners { onAdd(DirectDmxController(device, clock)) }
             }
         }
     }
@@ -43,10 +34,6 @@ class DmxManagerImpl(
 
     override fun stop() {
         TODO("not implemented")
-    }
-
-    override fun logStatus() {
-        logger.info { "Sending to ${attachedDevices.size} attached DMX controllers." }
     }
 
     override fun allOff() {
