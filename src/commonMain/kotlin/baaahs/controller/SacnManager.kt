@@ -1,6 +1,5 @@
 package baaahs.controller
 
-import baaahs.PubSub
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
@@ -9,9 +8,7 @@ import baaahs.mapper.SacnTransportConfig
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.publishProperty
 import baaahs.scene.ControllerConfig
-import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
@@ -57,20 +54,13 @@ object Delta {
     }
 }
 
-private class SacnConfigAndController(
-    var config: SacnControllerConfig,
-    var controller: SacnManager.SacnController
-)
-
 class SacnManager(
     private val link: Network.Link,
-    pubSub: PubSub.Server,
     private val mainDispatcher: CoroutineDispatcher,
     private val clock: Clock
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
-    private var sacnDevices by publishProperty(pubSub, Topics.sacnDevices, emptyMap())
     private var lastConfig: Map<String, SacnControllerConfig> = emptyMap()
     private var controllers: Map<String, SacnController> = emptyMap()
 
@@ -93,11 +83,6 @@ class SacnManager(
         TODO("not implemented")
     }
 
-    override fun logStatus() {
-        logger.info { "Sending to ${sacnDevices.size} SACN controllers." }
-
-    }
-
     private fun handleConfigs(configs: Map<String, SacnControllerConfig>) {
         controllers = buildMap {
             Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<String, SacnControllerConfig> {
@@ -105,12 +90,10 @@ class SacnManager(
                     val controller = SacnController(key, value.address, null, value.universes, clock.now())
                     put(key, controller)
                     notifyListeners { onAdd(controller) }
-                    addSacnDevice(controller)
                 }
 
                 override fun onRemove(key: String, value: SacnControllerConfig) {
                     val oldController = controllers[key]!!
-                    removeSacnDevice(oldController)
                     oldController.release()
                     notifyListeners { onRemove(oldController) }
                 }
@@ -160,7 +143,6 @@ class SacnManager(
                                 onlineSince
                             )
                             notifyListeners { onAdd(sacnController) }
-                            addSacnDevice(sacnController)
                         }
                     }
                 }
@@ -168,19 +150,12 @@ class SacnManager(
         })
     }
 
-    private fun addSacnDevice(sacnController: SacnController) {
-        val newWledDevices = sacnDevices.toMutableMap()
-        newWledDevices[sacnController.id] = with (sacnController) {
-            SacnDevice(id, address, fixtureMapping?.pixelCount, onlineSince)
-        }
-        sacnDevices = newWledDevices
-    }
-
-    private fun removeSacnDevice(sacnController: SacnController) {
-        val newWledDevices = sacnDevices.toMutableMap()
-        newWledDevices.remove(sacnController.id)
-        sacnDevices = newWledDevices
-    }
+    @Serializable
+    data class State(
+        override val title: String,
+        override val address: String,
+        override val onlineSince: Time?
+    ) : ControllerState()
 
     inner class SacnController(
         val id: String,
@@ -190,6 +165,9 @@ class SacnManager(
         val onlineSince: Time?
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
+        override val state: ControllerState =
+            State(controllerId.name(), address, onlineSince)
+
         private val channels = ByteArray(channelsPerUniverse * universeCount)
         private val universeMaxChannel = IntArray(universeCount)
         private val node = sacnLink.deviceAt(link.createAddress(address))
@@ -294,9 +272,8 @@ class SacnManager(
     }
 
     companion object {
-        val controllerTypeName = "SACN"
-
-        val channelsPerUniverse = 512
+        const val controllerTypeName = "SACN"
+        const val channelsPerUniverse = 512
 
         private val logger = Logger<SacnManager>()
         private val json = Json {
@@ -313,14 +290,6 @@ data class SacnControllerConfig(
 ) : ControllerConfig {
     override val controllerType: String get() = "SACN"
 }
-
-@Serializable
-data class SacnDevice(
-    val id: String,
-    val address: String?,
-    val pixelCount: Int?,
-    val onlineSince: Time?
-)
 
 @Serializable
 data class WledJson(

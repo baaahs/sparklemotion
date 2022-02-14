@@ -20,7 +20,7 @@ import react.RBuilder
 import react.buildElement
 import styled.StyleSheet
 
-class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-model", isStatic = true) {
+class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor", isStatic = true) {
     val editorPanes by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns(

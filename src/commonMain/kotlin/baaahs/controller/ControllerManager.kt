@@ -11,7 +11,6 @@ interface ControllerManager {
     fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>)
     fun start()
     fun stop()
-    fun logStatus()
 }
 
 abstract class BaseControllerManager(

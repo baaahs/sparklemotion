@@ -2,6 +2,7 @@ package baaahs.dmx
 
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
+import baaahs.controller.ControllerState
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
 import baaahs.io.ByteArrayWriter
@@ -9,12 +10,17 @@ import baaahs.mapper.FixtureMapping
 import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.scene.ControllerConfig
+import baaahs.util.Clock
+import baaahs.util.Time
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-class DirectDmxController(private val device: Dmx.Device) : Controller {
+class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Controller {
     override val controllerId: ControllerId
         get() = ControllerId(controllerType, device.id)
+    private val startedAt = clock.now()
+    override val state: ControllerState =
+        State(device.name, "N/A", startedAt)
     override val fixtureMapping: FixtureMapping?
         get() = null
     private val universe = device.asUniverse()
@@ -25,6 +31,14 @@ class DirectDmxController(private val device: Dmx.Device) : Controller {
         transportConfig: TransportConfig?,
         pixelCount: Int
     ): Transport = DirectDmxTransport(transportConfig as DirectDmxTransportConfig)
+
+
+    @Serializable
+    data class State(
+        override val title: String,
+        override val address: String?,
+        override val onlineSince: Time?
+    ) : ControllerState()
 
     inner class DirectDmxTransport(private val transportConfig: DirectDmxTransportConfig) : Transport {
         private val buffer = run {

@@ -5,6 +5,7 @@ import baaahs.Pinky
 import baaahs.PinkySettings
 import baaahs.PubSub
 import baaahs.controller.ControllersManager
+import baaahs.controller.ControllersPublisher
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
@@ -121,7 +122,7 @@ interface PinkyModule : KModule {
                 scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(), get(PinkyModule.pinkyMainDispatcher), get()) }
+                scoped { SacnManager(get(), get(PinkyModule.pinkyMainDispatcher), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> {
@@ -134,12 +135,16 @@ interface PinkyModule : KModule {
                     )
                 }
                 scoped { FixturePublisher(get(), get()) }
+                scoped { ControllersPublisher(get(), get()) }
                 scoped {
                     ControllersManager(
                         get(named("ControllerManagers")), get(), get(),
                         listOf(
                             get<FixtureManager>(),
                             get<FixturePublisher>(),
+                        ),
+                        listOf(
+                            get<ControllersPublisher>()
                         )
                     )
                 }

@@ -15,7 +15,8 @@ class ControllersManager(
     private val controllerManagers: List<ControllerManager>,
     private val mappingManager: MappingManager,
     private val sceneProvider: SceneProvider,
-    private val fixtureListeners: List<FixtureListener>
+    private val fixtureListeners: List<FixtureListener>,
+    private val controllerListeners: List<ControllerListener> = emptyList()
 ) : FrameListener {
     private val byType = controllerManagers.associateBy { it.controllerType }
     private var deferFixtureRefresh = false
@@ -23,8 +24,8 @@ class ControllersManager(
     private var model: Model? = sceneProvider.openScene?.model
 
     init {
-        controllerManagers.forEach {
-            it.addListener(object : ControllerListener {
+        controllerManagers.forEach { controllerManager ->
+            controllerManager.addListener(object : ControllerListener {
                 override fun onAdd(controller: Controller) {
                     logger.debug { "onAdd($controller)" }
                     if (controllers.containsKey(controller.controllerId))
@@ -35,6 +36,7 @@ class ControllersManager(
 
                     if (!deferFixtureRefresh)
                         refreshControllerFixtures(listOf(liveController))
+                    controllerListeners.forEach { it.onAdd(controller) }
                 }
 
                 override fun onRemove(controller: Controller) {
@@ -43,9 +45,11 @@ class ControllersManager(
                         ?: error("Don't know about ${controller.controllerId}")
 
                     fixturesChanged(removed = liveController.fixtures)
+                    controllerListeners.forEach { it.onRemove(controller) }
                 }
 
                 override fun onError(controller: Controller) {
+                    controllerListeners.forEach { it.onError(controller) }
                     onRemove(controller)
                 }
             })
