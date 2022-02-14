@@ -8,7 +8,7 @@ interface ControllerManager {
 
     fun addListener(controllerListener: ControllerListener)
     fun removeListener(controllerListener: ControllerListener)
-    fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>)
+    fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>)
     fun start()
     fun stop()
 }

@@ -3,6 +3,7 @@ package baaahs.scene
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.MutableEditable
+import baaahs.controller.ControllerId
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.model.*
@@ -17,8 +18,9 @@ class MutableScene(
         get() = model.title
         set(value) { model.title = value }
     val model = MutableModel(baseScene.model)
-    val controllers = baseScene.controllers
-        .mapValues { (_, v) -> MutableControllerConfig(v) }.toMutableMap()
+    val controllers: MutableMap<ControllerId, MutableControllerConfig> =
+        baseScene.controllers
+            .mapValues { (_, v) -> MutableControllerConfig(v) }.toMutableMap()
     val fixtures = baseScene.fixtures
         .map { data -> MutableFixture(data) }.toMutableList()
 

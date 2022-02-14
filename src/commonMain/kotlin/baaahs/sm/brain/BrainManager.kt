@@ -74,7 +74,7 @@ class BrainManager(
         isStartedUp = true
     }
 
-    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
     }
 
     override fun stop() {
