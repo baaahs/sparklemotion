@@ -44,7 +44,7 @@ object ControllersManagerSpec : Spek({
         val fakeController by value { FakeController("c1") }
         val fakeControllerConfig by value { FakeControllerManager.Config(fakeController) }
         val scene by value {
-            model?.let { OpenScene(it, controllers = mapOf(FakeController.type to fakeControllerConfig) ) }
+            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig) ) }
         }
         val mappingResults by value {
             mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, null, null)))
@@ -256,7 +256,7 @@ class FakeControllerManager(
         controllers.forEach { notifyListeners { onAdd(it) } }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
         if (hasStarted) {
             controllers.forEach { notifyListeners { onRemove(it) } }
         }

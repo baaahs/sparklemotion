@@ -9,7 +9,7 @@ import baaahs.util.Logger
 
 class OpenScene(
     val model: Model,
-    val controllers: Map<String, ControllerConfig> = emptyMap(),
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
     val fixtures: Map<ControllerId, List<FixtureMapping>> = emptyMap()
 ) {
     val allProblems: List<Problem>

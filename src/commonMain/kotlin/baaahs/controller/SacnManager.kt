@@ -61,18 +61,18 @@ class SacnManager(
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
-    private var lastConfig: Map<String, SacnControllerConfig> = emptyMap()
-    private var controllers: Map<String, SacnController> = emptyMap()
+    private var lastConfig: Map<ControllerId, SacnControllerConfig> = emptyMap()
+    private var controllers: Map<ControllerId, SacnController> = emptyMap()
 
     override fun start() {
         startWledDiscovery()
     }
 
-    override fun onConfigChange(controllerConfigs: Map<String, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
         handleConfigs(controllerConfigs.filterByType())
     }
 
-    inline fun <reified T : ControllerConfig> Map<String, ControllerConfig>.filterByType(): Map<String, T> =
+    inline fun <reified T : ControllerConfig> Map<ControllerId, ControllerConfig>.filterByType(): Map<ControllerId, T> =
         buildMap {
             this@filterByType.forEach { (k, v) ->
                 if (v is T) put(k, v)
@@ -83,16 +83,16 @@ class SacnManager(
         TODO("not implemented")
     }
 
-    private fun handleConfigs(configs: Map<String, SacnControllerConfig>) {
+    private fun handleConfigs(configs: Map<ControllerId, SacnControllerConfig>) {
         controllers = buildMap {
-            Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<String, SacnControllerConfig> {
-                override fun onAdd(key: String, value: SacnControllerConfig) {
-                    val controller = SacnController(key, value.address, null, value.universes, clock.now())
-                    put(key, controller)
+            Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<ControllerId, SacnControllerConfig> {
+                override fun onAdd(key: ControllerId, value: SacnControllerConfig) {
+                    val controller = SacnController(key.id, value.address, null, value.universes, clock.now())
+                    put(controller.controllerId, controller)
                     notifyListeners { onAdd(controller) }
                 }
 
-                override fun onRemove(key: String, value: SacnControllerConfig) {
+                override fun onRemove(key: ControllerId, value: SacnControllerConfig) {
                     val oldController = controllers[key]!!
                     oldController.release()
                     notifyListeners { onRemove(oldController) }

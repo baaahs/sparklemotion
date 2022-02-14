@@ -2,6 +2,7 @@ package baaahs.scene
 
 import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.controller.ControllerId
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
@@ -18,7 +19,7 @@ import kotlinx.serialization.modules.SerializersModule
 @Serializable
 data class Scene(
     val model: ModelData,
-    val controllers: Map<String, ControllerConfig> = emptyMap(),
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
     val fixtures: List<FixtureMappingData> = emptyList(),
 ) {
     val title get() = model.title

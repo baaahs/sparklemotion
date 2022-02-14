@@ -1,7 +1,6 @@
 package baaahs.mapper
 
 import baaahs.app.ui.appContext
-import baaahs.controller.ControllerId
 import baaahs.scene.MutableScene
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
@@ -31,9 +30,9 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
     val styles = appContext.allStyles.sceneEditor
 
-    val mutableControllers = props.mutableScene.controllers.mapKeys { (k, _) -> ControllerId.fromName(k) }
+    val mutableControllers = props.mutableScene.controllers
     val controllerStates = sceneEditorClient.controllerStates
-    val allControllerIds = mutableControllers.keys + controllerStates.keys
+    val allControllerIds = (mutableControllers.keys + controllerStates.keys).sorted()
 
     paper(styles.controllerConfigPaper on PaperStyle.root) {
         typographyH4 { +"Controllers" }
@@ -55,34 +54,33 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
 
             tableBody {
-                allControllerIds.sorted()
-                    .forEach { controllerId ->
-                        val mutableController = mutableControllers[controllerId]
-                        val state = controllerStates[controllerId]
-                        tableRow {
-                            tdCell { +controllerId.controllerType }
-                            tdCell { +controllerId.id }
-                            tdCell { +(state?.address ?: "None") }
+                allControllerIds.forEach { controllerId ->
+                    val mutableController = mutableControllers[controllerId]
+                    val state = controllerStates[controllerId]
+                    tableRow {
+                        tdCell { +controllerId.controllerType }
+                        tdCell { +controllerId.id }
+                        tdCell { +(state?.address ?: "None") }
 //                            tdCell { +(brainData.modelEntity ?: "Anonymous") }
 //                            tdCell { +brainData.pixelCount.toString() }
 //                            tdCell { +brainData.mappedPixelCount.toString() }
-                            tdCell {
-                                val onlineSince = state?.onlineSince
-                                if (onlineSince != null) {
-                                    +"Online since ${
-                                        DateTime(onlineSince * 1000)
-                                            .toString(DateFormat.FORMAT1)
-                                    }"
-                                } else {
-                                    +"Offline"
-                                }
+                        tdCell {
+                            val onlineSince = state?.onlineSince
+                            if (onlineSince != null) {
+                                +"Online since ${
+                                    DateTime(onlineSince * 1000)
+                                        .toString(DateFormat.FORMAT1)
+                                }"
+                            } else {
+                                +"Offline"
+                            }
 
-                                if (mutableController != null) {
-                                    +"Have Mutable"
-                                }
+                            if (mutableController != null) {
+                                +"Have Mutable"
                             }
                         }
                     }
+                }
             }
         }
 

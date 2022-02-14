@@ -1,6 +1,6 @@
 {
   "controllers": {
-    "sacn-main": {
+    "SACN:main": {
       "type": "SACN",
       "title": "Main",
       "address": "192.168.0.113",

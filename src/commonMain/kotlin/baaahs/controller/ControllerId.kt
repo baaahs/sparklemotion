@@ -33,6 +33,6 @@ data class ControllerId(val controllerType: String, val id: String) : Comparable
                 ControllerId(it[0], it[1])
             }
 
-        private val comparator = compareBy<ControllerId> { it.controllerType }.thenBy { it.id }
+        val comparator = compareBy<ControllerId> { it.controllerType }.thenBy { it.id }
     }
 }

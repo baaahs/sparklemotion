@@ -31,7 +31,8 @@ object SacnIntegrationSpec : Spek({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }
-        val controllers by value { mapOf<String, ControllerConfig>() }
+        val controllers by value { mapOf<ControllerId, ControllerConfig>() }
+        val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, "sacn1") }
         val fixtures by value { mapOf<ControllerId, List<FixtureMapping>>() }
         val scene by value { OpenScene(model, controllers, fixtures) }
         val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
@@ -41,7 +42,7 @@ object SacnIntegrationSpec : Spek({
         val controllersManager by value {
             ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(testScene()), listOf(listener))
         }
-        val configs by value { mapOf<String, ControllerConfig>() }
+        val configs by value { mapOf<ControllerId, ControllerConfig>() }
 
         beforeEachTest {
             controllersManager.start()
@@ -56,14 +57,14 @@ object SacnIntegrationSpec : Spek({
 
         context("with a controller has two fixtures") {
             override(configs) {
-                mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 1))
+                mapOf(sacn1Id to SacnControllerConfig("SACN Controller", "192.168.1.150", 1))
             }
 
             val bar1Mapping by value { fixtureMapping(model, "bar1", 0, 2, false) }
             val bar2Mapping by value { fixtureMapping(model, "bar2", 6, 2, false) }
 
             override(mappings) {
-                mapOf(ControllerId(SacnManager.controllerTypeName, "sacn1") to listOf(bar1Mapping, bar2Mapping))
+                mapOf(sacn1Id to listOf(bar1Mapping, bar2Mapping))
             }
 
             val bar1Fixture by value { listener.added[0] }
@@ -99,7 +100,7 @@ object SacnIntegrationSpec : Spek({
                     override(bar1Bytes) { PixelColors(1, 180) }
                     override(bar2Bytes) { PixelColors(602, 2) }
                     override(configs) {
-                        mapOf("sacn1" to SacnControllerConfig("SACN Controller", "192.168.1.150", 2))
+                        mapOf(sacn1Id to SacnControllerConfig("SACN Controller", "192.168.1.150", 2))
                     }
 
                     it("sends a DMX frame to multiple universes") {
@@ -185,7 +186,7 @@ object SacnIntegrationSpec : Spek({
             val mappingData by value { SessionMappingResults(scene, listOf(mappingSession)) }
 
             it("transforms it into FixtureConfigs") {
-                val data = mappingData.dataForController(ControllerId("SACN", "sacn1"))
+                val data = mappingData.dataForController(sacn1Id)
                     .only("fixture config")
 
                 val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
