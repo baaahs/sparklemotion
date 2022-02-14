@@ -14,7 +14,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinNext}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
         classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
