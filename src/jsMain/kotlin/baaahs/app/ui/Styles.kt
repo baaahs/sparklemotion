@@ -107,6 +107,8 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
         gridTemplateRows = GridTemplateRows("4em minmax(0, 1fr)")
 
         position = Position.absolute
+        width = 100.pct
+        height = 100.pct
     }
 
     val appDrawerOpen by css {}
