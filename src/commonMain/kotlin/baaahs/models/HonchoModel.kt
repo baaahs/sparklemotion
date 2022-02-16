@@ -67,9 +67,8 @@ fun generateFixtureMappingData(): List<FixtureMappingData> {
         val endChannel = startChannel + config.pixelCount * pixelFormat.channelsPerPixel
 
         FixtureMappingData(
-            controllerId.name(), // TODO: shortName? or ID?
+            // TODO: shortName? or ID?
             config.name, // TODO: name? or ID?
-            config.createEntity().deviceType,
             PixelArrayDevice.Config(
                 config.pixelCount,
                 pixelFormat,

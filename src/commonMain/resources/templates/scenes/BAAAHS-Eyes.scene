@@ -46,7 +46,6 @@
     {
       "controllerId": "DMX:dmx-simulator",
       "entityId": "leftEye",
-      "deviceType": "MovingHead",
       "deviceConfig": {
         "type": "MovingHead",
         "adapter": {
@@ -62,7 +61,6 @@
     {
       "controllerId": "DMX:dmx-simulator",
       "entityId": "rightEye",
-      "deviceType": "MovingHead",
       "deviceConfig": {
         "type": "MovingHead",
         "adapter": {
