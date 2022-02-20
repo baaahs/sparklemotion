@@ -2,10 +2,10 @@ package baaahs.model
 
 import baaahs.Color
 import baaahs.device.DeviceType
+import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
-import baaahs.fixtures.MovingHeadDevice
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation

@@ -1,6 +1,10 @@
 package baaahs.gl.preview
 
-import baaahs.fixtures.*
+import baaahs.device.MovingHeadDevice
+import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine

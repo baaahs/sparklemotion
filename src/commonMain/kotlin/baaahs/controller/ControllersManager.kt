@@ -6,6 +6,7 @@ import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
+import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.sm.server.FrameListener
 import baaahs.ui.addObserver
@@ -21,7 +22,7 @@ class ControllersManager(
     private val byType = controllerManagers.associateBy { it.controllerType }
     private var deferFixtureRefresh = false
     private val controllers = mutableMapOf<ControllerId, LiveController>()
-    private var model: Model? = sceneProvider.openScene?.model
+    private var scene: OpenScene? = sceneProvider.openScene
 
     init {
         controllerManagers.forEach { controllerManager ->
@@ -76,7 +77,7 @@ class ControllersManager(
     ) {
         val addFixtures = arrayListOf<Fixture>()
         val removeFixtures = arrayListOf<Fixture>()
-        val model = this.model
+        val model = this.scene?.model
         controllers.forEach { liveController ->
             val controller = liveController.controller
             removeFixtures.addAll(liveController.fixtures)
@@ -96,13 +97,17 @@ class ControllersManager(
         controller: Controller,
         model: Model
     ): ArrayList<Fixture> {
-        val mappings = mappingManager.findMappings(controller.controllerId)
+        val mappingsFromScene = (scene?.controllers?.get(controller.controllerId)
+            ?.fixtures?.map { fixtureMappingData -> fixtureMappingData.open(model) }
+            ?: emptyList())
+        val mappingsFromLegacy = mappingManager.findMappings(controller.controllerId)
+        val mappings = (mappingsFromScene + mappingsFromLegacy)
             .ifEmpty { controller.getAnonymousFixtureMappings() }
+
+        val defaultMapping = controller.defaultFixtureMapping
+
         val newFixtures = arrayListOf<Fixture>()
-
         mappings.forEach { mapping ->
-            val defaultMapping = controller.fixtureMapping
-
             val modelEntity = mapping.entity
 
             val fixtureConfig = mapping.fixtureConfig
@@ -149,7 +154,7 @@ class ControllersManager(
         val scene = sceneProvider.openScene
             ?: return
 
-        this.model = scene.model
+        this.scene = scene
 
         val managerConfig = scene.controllers.entries
             .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }

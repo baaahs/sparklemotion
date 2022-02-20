@@ -2,6 +2,7 @@ package baaahs.gl.render
 
 import baaahs.fixtures.Fixture
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.result.ResultStorage
 import baaahs.visualizer.remote.RemoteVisualizers
 
 interface RenderTarget {

@@ -2,6 +2,7 @@ package baaahs.controllers
 
 import baaahs.*
 import baaahs.controller.*
+import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
@@ -9,13 +10,12 @@ import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.TransportConfig
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
 import baaahs.scene.ControllerConfig
+import baaahs.scene.FixtureMappingData
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.ui.Observable
@@ -42,12 +42,17 @@ object ControllersManagerSpec : Spek({
         }
         val model by value<Model?> { fakeModel(modelEntity) }
         val fakeController by value { FakeController("c1") }
-        val fakeControllerConfig by value { FakeControllerManager.Config(fakeController) }
-        val scene by value {
-            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig) ) }
-        }
         val mappingResults by value {
             mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, null, null)))
+        }
+        val fakeControllerConfig by value {
+            FakeControllerManager.Config(
+                fakeController.controllerId.controllerType, fakeController.controllerId.id,
+                listOf(fakeController), emptyList()
+            )
+        }
+        val scene by value {
+            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig) ) }
         }
         val mappingManager by value { FakeMappingManager(mappingResults, false) }
         val fakeControllerMgr by value { FakeControllerManager() }
@@ -154,9 +159,11 @@ object ControllersManagerSpec : Spek({
 
             context("with a mapping result pointing to an entity") {
                 value(mappingResults) {
-                    mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, 3, null,
+                    mapOf(fakeController.controllerId to listOf(
+                        FixtureMapping(modelEntity, 3, null,
                         PixelArrayDevice.Config(3, PixelArrayDevice.PixelFormat.RGB8,
-                            pixelArrangement = LinearSurfacePixelStrategy(Random(1)))))
+                            pixelArrangement = LinearSurfacePixelStrategy(Random(1))))
+                    )
                     )
                 }
 
@@ -174,11 +181,13 @@ object ControllersManagerSpec : Spek({
 
                 context("with pixel location data") {
                     value(mappingResults) {
-                        mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, 3, listOf(
+                        mapOf(fakeController.controllerId to listOf(
+                            FixtureMapping(modelEntity, 3, listOf(
                             Vector3F(1f, 1f, 1f),
                             Vector3F(2f, 2f, 3f),
                             Vector3F(3f, 2f, 3f),
-                        ))))
+                        ))
+                        ))
                     }
 
                     it("uses the pixel data") {
@@ -276,19 +285,14 @@ class FakeControllerManager(
     class Config(
         override val controllerType: String,
         override val title: String,
-        val controllers: List<FakeController>
-    ) : ControllerConfig {
-        constructor(fakeController: FakeController) : this(
-            fakeController.controllerId.controllerType,
-            fakeController.controllerId.id,
-            listOf(fakeController)
-        )
-    }
+        val controllers: List<FakeController>,
+        override val fixtures: List<FixtureMappingData>
+    ) : ControllerConfig
 }
 
 class FakeController(
     val name: String,
-    override val fixtureMapping: FixtureMapping? = null,
+    override val defaultFixtureMapping: FixtureMapping? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
     override val state: ControllerState = object : ControllerState() {

@@ -1,15 +1,16 @@
 package baaahs.controller
 
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.Transport
+import baaahs.fixtures.TransportConfig
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.SacnTransportConfig
-import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.scene.ControllerConfig
+import baaahs.scene.FixtureMappingData
 import baaahs.util.Clock
+import baaahs.util.Delta
 import baaahs.util.Logger
 import baaahs.util.Time
 import kotlinx.coroutines.*
@@ -18,41 +19,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.math.min
-
-object Delta {
-    fun <K, V> diff(oldMap: Map<K, V>, newMap: Map<K, V>, listener: MapChangeListener<K, V>) {
-        val toRemove = oldMap.keys - newMap.keys
-        val toChange = oldMap.keys.intersect(newMap.keys)
-        val toAdd = newMap.keys - oldMap.keys
-
-        for (k in toRemove) {
-            listener.onRemove(k, oldMap[k]!!)
-        }
-
-        for (k in toChange) {
-            val oldValue = oldMap[k]!!
-            val newValue = newMap[k]!!
-            if (oldValue != newValue) {
-                listener.onChange(k, oldValue, newValue)
-            }
-        }
-
-        for (k in toAdd) {
-            listener.onAdd(k, newMap[k]!!)
-        }
-    }
-
-    interface MapChangeListener<K, V> {
-        fun onAdd(key: K, value: V)
-
-        fun onChange(key: K, oldValue: V, newValue: V) {
-            onRemove(key, oldValue)
-            onAdd(key, newValue)
-        }
-
-        fun onRemove(key: K, value: V)
-    }
-}
 
 class SacnManager(
     private val link: Network.Link,
@@ -160,7 +126,7 @@ class SacnManager(
     inner class SacnController(
         val id: String,
         val address: String,
-        override val fixtureMapping: FixtureMapping?,
+        override val defaultFixtureMapping: FixtureMapping?,
         val universeCount: Int,
         val onlineSince: Time?
     ) : Controller {
@@ -286,7 +252,8 @@ class SacnManager(
 data class SacnControllerConfig(
     override val title: String,
     val address: String,
-    val universes: Int
+    val universes: Int,
+    override val fixtures: List<FixtureMappingData>
 ) : ControllerConfig {
     override val controllerType: String get() = "SACN"
 }

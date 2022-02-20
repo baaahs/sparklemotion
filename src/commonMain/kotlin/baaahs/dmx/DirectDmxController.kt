@@ -4,12 +4,13 @@ import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.Transport
+import baaahs.fixtures.TransportConfig
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.scene.ControllerConfig
+import baaahs.scene.FixtureMappingData
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.SerialName
@@ -21,7 +22,7 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
     private val startedAt = clock.now()
     override val state: ControllerState =
         State(device.name, "N/A", startedAt)
-    override val fixtureMapping: FixtureMapping?
+    override val defaultFixtureMapping: FixtureMapping?
         get() = null
     private val universe = device.asUniverse()
 
@@ -90,7 +91,8 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
 @SerialName("DirectDMX")
 class DirectDmxControllerConfig(
     override val controllerType: String = DirectDmxController.controllerType,
-    override val title: String = "Direct DMX"
+    override val title: String = "Direct DMX",
+    override val fixtures: List<FixtureMappingData>
 ) : ControllerConfig
 
 /**

@@ -3,8 +3,8 @@ package baaahs.plugin.core
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
 import baaahs.device.DeviceType
+import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.MovingHeadDevice
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.IsfShaderDialect

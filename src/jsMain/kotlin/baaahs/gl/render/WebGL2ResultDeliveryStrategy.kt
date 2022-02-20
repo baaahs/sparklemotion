@@ -8,6 +8,7 @@ import baaahs.gl.WebGL2RenderingContext.Companion.PIXEL_PACK_BUFFER
 import baaahs.gl.WebGL2RenderingContext.Companion.STREAM_READ
 import baaahs.gl.WebGL2RenderingContext.Companion.SYNC_GPU_COMMANDS_COMPLETE
 import baaahs.gl.WebGLSync
+import baaahs.gl.result.ResultStorage
 import baaahs.internalTimerClock
 import com.danielgergely.kgl.Buffer
 import com.danielgergely.kgl.GlBuffer

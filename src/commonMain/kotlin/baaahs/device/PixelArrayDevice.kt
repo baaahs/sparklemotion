@@ -2,12 +2,12 @@ package baaahs.device
 
 import baaahs.Color
 import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.SingleResultStorage
 import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
-import baaahs.gl.render.ResultStorage
 import baaahs.gl.result.ColorResultType
+import baaahs.gl.result.ResultStorage
+import baaahs.gl.result.SingleResultStorage
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter

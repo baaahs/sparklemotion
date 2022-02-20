@@ -1,7 +1,7 @@
 package baaahs.sim
 
 import baaahs.controller.ControllerId
-import baaahs.mapper.FixtureMapping
+import baaahs.fixtures.FixtureMapping
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapping.MappingManager
 import baaahs.ui.Observable

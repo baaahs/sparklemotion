@@ -3,7 +3,6 @@ package baaahs.fixtures
 import baaahs.controller.Controller
 import baaahs.controller.NullController
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.TransportConfig
 
 interface Transport {
     val name: String
