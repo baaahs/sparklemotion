@@ -1,7 +1,10 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
+import baaahs.controller.SacnTransportConfig
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DirectDmxTransportConfig
+import baaahs.fixtures.FixtureMapping
 import baaahs.scene.OpenScene
 import baaahs.util.Logger
 
@@ -39,9 +42,26 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
             }
         }
 
-        scene.fixtures.forEach { (controllerId, fixtureMappings) ->
-            fixtureMappings.forEach { fixtureMapping ->
-                add(controllerId, fixtureMapping)
+        scene.controllers.forEach { (controllerId, controllerConfig) ->
+            controllerConfig.fixtures.forEach { fixtureMapping ->
+                val entity = fixtureMapping.entityId?.let { scene.model.findEntityByNameOrNull(it) }
+
+                if (fixtureMapping.entityId != null && entity == null) {
+                    logger.warn { "No such entity \"${fixtureMapping.entityId} found in model, but there's a fixture mapping for it." }
+                } else {
+                    val pixelArrayDeviceConfig = fixtureMapping.deviceConfig as? PixelArrayDevice.Config
+
+                    add(
+                        controllerId,
+                        FixtureMapping(
+                            entity,
+                            pixelArrayDeviceConfig?.pixelCount, // TODO kill this?
+                            null, // TODO kill this?
+                            fixtureMapping.deviceConfig,
+                            fixtureMapping.transportConfig
+                        )
+                    )
+                }
             }
         }
     }

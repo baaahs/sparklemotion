@@ -2,11 +2,11 @@ package baaahs.models
 
 import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
+import baaahs.controller.SacnTransportConfig
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.SacnTransportConfig
 import baaahs.model.LightRing
 import baaahs.model.LightRingData
 import baaahs.model.ModelData
@@ -55,7 +55,7 @@ val honchoModelData = ModelData(
     units = ModelUnit.Inches
 )
 
-val controllerId = ControllerId(
+private val controllerId = ControllerId(
     SacnManager.controllerTypeName,
     "sacn-main"
 )

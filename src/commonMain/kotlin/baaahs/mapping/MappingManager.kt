@@ -1,7 +1,7 @@
 package baaahs.mapping
 
 import baaahs.controller.ControllerId
-import baaahs.mapper.FixtureMapping
+import baaahs.fixtures.FixtureMapping
 import baaahs.mapper.SessionMappingResults
 import baaahs.mapper.Storage
 import baaahs.scene.OpenScene

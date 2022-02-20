@@ -1,9 +1,7 @@
-package baaahs.gl.render
+package baaahs.gl.result
 
 import baaahs.fixtures.Fixture
 import baaahs.gl.GlContext
-import baaahs.gl.result.FixtureResults
-import baaahs.gl.result.ResultBuffer
 import baaahs.visualizer.remote.RemoteVisualizers
 
 interface ResultStorage {

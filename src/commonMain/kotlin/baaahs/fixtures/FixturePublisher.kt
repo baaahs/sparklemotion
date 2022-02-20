@@ -2,7 +2,6 @@ package baaahs.fixtures
 
 import baaahs.PubSub
 import baaahs.controller.ControllerId
-import baaahs.mapper.TransportConfig
 import baaahs.plugin.Plugins
 import baaahs.sm.webapi.Topics
 import kotlinx.serialization.Serializable

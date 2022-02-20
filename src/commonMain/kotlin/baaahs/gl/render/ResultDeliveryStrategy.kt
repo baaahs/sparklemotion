@@ -1,6 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.gl.GlContext
+import baaahs.gl.result.ResultStorage
 
 interface ResultDeliveryStrategy {
     fun beforeRender() {}

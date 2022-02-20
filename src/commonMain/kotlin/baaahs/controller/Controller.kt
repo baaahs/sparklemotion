@@ -1,10 +1,6 @@
 package baaahs.controller
 
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.NullTransport
-import baaahs.fixtures.Transport
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.TransportConfig
+import baaahs.fixtures.*
 import baaahs.model.Model
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
@@ -13,7 +9,7 @@ import kotlinx.serialization.Serializable
 interface Controller {
     val controllerId: ControllerId
     val state: ControllerState
-    val fixtureMapping: FixtureMapping?
+    val defaultFixtureMapping: FixtureMapping?
 
     fun createTransport(entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int): Transport
     fun getAnonymousFixtureMappings(): List<FixtureMapping>
@@ -24,7 +20,7 @@ interface Controller {
 
 open class NullController(
     override val controllerId: ControllerId,
-    override val fixtureMapping: FixtureMapping?
+    override val defaultFixtureMapping: FixtureMapping?
 ) : Controller {
     override val state: ControllerState =
         State("Null Controller", "N/A", 0.0)

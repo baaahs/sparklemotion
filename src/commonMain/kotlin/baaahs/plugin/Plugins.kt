@@ -4,12 +4,10 @@ import baaahs.Gadget
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.controller.ControllerState
-import baaahs.controller.NullController
-import baaahs.controller.SacnControllerConfig
-import baaahs.controller.SacnManager
+import baaahs.controller.*
 import baaahs.device.DeviceType
 import baaahs.dmx.*
+import baaahs.fixtures.TransportConfig
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.glsl.LinkException
@@ -18,8 +16,6 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
-import baaahs.mapper.SacnTransportConfig
-import baaahs.mapper.TransportConfig
 import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig

@@ -3,9 +3,12 @@ package baaahs.scene
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.controller.ControllerId
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureMapping
+import baaahs.fixtures.TransportConfig
 import baaahs.io.RemoteFsSerializer
-import baaahs.mapper.TransportConfig
+import baaahs.model.Model
 import baaahs.model.ModelData
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
@@ -55,7 +58,16 @@ data class FixtureMappingData(
     val entityId: String? = null,
     val deviceConfig: FixtureConfig? = null,
     val transportConfig: TransportConfig? = null
-)
+) {
+    fun open(model: Model) =
+        FixtureMapping(
+            entityId?.let { model.findEntityByName(it) },
+            (deviceConfig as? PixelArrayDevice.Config)?.pixelCount,
+            null,
+            deviceConfig,
+            transportConfig
+        )
+}
 
 //interface FixtureControllerConfig
 

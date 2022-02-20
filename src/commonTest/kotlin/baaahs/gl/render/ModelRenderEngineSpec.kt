@@ -12,6 +12,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
+import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar

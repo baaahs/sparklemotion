@@ -17,6 +17,7 @@ class Fixture(
     val modelEntity: Model.Entity?,
     val pixelCount: Int,
     /** Each pixel's location in the global 3d model. */
+    @Deprecated("Use fixtureConfig for pixelCount instead.")
     val pixelLocations: List<Vector3F>,
     val fixtureConfig: FixtureConfig,
     val name: String = modelEntity?.name ?: "Anonymous fixture",

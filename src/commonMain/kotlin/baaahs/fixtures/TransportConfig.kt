@@ -1,0 +1,3 @@
+package baaahs.fixtures
+
+interface TransportConfig

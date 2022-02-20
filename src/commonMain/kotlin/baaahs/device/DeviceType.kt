@@ -4,7 +4,7 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
-import baaahs.gl.render.ResultStorage
+import baaahs.gl.result.ResultStorage
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import kotlinx.serialization.KSerializer

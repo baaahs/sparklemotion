@@ -9,12 +9,12 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.Transport
+import baaahs.fixtures.TransportConfig
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.mapper.FixtureMapping
-import baaahs.mapper.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
@@ -127,7 +127,7 @@ class BrainManager(
 
         override val state: ControllerState
             get() = State(brainId.uuid, brainAddress.asString(), startedAt)
-        override val fixtureMapping: FixtureMapping
+        override val defaultFixtureMapping: FixtureMapping
             get() = FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig)
 
         override fun createTransport(

@@ -1,12 +1,11 @@
-package baaahs.fixtures
+package baaahs.device
 
-import baaahs.device.DeviceType
 import baaahs.dmx.Shenzarpy
-import baaahs.gl.GlContext
+import baaahs.fixtures.FixtureConfig
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
-import baaahs.gl.render.ResultStorage
-import baaahs.gl.result.ResultBuffer
+import baaahs.gl.result.ResultStorage
+import baaahs.gl.result.SingleResultStorage
 import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
@@ -67,25 +66,5 @@ object MovingHeadDevice : DeviceType {
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice
-    }
-}
-
-class SingleResultStorage(private val resultBuffer: ResultBuffer) : ResultStorage {
-    override val resultBuffers: List<ResultBuffer>
-        get() = listOf(resultBuffer)
-
-    override fun resize(width: Int, height: Int) {
-        resultBuffer.resize(width, height)
-    }
-
-    override fun attachTo(fb: GlContext.FrameBuffer) {
-        resultBuffer.attachTo(fb)
-    }
-
-    override fun getFixtureResults(fixture: Fixture, bufferOffset: Int) =
-        resultBuffer.getFixtureView(fixture, bufferOffset)
-
-    override fun release() {
-        resultBuffer.release()
     }
 }
