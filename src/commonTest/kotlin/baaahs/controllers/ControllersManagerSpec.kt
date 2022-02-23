@@ -14,10 +14,7 @@ import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.OpenScene
-import baaahs.scene.SceneMonitor
+import baaahs.scene.*
 import baaahs.ui.Observable
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
@@ -227,6 +224,25 @@ object ControllersManagerSpec : Spek({
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
             }
+
+            context("when the scene is closed") {
+                beforeEachTest {
+                    sceneMonitor.onChange(null)
+                }
+
+                override(change) { fixtureListener.changes.getOrNull(1) ?: error("no second change") }
+                val removedFixture by value { change.removed.only("removed fixture") }
+
+                it("removes the previously added fixture and controller") {
+                    expect(removedFixture.modelEntity).toBe(modelEntity)
+                    expect(removedFixture.pixelCount).toBe(0)
+                    expect(removedFixture.pixelLocations).toBe(emptyList())
+                    expect(removedFixture.deviceType).toBe(modelEntity.deviceType)
+                    expect(removedFixture.transport).isSameAs(fakeController.transport)
+
+                    expect(fakeControllerMgr.controllers).isEmpty()
+                }
+            }
         }
     }
 })
@@ -257,7 +273,7 @@ class FakeControllerManager(
     startingControllers: List<FakeController> = emptyList()
 ) : BaseControllerManager("FAKE") {
     var hasStarted: Boolean = false
-    private val controllers = startingControllers.toMutableList()
+    val controllers = startingControllers.toMutableList()
 
     override fun start() {
         if (hasStarted) error("Already started!")
@@ -287,7 +303,9 @@ class FakeControllerManager(
         override val title: String,
         val controllers: List<FakeController>,
         override val fixtures: List<FixtureMappingData>
-    ) : ControllerConfig
+    ) : ControllerConfig {
+        override fun edit(): MutableControllerConfig = TODO("not implemented")
+    }
 }
 
 class FakeController(

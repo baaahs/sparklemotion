@@ -11,6 +11,8 @@ import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
+import baaahs.scene.MutableControllerConfig
+import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.SerialName
@@ -31,7 +33,7 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
         pixelCount: Int
-    ): Transport = DirectDmxTransport(transportConfig as DirectDmxTransportConfig)
+    ): Transport = DirectDmxTransport(transportConfig as DmxTransportConfig)
 
 
     @Serializable
@@ -41,7 +43,7 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
         override val onlineSince: Time?
     ) : ControllerState()
 
-    inner class DirectDmxTransport(private val transportConfig: DirectDmxTransportConfig) : Transport {
+    inner class DirectDmxTransport(private val transportConfig: DmxTransportConfig) : Transport {
         private val buffer = run {
             val (start, end) = transportConfig
             universe.writer(start, end - start + 1)
@@ -89,19 +91,13 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
 
 @Serializable
 @SerialName("DirectDMX")
-class DirectDmxControllerConfig(
-    override val controllerType: String = DirectDmxController.controllerType,
+data class DirectDmxControllerConfig(
     override val title: String = "Direct DMX",
-    override val fixtures: List<FixtureMappingData>
-) : ControllerConfig
+    override val fixtures: List<FixtureMappingData> = emptyList()
+) : ControllerConfig {
+    override val controllerType: String
+        get() = DirectDmxController.controllerType
 
-/**
- * @param startChannel Zero-based.
- * @param endChannel Zero-based.
- */
-@Serializable
-@SerialName("DirectDMX")
-data class DirectDmxTransportConfig(
-    val startChannel: Int,
-    val endChannel: Int
-) : TransportConfig
+    override fun edit(): MutableControllerConfig =
+        MutableDirectDmxControllerConfig(this)
+}

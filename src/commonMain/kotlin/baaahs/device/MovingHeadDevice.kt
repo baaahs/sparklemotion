@@ -9,8 +9,13 @@ import baaahs.gl.result.SingleResultStorage
 import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
+import baaahs.scene.EditingController
+import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureMapping
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
+import baaahs.ui.View
+import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
@@ -64,7 +69,24 @@ object MovingHeadDevice : DeviceType {
 
     @Serializable @SerialName("MovingHead")
     data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
+        override val componentCount: Int
+            get() = 1
         override val deviceType: DeviceType
             get() = MovingHeadDevice
+
+        override fun edit(): MutableFixtureConfig = MutableConfig(this)
+    }
+
+    class MutableConfig(config: Config) : MutableFixtureConfig {
+        override val deviceType: DeviceType
+            get() = MovingHeadDevice
+
+        var adapter: MovingHeadAdapter = config.adapter
+
+        override fun build(): FixtureConfig = Config(adapter)
+        override fun getEditorView(
+            editingController: EditingController<*>,
+            mutableFixtureMapping: MutableFixtureMapping
+        ): View = visualizerBuilder.getMovingHeadFixtureConfigEditorView(editingController, mutableFixtureMapping)
     }
 }

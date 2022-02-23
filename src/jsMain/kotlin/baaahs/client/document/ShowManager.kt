@@ -81,6 +81,8 @@ class ShowManager(
     }
 
     override fun switchTo(documentState: DocumentState<Show, ShowState>?, isLocalEdit: Boolean) {
+        localState = documentState
+
         val newShow = documentState?.document
         val newShowState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false

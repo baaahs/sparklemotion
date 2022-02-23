@@ -3,6 +3,7 @@ package baaahs.model
 import baaahs.controller.ControllerId
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.geom.*
 import baaahs.sim.BrainSurfaceSimulation
@@ -63,6 +64,8 @@ class Model(
         val name: String
         val title: String get() = name
         val description: String?
+        val deviceConfig: FixtureConfig?
+            get() = null
         val deviceType: DeviceType
         /** Bounds in entity's local space. */
         val bounds: Pair<Vector3F, Vector3F>

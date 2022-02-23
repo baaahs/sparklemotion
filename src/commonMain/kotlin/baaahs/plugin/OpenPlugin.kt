@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
+import baaahs.controller.ControllerManager
 import baaahs.device.DeviceType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
@@ -41,6 +42,9 @@ interface OpenPlugin {
         get() = emptyList()
 
     val controlSerializers: List<SerializerRegistrar<out Control>>
+        get() = emptyList()
+
+    val controllerManagers: List<ControllerManager.MetaManager>
         get() = emptyList()
 
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>

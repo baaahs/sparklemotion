@@ -2,8 +2,8 @@ package baaahs.models
 
 import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
-import baaahs.controller.SacnTransportConfig
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -74,7 +74,7 @@ fun generateFixtureMappingData(): List<FixtureMappingData> {
                 pixelFormat,
                 pixelArrangement = LinearSurfacePixelStrategy()
             ),
-            SacnTransportConfig(startChannel, endChannel)
+            DmxTransportConfig(startChannel, endChannel)
         )
     }
 }
@@ -95,7 +95,7 @@ fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
                             pixelFormat,
                             pixelArrangement = LinearSurfacePixelStrategy()
                         ),
-                        SacnTransportConfig(startChannel, endChannel)
+                        DmxTransportConfig(startChannel, endChannel)
                     )
                 }
     )

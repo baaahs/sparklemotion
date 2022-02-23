@@ -16,6 +16,7 @@ import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
+import baaahs.scene.MutableFixtureConfig
 import baaahs.show.*
 import baaahs.show.Shader
 import baaahs.show.live.LinkedShaderInstance
@@ -346,8 +347,12 @@ class DeviceTypeForTest(
     override fun toString(): String = id
 
     inner class Config : FixtureConfig {
+        override val componentCount: Int
+            get() = 1
         override val deviceType: DeviceType
             get() = this@DeviceTypeForTest
+
+        override fun edit(): MutableFixtureConfig = TODO("not implemented")
 
     }
 }

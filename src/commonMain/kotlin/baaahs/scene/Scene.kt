@@ -19,8 +19,7 @@ import kotlinx.serialization.modules.SerializersModule
 @Serializable
 data class Scene(
     val model: ModelData,
-    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
-    val fixtures: List<FixtureMappingData> = emptyList(),
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
 ) {
     val title get() = model.title
 
@@ -51,6 +50,8 @@ interface ControllerConfig {
     val controllerType: String
     val title: String
     val fixtures: List<FixtureMappingData>
+
+    fun edit(): MutableControllerConfig
 }
 
 @Serializable
@@ -59,10 +60,12 @@ data class FixtureMappingData(
     val deviceConfig: FixtureConfig? = null,
     val transportConfig: TransportConfig? = null
 ) {
+    fun edit() = MutableFixtureMapping(this)
+
     fun open(model: Model) =
         FixtureMapping(
             entityId?.let { model.findEntityByName(it) },
-            (deviceConfig as? PixelArrayDevice.Config)?.pixelCount,
+            (deviceConfig as? PixelArrayDevice.Config)?.componentCount,
             null,
             deviceConfig,
             transportConfig

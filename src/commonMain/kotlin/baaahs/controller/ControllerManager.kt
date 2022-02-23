@@ -1,6 +1,7 @@
 package baaahs.controller
 
 import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
 
 /** A ControllerManager discovers and registers controllers with its [ControllerListener]. */
 interface ControllerManager {
@@ -11,6 +12,15 @@ interface ControllerManager {
     fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>)
     fun start()
     fun stop()
+
+    interface MetaManager {
+        val controllerTypeName: String
+
+        fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig
+    }
 }
 
 abstract class BaseControllerManager(

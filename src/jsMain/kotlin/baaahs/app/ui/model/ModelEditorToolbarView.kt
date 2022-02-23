@@ -33,7 +33,6 @@ import materialui.components.textfield.textField
 import materialui.icon
 import materialui.lab.components.togglebutton.toggleButton
 import materialui.lab.components.togglebuttongroup.toggleButtonGroup
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
@@ -56,7 +55,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     }
 
     val handleLocalCoordinatesChange by eventHandler(visualizer) {
-        visualizer.transformInLocalSpace = (it.target as HTMLInputElement).checked
+        visualizer.transformInLocalSpace = it.target.checked
         forceRender()
     }
 
@@ -66,7 +65,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val gridSizeMemo = memo { mutableMapOf<TransformMode, Double?>() }
 
     val handleGridSnapChange by eventHandler(visualizer, transformMode) {
-        val gridEnabled = (it.target as HTMLInputElement).checked
+        val gridEnabled = it.target.checked
         val priorGridSize = transformMode.getGridSize(visualizer)
         val newSize = if (gridEnabled) {
             priorGridSize

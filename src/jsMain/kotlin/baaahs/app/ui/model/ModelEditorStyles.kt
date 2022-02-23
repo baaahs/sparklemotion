@@ -120,7 +120,7 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
         }
     }
 
-    fun <T : Number> RBuilder.numberTextField(
+    fun <T : Number?> RBuilder.numberTextField(
         label: String,
         value: T,
         adornment: (RBuilder.() -> Unit)? = null,
@@ -148,7 +148,7 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
             }.props.unsafeCast<PropsWithChildren>()
             attrs.inputLabelProps { attrs.shrink = true }
             attrs.onChangeFunction = cachedOnChange
-            attrs.value(value)
+            if (value != null) attrs.value(value)
             attrs.label { +label }
         }
     }

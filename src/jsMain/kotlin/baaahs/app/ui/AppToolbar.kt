@@ -57,6 +57,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
     val handleUndo by eventHandler(documentManager) { documentManager.undo() }
     val handleRedo by eventHandler(documentManager) { documentManager.redo() }
+    val handleSync by eventHandler(documentManager) { documentManager.sync() }
 
     val handleSave by eventHandler(documentManager) {
         appContext.notifier.launchAndReportErrors {
@@ -158,6 +159,16 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         attrs.onClickFunction = handleRedo
 
                         typographyH6 { +"Redo" }
+                    }
+
+                    if (props.appMode == AppMode.Scene) {
+                        iconButton {
+                            icon(materialui.icons.Sync)
+                            attrs.disabled = documentManager.isSynched
+                            attrs.onClickFunction = handleSync
+
+                            typographyH6 { +"Sync" }
+                        }
                     }
 
                     if (!documentManager.isLoaded) {

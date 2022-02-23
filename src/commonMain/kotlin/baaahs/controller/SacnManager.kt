@@ -1,5 +1,6 @@
 package baaahs.controller
 
+import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.Transport
@@ -9,6 +10,8 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
+import baaahs.scene.MutableControllerConfig
+import baaahs.scene.MutableSacnControllerConfig
 import baaahs.util.Clock
 import baaahs.util.Delta
 import baaahs.util.Logger
@@ -145,12 +148,12 @@ class SacnManager(
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?,
             pixelCount: Int
-        ): Transport = SacnTransport(transportConfig as SacnTransportConfig?)
+        ): Transport = SacnTransport(transportConfig as DmxTransportConfig?)
             .also { it.validate() }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
 
-        inner class SacnTransport(transportConfig: SacnTransportConfig?) : Transport {
+        inner class SacnTransport(transportConfig: DmxTransportConfig?) : Transport {
             override val name: String get() = id
             override val controller: Controller
                 get() = this@SacnController
@@ -237,13 +240,26 @@ class SacnManager(
         }
     }
 
-    companion object {
-        const val controllerTypeName = "SACN"
+    companion object : ControllerManager.MetaManager {
+        override val controllerTypeName = "SACN"
         const val channelsPerUniverse = 512
 
         private val logger = Logger<SacnManager>()
         private val json = Json {
             ignoreUnknownKeys = true
+        }
+
+        override fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig {
+            val sacnState = state as? State
+            val title = state?.title ?: controllerId?.id ?: "New sACN Controller"
+            return MutableSacnControllerConfig(SacnControllerConfig(
+                title,
+                sacnState?.address ?: "",
+                1
+            ))
         }
     }
 }
@@ -253,9 +269,12 @@ data class SacnControllerConfig(
     override val title: String,
     val address: String,
     val universes: Int,
-    override val fixtures: List<FixtureMappingData>
+    override val fixtures: List<FixtureMappingData> = emptyList()
 ) : ControllerConfig {
     override val controllerType: String get() = "SACN"
+
+    override fun edit(): MutableControllerConfig =
+        MutableSacnControllerConfig(this)
 }
 
 @Serializable
