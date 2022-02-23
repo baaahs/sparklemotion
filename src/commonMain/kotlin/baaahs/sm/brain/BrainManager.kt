@@ -198,7 +198,13 @@ class BrainManager(
                 buf.offset = 0
                 fn(i, buf)
                 val colorBytes = buf.toBytes()
-                pixelBuffer.colors[i] = Color(colorBytes[0], colorBytes[1], colorBytes[2])
+
+                // Using Color's int constructor fixes a bug in Safari causing
+                // color values above 127 to be treated as 0. Untested. :-(
+                pixelBuffer.colors[i] = Color(
+                    colorBytes[0].toInt() and 0xff,
+                    colorBytes[1].toInt() and 0xff,
+                    colorBytes[2].toInt() and 0xff)
             }
 
             deliverShaderMessage()
