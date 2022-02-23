@@ -21,6 +21,7 @@ import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.plugin.core.datasource.RasterCoordinateDataSource
+import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
@@ -294,7 +295,11 @@ object ProjectionPreviewDevice: DeviceType {
 
     @Serializable
     class Config : FixtureConfig {
+        override val componentCount: Int
+            get() = 1
         override val deviceType: DeviceType
             get() = ProjectionPreviewDevice
+
+        override fun edit(): MutableFixtureConfig = TODO("not implemented")
     }
 }

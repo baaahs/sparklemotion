@@ -1,3 +1,7 @@
 package baaahs.fixtures
 
-interface TransportConfig
+import baaahs.scene.MutableTransportConfig
+
+interface TransportConfig {
+    fun edit(): MutableTransportConfig
+}

@@ -5,6 +5,7 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
 import baaahs.fixtures.FixtureInfo
 import baaahs.plugin.ClientPlugins
+import baaahs.scene.MutableControllerConfig
 import baaahs.sm.webapi.Topics
 import baaahs.subscribeProperty
 
@@ -30,6 +31,9 @@ class SceneEditorClient(
 
         val fixtures: List<FixtureInfo>
             get() = this@SceneEditorClient.fixtures
+
+        fun createMutableControllerConfigFor(controllerId: ControllerId, state: ControllerState?): MutableControllerConfig =
+            plugins.createMutableControllerConfigFor(controllerId, state)
     }
 
     fun onClose() {

@@ -1,12 +1,18 @@
 package baaahs.visualizer
 
+import baaahs.app.ui.controllers.brainControllerEditor
+import baaahs.app.ui.controllers.directDmxControllerEditor
+import baaahs.app.ui.controllers.sacnControllerEditor
 import baaahs.app.ui.model.*
+import baaahs.device.pixelArrayFixtureConfigEditor
+import baaahs.dmx.dmxTransportConfigEditor
 import baaahs.geom.toThreeEuler
 import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
+import baaahs.visualizer.movers.movingHeadFixtureConfigEditor
 
 @Suppress("LeakingThis")
 abstract class BaseEntityVisualizer<T : Model.Entity>(
@@ -75,6 +81,63 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
     override fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View = renderWrapper {
         objGroupEditor {
             attrs.editingEntity = editingEntity
+        }
+    }
+
+
+    // Controllers:
+
+    override fun getBrainControllerEditorView(editingController: EditingController<MutableBrainControllerConfig>): View = renderWrapper {
+        brainControllerEditor {
+            attrs.editingController = editingController
+        }
+    }
+
+    override fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View = renderWrapper {
+        directDmxControllerEditor {
+            attrs.editingController = editingController
+        }
+    }
+
+    override fun getSacnControllerEditorView(editingController: EditingController<MutableSacnControllerConfig>): View = renderWrapper {
+        sacnControllerEditor {
+            attrs.editingController = editingController
+        }
+    }
+
+
+    // FixtureConfigs:
+
+    override fun getMovingHeadFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View = renderWrapper {
+        movingHeadFixtureConfigEditor {
+            attrs.editingController = editingController
+            attrs.mutableFixtureMapping = mutableFixtureMapping
+        }
+    }
+
+    override fun getPixelArrayFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View = renderWrapper {
+        pixelArrayFixtureConfigEditor {
+            attrs.editingController = editingController
+            attrs.mutableFixtureMapping = mutableFixtureMapping
+        }
+    }
+
+
+    // TransportConfigs:
+
+    override fun getDmxFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View = renderWrapper {
+        dmxTransportConfigEditor {
+            attrs.editingController = editingController
+            attrs.mutableFixtureMapping = mutableFixtureMapping
         }
     }
 }

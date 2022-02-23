@@ -118,6 +118,7 @@ class ControllersManager(
             // TODO: These really only apply to PixelArrayDevices,
             // TODO: and should live in fixtureConfig.
             val pixelCount = mapping.pixelCount
+                ?: modelEntity?.deviceConfig?.componentCount
                 ?: defaultMapping?.pixelCount
                 ?: modelEntity?.deviceType?.defaultPixelCount
                 ?: 0
@@ -151,15 +152,14 @@ class ControllersManager(
     }
 
     private fun onSceneChange() {
-        val scene = sceneProvider.openScene
-            ?: return
+        this.scene = sceneProvider.openScene
 
-        this.scene = scene
-
-        val managerConfig = scene.controllers.entries
-            .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
-            .mapKeys { (k, _) -> byType.getBang(k, "controller manager") }
-            .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
+        val managerConfig = scene?.let {
+            it.controllers.entries
+                .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
+                .mapKeys { (k, _) -> byType.getBang(k, "controller manager") }
+                .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
+        } ?: emptyMap()
 
         try {
             deferFixtureRefresh = true

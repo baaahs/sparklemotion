@@ -723,6 +723,7 @@ abstract class PubSub {
         fun <T> state(
             topic: Topic<T>,
             initialValue: T,
+            stateChannels: MutableList<Channel<*>>? = null,
             callback: (T) -> Unit = {}
         ): ReadWriteProperty<Any, T> {
             return object : ReadWriteProperty<Any, T> {
@@ -731,7 +732,7 @@ abstract class PubSub {
                 private val channel = subscribe(topic) {
                     value = it
                     callback(it)
-                }
+                }.also { stateChannels?.add(it) }
 
                 override fun getValue(thisRef: Any, property: KProperty<*>): T {
                     return value
@@ -739,7 +740,7 @@ abstract class PubSub {
 
                 override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
                     this.value = value
-                    channel.onChange(value!!)
+                    channel.onChange(value)
                 }
             }
         }

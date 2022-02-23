@@ -2,11 +2,7 @@ package baaahs.sm.brain
 
 import baaahs.Color
 import baaahs.Pinky
-import baaahs.PubSub
-import baaahs.controller.BaseControllerManager
-import baaahs.controller.Controller
-import baaahs.controller.ControllerId
-import baaahs.controller.ControllerState
+import baaahs.controller.*
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
@@ -19,6 +15,9 @@ import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.scene.ControllerConfig
+import baaahs.scene.FixtureMappingData
+import baaahs.scene.MutableBrainControllerConfig
+import baaahs.scene.MutableControllerConfig
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
@@ -28,6 +27,7 @@ import baaahs.util.asMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -41,7 +41,6 @@ class BrainManager(
     link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
-    pubSub: PubSub.IServer,
     coroutineContext: CoroutineContext
 ) : BaseControllerManager(controllerTypeName) {
     private var isStartedUp = false
@@ -70,11 +69,11 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun start() {
-        isStartedUp = true
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun start() {
+        isStartedUp = true
     }
 
     override fun stop() {
@@ -244,8 +243,9 @@ class BrainManager(
         }
     }
 
-    companion object {
-        const val controllerTypeName: String = "Brain"
+    companion object : ControllerManager.MetaManager {
+        override val controllerTypeName: String = "Brain"
+
         const val defaultPixelCount = 2048
         private val defaultFixtureConfig = PixelArrayDevice.Config(
             defaultPixelCount,
@@ -256,6 +256,16 @@ class BrainManager(
 
         private val logger = Logger<BrainManager>()
         private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
+
+        override fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig {
+            val title = state?.title
+                ?: controllerId?.id
+                ?: "brainXXXX"
+            return MutableBrainControllerConfig(BrainControllerConfig(title))
+        }
     }
 }
 
@@ -272,6 +282,19 @@ data class BrainInfo(
     enum class Status {
         Online
     }
+}
+
+@Serializable
+@SerialName("Brain")
+data class BrainControllerConfig(
+    override val title: String,
+    override val fixtures: List<FixtureMappingData> = emptyList()
+) : ControllerConfig {
+    override val controllerType: String
+        get() = BrainManager.controllerTypeName
+
+    override fun edit(): MutableControllerConfig =
+        MutableBrainControllerConfig(this)
 }
 
 @Serializable(with = BrainIdSerializer::class)

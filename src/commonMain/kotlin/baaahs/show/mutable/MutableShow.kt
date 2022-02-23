@@ -24,7 +24,7 @@ import baaahs.util.UniqueIds
 interface EditHandler<T, TState> {
     fun onEdit(mutableDocument: MutableDocument<T>, pushToUndoStack: Boolean = true)
     fun onEdit(document: T, pushToUndoStack: Boolean = true)
-    fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean = true)
+    fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean = true, syncToServer: Boolean = true)
 }
 
 abstract class MutablePatchHolder(

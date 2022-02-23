@@ -87,6 +87,8 @@ class SceneManager(
     }
 
     override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {
+        localState = documentState
+
         val newScene = documentState?.document
         val newSceneState = documentState?.state
         val newIsUnsaved = documentState?.isUnsaved ?: false
@@ -119,11 +121,11 @@ class SceneManager(
         /** Ugh super janky. */
         private var retainMutableDocument = false
 
-        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean) {
+        override fun onEdit(document: Scene, documentState: Unit, pushToUndoStack: Boolean, syncToServer: Boolean) {
             if (!retainMutableDocument)
                 this@SceneManager.mutableScene = null
 
-            super.onEdit(document, documentState, pushToUndoStack)
+            super.onEdit(document, documentState, pushToUndoStack, false)
         }
 
         override fun onEdit(mutableDocument: MutableDocument<Scene>, pushToUndoStack: Boolean) {

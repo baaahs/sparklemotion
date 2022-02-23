@@ -3,6 +3,7 @@ package baaahs.controller
 import baaahs.*
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
@@ -184,10 +185,10 @@ object SacnIntegrationSpec : Spek({
                     .only("fixture config")
 
                 val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
-                expect(fixtureConfig.pixelCount).toEqual(3)
+                expect(fixtureConfig.componentCount).toEqual(3)
                 expect(fixtureConfig.pixelFormat).toEqual(PixelArrayDevice.PixelFormat.RGB8)
 
-                val transportConfig = data.transportConfig as SacnTransportConfig
+                val transportConfig = data.transportConfig as DmxTransportConfig
                 expect(transportConfig.startChannel..transportConfig.endChannel).toEqual(0..511)
             }
         }
@@ -203,7 +204,7 @@ private fun fixtureMappingData(
     FixtureMappingData(
         entityName,
         PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
-        SacnTransportConfig(baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries)
+        DmxTransportConfig(baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries)
     )
 
 fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)

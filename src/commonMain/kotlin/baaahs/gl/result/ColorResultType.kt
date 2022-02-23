@@ -60,6 +60,10 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         override val size: Int
             get() = pixelCount
 
+        private val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
+        private val pixelFormat = fixtureConfig.pixelFormat ?: PixelArrayDevice.PixelFormat.RGB8
+        private val bytesPerPixel = pixelFormat.channelsPerPixel
+
         override operator fun get(i: Int): Color = buffer[pixelOffset + i]
 
         override fun set(i: Int, color: Color) = TODO("not implemented")
@@ -73,16 +77,14 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         }
 
         override fun send(remoteVisualizers: RemoteVisualizers) {
-            val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
-            val bytesPerPixel = fixtureConfig.pixelFormat.channelsPerPixel
             transport.deliverComponents(pixelCount, bytesPerPixel) { i, buf ->
-                fixtureConfig.pixelFormat.writeColor(this[i], buf)
+                pixelFormat.writeColor(this[i], buf)
             }
 
             val remoteVisualizersBytes by lazy {
                 val buf = ByteArrayWriter()
                 for (i in 0 until pixelCount) {
-                    fixtureConfig.pixelFormat.writeColor(this[i], buf)
+                    pixelFormat.writeColor(this[i], buf)
                 }
                 buf.toBytes()
             }

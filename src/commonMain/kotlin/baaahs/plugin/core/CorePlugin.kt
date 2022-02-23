@@ -2,9 +2,12 @@ package baaahs.plugin.core
 
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
+import baaahs.controller.ControllerManager
+import baaahs.controller.SacnManager
 import baaahs.device.DeviceType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxManager
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.IsfShaderDialect
@@ -12,6 +15,7 @@ import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.plugin.*
 import baaahs.plugin.core.datasource.*
+import baaahs.sm.brain.BrainManager
 import baaahs.util.Logger
 import kotlinx.cli.ArgParser
 
@@ -70,6 +74,13 @@ class CorePlugin(
             classSerializer(VacuityControl.serializer()),
             classSerializer(VisualizerControl.serializer()),
             classSerializer(XyPadControl.serializer())
+        )
+
+    override val controllerManagers: List<ControllerManager.MetaManager>
+        get() = listOf(
+            BrainManager,
+            DmxManager,
+            SacnManager
         )
 
     override val deviceTypes: List<DeviceType>

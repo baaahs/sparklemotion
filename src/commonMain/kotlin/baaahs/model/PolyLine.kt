@@ -2,6 +2,7 @@ package baaahs.model
 
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
@@ -75,6 +76,10 @@ open class PolyLine(
     val yPadding: Float,
     @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), PlacedPixelArray {
+    override val deviceConfig: FixtureConfig?
+        get() = PixelArrayDevice.Config(
+            componentCount = pixelCount,
+        )
     override val deviceType: DeviceType
         get() = PixelArrayDevice
 

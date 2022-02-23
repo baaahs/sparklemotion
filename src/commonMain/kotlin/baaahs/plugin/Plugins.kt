@@ -19,12 +19,14 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.UnknownDataSource
 import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.sim.BridgeClient
+import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
@@ -269,10 +271,6 @@ sealed class Plugins private constructor(
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
         }
-
-        polymorphic(TransportConfig::class) {
-            subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
-        }
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
@@ -357,6 +355,13 @@ sealed class Plugins private constructor(
     fun getSettingsPanels(): List<DialogPanel> {
         return byPackage.values.filterIsInstance<OpenClientPlugin>()
             .mapNotNull { plugin -> plugin.getSettingsPanel() }
+    }
+
+    fun createMutableControllerConfigFor(controllerId: ControllerId, state: ControllerState?): MutableControllerConfig {
+        val controllerManager = controllers.all.find { it.controllerTypeName == controllerId.controllerType }
+            ?: error("Unknown controller type ${controllerId.controllerType}.")
+        return controllerManager.createMutableControllerConfigFor(controllerId, state)
+
     }
 
     companion object {
@@ -498,15 +503,17 @@ sealed class Plugins private constructor(
     }
 
     inner class Controllers {
+         val all = openPlugins.flatMap { it.controllerManagers }
+
         val serialModule = SerializersModule {
             polymorphic(ControllerConfig::class) {
-                subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
+                subclass(BrainControllerConfig::class, BrainControllerConfig.serializer())
                 subclass(DirectDmxControllerConfig::class, DirectDmxControllerConfig.serializer())
+                subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
             }
 
             polymorphic(TransportConfig::class) {
-                subclass(DirectDmxTransportConfig::class, DirectDmxTransportConfig.serializer())
-                subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
+                subclass(DmxTransportConfig::class, DmxTransportConfig.serializer())
             }
 
             polymorphic(ControllerState::class) {

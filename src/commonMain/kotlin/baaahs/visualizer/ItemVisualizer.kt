@@ -49,6 +49,27 @@ interface VisualizerBuilder {
     fun getLightRingEditorView(editingEntity: EditingEntity<out MutableLightRingData>): View
     fun getMovingHeadEditorView(editingEntity: EditingEntity<out MutableMovingHeadData>): View
     fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View
+
+    // Controllers:
+    fun getBrainControllerEditorView(editingController: EditingController<MutableBrainControllerConfig>): View
+    fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View
+    fun getSacnControllerEditorView(editingController: EditingController<MutableSacnControllerConfig>): View
+
+    // FixtureConfigs:
+    fun getMovingHeadFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View
+    fun getPixelArrayFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View
+
+    // TransportConfigs:
+    fun getDmxFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureMapping: MutableFixtureMapping
+    ): View
 }
 
 expect val visualizerBuilder: VisualizerBuilder

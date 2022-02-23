@@ -220,7 +220,7 @@
         }
       },
       "transportConfig": {
-        "type": "DirectDMX",
+        "type": "DMX",
         "startChannel": 1,
         "endChannel": 16
       }
@@ -235,7 +235,7 @@
         }
       },
       "transportConfig": {
-        "type": "DirectDMX",
+        "type": "DMX",
         "startChannel": 17,
         "endChannel": 33
       }

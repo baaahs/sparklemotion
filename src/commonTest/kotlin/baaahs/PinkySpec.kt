@@ -68,7 +68,7 @@ object PinkySpec : Spek({
         val clock by value { FakeClock() }
         val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
         val brainManager by value {
-            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher)
+            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, ImmediateDispatcher)
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
