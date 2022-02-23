@@ -126,7 +126,14 @@ object PixelArrayDevice : DeviceType {
                 val greenB = reader.readByte()
                 val redB = reader.readByte()
                 val blueB = reader.readByte()
-                return Color(redB, greenB, blueB)
+
+                // Using Color's int constructor fixes a bug in Safari causing
+                // color values above 127 to be treated as 0. Untested. :-(
+                return Color(
+                    redB.toInt() and 0xff,
+                    greenB.toInt() and 0xff,
+                    blueB.toInt() and 0xff
+                )
             }
 
             override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
