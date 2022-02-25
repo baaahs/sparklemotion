@@ -1,9 +1,33 @@
 package baaahs.sim.ui
 
+import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.down
+import materialui.styles.muitheme.MuiTheme
 import styled.StyleSheet
+
+class ThemedSimulatorStyles(val theme: MuiTheme) : StyleSheet("sim-ui-themed", isStatic = true) {
+    val menuBar by css {
+        display = Display.flex
+        justifyContent = JustifyContent.spaceBetween
+        padding = "8px 16px"
+        background = "#182128"
+        declarations["box-shadow"] = "0px 1px 5px rgba(0, 0, 0, 0.4)"
+
+        theme.breakpoints.down(Breakpoint.lg)() {
+            padding = "2px"
+        }
+    }
+
+    val global = CssBuilder().apply {
+        ".mosaic-window-toolbar" {
+            important(::display, Display.none)
+        }
+    }
+}
 
 object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val app by css {
@@ -14,14 +38,6 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         left = 0.px
         width = 100.pct
         height = 100.pct
-    }
-
-    val menuBar by css {
-        display = Display.flex
-        justifyContent = JustifyContent.spaceBetween
-        padding = "8px 16px"
-        background = "#182128"
-        declarations["box-shadow"] = "0px 1px 5px rgba(0, 0, 0, 0.4)"
     }
 
     val title by css {

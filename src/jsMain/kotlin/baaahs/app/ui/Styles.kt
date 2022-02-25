@@ -2,6 +2,7 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
+import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.app.ui.model.ModelEditorStyles
@@ -10,6 +11,8 @@ import baaahs.mapper.SceneEditorStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.down
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.contrastText
 import materialui.styles.palette.dark
@@ -25,6 +28,7 @@ class AllStyles(val theme: MuiTheme) {
     val editor by lazy { baaahs.ui.editor.Styles(theme) }
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
+    val editableManager by lazy { ThemedEditableStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
     val sceneEditor by lazy { SceneEditorStyles(theme) }
     val modelEditor by lazy { ModelEditorStyles(theme) }
@@ -129,6 +133,12 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
         descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
+            whiteSpace = WhiteSpace.pre
+            marginRight = .75.em
+
+            theme.breakpoints.down(Breakpoint.sm)() {
+                fontSize = .9.rem
+            }
         }
 
         within(appDrawerOpen) { mixIn(drawerOpenShift) }

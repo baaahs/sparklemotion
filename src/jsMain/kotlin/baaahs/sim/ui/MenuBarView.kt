@@ -8,10 +8,12 @@ import react.RBuilder
 import react.RHandler
 import react.dom.button
 import react.dom.div
+import react.useContext
 
 private val MenuBarView = xComponent<MenuBarProps>("MenuBar") { props ->
+    val styles = useContext(simulatorContext).styles
 
-    div(+SimulatorStyles.menuBar) {
+    div(+styles.menuBar) {
         div(+SimulatorStyles.title) {
             +"Sparkle Motion"
         }
