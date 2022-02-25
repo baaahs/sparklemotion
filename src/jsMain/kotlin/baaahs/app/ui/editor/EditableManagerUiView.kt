@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
 import baaahs.ui.Styles
@@ -32,8 +33,12 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.form
+import react.useContext
 
 private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.editableManager
+
     observe(props.editableManager)
 
 //    val handleTitleChange = baaahs.ui.callback(props.mutablePatchHolder) { event: Event ->
@@ -69,7 +74,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
         form {
             attrs.onSubmitFunction = handleFormSubmit
 
-            drawer(EditableStyles.drawer on DrawerStyle.paper) {
+            drawer(styles.drawer on DrawerStyle.paper) {
                 attrs.anchor = DrawerAnchor.bottom
                 attrs.variant = DrawerVariant.temporary
                 attrs.elevation

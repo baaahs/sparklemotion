@@ -4,16 +4,25 @@ import baaahs.ui.StuffThatShouldComeFromTheTheme
 import baaahs.ui.child
 import baaahs.ui.important
 import kotlinx.css.*
+import materialui.styles.breakpoint.Breakpoint
+import materialui.styles.breakpoint.up
+import materialui.styles.muitheme.MuiTheme
 import styled.StyleSheet
+
+class ThemedEditableStyles(val theme: MuiTheme) : StyleSheet("app-ui-editor-Editable-themed", isStatic = true) {
+    val drawer by css {
+        minHeight = 85.vh
+
+        theme.breakpoints.up(Breakpoint.md)() {
+            margin(horizontal = 5.em)
+            important(::maxHeight, 85.vh)
+        }
+    }
+}
 
 object EditableStyles : StyleSheet("app-ui-editor-Editable", isStatic = true) {
     val cardWidth = 175.px
 
-    val drawer by css {
-        margin(horizontal = 5.em)
-        minHeight = 85.vh
-        important(::maxHeight, 85.vh)
-    }
 
     val tabsList by css {
         important(::paddingLeft, 1.em)
