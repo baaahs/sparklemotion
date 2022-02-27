@@ -177,11 +177,9 @@ abstract class DocumentManager<T, TState>(
             val isUnsaved = this@DocumentManager.isModified(document)
             val newEditState = DocumentState(document, documentState, isUnsaved, file)
             if (syncToServer) {
-                // Calls switchTo(editState, false):
                 this@DocumentManager.editState = newEditState
-            } else {
-                switchTo(newEditState, true)
             }
+            switchTo(newEditState, true)
 
             if (pushToUndoStack) {
                 undoStack.changed(newEditState)
