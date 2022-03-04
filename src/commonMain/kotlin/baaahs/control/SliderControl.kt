@@ -3,6 +3,8 @@ package baaahs.control
 import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.GenericPropertiesEditorPanel
+import baaahs.app.ui.editor.SliderPropsEditor
 import baaahs.camelize
 import baaahs.gadgets.Slider
 import baaahs.randomId
@@ -59,22 +61,27 @@ data class MutableSliderControl(
     override var title: String,
 
     /** The initial value for this slider. */
-    val initialValue: Float = 1f,
+    var initialValue: Float = 1f,
 
     /** The minimum value for this slider. */
-    val minValue: Float = 0f,
+    var minValue: Float = 0f,
 
     /** The maximum value for this slider. */
-    val maxValue: Float = 1f,
+    var maxValue: Float = 1f,
 
     /** The step value for the slider. */
-    val stepValue: Float? = null,
+    var stepValue: Float? = null,
 
     val controlledDataSource: DataSource
 ) : MutableControl {
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = emptyList()
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = listOf(
+        GenericPropertiesEditorPanel(
+            editableManager,
+            SliderPropsEditor(this)
+        )
+    )
 
     override fun build(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(
