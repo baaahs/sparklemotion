@@ -1,9 +1,7 @@
 package baaahs.gl.render
 
-import baaahs.describe
+import baaahs.*
 import baaahs.device.DeviceType
-import baaahs.device.PixelArrayDevice
-import baaahs.englishize
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -14,7 +12,6 @@ import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
-import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.scene.MutableFixtureConfig
 import baaahs.show.*
@@ -23,7 +20,6 @@ import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -308,9 +304,9 @@ object ModelRenderEngineSpec : Spek({
 
 private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial: Float = 0f) =
     deviceType.createFixture(
-        null, pixelCount, name = "test fixture",
-        transport = NullTransport, fixtureConfig = PixelArrayDevice.defaultConfig,
-        pixelLocations = someVectors(pixelCount, initial)
+        null, pixelCount,
+        deviceType.Config(pixelLocations = someVectors(pixelCount, initial)),
+        "test fixture", NullTransport, TestModel
     )
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
@@ -354,13 +350,17 @@ class DeviceTypeForTest(
         fixtureConfig: FixtureConfig,
         name: String,
         transport: Transport,
-        pixelLocations: List<Vector3F>
-    ): Fixture = DtftFixture(modelEntity, componentCount, name, transport, pixelLocations = pixelLocations)
+        model: Model
+    ): Fixture = DtftFixture(
+        modelEntity, componentCount, name, transport,
+        (fixtureConfig as Config).pixelLocations ?: emptyList()
+    )
 
     override fun toString(): String = id
 
     inner class Config(
-        override val componentCount: Int? = null
+        override val componentCount: Int? = null,
+        val pixelLocations: List<Vector3F>? = null
     ) : FixtureConfig {
         override val deviceType: DeviceType
             get() = this@DeviceTypeForTest
@@ -372,7 +372,8 @@ class DeviceTypeForTest(
             else plus(other as Config)
 
         operator fun plus(other: Config): Config = Config(
-            other.componentCount ?: componentCount
+            other.componentCount ?: componentCount,
+            other.pixelLocations ?: pixelLocations
         )
     }
 

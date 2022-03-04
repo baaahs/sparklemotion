@@ -9,7 +9,6 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
-import baaahs.geom.Vector3F
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -303,7 +302,7 @@ object ProjectionPreviewDevice: DeviceType {
         fixtureConfig: FixtureConfig,
         name: String,
         transport: Transport,
-        pixelLocations: List<Vector3F>
+        model: Model
     ): Fixture = TODO("not implemented")
 
     override fun toString(): String = id

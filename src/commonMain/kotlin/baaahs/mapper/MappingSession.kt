@@ -1,7 +1,6 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
-import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -28,7 +27,6 @@ data class MappingSession(
         val panelName: String, // TODO: rename to entityName.
         val pixelCount: Int? = null,
         val pixels: List<PixelData?>? = null,
-        val fixtureConfig: FixtureConfig? = null,
         val deltaImage: String? = null,
         val screenAreaInSqPixels: Float? = null,
         val screenAngle: Float? = null,

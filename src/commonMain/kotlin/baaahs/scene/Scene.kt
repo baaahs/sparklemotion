@@ -67,8 +67,7 @@ data class FixtureMappingData(
             entityId?.let { model.findEntityByName(it) },
             PixelArrayDevice,
             deviceConfig,
-            transportConfig,
-            null
+            transportConfig
         )
 }
 
