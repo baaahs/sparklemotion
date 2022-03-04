@@ -1,7 +1,7 @@
 package baaahs.gl.preview
 
 import baaahs.device.MovingHeadDevice
-import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
@@ -34,8 +34,8 @@ class MovingHeadPreview(
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    private val deviceType = MovingHeadDevice
-    override val renderEngine = ModelRenderEngine(gl, deviceType)
+    private val fixtureType = MovingHeadDevice
+    override val renderEngine = ModelRenderEngine(gl, fixtureType)
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()
@@ -62,7 +62,7 @@ class MovingHeadPreview(
 
     override fun setProgram(program: GlslProgram?) {
         renderEngine.setRenderPlan(
-            DeviceTypeRenderPlan(
+            FixtureTypeRenderPlan(
                 listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
             )
         )

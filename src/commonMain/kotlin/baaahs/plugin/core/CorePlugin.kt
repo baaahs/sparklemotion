@@ -4,7 +4,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.control.*
 import baaahs.controller.ControllerManager
 import baaahs.controller.SacnManager
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxManager
@@ -29,8 +29,8 @@ class CorePlugin(
         ContentType.coreTypes +
                 MovingHeadParams.contentType +
                 dataSourceBuilders.map { it.contentType } +
-                deviceTypes.map { it.resultContentType } +
-                deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
+                fixtureTypes.map { it.resultContentType } +
+                fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
 
     override val dataSourceBuilders get() = Companion.dataSourceBuilders
 
@@ -83,7 +83,7 @@ class CorePlugin(
             SacnManager
         )
 
-    override val deviceTypes: List<DeviceType>
+    override val fixtureTypes: List<FixtureType>
         get() = listOf(
             PixelArrayDevice,
             MovingHeadDevice

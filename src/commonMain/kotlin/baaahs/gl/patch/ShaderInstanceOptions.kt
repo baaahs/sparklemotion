@@ -2,7 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.gl.Toolchain
 import baaahs.gl.glsl.LinkException
 import baaahs.gl.openShader
@@ -18,13 +18,13 @@ import baaahs.util.Logger
 
 class ChannelsInfo {
     internal val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>>
-    internal val deviceTypes: Collection<DeviceType>
+    internal val fixtureTypes: Collection<FixtureType>
 
     constructor(
         parentShow: OpenShow? = null,
-        deviceTypes: Collection<DeviceType>
+        fixtureTypes: Collection<FixtureType>
     ) {
-        val shaderChannels = shaderChannelsFromDeviceTypes(deviceTypes)
+        val shaderChannels = shaderChannelsFromFixtureTypes(fixtureTypes)
 
         parentShow?.let {
             object : OpenShowVisitor() {
@@ -41,15 +41,15 @@ class ChannelsInfo {
         }
 
         this.shaderChannels = shaderChannels
-        this.deviceTypes = deviceTypes
+        this.fixtureTypes = fixtureTypes
     }
 
     constructor(
         parentMutableShow: MutableShow? = null,
-        deviceTypes: Collection<DeviceType>,
+        fixtureTypes: Collection<FixtureType>,
         toolchain: Toolchain
     ) {
-        val shaderChannels = shaderChannelsFromDeviceTypes(deviceTypes)
+        val shaderChannels = shaderChannelsFromFixtureTypes(fixtureTypes)
 
         parentMutableShow?.accept(object : MutableShowVisitor {
             override fun visit(mutableShaderInstance: MutableShaderInstance) {
@@ -64,13 +64,13 @@ class ChannelsInfo {
             }
         })
         this.shaderChannels = shaderChannels
-        this.deviceTypes = deviceTypes
+        this.fixtureTypes = fixtureTypes
     }
 
-    private fun shaderChannelsFromDeviceTypes(deviceTypes: Collection<DeviceType>): MutableMap<ContentType, MutableSet<MutableShaderChannel>> {
+    private fun shaderChannelsFromFixtureTypes(fixtureTypes: Collection<FixtureType>): MutableMap<ContentType, MutableSet<MutableShaderChannel>> {
         val shaderChannels = mutableMapOf<ContentType, MutableSet<MutableShaderChannel>>()
 
-        val likelyPipelineArtifactTypes = deviceTypes.flatMap { it.likelyPipelines }.map { it.second }
+        val likelyPipelineArtifactTypes = fixtureTypes.flatMap { it.likelyPipelines }.map { it.second }
         likelyPipelineArtifactTypes.forEach { contentType ->
             shaderChannels.getOrPut(contentType, ::mutableSetOf)
                 .add(ShaderChannel.Main.toMutable())

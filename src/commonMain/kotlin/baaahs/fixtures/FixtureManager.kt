@@ -1,6 +1,6 @@
 package baaahs.fixtures
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
@@ -184,14 +184,14 @@ class FixtureManagerImpl(
 }
 
 class RenderPlan(
-    val deviceTypes: Map<DeviceType, DeviceTypeRenderPlan>
-) : Map<DeviceType, DeviceTypeRenderPlan> by deviceTypes {
-    fun describe() = "${deviceTypes.size} devices, " +
-            "${deviceTypes.values.map { it.programs.count() }.sum()} programs, " +
-            "${deviceTypes.values.map { it.programs.map { it.renderTargets.count() }.sum() }.sum()} fixtures"
+    val fixtureTypes: Map<FixtureType, FixtureTypeRenderPlan>
+) : Map<FixtureType, FixtureTypeRenderPlan> by fixtureTypes {
+    fun describe() = "${fixtureTypes.size} devices, " +
+            "${fixtureTypes.values.map { it.programs.count() }.sum()} programs, " +
+            "${fixtureTypes.values.map { it.programs.map { it.renderTargets.count() }.sum() }.sum()} fixtures"
 }
 
-class DeviceTypeRenderPlan(
+class FixtureTypeRenderPlan(
     val programs: List<ProgramRenderPlan>,
 ) : Iterable<ProgramRenderPlan> by programs
 

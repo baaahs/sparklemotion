@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-object MovingHeadDevice : DeviceType {
+object MovingHeadDevice : FixtureType {
     override val id: String get() = "MovingHead"
     override val title: String get() = "Moving Head"
 
@@ -89,7 +89,7 @@ object MovingHeadDevice : DeviceType {
     data class Config(val adapter: MovingHeadAdapter?) : FixtureConfig {
         override val componentCount: Int
             get() = 1
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = MovingHeadDevice
 
         override fun edit(): MutableFixtureConfig = MutableConfig(this)
@@ -104,7 +104,7 @@ object MovingHeadDevice : DeviceType {
     }
 
     class MutableConfig(config: Config) : MutableFixtureConfig {
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = MovingHeadDevice
 
         var adapter: MovingHeadAdapter? = config.adapter

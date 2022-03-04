@@ -1,6 +1,6 @@
 package baaahs.fixtures
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.geom.Vector3F
 import baaahs.model.Model
 import baaahs.scene.MutableFixtureConfig
@@ -8,7 +8,7 @@ import baaahs.scene.MutableFixtureConfig
 interface FixtureConfig {
     val componentCount: Int?
 
-    val deviceType: DeviceType
+    val fixtureType: FixtureType
 
     fun edit(): MutableFixtureConfig
 

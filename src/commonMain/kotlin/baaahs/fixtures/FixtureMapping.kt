@@ -1,17 +1,17 @@
 package baaahs.fixtures
 
 import baaahs.controller.Controller
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.model.Model
 
 data class FixtureMapping(
     val entity: Model.Entity?,
-    val fixtureType: DeviceType,
+    val fixtureType: FixtureType,
     val fixtureConfig: FixtureConfig? = null,
     val transportConfig: TransportConfig? = null
 ) {
     init {
-        if (fixtureConfig != null && fixtureConfig.deviceType != fixtureType) {
+        if (fixtureConfig != null && fixtureConfig.fixtureType != fixtureType) {
             error("Fixture type mismatch for mapping (entity=${entity?.name})")
         }
     }
@@ -24,7 +24,7 @@ data class FixtureMapping(
             fixtureConfig
         )
 
-        val typedConfigs = cascadingConfigs.filter { it.deviceType == fixtureType }
+        val typedConfigs = cascadingConfigs.filter { it.fixtureType == fixtureType }
         val fixtureConfig = typedConfigs.reduce { acc, config -> acc.plus(config) }
 
         val componentCount = fixtureConfig.componentCount ?: 1

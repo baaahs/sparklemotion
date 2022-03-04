@@ -1,8 +1,8 @@
 package baaahs.gl.patch
 
 import baaahs.ShowRunner
-import baaahs.device.DeviceType
-import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.device.FixtureType
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.CompilationException
@@ -23,7 +23,7 @@ class PatchResolver(
     private val renderManager: RenderManager
 ) {
     val portDiagrams = renderTargets
-        .groupBy { it.fixture.deviceType }
+        .groupBy { it.fixture.fixtureType }
         .mapValues { (_, renderTargets) ->
             val patchSetsByKey = mutableMapOf<String, PatchSet>()
             val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
@@ -48,31 +48,31 @@ class PatchResolver(
         feedResolver: FeedResolver
     ): RenderPlan {
         return RenderPlan(
-            portDiagrams.mapValues { (deviceType, devicePortDiagrams) ->
+            portDiagrams.mapValues { (fixtureType, devicePortDiagrams) ->
                 val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
                     val linkedPatch = portDiagram.resolvePatch(
                         ShaderChannel.Main,
-                        deviceType.resultContentType,
+                        fixtureType.resultContentType,
                         dataSources
                     )
                     val program = linkedPatch?.let {
-                        buildProgram(it, deviceType, feedResolver)
+                        buildProgram(it, fixtureType, feedResolver)
                     }
 
                     ProgramRenderPlan(program, renderTargets)
                 }
 
-                DeviceTypeRenderPlan(programsRenderPlans)
+                FixtureTypeRenderPlan(programsRenderPlans)
             }
         )
     }
 
     private fun buildProgram(
         linkedPatch: LinkedPatch,
-        deviceType: DeviceType,
+        fixtureType: FixtureType,
         feedResolver: FeedResolver
     ) = try {
-        renderManager.compile(deviceType, linkedPatch, feedResolver)
+        renderManager.compile(fixtureType, linkedPatch, feedResolver)
     } catch (e: GlslException) {
         logger.error(e) { "Error preparing program" }
         if (e is CompilationException) {
@@ -80,7 +80,7 @@ class PatchResolver(
         }
 
         renderManager.compile(
-            deviceType, GuruMeditationError(deviceType).linkedPatch, feedResolver
+            fixtureType, GuruMeditationError(fixtureType).linkedPatch, feedResolver
         )
     }
 

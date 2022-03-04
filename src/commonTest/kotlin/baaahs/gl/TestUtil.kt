@@ -2,7 +2,7 @@ package baaahs.gl
 
 import baaahs.FakeClock
 import baaahs.StubPubSub
-import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
@@ -41,7 +41,7 @@ fun GlslCode.GlslStatement.esc(lineNumbers: Boolean): String {
 fun renderPlanFor(
     glslProgram: GlslProgram,
     vararg renderTargets: RenderTarget
-) = DeviceTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram, renderTargets.toList())))
+) = FixtureTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram, renderTargets.toList())))
 
 fun expectStatements(
     expected: List<GlslCode.GlslStatement>,

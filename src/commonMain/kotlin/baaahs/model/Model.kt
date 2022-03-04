@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.controller.ControllerId
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
@@ -66,7 +66,7 @@ class Model(
         val description: String?
         val defaultFixtureConfig: FixtureConfig?
             get() = null
-        val deviceType: DeviceType
+        val fixtureType: FixtureType
         /** Bounds in entity's local space. */
         val bounds: Pair<Vector3F, Vector3F>
         val position: Vector3F
@@ -156,7 +156,7 @@ class Model(
     ) : BaseEntity(), EntityWithGeometry {
         override val defaultFixtureConfig: FixtureConfig?
             get() = PixelArrayDevice.Config(pixelCount = expectedPixelCount)
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())

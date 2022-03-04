@@ -6,8 +6,8 @@ import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.FixtureTypeForTest
 import baaahs.gl.render.RenderManager
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -44,10 +44,10 @@ object FixtureManagerSpec : Spek({
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
-            val fogMachineDevice by value { DeviceTypeForTest(id = "fogMachine", resultContentType = fogginess) }
+            val fogMachineDevice by value { FixtureTypeForTest(id = "fogMachine", resultContentType = fogginess) }
 
             val deafeningness by value { ContentType("deafeningness", "Deafeningness", GlslType.Float) }
-            val vuzuvelaDevice by value { DeviceTypeForTest(id = "vuzuvela", resultContentType = deafeningness) }
+            val vuzuvelaDevice by value { FixtureTypeForTest(id = "vuzuvela", resultContentType = deafeningness) }
 
             val fogMachineEntity1 by value { FakeModelEntity("fog1", fogMachineDevice) }
             val fogMachineEntity2 by value { FakeModelEntity("fog2", fogMachineDevice) }
@@ -114,7 +114,7 @@ object FixtureManagerSpec : Spek({
                 val fogMachinePrograms by value { renderPlan[fogMachineDevice]!!.programs }
                 val vuzuvelaPrograms by value { renderPlan[vuzuvelaDevice]!!.programs }
 
-                it("creates a RenderPlan to cover all device types") {
+                it("creates a RenderPlan to cover all fixture types") {
                     val fogMachineProgram = fogMachinePrograms.only("program")
                     val vuzuvelaProgram = vuzuvelaPrograms.only("program")
 

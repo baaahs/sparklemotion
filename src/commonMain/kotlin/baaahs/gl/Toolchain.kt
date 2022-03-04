@@ -1,6 +1,6 @@
 package baaahs.gl
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.*
 import baaahs.gl.shader.OpenShader
@@ -34,7 +34,7 @@ interface Toolchain {
         shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
         shaderChannel: ShaderChannel = ShaderChannel.Main,
-        deviceTypes: Collection<DeviceType> = emptyList()
+        fixtureTypes: Collection<FixtureType> = emptyList()
     ): UnresolvedPatch
 }
 
@@ -99,9 +99,9 @@ class RootToolchain(
         shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort>,
         shaderChannel: ShaderChannel,
-        deviceTypes: Collection<DeviceType>
+        fixtureTypes: Collection<FixtureType>
     ): UnresolvedPatch {
-        return autoWirer.autoWire(shaders, shaderChannel, defaultPorts, deviceTypes)
+        return autoWirer.autoWire(shaders, shaderChannel, defaultPorts, fixtureTypes)
     }
 }
 
