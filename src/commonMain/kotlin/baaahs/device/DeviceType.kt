@@ -3,7 +3,6 @@ package baaahs.device
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
-import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
@@ -36,7 +35,7 @@ interface DeviceType {
         fixtureConfig: FixtureConfig,
         name: String,
         transport: Transport,
-        pixelLocations: List<Vector3F>
+        model: Model
     ): Fixture
 
     class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {

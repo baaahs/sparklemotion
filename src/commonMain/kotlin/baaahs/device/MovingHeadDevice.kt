@@ -5,7 +5,6 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.Transport
-import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
@@ -76,7 +75,7 @@ object MovingHeadDevice : DeviceType {
         fixtureConfig: FixtureConfig,
         name: String,
         transport: Transport,
-        pixelLocations: List<Vector3F>
+        model: Model
     ): Fixture {
         fixtureConfig as Config
         return MovingHeadFixture(

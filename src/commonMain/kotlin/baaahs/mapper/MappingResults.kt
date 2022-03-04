@@ -12,27 +12,33 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
 
     init {
         mappingSessions.forEach { mappingSession ->
-            mappingSession.surfaces.forEach { entityData ->
-                val controllerId = entityData.controllerId
-                val entityName = entityData.entityName
+            mappingSession.surfaces.forEach { mappingData ->
+                val controllerId = mappingData.controllerId
+                val entityName = mappingData.entityName
 
                 try {
                     val modelEntity = scene.model.findEntityByNameOrNull(entityName)
                     if (modelEntity == null)
                         logger.warn { "Unknown model entity \"$entityName\"." }
 
-                    val pixelLocations = entityData.pixels?.map { it?.modelPosition }
+                    val pixelLocations = mappingData.pixels?.map { it?.modelPosition }
                         ?.ifEmpty { null }
-                    val pixelCount = entityData.pixelCount ?: pixelLocations?.size
+                    val pixelCount = mappingData.pixelCount ?: pixelLocations?.size
+
+                    val fixtureConfig = PixelArrayDevice.Config(
+                        pixelCount,
+                        pixelLocations = pixelLocations
+                    )
+
                     val transportConfig = when (controllerId.controllerType) {
-                        "SACN" -> entityData.channels?.let { DmxTransportConfig(it.start, it.end) }
-                        "DMX" -> entityData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "SACN" -> mappingData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "DMX" -> mappingData.channels?.let { DmxTransportConfig(it.start, it.end) }
                         else -> null
                     }
 
                     val fixtureMapping = FixtureMapping(
                         modelEntity, PixelArrayDevice,
-                        entityData.fixtureConfig, transportConfig, pixelLocations
+                        fixtureConfig, transportConfig
                     )
                     add(controllerId, fixtureMapping)
                 } catch (e: Exception) {

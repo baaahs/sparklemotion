@@ -148,7 +148,7 @@ class TestRenderContext(
             modelEntities.map { entity ->
                 renderEngine.addFixture(
                     entity.deviceType.createFixture(
-                        entity, 1, deviceType.defaultConfig, entity.name, NullTransport, emptyList()
+                        entity, 1, deviceType.defaultConfig, entity.name, NullTransport, model
                     )
                 )
             }

@@ -1,6 +1,7 @@
 package baaahs.shaders
 
 import baaahs.Color
+import baaahs.TestModel
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
@@ -54,10 +55,13 @@ internal fun <T : BrainShader.Buffer> render(srcBrainShaderAndBuffer: Pair<Brain
 fun fakeFixture(
     pixelCount: Int,
     modelEntity: Model.Entity? = null,
-    deviceType: DeviceType = modelEntity?.deviceType ?: PixelArrayDevice
+    deviceType: DeviceType = modelEntity?.deviceType ?: PixelArrayDevice,
+    model: Model = TestModel
 ) =
-    deviceType.createFixture(modelEntity, pixelCount, PixelArrayDevice.defaultConfig,
-        "Fake ${deviceType.title}", transport = NullTransport, emptyList())
+    deviceType.createFixture(
+        modelEntity, pixelCount, deviceType.defaultConfig,
+        "Fake ${deviceType.title}", transport = NullTransport, model
+    )
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

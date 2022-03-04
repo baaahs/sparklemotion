@@ -84,9 +84,15 @@ object PixelArrayDevice : DeviceType {
         fixtureConfig: FixtureConfig,
         name: String,
         transport: Transport,
-        pixelLocations: List<Vector3F>
+        model: Model
     ): Fixture {
         fixtureConfig as Config
+
+        val pixelLocations = fixtureConfig.pixelLocations
+            ?.map { it ?: Vector3F(0f, 0f, 0f) }
+            ?: fixtureConfig.generatePixelLocations(componentCount, modelEntity, model)
+            ?: emptyList()
+
         return PixelArrayFixture(
             modelEntity, componentCount, name, transport,
             fixtureConfig.pixelFormat ?: error("No pixel format specified."),
@@ -102,7 +108,8 @@ object PixelArrayDevice : DeviceType {
         val pixelCount: Int? = null,
         val pixelFormat: PixelFormat? = null,
         val gammaCorrection: Float? = null,
-        val pixelArrangement: SurfacePixelStrategy? = null
+        val pixelArrangement: SurfacePixelStrategy? = null,
+        val pixelLocations: List<Vector3F?>? = null
     ) : FixtureConfig {
         override val componentCount: Int?
             get() = pixelCount
@@ -122,7 +129,8 @@ object PixelArrayDevice : DeviceType {
             other.componentCount ?: componentCount,
             other.pixelFormat ?: pixelFormat,
             other.gammaCorrection ?: gammaCorrection,
-            other.pixelArrangement ?: pixelArrangement
+            other.pixelArrangement ?: pixelArrangement,
+            other.pixelLocations ?: pixelLocations
         )
 
         override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? {

@@ -94,8 +94,7 @@ fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
                             pixelFormat,
                             pixelArrangement = LinearSurfacePixelStrategy()
                         ),
-                        DmxTransportConfig(startChannel, endChannel),
-                        null
+                        DmxTransportConfig(startChannel, endChannel)
                     )
                 }
     )

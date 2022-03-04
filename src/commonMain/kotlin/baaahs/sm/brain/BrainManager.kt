@@ -142,8 +142,7 @@ class BrainManager(
             return listOf(FixtureMapping(
                 null,
                 fixtureType = PixelArrayDevice,
-                BrainManager.defaultFixtureConfig,
-                pixelLocations = null
+                BrainManager.defaultFixtureConfig
             ))
         }
     }

@@ -37,8 +37,7 @@ actual class LightBarSimulation actual constructor(
                 "wled-X${pixelArray.name}X",
                 pixelArray.name,
                 pixelLocations.size,
-                pixelsVecs,
-                PixelArrayDevice.Config(pixelCount = pixelLocations.size)
+                pixelsVecs
             )
         }
 

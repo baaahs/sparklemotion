@@ -130,8 +130,7 @@ object ControllersManagerSpec : Spek({
                                     pixelCount = 3,
                                     pixelFormat = PixelArrayDevice.PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
-                                ),
-                                pixelLocations = null
+                                )
                             )
                         )
                     }
@@ -165,8 +164,7 @@ object ControllersManagerSpec : Spek({
                                 PixelArrayDevice.Config(
                                     3, PixelArrayDevice.PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
-                                ),
-                                pixelLocations = null
+                                )
                             )
                         )
                     )
@@ -193,11 +191,13 @@ object ControllersManagerSpec : Spek({
                             fakeController.controllerId to listOf(
                                 FixtureMapping(
                                     modelEntity, fixtureType = PixelArrayDevice,
-                                    PixelArrayDevice.Config(3),
-                                    pixelLocations = listOf(
-                                        Vector3F(1f, 1f, 1f),
-                                        Vector3F(2f, 2f, 3f),
-                                        Vector3F(3f, 2f, 3f),
+                                    PixelArrayDevice.Config(
+                                        3,
+                                        pixelLocations = listOf(
+                                            Vector3F(1f, 1f, 1f),
+                                            Vector3F(2f, 2f, 3f),
+                                            Vector3F(3f, 2f, 3f)
+                                        )
                                     )
                                 )
                             )
@@ -412,9 +412,6 @@ class FakeFixtureListener : FixtureListener {
     val changes = mutableListOf<Changes>()
 
     override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>) {
-        println("fixturesChanged:\n" +
-                "* added $addedFixtures\n" +
-                "* removed $removedFixtures")
         changes.add(Changes(addedFixtures, removedFixtures))
     }
 

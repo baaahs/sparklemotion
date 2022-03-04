@@ -97,6 +97,3 @@ object OpenSceneSpec : Spek({
     }
 
 })
-
-private fun mapToPixelArray(pixelCount: Int) =
-    FixtureMapping(null, fixtureType = PixelArrayDevice, PixelArrayDevice.Config(pixelCount), pixelLocations = null)
