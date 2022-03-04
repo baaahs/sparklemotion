@@ -1,7 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.*
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -35,10 +35,10 @@ object ModelRenderEngineSpec : Spek({
         val fixtureDataSource by value { PerFixtureDataSourceForTest(updateMode) }
         val pixelDataSource by value { PerPixelDataSourceForTest(updateMode) }
         val dataSource by value<DataSource> { fixtureDataSource }
-        val deviceType by value { DeviceTypeForTest(dataSource) }
+        val fixtureType by value { FixtureTypeForTest(dataSource) }
         val maxFramebufferWidth by value { 64 }
         val renderEngine by value {
-            ModelRenderEngine(gl, deviceType, minTextureWidth = 1, maxFramebufferWidth)
+            ModelRenderEngine(gl, fixtureType, minTextureWidth = 1, maxFramebufferWidth)
         }
         val texture by value { gl.textures.only("texture") }
 
@@ -141,7 +141,7 @@ object ModelRenderEngineSpec : Spek({
 
             context("when a fixture with maxFramebufferWidth pixels is added") {
                 val fixture1Target by value {
-                    renderEngine.addFixture(testFixture(deviceType, maxFramebufferWidth, 0f))
+                    renderEngine.addFixture(testFixture(fixtureType, maxFramebufferWidth, 0f))
                 }
 
                 val addFixture by value { { fixture1Target.run { } } }
@@ -194,10 +194,10 @@ object ModelRenderEngineSpec : Spek({
 
             context("when fixtures are added") {
                 val fixture1Target by value {
-                    renderEngine.addFixture(testFixture(deviceType, 1, 0f))
+                    renderEngine.addFixture(testFixture(fixtureType, 1, 0f))
                 }
                 val fixture2Target by value {
-                    renderEngine.addFixture(testFixture(deviceType, 2, 0.1f))
+                    renderEngine.addFixture(testFixture(fixtureType, 2, 0.1f))
                 }
                 val addTwoFixtures by value { { fixture1Target.run { }; fixture2Target.run { } } }
                 val renderPlan by value { renderPlanFor(initialProgram[0]!!, fixture1Target, fixture2Target) }
@@ -272,7 +272,7 @@ object ModelRenderEngineSpec : Spek({
                         }
 
                         context("when per-pixel data source isn't provided by the fixture, and the fixtures were previously rendered to without the data source") {
-                            override(deviceType) { DeviceTypeForTest() }
+                            override(fixtureType) { FixtureTypeForTest() }
                             override(initialProgram) { arrayOf<GlslProgram?>(null) }
                             override(drawTwoFrames) { {} }
 
@@ -302,17 +302,17 @@ object ModelRenderEngineSpec : Spek({
     }
 })
 
-private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial: Float = 0f) =
-    deviceType.createFixture(
+private fun testFixture(fixtureType: FixtureTypeForTest, pixelCount: Int, initial: Float = 0f) =
+    fixtureType.createFixture(
         null, pixelCount,
-        deviceType.Config(pixelLocations = someVectors(pixelCount, initial)),
+        fixtureType.Config(pixelLocations = someVectors(pixelCount, initial)),
         "test fixture", NullTransport, TestModel
     )
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
 
-class DeviceTypeForTest(
+class FixtureTypeForTest(
     vararg val fixtureDataSources: DataSource,
     override val resultContentType: ContentType = Color,
     override val id: String = "testDevice",
@@ -324,7 +324,7 @@ class DeviceTypeForTest(
                 UvCoordinate to Color
             )
         }
-) : DeviceType {
+) : FixtureType {
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = fixtureDataSources.map { dataSource ->
             object : DataSourceBuilder<DataSource> {
@@ -362,8 +362,8 @@ class DeviceTypeForTest(
         override val componentCount: Int? = null,
         val pixelLocations: List<Vector3F>? = null
     ) : FixtureConfig {
-        override val deviceType: DeviceType
-            get() = this@DeviceTypeForTest
+        override val fixtureType: FixtureType
+            get() = this@FixtureTypeForTest
 
         override fun edit(): MutableFixtureConfig = TODO("not implemented")
 
@@ -384,8 +384,8 @@ class DeviceTypeForTest(
         transport: Transport,
         val pixelLocations: List<Vector3F>
     ) : Fixture(modelEntity, pixelCount, name, transport) {
-        override val deviceType: DeviceType
-            get() = this@DeviceTypeForTest
+        override val fixtureType: FixtureType
+            get() = this@FixtureTypeForTest
         override val remoteConfig: RemoteConfig
             get() = TODO("not implemented")
     }

@@ -1,6 +1,6 @@
 package baaahs.fixtures
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
@@ -28,11 +28,11 @@ abstract class Fixture(
     open val componentCount: Int
         get() = pixelCount
 
-    abstract val deviceType: DeviceType
+    abstract val fixtureType: FixtureType
     abstract val remoteConfig: RemoteConfig
 
     val title: String
-        get() = "$name: ${deviceType.title} with $pixelCount pixels at ${transport.name}"
+        get() = "$name: ${fixtureType.title} with $pixelCount pixels at ${transport.name}"
 
     override fun toString() = "Fixture[${hashCode()} $title]"
 }
@@ -70,7 +70,7 @@ class PixelArrayFixture(
     /** Each pixel's location relative to the fixture. */
     val pixelLocations: List<Vector3F> = emptyList()
 ) : Fixture(modelEntity, pixelCount, name, transport) {
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = PixelArrayDevice
     override val remoteConfig: RemoteConfig
         get() = PixelArrayRemoteConfig(
@@ -93,7 +93,7 @@ class MovingHeadFixture(
     transport: Transport,
     val adapter: MovingHeadAdapter
 ) : Fixture(modelEntity, pixelCount, name, transport) {
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = MovingHeadDevice
     override val remoteConfig: RemoteConfig
         get() = MovingHeadRemoteConfig(

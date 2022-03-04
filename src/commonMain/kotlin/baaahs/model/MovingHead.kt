@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.Color
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.LixadaMiniMovingHead
@@ -179,7 +179,7 @@ class MovingHead(
         val y: Int
     )
 
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = MovingHeadDevice
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =

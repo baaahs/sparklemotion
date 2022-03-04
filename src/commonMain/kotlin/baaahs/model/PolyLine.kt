@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.geom.EulerAngle
@@ -79,7 +79,7 @@ open class PolyLine(
 ) : Model.BaseEntity(), PlacedPixelArray {
     override val defaultFixtureConfig: FixtureConfig?
         get() = PixelArrayDevice.Config(pixelCount, pixelArrangement = LinearSurfacePixelStrategy())
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = PixelArrayDevice
 
     override val bounds: Pair<Vector3F, Vector3F>

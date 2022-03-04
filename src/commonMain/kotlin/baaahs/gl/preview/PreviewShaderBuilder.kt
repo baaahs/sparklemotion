@@ -4,7 +4,7 @@ import baaahs.BaseShowPlayer
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
@@ -270,7 +270,7 @@ class PreviewShaders(val toolchain: Toolchain) {
     val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 }
 
-object ProjectionPreviewDevice: DeviceType {
+object ProjectionPreviewDevice: FixtureType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
     override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
@@ -311,7 +311,7 @@ object ProjectionPreviewDevice: DeviceType {
     class Config : FixtureConfig {
         override val componentCount: Int
             get() = 1
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = ProjectionPreviewDevice
 
         override fun edit(): MutableFixtureConfig = TODO("not implemented")

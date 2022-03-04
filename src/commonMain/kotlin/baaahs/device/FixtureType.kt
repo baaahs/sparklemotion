@@ -17,7 +17,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.SerializersModule
 
-interface DeviceType {
+interface FixtureType {
     val id: String
     val title: String
     val dataSourceBuilders: List<DataSourceBuilder<*>>
@@ -38,16 +38,16 @@ interface DeviceType {
         model: Model
     ): Fixture
 
-    class Serializer(private val knownDeviceTypes: Map<String, DeviceType>) : KSerializer<DeviceType> {
+    class Serializer(private val knownFixtureTypes: Map<String, FixtureType>) : KSerializer<FixtureType> {
         override val descriptor: SerialDescriptor
             get() = String.serializer().descriptor
 
-        override fun serialize(encoder: Encoder, value: DeviceType) {
+        override fun serialize(encoder: Encoder, value: FixtureType) {
             encoder.encodeString(value.id)
         }
 
-        override fun deserialize(decoder: Decoder): DeviceType {
-            return knownDeviceTypes.getBang(decoder.decodeString(), "device type")
+        override fun deserialize(decoder: Decoder): FixtureType {
+            return knownFixtureTypes.getBang(decoder.decodeString(), "fixture type")
         }
     }
 }

@@ -507,7 +507,7 @@ private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatc
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture, model = model))
     val patchResolution = PatchResolver(listOf(renderTarget), activePatchSet, renderManager)
     val portDiagram = patchResolution.portDiagrams
-        .getBang(PixelArrayDevice, "device type")
+        .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")
         .first
     return portDiagram.resolvePatch(ShaderChannel.Main, Color, dataSources)!!

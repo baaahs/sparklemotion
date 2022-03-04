@@ -5,7 +5,7 @@ import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.*
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.dmx.*
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
@@ -163,7 +163,7 @@ sealed class Plugins private constructor(
 
     val dataSourceBuilders = DataSourceBuilders()
 
-    val deviceTypes = DeviceTypes()
+    val fixtureTypes = FixtureTypes()
 
     val controllers = Controllers()
 
@@ -244,7 +244,7 @@ sealed class Plugins private constructor(
         include(controlSerialModule)
         contextual(DataSource::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
         include(dataSourceBuilders.serialModule)
-        include(deviceTypes.serialModule)
+        include(fixtureTypes.serialModule)
         include(controllers.serialModule)
 
         polymorphic(SurfacePixelStrategy::class) {
@@ -316,7 +316,7 @@ sealed class Plugins private constructor(
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
             val dataSourceCandidates =
                 dataSourceBuilders.buildForContentType(contentType, inputPort) +
-                        deviceTypes.buildForContentType(contentType, inputPort)
+                        fixtureTypes.buildForContentType(contentType, inputPort)
 
             dataSourceCandidates.map { dataSource ->
                 PortLinkOption(
@@ -469,7 +469,7 @@ sealed class Plugins private constructor(
 
         private fun OpenPlugin.dataSourceSerlializerRegistrars() =
             dataSourceBuilders.map { it.serializerRegistrar } +
-                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
+                    fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
 
         fun buildForContentType(
             contentType: ContentType?,
@@ -481,23 +481,23 @@ sealed class Plugins private constructor(
                 )
     }
 
-    inner class DeviceTypes {
-        val all = openPlugins.flatMap { it.deviceTypes }
+    inner class FixtureTypes {
+        val all = openPlugins.flatMap { it.fixtureTypes }
 
         val serialModule = SerializersModule {
-            val serializer = DeviceType.Serializer(all.associateBy { it.id })
+            val serializer = FixtureType.Serializer(all.associateBy { it.id })
 
-            contextual(DeviceType::class, serializer)
-            all.forEach { deviceType ->
+            contextual(FixtureType::class, serializer)
+            all.forEach { fixtureType ->
                 @Suppress("UNCHECKED_CAST")
-                contextual(deviceType::class as KClass<DeviceType>, serializer)
-                include(deviceType.serialModule)
+                contextual(fixtureType::class as KClass<FixtureType>, serializer)
+                include(fixtureType.serialModule)
             }
         }
 
         fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
-            return all.flatMap { deviceType ->
-                deviceType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
+            return all.flatMap { fixtureType ->
+                fixtureType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
             }.map { it.build(inputPort) }
         }
     }

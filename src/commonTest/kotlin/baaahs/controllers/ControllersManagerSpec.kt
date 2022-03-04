@@ -8,7 +8,7 @@ import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.override
-import baaahs.gl.render.DeviceTypeForTest
+import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
 import baaahs.mapping.MappingManager
@@ -28,12 +28,12 @@ import kotlin.random.Random
 @OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 object ControllersManagerSpec : Spek({
     describe<ControllersManager> {
-        val modelFixtureType by value { DeviceTypeForTest() }
+        val modelFixtureType by value { FixtureTypeForTest() }
         val modelEntity by value<Model.Entity> { FakeModelEntity("panel", modelFixtureType) }
         val model by value<Model?> { fakeModel(modelEntity) }
         val fakeController by value { FakeController("c1") }
         val legacyMappings by value {
-            mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, modelEntity.deviceType)))
+            mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, modelEntity.fixtureType)))
         }
         val fakeControllerConfig by value {
             FakeControllerManager.Config(
@@ -137,7 +137,7 @@ object ControllersManagerSpec : Spek({
 
                     it("adds the anonymous fixture") {
                         expect(addedFixture.modelEntity).toBe(null)
-                        expect(addedFixture.deviceType).toBe(PixelArrayDevice)
+                        expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
                         expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
 
@@ -172,7 +172,7 @@ object ControllersManagerSpec : Spek({
 
                 it("finds model entity mapping for the controller and creates a fixture") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.deviceType).toBe(PixelArrayDevice)
+                    expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
 
@@ -229,17 +229,17 @@ object ControllersManagerSpec : Spek({
                 it("finds model entity mapping for the controller and creates a fixture with the model's ") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
                     expect(addedFixture.pixelCount).toBe(59)
-                    expect(addedFixture).isA<DeviceTypeForTest.DtftFixture> {
-                        feature(DeviceTypeForTest.DtftFixture::pixelLocations)
+                    expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                        feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                             .toBe(emptyList())
                     }
-                    expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                    expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
 
                 context("and the fixture type also provides a default fixture config") {
                     override(modelFixtureType) {
-                        DeviceTypeForTest().apply {
+                        FixtureTypeForTest().apply {
                             defaultConfig = Config(4321)
                         }
                     }
@@ -247,11 +247,11 @@ object ControllersManagerSpec : Spek({
                     it("finds model entity mapping for the controller and creates a fixture with the model's ") {
                         expect(addedFixture.modelEntity).toBe(modelEntity)
                         expect(addedFixture.pixelCount).toBe(59)
-                        expect(addedFixture).isA<DeviceTypeForTest.DtftFixture> {
-                            feature(DeviceTypeForTest.DtftFixture::pixelLocations)
+                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                                 .toBe(emptyList())
                         }
-                        expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
                         expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
                 }
@@ -262,11 +262,11 @@ object ControllersManagerSpec : Spek({
                     it("ignores it, because we use the most specific fixture type to filter out others") {
                         expect(addedFixture.modelEntity).toBe(modelEntity)
                         expect(addedFixture.pixelCount).toBe(1)
-                        expect(addedFixture).isA<DeviceTypeForTest.DtftFixture> {
-                            feature(DeviceTypeForTest.DtftFixture::pixelLocations)
+                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                                 .toBe(emptyList())
                         }
-                        expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
                         expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
                 }
@@ -278,7 +278,7 @@ object ControllersManagerSpec : Spek({
                 it("creates an appropriate fixture") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
                     expect(addedFixture.pixelCount).toBe(1)
-                    expect(addedFixture.deviceType).toBe(MovingHeadDevice)
+                    expect(addedFixture.fixtureType).toBe(MovingHeadDevice)
                     expect(addedFixture).isA<MovingHeadFixture>()
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }

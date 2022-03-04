@@ -1,10 +1,10 @@
 package baaahs
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.EulerAngle
@@ -86,7 +86,7 @@ class FakeClock(var time: Time = 0.0) : Clock {
 
 open class FakeModelEntity(
     override val name: String,
-    override val deviceType: DeviceType = PixelArrayDevice,
+    override val fixtureType: FixtureType = PixelArrayDevice,
     override val description: String = name,
     override val position: Vector3F = Vector3F.origin,
     override val rotation: EulerAngle = EulerAngle.identity,
@@ -130,9 +130,9 @@ class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))
 ) {
     val model = fakeModel(modelEntities.toList())
-    val deviceType = modelEntities.map { it.deviceType }.distinct().only("device type")
+    val fixtureType = modelEntities.map { it.fixtureType }.distinct().only("fixture type")
     val gl = FakeGlContext()
-    val renderEngine = ModelRenderEngine(gl, deviceType, minTextureWidth = 1,)
+    val renderEngine = ModelRenderEngine(gl, fixtureType, minTextureWidth = 1,)
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
@@ -147,8 +147,8 @@ class TestRenderContext(
         renderTargets.addAll(
             modelEntities.map { entity ->
                 renderEngine.addFixture(
-                    entity.deviceType.createFixture(
-                        entity, 1, deviceType.defaultConfig, entity.name, NullTransport, model
+                    entity.fixtureType.createFixture(
+                        entity, 1, fixtureType.defaultConfig, entity.name, NullTransport, model
                     )
                 )
             }
@@ -157,7 +157,7 @@ class TestRenderContext(
 
     fun applyProgram(program: GlslProgram) {
         renderEngine.setRenderPlan(
-            DeviceTypeRenderPlan(
+            FixtureTypeRenderPlan(
                 listOf(ProgramRenderPlan(program, renderTargets))
             )
         )

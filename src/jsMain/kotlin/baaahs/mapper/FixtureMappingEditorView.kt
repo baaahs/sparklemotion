@@ -2,7 +2,7 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.dmx.DmxTransport
 import baaahs.fixtures.TransportType
 import baaahs.getBang
@@ -49,10 +49,10 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         props.editingController.onChange()
     }
 
-    val handleDeviceTypeChange by handler(
+    val handleFixtureTypeChange by handler(
         props.mutableFixtureMapping, props.editingController.onChange
-    ) { deviceType: DeviceType? ->
-        props.mutableFixtureMapping.deviceConfig = deviceType?.emptyConfig?.edit()
+    ) { fixtureType: FixtureType? ->
+        props.mutableFixtureMapping.deviceConfig = fixtureType?.emptyConfig?.edit()
         props.editingController.onChange()
     }
 
@@ -106,12 +106,12 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             }
 
             container {
-                betterSelect<DeviceType?> {
+                betterSelect<FixtureType?> {
                     attrs.label = "Fixture Type"
-                    attrs.values = listOf(null) + appContext.plugins.deviceTypes.all
-                    attrs.value = deviceConfig?.deviceType
+                    attrs.values = listOf(null) + appContext.plugins.fixtureTypes.all
+                    attrs.value = deviceConfig?.fixtureType
                     attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
-                    attrs.onChange = handleDeviceTypeChange
+                    attrs.onChange = handleFixtureTypeChange
                 }
 
                 if (deviceConfig != null) {

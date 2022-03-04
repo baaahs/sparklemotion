@@ -5,7 +5,7 @@ import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.MutableEditable
 import baaahs.camelize
 import baaahs.controller.*
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.dmx.DirectDmxController
 import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
@@ -357,7 +357,7 @@ class MutableLightRingData(
 }
 
 interface MutableFixtureConfig {
-    val deviceType: DeviceType
+    val fixtureType: FixtureType
 
     fun build(): FixtureConfig
     fun getEditorView(editingController: EditingController<*>, mutableFixtureMapping: MutableFixtureMapping): View

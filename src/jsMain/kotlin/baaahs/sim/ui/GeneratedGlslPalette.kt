@@ -42,10 +42,10 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
                         if (renderPlan == null) {
                             i { +"No plans!" }
                         } else {
-                            renderPlan.forEach { (deviceType, deviceTypeRenderPlans) ->
-                                deviceTypeRenderPlans.forEach { programRenderPlan ->
+                            renderPlan.forEach { (fixtureType, fixtureTypeRenderPlans) ->
+                                fixtureTypeRenderPlans.forEach { programRenderPlan ->
                                     header {
-                                        +"${deviceType.title}: ${programRenderPlan.renderTargets.size} fixtures"
+                                        +"${fixtureType.title}: ${programRenderPlan.renderTargets.size} fixtures"
                                     }
 
                                     programRenderPlan.program?.fragShader?.source

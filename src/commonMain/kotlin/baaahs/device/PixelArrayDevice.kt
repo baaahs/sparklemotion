@@ -27,7 +27,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-object PixelArrayDevice : DeviceType {
+object PixelArrayDevice : FixtureType {
     override val id: String get() = "PixelArray"
     override val title: String get() = "Pixel Array"
 
@@ -114,7 +114,7 @@ object PixelArrayDevice : DeviceType {
         override val componentCount: Int?
             get() = pixelCount
 
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
         override fun edit(): MutableFixtureConfig = MutableConfig(this)
@@ -139,7 +139,7 @@ object PixelArrayDevice : DeviceType {
     }
 
     class MutableConfig(config: Config) : MutableFixtureConfig {
-        override val deviceType: DeviceType
+        override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
         var componentCount: Int? = config.componentCount
