@@ -6,7 +6,10 @@ import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.device.DeviceType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.Transport
+import baaahs.geom.Vector3F
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -20,6 +23,7 @@ import baaahs.gl.result.SingleResultStorage
 import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
+import baaahs.model.Model
 import baaahs.plugin.core.datasource.RasterCoordinateDataSource
 import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
@@ -283,6 +287,8 @@ object ProjectionPreviewDevice: DeviceType {
             ""
         )
 
+    override val emptyConfig: FixtureConfig
+        get() = Config()
     override val defaultConfig: FixtureConfig
         get() = Config()
 
@@ -290,6 +296,15 @@ object ProjectionPreviewDevice: DeviceType {
         val resultBuffer = renderResults.allocate("Vertex Location", Vec2ResultType)
         return SingleResultStorage(resultBuffer)
     }
+
+    override fun createFixture(
+        modelEntity: Model.Entity?,
+        componentCount: Int,
+        fixtureConfig: FixtureConfig,
+        name: String,
+        transport: Transport,
+        pixelLocations: List<Vector3F>
+    ): Fixture = TODO("not implemented")
 
     override fun toString(): String = id
 
@@ -301,5 +316,6 @@ object ProjectionPreviewDevice: DeviceType {
             get() = ProjectionPreviewDevice
 
         override fun edit(): MutableFixtureConfig = TODO("not implemented")
+        override fun plus(other: FixtureConfig?) = this
     }
 }

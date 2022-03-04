@@ -88,14 +88,14 @@ fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
 
                     FixtureMapping(
                         config.createEntity(),
-                        config.pixelCount,
-                        null,
+                        PixelArrayDevice,
                         PixelArrayDevice.Config(
                             config.pixelCount,
                             pixelFormat,
                             pixelArrangement = LinearSurfacePixelStrategy()
                         ),
-                        DmxTransportConfig(startChannel, endChannel)
+                        DmxTransportConfig(startChannel, endChannel),
+                        null
                     )
                 }
     )

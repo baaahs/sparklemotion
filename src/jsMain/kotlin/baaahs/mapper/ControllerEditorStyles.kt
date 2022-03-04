@@ -3,6 +3,7 @@ package baaahs.mapper
 import kotlinx.css.*
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.dark
+import materialui.styles.palette.paper
 import styled.StyleSheet
 
 class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
@@ -13,6 +14,7 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
             GridAutoRows.auto,
             GridAutoRows.minMax(15.em, 15.pct)
         )
+        columnGap = 1.em
         gridTemplateRows = GridTemplateRows(100.pct)
         height = 100.pct
     }
@@ -38,7 +40,7 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
             GridAutoRows.minContent,
             GridAutoRows.auto
         )
-        gridTemplateRows = GridTemplateRows(100.pct)
+        gridTemplateRows = GridTemplateRows.minContent
     }
 
     val fixturesPane by css {
@@ -62,5 +64,16 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
         marginTop = 8.px
         marginBottom = 8.px
         marginLeft = 1.em
+    }
+
+    val button by css {
+        textTransform = TextTransform.none
+    }
+
+    val expansionPanelRoot by css {
+        backgroundColor = theme.palette.background.paper.darken(5)
+    }
+    val expansionPanelDetails by css {
+        flexDirection = FlexDirection.column
     }
 }

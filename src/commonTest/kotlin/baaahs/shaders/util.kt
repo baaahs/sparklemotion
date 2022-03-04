@@ -56,7 +56,8 @@ fun fakeFixture(
     modelEntity: Model.Entity? = null,
     deviceType: DeviceType = modelEntity?.deviceType ?: PixelArrayDevice
 ) =
-    Fixture(modelEntity, pixelCount, emptyList(), deviceType.defaultConfig, "Fake ${deviceType.title}", transport = NullTransport)
+    deviceType.createFixture(modelEntity, pixelCount, PixelArrayDevice.defaultConfig,
+        "Fake ${deviceType.title}", transport = NullTransport, emptyList())
 
 class FakePixels(override val size: Int) : Pixels {
     private val buf = Array(size) { Color.BLACK }

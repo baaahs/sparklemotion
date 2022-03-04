@@ -29,7 +29,7 @@ private val DmxTransportConfigEditorView =
         container {
             inlineStyles {
                 display = Display.flex
-                flexDirection = FlexDirection.column
+                flexDirection = FlexDirection.row
             }
 
             with (appContext.allStyles.modelEditor) {
@@ -44,6 +44,7 @@ private val DmxTransportConfigEditorView =
                 })
 
                 formControlLabel {
+                    attrs.label { +"Components start at universe boundaries" }
                     attrs.control {
                         switch {
                             attrs.checked = mutableConfig.componentsStartAtUniverseBoundaries
@@ -51,6 +52,20 @@ private val DmxTransportConfigEditorView =
                                 val value = it.target.checked
                                 mutableConfig.componentsStartAtUniverseBoundaries = value
                                 props.editingController.onChange()
+                            }
+                        }
+                    }
+                }
+
+                formControlLabel {
+                    attrs.label { +"Start in a fresh universe" }
+                    attrs.control {
+                        switch {
+                            attrs.checked = false // TODO mutableConfig.fixtureStartsInFreshUniverse
+                            attrs.onChangeFunction = {
+//                                val value = it.target.checked
+//                                mutableConfig.componentsStartAtUniverseBoundaries = value
+//                                props.editingController.onChange()
                             }
                         }
                     }

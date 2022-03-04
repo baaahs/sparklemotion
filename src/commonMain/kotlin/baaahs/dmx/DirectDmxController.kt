@@ -3,10 +3,7 @@ package baaahs.dmx
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.Transport
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.scene.ControllerConfig
@@ -24,7 +21,7 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
     private val startedAt = clock.now()
     override val state: ControllerState =
         State(device.name, "N/A", startedAt)
-    override val defaultFixtureMapping: FixtureMapping?
+    override val defaultFixtureConfig: FixtureConfig?
         get() = null
     private val universe = device.asUniverse()
 
@@ -87,6 +84,15 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
     companion object {
         val controllerType = "DMX"
     }
+}
+
+object DmxTransport : TransportType {
+    override val id: String
+        get() = "DMX"
+    override val title: String
+        get() = "DMX"
+    override val emptyConfig: TransportConfig
+        get() = DmxTransportConfig(0, 0, true)
 }
 
 @Serializable

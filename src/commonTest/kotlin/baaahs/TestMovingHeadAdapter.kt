@@ -29,6 +29,8 @@ class TestMovingHeadAdapter(
 
     override val shutterChannel: Dmx.Channel = TestChannel(6)
 ) : MovingHeadAdapter {
+    override val id: String get() = "TestMovingHeadAdapter"
+
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
     inner class Buffer(override val dmxBuffer: Dmx.Buffer) : MovingHead.BaseBuffer(this) {

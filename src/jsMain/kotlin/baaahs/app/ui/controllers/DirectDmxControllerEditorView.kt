@@ -3,15 +3,15 @@ package baaahs.app.ui.controllers
 import baaahs.scene.EditingController
 import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.ui.xComponent
+import materialui.components.container.container
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
 
 private val DirectDmxControllerEditorView =
     xComponent<DirectDmxControllerEditorProps>("DirectDmxControllerEditor") { props ->
 
-        div { +"Nothing to edit right now." }
+        container { +"Nothing to edit right now." }
     }
 
 external interface DirectDmxControllerEditorProps : Props {

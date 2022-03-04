@@ -5,7 +5,6 @@ import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.DeviceTypeRenderPlan
-import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.EulerAngle
@@ -85,7 +84,7 @@ class FakeClock(var time: Time = 0.0) : Clock {
     override fun now(): Time = time
 }
 
-class FakeModelEntity(
+open class FakeModelEntity(
     override val name: String,
     override val deviceType: DeviceType = PixelArrayDevice,
     override val description: String = name,
@@ -147,7 +146,11 @@ class TestRenderContext(
     fun addFixtures() {
         renderTargets.addAll(
             modelEntities.map { entity ->
-                renderEngine.addFixture(Fixture(entity, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport))
+                renderEngine.addFixture(
+                    entity.deviceType.createFixture(
+                        entity, 1, deviceType.defaultConfig, entity.name, NullTransport, emptyList()
+                    )
+                )
             }
         )
     }

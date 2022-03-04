@@ -1,19 +1,33 @@
 package baaahs.visualizer.movers
 
+import baaahs.app.ui.editor.betterSelect
 import baaahs.device.MovingHeadDevice
+import baaahs.model.MovingHeadAdapter
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.ui.xComponent
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
+import react.buildElement
 
 private val MovingHeadFixtureConfigEditorView =
     xComponent<MovingHeadFixtureConfigEditorProps>("MovingHeadFixtureConfigEditor") { props ->
         val mutableConfig = props.mutableFixtureMapping.deviceConfig as MovingHeadDevice.MutableConfig?
 
-        div {
+        val handleAdapterChange by handler(
+            props.editingController, mutableConfig
+        ) { value: MovingHeadAdapter? ->
+            mutableConfig?.adapter = value
+            props.editingController.onChange()
+        }
+
+        betterSelect<MovingHeadAdapter?> {
+            attrs.label = "Adapter"
+            attrs.values = MovingHeadAdapter.all
+            attrs.renderValueOption = { adapter -> buildElement { +(adapter?.id ?: "Default") } }
+            attrs.value = mutableConfig?.adapter
+            attrs.onChange = handleAdapterChange
         }
     }
 

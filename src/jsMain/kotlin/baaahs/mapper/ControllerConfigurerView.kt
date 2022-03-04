@@ -12,8 +12,9 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import external.searchbar.SearchBar
 import kotlinx.html.js.onClickFunction
+import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
-import materialui.components.iconbutton.iconButton
+import materialui.components.button.enums.ButtonStyle
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.paper.paper
 import materialui.components.table.enums.TablePadding
@@ -65,12 +66,12 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             header { +"Controllers" }
 
             div(+styles.navigatorPaneActions) {
-                iconButton {
+                button(+styles.button on ButtonStyle.root) {
                     attrs.color = ButtonColor.secondary
                     attrs.onClickFunction = handleNewControllerClick
 
-                    icon(materialui.icons.AddCircleOutline)
-                    +"New Controller…"
+                    attrs.startIcon { icon(materialui.icons.AddCircleOutline) }
+                    +"New…"
                 }
 
                 SearchBar {

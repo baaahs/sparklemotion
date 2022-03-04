@@ -65,10 +65,10 @@ data class FixtureMappingData(
     fun open(model: Model) =
         FixtureMapping(
             entityId?.let { model.findEntityByName(it) },
-            (deviceConfig as? PixelArrayDevice.Config)?.componentCount,
-            null,
+            PixelArrayDevice,
             deviceConfig,
-            transportConfig
+            transportConfig,
+            null
         )
 }
 

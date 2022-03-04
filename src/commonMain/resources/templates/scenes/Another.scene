@@ -20,7 +20,7 @@
         "objDataIsFileRef": true,
         "metadata": {
           "type": "baaahs.model.ConstEntityMetadataProvider",
-          "componentCount": 960
+          "pixelCount": 960
         }
       },
       {
