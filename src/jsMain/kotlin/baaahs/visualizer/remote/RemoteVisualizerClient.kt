@@ -73,13 +73,13 @@ class RemoteVisualizerClient(
         when (RemoteVisualizerServer.Opcode.get(reader.readByte())) {
             FixtureInfo -> {
                 val entityName = reader.readString()
-                val fixtureConfig = plugins.json.decodeFromString(
-                    FixtureConfigWrapper.serializer(),
+                val remoteConfig = plugins.json.decodeFromString(
+                    RemoteConfigWrapper.serializer(),
                     reader.readString()
-                ).fixtureConfig
+                ).remoteConfig
                 val fixtureSimulation = fixtureSimulations[entityName]
                 fixtureSimulation?.let {
-                    fixtureConfig.receiveRemoteVisualizationFixtureInfo(reader, it)
+                    remoteConfig.receiveRemoteVisualizationFixtureInfo(reader, it)
                 }
             }
 

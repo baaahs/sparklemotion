@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.TransportType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableTransportConfig
@@ -20,11 +21,17 @@ data class DmxTransportConfig(
     val endChannel: Int,
     val componentsStartAtUniverseBoundaries: Boolean = true
 ) : TransportConfig {
+    override val transportType: TransportType
+        get() = DmxTransport
+
     override fun edit(): MutableTransportConfig =
         MutableDmxTransportConfig(this)
 }
 
 class MutableDmxTransportConfig(config: DmxTransportConfig) : MutableTransportConfig {
+    override val transportType: TransportType
+        get() = DmxTransport
+
     var startChannel: Int = config.startChannel
     var endChannel: Int = config.endChannel
     var componentsStartAtUniverseBoundaries: Boolean = config.componentsStartAtUniverseBoundaries
@@ -36,4 +43,7 @@ class MutableDmxTransportConfig(config: DmxTransportConfig) : MutableTransportCo
         editingController: EditingController<*>,
         mutableFixtureMapping: MutableFixtureMapping
     ): View = visualizerBuilder.getDmxFixtureConfigEditorView(editingController, mutableFixtureMapping)
+
+    override fun toSummaryString(): String =
+        "$startChannel–$endChannel"
 }

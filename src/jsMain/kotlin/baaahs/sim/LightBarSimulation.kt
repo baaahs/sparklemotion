@@ -1,8 +1,10 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.RemoteConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -22,23 +24,28 @@ actual class LightBarSimulation actual constructor(
         VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             pixelVisualizationNormal,
-            pixelArray.transformation
+            pixelArray.transformation,
+            PixelArrayDevice.PixelFormat.default
         )
     }
 
     override val mappingData: MappingSession.SurfaceData
-        get() = MappingSession.SurfaceData(
-            SacnManager.controllerTypeName,
-            "wled-X${pixelArray.name}X",
-            pixelArray.name,
-            pixelLocations.size,
-            pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
-        )
+        get() {
+            val pixelsVecs = pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
+            return MappingSession.SurfaceData(
+                SacnManager.controllerTypeName,
+                "wled-X${pixelArray.name}X",
+                pixelArray.name,
+                pixelLocations.size,
+                pixelsVecs,
+                PixelArrayDevice.Config(pixelCount = pixelLocations.size)
+            )
+        }
 
     override val itemVisualizer: PixelArrayVisualizer<*> by lazy {
         when (pixelArray) {
             is LightBar -> LightBarVisualizer(pixelArray, adapter, vizPixels)
-            is PolyLine -> PolyLineVisualizer(pixelArray)
+            is PolyLine -> PolyLineVisualizer(pixelArray, adapter, vizPixels)
             else -> error("unsupported?")
         }
     }
@@ -49,13 +56,14 @@ actual class LightBarSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        Fixture(
+        PixelArrayFixture(
             pixelArray,
             pixelLocations.size,
-            pixelLocations,
-            pixelArray.deviceType.defaultConfig,
             pixelArray.name,
-            PixelArrayPreviewTransport(pixelArray.name, vizPixels)
+            PixelArrayPreviewTransport(pixelArray.name, vizPixels),
+            PixelArrayDevice.PixelFormat.default,
+            1f,
+            pixelLocations
         )
     }
 
@@ -67,7 +75,7 @@ actual class LightBarSimulation actual constructor(
         wledSimulator.stop()
     }
 
-    override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
+    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
 //        entityVisualizer.vizPixels = VizPixels(
 //            pixelLocations.map { it.toVector3() }.toTypedArray(),
 //            pixelVisualizationNormal,

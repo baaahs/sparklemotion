@@ -11,6 +11,7 @@ import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.TransportType
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.model.*
@@ -363,6 +364,9 @@ interface MutableFixtureConfig {
 }
 
 interface MutableTransportConfig {
+    val transportType: TransportType?
+
     fun build(): TransportConfig
     fun getEditorView(editingController: EditingController<*>, mutableFixtureMapping: MutableFixtureMapping): View
+    fun toSummaryString(): String
 }

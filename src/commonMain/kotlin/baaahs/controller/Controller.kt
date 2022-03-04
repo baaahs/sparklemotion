@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 interface Controller {
     val controllerId: ControllerId
     val state: ControllerState
-    val defaultFixtureMapping: FixtureMapping?
+    val defaultFixtureConfig: FixtureConfig?
 
     fun createTransport(entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int): Transport
     fun getAnonymousFixtureMappings(): List<FixtureMapping>
@@ -20,7 +20,7 @@ interface Controller {
 
 open class NullController(
     override val controllerId: ControllerId,
-    override val defaultFixtureMapping: FixtureMapping?
+    override val defaultFixtureConfig: FixtureConfig?
 ) : Controller {
     override val state: ControllerState =
         State("Null Controller", "N/A", 0.0)

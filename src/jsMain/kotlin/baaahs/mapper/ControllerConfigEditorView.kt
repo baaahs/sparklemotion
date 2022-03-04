@@ -6,16 +6,19 @@ import baaahs.scene.EditingController
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
+import baaahs.ui.on
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
+import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
+import materialui.components.button.enums.ButtonStyle
 import materialui.components.container.container
-import materialui.components.iconbutton.iconButton
 import materialui.components.typography.typographyH5
 import materialui.icon
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.header
 import react.useContext
 import kotlin.collections.set
 
@@ -51,6 +54,8 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         with(it) { render() }
     }
 
+    header { +"Fixture Mappings" }
+
     mutableControllerConfig.fixtures.forEach {
         fixtureMappingEditor {
             attrs.mutableScene = props.mutableScene
@@ -59,12 +64,12 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         }
     }
 
-    iconButton {
+    button(styles.button on ButtonStyle.root) {
         attrs.color = ButtonColor.secondary
         attrs.onClickFunction = handleNewFixtureMappingClick
 
         icon(materialui.icons.AddCircleOutline)
-        +"New Fixture Mapping…"
+        +"New…"
     }
 }
 

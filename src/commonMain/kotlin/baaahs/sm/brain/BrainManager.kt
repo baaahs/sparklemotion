@@ -126,8 +126,8 @@ class BrainManager(
 
         override val state: ControllerState
             get() = State(brainId.uuid, brainAddress.asString(), startedAt)
-        override val defaultFixtureMapping: FixtureMapping
-            get() = FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig)
+        override val defaultFixtureConfig: FixtureConfig
+            get() = BrainManager.defaultFixtureConfig
 
         override fun createTransport(
             entity: Model.Entity?,
@@ -139,7 +139,12 @@ class BrainManager(
         }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
-            return listOf(FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig))
+            return listOf(FixtureMapping(
+                null,
+                fixtureType = PixelArrayDevice,
+                BrainManager.defaultFixtureConfig,
+                pixelLocations = null
+            ))
         }
     }
 

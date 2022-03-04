@@ -1,8 +1,8 @@
 package baaahs.gl.result
 
 import baaahs.Color
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.io.ByteArrayWriter
 import baaahs.sm.brain.proto.Pixels
@@ -60,8 +60,8 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         override val size: Int
             get() = pixelCount
 
-        private val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
-        private val pixelFormat = fixtureConfig.pixelFormat ?: PixelArrayDevice.PixelFormat.RGB8
+        private val fixtureConfig = fixture as PixelArrayFixture
+        private val pixelFormat = fixtureConfig.pixelFormat
         private val bytesPerPixel = pixelFormat.channelsPerPixel
 
         override operator fun get(i: Int): Color = buffer[pixelOffset + i]

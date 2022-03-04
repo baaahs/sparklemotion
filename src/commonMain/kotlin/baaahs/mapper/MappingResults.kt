@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.scene.OpenScene
@@ -30,8 +31,8 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                     }
 
                     val fixtureMapping = FixtureMapping(
-                        modelEntity, pixelCount, pixelLocations,
-                        entityData.fixtureConfig, transportConfig
+                        modelEntity, PixelArrayDevice,
+                        entityData.fixtureConfig, transportConfig, pixelLocations
                     )
                     add(controllerId, fixtureMapping)
                 } catch (e: Exception) {

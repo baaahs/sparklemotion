@@ -2,10 +2,9 @@ package baaahs.gl.render
 
 import baaahs.describe
 import baaahs.device.DeviceType
+import baaahs.device.PixelArrayDevice
 import baaahs.englishize
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.NullTransport
+import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
@@ -14,6 +13,7 @@ import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
+import baaahs.model.Model
 import baaahs.only
 import baaahs.plugin.SerializerRegistrar
 import baaahs.scene.MutableFixtureConfig
@@ -307,7 +307,11 @@ object ModelRenderEngineSpec : Spek({
 })
 
 private fun testFixture(deviceType: DeviceTypeForTest, pixelCount: Int, initial: Float = 0f) =
-    Fixture(null, pixelCount, someVectors(pixelCount, initial), deviceType.defaultConfig, transport = NullTransport)
+    deviceType.createFixture(
+        null, pixelCount, name = "test fixture",
+        transport = NullTransport, fixtureConfig = PixelArrayDevice.defaultConfig,
+        pixelLocations = someVectors(pixelCount, initial)
+    )
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
     (0 until count).map { Vector3F(initial + count / 10f, 0f, 0f) }
@@ -337,23 +341,52 @@ class DeviceTypeForTest(
             }
         }
 
+    override var defaultConfig: FixtureConfig = Config()
+    override val emptyConfig: FixtureConfig = Config()
+
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
-    override val defaultConfig: FixtureConfig
-        get() = Config()
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage = ResultStorage.Empty
+    override fun createFixture(
+        modelEntity: Model.Entity?,
+        componentCount: Int,
+        fixtureConfig: FixtureConfig,
+        name: String,
+        transport: Transport,
+        pixelLocations: List<Vector3F>
+    ): Fixture = DtftFixture(modelEntity, componentCount, name, transport, pixelLocations = pixelLocations)
 
     override fun toString(): String = id
 
-    inner class Config : FixtureConfig {
-        override val componentCount: Int
-            get() = 1
+    inner class Config(
+        override val componentCount: Int? = null
+    ) : FixtureConfig {
         override val deviceType: DeviceType
             get() = this@DeviceTypeForTest
 
         override fun edit(): MutableFixtureConfig = TODO("not implemented")
 
+        override fun plus(other: FixtureConfig?): FixtureConfig =
+            if (other == null) this
+            else plus(other as Config)
+
+        operator fun plus(other: Config): Config = Config(
+            other.componentCount ?: componentCount
+        )
+    }
+
+    inner class DtftFixture(
+        modelEntity: Model.Entity?,
+        pixelCount: Int,
+        name: String,
+        transport: Transport,
+        val pixelLocations: List<Vector3F>
+    ) : Fixture(modelEntity, pixelCount, name, transport) {
+        override val deviceType: DeviceType
+            get() = this@DeviceTypeForTest
+        override val remoteConfig: RemoteConfig
+            get() = TODO("not implemented")
     }
 }
 

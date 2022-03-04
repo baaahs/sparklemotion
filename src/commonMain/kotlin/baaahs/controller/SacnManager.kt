@@ -1,5 +1,6 @@
 package baaahs.controller
 
+import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
@@ -107,7 +108,7 @@ class SacnManager(
                             val sacnController = SacnController(
                                 id,
                                 wledAddress.asString(),
-                                FixtureMapping(null, pixelCount, null),
+                                PixelArrayDevice.Config(pixelCount),
                                 pixelCount  * 3 / channelsPerUniverse + 1,
                                 onlineSince
                             )
@@ -129,7 +130,7 @@ class SacnManager(
     inner class SacnController(
         val id: String,
         val address: String,
-        override val defaultFixtureMapping: FixtureMapping?,
+        override val defaultFixtureConfig: FixtureConfig?,
         val universeCount: Int,
         val onlineSince: Time?
     ) : Controller {

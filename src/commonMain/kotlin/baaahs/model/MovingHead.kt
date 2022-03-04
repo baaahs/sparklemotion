@@ -19,6 +19,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 interface MovingHeadAdapter {
+    val id: String
     val dmxChannelCount: Int
 
     val colorModel: MovingHead.ColorModel
@@ -53,10 +54,8 @@ interface MovingHeadAdapter {
 
     companion object {
         // TODO: Move this to plugins.
-        val all = mapOf(
-            "Shenzarpy" to Shenzarpy,
-            "LixadaMiniMovingHead" to LixadaMiniMovingHead,
-        )
+        val all: List<MovingHeadAdapter> = listOf(Shenzarpy, LixadaMiniMovingHead)
+        val map = all.associateBy { it.id }
     }
 
     data class VisualizerInfo(

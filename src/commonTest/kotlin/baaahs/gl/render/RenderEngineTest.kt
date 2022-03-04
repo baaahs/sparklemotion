@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
+import baaahs.fixtures.PixelArrayFixture
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -222,30 +223,29 @@ class RenderEngineTest {
     }
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
-        return Fixture(
+        return PixelArrayFixture(
             testModelSurface(name),
             pixelCount,
+            transport = NullTransport,
             /**
              * e.g.:
              *  Vector3F(0f, .1f, 0f),
              *  Vector3F(.2f, .3f, 0f),
              *  Vector3F(.4f, .5f, 0f)
              */
-            (0 until pixelCount).map { i ->
+            pixelLocations = (0 until pixelCount).map { i ->
                 val offset = i * .2f
                 Vector3F(0f + offset, .1f + offset, 0f)
-            },
-            PixelArrayDevice.defaultConfig,
-            transport = NullTransport
+            }
         )
     }
 
     private fun createSurface(name: String, pixelCount: Int): Fixture {
-        return Fixture(
+        return PixelArrayFixture(
             testModelSurface(name), pixelCount,
-            (0 until pixelCount).map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) },
-            PixelArrayDevice.defaultConfig,
-            transport = NullTransport
+            transport = NullTransport,
+            pixelLocations = (0 until pixelCount)
+                .map { Vector3F(Random.nextFloat(), Random.nextFloat(), Random.nextFloat()) }
         )
     }
 

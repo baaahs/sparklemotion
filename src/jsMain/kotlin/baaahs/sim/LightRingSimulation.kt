@@ -3,7 +3,9 @@ package baaahs.sim
 import baaahs.controller.SacnManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.PixelArrayRemoteConfig
+import baaahs.fixtures.RemoteConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -26,7 +28,8 @@ actual class LightRingSimulation actual constructor(
         VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             pixelVisualizationNormal,
-            lightRing.transformation
+            lightRing.transformation,
+            PixelArrayDevice.PixelFormat.default
         )
     }
 
@@ -48,13 +51,14 @@ actual class LightRingSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        Fixture(
+        PixelArrayFixture(
             lightRing,
-            pixelCount,
-            pixelLocations,
-            lightRing.deviceType.defaultConfig,
+            pixelLocations.size,
             lightRing.name,
-            PixelArrayPreviewTransport(lightRing.name, vizPixels)
+            PixelArrayPreviewTransport(lightRing.name, vizPixels),
+            PixelArrayDevice.PixelFormat.default,
+            1f,
+            pixelLocations
         )
     }
 
@@ -66,12 +70,13 @@ actual class LightRingSimulation actual constructor(
         wledSimulator.stop()
     }
 
-    override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
+    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
+        remoteConfig as PixelArrayRemoteConfig
         itemVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             LightBarSimulation.pixelVisualizationNormal,
             lightRing.transformation,
-            fixtureConfig as PixelArrayDevice.Config
+            remoteConfig.pixelFormat
         )
     }
 

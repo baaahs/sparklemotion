@@ -64,7 +64,7 @@ class Model(
         val name: String
         val title: String get() = name
         val description: String?
-        val deviceConfig: FixtureConfig?
+        val defaultFixtureConfig: FixtureConfig?
             get() = null
         val deviceType: DeviceType
         /** Bounds in entity's local space. */
@@ -154,6 +154,8 @@ class Model(
         override val scale: Vector3F = Vector3F.unit3d,
         @Transient override val id: EntityId = Entity.nextId()
     ) : BaseEntity(), EntityWithGeometry {
+        override val defaultFixtureConfig: FixtureConfig?
+            get() = PixelArrayDevice.Config(pixelCount = expectedPixelCount)
         override val deviceType: DeviceType
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>

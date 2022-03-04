@@ -1,27 +1,38 @@
 package baaahs.mapper
 
+import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
-import baaahs.device.MovingHeadDevice
-import baaahs.device.PixelArrayDevice
-import baaahs.dmx.DmxTransportConfig
+import baaahs.device.DeviceType
+import baaahs.dmx.DmxTransport
+import baaahs.fixtures.TransportType
 import baaahs.getBang
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
 import baaahs.ui.asTextNode
+import baaahs.ui.on
+import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.components.button.enums.ButtonColor
 import materialui.components.container.container
-import materialui.components.iconbutton.iconButton
+import materialui.components.divider.divider
+import materialui.components.divider.enums.DividerVariant
+import materialui.components.expansionpanel.enums.ExpansionPanelStyle
+import materialui.components.expansionpanel.expansionPanel
+import materialui.components.expansionpaneldetails.expansionPanelDetails
+import materialui.components.expansionpanelsummary.expansionPanelSummary
 import materialui.icon
-import org.w3c.dom.events.Event
+import materialui.icons.ExpandMore
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.header
+import react.dom.i
+import react.useContext
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
+    val appContext = useContext(appContext)
+    val styles = appContext.allStyles.controllerEditor
+
     val allEntities = buildMap {
         props.mutableScene.model.build().open().visit { entity ->
             put(entity.name, entity)
@@ -38,74 +49,97 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         props.editingController.onChange()
     }
 
-    val handleMovingHeadFixtureConfigClick by handler(props.mutableFixtureMapping, props.editingController.onChange) { _: Event ->
-        props.mutableFixtureMapping.deviceConfig =
-            MovingHeadDevice.defaultConfig.edit()
-        props.editingController.onChange()
-    }
-    val handlePixelArrayFixtureConfigClick by handler(props.mutableFixtureMapping, props.editingController.onChange) { _: Event ->
-        props.mutableFixtureMapping.deviceConfig =
-            PixelArrayDevice.defaultConfig.edit()
-        props.editingController.onChange()
-    }
-    val handleDmxTransportConfigClick by handler(props.mutableFixtureMapping, props.editingController.onChange) { _: Event ->
-        props.mutableFixtureMapping.transportConfig =
-            DmxTransportConfig(1, 2, true).edit()
+    val handleDeviceTypeChange by handler(
+        props.mutableFixtureMapping, props.editingController.onChange
+    ) { deviceType: DeviceType? ->
+        props.mutableFixtureMapping.deviceConfig = deviceType?.emptyConfig?.edit()
         props.editingController.onChange()
     }
 
-    header { +"Fixture Mapping" }
+    val handleTransportTypeChange by handler(
+        props.mutableFixtureMapping, props.editingController.onChange
+    ) { transportType: TransportType? ->
+        props.mutableFixtureMapping.transportConfig = transportType?.emptyConfig?.edit()
+        props.editingController.onChange()
+    }
 
-    container {
-        betterSelect<String?> {
-            attrs.label = "Entity"
-            attrs.values = allEntities.keys.toList()
-            attrs.renderValueOption = { option ->
-                (option?.let { allEntities.getBang(it, "entity").title } ?: "None")
-                    .asTextNode()
+    var expanded by state { false }
+    val toggleExpanded by eventHandler { expanded = !expanded }
+
+    expansionPanel(styles.expansionPanelRoot on ExpansionPanelStyle.root) {
+        attrs.expanded = expanded
+
+        expansionPanelSummary {
+            attrs.expandIcon { icon(ExpandMore) }
+            attrs.onClickFunction = toggleExpanded
+
+            val entityName = props.mutableFixtureMapping.entityId
+            if (entityName != null) +entityName else i { +"Anonymous" }
+
+            if (!expanded) {
+                transportConfig?.toSummaryString()?.let {
+                    +" – "
+                    +it
+                }
             }
+        }
+
+        expansionPanelDetails(+styles.expansionPanelDetails) {
+            betterSelect<String?> {
+                attrs.label = "Entity"
+                attrs.values = allEntities.keys.toList()
+                attrs.renderValueOption = { option ->
+                    (option?.let { allEntities.getBang(it, "entity").title } ?: "None")
+                        .asTextNode()
+                }
 //            attrs.renderValueSelected = { option ->
 //                (option?.let { allEntities.getBang(it, "entity").title } ?: "None")
 //                    .asTextNode()
 //            }
-            attrs.value = props.mutableFixtureMapping.entityId
-            attrs.onChange = handleEntityChange
-        }
-
-        header { +"Fixture Config" }
-        if (deviceConfig != null) {
-            with (deviceConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
-        } else {
-            iconButton {
-                attrs.color = ButtonColor.secondary
-                attrs.onClickFunction = handleMovingHeadFixtureConfigClick
-
-                icon(materialui.icons.AddCircleOutline)
-                +"Moving Head"
+                attrs.value = props.mutableFixtureMapping.entityId
+                attrs.onChange = handleEntityChange
             }
 
-            iconButton {
-                attrs.color = ButtonColor.secondary
-                attrs.onClickFunction = handlePixelArrayFixtureConfigClick
-
-                icon(materialui.icons.AddCircleOutline)
-                +"Pixel Array"
+            divider {
+                attrs.light = true
+                attrs.variant = DividerVariant.middle
             }
-        }
 
-        header { +"Transport Config" }
-        if (transportConfig != null) {
-            with(transportConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
-        } else {
-            iconButton {
-                attrs.color = ButtonColor.secondary
-                attrs.onClickFunction = handleDmxTransportConfigClick
+            container {
+                betterSelect<DeviceType?> {
+                    attrs.label = "Fixture Type"
+                    attrs.values = listOf(null) + appContext.plugins.deviceTypes.all
+                    attrs.value = deviceConfig?.deviceType
+                    attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
+                    attrs.onChange = handleDeviceTypeChange
+                }
 
-                icon(materialui.icons.AddCircleOutline)
-                +"DMX"
+                if (deviceConfig != null) {
+                    with (deviceConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                }
+            }
+
+            divider {
+                attrs.light = true
+                attrs.variant = DividerVariant.middle
+            }
+
+            container {
+                betterSelect<TransportType?> {
+                    attrs.label = "Transport Type"
+                    attrs.values = listOf(null, DmxTransport)
+                    attrs.value = transportConfig?.transportType
+                    attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
+                    attrs.onChange = handleTransportTypeChange
+                }
+
+                if (transportConfig != null) {
+                    with(transportConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                }
             }
         }
     }
+
 }
 
 external interface FixtureMappingEditorProps : Props {

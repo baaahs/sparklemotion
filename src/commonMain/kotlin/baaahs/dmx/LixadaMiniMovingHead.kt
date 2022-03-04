@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable @SerialName("LixadaMiniMovingHead")
 object LixadaMiniMovingHead : MovingHeadAdapter {
+    override val id: String get() = "LixadaMiniMovingHead"
     override val dmxChannelCount: Int get() = 9 // TODO: ?
 
     override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.RGBW

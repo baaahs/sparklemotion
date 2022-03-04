@@ -3,6 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrol.formControl
+import materialui.components.formlabel.formLabel
 import materialui.components.listitemtext.listItemText
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
@@ -23,6 +24,13 @@ private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") 
     }
 
     formControl {
+        props.label?.let { label ->
+            formLabel {
+                attrs.component = "legend"
+                +label
+            }
+        }
+
         select {
             attrs.value = props.values.indexOf(props.value)
             val renderValueSelected = anyProps.renderValueSelected

@@ -2,7 +2,7 @@ package baaahs.gl.preview
 
 import baaahs.device.MovingHeadDevice
 import baaahs.fixtures.DeviceTypeRenderPlan
-import baaahs.fixtures.Fixture
+import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
@@ -40,7 +40,7 @@ class MovingHeadPreview(
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()
         .associateWith { movingHead ->
-            val fixture = Fixture(movingHead, 1, emptyList(), deviceType.defaultConfig, transport = NullTransport)
+            val fixture = MovingHeadFixture(movingHead, 1, movingHead.name, transport = NullTransport, adapter = movingHead.adapter)
             renderEngine.addFixture(fixture)
         }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D

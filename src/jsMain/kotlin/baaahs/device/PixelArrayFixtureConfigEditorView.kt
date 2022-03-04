@@ -33,7 +33,7 @@ private val PixelArrayFixtureConfigEditorView =
         container {
             inlineStyles {
                 display = Display.flex
-                flexDirection = FlexDirection.column
+                flexDirection = FlexDirection.row
             }
 
             with (appContext.allStyles.modelEditor) {

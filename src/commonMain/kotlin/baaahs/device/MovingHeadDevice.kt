@@ -1,11 +1,16 @@
 package baaahs.device
 
 import baaahs.dmx.Shenzarpy
+import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.MovingHeadFixture
+import baaahs.fixtures.Transport
+import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
 import baaahs.gl.result.SingleResultStorage
+import baaahs.model.Model
 import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
@@ -49,10 +54,10 @@ object MovingHeadDevice : DeviceType {
                 }
             """.trimIndent()
         )
+    override val emptyConfig: FixtureConfig
+        get() = Config(null)
     override val defaultConfig: FixtureConfig
         get() = Config(Shenzarpy)
-    override val defaultPixelCount: Int
-        get() = 1
     override val serialModule: SerializersModule
         get() = SerializersModule {
             polymorphic(FixtureConfig::class) {
@@ -65,23 +70,45 @@ object MovingHeadDevice : DeviceType {
         return SingleResultStorage(resultBuffer)
     }
 
+    override fun createFixture(
+        modelEntity: Model.Entity?,
+        componentCount: Int,
+        fixtureConfig: FixtureConfig,
+        name: String,
+        transport: Transport,
+        pixelLocations: List<Vector3F>
+    ): Fixture {
+        fixtureConfig as Config
+        return MovingHeadFixture(
+            modelEntity, componentCount, name, transport,
+            fixtureConfig.adapter ?: error("No adapter specified."))
+    }
+
     override fun toString(): String = id
 
     @Serializable @SerialName("MovingHead")
-    data class Config(val adapter: MovingHeadAdapter) : FixtureConfig {
+    data class Config(val adapter: MovingHeadAdapter?) : FixtureConfig {
         override val componentCount: Int
             get() = 1
         override val deviceType: DeviceType
             get() = MovingHeadDevice
 
         override fun edit(): MutableFixtureConfig = MutableConfig(this)
+
+        override fun plus(other: FixtureConfig?): FixtureConfig =
+            if (other == null) this
+            else plus(other as Config)
+
+        operator fun plus(other: Config): Config = Config(
+            other.adapter ?: adapter,
+        )
     }
 
     class MutableConfig(config: Config) : MutableFixtureConfig {
         override val deviceType: DeviceType
             get() = MovingHeadDevice
 
-        var adapter: MovingHeadAdapter = config.adapter
+        var adapter: MovingHeadAdapter? = config.adapter
 
         override fun build(): FixtureConfig = Config(adapter)
         override fun getEditorView(

@@ -1,6 +1,7 @@
 package baaahs.device
 
 import baaahs.ShowPlayer
+import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.Feed
 import baaahs.gl.data.PerPixelEngineFeed
@@ -84,14 +85,20 @@ class PixelLocationFeed(
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
             if (renderTarget is FixtureRenderTarget) {
-                val pixelLocations = renderTarget.fixture.pixelLocations
-                buffer.scoped(renderTarget).also { view ->
-                    for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.pixelCount)) {
-                        val location = pixelLocations[pixelIndex]
-                        view[pixelIndex, 0] = location.x
-                        view[pixelIndex, 1] = location.y
-                        view[pixelIndex, 2] = location.z
+                val fixture = renderTarget.fixture
+                if (fixture is PixelArrayFixture) {
+                    val pixelLocations = fixture.pixelLocations
+
+                    buffer.scoped(renderTarget).also { view ->
+                        for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.pixelCount)) {
+                            val location = pixelLocations[pixelIndex]
+                            view[pixelIndex, 0] = location.x
+                            view[pixelIndex, 1] = location.y
+                            view[pixelIndex, 2] = location.z
+                        }
                     }
+                } else {
+                    logger.warn { "Attempted to set per-pixel data for a non-PixelArrayFixture, but that's impossible!" }
                 }
             } else {
                 logger.warn { "Attempted to set per-pixel data for a non-FixtureRenderTarget, but that's impossible!" }
