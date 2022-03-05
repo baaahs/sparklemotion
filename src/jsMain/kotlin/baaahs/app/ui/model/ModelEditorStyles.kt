@@ -127,8 +127,10 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
     ) {
         val cachedOnChange = onChange.asDynamic().cachedOnClick ?: run {
             { event: Event ->
-                val value = event.currentTarget.value as String?
-                onChange(value?.toDouble() as T)
+                val numericValue = event.currentTarget.value
+                    .ifBlank { null }
+                    ?.toDouble() as T
+                onChange(numericValue)
             }
                 .also { onChange.asDynamic().cachedOnClick = it }
         }
