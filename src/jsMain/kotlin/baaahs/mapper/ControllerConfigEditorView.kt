@@ -38,8 +38,11 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val editingController = EditingController(mutableControllerConfig, props.onEdit)
 
+    val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by eventHandler(mutableControllerConfig, props.onEdit) {
-        mutableControllerConfig.fixtures.add(MutableFixtureMapping(FixtureMappingData()))
+        val newMapping = MutableFixtureMapping(FixtureMappingData())
+        mutableControllerConfig.fixtures.add(newMapping)
+        recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
     }
 
@@ -61,6 +64,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             attrs.mutableScene = props.mutableScene
             attrs.editingController = editingController
             attrs.mutableFixtureMapping = it
+            attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == it
         }
     }
 
