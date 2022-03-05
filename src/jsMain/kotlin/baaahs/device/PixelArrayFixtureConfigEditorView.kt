@@ -4,21 +4,19 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
+import baaahs.ui.asTextNode
+import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
-import kotlinx.css.display
-import kotlinx.css.flexDirection
-import materialui.components.container.container
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.div
 import react.useContext
-import styled.inlineStyles
 
 private val PixelArrayFixtureConfigEditorView =
     xComponent<PixelArrayFixtureConfigEditorProps>("PixelArrayFixtureConfigEditor") { props ->
         val appContext = useContext(appContext)
+        val styles = appContext.allStyles.controllerEditor
 
         val mutableConfig = props.mutableFixtureMapping.deviceConfig as PixelArrayDevice.MutableConfig?
         mutableConfig!!
@@ -30,29 +28,26 @@ private val PixelArrayFixtureConfigEditorView =
             props.editingController.onChange()
         }
 
-        container {
-            inlineStyles {
-                display = Display.flex
-                flexDirection = FlexDirection.row
-            }
-
+        div(+styles.pixelArrayConfigEditorRow) {
             with (appContext.allStyles.modelEditor) {
-                numberTextField("Pixel Count", mutableConfig.componentCount ?: 0, onChange = {
+                numberTextField("Pixel Count", mutableConfig.componentCount, onChange = {
                     mutableConfig.componentCount = if (it == 0) null else it
-                })
+                }, placeholder = "default")
 
                 betterSelect<PixelArrayDevice.PixelFormat?> {
                     attrs.label = "Pixel Format"
-                    attrs.values = PixelArrayDevice.PixelFormat.values().toList()
+                    attrs.values = listOf(null) + PixelArrayDevice.PixelFormat.values().toList()
+                    attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
                     attrs.value = mutableConfig.pixelFormat
                     attrs.onChange = handlePixelFormatChange
                 }
 
                 numberTextField("Gamma Correction", mutableConfig.gammaCorrection, onChange = {
                     mutableConfig.gammaCorrection = it
-                })
+                }, placeholder = "default")
             }
         }
+//        }
     }
 
 external interface PixelArrayFixtureConfigEditorProps : Props {

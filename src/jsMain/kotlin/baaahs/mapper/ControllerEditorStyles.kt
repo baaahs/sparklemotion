@@ -3,7 +3,7 @@ package baaahs.mapper
 import kotlinx.css.*
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.dark
-import materialui.styles.palette.paper
+import materialui.styles.palette.main
 import styled.StyleSheet
 
 class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
@@ -71,9 +71,52 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val expansionPanelRoot by css {
-        backgroundColor = theme.palette.background.paper.darken(5)
+        backgroundColor = theme.palette.primary.main
     }
+
+    val configCardOuter by css {
+        backgroundColor = theme.palette.primary.main.lighten(5)
+        padding(.5.em)
+
+        adjacentSibling(".$name-configCardOuter") {
+            marginTop = 1.em
+        }
+    }
+
+    val configCardInner by css {
+        backgroundColor = theme.palette.primary.dark
+        paddingLeft = 1.em
+        paddingTop = .75.em
+        paddingBottom = .75.em
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        gap = 1.em
+    }
+
     val expansionPanelDetails by css {
         flexDirection = FlexDirection.column
+    }
+
+    val divider by css {
+        height = 2.px
+        margin(.5.em, 0.em)
+    }
+
+    val configEditorRow by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+        gap = 1.em
+    }
+
+    val pixelArrayConfigEditorRow by css(configEditorRow) {
+        input {
+            width = 7.em
+        }
+    }
+
+    val dmxTransportConfigEditorRow by css(configEditorRow) {
+        input {
+            width = 7.em
+        }
     }
 }

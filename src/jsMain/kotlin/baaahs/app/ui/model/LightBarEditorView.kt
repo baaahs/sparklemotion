@@ -63,7 +63,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
 
         with(styles) {
             val length = with (mutableEntity) { (endVertex - startVertex).length() }
-            numberTextField("", length, { +props.editingEntity.modelUnit.display }, handleLengthChange)
+            numberTextField("", length, { +props.editingEntity.modelUnit.display }, onChange = handleLengthChange)
         }
     }
 }

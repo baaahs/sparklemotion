@@ -7,7 +7,7 @@ import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrol.formControl
 import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.formlabel.formLabel
+import materialui.components.inputlabel.inputLabel
 import materialui.components.radio.radio
 import materialui.components.radiogroup.radioGroup
 import org.w3c.dom.HTMLInputElement
@@ -31,7 +31,7 @@ private val ButtonGroupPropsEditorView =
 
         div(+EditableStyles.propertiesSection) {
             formControl {
-                formLabel {
+                inputLabel {
                     attrs.component = "legend"
                     +"Direction"
                 }

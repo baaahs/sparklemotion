@@ -4,35 +4,27 @@ import baaahs.app.ui.appContext
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.ui.checked
+import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
-import kotlinx.css.display
-import kotlinx.css.flexDirection
 import kotlinx.html.js.onChangeFunction
-import materialui.components.container.container
 import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.switches.switch
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.div
 import react.useContext
-import styled.inlineStyles
 
 private val DmxTransportConfigEditorView =
     xComponent<DmxTransportConfigEditorProps>("DmxTransportConfigEditor") { props ->
         val appContext = useContext(appContext)
+        val styles = appContext.allStyles.controllerEditor
 
         val mutableConfig = props.mutableFixtureMapping.transportConfig as MutableDmxTransportConfig?
         mutableConfig!!
 
-        container {
-            inlineStyles {
-                display = Display.flex
-                flexDirection = FlexDirection.row
-            }
-
-            with (appContext.allStyles.modelEditor) {
+        with (appContext.allStyles.modelEditor) {
+            div(+styles.dmxTransportConfigEditorRow) {
                 numberTextField("Start Channel", mutableConfig.startChannel, onChange = {
                     mutableConfig.startChannel = it
                     props.editingController.onChange()
@@ -42,7 +34,9 @@ private val DmxTransportConfigEditorView =
                     mutableConfig.endChannel = it
                     props.editingController.onChange()
                 })
+            }
 
+            div(+styles.dmxTransportConfigEditorRow) {
                 formControlLabel {
                     attrs.label { +"Components start at universe boundaries" }
                     attrs.control {
@@ -56,7 +50,9 @@ private val DmxTransportConfigEditorView =
                         }
                     }
                 }
+            }
 
+            div(+styles.dmxTransportConfigEditorRow) {
                 formControlLabel {
                     attrs.label { +"Start in a fresh universe" }
                     attrs.control {

@@ -28,9 +28,9 @@ private val RotationEditorView = xComponent<RotationEditorProps>("RotationEditor
 
     val rotation = props.eulerAngle
     with(styles) {
-        numberTextField("Pitch", rotation.pitchRad.asDegrees, { +"°" }, updatePitch)
-        numberTextField("Yaw", rotation.yawRad.asDegrees, { +"°" }, updateYaw)
-        numberTextField("Roll", rotation.rollRad.asDegrees, { +"°" }, updateRoll)
+        numberTextField("Pitch", rotation.pitchRad.asDegrees, { +"°" }, onChange = updatePitch)
+        numberTextField("Yaw", rotation.yawRad.asDegrees, { +"°" }, onChange = updateYaw)
+        numberTextField("Roll", rotation.rollRad.asDegrees, { +"°" }, onChange = updateRoll)
     }
 }
 

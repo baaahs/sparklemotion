@@ -11,7 +11,10 @@ import baaahs.ui.xComponent
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import external.searchbar.SearchBar
+import kotlinx.css.em
+import kotlinx.css.padding
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.title
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonStyle
@@ -34,6 +37,7 @@ import react.dom.div
 import react.dom.header
 import react.dom.setProp
 import react.useContext
+import styled.inlineStyles
 
 private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)
@@ -91,7 +95,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
                     tableHead {
                         tableRow {
-                            thCell { +"Type" }
+//                            thCell { +"Type" }
                             thCell { +"ID" }
                             thCell { +"Address" }
 //                    thCell { +"Model Element" }
@@ -101,16 +105,28 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                         }
                     }
 
+                    var lastControllerType: String? = null
                     tableBody {
                         allControllerIds.forEach { controllerId ->
                             val mutableController = mutableControllers[controllerId]
                             val state = controllerStates[controllerId]
                             if (controllerMatcher.matches(state, mutableController)) {
+                                if (controllerId.controllerType != lastControllerType) {
+                                    tableRow {
+                                        thCell {
+                                            attrs.colSpan = "3"
+                                            inlineStyles { padding(0.em) }
+                                            header { +controllerId.controllerType }
+                                        }
+                                    }
+
+                                    lastControllerType = controllerId.controllerType
+                                }
+
                                 tableRow {
                                     attrs.onClickFunction = handleControllerSelect
                                     attrs["data-controller-id"] = controllerId.name()
 
-                                    tdCell { +controllerId.controllerType }
                                     tdCell { +(state?.title ?: mutableController?.title ?: "Unnamed Controller") }
                                     tdCell { +(state?.address ?: "None") }
 //                            tdCell { +(brainData.modelEntity ?: "Anonymous") }
@@ -119,10 +135,11 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     tdCell {
                                         val onlineSince = state?.onlineSince
                                         if (onlineSince != null) {
-                                            +"Online since ${
-                                                DateTime(onlineSince * 1000)
-                                                    .toString(DateFormat.FORMAT1)
-                                            }"
+                                            +"Online"
+
+                                            val since = DateTime(onlineSince * 1000)
+                                                .toString(DateFormat.FORMAT1)
+                                            attrs.title = "Online since $since"
                                         } else {
                                             +"Offline"
                                         }

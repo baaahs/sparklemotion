@@ -6,6 +6,7 @@ import baaahs.device.FixtureType
 import baaahs.dmx.DmxTransport
 import baaahs.fixtures.TransportType
 import baaahs.getBang
+import baaahs.model.Model
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
@@ -14,20 +15,16 @@ import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.components.container.container
-import materialui.components.divider.divider
-import materialui.components.divider.enums.DividerVariant
+import materialui.components.card.card
 import materialui.components.expansionpanel.enums.ExpansionPanelStyle
 import materialui.components.expansionpanel.expansionPanel
 import materialui.components.expansionpaneldetails.expansionPanelDetails
 import materialui.components.expansionpanelsummary.expansionPanelSummary
+import materialui.components.paper.enums.PaperStyle
 import materialui.icon
 import materialui.icons.ExpandMore
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.i
-import react.useContext
 
 private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("FixtureMappingEditor") { props ->
     val appContext = useContext(appContext)
@@ -44,8 +41,8 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
 
     val handleEntityChange by handler(
         props.mutableScene, props.mutableFixtureMapping, props.editingController
-    ) { value: String? ->
-        props.mutableFixtureMapping.entityId = value
+    ) { value: Model.Entity? ->
+        props.mutableFixtureMapping.entityId = value?.name
         props.editingController.onChange()
     }
 
@@ -63,7 +60,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         props.editingController.onChange()
     }
 
-    var expanded by state { false }
+    var expanded by state { props.initiallyOpen ?: false }
     val toggleExpanded by eventHandler { expanded = !expanded }
 
     expansionPanel(styles.expansionPanelRoot on ExpansionPanelStyle.root) {
@@ -73,39 +70,32 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             attrs.expandIcon { icon(ExpandMore) }
             attrs.onClickFunction = toggleExpanded
 
-            val entityName = props.mutableFixtureMapping.entityId
-            if (entityName != null) +entityName else i { +"Anonymous" }
-
             if (!expanded) {
+                val entityName = props.mutableFixtureMapping.entityId
+                if (entityName != null) +entityName else i { +"Anonymous" }
+
                 transportConfig?.toSummaryString()?.let {
                     +" – "
                     +it
+                }
+            } else {
+                betterSelect<Model.Entity?> {
+                    attrs.label = "Model Entity"
+                    attrs.values = listOf(null) + allEntities.values.sortedBy { it.title }
+                    attrs.renderValueOption = { option ->
+                        option?.title?.asTextNode()
+                            ?: buildElement { i { +"Anonymous" } }
+                    }
+                    attrs.value = props.mutableFixtureMapping.entityId?.let { allEntities.getBang(it, "entity") }
+                    attrs.onChange = handleEntityChange
                 }
             }
         }
 
         expansionPanelDetails(+styles.expansionPanelDetails) {
-            betterSelect<String?> {
-                attrs.label = "Entity"
-                attrs.values = allEntities.keys.toList()
-                attrs.renderValueOption = { option ->
-                    (option?.let { allEntities.getBang(it, "entity").title } ?: "None")
-                        .asTextNode()
-                }
-//            attrs.renderValueSelected = { option ->
-//                (option?.let { allEntities.getBang(it, "entity").title } ?: "None")
-//                    .asTextNode()
-//            }
-                attrs.value = props.mutableFixtureMapping.entityId
-                attrs.onChange = handleEntityChange
-            }
+            card(styles.configCardOuter on PaperStyle.root) {
+                attrs.elevation = 4
 
-            divider {
-                attrs.light = true
-                attrs.variant = DividerVariant.middle
-            }
-
-            container {
                 betterSelect<FixtureType?> {
                     attrs.label = "Fixture Type"
                     attrs.values = listOf(null) + appContext.plugins.fixtureTypes.all
@@ -115,16 +105,15 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 }
 
                 if (deviceConfig != null) {
-                    with (deviceConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                    card(styles.configCardInner on PaperStyle.root) {
+                        with(deviceConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                    }
                 }
             }
 
-            divider {
-                attrs.light = true
-                attrs.variant = DividerVariant.middle
-            }
+            card(styles.configCardOuter on PaperStyle.root) {
+                attrs.elevation = 4
 
-            container {
                 betterSelect<TransportType?> {
                     attrs.label = "Transport Type"
                     attrs.values = listOf(null, DmxTransport)
@@ -134,7 +123,9 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 }
 
                 if (transportConfig != null) {
-                    with(transportConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                    card(styles.configCardInner on PaperStyle.root) {
+                        with(transportConfig.getEditorView(props.editingController, props.mutableFixtureMapping)) { render() }
+                    }
                 }
             }
         }
@@ -146,6 +137,7 @@ external interface FixtureMappingEditorProps : Props {
     var mutableScene: MutableScene
     var editingController: EditingController<*>
     var mutableFixtureMapping: MutableFixtureMapping
+    var initiallyOpen: Boolean?
 }
 
 fun RBuilder.fixtureMappingEditor(handler: RHandler<FixtureMappingEditorProps>) =
