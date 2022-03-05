@@ -32,6 +32,7 @@ private val PixelArrayFixtureConfigEditorView =
             with (appContext.allStyles.modelEditor) {
                 numberTextField("Pixel Count", mutableConfig.componentCount, onChange = {
                     mutableConfig.componentCount = if (it == 0) null else it
+                    props.editingController.onChange()
                 }, placeholder = "default")
 
                 betterSelect<PixelArrayDevice.PixelFormat?> {
@@ -44,6 +45,7 @@ private val PixelArrayFixtureConfigEditorView =
 
                 numberTextField("Gamma Correction", mutableConfig.gammaCorrection, onChange = {
                     mutableConfig.gammaCorrection = it
+                    props.editingController.onChange()
                 }, placeholder = "default")
             }
         }

@@ -75,7 +75,7 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val configCardOuter by css {
-        backgroundColor = theme.palette.primary.main.lighten(5)
+        backgroundColor = theme.palette.primary.main.lighten(10)
         padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {
