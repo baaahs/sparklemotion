@@ -50,6 +50,8 @@ interface ControllerConfig {
     val controllerType: String
     val title: String
     val fixtures: List<FixtureMappingData>
+    val defaultFixtureConfig: FixtureConfig?
+    val defaultTransportConfig: TransportConfig?
 
     fun edit(): MutableControllerConfig
 }

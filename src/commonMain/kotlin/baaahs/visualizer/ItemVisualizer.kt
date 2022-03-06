@@ -1,5 +1,8 @@
 package baaahs.visualizer
 
+import baaahs.device.MovingHeadDevice
+import baaahs.device.PixelArrayDevice
+import baaahs.dmx.MutableDmxTransportConfig
 import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.IObservable
@@ -58,17 +61,17 @@ interface VisualizerBuilder {
     // FixtureConfigs:
     fun getMovingHeadFixtureConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableFixtureConfig: MovingHeadDevice.MutableConfig
     ): View
     fun getPixelArrayFixtureConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableFixtureConfig: PixelArrayDevice.MutableConfig
     ): View
 
     // TransportConfigs:
-    fun getDmxFixtureConfigEditorView(
+    fun getDmxTransportConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableTransportConfig: MutableDmxTransportConfig
     ): View
 }
 

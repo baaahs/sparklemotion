@@ -99,7 +99,9 @@ object DmxTransport : TransportType {
 @SerialName("DirectDMX")
 data class DirectDmxControllerConfig(
     override val title: String = "Direct DMX",
-    override val fixtures: List<FixtureMappingData> = emptyList()
+    override val fixtures: List<FixtureMappingData> = emptyList(),
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
     override val controllerType: String
         get() = DirectDmxController.controllerType

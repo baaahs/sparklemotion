@@ -4,7 +4,10 @@ import baaahs.app.ui.controllers.brainControllerEditor
 import baaahs.app.ui.controllers.directDmxControllerEditor
 import baaahs.app.ui.controllers.sacnControllerEditor
 import baaahs.app.ui.model.*
+import baaahs.device.MovingHeadDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.device.pixelArrayFixtureConfigEditor
+import baaahs.dmx.MutableDmxTransportConfig
 import baaahs.dmx.dmxTransportConfigEditor
 import baaahs.geom.toThreeEuler
 import baaahs.model.Model
@@ -110,34 +113,34 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
 
     override fun getMovingHeadFixtureConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableFixtureConfig: MovingHeadDevice.MutableConfig
     ): View = renderWrapper {
         movingHeadFixtureConfigEditor {
             attrs.editingController = editingController
-            attrs.mutableFixtureMapping = mutableFixtureMapping
+            attrs.mutableFixtureConfig = mutableFixtureConfig
         }
     }
 
     override fun getPixelArrayFixtureConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableFixtureConfig: PixelArrayDevice.MutableConfig
     ): View = renderWrapper {
         pixelArrayFixtureConfigEditor {
             attrs.editingController = editingController
-            attrs.mutableFixtureMapping = mutableFixtureMapping
+            attrs.mutableFixtureConfig = mutableFixtureConfig
         }
     }
 
 
     // TransportConfigs:
 
-    override fun getDmxFixtureConfigEditorView(
+    override fun getDmxTransportConfigEditorView(
         editingController: EditingController<*>,
-        mutableFixtureMapping: MutableFixtureMapping
+        mutableTransportConfig: MutableDmxTransportConfig
     ): View = renderWrapper {
         dmxTransportConfigEditor {
             attrs.editingController = editingController
-            attrs.mutableFixtureMapping = mutableFixtureMapping
+            attrs.mutableTransportConfig = mutableTransportConfig
         }
     }
 }

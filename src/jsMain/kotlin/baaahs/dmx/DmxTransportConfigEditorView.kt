@@ -2,7 +2,7 @@ package baaahs.dmx
 
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingController
-import baaahs.scene.MutableFixtureMapping
+import baaahs.scene.MutableTransportConfig
 import baaahs.ui.checked
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -20,7 +20,7 @@ private val DmxTransportConfigEditorView =
         val appContext = useContext(appContext)
         val styles = appContext.allStyles.controllerEditor
 
-        val mutableConfig = props.mutableFixtureMapping.transportConfig as MutableDmxTransportConfig?
+        val mutableConfig = props.mutableTransportConfig as MutableDmxTransportConfig?
         mutableConfig!!
 
         with (appContext.allStyles.modelEditor) {
@@ -72,7 +72,7 @@ private val DmxTransportConfigEditorView =
 
 external interface DmxTransportConfigEditorProps : Props {
     var editingController: EditingController<*>
-    var mutableFixtureMapping: MutableFixtureMapping
+    var mutableTransportConfig: MutableTransportConfig
 }
 
 fun RBuilder.dmxTransportConfigEditor(handler: RHandler<DmxTransportConfigEditorProps>) =

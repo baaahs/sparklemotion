@@ -57,6 +57,21 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         with(it) { render() }
     }
 
+    header { +"Defautls" }
+
+    fixtureConfigPicker {
+        attrs.editingController = editingController
+        attrs.mutableFixtureConfig = mutableControllerConfig.defaultFixtureConfig
+        attrs.setMutableFixtureConfig = { mutableControllerConfig.defaultFixtureConfig = it }
+    }
+
+    transportConfigPicker {
+        attrs.editingController = editingController
+        attrs.mutableTransportConfig = mutableControllerConfig.defaultTransportConfig
+        attrs.setMutableTransportConfig = { mutableControllerConfig.defaultTransportConfig = it }
+    }
+
+
     header { +"Fixture Mappings" }
 
     mutableControllerConfig.fixtures.forEach {

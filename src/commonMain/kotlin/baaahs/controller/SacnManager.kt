@@ -270,7 +270,9 @@ data class SacnControllerConfig(
     override val title: String,
     val address: String,
     val universes: Int,
-    override val fixtures: List<FixtureMappingData> = emptyList()
+    override val fixtures: List<FixtureMappingData> = emptyList(),
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
     override val controllerType: String get() = "SACN"
 
