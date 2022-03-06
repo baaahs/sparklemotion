@@ -292,7 +292,9 @@ data class BrainInfo(
 @SerialName("Brain")
 data class BrainControllerConfig(
     override val title: String,
-    override val fixtures: List<FixtureMappingData> = emptyList()
+    override val fixtures: List<FixtureMappingData> = emptyList(),
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
     override val controllerType: String
         get() = BrainManager.controllerTypeName

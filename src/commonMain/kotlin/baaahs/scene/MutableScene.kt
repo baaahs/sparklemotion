@@ -53,6 +53,8 @@ interface MutableControllerConfig {
     val controllerMeta: ControllerManager.MetaManager
     var title: String
     val fixtures: MutableList<MutableFixtureMapping>
+    var defaultFixtureConfig: MutableFixtureConfig?
+    var defaultTransportConfig: MutableTransportConfig?
 
     fun build(): ControllerConfig
     fun suggestId(): String
@@ -66,9 +68,16 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
     override var title: String = config.title
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
-        BrainControllerConfig(title, fixtures.map { it.build() })
+        BrainControllerConfig(
+            title, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(), defaultTransportConfig?.build()
+        )
 
     override fun suggestId(): String = title.camelize()
 
@@ -85,9 +94,17 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
     override var title: String = config.title
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
-        DirectDmxControllerConfig(title, fixtures.map { it.build() })
+        DirectDmxControllerConfig(
+            title, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(),
+            defaultTransportConfig?.build()
+        )
 
     override fun suggestId(): String = title.camelize()
 
@@ -106,9 +123,17 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
     var universes: Int = config.universes
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
-        SacnControllerConfig(title, address, universes, fixtures.map { it.build() })
+        SacnControllerConfig(
+            title, address, universes, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(),
+            defaultTransportConfig?.build()
+        )
 
     override fun suggestId(): String = title.camelize()
 
@@ -121,11 +146,11 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
 
 class MutableFixtureMapping(fixtureMappingData: FixtureMappingData) {
     var entityId: String? = fixtureMappingData.entityId
-    var deviceConfig: MutableFixtureConfig? = fixtureMappingData.deviceConfig?.edit()
+    var fixtureConfig: MutableFixtureConfig? = fixtureMappingData.deviceConfig?.edit()
     var transportConfig: MutableTransportConfig? = fixtureMappingData.transportConfig?.edit()
 
     fun build(): FixtureMappingData =
-        FixtureMappingData(entityId, deviceConfig?.build(), transportConfig?.build())
+        FixtureMappingData(entityId, fixtureConfig?.build(), transportConfig?.build())
 }
 
 class MutableModel(baseModel: ModelData) {
@@ -360,13 +385,13 @@ interface MutableFixtureConfig {
     val fixtureType: FixtureType
 
     fun build(): FixtureConfig
-    fun getEditorView(editingController: EditingController<*>, mutableFixtureMapping: MutableFixtureMapping): View
+    fun getEditorView(editingController: EditingController<*>): View
 }
 
 interface MutableTransportConfig {
     val transportType: TransportType?
 
     fun build(): TransportConfig
-    fun getEditorView(editingController: EditingController<*>, mutableFixtureMapping: MutableFixtureMapping): View
+    fun getEditorView(editingController: EditingController<*>): View
     fun toSummaryString(): String
 }

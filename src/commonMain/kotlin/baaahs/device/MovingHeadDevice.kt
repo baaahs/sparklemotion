@@ -15,7 +15,6 @@ import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureConfig
-import baaahs.scene.MutableFixtureMapping
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
@@ -111,8 +110,7 @@ object MovingHeadDevice : FixtureType {
 
         override fun build(): FixtureConfig = Config(adapter)
         override fun getEditorView(
-            editingController: EditingController<*>,
-            mutableFixtureMapping: MutableFixtureMapping
-        ): View = visualizerBuilder.getMovingHeadFixtureConfigEditorView(editingController, mutableFixtureMapping)
+            editingController: EditingController<*>
+        ): View = visualizerBuilder.getMovingHeadFixtureConfigEditorView(editingController, this)
     }
 }

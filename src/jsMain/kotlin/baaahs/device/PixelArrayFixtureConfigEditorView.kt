@@ -3,7 +3,6 @@ package baaahs.device
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.scene.EditingController
-import baaahs.scene.MutableFixtureMapping
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -18,8 +17,7 @@ private val PixelArrayFixtureConfigEditorView =
         val appContext = useContext(appContext)
         val styles = appContext.allStyles.controllerEditor
 
-        val mutableConfig = props.mutableFixtureMapping.deviceConfig as PixelArrayDevice.MutableConfig?
-        mutableConfig!!
+        val mutableConfig = props.mutableFixtureConfig
 
         val handlePixelFormatChange by handler(
             props.editingController, mutableConfig
@@ -54,7 +52,7 @@ private val PixelArrayFixtureConfigEditorView =
 
 external interface PixelArrayFixtureConfigEditorProps : Props {
     var editingController: EditingController<*>
-    var mutableFixtureMapping: MutableFixtureMapping
+    var mutableFixtureConfig: PixelArrayDevice.MutableConfig
 }
 
 fun RBuilder.pixelArrayFixtureConfigEditor(handler: RHandler<PixelArrayFixtureConfigEditorProps>) =

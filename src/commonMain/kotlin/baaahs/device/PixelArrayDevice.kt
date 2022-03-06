@@ -17,7 +17,6 @@ import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureConfig
-import baaahs.scene.MutableFixtureMapping
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
@@ -151,9 +150,8 @@ object PixelArrayDevice : FixtureType {
             Config(componentCount, pixelFormat, gammaCorrection, pixelArrangement)
 
         override fun getEditorView(
-            editingController: EditingController<*>,
-            mutableFixtureMapping: MutableFixtureMapping
-        ): View = visualizerBuilder.getPixelArrayFixtureConfigEditorView(editingController, mutableFixtureMapping)
+            editingController: EditingController<*>
+        ): View = visualizerBuilder.getPixelArrayFixtureConfigEditorView(editingController, this)
     }
 
     enum class PixelFormat {

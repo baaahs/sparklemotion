@@ -358,7 +358,9 @@ class FakeControllerManager(
         override val controllerType: String = "FAKE",
         override val title: String = "fake controller",
         val controllers: List<FakeController> = emptyList(),
-        override val fixtures: List<FixtureMappingData> = emptyList()
+        override val fixtures: List<FixtureMappingData> = emptyList(),
+        override val defaultFixtureConfig: FixtureConfig? = null,
+        override val defaultTransportConfig: TransportConfig? = null
     ) : ControllerConfig {
         override fun edit(): MutableControllerConfig = TODO("not implemented")
     }
