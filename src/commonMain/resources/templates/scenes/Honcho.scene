@@ -314,11 +314,7 @@
           "entityId": "ring 4.01",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -330,11 +326,7 @@
           "entityId": "ring 4.02",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -346,11 +338,7 @@
           "entityId": "ring 4.03",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -362,11 +350,7 @@
           "entityId": "ring 4.04",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -378,11 +362,7 @@
           "entityId": "ring 4.05",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -394,11 +374,7 @@
           "entityId": "ring 4.06",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -410,11 +386,7 @@
           "entityId": "ring 4.07",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -426,11 +398,7 @@
           "entityId": "ring 4.08",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -442,11 +410,7 @@
           "entityId": "ring 4.09",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -458,11 +422,7 @@
           "entityId": "ring 4.10",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -474,11 +434,7 @@
           "entityId": "ring 4.11",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -490,11 +446,7 @@
           "entityId": "ring 4.12",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 240,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
@@ -506,11 +458,7 @@
           "entityId": "ring 5.01",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -522,11 +470,7 @@
           "entityId": "ring 5.02",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -538,11 +482,7 @@
           "entityId": "ring 5.03",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -554,11 +494,7 @@
           "entityId": "ring 5.04",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -570,11 +506,7 @@
           "entityId": "ring 5.05",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -586,11 +518,7 @@
           "entityId": "ring 5.06",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -602,11 +530,7 @@
           "entityId": "ring 5.07",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -618,11 +542,7 @@
           "entityId": "ring 5.08",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -634,11 +554,7 @@
           "entityId": "ring 5.09",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -650,11 +566,7 @@
           "entityId": "ring 5.10",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -666,11 +578,7 @@
           "entityId": "ring 5.11",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -682,11 +590,7 @@
           "entityId": "ring 5.12",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 300,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
@@ -698,11 +602,7 @@
           "entityId": "ring 8.01",
           "deviceConfig": {
             "type": "PixelArray",
-            "pixelCount": 480,
-            "pixelFormat": "GRB8",
-            "pixelArrangement": {
-              "type": "Linear"
-            }
+            "pixelCount": 480
           },
           "transportConfig": {
             "type": "DMX",
@@ -711,6 +611,10 @@
           }
         }
       ],
+      "defaultFixtureConfig": {
+        "type": "PixelArray",
+        "pixelFormat": "GRB8"
+      },
       "address": "192.168.0.113",
       "universes": 51
     }
