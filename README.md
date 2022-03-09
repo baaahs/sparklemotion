@@ -24,7 +24,9 @@ we're nerds. We hope you'll have some fun with it and maybe find it useful.
 > connecting external sensor data—like a beat detector, midi controller, sound spectral analysis, or a
 > webcam—to shader variables.
 >
-> Sparkle Motion can currently control LED strips using a custom IP protocol, and Sharpy-style moving heads
+> Sparkle Motion can control LED strips using
+> [sACN](https://artisticlicenceintegration.com/technology-brief/technology-resource/sacn-and-art-net/)
+> or our custom IP protocol, and Sharpy-style moving heads
 > over DMX, but it could be extended to control pretty much any kind of device. Lights can be mapped to a
 > 3D model using computer vision. Individual lighting fixtures, or groups of fixtures, can be controlled
 > separately. All types of lights are controlled using the same language and idioms.
