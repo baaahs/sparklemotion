@@ -8,9 +8,9 @@ light show designer and performance interface, 3D light mapping, IP-based contro
 custom LED control hardware and firmware. We designed it all pretty much from scratch, because
 we're nerds. We hope you'll have some fun with it and maybe find it useful.
 
-| | |
+| ![SparkleMotionDemo-20220308](https://user-images.githubusercontent.com/40298/157351650-5b3338b7-757a-4e76-bfe2-743a06bb2891.gif) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> |
 | --- | --- |
-| ![SparkleMotionDemo-20220308](https://user-images.githubusercontent.com/40298/157351650-5b3338b7-757a-4e76-bfe2-743a06bb2891.gif) <br/> The Sparkle Motion [Simulator](https://baaahs.github.io/sparklemotion) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> <br/> BAAAHS at Black Rock City, 2019|
+| The Sparkle Motion [Simulator](https://baaahs.github.io/sparklemotion) | BAAAHS at Black Rock City, 2019 |
 
 
 > **tl;dr:**
