@@ -10,7 +10,7 @@ we're nerds. We hope you'll have some fun with it and maybe find it useful.
 
 | | |
 | --- | --- |
-| <img src="/demo.gif" alt="Simulator image" width="400"> <br/> The Sparkle Motion [Simulator](https://baaahs.github.io/sparklemotion) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> <br/> BAAAHS at Black Rock City, 2019|
+| ![SparkleMotionDemo-20220308](https://user-images.githubusercontent.com/40298/157351650-5b3338b7-757a-4e76-bfe2-743a06bb2891.gif) <br/> The Sparkle Motion [Simulator](https://baaahs.github.io/sparklemotion) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> <br/> BAAAHS at Black Rock City, 2019|
 
 
 > **tl;dr:**
