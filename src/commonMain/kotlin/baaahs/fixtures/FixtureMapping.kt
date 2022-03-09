@@ -17,18 +17,25 @@ data class FixtureMapping(
     }
 
     fun buildFixture(controller: Controller, model: Model): Fixture {
-        val cascadingConfigs = listOfNotNull(
+        val cascadingFixtureConfigs = listOfNotNull(
             fixtureType.defaultConfig,
             controller.defaultFixtureConfig,
             entity?.defaultFixtureConfig,
             fixtureConfig
         )
 
-        val typedConfigs = cascadingConfigs.filter { it.fixtureType == fixtureType }
-        val fixtureConfig = typedConfigs.reduce { acc, config -> acc.plus(config) }
+        val fixtureConfig = cascadingFixtureConfigs
+            .filter { it.fixtureType == fixtureType }
+            .reduce { acc, config -> acc.plus(config) }
+
+        val cascadingTransportConfigs = listOfNotNull(
+            controller.defaultTransportConfig,
+            transportConfig
+        )
+        val transportConfig = cascadingTransportConfigs
+            .reduceOrNull { acc, config -> acc.plus(config) }
 
         val componentCount = fixtureConfig.componentCount ?: 1
-        val transportConfig = transportConfig
 
         val name = "${entity?.name ?: "???"}@${controller.controllerId.name()}"
         val transport = controller.createTransport(entity, fixtureConfig, transportConfig, componentCount)

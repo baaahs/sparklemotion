@@ -76,7 +76,7 @@ class CorePlugin(
             classSerializer(XyPadControl.serializer())
         )
 
-    override val controllerManagers: List<ControllerManager.MetaManager>
+    override val controllerManagers: List<ControllerManager.Meta>
         get() = listOf(
             BrainManager,
             DmxManager,

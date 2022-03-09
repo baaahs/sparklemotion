@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.controller.*
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransport
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
@@ -369,6 +370,7 @@ class FakeControllerManager(
 class FakeController(
     val name: String,
     override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
     override val state: ControllerState = object : ControllerState() {
@@ -376,15 +378,21 @@ class FakeController(
         override val address: String get() = TODO("not implemented")
         override val onlineSince: Time get() = TODO("not implemented")
     }
-    val transport = FakeTransport()
+    override val transportType: TransportType
+        get() = DmxTransport
+
+    lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
     override fun createTransport(
         entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int
-    ): Transport = transport
+    ): Transport = FakeTransport(fixtureConfig, transportConfig).also { transport = it }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
 
-    inner class FakeTransport : Transport {
+    inner class FakeTransport(
+        val fixtureConfig: FixtureConfig,
+        override val config: TransportConfig?
+    ) : Transport {
         override val name: String get() = this@FakeController.name
         override val controller: Controller
             get() = this@FakeController

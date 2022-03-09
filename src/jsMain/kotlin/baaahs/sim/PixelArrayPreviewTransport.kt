@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.controller.Controller
 import baaahs.controller.NullController
 import baaahs.fixtures.Transport
+import baaahs.fixtures.TransportConfig
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.visualizer.VizPixels
@@ -14,6 +15,8 @@ class PixelArrayPreviewTransport(
 ) : Transport {
     override val controller: Controller
         get() = NullController
+    override val config: TransportConfig?
+        get() = null
 
     override fun deliverBytes(byteArray: ByteArray) {
         val buf = ByteArrayReader(byteArray)

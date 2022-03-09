@@ -17,7 +17,7 @@ interface DmxManager {
 
     val dmxUniverse: Dmx.Universe
 
-    companion object : ControllerManager.MetaManager {
+    companion object : ControllerManager.Meta {
         override val controllerTypeName: String
             get() = "DMX"
         internal val logger = Logger<DmxManager>()

@@ -7,7 +7,7 @@ import baaahs.io.ByteArrayWriter
 interface Transport {
     val name: String
     val controller: Controller
-    val config: TransportConfig? get() = null
+    val config: TransportConfig?
 
     fun deliverBytes(byteArray: ByteArray)
     fun deliverComponents(
@@ -21,6 +21,8 @@ open class NullTransport(
     override val name: String = "Null Transport",
     override val controller: Controller = NullController
 ) : Transport {
+    override val config: TransportConfig?
+        get() = null
 
     override fun deliverBytes(byteArray: ByteArray) {
         // No-op.

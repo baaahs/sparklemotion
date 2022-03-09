@@ -12,7 +12,9 @@ import kotlinx.html.js.onClickFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.button.enums.ButtonStyle
+import materialui.components.card.card
 import materialui.components.container.container
+import materialui.components.paper.enums.PaperStyle
 import materialui.components.typography.typographyH5
 import materialui.icon
 import react.Props
@@ -57,18 +59,24 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         with(it) { render() }
     }
 
-    header { +"Defautls" }
+    card(styles.defaultConfigs on PaperStyle.root) {
+        attrs.elevation = 4
 
-    fixtureConfigPicker {
-        attrs.editingController = editingController
-        attrs.mutableFixtureConfig = mutableControllerConfig.defaultFixtureConfig
-        attrs.setMutableFixtureConfig = { mutableControllerConfig.defaultFixtureConfig = it }
-    }
+        header {
+            +"Controller Defaults"
+        }
 
-    transportConfigPicker {
-        attrs.editingController = editingController
-        attrs.mutableTransportConfig = mutableControllerConfig.defaultTransportConfig
-        attrs.setMutableTransportConfig = { mutableControllerConfig.defaultTransportConfig = it }
+        fixtureConfigPicker {
+            attrs.editingController = editingController
+            attrs.mutableFixtureConfig = mutableControllerConfig.defaultFixtureConfig
+            attrs.setMutableFixtureConfig = { mutableControllerConfig.defaultFixtureConfig = it }
+        }
+
+        transportConfigPicker {
+            attrs.editingController = editingController
+            attrs.mutableTransportConfig = mutableControllerConfig.defaultTransportConfig
+            attrs.setMutableTransportConfig = { mutableControllerConfig.defaultTransportConfig = it }
+        }
     }
 
 

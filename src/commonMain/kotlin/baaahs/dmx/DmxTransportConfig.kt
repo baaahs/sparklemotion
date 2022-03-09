@@ -25,6 +25,17 @@ data class DmxTransportConfig(
 
     override fun edit(): MutableTransportConfig =
         MutableDmxTransportConfig(this)
+
+    override fun plus(other: TransportConfig?): TransportConfig =
+        if (other == null) this
+        else plus(other as DmxTransportConfig)
+
+    /** Merges two configs, preferring values from [other]. */
+    operator fun plus(other: DmxTransportConfig): DmxTransportConfig = DmxTransportConfig(
+        other.startChannel ?: startChannel,
+        other.endChannel ?: endChannel,
+        other.componentsStartAtUniverseBoundaries ?: componentsStartAtUniverseBoundaries
+    )
 }
 
 class MutableDmxTransportConfig(config: DmxTransportConfig) : MutableTransportConfig {
