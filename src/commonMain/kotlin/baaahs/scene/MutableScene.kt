@@ -50,7 +50,7 @@ class MutableScene(
 }
 
 interface MutableControllerConfig {
-    val controllerMeta: ControllerManager.MetaManager
+    val controllerMeta: ControllerManager.Meta
     var title: String
     val fixtures: MutableList<MutableFixtureMapping>
     var defaultFixtureConfig: MutableFixtureConfig?
@@ -63,9 +63,10 @@ interface MutableControllerConfig {
 }
 
 class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableControllerConfig {
-    override val controllerMeta: ControllerManager.MetaManager
+    override val controllerMeta: ControllerManager.Meta
         get() = BrainManager
     override var title: String = config.title
+    var address: String? = config.address
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
     override var defaultFixtureConfig: MutableFixtureConfig? =
@@ -75,7 +76,7 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
 
     override fun build(): ControllerConfig =
         BrainControllerConfig(
-            title, fixtures.map { it.build() },
+            title, address, fixtures.map { it.build() },
             defaultFixtureConfig?.build(), defaultTransportConfig?.build()
         )
 
@@ -89,7 +90,7 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
 }
 
 class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : MutableControllerConfig {
-    override val controllerMeta: ControllerManager.MetaManager
+    override val controllerMeta: ControllerManager.Meta
         get() = DmxManager
     override var title: String = config.title
     override val fixtures: MutableList<MutableFixtureMapping> =
@@ -116,7 +117,7 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
 }
 
 class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControllerConfig {
-    override val controllerMeta: ControllerManager.MetaManager
+    override val controllerMeta: ControllerManager.Meta
         get() = SacnManager
     override var title: String = config.title
     var address: String = config.address

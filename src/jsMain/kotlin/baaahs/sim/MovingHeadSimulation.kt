@@ -5,6 +5,7 @@ import baaahs.controller.NullController
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.Transport
+import baaahs.fixtures.TransportConfig
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
@@ -59,6 +60,8 @@ actual class MovingHeadSimulation actual constructor(
 
         override val controller: Controller
             get() = NullController
+        override val config: TransportConfig?
+            get() = null
 
         override fun deliverBytes(byteArray: ByteArray) {
             for (i in byteArray.indices) {

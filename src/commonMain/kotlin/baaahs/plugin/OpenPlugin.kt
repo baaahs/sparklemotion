@@ -44,7 +44,7 @@ interface OpenPlugin {
     val controlSerializers: List<SerializerRegistrar<out Control>>
         get() = emptyList()
 
-    val controllerManagers: List<ControllerManager.MetaManager>
+    val controllerManagers: List<ControllerManager.Meta>
         get() = emptyList()
 
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>

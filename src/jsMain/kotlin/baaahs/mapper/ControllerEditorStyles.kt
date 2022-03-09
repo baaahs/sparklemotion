@@ -43,6 +43,23 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
         gridTemplateRows = GridTemplateRows.minContent
     }
 
+    val defaultConfigs by css {
+        backgroundColor = theme.palette.info.main
+        marginTop = 1.em
+        marginBottom = 1.em
+        paddingBottom = 1.em
+
+        header {
+            backgroundColor = theme.palette.info.main.darken(20)
+            marginBottom = 1.em
+        }
+
+        child("div") {
+            marginLeft = 1.em
+            marginRight = 1.em
+        }
+    }
+
     val fixturesPane by css {
         position = Position.relative
         height = 100.pct

@@ -1,10 +1,7 @@
 package baaahs
 
 import baaahs.controller.Controller
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureManagerImpl
-import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.Transport
+import baaahs.fixtures.*
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -291,6 +288,8 @@ class ShowRunnerTest {
     ) : Transport {
         override val controller: Controller
             get() = TODO("not implemented")
+        override val config: TransportConfig?
+            get() = null
 
         override fun deliverBytes(byteArray: ByteArray) {
             fn(byteArray)

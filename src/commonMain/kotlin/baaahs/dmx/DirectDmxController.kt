@@ -15,13 +15,20 @@ import baaahs.util.Time
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Controller {
+class DirectDmxController(
+    private val device: Dmx.Device,
+    clock: Clock
+) : Controller {
     override val controllerId: ControllerId
         get() = ControllerId(controllerType, device.id)
     private val startedAt = clock.now()
     override val state: ControllerState =
         State(device.name, "N/A", startedAt)
     override val defaultFixtureConfig: FixtureConfig?
+        get() = null
+    override val transportType: TransportType
+        get() = DmxTransport
+    override val defaultTransportConfig: TransportConfig?
         get() = null
     private val universe = device.asUniverse()
 
@@ -40,9 +47,11 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
         override val onlineSince: Time?
     ) : ControllerState()
 
-    inner class DirectDmxTransport(private val transportConfig: DmxTransportConfig) : Transport {
+    inner class DirectDmxTransport(
+        override val config: DmxTransportConfig
+    ) : Transport {
         private val buffer = run {
-            val (start, end) = transportConfig
+            val (start, end) = config
             universe.writer(start, end - start + 1)
         }
 
@@ -50,7 +59,6 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
             get() = "DMX Transport"
         override val controller: Controller
             get() = this@DirectDmxController
-        override val config: TransportConfig = transportConfig
 
         override fun deliverBytes(byteArray: ByteArray) {
             byteArray.forEachIndexed { i, byte -> buffer[i] = byte }

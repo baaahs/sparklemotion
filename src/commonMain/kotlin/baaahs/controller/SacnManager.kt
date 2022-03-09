@@ -1,11 +1,9 @@
 package baaahs.controller
 
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransport
 import baaahs.dmx.DmxTransportConfig
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.Transport
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
@@ -57,7 +55,11 @@ class SacnManager(
         controllers = buildMap {
             Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<ControllerId, SacnControllerConfig> {
                 override fun onAdd(key: ControllerId, value: SacnControllerConfig) {
-                    val controller = SacnController(key.id, value.address, null, value.universes, clock.now())
+                    val controller = SacnController(
+                        key.id, value.address,
+                        value.defaultFixtureConfig, value.defaultTransportConfig,
+                        value.universes, clock.now()
+                    )
                     put(controller.controllerId, controller)
                     notifyListeners { onAdd(controller) }
                 }
@@ -109,6 +111,7 @@ class SacnManager(
                                 id,
                                 wledAddress.asString(),
                                 PixelArrayDevice.Config(pixelCount),
+                                null,
                                 pixelCount  * 3 / channelsPerUniverse + 1,
                                 onlineSince
                             )
@@ -131,12 +134,15 @@ class SacnManager(
         val id: String,
         val address: String,
         override val defaultFixtureConfig: FixtureConfig?,
+        override val defaultTransportConfig: TransportConfig?,
         val universeCount: Int,
         val onlineSince: Time?
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
         override val state: ControllerState =
             State(controllerId.name(), address, onlineSince)
+        override val transportType: TransportType
+            get() = DmxTransport
 
         private val channels = ByteArray(channelsPerUniverse * universeCount)
         private val universeMaxChannel = IntArray(universeCount)
@@ -241,7 +247,7 @@ class SacnManager(
         }
     }
 
-    companion object : ControllerManager.MetaManager {
+    companion object : ControllerManager.Meta {
         override val controllerTypeName = "SACN"
         const val channelsPerUniverse = 512
 
@@ -274,7 +280,7 @@ data class SacnControllerConfig(
     override val defaultFixtureConfig: FixtureConfig? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
-    override val controllerType: String get() = "SACN"
+    override val controllerType: String get() = SacnManager.controllerTypeName
 
     override fun edit(): MutableControllerConfig =
         MutableSacnControllerConfig(this)

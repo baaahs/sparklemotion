@@ -83,7 +83,7 @@ object OpenSceneSpec : Spek({
                 override(controller) {
                     FakeController(
                         "fake", null,
-                        FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(333))
+                        anonymousFixtureMapping = FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(333))
                     )
                 }
 
