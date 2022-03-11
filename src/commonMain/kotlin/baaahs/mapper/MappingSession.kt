@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
+import baaahs.dmx.DmxTransportConfig
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -30,7 +31,7 @@ data class MappingSession(
         val deltaImage: String? = null,
         val screenAreaInSqPixels: Float? = null,
         val screenAngle: Float? = null,
-        val channels: Channels? = null
+        val channels: DmxTransportConfig? = null
     ) {
         val controllerId: ControllerId
             get() =

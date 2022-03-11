@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
+import baaahs.fixtures.FixturePreview
 import baaahs.getBang
 import baaahs.model.Model
 import baaahs.scene.EditingController
@@ -12,6 +13,7 @@ import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
+import materialui.components.chip.chip
 import materialui.components.expansionpanel.enums.ExpansionPanelStyle
 import materialui.components.expansionpanel.expansionPanel
 import materialui.components.expansionpaneldetails.expansionPanelDetails
@@ -55,9 +57,13 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                 val entityName = props.mutableFixtureMapping.entityId
                 if (entityName != null) +entityName else i { +"Anonymous" }
 
-                transportConfig?.toSummaryString()?.let {
-                    +" – "
-                    +it
+                +" | "
+                props.fixturePreview.fixtureConfig.summary().forEach { (title, value) ->
+                    chip { attrs.label { +"$title: $value" } }
+                }
+                +" | "
+                props.fixturePreview.transportConfig.summary().forEach { (title, value) ->
+                    chip { attrs.label { +"$title: $value" } }
                 }
             } else {
                 betterSelect<Model.Entity?> {
@@ -77,7 +83,8 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             fixtureConfigPicker {
                 attrs.editingController = props.editingController
                 attrs.mutableFixtureConfig = props.mutableFixtureMapping.fixtureConfig
-                attrs.setMutableFixtureConfig = { props.mutableFixtureMapping.fixtureConfig = it }
+                attrs.setMutableFixtureConfig = { props.mutableFixtureMapping.fixtureConfig = it!! }
+                attrs.allowNullFixtureConfig = false
             }
 
             transportConfigPicker {
@@ -94,6 +101,7 @@ external interface FixtureMappingEditorProps : Props {
     var mutableScene: MutableScene
     var editingController: EditingController<*>
     var mutableFixtureMapping: MutableFixtureMapping
+    var fixturePreview: FixturePreview
     var initiallyOpen: Boolean?
 }
 

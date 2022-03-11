@@ -360,6 +360,7 @@ class FixtureTypeForTest(
 
     inner class Config(
         override val componentCount: Int? = null,
+        override val bytesPerComponent: Int? = null,
         val pixelLocations: List<Vector3F>? = null
     ) : FixtureConfig {
         override val fixtureType: FixtureType
@@ -373,8 +374,11 @@ class FixtureTypeForTest(
 
         operator fun plus(other: Config): Config = Config(
             other.componentCount ?: componentCount,
+            other.bytesPerComponent ?: bytesPerComponent,
             other.pixelLocations ?: pixelLocations
         )
+
+        override fun preview(): ConfigPreview = TODO("not implemented")
     }
 
     inner class DtftFixture(

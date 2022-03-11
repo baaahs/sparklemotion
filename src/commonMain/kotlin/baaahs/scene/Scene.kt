@@ -3,9 +3,9 @@ package baaahs.scene
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.controller.ControllerId
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
+import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.TransportConfig
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
@@ -51,15 +51,17 @@ interface ControllerConfig {
     val title: String
     val fixtures: List<FixtureMappingData>
     val defaultFixtureConfig: FixtureConfig?
+    val emptyTransportConfig: TransportConfig
     val defaultTransportConfig: TransportConfig?
 
     fun edit(): MutableControllerConfig
+    fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview
 }
 
 @Serializable
 data class FixtureMappingData(
     val entityId: String? = null,
-    val deviceConfig: FixtureConfig? = null,
+    val fixtureConfig: FixtureConfig,
     val transportConfig: TransportConfig? = null
 ) {
     fun edit() = MutableFixtureMapping(this)
@@ -67,8 +69,7 @@ data class FixtureMappingData(
     fun open(model: Model) =
         FixtureMapping(
             entityId?.let { model.findEntityByName(it) },
-            PixelArrayDevice,
-            deviceConfig,
+            fixtureConfig,
             transportConfig
         )
 }

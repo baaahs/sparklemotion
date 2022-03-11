@@ -23,7 +23,7 @@ object OpenSceneSpec : Spek({
         context("#relevantFixtureMappings") {
             val surface123 by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = 123) }
             val model by value { modelForTest(listOfNotNull(surface123)) }
-            val transportConfig by value<TransportConfig?> { DmxTransportConfig(0, 0) }
+            val transportConfig by value<TransportConfig?> { DmxTransportConfig(0) }
             val controller by value { FakeController("fake", null, null) }
             val controllerFixtureMappingData by value<FixtureMappingData?> { null }
             val controllerFixtures by value { listOfNotNull(controllerFixtureMappingData) }
@@ -58,23 +58,23 @@ object OpenSceneSpec : Spek({
 //            }
 
             context("with fixture mappings configured for the controller") {
-                override(controllerFixtureMappingData) { FixtureMappingData(deviceConfig = PixelArrayDevice.Config(111)) }
+                override(controllerFixtureMappingData) { FixtureMappingData(fixtureConfig = PixelArrayDevice.Config(111)) }
 
                 it("returns the correct mappings") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(111))
+                        FixtureMapping(null, PixelArrayDevice.Config(111))
                     )
                 }
             }
 
             context("with legacy mapping data") {
                 override(legacyMappingData) {
-                    FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(222), transportConfig)
+                    FixtureMapping(null, PixelArrayDevice.Config(222), transportConfig)
                 }
 
                 it("returns the correct mapping") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(222), transportConfig)
+                        FixtureMapping(null, PixelArrayDevice.Config(222), transportConfig)
                     )
                 }
             }
@@ -83,13 +83,13 @@ object OpenSceneSpec : Spek({
                 override(controller) {
                     FakeController(
                         "fake", null,
-                        anonymousFixtureMapping = FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(333))
+                        anonymousFixtureMapping = FixtureMapping(null, PixelArrayDevice.Config(333))
                     )
                 }
 
                 it("returns it") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(333))
+                        FixtureMapping(null, PixelArrayDevice.Config(333))
                     )
                 }
             }

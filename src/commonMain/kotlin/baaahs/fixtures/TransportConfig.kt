@@ -9,4 +9,6 @@ interface TransportConfig {
 
     /** Merges two configs, preferring values from [other]. */
     operator fun plus(other: TransportConfig?): TransportConfig
+
+    fun preview(): ConfigPreview
 }

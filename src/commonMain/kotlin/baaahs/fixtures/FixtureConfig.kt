@@ -7,6 +7,7 @@ import baaahs.scene.MutableFixtureConfig
 
 interface FixtureConfig {
     val componentCount: Int?
+    val bytesPerComponent: Int?
 
     val fixtureType: FixtureType
 
@@ -16,4 +17,6 @@ interface FixtureConfig {
 
     /** Merges two configs, preferring values from [other]. */
     operator fun plus(other: FixtureConfig?): FixtureConfig
+
+    fun preview(): ConfigPreview
 }

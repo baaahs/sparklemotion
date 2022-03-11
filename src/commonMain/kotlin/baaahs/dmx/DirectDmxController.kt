@@ -31,13 +31,26 @@ class DirectDmxController(
     override val defaultTransportConfig: TransportConfig?
         get() = null
     private val universe = device.asUniverse()
+    private var dynamicDmxAllocator: DynamicDmxAllocator? = null
+
+    override fun beforeFixtureResolution() {
+        dynamicDmxAllocator = DynamicDmxAllocator(1)
+    }
+
+    override fun afterFixtureResolution() {
+        dynamicDmxAllocator = null
+    }
 
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
-        pixelCount: Int
-    ): Transport = DirectDmxTransport(transportConfig as DmxTransportConfig)
+        componentCount: Int,
+        bytesPerComponent: Int
+    ): Transport {
+        val staticDmxMapping = dynamicDmxAllocator!!.allocate(transportConfig as DmxTransportConfig, 1, 3)
+        return DirectDmxTransport(transportConfig, staticDmxMapping)
+    }
 
 
     @Serializable
@@ -48,10 +61,11 @@ class DirectDmxController(
     ) : ControllerState()
 
     inner class DirectDmxTransport(
-        override val config: DmxTransportConfig
+        override val config: DmxTransportConfig,
+        staticDmxMapping: StaticDmxMapping
     ) : Transport {
         private val buffer = run {
-            val (start, end) = config
+            val (start, end) = staticDmxMapping
             universe.writer(start, end - start + 1)
         }
 
@@ -100,7 +114,7 @@ object DmxTransport : TransportType {
     override val title: String
         get() = "DMX"
     override val emptyConfig: TransportConfig
-        get() = DmxTransportConfig(0, 0, true)
+        get() = DmxTransportConfig()
 }
 
 @Serializable
@@ -113,7 +127,16 @@ data class DirectDmxControllerConfig(
 ) : ControllerConfig {
     override val controllerType: String
         get() = DirectDmxController.controllerType
+    override val emptyTransportConfig: TransportConfig
+        get() = DmxTransportConfig()
 
     override fun edit(): MutableControllerConfig =
         MutableDirectDmxControllerConfig(this)
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
+        override val fixtureConfig: ConfigPreview
+            get() = TODO("not implemented")
+        override val transportConfig: ConfigPreview
+            get() = TODO("not implemented")
+    }
 }

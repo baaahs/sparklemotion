@@ -74,7 +74,7 @@ fun generateFixtureMappingData(): List<FixtureMappingData> {
                 pixelFormat,
                 pixelArrangement = LinearSurfacePixelStrategy()
             ),
-            DmxTransportConfig(startChannel, endChannel)
+            DmxTransportConfig(fixtureStartsInFreshUniverse = true)
         )
     }
 }
@@ -88,13 +88,12 @@ fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
 
                     FixtureMapping(
                         config.createEntity(),
-                        PixelArrayDevice,
                         PixelArrayDevice.Config(
                             config.pixelCount,
                             pixelFormat,
                             pixelArrangement = LinearSurfacePixelStrategy()
                         ),
-                        DmxTransportConfig(startChannel, endChannel)
+                        DmxTransportConfig(fixtureStartsInFreshUniverse = true)
                     )
                 }
     )

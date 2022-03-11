@@ -2,7 +2,6 @@ package baaahs.mapper
 
 import baaahs.controller.ControllerId
 import baaahs.device.PixelArrayDevice
-import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.scene.OpenScene
 import baaahs.util.Logger
@@ -31,15 +30,11 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                     )
 
                     val transportConfig = when (controllerId.controllerType) {
-                        "SACN" -> mappingData.channels?.let { DmxTransportConfig(it.start, it.end) }
-                        "DMX" -> mappingData.channels?.let { DmxTransportConfig(it.start, it.end) }
+                        "SACN", "DMX" -> mappingData.channels
                         else -> null
                     }
 
-                    val fixtureMapping = FixtureMapping(
-                        modelEntity, PixelArrayDevice,
-                        fixtureConfig, transportConfig
-                    )
+                    val fixtureMapping = FixtureMapping(modelEntity, fixtureConfig, transportConfig)
                     add(controllerId, fixtureMapping)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }

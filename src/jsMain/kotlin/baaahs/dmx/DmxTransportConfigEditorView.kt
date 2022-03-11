@@ -7,8 +7,10 @@ import baaahs.ui.checked
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
+import materialui.components.checkbox.checkbox
+import materialui.components.formcontrol.formControl
 import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.switches.switch
+import materialui.components.formhelpertext.formHelperText
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -29,39 +31,40 @@ private val DmxTransportConfigEditorView =
                     mutableConfig.startChannel = it
                     props.editingController.onChange()
                 })
-
-                numberTextField("End Channel", mutableConfig.endChannel, onChange = {
-                    mutableConfig.endChannel = it
-                    props.editingController.onChange()
-                })
             }
 
             div(+styles.dmxTransportConfigEditorRow) {
-                formControlLabel {
-                    attrs.label { +"Components start at universe boundaries" }
-                    attrs.control {
-                        switch {
-                            attrs.checked = mutableConfig.componentsStartAtUniverseBoundaries
-                            attrs.onChangeFunction = {
-                                val value = it.target.checked
-                                mutableConfig.componentsStartAtUniverseBoundaries = value
-                                props.editingController.onChange()
+                formControl {
+                    formControlLabel {
+                        attrs.label { +"Start in a fresh universe" }
+                        attrs.control {
+                            checkbox {
+                                attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
+                                attrs.onChangeFunction = {
+//                                val value = it.target.checked
+//                                mutableConfig.componentsStartAtUniverseBoundaries = value
+//                                props.editingController.onChange()
+                                }
                             }
                         }
+                    }
+
+                    formHelperText {
+                        +"texty text text"
                     }
                 }
             }
 
             div(+styles.dmxTransportConfigEditorRow) {
                 formControlLabel {
-                    attrs.label { +"Start in a fresh universe" }
+                    attrs.label { +"Components start at universe boundaries" }
                     attrs.control {
-                        switch {
-                            attrs.checked = false // TODO mutableConfig.fixtureStartsInFreshUniverse
+                        checkbox {
+                            attrs.checked = mutableConfig.componentMaySpanUniverses
                             attrs.onChangeFunction = {
-//                                val value = it.target.checked
-//                                mutableConfig.componentsStartAtUniverseBoundaries = value
-//                                props.editingController.onChange()
+                                val value = it.target.checked
+                                mutableConfig.componentMaySpanUniverses = value
+                                props.editingController.onChange()
                             }
                         }
                     }

@@ -36,13 +36,19 @@ class OpenScene(
 //            fixtures.visit { fixture -> addAll(fixture.problems) }
         }
 
-    fun resolveFixtures(controller: Controller, mappingManager: MappingManager): List<Fixture> =
-        relevantFixtureMappings(controller, mappingManager).map { mapping ->
-            mapping.buildFixture(controller, model)
+    fun resolveFixtures(controller: Controller, mappingManager: MappingManager): List<Fixture> {
+        controller.beforeFixtureResolution()
+        try {
+            return relevantFixtureMappings(controller, mappingManager).map { mapping ->
+                mapping.buildFixture(controller, model)
+            }
+        } finally {
+            controller.afterFixtureResolution()
         }
+    }
 
     fun relevantFixtureMappings(controller: Controller, mappingManager: MappingManager): List<FixtureMapping> {
-        val mappingsFromScene = (controllers.get(controller.controllerId)
+        val mappingsFromScene = (controllers[controller.controllerId]
             ?.fixtures?.map { fixtureMappingData -> fixtureMappingData.open(model) }
             ?: emptyList())
         val mappingsFromLegacy = mappingManager.findMappings(controller.controllerId)

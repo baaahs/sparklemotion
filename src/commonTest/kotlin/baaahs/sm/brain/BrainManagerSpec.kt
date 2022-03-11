@@ -102,6 +102,5 @@ private fun fixtureMappingData(
 ) =
     FixtureMappingData(
         entityName,
-        pixelCount?.let { PixelArrayDevice.Config(it, PixelArrayDevice.PixelFormat.RGB8) },
-        null
+        PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8)
     )

@@ -14,11 +14,21 @@ interface Controller {
     val transportType: TransportType
     val defaultTransportConfig: TransportConfig?
 
-    fun createTransport(entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int): Transport
+    fun createTransport(
+        entity: Model.Entity?,
+        fixtureConfig: FixtureConfig,
+        transportConfig: TransportConfig?,
+        componentCount: Int,
+        bytesPerComponent: Int
+    ): Transport
+
     fun getAnonymousFixtureMappings(): List<FixtureMapping>
 
     fun beforeFrame() {}
     fun afterFrame() {}
+
+    fun beforeFixtureResolution() {}
+    fun afterFixtureResolution() {}
 }
 
 open class NullController(
@@ -42,7 +52,8 @@ open class NullController(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
-        pixelCount: Int
+        componentCount: Int,
+        bytesPerComponent: Int
     ): Transport = NullTransport
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> =

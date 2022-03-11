@@ -210,7 +210,7 @@
       "fixtures": [
         {
           "entityId": "leftEye",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "MovingHead",
             "adapter": {
               "type": "Shenzarpy"
@@ -218,13 +218,12 @@
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 1,
-            "endChannel": 16
+            "startChannel": 1
           }
         },
         {
           "entityId": "rightEye",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "MovingHead",
             "adapter": {
               "type": "Shenzarpy"
@@ -232,8 +231,7 @@
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 17,
-            "endChannel": 33
+            "startChannel": 17
           }
         }
       ]

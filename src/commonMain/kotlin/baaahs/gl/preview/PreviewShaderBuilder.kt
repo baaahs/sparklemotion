@@ -6,6 +6,7 @@ import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.ConfigPreview
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.Transport
@@ -311,10 +312,14 @@ object ProjectionPreviewDevice: FixtureType {
     class Config : FixtureConfig {
         override val componentCount: Int
             get() = 1
+        override val bytesPerComponent: Int
+            get() = error("bytesPerComponent not implemented for ProjectionPreviewDevice")
+
         override val fixtureType: FixtureType
             get() = ProjectionPreviewDevice
 
         override fun edit(): MutableFixtureConfig = TODO("not implemented")
         override fun plus(other: FixtureConfig?) = this
+        override fun preview(): ConfigPreview = TODO("not implemented")
     }
 }
