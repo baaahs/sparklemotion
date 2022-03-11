@@ -1,10 +1,7 @@
 package baaahs.device
 
 import baaahs.Color
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.Transport
+import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
@@ -113,10 +110,16 @@ object PixelArrayDevice : FixtureType {
         override val componentCount: Int?
             get() = pixelCount
 
+        override val bytesPerComponent: Int?
+            get() = pixelFormat?.channelsPerPixel
+
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
         override fun edit(): MutableFixtureConfig = MutableConfig(this)
+
+        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? =
+            pixelArrangement?.forFixture(pixelCount, entity, model)
 
         /** Merges two configs, preferring values from [other]. */
         override fun plus(other: FixtureConfig?): FixtureConfig =
@@ -132,8 +135,12 @@ object PixelArrayDevice : FixtureType {
             other.pixelLocations ?: pixelLocations
         )
 
-        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? {
-            return pixelArrangement?.forFixture(pixelCount, entity, model)
+        override fun preview(): ConfigPreview = object : ConfigPreview {
+            override fun summary(): List<Pair<String, String?>> = listOf(
+                "Pixel Count" to pixelCount?.toString(),
+                "Pixel Format" to pixelFormat?.name,
+                "Gamma Correction" to gammaCorrection?.toString()
+            )
         }
     }
 

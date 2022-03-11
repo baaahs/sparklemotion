@@ -1,10 +1,7 @@
 package baaahs.device
 
 import baaahs.dmx.Shenzarpy
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.MovingHeadFixture
-import baaahs.fixtures.Transport
+import baaahs.fixtures.*
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
@@ -88,6 +85,9 @@ object MovingHeadDevice : FixtureType {
     data class Config(val adapter: MovingHeadAdapter?) : FixtureConfig {
         override val componentCount: Int
             get() = 1
+        override val bytesPerComponent: Int?
+            get() = adapter?.dmxChannelCount
+
         override val fixtureType: FixtureType
             get() = MovingHeadDevice
 
@@ -100,6 +100,11 @@ object MovingHeadDevice : FixtureType {
         operator fun plus(other: Config): Config = Config(
             other.adapter ?: adapter,
         )
+
+        override fun preview(): ConfigPreview = object : ConfigPreview {
+            override fun summary(): List<Pair<String, String?>> =
+                listOf("Adapter" to adapter?.id)
+        }
     }
 
     class MutableConfig(config: Config) : MutableFixtureConfig {

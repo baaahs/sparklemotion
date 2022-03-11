@@ -1,8 +1,8 @@
 package baaahs.controller
 
 import baaahs.device.PixelArrayDevice
-import baaahs.dmx.DmxTransport
-import baaahs.dmx.DmxTransportConfig
+import baaahs.dmx.*
+import baaahs.dmx.Dmx.Companion.channelsPerUniverse
 import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
@@ -19,8 +19,6 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlin.math.max
-import kotlin.math.min
 
 class SacnManager(
     private val link: Network.Link,
@@ -144,44 +142,55 @@ class SacnManager(
         override val transportType: TransportType
             get() = DmxTransport
 
-        private val channels = ByteArray(channelsPerUniverse * universeCount)
-        private val universeMaxChannel = IntArray(universeCount)
+        private val dmxUniverses = DmxUniverses(universeCount)
+        private var dynamicDmxAllocator: DynamicDmxAllocator? = null
+
         private val node = sacnLink.deviceAt(link.createAddress(address))
         val stats get() = node.stats
         private var sequenceNumber = 0
+
+        override fun beforeFixtureResolution() {
+            dynamicDmxAllocator = DynamicDmxAllocator(1)
+        }
+
+        override fun afterFixtureResolution() {
+            dynamicDmxAllocator = null
+        }
 
         override fun createTransport(
             entity: Model.Entity?,
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?,
-            pixelCount: Int
-        ): Transport = SacnTransport(transportConfig as DmxTransportConfig?)
-            .also { it.validate() }
+            componentCount: Int,
+            bytesPerComponent: Int
+        ): Transport {
+            val staticDmxMapping = dynamicDmxAllocator!!.allocate(transportConfig as DmxTransportConfig?, 1, 3)
+            return SacnTransport(transportConfig, staticDmxMapping)
+                .also { it.validate() }
+        }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
 
-        inner class SacnTransport(transportConfig: DmxTransportConfig?) : Transport {
+        inner class SacnTransport(
+            transportConfig: DmxTransportConfig?,
+            private val staticDmxMapping: StaticDmxMapping
+        ) : Transport {
             override val name: String get() = id
             override val controller: Controller
                 get() = this@SacnController
             override val config: TransportConfig? = transportConfig
-            private val startChannel = transportConfig?.startChannel ?: 0
-            private val endChannel = transportConfig?.endChannel
-            private val componentsStartAtUniverseBoundaries =
-                transportConfig?.componentsStartAtUniverseBoundaries ?: true
-
-            private val writer = ByteArrayWriter(channels)
+            private val startChannel = staticDmxMapping.startChannel
+            private val channelCount = staticDmxMapping.channelCount - 1
 
             fun validate() {
-                if (startChannel >= channels.size)
+                if (startChannel >= dmxUniverses.channels.size)
                     error("For $name, start channel $startChannel won't fit in $universeCount universes")
-                if (endChannel != null && endChannel >= channels.size)
-                    error("For $name, end channel $endChannel won't fit in $universeCount universes")
+                if (startChannel + channelCount - 1 >= dmxUniverses.channels.size)
+                    error("For $name, end channel $channelCount won't fit in $universeCount universes")
             }
 
             override fun deliverBytes(byteArray: ByteArray) {
-                val channelCount = min(byteArray.size, endChannel ?: Int.MAX_VALUE)
-                byteArray.copyInto(channels, startChannel, 0, channelCount)
+                staticDmxMapping.writeBytes(byteArray, dmxUniverses)
             }
 
             override fun deliverComponents(
@@ -189,56 +198,24 @@ class SacnManager(
                 bytesPerComponent: Int,
                 fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
             ) {
-                fun bumpUniverseMax(universeIndex: Int, channelIndex: Int) {
-                    universeMaxChannel[universeIndex] =
-                        max(channelIndex, universeMaxChannel[universeIndex])
-                }
-
-                if (componentsStartAtUniverseBoundaries) {
-                    val componentsPerUniverse = channelsPerUniverse / bytesPerComponent
-                    val effectiveChannelsPerUniverse = componentsPerUniverse * bytesPerComponent
-                    val startUniverseIndex = startChannel / channelsPerUniverse
-                    val startChannelIndex = startChannel % channelsPerUniverse
-
-                    for (componentIndex in 0 until componentCount) {
-                        val componentByteOffset = startChannelIndex + componentIndex * bytesPerComponent
-                        val universeOffset = componentByteOffset / effectiveChannelsPerUniverse
-                        val channelIndex = componentByteOffset % effectiveChannelsPerUniverse
-                        val universeIndex = startUniverseIndex + universeOffset
-                        writer.offset = universeIndex * channelsPerUniverse + channelIndex
-                        fn(componentIndex, writer)
-                        bumpUniverseMax(universeIndex, channelIndex + bytesPerComponent)
-                    }
-                } else {
-                    for (componentIndex in 0 until componentCount) {
-                        val channelIndex = startChannel + componentIndex * bytesPerComponent
-                        writer.offset = channelIndex
-                        for (i in channelIndex until channelIndex + bytesPerComponent) {
-                            val universeIndex = i / channelsPerUniverse
-                            val bIndex = i % channelsPerUniverse
-                            bumpUniverseMax(universeIndex, bIndex + 1)
-                        }
-                        fn(componentIndex, writer)
-                    }
-
-                }
+                staticDmxMapping.writeComponents(componentCount, bytesPerComponent, dmxUniverses, fn)
             }
         }
 
         override fun afterFrame() {
             sequenceNumber++
             for (universeIndex in 0 until universeCount) {
-                val maxChannel = universeMaxChannel[universeIndex]
+                val maxChannel = dmxUniverses.universeMaxChannel[universeIndex]
                 if (maxChannel > 0) {
                     node.sendDataPacket(
-                        channels,
+                        dmxUniverses.channels,
                         universeIndex + 1,
                         universeIndex * channelsPerUniverse,
                         maxChannel,
                         sequenceNumber
                     )
                 }
-                universeMaxChannel[universeIndex] = 0
+                dmxUniverses.universeMaxChannel[universeIndex] = 0
             }
         }
 
@@ -249,7 +226,6 @@ class SacnManager(
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName = "SACN"
-        const val channelsPerUniverse = 512
 
         private val logger = Logger<SacnManager>()
         private val json = Json {
@@ -281,9 +257,18 @@ data class SacnControllerConfig(
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
     override val controllerType: String get() = SacnManager.controllerTypeName
+    override val emptyTransportConfig: TransportConfig
+        get() = DmxTransportConfig()
 
     override fun edit(): MutableControllerConfig =
         MutableSacnControllerConfig(this)
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
+        override val fixtureConfig: ConfigPreview
+            get() = fixtureConfig.preview()
+        override val transportConfig: ConfigPreview
+            get() = transportConfig.preview()
+    }
 }
 
 @Serializable

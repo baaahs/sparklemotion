@@ -312,308 +312,287 @@
       "fixtures": [
         {
           "entityId": "ring 4.01",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 0,
-            "endChannel": 720
+            "startChannel": 0
           }
         },
         {
           "entityId": "ring 4.02",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 1024,
-            "endChannel": 1744
+            "startChannel": 1024
           }
         },
         {
           "entityId": "ring 4.03",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 2048,
-            "endChannel": 2768
+            "startChannel": 2048
           }
         },
         {
           "entityId": "ring 4.04",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 3072,
-            "endChannel": 3792
+            "startChannel": 3072
           }
         },
         {
           "entityId": "ring 4.05",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 4096,
-            "endChannel": 4816
+            "startChannel": 4096
           }
         },
         {
           "entityId": "ring 4.06",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 5120,
-            "endChannel": 5840
+            "startChannel": 5120
           }
         },
         {
           "entityId": "ring 4.07",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 6144,
-            "endChannel": 6864
+            "startChannel": 6144
           }
         },
         {
           "entityId": "ring 4.08",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 7168,
-            "endChannel": 7888
+            "startChannel": 7168
           }
         },
         {
           "entityId": "ring 4.09",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 8192,
-            "endChannel": 8912
+            "startChannel": 8192
           }
         },
         {
           "entityId": "ring 4.10",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 9216,
-            "endChannel": 9936
+            "startChannel": 9216
           }
         },
         {
           "entityId": "ring 4.11",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 10240,
-            "endChannel": 10960
+            "startChannel": 10240
           }
         },
         {
           "entityId": "ring 4.12",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 11264,
-            "endChannel": 11984
+            "startChannel": 11264
           }
         },
         {
           "entityId": "ring 5.01",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 12288,
-            "endChannel": 13188
+            "startChannel": 12288
           }
         },
         {
           "entityId": "ring 5.02",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 13312,
-            "endChannel": 14212
+            "startChannel": 13312
           }
         },
         {
           "entityId": "ring 5.03",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 14336,
-            "endChannel": 15236
+            "startChannel": 14336
           }
         },
         {
           "entityId": "ring 5.04",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 15360,
-            "endChannel": 16260
+            "startChannel": 15360
           }
         },
         {
           "entityId": "ring 5.05",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 16384,
-            "endChannel": 17284
+            "startChannel": 16384
           }
         },
         {
           "entityId": "ring 5.06",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 17408,
-            "endChannel": 18308
+            "startChannel": 17408
           }
         },
         {
           "entityId": "ring 5.07",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 18432,
-            "endChannel": 19332
+            "startChannel": 18432
           }
         },
         {
           "entityId": "ring 5.08",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 19456,
-            "endChannel": 20356
+            "startChannel": 19456
           }
         },
         {
           "entityId": "ring 5.09",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 20480,
-            "endChannel": 21380
+            "startChannel": 20480
           }
         },
         {
           "entityId": "ring 5.10",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 21504,
-            "endChannel": 22404
+            "startChannel": 21504
           }
         },
         {
           "entityId": "ring 5.11",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 22528,
-            "endChannel": 23428
+            "startChannel": 22528
           }
         },
         {
           "entityId": "ring 5.12",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 23552,
-            "endChannel": 24452
+            "startChannel": 23552
           }
         },
         {
           "entityId": "ring 8.01",
-          "deviceConfig": {
+          "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 480
           },
           "transportConfig": {
             "type": "DMX",
-            "startChannel": 24576,
-            "endChannel": 26016
+            "startChannel": 24576
           }
         }
       ],
       "defaultFixtureConfig": {
         "type": "PixelArray",
         "pixelFormat": "GRB8"
+      },
+      "defaultTransportConfig": {
+        "type": "DMX",
+        "fixtureStartsInFreshUniverse": true
       },
       "address": "192.168.0.113",
       "universes": 51

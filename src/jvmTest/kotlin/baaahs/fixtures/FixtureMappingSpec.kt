@@ -20,10 +20,10 @@ object FixtureMappingSpec : Spek({
         context("buildFixture") {
             val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }
             val model by value { modelForTest(listOfNotNull(entity)) }
-            val mappingFixtureConfig by value<FixtureConfig?> { PixelArrayDevice.Config() }
-            val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig(777, 888) }
+            val mappingFixtureConfig by value<FixtureConfig> { PixelArrayDevice.Config() }
+            val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig(777) }
             val mapping by value {
-                FixtureMapping(entity, PixelArrayDevice, mappingFixtureConfig, mappingTransportConfig)
+                FixtureMapping(entity, mappingFixtureConfig, mappingTransportConfig)
             }
             val controllerDefaultFixtureConfig by value<FixtureConfig?> { null }
             val controllerDefaultTransportConfig by value<TransportConfig?> { null }
@@ -44,7 +44,6 @@ object FixtureMappingSpec : Spek({
 
                     expect(fixture.transport.config).isA<DmxTransportConfig> {
                         feature { f(it::startChannel) }.toEqual(777)
-                        feature { f(it::endChannel) }.toEqual(888)
                     }
                 }
 
@@ -97,12 +96,11 @@ object FixtureMappingSpec : Spek({
                 }
 
                 context("whose controller has a default transport config") {
-                    override(controllerDefaultTransportConfig) { DmxTransportConfig(555, 666) }
+                    override(controllerDefaultTransportConfig) { DmxTransportConfig(555) }
 
                     it("the mapping's config takes precedence") {
                         expect(fixture.transport.config).isA<DmxTransportConfig> {
                             feature { f(it::startChannel) }.toEqual(777)
-                            feature { f(it::endChannel) }.toEqual(888)
                         }
                     }
 
@@ -112,7 +110,6 @@ object FixtureMappingSpec : Spek({
                         it("the default config is used") {
                             expect(fixture.transport.config).isA<DmxTransportConfig> {
                                 feature { f(it::startChannel) }.toEqual(555)
-                                feature { f(it::endChannel) }.toEqual(666)
                             }
                         }
                     }

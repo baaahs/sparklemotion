@@ -140,15 +140,13 @@ class BrainManager(
             entity: Model.Entity?,
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?,
-            pixelCount: Int
-        ): Transport {
-            return BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
-        }
+            componentCount: Int,
+            bytesPerComponent: Int
+        ): Transport = BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
             return listOf(FixtureMapping(
                 null,
-                fixtureType = PixelArrayDevice,
                 BrainManager.defaultFixtureConfig
             ))
         }
@@ -308,9 +306,18 @@ data class BrainControllerConfig(
 ) : ControllerConfig {
     override val controllerType: String
         get() = BrainManager.controllerTypeName
+    override val emptyTransportConfig: TransportConfig
+        get() = BrainTransportConfig()
 
     override fun edit(): MutableControllerConfig =
         MutableBrainControllerConfig(this)
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
+        override val fixtureConfig: ConfigPreview
+            get() = TODO("not implemented")
+        override val transportConfig: ConfigPreview
+            get() = TODO("not implemented")
+    }
 }
 
 @Serializable(with = BrainIdSerializer::class)
@@ -330,7 +337,7 @@ object BrainTransportType : TransportType {
     override val title: String
         get() = "Brain"
     override val emptyConfig: TransportConfig
-        get() = DmxTransportConfig(0, 0, true)
+        get() = DmxTransportConfig()
 }
 
 @Serializable
@@ -344,4 +351,8 @@ class BrainTransportConfig() : TransportConfig {
 
     override fun plus(other: TransportConfig?): TransportConfig =
         this
+
+    override fun preview(): ConfigPreview = object : ConfigPreview {
+        override fun summary(): List<Pair<String, String?>> = emptyList()
+    }
 }

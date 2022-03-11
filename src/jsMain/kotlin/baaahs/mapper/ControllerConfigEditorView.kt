@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
+import baaahs.device.PixelArrayDevice
 import baaahs.scene.EditingController
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
@@ -42,7 +43,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by eventHandler(mutableControllerConfig, props.onEdit) {
-        val newMapping = MutableFixtureMapping(FixtureMappingData())
+        val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureConfig = PixelArrayDevice.Config()))
         mutableControllerConfig.fixtures.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
@@ -70,6 +71,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             attrs.editingController = editingController
             attrs.mutableFixtureConfig = mutableControllerConfig.defaultFixtureConfig
             attrs.setMutableFixtureConfig = { mutableControllerConfig.defaultFixtureConfig = it }
+            attrs.allowNullFixtureConfig = true
         }
 
         transportConfigPicker {
@@ -82,12 +84,23 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     header { +"Fixture Mappings" }
 
-    mutableControllerConfig.fixtures.forEach {
+    val tempModel = props.mutableScene.model.build().open()
+    val tempController = mutableControllerConfig.build()
+    val fixturePreviews = tempController.fixtures.map { fixtureMappingData ->
+        val fixtureMapping = fixtureMappingData.open(tempModel)
+        val fixtureConfig =
+            fixtureMapping.resolveFixtureConfig(mutableControllerConfig.defaultFixtureConfig?.build())
+        val transportConfig =
+            fixtureMapping.resolveTransportConfig(tempController.emptyTransportConfig, mutableControllerConfig.defaultTransportConfig?.build())
+        tempController.createFixturePreview(fixtureConfig, transportConfig)
+    }
+    mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
         fixtureMappingEditor {
             attrs.mutableScene = props.mutableScene
             attrs.editingController = editingController
-            attrs.mutableFixtureMapping = it
-            attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == it
+            attrs.mutableFixtureMapping = mutableFixtureMapping
+            attrs.fixturePreview = fixturePreview
+            attrs.initiallyOpen = recentlyAddedFixtureMappingRef.current == mutableFixtureMapping
         }
     }
 

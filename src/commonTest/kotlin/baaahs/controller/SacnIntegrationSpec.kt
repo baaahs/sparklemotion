@@ -171,7 +171,7 @@ object SacnIntegrationSpec : Spek({
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
                             pixelCount = 3,
-                            channels = MappingSession.SurfaceData.Channels(0, 511)
+                            channels = DmxTransportConfig(0)
                         )
                     )
                 )
@@ -188,7 +188,7 @@ object SacnIntegrationSpec : Spek({
                 expect(fixtureConfig.pixelFormat).toEqual(null)
 
                 val transportConfig = data.transportConfig as DmxTransportConfig
-                expect(transportConfig.startChannel..transportConfig.endChannel).toEqual(0..511)
+                expect(transportConfig.startChannel).toEqual(0)
             }
         }
     }
@@ -199,12 +199,11 @@ private fun fixtureMappingData(
     baseChannel: Int,
     pixelCount: Int,
     componentsStartAtUniverseBoundaries: Boolean
-) =
-    FixtureMappingData(
-        entityName,
-        PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
-        DmxTransportConfig(baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries)
-    )
+) = FixtureMappingData(
+    entityName,
+    PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
+    DmxTransportConfig(baseChannel, true, componentsStartAtUniverseBoundaries)
+)
 
 fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
 

@@ -41,6 +41,15 @@ interface RemoteConfig {
     fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) = Unit
 }
 
+interface FixturePreview {
+    val fixtureConfig: ConfigPreview
+    val transportConfig: ConfigPreview
+}
+
+interface ConfigPreview {
+    fun summary(): List<Pair<String, String?>>
+}
+
 @Serializable
 data class PixelArrayRemoteConfig(
     val entityId: String?,

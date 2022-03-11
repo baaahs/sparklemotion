@@ -5,6 +5,7 @@ import baaahs.controller.*
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransport
+import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
@@ -34,7 +35,10 @@ object ControllersManagerSpec : Spek({
         val model by value<Model?> { fakeModel(modelEntity) }
         val fakeController by value { FakeController("c1") }
         val legacyMappings by value {
-            mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, modelEntity.fixtureType)))
+            mapOf(
+                fakeController.controllerId to
+                        listOf(FixtureMapping(modelEntity, modelEntity.fixtureType.emptyConfig))
+            )
         }
         val fakeControllerConfig by value {
             FakeControllerManager.Config(
@@ -126,8 +130,7 @@ object ControllersManagerSpec : Spek({
                         FakeController(
                             "c1",
                             anonymousFixtureMapping = FixtureMapping(
-                                null, fixtureType = PixelArrayDevice,
-                                PixelArrayDevice.Config(
+                                null, PixelArrayDevice.Config(
                                     pixelCount = 3,
                                     pixelFormat = PixelArrayDevice.PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
@@ -161,8 +164,7 @@ object ControllersManagerSpec : Spek({
                     mapOf(
                         fakeController.controllerId to listOf(
                             FixtureMapping(
-                                modelEntity, fixtureType = PixelArrayDevice,
-                                PixelArrayDevice.Config(
+                                modelEntity, PixelArrayDevice.Config(
                                     3, PixelArrayDevice.PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
@@ -191,8 +193,7 @@ object ControllersManagerSpec : Spek({
                         mapOf(
                             fakeController.controllerId to listOf(
                                 FixtureMapping(
-                                    modelEntity, fixtureType = PixelArrayDevice,
-                                    PixelArrayDevice.Config(
+                                    modelEntity, PixelArrayDevice.Config(
                                         3,
                                         pixelLocations = listOf(
                                             Vector3F(1f, 1f, 1f),
@@ -363,7 +364,14 @@ class FakeControllerManager(
         override val defaultFixtureConfig: FixtureConfig? = null,
         override val defaultTransportConfig: TransportConfig? = null
     ) : ControllerConfig {
+        override val emptyTransportConfig: TransportConfig
+            get() = DmxTransportConfig()
+
         override fun edit(): MutableControllerConfig = TODO("not implemented")
+        override fun createFixturePreview(
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig
+        ): FixturePreview = TODO("not implemented")
     }
 }
 
@@ -384,7 +392,11 @@ class FakeController(
     lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
     override fun createTransport(
-        entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int
+        entity: Model.Entity?,
+        fixtureConfig: FixtureConfig,
+        transportConfig: TransportConfig?,
+        componentCount: Int,
+        bytesPerComponent: Int
     ): Transport = FakeTransport(fixtureConfig, transportConfig).also { transport = it }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)

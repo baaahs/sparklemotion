@@ -51,6 +51,7 @@ external interface FixtureConfigPickerProps : Props {
     var editingController: EditingController<*>
     var mutableFixtureConfig: MutableFixtureConfig?
     var setMutableFixtureConfig: (mutableFixtureConfig: MutableFixtureConfig?) -> Unit
+    var allowNullFixtureConfig: Boolean?
 }
 
 fun RBuilder.fixtureConfigPicker(handler: RHandler<FixtureConfigPickerProps>) =

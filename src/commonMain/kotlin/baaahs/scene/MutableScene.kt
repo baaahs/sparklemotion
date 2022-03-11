@@ -147,11 +147,11 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
 
 class MutableFixtureMapping(fixtureMappingData: FixtureMappingData) {
     var entityId: String? = fixtureMappingData.entityId
-    var fixtureConfig: MutableFixtureConfig? = fixtureMappingData.deviceConfig?.edit()
+    var fixtureConfig: MutableFixtureConfig = fixtureMappingData.fixtureConfig.edit()
     var transportConfig: MutableTransportConfig? = fixtureMappingData.transportConfig?.edit()
 
     fun build(): FixtureMappingData =
-        FixtureMappingData(entityId, fixtureConfig?.build(), transportConfig?.build())
+        FixtureMappingData(entityId, fixtureConfig.build(), transportConfig?.build())
 }
 
 class MutableModel(baseModel: ModelData) {
