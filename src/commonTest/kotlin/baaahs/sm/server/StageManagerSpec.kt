@@ -40,8 +40,6 @@ import org.spekframework.spek2.Spek
 @InternalCoroutinesApi
 object StageManagerSpec : Spek({
     describe<StageManager> {
-        val model by value { TestModel }
-
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
         val dispatcher by value { TestCoroutineDispatcher() }

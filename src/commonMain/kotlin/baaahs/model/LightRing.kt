@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
@@ -26,7 +26,7 @@ class LightRing(
     val pixelDirection: PixelDirection = PixelDirection.Clockwise,
     @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), LinearPixelArray {
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = PixelArrayDevice
 
     override val bounds: Pair<Vector3F, Vector3F>

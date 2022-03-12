@@ -6,8 +6,8 @@ import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.app.ui.model.ModelEditorStyles
+import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
-import baaahs.mapper.SceneEditorStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -30,7 +30,7 @@ class AllStyles(val theme: MuiTheme) {
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val editableManager by lazy { ThemedEditableStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
-    val sceneEditor by lazy { SceneEditorStyles(theme) }
+    val controllerEditor by lazy { ControllerEditorStyles(theme) }
     val modelEditor by lazy { ModelEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }

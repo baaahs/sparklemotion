@@ -1,5 +1,8 @@
 package baaahs.visualizer
 
+import baaahs.device.MovingHeadDevice
+import baaahs.device.PixelArrayDevice
+import baaahs.dmx.MutableDmxTransportConfig
 import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.IObservable
@@ -49,6 +52,27 @@ interface VisualizerBuilder {
     fun getLightRingEditorView(editingEntity: EditingEntity<out MutableLightRingData>): View
     fun getMovingHeadEditorView(editingEntity: EditingEntity<out MutableMovingHeadData>): View
     fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View
+
+    // Controllers:
+    fun getBrainControllerEditorView(editingController: EditingController<MutableBrainControllerConfig>): View
+    fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View
+    fun getSacnControllerEditorView(editingController: EditingController<MutableSacnControllerConfig>): View
+
+    // FixtureConfigs:
+    fun getMovingHeadFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureConfig: MovingHeadDevice.MutableConfig
+    ): View
+    fun getPixelArrayFixtureConfigEditorView(
+        editingController: EditingController<*>,
+        mutableFixtureConfig: PixelArrayDevice.MutableConfig
+    ): View
+
+    // TransportConfigs:
+    fun getDmxTransportConfigEditorView(
+        editingController: EditingController<*>,
+        mutableTransportConfig: MutableDmxTransportConfig
+    ): View
 }
 
 expect val visualizerBuilder: VisualizerBuilder

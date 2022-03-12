@@ -55,4 +55,8 @@ interface Dmx {
     interface Channel {
         val offset: Int
     }
+
+    companion object {
+        const val channelsPerUniverse = 512
+    }
 }

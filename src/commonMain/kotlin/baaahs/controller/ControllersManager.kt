@@ -2,10 +2,8 @@ package baaahs.controller
 
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
-import baaahs.geom.Vector3F
 import baaahs.getBang
 import baaahs.mapping.MappingManager
-import baaahs.model.Model
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.sm.server.FrameListener
@@ -77,69 +75,20 @@ class ControllersManager(
     ) {
         val addFixtures = arrayListOf<Fixture>()
         val removeFixtures = arrayListOf<Fixture>()
-        val model = this.scene?.model
         controllers.forEach { liveController ->
             val controller = liveController.controller
             removeFixtures.addAll(liveController.fixtures)
             liveController.fixtures.clear()
 
-            if (model != null && mappingManager.dataHasLoaded) {
-                val newFixtures = resolveFixtures(controller, model)
+            val scene = this.scene
+            if (scene != null && mappingManager.dataHasLoaded) {
+                val newFixtures = scene.resolveFixtures(controller, mappingManager)
                 liveController.fixtures.addAll(newFixtures)
                 addFixtures.addAll(newFixtures)
             }
         }
 
         fixturesChanged(addFixtures, removeFixtures)
-    }
-
-    private fun resolveFixtures(
-        controller: Controller,
-        model: Model
-    ): ArrayList<Fixture> {
-        val mappingsFromScene = (scene?.controllers?.get(controller.controllerId)
-            ?.fixtures?.map { fixtureMappingData -> fixtureMappingData.open(model) }
-            ?: emptyList())
-        val mappingsFromLegacy = mappingManager.findMappings(controller.controllerId)
-        val mappings = (mappingsFromScene + mappingsFromLegacy)
-            .ifEmpty { controller.getAnonymousFixtureMappings() }
-
-        val defaultMapping = controller.defaultFixtureMapping
-
-        val newFixtures = arrayListOf<Fixture>()
-        mappings.forEach { mapping ->
-            val modelEntity = mapping.entity
-
-            val fixtureConfig = mapping.fixtureConfig
-                ?: modelEntity?.deviceType?.defaultConfig
-                ?: defaultMapping?.fixtureConfig
-                ?: error("huh? no device config")
-
-            // TODO: These really only apply to PixelArrayDevices,
-            // TODO: and should live in fixtureConfig.
-            val pixelCount = mapping.pixelCount
-                ?: defaultMapping?.pixelCount
-                ?: modelEntity?.deviceType?.defaultPixelCount
-                ?: 0
-
-            val pixelLocations = mapping.pixelLocations
-                ?.map { it ?: Vector3F(0f, 0f, 0f) }
-                ?: fixtureConfig.generatePixelLocations(pixelCount, modelEntity, model)
-                ?: emptyList()
-
-            val transportConfig = mapping.transportConfig
-                ?: defaultMapping?.transportConfig
-
-            val fixture = Fixture(
-                modelEntity, pixelCount, pixelLocations,
-                fixtureConfig,
-                "${modelEntity?.name ?: "???"}@${controller.controllerId.name()}",
-                controller.createTransport(modelEntity, fixtureConfig, transportConfig, pixelCount)
-            )
-
-            newFixtures.add(fixture)
-        }
-        return newFixtures
     }
 
     override fun beforeFrame() {
@@ -151,15 +100,14 @@ class ControllersManager(
     }
 
     private fun onSceneChange() {
-        val scene = sceneProvider.openScene
-            ?: return
+        this.scene = sceneProvider.openScene
 
-        this.scene = scene
-
-        val managerConfig = scene.controllers.entries
-            .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
-            .mapKeys { (k, _) -> byType.getBang(k, "controller manager") }
-            .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
+        val managerConfig = scene?.let {
+            it.controllers.entries
+                .groupByTo(hashMapOf()) { (_, v) -> v.controllerType }
+                .mapKeys { (k, _) -> byType.getBang(k, "controller manager") }
+                .mapValues { (_, v) -> v.associate { (k, v) -> k to v } }
+        } ?: emptyMap()
 
         try {
             deferFixtureRefresh = true

@@ -40,14 +40,10 @@ class RemoteVisualizerServer(
                 sendPacket(Opcode.FixtureInfo, fixture.modelEntity) {
                     outBuf.writeString(
                         plugins.json.encodeToString(
-                            FixtureConfigWrapper.serializer(),
-                            FixtureConfigWrapper(fixture.fixtureConfig)
+                            RemoteConfigWrapper.serializer(),
+                            RemoteConfigWrapper(fixture.remoteConfig)
                         )
                     )
-
-
-                    outBuf.writeInt(fixture.pixelCount)
-                    fixture.pixelLocations.forEach { it.serialize(outBuf) }
                 }
             }
         }

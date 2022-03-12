@@ -65,7 +65,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
             formControlLabel {
                 attrs.control {
                     switch {
-                        attrs.value(mutableEntity.zigZag)
+                        attrs.checked = mutableEntity.zigZag
                         attrs.onChangeFunction = handleZigZagChange
                     }
                 }

@@ -49,7 +49,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         header { +"Radius:" }
 
         with(styles) {
-            numberTextField("", mutableEntity.radius, { +props.editingEntity.modelUnit.display }, handleRadiusChange)
+            numberTextField("", mutableEntity.radius, { +props.editingEntity.modelUnit.display }, onChange = handleRadiusChange)
         }
     }
 
@@ -57,7 +57,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         header { +"First Pixel:" }
 
         with(styles) {
-            numberTextField("Position", mutableEntity.firstPixelRadians.asDegrees, {  +"°" }, handleFirstPixelRadiansChange)
+            numberTextField("Position", mutableEntity.firstPixelRadians.asDegrees, {  +"°" }, onChange = handleFirstPixelRadiansChange)
         }
     }
 

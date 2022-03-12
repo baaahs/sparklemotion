@@ -1,10 +1,12 @@
 package baaahs.model
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
+import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightBarSimulation
 import baaahs.sim.SimulationEnv
@@ -75,7 +77,9 @@ open class PolyLine(
     val yPadding: Float,
     @Transient override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), PlacedPixelArray {
-    override val deviceType: DeviceType
+    override val defaultFixtureConfig: FixtureConfig?
+        get() = PixelArrayDevice.Config(pixelCount, pixelArrangement = LinearSurfacePixelStrategy())
+    override val fixtureType: FixtureType
         get() = PixelArrayDevice
 
     override val bounds: Pair<Vector3F, Vector3F>

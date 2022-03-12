@@ -1,15 +1,22 @@
 package baaahs.fixtures
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayReader
 import baaahs.model.Model
-import baaahs.sim.FixtureSimulation
+import baaahs.scene.MutableFixtureConfig
 
 interface FixtureConfig {
-    val deviceType: DeviceType
+    val componentCount: Int?
+    val bytesPerComponent: Int
+
+    val fixtureType: FixtureType
+
+    fun edit(): MutableFixtureConfig
 
     fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? = null
 
-    fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) = Unit
+    /** Merges two configs, preferring values from [other]. */
+    operator fun plus(other: FixtureConfig?): FixtureConfig
+
+    fun preview(): ConfigPreview
 }

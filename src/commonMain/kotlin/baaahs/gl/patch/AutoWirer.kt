@@ -1,6 +1,6 @@
 package baaahs.gl.patch
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
@@ -16,7 +16,7 @@ class AutoWirer(private val plugins: Plugins) {
         shaders: Collection<OpenShader>,
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        deviceTypes: Collection<DeviceType> = emptyList()
+        fixtureTypes: Collection<FixtureType> = emptyList()
     ): UnresolvedPatch {
         val siblingsPatch = OpenPatch(shaders.map {
             LiveShaderInstance(it, emptyMap(), shaderChannel, 0f)
@@ -24,7 +24,7 @@ class AutoWirer(private val plugins: Plugins) {
 
         val parentShow = null as OpenShow? // TODO: test with non-null?
         val channelsInfo = ChannelsInfo(
-            parentShow, if (deviceTypes.isEmpty()) plugins.deviceTypes.all else deviceTypes
+            parentShow, if (fixtureTypes.isEmpty()) plugins.fixtureTypes.all else fixtureTypes
         )
 
         // First pass: gather shader output ports.

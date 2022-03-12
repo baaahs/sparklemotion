@@ -48,14 +48,12 @@ data class MutableVisualizerControl(
 
     override var asBuiltId: String? = null
 
-    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
-        return listOf(
-            GenericPropertiesEditorPanel(
-                editableManager,
-                VisualizerPropsEditor(this)
-            )
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = listOf(
+        GenericPropertiesEditorPanel(
+            editableManager,
+            VisualizerPropsEditor(this)
         )
-    }
+    )
 
     override fun build(showBuilder: ShowBuilder): VisualizerControl {
         return VisualizerControl(surfaceDisplayMode, rotate)

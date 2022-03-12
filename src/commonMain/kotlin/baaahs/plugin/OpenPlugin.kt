@@ -2,7 +2,8 @@ package baaahs.plugin
 
 import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.device.DeviceType
+import baaahs.controller.ControllerManager
+import baaahs.device.FixtureType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
@@ -43,10 +44,13 @@ interface OpenPlugin {
     val controlSerializers: List<SerializerRegistrar<out Control>>
         get() = emptyList()
 
+    val controllerManagers: List<ControllerManager.Meta>
+        get() = emptyList()
+
     val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
         get() = emptyList()
 
-    val deviceTypes: List<DeviceType>
+    val fixtureTypes: List<FixtureType>
         get() = emptyList()
 
     val shaderDialects: List<ShaderDialect>

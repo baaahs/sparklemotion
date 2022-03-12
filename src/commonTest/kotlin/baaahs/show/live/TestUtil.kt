@@ -44,7 +44,7 @@ class FakeEditHandler : EditHandler<Show, ShowState> {
         onEdit(document, ShowState(emptyMap()), pushToUndoStack)
     }
 
-    override fun onEdit(document: Show, documentState: ShowState, pushToUndoStack: Boolean) {
+    override fun onEdit(document: Show, documentState: ShowState, pushToUndoStack: Boolean, syncToServer: Boolean) {
         calls.add(listOf(document, documentState, pushToUndoStack))
         updatedShow = document
     }

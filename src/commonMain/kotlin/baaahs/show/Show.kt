@@ -5,7 +5,7 @@ package baaahs.show
 import baaahs.SparkleMotion
 import baaahs.app.ui.editor.Editable
 import baaahs.camelize
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
@@ -79,9 +79,9 @@ data class EventBinding(
 @Serializable
 data class Surfaces(
     val name: String,
-    /** Set of [DeviceType]s that this object matches. If the set is empty, every DeviceType matches. */
+    /** Set of [FixtureType]s that this object matches. If the set is empty, every FixtureType matches. */
     @Contextual
-    val deviceTypes: Set<DeviceType> = emptySet()
+    val fixtureTypes: Set<FixtureType> = emptySet()
 ) {
     fun matches(fixture: Fixture): Boolean {
         return true

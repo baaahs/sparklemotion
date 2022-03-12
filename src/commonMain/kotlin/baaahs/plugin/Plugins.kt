@@ -5,7 +5,7 @@ import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.*
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.dmx.*
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
@@ -19,12 +19,14 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.show.UnknownDataSource
 import baaahs.show.appearsToBePurposeBuiltFor
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.sim.BridgeClient
+import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
@@ -161,7 +163,7 @@ sealed class Plugins private constructor(
 
     val dataSourceBuilders = DataSourceBuilders()
 
-    val deviceTypes = DeviceTypes()
+    val fixtureTypes = FixtureTypes()
 
     val controllers = Controllers()
 
@@ -242,7 +244,7 @@ sealed class Plugins private constructor(
         include(controlSerialModule)
         contextual(DataSource::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
         include(dataSourceBuilders.serialModule)
-        include(deviceTypes.serialModule)
+        include(fixtureTypes.serialModule)
         include(controllers.serialModule)
 
         polymorphic(SurfacePixelStrategy::class) {
@@ -268,10 +270,6 @@ sealed class Plugins private constructor(
         polymorphic(MovingHeadAdapter::class) {
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
-        }
-
-        polymorphic(TransportConfig::class) {
-            subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
         }
     }
 
@@ -318,7 +316,7 @@ sealed class Plugins private constructor(
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
             val dataSourceCandidates =
                 dataSourceBuilders.buildForContentType(contentType, inputPort) +
-                        deviceTypes.buildForContentType(contentType, inputPort)
+                        fixtureTypes.buildForContentType(contentType, inputPort)
 
             dataSourceCandidates.map { dataSource ->
                 PortLinkOption(
@@ -357,6 +355,13 @@ sealed class Plugins private constructor(
     fun getSettingsPanels(): List<DialogPanel> {
         return byPackage.values.filterIsInstance<OpenClientPlugin>()
             .mapNotNull { plugin -> plugin.getSettingsPanel() }
+    }
+
+    fun createMutableControllerConfigFor(controllerId: ControllerId, state: ControllerState?): MutableControllerConfig {
+        val controllerManager = controllers.all.find { it.controllerTypeName == controllerId.controllerType }
+            ?: error("Unknown controller type ${controllerId.controllerType}.")
+        return controllerManager.createMutableControllerConfigFor(controllerId, state)
+
     }
 
     companion object {
@@ -464,7 +469,7 @@ sealed class Plugins private constructor(
 
         private fun OpenPlugin.dataSourceSerlializerRegistrars() =
             dataSourceBuilders.map { it.serializerRegistrar } +
-                    deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
+                    fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
 
         fun buildForContentType(
             contentType: ContentType?,
@@ -476,37 +481,39 @@ sealed class Plugins private constructor(
                 )
     }
 
-    inner class DeviceTypes {
-        val all = openPlugins.flatMap { it.deviceTypes }
+    inner class FixtureTypes {
+        val all = openPlugins.flatMap { it.fixtureTypes }
 
         val serialModule = SerializersModule {
-            val serializer = DeviceType.Serializer(all.associateBy { it.id })
+            val serializer = FixtureType.Serializer(all.associateBy { it.id })
 
-            contextual(DeviceType::class, serializer)
-            all.forEach { deviceType ->
+            contextual(FixtureType::class, serializer)
+            all.forEach { fixtureType ->
                 @Suppress("UNCHECKED_CAST")
-                contextual(deviceType::class as KClass<DeviceType>, serializer)
-                include(deviceType.serialModule)
+                contextual(fixtureType::class as KClass<FixtureType>, serializer)
+                include(fixtureType.serialModule)
             }
         }
 
         fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
-            return all.flatMap { deviceType ->
-                deviceType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
+            return all.flatMap { fixtureType ->
+                fixtureType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
             }.map { it.build(inputPort) }
         }
     }
 
     inner class Controllers {
+         val all = openPlugins.flatMap { it.controllerManagers }
+
         val serialModule = SerializersModule {
             polymorphic(ControllerConfig::class) {
-                subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
+                subclass(BrainControllerConfig::class, BrainControllerConfig.serializer())
                 subclass(DirectDmxControllerConfig::class, DirectDmxControllerConfig.serializer())
+                subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
             }
 
             polymorphic(TransportConfig::class) {
-                subclass(DirectDmxTransportConfig::class, DirectDmxTransportConfig.serializer())
-                subclass(SacnTransportConfig::class, SacnTransportConfig.serializer())
+                subclass(DmxTransportConfig::class, DmxTransportConfig.serializer())
             }
 
             polymorphic(ControllerState::class) {

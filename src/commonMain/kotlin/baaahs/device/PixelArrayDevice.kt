@@ -1,7 +1,7 @@
 package baaahs.device
 
 import baaahs.Color
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
@@ -12,15 +12,18 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
+import baaahs.scene.EditingController
+import baaahs.scene.MutableFixtureConfig
 import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
-import baaahs.sim.FixtureSimulation
+import baaahs.ui.View
+import baaahs.visualizer.visualizerBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-object PixelArrayDevice : DeviceType {
+object PixelArrayDevice : FixtureType {
     override val id: String get() = "PixelArray"
     override val title: String get() = "Pixel Array"
 
@@ -55,8 +58,10 @@ object PixelArrayDevice : DeviceType {
             """.trimIndent()
         )
 
+    override val emptyConfig: FixtureConfig
+        get() = Config()
     override val defaultConfig: FixtureConfig
-        get() = Config(null, PixelFormat.RGB8)
+        get() = Config(null, PixelFormat.default, 1f)
     override val serialModule: SerializersModule
         get() = SerializersModule {
             polymorphic(FixtureConfig::class) {
@@ -69,33 +74,91 @@ object PixelArrayDevice : DeviceType {
         return SingleResultStorage(resultBuffer)
     }
 
+    override fun createFixture(
+        modelEntity: Model.Entity?,
+        componentCount: Int,
+        fixtureConfig: FixtureConfig,
+        name: String,
+        transport: Transport,
+        model: Model
+    ): Fixture {
+        fixtureConfig as Config
+
+        val pixelLocations = fixtureConfig.pixelLocations
+            ?.map { it ?: Vector3F(0f, 0f, 0f) }
+            ?: fixtureConfig.generatePixelLocations(componentCount, modelEntity, model)
+            ?: emptyList()
+
+        return PixelArrayFixture(
+            modelEntity, componentCount, name, transport,
+            fixtureConfig.pixelFormat ?: error("No pixel format specified."),
+            fixtureConfig.gammaCorrection ?: error("No gamma correction specified."),
+            pixelLocations
+        )
+    }
+
     override fun toString(): String = id
 
     @Serializable @SerialName("PixelArray")
     data class Config(
         val pixelCount: Int? = null,
-        val pixelFormat: PixelFormat,
-        val gammaCorrection: Float = 1f,
-        val pixelArrangement: SurfacePixelStrategy? = null
+        val pixelFormat: PixelFormat? = null,
+        val gammaCorrection: Float? = null,
+        val pixelArrangement: SurfacePixelStrategy? = null,
+        val pixelLocations: List<Vector3F?>? = null
     ) : FixtureConfig {
-        override val deviceType: DeviceType
+        override val componentCount: Int?
+            get() = pixelCount
+
+        override val bytesPerComponent: Int
+            get() = pixelFormat?.channelsPerPixel ?: error("no pixel format specified")
+
+        override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
-        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? {
-            return pixelArrangement?.forFixture(pixelCount, entity, model)
-        }
+        override fun edit(): MutableFixtureConfig = MutableConfig(this)
 
-        override fun receiveRemoteVisualizationFixtureInfo(
-            reader: ByteArrayReader,
-            fixtureSimulation: FixtureSimulation
-        ) {
-            val pixelCount = reader.readInt()
-            val pixelLocations = (0 until pixelCount).map {
-                Vector3F.parse(reader)
-            }.toTypedArray()
+        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? =
+            pixelArrangement?.forFixture(pixelCount, entity, model)
 
-            fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations)
+        /** Merges two configs, preferring values from [other]. */
+        override fun plus(other: FixtureConfig?): FixtureConfig =
+            if (other == null) this
+            else plus(other as Config)
+
+        /** Merges two configs, preferring values from [other]. */
+        operator fun plus(other: Config): Config = Config(
+            other.componentCount ?: componentCount,
+            other.pixelFormat ?: pixelFormat,
+            other.gammaCorrection ?: gammaCorrection,
+            other.pixelArrangement ?: pixelArrangement,
+            other.pixelLocations ?: pixelLocations
+        )
+
+        override fun preview(): ConfigPreview = object : ConfigPreview {
+            override fun summary(): List<Pair<String, String?>> = listOf(
+                "Pixel Count" to pixelCount?.toString(),
+                "Pixel Format" to pixelFormat?.name,
+                "Gamma Correction" to gammaCorrection?.toString()
+            )
         }
+    }
+
+    class MutableConfig(config: Config) : MutableFixtureConfig {
+        override val fixtureType: FixtureType
+            get() = PixelArrayDevice
+
+        var componentCount: Int? = config.componentCount
+        var pixelFormat: PixelFormat? = config.pixelFormat
+        var gammaCorrection: Float? = config.gammaCorrection
+        var pixelArrangement: SurfacePixelStrategy? = config.pixelArrangement
+
+        override fun build(): FixtureConfig =
+            Config(componentCount, pixelFormat, gammaCorrection, pixelArrangement)
+
+        override fun getEditorView(
+            editingController: EditingController<*>
+        ): View = visualizerBuilder.getPixelArrayFixtureConfigEditorView(editingController, this)
     }
 
     enum class PixelFormat {
@@ -117,6 +180,29 @@ object PixelArrayDevice : DeviceType {
                 buf.writeByte(color.redB)
                 buf.writeByte(color.greenB)
                 buf.writeByte(color.blueB)
+            }
+        },
+        RBG8 {
+            override val channelsPerPixel: Int = 3
+
+            override fun readColor(reader: ByteArrayReader): Color {
+                val redB = reader.readByte()
+                val blueB = reader.readByte()
+                val greenB = reader.readByte()
+                return Color(redB, greenB, blueB)
+            }
+
+            override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+                val redF = reader.readByte().asUnsignedToInt() / 255f
+                val blueF = reader.readByte().asUnsignedToInt() / 255f
+                val greenF = reader.readByte().asUnsignedToInt() / 255f
+                setter(redF, greenF, blueF)
+            }
+
+            override fun writeColor(color: Color, buf: ByteArrayWriter) {
+                buf.writeByte(color.redB)
+                buf.writeByte(color.blueB)
+                buf.writeByte(color.greenB)
             }
         },
         GRB8 {
@@ -154,6 +240,10 @@ object PixelArrayDevice : DeviceType {
         abstract fun readColor(reader: ByteArrayReader): Color
         abstract fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit)
         abstract fun writeColor(color: Color, buf: ByteArrayWriter)
+
+        companion object {
+            val default = RGB8
+        }
     }
 }
 

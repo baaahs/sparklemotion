@@ -2,7 +2,9 @@ package baaahs.sim
 
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.PixelArrayRemoteConfig
+import baaahs.fixtures.RemoteConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
@@ -26,7 +28,12 @@ actual class BrainSurfaceSimulation actual constructor(
         pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
     }
 
-    private val vizPixels by lazy { VizPixels(pixelPositions, surfaceGeometry.panelNormal, surface.transformation) }
+    private val vizPixels by lazy { VizPixels(
+        pixelPositions,
+        surfaceGeometry.panelNormal,
+        surface.transformation,
+        PixelArrayDevice.PixelFormat.default
+    ) }
 
     val brain by lazy {
         val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
@@ -42,7 +49,8 @@ actual class BrainSurfaceSimulation actual constructor(
                 pixelPositions.size,
                 pixelPositions.map {
                     MappingSession.SurfaceData.PixelData(it.toVector3F(), null, null)
-                }, null, null, null
+                },
+                null, null
             )
         }
 
@@ -51,13 +59,14 @@ actual class BrainSurfaceSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        Fixture(
+        PixelArrayFixture(
             surface,
             pixelPositions.size,
-            pixelPositions.map { it.toVector3F() },
-            surface.deviceType.defaultConfig,
             surface.name,
-            PixelArrayPreviewTransport(surface.name, vizPixels)
+            PixelArrayPreviewTransport(surface.name, vizPixels),
+            PixelArrayDevice.PixelFormat.default,
+            1f,
+            pixelPositions.map { it.toVector3F() }
         )
     }
 
@@ -72,12 +81,14 @@ actual class BrainSurfaceSimulation actual constructor(
         brain.stop()
     }
 
-    override fun updateVisualizerWith(fixtureConfig: FixtureConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
+    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
+        remoteConfig as PixelArrayRemoteConfig
+
         itemVisualizer.vizPixels = VizPixels(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             itemVisualizer.surfaceGeometry.panelNormal,
             surface.transformation,
-            fixtureConfig as PixelArrayDevice.Config
+            remoteConfig.pixelFormat
         )
     }
 

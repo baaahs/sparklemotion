@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.model.ModelUnit
 import baaahs.scene.MutableScene
@@ -83,6 +84,16 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         buttonGroupPropsEditor {
             attrs.editableManager = editableManager
             attrs.mutableButtonGroupControl = mutableButtonGroupControl
+        }
+    }
+
+    override fun forSlider(
+        editableManager: EditableManager<*>,
+        mutableSliderControl: MutableSliderControl
+    ) = renderWrapper {
+        sliderPropsEditor {
+            attrs.editableManager = editableManager
+            attrs.mutableSliderControl = mutableSliderControl
         }
     }
 

@@ -2,9 +2,12 @@ package baaahs.plugin.core
 
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
-import baaahs.device.DeviceType
+import baaahs.controller.ControllerManager
+import baaahs.controller.SacnManager
+import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxManager
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
 import baaahs.gl.shader.dialect.IsfShaderDialect
@@ -12,6 +15,7 @@ import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.plugin.*
 import baaahs.plugin.core.datasource.*
+import baaahs.sm.brain.BrainManager
 import baaahs.util.Logger
 import kotlinx.cli.ArgParser
 
@@ -25,8 +29,8 @@ class CorePlugin(
         ContentType.coreTypes +
                 MovingHeadParams.contentType +
                 dataSourceBuilders.map { it.contentType } +
-                deviceTypes.map { it.resultContentType } +
-                deviceTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
+                fixtureTypes.map { it.resultContentType } +
+                fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
 
     override val dataSourceBuilders get() = Companion.dataSourceBuilders
 
@@ -72,7 +76,14 @@ class CorePlugin(
             classSerializer(XyPadControl.serializer())
         )
 
-    override val deviceTypes: List<DeviceType>
+    override val controllerManagers: List<ControllerManager.Meta>
+        get() = listOf(
+            BrainManager,
+            DmxManager,
+            SacnManager
+        )
+
+    override val fixtureTypes: List<FixtureType>
         get() = listOf(
             PixelArrayDevice,
             MovingHeadDevice

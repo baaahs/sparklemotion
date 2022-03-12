@@ -4,26 +4,23 @@ import baaahs.*
 import baaahs.controller.*
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransport
+import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
 import baaahs.mapping.MappingManager
 import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.OpenScene
-import baaahs.scene.SceneMonitor
+import baaahs.scene.*
 import baaahs.ui.Observable
 import baaahs.util.Time
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
-import ch.tutteli.atrium.api.fluent.en_GB.size
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -33,17 +30,15 @@ import kotlin.random.Random
 @OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 object ControllersManagerSpec : Spek({
     describe<ControllersManager> {
-        val modelEntity by value<Model.Entity> {
-            val quad1x1 = listOf(
-                Vector3F(1f, 1f, 1f), Vector3F(2f, 2f, 1f),
-                Vector3F(1f, 2f, 2f), Vector3F(2f, 1f, 2f)
-            )
-            testModelSurface("panel", 2, vertices = quad1x1)
-        }
+        val modelFixtureType by value { FixtureTypeForTest() }
+        val modelEntity by value<Model.Entity> { FakeModelEntity("panel", modelFixtureType) }
         val model by value<Model?> { fakeModel(modelEntity) }
         val fakeController by value { FakeController("c1") }
-        val mappingResults by value {
-            mapOf(fakeController.controllerId to listOf(FixtureMapping(modelEntity, null, null)))
+        val legacyMappings by value {
+            mapOf(
+                fakeController.controllerId to
+                        listOf(FixtureMapping(modelEntity, modelEntity.fixtureType.emptyConfig))
+            )
         }
         val fakeControllerConfig by value {
             FakeControllerManager.Config(
@@ -52,12 +47,13 @@ object ControllersManagerSpec : Spek({
             )
         }
         val scene by value {
-            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig) ) }
+            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig)) }
         }
-        val mappingManager by value { FakeMappingManager(mappingResults, false) }
+        val mappingManager by value { FakeMappingManager(legacyMappings, false) }
         val fakeControllerMgr by value { FakeControllerManager() }
         val controllerManagers by value { listOf(fakeControllerMgr) }
         val fixtureListener by value { FakeFixtureListener() }
+        val changes by value { fixtureListener.changes }
         val sceneMonitor by value { SceneMonitor(scene) }
         val controllersManager by value {
             ControllersManager(controllerManagers, mappingManager, sceneMonitor, listOf(fixtureListener))
@@ -119,11 +115,11 @@ object ControllersManagerSpec : Spek({
                 controllersManager.start()
             }
 
-            val change by value { fixtureListener.changes.only("fixture change") }
-            val addedFixture by value { change.added.only("added fixture") }
+            val firstChange by value { changes.only("fixture change") }
+            val addedFixture by value { firstChange.added.only("added fixture") }
 
             context("with no mapping results") {
-                value(mappingResults) { mapOf(fakeController.controllerId to emptyList()) }
+                value(legacyMappings) { mapOf(fakeController.controllerId to emptyList()) }
 
                 it("ignores the controller") {
                     expect(fixtureListener.changes).isEmpty()
@@ -134,8 +130,8 @@ object ControllersManagerSpec : Spek({
                         FakeController(
                             "c1",
                             anonymousFixtureMapping = FixtureMapping(
-                                null, 3, null,
-                                PixelArrayDevice.Config(
+                                null, PixelArrayDevice.Config(
+                                    pixelCount = 3,
                                     pixelFormat = PixelArrayDevice.PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
@@ -145,86 +141,164 @@ object ControllersManagerSpec : Spek({
 
                     it("adds the anonymous fixture") {
                         expect(addedFixture.modelEntity).toBe(null)
-                        expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                        expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
                         expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
 
                     it("generates pixel positions within the model bounds") {
-                        expect(addedFixture.pixelCount).toBe(3)
-                        expect(addedFixture.pixelLocations)
+                        expect(addedFixture).isA<PixelArrayFixture> {
+                            feature(PixelArrayFixture::pixelCount)
+                                .toBe(3)
+                            feature(PixelArrayFixture::pixelLocations)
+                                .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
+                        }
+                        val fixture = addedFixture as PixelArrayFixture
+                        expect(fixture.pixelLocations)
                             .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
                     }
                 }
             }
 
             context("with a mapping result pointing to an entity") {
-                value(mappingResults) {
-                    mapOf(fakeController.controllerId to listOf(
-                        FixtureMapping(modelEntity, 3, null,
-                        PixelArrayDevice.Config(3, PixelArrayDevice.PixelFormat.RGB8,
-                            pixelArrangement = LinearSurfacePixelStrategy(Random(1))))
-                    )
+                value(legacyMappings) {
+                    mapOf(
+                        fakeController.controllerId to listOf(
+                            FixtureMapping(
+                                modelEntity, PixelArrayDevice.Config(
+                                    3, PixelArrayDevice.PixelFormat.RGB8,
+                                    pixelArrangement = LinearSurfacePixelStrategy(Random(1))
+                                )
+                            )
+                        )
                     )
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                    expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
 
                 it("generates pixel positions within the entity bounds") {
-                    expect(addedFixture.pixelCount).toBe(3)
-                    expect(addedFixture.pixelLocations)
-                        .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, modelEntity, model!!))
+                    expect(addedFixture).isA<PixelArrayFixture> {
+                        feature(PixelArrayFixture::pixelCount)
+                            .toBe(3)
+                        feature(PixelArrayFixture::pixelLocations)
+                            .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, modelEntity, model!!))
+                    }
                 }
 
                 context("with pixel location data") {
-                    value(mappingResults) {
-                        mapOf(fakeController.controllerId to listOf(
-                            FixtureMapping(modelEntity, 3, listOf(
-                            Vector3F(1f, 1f, 1f),
-                            Vector3F(2f, 2f, 3f),
-                            Vector3F(3f, 2f, 3f),
-                        ))
-                        ))
+                    value(legacyMappings) {
+                        mapOf(
+                            fakeController.controllerId to listOf(
+                                FixtureMapping(
+                                    modelEntity, PixelArrayDevice.Config(
+                                        3,
+                                        pixelLocations = listOf(
+                                            Vector3F(1f, 1f, 1f),
+                                            Vector3F(2f, 2f, 3f),
+                                            Vector3F(3f, 2f, 3f)
+                                        )
+                                    )
+                                )
+                            )
+                        )
                     }
 
                     it("uses the pixel data") {
-                        expect(addedFixture.pixelCount).toBe(3)
-                        expect(addedFixture.pixelLocations)
-                            .toBe(listOf(
-                                Vector3F(1f, 1f, 1f),
-                                Vector3F(2f, 2f, 3f),
-                                Vector3F(3f, 2f, 3f),
-                            ))
+                        expect(addedFixture).isA<PixelArrayFixture> {
+                            feature(PixelArrayFixture::pixelCount)
+                                .toBe(3)
+                            feature(PixelArrayFixture::pixelLocations)
+                                .toBe(
+                                    listOf(
+                                        Vector3F(1f, 1f, 1f),
+                                        Vector3F(2f, 2f, 3f),
+                                        Vector3F(3f, 2f, 3f),
+                                    )
+                                )
+                        }
                     }
                 }
             }
 
-            context("when controller specifies its pixel count") {
+            context("when controller provides a default fixture config") {
                 value(fakeController) {
-                    FakeController("c1", FixtureMapping(null, 59, null))
+                    FakeController("c1", modelFixtureType.Config(59, 3))
                 }
 
-                it("finds model entity mapping for the controller and creates a fixture") {
+                it("finds model entity mapping for the controller and creates a fixture with the model's ") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
                     expect(addedFixture.pixelCount).toBe(59)
-                    expect(addedFixture.pixelLocations).toBe(emptyList())
-                    expect(addedFixture.deviceType).toBe(modelEntity.deviceType)
+                    expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                        feature(FixtureTypeForTest.DtftFixture::pixelLocations)
+                            .toBe(emptyList())
+                    }
+                    expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
+                }
+
+                context("and the fixture type also provides a default fixture config") {
+                    override(modelFixtureType) {
+                        FixtureTypeForTest().apply {
+                            defaultConfig = Config(4321, bytesPerComponent = 3)
+                        }
+                    }
+
+                    it("finds model entity mapping for the controller and creates a fixture with the model's ") {
+                        expect(addedFixture.modelEntity).toBe(modelEntity)
+                        expect(addedFixture.pixelCount).toBe(59)
+                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
+                                .toBe(emptyList())
+                        }
+                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
+                        expect(addedFixture.transport).isSameAs(fakeController.transport)
+                    }
+                }
+
+                context("when controller provides a default fixture config for a different fixture type") {
+                    value(fakeController) { FakeController("c1", PixelArrayDevice.Config(4321)) }
+
+                    it("ignores it, because we use the most specific fixture type to filter out others") {
+                        expect(addedFixture.modelEntity).toBe(modelEntity)
+                        expect(addedFixture.pixelCount).toBe(1)
+                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
+                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
+                                .toBe(emptyList())
+                        }
+                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
+                        expect(addedFixture.transport).isSameAs(fakeController.transport)
+                    }
                 }
             }
 
-            context("when the device type specifies defaultPixelCount") {
+            context("when the fixture type specifies defaultPixelCount") {
                 value(modelEntity) { MovingHead("mover", baseDmxChannel = 1, adapter = Shenzarpy) }
 
                 it("creates an appropriate fixture") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
                     expect(addedFixture.pixelCount).toBe(1)
-                    expect(addedFixture.pixelLocations).toBe(emptyList())
-                    expect(addedFixture.deviceType).toBe(MovingHeadDevice)
+                    expect(addedFixture.fixtureType).toBe(MovingHeadDevice)
+                    expect(addedFixture).isA<MovingHeadFixture>()
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
+                }
+            }
+
+            context("when the scene is closed") {
+                beforeEachTest {
+                    sceneMonitor.onChange(null)
+                }
+
+                val secondChange by value { fixtureListener.changes.getOrNull(1) ?: error("no second change") }
+                val removedFixture by value { secondChange.removed.only("removed fixture") }
+
+                it("removes the previously added fixture and controller") {
+                    val previouslyAddedFixture = changes.first().added.only("added fixture")
+                    expect(removedFixture).isSameAs(previouslyAddedFixture)
+
+                    expect(fakeControllerMgr.controllers).isEmpty()
                 }
             }
         }
@@ -257,7 +331,7 @@ class FakeControllerManager(
     startingControllers: List<FakeController> = emptyList()
 ) : BaseControllerManager("FAKE") {
     var hasStarted: Boolean = false
-    private val controllers = startingControllers.toMutableList()
+    val controllers = startingControllers.toMutableList()
 
     override fun start() {
         if (hasStarted) error("Already started!")
@@ -283,16 +357,28 @@ class FakeControllerManager(
     }
 
     class Config(
-        override val controllerType: String,
-        override val title: String,
-        val controllers: List<FakeController>,
-        override val fixtures: List<FixtureMappingData>
-    ) : ControllerConfig
+        override val controllerType: String = "FAKE",
+        override val title: String = "fake controller",
+        val controllers: List<FakeController> = emptyList(),
+        override val fixtures: List<FixtureMappingData> = emptyList(),
+        override val defaultFixtureConfig: FixtureConfig? = null,
+        override val defaultTransportConfig: TransportConfig? = null
+    ) : ControllerConfig {
+        override val emptyTransportConfig: TransportConfig
+            get() = DmxTransportConfig()
+
+        override fun edit(): MutableControllerConfig = TODO("not implemented")
+        override fun createFixturePreview(
+            fixtureConfig: FixtureConfig,
+            transportConfig: TransportConfig
+        ): FixturePreview = TODO("not implemented")
+    }
 }
 
 class FakeController(
     val name: String,
-    override val defaultFixtureMapping: FixtureMapping? = null,
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
     override val state: ControllerState = object : ControllerState() {
@@ -300,25 +386,37 @@ class FakeController(
         override val address: String get() = TODO("not implemented")
         override val onlineSince: Time get() = TODO("not implemented")
     }
-    val transport = FakeTransport()
+    override val transportType: TransportType
+        get() = DmxTransport
+
+    lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
     override fun createTransport(
-        entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int
-    ): Transport = transport
+        entity: Model.Entity?,
+        fixtureConfig: FixtureConfig,
+        transportConfig: TransportConfig?,
+        componentCount: Int,
+        bytesPerComponent: Int
+    ): Transport = FakeTransport(fixtureConfig, transportConfig).also { transport = it }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
 
-    inner class FakeTransport : Transport {
+    inner class FakeTransport(
+        val fixtureConfig: FixtureConfig,
+        override val config: TransportConfig?
+    ) : Transport {
         override val name: String get() = this@FakeController.name
         override val controller: Controller
             get() = this@FakeController
+
         override fun deliverBytes(byteArray: ByteArray) {}
 
         override fun deliverComponents(
             componentCount: Int,
             bytesPerComponent: Int,
             fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
-        ) {}
+        ) {
+        }
     }
 
     companion object {

@@ -4,6 +4,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
+import baaahs.ui.checked
 import baaahs.ui.on
 import baaahs.ui.value
 import baaahs.ui.xComponent
@@ -17,7 +18,6 @@ import materialui.components.iconbutton.iconButton
 import materialui.components.switches.switch
 import materialui.components.textfield.textField
 import materialui.icon
-import org.w3c.dom.HTMLInputElement
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -35,7 +35,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
     val mutableEntity = props.editingEntity.mutableEntity
 
     val handleIsFileClick by eventHandler(mutableEntity, props.editingEntity) {
-        mutableEntity.objDataIsFileRef = (it.target as HTMLInputElement).checked
+        mutableEntity.objDataIsFileRef = it.target.checked
         props.editingEntity.onChange()
     }
 

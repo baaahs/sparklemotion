@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable @SerialName("Shenzarpy")
 object Shenzarpy : MovingHeadAdapter {
+    override val id: String get() = "Shenzarpy"
     override val dmxChannelCount: Int get() = 16
 
     override val colorModel: MovingHead.ColorModel get() = MovingHead.ColorModel.ColorWheel

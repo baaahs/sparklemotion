@@ -1,8 +1,8 @@
 package baaahs.gl.result
 
 import baaahs.Color
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.io.ByteArrayWriter
 import baaahs.sm.brain.proto.Pixels
@@ -60,6 +60,10 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         override val size: Int
             get() = pixelCount
 
+        private val fixtureConfig = fixture as PixelArrayFixture
+        private val pixelFormat = fixtureConfig.pixelFormat
+        private val bytesPerPixel = pixelFormat.channelsPerPixel
+
         override operator fun get(i: Int): Color = buffer[pixelOffset + i]
 
         override fun set(i: Int, color: Color) = TODO("not implemented")
@@ -73,16 +77,14 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         }
 
         override fun send(remoteVisualizers: RemoteVisualizers) {
-            val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
-            val bytesPerPixel = fixtureConfig.pixelFormat.channelsPerPixel
             transport.deliverComponents(pixelCount, bytesPerPixel) { i, buf ->
-                fixtureConfig.pixelFormat.writeColor(this[i], buf)
+                pixelFormat.writeColor(this[i], buf)
             }
 
             val remoteVisualizersBytes by lazy {
                 val buf = ByteArrayWriter()
                 for (i in 0 until pixelCount) {
-                    fixtureConfig.pixelFormat.writeColor(this[i], buf)
+                    pixelFormat.writeColor(this[i], buf)
                 }
                 buf.toBytes()
             }

@@ -4,6 +4,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
+import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.scene.MutableScene
@@ -133,6 +134,13 @@ data class ButtonGroupPropsEditor(
         editorPanelViews.forButtonGroup(editableManager, mutableButtonGroupControl)
 }
 
+data class SliderPropsEditor(
+    val mutableSliderControl: MutableSliderControl
+) : PropsEditor {
+    override fun getView(editableManager: EditableManager<*>): View =
+        editorPanelViews.forSlider(editableManager, mutableSliderControl)
+}
+
 data class VisualizerPropsEditor(
     val mutableVisualizerControl: MutableVisualizerControl
 ) : PropsEditor {
@@ -151,6 +159,7 @@ interface EditorPanelViews {
     ): View
     fun forButton(editableManager: EditableManager<*>, mutableButtonControl: MutableButtonControl): View
     fun forButtonGroup(editableManager: EditableManager<*>, mutableButtonGroupControl: MutableButtonGroupControl): View
+    fun forSlider(editableManager: EditableManager<*>, mutableSliderControl: MutableSliderControl): View
     fun forVisualizer(editableManager: EditableManager<*>, mutableVisualizerControl: MutableVisualizerControl): View
 
     fun forTitleComponent(editableManager: EditableManager<*>, mutablePatchHolder: MutablePatchHolder): View

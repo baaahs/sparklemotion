@@ -1,6 +1,6 @@
 package baaahs.model
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.geom.EulerAngle
@@ -25,7 +25,7 @@ class ImportedEntityGroup(
     @Transient
     override val id: EntityId = Model.Entity.nextId()
 ) : Model.BaseEntity(), Model.EntityGroup {
-    override val deviceType: DeviceType get() = PixelArrayDevice // TODO
+    override val fixtureType: FixtureType get() = PixelArrayDevice // TODO
 
 
     override val bounds: Pair<Vector3F, Vector3F> = boundingBox(importerResults?.vertices ?: emptyList())
