@@ -225,7 +225,7 @@ object ControllersManagerSpec : Spek({
 
             context("when controller provides a default fixture config") {
                 value(fakeController) {
-                    FakeController("c1", modelFixtureType.Config(59))
+                    FakeController("c1", modelFixtureType.Config(59, 3))
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture with the model's ") {
@@ -242,7 +242,7 @@ object ControllersManagerSpec : Spek({
                 context("and the fixture type also provides a default fixture config") {
                     override(modelFixtureType) {
                         FixtureTypeForTest().apply {
-                            defaultConfig = Config(4321)
+                            defaultConfig = Config(4321, bytesPerComponent = 3)
                         }
                     }
 

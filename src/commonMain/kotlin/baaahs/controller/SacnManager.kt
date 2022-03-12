@@ -133,7 +133,7 @@ class SacnManager(
         val address: String,
         override val defaultFixtureConfig: FixtureConfig?,
         override val defaultTransportConfig: TransportConfig?,
-        val universeCount: Int,
+        private val universeCount: Int,
         val onlineSince: Time?
     ) : Controller {
         override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
@@ -150,7 +150,7 @@ class SacnManager(
         private var sequenceNumber = 0
 
         override fun beforeFixtureResolution() {
-            dynamicDmxAllocator = DynamicDmxAllocator(1)
+            dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses)
         }
 
         override fun afterFixtureResolution() {
@@ -164,9 +164,11 @@ class SacnManager(
             componentCount: Int,
             bytesPerComponent: Int
         ): Transport {
-            val staticDmxMapping = dynamicDmxAllocator!!.allocate(transportConfig as DmxTransportConfig?, 1, 3)
+            val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+                transportConfig as DmxTransportConfig?, componentCount, bytesPerComponent
+            )
             return SacnTransport(transportConfig, staticDmxMapping)
-                .also { it.validate() }
+                .also { dmxUniverses.validate(staticDmxMapping) }
         }
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
@@ -179,15 +181,6 @@ class SacnManager(
             override val controller: Controller
                 get() = this@SacnController
             override val config: TransportConfig? = transportConfig
-            private val startChannel = staticDmxMapping.startChannel
-            private val channelCount = staticDmxMapping.channelCount - 1
-
-            fun validate() {
-                if (startChannel >= dmxUniverses.channels.size)
-                    error("For $name, start channel $startChannel won't fit in $universeCount universes")
-                if (startChannel + channelCount - 1 >= dmxUniverses.channels.size)
-                    error("For $name, end channel $channelCount won't fit in $universeCount universes")
-            }
 
             override fun deliverBytes(byteArray: ByteArray) {
                 staticDmxMapping.writeBytes(byteArray, dmxUniverses)

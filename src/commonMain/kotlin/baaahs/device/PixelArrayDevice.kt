@@ -110,8 +110,8 @@ object PixelArrayDevice : FixtureType {
         override val componentCount: Int?
             get() = pixelCount
 
-        override val bytesPerComponent: Int?
-            get() = pixelFormat?.channelsPerPixel
+        override val bytesPerComponent: Int
+            get() = pixelFormat?.channelsPerPixel ?: error("no pixel format specified")
 
         override val fixtureType: FixtureType
             get() = PixelArrayDevice

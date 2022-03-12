@@ -34,7 +34,7 @@ class DirectDmxController(
     private var dynamicDmxAllocator: DynamicDmxAllocator? = null
 
     override fun beforeFixtureResolution() {
-        dynamicDmxAllocator = DynamicDmxAllocator(1)
+        dynamicDmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
     }
 
     override fun afterFixtureResolution() {
@@ -48,7 +48,9 @@ class DirectDmxController(
         componentCount: Int,
         bytesPerComponent: Int
     ): Transport {
-        val staticDmxMapping = dynamicDmxAllocator!!.allocate(transportConfig as DmxTransportConfig, 1, 3)
+        val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+            transportConfig as DmxTransportConfig, componentCount, bytesPerComponent
+        )
         return DirectDmxTransport(transportConfig, staticDmxMapping)
     }
 

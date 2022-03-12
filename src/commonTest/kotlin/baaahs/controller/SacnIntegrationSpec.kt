@@ -140,8 +140,8 @@ object SacnIntegrationSpec : Spek({
                         }
 
                         context("when universes are skipped") {
-                            override(bar1Mapping) { fixtureMappingData("bar1", 540, 2, true) }
-                            override(bar2Mapping) { fixtureMappingData("bar2", 530, 2, true) }
+                            override(bar1Mapping) { fixtureMappingData("bar1", 530, 2, true) }
+                            override(bar2Mapping) { fixtureMappingData("bar2", 540, 2, true) }
                             override(bar1Bytes) { PixelColors(1, 2) }
                             override(bar2Bytes) { PixelColors(3, 2) }
 
@@ -153,9 +153,9 @@ object SacnIntegrationSpec : Spek({
                                 expect(universe2Data.universe).toEqual(2)
                                 expect(universe2Data.channels.toList()).toEqual(
                                     ByteArray(18).toList() +  // starting at 512
-                                            bar2Bytes.bytes.subList(0, 6) + // starting at 530
+                                            bar1Bytes.bytes.subList(0, 6) + // starting at 530
                                             ByteArray(4).toList() +    // starting at 540
-                                            bar1Bytes.bytes
+                                            bar2Bytes.bytes
                                 )
                             }
                         }
@@ -171,7 +171,7 @@ object SacnIntegrationSpec : Spek({
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
                             pixelCount = 3,
-                            channels = DmxTransportConfig(0)
+                            channels = DmxTransportConfig()
                         )
                     )
                 )
@@ -187,8 +187,7 @@ object SacnIntegrationSpec : Spek({
                 expect(fixtureConfig.componentCount).toEqual(3)
                 expect(fixtureConfig.pixelFormat).toEqual(null)
 
-                val transportConfig = data.transportConfig as DmxTransportConfig
-                expect(transportConfig.startChannel).toEqual(0)
+                expect(data.transportConfig).toEqual(DmxTransportConfig())
             }
         }
     }
@@ -202,7 +201,7 @@ private fun fixtureMappingData(
 ) = FixtureMappingData(
     entityName,
     PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
-    DmxTransportConfig(baseChannel, true, componentsStartAtUniverseBoundaries)
+    DmxTransportConfig(baseChannel, false, !componentsStartAtUniverseBoundaries)
 )
 
 fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
