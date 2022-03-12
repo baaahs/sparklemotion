@@ -141,7 +141,7 @@ object SampleData {
                 struct FixtureInfo {
                     vec3 origin;
                     vec3 heading;
-                    mat4 matrix;
+                    mat4 transformation;
                 };
 
                 struct MovingHeadParams {
@@ -161,7 +161,7 @@ object SampleData {
                 void main(out MovingHeadParams params) {
                     vec3 target = vec3(targetX, targetY, targetZ);
 
-                    vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.matrix).xyz);
+                    vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.transformation).xyz);
                     float theta = atan(direction.y, direction.x);
                     float phi = acos(direction.z);
                     
