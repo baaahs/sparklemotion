@@ -1,11 +1,12 @@
 package baaahs.dmx
 
+import baaahs.fixtures.ConfigPreview
 import baaahs.io.ByteArrayWriter
 import kotlin.math.max
 import kotlin.math.min
 
 class DynamicDmxAllocator(
-    private val dmxUniverses: DmxUniverses
+    val dmxUniverses: DmxUniverses
 ) {
     private val channelsPerUniverse: Int = Dmx.channelsPerUniverse
 
@@ -65,6 +66,8 @@ class DmxUniverses(
     ) {
         byteArray.copyInto(channels, startChannel, startIndex, endIndex)
     }
+
+    fun describeChannel(channel: Int): String = "${channel / channelsPerUniverse + 1}u${channel % channelsPerUniverse + 1}"
 }
 
 /**
@@ -149,5 +152,12 @@ data class StaticDmxMapping(
                 fn(componentIndex, writer)
             }
         }
+    }
+
+    fun preview(dmxUniverses: DmxUniverses): ConfigPreview = object : ConfigPreview {
+        override fun summary(): List<Pair<String, String?>> = listOf(
+            "Start" to dmxUniverses.describeChannel(startChannel),
+            "End" to dmxUniverses.describeChannel(calculateEndChannel(dmxUniverses))
+        )
     }
 }

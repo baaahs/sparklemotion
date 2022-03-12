@@ -86,14 +86,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val tempModel = props.mutableScene.model.build().open()
     val tempController = mutableControllerConfig.build()
-    val fixturePreviews = tempController.fixtures.map { fixtureMappingData ->
-        val fixtureMapping = fixtureMappingData.open(tempModel)
-        val fixtureConfig =
-            fixtureMapping.resolveFixtureConfig(mutableControllerConfig.defaultFixtureConfig?.build())
-        val transportConfig =
-            fixtureMapping.resolveTransportConfig(tempController.emptyTransportConfig, mutableControllerConfig.defaultTransportConfig?.build())
-        tempController.createFixturePreview(fixtureConfig, transportConfig)
-    }
+    val fixturePreviews = tempController.buildFixturePreviews(tempModel)
     mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
         fixtureMappingEditor {
             attrs.mutableScene = props.mutableScene

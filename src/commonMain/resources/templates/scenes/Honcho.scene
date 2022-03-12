@@ -315,10 +315,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 0
           }
         },
         {
@@ -326,10 +322,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 1024
           }
         },
         {
@@ -337,10 +329,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 2048
           }
         },
         {
@@ -348,10 +336,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 3072
           }
         },
         {
@@ -359,10 +343,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 4096
           }
         },
         {
@@ -370,10 +350,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 5120
           }
         },
         {
@@ -381,10 +357,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 6144
           }
         },
         {
@@ -392,10 +364,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 7168
           }
         },
         {
@@ -403,10 +371,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 8192
           }
         },
         {
@@ -414,10 +378,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 9216
           }
         },
         {
@@ -425,10 +385,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 10240
           }
         },
         {
@@ -436,10 +392,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 240
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 11264
           }
         },
         {
@@ -447,10 +399,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 12288
           }
         },
         {
@@ -458,10 +406,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 13312
           }
         },
         {
@@ -469,10 +413,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 14336
           }
         },
         {
@@ -480,10 +420,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 15360
           }
         },
         {
@@ -491,10 +427,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 16384
           }
         },
         {
@@ -502,10 +434,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 17408
           }
         },
         {
@@ -513,10 +441,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 18432
           }
         },
         {
@@ -524,10 +448,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 19456
           }
         },
         {
@@ -535,10 +455,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 20480
           }
         },
         {
@@ -546,10 +462,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 21504
           }
         },
         {
@@ -557,10 +469,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 22528
           }
         },
         {
@@ -568,10 +476,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 300
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 23552
           }
         },
         {
@@ -579,10 +483,6 @@
           "fixtureConfig": {
             "type": "PixelArray",
             "pixelCount": 480
-          },
-          "transportConfig": {
-            "type": "DMX",
-            "startChannel": 24576
           }
         }
       ],

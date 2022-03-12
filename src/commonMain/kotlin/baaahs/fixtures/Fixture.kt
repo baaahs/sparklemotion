@@ -46,6 +46,14 @@ interface FixturePreview {
     val transportConfig: ConfigPreview
 }
 
+class FixturePreviewError(val e: Exception) : FixturePreview {
+    override val fixtureConfig: ConfigPreview
+        get() = TODO("not implemented")
+    override val transportConfig: ConfigPreview
+        get() = TODO("not implemented")
+
+}
+
 interface ConfigPreview {
     fun summary(): List<Pair<String, String?>>
 }
