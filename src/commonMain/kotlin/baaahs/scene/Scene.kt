@@ -3,10 +3,7 @@ package baaahs.scene
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.controller.ControllerId
-import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
 import baaahs.model.ModelData
@@ -19,8 +16,7 @@ import kotlinx.serialization.modules.SerializersModule
 @Serializable
 data class Scene(
     val model: ModelData,
-    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
-    val fixtures: List<FixtureMappingData> = emptyList(),
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
 ) {
     val title get() = model.title
 
@@ -51,20 +47,40 @@ interface ControllerConfig {
     val controllerType: String
     val title: String
     val fixtures: List<FixtureMappingData>
+    val defaultFixtureConfig: FixtureConfig?
+    val emptyTransportConfig: TransportConfig
+    val defaultTransportConfig: TransportConfig?
+
+    fun edit(): MutableControllerConfig
+
+    fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+        return fixtures.map { fixtureMappingData ->
+            try {
+                val fixtureMapping = fixtureMappingData.open(tempModel)
+                val fixtureConfig = fixtureMapping.resolveFixtureConfig(defaultFixtureConfig)
+                val transportConfig = fixtureMapping.resolveTransportConfig(emptyTransportConfig, defaultTransportConfig)
+                createFixturePreview(fixtureConfig, transportConfig)
+            } catch (e: Exception) {
+                FixturePreviewError(e)
+            }
+        }
+    }
+
+    fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview
 }
 
 @Serializable
 data class FixtureMappingData(
     val entityId: String? = null,
-    val deviceConfig: FixtureConfig? = null,
+    val fixtureConfig: FixtureConfig,
     val transportConfig: TransportConfig? = null
 ) {
+    fun edit() = MutableFixtureMapping(this)
+
     fun open(model: Model) =
         FixtureMapping(
             entityId?.let { model.findEntityByName(it) },
-            (deviceConfig as? PixelArrayDevice.Config)?.pixelCount,
-            null,
-            deviceConfig,
+            fixtureConfig,
             transportConfig
         )
 }

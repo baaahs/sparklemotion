@@ -26,9 +26,9 @@ private val FixtureConfigurerView = xComponent<FixtureConfigurerProps>("FixtureC
     val sceneEditorClient = appContext.sceneEditorClient
     observe(sceneEditorClient)
 
-    val styles = appContext.allStyles.sceneEditor
+    val styles = appContext.allStyles.controllerEditor
 
-    paper(styles.controllerConfigPaper on PaperStyle.root) {
+    paper(styles.editorPanes on PaperStyle.root) {
         typographyH4 { +"Fixtures" }
 
         table(+styles.controllersTable) {

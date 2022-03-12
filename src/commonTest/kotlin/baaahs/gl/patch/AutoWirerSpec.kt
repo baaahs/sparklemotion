@@ -4,7 +4,7 @@ import baaahs.device.PixelLocationDataSource
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.render.DeviceTypeForTest
+import baaahs.gl.render.FixtureTypeForTest
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -34,8 +34,8 @@ object AutoWirerSpec : Spek({
     describe("AutoWirer") {
         val autoWirer by value { AutoWirer(testPlugins()) }
         val toolchain by value { RootToolchain(testPlugins(), autoWirer = autoWirer) }
-        val deviceType by value {
-            DeviceTypeForTest(
+        val fixtureType by value {
+            FixtureTypeForTest(
                 likelyPipelines = listOf(
                     ContentType.XyzCoordinate to ContentType.UvCoordinate,
                     ContentType.UvCoordinate to ContentType.Color
@@ -58,7 +58,7 @@ object AutoWirerSpec : Spek({
             val shaders by value { listOf<OpenShader>(mainShader) }
             val shaderChannel by value { ShaderChannel.Main }
             val suggestions by value {
-                autoWirer.autoWire(shaders, shaderChannel = shaderChannel, deviceTypes = listOf(deviceType))
+                autoWirer.autoWire(shaders, shaderChannel = shaderChannel, fixtureTypes = listOf(fixtureType))
             }
             val patch by value { suggestions.acceptSuggestedLinkOptions().confirm() }
             val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
@@ -184,7 +184,7 @@ object AutoWirerSpec : Spek({
             val mainShader by value { toolchain.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
             val patch by value {
-                autoWirer.autoWire(shaders.open(toolchain), deviceTypes = listOf(deviceType))
+                autoWirer.autoWire(shaders.open(toolchain), fixtureTypes = listOf(fixtureType))
                     .acceptSuggestedLinkOptions().confirm()
             }
             val linkedPatch by value { patch.openForPreview(toolchain, ContentType.Color)!! }

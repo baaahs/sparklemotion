@@ -1,20 +1,14 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
-import baaahs.getBang
+import baaahs.app.ui.editor.betterSelect
 import baaahs.model.MovingHeadAdapter
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableMovingHeadData
 import baaahs.ui.on
-import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
 import materialui.components.container.container
 import materialui.components.container.enums.ContainerStyle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -28,31 +22,19 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
 
-    val handleAdapterChange by eventHandler(mutableEntity) {
-        mutableEntity.adapter = MovingHeadAdapter.all.getBang(it.target.value, "adapter") as MovingHeadAdapter
+    val handleAdapterChange by handler(mutableEntity) { movingHeadAdapter: MovingHeadAdapter ->
+        mutableEntity.adapter = movingHeadAdapter
         props.editingEntity.onChange()
     }
 
     header { +"Moving Head" }
 
     container(styles.transformEditSection on ContainerStyle.root) {
-        formControlLabel {
-            attrs.label { +"Adapter" }
-            attrs.control {
-                select {
-                    attrs.value(MovingHeadAdapter.all.firstNotNullOf { (name, adapter) ->
-                        if (mutableEntity.adapter == adapter) name else null
-                    })
-                    attrs.onChangeFunction = handleAdapterChange
-
-                    MovingHeadAdapter.all.forEach { (name, adapter) ->
-                        menuItem {
-                            attrs.value = name
-                            listItemText { +name }
-                        }
-                    }
-                }
-            }
+        betterSelect<MovingHeadAdapter> {
+            attrs.label = "Adapter"
+            attrs.values = MovingHeadAdapter.all
+            attrs.value = mutableEntity.adapter
+            attrs.onChange = handleAdapterChange
         }
     }
 }

@@ -1,9 +1,7 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
-import baaahs.controller.SacnTransportConfig
 import baaahs.device.PixelArrayDevice
-import baaahs.dmx.DirectDmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.scene.OpenScene
 import baaahs.util.Logger
@@ -13,28 +11,30 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
 
     init {
         mappingSessions.forEach { mappingSession ->
-            mappingSession.surfaces.forEach { entityData ->
-                val controllerId = entityData.controllerId
-                val entityName = entityData.entityName
+            mappingSession.surfaces.forEach { mappingData ->
+                val controllerId = mappingData.controllerId
+                val entityName = mappingData.entityName
 
                 try {
                     val modelEntity = scene.model.findEntityByNameOrNull(entityName)
                     if (modelEntity == null)
                         logger.warn { "Unknown model entity \"$entityName\"." }
 
-                    val pixelLocations = entityData.pixels?.map { it?.modelPosition }
+                    val pixelLocations = mappingData.pixels?.map { it?.modelPosition }
                         ?.ifEmpty { null }
-                    val pixelCount = entityData.pixelCount ?: pixelLocations?.size
+                    val pixelCount = mappingData.pixelCount ?: pixelLocations?.size
+
+                    val fixtureConfig = PixelArrayDevice.Config(
+                        pixelCount,
+                        pixelLocations = pixelLocations
+                    )
+
                     val transportConfig = when (controllerId.controllerType) {
-                        "SACN" -> entityData.channels?.let { SacnTransportConfig(it.start, it.end) }
-                        "DMX" -> entityData.channels?.let { DirectDmxTransportConfig(it.start, it.end) }
+                        "SACN", "DMX" -> mappingData.channels
                         else -> null
                     }
 
-                    val fixtureMapping = FixtureMapping(
-                        modelEntity, pixelCount, pixelLocations,
-                        entityData.fixtureConfig, transportConfig
-                    )
+                    val fixtureMapping = FixtureMapping(modelEntity, fixtureConfig, transportConfig)
                     add(controllerId, fixtureMapping)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }
@@ -42,28 +42,28 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
             }
         }
 
-        scene.controllers.forEach { (controllerId, controllerConfig) ->
-            controllerConfig.fixtures.forEach { fixtureMapping ->
-                val entity = fixtureMapping.entityId?.let { scene.model.findEntityByNameOrNull(it) }
-
-                if (fixtureMapping.entityId != null && entity == null) {
-                    logger.warn { "No such entity \"${fixtureMapping.entityId} found in model, but there's a fixture mapping for it." }
-                } else {
-                    val pixelArrayDeviceConfig = fixtureMapping.deviceConfig as? PixelArrayDevice.Config
-
-                    add(
-                        controllerId,
-                        FixtureMapping(
-                            entity,
-                            pixelArrayDeviceConfig?.pixelCount, // TODO kill this?
-                            null, // TODO kill this?
-                            fixtureMapping.deviceConfig,
-                            fixtureMapping.transportConfig
-                        )
-                    )
-                }
-            }
-        }
+//        scene.controllers.forEach { (controllerId, controllerConfig) ->
+//            controllerConfig.fixtures.forEach { fixtureMapping ->
+//                val entity = fixtureMapping.entityId?.let { scene.model.findEntityByNameOrNull(it) }
+//
+//                if (fixtureMapping.entityId != null && entity == null) {
+//                    logger.warn { "No such entity \"${fixtureMapping.entityId} found in model, but there's a fixture mapping for it." }
+//                } else {
+//                    val pixelArrayDeviceConfig = fixtureMapping.deviceConfig as? PixelArrayDevice.Config
+//
+//                    add(
+//                        controllerId,
+//                        FixtureMapping(
+//                            entity,
+//                            pixelArrayDeviceConfig?.componentCount, // TODO kill this?
+//                            null, // TODO kill this?
+//                            fixtureMapping.deviceConfig,
+//                            fixtureMapping.transportConfig
+//                        )
+//                    )
+//                }
+//            }
+//        }
     }
 
     private fun add(controllerId: ControllerId, fixtureMapping: FixtureMapping) {

@@ -390,7 +390,6 @@ class Mapper(
                         visibleSurface.entity.name,
                         pixels.size,
                         pixels,
-                        null,
                         brainToMap.deltaImageName,
                         screenAreaInSqPixels = null,
                         screenAngle = null

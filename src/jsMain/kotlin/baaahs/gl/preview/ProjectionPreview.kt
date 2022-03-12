@@ -1,8 +1,9 @@
 package baaahs.gl.preview
 
-import baaahs.fixtures.DeviceTypeRenderPlan
-import baaahs.fixtures.Fixture
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
+import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
@@ -25,16 +26,16 @@ class ProjectionPreview(
     private val preRenderCallback: (() -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    private val deviceType = ProjectionPreviewDevice
-    override val renderEngine = ModelRenderEngine(gl, deviceType)
+    private val fixtureType = ProjectionPreviewDevice
+    override val renderEngine = ModelRenderEngine(gl, fixtureType)
     private var projectionProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!
         .associateWith { surface ->
             val lineVertices = surface.lines.flatMap { it.vertices }
-            val fixture = Fixture(
-                surface, lineVertices.size, lineVertices, deviceType.defaultConfig,
-                transport = NullTransport
+            val fixture = PixelArrayFixture(
+                surface, lineVertices.size, surface.name, transport = NullTransport,
+                PixelArrayDevice.PixelFormat.RGB8, 1f, lineVertices
             )
             renderEngine.addFixture(fixture)
         }
@@ -57,7 +58,7 @@ class ProjectionPreview(
 
     override fun setProgram(program: GlslProgram?) {
         renderEngine.setRenderPlan(
-            DeviceTypeRenderPlan(
+            FixtureTypeRenderPlan(
                 listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
             )
         )

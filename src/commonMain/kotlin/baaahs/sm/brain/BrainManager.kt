@@ -2,23 +2,17 @@ package baaahs.sm.brain
 
 import baaahs.Color
 import baaahs.Pinky
-import baaahs.PubSub
-import baaahs.controller.BaseControllerManager
-import baaahs.controller.Controller
-import baaahs.controller.ControllerId
-import baaahs.controller.ControllerState
+import baaahs.controller.*
 import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.Transport
-import baaahs.fixtures.TransportConfig
+import baaahs.dmx.DmxTransportConfig
+import baaahs.fixtures.*
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
-import baaahs.scene.ControllerConfig
+import baaahs.scene.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
@@ -28,6 +22,7 @@ import baaahs.util.asMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -41,9 +36,9 @@ class BrainManager(
     link: Network.Link,
     private val networkStats: Pinky.NetworkStats,
     private val clock: Clock,
-    pubSub: PubSub.IServer,
     coroutineContext: CoroutineContext
 ) : BaseControllerManager(controllerTypeName) {
+    private val controllerConfigs: MutableMap<ControllerId, ControllerConfig> = mutableMapOf()
     private var isStartedUp = false
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
@@ -70,11 +65,13 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun start() {
-        isStartedUp = true
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+        this.controllerConfigs.clear() // TODO: should apply any changes.
+        this.controllerConfigs.putAll(controllerConfigs)
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun start() {
+        isStartedUp = true
     }
 
     override fun stop() {
@@ -111,7 +108,13 @@ class BrainManager(
             return
         }
 
-        val controller = BrainController(brainAddress, brainId, isSimulatedBrain)
+        val config = controllerConfigs[brainId.asControllerId()]
+        val controller = BrainController(
+            brainAddress, brainId,
+            config?.defaultFixtureConfig,
+            config?.defaultTransportConfig,
+            isSimulatedBrain
+        )
         activeBrains[brainId] = controller
         notifyListeners { onAdd(controller) }
     }
@@ -119,6 +122,8 @@ class BrainManager(
     inner class BrainController(
         private val brainAddress: Network.Address,
         private val brainId: BrainId,
+        override val defaultFixtureConfig: FixtureConfig?,
+        override val defaultTransportConfig: TransportConfig?,
         private val isSimulatedBrain: Boolean,
         private val startedAt: Time = clock.now()
     ) : Controller {
@@ -127,20 +132,23 @@ class BrainManager(
 
         override val state: ControllerState
             get() = State(brainId.uuid, brainAddress.asString(), startedAt)
-        override val defaultFixtureMapping: FixtureMapping
-            get() = FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig)
+
+        override val transportType: TransportType
+            get() = BrainTransportType
 
         override fun createTransport(
             entity: Model.Entity?,
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?,
-            pixelCount: Int
-        ): Transport {
-            return BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
-        }
+            componentCount: Int,
+            bytesPerComponent: Int
+        ): Transport = BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
-            return listOf(FixtureMapping(null, defaultPixelCount, null, defaultFixtureConfig))
+            return listOf(FixtureMapping(
+                null,
+                BrainManager.defaultFixtureConfig
+            ))
         }
     }
 
@@ -168,6 +176,8 @@ class BrainManager(
             get() = "Brain ${brainId.uuid} at $brainAddress"
         override val controller: Controller
             get() = brainController
+        override val config: TransportConfig?
+            get() = null
 
         override fun deliverBytes(byteArray: ByteArray) {
             val pixelCount = byteArray.size / 3
@@ -244,10 +254,11 @@ class BrainManager(
         }
     }
 
-    companion object {
-        const val controllerTypeName: String = "Brain"
-        const val defaultPixelCount = 2048
-        private val defaultFixtureConfig = PixelArrayDevice.Config(
+    companion object : ControllerManager.Meta {
+        override val controllerTypeName: String = "Brain"
+
+        private const val defaultPixelCount = 2048
+        override val defaultFixtureConfig = PixelArrayDevice.Config(
             defaultPixelCount,
             PixelArrayDevice.PixelFormat.RGB8,
             1f,
@@ -256,6 +267,16 @@ class BrainManager(
 
         private val logger = Logger<BrainManager>()
         private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.DIRECT_RGB)
+
+        override fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig {
+            val title = state?.title
+                ?: controllerId?.id
+                ?: "brainXXXX"
+            return MutableBrainControllerConfig(BrainControllerConfig(title))
+        }
     }
 }
 
@@ -274,6 +295,31 @@ data class BrainInfo(
     }
 }
 
+@Serializable
+@SerialName("Brain")
+data class BrainControllerConfig(
+    override val title: String,
+    val address: String? = null,
+    override val fixtures: List<FixtureMappingData> = emptyList(),
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
+) : ControllerConfig {
+    override val controllerType: String
+        get() = BrainManager.controllerTypeName
+    override val emptyTransportConfig: TransportConfig
+        get() = BrainTransportConfig()
+
+    override fun edit(): MutableControllerConfig =
+        MutableBrainControllerConfig(this)
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
+        override val fixtureConfig: ConfigPreview
+            get() = TODO("not implemented")
+        override val transportConfig: ConfigPreview
+            get() = TODO("not implemented")
+    }
+}
+
 @Serializable(with = BrainIdSerializer::class)
 data class BrainId(val uuid: String) {
     fun asControllerId(): ControllerId = ControllerId(BrainManager.controllerTypeName, uuid)
@@ -283,4 +329,30 @@ class BrainIdSerializer : KSerializer<BrainId> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BrainId", PrimitiveKind.STRING)
     override fun deserialize(decoder: Decoder): BrainId = BrainId(decoder.decodeString())
     override fun serialize(encoder: Encoder, value: BrainId) = encoder.encodeString(value.uuid)
+}
+
+object BrainTransportType : TransportType {
+    override val id: String
+        get() = "Brain"
+    override val title: String
+        get() = "Brain"
+    override val emptyConfig: TransportConfig
+        get() = DmxTransportConfig()
+}
+
+@Serializable
+@SerialName("Brain")
+class BrainTransportConfig() : TransportConfig {
+    override val transportType: TransportType
+        get() = BrainTransportType
+
+    override fun edit(): MutableTransportConfig =
+        TODO("Implement BrainTransportConfig editing.")
+
+    override fun plus(other: TransportConfig?): TransportConfig =
+        this
+
+    override fun preview(): ConfigPreview = object : ConfigPreview {
+        override fun summary(): List<Pair<String, String?>> = emptyList()
+    }
 }

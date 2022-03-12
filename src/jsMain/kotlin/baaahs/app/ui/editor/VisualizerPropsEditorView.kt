@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.control.MutableVisualizerControl
 import baaahs.control.VisualizerControl
+import baaahs.ui.checked
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
@@ -50,10 +51,10 @@ private val VisualizerPropsEditorView = xComponent<VisualizerPropsEditorProps>("
         formControlLabel {
             attrs.control {
                 switch {
-                    attrs.value(props.mutableVisualizerControl.rotate)
+                    attrs.checked = props.mutableVisualizerControl.rotate
                     attrs.onChangeFunction = {
-                        val value = (it.target as HTMLInputElement).value
-                        props.mutableVisualizerControl.rotate = value.toBoolean()
+                        val value = it.target.checked
+                        props.mutableVisualizerControl.rotate = value
                         props.editableManager.onChange()
                     }
                 }

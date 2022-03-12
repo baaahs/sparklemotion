@@ -3,35 +3,57 @@ package baaahs.dmx
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.Transport
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
+import baaahs.scene.MutableControllerConfig
+import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
-class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Controller {
+class DirectDmxController(
+    private val device: Dmx.Device,
+    clock: Clock
+) : Controller {
     override val controllerId: ControllerId
         get() = ControllerId(controllerType, device.id)
     private val startedAt = clock.now()
     override val state: ControllerState =
         State(device.name, "N/A", startedAt)
-    override val defaultFixtureMapping: FixtureMapping?
+    override val defaultFixtureConfig: FixtureConfig?
+        get() = null
+    override val transportType: TransportType
+        get() = DmxTransport
+    override val defaultTransportConfig: TransportConfig?
         get() = null
     private val universe = device.asUniverse()
+    private var dynamicDmxAllocator: DynamicDmxAllocator? = null
+
+    override fun beforeFixtureResolution() {
+        dynamicDmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
+    }
+
+    override fun afterFixtureResolution() {
+        dynamicDmxAllocator = null
+    }
 
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
-        pixelCount: Int
-    ): Transport = DirectDmxTransport(transportConfig as DirectDmxTransportConfig)
+        componentCount: Int,
+        bytesPerComponent: Int
+    ): Transport {
+        val staticDmxMapping = dynamicDmxAllocator!!.allocate(
+            transportConfig as DmxTransportConfig, componentCount, bytesPerComponent
+        )
+        return DirectDmxTransport(transportConfig, staticDmxMapping)
+    }
 
 
     @Serializable
@@ -41,9 +63,12 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
         override val onlineSince: Time?
     ) : ControllerState()
 
-    inner class DirectDmxTransport(private val transportConfig: DirectDmxTransportConfig) : Transport {
+    inner class DirectDmxTransport(
+        override val config: DmxTransportConfig,
+        staticDmxMapping: StaticDmxMapping
+    ) : Transport {
         private val buffer = run {
-            val (start, end) = transportConfig
+            val (start, end) = staticDmxMapping
             universe.writer(start, end - start + 1)
         }
 
@@ -51,7 +76,6 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
             get() = "DMX Transport"
         override val controller: Controller
             get() = this@DirectDmxController
-        override val config: TransportConfig = transportConfig
 
         override fun deliverBytes(byteArray: ByteArray) {
             byteArray.forEachIndexed { i, byte -> buffer[i] = byte }
@@ -87,21 +111,57 @@ class DirectDmxController(private val device: Dmx.Device, clock: Clock) : Contro
     }
 }
 
-@Serializable
-@SerialName("DirectDMX")
-class DirectDmxControllerConfig(
-    override val controllerType: String = DirectDmxController.controllerType,
-    override val title: String = "Direct DMX",
-    override val fixtures: List<FixtureMappingData>
-) : ControllerConfig
+object DmxTransport : TransportType {
+    override val id: String
+        get() = "DMX"
+    override val title: String
+        get() = "DMX"
+    override val emptyConfig: TransportConfig
+        get() = DmxTransportConfig()
+}
 
-/**
- * @param startChannel Zero-based.
- * @param endChannel Zero-based.
- */
 @Serializable
 @SerialName("DirectDMX")
-data class DirectDmxTransportConfig(
-    val startChannel: Int,
-    val endChannel: Int
-) : TransportConfig
+data class DirectDmxControllerConfig(
+    override val title: String = "Direct DMX",
+    override val fixtures: List<FixtureMappingData> = emptyList(),
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
+) : ControllerConfig {
+    override val controllerType: String
+        get() = DirectDmxController.controllerType
+    override val emptyTransportConfig: TransportConfig
+        get() = DmxTransportConfig()
+
+    @Transient
+    private var dmxAllocator: DynamicDmxAllocator? = null
+
+    override fun edit(): MutableControllerConfig =
+        MutableDirectDmxControllerConfig(this)
+
+    // TODO: This is pretty dumb, find a better way to do this.
+    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+        dmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
+        try {
+            return super.buildFixturePreviews(tempModel)
+        } finally {
+            dmxAllocator = null
+        }
+    }
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+        val staticDmxMapping = dmxAllocator!!.allocate(
+            transportConfig as DmxTransportConfig,
+            fixtureConfig.componentCount!!,
+            fixtureConfig.bytesPerComponent
+        )
+        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+
+        return object : FixturePreview {
+            override val fixtureConfig: ConfigPreview
+                get() = fixtureConfig.preview()
+            override val transportConfig: ConfigPreview
+                get() = dmxPreview
+        }
+    }
+}

@@ -21,7 +21,7 @@ class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
     val transformation: Matrix4F,
-    val pixelArrayConfig: PixelArrayDevice.Config? = null
+    val pixelFormat: PixelArrayDevice.PixelFormat
 ) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()
@@ -152,11 +152,9 @@ class VizPixels(
 
     fun clamp(f: Float): Float = min(1f, max(f, 0f))
 
-    fun readColors(reader: ByteArrayReader) {
+    fun readColors(reader: ByteArrayReader ) {
         val pixelCount = reader.readInt()
         val minPixCount = min(size, pixelCount)
-        val pixelFormat = pixelArrayConfig?.pixelFormat ?: PixelArrayDevice.PixelFormat.RGB8
-
         for (i in 0 until minPixCount) {
             pixelFormat.readColor(reader) { r, g, b ->
                 set(i, r, g, b)

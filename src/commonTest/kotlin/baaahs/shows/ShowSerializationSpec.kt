@@ -16,7 +16,6 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
@@ -284,7 +283,7 @@ private fun jsonFor(patch: Patch): JsonObject {
         put("shaderInstanceIds", patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) })
         put("surfaces", buildJsonObject {
             put("name", "All Surfaces")
-            put("deviceTypes", buildJsonArray { })
+            put("fixtureTypes", buildJsonArray { })
         })
     }
 }

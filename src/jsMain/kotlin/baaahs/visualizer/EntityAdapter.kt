@@ -26,7 +26,7 @@ actual class EntityAdapter(
         MovingHeadVisualizer(movingHead, this)
 
     actual fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine> =
-        PolyLineVisualizer(polyLine)
+        PolyLineVisualizer(polyLine, this, null)
 
     actual fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface> =
         SurfaceVisualizer(surface, SurfaceGeometry(surface))

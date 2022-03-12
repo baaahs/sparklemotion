@@ -6,8 +6,8 @@ import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.DeviceTypeForTest
 import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.FixtureTypeForTest
 import baaahs.gl.render.RenderManager
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
@@ -44,17 +44,22 @@ object FixtureManagerSpec : Spek({
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }
-            val fogMachineDevice by value { DeviceTypeForTest(id = "fogMachine", resultContentType = fogginess) }
+            val fogMachineDevice by value { FixtureTypeForTest(id = "fogMachine", resultContentType = fogginess) }
 
             val deafeningness by value { ContentType("deafeningness", "Deafeningness", GlslType.Float) }
-            val vuzuvelaDevice by value { DeviceTypeForTest(id = "vuzuvela", resultContentType = deafeningness) }
+            val vuzuvelaDevice by value { FixtureTypeForTest(id = "vuzuvela", resultContentType = deafeningness) }
 
-            val fogMachine1 by value { fakeFixture(1, FakeModelEntity("fog1", fogMachineDevice)) }
-            val fogMachine2 by value { fakeFixture(1, FakeModelEntity("fog2", fogMachineDevice)) }
-            val vuzuvela1 by value { fakeFixture(1, FakeModelEntity("vuzuvela1", vuzuvelaDevice)) }
-            val vuzuvela2 by value { fakeFixture(1, FakeModelEntity("vuzuvela2", vuzuvelaDevice)) }
+            val fogMachineEntity1 by value { FakeModelEntity("fog1", fogMachineDevice) }
+            val fogMachineEntity2 by value { FakeModelEntity("fog2", fogMachineDevice) }
+            val vuzuvelaEntity1 by value { FakeModelEntity("vuzuvela1", vuzuvelaDevice) }
+            val vuzuvelaEntity2 by value { FakeModelEntity("vuzuvela2", vuzuvelaDevice) }
+            override(modelEntities) { listOf(fogMachineEntity1, fogMachineEntity2, vuzuvelaEntity1, vuzuvelaEntity2) }
+
+            val fogMachine1 by value { fakeFixture(1, fogMachineEntity1, model = model) }
+            val fogMachine2 by value { fakeFixture(1, fogMachineEntity2, model = model) }
+            val vuzuvela1 by value { fakeFixture(1, vuzuvelaEntity1, model = model) }
+            val vuzuvela2 by value { fakeFixture(1, vuzuvelaEntity2, model = model) }
             val fixtures by value { listOf(fogMachine1, fogMachine2, vuzuvela1, vuzuvela2) }
-            override(modelEntities) { fixtures.map { it.modelEntity } }
             val initialFixtures by value { fixtures }
 
             beforeEachTest {
@@ -109,7 +114,7 @@ object FixtureManagerSpec : Spek({
                 val fogMachinePrograms by value { renderPlan[fogMachineDevice]!!.programs }
                 val vuzuvelaPrograms by value { renderPlan[vuzuvelaDevice]!!.programs }
 
-                it("creates a RenderPlan to cover all device types") {
+                it("creates a RenderPlan to cover all fixture types") {
                     val fogMachineProgram = fogMachinePrograms.only("program")
                     val vuzuvelaProgram = vuzuvelaPrograms.only("program")
 

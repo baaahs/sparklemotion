@@ -39,8 +39,10 @@ abstract class DocumentManager<T, TState>(
     private var documentAsSaved: T? = null
     val isLoaded: Boolean
         get() = document != null
-    var isSynched: Boolean = false
+    var everSynched: Boolean = false
         private set
+    private val isSynced: Boolean
+        get() = editState == localState
 
     protected val undoStack = object : UndoStack<DocumentState<T, TState>>() {
         override fun undo(): DocumentState<T, TState> {
@@ -56,8 +58,12 @@ abstract class DocumentManager<T, TState>(
         }
     }
 
-    protected val editStateChannel =
-        pubSub.subscribe(topic) { incoming ->
+    private val stateChannels = mutableListOf<PubSub.Channel<*>>()
+
+    protected var localState: DocumentState<T, TState>? = null
+    protected var editState by
+        pubSub.state(topic, null, stateChannels) { incoming ->
+            localState = incoming
             switchTo(incoming, false)
             undoStack.reset(incoming)
             facade.notifyChanged()
@@ -121,7 +127,7 @@ abstract class DocumentManager<T, TState>(
         file = newFile
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
-        isSynched = true
+        everSynched = true
     }
 
     fun isModified(newDocument: T): Boolean {
@@ -140,13 +146,14 @@ abstract class DocumentManager<T, TState>(
     }
 
     fun release() {
-        editStateChannel.unsubscribe()
+        stateChannels.forEach { it.unsubscribe() }
     }
 
     abstract inner class Facade : baaahs.ui.Facade(), EditHandler<T, TState> {
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
+        val isSynched get() = this@DocumentManager.isSynced
         val isUnsaved get() = this@DocumentManager.isUnsaved
         val canUndo get() = undoStack.canUndo()
         val canRedo get() = undoStack.canRedo()
@@ -160,17 +167,22 @@ abstract class DocumentManager<T, TState>(
         suspend fun onSaveAs(file: Fs.File) = this@DocumentManager.onSaveAs(file)
         suspend fun onDownload() = this@DocumentManager.onDownload()
         suspend fun onClose() = this@DocumentManager.onClose()
+        fun sync() {
+            this@DocumentManager.editState = localState
+        }
         fun undo() = undoStack.undo()
         fun redo() = undoStack.redo()
 
-        override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean) {
+        override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean, syncToServer: Boolean) {
             val isUnsaved = this@DocumentManager.isModified(document)
-            val editState = DocumentState(document, documentState, isUnsaved, file)
-            editStateChannel.onChange(editState)
-            switchTo(editState, true)
+            val newEditState = DocumentState(document, documentState, isUnsaved, file)
+            if (syncToServer) {
+                this@DocumentManager.editState = newEditState
+            }
+            switchTo(newEditState, true)
 
             if (pushToUndoStack) {
-                undoStack.changed(editState)
+                undoStack.changed(newEditState)
             }
 
             notifyChanged()

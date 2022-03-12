@@ -3,13 +3,24 @@ package baaahs.scene
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.MutableEditable
-import baaahs.controller.ControllerId
+import baaahs.camelize
+import baaahs.controller.*
+import baaahs.device.FixtureType
+import baaahs.dmx.DirectDmxController
+import baaahs.dmx.DirectDmxControllerConfig
+import baaahs.dmx.DmxManager
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.TransportType
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.model.*
 import baaahs.model.importers.ObjImporter
 import baaahs.show.mutable.MutableDocument
+import baaahs.sm.brain.BrainControllerConfig
+import baaahs.sm.brain.BrainManager
 import baaahs.sm.webapi.Problem
+import baaahs.ui.View
 
 class MutableScene(
     baseScene: Scene
@@ -20,9 +31,7 @@ class MutableScene(
     val model = MutableModel(baseScene.model)
     val controllers: MutableMap<ControllerId, MutableControllerConfig> =
         baseScene.controllers
-            .mapValues { (_, v) -> MutableControllerConfig(v) }.toMutableMap()
-    val fixtures = baseScene.fixtures
-        .map { data -> MutableFixture(data) }.toMutableList()
+            .mapValues { (_, v) -> v.edit() }.toMutableMap()
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = listOf(
         ScenePropertiesEditorPanel(
@@ -35,15 +44,115 @@ class MutableScene(
     override fun build(): Scene {
         return Scene(
             model.build(),
-            controllers.mapValues { (_, v) -> v.controllerConfig },
-            fixtures.map { it.fixture }
+            controllers.mapValues { (_, v) -> v.build() }
         )
     }
 }
 
-class MutableControllerConfig(var controllerConfig: ControllerConfig)
+interface MutableControllerConfig {
+    val controllerMeta: ControllerManager.Meta
+    var title: String
+    val fixtures: MutableList<MutableFixtureMapping>
+    var defaultFixtureConfig: MutableFixtureConfig?
+    var defaultTransportConfig: MutableTransportConfig?
 
-class MutableFixture(var fixture: FixtureMappingData)
+    fun build(): ControllerConfig
+    fun suggestId(): String
+    fun matches(controllerMatcher: ControllerMatcher): Boolean
+    fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>>
+}
+
+class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableControllerConfig {
+    override val controllerMeta: ControllerManager.Meta
+        get() = BrainManager
+    override var title: String = config.title
+    var address: String? = config.address
+    override val fixtures: MutableList<MutableFixtureMapping> =
+        config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
+
+    override fun build(): ControllerConfig =
+        BrainControllerConfig(
+            title, address, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(), defaultTransportConfig?.build()
+        )
+
+    override fun suggestId(): String = title.camelize()
+
+    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
+        controllerMatcher.matches(title, BrainManager.controllerTypeName)
+
+    override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
+        listOf(BrainControllerEditorPanel)
+}
+
+class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : MutableControllerConfig {
+    override val controllerMeta: ControllerManager.Meta
+        get() = DmxManager
+    override var title: String = config.title
+    override val fixtures: MutableList<MutableFixtureMapping> =
+        config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
+
+    override fun build(): ControllerConfig =
+        DirectDmxControllerConfig(
+            title, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(),
+            defaultTransportConfig?.build()
+        )
+
+    override fun suggestId(): String = title.camelize()
+
+    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
+        controllerMatcher.matches(title, DirectDmxController.controllerType)
+
+    override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
+        listOf(DirectDmxControllerEditorPanel)
+}
+
+class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControllerConfig {
+    override val controllerMeta: ControllerManager.Meta
+        get() = SacnManager
+    override var title: String = config.title
+    var address: String = config.address
+    var universes: Int = config.universes
+    override val fixtures: MutableList<MutableFixtureMapping> =
+        config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureConfig: MutableFixtureConfig? =
+        config.defaultFixtureConfig?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
+
+    override fun build(): ControllerConfig =
+        SacnControllerConfig(
+            title, address, universes, fixtures.map { it.build() },
+            defaultFixtureConfig?.build(),
+            defaultTransportConfig?.build()
+        )
+
+    override fun suggestId(): String = title.camelize()
+
+    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
+        controllerMatcher.matches(title, SacnManager.controllerTypeName)
+
+    override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
+        listOf(SacnControllerEditorPanel)
+}
+
+class MutableFixtureMapping(fixtureMappingData: FixtureMappingData) {
+    var entityId: String? = fixtureMappingData.entityId
+    var fixtureConfig: MutableFixtureConfig = fixtureMappingData.fixtureConfig.edit()
+    var transportConfig: MutableTransportConfig? = fixtureMappingData.transportConfig?.edit()
+
+    fun build(): FixtureMappingData =
+        FixtureMappingData(entityId, fixtureConfig.build(), transportConfig?.build())
+}
 
 class MutableModel(baseModel: ModelData) {
     var title = baseModel.title
@@ -271,4 +380,19 @@ class MutableLightRingData(
             TransformEntityEditorPanel,
             LightRingEditorPanel
         )
+}
+
+interface MutableFixtureConfig {
+    val fixtureType: FixtureType
+
+    fun build(): FixtureConfig
+    fun getEditorView(editingController: EditingController<*>): View
+}
+
+interface MutableTransportConfig {
+    val transportType: TransportType?
+
+    fun build(): TransportConfig
+    fun getEditorView(editingController: EditingController<*>): View
+    fun toSummaryString(): String
 }

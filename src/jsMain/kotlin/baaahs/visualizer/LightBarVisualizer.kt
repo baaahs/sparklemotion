@@ -104,8 +104,8 @@ class LightBarVisualizer(
 }
 
 class PolyLineVisualizer(
-    polyLine: PolyLine
-) : PixelArrayVisualizer<PolyLine>(polyLine) {
+    polyLine: PolyLine, adapter: EntityAdapter, vizPixels: VizPixels?
+) : PixelArrayVisualizer<PolyLine>(polyLine, vizPixels) {
     init {
         update(item)
     }

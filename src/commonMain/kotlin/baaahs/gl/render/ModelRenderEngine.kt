@@ -1,8 +1,8 @@
 package baaahs.gl.render
 
-import baaahs.device.DeviceType
-import baaahs.fixtures.DeviceTypeRenderPlan
+import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.PerPixelEngineFeed
@@ -19,7 +19,7 @@ import kotlin.math.min
 
 class ModelRenderEngine(
     gl: GlContext,
-    private val deviceType: DeviceType,
+    private val fixtureType: FixtureType,
     private val minTextureWidth: Int = 16,
     private val maxFramebufferWidth: Int = fbMaxPixWidth,
     private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
@@ -31,10 +31,10 @@ class ModelRenderEngine(
     var nextRectOffset: Int = 0
 
     private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
-    private var renderPlan: DeviceTypeRenderPlan? = null
+    private var renderPlan: FixtureTypeRenderPlan? = null
 
     private val resultStorage = gl.runInContext {
-        deviceType.createResultStorage(object : RenderResults {
+        fixtureType.createResultStorage(object : RenderResults {
             var index = 0
 
             override fun <T: ResultBuffer> allocate(title: String, resultType: ResultType<T>): T =
@@ -53,9 +53,9 @@ class ModelRenderEngine(
     init { arrangement = gl.runInContext { Arrangement(0, emptyList()) } }
 
     fun addFixture(fixture: Fixture): FixtureRenderTarget {
-        if (fixture.deviceType != deviceType) {
+        if (fixture.fixtureType != fixtureType) {
             throw IllegalArgumentException(
-                "This RenderEngine can't accept ${fixture.deviceType} devices, only $deviceType."
+                "This RenderEngine can't accept ${fixture.fixtureType} devices, only $fixtureType."
             )
         }
 
@@ -79,7 +79,7 @@ class ModelRenderEngine(
     }
 
     override fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
-        logger.debug { "Compiling ${linkedPatch.rootNode.title} for ${deviceType::class.simpleName}"}
+        logger.debug { "Compiling ${linkedPatch.rootNode.title} for ${fixtureType::class.simpleName}"}
         return super.compile(linkedPatch, feedResolver)
     }
 
@@ -142,7 +142,7 @@ class ModelRenderEngine(
         }
     }
 
-    fun setRenderPlan(renderPlan: DeviceTypeRenderPlan?) {
+    fun setRenderPlan(renderPlan: FixtureTypeRenderPlan?) {
         this.renderPlan = renderPlan
     }
 
@@ -153,7 +153,7 @@ class ModelRenderEngine(
     }
 
     fun logStatus() {
-        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} ${deviceType.title} fixtures."}
+        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} ${fixtureType.title} fixtures."}
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
@@ -162,7 +162,7 @@ class ModelRenderEngine(
 
     inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
         init {
-            logger.info { "Creating ${deviceType::class.simpleName} arrangement with $pixelCount pixels" }
+            logger.info { "Creating ${fixtureType::class.simpleName} arrangement with $pixelCount pixels" }
         }
 
         val pixWidth = pixelCount.bufWidth

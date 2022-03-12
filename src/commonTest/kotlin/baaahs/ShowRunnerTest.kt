@@ -1,10 +1,7 @@
 package baaahs
 
 import baaahs.controller.Controller
-import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureManagerImpl
-import baaahs.fixtures.Transport
+import baaahs.fixtures.*
 import baaahs.gadgets.Slider
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -43,11 +40,11 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        Fixture(testModelSurface("surface 1"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        PixelArrayFixture(testModelSurface("surface 1"), 1,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        Fixture(testModelSurface("surface 2"), 1, emptyList(), PixelArrayDevice.defaultConfig,
+        PixelArrayFixture(testModelSurface("surface 2"), 1,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse
@@ -291,6 +288,8 @@ class ShowRunnerTest {
     ) : Transport {
         override val controller: Controller
             get() = TODO("not implemented")
+        override val config: TransportConfig?
+            get() = null
 
         override fun deliverBytes(byteArray: ByteArray) {
             fn(byteArray)

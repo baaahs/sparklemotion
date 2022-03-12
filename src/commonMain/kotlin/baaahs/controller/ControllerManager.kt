@@ -1,6 +1,8 @@
 package baaahs.controller
 
+import baaahs.fixtures.FixtureConfig
 import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
 
 /** A ControllerManager discovers and registers controllers with its [ControllerListener]. */
 interface ControllerManager {
@@ -11,6 +13,22 @@ interface ControllerManager {
     fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>)
     fun start()
     fun stop()
+
+    interface Meta {
+        val controllerTypeName: String
+
+        /**
+         * A class of controllers may imply a certain fixture configuration, e.g. colors
+         * are automatically gamma corrected.
+         */
+        val defaultFixtureConfig: FixtureConfig?
+            get() = null
+
+        fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig
+    }
 }
 
 abstract class BaseControllerManager(

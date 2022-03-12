@@ -68,7 +68,7 @@ object PinkySpec : Spek({
         val clock by value { FakeClock() }
         val gadgetManager by value { GadgetManager(pubSub, clock, ImmediateDispatcher) }
         val brainManager by value {
-            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, pubSub, ImmediateDispatcher)
+            BrainManager(PermissiveFirmwareDaddy(), link, Pinky.NetworkStats(), clock, ImmediateDispatcher)
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
@@ -122,7 +122,7 @@ object PinkySpec : Spek({
             doRunBlocking {
                 panelMappings.forEach { (brainId, surface) ->
                     val surfaceData = MappingSession.SurfaceData(
-                        BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null, null
+                        BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null
                     )
                     val mappingSessionPath = storage.saveSession(
                         MappingSession(

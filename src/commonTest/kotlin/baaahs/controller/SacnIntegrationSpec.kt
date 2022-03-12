@@ -3,6 +3,7 @@ package baaahs.controller
 import baaahs.*
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
@@ -29,9 +30,9 @@ object SacnIntegrationSpec : Spek({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }
-        val controllers by value { mapOf<ControllerId, ControllerConfig>() }
+        val controllerConfigs by value { mapOf<ControllerId, ControllerConfig>() }
         val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, "sacn1") }
-        val scene by value { OpenScene(model, controllers) }
+        val scene by value { OpenScene(model, controllerConfigs) }
         val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val sacn1Fixtures by value { emptyList<FixtureMappingData>() }
@@ -42,7 +43,7 @@ object SacnIntegrationSpec : Spek({
 
         beforeEachTest {
             controllersManager.start()
-            sacnManager.onConfigChange(controllers)
+            sacnManager.onConfigChange(controllerConfigs)
         }
 
         context("with no declared controllers") {
@@ -52,7 +53,7 @@ object SacnIntegrationSpec : Spek({
         }
 
         context("with a controller which has two fixtures") {
-            override(controllers) {
+            override(controllerConfigs) {
                 mapOf(sacn1Id to SacnControllerConfig("SACN Controller", "192.168.1.150", 1, sacn1Fixtures))
             }
 
@@ -93,7 +94,7 @@ object SacnIntegrationSpec : Spek({
                     override(bar2Mapping) { fixtureMappingData("bar2", 540, 2, false) }
                     override(bar1Bytes) { PixelColors(1, 180) }
                     override(bar2Bytes) { PixelColors(602, 2) }
-                    override(controllers) {
+                    override(controllerConfigs) {
                         mapOf(sacn1Id to SacnControllerConfig("SACN Controller", "192.168.1.150", 2, sacn1Fixtures))
                     }
 
@@ -139,8 +140,8 @@ object SacnIntegrationSpec : Spek({
                         }
 
                         context("when universes are skipped") {
-                            override(bar1Mapping) { fixtureMappingData("bar1", 540, 2, true) }
-                            override(bar2Mapping) { fixtureMappingData("bar2", 530, 2, true) }
+                            override(bar1Mapping) { fixtureMappingData("bar1", 530, 2, true) }
+                            override(bar2Mapping) { fixtureMappingData("bar2", 540, 2, true) }
                             override(bar1Bytes) { PixelColors(1, 2) }
                             override(bar2Bytes) { PixelColors(3, 2) }
 
@@ -152,9 +153,9 @@ object SacnIntegrationSpec : Spek({
                                 expect(universe2Data.universe).toEqual(2)
                                 expect(universe2Data.channels.toList()).toEqual(
                                     ByteArray(18).toList() +  // starting at 512
-                                            bar2Bytes.bytes.subList(0, 6) + // starting at 530
+                                            bar1Bytes.bytes.subList(0, 6) + // starting at 530
                                             ByteArray(4).toList() +    // starting at 540
-                                            bar1Bytes.bytes
+                                            bar2Bytes.bytes
                                 )
                             }
                         }
@@ -170,8 +171,7 @@ object SacnIntegrationSpec : Spek({
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
                             pixelCount = 3,
-                            fixtureConfig = PixelArrayDevice.Config(3, PixelArrayDevice.PixelFormat.RGB8),
-                            channels = MappingSession.SurfaceData.Channels(0, 511)
+                            channels = DmxTransportConfig()
                         )
                     )
                 )
@@ -184,11 +184,10 @@ object SacnIntegrationSpec : Spek({
                     .only("fixture config")
 
                 val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
-                expect(fixtureConfig.pixelCount).toEqual(3)
-                expect(fixtureConfig.pixelFormat).toEqual(PixelArrayDevice.PixelFormat.RGB8)
+                expect(fixtureConfig.componentCount).toEqual(3)
+                expect(fixtureConfig.pixelFormat).toEqual(null)
 
-                val transportConfig = data.transportConfig as SacnTransportConfig
-                expect(transportConfig.startChannel..transportConfig.endChannel).toEqual(0..511)
+                expect(data.transportConfig).toEqual(DmxTransportConfig())
             }
         }
     }
@@ -199,12 +198,11 @@ private fun fixtureMappingData(
     baseChannel: Int,
     pixelCount: Int,
     componentsStartAtUniverseBoundaries: Boolean
-) =
-    FixtureMappingData(
-        entityName,
-        PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
-        SacnTransportConfig(baseChannel, pixelCount * 3, componentsStartAtUniverseBoundaries)
-    )
+) = FixtureMappingData(
+    entityName,
+    PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
+    DmxTransportConfig(baseChannel, false, !componentsStartAtUniverseBoundaries)
+)
 
 fun entity(name: String) = LightBar(name, name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
 

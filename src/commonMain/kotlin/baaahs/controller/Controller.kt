@@ -1,5 +1,6 @@
 package baaahs.controller
 
+import baaahs.dmx.DmxTransport
 import baaahs.fixtures.*
 import baaahs.model.Model
 import baaahs.util.Time
@@ -9,21 +10,36 @@ import kotlinx.serialization.Serializable
 interface Controller {
     val controllerId: ControllerId
     val state: ControllerState
-    val defaultFixtureMapping: FixtureMapping?
+    val defaultFixtureConfig: FixtureConfig?
+    val transportType: TransportType
+    val defaultTransportConfig: TransportConfig?
 
-    fun createTransport(entity: Model.Entity?, fixtureConfig: FixtureConfig, transportConfig: TransportConfig?, pixelCount: Int): Transport
+    fun createTransport(
+        entity: Model.Entity?,
+        fixtureConfig: FixtureConfig,
+        transportConfig: TransportConfig?,
+        componentCount: Int,
+        bytesPerComponent: Int
+    ): Transport
+
     fun getAnonymousFixtureMappings(): List<FixtureMapping>
 
     fun beforeFrame() {}
     fun afterFrame() {}
+
+    fun beforeFixtureResolution() {}
+    fun afterFixtureResolution() {}
 }
 
 open class NullController(
     override val controllerId: ControllerId,
-    override val defaultFixtureMapping: FixtureMapping?
+    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultTransportConfig: TransportConfig? = null
 ) : Controller {
     override val state: ControllerState =
         State("Null Controller", "N/A", 0.0)
+    override val transportType: TransportType
+        get() = DmxTransport
 
     @Serializable
     class State(
@@ -36,11 +52,12 @@ open class NullController(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
         transportConfig: TransportConfig?,
-        pixelCount: Int
+        componentCount: Int,
+        bytesPerComponent: Int
     ): Transport = NullTransport
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> =
         emptyList()
 
-    companion object : NullController(ControllerId("Null", "Null"), null)
+    companion object : NullController(ControllerId("Null", "Null"))
 }

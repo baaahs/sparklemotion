@@ -1,8 +1,14 @@
 package baaahs.fixtures
 
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
+import baaahs.device.MovingHeadDevice
+import baaahs.device.PixelArrayDevice
 import baaahs.geom.Vector3F
+import baaahs.io.ByteArrayReader
 import baaahs.model.Model
+import baaahs.model.MovingHeadAdapter
+import baaahs.sim.FixtureSimulation
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a controllable lighting fixture.
@@ -13,21 +19,101 @@ import baaahs.model.Model
  * TODO: Fixture shouldn't contain references to pixels, those only make sense for
  * TODO: [PixelArrayDevice] fixtures, so pixel data should live in their [FixtureConfig].
  */
-class Fixture(
+abstract class Fixture(
     val modelEntity: Model.Entity?,
     val pixelCount: Int,
-    /** Each pixel's location in the global 3d model. */
-    @Deprecated("Use fixtureConfig for pixelCount instead.")
-    val pixelLocations: List<Vector3F>,
-    val fixtureConfig: FixtureConfig,
     val name: String = modelEntity?.name ?: "Anonymous fixture",
     val transport: Transport
 ) {
-    val deviceType: DeviceType
-        get() = fixtureConfig.deviceType
+    open val componentCount: Int
+        get() = pixelCount
+
+    abstract val fixtureType: FixtureType
+    abstract val remoteConfig: RemoteConfig
 
     val title: String
-        get() = "$name: ${deviceType.title} with $pixelCount pixels at ${transport.name}"
+        get() = "$name: ${fixtureType.title} with $pixelCount pixels at ${transport.name}"
 
     override fun toString() = "Fixture[${hashCode()} $title]"
+}
+
+interface RemoteConfig {
+    fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) = Unit
+}
+
+interface FixturePreview {
+    val fixtureConfig: ConfigPreview
+    val transportConfig: ConfigPreview
+}
+
+class FixturePreviewError(val e: Exception) : FixturePreview {
+    override val fixtureConfig: ConfigPreview
+        get() = TODO("not implemented")
+    override val transportConfig: ConfigPreview
+        get() = TODO("not implemented")
+
+}
+
+interface ConfigPreview {
+    fun summary(): List<Pair<String, String?>>
+}
+
+@Serializable
+data class PixelArrayRemoteConfig(
+    val entityId: String?,
+    val pixelCount: Int,
+    val name: String,
+    val pixelFormat: PixelArrayDevice.PixelFormat,
+    val gammaCorrection: Float,
+    val pixelLocations: List<Vector3F>
+) : RemoteConfig {
+    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) {
+        val pixelCount = reader.readInt()
+        val pixelLocations = (0 until pixelCount).map {
+            Vector3F.parse(reader)
+        }.toTypedArray()
+
+        fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations)
+    }
+}
+
+class PixelArrayFixture(
+    modelEntity: Model.Entity?,
+    pixelCount: Int,
+    name: String = modelEntity?.name ?: "Anonymous fixture",
+    transport: Transport,
+    val pixelFormat: PixelArrayDevice.PixelFormat = PixelArrayDevice.PixelFormat.default,
+    val gammaCorrection: Float = 1f,
+    /** Each pixel's location relative to the fixture. */
+    val pixelLocations: List<Vector3F> = emptyList()
+) : Fixture(modelEntity, pixelCount, name, transport) {
+    override val fixtureType: FixtureType
+        get() = PixelArrayDevice
+    override val remoteConfig: RemoteConfig
+        get() = PixelArrayRemoteConfig(
+            modelEntity?.name, pixelCount, name, pixelFormat, gammaCorrection, pixelLocations
+        )
+}
+
+@Serializable
+data class MovingHeadRemoteConfig(
+    val entityId: String?,
+    val pixelCount: Int,
+    val name: String,
+    val adapter: MovingHeadAdapter
+) : RemoteConfig
+
+class MovingHeadFixture(
+    modelEntity: Model.Entity?,
+    pixelCount: Int,
+    name: String = modelEntity?.name ?: "Anonymous fixture",
+    transport: Transport,
+    val adapter: MovingHeadAdapter
+) : Fixture(modelEntity, pixelCount, name, transport) {
+    override val fixtureType: FixtureType
+        get() = MovingHeadDevice
+    override val remoteConfig: RemoteConfig
+        get() = MovingHeadRemoteConfig(
+            modelEntity?.name, pixelCount, name, adapter
+        )
 }

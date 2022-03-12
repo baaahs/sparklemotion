@@ -1,7 +1,7 @@
 package baaahs.model
 
 import baaahs.Color
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.LixadaMiniMovingHead
@@ -19,6 +19,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 interface MovingHeadAdapter {
+    val id: String
     val dmxChannelCount: Int
 
     val colorModel: MovingHead.ColorModel
@@ -53,10 +54,8 @@ interface MovingHeadAdapter {
 
     companion object {
         // TODO: Move this to plugins.
-        val all = mapOf(
-            "Shenzarpy" to Shenzarpy,
-            "LixadaMiniMovingHead" to LixadaMiniMovingHead,
-        )
+        val all: List<MovingHeadAdapter> = listOf(Shenzarpy, LixadaMiniMovingHead)
+        val map = all.associateBy { it.id }
     }
 
     data class VisualizerInfo(
@@ -180,7 +179,7 @@ class MovingHead(
         val y: Int
     )
 
-    override val deviceType: DeviceType
+    override val fixtureType: FixtureType
         get() = MovingHeadDevice
 
     override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =

@@ -59,8 +59,8 @@ object V1_UpdateDataSourceRefsSpec : Spek({
                 expect(show.dataSources["time"]).toBe(TimeDataSource())
             }
 
-            it("permits missing surfaces.deviceTypes") {
-                expect(show.patches[0].surfaces.deviceTypes).toBe(emptySet())
+            it("permits missing surfaces.fixtureTypes") {
+                expect(show.patches[0].surfaces.fixtureTypes).toBe(emptySet())
             }
         }
     }

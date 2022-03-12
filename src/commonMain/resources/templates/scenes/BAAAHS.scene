@@ -206,39 +206,35 @@
   },
   "controllers": {
     "DMX:directDmx": {
-      "type": "DirectDMX"
-    }
-  },
-  "fixtures": [
-    {
-      "controllerId": "DMX:dmx-simulator",
-      "entityId": "leftEye",
-      "deviceConfig": {
-        "type": "MovingHead",
-        "adapter": {
-          "type": "Shenzarpy"
+      "type": "DirectDMX",
+      "fixtures": [
+        {
+          "entityId": "leftEye",
+          "fixtureConfig": {
+            "type": "MovingHead",
+            "adapter": {
+              "type": "Shenzarpy"
+            }
+          },
+          "transportConfig": {
+            "type": "DMX",
+            "startChannel": 1
+          }
+        },
+        {
+          "entityId": "rightEye",
+          "fixtureConfig": {
+            "type": "MovingHead",
+            "adapter": {
+              "type": "Shenzarpy"
+            }
+          },
+          "transportConfig": {
+            "type": "DMX",
+            "startChannel": 17
+          }
         }
-      },
-      "transportConfig": {
-        "type": "DirectDMX",
-        "startChannel": 1,
-        "endChannel": 16
-      }
-    },
-    {
-      "controllerId": "DMX:dmx-simulator",
-      "entityId": "rightEye",
-      "deviceConfig": {
-        "type": "MovingHead",
-        "adapter": {
-          "type": "Shenzarpy"
-        }
-      },
-      "transportConfig": {
-        "type": "DirectDMX",
-        "startChannel": 17,
-        "endChannel": 33
-      }
+      ]
     }
-  ]
+  }
 }

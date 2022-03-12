@@ -1,24 +1,22 @@
 package baaahs.app.ui.model
 
 import baaahs.ui.on
-import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import materialui.components.input.enums.InputStyle
-import materialui.components.input.input
 import materialui.components.inputadornment.enums.InputAdornmentPosition
+import materialui.components.inputlabel.enums.InputLabelStyle
 import materialui.components.textfield.enums.TextFieldSize
 import materialui.components.textfield.textField
 import materialui.styles.muitheme.MuiTheme
 import materialui.styles.palette.paper
 import org.w3c.dom.events.Event
-import react.PropsWithChildren
 import react.RBuilder
-import react.buildElement
 import styled.StyleSheet
+import baaahs.app.ui.controls.Styles as ControlStyles
 
 class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor", isStatic = true) {
     val editorPanes by css {
@@ -116,19 +114,23 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
     val partialUnderline by css {
         before {
             right = LinearDimension.inherit
-            width = 4.em
+            width = 100.pct - 1.5.em
         }
     }
 
-    fun <T : Number> RBuilder.numberTextField(
+    fun <T : Number?> RBuilder.numberTextField(
         label: String,
         value: T,
         adornment: (RBuilder.() -> Unit)? = null,
+        placeholder: String? = null,
         onChange: (T) -> Unit
     ) {
         val cachedOnChange = onChange.asDynamic().cachedOnClick ?: run {
             { event: Event ->
-                onChange(event.currentTarget.value.toDouble() as T)
+                val numericValue = event.currentTarget.value
+                    .ifBlank { null }
+                    ?.toDouble() as T
+                onChange(numericValue)
             }
                 .also { onChange.asDynamic().cachedOnClick = it }
         }
@@ -136,21 +138,23 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
         textField {
             attrs.type = InputType.number
             attrs.size = TextFieldSize.small
-            attrs.InputProps = buildElement {
-                input(+partialUnderline on InputStyle.underline) {
-                    if (adornment != null) {
-                        attrs.endAdornment {
-                            attrs.position = InputAdornmentPosition.end
-                            adornment()
-                        }
+            attrs.placeholder = placeholder
+            attrs.inputProps {
+                attrs.classes(partialUnderline on InputStyle.underline)
+                if (adornment != null) {
+                    attrs.endAdornment {
+                        attrs.position = InputAdornmentPosition.end
+                        adornment()
                     }
                 }
-            }.props.unsafeCast<PropsWithChildren>()
-            attrs.inputLabelProps { attrs.shrink = true }
+            }
+            attrs.inputLabelProps {
+                attrs.classes(ControlStyles.inputLabel on InputLabelStyle.root)
+                attrs.shrink = true
+            }
             attrs.onChangeFunction = cachedOnChange
-            attrs.value(value)
+            if (value != null) attrs.value(value)
             attrs.label { +label }
         }
     }
-
 }

@@ -2,7 +2,11 @@ package baaahs.dmx
 
 import baaahs.controller.BaseControllerManager
 import baaahs.controller.ControllerId
+import baaahs.controller.ControllerManager
+import baaahs.controller.ControllerState
 import baaahs.scene.ControllerConfig
+import baaahs.scene.MutableControllerConfig
+import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -12,13 +16,27 @@ interface DmxManager {
     fun allOff()
 
     val dmxUniverse: Dmx.Universe
+
+    companion object : ControllerManager.Meta {
+        override val controllerTypeName: String
+            get() = "DMX"
+        internal val logger = Logger<DmxManager>()
+
+        override fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig {
+            val title = state?.title ?: controllerId?.id ?: "Direct DMX"
+            return MutableDirectDmxControllerConfig(DirectDmxControllerConfig(title))
+        }
+    }
 }
 
 class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
     private val clock: Clock,
     private val fakeDmxUniverse: FakeDmxUniverse // For fallback.){}
-) : BaseControllerManager("DMX"), DmxManager {
+) : BaseControllerManager(DmxManager.controllerTypeName), DmxManager {
     private val attachedDevices = findAttachedDevices()
     override val dmxUniverse = findDmxUniverse(attachedDevices)
 
@@ -57,7 +75,7 @@ class DmxManagerImpl(
     }
 
     companion object {
-        internal val logger = Logger<DmxManager>()
+        internal val logger = DmxManager.logger
     }
 }
 

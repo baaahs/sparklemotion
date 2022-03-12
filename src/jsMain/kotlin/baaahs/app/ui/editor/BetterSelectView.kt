@@ -1,8 +1,11 @@
 package baaahs.app.ui.editor
 
+import baaahs.ui.on
 import baaahs.ui.xComponent
 import kotlinx.html.js.onChangeFunction
 import materialui.components.formcontrol.formControl
+import materialui.components.inputlabel.enums.InputLabelStyle
+import materialui.components.inputlabel.inputLabel
 import materialui.components.listitemtext.listItemText
 import materialui.components.menuitem.menuItem
 import materialui.components.select.select
@@ -10,6 +13,7 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.ReactElement
+import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") { props ->
     val anyProps = props as BetterSelectProps<Any?>
@@ -20,10 +24,19 @@ private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") 
             anyProps.values[newValueIndex]
         }
         anyProps.onChange(newValue)
+        event.stopPropagation()
     }
 
     formControl {
+        props.label?.let { label ->
+            inputLabel(ControlsStyles.inputLabel on InputLabelStyle.root) {
+                attrs.component = "legend"
+                +label
+            }
+        }
+
         select {
+            attrs.displayEmpty = true
             attrs.value = props.values.indexOf(props.value)
             val renderValueSelected = anyProps.renderValueSelected
             if (renderValueSelected != null) {

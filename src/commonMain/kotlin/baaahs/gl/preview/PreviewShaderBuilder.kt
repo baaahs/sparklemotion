@@ -4,9 +4,12 @@ import baaahs.BaseShowPlayer
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
-import baaahs.device.DeviceType
+import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.Transport
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -20,7 +23,9 @@ import baaahs.gl.result.SingleResultStorage
 import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
+import baaahs.model.Model
 import baaahs.plugin.core.datasource.RasterCoordinateDataSource
+import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
@@ -266,7 +271,7 @@ class PreviewShaders(val toolchain: Toolchain) {
     val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 }
 
-object ProjectionPreviewDevice: DeviceType {
+object ProjectionPreviewDevice: FixtureType {
     override val id: String get() = "ProjectionPreview"
     override val title: String get() = "Projection Preview"
     override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
@@ -282,6 +287,8 @@ object ProjectionPreviewDevice: DeviceType {
             ""
         )
 
+    override val emptyConfig: FixtureConfig
+        get() = Config()
     override val defaultConfig: FixtureConfig
         get() = Config()
 
@@ -290,11 +297,29 @@ object ProjectionPreviewDevice: DeviceType {
         return SingleResultStorage(resultBuffer)
     }
 
+    override fun createFixture(
+        modelEntity: Model.Entity?,
+        componentCount: Int,
+        fixtureConfig: FixtureConfig,
+        name: String,
+        transport: Transport,
+        model: Model
+    ): Fixture = TODO("not implemented")
+
     override fun toString(): String = id
 
     @Serializable
     class Config : FixtureConfig {
-        override val deviceType: DeviceType
+        override val componentCount: Int
+            get() = 1
+        override val bytesPerComponent: Int
+            get() = error("bytesPerComponent not implemented for ProjectionPreviewDevice")
+
+        override val fixtureType: FixtureType
             get() = ProjectionPreviewDevice
+
+        override fun edit(): MutableFixtureConfig = TODO("not implemented")
+        override fun plus(other: FixtureConfig?) = this
+        override fun preview(): ConfigPreview = TODO("not implemented")
     }
 }
