@@ -34,7 +34,7 @@ class BrowserSandboxFs(
                 throw Exception("$file already exists")
             }
         } else {
-            updateFileList((keys + file.fullPath))
+            updateFileList((keys + "${basePath}${file.fullPath}"))
         }
         storage.setItem(keyName(file), content)
     }

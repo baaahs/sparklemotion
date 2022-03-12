@@ -161,6 +161,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     }
                 }
                 filesInDir.forEach { file ->
+                    println("file.fullPath = ${file.fullPath}")
                     val icon = if (file.isDirectory == true) materialui.icons.Folder else materialui.icons.InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
                     fileDialog.adjustFileDisplay(file, fileDisplay)
@@ -168,6 +169,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     if (!fileDisplay.isHidden) {
                         listItem {
                             attrs.button = true
+                            attrs.dense = true
                             attrs.disabled = !fileDisplay.isSelectable
                             attrs.onClickFunction = { _ -> handleFileSingleClick(file) }
                             attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(file) }
