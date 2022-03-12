@@ -14,6 +14,7 @@ import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 class DirectDmxController(
     private val device: Dmx.Device,
@@ -132,13 +133,35 @@ data class DirectDmxControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = DmxTransportConfig()
 
+    @Transient
+    private var dmxAllocator: DynamicDmxAllocator? = null
+
     override fun edit(): MutableControllerConfig =
         MutableDirectDmxControllerConfig(this)
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
-        override val fixtureConfig: ConfigPreview
-            get() = TODO("not implemented")
-        override val transportConfig: ConfigPreview
-            get() = TODO("not implemented")
+    // TODO: This is pretty dumb, find a better way to do this.
+    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+        dmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
+        try {
+            return super.buildFixturePreviews(tempModel)
+        } finally {
+            dmxAllocator = null
+        }
+    }
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+        val staticDmxMapping = dmxAllocator!!.allocate(
+            transportConfig as DmxTransportConfig,
+            fixtureConfig.componentCount!!,
+            fixtureConfig.bytesPerComponent
+        )
+        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+
+        return object : FixturePreview {
+            override val fixtureConfig: ConfigPreview
+                get() = fixtureConfig.preview()
+            override val transportConfig: ConfigPreview
+                get() = dmxPreview
+        }
     }
 }

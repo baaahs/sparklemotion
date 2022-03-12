@@ -3,10 +3,7 @@ package baaahs.scene
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.controller.ControllerId
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.FixtureMapping
-import baaahs.fixtures.FixturePreview
-import baaahs.fixtures.TransportConfig
+import baaahs.fixtures.*
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
 import baaahs.model.ModelData
@@ -55,6 +52,20 @@ interface ControllerConfig {
     val defaultTransportConfig: TransportConfig?
 
     fun edit(): MutableControllerConfig
+
+    fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+        return fixtures.map { fixtureMappingData ->
+            try {
+                val fixtureMapping = fixtureMappingData.open(tempModel)
+                val fixtureConfig = fixtureMapping.resolveFixtureConfig(defaultFixtureConfig)
+                val transportConfig = fixtureMapping.resolveTransportConfig(emptyTransportConfig, defaultTransportConfig)
+                createFixturePreview(fixtureConfig, transportConfig)
+            } catch (e: Exception) {
+                FixturePreviewError(e)
+            }
+        }
+    }
+
     fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview
 }
 

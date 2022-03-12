@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.fixtures.FixturePreview
+import baaahs.fixtures.FixturePreviewError
 import baaahs.getBang
 import baaahs.model.Model
 import baaahs.scene.EditingController
@@ -13,7 +14,10 @@ import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.title
 import materialui.components.chip.chip
+import materialui.components.chip.enums.ChipColor
+import materialui.components.chip.enums.ChipVariant
 import materialui.components.expansionpanel.enums.ExpansionPanelStyle
 import materialui.components.expansionpanel.expansionPanel
 import materialui.components.expansionpaneldetails.expansionPanelDetails
@@ -56,15 +60,6 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             if (!expanded) {
                 val entityName = props.mutableFixtureMapping.entityId
                 if (entityName != null) +entityName else i { +"Anonymous" }
-
-                +" | "
-                props.fixturePreview.fixtureConfig.summary().forEach { (title, value) ->
-                    chip { attrs.label { +"$title: $value" } }
-                }
-                +" | "
-                props.fixturePreview.transportConfig.summary().forEach { (title, value) ->
-                    chip { attrs.label { +"$title: $value" } }
-                }
             } else {
                 betterSelect<Model.Entity?> {
                     attrs.label = "Model Entity"
@@ -75,6 +70,32 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     }
                     attrs.value = props.mutableFixtureMapping.entityId?.let { allEntities.getBang(it, "entity") }
                     attrs.onChange = handleEntityChange
+                }
+            }
+
+            +" | "
+            val fixturePreview = props.fixturePreview
+            if (fixturePreview is FixturePreviewError) {
+                chip {
+                    attrs.color = ChipColor.secondary
+                    attrs.variant = ChipVariant.outlined
+                    attrs.label { +"Error: ${fixturePreview.e.message}" }
+                }
+            } else {
+                fixturePreview.fixtureConfig.summary().forEach { (title, value) ->
+                    chip {
+                        attrs.variant = ChipVariant.outlined
+                        attrs.title = title
+                        attrs.label { +(value ?: "?") }
+                    }
+                }
+                +" | "
+                fixturePreview.transportConfig.summary().forEach { (title, value) ->
+                    chip {
+                        attrs.variant = ChipVariant.outlined
+                        attrs.title = title
+                        attrs.label { +(value ?: "?") }
+                    }
                 }
             }
         }

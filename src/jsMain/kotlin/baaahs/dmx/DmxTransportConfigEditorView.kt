@@ -57,7 +57,7 @@ private val DmxTransportConfigEditorView =
 
             div(+styles.dmxTransportConfigEditorRow) {
                 formControlLabel {
-                    attrs.label { +"Components start at universe boundaries" }
+                    attrs.label { +"Components may span universes" }
                     attrs.control {
                         checkbox {
                             attrs.checked = mutableConfig.componentMaySpanUniverses

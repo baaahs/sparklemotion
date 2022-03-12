@@ -18,6 +18,7 @@ import baaahs.util.Time
 import kotlinx.coroutines.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 
 class SacnManager(
@@ -253,14 +254,36 @@ data class SacnControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = DmxTransportConfig()
 
+    @Transient
+    private var dmxAllocator: DynamicDmxAllocator? = null
+
     override fun edit(): MutableControllerConfig =
         MutableSacnControllerConfig(this)
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
-        override val fixtureConfig: ConfigPreview
-            get() = fixtureConfig.preview()
-        override val transportConfig: ConfigPreview
-            get() = transportConfig.preview()
+    // TODO: This is pretty dumb, find a better way to do this.
+    override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
+        dmxAllocator = DynamicDmxAllocator(DmxUniverses(universes))
+        try {
+            return super.buildFixturePreviews(tempModel)
+        } finally {
+            dmxAllocator = null
+        }
+    }
+
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+        val staticDmxMapping = dmxAllocator!!.allocate(
+            transportConfig as DmxTransportConfig,
+            fixtureConfig.componentCount!!,
+            fixtureConfig.bytesPerComponent
+        )
+        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+
+        return object : FixturePreview {
+            override val fixtureConfig: ConfigPreview
+                get() = fixtureConfig.preview()
+            override val transportConfig: ConfigPreview
+                get() = dmxPreview
+        }
     }
 }
 
