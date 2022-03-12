@@ -60,7 +60,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
 
     companion object : DataSourceBuilder<PixelLocationDataSource> {
         override val title: String get() = "Pixel Location"
-        override val description: String get() = "The location of this pixel within the model."
+        override val description: String get() = "The location of this pixel within the model entity."
         override val resourceName: String
             get() = "PixelLocation"
         override val contentType: ContentType

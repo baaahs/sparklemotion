@@ -632,7 +632,7 @@ object GlslGenerationSpec : Spek({
                     struct FixtureInfo {
                         vec3 origin;            
                         vec3 heading; // in Euler angles
-                        vec3 matrix;
+                        vec3 transformation;
                     };
                     
                     uniform FixtureInfo fixtureInfo;
@@ -685,7 +685,8 @@ object GlslGenerationSpec : Spek({
                             vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
                             vec3 heading; // Deprecated. Use "rotation" instead.
-                            mat4 matrix;
+                            mat4 transformation;
+                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         // Data source: Fixture Info

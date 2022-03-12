@@ -458,7 +458,7 @@ object AutoWirerSpec : Spek({
                         struct FixtureInfo {
                             vec3 origin;
                             vec3 heading;
-                            mat4 matrix;
+                            mat4 transformation;
                         };
                         
                         uniform FixtureInfo fixtureInfo;

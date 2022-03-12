@@ -31,7 +31,8 @@ val fixtureInfoStruct = GlslType.Struct(
     GlslType.Field("origin", GlslType.Vec3, "Use \"position\" instead.", true),
     GlslType.Field("rotation", GlslType.Vec3),
     GlslType.Field("heading", GlslType.Vec3, "Use \"rotation\" instead.", true),
-    GlslType.Field("matrix", GlslType.Matrix4)
+    GlslType.Field("transformation", GlslType.Matrix4),
+    GlslType.Field("matrix", GlslType.Matrix4, "Use \"transformation\" instead.", true)
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -75,11 +76,12 @@ class FixtureInfoFeed(
             private val rotationUniform = glslProgram.getUniform("$id.rotation")
             private val headingUniform = glslProgram.getUniform("$id.heading")
             private val matrixUniform = glslProgram.getUniform("$id.matrix")
+            private val transformationUniform = glslProgram.getUniform("$id.transformation")
 
             override val isValid: Boolean get() =
                 positionUniform != null || originUniform != null ||
-                rotationUniform != null || headingUniform != null ||
-                        matrixUniform != null
+                        rotationUniform != null || headingUniform != null ||
+                        matrixUniform != null || transformationUniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
@@ -88,6 +90,7 @@ class FixtureInfoFeed(
                 rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 headingUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 matrixUniform?.set(fixtureInfo?.transformation ?: Matrix4F.identity)
+                transformationUniform?.set(fixtureInfo?.transformation ?: Matrix4F.identity)
             }
         }
     }
