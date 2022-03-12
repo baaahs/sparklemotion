@@ -305,7 +305,7 @@ object ModelRenderEngineSpec : Spek({
 private fun testFixture(fixtureType: FixtureTypeForTest, pixelCount: Int, initial: Float = 0f) =
     fixtureType.createFixture(
         null, pixelCount,
-        fixtureType.Config(pixelLocations = someVectors(pixelCount, initial)),
+        fixtureType.Config(pixelLocations = someVectors(pixelCount, initial), bytesPerComponent = 3),
         "test fixture", NullTransport, TestModel
     )
 
@@ -337,8 +337,8 @@ class FixtureTypeForTest(
             }
         }
 
-    override var defaultConfig: FixtureConfig = Config()
-    override val emptyConfig: FixtureConfig = Config()
+    override var defaultConfig: FixtureConfig = Config(bytesPerComponent = 3)
+    override val emptyConfig: FixtureConfig = Config(bytesPerComponent = 3)
 
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
@@ -360,7 +360,7 @@ class FixtureTypeForTest(
 
     inner class Config(
         override val componentCount: Int? = null,
-        override val bytesPerComponent: Int? = null,
+        override val bytesPerComponent: Int,
         val pixelLocations: List<Vector3F>? = null
     ) : FixtureConfig {
         override val fixtureType: FixtureType

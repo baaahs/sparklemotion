@@ -85,8 +85,8 @@ object MovingHeadDevice : FixtureType {
     data class Config(val adapter: MovingHeadAdapter?) : FixtureConfig {
         override val componentCount: Int
             get() = 1
-        override val bytesPerComponent: Int?
-            get() = adapter?.dmxChannelCount
+        override val bytesPerComponent: Int
+            get() = adapter?.dmxChannelCount ?: error("no adapter specified")
 
         override val fixtureType: FixtureType
             get() = MovingHeadDevice
