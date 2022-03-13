@@ -86,7 +86,7 @@ object LiveShaderInstanceSpec : Spek({
                             buildJsonObject {
                                 put("whateverData", "whateverValue")
                             }
-                        ), "ds")
+                        ), "ds", emptyMap())
                     )
                 }
 
