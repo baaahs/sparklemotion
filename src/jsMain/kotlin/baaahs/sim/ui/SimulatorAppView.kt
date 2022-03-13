@@ -50,9 +50,9 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
         if (small) {
             jsObject {
                 direction = "column"
-                splitPercentage = 80
-                first = SimulatorWindows.UI
-                second = SimulatorWindows.Visualizer
+                splitPercentage = 20
+                first = SimulatorWindows.Visualizer
+                second = SimulatorWindows.UI
             }
         } else {
             jsObject {
