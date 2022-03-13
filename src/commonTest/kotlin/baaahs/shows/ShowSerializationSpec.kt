@@ -16,6 +16,7 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
+import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
@@ -259,6 +260,11 @@ fun jsonFor(dataSource: DataSource): JsonElement {
         is PixelLocationDataSource -> {
             buildJsonObject {
                 put("type", "baaahs.Core:PixelLocation")
+            }
+        }
+        is FixtureInfoDataSource -> {
+            buildJsonObject {
+                put("type", "baaahs.Core:FixtureInfo")
             }
         }
         is ModelInfoDataSource -> {

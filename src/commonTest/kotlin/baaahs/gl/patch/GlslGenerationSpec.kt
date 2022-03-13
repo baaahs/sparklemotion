@@ -341,6 +341,15 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct FixtureInfo {
+                            vec3 position;
+                            vec3 origin; // Deprecated. Use "position" instead.
+                            vec3 rotation;
+                            vec3 heading; // Deprecated. Use "rotation" instead.
+                            mat4 transformation;
+                            mat4 matrix; // Deprecated. Use "transformation" instead.
+                        };
+
                         struct ModelInfo {
                             vec3 center;
                             vec3 extents;
@@ -349,13 +358,18 @@ object GlslGenerationSpec : Spek({
                         // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
 
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
+
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                            return xyzwInModel.xyz;
                         }
                         vec3 in_pixelLocation;
 
@@ -661,7 +675,7 @@ object GlslGenerationSpec : Spek({
                 }
             }
 
-            it("generates GLSL") {
+            it("generates GLSL including the struct") {
                 kexpect(glsl).toBe(
                     /**language=glsl*/
                     """

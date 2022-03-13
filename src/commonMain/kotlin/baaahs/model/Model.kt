@@ -60,7 +60,7 @@ class Model(
         entities.forEach { entity -> entity.visit(callback) }
     }
 
-    interface Entity {
+    interface Entity : FixtureInfo {
         val name: String
         val title: String get() = name
         val description: String?
@@ -69,10 +69,10 @@ class Model(
         val fixtureType: FixtureType
         /** Bounds in entity's local space. */
         val bounds: Pair<Vector3F, Vector3F>
-        val position: Vector3F
-        val rotation: EulerAngle
+        override val position: Vector3F
+        override val rotation: EulerAngle
         val scale: Vector3F
-        val transformation: Matrix4F
+        override val transformation: Matrix4F
         val containedEntities: List<Entity> get() = listOf(this)
         val problems: Collection<Problem>
         val id: EntityId
