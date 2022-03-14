@@ -388,9 +388,15 @@ class FakeKgl : Kgl {
         location.set(listOf(x, y, z, w))
     }
 
-    override fun uniformMatrix3fv(location: UniformLocation, transpose: Boolean, value: FloatArray) { checkContext() }
+    override fun uniformMatrix3fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {
+        checkContext()
+        location.set(value.toList())
+    }
 
-    override fun uniformMatrix4fv(location: UniformLocation, transpose: Boolean, value: FloatArray) { checkContext() }
+    override fun uniformMatrix4fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {
+        checkContext()
+        location.set(value.toList())
+    }
 
     override fun useProgram(programId: Program) {
         checkContext()

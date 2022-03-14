@@ -139,8 +139,8 @@ object SampleData {
                 const float tiltScale = 125. / PI / 180.;
 
                 struct FixtureInfo {
-                    vec3 origin;
-                    vec3 heading;
+                    vec3 position;
+                    vec3 rotation;
                     mat4 transformation;
                 };
 

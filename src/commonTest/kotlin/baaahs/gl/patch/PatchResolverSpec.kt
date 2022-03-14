@@ -130,11 +130,8 @@ object PatchResolverSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 transformation;
-                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         struct ModelInfo {
@@ -254,11 +251,8 @@ object PatchResolverSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 transformation;
-                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         struct ModelInfo {
@@ -421,11 +415,8 @@ object PatchResolverSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 transformation;
-                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         struct ModelInfo {
