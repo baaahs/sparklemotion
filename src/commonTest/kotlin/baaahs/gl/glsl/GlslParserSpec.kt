@@ -36,8 +36,8 @@ object GlslParserSpec : Spek({
                     
                     // @@AnotherClass key=value key2=value2
                     uniform struct FixtureInfo {
-                        vec3 origin;
-                        vec3 heading;
+                        vec3 position;
+                        vec3 rotation;
                     } leftEye;
 
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
@@ -82,12 +82,12 @@ object GlslParserSpec : Spek({
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
-                                    "origin" to GlslType.Vec3,
-                                    "heading" to GlslType.Vec3
+                                    "position" to GlslType.Vec3,
+                                    "rotation" to GlslType.Vec3
                                 ),
                                 "uniform struct FixtureInfo {\n" +
-                                        "    vec3 origin;\n" +
-                                        "    vec3 heading;\n" +
+                                        "    vec3 position;\n" +
+                                        "    vec3 rotation;\n" +
                                         "} leftEye;",
                                 isUniform = true,
                                 lineNumber = 13,
@@ -135,8 +135,8 @@ object GlslParserSpec : Spek({
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
-                                    "origin" to GlslType.Vec3,
-                                    "heading" to GlslType.Vec3
+                                    "position" to GlslType.Vec3,
+                                    "rotation" to GlslType.Vec3
                                 ),
                                 fullText = "uniform FixtureInfo leftEye;", lineNumber = 13,
                                 comments = listOf(" @@AnotherClass key=value key2=value2")
@@ -155,7 +155,7 @@ object GlslParserSpec : Spek({
                 it("finds the structs") {
                     expect(glslCode.structs.map { "${it.lineNumber}: ${it.fullText}" })
                         .containsExactly(
-                            "13: uniform struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n} leftEye;"
+                            "13: uniform struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n} leftEye;"
                         )
                 }
 

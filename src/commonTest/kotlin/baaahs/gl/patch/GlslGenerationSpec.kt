@@ -343,11 +343,8 @@ object GlslGenerationSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 transformation;
-                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         struct ModelInfo {
@@ -644,8 +641,8 @@ object GlslGenerationSpec : Spek({
                 /**language=glsl*/
                 """
                     struct FixtureInfo {
-                        vec3 origin;            
-                        vec3 heading; // in Euler angles
+                        vec3 position;            
+                        vec3 rotation; // in Euler angles
                         vec3 transformation;
                     };
                     
@@ -660,10 +657,10 @@ object GlslGenerationSpec : Spek({
  
                     // @param params moving-head-params
                     void main(out MovingHeadParams params) {
-                        params.pan = fixtureInfo.origin.x;
-                        params.tilt = fixtureInfo.origin.y,
-                        params.colorWheel = fixtureInfo.heading.x,
-                        params.dimmer = fixtureInfo.heading.y;
+                        params.pan = fixtureInfo.position.x;
+                        params.tilt = fixtureInfo.position.y,
+                        params.colorWheel = fixtureInfo.rotation.x,
+                        params.dimmer = fixtureInfo.rotation.y;
                     }
                 """.trimIndent()
             }
@@ -696,11 +693,8 @@ object GlslGenerationSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
                             mat4 transformation;
-                            mat4 matrix; // Deprecated. Use "transformation" instead.
                         };
 
                         // Data source: Fixture Info
@@ -713,10 +707,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 17 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
-                            params.pan = in_fixtureInfo.origin.x;
-                            params.tilt = in_fixtureInfo.origin.y,
-                            params.colorWheel = in_fixtureInfo.heading.x,
-                            params.dimmer = in_fixtureInfo.heading.y;
+                            params.pan = in_fixtureInfo.position.x;
+                            params.tilt = in_fixtureInfo.position.y,
+                            params.colorWheel = in_fixtureInfo.rotation.x,
+                            params.dimmer = in_fixtureInfo.rotation.y;
                         }
 
 

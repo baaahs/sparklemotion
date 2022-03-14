@@ -20,9 +20,9 @@ object MoverShader : ShaderType {
     /**language=glsl*/
     override val template: String = """
         struct FixtureInfo {
-            vec3 origin;
-            vec3 heading;
-            mat4 matrix;
+            vec3 position;
+            vec3 rotation;
+            mat4 transformation;
         };
 
         struct MovingHeadParams {

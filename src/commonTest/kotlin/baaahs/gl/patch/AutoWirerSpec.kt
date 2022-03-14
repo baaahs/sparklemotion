@@ -426,14 +426,14 @@ object AutoWirerSpec : Spek({
                     /**language=glsl*/
                     """
                         struct FixtureInfo {
-                            vec3 origin;
-                            vec3 heading;
+                            vec3 position;
+                            vec3 rotation;
                         };
                         
                         uniform FixtureInfo fixtureInfo;
                         
                         vec4 main() {
-                            return vec4(fixtureInfo.heading.xy, fixtureInfo.origin.xy);
+                            return vec4(fixtureInfo.heading.xy, fixtureInfo.position.xy);
                         }
                     """.trimIndent()
                 }
@@ -456,15 +456,15 @@ object AutoWirerSpec : Spek({
                     /**language=glsl*/
                     """
                         struct FixtureInfo {
-                            vec3 origin;
-                            vec3 heading;
+                            vec3 position;
+                            vec3 rotation;
                             mat4 transformation;
                         };
                         
                         uniform FixtureInfo fixtureInfo;
                         
                         vec4 main() {
-                            return vec4(fixtureInfo.heading.xy, fixtureInfo.origin.xy);
+                            return vec4(fixtureInfo.rotation.xy, fixtureInfo.position.xy);
                         }
                     """.trimIndent()
                 }
