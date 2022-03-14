@@ -136,7 +136,7 @@
     },
     "sharpyDefault": {
       "title": "Sharpy Default",
-      "src": "struct FixtureInfo {\n    vec3 origin;\n    vec3 heading;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.origin.x, fixtureInfo.origin.z, 0., 0.);\n}"
+      "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.position.x, fixtureInfo.position.z, 0., 0.);\n}"
     },
     "untitledFilterShader": {
       "title": "Untitled Filter Shader",
