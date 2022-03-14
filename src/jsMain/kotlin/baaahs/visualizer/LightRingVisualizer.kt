@@ -6,7 +6,7 @@ import three_ext.clear
 
 class LightRingVisualizer(
     lightRing: LightRing,
-    vizPixels: VizPixels? = null
+    vizPixels: VizPixels?
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
     private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
     private val ringMaterial = MeshBasicMaterial()
@@ -54,6 +54,7 @@ class LightRingVisualizer(
         obj.clear()
         obj.add(ringMesh)
         obj.add(pixelsPreview)
+        vizPixels?.addTo(obj)
 
         val pixelLocations = newItem.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)
 
