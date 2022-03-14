@@ -63,6 +63,9 @@ interface DataSource {
     fun isImplicit(): Boolean = false
     val contentType: ContentType
 
+    val dependencies: Map<String, DataSource>
+        get() = emptyMap()
+
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 

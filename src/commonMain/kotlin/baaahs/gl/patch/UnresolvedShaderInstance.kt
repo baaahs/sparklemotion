@@ -36,7 +36,7 @@ class UnresolvedShaderInstance(
 
     fun linkOptionsFor(portId: String): MutableList<LinkOption> {
         val key = incomingLinksOptions.keys.find { it.id == portId }
-            ?: throw error(unknown("port", portId, incomingLinksOptions.keys.map { it.id }))
+            ?: error(unknown("port", portId, incomingLinksOptions.keys.map { it.id }))
         return linkOptionsFor(key)
     }
 

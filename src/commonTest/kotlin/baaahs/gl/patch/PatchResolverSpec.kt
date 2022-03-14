@@ -128,6 +128,12 @@ object PatchResolverSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct FixtureInfo {
+                            vec3 position;
+                            vec3 rotation;
+                            mat4 transformation;
+                        };
+
                         struct ModelInfo {
                             vec3 center;
                             vec3 extents;
@@ -136,13 +142,18 @@ object PatchResolverSpec : Spek({
                         // Data source: Brightness Slider
                         uniform float in_brightnessSlider;
 
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
+
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                            return xyzwInModel.xyz;
                         }
                         vec3 in_pixelLocation;
 
@@ -238,6 +249,12 @@ object PatchResolverSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct FixtureInfo {
+                            vec3 position;
+                            vec3 rotation;
+                            mat4 transformation;
+                        };
+
                         struct ModelInfo {
                             vec3 center;
                             vec3 extents;
@@ -246,13 +263,18 @@ object PatchResolverSpec : Spek({
                         // Data source: Brightness Slider
                         uniform float in_brightnessSlider;
 
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
+
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                            return xyzwInModel.xyz;
                         }
                         vec3 in_pixelLocation;
 
@@ -391,6 +413,12 @@ object PatchResolverSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct FixtureInfo {
+                            vec3 position;
+                            vec3 rotation;
+                            mat4 transformation;
+                        };
+
                         struct ModelInfo {
                             vec3 center;
                             vec3 extents;
@@ -399,13 +427,18 @@ object PatchResolverSpec : Spek({
                         // Data source: Fade Slider
                         uniform float in_fadeSlider;
 
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
+
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                            return xyzwInModel.xyz;
                         }
                         vec3 in_pixelLocation;
 

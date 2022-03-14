@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.getBang
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
@@ -18,7 +19,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
         fun addToChannel(track: Track, shaderInstance: LiveShaderInstance, level: Int) {
             val channelTypeCandidates = candidates.getOrPut(track) { arrayListOf() }
             if (channelTypeCandidates.any { it.shaderInstance == shaderInstance }) {
-                throw error("candidates for $track already include ${shaderInstance.shader.title}")
+                error("candidates for $track already include ${shaderInstance.shader.title}")
             }
             channelTypeCandidates.add(ChannelEntry(shaderInstance, shaderInstance.priority, level))
         }
@@ -95,9 +96,26 @@ class PortDiagram(val patches: List<OpenPatch>) {
     inner class Resolver(
         dataSources: Map<String, DataSource>
     ) {
-        private val dataSourceChannelLinks = dataSources.map { (id, dataSource) ->
-            (id to dataSource.contentType) to LiveShaderInstance.DataSourceLink(dataSource, id)
-        }.associate { it }
+        private val dataSourcesToId by lazy { dataSources.entries.associate { (k, v) -> v to k } }
+        private val dataSourceLinks = mutableMapOf<Pair<String, ContentType>, LiveShaderInstance.DataSourceLink>()
+
+        private fun resolveDataSource(id: String, dataSource: DataSource): LiveShaderInstance.DataSourceLink {
+            return dataSourceLinks.getOrPut(id to dataSource.contentType) {
+                val deps = dataSource.dependencies.mapValues { (_, dataSource) ->
+                    val dependencyId = dataSourcesToId.getBang(dataSource, "data source dependency")
+                    resolveDataSource(dependencyId, dataSource)
+                }
+                LiveShaderInstance.DataSourceLink(dataSource, id, deps)
+            }
+        }
+
+        init {
+            dataSources.forEach { (id, dataSource) ->
+                resolveDataSource(id, dataSource)
+            }
+        }
+
+        private val dataSourceChannelLinks = dataSourceLinks.toMap()
 
         private val trackResolvers = mutableMapOf<Track, TrackResolver>()
         private val breadcrumbs = mutableListOf<Breadcrumb>()

@@ -18,6 +18,7 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
+import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
 import baaahs.util.Logger
@@ -37,6 +38,9 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
+    override val dependencies: Map<String, DataSource>
+        get() = mapOf("fixtureInfo" to FixtureInfoDataSource())
+
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         return PixelLocationFeed(getVarName(id), "ds_${id}_texture")
     }
@@ -47,7 +51,9 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
         buf.append("""
             uniform sampler2D $textureUniformId;
             vec3 ds_${id}_getPixelCoords(vec2 rasterCoord) {
-                return texelFetch($textureUniformId, ivec2(rasterCoord.xy), 0).xyz;
+                vec3 xyzInEntity = texelFetch($textureUniformId, ivec2(rasterCoord.xy), 0).xyz;
+                vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                return xyzwInModel.xyz;
             }
             vec3 $varName;
             
@@ -60,7 +66,7 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
 
     companion object : DataSourceBuilder<PixelLocationDataSource> {
         override val title: String get() = "Pixel Location"
-        override val description: String get() = "The location of this pixel within the model."
+        override val description: String get() = "The location of this pixel within the model entity."
         override val resourceName: String
             get() = "PixelLocation"
         override val contentType: ContentType

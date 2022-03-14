@@ -218,7 +218,10 @@ class MutableShow(
             layouts = layouts.build(showBuilder),
             shaders = showBuilder.getShaders(),
             shaderInstances = showBuilder.getShaderInstances(),
-            dataSources = showBuilder.getDataSources(),
+            dataSources = run {
+                showBuilder.includeDependencyDataSources()
+                showBuilder.getDataSources()
+            },
             controls = showBuilder.getControls()
         )
     }
@@ -319,6 +322,7 @@ class MutablePatch {
     fun openForPreview(toolchain: Toolchain, resultContentType: ContentType): LinkedPatch? {
         val showBuilder = ShowBuilder()
         build(showBuilder)
+        showBuilder.includeDependencyDataSources()
 
         val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
             toolchain.openShader(showBuilder.getShaders().getBang(shaderId, "shader"))
@@ -474,6 +478,16 @@ class ShowBuilder {
     fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getShaderInstances(): Map<String, ShaderInstance> = shaderInstanceIds.all()
+
+    // Make sure we include data source dependencies, otherwise their feeds aren't opened.
+    // This is pretty janky, find a better way.
+    fun includeDependencyDataSources() {
+        getDataSources().forEach { (_, dataSource) ->
+            dataSource.dependencies.forEach { (_, dependency) ->
+                idFor(dependency)
+            }
+        }
+    }
 
     companion object {
         fun forImplicitControls(

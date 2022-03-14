@@ -65,7 +65,7 @@ data class Patch(
 fun <T> List<T>.assertNoDuplicates(items: String = "items") {
     val duplicates = groupBy { it }.mapValues { (_, v) -> v.size }.filterValues { it > 1 }
     if (duplicates.isNotEmpty()) {
-        throw error("duplicate $items: $duplicates")
+        error("duplicate $items: $duplicates")
     }
 }
 

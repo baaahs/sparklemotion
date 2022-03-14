@@ -4,6 +4,7 @@ import baaahs.TestMovingHeadAdapter
 import baaahs.TestRenderContext
 import baaahs.describe
 import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.model.MovingHead
@@ -24,13 +25,14 @@ object FixtureInfoDataSourceSpec : Spek({
         val shaderText by value {
             """
                 struct FixtureInfo {
-                    vec3 origin;
-                    vec3 heading;
+                    vec3 position;
+                    vec3 rotation;
+                    mat4 transformation;
                 };
                 uniform FixtureInfo fixtureInfo;
         
                 void main(void) {
-                    gl_FragColor = vec4(fixtureInfo.origin.xy, fixtureInfo.heading.zw);
+                    gl_FragColor = vec4(fixtureInfo.position.xy, fixtureInfo.rotation.zw);
                 }
             """.trimIndent()
         }
@@ -46,14 +48,17 @@ object FixtureInfoDataSourceSpec : Spek({
             testRenderContext.renderEngine.draw()
         }
 
-        it("should set uniforms for origin and heading") {
+        it("should set uniforms for position, rotation, and transformation") {
             val glProgram = testRenderContext.gl.findProgram(program.id)
 
-            val originUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.origin")
+            val originUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.position")
             expect(originUniform.asVector3F()).toEqual(movingHead.position)
 
-            val headingUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.heading")
+            val headingUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.rotation")
             expect(headingUniform.asEulerAngle()).toEqual(movingHead.rotation)
+
+            val transformationUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.transformation")
+            expect(transformationUniform.asMatrix4F()).toEqual(movingHead.transformation)
         }
     }
 })
@@ -62,3 +67,5 @@ fun Iterable<Float>.asVector3F() =
     with(iterator()) { Vector3F(next(), next(), next()) }
 fun Iterable<Float>.asEulerAngle() =
     with(iterator()) { EulerAngle(next().toDouble(), next().toDouble(), next().toDouble()) }
+fun Iterable<Float>.asMatrix4F() =
+    with(iterator()) { Matrix4F(FloatArray(16) { next() }) }
