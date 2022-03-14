@@ -20,7 +20,7 @@ actual class EntityAdapter(
         LightBarVisualizer(lightBar, this)
 
     actual fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing> =
-        LightRingVisualizer(lightRing)
+        LightRingVisualizer(lightRing, null)
 
     actual fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
         MovingHeadVisualizer(movingHead, this)
