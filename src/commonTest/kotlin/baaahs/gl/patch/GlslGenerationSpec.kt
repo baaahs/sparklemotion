@@ -341,6 +341,12 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
+                        struct FixtureInfo {
+                            vec3 position;
+                            vec3 rotation;
+                            mat4 transformation;
+                        };
+
                         struct ModelInfo {
                             vec3 center;
                             vec3 extents;
@@ -349,13 +355,18 @@ object GlslGenerationSpec : Spek({
                         // Data source: Blueness Slider
                         uniform float in_bluenessSlider;
 
+                        // Data source: Fixture Info
+                        uniform FixtureInfo in_fixtureInfo;
+
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            return texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                            return xyzwInModel.xyz;
                         }
                         vec3 in_pixelLocation;
 
@@ -630,9 +641,9 @@ object GlslGenerationSpec : Spek({
                 /**language=glsl*/
                 """
                     struct FixtureInfo {
-                        vec3 origin;            
-                        vec3 heading; // in Euler angles
-                        vec3 matrix;
+                        vec3 position;            
+                        vec3 rotation; // in Euler angles
+                        vec3 transformation;
                     };
                     
                     uniform FixtureInfo fixtureInfo;
@@ -646,10 +657,10 @@ object GlslGenerationSpec : Spek({
  
                     // @param params moving-head-params
                     void main(out MovingHeadParams params) {
-                        params.pan = fixtureInfo.origin.x;
-                        params.tilt = fixtureInfo.origin.y,
-                        params.colorWheel = fixtureInfo.heading.x,
-                        params.dimmer = fixtureInfo.heading.y;
+                        params.pan = fixtureInfo.position.x;
+                        params.tilt = fixtureInfo.position.y,
+                        params.colorWheel = fixtureInfo.rotation.x,
+                        params.dimmer = fixtureInfo.rotation.y;
                     }
                 """.trimIndent()
             }
@@ -661,7 +672,7 @@ object GlslGenerationSpec : Spek({
                 }
             }
 
-            it("generates GLSL") {
+            it("generates GLSL including the struct") {
                 kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
@@ -682,10 +693,8 @@ object GlslGenerationSpec : Spek({
 
                         struct FixtureInfo {
                             vec3 position;
-                            vec3 origin; // Deprecated. Use "position" instead.
                             vec3 rotation;
-                            vec3 heading; // Deprecated. Use "rotation" instead.
-                            mat4 matrix;
+                            mat4 transformation;
                         };
 
                         // Data source: Fixture Info
@@ -698,10 +707,10 @@ object GlslGenerationSpec : Spek({
 
                         #line 17 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
-                            params.pan = in_fixtureInfo.origin.x;
-                            params.tilt = in_fixtureInfo.origin.y,
-                            params.colorWheel = in_fixtureInfo.heading.x,
-                            params.dimmer = in_fixtureInfo.heading.y;
+                            params.pan = in_fixtureInfo.position.x;
+                            params.tilt = in_fixtureInfo.position.y,
+                            params.colorWheel = in_fixtureInfo.rotation.x,
+                            params.dimmer = in_fixtureInfo.rotation.y;
                         }
 
 

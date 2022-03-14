@@ -139,7 +139,11 @@ class LiveShaderInstance(
         }
     }
 
-    data class DataSourceLink(val dataSource: DataSource, val varName: String) : Link, ProgramNode {
+    data class DataSourceLink(
+        val dataSource: DataSource,
+        val varName: String,
+        val deps: Map<String, DataSourceLink>
+    ) : Link, ProgramNode {
         override val title: String get() = dataSource.title
         override val outputPort: OutputPort get() = OutputPort(dataSource.contentType)
 
@@ -160,7 +164,22 @@ class LiveShaderInstance(
             index: Int,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
-            return DataSourceComponent(dataSource, varName)
+//            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
+//                val inputPort = shaderInstance.shader.findInputPort(toPortId)
+//
+//                val upstreamComponent = findUpstreamComponent(fromLink)
+//                var expression = upstreamComponent.getExpression(prefix)
+//                val type = upstreamComponent.resultType
+//                if (inputPort.type != type) {
+//                    expression = inputPort.contentType.adapt(expression, type)
+//                }
+//                tmpPortMap[toPortId] = expression
+//            }
+            return DataSourceComponent(dataSource, varName,
+                deps.mapValues { (_, dataSourceLink) ->
+                    findUpstreamComponent(dataSourceLink)
+                }
+            )
         }
     }
 
@@ -190,7 +209,7 @@ class LiveShaderInstance(
     }
 }
 
-fun DataSource.link(varName: String) = LiveShaderInstance.DataSourceLink(this, varName)
+fun DataSource.link(varName: String) = LiveShaderInstance.DataSourceLink(this, varName, emptyMap())
 
 class ShaderInstanceResolver(
     private val openShaders: CacheBuilder<String, OpenShader>,

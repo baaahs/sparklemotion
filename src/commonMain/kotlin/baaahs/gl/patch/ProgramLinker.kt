@@ -53,6 +53,7 @@ class ProgramLinker(
 
     fun visit(dataSourceLink: LiveShaderInstance.DataSourceLink) {
         dataSourceLinks.add(dataSourceLink)
+        dataSourceLink.deps.forEach { (_, dependency) -> visit(dependency as ProgramNode) }
     }
 
     init { visit(rootNode) }

@@ -4,7 +4,11 @@ import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.show.DataSource
 
-class DataSourceComponent(val dataSource: DataSource, val varName: String) : Component {
+class DataSourceComponent(
+    val dataSource: DataSource,
+    val varName: String,
+    val dependencies: Map<String, Component>
+) : Component {
     override val title: String
         get() = dataSource.title
     override val outputVar: String?
