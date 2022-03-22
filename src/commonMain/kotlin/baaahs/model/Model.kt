@@ -192,7 +192,7 @@ class Model(
         val b: Vector3F get() = geometry.vertices[vertexB]
         val c: Vector3F get() = geometry.vertices[vertexC]
 
-        val vertices: Array<Vector3F> = arrayOf(a, b, c)
+        val vertices: Array<Vector3F> get() = arrayOf(a, b, c)
     }
 }
 
