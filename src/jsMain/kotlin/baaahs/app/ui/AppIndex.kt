@@ -51,16 +51,15 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
     val uiSettings = webClient.uiSettings
-    val handleUiSettingsChange by handler { callback: (UiSettings) -> UiSettings ->
-        val newUiSettings = callback(props.webClient.uiSettings)
+    val handleUiSettingsChange by handler(webClient, webClient.uiSettings) { callback: (UiSettings) -> UiSettings ->
+        val newUiSettings = callback(webClient.uiSettings)
         webClient.updateUiSettings(newUiSettings, saveToStorage = true)
     }
 
-    val handleDarkModeChange = callback(webClient) {
+    val darkMode = uiSettings.darkMode
+    val handleDarkModeChange = callback(handleUiSettingsChange) {
         handleUiSettingsChange { it.copy(darkMode = !it.darkMode) }
     }
-
-    val darkMode = uiSettings.darkMode
     val theme = memo(darkMode) {
         createMuiTheme {
             palette {
@@ -69,9 +68,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    var appMode by state { AppMode.Show }
-    val handleAppModeChange by handler { newAppMode: AppMode ->
-        appMode = newAppMode
+    val appMode = uiSettings.appMode
+    val handleAppModeChange by handler(handleUiSettingsChange) { newAppMode: AppMode ->
+        handleUiSettingsChange { it.copy(appMode = newAppMode) }
     }
 
     val allStyles = memo(theme) { AllStyles(theme) }
