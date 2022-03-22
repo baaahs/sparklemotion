@@ -31,11 +31,11 @@ class ObjImporterSpec : Spek({
                 l 4 1
             """.trimIndent()
         }
-        val loader by value { ObjImporter.import(objData) }
+        val results by value { ObjImporter.import(objData) }
 
         it("imports simple OBJ data") {
-            expect(loader.entities).size.toEqual(1)
-            val surface = loader.entities.only()
+            expect(results.entities).size.toEqual(1)
+            val surface = results.entities.only()
             expect(surface.name).toEqual("Panel 1")
             expect((surface as Model.Surface).faces.map { it.vertices.toList() }).containsExactly(
                 listOf(
@@ -52,7 +52,7 @@ class ObjImporterSpec : Spek({
         }
 
         it("lists no errors") {
-            expect(loader.errors).isEmpty()
+            expect(results.errors).isEmpty()
         }
 
         context("when it contains an error") {
@@ -63,11 +63,11 @@ class ObjImporterSpec : Spek({
             }
 
             it("creates no entities") {
-                expect(loader.entities).isEmpty()
+                expect(results.entities).isEmpty()
             }
 
             it("lists errors") {
-                expect(loader.errors).containsExactly(
+                expect(results.errors).containsExactly(
                     Importer.Error("A vertex must have three coordinates: v 1 2", 1)
                 )
             }

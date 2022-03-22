@@ -2,6 +2,8 @@ package baaahs.model
 
 import baaahs.describe
 import baaahs.fakeModel
+import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.nuffin
@@ -11,13 +13,26 @@ import org.spekframework.spek2.Spek
 
 object ModelSpec : Spek({
     describe<Model> {
+        context("applying parent transformations") {
+            it("multiplies them") {
+                val data = LightBarData(
+                    "bar",
+                    position = Vector3F.unit3d,
+                    startVertex = Vector3F.origin, endVertex = Vector3F.unit3d
+                )
+                val entity =
+                    data.open(Matrix4F.fromPositionAndRotation(Vector3F(.5, .5, .5), EulerAngle.identity))
+                expect(entity.position).toEqual(Vector3F(1.5, 1.5, 1.5))
+            }
+        }
+
         context("model bounds") {
             val model by value { nuffin<Model>() }
             val v1 by value { Vector3F(1f, 0f, 5f) }
             val v2 by value { Vector3F(-1f, 1f, 0f) }
             val v3 by value { Vector3F(0f, 1f, -.25f) }
 
-            context("with an OBJ import") {
+            context("with a hand-created OBJ import") {
                 val position by value { Vector3F.origin }
                 override(model) {
                     val geometry = Model.Geometry(listOf(v1, v2, v3))
@@ -61,7 +76,6 @@ object ModelSpec : Spek({
                 }
             }
 
-
             context("with light bars") {
                 val bar1Position by value { Vector3F.origin }
                 val v4 by value { Vector3F(7f, -3f, 5.25f) }
@@ -69,7 +83,7 @@ object ModelSpec : Spek({
                 override(model) {
                     fakeModel(
                         LightBar("bar1", startVertex = v1, endVertex = v2, position = bar1Position),
-                        LightBar("bar2", startVertex = v3, endVertex = v4,)
+                        LightBar("bar2", startVertex = v3, endVertex = v4)
                     )
                 }
 

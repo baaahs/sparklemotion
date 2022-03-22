@@ -2,6 +2,7 @@ package baaahs.model
 
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.io.getResource
@@ -22,7 +23,7 @@ data class ModelData(
         MutableModel(this)
 
     fun open(): Model =
-        Model(title, entities.map { entity -> entity.open() }, units)
+        Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units)
 }
 
 enum class ModelUnit(val display: String) {
@@ -46,7 +47,16 @@ sealed interface EntityData {
     @Transient val id: EntityId
 
     fun edit(): MutableEntity
-    fun open(): Model.Entity
+
+    fun open(parentTransformation: Matrix4F): Model.Entity {
+        val transform = parentTransformation * Matrix4F.fromPositionAndRotation(position, rotation)
+        val position = transform.position
+        val rotation = transform.rotation
+        val scale = transform.scale
+        return open(position, rotation, scale)
+    }
+
+    fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity
 }
 
 @Serializable @SerialName("Import")
@@ -64,7 +74,7 @@ data class ImportedEntityData(
 ) : EntityData {
     override fun edit(): MutableEntity = MutableImportedEntityGroup(this)
 
-    override fun open(): ImportedEntityGroup {
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): ImportedEntityGroup {
         var importFail: Exception? = null
         val importerResults = try {
             ObjImporter.doImport(objData, objDataIsFileRef, title) {
@@ -97,7 +107,7 @@ data class MovingHeadData(
     override fun edit(): MutableEntity =
         MutableMovingHeadData(this)
 
-    override fun open(): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
         MovingHead(title, description, position, rotation, scale, baseDmxChannel, adapter, id)
 }
 
@@ -115,7 +125,7 @@ data class LightBarData(
     override fun edit(): MutableEntity =
         MutableLightBarData(this)
 
-    override fun open(): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
         LightBar(title, description, position, rotation, scale, startVertex, endVertex, id)
 }
 
@@ -132,7 +142,7 @@ data class PolyLineData(
     override fun edit(): MutableEntity =
         MutablePolyLineData(this)
 
-    override fun open(): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
         PolyLine(title, description, segments.map {
             PolyLine.Segment(it.startVertex, it.endVertex, it.pixelCount)
         }, position, rotation, scale, 1f, 1f, id)
@@ -160,9 +170,11 @@ data class GridData(
         RowsThenColumns("Rows then Columns")
     }
 
-    override fun open(): Model.Entity = Grid(
-        title, description, position, rotation, scale, rows, columns, rowGap, columnGap, direction, zigZag, id
-    )
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
+        Grid(
+            title, description, position, rotation, scale,
+            rows, columns, rowGap, columnGap, direction, zigZag, id
+        )
 }
 
 @Serializable
@@ -187,7 +199,7 @@ data class LightRingData(
     override fun edit(): MutableEntity =
         MutableLightRingData(this)
 
-    override fun open(): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
         LightRing(
             title, description, position, rotation, scale, radius, firstPixelRadians,
             pixelDirection, id
@@ -209,7 +221,7 @@ data class SurfaceDataForTest(
     override fun edit(): MutableEntity =
         TODO("MutableSurfaceDataForTest not implemented yet!")
 
-    override fun open(): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity =
         Model.Surface(
             title, description, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices),
             position, rotation, scale
