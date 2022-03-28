@@ -15,10 +15,8 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.Scene
 import baaahs.show.Show
-import baaahs.sim.FakeNetwork
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
-import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.server.DocumentService
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
@@ -83,37 +81,17 @@ class Pinky(
 
     private var keepRunning = true
 
-    suspend fun startAndRun(simulateBrains: Boolean = false) {
+    suspend fun startAndRun(beforeRun: suspend CoroutineScope.() -> Unit = {}) {
         withContext(coroutineContext) {
             val startupJobs = launchStartupJobs()
             val daemonJobs = launchDaemonJobs()
 
             startupJobs.join()
 
-            if (simulateBrains) addSimulatedBrains()
+            beforeRun()
 
             run()
             daemonJobs.cancelAndJoin()
-        }
-    }
-
-    private fun addSimulatedBrains() {
-        val mappingInfos = mappingManager.getAllControllerMappings()
-        mappingInfos.forEach { (controllerId, mappings) ->
-            when (controllerId.controllerType) {
-                BrainManager.controllerTypeName -> {
-                    mappings.forEach { mapping ->
-                        brainManager.foundBrain(
-                            FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
-                            BrainHelloMessage(controllerId.id, mapping.entity!!.name, null, null),
-                            isSimulatedBrain = true
-                        )
-                    }
-                }
-                else -> {
-                    logger.error { "Unknown controller type for $controllerId." }
-                }
-            }
         }
     }
 
