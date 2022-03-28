@@ -7,6 +7,9 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.*
 import baaahs.device.FixtureType
 import baaahs.dmx.*
+import baaahs.fixtures.MovingHeadRemoteConfig
+import baaahs.fixtures.PixelArrayRemoteConfig
+import baaahs.fixtures.RemoteConfig
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
@@ -270,6 +273,11 @@ sealed class Plugins private constructor(
         polymorphic(MovingHeadAdapter::class) {
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
+        }
+
+        polymorphic(RemoteConfig::class) {
+            subclass(PixelArrayRemoteConfig::class, PixelArrayRemoteConfig.serializer())
+            subclass(MovingHeadRemoteConfig::class, MovingHeadRemoteConfig.serializer())
         }
     }
 
