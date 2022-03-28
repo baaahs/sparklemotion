@@ -59,7 +59,7 @@ fun Int.boundedBy(range: IntRange): Int {
 
 expect val internalTimerClock: Clock
 
-expect fun doRunBlocking(block: suspend () -> Unit)
+expect fun <T> doRunBlocking(block: suspend () -> T): T
 
 expect fun decodeBase64(s: String): ByteArray
 

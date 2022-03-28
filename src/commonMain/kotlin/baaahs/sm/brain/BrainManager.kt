@@ -119,6 +119,12 @@ class BrainManager(
         notifyListeners { onAdd(controller) }
     }
 
+    fun removeBrain(brainId: BrainId) {
+        activeBrains.remove(brainId)?.let {
+            notifyListeners { onRemove(it) }
+        }
+    }
+
     inner class BrainController(
         private val brainAddress: Network.Address,
         private val brainId: BrainId,

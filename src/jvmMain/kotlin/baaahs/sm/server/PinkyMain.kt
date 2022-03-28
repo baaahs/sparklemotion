@@ -9,6 +9,7 @@ import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
+import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import baaahs.util.SystemClock
@@ -130,8 +131,13 @@ class PinkyMain(private val args: Array<String>) {
         logger.info { responses.random() }
 
         try {
+            val pinkyArgs = pinkyScope.get<PinkyArgs>()
             runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
-                pinky.startAndRun(simulateBrains = pinkyScope.get<PinkyArgs>().simulateBrains)
+                pinky.startAndRun {
+                    if (pinkyArgs.simulateBrains) {
+                        pinkyScope.get<ProdBrainSimulator>().enableSimulation()
+                    }
+                }
             }
         } catch(e: Throwable) {
             logger.error(e) { "Failed to start Pinky." }
