@@ -1,9 +1,12 @@
 package baaahs.mapper
 
 import baaahs.describe
+import baaahs.doRunBlocking
+import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.only
 import baaahs.show.SampleData
+import baaahs.sim.FakeFs
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
@@ -26,13 +29,21 @@ class MappingSessionSpec : Spek({
                           "panelName": "panel1234",
                           "pixels": [{"modelPosition": {"x": 1, "y": 2, "z": 3}}]
                         }
-                      ]
+                      ],
+                      "cameraMatrix": {
+                        "elements": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1] 
+                      }
                     }
                 """.trimIndent()
             }
 
-            context("fromJson") {
-                val decoded by value { Json.decodeFromString(MappingSession.serializer(), json) }
+            context("Session.loadMappingSession") {
+                val fs by value { FakeFs() }
+                val decoded by value {
+                    val file = fs.resolve("mapping-session.json")
+                    doRunBlocking { fs.saveFile(file, json) }
+                    doRunBlocking { Storage(fs, plugins).loadMappingSession(file) }
+                }
 
                 it("deserializes equally") {
                     expect(decoded)
@@ -45,6 +56,9 @@ class MappingSessionSpec : Spek({
                         .its({ pixels }) { toEqual(listOf(
                             MappingSession.SurfaceData.PixelData(Vector3F(1f, 2f, 3f))
                         )) }
+
+                    expect(decoded)
+                        .its({ cameraMatrix }) { toEqual(Matrix4F.Companion.identity) }
                 }
             }
 
