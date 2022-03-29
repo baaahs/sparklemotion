@@ -1,5 +1,6 @@
 package baaahs.controller
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.*
 import baaahs.dmx.Dmx.Companion.channelsPerUniverse
@@ -11,6 +12,8 @@ import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableSacnControllerConfig
+import baaahs.sim.SimulationEnv
+import baaahs.sim.WledsSimulator
 import baaahs.util.Clock
 import baaahs.util.Delta
 import baaahs.util.Logger
@@ -137,7 +140,7 @@ class SacnManager(
         private val universeCount: Int,
         val onlineSince: Time?
     ) : Controller {
-        override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
+        override val controllerId: ControllerId = idFor(id)
         override val state: ControllerState =
             State(controllerId.name(), address, onlineSince)
         override val transportType: TransportType
@@ -226,6 +229,8 @@ class SacnManager(
             ignoreUnknownKeys = true
         }
 
+        fun idFor(id: String) = ControllerId(controllerTypeName, id)
+
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
@@ -284,6 +289,11 @@ data class SacnControllerConfig(
             override val transportConfig: ConfigPreview
                 get() = dmxPreview
         }
+    }
+
+    override fun createSimulator(controllerId: ControllerId, simulationEnv: SimulationEnv): ControllerSimulator {
+        val wledsSimulator = simulationEnv[WledsSimulator::class]
+        return wledsSimulator.createFakeWledDevice(controllerId, null)
     }
 }
 

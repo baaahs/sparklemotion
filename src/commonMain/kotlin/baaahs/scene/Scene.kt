@@ -3,10 +3,12 @@ package baaahs.scene
 import baaahs.DocumentState
 import baaahs.PubSub
 import baaahs.controller.ControllerId
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.fixtures.*
 import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
 import baaahs.model.ModelData
+import baaahs.sim.SimulationEnv
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
@@ -67,6 +69,7 @@ interface ControllerConfig {
     }
 
     fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview
+    fun createSimulator(controllerId: ControllerId, simulationEnv: SimulationEnv): ControllerSimulator
 }
 
 @Serializable

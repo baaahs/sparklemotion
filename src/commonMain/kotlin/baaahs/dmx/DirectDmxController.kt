@@ -3,6 +3,7 @@ package baaahs.dmx
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
@@ -10,6 +11,8 @@ import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
+import baaahs.sim.SimulationEnv
+import baaahs.sim.WledsSimulator
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.SerialName
@@ -163,5 +166,10 @@ data class DirectDmxControllerConfig(
             override val transportConfig: ConfigPreview
                 get() = dmxPreview
         }
+    }
+
+    override fun createSimulator(controllerId: ControllerId, simulationEnv: SimulationEnv): ControllerSimulator {
+        val wledsSimulator = simulationEnv[WledsSimulator::class]
+        return wledsSimulator.createFakeWledDevice(controllerId, null)
     }
 }

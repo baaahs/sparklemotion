@@ -118,7 +118,11 @@ suspend fun throttle(targetRatePerSecond: Float, logger: Logger? = null, block: 
     val target = 1f / targetRatePerSecond
     val delayMs = ((target - elapsed) * 1000).roundToInt()
     if (delayMs <= 0) {
-        logger?.warn { "Throttled block took ${elapsed.asMillis()}ms; target is ${target.asMillis()}ms." }
+        val elapsedMs = elapsed.asMillis()
+        val targetMs = target.asMillis()
+        if (elapsedMs > targetMs * 2) {
+            logger?.warn { "Throttled block took ${elapsedMs}ms; target is ${targetMs}ms." }
+        }
         yield()
     } else {
         delay(delayMs.toLong())

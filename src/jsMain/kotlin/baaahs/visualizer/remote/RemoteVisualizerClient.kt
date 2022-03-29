@@ -1,6 +1,8 @@
 package baaahs.visualizer.remote
 
 import baaahs.client.document.SceneManager
+import baaahs.controller.ControllerId
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.io.ByteArrayReader
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -49,7 +51,22 @@ class RemoteVisualizerClient(
             fixtureSimulations = buildMap {
                 openScene?.let { scene ->
                     scene.model.visit { entity ->
-                        entity.createFixtureSimulation(simulationEnv, entityAdapter)?.let { simulation ->
+                        entity.createFixtureVisualizer(
+                            simulationEnv,
+                            entityAdapter,
+                            object : ControllerSimulator {
+                                override val controllerId: ControllerId
+                                    get() = TODO("not implemented")
+
+                                override fun start() {
+                                    TODO("not implemented")
+                                }
+
+                                override fun stop() {
+                                    TODO("not implemented")
+                                }
+                            }
+                        )?.let { simulation ->
                             val entityVisualizer = simulation.itemVisualizer
                             visualizer.add(entityVisualizer)
                             put(entity.name, simulation)

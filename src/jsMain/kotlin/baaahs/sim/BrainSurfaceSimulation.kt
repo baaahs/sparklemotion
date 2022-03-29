@@ -1,5 +1,6 @@
 package baaahs.sim
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
@@ -9,17 +10,15 @@ import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
-import baaahs.randomDelay
 import baaahs.sm.brain.BrainManager
-import baaahs.sm.brain.sim.BrainSimulatorManager
-import baaahs.util.globalLaunch
 import baaahs.visualizer.*
 import three_ext.toVector3F
 
 actual class BrainSurfaceSimulation actual constructor(
     private val surface: Model.Surface,
     private val simulationEnv: SimulationEnv,
-    adapter: EntityAdapter
+    adapter: EntityAdapter,
+    private val controllerSimulator: ControllerSimulator
 ) : FixtureSimulation {
     private val surfaceGeometry by lazy { SurfaceGeometry(surface) }
 
@@ -28,23 +27,20 @@ actual class BrainSurfaceSimulation actual constructor(
         pixelArranger.arrangePixels(surfaceGeometry, surface.expectedPixelCount)
     }
 
-    private val vizPixels by lazy { VizPixels(
-        pixelPositions,
-        surfaceGeometry.panelNormal,
-        surface.transformation,
-        PixelArrayDevice.PixelFormat.default
-    ) }
-
-    val brain by lazy {
-        val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
-        brainSimulatorManager.createBrain(surface.name, vizPixels)
+    private val vizPixels by lazy {
+        VizPixels(
+            pixelPositions,
+            surfaceGeometry.panelNormal,
+            surface.transformation,
+            PixelArrayDevice.PixelFormat.default
+        )
     }
 
     override val mappingData: MappingSession.SurfaceData
         by lazy {
             MappingSession.SurfaceData(
                 BrainManager.controllerTypeName,
-                brain.id,
+                controllerSimulator.controllerId.name(),
                 surface.name,
                 pixelPositions.size,
                 pixelPositions.map {
@@ -58,7 +54,7 @@ actual class BrainSurfaceSimulation actual constructor(
         SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
     }
 
-    override val previewFixture: Fixture by lazy {
+    override fun createPreviewFixture(): Fixture =
         PixelArrayFixture(
             surface,
             pixelPositions.size,
@@ -68,18 +64,7 @@ actual class BrainSurfaceSimulation actual constructor(
             1f,
             pixelPositions.map { it.toVector3F() }
         )
-    }
 
-    override fun start() {
-        globalLaunch {
-            randomDelay(1000)
-            brain.start()
-        }
-    }
-
-    override fun stop() {
-        brain.stop()
-    }
 
     override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
         remoteConfig as PixelArrayRemoteConfig

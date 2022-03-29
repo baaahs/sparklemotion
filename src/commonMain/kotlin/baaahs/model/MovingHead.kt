@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.Color
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Dmx
@@ -182,8 +183,12 @@ class MovingHead(
     override val fixtureType: FixtureType
         get() = MovingHeadDevice
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
-        MovingHeadSimulation(this, adapter)
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ): FixtureSimulation =
+        MovingHeadSimulation(this, adapter, simulationEnv)
 
     override fun createVisualizer(adapter: EntityAdapter) =
         adapter.createMovingHeadVisualizer(this)

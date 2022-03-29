@@ -1,5 +1,6 @@
 package baaahs.model
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.EulerAngle
@@ -57,7 +58,11 @@ class LightRing(
         return (v1 * cos(a) + v2 * sin(a)) * radius
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ): FixtureSimulation =
         LightRingSimulation(this, simulationEnv, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =

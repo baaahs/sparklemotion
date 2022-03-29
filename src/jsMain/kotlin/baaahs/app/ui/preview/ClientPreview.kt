@@ -1,6 +1,9 @@
 package baaahs.app.ui.preview
 
 import baaahs.client.ClientStageManager
+import baaahs.controller.ControllerId
+import baaahs.controller.SacnControllerConfig
+import baaahs.controller.SacnManager
 import baaahs.document
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
@@ -8,7 +11,10 @@ import baaahs.gl.render.RenderManager
 import baaahs.model.Model
 import baaahs.plugin.Plugins
 import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.FakeNetwork
 import baaahs.sim.SimulationEnv
+import baaahs.sim.WledsSimulator
+import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.throttle
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -47,20 +53,28 @@ class ClientPreview(
 
     init {
         val pixelArranger = SwirlyPixelArranger(0.2f, 3f)
+        val network = FakeNetwork(networkDelay = 0)
+        val brainSimulatorManager = BrainSimulatorManager(network, clock)
+        val wledsSimulator = WledsSimulator(network)
 
         val simulationEnv = SimulationEnv {
             component(clock)
             component(dmxUniverse)
             component<PixelArranger>(pixelArranger)
             component(visualizer)
+            component(brainSimulatorManager)
+            component(wledsSimulator)
         }
         val adapter = EntityAdapter(simulationEnv)
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
-                entity.createFixtureSimulation(simulationEnv, adapter)?.let { simulation ->
+                val controllerSimulation =
+                    SacnControllerConfig("SACN for ${entity.name}", "whatever", 10)
+                        .createSimulator(ControllerId(SacnManager.controllerTypeName, entity.name), simulationEnv)
+                entity.createFixtureVisualizer(simulationEnv, adapter, controllerSimulation)?.let { simulation ->
                     theVisualizer.add(simulation.itemVisualizer)
-                    simulation.previewFixture
+                    simulation.createPreviewFixture()
                 }
             }
 //    private val mappingResults = SessionMappingResults(model, emptyList()) // TODO: use real data.

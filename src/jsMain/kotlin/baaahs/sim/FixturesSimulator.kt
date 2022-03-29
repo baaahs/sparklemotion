@@ -1,9 +1,14 @@
 package baaahs.sim
 
+import baaahs.controller.ControllerId
+import baaahs.controller.SacnControllerConfig
+import baaahs.controller.SacnManager
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.mapper.MappingSession
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.scene.FixtureMappingData
 import baaahs.scene.SceneProvider
 import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.sm.brain.sim.BrainSimulatorManager
@@ -45,55 +50,93 @@ class FixturesSimulator(
         component(visualizer)
     }
     private val entityAdapter = EntityAdapter(simulationEnv)
-    private var fixtureSimulations: Map<Model.Entity, FixtureSimulation> = emptyMap()
+    private var simulation: Simulation? = null
 
     init {
         sceneProvider.addBeforeChangeListener { newOpenScene ->
-            fixtureSimulations.values.forEach { oldFixtureSimulator ->
-                oldFixtureSimulator.stop()
-            }
+            simulation?.stop()
             visualizer.facade.clear()
 
-            fixtureSimulations =
-                if (newOpenScene == null) {
-                    emptyMap()
-                } else {
-                    // TODO: create the appropriate controller simulators for fixtures that are mapped.
-                    val mappedEntities = buildSet {
-                        newOpenScene.controllers.forEach { (controllerId, controllerConfig) ->
-                            controllerConfig.fixtures.forEach { fixtureMappingData ->
-                                add(fixtureMappingData.entityId)
-                            }
-                        }
-                    }
+            simulation = if (newOpenScene != null) {
+                val entityToControllerId = mutableMapOf<String, ControllerId>()
 
-                    buildMap {
-                        newOpenScene.model.visit { entity ->
-                            entity.createFixtureSimulation(simulationEnv, entityAdapter)
-                                ?.let { put(entity, it) }
+                // Create additional controller configs for any unmapped entities.
+
+                newOpenScene.controllers.forEach { (controllerId, controllerConfig) ->
+                    controllerConfig.fixtures.forEach { fixtureMappingData ->
+                        if (fixtureMappingData.entityId != null) {
+                            entityToControllerId[fixtureMappingData.entityId] = controllerId
                         }
                     }
                 }
 
-            fixtureSimulations.values.forEach {
-                it.start()
-                visualizer.add(it.itemVisualizer)
-            }
+                val generatedControllerConfigs = buildMap {
+                    newOpenScene.model.visit { entity ->
+                        if (!entityToControllerId.contains(entity.name)) {
+                            val controllerId = SacnManager.idFor("sim_${entity.name}")
+                            put(
+                                controllerId,
+                                SacnControllerConfig(
+                                    "Sim Controller for ${entity.name}", "fake-address", 5,
+                                    listOf(FixtureMappingData(entity.name, entity.fixtureType.emptyConfig))
+                                )
+                            )
+                            entityToControllerId[entity.name] = controllerId
+                        }
+                    }
+                }
 
-            simMappingManager.mappingData =
-                newOpenScene?.let {
+                val controllerSimulators =
+                    (newOpenScene.controllers + generatedControllerConfigs)
+                        .mapValues { (controllerId, controllerConfig) ->
+                            controllerConfig.createSimulator(controllerId, simulationEnv)
+                        }
+
+                val mappingDatas = mutableListOf<MappingSession.SurfaceData>()
+                val fixturePreviews = buildMap {
+                    newOpenScene.model.visit { entity ->
+                        val controllerId = entityToControllerId[entity.name]
+                        val controllerSimulation = controllerSimulators[controllerId]!!
+
+                        entity.createFixtureVisualizer(simulationEnv, entityAdapter, controllerSimulation)
+                            ?.let {
+                                visualizer.add(it.itemVisualizer)
+                                it.mappingData?.let { mappingDatas.add(it) }
+
+                                put(entity, it)
+                            }
+                    }
+                }
+
+                simMappingManager.mappingData =
                     SessionMappingResults(
                         newOpenScene, listOf(
                             MappingSession(
                                 clock.now(),
-                                fixtureSimulations.values.mapNotNull { it.mappingData },
+                                mappingDatas,
                                 null,
                                 null,
                                 notes = "Simulated mapping session"
                             )
                         )
                     )
-                }
+
+                controllerSimulators.values.forEach { it.start() }
+
+                Simulation(controllerSimulators, fixturePreviews)
+            } else {
+                simMappingManager.mappingData = null
+                null
+            }
+        }
+    }
+
+    inner class Simulation(
+        private val controllerSimulators: Map<ControllerId, ControllerSimulator>,
+        private val fixturePreviews: Map<Model.Entity, FixtureSimulation>
+    ) {
+        fun stop() {
+            controllerSimulators.values.forEach { it.stop() }
         }
     }
 

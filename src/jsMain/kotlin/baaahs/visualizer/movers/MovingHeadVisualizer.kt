@@ -1,6 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.model.MovingHead
+import baaahs.sim.MovingHeadVisualizerI
 import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
 import baaahs.visualizer.EntityAdapter
@@ -12,7 +13,7 @@ import three_ext.clear
 class MovingHeadVisualizer(
     movingHead: MovingHead,
     adapter: EntityAdapter
-) : BaseEntityVisualizer<MovingHead>(movingHead) {
+) : BaseEntityVisualizer<MovingHead>(movingHead), MovingHeadVisualizerI {
     private val holder = Group()
     override val obj: Object3D
         get() = holder
@@ -42,7 +43,7 @@ class MovingHeadVisualizer(
         holder.add(sharpyVisualizer.group)
     }
 
-    internal fun receivedUpdate(buffer: MovingHead.Buffer) {
+    override fun receivedUpdate(buffer: MovingHead.Buffer) {
         val state = physicalModel.update(buffer)
 
         sharpyVisualizer.update(state)

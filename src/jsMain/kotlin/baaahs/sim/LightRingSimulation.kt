@@ -1,5 +1,6 @@
 package baaahs.sim
 
+import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
@@ -47,10 +48,10 @@ actual class LightRingSimulation actual constructor(
 
     val wledSimulator by lazy {
         val wledsSimulator = simulationEnv[WledsSimulator::class]
-        wledsSimulator.createFakeWledDevice(lightRing.name, vizPixels)
+        wledsSimulator.createFakeWledDevice(ControllerId(SacnManager.controllerTypeName, lightRing.name), vizPixels)
     }
 
-    override val previewFixture: Fixture by lazy {
+    override fun createPreviewFixture(): Fixture =
         PixelArrayFixture(
             lightRing,
             pixelLocations.size,
@@ -60,7 +61,6 @@ actual class LightRingSimulation actual constructor(
             1f,
             pixelLocations
         )
-    }
 
     override fun start() {
         wledSimulator.start()

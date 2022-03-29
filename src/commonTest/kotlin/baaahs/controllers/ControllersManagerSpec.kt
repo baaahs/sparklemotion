@@ -2,6 +2,7 @@ package baaahs.controllers
 
 import baaahs.*
 import baaahs.controller.*
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransport
@@ -18,6 +19,7 @@ import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
 import baaahs.scene.*
+import baaahs.sim.SimulationEnv
 import baaahs.ui.Observable
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.*
@@ -372,6 +374,10 @@ class FakeControllerManager(
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig
         ): FixturePreview = TODO("not implemented")
+
+        override fun createSimulator(controllerId: ControllerId, simulationEnv: SimulationEnv): ControllerSimulator {
+            TODO("not implemented")
+        }
     }
 }
 

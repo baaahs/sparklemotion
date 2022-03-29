@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
@@ -95,7 +96,11 @@ open class FakeModelEntity(
     override val bounds: Pair<Vector3F, Vector3F>
         get() = Vector3F.origin to Vector3F.origin
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter) = TODO("not implemented")
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ) = TODO("not implemented")
 
     override fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<Model.Entity> = TODO("not implemented")
 }

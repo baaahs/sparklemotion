@@ -1,5 +1,6 @@
 package baaahs.model
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.geom.EulerAngle
@@ -38,7 +39,11 @@ class LightBar(
         return delta * index.toDouble() / (count - 1).toDouble() + startVertex
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ): FixtureSimulation =
         LightBarSimulation(this, simulationEnv, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =

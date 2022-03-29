@@ -1,5 +1,6 @@
 package baaahs.model
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
@@ -94,7 +95,11 @@ open class PolyLine(
         return segments.flatMap { segment -> segment.calculatePixelLocations() }
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ): FixtureSimulation =
         LightBarSimulation(this, simulationEnv, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =

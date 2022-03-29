@@ -1,7 +1,9 @@
 package baaahs.sim
 
 import baaahs.Color
+import baaahs.controller.ControllerId
 import baaahs.controller.SacnLink
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.dmx.Dmx
 import baaahs.net.Network
 import baaahs.randomDelay
@@ -17,13 +19,13 @@ class WledsSimulator(
     private val wledScope = CoroutineScope(Dispatchers.Main)
     internal val fakeWledDevices: MutableList<FakeWledDevice> = mutableListOf()
 
-    fun createFakeWledDevice(name: String, vizPixels: Pixels): FakeWledDevice {
-        val id = "wled-X${name}X"
-        logger.debug { "Creating simulated WLED device for $name: $id" }
+    fun createFakeWledDevice(controllerId: ControllerId, vizPixels: Pixels?): FakeWledDevice {
+        val id = controllerId.name()
+        logger.debug { "Creating simulated WLED device: $id" }
 
         network as FakeNetwork
         val link = network.link(FakeNetwork.FakeAddress(id))
-        val fakeWledDevice = FakeWledDevice(link, id, vizPixels)
+        val fakeWledDevice = FakeWledDevice(link, controllerId, vizPixels)
         fakeWledDevices.add(fakeWledDevice)
 
         wledScope.launch { randomDelay(1000); fakeWledDevice.start() }
@@ -38,14 +40,14 @@ class WledsSimulator(
 
 class FakeWledDevice(
     private val link: FakeNetwork.FakeLink,
-    val id: String,
-    val pixels: Pixels
-) {
+    override val controllerId: ControllerId,
+    val pixels: Pixels?
+) : ControllerSimulator {
     private lateinit var mdnsService: Network.MdnsRegisteredService
     private lateinit var udpSocket: Network.UdpSocket
 
-    fun start() {
-        mdnsService = link.mdns.register(id, "_wled", "_tcp", 80)
+    override fun start() {
+        mdnsService = link.mdns.register(controllerId.id, "_wled", "_tcp", 80)
 
         val fakeHttpServer = link.startHttpServer(80) as FakeNetwork.FakeLink.FakeHttpServer
 
@@ -61,7 +63,7 @@ class FakeWledDevice(
                 "info": {
                   "ver": "fake",
                   "leds": {
-                    "count": ${pixels.size},
+                    "count": ${pixels?.size ?: 0},
                     "rgbw": false,
                     "wv": false,
                     "fps": 30,
@@ -76,6 +78,8 @@ class FakeWledDevice(
 
         udpSocket = link.listenUdp(SacnLink.sAcnPort, object : Network.UdpListener {
             override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
+                if (pixels == null) return
+
                 val dataFrame = SacnLink.readDataFrame(bytes)
                 val channelOffset = (dataFrame.universe - 1) * Dmx.channelsPerUniverse
                 val channels = dataFrame.channels
@@ -93,7 +97,7 @@ class FakeWledDevice(
         })
     }
 
-    fun stop() {
+    override fun stop() {
 //        link.close(udpSocket)
         link.mdns.unregister(mdnsService)
     }

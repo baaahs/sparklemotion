@@ -1,5 +1,6 @@
 package baaahs.model
 
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
@@ -38,13 +39,18 @@ class ImportedEntityGroup(
         listOfNotNull(importerError)
             .map { Problem("Import error: $name", importerError?.message ?: "Unknown error.") }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureVisualizer(
+        simulationEnv: SimulationEnv,
+        adapter: EntityAdapter,
+        controllerSimulator: ControllerSimulator
+    ): FixtureSimulation =
         ObjGroupSimulation(adapter)
 
     inner class ObjGroupSimulation(adapter: EntityAdapter) : FixtureSimulation {
         override val mappingData: MappingSession.SurfaceData? get() = null
         override val itemVisualizer: ItemVisualizer<*> = createVisualizer(adapter)
-        override val previewFixture: Fixture? get() = null
+
+        override fun createPreviewFixture(): Fixture? = null
 
         override fun start() {
             // No-op.

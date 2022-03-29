@@ -3,6 +3,7 @@ package baaahs.sm.brain
 import baaahs.Color
 import baaahs.Pinky
 import baaahs.controller.*
+import baaahs.controller.sim.ControllerSimulator
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.*
@@ -14,7 +15,9 @@ import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.scene.*
 import baaahs.shaders.PixelBrainShader
+import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.*
+import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
@@ -323,6 +326,11 @@ data class BrainControllerConfig(
             get() = TODO("not implemented")
         override val transportConfig: ConfigPreview
             get() = TODO("not implemented")
+    }
+
+    override fun createSimulator(controllerId: ControllerId, simulationEnv: SimulationEnv): ControllerSimulator {
+        val brainSimulatorManager = simulationEnv[BrainSimulatorManager::class]
+        return brainSimulatorManager.createBrain(null)
     }
 }
 

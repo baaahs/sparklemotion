@@ -10,7 +10,6 @@ import baaahs.visualizer.ItemVisualizer
 interface FixtureSimulation {
     val mappingData: MappingSession.SurfaceData?
     val itemVisualizer: ItemVisualizer<*>
-    val previewFixture: Fixture?
 
     fun start() {}
     fun stop() {}
@@ -22,5 +21,7 @@ interface FixtureSimulation {
     fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
         // No-op by default.
     }
+
+    fun createPreviewFixture(): Fixture?
 }
 

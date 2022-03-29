@@ -16,7 +16,7 @@ import kotlinx.coroutines.channels.Channel
 class BrainSimulator(
     val id: String,
     private val network: Network,
-    private val pixels: Pixels,
+    private var pixels: Pixels?,
     private val clock: Clock,
     private val coroutineScope: CoroutineScope
 ) : Network.UdpListener {
@@ -66,7 +66,9 @@ class BrainSimulator(
         currentShaderDesc = null
         currentRenderTree = null
 
-        for (i in pixels.indices) pixels[i] = Color.WHITE
+        pixels?.let { pixels ->
+            for (i in pixels.indices) pixels[i] = Color.WHITE
+        }
 
         sendHello()
     }
@@ -170,7 +172,7 @@ class BrainSimulator(
 
             with(currentRenderTree!!) {
                 read(reader)
-                draw(pixels)
+                pixels?.let { draw(it) }
             }
 
             if (pongData != null) {
