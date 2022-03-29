@@ -20,7 +20,7 @@ abstract class FloatsResultType<T : FloatsResultType.Buffer>(
         gl, index, type,
         run {
             when {
-                gl.checkIfResultBufferCanContainHalfFloats() -> {
+                gl.checkIfResultBufferCanContainFloats() -> {
                     when (type.floatCount) {
                         1 -> GlContext.GL_R32F
                         2 -> GlContext.GL_RG32F // Doesn't work in WebGL.
@@ -29,7 +29,7 @@ abstract class FloatsResultType<T : FloatsResultType.Buffer>(
                         else -> error("huh?")
                     }
                 }
-                gl.checkIfResultBufferCanContainFloats(required = true) -> {
+                gl.checkIfResultBufferCanContainHalfFloats(required = true) -> {
                     when (type.floatCount) {
                         1 -> GlContext.GL_R16F
                         2 -> GlContext.GL_RG16F // Doesn't work in WebGL.
