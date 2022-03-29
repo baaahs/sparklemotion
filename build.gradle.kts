@@ -60,6 +60,12 @@ kotlin {
                 report = true
                 sourceMaps = true
             }
+
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
         }
     }
 
