@@ -1,9 +1,7 @@
 package baaahs.gl.preview
 
-import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
@@ -33,9 +31,9 @@ class ProjectionPreview(
         .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!
         .associateWith { surface ->
             val lineVertices = surface.lines.flatMap { it.vertices }
-            val fixture = PixelArrayFixture(
-                surface, lineVertices.size, surface.name, transport = NullTransport,
-                PixelArrayDevice.PixelFormat.RGB8, 1f, lineVertices
+            val fixture = fixtureType.createFixture(
+                surface, lineVertices.size, fixtureType.defaultConfig,
+                surface.name, NullTransport, model
             )
             renderEngine.addFixture(fixture)
         }

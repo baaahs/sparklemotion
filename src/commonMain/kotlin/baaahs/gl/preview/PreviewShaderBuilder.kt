@@ -6,10 +6,7 @@ import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.ConfigPreview
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.Transport
+import baaahs.fixtures.*
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
@@ -304,7 +301,12 @@ object ProjectionPreviewDevice: FixtureType {
         name: String,
         transport: Transport,
         model: Model
-    ): Fixture = TODO("not implemented")
+    ): Fixture = object : Fixture(modelEntity, componentCount, name, transport) {
+        override val fixtureType: FixtureType
+            get() = ProjectionPreviewDevice
+        override val remoteConfig: RemoteConfig
+            get() = TODO("not implemented")
+    }
 
     override fun toString(): String = id
 
