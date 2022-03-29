@@ -45,7 +45,8 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
     actual fun withRotation(rotation: EulerAngle): Matrix4F {
         return Matrix4F(
             NativeMatrix4F(nativeMatrix).rotationXYZ(
-                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat())
+                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+            )
         )
     }
 
@@ -68,14 +69,18 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
     actual companion object {
         actual val identity: Matrix4F = Matrix4F()
 
-        actual fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F {
-            val nativeMatrix = NativeMatrix4F()
-            nativeMatrix.setTranslation(position.x, position.y, position.z)
-            nativeMatrix.setRotationXYZ(
-                rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+        actual fun compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
+            Matrix4F(
+                NativeMatrix4F().apply {
+                    translationRotateScale(
+                        position.toNativeVector3F(),
+                        NativeQuaternionF().rotateXYZ(
+                            rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+                        ),
+                        scale.toNativeVector3F()
+                    )
+                }
             )
-            return Matrix4F(nativeMatrix)
-        }
     }
 }
 

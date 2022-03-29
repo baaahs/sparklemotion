@@ -12,7 +12,7 @@ import org.spekframework.spek2.Spek
 
 object Matrix4FSpec : Spek({
     describe<Matrix4F> {
-        context("fromPositionAndOrientation") {
+        context("a transformation") {
             val position by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }
             val rotation by value {
                 EulerAngle(
@@ -21,23 +21,38 @@ object Matrix4FSpec : Spek({
                     rollRad = 1.5707963267948966
                 )
             }
-            val matrix by value { Matrix4F.fromPositionAndRotation(position, rotation) }
+            val scale by value { Vector3F(1f, 1f, 1.5f) }
+            val matrix by value { Matrix4F.compose(position, rotation, scale) }
 
             it("should be calculated properly") {
-                expect(matrix.elements.toList()).toEqual(
-                    listOf(
-                        -0.0f, 1.0f, 0.0f, 0.0f,
-                        -0.9876883f, 0.0f, -0.15643448f, 0.0f,
-                        -0.15643448f, -0.0f, 0.9876883f, 0.0f,
-                        -11.0f, 202.361f, 27.5f, 1.0f
-                    )
+                val expected = listOf(
+                    -0.0f, 1.0f, 0.0f, 0.0f,
+                    -0.9876883f, 0.0f, -0.15643446f, 0.0f,
+                    -0.23465168f, -0.0f, 1.4815325f, 0.0f,
+                    -11.0f, 202.361f, 27.5f, 1.0f
                 )
+
+                matrix.elements.zip(expected).forEachIndexed { index, (actual, expected) ->
+                    expect(actual).toBeWithErrorTolerance(expected, 0.0001f)
+                }
             }
 
-            it("should have unit scale") {
+            it("should have correct scale") {
                 expect(matrix.scale.x).toBeWithErrorTolerance(1f, .00001f)
                 expect(matrix.scale.y).toBeWithErrorTolerance(1f, .00001f)
-                expect(matrix.scale.z).toBeWithErrorTolerance(1f, .00001f)
+                expect(matrix.scale.z).toBeWithErrorTolerance(1.5f, .00001f)
+            }
+
+            context("times") {
+                it("should premultiply") {
+                    expect(matrix * Matrix4F.identity)
+                        .toEqual(matrix)
+                }
+
+                it("should postmultiply") {
+                    expect(Matrix4F.identity * matrix)
+                        .toEqual(matrix)
+                }
             }
         }
 
