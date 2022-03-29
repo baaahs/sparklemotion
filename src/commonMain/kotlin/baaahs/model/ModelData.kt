@@ -49,11 +49,9 @@ sealed interface EntityData {
     fun edit(): MutableEntity
 
     fun open(parentTransformation: Matrix4F): Model.Entity {
-        val transform = parentTransformation * Matrix4F.fromPositionAndRotation(position, rotation)
-        val position = transform.position
-        val rotation = transform.rotation
-        val scale = transform.scale
-        return open(position, rotation, scale)
+        val myTransformation = Matrix4F.compose(position, rotation, scale)
+        val transform = parentTransformation * myTransformation
+        return open(transform.position, transform.rotation, transform.scale)
     }
 
     fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity

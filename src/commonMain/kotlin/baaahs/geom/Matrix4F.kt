@@ -25,7 +25,12 @@ expect class Matrix4F(elements: FloatArray? = null) {
 
     companion object {
         val identity: Matrix4F
-        fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F
+
+        fun compose(
+            position: Vector3F = Vector3F.origin,
+            rotation: EulerAngle = EulerAngle.identity,
+            scale: Vector3F = Vector3F.unit3d
+        ): Matrix4F
     }
 }
 
