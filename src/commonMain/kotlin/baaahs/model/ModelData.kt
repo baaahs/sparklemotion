@@ -8,6 +8,7 @@ import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
 import baaahs.scene.*
+import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -262,12 +263,19 @@ class StrandCountEntityMetadataProvider(
         }
 
     companion object {
+        private val logger = Logger<StrandCountEntityMetadataProvider>()
+
         suspend fun open(file: Fs.File): StrandCountEntityMetadataProvider {
             return open(file.read() ?: error("Unknown file $file."))
         }
 
         fun openResource(name: String): StrandCountEntityMetadataProvider {
-            return open(getResource(name))
+            return try {
+                open(getResource(name))
+            } catch (e: Exception) {
+                logger.error(e) { "Couldn't load \"$name\"." }
+                StrandCountEntityMetadataProvider(emptyMap())
+            }
         }
 
         fun open(data: String): StrandCountEntityMetadataProvider {
