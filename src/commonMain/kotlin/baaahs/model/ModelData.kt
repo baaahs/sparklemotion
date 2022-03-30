@@ -69,14 +69,15 @@ data class ImportedEntityData(
     val objData: String,
     val objDataIsFileRef: Boolean,
     @Polymorphic
-    val metadata: EntityMetadataProvider? = null
+    val metadata: EntityMetadataProvider? = null,
+    val properties: Map<String, ImportedEntityProperties> = emptyMap()
 ) : EntityData {
     override fun edit(): MutableEntity = MutableImportedEntityGroup(this)
 
     override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): ImportedEntityGroup {
         var importFail: Exception? = null
         val importerResults = try {
-            ObjImporter.doImport(objData, objDataIsFileRef, title) {
+            ObjImporter.doImport(objData, objDataIsFileRef, title, id) {
                 metadata?.getMetadataFor(this)?.expectedPixelCount
             }
         } catch (e: Exception) {
@@ -87,6 +88,25 @@ data class ImportedEntityData(
         return ImportedEntityGroup(
             title, description, position, rotation, scale, importerResults, importFail, id
         )
+    }
+}
+
+@Serializable
+data class ImportedEntityProperties(
+    override val title: String,
+    override val description: String?,
+    override val position: Vector3F,
+    override val rotation: EulerAngle,
+    override val scale: Vector3F,
+    val hide: Boolean = false,
+    @Transient override val id: EntityId
+) : EntityData {
+    override fun edit(): MutableEntity {
+        TODO("not implemented")
+    }
+
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity {
+        TODO("not implemented")
     }
 }
 
@@ -223,7 +243,7 @@ data class SurfaceDataForTest(
     override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity =
         Model.Surface(
             title, description, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices),
-            position, rotation, scale
+            position, rotation, scale, id
         )
 }
 

@@ -12,6 +12,7 @@ object ObjImporter : Importer {
     fun import(
         objText: String,
         objName: String = "OBJ file",
+        baseId: String,
         expectedPixelCount: (name: String) -> Int? = { null }
     ): Importer.Results {
         val allVertices: MutableList<Vector3F> = mutableListOf()
@@ -57,7 +58,7 @@ object ObjImporter : Importer {
                     }
                     "g", "o" -> {
                         buildSurface()
-                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, expectedPixelCount)
+                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, baseId, expectedPixelCount)
                     }
                     "f" -> {
                         val vertIs = try {
@@ -110,12 +111,17 @@ object ObjImporter : Importer {
         return Results(surfaces, allVertices, errors)
     }
 
-    private class ObjBuilder(val name: String, val geometry: Model.Geometry, val expectedPixelCount: (name: String) -> Int?) {
+    private class ObjBuilder(
+        val name: String,
+        val geometry: Model.Geometry,
+        val baseId: String,
+        val expectedPixelCount: (name: String) -> Int?
+    ) {
         val faces = mutableListOf<Model.Face>()
         val lines = mutableListOf<Model.Line>()
 
         fun build(): Model.Surface =
-            Model.Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
+            Model.Surface(name, name, expectedPixelCount(name), faces, lines, geometry, id = "$baseId.$name")
     }
 
     class Results(
@@ -129,10 +135,11 @@ object ObjImporter : Importer {
         objData: String,
         objDataIsFileRef: Boolean,
         title: String,
+        baseId: String,
         expectedPixelCount: (name: String) -> Int? = { null }
     ): Importer.Results {
         val data = if (objDataIsFileRef) getResource(objData) else objData
         val name = if (objDataIsFileRef) objData else title
-        return import(data, name, expectedPixelCount)
+        return import(data, name, baseId, expectedPixelCount)
     }
 }

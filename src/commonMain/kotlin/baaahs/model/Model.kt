@@ -89,9 +89,9 @@ class Model(
         fun visit(callback: (Entity) -> Unit) = callback(this)
 
         companion object {
-            private var _nextId = 1
+            private var nextId = 1
 
-            fun nextId(): EntityId = _nextId++
+            fun nextId(): EntityId = nextId++.toString()
         }
     }
 
@@ -196,4 +196,4 @@ class Model(
     }
 }
 
-typealias EntityId = Int
+typealias EntityId = String

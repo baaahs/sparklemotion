@@ -4,6 +4,7 @@ import baaahs.geom.toEulerAngle
 import baaahs.model.EntityId
 import baaahs.model.Model
 import baaahs.model.ModelData
+import baaahs.scene.EditSubject
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
@@ -35,7 +36,7 @@ class ModelVisualEditor(
         get() = selectedObject?.modelEntity
         set(value) { selectedObject = value?.let { findVisualizer(it)?.obj } }
 
-    var editingEntity: EditingEntity<*>? = null
+    var editSubject: EditSubject? = null
         private set
 
     /** [TransformControls] must be created by [OrbitControls]. */
@@ -81,15 +82,15 @@ class ModelVisualEditor(
 
             orbitControls.enabled = !isDragging
 
-            println("${editingEntity?.mutableEntity?.title}: dragging-changed, dragging=${transformControls.dragging}; obj=${transformControls.`object`?.modelEntity?.title}")
+            println("${editSubject?.title}: dragging-changed, dragging=${transformControls.dragging}; obj=${transformControls.`object`?.modelEntity?.title}")
             if (!isDragging) {
                 pushTransformationChange()
                 println("Push to undo stack!!!!!!!!!!!!!!!!!!!!!!")
-                editingEntity?.onChange()
+                editSubject?.onChange()
             }
         }
         transformControls.addEventListener("objectChange") {
-            println("${editingEntity?.mutableEntity?.title}: pushTransformationChange(${
+            println("${editSubject?.title}: pushTransformationChange(${
                 if (!transformControls.dragging) "withUndo" else ""
             }) because 'objectChange'; dragging = ${transformControls.dragging}")
             pushTransformationChange()
@@ -103,7 +104,7 @@ class ModelVisualEditor(
 
     private fun pushTransformationChange() {
         selectedObject?.let { selectedObj ->
-            editingEntity?.onTransformationChange(
+            editSubject?.onTransformationChange(
                 selectedObj.position.toVector3F(),
                 selectedObj.rotation.toEulerAngle(),
                 selectedObj.scale.toVector3F()
@@ -149,7 +150,7 @@ class ModelVisualEditor(
             transformControls.enabled = true
         }
 
-        editingEntity = obj?.let {
+        editSubject = obj?.let {
             EditingEntity(
                 mutableEntity ?: error("No mutable entity for selection?"),
                 mutableModel.units,

@@ -246,13 +246,14 @@ class MutableImportedEntityGroup(
 
     private var importerResults: Importer.Results? = null
     private var importFail: Exception? = null
+    private val baseId = baseImportedEntityData.id
     val problems get() = (getImporterResults()?.errors ?: emptyList()).map { Problem("", it.message) } +
             listOfNotNull(importFail).map { Problem("", it.message) }
 
     private fun getImporterResults(): Importer.Results? =
         importerResults ?: try {
             importFail = null
-            ObjImporter.doImport(objData, objDataIsFileRef, title) {
+            ObjImporter.doImport(objData, objDataIsFileRef, title, baseId) {
                 metadata?.getMetadataFor(this.build())?.expectedPixelCount
             }.also {
                 importerResults = it
@@ -262,16 +263,9 @@ class MutableImportedEntityGroup(
             null
         }
 
-    override val children: MutableList<MutableEntity> get() =
+    override val children: MutableList<baaahs.scene.MutableEntity> get() =
         (getImporterResults()?.entities ?: emptyList()).map {
-            object : MutableEntity(it.title, null, Vector3F.origin, EulerAngle.identity, Vector3F.origin, Model.Entity.nextId()) {
-                override fun build(): EntityData {
-                    return SurfaceDataForTest(it.title)
-                }
-
-                override fun getEditorPanels(): List<EntityEditorPanel<in MutableEntity>> =
-                    emptyList()
-            }
+            MutableImportedEntity(it)
         }.toMutableList()
 
     override fun build(): ImportedEntityData =
@@ -287,6 +281,19 @@ class MutableImportedEntityGroup(
         importerResults = null
         importFail = null
         getImporterResults()
+    }
+
+    inner class MutableImportedEntity(entity: Model.Entity) : MutableEntity(
+        entity.title, entity.description, entity.position, entity.rotation, entity.scale, entity.id
+    ) {
+        var hide: Boolean = false
+
+        override fun build(): EntityData = ImportedEntityProperties(
+            title, description, position, rotation, scale, hide, id
+        )
+
+        override fun getEditorPanels(): List<EntityEditorPanel<in baaahs.scene.MutableEntity>> =
+            emptyList()
     }
 }
 
