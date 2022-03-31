@@ -158,6 +158,11 @@ class MutablePatch {
         this.surfaces = surfaces
     }
 
+    constructor(
+        mutableShaderInstance: MutableShaderInstance,
+        surfaces: Surfaces = Surfaces.AllSurfaces
+    ) : this(listOf(mutableShaderInstance), surfaces)
+
     constructor(basePatch: Patch, show: MutableShow) {
         mutableShaderInstances = basePatch.shaderInstanceIds.map { shaderInstanceId ->
             show.findShaderInstance(shaderInstanceId)

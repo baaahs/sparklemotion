@@ -141,7 +141,7 @@ object OpenShowSpec : Spek({
                             "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }"
                         )
                     ).apply {
-                        mutableShaderInstances.only().incomingLinks["nonsense"] =
+                        incomingLinks["nonsense"] =
                             MutableConstPort("invalid", GlslType.Companion.from("?huh?"))
                     }
                 )

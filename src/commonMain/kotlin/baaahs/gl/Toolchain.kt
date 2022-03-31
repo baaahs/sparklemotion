@@ -36,6 +36,13 @@ interface Toolchain {
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         fixtureTypes: Collection<FixtureType> = emptyList()
     ): UnresolvedPatch
+
+    fun autoWire(
+        openShader: OpenShader,
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        fixtureTypes: Collection<FixtureType> = emptyList()
+    ): UnresolvedShaderInstance
 }
 
 class ToolchainStats : Stats() {
@@ -100,9 +107,16 @@ class RootToolchain(
         defaultPorts: Map<ContentType, MutablePort>,
         shaderChannel: ShaderChannel,
         fixtureTypes: Collection<FixtureType>
-    ): UnresolvedPatch {
-        return autoWirer.autoWire(shaders, shaderChannel, defaultPorts, fixtureTypes)
-    }
+    ): UnresolvedPatch =
+        autoWirer.autoWire(shaders, shaderChannel, defaultPorts, fixtureTypes)
+
+    override fun autoWire(
+        openShader: OpenShader,
+        defaultPorts: Map<ContentType, MutablePort>,
+        shaderChannel: ShaderChannel,
+        fixtureTypes: Collection<FixtureType>
+    ): UnresolvedShaderInstance =
+        autoWirer.autoWire(openShader, shaderChannel, defaultPorts, fixtureTypes)
 }
 
 class CachingToolchain(

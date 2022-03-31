@@ -3,6 +3,7 @@ package baaahs.gl
 import baaahs.device.FixtureType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.UnresolvedPatch
+import baaahs.gl.patch.UnresolvedShaderInstance
 import baaahs.gl.shader.OpenShader
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
@@ -26,12 +27,21 @@ fun Toolchain.autoWire(
 }
 
 fun Toolchain.autoWire(
+    shader: Shader,
+    defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+    shaderChannel: ShaderChannel = ShaderChannel.Main,
+    fixtureTypes: Collection<FixtureType> = emptyList()
+): UnresolvedShaderInstance {
+    val openShader = openShader(shader)
+    return autoWire(openShader, defaultPorts, shaderChannel, fixtureTypes)
+}
+
+fun Toolchain.autoWire(
     vararg shaders: OpenShader,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
     shaderChannel: ShaderChannel = ShaderChannel.Main,
     fixtureTypes: Collection<FixtureType> = emptyList()
-): UnresolvedPatch {
-    return autoWire(shaders.toList(), defaultPorts, shaderChannel, fixtureTypes)
-}
+): UnresolvedPatch =
+    autoWire(shaders.toList(), defaultPorts, shaderChannel, fixtureTypes)
 
 fun Toolchain.withCache(name: String) = CachingToolchain(this, name)

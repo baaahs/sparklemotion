@@ -5,6 +5,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableShaderInstance
 import baaahs.unknown
 
 class UnresolvedShaderInstance(
@@ -46,6 +47,22 @@ class UnresolvedShaderInstance(
     override fun toString(): String {
         return "UnresolvedShaderInstance(shader=${mutableShader.title})"
     }
+
+    fun acceptSuggestedLinkOptions(): UnresolvedShaderInstance {
+        takeFirstIfAmbiguous()
+        return this
+    }
+
+    fun confirm() = MutableShaderInstance(
+        mutableShader,
+        incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
+            port.id to
+                    (fromPortOptions.firstOrNull()?.getMutablePort()
+                        ?: port.type.mutableDefaultInitializer)
+        }.toMutableMap(),
+        MutableShaderChannel(shaderChannel.id),
+        priority
+    )
 
     fun takeFirstIfAmbiguous() {
         if (isAmbiguous()) {

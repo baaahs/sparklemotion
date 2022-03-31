@@ -296,7 +296,7 @@ private fun Toolchain.testPatch(title: String): MutablePatch {
         """.trimIndent()
     )
 
-    return autoWire(shader).acceptSuggestedLinkOptions().confirm()
+    return MutablePatch(autoWire(shader).acceptSuggestedLinkOptions().confirm())
 }
 
 //private fun Show.desc(): List<String> =
