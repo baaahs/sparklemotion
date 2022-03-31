@@ -386,7 +386,7 @@ class FakePlugin(
 
 object TestSampleData {
     val plugins = Plugins.buildForClient(Plugins.dummyContext, listOf(BeatLinkPlugin))
-    private val beatLinkPlugin = plugins.findPlugin<BeatLinkPlugin>()
+    private val beatLinkPlugin = plugins.getPlugin<BeatLinkPlugin>()
 
     val sampleShowWithBeatLink: Show
         get() = MutableShow(SampleData.sampleShow).apply {

@@ -28,7 +28,7 @@ private val beatLinkVisualizerShader =
 
 private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { _ ->
     val appContext = useContext(appContext)
-    val beatSource = appContext.plugins.findPlugin<BeatLinkPlugin>().beatSource
+    val beatSource = appContext.plugins.getPlugin<BeatLinkPlugin>().beatSource
 
     val bpmDiv = ref<HTMLElement>()
     val confidenceDiv = ref<HTMLElement>()

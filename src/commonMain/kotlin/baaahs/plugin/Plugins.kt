@@ -283,12 +283,16 @@ sealed class Plugins private constructor(
 
     val json = Json { serializersModule = this@Plugins.serialModule }
 
-    fun <T: OpenPlugin > findPlugin(pluginKlass: KClass<T>): T {
+    fun <T: OpenPlugin > getPlugin(pluginKlass: KClass<T>): T? {
         @Suppress("UNCHECKED_CAST")
-        return openPlugins.find { it::class == pluginKlass } as T
+        return openPlugins.find { it::class == pluginKlass } as T?
     }
 
-    inline fun <reified T : OpenPlugin> findPlugin(): T = findPlugin(T::class)
+    inline fun <reified T : OpenPlugin> getPlugin(): T =
+        getPlugin(T::class) ?: error("No such plugin: ${T::class.simpleName}")
+
+    inline fun <reified T : OpenPlugin> findPlugin(): T? =
+        getPlugin(T::class)
 
     fun resolveContentType(name: String): ContentType? {
         return contentTypes.byId[name]
