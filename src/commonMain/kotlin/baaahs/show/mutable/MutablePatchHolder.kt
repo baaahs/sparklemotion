@@ -58,6 +58,10 @@ abstract class MutablePatchHolder(
         return this
     }
 
+    fun addPatch(mutableShaderInstance: MutableShaderInstance): MutablePatchHolder {
+        return addPatch(MutablePatch(listOf(mutableShaderInstance)))
+    }
+
     fun editPatch(index: Int, block: MutablePatch.() -> Unit): MutablePatchHolder {
         patches[index].block()
         return this

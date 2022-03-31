@@ -30,21 +30,42 @@ class AutoWirer(private val plugins: Plugins) {
         // First pass: gather shader output ports.
         val shaderInstances =
             shaders.associateWith { openShader ->
-                val shaderInstanceOptions =
-                    ShaderInstanceOptions(openShader, shaderChannel, channelsInfo, defaultPorts, emptyMap(), plugins)
-
-                val unresolvedShaderInstance = UnresolvedShaderInstance(
-                    MutableShader(openShader.shader),
-                    openShader.inputPorts.associateWith { inputPort ->
-                        shaderInstanceOptions.inputPortLinkOptions[inputPort.id]?.toMutableList() ?: mutableListOf()
-                    },
-                    shaderChannel,
-                    0f
-                )
-
-                unresolvedShaderInstance
+                autoWire(openShader, shaderChannel, channelsInfo, defaultPorts)
             }
 
         return UnresolvedPatch(shaderInstances.values.toList())
+    }
+
+    fun autoWire(
+        openShader: OpenShader,
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        fixtureTypes: Collection<FixtureType> = emptyList()
+    ): UnresolvedShaderInstance {
+        val parentShow = null as OpenShow? // TODO: test with non-null?
+        val channelsInfo = ChannelsInfo(
+            parentShow, if (fixtureTypes.isEmpty()) plugins.fixtureTypes.all else fixtureTypes
+        )
+
+        return autoWire(openShader, shaderChannel, channelsInfo, defaultPorts)
+    }
+
+    private fun autoWire(
+        openShader: OpenShader,
+        shaderChannel: ShaderChannel,
+        channelsInfo: ChannelsInfo,
+        defaultPorts: Map<ContentType, MutablePort>
+    ): UnresolvedShaderInstance {
+        val shaderInstanceOptions =
+            ShaderInstanceOptions(openShader, shaderChannel, channelsInfo, defaultPorts, emptyMap(), plugins)
+
+        return UnresolvedShaderInstance(
+            MutableShader(openShader.shader),
+            openShader.inputPorts.associateWith { inputPort ->
+                shaderInstanceOptions.inputPortLinkOptions[inputPort.id]?.toMutableList() ?: mutableListOf()
+            },
+            shaderChannel,
+            0f
+        )
     }
 }

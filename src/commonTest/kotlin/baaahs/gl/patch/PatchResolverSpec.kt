@@ -389,7 +389,7 @@ object PatchResolverSpec : Spek({
                                     }
                                 """.trimIndent()
                             )
-                        ).editAll {
+                        ).apply {
                             linkOptionsFor("otherColorStream").apply {
                                 clear()
                                 add(PortLinkOption(MutableShaderChannel("other")))

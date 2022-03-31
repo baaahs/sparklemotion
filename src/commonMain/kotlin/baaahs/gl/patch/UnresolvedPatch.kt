@@ -3,8 +3,6 @@ package baaahs.gl.patch
 import baaahs.show.Shader
 import baaahs.show.Surfaces
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.util.Logger
 
 class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
@@ -32,16 +30,7 @@ class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShad
 
         // Create a shader instance editor for each shader.
         val shaderInstances = unresolvedShaderInstances.associate {
-            it.mutableShader.build() to MutableShaderInstance(
-                it.mutableShader,
-                it.incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
-                    port.id to
-                            (fromPortOptions.firstOrNull()?.getMutablePort()
-                                ?: port.type.mutableDefaultInitializer)
-                }.toMutableMap(),
-                MutableShaderChannel(it.shaderChannel.id),
-                it.priority
-            )
+            it.mutableShader.build() to it.confirm()
         }
 
         return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
