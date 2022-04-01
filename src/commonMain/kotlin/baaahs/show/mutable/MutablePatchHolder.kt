@@ -12,12 +12,23 @@ abstract class MutablePatchHolder(
 
     override var title = basePatchHolder.title
 
-    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
-        return listOf(
-            GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
-            PatchesOverviewPanel(editableManager, this)
-        )
-    }
+    override var isForceExpanded: Boolean = false
+
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> =
+        when {
+            patches.isEmpty() && !isForceExpanded -> {
+                listOf(PatchesOverviewPanel(editableManager, this))
+            }
+            patches.size == 1 && !isForceExpanded -> {
+                listOf(SingleShaderSimplifiedEditorPanel(editableManager, this))
+            }
+            else -> {
+                listOf(
+                    GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
+                    PatchesOverviewPanel(editableManager, this)
+                )
+            }
+        }
 
     open fun getPropertiesComponents(): List<PropsEditor> {
         return listOf(TitlePropsEditor(this))
@@ -34,6 +45,15 @@ abstract class MutablePatchHolder(
                 mutableShow.findPanel(panelId) to
                         controlIds.map { mutableShow.findControl(it) }.toMutableList()
             }.toMap(mutableMapOf())
+    }
+
+    fun maybeChangeTitle(from: String?, to: String) {
+        if (title.isEmpty() ||
+            title == from ||
+            title == "New Button" // TODO: This is dumb, DRY or allow title to be null?
+        ) {
+            title = to
+        }
     }
 
     fun addPatch(shader: Shader, block: MutablePatch.() -> Unit = {}): MutablePatchHolder =

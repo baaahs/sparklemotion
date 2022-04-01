@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
 import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
+import baaahs.plugin.Plugins
 import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
@@ -22,11 +23,13 @@ import materialui.components.listitemicon.listItemIcon
 import materialui.components.listitemtext.listItemText
 import materialui.components.menu.menu
 import materialui.components.menuitem.menuItem
+import materialui.components.menulist.menuList
 import materialui.components.paper.enums.PaperStyle
 import materialui.components.typography.enums.TypographyDisplay
 import materialui.components.typography.enums.TypographyVariant
 import materialui.components.typography.typography
 import materialui.icon
+import materialui.icons.CloudDownload
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -90,6 +93,8 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
         if (shader != null) {
             val newPatch = MutablePatch(shader)
             props.mutablePatchHolder.addPatch(newPatch)
+            props.editableManager.maybeChangeTitle(to = newPatch.title)
+
             handleShaderSelect[newPatch].invoke()
             props.editableManager.onChange()
         }
@@ -117,58 +122,46 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                     }
                 }
 
-            card(+styles.shaderCard on PaperStyle.root) {
-                key = "new patch"
-                ref = newPatchCardRef
-
-                attrs.onClickFunction = handleNewPatchClick
-
-                cardContent {
-                    icon(materialui.icons.AddCircleOutline)
-                    typography {
-                        attrs.display = TypographyDisplay.block
-                        attrs.variant = TypographyVariant.subtitle1
-                        +"New Shader…"
+            if (props.mutablePatchHolder.patches.isEmpty()) {
+                card {
+                    menuList {
+                        populateNewShaderMenu(
+                            appContext.plugins.shaderTypes,
+                            handleNewShaderMenuClick,
+                            handleNewShaderFromTemplateMenuClick,
+                            handleNewFromShaderLibrary
+                        )
                     }
                 }
-            }
+            } else {
+                card(+styles.shaderCard on PaperStyle.root) {
+                    key = "new patch"
+                    ref = newPatchCardRef
 
-            menu {
-                attrs.getContentAnchorEl = null
-                attrs.anchorEl(newPatchMenuAnchor)
-                attrs.open = newPatchMenuAnchor != null
-                attrs.onClose = handleNewPatchMenuClose
+                    attrs.onClickFunction = handleNewPatchClick
 
-                menuItem {
-                    attrs.onClickFunction = handleNewShaderMenuClick
-
-                    listItemIcon { icon(CommonIcons.Add) }
-                    listItemText { +"New Shader…" }
-                }
-
-                divider {}
-
-                appContext.plugins.shaderTypes.all.forEach { type ->
-                    menuItem {
-                        attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
-
-                        listItemIcon { icon(type.icon) }
-                        listItemText { +"New ${type.title} Shader…" }
+                    cardContent {
+                        icon(materialui.icons.AddCircleOutline)
+                        typography {
+                            attrs.display = TypographyDisplay.block
+                            attrs.variant = TypographyVariant.subtitle1
+                            +"New Shader…"
+                        }
                     }
-                }
 
-                divider {}
+                    menu {
+                        attrs.getContentAnchorEl = null
+                        attrs.anchorEl(newPatchMenuAnchor)
+                        attrs.open = newPatchMenuAnchor != null
+                        attrs.onClose = handleNewPatchMenuClose
 
-                menuItem {
-                    attrs.onClickFunction = handleNewFromShaderLibrary
-
-                    listItemIcon { icon(CommonIcons.ShaderLibrary) }
-                    listItemText { +"From Shader Library…" }
-                }
-
-                menuItem {
-                    listItemIcon { icon(materialui.icons.CloudDownload) }
-                    listItemText { +"Import… (TBD)" }
+                        populateNewShaderMenu(
+                            appContext.plugins.shaderTypes,
+                            handleNewShaderMenuClick,
+                            handleNewShaderFromTemplateMenuClick,
+                            handleNewFromShaderLibrary
+                        )
+                    }
                 }
             }
         }
@@ -178,6 +171,45 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
         shaderLibraryDialog {
             attrs.onSelect = handleShaderLibrarySelect
         }
+    }
+}
+
+private fun RBuilder.populateNewShaderMenu(
+    shaderTypes: Plugins.ShaderTypes,
+    handleNewShaderMenuClick: (Event) -> Unit,
+    handleNewShaderFromTemplateMenuClick: CacheBuilder<ShaderType, (Event) -> Unit>,
+    handleNewFromShaderLibrary: (Event) -> Unit
+) {
+    menuItem {
+        attrs.onClickFunction = handleNewShaderMenuClick
+
+        listItemIcon { icon(CommonIcons.Add) }
+        listItemText { +"New Shader…" }
+    }
+
+    divider {}
+
+    shaderTypes.all.forEach { type ->
+        menuItem {
+            attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
+
+            listItemIcon { icon(type.icon) }
+            listItemText { +"New ${type.title} Shader…" }
+        }
+    }
+
+    divider {}
+
+    menuItem {
+        attrs.onClickFunction = handleNewFromShaderLibrary
+
+        listItemIcon { icon(CommonIcons.ShaderLibrary) }
+        listItemText { +"From Shader Library…" }
+    }
+
+    menuItem {
+        listItemIcon { icon(CloudDownload) }
+        listItemText { +"Import… (TBD)" }
     }
 }
 

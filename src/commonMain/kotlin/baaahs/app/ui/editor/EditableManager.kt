@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.show.mutable.MutableDocument
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.Facade
 import baaahs.util.Logger
 import baaahs.util.UndoStack
@@ -10,12 +11,18 @@ import kotlin.math.max
 abstract class EditableManager<T>(
     private val onApply: (T) -> Unit
 ) : Facade() {
+    private val mutableEditable
+        get() = session?.mutableEditable
     val uiTitle: String
-        get() = session?.mutableEditable?.title ?: ""
+        get() = mutableEditable?.title ?: ""
 
     internal val undoStack = UndoStack<DocAndEditIntent<T>>()
     private var appliedDocument: T? = null
     internal var session: Session? = null
+
+    var isForceExpanded: Boolean
+        get() = mutableEditable?.isForceExpanded ?: false
+        set(value) { mutableEditable?.isForceExpanded = value }
 
     fun isEditing(): Boolean = session != null
 
@@ -47,6 +54,10 @@ abstract class EditableManager<T>(
             if (selectedPanelIndex >= flatList.size) return flatList.lastOrNull()
             return flatList[selectedPanelIndex]
         }
+
+    fun maybeChangeTitle(from: String? = null, to: String) {
+        (mutableEditable as? MutablePatchHolder)?.maybeChangeTitle(from, to)
+    }
 
     protected fun openEditor(session: Session) {
         if (isEditing()) error("already editing ${this.session!!.editIntent}")
@@ -142,7 +153,6 @@ abstract class EditableManager<T>(
             val nextEditIntent = editIntent.nextEditIntent()
             return newShow to nextEditIntent
         }
-
         abstract fun createNewSession(newDocument: T, editIntent: EditIntent): Session
     }
 

@@ -18,6 +18,26 @@ class ThemedEditableStyles(val theme: MuiTheme) : StyleSheet("app-ui-editor-Edit
             important(::maxHeight, 85.vh)
         }
     }
+
+    val dialogContent by css {
+        padding(0.px)
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val singlePanel by css {
+        grow(Grow.GROW)
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        ".ui-shaderEditor" {
+            grow(Grow.GROW)
+
+            ".ui-textEditor" {
+                height = LinearDimension.initial
+            }
+        }
+    }
 }
 
 object EditableStyles : StyleSheet("app-ui-editor-Editable", isStatic = true) {
