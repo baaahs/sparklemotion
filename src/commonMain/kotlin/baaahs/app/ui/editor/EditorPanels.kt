@@ -17,6 +17,17 @@ import baaahs.sm.webapi.severity
 import baaahs.ui.Icon
 import baaahs.ui.View
 
+data class SingleShaderSimplifiedEditorPanel(
+    private val editableManager: EditableManager<*>,
+    private val mutablePatchHolder: MutablePatchHolder
+) : DialogPanel {
+    override val title: String
+        get() = "Simplified View: ${mutablePatchHolder.title}"
+
+    override fun getView(): View =
+        editorPanelViews.forSingleShaderSimplifiedEditorPanel(editableManager, mutablePatchHolder)
+}
+
 data class GenericPropertiesEditorPanel(
     private val editableManager: EditableManager<*>,
     private val propsEditors: List<PropsEditor>
@@ -130,6 +141,10 @@ data class VisualizerPropsEditor(
 }
 
 interface EditorPanelViews {
+    fun forSingleShaderSimplifiedEditorPanel(
+        editableManager: EditableManager<*>,
+        mutablePatchHolder: MutablePatchHolder
+    ): View
     fun forGenericPropertiesPanel(editableManager: EditableManager<*>, propsEditors: List<PropsEditor>): View
     fun forPatchHolder(editableManager: EditableManager<*>, mutablePatchHolder: MutablePatchHolder): View
     fun forPatch(editableManager: EditableManager<*>, mutablePatch: MutablePatch): View

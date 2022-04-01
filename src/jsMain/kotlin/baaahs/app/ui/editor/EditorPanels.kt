@@ -16,6 +16,15 @@ import materialui.components.divider.enums.DividerVariant
 import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
+    override fun forSingleShaderSimplifiedEditorPanel(
+        editableManager: EditableManager<*>,
+        mutablePatchHolder: MutablePatchHolder
+    ): View = renderWrapper {
+        val mutablePatch = mutablePatchHolder.patches[0]
+        val editorPanel = mutablePatch.getEditorPanel(editableManager)
+        with (editorPanel.getView()) { render() }
+    }
+
     override fun forGenericPropertiesPanel(
         editableManager: EditableManager<*>,
         propsEditors: List<PropsEditor>

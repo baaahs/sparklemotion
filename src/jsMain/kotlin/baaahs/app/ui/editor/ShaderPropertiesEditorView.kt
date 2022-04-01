@@ -70,7 +70,10 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
             textFieldEditor {
                 attrs.label = "Shader Name"
                 attrs.getValue = { patch.mutableShader.title }
-                attrs.setValue = { value -> patch.mutableShader.title = value }
+                attrs.setValue = { value ->
+                    props.editableManager.maybeChangeTitle(patch.mutableShader.title, value)
+                    patch.mutableShader.title = value
+                }
                 attrs.editableManager = props.editableManager
             }
         }
