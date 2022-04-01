@@ -132,7 +132,7 @@ object OpenShowSpec : Spek({
             }
         }
 
-        context("when a shader instance has weird incoming links") {
+        context("when a patch has weird incoming links") {
             beforeEachTest {
                 mutableShow.addPatch(
                     testToolchain.wireUp(

@@ -161,8 +161,8 @@ object EditingShaderSpec : Spek({
                         expect(notifiedStates).containsExactly(State.Errors)
                     }
 
-                    it("should still return ShaderInstanceOptions") {
-                        expect(editingShader.getShaderInstanceOptions()).notToBeNull()
+                    it("should still return PatchOptions") {
+                        expect(editingShader.getPatchOptions()).notToBeNull()
                     }
                 }
             }
@@ -174,7 +174,7 @@ object EditingShaderSpec : Spek({
                 observerSlot.captured.notifyChanged()
             }
 
-            context("when the shader instance had no previous incoming links") {
+            context("when the patch had no previous incoming links") {
                 it("should set some reasonable defaults") {
                     expect(mutablePatch.incomingLinks.mapValues { (_, port) -> port.title })
                         .toBe(mapOf(
@@ -217,7 +217,7 @@ object EditingShaderSpec : Spek({
                 }
             }
 
-            context("when the shader instance had a previous incoming link") {
+            context("when the patch had a previous incoming link") {
                 override(beforeBuildingShader) {
                     {
                         mutablePatch.incomingLinks["theScale"] =

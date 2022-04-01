@@ -87,7 +87,7 @@ class EditingShader(
     private fun maybeUpdateIncomingLinks() {
         openShader?.inputPorts?.forEach { inputPort ->
             if (!linksSelectedByAHuman.containsKey(inputPort.id)) {
-                getShaderInstanceOptions()
+                getPatchOptions()
                     ?.inputPortLinkOptions?.get(inputPort.id)?.firstOrNull()
                     ?.getMutablePort()
                     ?.let { mutablePatch.incomingLinks[inputPort.id] = it }
@@ -95,7 +95,7 @@ class EditingShader(
         }
     }
 
-    fun getShaderInstanceOptions(): PatchOptions? {
+    fun getPatchOptions(): PatchOptions? {
         val currentOpenShader = openShader
         if (patchOptions == null && currentOpenShader != null) {
             val showBuilder = ShowBuilder()
@@ -108,7 +108,7 @@ class EditingShader(
 
     fun getShaderChannelOptions(excludeMain: Boolean = false): List<MutableShaderChannel> {
         return mutableListOf<MutableShaderChannel>().apply {
-            getShaderInstanceOptions()?.shaderChannels?.let { addAll(it) }
+            getPatchOptions()?.shaderChannels?.let { addAll(it) }
             if (excludeMain) removeAll { it.id == ShaderChannel.Main.id }
             if (none { it.id == mutablePatch.shaderChannel.id }) {
                 add(0, mutablePatch.shaderChannel)
@@ -118,7 +118,7 @@ class EditingShader(
 
     fun linkOptionsFor(inputPort: InputPort): List<LinkOption>? = linkOptionsFor(inputPort.id)
     fun linkOptionsFor(portId: String): List<LinkOption>? {
-        return getShaderInstanceOptions()
+        return getPatchOptions()
             ?.inputPortLinkOptions
             ?.get(portId)
     }
@@ -161,8 +161,8 @@ class EditingShader(
 //            .takeFirstIfAmbiguous()
 //            .resolve()
 //        // TODO Improve on this.
-//        val editingIncomingLinks = props.mutableShaderInstance.incomingLinks
-//        val guessIncomingLinks = wiringGuess.mutableShaderInstances.first().incomingLinks
+//        val editingIncomingLinks = props.mutablePatch.incomingLinks
+//        val guessIncomingLinks = wiringGuess.mutablePatches.first().incomingLinks
 //
 //        editingIncomingLinks.clear()
 //        editingIncomingLinks.putAll(guessIncomingLinks)

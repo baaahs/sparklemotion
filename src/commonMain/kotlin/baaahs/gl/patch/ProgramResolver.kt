@@ -17,7 +17,7 @@ import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
-class PatchResolver(
+class ProgramResolver(
     renderTargets: Collection<RenderTarget>,
     private val activePatchSet: ActivePatchSet,
     private val renderManager: RenderManager
@@ -68,11 +68,11 @@ class PatchResolver(
     }
 
     private fun buildProgram(
-        linkedPatch: LinkedPatch,
+        linkedProgram: LinkedProgram,
         fixtureType: FixtureType,
         feedResolver: FeedResolver
     ) = try {
-        renderManager.compile(fixtureType, linkedPatch, feedResolver)
+        renderManager.compile(fixtureType, linkedProgram, feedResolver)
     } catch (e: GlslException) {
         logger.error(e) { "Error preparing program" }
         if (e is CompilationException) {
@@ -80,12 +80,12 @@ class PatchResolver(
         }
 
         renderManager.compile(
-            fixtureType, GuruMeditationError(fixtureType).linkedPatch, feedResolver
+            fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
         )
     }
 
     companion object {
-        private val logger = Logger<PatchResolver>()
+        private val logger = Logger<ProgramResolver>()
 
         fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
     }

@@ -107,12 +107,12 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                         { (_, openShader) -> openShader.title }
                     )
                 )
-                .forEach { (mutableShaderInstance, _) ->
+                .forEach { (mutablePatch, _) ->
                     shaderCard {
-                        key = mutableShaderInstance.id
-                        attrs.mutablePatch = mutableShaderInstance
-                        attrs.onSelect = handleShaderSelect[mutableShaderInstance]
-                        attrs.onDelete = handleShaderDelete[mutableShaderInstance]
+                        key = mutablePatch.id
+                        attrs.mutablePatch = mutablePatch
+                        attrs.onSelect = handleShaderSelect[mutablePatch]
+                        attrs.onDelete = handleShaderDelete[mutablePatch]
                         attrs.toolchain = toolchain
                     }
                 }

@@ -70,7 +70,7 @@ object MutableShowSpec : Spek({
             expect(baseShow).toBe(show)
         }
 
-        context("editing a shader instance") {
+        context("editing a patch") {
             val editor by value { mutableShow.patches.only() }
 
             context("when weird port mappings are added") {
@@ -80,8 +80,8 @@ object MutableShowSpec : Spek({
 
                 it("should retain them, I guess?") {
                     val id = show.patchIds.only()
-                    val shaderInstance = show.patches[id]!!
-                    expect(shaderInstance.incomingLinks.keys)
+                    val patch = show.patches[id]!!
+                    expect(patch.incomingLinks.keys)
                         .toBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
                 }
             }

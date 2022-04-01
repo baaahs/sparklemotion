@@ -26,7 +26,7 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 
-val ShaderCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
+val ShaderCard = xComponent<ShaderCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
 
     val mutablePatch = props.mutablePatch
@@ -82,12 +82,12 @@ val ShaderCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
     }
 }
 
-external interface ShaderInstanceCardProps : Props {
+external interface ShaderCardProps : Props {
     var mutablePatch: MutablePatch
     var onSelect: () -> Unit
     var onDelete: (() -> Unit)?
     var toolchain: Toolchain
 }
 
-fun RBuilder.shaderCard(handler: RHandler<ShaderInstanceCardProps>) =
+fun RBuilder.shaderCard(handler: RHandler<ShaderCardProps>) =
     child(ShaderCard, handler = handler)

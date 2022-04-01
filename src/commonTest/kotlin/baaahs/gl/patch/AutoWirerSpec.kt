@@ -18,8 +18,7 @@ import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
 import baaahs.show.live.FakeOpenShader
-import baaahs.show.live.LinkedShaderInstance
-import baaahs.show.live.link
+import baaahs.show.live.LinkedPatch
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.editor
@@ -188,7 +187,7 @@ object AutoWirerSpec : Spek({
                     .acceptSuggestedLinkOptions().confirm()
             }
             val linkedPatch by value { patchSet.openForPreview(toolchain, ContentType.Color)!! }
-            val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
+            val rootProgramNode by value { linkedPatch.rootNode as LinkedPatch }
             val mutableLinks by value { patchSet.mutablePatches.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }
 

@@ -7,33 +7,31 @@ import baaahs.show.*
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
-fun DataSource.link(varName: String) = OpenPatch.DataSourceLink(this, varName, emptyMap())
-
-class ShaderInstanceResolver(
+class PatchResolver(
     private val openShaders: CacheBuilder<String, OpenShader>,
-    private val shaderInstances: Map<String, Patch>,
+    private val patches: Map<String, Patch>,
     private val dataSources: Map<String, DataSource>
 ) {
     private val openPatches = hashMapOf<String, OpenPatch>()
 
     init {
-        shaderInstances.keys.forEach { shaderInstanceId ->
-            resolve(shaderInstanceId)
+        patches.keys.forEach { patchId ->
+            resolve(patchId)
         }
     }
 
     private fun findDataSource(id: String) = dataSources.getBang(id, "data source")
     private fun findShader(id: String): OpenShader = openShaders.getBang(id, "open shader")
-    private fun findShaderInstance(id: String): Patch = shaderInstances.getBang(id, "shader instance")
+    private fun findPatch(id: String): Patch = patches.getBang(id, "patch")
 
     private fun resolve(id: String): OpenPatch {
         openPatches[id]?.let { return it }
 
-        val shaderInstance = findShaderInstance(id)
-        val shader = findShader(shaderInstance.shaderId)
+        val patch = findPatch(id)
+        val shader = findShader(patch.shaderId)
         val knownInputPorts = shader.inputPorts.associateBy { it.id }
 
-        val links = shaderInstance.incomingLinks
+        val links = patch.incomingLinks
             .filterKeys { portId ->
                 knownInputPorts.contains(portId).also { containsKey ->
                     if (!containsKey)
@@ -52,11 +50,11 @@ class ShaderInstanceResolver(
                 }
             }
 
-        return build(shader, shaderInstance, links)
+        return build(shader, patch, links)
             .also { openPatches[id] = it }
     }
 
-    fun getResolvedShaderInstances() = openPatches
+    fun getResolvedPatches() = openPatches
 
     companion object {
         fun build(
@@ -78,6 +76,6 @@ class ShaderInstanceResolver(
             );
         }
 
-        private val logger = Logger("ShaderInstanceResolver")
+        private val logger = Logger("PatchResolver")
     }
 }

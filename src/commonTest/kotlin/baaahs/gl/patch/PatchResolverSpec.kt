@@ -226,7 +226,7 @@ object PatchResolverSpec : Spek({
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
-                                mutablePatches.only("shader instance")
+                                mutablePatches.only("patch")
                                     .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
                         }
@@ -533,12 +533,12 @@ object PatchResolverSpec : Spek({
     }
 })
 
-private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedPatch {
+private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
     val renderManager = RenderManager { FakeGlContext() }
     val fixture = model.allEntities.first()
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture, model = model))
-    val patchResolution = PatchResolver(listOf(renderTarget), activePatchSet, renderManager)
+    val patchResolution = ProgramResolver(listOf(renderTarget), activePatchSet, renderManager)
     val portDiagram = patchResolution.portDiagrams
         .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")

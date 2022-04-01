@@ -35,7 +35,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
-    val shaderInstance = props.mutablePatch
+    val patch = props.mutablePatch
     val editingShader = props.editingShader
 
     val handleUpdate by handler(props.mutablePatch, props.editableManager) { block: MutablePatch.() -> Unit ->
@@ -69,8 +69,8 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
         div(+shaderEditorStyles.shaderName) {
             textFieldEditor {
                 attrs.label = "Shader Name"
-                attrs.getValue = { shaderInstance.mutableShader.title }
-                attrs.setValue = { value -> shaderInstance.mutableShader.title = value }
+                attrs.getValue = { patch.mutableShader.title }
+                attrs.setValue = { value -> patch.mutableShader.title = value }
                 attrs.editableManager = props.editableManager
             }
         }
@@ -81,7 +81,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                 inputLabel { +"Channel" }
                 select {
                     attrs.renderValue<String> { it.asTextNode() }
-                    attrs.value(shaderInstance.shaderChannel.id)
+                    attrs.value(patch.shaderChannel.id)
                     attrs.onChangeFunction = handleSelectShaderChannel
 
                     menuItem {
@@ -119,7 +119,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                 textField {
                     attrs.label { +"Priority" }
                     attrs.type = InputType.number
-                    attrs.value = shaderInstance.priority
+                    attrs.value = patch.priority
                     attrs.onChangeFunction = { event: Event ->
                         val priorityStr = event.target.value
                         handleUpdate { priority = priorityStr.toFloat() }

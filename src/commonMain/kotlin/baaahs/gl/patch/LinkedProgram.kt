@@ -3,7 +3,7 @@ package baaahs.gl.patch
 import baaahs.gl.glsl.GlslType
 import baaahs.show.live.OpenPatch
 
-class LinkedPatch(
+class LinkedProgram(
     val rootNode: ProgramNode,
     private val components: List<Component>,
     val dataSourceLinks: Set<OpenPatch.DataSourceLink>,
