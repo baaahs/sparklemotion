@@ -5,8 +5,8 @@ import baaahs.app.ui.appContext
 import baaahs.englishize
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
+import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -35,11 +35,11 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
-    val shaderInstance = props.mutableShaderInstance
+    val shaderInstance = props.mutablePatch
     val editingShader = props.editingShader
 
-    val handleUpdate by handler(props.mutableShaderInstance, props.editableManager) { block: MutableShaderInstance.() -> Unit ->
-        props.mutableShaderInstance.block()
+    val handleUpdate by handler(props.mutablePatch, props.editableManager) { block: MutablePatch.() -> Unit ->
+        props.mutablePatch.block()
         props.editableManager.onChange()
     }
 
@@ -158,7 +158,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
 external interface ShaderPropertiesEditorProps : Props {
     var editableManager: EditableManager<*>
     var editingShader: EditingShader
-    var mutableShaderInstance: MutableShaderInstance
+    var mutablePatch: MutablePatch
 }
 
 fun RBuilder.shaderPropertiesEditor(handler: RHandler<ShaderPropertiesEditorProps>) =

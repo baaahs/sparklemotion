@@ -7,8 +7,8 @@ import baaahs.gl.openShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.on
 import baaahs.ui.sharedGlContext
 import baaahs.ui.unaryPlus
@@ -36,30 +36,29 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { props ->
+private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview") { props ->
     val appContext = useContext(appContext)
     val styles = EditableStyles
     val toolchain = (props.editableManager.session!! as ShowEditableManager.ShowSession).toolchain
 
-    val handleShaderSelect: CacheBuilder<MutableShaderInstance, () -> Unit> =
+    val handleShaderSelect: CacheBuilder<MutablePatch, () -> Unit> =
         CacheBuilder {
             {
-                props.editableManager.openPanel(
-                    it.getEditorPanel(props.mutablePatch.getEditorPanel(props.editableManager))
-                )
+                props.editableManager.openPanel(it.getEditorPanel(props.editableManager))
             }
         }
-    val handleShaderDelete: CacheBuilder<MutableShaderInstance, () -> Unit> =
+    val handleShaderDelete: CacheBuilder<MutablePatch, () -> Unit> =
         CacheBuilder {
             {
-                props.mutablePatch.remove(it)
+                props.mutablePatchHolder.patches.remove(it)
                 props.editableManager.onChange()
             }
         }
 
-    val handleNewShader = callback(props.mutablePatch, props.editableManager) { shader: MutableShader ->
-        val newShaderInstance = props.mutablePatch.addShaderInstance(shader)
-        handleShaderSelect[newShaderInstance].invoke()
+    val handleNewShader = callback(props.mutablePatchHolder, props.editableManager) { shader: MutableShader ->
+        val newPatch = MutablePatch(shader)
+        props.mutablePatchHolder.addPatch(newPatch)
+        handleShaderSelect[newPatch].invoke()
         props.editableManager.onChange()
     }
 
@@ -85,12 +84,13 @@ private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { pr
         newPatchMenuAnchor = null
         showShaderLibraryDialog = true
     }
-    val handleShaderLibrarySelect = callback(props.mutablePatch, props.editableManager) { shader: Shader? ->
+    val handleShaderLibrarySelect = callback(props.mutablePatchHolder, props.editableManager) { shader: Shader? ->
         showShaderLibraryDialog = false
 
         if (shader != null) {
-            val newShaderInstance = props.mutablePatch.addShaderInstance(shader)
-            handleShaderSelect[newShaderInstance].invoke()
+            val newPatch = MutablePatch(shader)
+            props.mutablePatchHolder.addPatch(newPatch)
+            handleShaderSelect[newPatch].invoke()
             props.editableManager.onChange()
         }
     }
@@ -99,7 +99,7 @@ private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { pr
         attrs.inFront = true
 
         div(+EditableStyles.patchOverview) {
-            props.mutablePatch.mutableShaderInstances
+            props.mutablePatchHolder.patches
                 .map { it to toolchain.openShader(it.mutableShader) }
                 .sortedWith(
                     compareBy(
@@ -110,7 +110,7 @@ private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { pr
                 .forEach { (mutableShaderInstance, _) ->
                     shaderCard {
                         key = mutableShaderInstance.id
-                        attrs.mutableShaderInstance = mutableShaderInstance
+                        attrs.mutablePatch = mutableShaderInstance
                         attrs.onSelect = handleShaderSelect[mutableShaderInstance]
                         attrs.onDelete = handleShaderDelete[mutableShaderInstance]
                         attrs.toolchain = toolchain
@@ -181,10 +181,10 @@ private val PatchOverview = xComponent<PatchOverviewProps>("PatchOverview") { pr
     }
 }
 
-external interface PatchOverviewProps : Props {
+external interface PatchesOverviewProps : Props {
     var editableManager: EditableManager<*>
-    var mutablePatch: MutablePatch
+    var mutablePatchHolder: MutablePatchHolder
 }
 
-fun RBuilder.patchOverview(handler: RHandler<PatchOverviewProps>) =
-    child(PatchOverview, handler = handler)
+fun RBuilder.patchesOverview(handler: RHandler<PatchesOverviewProps>) =
+    child(PatchesOverview, handler = handler)

@@ -58,13 +58,8 @@ object ShowSerializationSpec : Spek({
             override(origShow) {
                 SampleData.createSimpleShow {
                     addButton(findPanel("controls"), "Button") {
-                        addPatch {
-                            addShaderInstance(Shaders.red) {
-                                link(
-                                    "somePort",
-                                    FakeDataSource("foo")
-                                )
-                            }
+                        addPatch(Shaders.red) {
+                            link("somePort", FakeDataSource("foo"))
                         }
                     }
                 }.getShow()
@@ -134,7 +129,7 @@ private fun buildPlugins(fakePlugin: FakePlugin.Builder) =
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
 private fun JsonObjectBuilder.addPatchHolder(patchHolder: PatchHolder) {
-    put("patches", patchHolder.patches.jsonMap { jsonFor(it) })
+    put("patchIds", patchHolder.patchIds.jsonMap { JsonPrimitive(it) })
     put("eventBindings", patchHolder.eventBindings.jsonMap { jsonFor(it) })
     put("controlLayout", patchHolder.controlLayout.jsonMap { it.jsonMap { JsonPrimitive(it) } })
 }
@@ -172,7 +167,7 @@ private fun forJson(show: Show): JsonObject {
             })
         })
         put("shaders", show.shaders.jsonMap { jsonFor(it) })
-        put("shaderInstances", show.shaderInstances.jsonMap { jsonFor(it) })
+        put("patches", show.patches.jsonMap { jsonFor(it) })
         put("controls", show.controls.jsonMap { jsonFor(it) })
         put("dataSources", show.dataSources.jsonMap { jsonFor(it) })
     }
@@ -284,16 +279,6 @@ fun jsonFor(dataSource: DataSource): JsonElement {
     }
 }
 
-private fun jsonFor(patch: Patch): JsonObject {
-    return buildJsonObject {
-        put("shaderInstanceIds", patch.shaderInstanceIds.jsonMap { JsonPrimitive(it) })
-        put("surfaces", buildJsonObject {
-            put("name", "All Surfaces")
-            put("fixtureTypes", buildJsonArray { })
-        })
-    }
-}
-
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
         is DataSourceRef -> buildJsonObject {
@@ -317,11 +302,11 @@ private fun jsonFor(shader: Shader) = buildJsonObject {
     put("src", shader.src)
 }
 
-private fun jsonFor(shaderInstance: ShaderInstance) = buildJsonObject {
-    put("shaderId", shaderInstance.shaderId)
-    put("incomingLinks", shaderInstance.incomingLinks.jsonMap { jsonFor(it) })
-    put("shaderChannel", shaderInstance.shaderChannel.id)
-    put("priority", shaderInstance.priority)
+private fun jsonFor(patch: Patch) = buildJsonObject {
+    put("shaderId", patch.shaderId)
+    put("incomingLinks", patch.incomingLinks.jsonMap { jsonFor(it) })
+    put("shaderChannel", patch.shaderChannel.id)
+    put("priority", patch.priority)
 }
 
 fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
@@ -390,21 +375,19 @@ object TestSampleData {
 
     val sampleShowWithBeatLink: Show
         get() = MutableShow(SampleData.sampleShow).apply {
-            addPatch {
-                addShaderInstance(
-                    Shader(
-                        "BeatLink",
-                        /**language=glsl*/
-                        """
+            addPatch(
+                Shader(
+                    "BeatLink",
+                    /**language=glsl*/
+                    """
                     uniform float beat;
                     void main(void) {
                         gl_FragColor = vec4(beat, 0., 0., 1.);
                     }
                 """.trimIndent()
-                    )
-                ) {
-                    link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
-                }
+                )
+            ) {
+                link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
             }
         }.getShow()
 }

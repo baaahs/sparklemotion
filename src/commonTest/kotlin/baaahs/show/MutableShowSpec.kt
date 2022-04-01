@@ -71,7 +71,7 @@ object MutableShowSpec : Spek({
         }
 
         context("editing a shader instance") {
-            val editor by value { mutableShow.patches.only().mutableShaderInstances.only() }
+            val editor by value { mutableShow.patches.only() }
 
             context("when weird port mappings are added") {
                 beforeEachTest {
@@ -79,8 +79,8 @@ object MutableShowSpec : Spek({
                 }
 
                 it("should retain them, I guess?") {
-                    val id = show.patches.only().shaderInstanceIds.only()
-                    val shaderInstance = show.shaderInstances[id]!!
+                    val id = show.patchIds.only()
+                    val shaderInstance = show.patches[id]!!
                     expect(shaderInstance.incomingLinks.keys)
                         .toBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
                 }
@@ -93,28 +93,28 @@ object MutableShowSpec : Spek({
                 val mutableShader by value { MutableShader("Test shader", "Src for shader") }
                 val incomingLinks by value { mutableMapOf<String, MutablePort>() }
                 val shaderChannel by value { ShaderChannel.Main.toMutable() }
-                val instance by value { MutableShaderInstance(mutableShader, incomingLinks, shaderChannel) }
+                val patch by value { MutablePatch(mutableShader, incomingLinks, shaderChannel) }
 
                 context("with no input port links") {
-                    it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+                    it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
                 }
 
                 context("when an input port's content type matches the return content type") {
                     override(inputPorts) { listOf(InputPort("color", ContentType.Color)) }
                     override(incomingLinks) { mapOf("color" to MutableConstPort("foo", GlslType.Vec4)) }
 
-                    it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+                    it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
 
                     context("linked to a shader channel") {
                         override(incomingLinks) { mapOf("color" to ShaderChannel.Main.toMutable()) }
 
                         context("on the same channel") {
-                            it("is a filter") { expect(instance.isFilter(openShader)).toBe(true) }
+                            it("is a filter") { expect(patch.isFilter(openShader)).toBe(true) }
                         }
 
                         context("on a different channel") {
                             override(shaderChannel) { ShaderChannel("other").toMutable() }
-                            it("isn't a filter") { expect(instance.isFilter(openShader)).toBe(false) }
+                            it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
                         }
                     }
                 }
@@ -122,7 +122,7 @@ object MutableShowSpec : Spek({
                 context("when the return content type doesn't match any of the input ports") {
                     override(outputPort) { OutputPort(ContentType.XyCoordinate) }
                     it("is a filter") {
-                        expect(instance.isFilter(openShader)).toBe(false)
+                        expect(patch.isFilter(openShader)).toBe(false)
                     }
                 }
             }
@@ -248,30 +248,6 @@ object MutableShowSpec : Spek({
 //                }
 //            }
 //        }
-
-        context("editing MutablePatchHolders") {
-            it("adds to existing patch for the given surface, if it exists") {
-                mutableShow.addPatch(testToolchain.testPatch("show shader 1a"))
-                mutableShow.addPatch(testToolchain.testPatch("show shader 1b"))
-
-                expect(show.patches.map { patch ->
-                    patch.surfaces to
-                            patch.shaderInstanceIds.map {
-                                show.shaderInstances[it]?.shaderId?.let { shaderId ->
-                                    show.shaders[shaderId]?.title
-                                } ?: "?!?"
-                            }
-                }.associate { it }).toBe(
-                    mapOf(
-                        Surfaces.AllSurfaces to listOf(
-                            "shader 0",
-                            "show shader 1a",
-                            "show shader 1b"
-                        )
-                    )
-                )
-            }
-        }
     }
 })
 
@@ -296,7 +272,7 @@ private fun Toolchain.testPatch(title: String): MutablePatch {
         """.trimIndent()
     )
 
-    return MutablePatch(autoWire(shader).acceptSuggestedLinkOptions().confirm())
+    return autoWire(shader).acceptSuggestedLinkOptions().confirm()
 }
 
 //private fun Show.desc(): List<String> =

@@ -1,61 +1,78 @@
 package baaahs.gl.patch
 
-import baaahs.show.Shader
-import baaahs.show.Surfaces
+import baaahs.app.ui.editor.LinkOption
+import baaahs.gl.shader.InputPort
+import baaahs.show.ShaderChannel
 import baaahs.show.mutable.MutablePatch
-import baaahs.util.Logger
+import baaahs.show.mutable.MutableShader
+import baaahs.show.mutable.MutableShaderChannel
+import baaahs.unknown
 
-class UnresolvedPatch(private val unresolvedShaderInstances: List<UnresolvedShaderInstance>) {
-    fun editShader(shader: Shader): UnresolvedShaderInstance {
-        // TODO: src == src is probably the wrong check here:
-        return unresolvedShaderInstances.find { it.mutableShader.src == shader.src }
-            ?: error("Couldn't find shader \"${shader.title}\"")
+class UnresolvedPatch(
+    val mutableShader: MutableShader,
+    val incomingLinksOptions: Map<InputPort, MutableList<LinkOption>>,
+    var shaderChannel: ShaderChannel = ShaderChannel.Main,
+    var priority: Float
+) {
+    fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }
+
+    fun describeAmbiguity(): String {
+        return mutableShader.title + ": " +
+                incomingLinksOptions
+                    .filter { (_, links) -> links.size > 1 }
+                    .map { (portId, links) ->
+                        "$portId->(${links.joinToString(",") { it.title }}"
+                    }
     }
 
-    fun editAll(callback: UnresolvedShaderInstance.() -> Unit): UnresolvedPatch {
-        unresolvedShaderInstances.forEach { it.callback() }
-        return this
-    }
-
-    fun isAmbiguous() = unresolvedShaderInstances.any { it.isAmbiguous() }
-
-    fun confirm(): MutablePatch {
-        if (isAmbiguous()) {
-            error("ambiguous! " +
-                    unresolvedShaderInstances
-                        .filter { it.isAmbiguous() }
-                        .map { it.describeAmbiguity() }
-            )
-        }
-
-        // Create a shader instance editor for each shader.
-        val shaderInstances = unresolvedShaderInstances.associate {
-            it.mutableShader.build() to it.confirm()
-        }
-
-        return MutablePatch(shaderInstances.values.toList(), Surfaces.AllSurfaces)
-    }
-
-    fun dumpOptions(): UnresolvedPatch {
-        logger.info { "Unresolved Patch:" }
-        unresolvedShaderInstances.forEach { unresolvedShaderInstance ->
-            logger.info { "* ${unresolvedShaderInstance.mutableShader.title}" }
-            unresolvedShaderInstance.incomingLinksOptions.forEach { (inputPort, linkOptions) ->
-                logger.info { "  ${inputPort.id} (${inputPort.contentType}) ->" }
-                linkOptions.forEach { linkOption ->
-                    logger.info { "    * ${linkOption.title}"}
-                }
+    fun acceptSymbolicChannelLinks() {
+        incomingLinksOptions.values.forEach { options ->
+            val shaderChannelOptions = options.filter { it.getMutablePort() is MutableShaderChannel }
+            if (options.size > 1 && shaderChannelOptions.size == 1) {
+                options.clear()
+                options.add(shaderChannelOptions.first())
             }
         }
-        return this
+    }
+
+    fun linkOptionsFor(portId: String): MutableList<LinkOption> {
+        val key = incomingLinksOptions.keys.find { it.id == portId }
+            ?: error(unknown("port", portId, incomingLinksOptions.keys.map { it.id }))
+        return linkOptionsFor(key)
+    }
+
+    fun linkOptionsFor(inputPort: InputPort) =
+        incomingLinksOptions.getValue(inputPort)
+
+    override fun toString(): String {
+        return "UnresolvedShaderInstance(shader=${mutableShader.title})"
     }
 
     fun acceptSuggestedLinkOptions(): UnresolvedPatch {
-        unresolvedShaderInstances.forEach { it.takeFirstIfAmbiguous() }
+        takeFirstIfAmbiguous()
         return this
     }
 
-    companion object {
-        private val logger = Logger<UnresolvedPatch>()
+    fun confirm() = MutablePatch(
+        mutableShader,
+        incomingLinksOptions.entries.associate { (port, fromPortOptions) ->
+            port.id to
+                    (fromPortOptions.firstOrNull()?.getMutablePort()
+                        ?: port.type.mutableDefaultInitializer)
+        }.toMutableMap(),
+        MutableShaderChannel(shaderChannel.id),
+        priority
+    )
+
+    fun takeFirstIfAmbiguous() {
+        if (isAmbiguous()) {
+            incomingLinksOptions.values.forEach { options ->
+                if (options.size > 1) {
+                    val first = options.first()
+                    options.clear()
+                    options.add(first)
+                }
+            }
+        }
     }
 }

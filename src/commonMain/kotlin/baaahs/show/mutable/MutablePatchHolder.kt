@@ -1,6 +1,5 @@
 package baaahs.show.mutable
 
-import baaahs.SparkleMotion
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
@@ -16,7 +15,7 @@ abstract class MutablePatchHolder(
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> {
         return listOf(
             GenericPropertiesEditorPanel(editableManager, getPropertiesComponents()),
-            PatchHolderEditorPanel(editableManager, this)
+            PatchesOverviewPanel(editableManager, this)
         )
     }
 
@@ -25,7 +24,7 @@ abstract class MutablePatchHolder(
     }
 
     val patches by lazy {
-        basePatchHolder.patches.map { MutablePatch(it, mutableShow) }.toMutableList()
+        basePatchHolder.patchIds.map { mutableShow.findPatch(it) }.toMutableList()
     }
     val eventBindings = basePatchHolder.eventBindings.toMutableList()
 
@@ -37,29 +36,32 @@ abstract class MutablePatchHolder(
             }.toMap(mutableMapOf())
     }
 
-    fun addPatch(block: MutablePatch.() -> Unit): MutablePatchHolder {
-        val mutablePatch = MutablePatch(
-            emptyList(),
-            Surfaces.AllSurfaces
+    fun addPatch(shader: Shader, block: MutablePatch.() -> Unit = {}): MutablePatchHolder =
+        addPatch(
+            MutablePatch(MutableShader(shader))
+            .also { it.block() }
         )
-        mutablePatch.block()
-        addPatch(mutablePatch)
+
+    fun addPatch(shader: MutableShader, block: MutablePatch.() -> Unit = {}): MutablePatchHolder =
+        addPatch(
+            MutablePatch(shader)
+                .also { it.block() }
+        )
+
+    fun addPatch(block: MutablePatch.() -> Unit): MutablePatchHolder =
+        addPatch(
+            MutablePatch(MutableShader(Shader("", "")))
+                .also { it.block() }
+        )
+
+    fun addPatch(mutablePatchSet: MutablePatchSet): MutablePatchHolder {
+        patches.addAll(mutablePatchSet.mutablePatches)
         return this
     }
 
     fun addPatch(mutablePatch: MutablePatch): MutablePatchHolder {
-        val existingPatch = patches.find { it.surfaces == mutablePatch.surfaces }
-        if (existingPatch != null) {
-            existingPatch.mutableShaderInstances.addAll(mutablePatch.mutableShaderInstances)
-            if (SparkleMotion.EXTRA_ASSERTIONS) existingPatch.mutableShaderInstances.assertNoDuplicates()
-        } else {
-            patches.add(mutablePatch)
-        }
+        patches.add(mutablePatch)
         return this
-    }
-
-    fun addPatch(mutableShaderInstance: MutableShaderInstance): MutablePatchHolder {
-        return addPatch(MutablePatch(listOf(mutableShaderInstance)))
     }
 
     fun editPatch(index: Int, block: MutablePatch.() -> Unit): MutablePatchHolder {

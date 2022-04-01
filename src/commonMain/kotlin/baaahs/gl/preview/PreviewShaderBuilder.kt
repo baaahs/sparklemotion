@@ -29,7 +29,7 @@ import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchSet
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.util.Logger
@@ -93,7 +93,7 @@ class PreviewShaderBuilder(
         private set
     override var openShader: OpenShader? = null
         private set
-    var previewPatch: MutablePatch? = null
+    var previewPatchSet: MutablePatchSet? = null
         private set
     override var linkedPatch: LinkedPatch? = null
         private set
@@ -161,11 +161,11 @@ class PreviewShaderBuilder(
                 mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateDataSource()))
             } else emptyMap()
 
-            previewPatch = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
+            previewPatchSet = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
-            linkedPatch = previewPatch?.openForPreview(toolchain, resultContentType)
+            linkedPatch = previewPatchSet?.openForPreview(toolchain, resultContentType)
             ShaderBuilder.State.Linked
         } catch (e: GlslException) {
             logger.warn(e) { "Failed to compile shader." }

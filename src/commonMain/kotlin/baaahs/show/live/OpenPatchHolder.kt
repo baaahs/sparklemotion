@@ -11,7 +11,7 @@ open class OpenPatchHolder(
     openContext: OpenContext
 ) {
     val title = patchHolder.title
-    val patches = patchHolder.patches.map { OpenPatch(it, openContext) }
+    val patches = patchHolder.patchIds.map { openContext.getPatch(it) }
     val problems get() = patches.flatMap { it.problems }
     val problemLevel: Severity? by lazy { problems.severity() }
 

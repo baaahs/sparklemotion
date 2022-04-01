@@ -8,7 +8,7 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.Shader
 import baaahs.show.live.LinkedShaderInstance
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
 
@@ -17,7 +17,7 @@ class ProgramLinker(
     private val warnings: List<String> = emptyList()
 ) {
     private val linkNodes: MutableMap<ProgramNode, LinkNode> = mutableMapOf()
-    private val dataSourceLinks = hashSetOf<LiveShaderInstance.DataSourceLink>()
+    private val dataSourceLinks = hashSetOf<OpenPatch.DataSourceLink>()
     private val showBuilder: ShowBuilder = ShowBuilder()
     private var curDepth = 0
     private val structs = hashSetOf<GlslCode.GlslStruct>()
@@ -51,7 +51,7 @@ class ProgramLinker(
         }
     }
 
-    fun visit(dataSourceLink: LiveShaderInstance.DataSourceLink) {
+    fun visit(dataSourceLink: OpenPatch.DataSourceLink) {
         dataSourceLinks.add(dataSourceLink)
         dataSourceLink.deps.forEach { (_, dependency) -> visit(dependency as ProgramNode) }
     }

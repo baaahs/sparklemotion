@@ -20,8 +20,8 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.live.LinkedShaderInstance
 import baaahs.show.live.link
+import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.editor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -60,8 +60,8 @@ object AutoWirerSpec : Spek({
             val suggestions by value {
                 autoWirer.autoWire(shaders, shaderChannel = shaderChannel, fixtureTypes = listOf(fixtureType))
             }
-            val patch by value { suggestions.acceptSuggestedLinkOptions().confirm() }
-            val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
+            val patches by value { suggestions.acceptSuggestedLinkOptions().confirm() }
+            val mutableLinks by value { patches.mutablePatches.only().incomingLinks }
             val portLink by value { mutableLinks[portId] }
 
             context("for content types of artifacts in potential render pipelines") {
@@ -183,13 +183,13 @@ object AutoWirerSpec : Spek({
             }
             val mainShader by value { toolchain.import(shaderText) }
             val shaders by value { arrayOf(mainShader) }
-            val patch by value {
+            val patchSet by value {
                 autoWirer.autoWire(shaders.open(toolchain), fixtureTypes = listOf(fixtureType))
                     .acceptSuggestedLinkOptions().confirm()
             }
-            val linkedPatch by value { patch.openForPreview(toolchain, ContentType.Color)!! }
+            val linkedPatch by value { patchSet.openForPreview(toolchain, ContentType.Color)!! }
             val rootProgramNode by value { linkedPatch.rootNode as LinkedShaderInstance }
-            val mutableLinks by value { patch.mutableShaderInstances.only().incomingLinks }
+            val mutableLinks by value { patchSet.mutablePatches.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }
 
             it("picks TimeDataSource for time") {
@@ -254,7 +254,7 @@ object AutoWirerSpec : Spek({
                 it("should pull from something") {
                     expects(
                         listOf(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "fragCoord" to ShaderChannel.Main.editor(),
@@ -264,7 +264,7 @@ object AutoWirerSpec : Spek({
                                 priority = 0f
                             )
                         )
-                    ) { patch.mutableShaderInstances }
+                    ) { patchSet.mutablePatches }
                 }
             }
 
@@ -292,7 +292,7 @@ object AutoWirerSpec : Spek({
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "iTime" to TimeDataSource().editor(),
@@ -304,7 +304,7 @@ object AutoWirerSpec : Spek({
                                 priority = 0f
                             )
                         )
-                    ) { patch.mutableShaderInstances }
+                    ) { patchSet.mutablePatches }
                 }
 
                 it("builds a linked patch") {
@@ -325,14 +325,14 @@ object AutoWirerSpec : Spek({
 
             context("with a UV projection shader") {
                 val uvShader = cylindricalProjection
-                val uvShaderInst by value { MutableShaderInstance(MutableShader(uvShader)) }
+                val uvPatch by value { MutablePatch(MutableShader(uvShader)) }
 
                 override(shaders) { arrayOf(mainShader, uvShader) }
 
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "time" to TimeDataSource().editor(),
@@ -342,7 +342,7 @@ object AutoWirerSpec : Spek({
                                 ),
                                 shaderChannel = ShaderChannel.Main.editor()
                             ),
-                            uvShaderInst.apply {
+                            uvPatch.apply {
                                 incomingLinks.putAll(
                                     mapOf(
                                         "modelInfo" to ModelInfoDataSource().editor(),
@@ -352,7 +352,7 @@ object AutoWirerSpec : Spek({
                                 shaderChannel = ShaderChannel.Main.editor()
                             }
                         )
-                    ) { patch.mutableShaderInstances }
+                    ) { patchSet.mutablePatches }
                 }
             }
 
@@ -376,7 +376,7 @@ object AutoWirerSpec : Spek({
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(filterShader),
                                 hashMapOf(
                                     "brightness" to SliderDataSource("Brightness", 1f, 0f, 1f, null)
@@ -386,7 +386,7 @@ object AutoWirerSpec : Spek({
                                 shaderChannel = ShaderChannel.Main.editor()
                             )
                         )
-                    ) { patch.mutableShaderInstances }
+                    ) { patchSet.mutablePatches }
                 }
             }
 
@@ -408,7 +408,7 @@ object AutoWirerSpec : Spek({
                 it("creates a reasonable guess patch") {
                     expects(
                         listOf(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(filterShader),
                                 hashMapOf(
                                     "uvIn" to ShaderChannel.Main.editor()
@@ -416,7 +416,7 @@ object AutoWirerSpec : Spek({
                                 shaderChannel = ShaderChannel.Main.editor()
                             )
                         )
-                    ) { patch.mutableShaderInstances }
+                    ) { patchSet.mutablePatches }
                 }
             }
 
@@ -433,15 +433,15 @@ object AutoWirerSpec : Spek({
                         uniform FixtureInfo fixtureInfo;
                         
                         vec4 main() {
-                            return vec4(fixtureInfo.heading.xy, fixtureInfo.position.xy);
+                            return vec4(fixtureInfo.rotation.xy, fixtureInfo.position.xy);
                         }
                     """.trimIndent()
                 }
 
                 it("creates a reasonable guess patch") {
-                    expect(patch.mutableShaderInstances)
+                    expect(patchSet.mutablePatches)
                         .containsExactly(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "fixtureInfo" to FixtureInfoDataSource().editor()
@@ -470,9 +470,9 @@ object AutoWirerSpec : Spek({
                 }
 
                 it("creates a reasonable guess patch") {
-                    expect(patch.mutableShaderInstances)
+                    expect(patchSet.mutablePatches)
                         .containsExactly(
-                            MutableShaderInstance(
+                            MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "fixtureInfo" to FixtureInfoDataSource().editor()

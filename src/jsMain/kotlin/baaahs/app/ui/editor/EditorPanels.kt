@@ -8,7 +8,6 @@ import baaahs.model.ModelUnit
 import baaahs.scene.MutableScene
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
@@ -38,7 +37,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         editableManager: EditableManager<*>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
-        fixturesList {
+        patchesOverview {
             attrs.editableManager = editableManager
             attrs.mutablePatchHolder = mutablePatchHolder
         }
@@ -47,23 +46,11 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forPatch(
         editableManager: EditableManager<*>,
         mutablePatch: MutablePatch
-    ): View = renderWrapper {
-        patchOverview {
-            attrs.editableManager = editableManager
-            attrs.mutablePatch = mutablePatch
-        }
-    }
-
-    override fun forShaderInstance(
-        editableManager: EditableManager<*>,
-        mutablePatch: MutablePatch,
-        mutableShaderInstance: MutableShaderInstance
     ): View =
         renderWrapper {
             shaderInstanceEditor {
                 attrs.editableManager = editableManager
                 attrs.mutablePatch = mutablePatch
-                attrs.mutableShaderInstance = mutableShaderInstance
             }
         }
 

@@ -8,7 +8,7 @@ class ShowBuilder {
     private val controlIds = UniqueIds<Control>()
     private val dataSourceIds = UniqueIds<DataSource>()
     private val shaderIds = UniqueIds<Shader>()
-    private val shaderInstanceIds = UniqueIds<ShaderInstance>()
+    private val patchIds = UniqueIds<Patch>()
 
     fun idFor(panel: Panel): String {
         return panelIds.idFor(panel) { panel.suggestId() }
@@ -26,14 +26,14 @@ class ShowBuilder {
         return shaderIds.idFor(shader) { shader.suggestId() }
     }
 
-    fun idFor(shaderInstance: ShaderInstance): String {
-        return shaderInstanceIds.idFor(shaderInstance) { "${shaderInstance.shaderId}-inst" }
+    fun idFor(patch: Patch): String {
+        return patchIds.idFor(patch) { "${patch.shaderId}-patch" }
     }
 
     fun getControls(): Map<String, Control> = controlIds.all()
     fun getDataSources(): Map<String, DataSource> = dataSourceIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
-    fun getShaderInstances(): Map<String, ShaderInstance> = shaderInstanceIds.all()
+    fun getPatches(): Map<String, Patch> = patchIds.all()
 
     // Make sure we include data source dependencies, otherwise their feeds aren't opened.
     // This is pretty janky, find a better way.

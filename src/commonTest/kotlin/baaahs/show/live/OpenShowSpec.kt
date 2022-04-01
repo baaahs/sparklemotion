@@ -148,7 +148,7 @@ object OpenShowSpec : Spek({
             }
 
             it("ignores links to unknown ports") {
-                expect(openShow.patches.only().shaderInstances.only().incomingLinks.keys)
+                expect(openShow.patches.only().incomingLinks.keys)
                     .toBe(setOf("gl_FragCoord", "time"))
             }
         }
