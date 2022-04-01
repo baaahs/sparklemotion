@@ -8,9 +8,6 @@ import baaahs.show.mutable.MutableShow
 class ShowEditableManager(
     onApply: (Show) -> Unit
 ) : EditableManager<Show>(onApply) {
-    override val uiTitle: String
-        get() = (session?.mutableDocument as? MutableShow)?.title ?: ""
-
     fun openEditor(baseDocument: Show, editIntent: EditIntent, toolchain: Toolchain) {
         val session = ShowSession(baseDocument, MutableShow(baseDocument), editIntent, toolchain)
         openEditor(session)
