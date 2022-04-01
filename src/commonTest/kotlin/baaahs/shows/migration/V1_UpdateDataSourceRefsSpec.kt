@@ -27,7 +27,7 @@ object V1_UpdateDataSourceRefsSpec : Spek({
         val toJsonObj by value { migration.migrate(fromJsonObj) }
         val show by value { json.decodeFromJsonElement(Show.serializer(), toJsonObj)}
 
-        context("migration of layouts") {
+        context("migration of dataSources") {
             override(fromJson) {
                 /**language=json*/
                 """
@@ -41,26 +41,14 @@ object V1_UpdateDataSourceRefsSpec : Spek({
                     "time": {
                       "type": "baaahs.plugin.CorePlugin.Time"
                     }
-                  },
-                  "patches": [
-                    {
-                      "shaderInstanceIds": [],
-                      "surfaces": {
-                        "name": "All Surfaces"
-                      }
-                    }
-                  ]
+                  }
                 }
                 """.trimIndent()
             }
 
-            it("ignores `structType` and maps from old class names") {
+            it("fixes data source serial names") {
                 expect(show.dataSources["modelInfo"]).toBe(ModelInfoDataSource())
                 expect(show.dataSources["time"]).toBe(TimeDataSource())
-            }
-
-            it("permits missing surfaces.fixtureTypes") {
-                expect(show.patches[0].surfaces.fixtureTypes).toBe(emptySet())
             }
         }
     }

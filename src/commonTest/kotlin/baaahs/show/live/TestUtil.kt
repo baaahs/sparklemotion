@@ -15,7 +15,7 @@ import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop
 import baaahs.ui.DropTarget
 
-fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutableShaderInstance {
+fun Toolchain.wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
     val unresolvedPatch = autoWire(shader)
     unresolvedPatch.apply {
         ports.forEach { (portId, port) ->

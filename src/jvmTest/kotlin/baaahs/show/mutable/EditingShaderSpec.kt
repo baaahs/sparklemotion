@@ -1,8 +1,11 @@
 package baaahs.show.mutable
 
-import baaahs.*
+import baaahs.StubBeatSource
+import baaahs.TestModel
 import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
+import baaahs.describe
+import baaahs.expectEmptyMap
 import baaahs.gl.RootToolchain
 import baaahs.gl.kexpect
 import baaahs.gl.openShader
@@ -75,21 +78,24 @@ object EditingShaderSpec : Spek({
             )
         }
         val shaderInEdit by value { filterShader }
-        val otherShaderInPatch by value<Shader?> { paintShader }
-        val otherShaderInShow by value { Shaders.red }
+        val otherShaderInShow by value<Shader?> { paintShader }
+        val shaderForButton by value { Shaders.red }
 
-        val mutableShaderInstance by value { MutableShaderInstance(MutableShader(shaderInEdit)) }
-        val mutablePatch by value { MutablePatch { addShaderInstance(mutableShaderInstance) } }
-        val mutableShow by value { MutableShow("show") { addPatch(mutablePatch) } }
+        val mutablePatch by value { MutablePatch(MutableShader(shaderInEdit)) }
+        val mutableShow by value {
+            MutableShow("show") {
+                addPatch(mutablePatch)
+                otherShaderInShow?.let { addPatch(it) }
+            }
+        }
         val observerSlot by value { slot<Observer>() }
         val mockShaderBuilder by value { mockk<ShaderBuilder>() }
         val getShaderBuilder by value<(Shader) -> ShaderBuilder> { { mockShaderBuilder } }
+        val patchOnButton by value { MutablePatch(shaderForButton) }
         val button by value { mutableShow.addButton(MutablePanel(Panel("panel")), "button") {} }
-        val otherPatchInShow by value { MutablePatch { addShaderInstance(otherShaderInShow) } }
 
         beforeEachTest {
-            otherShaderInPatch?.let { mutablePatch.addShaderInstance(it) }
-            button.addPatch(otherPatchInShow)
+            button.addPatch(patchOnButton)
             every { mockShaderBuilder.addObserver(capture(observerSlot)) } answers { observerSlot.captured }
             every { mockShaderBuilder.startBuilding() } just runs
             every { mockShaderBuilder.gadgets } returns emptyList()
@@ -100,7 +106,7 @@ object EditingShaderSpec : Spek({
         val beforeBuildingShader by value { { } }
         val editingShader by value {
             beforeBuildingShader()
-            EditingShader(mutableShow, mutablePatch, mutableShaderInstance, toolchain, getShaderBuilder)
+            EditingShader(mutableShow, mutablePatch, toolchain, getShaderBuilder)
                 .also { it.addObserver { notifiedStates.add(it.state) } }
         }
         beforeEachTest {
@@ -125,7 +131,7 @@ object EditingShaderSpec : Spek({
             }
 
             it("has no incoming links") {
-                expectEmptyMap { mutableShaderInstance.incomingLinks }
+                expectEmptyMap { mutablePatch.incomingLinks }
             }
 
             context("if shader builder notifies us") {
@@ -170,7 +176,7 @@ object EditingShaderSpec : Spek({
 
             context("when the shader instance had no previous incoming links") {
                 it("should set some reasonable defaults") {
-                    expect(mutableShaderInstance.incomingLinks.mapValues { (_, port) -> port.title })
+                    expect(mutablePatch.incomingLinks.mapValues { (_, port) -> port.title })
                         .toBe(mapOf(
                             "inColor" to "Main Channel",
                             "theScale" to "The Scale Slider",
@@ -179,7 +185,7 @@ object EditingShaderSpec : Spek({
                 }
 
                 it("should create an appropriate data source") {
-                    expect(mutableShaderInstance.incomingLinks["theScale"])
+                    expect(mutablePatch.incomingLinks["theScale"])
                         .toBe(MutableDataSourcePort(SliderDataSource("The Scale", 1f, 0f, 1f)))
                 }
 
@@ -187,7 +193,7 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @@Slider min=.25 max=4 default=1" }
 
                     it("should create an appropriate data source") {
-                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                        expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableDataSourcePort(SliderDataSource("The Scale", 1f, .25f, 4f)))
                     }
                 }
@@ -196,7 +202,7 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @@baaahs.BeatLink:BeatLink" }
 
                     it("should create an appropriate data source") {
-                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                        expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableDataSourcePort(beatLinkDataSource))
                     }
                 }
@@ -205,7 +211,7 @@ object EditingShaderSpec : Spek({
                     override(scaleUniform) { "uniform float theScale; // @type beat-link" }
 
                     it("should create an appropriate data source") {
-                        expect(mutableShaderInstance.incomingLinks["theScale"])
+                        expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableDataSourcePort(beatLinkDataSource))
                     }
                 }
@@ -214,13 +220,13 @@ object EditingShaderSpec : Spek({
             context("when the shader instance had a previous incoming link") {
                 override(beforeBuildingShader) {
                     {
-                        mutableShaderInstance.incomingLinks["theScale"] =
+                        mutablePatch.incomingLinks["theScale"] =
                             MutableDataSourcePort(SliderDataSource("Custom slider", 1f, 0f, 1f))
                     }
                 }
 
                 it("shouldn't change it") {
-                    expect(mutableShaderInstance.incomingLinks["theScale"]!!.title)
+                    expect(mutablePatch.incomingLinks["theScale"]!!.title)
                         .toBe("Custom slider Slider")
                 }
 
@@ -239,7 +245,7 @@ object EditingShaderSpec : Spek({
 
             context("when a link has been selected by a human") {
                 beforeEachTest {
-                    mutableShaderInstance.incomingLinks["theScale"] =
+                    mutablePatch.incomingLinks["theScale"] =
                         MutableDataSourcePort(SliderDataSource("custom slider", 1f, 0f, 1f))
 
                     editingShader.changeInputPortLink(
@@ -254,7 +260,7 @@ object EditingShaderSpec : Spek({
                 }
 
                 it("shouldn't modify it") {
-                    expect(mutableShaderInstance.incomingLinks["theScale"]!!.title)
+                    expect(mutablePatch.incomingLinks["theScale"]!!.title)
                         .toBe("custom slider Slider")
                 }
 
@@ -305,7 +311,7 @@ object EditingShaderSpec : Spek({
 
                 context("when another patch has shader on a different shader channel") {
                     override(beforeBuildingShader) {
-                        { otherPatchInShow.mutableShaderInstances.only().shaderChannel = MutableShaderChannel("other") }
+                        { patchOnButton.shaderChannel = MutableShaderChannel("other") }
                     }
 
                     context("and its result type matches this input's type") {
@@ -324,7 +330,7 @@ object EditingShaderSpec : Spek({
                     }
 
                     context("and its result type doesn't match this input's type") {
-                        override(otherShaderInShow) { Shaders.flipY } // distortion
+                        override(shaderForButton) { Shaders.flipY } // distortion
 
                         it("shouldn't include that shader channel as an option") {
                             expect(editingShader.linkOptionsFor("inColor").stringify())
@@ -344,7 +350,7 @@ object EditingShaderSpec : Spek({
         context("preview") {
             val dispatcher by value { TestCoroutineDispatcher() }
             override(shaderInEdit) { paintShader }
-            override(otherShaderInPatch) { null }
+            override(otherShaderInShow) { null }
             override(getShaderBuilder) {
                 { shader: Shader ->
                     PreviewShaderBuilder(shader, toolchain, SceneMonitor(OpenScene(TestModel)), CoroutineScope(dispatcher))

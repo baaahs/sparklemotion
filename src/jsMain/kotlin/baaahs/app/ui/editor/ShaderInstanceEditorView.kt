@@ -8,7 +8,6 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.withCache
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
 import baaahs.ui.on
@@ -59,12 +58,11 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
 
     // props.mutableShaderInstance.id is included here so we re-memoize if we have a different instance
     // from before; this happens after clicking "Apply" when the whole mutable document is regenerated.
-    val editingShader = memo(props.editableManager, props.mutableShaderInstance, props.mutableShaderInstance.id) {
+    val editingShader = memo(props.editableManager, props.mutablePatch, props.mutablePatch.id) {
         val newEditingShader =
             EditingShader(
                 props.editableManager.currentMutableDocument as MutableShow,
                 props.mutablePatch,
-                props.mutableShaderInstance,
                 toolchain
             ) { shader ->
                 PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
@@ -123,7 +121,7 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
                     PageTabs.Properties -> shaderPropertiesEditor {
                         attrs.editableManager = props.editableManager
                         attrs.editingShader = editingShader
-                        attrs.mutableShaderInstance = props.mutableShaderInstance
+                        attrs.mutablePatch = props.mutablePatch
                     }
                     PageTabs.Ports -> linksEditor {
                         attrs.editableManager = props.editableManager
@@ -210,7 +208,6 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
 external interface ShaderInstanceEditorProps : Props {
     var editableManager: EditableManager<*>
     var mutablePatch: MutablePatch
-    var mutableShaderInstance: MutableShaderInstance
 }
 
 fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =

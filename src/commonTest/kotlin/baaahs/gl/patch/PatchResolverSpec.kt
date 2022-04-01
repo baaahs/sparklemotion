@@ -29,7 +29,7 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object PatchResolverSpec : Spek({
     describe("Layering of patch links") {
-        fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatch {
+        fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatchSet {
             return testToolchain.autoWire(*shaders, shaderChannel = shaderChannel)
                 .acceptSuggestedLinkOptions().confirm()
         }
@@ -105,7 +105,7 @@ object PatchResolverSpec : Spek({
 
                     addButton(mainPanel, "Orange") {
                         addPatch(autoWire(orangeShader).apply {
-                            this.mutableShaderInstances.first().incomingLinks.forEach { (k, v) ->
+                            mutablePatches.first().incomingLinks.forEach { (k, v) ->
                                 println("$k = $v")
                             }
                         })
@@ -226,7 +226,7 @@ object PatchResolverSpec : Spek({
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
-                                mutableShaderInstances.only("shader instance")
+                                mutablePatches.only("shader instance")
                                     .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
                         }

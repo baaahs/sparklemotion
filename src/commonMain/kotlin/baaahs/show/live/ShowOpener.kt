@@ -36,7 +36,7 @@ open class ShowOpener(
 
     private val resolver = ShaderInstanceResolver(
         openShaders,
-        show.shaderInstances,
+        show.patches,
         show.dataSources
     )
 
@@ -53,7 +53,7 @@ open class ShowOpener(
     override fun getPanel(id: String): Panel =
         show.layouts.panels.getBang(id, "panel")
 
-    override fun getShaderInstance(it: String): LiveShaderInstance =
+    override fun getPatch(it: String): OpenPatch =
         allShaderInstances.getBang(it, "shader instance")
 
     fun openShow(showState: ShowState? = null): OpenShow {

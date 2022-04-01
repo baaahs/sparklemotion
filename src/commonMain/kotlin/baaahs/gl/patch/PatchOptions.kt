@@ -31,11 +31,9 @@ class ChannelsInfo {
                 override fun visitPatch(openPatch: OpenPatch) {
                     super.visitPatch(openPatch)
 
-                    openPatch.shaderInstances.forEach { shaderInstance ->
-                        val contentType = shaderInstance.shader.outputPort.contentType
-                        shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                            .add(shaderInstance.shaderChannel.toMutable())
-                    }
+                    val contentType = openPatch.shader.outputPort.contentType
+                    shaderChannels.getOrPut(contentType, ::mutableSetOf)
+                        .add(openPatch.shaderChannel.toMutable())
                 }
             }.visitShow(parentShow)
         }
@@ -52,12 +50,12 @@ class ChannelsInfo {
         val shaderChannels = shaderChannelsFromFixtureTypes(fixtureTypes)
 
         parentMutableShow?.accept(object : MutableShowVisitor {
-            override fun visit(mutableShaderInstance: MutableShaderInstance) {
+            override fun visit(mutablePatch: MutablePatch) {
                 try {
-                    val shader = mutableShaderInstance.mutableShader.build()
+                    val shader = mutablePatch.mutableShader.build()
                     val contentType = toolchain.openShader(shader).outputPort.contentType
                     shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                        .add(mutableShaderInstance.shaderChannel)
+                        .add(mutablePatch.shaderChannel)
                 } catch (e: Exception) {
                     // It's okay, just ignore it.
                 }
@@ -83,7 +81,7 @@ class ChannelsInfo {
     }
 }
 
-class ShaderInstanceOptions(
+class PatchOptions(
     shader: OpenShader,
     val shaderChannel: ShaderChannel = ShaderChannel.Main,
     channelsInfo: ChannelsInfo,
@@ -178,6 +176,6 @@ class ShaderInstanceOptions(
     }
 
     companion object {
-        private val logger = Logger<ShaderInstanceOptions>()
+        private val logger = Logger<PatchOptions>()
     }
 }

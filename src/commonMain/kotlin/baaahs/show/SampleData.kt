@@ -281,9 +281,9 @@ object SampleData {
         }
     }
 
-    private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutableShaderInstance {
-        val unresolvedShaderInstance = toolchain.autoWire(shader)
-        unresolvedShaderInstance.apply {
+    private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
+        val unresolvedPatch = toolchain.autoWire(shader)
+        unresolvedPatch.apply {
             ports.forEach { (portId, port) ->
                 linkOptionsFor(portId).apply {
                     clear()
@@ -291,7 +291,7 @@ object SampleData {
                 }
             }
         }
-        return unresolvedShaderInstance
+        return unresolvedPatch
             .acceptSuggestedLinkOptions()
             .confirm()
     }

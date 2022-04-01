@@ -43,17 +43,17 @@ object GlslGenerationSpec : Spek({
             """.trimIndent()
         }
         val mainShader by value { testToolchain.import(shaderText) }
-        val mutablePatch by value { MutablePatch { } }
+        val mutablePatchSet by value { MutablePatchSet() }
         val resultContentType by value { Color }
         val linkedPatch by value {
-            mutablePatch.openForPreview(testToolchain, resultContentType)
+            mutablePatchSet.openForPreview(testToolchain, resultContentType)
                 ?: fail("openForPreview returned null, maybe no shaders on mutablePatch?")
         }
         val glsl by value { linkedPatch.toGlsl().trim() }
 
         context("with screen coordinates for preview") {
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fragCoord", RasterCoordinateDataSource())
                     link("resolution", ResolutionDataSource())
                     link("time", TimeDataSource())
@@ -150,7 +150,7 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("resolution", ResolutionDataSource())
                     link("fragCoord", RasterCoordinateDataSource())
                     shaderChannel = ShaderChannel.Main.editor()
@@ -228,7 +228,7 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link(
                         "blueness",
                         SliderDataSource("Blueness", 0f, 0f, 1f, null)
@@ -312,14 +312,14 @@ object GlslGenerationSpec : Spek({
 
         describe("with projection shader") {
             beforeEachTest {
-                mutablePatch.apply {
-                    addShaderInstance(cylindricalProjection) {
+                mutablePatchSet.apply {
+                    addPatch(cylindricalProjection) {
                         link("pixelLocation", PixelLocationDataSource())
                         link("modelInfo", ModelInfoDataSource())
                         shaderChannel = ShaderChannel.Main.editor()
                     }
 
-                    addShaderInstance(mainShader) {
+                    addPatch(mainShader) {
                         link("gl_FragCoord", ShaderChannel.Main.toMutable())
                         link("resolution", ResolutionDataSource())
                         link("time", TimeDataSource())
@@ -489,13 +489,13 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainPaintShader)
-                mutablePatch.addShaderInstance(otherPaintShader) {
+                mutablePatchSet.addPatch(mainPaintShader)
+                mutablePatchSet.addPatch(otherPaintShader) {
                     link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
                     shaderChannel = MutableShaderChannel.from(otherShaderActualChannel)
                 }
 
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
                     link("inColor", MutableShaderChannel("main"))
                     link("inColor2", MutableShaderChannel("other"))
@@ -667,7 +667,7 @@ object GlslGenerationSpec : Spek({
             override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
@@ -758,7 +758,7 @@ object GlslGenerationSpec : Spek({
             override(resultContentType) { MovingHeadParams.contentType }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
@@ -838,7 +838,7 @@ object GlslGenerationSpec : Spek({
             override(resultContentType) { Color }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoDataSource())
                 }
             }
@@ -939,7 +939,7 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {
+                mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
                     link("channelA", MutableShaderChannel("channelA"))
                     link("channelB", MutableShaderChannel("channelB"))
@@ -947,13 +947,13 @@ object GlslGenerationSpec : Spek({
                     link("uvIn", MutableDataSourcePort(RasterCoordinateDataSource()))
                 }
 
-                mutablePatch.addShaderInstance(channelAShader) {
+                mutablePatchSet.addPatch(channelAShader) {
                     link("gl_FragCoord", MutableConstPort("var from downstream", GlslType.Vec4))
                     link("time", MutableDataSourcePort(TimeDataSource()))
                     shaderChannel = MutableShaderChannel.from("channelA")
                 }
 
-                mutablePatch.addShaderInstance(channelBShader) {
+                mutablePatchSet.addPatch(channelBShader) {
                     link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
                     link("time", MutableConstPort("var from downstream", GlslType.Vec4))
                     shaderChannel = MutableShaderChannel.from("channelB")
@@ -1069,7 +1069,7 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
-                mutablePatch.addShaderInstance(mainShader) {}
+                mutablePatchSet.addPatch(mainShader)
             }
 
             it("doesn't perform namespacing on struct member names") {

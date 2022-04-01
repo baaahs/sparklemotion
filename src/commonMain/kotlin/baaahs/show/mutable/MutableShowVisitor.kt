@@ -8,7 +8,6 @@ interface MutableShowVisitor {
     fun visit(mutablePatch: MutablePatch) {}
     fun visit(surfaces: Surfaces) {}
     fun visit(mutableControl: MutableControl) {}
-    fun visit(mutableShaderInstance: MutableShaderInstance) {}
     fun visit(mutableShader: MutableShader) {}
     fun visit(mutableShaderChannel: MutableShaderChannel) {}
     fun visit(dataSource: DataSource) {}

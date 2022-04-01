@@ -4,7 +4,7 @@ import baaahs.app.ui.editor.EditableStyles
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
-import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutablePatch
 import baaahs.ui.on
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -26,11 +26,11 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 
-val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
+val ShaderCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
 
-    val mutableShaderInstance = props.mutableShaderInstance
-    val shader = mutableShaderInstance.mutableShader.build()
+    val mutablePatch = props.mutablePatch
+    val shader = mutablePatch.mutableShader.build()
     val openShader = props.toolchain.openShader(shader)
 
     val handleCardClick by eventHandler(props.onSelect) { e ->
@@ -44,7 +44,7 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
     }
 
     card(+styles.shaderCard on PaperStyle.root) {
-        key = mutableShaderInstance.id
+        key = mutablePatch.id
         attrs.onClickFunction = handleCardClick
 
         cardHeader {
@@ -83,11 +83,11 @@ val ShaderInstanceCard = xComponent<ShaderInstanceCardProps>("ShaderCard") { pro
 }
 
 external interface ShaderInstanceCardProps : Props {
-    var mutableShaderInstance: MutableShaderInstance
+    var mutablePatch: MutablePatch
     var onSelect: () -> Unit
     var onDelete: (() -> Unit)?
     var toolchain: Toolchain
 }
 
 fun RBuilder.shaderCard(handler: RHandler<ShaderInstanceCardProps>) =
-    child(ShaderInstanceCard, handler = handler)
+    child(ShaderCard, handler = handler)

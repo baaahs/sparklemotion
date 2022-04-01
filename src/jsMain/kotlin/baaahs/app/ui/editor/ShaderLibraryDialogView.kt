@@ -5,8 +5,8 @@ import baaahs.app.ui.shaderCard
 import baaahs.gl.withCache
 import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
+import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -125,7 +125,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                 matches.forEach { match ->
                     shaderCard {
                         key = match.id
-                        attrs.mutableShaderInstance = MutableShaderInstance(MutableShader(match.shader))
+                        attrs.mutablePatch = MutablePatch(MutableShader(match.shader))
                         attrs.onSelect = handleShaderSelect[match]
                         attrs.onDelete = null
                         attrs.toolchain = toolchain
