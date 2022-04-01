@@ -48,7 +48,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         mutablePatch: MutablePatch
     ): View =
         renderWrapper {
-            shaderInstanceEditor {
+            patchEditor {
                 attrs.editableManager = editableManager
                 attrs.mutablePatch = mutablePatch
             }

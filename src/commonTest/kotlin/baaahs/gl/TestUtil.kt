@@ -58,7 +58,7 @@ fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
     val actual = block()
     fun T.prettier() =
         if (this is MutablePatch) {
-            "MutableShaderInstance(\n" +
+            "MutablePatch(\n" +
                     "    mutableShader=$mutableShader\n" +
                     "    incomingLinks=\n" +
                     "${incomingLinks.prettier("        ")}\n" +

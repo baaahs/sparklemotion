@@ -124,7 +124,7 @@ class OpenPatch(
             }
         }
 
-        return LinkedShaderInstance(shader, resolvedIncomingLinks, shaderChannel, priority, injectedPorts)
+        return LinkedPatch(shader, resolvedIncomingLinks, shaderChannel, priority, injectedPorts)
     }
 
     override fun toString(): String {
@@ -169,7 +169,7 @@ class OpenPatch(
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
 //            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
-//                val inputPort = shaderInstance.shader.findInputPort(toPortId)
+//                val inputPort = shader.findInputPort(toPortId)
 //
 //                val upstreamComponent = findUpstreamComponent(fromLink)
 //                var expression = upstreamComponent.getExpression(prefix)

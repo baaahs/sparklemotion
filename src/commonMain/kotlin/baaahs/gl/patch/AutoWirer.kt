@@ -26,12 +26,12 @@ class AutoWirer(private val plugins: Plugins) {
         )
 
         // First pass: gather shader output ports.
-        val shaderInstances =
+        val unresolvedPatches =
             shaders.associateWith { openShader ->
                 autoWire(openShader, shaderChannel, channelsInfo, defaultPorts)
             }
 
-        return UnresolvedPatches(shaderInstances.values.toList())
+        return UnresolvedPatches(unresolvedPatches.values.toList())
     }
 
     fun autoWire(

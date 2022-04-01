@@ -7,7 +7,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.Shader
-import baaahs.show.live.LinkedShaderInstance
+import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
@@ -58,7 +58,7 @@ class ProgramLinker(
 
     init { visit(rootNode) }
 
-    fun buildLinkedPatch(): LinkedPatch {
+    fun buildLinkedProgram(): LinkedProgram {
         var pIndex = 0
         linkNodes.values
             .sortedWith(
@@ -67,7 +67,7 @@ class ProgramLinker(
             )
             .forEach { instanceNode ->
                 instanceNode.index =
-                    if (instanceNode.programNode is LinkedShaderInstance)
+                    if (instanceNode.programNode is LinkedPatch)
                         pIndex++ else -1
             }
 
@@ -78,7 +78,7 @@ class ProgramLinker(
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedPatch(rootNode, components, dataSourceLinks, warnings)
+        return LinkedProgram(rootNode, components, dataSourceLinks, warnings)
     }
 
     fun visit(openShader: OpenShader) {

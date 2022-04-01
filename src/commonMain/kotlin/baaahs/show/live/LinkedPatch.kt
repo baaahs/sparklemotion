@@ -8,7 +8,7 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.ShaderChannel
 
-class LinkedShaderInstance(
+class LinkedPatch(
     val shader: OpenShader,
     val incomingLinks: Map<String, ProgramNode>,
     val shaderChannel: ShaderChannel,

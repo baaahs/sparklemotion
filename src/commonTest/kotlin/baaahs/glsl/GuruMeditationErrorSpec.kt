@@ -2,7 +2,7 @@ package baaahs.glsl
 
 import baaahs.describe
 import baaahs.device.PixelArrayDevice
-import baaahs.show.live.LinkedShaderInstance
+import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -15,7 +15,7 @@ object GuruMeditationErrorSpec : Spek({
         val guruMeditationError by value { GuruMeditationError(PixelArrayDevice) }
 
         it("should create a RenderPlan") {
-            val rootNode = guruMeditationError.linkedPatch.rootNode as LinkedShaderInstance
+            val rootNode = guruMeditationError.linkedProgram.rootNode as LinkedPatch
             expect(rootNode.shader.shader)
                 .toBe(PixelArrayDevice.errorIndicatorShader)
         }

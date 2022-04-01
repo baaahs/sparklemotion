@@ -40,7 +40,7 @@ private enum class PageTabs {
     Properties, Ports, Gadgets, Help
 }
 
-private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
+private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { props ->
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
@@ -56,7 +56,7 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
         selectedTab = value
     }
 
-    // props.mutableShaderInstance.id is included here so we re-memoize if we have a different instance
+    // props.mutablePatch.id is included here so we re-memoize if we have a different instance
     // from before; this happens after clicking "Apply" when the whole mutable document is regenerated.
     val editingShader = memo(props.editableManager, props.mutablePatch, props.mutablePatch.id) {
         val newEditingShader =
@@ -205,10 +205,10 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
     }
 }
 
-external interface ShaderInstanceEditorProps : Props {
+external interface PatchEditorProps : Props {
     var editableManager: EditableManager<*>
     var mutablePatch: MutablePatch
 }
 
-fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =
-    child(ShaderInstanceEditorView, handler = handler)
+fun RBuilder.patchEditor(handler: RHandler<PatchEditorProps>) =
+    child(PatchEditorView, handler = handler)

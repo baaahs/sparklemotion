@@ -8,7 +8,7 @@ import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.scene.MutableScene
-import baaahs.show.live.ShaderInstanceResolver
+import baaahs.show.live.PatchResolver
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.ShowBuilder
@@ -65,14 +65,14 @@ data class PatchEditorPanel(
     override val icon: Icon
         get() = openShader.shaderType.icon
     override val problemLevel: Severity?
-            by lazy { liveShaderInstance.problems.severity() }
+            by lazy { openPatch.problems.severity() }
 
     // TODO: This is a clunky way to get our cached toolchain... clean up somehow.
     val toolchain = (editableManager.session!! as ShowEditableManager.ShowSession).toolchain
     private val openShader = toolchain.openShader(mutablePatch.mutableShader.build())
-    private val liveShaderInstance = run {
+    private val openPatch = run {
     val patch = mutablePatch.build(ShowBuilder())
-        ShaderInstanceResolver.build(openShader, patch, emptyMap())
+        PatchResolver.build(openShader, patch, emptyMap())
     }
 
     override fun getView(): View =

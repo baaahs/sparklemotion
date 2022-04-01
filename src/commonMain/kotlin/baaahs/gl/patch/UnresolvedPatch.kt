@@ -45,7 +45,7 @@ class UnresolvedPatch(
         incomingLinksOptions.getValue(inputPort)
 
     override fun toString(): String {
-        return "UnresolvedShaderInstance(shader=${mutableShader.title})"
+        return "UnresolvedPatch(shader=${mutableShader.title})"
     }
 
     fun acceptSuggestedLinkOptions(): UnresolvedPatch {

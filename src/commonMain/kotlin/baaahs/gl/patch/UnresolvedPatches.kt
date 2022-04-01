@@ -27,7 +27,7 @@ class UnresolvedPatches(private val unresolvedPatches: List<UnresolvedPatch>) {
             )
         }
 
-        // Create a shader instance editor for each shader.
+        // Create a patch editor for each shader.
         val mutablePatches = unresolvedPatches.associate {
             it.mutableShader.build() to it.confirm()
         }
@@ -37,9 +37,9 @@ class UnresolvedPatches(private val unresolvedPatches: List<UnresolvedPatch>) {
 
     fun dumpOptions(): UnresolvedPatches {
         logger.info { "Unresolved Patch:" }
-        unresolvedPatches.forEach { unresolvedShaderInstance ->
-            logger.info { "* ${unresolvedShaderInstance.mutableShader.title}" }
-            unresolvedShaderInstance.incomingLinksOptions.forEach { (inputPort, linkOptions) ->
+        unresolvedPatches.forEach { unresolvedPatch ->
+            logger.info { "* ${unresolvedPatch.mutableShader.title}" }
+            unresolvedPatch.incomingLinksOptions.forEach { (inputPort, linkOptions) ->
                 logger.info { "  ${inputPort.id} (${inputPort.contentType}) ->" }
                 linkOptions.forEach { linkOption ->
                     logger.info { "    * ${linkOption.title}"}

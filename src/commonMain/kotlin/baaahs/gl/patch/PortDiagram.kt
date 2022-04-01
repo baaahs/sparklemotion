@@ -40,14 +40,14 @@ class PortDiagram(val patches: List<OpenPatch>) {
         shaderChannel: ShaderChannel,
         contentType: ContentType,
         dataSources: Map<String, DataSource>
-    ): LinkedPatch? {
+    ): LinkedProgram? {
         val resolver = Resolver(dataSources)
         val track = Track(shaderChannel, contentType)
         val rootProgramNode = resolver.resolve(track)
 
         return if (rootProgramNode != null) {
             logger.debug { "Resolved $track to $rootProgramNode." }
-            ProgramLinker(rootProgramNode, resolver.warnings).buildLinkedPatch()
+            ProgramLinker(rootProgramNode, resolver.warnings).buildLinkedProgram()
         } else {
             logger.warn { "Failed to resolve $track." }
             null

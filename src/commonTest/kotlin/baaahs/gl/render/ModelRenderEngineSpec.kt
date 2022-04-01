@@ -16,8 +16,7 @@ import baaahs.plugin.SerializerRegistrar
 import baaahs.scene.MutableFixtureConfig
 import baaahs.show.*
 import baaahs.show.Shader
-import baaahs.show.live.LinkedShaderInstance
-import baaahs.show.live.link
+import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -74,8 +73,8 @@ object ModelRenderEngineSpec : Spek({
             val openShader by value { testToolchain.openShader(shader) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
-                val rootNode = LinkedShaderInstance(openShader, incomingLinks, ShaderChannel.Main, 0f)
-                ProgramLinker(rootNode).buildLinkedPatch()
+                val rootNode = LinkedPatch(openShader, incomingLinks, ShaderChannel.Main, 0f)
+                ProgramLinker(rootNode).buildLinkedProgram()
             }
             val program by value {
                 renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(FakeShowPlayer(), id) }

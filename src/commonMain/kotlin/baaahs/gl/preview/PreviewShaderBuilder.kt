@@ -12,7 +12,7 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
@@ -44,7 +44,7 @@ interface ShaderBuilder : IObservable {
     val gadgets: List<GadgetPreview>
     val shaderAnalysis: ShaderAnalysis?
     val openShader: OpenShader?
-    val linkedPatch: LinkedPatch?
+    val linkedProgram: LinkedProgram?
     val glslProgram: GlslProgram?
     val glslErrors: List<GlslError>
 
@@ -95,7 +95,7 @@ class PreviewShaderBuilder(
         private set
     var previewPatchSet: MutablePatchSet? = null
         private set
-    override var linkedPatch: LinkedPatch? = null
+    override var linkedProgram: LinkedProgram? = null
         private set
     override var glslProgram: GlslProgram? = null
         private set
@@ -165,7 +165,7 @@ class PreviewShaderBuilder(
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
-            linkedPatch = previewPatchSet?.openForPreview(toolchain, resultContentType)
+            linkedProgram = previewPatchSet?.openForPreview(toolchain, resultContentType)
             ShaderBuilder.State.Linked
         } catch (e: GlslException) {
             logger.warn(e) { "Failed to compile shader." }
@@ -217,7 +217,7 @@ class PreviewShaderBuilder(
 
     private fun compile(renderEngine: RenderEngine, feedResolver: FeedResolver) {
         try {
-            glslProgram = linkedPatch?.let { renderEngine.compile(it, feedResolver) }
+            glslProgram = linkedProgram?.let { renderEngine.compile(it, feedResolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             compileErrors = e.errors

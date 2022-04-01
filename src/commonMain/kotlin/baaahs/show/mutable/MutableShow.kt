@@ -10,14 +10,14 @@ import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.patch.PatchResolver
+import baaahs.gl.patch.LinkedProgram
+import baaahs.gl.patch.ProgramResolver
 import baaahs.gl.shader.OpenShader
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.OpenPatchHolder
 import baaahs.show.live.OpenShow
-import baaahs.show.live.ShaderInstanceResolver
+import baaahs.show.live.PatchResolver
 import baaahs.util.CacheBuilder
 
 class MutableShow(
@@ -43,21 +43,21 @@ class MutableShow(
         MutableShaderChannel(it.id)
     }
 
-    private val shaderInstances = baseShow.patches
-        .mapValues { (_, shaderInstance) ->
+    private val allPatches = baseShow.patches
+        .mapValues { (_, patch) ->
             MutablePatch(
-                findShader(shaderInstance.shaderId),
+                findShader(patch.shaderId),
                 hashMapOf(),
-                shaderChannels[shaderInstance.shaderChannel],
-                shaderInstance.priority
+                shaderChannels[patch.shaderChannel],
+                patch.priority
             )
-        }.toMutableMap()
+        }
 
     init {
         // Second pass required here since they might refer to each other.
-        baseShow.patches.forEach { (id, shaderInstance) ->
+        baseShow.patches.forEach { (id, patch) ->
             val editor = findPatch(id)
-            val resolvedIncomingLinks = shaderInstance.incomingLinks.mapValues { (_, fromPortRef) ->
+            val resolvedIncomingLinks = patch.incomingLinks.mapValues { (_, fromPortRef) ->
                 fromPortRef.dereference(this)
             }
             editor.incomingLinks.putAll(resolvedIncomingLinks)
@@ -127,7 +127,7 @@ class MutableShow(
         shaders.getBang(shaderId, "shader")
 
     fun findPatch(id: String): MutablePatch =
-        shaderInstances.getBang(id, "shader instance")
+        allPatches.getBang(id, "patch")
 
     fun commit(editHandler: EditHandler<Show, ShowState>) {
         editHandler.onEdit(this)
@@ -228,8 +228,8 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
         return this
     }
 
-    /** Build a [LinkedPatch] independent of an [baaahs.show.live.OpenShow]. */
-    fun openForPreview(toolchain: Toolchain, resultContentType: ContentType): LinkedPatch? {
+    /** Build a [LinkedProgram] independent of an [baaahs.show.live.OpenShow]. */
+    fun openForPreview(toolchain: Toolchain, resultContentType: ContentType): LinkedProgram? {
         val showBuilder = ShowBuilder()
         mutablePatches.forEach {
             showBuilder.idFor(it.build(showBuilder))
@@ -241,10 +241,10 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
         }
 
         val resolvedPatches =
-            ShaderInstanceResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources())
-                .getResolvedShaderInstances()
+            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources())
+                .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
-        val portDiagram = PatchResolver.buildPortDiagram(*openPatches)
+        val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)
         return portDiagram.resolvePatch(ShaderChannel.Main, resultContentType, showBuilder.getDataSources())
     }
 
