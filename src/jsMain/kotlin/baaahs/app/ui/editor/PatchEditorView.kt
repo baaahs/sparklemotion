@@ -37,7 +37,7 @@ import react.dom.div
 import react.useContext
 
 private enum class PageTabs {
-    Properties, Ports, Gadgets, Help
+    Patch, Ports, Gadgets, Help
 }
 
 private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { props ->
@@ -50,7 +50,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target!! }
     val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
-    var selectedTab by state { PageTabs.Properties }
+    var selectedTab by state { PageTabs.Patch }
     @Suppress("UNCHECKED_CAST")
     val handleChangeTab by handler { _: Event, value: PageTabs ->
         selectedTab = value
@@ -118,7 +118,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
 
             div(+shaderEditorStyles.propsPanel) {
                 when (selectedTab) {
-                    PageTabs.Properties -> shaderPropertiesEditor {
+                    PageTabs.Patch -> shaderPropertiesEditor {
                         attrs.editableManager = props.editableManager
                         attrs.editingShader = editingShader
                         attrs.mutablePatch = props.mutablePatch
