@@ -32,6 +32,8 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
     operator fun div(other: Vector3F): Vector3F = Vector3F(x / other.x, y / other.y, z / other.z)
 
+    operator fun unaryMinus(): Vector3F = Vector3F(-x, -y, -z)
+
     fun normalize(): Vector3F {
         val invLength = 1.0f / length()
         return Vector3F(x * invLength, y * invLength, z * invLength)
