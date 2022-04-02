@@ -18,6 +18,8 @@ data class Vector2F(val x: Float, val y: Float) {
 
     operator fun div(other: Vector2F): Vector2F = Vector2F(x / other.x, y / other.y)
 
+    operator fun unaryMinus(): Vector2F = Vector2F(-x, -y)
+
     fun clamp(minValue: Vector2F, maxValue: Vector2F): Vector2F {
         return Vector2F(
             max(min(x, maxValue.x), minValue.x),
