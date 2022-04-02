@@ -1,5 +1,6 @@
 package baaahs.geom
 
+import baaahs.clamp
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import kotlinx.serialization.Serializable
@@ -33,6 +34,13 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
     operator fun div(other: Vector3F): Vector3F = Vector3F(x / other.x, y / other.y, z / other.z)
 
     operator fun unaryMinus(): Vector3F = Vector3F(-x, -y, -z)
+
+    fun clamp(minValue: Vector3F, maxValue: Vector3F): Vector3F =
+        Vector3F(
+            x.clamp(minValue.x, maxValue.x),
+            y.clamp(minValue.y, maxValue.y),
+            z.clamp(minValue.z, maxValue.z)
+        )
 
     fun normalize(): Vector3F {
         val invLength = 1.0f / length()

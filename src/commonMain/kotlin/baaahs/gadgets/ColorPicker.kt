@@ -23,7 +23,11 @@ data class ColorPicker(
     var color: Color by updatable("color", initialValue, Color.serializer())
 
     override fun adjustALittleBit() {
-        fun randomAmount() = Random.nextFloat() * .1f - .05f
-        color = Color(color.redF + randomAmount(), color.greenF + randomAmount(), color.blueF + randomAmount())
+        fun randomAmount() = Random.nextFloat() * adjustmentFactor - .05f
+        color = Color(
+            color.redF + randomAmount(),
+            color.greenF + randomAmount(),
+            color.blueF + randomAmount()
+        )
     }
 }

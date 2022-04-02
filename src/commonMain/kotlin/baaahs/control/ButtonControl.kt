@@ -93,6 +93,8 @@ class OpenButtonControl(
     val controlledDataSource: DataSource? = buttonControl.controlledDataSourceId?.let { openContext.getDataSource(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     val switch: Switch = Switch(buttonControl.title)
+    override val gadget: Switch
+        get() = switch
 
     val type get() = buttonControl.activationType
 
