@@ -78,6 +78,9 @@ class OpenColorPickerControl(
     val colorPicker: ColorPicker,
     override val controlledDataSource: DataSource
 ) : DataSourceOpenControl() {
+    override val gadget: ColorPicker
+        get() = colorPicker
+
     override fun getState(): Map<String, JsonElement> = colorPicker.state
 
     override fun applyState(state: Map<String, JsonElement>) = colorPicker.applyState(state)

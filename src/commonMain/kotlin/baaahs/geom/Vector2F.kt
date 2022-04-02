@@ -1,8 +1,7 @@
 package baaahs.geom
 
+import baaahs.clamp
 import kotlinx.serialization.Serializable
-import kotlin.math.max
-import kotlin.math.min
 
 @Serializable
 data class Vector2F(val x: Float, val y: Float) {
@@ -20,12 +19,11 @@ data class Vector2F(val x: Float, val y: Float) {
 
     operator fun unaryMinus(): Vector2F = Vector2F(-x, -y)
 
-    fun clamp(minValue: Vector2F, maxValue: Vector2F): Vector2F {
-        return Vector2F(
-            max(min(x, maxValue.x), minValue.x),
-            max(min(y, maxValue.y), minValue.y)
+    fun clamp(minValue: Vector2F, maxValue: Vector2F): Vector2F =
+        Vector2F(
+            x.clamp(minValue.x, maxValue.x),
+            y.clamp(minValue.y, maxValue.y)
         )
-    }
 
     override fun toString(): String = "Vector2F(x=$x, y=$y)"
 

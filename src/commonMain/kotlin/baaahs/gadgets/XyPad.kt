@@ -30,11 +30,13 @@ data class XyPad(
         set(value) { position = value.clamp(minValue, maxValue) }
 
     override fun adjustALittleBit() {
-        val factor = .125f
         val spread = maxValue - minValue
-        val amountX = (Random.nextFloat() - .5f) * spread.x * factor
-        val amountY = (Random.nextFloat() - .5f) * spread.y * factor
-        position = Vector2F(position.y + amountX, position.y + amountY)
+        val adjustment = Vector2F(
+            (Random.nextFloat() - .5f) * spread.x,
+            (Random.nextFloat() - .5f) * spread.y
+        ) * adjustmentFactor
+
+        position = (position + adjustment)
             .clamp(minValue, maxValue)
     }
 }

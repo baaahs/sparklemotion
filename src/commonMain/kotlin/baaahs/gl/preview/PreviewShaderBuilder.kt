@@ -1,9 +1,6 @@
 package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
-import baaahs.control.OpenButtonControl
-import baaahs.control.OpenColorPickerControl
-import baaahs.control.OpenSliderControl
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.*
@@ -193,12 +190,7 @@ class PreviewShaderBuilder(
                 dataSource.buildControl()?.let {
                     // TODO: De-gnarl this mess.
                     val openControl = it.previewOpen()
-                    val gadget = when (openControl) {
-                        is OpenButtonControl -> openControl.switch
-                        is OpenColorPickerControl -> openControl.colorPicker
-                        is OpenSliderControl -> openControl.slider
-                        else -> null
-                    }
+                    val gadget = openControl.gadget
                     if (gadget == null) {
                         logger.warn { "No gadget for $openControl" }
                     } else {

@@ -78,6 +78,9 @@ class OpenXyPadControl(
     val xyPad: XyPad,
     override val controlledDataSource: DataSource
 ) : DataSourceOpenControl() {
+    override val gadget: XyPad
+        get() = xyPad
+
     override fun getState(): Map<String, JsonElement> = xyPad.state
 
     override fun applyState(state: Map<String, JsonElement>) = xyPad.applyState(state)
