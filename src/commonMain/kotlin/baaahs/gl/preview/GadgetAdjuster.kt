@@ -1,6 +1,5 @@
 package baaahs.gl.preview
 
-import baaahs.control.OpenSliderControl
 import baaahs.util.Clock
 
 interface GadgetAdjuster {
@@ -54,14 +53,7 @@ class FullRangeGadgetAdjuster(
             }
 
             val control = gadgetData.openControl
-            if (control is OpenSliderControl) {
-                val gadget = control.slider
-
-                val range = gadget.maxValue - gadget.minValue
-                val scaled = range * myDegree + gadget.minValue
-                gadget.position = scaled
-
-            }
+            control.gadget?.adjustInRange(myDegree)
 
             mask = mask.shl(1)
         }
