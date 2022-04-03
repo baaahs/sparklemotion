@@ -33,6 +33,7 @@ react-mosaic-component.css
 shader-libraries/built-in/Brightness.glsl
 shader-libraries/built-in/Fireball.glsl
 shader-libraries/built-in/HSB.glsl
+shader-libraries/built-in/Heart.glsl
 shader-libraries/built-in/Movers On.glsl
 shader-libraries/built-in/Movers Swirl.glsl
 shader-libraries/built-in/Saturation.glsl

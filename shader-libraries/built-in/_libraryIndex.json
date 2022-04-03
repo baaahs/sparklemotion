@@ -44,6 +44,16 @@
       "srcFile": "HSB.glsl"
     },
     {
+      "id": "heart",
+      "title": "Heart",
+      "description": "Beating heart.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=filter"
+      ],
+      "srcFile": "Heart.glsl"
+    },
+    {
       "id": "movers-swirl",
       "title": "Movers Swirl Filter",
       "description": "Swirl sharpys around whatever they're aimed at!",
