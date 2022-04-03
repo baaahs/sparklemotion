@@ -6,7 +6,7 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.LinkedProgram
 import baaahs.show.DataSource
 import baaahs.time
 import baaahs.timeSync
@@ -21,8 +21,8 @@ abstract class RenderEngine(val gl: GlContext) {
         return engineFeeds.getOrPut(feed) { bindFeed(feed) }
     }
 
-    open fun compile(linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
-        return GlslProgramImpl(gl, linkedPatch) { id: String, dataSource: DataSource ->
+    open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
+        return GlslProgramImpl(gl, linkedProgram) { id: String, dataSource: DataSource ->
             val feed = feedResolver.openFeed(id, dataSource)
             feed?.let { cachedEngineFeed(it)}
         }

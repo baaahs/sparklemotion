@@ -34,13 +34,13 @@ open class ShowOpener(
         openShader(show.shaders.getBang(shaderId, "shaders"))
     }
 
-    private val resolver = ShaderInstanceResolver(
+    private val resolver = PatchResolver(
         openShaders,
-        show.shaderInstances,
+        show.patches,
         show.dataSources
     )
 
-    private val allShaderInstances = resolver.getResolvedShaderInstances()
+    private val allPatches = resolver.getResolvedPatches()
 
     override fun findControl(id: String): OpenControl? =
         if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
@@ -53,8 +53,8 @@ open class ShowOpener(
     override fun getPanel(id: String): Panel =
         show.layouts.panels.getBang(id, "panel")
 
-    override fun getShaderInstance(it: String): LiveShaderInstance =
-        allShaderInstances.getBang(it, "shader instance")
+    override fun getPatch(it: String): OpenPatch =
+        allPatches.getBang(it, "patch")
 
     fun openShow(showState: ShowState? = null): OpenShow {
         val controlledDataSourceIds = show.controls.mapNotNull { (_, control) ->
@@ -85,7 +85,7 @@ open class ShowOpener(
     override fun release() {
 //        allControls.forEach { it.release() }
 //        openShaders.forEach { it.release() }
-//        allShaderInstances.forEach { it.release() }
+//        allPatches.forEach { it.release() }
     }
 
     companion object {

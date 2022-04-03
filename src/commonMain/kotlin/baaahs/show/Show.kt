@@ -2,7 +2,6 @@
 
 package baaahs.show
 
-import baaahs.SparkleMotion
 import baaahs.app.ui.editor.Editable
 import baaahs.camelize
 import baaahs.device.FixtureType
@@ -25,15 +24,17 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 data class Show(
     override val title: String,
-    override val patches: List<Patch> = emptyList(),
+    override val patchIds: List<String> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<String>> = emptyMap(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
-    val shaderInstances: Map<String, ShaderInstance> = emptyMap(),
+    val patches: Map<String, Patch> = emptyMap(),
     val controls: Map<String, Control>  = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder, Editable {
+    init { validatePatchHolder() }
+
     fun toJson(json: Json): JsonElement {
         return json.encodeToJsonElement(serializer(), this)
     }
@@ -56,11 +57,13 @@ data class Show(
 
 @Serializable
 data class Patch(
-    val shaderInstanceIds: List<String>,
-    val surfaces: Surfaces
-) {
-    init { if (SparkleMotion.EXTRA_ASSERTIONS) shaderInstanceIds.assertNoDuplicates() }
-}
+    val shaderId: String,
+    val incomingLinks: Map<String, PortRef>,
+    val shaderChannel: ShaderChannel = ShaderChannel.Main,
+    val priority: Float = 0f
+
+    // TODO: Fixture matcher (previously called "Surfaces") will eventually go here.
+)
 
 fun <T> List<T>.assertNoDuplicates(items: String = "items") {
     val duplicates = groupBy { it }.mapValues { (_, v) -> v.size }.filterValues { it > 1 }
@@ -104,14 +107,6 @@ data class Shader(
 ) {
     fun suggestId(): String = title.camelize()
 }
-
-@Serializable
-data class ShaderInstance(
-    val shaderId: String,
-    val incomingLinks: Map<String, PortRef>,
-    val shaderChannel: ShaderChannel = ShaderChannel.Main,
-    val priority: Float = 0f
-)
 
 @Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
 data class ShaderChannel(val id: String) {

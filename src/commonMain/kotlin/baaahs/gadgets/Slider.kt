@@ -32,9 +32,8 @@ data class Slider(
     var beatLinked: Boolean by updatable("beatLinked", false, Boolean.serializer())
 
     override fun adjustALittleBit() {
-        val factor = .125f
         val spread = maxValue - minValue
-        val amount = (Random.nextFloat() - .5f) * spread * factor
+        val amount = (Random.nextFloat() - .5f) * spread * adjustmentFactor
         position = (position + amount).clamp(minValue, maxValue)
     }
 }

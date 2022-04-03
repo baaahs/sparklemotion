@@ -2,7 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.app.ui.editor.LinkOption
 import baaahs.gl.Toolchain
-import baaahs.gl.patch.ShaderInstanceOptions
+import baaahs.gl.patch.PatchOptions
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.randomId
@@ -14,22 +14,21 @@ import baaahs.util.Logger
 
 class EditingShader(
     private val parentMutableShow: MutableShow,
-    private val parentMutablePatch: MutablePatch,
-    val mutableShaderInstance: MutableShaderInstance,
+    private val mutablePatch: MutablePatch,
     private val toolchain: Toolchain,
     private val createShaderBuilder: (Shader) -> ShaderBuilder,
 ) : Observable() {
     val id = randomId("EditingShader")
     var state = State.Building
 
-    val mutableShader: MutableShader get() = mutableShaderInstance.mutableShader
+    val mutableShader: MutableShader get() = mutablePatch.mutableShader
     val title: String get() = mutableShader.title
 
     var shaderBuilder: ShaderBuilder = createShaderBuilder(mutableShader.build())
         private set
 
-    private var shaderInstanceOptions: ShaderInstanceOptions? = null
-    private val linksSelectedByAHuman = HashMap(mutableShaderInstance.incomingLinks)
+    private var patchOptions: PatchOptions? = null
+    private val linksSelectedByAHuman = HashMap(mutablePatch.incomingLinks)
 
     val gadgets get() = shaderBuilder.gadgets
     val openShader get() = shaderBuilder.openShader
@@ -39,7 +38,7 @@ class EditingShader(
         get() {
             return openShader?.let {
                 val inputPortIds = it.inputPorts.map { port -> port.id }.toSet()
-                mutableShaderInstance.incomingLinks.filter { (id, _) ->
+                mutablePatch.incomingLinks.filter { (id, _) ->
                     !inputPortIds.contains(id)
                 }
             } ?: emptyMap()
@@ -66,7 +65,7 @@ class EditingShader(
     }
 
     private fun startBuilding() {
-        shaderInstanceOptions = null
+        patchOptions = null
 
         shaderBuilder.addObserver {
             if (it.state == ShaderBuilder.State.Success)
@@ -88,38 +87,38 @@ class EditingShader(
     private fun maybeUpdateIncomingLinks() {
         openShader?.inputPorts?.forEach { inputPort ->
             if (!linksSelectedByAHuman.containsKey(inputPort.id)) {
-                getShaderInstanceOptions()
+                getPatchOptions()
                     ?.inputPortLinkOptions?.get(inputPort.id)?.firstOrNull()
                     ?.getMutablePort()
-                    ?.let { mutableShaderInstance.incomingLinks[inputPort.id] = it }
+                    ?.let { mutablePatch.incomingLinks[inputPort.id] = it }
             }
         }
     }
 
-    fun getShaderInstanceOptions(): ShaderInstanceOptions? {
+    fun getPatchOptions(): PatchOptions? {
         val currentOpenShader = openShader
-        if (shaderInstanceOptions == null && currentOpenShader != null) {
+        if (patchOptions == null && currentOpenShader != null) {
             val showBuilder = ShowBuilder()
-            parentMutablePatch.build(showBuilder)
+            mutablePatch.build(showBuilder)
 
-            shaderInstanceOptions = toolchain.wiringOptions(currentOpenShader, parentMutableShow, mutableShaderInstance)
+            patchOptions = toolchain.wiringOptions(currentOpenShader, parentMutableShow, mutablePatch)
         }
-        return shaderInstanceOptions
+        return patchOptions
     }
 
     fun getShaderChannelOptions(excludeMain: Boolean = false): List<MutableShaderChannel> {
         return mutableListOf<MutableShaderChannel>().apply {
-            getShaderInstanceOptions()?.shaderChannels?.let { addAll(it) }
+            getPatchOptions()?.shaderChannels?.let { addAll(it) }
             if (excludeMain) removeAll { it.id == ShaderChannel.Main.id }
-            if (none { it.id == mutableShaderInstance.shaderChannel.id }) {
-                add(0, mutableShaderInstance.shaderChannel)
+            if (none { it.id == mutablePatch.shaderChannel.id }) {
+                add(0, mutablePatch.shaderChannel)
             }
         }.sortedBy { it.title }
     }
 
     fun linkOptionsFor(inputPort: InputPort): List<LinkOption>? = linkOptionsFor(inputPort.id)
     fun linkOptionsFor(portId: String): List<LinkOption>? {
-        return getShaderInstanceOptions()
+        return getPatchOptions()
             ?.inputPortLinkOptions
             ?.get(portId)
     }
@@ -127,7 +126,7 @@ class EditingShader(
     fun changeInputPortLink(inputPort: InputPort, linkOption: LinkOption?) =
         changeInputPortLink(inputPort.id, linkOption)
     fun changeInputPortLink(portId: String, linkOption: LinkOption?) {
-        val incomingLinks = mutableShaderInstance.incomingLinks
+        val incomingLinks = mutablePatch.incomingLinks
         if (linkOption == null) {
             incomingLinks.remove(portId)
         } else {
@@ -150,7 +149,7 @@ class EditingShader(
 
     fun getInputPortLink(inputPort: InputPort) = getInputPortLink(inputPort.id)
     private fun getInputPortLink(portId: String): MutablePort? {
-        return mutableShaderInstance.incomingLinks[portId]
+        return mutablePatch.incomingLinks[portId]
     }
 
     fun isBuilding(): Boolean = state == State.Building
@@ -162,8 +161,8 @@ class EditingShader(
 //            .takeFirstIfAmbiguous()
 //            .resolve()
 //        // TODO Improve on this.
-//        val editingIncomingLinks = props.mutableShaderInstance.incomingLinks
-//        val guessIncomingLinks = wiringGuess.mutableShaderInstances.first().incomingLinks
+//        val editingIncomingLinks = props.mutablePatch.incomingLinks
+//        val guessIncomingLinks = wiringGuess.mutablePatches.first().incomingLinks
 //
 //        editingIncomingLinks.clear()
 //        editingIncomingLinks.putAll(guessIncomingLinks)

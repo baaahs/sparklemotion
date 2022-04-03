@@ -19,7 +19,7 @@ import react.dom.pre
 val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") { props ->
 
     val glslErrors = props.builder.glslErrors
-    val linkedPatch = props.builder.linkedPatch
+    val linkedPatch = props.builder.linkedProgram
 
     popover(ShaderPreviewStyles.errorPopup on PopoverStyle.paper) {
         attrs.open = props.anchor != null

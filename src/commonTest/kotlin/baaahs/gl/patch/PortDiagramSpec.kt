@@ -7,7 +7,7 @@ import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
 import baaahs.show.ShaderChannel
-import baaahs.show.live.LiveShaderInstance
+import baaahs.show.live.OpenPatch
 import baaahs.show.live.fakeShader
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
@@ -17,14 +17,14 @@ import kotlin.test.assertTrue
 object PortDiagramSpec : Spek({
     describe<PortDiagram> {
         context("shader prioritization") {
-            fun Shader.enliven(links: Map<String, LiveShaderInstance.Link> = emptyMap()) =
-                LiveShaderInstance(testToolchain.openShader(this), links, ShaderChannel.Main, 0f)
+            fun Shader.enliven(links: Map<String, OpenPatch.Link> = emptyMap()) =
+                OpenPatch(testToolchain.openShader(this), links, ShaderChannel.Main, 0f)
 
             val shaderA by value { fakeShader("Shader A").enliven() }
             val shaderB by value { fakeShader("Shader B").enliven() }
             val filterShaderA by value {
                 fakeShader("Shader A", FilterShader)
-                    .enliven(mapOf("inColor" to LiveShaderInstance.ShaderChannelLink(ShaderChannel.Main)))
+                    .enliven(mapOf("inColor" to OpenPatch.ShaderChannelLink(ShaderChannel.Main)))
             }
 
             it("shaders with higher priority always come first") {
@@ -68,10 +68,10 @@ object PortDiagramSpec : Spek({
 
 fun ChannelEntry.shouldComeBefore(other: ChannelEntry) {
     val comparison = PortDiagram.Candidates.comparator.compare(this, other)
-    assertTrue("${this.shaderInstance.title} should come before ${other.shaderInstance.title}, " +
+    assertTrue("${this.openPatch.title} should come before ${other.openPatch.title}, " +
             "but ${if (comparison == 0) "they are equivalent" else "it comes after"}") { comparison == -1 }
 
     // Verify that we're actually sorting using that comparator.
     expect(PortDiagram.Candidates(listOf(this, other)).iterator().asSequence().toList())
-        .containsExactly(this.shaderInstance, other.shaderInstance)
+        .containsExactly(this.openPatch, other.openPatch)
 }

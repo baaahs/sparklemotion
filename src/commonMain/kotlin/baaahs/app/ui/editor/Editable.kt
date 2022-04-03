@@ -15,6 +15,10 @@ interface Editable {
 
 interface MutableEditable<T> {
     val title: String
+    var isForceExpanded: Boolean
+        get() = false
+        set(_) {}
+
     fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel>
 }
 

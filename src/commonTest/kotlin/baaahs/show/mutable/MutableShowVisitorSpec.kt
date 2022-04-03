@@ -23,7 +23,7 @@ object MutableShowVisitorSpec : Spek({
                 expects(
                     mapOf(
                         "Some patch holder" to 8, // These represent distinct items that don't have distinguishing short names.
-                        "Some patch" to 6, // These represent distinct items that don't have distinguishing short names.
+                        "Some patch" to 9, // These represent distinct items that don't have distinguishing short names.
                         "Control Backdrops" to 2, // There really are two controls named "Backdrops"
                         "Control Blue Aqua Green" to 1,
                         "Control Brightness" to 1,
@@ -57,15 +57,6 @@ object MutableShowVisitorSpec : Spek({
                         "Shader Saturation" to 1,
                         "Shader XY Projection" to 1,
                         "Shader channel main" to 1,
-                        "Shader instance Another GLSL Hue Test Pattern" to 1,
-                        "Shader instance Brightness" to 1,
-                        "Shader instance Checkerboard" to 1,
-                        "Shader instance Darkness" to 1,
-                        "Shader instance Fire Ball" to 1,
-                        "Shader instance GLSL Hue Test Pattern" to 1,
-                        "Shader instance Ripple" to 1,
-                        "Shader instance Saturation" to 1,
-                        "Shader instance XY Projection" to 1,
                         "Surfaces All Surfaces" to 1,
                     )
                 ) { visitorCounts }
@@ -91,10 +82,6 @@ class CollectingVisitor : MutableShowVisitor {
 
     override fun visit(mutableControl: MutableControl) {
         items.add("Control ${mutableControl.title}")
-    }
-
-    override fun visit(mutableShaderInstance: MutableShaderInstance) {
-        items.add("Shader instance ${mutableShaderInstance.mutableShader.title}")
     }
 
     override fun visit(mutableShader: MutableShader) {

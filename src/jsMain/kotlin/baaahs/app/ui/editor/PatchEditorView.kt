@@ -8,7 +8,6 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.withCache
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
 import baaahs.ui.on
@@ -38,10 +37,10 @@ import react.dom.div
 import react.useContext
 
 private enum class PageTabs {
-    Properties, Ports, Gadgets, Help
+    Patch, Ports, Gadgets, Help
 }
 
-private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("ShaderInstanceEditor") { props ->
+private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { props ->
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
@@ -51,20 +50,19 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
     val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target!! }
     val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
-    var selectedTab by state { PageTabs.Properties }
+    var selectedTab by state { PageTabs.Patch }
     @Suppress("UNCHECKED_CAST")
     val handleChangeTab by handler { _: Event, value: PageTabs ->
         selectedTab = value
     }
 
-    // props.mutableShaderInstance.id is included here so we re-memoize if we have a different instance
+    // props.mutablePatch.id is included here so we re-memoize if we have a different instance
     // from before; this happens after clicking "Apply" when the whole mutable document is regenerated.
-    val editingShader = memo(props.editableManager, props.mutableShaderInstance, props.mutableShaderInstance.id) {
+    val editingShader = memo(props.editableManager, props.mutablePatch, props.mutablePatch.id) {
         val newEditingShader =
             EditingShader(
                 props.editableManager.currentMutableDocument as MutableShow,
                 props.mutablePatch,
-                props.mutableShaderInstance,
                 toolchain
             ) { shader ->
                 PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
@@ -120,10 +118,10 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
 
             div(+shaderEditorStyles.propsPanel) {
                 when (selectedTab) {
-                    PageTabs.Properties -> shaderPropertiesEditor {
+                    PageTabs.Patch -> shaderPropertiesEditor {
                         attrs.editableManager = props.editableManager
                         attrs.editingShader = editingShader
-                        attrs.mutableShaderInstance = props.mutableShaderInstance
+                        attrs.mutablePatch = props.mutablePatch
                     }
                     PageTabs.Ports -> linksEditor {
                         attrs.editableManager = props.editableManager
@@ -207,11 +205,10 @@ private val ShaderInstanceEditorView = xComponent<ShaderInstanceEditorProps>("Sh
     }
 }
 
-external interface ShaderInstanceEditorProps : Props {
+external interface PatchEditorProps : Props {
     var editableManager: EditableManager<*>
     var mutablePatch: MutablePatch
-    var mutableShaderInstance: MutableShaderInstance
 }
 
-fun RBuilder.shaderInstanceEditor(handler: RHandler<ShaderInstanceEditorProps>) =
-    child(ShaderInstanceEditorView, handler = handler)
+fun RBuilder.patchEditor(handler: RHandler<PatchEditorProps>) =
+    child(PatchEditorView, handler = handler)

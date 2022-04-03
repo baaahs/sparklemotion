@@ -5,8 +5,8 @@ import baaahs.app.ui.appContext
 import baaahs.englishize
 import baaahs.show.ShaderChannel
 import baaahs.show.mutable.EditingShader
+import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.*
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -35,11 +35,11 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
-    val shaderInstance = props.mutableShaderInstance
+    val patch = props.mutablePatch
     val editingShader = props.editingShader
 
-    val handleUpdate by handler(props.mutableShaderInstance, props.editableManager) { block: MutableShaderInstance.() -> Unit ->
-        props.mutableShaderInstance.block()
+    val handleUpdate by handler(props.mutablePatch, props.editableManager) { block: MutablePatch.() -> Unit ->
+        props.mutablePatch.block()
         props.editableManager.onChange()
     }
 
@@ -69,8 +69,11 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
         div(+shaderEditorStyles.shaderName) {
             textFieldEditor {
                 attrs.label = "Shader Name"
-                attrs.getValue = { shaderInstance.mutableShader.title }
-                attrs.setValue = { value -> shaderInstance.mutableShader.title = value }
+                attrs.getValue = { patch.mutableShader.title }
+                attrs.setValue = { value ->
+                    props.editableManager.maybeChangeTitle(patch.mutableShader.title, value)
+                    patch.mutableShader.title = value
+                }
                 attrs.editableManager = props.editableManager
             }
         }
@@ -81,7 +84,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                 inputLabel { +"Channel" }
                 select {
                     attrs.renderValue<String> { it.asTextNode() }
-                    attrs.value(shaderInstance.shaderChannel.id)
+                    attrs.value(patch.shaderChannel.id)
                     attrs.onChangeFunction = handleSelectShaderChannel
 
                     menuItem {
@@ -119,7 +122,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                 textField {
                     attrs.label { +"Priority" }
                     attrs.type = InputType.number
-                    attrs.value = shaderInstance.priority
+                    attrs.value = patch.priority
                     attrs.onChangeFunction = { event: Event ->
                         val priorityStr = event.target.value
                         handleUpdate { priority = priorityStr.toFloat() }
@@ -158,7 +161,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
 external interface ShaderPropertiesEditorProps : Props {
     var editableManager: EditableManager<*>
     var editingShader: EditingShader
-    var mutableShaderInstance: MutableShaderInstance
+    var mutablePatch: MutablePatch
 }
 
 fun RBuilder.shaderPropertiesEditor(handler: RHandler<ShaderPropertiesEditorProps>) =

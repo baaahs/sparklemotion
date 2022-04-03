@@ -69,23 +69,12 @@ object FixtureManagerSpec : Spek({
             context("generating programs to cover every fixture") {
                 val show by value {
                     MutableShow("Test Show") {
-                        addPatch {
-                            addShaderInstance(
-                                Shader(
-                                    "Pea Soup",
-                                    """
-                                        vec4 main() { return vec4(0.); }
-                                    """.trimIndent()
-                                )
-                            )
-                            addShaderInstance(
-                                Shader(
-                                    "Din", """
-                                        vec4 main() { return vec4(0.); }
-                                    """.trimIndent()
-                                )
-                            )
-                        }
+                        addPatch(
+                            Shader("Pea Soup", "vec4 main() { return vec4(0.); }")
+                        )
+                        addPatch(
+                            Shader("Din", "vec4 main() { return vec4(0.); }")
+                        )
                     }.getShow()
                 }
 

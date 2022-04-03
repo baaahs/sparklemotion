@@ -35,6 +35,9 @@ abstract class Gadget {
     @Transient
     private val listeners = arrayListOf<Listener>()
 
+    @Transient
+    protected val adjustmentFactor get() = 1f / 64
+
     @JsName("listen")
     fun listen(gadgetListener: GadgetListener) {
         if (findListener(gadgetListener) != -1)

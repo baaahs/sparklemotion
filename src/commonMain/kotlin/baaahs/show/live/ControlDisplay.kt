@@ -60,11 +60,9 @@ class ControlDisplay(
         val activePatchSet = show.buildActivePatchSet()
         val activeDataSources = mutableSetOf<DataSource>()
         activePatchSet.activePatches.forEach { activePatch ->
-            activePatch.shaderInstances.forEach { shaderInstance ->
-                shaderInstance.incomingLinks.forEach { (_, link) ->
-                    if (link is LiveShaderInstance.DataSourceLink) {
-                        activeDataSources.add(link.dataSource)
-                    }
+            activePatch.incomingLinks.forEach { (_, link) ->
+                if (link is OpenPatch.DataSourceLink) {
+                    activeDataSources.add(link.dataSource)
                 }
             }
         }

@@ -1,7 +1,5 @@
 package baaahs.gl.preview
 
-import baaahs.control.OpenButtonControl
-import baaahs.control.OpenColorPickerControl
 import baaahs.control.OpenSliderControl
 import baaahs.util.Clock
 
@@ -27,14 +25,8 @@ class IncrementalGadgetAdjuster(
     val clock: Clock
 ) : GadgetAdjuster {
     override fun adjustGadgets() {
-        gadgets.forEachIndexed() { index, gadgetData ->
-            val gadget = when (val control = gadgetData.openControl) {
-                is OpenButtonControl -> control.switch
-                is OpenColorPickerControl -> control.colorPicker
-                is OpenSliderControl -> control.slider
-                else -> null
-            }
-            gadget?.adjustALittleBit()
+        gadgets.forEachIndexed() { _, gadgetData ->
+            gadgetData.openControl.gadget?.adjustALittleBit()
         }
     }
 }

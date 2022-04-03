@@ -1,9 +1,6 @@
 package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
-import baaahs.control.OpenButtonControl
-import baaahs.control.OpenColorPickerControl
-import baaahs.control.OpenSliderControl
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.*
@@ -12,7 +9,7 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.*
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
@@ -29,7 +26,7 @@ import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableDataSourcePort
-import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePatchSet
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.util.Logger
@@ -44,7 +41,7 @@ interface ShaderBuilder : IObservable {
     val gadgets: List<GadgetPreview>
     val shaderAnalysis: ShaderAnalysis?
     val openShader: OpenShader?
-    val linkedPatch: LinkedPatch?
+    val linkedProgram: LinkedProgram?
     val glslProgram: GlslProgram?
     val glslErrors: List<GlslError>
 
@@ -93,9 +90,9 @@ class PreviewShaderBuilder(
         private set
     override var openShader: OpenShader? = null
         private set
-    var previewPatch: MutablePatch? = null
+    var previewPatchSet: MutablePatchSet? = null
         private set
-    override var linkedPatch: LinkedPatch? = null
+    override var linkedProgram: LinkedProgram? = null
         private set
     override var glslProgram: GlslProgram? = null
         private set
@@ -161,11 +158,11 @@ class PreviewShaderBuilder(
                 mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateDataSource()))
             } else emptyMap()
 
-            previewPatch = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
+            previewPatchSet = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
 //                .dumpOptions()
                 .acceptSuggestedLinkOptions()
                 .confirm()
-            linkedPatch = previewPatch?.openForPreview(toolchain, resultContentType)
+            linkedProgram = previewPatchSet?.openForPreview(toolchain, resultContentType)
             ShaderBuilder.State.Linked
         } catch (e: GlslException) {
             logger.warn(e) { "Failed to compile shader." }
@@ -193,12 +190,7 @@ class PreviewShaderBuilder(
                 dataSource.buildControl()?.let {
                     // TODO: De-gnarl this mess.
                     val openControl = it.previewOpen()
-                    val gadget = when (openControl) {
-                        is OpenButtonControl -> openControl.switch
-                        is OpenColorPickerControl -> openControl.colorPicker
-                        is OpenSliderControl -> openControl.slider
-                        else -> null
-                    }
+                    val gadget = openControl.gadget
                     if (gadget == null) {
                         logger.warn { "No gadget for $openControl" }
                     } else {
@@ -217,7 +209,7 @@ class PreviewShaderBuilder(
 
     private fun compile(renderEngine: RenderEngine, feedResolver: FeedResolver) {
         try {
-            glslProgram = linkedPatch?.let { renderEngine.compile(it, feedResolver) }
+            glslProgram = linkedProgram?.let { renderEngine.compile(it, feedResolver) }
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             compileErrors = e.errors

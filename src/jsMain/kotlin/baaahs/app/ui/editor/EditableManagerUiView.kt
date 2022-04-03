@@ -3,25 +3,31 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
-import baaahs.ui.Styles
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
+import external.ErrorBoundary
+import kotlinx.css.Grow
+import kotlinx.css.em
+import kotlinx.css.grow
+import kotlinx.css.paddingLeft
+import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
 import materialui.components.button.button
 import materialui.components.button.enums.ButtonColor
 import materialui.components.dialogactions.dialogActions
+import materialui.components.dialogcontent.dialogContent
 import materialui.components.dialogtitle.dialogTitle
 import materialui.components.drawer.drawer
 import materialui.components.drawer.enums.DrawerAnchor
 import materialui.components.drawer.enums.DrawerStyle
 import materialui.components.drawer.enums.DrawerVariant
+import materialui.components.formcontrollabel.formControlLabel
 import materialui.components.iconbutton.enums.IconButtonStyle
 import materialui.components.iconbutton.iconButton
 import materialui.components.link.link
 import materialui.components.portal.portal
 import materialui.components.snackbar.snackbar
+import materialui.components.switches.switch
 import materialui.components.typography.typographyH6
 import materialui.icon
 import materialui.lab.components.alert.alert
@@ -34,6 +40,7 @@ import react.RHandler
 import react.dom.div
 import react.dom.form
 import react.useContext
+import styled.inlineStyles
 
 private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     val appContext = useContext(appContext)
@@ -104,13 +111,46 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                     }
                 }
 
-                dialogPanels {
-                    attrs.panels = editorPanels
-                    attrs.selectedPanel = selectedPanel
-                    attrs.onSelectPanel = props.editableManager::openPanel
+                dialogContent(+styles.dialogContent) {
+                    if (editorPanels.size == 1) {
+                        ErrorBoundary {
+                            attrs.FallbackComponent = ErrorDisplay
+
+                            val dialogPanel = editorPanels[0]
+                            div(+styles.singlePanel) {
+                                with (dialogPanel.getView()) { render() }
+                            }
+                        }
+                    } else {
+                        dialogPanels {
+                            attrs.panels = editorPanels
+                            attrs.selectedPanel = selectedPanel
+                            attrs.onSelectPanel = props.editableManager::openPanel
+                        }
+                    }
                 }
 
                 dialogActions {
+                    if (editorPanels.size == 1) {
+                        formControlLabel {
+                            inlineStyles {
+                                grow(Grow.GROW)
+                                paddingLeft = 1.em
+                            }
+
+                            attrs.control {
+                                switch {
+                                    attrs.checked = props.editableManager.isForceExpanded
+                                    attrs.onChangeFunction = {
+                                        props.editableManager.isForceExpanded = !props.editableManager.isForceExpanded
+                                        this@xComponent.forceRender()
+                                    }
+                                }
+                            }
+                            attrs.label { +"Expand" }
+                        }
+                    }
+
                     if (showModifiedWarning) {
                         snackbar {
                             attrs.open = true

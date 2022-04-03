@@ -80,7 +80,7 @@ data class XyPadDataSource(
             return XyPadDataSource(
                 inputPort.title,
                 initialValue = config.getVector2F("default") ?: Vector2F.origin,
-                minValue = config.getVector2F("min") ?: Vector2F.origin,
+                minValue = config.getVector2F("min") ?: -Vector2F.unit2d,
                 maxValue = config.getVector2F("max") ?: Vector2F.unit2d
             )
         }

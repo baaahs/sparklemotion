@@ -4,32 +4,29 @@ import baaahs.getBang
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 import baaahs.show.ShaderChannel
-import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
 class PortDiagram(val patches: List<OpenPatch>) {
     private val candidates: Map<Track, Candidates>
-    private val resolvedNodes = hashMapOf<LiveShaderInstance, ProgramNode>()
+    private val resolvedNodes = hashMapOf<OpenPatch, ProgramNode>()
 
     init {
         val candidates = hashMapOf<Track, MutableList<ChannelEntry>>()
         var level = 0
 
-        fun addToChannel(track: Track, shaderInstance: LiveShaderInstance, level: Int) {
+        fun addToChannel(track: Track, openPatch: OpenPatch, level: Int) {
             val channelTypeCandidates = candidates.getOrPut(track) { arrayListOf() }
-            if (channelTypeCandidates.any { it.shaderInstance == shaderInstance }) {
-                error("candidates for $track already include ${shaderInstance.shader.title}")
+            if (channelTypeCandidates.any { it.openPatch == openPatch }) {
+                error("candidates for $track already include ${openPatch.shader.title}")
             }
-            channelTypeCandidates.add(ChannelEntry(shaderInstance, shaderInstance.priority, level))
+            channelTypeCandidates.add(ChannelEntry(openPatch, openPatch.priority, level))
         }
 
         fun add(patch: OpenPatch) {
-            patch.shaderInstances.forEach { liveShaderInstance ->
-                val outputPort = liveShaderInstance.shader.outputPort
-                val track = Track(liveShaderInstance.shaderChannel, outputPort.contentType)
-                addToChannel(track, liveShaderInstance, level)
-            }
+            val outputPort = patch.shader.outputPort
+            val track = Track(patch.shaderChannel, outputPort.contentType)
+            addToChannel(track, patch, level)
 
             level++
         }
@@ -43,14 +40,14 @@ class PortDiagram(val patches: List<OpenPatch>) {
         shaderChannel: ShaderChannel,
         contentType: ContentType,
         dataSources: Map<String, DataSource>
-    ): LinkedPatch? {
+    ): LinkedProgram? {
         val resolver = Resolver(dataSources)
         val track = Track(shaderChannel, contentType)
         val rootProgramNode = resolver.resolve(track)
 
         return if (rootProgramNode != null) {
             logger.debug { "Resolved $track to $rootProgramNode." }
-            ProgramLinker(rootProgramNode, resolver.warnings).buildLinkedPatch()
+            ProgramLinker(rootProgramNode, resolver.warnings).buildLinkedProgram()
         } else {
             logger.warn { "Failed to resolve $track." }
             null
@@ -69,14 +66,14 @@ class PortDiagram(val patches: List<OpenPatch>) {
                 compareByDescending<ChannelEntry> { it.priority }
                     .thenByDescending { it.typePriority }
                     .thenByDescending { it.level }
-                    .thenBy { it.shaderInstance.shader.title }
+                    .thenBy { it.openPatch.shader.title }
         }
 
         private val sortedEntries = entries.sortedWith(comparator)
 
-        fun iterator(): Iterator<LiveShaderInstance> {
+        fun iterator(): Iterator<OpenPatch> {
             return sortedEntries
-                .map { it.shaderInstance }
+                .map { it.openPatch }
                 .iterator()
         }
     }
@@ -84,11 +81,11 @@ class PortDiagram(val patches: List<OpenPatch>) {
     class Breadcrumb(
         val track: Track
     ) {
-        var instance: LiveShaderInstance? = null
+        var openPatch: OpenPatch? = null
         var resolvingInputPort: InputPort? = null
         override fun toString(): String {
             return "Resolving $track" +
-                    (instance?.let { " -> [${it.shader.title}]" } ?: "") +
+                    (openPatch?.let { " -> [${it.shader.title}]" } ?: "") +
                     (resolvingInputPort?.let { ".${it.id} (${it.contentType.id})" } ?: "")
         }
     }
@@ -97,15 +94,15 @@ class PortDiagram(val patches: List<OpenPatch>) {
         dataSources: Map<String, DataSource>
     ) {
         private val dataSourcesToId by lazy { dataSources.entries.associate { (k, v) -> v to k } }
-        private val dataSourceLinks = mutableMapOf<Pair<String, ContentType>, LiveShaderInstance.DataSourceLink>()
+        private val dataSourceLinks = mutableMapOf<Pair<String, ContentType>, OpenPatch.DataSourceLink>()
 
-        private fun resolveDataSource(id: String, dataSource: DataSource): LiveShaderInstance.DataSourceLink {
+        private fun resolveDataSource(id: String, dataSource: DataSource): OpenPatch.DataSourceLink {
             return dataSourceLinks.getOrPut(id to dataSource.contentType) {
                 val deps = dataSource.dependencies.mapValues { (_, dataSource) ->
                     val dependencyId = dataSourcesToId.getBang(dataSource, "data source dependency")
                     resolveDataSource(dependencyId, dataSource)
                 }
-                LiveShaderInstance.DataSourceLink(dataSource, id, deps)
+                OpenPatch.DataSourceLink(dataSource, id, deps)
             }
         }
 
@@ -146,7 +143,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
             )
         }
 
-        fun resolveLink(inputPort: InputPort, link: LiveShaderInstance.Link): ProgramNode {
+        fun resolveLink(inputPort: InputPort, link: OpenPatch.Link): ProgramNode {
             currentBreadcrumb.resolvingInputPort = inputPort
             return link.finalResolve(inputPort, this@Resolver)
         }
@@ -154,14 +151,14 @@ class PortDiagram(val patches: List<OpenPatch>) {
         private fun tryDataSource(
             shaderChannel: ShaderChannel,
             contentType: ContentType
-        ): LiveShaderInstance.DataSourceLink? {
+        ): OpenPatch.DataSourceLink? {
             return dataSourceChannelLinks[shaderChannel.id to contentType]
         }
 
 
         inner class TrackResolver(private val track: Track) {
-            private val channelIterators = hashMapOf<Track, Iterator<LiveShaderInstance>>()
-            private val dagAncestors = hashSetOf<LiveShaderInstance>()
+            private val channelIterators = hashMapOf<Track, Iterator<OpenPatch>>()
+            private val dagAncestors = hashSetOf<OpenPatch>()
 
             private var resolved = false
             private var resolution: ProgramNode? = null
@@ -175,7 +172,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
                     val nextInstance = try {
                         val iterator = channelIterators.getOrPut(track) {
                             candidates[track]?.iterator()
-                                ?: emptyList<LiveShaderInstance>().iterator()
+                                ?: emptyList<OpenPatch>().iterator()
                         }
                         if (iterator.hasNext())
                             iterator.next()
@@ -184,24 +181,24 @@ class PortDiagram(val patches: List<OpenPatch>) {
                         throw e.chain("Resolver.resolve($track)")
                     }
 
-                    currentBreadcrumb.instance = nextInstance
+                    currentBreadcrumb.openPatch = nextInstance
 
                     return nextInstance
                         ?.maybeWithInjectedData(injectedData)
-                        ?.let { shaderInstance ->
-                            if (!dagAncestors.add(shaderInstance)) {
+                        ?.let { openPatch ->
+                            if (!dagAncestors.add(openPatch)) {
                                 throw ResolveException(
                                     "circular reference",
-                                    message = "resolve($track) already saw [${shaderInstance.shader.title}]"
+                                    message = "resolve($track) already saw [${openPatch.shader.title}]"
                                 )
                             }
 
                             try {
-                                resolvedNodes.getOrPut(shaderInstance) {
-                                    shaderInstance.finalResolve(this@Resolver)
+                                resolvedNodes.getOrPut(openPatch) {
+                                    openPatch.finalResolve(this@Resolver)
                                 }
                             } finally {
-                                dagAncestors.remove(shaderInstance)
+                                dagAncestors.remove(openPatch)
                             }
                         }.also {
                             resolved = true
@@ -218,11 +215,11 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    class ChannelEntry(val shaderInstance: LiveShaderInstance, val priority: Float, val level: Int) {
-        val typePriority: Int get() = if (shaderInstance.isFilter) 1 else 0
+    class ChannelEntry(val openPatch: OpenPatch, val priority: Float, val level: Int) {
+        val typePriority: Int get() = if (openPatch.isFilter) 1 else 0
 
         override fun toString(): String {
-            return "ChannelEntry(shaderInstance=${shaderInstance.shader.title}, priority=$priority, level=$level)"
+            return "ChannelEntry(shader=${openPatch.shader.title}, priority=$priority, level=$level)"
         }
     }
 

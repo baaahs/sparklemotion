@@ -9,7 +9,6 @@ import baaahs.gl.shader.OutputPort
 import baaahs.plugin.PluginRef
 import baaahs.show.ShaderChannel
 import baaahs.show.UnknownDataSource
-import baaahs.show.live.LiveShaderInstance.*
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import ch.tutteli.atrium.api.fluent.en_GB.contains
@@ -19,13 +18,13 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.spekframework.spek2.Spek
 
-object LiveShaderInstanceSpec : Spek({
-    describe<LiveShaderInstance> {
+object OpenPatchSpec : Spek({
+    describe<OpenPatch> {
         val inputPorts by value { listOf<InputPort>() }
         val outputPort by value { OutputPort(ContentType.Color) }
-        val links by value { mapOf<String, Link>() }
+        val links by value { mapOf<String, OpenPatch.Link>() }
         val shaderChannel by value { ShaderChannel.Main }
-        val instance by value { LiveShaderInstance(FakeOpenShader(inputPorts, outputPort), links, shaderChannel) }
+        val instance by value { OpenPatch(FakeOpenShader(inputPorts, outputPort), links, shaderChannel) }
 
         context(".isFilter") {
             context("with no input port links") {
@@ -34,12 +33,12 @@ object LiveShaderInstanceSpec : Spek({
 
             context("when an input port's content type matches the return content type") {
                 override(inputPorts) { listOf(InputPort("color", ContentType.Color)) }
-                override(links) { mapOf("color" to ConstLink("foo", GlslType.Vec4)) }
+                override(links) { mapOf("color" to OpenPatch.ConstLink("foo", GlslType.Vec4)) }
 
                 it("isn't a filter") { expect(instance.isFilter).toBe(false) }
 
                 context("linked to a shader channel") {
-                    override(links) { mapOf("color" to ShaderChannelLink(ShaderChannel.Main)) }
+                    override(links) { mapOf("color" to OpenPatch.ShaderChannelLink(ShaderChannel.Main)) }
 
                     context("on the same channel") {
                         it("is a filter") { expect(instance.isFilter).toBe(true) }
@@ -79,7 +78,7 @@ object LiveShaderInstanceSpec : Spek({
             context("when a datasource is unknown") {
                 override(links) {
                     mapOf(
-                        "someDatasource" to DataSourceLink(UnknownDataSource(
+                        "someDatasource" to OpenPatch.DataSourceLink(UnknownDataSource(
                             PluginRef("some.plugin", "SomeDataSource"),
                             "Missing plugin.",
                             ContentType.Unknown,
