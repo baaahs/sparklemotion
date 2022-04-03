@@ -3,6 +3,7 @@ package baaahs.controller
 import baaahs.*
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureListener
@@ -200,7 +201,7 @@ private fun fixtureMappingData(
     componentsStartAtUniverseBoundaries: Boolean
 ) = FixtureMappingData(
     entityName,
-    PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8),
+    PixelArrayDevice.Config(pixelCount, PixelFormat.RGB8),
     DmxTransportConfig(baseChannel, false, !componentsStartAtUniverseBoundaries)
 )
 

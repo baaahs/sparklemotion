@@ -4,7 +4,6 @@ import baaahs.Gadget
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
-import kotlin.js.JsName
 import kotlin.random.Random
 
 /** A switch. */
@@ -24,5 +23,9 @@ data class Switch(
         if (Random.nextFloat() < .05) {
             enabled = !enabled
         }
+    }
+
+    override fun adjustInRange(value: Float) {
+        enabled = (value >= .5f)
     }
 }
