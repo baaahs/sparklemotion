@@ -1,7 +1,7 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
-import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.RemoteConfig
@@ -25,7 +25,7 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             pixelVisualizationNormal,
             pixelArray.transformation,
-            PixelArrayDevice.PixelFormat.default
+            PixelFormat.default
         )
     }
 
@@ -60,7 +60,7 @@ actual class LightBarSimulation actual constructor(
             pixelLocations.size,
             pixelArray.name,
             PixelArrayPreviewTransport(pixelArray.name, vizPixels),
-            PixelArrayDevice.PixelFormat.default,
+            PixelFormat.default,
             1f,
             pixelLocations
         )

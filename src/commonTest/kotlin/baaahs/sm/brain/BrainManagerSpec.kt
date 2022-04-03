@@ -7,6 +7,7 @@ import baaahs.controller.SpyFixtureListener
 import baaahs.controller.entity
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.override
 import baaahs.net.TestNetwork
@@ -102,5 +103,5 @@ private fun fixtureMappingData(
 ) =
     FixtureMappingData(
         entityName,
-        PixelArrayDevice.Config(pixelCount, PixelArrayDevice.PixelFormat.RGB8)
+        PixelArrayDevice.Config(pixelCount, PixelFormat.RGB8)
     )

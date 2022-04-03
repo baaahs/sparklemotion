@@ -1,6 +1,6 @@
 package baaahs.sim
 
-import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.PixelArrayRemoteConfig
@@ -32,7 +32,7 @@ actual class BrainSurfaceSimulation actual constructor(
         pixelPositions,
         surfaceGeometry.panelNormal,
         surface.transformation,
-        PixelArrayDevice.PixelFormat.default
+        PixelFormat.default
     ) }
 
     val brain by lazy {
@@ -64,7 +64,7 @@ actual class BrainSurfaceSimulation actual constructor(
             pixelPositions.size,
             surface.name,
             PixelArrayPreviewTransport(surface.name, vizPixels),
-            PixelArrayDevice.PixelFormat.default,
+            PixelFormat.default,
             1f,
             pixelPositions.map { it.toVector3F() }
         )

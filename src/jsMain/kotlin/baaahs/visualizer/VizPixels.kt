@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2
 import baaahs.io.ByteArrayReader
@@ -21,7 +21,7 @@ class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
     val transformation: Matrix4F,
-    val pixelFormat: PixelArrayDevice.PixelFormat
+    val pixelFormat: PixelFormat
 ) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()

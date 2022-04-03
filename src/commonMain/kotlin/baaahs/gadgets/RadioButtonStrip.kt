@@ -20,4 +20,8 @@ data class RadioButtonStrip(
     override fun adjustALittleBit() {
         selectionIndex = Random.nextInt(buttonTitles.size)
     }
+
+    override fun adjustInRange(value: Float) {
+        selectionIndex = (buttonTitles.size * value).toInt()
+    }
 }

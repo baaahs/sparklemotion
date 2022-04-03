@@ -2,7 +2,7 @@ package baaahs.gl.preview
 
 import baaahs.BaseShowPlayer
 import baaahs.device.FixtureType
-import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelArrayFixtureType
 import baaahs.fixtures.*
 import baaahs.gl.Toolchain
 import baaahs.gl.data.Feed
@@ -22,7 +22,6 @@ import baaahs.plugin.core.datasource.RasterCoordinateDataSource
 import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
 import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableDataSourcePort
@@ -260,10 +259,11 @@ class PreviewShaders(val toolchain: Toolchain) {
     val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
 }
 
-object ProjectionPreviewDevice: FixtureType {
-    override val id: String get() = "ProjectionPreview"
-    override val title: String get() = "Projection Preview"
-    override val dataSourceBuilders: List<DataSourceBuilder<*>> get() = PixelArrayDevice.dataSourceBuilders
+object ProjectionPreviewDevice: PixelArrayFixtureType() {
+    override val id: String
+        get() = "ProjectionPreview"
+    override val title: String
+        get() = "Projection Preview"
     override val resultContentType: ContentType
         get() = ContentType.UvCoordinate
 
