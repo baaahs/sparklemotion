@@ -3,6 +3,7 @@ package baaahs.models
 import baaahs.controller.ControllerId
 import baaahs.controller.SacnManager
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
@@ -59,7 +60,7 @@ private val controllerId = ControllerId(
     SacnManager.controllerTypeName,
     "sacn-main"
 )
-val pixelFormat = PixelArrayDevice.PixelFormat.GRB8 // ... could be RGB8 or GRB8.
+val pixelFormat = PixelFormat.GRB8 // ... could be RGB8 or GRB8.
 
 fun generateFixtureMappingData(): List<FixtureMappingData> {
     return lightRings.map { config ->

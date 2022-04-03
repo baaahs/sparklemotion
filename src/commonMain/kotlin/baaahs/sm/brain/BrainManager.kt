@@ -4,6 +4,7 @@ import baaahs.Color
 import baaahs.Pinky
 import baaahs.controller.*
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.*
 import baaahs.glsl.LinearSurfacePixelStrategy
@@ -266,7 +267,7 @@ class BrainManager(
         private const val defaultPixelCount = 2048
         override val defaultFixtureConfig = PixelArrayDevice.Config(
             defaultPixelCount,
-            PixelArrayDevice.PixelFormat.RGB8,
+            PixelFormat.RGB8,
             1f,
             LinearSurfacePixelStrategy()
         )

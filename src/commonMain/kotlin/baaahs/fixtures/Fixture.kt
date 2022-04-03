@@ -3,6 +3,7 @@ package baaahs.fixtures
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
@@ -63,7 +64,7 @@ data class PixelArrayRemoteConfig(
     val entityId: String?,
     val pixelCount: Int,
     val name: String,
-    val pixelFormat: PixelArrayDevice.PixelFormat,
+    val pixelFormat: PixelFormat,
     val gammaCorrection: Float,
     val pixelLocations: List<Vector3F>
 ) : RemoteConfig {
@@ -77,12 +78,12 @@ data class PixelArrayRemoteConfig(
     }
 }
 
-class PixelArrayFixture(
+open class PixelArrayFixture(
     modelEntity: Model.Entity?,
     pixelCount: Int,
     name: String = modelEntity?.name ?: "Anonymous fixture",
     transport: Transport,
-    val pixelFormat: PixelArrayDevice.PixelFormat = PixelArrayDevice.PixelFormat.default,
+    val pixelFormat: PixelFormat = PixelFormat.default,
     val gammaCorrection: Float = 1f,
     /** Each pixel's location relative to the fixture. */
     val pixelLocations: List<Vector3F> = emptyList()

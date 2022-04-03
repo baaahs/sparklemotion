@@ -21,7 +21,7 @@ private val PixelArrayFixtureConfigEditorView =
 
         val handlePixelFormatChange by handler(
             props.editingController, mutableConfig
-        ) { value: PixelArrayDevice.PixelFormat? ->
+        ) { value: PixelFormat? ->
             mutableConfig.pixelFormat = value
             props.editingController.onChange()
         }
@@ -33,9 +33,9 @@ private val PixelArrayFixtureConfigEditorView =
                     props.editingController.onChange()
                 }, placeholder = "default")
 
-                betterSelect<PixelArrayDevice.PixelFormat?> {
+                betterSelect<PixelFormat?> {
                     attrs.label = "Pixel Format"
-                    attrs.values = listOf(null) + PixelArrayDevice.PixelFormat.values().toList()
+                    attrs.values = listOf(null) + PixelFormat.values().toList()
                     attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
                     attrs.value = mutableConfig.pixelFormat
                     attrs.onChange = handlePixelFormatChange
