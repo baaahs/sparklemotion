@@ -4,6 +4,9 @@ import baaahs.Gadget
 import baaahs.geom.Vector2F
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.random.Random
 
 /** A gadget for adjusting a scalar numeric value using an XY pad. */
@@ -29,8 +32,9 @@ data class XyPad(
         get() = position.clamp(minValue, maxValue)
         set(value) { position = value.clamp(minValue, maxValue) }
 
+    private val spread = maxValue - minValue
+
     override fun adjustALittleBit() {
-        val spread = maxValue - minValue
         val adjustment = Vector2F(
             (Random.nextFloat() - .5f) * spread.x,
             (Random.nextFloat() - .5f) * spread.y
@@ -38,5 +42,14 @@ data class XyPad(
 
         position = (position + adjustment)
             .clamp(minValue, maxValue)
+    }
+
+    override fun adjustInRange(value: Float) {
+        val v = (value * 2 * PI).toFloat()
+        position = minValue +
+                Vector2F(
+                    sin(v) * .5f + .5f,
+                    cos(v) * .5f + .5f
+                ) * spread
     }
 }
