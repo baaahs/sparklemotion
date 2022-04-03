@@ -1,7 +1,7 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
-import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.PixelArrayRemoteConfig
@@ -29,7 +29,7 @@ actual class LightRingSimulation actual constructor(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             pixelVisualizationNormal,
             lightRing.transformation,
-            PixelArrayDevice.PixelFormat.default
+            PixelFormat.default
         )
     }
 
@@ -56,7 +56,7 @@ actual class LightRingSimulation actual constructor(
             pixelLocations.size,
             lightRing.name,
             PixelArrayPreviewTransport(lightRing.name, vizPixels),
-            PixelArrayDevice.PixelFormat.default,
+            PixelFormat.default,
             1f,
             pixelLocations
         )

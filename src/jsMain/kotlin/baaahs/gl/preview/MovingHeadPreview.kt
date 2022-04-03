@@ -1,6 +1,7 @@
 package baaahs.gl.preview
 
 import baaahs.device.MovingHeadDevice
+import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.NullTransport
@@ -39,6 +40,7 @@ class MovingHeadPreview(
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()
+        .ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
         .associateWith { movingHead ->
             val fixture = MovingHeadFixture(movingHead, 1, movingHead.name, transport = NullTransport, adapter = movingHead.adapter)
             renderEngine.addFixture(fixture)
