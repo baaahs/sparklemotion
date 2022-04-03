@@ -283,7 +283,7 @@ object SampleData {
 
     private fun wireUp(shader: Shader, ports: Map<String, MutablePort> = emptyMap()): MutablePatch {
         val unresolvedPatch = toolchain.autoWire(shader)
-        unresolvedPatch.editShader(shader).apply {
+        unresolvedPatch.apply {
             ports.forEach { (portId, port) ->
                 linkOptionsFor(portId).apply {
                     clear()

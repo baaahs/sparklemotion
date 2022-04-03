@@ -91,6 +91,5 @@ object ControlDisplaySpec : Spek({
     }
 })
 
-fun List<OpenPatch>.prettyPrint(): List<String> {
-    return flatMap { it.shaderInstances.map { instance -> instance.shader.title } }
-}
+fun List<OpenPatch>.prettyPrint(): List<String> =
+    map { it.shader.title }

@@ -63,11 +63,11 @@ object PreviewShaderBuilderSpec : Spek({
                     }
 
                     it("has a previewPatch") {
-                        assertNotNull(previewShaderBuilder.previewPatch)
+                        assertNotNull(previewShaderBuilder.previewPatchSet)
                     }
 
                     it("has a linkedPatch") {
-                        assertNotNull(previewShaderBuilder.linkedPatch)
+                        assertNotNull(previewShaderBuilder.linkedProgram)
                     }
 
                     it("has no gadgets yet") {

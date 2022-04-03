@@ -8,7 +8,6 @@ import baaahs.model.ModelUnit
 import baaahs.scene.MutableScene
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
@@ -17,6 +16,15 @@ import materialui.components.divider.enums.DividerVariant
 import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
+    override fun forSingleShaderSimplifiedEditorPanel(
+        editableManager: EditableManager<*>,
+        mutablePatchHolder: MutablePatchHolder
+    ): View = renderWrapper {
+        val mutablePatch = mutablePatchHolder.patches[0]
+        val editorPanel = mutablePatch.getEditorPanel(editableManager)
+        with (editorPanel.getView()) { render() }
+    }
+
     override fun forGenericPropertiesPanel(
         editableManager: EditableManager<*>,
         propsEditors: List<PropsEditor>
@@ -38,7 +46,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         editableManager: EditableManager<*>,
         mutablePatchHolder: MutablePatchHolder
     ): View = renderWrapper {
-        fixturesList {
+        patchesOverview {
             attrs.editableManager = editableManager
             attrs.mutablePatchHolder = mutablePatchHolder
         }
@@ -47,23 +55,11 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forPatch(
         editableManager: EditableManager<*>,
         mutablePatch: MutablePatch
-    ): View = renderWrapper {
-        patchOverview {
-            attrs.editableManager = editableManager
-            attrs.mutablePatch = mutablePatch
-        }
-    }
-
-    override fun forShaderInstance(
-        editableManager: EditableManager<*>,
-        mutablePatch: MutablePatch,
-        mutableShaderInstance: MutableShaderInstance
     ): View =
         renderWrapper {
-            shaderInstanceEditor {
+            patchEditor {
                 attrs.editableManager = editableManager
                 attrs.mutablePatch = mutablePatch
-                attrs.mutableShaderInstance = mutableShaderInstance
             }
         }
 

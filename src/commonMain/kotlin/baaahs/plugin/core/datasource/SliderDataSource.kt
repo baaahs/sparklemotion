@@ -63,12 +63,12 @@ data class SliderDataSource(
 
         return object : Feed, RefCounted by RefCounter() {
             val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
-            val beatSource = plugin.beatSource
+            val beatSource = plugin?.beatSource
 
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@SliderDataSource, id) { uniform ->
-                        if (slider.beatLinked) {
+                        if (beatSource != null && slider.beatLinked) {
                             val beatData = beatSource.getBeatData()
                             if (beatData.confidence > .2f) {
                                 uniform.set(

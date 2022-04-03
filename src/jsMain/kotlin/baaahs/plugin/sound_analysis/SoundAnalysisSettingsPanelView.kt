@@ -23,7 +23,7 @@ import react.useContext
 private val SoundAnalysisSettingsPanelView =
     xComponent<SoundAnalysisSettingsPanelProps>("SoundAnalysisSettingsPanel") { _ ->
         val appContext = useContext(appContext)
-        val plugin = appContext.plugins.findPlugin<SoundAnalysisPlugin>()
+        val plugin = appContext.plugins.getPlugin<SoundAnalysisPlugin>()
         val soundAnalyzer = plugin.soundAnalyzer
         var availableAudioInputs by state { soundAnalyzer.listAudioInputs() }
         var currentAudioInput by state { soundAnalyzer.currentAudioInput }

@@ -1,12 +1,12 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslType
-import baaahs.show.live.LiveShaderInstance.DataSourceLink
+import baaahs.show.live.OpenPatch
 
-class LinkedPatch(
+class LinkedProgram(
     val rootNode: ProgramNode,
     private val components: List<Component>,
-    val dataSourceLinks: Set<DataSourceLink>,
+    val dataSourceLinks: Set<OpenPatch.DataSourceLink>,
     val warnings: List<String>
 ) {
     fun toGlsl(): String {

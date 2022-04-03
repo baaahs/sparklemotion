@@ -101,6 +101,9 @@ class OpenSliderControl(
     val slider: Slider,
     override val controlledDataSource: DataSource
 ) : DataSourceOpenControl() {
+    override val gadget: Slider
+        get() = slider
+
     override fun getState(): Map<String, JsonElement> = slider.state
 
     override fun applyState(state: Map<String, JsonElement>) = slider.applyState(state)

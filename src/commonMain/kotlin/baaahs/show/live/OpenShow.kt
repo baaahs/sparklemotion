@@ -19,7 +19,7 @@ interface OpenContext {
     fun getControl(id: String): OpenControl
     fun getDataSource(id: String): DataSource
     fun getPanel(id: String): Panel
-    fun getShaderInstance(it: String): LiveShaderInstance
+    fun getPatch(it: String): OpenPatch
     fun release()
 }
 
@@ -34,7 +34,7 @@ object EmptyOpenContext : OpenContext {
 
     override fun getPanel(id: String): Panel = error("not really an open context")
 
-    override fun getShaderInstance(it: String): LiveShaderInstance = error("not really an open context")
+    override fun getPatch(it: String): OpenPatch = error("not really an open context")
 
     override fun release() {
     }
