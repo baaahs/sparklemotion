@@ -4,7 +4,7 @@ object Versions {
     const val coroutines = "1.5.2"
     const val serializationRuntime = "1.3.1"
     const val koin = "3.1.3"
-    const val dokka = "1.5.31"
+    const val dokka = kotlin
 
     // GL:
     const val kgl = "0.3-baaahs.1"
