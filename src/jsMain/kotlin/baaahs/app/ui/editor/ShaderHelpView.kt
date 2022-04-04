@@ -4,18 +4,23 @@ import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
 import baaahs.ui.markdown
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.window
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
+import kotlinx.js.jso
 import mui.material.*
 import mui.material.styles.Theme
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.code
+import react.dom.div
 import react.dom.pre
 import react.dom.span
 import react.useContext
@@ -76,8 +81,9 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                     }
                                 }
 
-                                button(classes = +styles.copyButton) {
-                                    attrs.onClickFunction = { event ->
+                                Button {
+                                    attrs.classes = jso { this.root = -styles.copyButton }
+                                    attrs.onClick = { event ->
                                         val target = event.currentTarget as HTMLElement?
                                         val pre = target
                                             ?.parentElement
@@ -104,8 +110,8 @@ class ShaderHelpStyles(
 ) : StyleSheet("app-ui-editor-ShaderHelp", isStatic = true) {
     val codeContainer by css {
         position = Position.relative
-        color = Color(theme.palette.info.contrastText)
-        backgroundColor = Color(theme.palette.info.main)
+        color = Color(theme.palette.info.contrastText.asDynamic())
+        backgroundColor = Color(theme.palette.info.main.asDynamic())
         padding = 0.5.em.value
         border = "2px inset ${theme.palette.info.main}"
     }
@@ -146,7 +152,7 @@ class ShaderHelpStyles(
     }
 
     val comment by css {
-        color = Color(theme.palette.info.contrastText).withAlpha(.75)
+        color = Color(theme.palette.info.contrastText.asDynamic()).withAlpha(.75)
     }
 }
 

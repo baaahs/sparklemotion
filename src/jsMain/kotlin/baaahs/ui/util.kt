@@ -102,7 +102,11 @@ fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, bl
 
 fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
 
-fun CssBuilder.mixIn(mixin: CssBuilder) = declarations.putAll(mixin.declarations)
+fun CssBuilder.mixIn(mixin: CssBuilder) = try {
+    declarations.putAll(mixin.declarations)
+} catch (e: Throwable) {
+    e.printStackTrace()
+}
 
 fun keys(jsObj: dynamic) = js("Object").keys(jsObj).unsafeCast<Array<String>>()
 
@@ -221,3 +225,5 @@ object Events {
 val Event.buttons: Int get() = asDynamic().buttons as Int
 val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
+
+fun csstype.Color.asColor(): Color = asDynamic()

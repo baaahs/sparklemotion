@@ -9,10 +9,7 @@ import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import kotlinx.html.hidden
 import kotlinx.js.jso
-import mui.material.AppBar
-import mui.material.AppBarPosition
-import mui.material.Tab
-import mui.material.Tabs
+import mui.material.*
 import mui.material.styles.createTheme
 import org.w3c.dom.events.Event
 import react.Props
@@ -32,7 +29,7 @@ private enum class PageTabs {
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
     val theme = memo {
         createTheme(jso {
-            palette = jso { mode = "dark" }
+            palette = jso { mode = PaletteMode.dark }
         })
     }
 

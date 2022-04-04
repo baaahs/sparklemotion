@@ -124,9 +124,9 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         transform.translateX((-50).pct)
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
-        backgroundColor = theme.palette.text.primary
+        backgroundColor = Color(theme.palette.text.primary.asDynamic())
             .withAlpha(.25)
-            .blend(theme.palette.background.paper)
+            .blend(theme.palette.background.paper.asDynamic())
         boxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
         boxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
     }

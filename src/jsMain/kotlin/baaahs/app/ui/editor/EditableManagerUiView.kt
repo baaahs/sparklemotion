@@ -4,19 +4,16 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
 import baaahs.ui.*
+import external.ErrorBoundary
 import kotlinx.html.js.onSubmitFunction
 import kotlinx.js.jso
 import materialui.icon
 import mui.base.Portal
 import mui.material.*
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.form
-import react.useContext
-import styled.inlineStyles
 
 private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     val appContext = useContext(appContext)
@@ -90,7 +87,8 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                     }
                 }
 
-                dialogContent(+styles.dialogContent) {
+                DialogContent {
+                    attrs.classes = jso { this.root = -styles.dialogContent }
                     if (editorPanels.size == 1) {
                         ErrorBoundary {
                             attrs.FallbackComponent = ErrorDisplay
@@ -111,22 +109,19 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
 
                 DialogActions {
                     if (editorPanels.size == 1) {
-                        formControlLabel {
-                            inlineStyles {
-                                grow(Grow.GROW)
-                                paddingLeft = 1.em
-                            }
+                        FormControlLabel {
+                            attrs.classes = jso { this.root = -styles.expandSwitchLabel }
 
-                            attrs.control {
-                                switch {
+                            attrs.control = buildElement {
+                                Switch {
                                     attrs.checked = props.editableManager.isForceExpanded
-                                    attrs.onChangeFunction = {
+                                    attrs.onChange = { _, _ ->
                                         props.editableManager.isForceExpanded = !props.editableManager.isForceExpanded
                                         this@xComponent.forceRender()
                                     }
                                 }
                             }
-                            attrs.label { +"Expand" }
+                            attrs.label = buildElement { +"Expand" }
                         }
                     }
                     if (showModifiedWarning) {

@@ -24,6 +24,11 @@ class ThemedEditableStyles(val theme: Theme) : StyleSheet("app-ui-editor-Editabl
         flexDirection = FlexDirection.column
     }
 
+    val expandSwitchLabel by css {
+        grow(Grow.GROW)
+        paddingLeft = 1.em
+    }
+
     val singlePanel by css {
         grow(Grow.GROW)
         display = Display.flex
