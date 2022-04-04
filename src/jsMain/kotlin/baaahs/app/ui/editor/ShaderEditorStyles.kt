@@ -31,7 +31,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
     }
 
     val tabsContainer by css {
-        backgroundColor = Color(theme.palette.primary.dark)
+        backgroundColor = Color(theme.palette.primary.dark.asDynamic())
     }
 
     val propsPanel by css {

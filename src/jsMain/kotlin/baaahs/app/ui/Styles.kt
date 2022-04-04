@@ -67,8 +67,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     val global = baaahs.ui.xCssBuilder().apply {
         "header" {
-            color = Color(theme.palette.primary.contrastText)
-            backgroundColor = Color(theme.palette.primary.dark)
+            color = Color(theme.palette.primary.contrastText.asDynamic())
+            backgroundColor = Color(theme.palette.primary.dark.asDynamic())
             fontSize = 0.875.rem
             fontWeight = FontWeight.w600
             lineHeight = LineHeight("48px")
@@ -83,7 +83,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
                 right = 1.em
 
                 child("a") {
-                    color = Color(theme.palette.primary.contrastText)
+                    color = Color(theme.palette.primary.contrastText.asDynamic())
                 }
             }
         }

@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.ui.asColor
 import kotlinx.css.*
 import mui.material.styles.Theme
 import styled.StyleSheet
@@ -42,13 +43,13 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val defaultConfigs by css {
-        backgroundColor = Color(theme.palette.info.main)
+        backgroundColor = theme.palette.info.main.asColor()
         marginTop = 1.em
         marginBottom = 1.em
         paddingBottom = 1.em
 
         header {
-            backgroundColor = Color(theme.palette.info.main).darken(20)
+            backgroundColor = theme.palette.info.main.asColor().darken(20)
             marginBottom = 1.em
         }
 
@@ -75,7 +76,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val searchBarPaper by css {
-        backgroundColor = Color(theme.palette.primary.dark).darken(20)
+        backgroundColor = theme.palette.primary.dark.asColor().darken(20)
         marginTop = 8.px
         marginBottom = 8.px
         marginLeft = 1.em
@@ -86,11 +87,11 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val expansionPanelRoot by css {
-        backgroundColor = Color(theme.palette.primary.main)
+        backgroundColor = theme.palette.primary.main.asColor()
     }
 
     val configCardOuter by css {
-        backgroundColor = Color(theme.palette.primary.main).lighten(10)
+        backgroundColor = theme.palette.primary.main.asColor().lighten(10)
         padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {
@@ -99,7 +100,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val configCardInner by css {
-        backgroundColor = Color(theme.palette.primary.dark)
+        backgroundColor = theme.palette.primary.dark.asColor()
         paddingLeft = 1.em
         paddingTop = .75.em
         paddingBottom = .75.em

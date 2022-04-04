@@ -2,6 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
+import baaahs.ui.asColor
 import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
@@ -227,22 +228,22 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
     }
 
     val transitionHoldButton by css {
-        backgroundColor = Color(theme.palette.secondary.main)
-            .withAlpha(.125).blend(theme.palette.background.paper)
+        backgroundColor = theme.palette.secondary.main.asColor()
+            .withAlpha(.125).blend(Color(theme.palette.background.paper))
 
         hover {
-            backgroundColor = Color(theme.palette.secondary.main)
-                .withAlpha(.25).blend(theme.palette.background.paper)
+            backgroundColor = theme.palette.secondary.main.asColor()
+                .withAlpha(.25).blend(Color(theme.palette.background.paper))
         }
     }
 
     val transitionHoldEngaged by css {
-        color = Color(theme.palette.secondary.contrastText)
-        backgroundColor = Color(theme.palette.secondary.main)
+        color = theme.palette.secondary.contrastText.asColor()
+        backgroundColor = theme.palette.secondary.main.asColor()
 
         hover {
-            backgroundColor = Color(theme.palette.secondary.main)
-                .withAlpha(.75).blend(theme.palette.background.paper)
+            backgroundColor = theme.palette.secondary.main.asColor()
+                .withAlpha(.75).blend(Color(theme.palette.background.paper))
         }
     }
 

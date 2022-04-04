@@ -15,6 +15,7 @@ import baaahs.util.Time
 import baaahs.util.useResizeListener
 import baaahs.window
 import kotlinx.js.jso
+import mui.material.PaletteMode
 import mui.material.styles.useTheme
 import org.w3c.dom.Element
 import react.Props
@@ -80,8 +81,8 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
 
 
     val theme = props.theme ?: when (val mode = useTheme<mui.material.styles.Theme>().palette.mode) {
-        "light" -> Themes.github
-        "dark" -> Themes.tomorrowNightBright
+        PaletteMode.light -> Themes.github
+        PaletteMode.dark -> Themes.tomorrowNightBright
         else -> error("Huh? Unknown palette mode $mode.")
     }
 

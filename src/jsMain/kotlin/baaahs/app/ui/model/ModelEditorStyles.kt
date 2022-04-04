@@ -65,7 +65,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         flexDirection = FlexDirection.column
         top = 10.px
         left = 10.px
-        backgroundColor = theme.palette.background.paper.withAlpha(.8)
+        backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
     }
 
     val propertiesPane by css {

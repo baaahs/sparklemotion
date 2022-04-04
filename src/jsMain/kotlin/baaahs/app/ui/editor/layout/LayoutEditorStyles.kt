@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor.layout
 
+import baaahs.ui.asColor
 import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
@@ -23,18 +24,18 @@ class LayoutEditorStyles(theme: Theme) : StyleSheet("app-ui-editor-LayoutEditorS
         marginTop = 1.em
 
         children {
-            borderRight(1.px, BorderStyle.solid, Color(theme.palette.primary.dark))
-            borderBottom(1.px, BorderStyle.solid, Color(theme.palette.primary.dark))
+            borderRight(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
+            borderBottom(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
             padding(2.px)
         }
     }
 
     val gridSizeEditor by css {
-        color = Color(theme.palette.primary.contrastText)
-        backgroundColor = Color(theme.palette.primary.main)
+        color = theme.palette.primary.contrastText.asColor()
+        backgroundColor = theme.palette.primary.main.asColor()
 
         input {
-            color = Color(theme.palette.primary.contrastText)
+            color = theme.palette.primary.contrastText.asColor()
             width = 4.em
             textAlign = TextAlign.right
         }
