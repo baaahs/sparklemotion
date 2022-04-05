@@ -170,6 +170,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.theme = theme
                 CssBaseline {}
 
+                println("appRoot=${themeStyles.appRoot.name}")
+                println("appDrawerStateStyle = ${appDrawerStateStyle.name}")
+                println("editModeStyle = ${editModeStyle.name}")
                 div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
                     appToolbar {
                         attrs.appMode = appMode

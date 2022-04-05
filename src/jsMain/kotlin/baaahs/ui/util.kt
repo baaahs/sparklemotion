@@ -3,7 +3,9 @@ package baaahs.ui
 import csstype.ClassName
 import external.DroppableProvided
 import external.copyFrom
+import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
+import kotlinx.js.Object
 import mui.material.Typography
 import mui.material.TypographyProps
 import org.w3c.dom.Element
@@ -63,6 +65,10 @@ fun Function<*>.withFormEvent(): FormEventHandler<*> =
 fun <T : Element> Function<*>.withTChangeEvent(): (event: ChangeEvent<T>, checked: Boolean) -> Unit =
     this as (event: ChangeEvent<T>, checked: Boolean) -> Unit
 
+@Suppress("UNCHECKED_CAST")
+fun <T : Element> Function<*>.withSelectEvent(): (event: ChangeEvent<T>, child: ReactNode) -> Unit =
+    this as (event: ChangeEvent<T>, child: ReactNode) -> Unit
+
 val EventTarget?.value: String
         get() = asDynamic().value as String
 
@@ -101,6 +107,12 @@ fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, bl
     descendants(".${styleSheet.name}-${rule.name}") { block() }
 
 fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
+
+fun CssBuilder.mixIn(mixin: Object) {
+    for (key in mixin.getOwnPropertyNames()) {
+        declarations[key] = mixin.asDynamic()[key]
+    }
+}
 
 fun CssBuilder.mixIn(mixin: CssBuilder) = try {
     declarations.putAll(mixin.declarations)
@@ -226,4 +238,4 @@ val Event.buttons: Int get() = asDynamic().buttons as Int
 val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
-fun csstype.Color.asColor(): Color = asDynamic()
+fun csstype.Color.asColor(): Color = Color(this.unsafeCast<String>())

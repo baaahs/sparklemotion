@@ -159,6 +159,7 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
 
                 implementation(npm("camera-controls", "^1.25.3"))
 
@@ -193,8 +194,8 @@ kotlin {
                 implementation(npm("@mui/material", "^5.5.1"))
                 implementation(npm("@mui/lab", "^5.0.0-alpha.73"))
                 implementation(npm("@mui/icons-material", "^5.5.1"))
-                implementation(npm("@emotion/react", "^11.8.2"))
-                implementation(npm("@emotion/styled", "^11.8.1"))
+//                implementation(npm("@emotion/react", "^11.8.2"))
+//                implementation(npm("@emotion/styled", "^11.8.1"))
             }
         }
         @Suppress("UNUSED_VARIABLE")

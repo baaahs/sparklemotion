@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.6.10"
+    const val kotlin = "1.6.20"
     const val kotlinGradlePlugin = "1.6.20"
     const val coroutines = "1.5.2"
     const val serializationRuntime = "1.3.1"
@@ -16,10 +16,11 @@ object Versions {
 
     // JS:
     const val kotlinxHtml = "0.7.3"
-    const val wrappersBuild = "pre.325-kotlin-$kotlin"
+    const val wrappersBuild = "pre.328-kotlin-$kotlin"
     const val kotlinReact = "18.0.0-$wrappersBuild"
     const val kotlinStyled = "5.3.5-$wrappersBuild"
     const val kotlinMui = "5.5.1-$wrappersBuild"
+    const val kotlinEmotion = "11.8.2-$wrappersBuild"
 
     // Test:
     const val junit = "5.8.1"

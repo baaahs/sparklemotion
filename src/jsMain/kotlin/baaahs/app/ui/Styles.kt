@@ -11,8 +11,7 @@ import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import kotlinx.js.jso
-import materialui.createTransition
+import kotlinx.js.Object
 import mui.material.styles.Theme
 import mui.system.Breakpoint
 import styled.StyleSheet
@@ -91,18 +90,18 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     private val drawerClosedShift = partial {
         transform { translateX(0.px) }
-        transition = theme.createTransition("transform", options = jso {
-            easing = theme.transitions.easing.sharp
-            duration = theme.transitions.duration.enteringScreen
-        })
+//        transition = theme.createTransition("transform", options = jso {
+//            easing = theme.transitions.easing.sharp
+//            duration = theme.transitions.duration.enteringScreen
+//        })
     }
 
     private val drawerOpenShift = partial {
         transform { translateX(drawerWidth) }
-        transition = theme.createTransition("transform", options = jso {
-            easing = theme.transitions.easing.sharp
-            duration = theme.transitions.duration.leavingScreen
-        })
+//        transition = theme.createTransition("transform", options = jso {
+//            easing = theme.transitions.easing.sharp
+//            duration = theme.transitions.duration.leavingScreen
+//        })
     }
 
     val appRoot by css {
@@ -126,7 +125,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appToolbar by css {
-        mixIn(theme.mixins.toolbar)
+        mixIn(theme.mixins.toolbar as Object)
 
         descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
@@ -221,9 +220,9 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val appDrawerHeader by css {
         display = Display.flex
         alignItems = Align.center
-        padding = theme.spacing.asDynamic().invoke(0, 1)
-        rules.addAll(theme.mixins.toolbar.rules)
-        theme.mixins.toolbar
+        padding = theme.spacing.asDynamic()(0, 1).toString()
+//        rules.addAll(theme.mixins.toolbar.rules)
+//        theme.mixins.toolbar
         justifyContent = JustifyContent.flexEnd
     }
 

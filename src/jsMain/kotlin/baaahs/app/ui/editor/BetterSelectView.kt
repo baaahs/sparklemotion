@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.ui.unaryMinus
+import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
 import kotlinx.js.jso
 import mui.material.*
@@ -11,7 +12,7 @@ import baaahs.app.ui.controls.Styles as ControlsStyles
 private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") { props ->
     val anyProps = props as BetterSelectProps<Any?>
 
-    val handleChange by eventHandler(anyProps.values, anyProps.onChange) { event ->
+    val handleChange by changeEventHandler(anyProps.values, anyProps.onChange) { event ->
         val newValueIndex = event.target.asDynamic()?.value as Int
         val newValue = if (newValueIndex == -1) null else {
             anyProps.values[newValueIndex]
@@ -34,7 +35,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<*>>("BetterSelect") 
             attrs.displayEmpty = true
             attrs.value = props.values.indexOf(props.value)
             attrs.renderValue = anyProps.renderValueSelected
-            attrs.onChange = handleChange
+            attrs.onChange = handleChange.withSelectEvent()
 
             props.values.forEachIndexed { index, option ->
                 MenuItem {

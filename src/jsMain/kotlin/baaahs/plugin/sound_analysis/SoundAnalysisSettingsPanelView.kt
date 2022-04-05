@@ -34,7 +34,7 @@ private val SoundAnalysisSettingsPanelView =
                 attrs.value = currentAudioInput?.id ?: none
                 attrs.renderValue = { (if (it == none) "None" else it).asTextNode() }
 
-                attrs.onChange = { event: ChangeEvent<*> ->
+                attrs.onChange = { event: ChangeEvent<*>, _: ReactNode ->
                     val inputId = event.target.value
                     val input = availableAudioInputs.find { it.id == inputId }
                     globalLaunch {
