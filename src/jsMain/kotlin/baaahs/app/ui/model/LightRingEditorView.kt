@@ -6,6 +6,7 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
+import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
 import kotlinx.js.jso
 import mui.material.*
@@ -66,7 +67,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
                     this as RElementBuilder<SelectProps<String>>
 
                     attrs.value = mutableEntity.pixelDirection.name
-                    attrs.onChange = handlePixelDirectionChange
+                    attrs.onChange = handlePixelDirectionChange.withSelectEvent()
 
                     LightRing.PixelDirection.values().forEach { direction ->
                         MenuItem {

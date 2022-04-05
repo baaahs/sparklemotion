@@ -76,7 +76,7 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                 Select<SelectProps<String>> {
                     attrs.renderValue = { it.asTextNode() }
                     attrs.value = patch.shaderChannel.id
-                    attrs.onChange = handleSelectShaderChannel
+                    attrs.onChange = handleSelectShaderChannel.withSelectEvent()
 
                     MenuItem {
                         attrs.value = main.id

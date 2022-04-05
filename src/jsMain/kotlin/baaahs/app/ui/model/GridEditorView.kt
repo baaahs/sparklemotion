@@ -37,7 +37,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
                 attrs.control = buildElement {
                     Select<SelectProps<String>> {
                         attrs.value = mutableEntity.direction.name
-                        attrs.onChange = handleDirectionChange
+                        attrs.onChange = handleDirectionChange.withSelectEvent()
 
                         GridData.Direction.values().forEach { direction ->
                             MenuItem {

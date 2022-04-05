@@ -1,5 +1,6 @@
 package baaahs.app.ui.gadgets.slider
 
+import baaahs.ui.asColor
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
@@ -124,9 +125,9 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         transform.translateX((-50).pct)
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
-        backgroundColor = Color(theme.palette.text.primary.asDynamic())
+        backgroundColor = theme.palette.text.primary.asColor()
             .withAlpha(.25)
-            .blend(theme.palette.background.paper.asDynamic())
+            .blend(Color(theme.palette.background.paper))
         boxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
         boxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
     }

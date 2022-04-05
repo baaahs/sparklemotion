@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.unaryMinus
+import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
 import kotlinx.js.jso
 import materialui.icon
@@ -60,7 +61,7 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
             attrs.renderValue = {
                 buildElement { Typography { +it.title } }
             }
-            attrs.onChange = handleChange
+            attrs.onChange = handleChange.withSelectEvent()
             attrs.disabled = props.editingShader.isBuilding()
 
             var dividerGroup: String? = null

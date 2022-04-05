@@ -6,6 +6,7 @@ import baaahs.show.mutable.MutableLayouts
 import baaahs.show.mutable.MutableTab
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
+import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
 import mui.material.ListItemText
 import mui.material.MenuItem
@@ -32,7 +33,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
             val currentPanel = props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex]
             val panelId = props.layouts.panels.entries.find { (_, panel) -> panel == currentPanel }!!.key
             attrs.value = panelId
-            attrs.onChange = handlePanelAreaChange
+            attrs.onChange = handlePanelAreaChange.withSelectEvent()
 
             props.layouts.panels.entries.sortedBy { (_, v) -> v.title }.forEach { (panelId, panel) ->
                 MenuItem {
