@@ -17,6 +17,7 @@ import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
+import react.dom.html.ReactHTML
 import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
@@ -64,6 +65,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
     AppBar {
         attrs.classes = jso { this.root = -themeStyles.appToolbar }
+        attrs.component = ReactHTML.div
         attrs.position = AppBarPosition.relative
 
         Toolbar {

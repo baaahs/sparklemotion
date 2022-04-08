@@ -41,14 +41,14 @@ private val TitleAndDescriptionEditorView =
             TextField {
                 attrs.label = buildElement { +"Title" }
                 attrs.fullWidth = true
-                attrs.value(mutableEntity.title)
+                attrs.value = mutableEntity.title
                 attrs.onChange = handleTitleChange
             }
 
             TextField {
                 attrs.label = buildElement { +"Description" }
                 attrs.fullWidth = true
-                attrs.value(mutableEntity.description ?: "")
+                attrs.value = mutableEntity.description ?: ""
                 attrs.onChange = handleDescriptionChange
             }
         }

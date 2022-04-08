@@ -177,8 +177,8 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun keyboardEventHandler(vararg watch: Any?, block: KeyboardEventHandler<*>): ReadOnlyProperty<Any?, KeyboardEventHandler<*>> =
         handler(*watch, block = block)
 
-    fun mouseEventHandler(vararg watch: Any?, block: (Event) -> Unit): ReadOnlyProperty<Any?, MouseEventHandler<*>> =
-        handler(*watch, block = { block.invoke(it as Event) })
+    fun mouseEventHandler(vararg watch: Any?, block: (MouseEvent<*, *>) -> Unit): ReadOnlyProperty<Any?, MouseEventHandler<*>> =
+        handler(*watch, block = { block.invoke(it) })
 
     fun switchEventHandler(vararg watch: Any?, block: (event: ChangeEvent<*>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: ChangeEvent<*>, checked: Boolean) -> Unit> =
         handler(*watch, block = block)

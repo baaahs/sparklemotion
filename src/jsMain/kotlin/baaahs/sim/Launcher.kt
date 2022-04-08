@@ -9,7 +9,7 @@ import baaahs.window
 import kotlinx.js.jso
 import react.ReactElement
 import react.createElement
-import react.dom.render
+import react.dom.client.createRoot
 
 object Launcher {
     fun launch(name: String, buildWebApp: () -> HostedWebApp) {
@@ -43,7 +43,8 @@ object Launcher {
             hostedWebApp = webApp
             onClose = { document.body?.removeChild(containerDiv) }
         }
-        render(createElement(FakeClientDevice, props), containerDiv)
+        createRoot(containerDiv)
+            .render(createElement(FakeClientDevice, props))
     }
 
     private val logger = Logger<Launcher>()

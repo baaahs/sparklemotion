@@ -170,17 +170,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.theme = theme
                 CssBaseline {}
 
-                println("appRoot=${themeStyles.appRoot.name}")
-                println("appDrawerStateStyle = ${appDrawerStateStyle.name}")
-                println("editModeStyle = ${editModeStyle.name}")
                 div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
-                    appToolbar {
-                        attrs.appMode = appMode
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
-                        attrs.onMenuButtonClick = handleAppDrawerToggle
-                    }
-
                     appDrawer {
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen
@@ -193,6 +183,13 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
                         attrs.onSettings = handleSettings
+                    }
+
+                    appToolbar {
+                        attrs.appMode = appMode
+                        attrs.editMode = editMode
+                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.onMenuButtonClick = handleAppDrawerToggle
                     }
 
                     div(+themeStyles.appContent) {

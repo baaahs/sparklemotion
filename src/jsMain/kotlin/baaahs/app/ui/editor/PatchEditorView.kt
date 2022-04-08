@@ -149,7 +149,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     }
 
     Menu {
-        attrs.anchorEl = { settingsMenuAnchor!! }
+        attrs.anchorEl = settingsMenuAnchor.asDynamic()
         attrs.anchorOrigin = jso {
             horizontal = "left"
             vertical = "bottom"

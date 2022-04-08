@@ -64,7 +64,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     }
 
-    val global = baaahs.ui.xCssBuilder().apply {
+    val global = CssBuilder().apply {
         "header" {
             color = Color(theme.palette.primary.contrastText.asDynamic())
             backgroundColor = Color(theme.palette.primary.dark.asDynamic())
@@ -90,18 +90,20 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     private val drawerClosedShift = partial {
         transform { translateX(0.px) }
-//        transition = theme.createTransition("transform", options = jso {
-//            easing = theme.transitions.easing.sharp
-//            duration = theme.transitions.duration.enteringScreen
-//        })
+        transition(
+            ::transform,
+            timing = Timing(theme.transitions.easing.sharp),
+            duration = Time(theme.transitions.duration.enteringScreen.toString())
+        )
     }
 
     private val drawerOpenShift = partial {
         transform { translateX(drawerWidth) }
-//        transition = theme.createTransition("transform", options = jso {
-//            easing = theme.transitions.easing.sharp
-//            duration = theme.transitions.duration.leavingScreen
-//        })
+        transition(
+            ::transform,
+            timing = Timing(theme.transitions.easing.sharp),
+            duration = Time(theme.transitions.duration.leavingScreen.toString())
+        )
     }
 
     val appRoot by css {
@@ -221,8 +223,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         display = Display.flex
         alignItems = Align.center
         padding = theme.spacing.asDynamic()(0, 1).toString()
-//        rules.addAll(theme.mixins.toolbar.rules)
-//        theme.mixins.toolbar
+        mixIn(theme.mixins.toolbar)
         justifyContent = JustifyContent.flexEnd
     }
 
@@ -479,7 +480,12 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.scroll
     }
 
-    val global = baaahs.ui.xCssBuilder().apply {
+    val global = CssBuilder().apply {
+        body {
+            fontSize = 0.875.rem
+            lineHeight = LineHeight("1.43")
+        }
+
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
             pointerEvents = PointerEvents.auto

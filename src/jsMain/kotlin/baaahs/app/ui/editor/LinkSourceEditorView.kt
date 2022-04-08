@@ -10,7 +10,6 @@ import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import react.*
 
 private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { props ->
@@ -45,15 +44,13 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
     var showAdvanced by state { false }
     val showAdvancedCheckbox = ref<HTMLElement>()
     val anyAdvanced = linkOptions.any { it.isAdvanced }
-    val handleToggleShowAdvanced by mouseEventHandler { event: Event ->
+    val handleToggleShowAdvanced by mouseEventHandler { event ->
         showAdvanced = !showAdvanced
         event.stopPropagation()
     }
 
     FormControl {
-        Select {
-            this as RElementBuilder<SelectProps<LinkOption>> // todo: yuck
-
+        Select<SelectProps<LinkOption>> {
             attrs.value = selected
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }

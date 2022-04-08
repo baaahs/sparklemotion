@@ -7,6 +7,7 @@ import materialui.icon
 import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
+import mui.system.Direction
 import react.*
 import react.dom.div
 import react.dom.events.SyntheticEvent
@@ -63,11 +64,11 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
             IconButton {
                 attrs.onClick = handleCloseButton
-//                if (theme.direction == Direction.ltr) {
+                if (theme.direction == Direction.ltr) {
                     icon(mui.icons.material.ChevronLeft)
-//                } else {
-//                    icon(mui.icons.material.ChevronRight)
-//                }
+                } else {
+                    icon(mui.icons.material.ChevronRight)
+                }
                 if (props.forcedOpen == true) {
                     attrs.disabled = true
                 }
@@ -116,14 +117,13 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         List {
             ListItem {
                 FormControlLabel {
-                    attrs.control = Switch.create()
+                    attrs.control = buildElement {
+                        Switch {
+                            attrs.checked = props.darkMode
+                            attrs.onChange = handleDarkModeChange
+                        }
+                    }
                     attrs.onChange = handleDarkModeChange
-//                    buildElement {
-//                        Switch {
-//                            attrs.checked = props.darkMode
-//                            attrs.onChange = handleDarkModeChange
-//                        }
-//                    }
                     attrs.label = buildElement { typographyH6 { +"Dark Mode" } }
                 }
             }

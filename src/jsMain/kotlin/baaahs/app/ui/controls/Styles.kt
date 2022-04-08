@@ -189,7 +189,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
 
-    val global = baaahs.ui.xCssBuilder().apply {
+    val global = CssBuilder().apply {
         ".${baaahs.app.ui.Styles.editModeOff.name}" {
             ".${editButton.name}" {
                 put("opacity", "0 !important")

@@ -12,9 +12,12 @@ import mui.material.ListItemText
 import mui.material.MenuItem
 import mui.material.Select
 import mui.material.SelectProps
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.events.FormEvent
+import react.useContext
 
 val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
     val appContext = useContext(appContext)
@@ -28,8 +31,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
     }
 
     div(+styles.gridAreaEditor) {
-        Select {
-            this as RElementBuilder<SelectProps<String>>
+        Select<SelectProps<String>> {
             val currentPanel = props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex]
             val panelId = props.layouts.panels.entries.find { (_, panel) -> panel == currentPanel }!!.key
             attrs.value = panelId

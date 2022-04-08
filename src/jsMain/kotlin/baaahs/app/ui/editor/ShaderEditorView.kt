@@ -127,7 +127,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
 
         if (refactorMenuAnchor != null) {
             Menu {
-                attrs.anchorEl = { refactorMenuAnchor!! }
+                attrs.anchorEl = refactorMenuAnchor.asDynamic()
                 attrs.anchorOrigin = jso {
                     horizontal = "left"
                     vertical = "top"

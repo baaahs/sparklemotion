@@ -1,6 +1,7 @@
 package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.betterSelect
 import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
@@ -18,8 +19,8 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
 
-    val handleDirectionChange by eventHandler(mutableEntity) {
-        mutableEntity.direction = GridData.Direction.valueOf(it.target.value)
+    val handleDirectionChange by handler(mutableEntity) { value: GridData.Direction ->
+        mutableEntity.direction = value
         props.editingEntity.onChange()
     }
 
@@ -32,19 +33,17 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
     Container {
         attrs.classes = jso { this.root = -styles.transformEditSection }
         with(styles) {
-            FormControlLabel {
-                attrs.label = buildElement { +"Direction" }
-                attrs.control = buildElement {
-                    Select<SelectProps<String>> {
-                        attrs.value = mutableEntity.direction.name
-                        attrs.onChange = handleDirectionChange.withSelectEvent()
+            betterSelect<GridData.Direction> {
+                attrs.label = "Direction"
+                attrs.value = mutableEntity.direction
+                attrs.values = GridData.Direction.values().toList()
+                attrs.renderValueOption = { it.title.asTextNode() }
+                attrs.onChange = handleDirectionChange
 
-                        GridData.Direction.values().forEach { direction ->
-                            MenuItem {
-                                attrs.value = direction.name
-                                ListItemText { +direction.title }
-                            }
-                        }
+                GridData.Direction.values().forEach { direction ->
+                    MenuItem {
+                        attrs.value = direction.name
+                        ListItemText { +direction.title }
                     }
                 }
             }

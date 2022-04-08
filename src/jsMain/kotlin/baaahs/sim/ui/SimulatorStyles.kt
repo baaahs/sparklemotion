@@ -21,7 +21,7 @@ class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isSt
         }
     }
 
-    val global = baaahs.ui.xCssBuilder().apply {
+    val global = CssBuilder().apply {
         ".mosaic-window-toolbar" {
             important(::display, Display.none)
         }

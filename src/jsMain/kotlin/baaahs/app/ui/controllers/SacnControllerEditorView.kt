@@ -39,14 +39,14 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
         TextField {
             attrs.label = buildElement { +"Title" }
             attrs.fullWidth = true
-            attrs.value(mutableConfig.title)
+            attrs.value = mutableConfig.title
             attrs.onChange = handleTitleChange
         }
 
         TextField {
             attrs.label = buildElement { +"Address" }
             attrs.fullWidth = true
-            attrs.value(mutableConfig.address)
+            attrs.value = mutableConfig.address
             attrs.onChange = handleAddressChange
         }
 
