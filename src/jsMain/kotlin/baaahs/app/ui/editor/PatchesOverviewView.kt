@@ -137,7 +137,7 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                     }
 
                     Menu {
-                        attrs.anchorEl = { newPatchMenuAnchor!! }
+                        attrs.anchorEl = newPatchMenuAnchor.asDynamic()
                         attrs.open = newPatchMenuAnchor != null
                         attrs.onClose = handleNewPatchMenuClose
 

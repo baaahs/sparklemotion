@@ -2,10 +2,11 @@ package baaahs.sim.ui
 
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import mui.material.Button
+import kotlinx.html.js.onClickFunction
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.button
 import react.dom.div
 import react.useContext
 
@@ -19,8 +20,8 @@ private val MenuBarView = xComponent<MenuBarProps>("MenuBar") { props ->
 
         div(+SimulatorStyles.menu) {
             props.launchItems.forEach { launchItem ->
-                Button {
-                    attrs.onClick = { launchItem.onLaunch()}
+                button {
+                    attrs.onClickFunction = { launchItem.onLaunch()}
                     +launchItem.title
                 }
             }

@@ -63,9 +63,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         FormControlLabel {
 //            attrs.label { +"Pixel Direction" }
             attrs.control = buildElement {
-                Select {
-                    this as RElementBuilder<SelectProps<String>>
-
+                Select<SelectProps<String>> {
                     attrs.value = mutableEntity.pixelDirection.name
                     attrs.onChange = handlePixelDirectionChange.withSelectEvent()
 

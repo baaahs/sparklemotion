@@ -142,7 +142,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
     showAddMenuFor?.let { panelBucket ->
         Menu {
-            attrs.anchorEl = { showAddMenuForAnchorEl!! }
+            attrs.anchorEl = showAddMenuForAnchorEl.asDynamic()
             attrs.open = true
             attrs.onClose = { showAddMenuFor = null }
 

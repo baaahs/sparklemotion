@@ -28,9 +28,7 @@ private val SoundAnalysisSettingsPanelView =
             FormLabel { +"Audio Input" }
 
             val none = "_NONE_"
-            Select {
-                this as RElementBuilder<SelectProps<String>>
-
+            Select<SelectProps<String>> {
                 attrs.value = currentAudioInput?.id ?: none
                 attrs.renderValue = { (if (it == none) "None" else it).asTextNode() }
 

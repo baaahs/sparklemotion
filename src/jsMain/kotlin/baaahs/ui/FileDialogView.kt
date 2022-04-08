@@ -73,7 +73,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         selectedFile = currentDir?.resolve(str)
     }
 
-    val handleConfirm by mouseEventHandler(selectedFile) { _: Event ->
+    val handleConfirm by mouseEventHandler(selectedFile) {
         selectedFile?.let {
             globalLaunch { fileDialog.onSelect(it) }
         }; Unit

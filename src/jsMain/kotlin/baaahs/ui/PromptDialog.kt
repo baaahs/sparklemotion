@@ -28,12 +28,12 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleCancelClick by mouseEventHandler(props.onClose, prompt.onCancel) { event: Event ->
+    val handleCancelClick by mouseEventHandler(props.onClose, prompt.onCancel) { event ->
         props.onClose()
         prompt.onCancel()
         event.stopPropagation()
     }
-    val handleSubmitClick by mouseEventHandler(props.onClose, prompt.onSubmit) { event: Event ->
+    val handleSubmitClick by mouseEventHandler(props.onClose, prompt.onSubmit) { event ->
         props.onClose()
         prompt.onSubmit(value.current!!)
         event.stopPropagation()

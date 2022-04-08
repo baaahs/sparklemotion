@@ -1,7 +1,6 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.editor.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl
@@ -18,7 +17,10 @@ import external.droppable
 import kotlinx.html.js.onClickFunction
 import kotlinx.js.jso
 import materialui.icon
-import mui.material.*
+import mui.material.Card
+import mui.material.Orientation
+import mui.material.ToggleButton
+import mui.material.ToggleButtonGroup
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
@@ -150,12 +152,12 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                     child(sceneDropProvided.placeholder)
 
                     if (editMode) {
-                        IconButton {
-                            icon(mui.icons.material.AddCircleOutline)
-                            attrs.onClick = {
-                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
-                            }
-                        }
+//                        IconButton {
+//                            icon(mui.icons.material.AddCircleOutline)
+//                            attrs.onClick = {
+//                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+//                            }
+//                        }
                     }
                 }
             }

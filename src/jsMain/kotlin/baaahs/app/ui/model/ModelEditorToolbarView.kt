@@ -91,7 +91,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                 }
 
                 Menu {
-                    attrs.anchorEl = { newEntityMenuAnchor!! }
+                    attrs.anchorEl = newEntityMenuAnchor.asDynamic()
                     attrs.anchorOrigin = jso {
                         horizontal = "left"
                         vertical = "bottom"
@@ -155,7 +155,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                     }
                     attrs.disabled = !gridSnap
                     attrs.onChange = handleGridSizeChange
-                    attrs.value(transformMode.toDisplayValue(gridSize ?: transformMode.defaultGridSize))
+                    attrs.value = transformMode.toDisplayValue(gridSize ?: transformMode.defaultGridSize)
                 }
             }
 

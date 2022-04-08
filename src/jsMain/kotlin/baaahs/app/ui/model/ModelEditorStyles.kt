@@ -1,5 +1,6 @@
 package baaahs.app.ui.model
 
+import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import kotlinx.css.*
@@ -12,7 +13,6 @@ import react.RBuilder
 import react.RElementBuilder
 import react.buildElement
 import react.dom.html.InputType
-import react.dom.onChange
 import styled.StyleSheet
 import baaahs.app.ui.controls.Styles as ControlStyles
 
@@ -133,12 +133,16 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
                 .also { onChange.asDynamic().cachedOnClick = it }
         }
 
-        TextField {
+        TextField<StandardTextFieldProps> {
             attrs.type = InputType.number
+            attrs.margin = FormControlMargin.dense
             attrs.size = Size.small
+            attrs.variant = "standard"
             attrs.placeholder = placeholder
-            attrs.inputProps = jso<InputProps> {
+            attrs.InputProps = jso {
                 classes = jso { this.underline = -partialUnderline }
+                size = Size.small
+                margin = InputBaseMargin.dense
                 if (adornment != null) {
                     endAdornment = buildElement {
                         InputAdornment {
@@ -147,14 +151,14 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
                         }
                     }
                 }
-            } as InputBaseComponentProps
+            }
             attrs.InputLabelProps = jso {
                 attrs.classes = jso { this.root = -ControlStyles.inputLabel }
                 shrink = true
             }
             attrs.onChange = cachedOnChange
-            if (value != null) attrs.value(value)
-            attrs.label = buildElement { +label }
+            if (value != null) attrs.value = value
+            attrs.label = label.asTextNode()
         }
     }
 }

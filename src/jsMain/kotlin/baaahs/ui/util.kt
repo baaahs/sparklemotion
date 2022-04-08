@@ -5,7 +5,6 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
-import kotlinx.js.Object
 import mui.material.Typography
 import mui.material.TypographyProps
 import org.w3c.dom.Element
@@ -75,16 +74,8 @@ val EventTarget?.value: String
 val EventTarget?.checked: Boolean
         get() = (this as HTMLInputElement).checked
 
-fun xCssBuilder(
-    indent: String = "",
-    allowClasses: Boolean = true,
-    parent: RuleContainer? = null,
-    isHolder: Boolean = false,
-    isStyledComponent: Boolean = false,
-): CssBuilder = CssBuilderImpl(indent, allowClasses, parent, isHolder, isStyledComponent)
-
 val RuleSet.name: String
-    get() = baaahs.ui.xCssBuilder().apply { +this@name }.classes.joinToString(" ")
+    get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")
 
 val RuleSet.selector: String
     get() = ".$name"
@@ -108,17 +99,15 @@ fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, bl
 
 fun CssBuilder.within(ruleSet: RuleSet, block: RuleSet) = "${ruleSet.selector} &"(block)
 
-fun CssBuilder.mixIn(mixin: Object) {
-    for (key in mixin.getOwnPropertyNames()) {
-        declarations[key] = mixin.asDynamic()[key]
+fun CssBuilder.mixIn(mixin: Any) =
+    when (mixin) {
+        is CssBuilder -> declarations.putAll(mixin.declarations)
+        else -> {
+            for (key in mixin.getOwnPropertyNames()) {
+                declarations[key] = mixin.asDynamic()[key]
+            }
+        }
     }
-}
-
-fun CssBuilder.mixIn(mixin: CssBuilder) = try {
-    declarations.putAll(mixin.declarations)
-} catch (e: Throwable) {
-    e.printStackTrace()
-}
 
 fun keys(jsObj: dynamic) = js("Object").keys(jsObj).unsafeCast<Array<String>>()
 
@@ -129,7 +118,7 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
 }
 
 fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
-    return baaahs.ui.xCssBuilder().apply { block() }
+    return CssBuilder().apply { block() }
 }
 
 fun <T> StyledElement.important(property: KProperty<T>, value: T) {

@@ -60,7 +60,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             TextField {
                 attrs.fullWidth = true
                 attrs.onChange = handleObjDataChange
-                attrs.value(mutableEntity.objData)
+                attrs.value = mutableEntity.objData
                 attrs.label = buildElement { +"File" }
             }
         } else {
@@ -69,7 +69,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                 attrs.multiline = true
                 attrs.rows = 6
                 attrs.onChange = handleObjDataChange
-                attrs.value(mutableEntity.objData)
+                attrs.value = mutableEntity.objData
                 attrs.label = buildElement { +"OBJ Data" }
             }
         }

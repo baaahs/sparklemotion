@@ -23,7 +23,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
 import react.createElement
-import react.dom.render
+import react.dom.client.createRoot
 import three_ext.installCameraControls
 
 fun main(args: Array<String>) {
@@ -123,7 +123,8 @@ private fun launchSimulator(
     val simulatorEl = document.getElementById("app")!!
 
     GlobalScope.promise {
-        render(createElement(SimulatorAppView, props), simulatorEl)
+        createRoot(simulatorEl)
+            .render(createElement(SimulatorAppView, props))
 
         simulator.start()
     }.catch {
@@ -138,9 +139,10 @@ private fun HostedWebApp.launchApp() {
         onLaunch()
 
         val contentDiv = document.getElementById("content")!!
-        render(createElement(WebClientWindowView, jso {
-            this.hostedWebApp = this@launchApp
-        }), contentDiv)
+        createRoot(contentDiv)
+            .render(createElement(WebClientWindowView, jso {
+                this.hostedWebApp = this@launchApp
+            }))
     }
 }
 
@@ -150,19 +152,22 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     } catch (e: Exception) {
         val container = document.getElementById("content")
             ?: document.getElementById("app")!!
-        render(createElement(ErrorDisplay, jso {
-            this.error = e.asDynamic()
-            this.componentStack = e.stackTraceToString().let {
-                if (it.contains("@webpack-internal:")) {
-                    it.replace(Regex("webpack-internal:///.*/"), "")
-                        .replace(".prototype.", "#")
-                        .replace(Regex("([A-Z][A-Za-z]+)\$")) { it.groupValues.first() }
-                        .replace("@", " @ ")
-                } else it
-            }
-            this.resetErrorBoundary = { window.location.reload() }
+        createRoot(container)
+            .render(
+                createElement(ErrorDisplay, jso {
+                    this.error = e.asDynamic()
+                    this.componentStack = e.stackTraceToString().let {
+                        if (it.contains("@webpack-internal:")) {
+                            it.replace(Regex("webpack-internal:///.*/"), "")
+                                .replace(".prototype.", "#")
+                                .replace(Regex("([A-Z][A-Za-z]+)\$")) { it.groupValues.first() }
+                                .replace("@", " @ ")
+                        } else it
+                    }
+                    this.resetErrorBoundary = { window.location.reload() }
 
-        }), container)
+                })
+            )
         throw e
     }
 }
