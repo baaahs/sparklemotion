@@ -59,6 +59,8 @@ val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { pro
             attrs.sx = jso {
                 paddingTop = 5.px
             }
+            attrs.size = Size.small
+            attrs.margin = FormControlMargin.dense
             attrs.type = InputType.number
             attrs.value = props.dimen.scalar
             attrs.onChange = handleGridSizeScalarChange

@@ -8,10 +8,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
-import mui.material.ListItemText
-import mui.material.MenuItem
-import mui.material.Select
-import mui.material.SelectProps
+import mui.material.*
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -32,6 +29,8 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
 
     div(+styles.gridAreaEditor) {
         Select<SelectProps<String>> {
+            attrs.size = Size.small
+            attrs.margin = InputBaseMargin.dense
             val currentPanel = props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex]
             val panelId = props.layouts.panels.entries.find { (_, panel) -> panel == currentPanel }!!.key
             attrs.value = panelId
