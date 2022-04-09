@@ -7,6 +7,7 @@ import baaahs.controller.SacnManager
 import baaahs.scene.MutableScene
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
+import baaahs.ui.value
 import baaahs.ui.xComponent
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
@@ -14,6 +15,7 @@ import csstype.Padding
 import csstype.em
 import kotlinx.js.jso
 import materialui.icon
+import mui.icons.material.Search
 import mui.material.*
 import mui.system.sx
 import org.w3c.dom.HTMLElement
@@ -64,14 +66,23 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                     +"New…"
                 }
 
-//                SearchBar {
-//                    attrs.cancelOnEscape = true
-//                    attrs.className = +styles.searchBarPaper
-//                    attrs.onCancelSearch = handleSearchCancel
-//                    attrs.onChange = handleSearchChange
-//                    attrs.onRequestSearch = handleSearchRequest
-//                    attrs.value = controllerMatcher.searchString
-//                }
+                FormControl {
+                    TextField<StandardTextFieldProps> {
+                        attrs.autoFocus = true
+                        attrs.fullWidth = true
+//                attrs.label { +props.label }
+                        attrs.InputProps = jso {
+                            endAdornment = buildElement { icon(Search) }
+                        }
+                        attrs.defaultValue = controllerMatcher.searchString
+
+                        attrs.onChange = { event ->
+                            handleSearchChange(event.target.value)
+                        }
+                    }
+
+                    FormHelperText { +"Enter stuff to search for!" }
+                }
             }
 
             div(+styles.navigatorPaneContent) {

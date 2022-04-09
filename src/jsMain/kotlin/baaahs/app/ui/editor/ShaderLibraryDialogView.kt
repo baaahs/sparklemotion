@@ -14,16 +14,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.css.*
+import kotlinx.js.jso
+import materialui.icon
+import mui.icons.material.Search
 import mui.material.*
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.events.FocusEvent
 import react.dom.events.FormEvent
-import react.dom.onChange
-import react.useContext
 import styled.inlineStyles
 
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
@@ -42,7 +41,10 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
         }
     }
 
-    val handleSearchChange by formEventHandler { event: FormEvent<*> ->
+    @Suppress("UNUSED_VARIABLE")
+    val justOnce = memo { runSearch("") }
+
+    val handleSearchChange by changeEventHandler { event ->
         println("onChange $event — ${event.target.value}")
 //        props.setValue(event.target.value)
 //        props.editableManager.onChange(pushToUndoStack = false)
@@ -90,10 +92,13 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
         DialogContent {
             FormControl {
-                TextField {
+                TextField<StandardTextFieldProps> {
                     attrs.autoFocus = true
                     attrs.fullWidth = true
 //                attrs.label { +props.label }
+                    attrs.InputProps = jso {
+                        endAdornment = buildElement { icon(Search) }
+                    }
                     attrs.defaultValue = ""
 
                     attrs.onChange = handleSearchChange
