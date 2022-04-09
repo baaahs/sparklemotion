@@ -23,9 +23,9 @@ fun RBuilder.problemBadge(openPatchHolder: OpenPatchHolder, cssClass: RuleSet = 
 fun RBuilder.problemBadge(problemLevel: Severity?, cssClass: RuleSet = Styles.cardProblemBadge) {
     problemLevel?.let { severity ->
         val (severityClass, severityIcon) = when (severity) {
-            Severity.INFO -> Styles.cardProblemInfo to materialui.icons.Info
-            Severity.WARN -> Styles.cardProblemWarning to materialui.icons.Warning
-            Severity.ERROR -> Styles.cardProblemError to materialui.icons.Error
+            Severity.INFO -> Styles.cardProblemInfo to mui.icons.material.Info
+            Severity.WARN -> Styles.cardProblemWarning to mui.icons.material.Warning
+            Severity.ERROR -> Styles.cardProblemError to mui.icons.material.Error
         }
         div(+cssClass and severityClass) {
             icon(severityIcon)

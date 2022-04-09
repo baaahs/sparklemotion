@@ -1,13 +1,13 @@
 package baaahs.app.ui
 
 import baaahs.gl.preview.ShaderBuilder
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import materialui.components.divider.divider
-import materialui.components.popover.enums.PopoverStyle
-import materialui.components.popover.popover
-import org.w3c.dom.events.EventTarget
+import kotlinx.js.jso
+import mui.material.Divider
+import mui.material.Popover
+import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -21,9 +21,10 @@ val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") 
     val glslErrors = props.builder.glslErrors
     val linkedPatch = props.builder.linkedProgram
 
-    popover(ShaderPreviewStyles.errorPopup on PopoverStyle.paper) {
+    Popover {
+        attrs.classes = jso { this.paper = -ShaderPreviewStyles.errorPopup }
         attrs.open = props.anchor != null
-        attrs.anchorEl(props.anchor)
+        props.anchor?.let { anchor -> attrs.anchorEl = { anchor } }
         attrs.onClose = { event, _ ->
             props.onClose()
             event.stopPropagation()
@@ -41,7 +42,7 @@ val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") 
                     }
                 }
 
-                divider {}
+                Divider {}
 
                 pre(+ShaderPreviewStyles.errorSourceCode) {
                     (linkedPatch?.toFullGlsl("x") ?: "No source!?")
@@ -54,7 +55,7 @@ val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") 
 }
 
 external interface ShaderDiagnosticsProps : Props {
-    var anchor: EventTarget?
+    var anchor: Element?
     var builder: ShaderBuilder
     var onClose: () -> Unit
 }

@@ -10,8 +10,8 @@ import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.percent
 import kotlinx.css.*
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
+import mui.material.Card
 import org.w3c.dom.HTMLElement
 import react.Props
 import react.RBuilder
@@ -52,7 +52,8 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
     var shader by state<Shader?> { null }
     beatLinkVisualizerShader.onAvailable { shader = it }
 
-    card(Styles.card on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { this.root = -Styles.card }
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader

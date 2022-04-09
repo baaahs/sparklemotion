@@ -4,12 +4,13 @@ import baaahs.app.ui.appContext
 import baaahs.control.MutableSliderControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import materialui.components.formcontrol.formControl
-import materialui.components.formlabel.formLabel
+import mui.material.FormControl
+import mui.material.FormLabel
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.html.ReactHTML
 import react.useContext
 
 private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPropsEditor") { props ->
@@ -18,9 +19,9 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
     val mutableSliderControl = props.mutableSliderControl
 
     div(+EditableStyles.propertiesSection) {
-        formControl {
-            formLabel {
-                attrs.component = "legend"
+        FormControl {
+            FormLabel {
+                attrs.component = ReactHTML.legend
                 +"Surface Display Mode"
             }
 

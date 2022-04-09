@@ -4,8 +4,8 @@ import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.appContext
 import baaahs.app.ui.appGlContext
-import kotlinext.js.jsObject
 import kotlinx.css.*
+import kotlinx.js.jso
 import org.w3c.dom.HTMLElement
 import react.PropsWithChildren
 import react.RBuilder
@@ -26,7 +26,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
 
     val canvasParentRef = ref<HTMLElement>()
     val appGlContext = memo(useSharedContexts) {
-        jsObject<AppGlContext> {
+        jso<AppGlContext> {
             this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext() else null
         }
     }

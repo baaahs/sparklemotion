@@ -15,15 +15,15 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
 import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
-import kotlinext.js.jsObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
+import kotlinx.js.jso
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
 import react.createElement
-import react.dom.render
+import react.dom.client.createRoot
 import three_ext.installCameraControls
 
 fun main(args: Array<String>) {
@@ -116,14 +116,15 @@ private fun launchSimulator(
     }
     hostedWebApp.onLaunch()
 
-    val props = jsObject<SimulatorAppProps> {
+    val props = jso<SimulatorAppProps> {
         this.simulator = simulator.facade
         this.hostedWebApp = hostedWebApp
     }
-    val simulatorEl = document.getElementById("app")
+    val simulatorEl = document.getElementById("app")!!
 
     GlobalScope.promise {
-        render(createElement(SimulatorAppView, props), simulatorEl)
+        createRoot(simulatorEl)
+            .render(createElement(SimulatorAppView, props))
 
         simulator.start()
     }.catch {
@@ -137,10 +138,11 @@ private fun HostedWebApp.launchApp() {
     globalLaunch {
         onLaunch()
 
-        val contentDiv = document.getElementById("content")
-        render(createElement(WebClientWindowView, jsObject {
-            this.hostedWebApp = this@launchApp
-        }), contentDiv)
+        val contentDiv = document.getElementById("content")!!
+        createRoot(contentDiv)
+            .render(createElement(WebClientWindowView, jso {
+                this.hostedWebApp = this@launchApp
+            }))
     }
 }
 
@@ -148,20 +150,24 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     try {
         block()
     } catch (e: Exception) {
-        val container = document.getElementById("content") ?: document.getElementById("app")
-        render(createElement(ErrorDisplay, jsObject {
-            this.error = e.asDynamic()
-            this.componentStack = e.stackTraceToString().let {
-                if (it.contains("@webpack-internal:")) {
-                    it.replace(Regex("webpack-internal:///.*/"), "")
-                        .replace(".prototype.", "#")
-                        .replace(Regex("([A-Z][A-Za-z]+)\$")) { it.groupValues.first() }
-                        .replace("@", " @ ")
-                } else it
-            }
-            this.resetErrorBoundary = { window.location.reload() }
+        val container = document.getElementById("content")
+            ?: document.getElementById("app")!!
+        createRoot(container)
+            .render(
+                createElement(ErrorDisplay, jso {
+                    this.error = e.asDynamic()
+                    this.componentStack = e.stackTraceToString().let {
+                        if (it.contains("@webpack-internal:")) {
+                            it.replace(Regex("webpack-internal:///.*/"), "")
+                                .replace(".prototype.", "#")
+                                .replace(Regex("([A-Z][A-Za-z]+)\$")) { it.groupValues.first() }
+                                .replace("@", " @ ")
+                        } else it
+                    }
+                    this.resetErrorBoundary = { window.location.reload() }
 
-        }), container)
+                })
+            )
         throw e
     }
 }

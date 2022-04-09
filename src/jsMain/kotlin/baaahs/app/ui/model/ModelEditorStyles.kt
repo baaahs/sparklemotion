@@ -1,24 +1,22 @@
 package baaahs.app.ui.model
 
-import baaahs.ui.on
+import baaahs.ui.asTextNode
+import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import materialui.components.input.enums.InputStyle
-import materialui.components.inputadornment.enums.InputAdornmentPosition
-import materialui.components.inputlabel.enums.InputLabelStyle
-import materialui.components.textfield.enums.TextFieldSize
-import materialui.components.textfield.textField
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.paper
+import kotlinx.js.jso
+import mui.material.*
+import mui.material.styles.Theme
 import org.w3c.dom.events.Event
 import react.RBuilder
+import react.RElementBuilder
+import react.buildElement
+import react.dom.html.InputType
 import styled.StyleSheet
 import baaahs.app.ui.controls.Styles as ControlStyles
 
-class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor", isStatic = true) {
+class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
     val editorPanes by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns(
@@ -67,7 +65,7 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
         flexDirection = FlexDirection.column
         top = 10.px
         left = 10.px
-        backgroundColor = theme.palette.background.paper.withAlpha(.8)
+        backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
     }
 
     val propertiesPane by css {
@@ -121,7 +119,7 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
     fun <T : Number?> RBuilder.numberTextField(
         label: String,
         value: T,
-        adornment: (RBuilder.() -> Unit)? = null,
+        adornment: (RElementBuilder<InputAdornmentProps>.() -> Unit)? = null,
         placeholder: String? = null,
         onChange: (T) -> Unit
     ) {
@@ -135,26 +133,32 @@ class ModelEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-model-editor",
                 .also { onChange.asDynamic().cachedOnClick = it }
         }
 
-        textField {
+        TextField<StandardTextFieldProps> {
             attrs.type = InputType.number
-            attrs.size = TextFieldSize.small
+            attrs.margin = FormControlMargin.dense
+            attrs.size = Size.small
+            attrs.variant = "standard"
             attrs.placeholder = placeholder
-            attrs.inputProps {
-                attrs.classes(partialUnderline on InputStyle.underline)
+            attrs.InputProps = jso {
+                classes = jso { this.underline = -partialUnderline }
+                size = Size.small
+                margin = InputBaseMargin.dense
                 if (adornment != null) {
-                    attrs.endAdornment {
-                        attrs.position = InputAdornmentPosition.end
-                        adornment()
+                    endAdornment = buildElement {
+                        InputAdornment {
+                            attrs.position = InputAdornmentPosition.end
+                            adornment()
+                        }
                     }
                 }
             }
-            attrs.inputLabelProps {
-                attrs.classes(ControlStyles.inputLabel on InputLabelStyle.root)
-                attrs.shrink = true
+            attrs.InputLabelProps = jso {
+                attrs.classes = jso { this.root = -ControlStyles.inputLabel }
+                shrink = true
             }
-            attrs.onChangeFunction = cachedOnChange
-            if (value != null) attrs.value(value)
-            attrs.label { +label }
+            attrs.onChange = cachedOnChange
+            if (value != null) attrs.value = value
+            attrs.label = label.asTextNode()
         }
     }
 }

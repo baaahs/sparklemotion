@@ -4,21 +4,14 @@ import baaahs.app.ui.appContext
 import baaahs.model.LightRing
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.value
+import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import react.Props
-import react.RBuilder
-import react.RHandler
+import kotlinx.js.jso
+import mui.material.*
+import react.*
 import react.dom.header
-import react.useContext
 
 private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEditor") { props ->
     val appContext = useContext(appContext)
@@ -45,7 +38,8 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
 
     header { +"Light Ring" }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Radius:" }
 
         with(styles) {
@@ -53,7 +47,8 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"First Pixel:" }
 
         with(styles) {
@@ -61,20 +56,21 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Pixel Direction:" }
 
-        formControlLabel {
+        FormControlLabel {
 //            attrs.label { +"Pixel Direction" }
-            attrs.control {
-                select {
-                    attrs.value(mutableEntity.pixelDirection.name)
-                    attrs.onChangeFunction = handlePixelDirectionChange
+            attrs.control = buildElement {
+                Select<SelectProps<String>> {
+                    attrs.value = mutableEntity.pixelDirection.name
+                    attrs.onChange = handlePixelDirectionChange.withSelectEvent()
 
                     LightRing.PixelDirection.values().forEach { direction ->
-                        menuItem {
+                        MenuItem {
                             attrs.value = direction.name
-                            listItemText { +direction.name }
+                            ListItemText { +direction.name }
                         }
                     }
                 }

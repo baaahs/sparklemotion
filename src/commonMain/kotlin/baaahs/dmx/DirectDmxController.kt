@@ -152,7 +152,7 @@ data class DirectDmxControllerConfig(
     override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
             transportConfig as DmxTransportConfig,
-            fixtureConfig.componentCount!!,
+            fixtureConfig.componentCount ?: 1,
             fixtureConfig.bytesPerComponent
         )
         val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)

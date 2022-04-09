@@ -54,5 +54,5 @@ external interface TracksProps : Props {
 //    var emitTouch: EmitTouch?
 //        get() = definedExternally
 //        set(value) = definedExternally
-    var children: (tracksObject: TracksObject) -> ReactElement
+    var children: (tracksObject: TracksObject) -> ReactElement<*>
 }

@@ -29,6 +29,7 @@ class GlslCode(
                 }
                 is GlslVar -> globalVarNames.add(it.name)
                 is GlslFunction -> functionNames.add(it.name)
+                is GlslOther -> {}
                 else -> {
                     if (it.fullText.isNotBlank()) {
                         logger.warn { "unrecognized GLSL: ${it.fullText} at ${it.lineNumber}" }

@@ -10,33 +10,20 @@ import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShader
-import baaahs.ui.on
-import baaahs.ui.sharedGlContext
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import kotlinx.html.js.onClickFunction
-import materialui.components.card.card
-import materialui.components.cardcontent.cardContent
-import materialui.components.divider.divider
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
-import materialui.components.menulist.menuList
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.typography.enums.TypographyDisplay
-import materialui.components.typography.enums.TypographyVariant
-import materialui.components.typography.typography
+import kotlinx.js.jso
 import materialui.icon
-import materialui.icons.CloudDownload
+import mui.icons.material.AddCircleOutline
+import mui.icons.material.CloudDownload
+import mui.material.*
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.html.ReactHTML
 import react.useContext
 
 private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview") { props ->
@@ -66,10 +53,10 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
     }
 
     val newPatchCardRef = ref<Element>()
-    var newPatchMenuAnchor by state<EventTarget?> { null }
-    val handleNewPatchClick = callback { e: Event -> newPatchMenuAnchor = e.currentTarget }
+    var newPatchMenuAnchor by state<Element?> { null }
+    val handleNewPatchClick by eventHandler { e: Event -> newPatchMenuAnchor = e.currentTarget as Element? }
     val handleNewPatchMenuClose = callback { _: Event, _: String -> newPatchMenuAnchor = null }
-    val handleNewShaderMenuClick = callback(handleNewShader) { _: Event ->
+    val handleNewShaderMenuClick by eventHandler(handleNewShader) { _: Event ->
         newPatchMenuAnchor = null
         handleNewShader(MutableShader("New Shader", ""))
     }
@@ -123,8 +110,8 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                 }
 
             if (props.mutablePatchHolder.patches.isEmpty()) {
-                card {
-                    menuList {
+                Card {
+                    MenuList {
                         populateNewShaderMenu(
                             appContext.plugins.shaderTypes,
                             handleNewShaderMenuClick,
@@ -134,24 +121,23 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                     }
                 }
             } else {
-                card(+styles.shaderCard on PaperStyle.root) {
+                Card {
+                    attrs.classes = jso { this.root = -styles.shaderCard }
                     key = "new patch"
                     ref = newPatchCardRef
 
-                    attrs.onClickFunction = handleNewPatchClick
+                    attrs.onClick = handleNewPatchClick.withMouseEvent()
 
-                    cardContent {
-                        icon(materialui.icons.AddCircleOutline)
-                        typography {
-                            attrs.display = TypographyDisplay.block
-                            attrs.variant = TypographyVariant.subtitle1
+                    CardContent {
+                        icon(AddCircleOutline)
+                        typographySubtitle1 {
+                            attrs.component = ReactHTML.div
                             +"New Shader…"
                         }
                     }
 
-                    menu {
-                        attrs.getContentAnchorEl = null
-                        attrs.anchorEl(newPatchMenuAnchor)
+                    Menu {
+                        attrs.anchorEl = newPatchMenuAnchor.asDynamic()
                         attrs.open = newPatchMenuAnchor != null
                         attrs.onClose = handleNewPatchMenuClose
 
@@ -180,36 +166,36 @@ private fun RBuilder.populateNewShaderMenu(
     handleNewShaderFromTemplateMenuClick: CacheBuilder<ShaderType, (Event) -> Unit>,
     handleNewFromShaderLibrary: (Event) -> Unit
 ) {
-    menuItem {
-        attrs.onClickFunction = handleNewShaderMenuClick
+    MenuItem {
+        attrs.onClick = handleNewShaderMenuClick.withMouseEvent()
 
-        listItemIcon { icon(CommonIcons.Add) }
-        listItemText { +"New Shader…" }
+        ListItemIcon { icon(CommonIcons.Add) }
+        ListItemText { +"New Shader…" }
     }
 
-    divider {}
+    Divider {}
 
     shaderTypes.all.forEach { type ->
-        menuItem {
-            attrs.onClickFunction = handleNewShaderFromTemplateMenuClick[type]
+        MenuItem {
+            attrs.onClick = handleNewShaderFromTemplateMenuClick[type].withMouseEvent()
 
-            listItemIcon { icon(type.icon) }
-            listItemText { +"New ${type.title} Shader…" }
+            ListItemIcon { icon(type.icon) }
+            ListItemText { +"New ${type.title} Shader…" }
         }
     }
 
-    divider {}
+    Divider {}
 
-    menuItem {
-        attrs.onClickFunction = handleNewFromShaderLibrary
+    MenuItem {
+        attrs.onClick = handleNewFromShaderLibrary.withMouseEvent()
 
-        listItemIcon { icon(CommonIcons.ShaderLibrary) }
-        listItemText { +"From Shader Library…" }
+        ListItemIcon { icon(CommonIcons.ShaderLibrary) }
+        ListItemText { +"From Shader Library…" }
     }
 
-    menuItem {
-        listItemIcon { icon(CloudDownload) }
-        listItemText { +"Import… (TBD)" }
+    MenuItem {
+        ListItemIcon { icon(CloudDownload) }
+        ListItemText { +"Import… (TBD)" }
     }
 }
 

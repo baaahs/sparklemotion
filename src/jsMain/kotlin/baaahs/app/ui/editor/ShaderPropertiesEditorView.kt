@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.Colors
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.englishize
@@ -8,28 +9,18 @@ import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShaderChannel
 import baaahs.ui.*
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import materialui.components.divider.divider
-import materialui.components.formcontrol.formControl
-import materialui.components.formhelpertext.formHelperText
-import materialui.components.inputlabel.inputLabel
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
-import materialui.components.textfield.textField
-import materialui.components.typography.enums.TypographyColor
-import materialui.components.typography.typography
 import materialui.icon
+import mui.material.*
+import mui.system.sx
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.b
 import react.dom.br
 import react.dom.div
-import react.useContext
+import react.dom.events.FormEvent
+import react.dom.html.InputType
+import react.dom.onChange
 
 private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
     val appContext = useContext(appContext)
@@ -79,56 +70,56 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
         }
 
         div(+shaderEditorStyles.shaderChannel) {
-            formControl {
+            FormControl {
                 val main = ShaderChannel.Main
-                inputLabel { +"Channel" }
-                select {
-                    attrs.renderValue<String> { it.asTextNode() }
-                    attrs.value(patch.shaderChannel.id)
-                    attrs.onChangeFunction = handleSelectShaderChannel
+                InputLabel { +"Channel" }
+                Select<SelectProps<String>> {
+                    attrs.renderValue = { it.asTextNode() }
+                    attrs.value = patch.shaderChannel.id
+                    attrs.onChange = handleSelectShaderChannel.withSelectEvent()
 
-                    menuItem {
+                    MenuItem {
                         attrs.value = main.id
-                        listItemIcon { icon(CommonIcons.ShaderChannel) }
-                        listItemText { +"${main.id.englishize()} (default)" }
+                        ListItemIcon { icon(CommonIcons.ShaderChannel) }
+                        ListItemText { +"${main.id.englishize()} (default)" }
                     }
 
-                    divider {}
+                    Divider {}
 
                     val shaderChannels = editingShader.getShaderChannelOptions(excludeMain = true)
                     shaderChannels.forEach { shaderChannel ->
                         if (shaderChannel.id != main.id) {
-                            menuItem {
+                            MenuItem {
                                 attrs.value = shaderChannel.id
-                                listItemIcon { icon(CommonIcons.ShaderChannel) }
-                                listItemText { +shaderChannel.id.englishize() }
+                                ListItemIcon { icon(CommonIcons.ShaderChannel) }
+                                ListItemText { +shaderChannel.id.englishize() }
                             }
                         }
                     }
 
-                    divider {}
-                    menuItem {
+                    Divider {}
+                    MenuItem {
                         attrs.value = "__new__"
-                        listItemIcon { icon(CommonIcons.Add) }
-                        listItemText { +"New Channel…" }
+                        ListItemIcon { icon(CommonIcons.Add) }
+                        ListItemText { +"New Channel…" }
                     }
                 }
-                formHelperText { +"This shader's channel." }
+                FormHelperText { +"This shader's channel." }
             }
         }
 
         div(+shaderEditorStyles.shaderPriority) {
-            formControl {
-                textField {
-                    attrs.label { +"Priority" }
+            FormControl {
+                TextField {
+                    attrs.label = ReactNode("Priority")
                     attrs.type = InputType.number
                     attrs.value = patch.priority
-                    attrs.onChangeFunction = { event: Event ->
+                    attrs.onChange = { event: FormEvent<HTMLDivElement> ->
                         val priorityStr = event.target.value
                         handleUpdate { priority = priorityStr.toFloat() }
                     }
                 }
-                formHelperText { +"This shader's priority in the patch." }
+                FormHelperText { +"This shader's priority in the patch." }
             }
         }
 
@@ -138,18 +129,18 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
             if (openShader != null) {
                 val outputPort = openShader.outputPort
 
-                typography { b { +"Returns: " } }
-                typography {
+                Typography { b { +"Returns: " } }
+                Typography {
                     if (outputPort.contentType.isUnknown()) {
-                        attrs.color = TypographyColor.error
+                        attrs.sx { color = Colors.error }
                     }
                     +outputPort.contentType.title
                 }
 
                 br {}
 
-                typography { b { +"Shader Type: " } }
-                typography {
+                Typography { b { +"Shader Type: " } }
+                Typography {
                     +"${openShader.shaderType.title} (${openShader.shaderDialect.title})"
                 }
             }

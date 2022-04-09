@@ -3,15 +3,15 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
 import kotlinx.html.js.onClickFunction
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.Card
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
@@ -29,7 +29,8 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
         event.preventDefault()
     }
 
-    card(Styles.controlBox on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { root = -Styles.controlBox }
         with (props.control.getView(props.controlProps)) {
             render()
         }
@@ -45,14 +46,14 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
             div(+Styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 
-                icon(materialui.icons.Edit)
+                icon(mui.icons.material.Edit)
             }
         }
 
         props.draggableProvided?.let { draggableProvided ->
             div(+Styles.dragHandle) {
                 copyFrom(draggableProvided.dragHandleProps)
-                icon(materialui.icons.DragIndicator)
+                icon(mui.icons.material.DragIndicator)
             }
         }
     }

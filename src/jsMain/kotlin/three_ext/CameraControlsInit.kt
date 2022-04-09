@@ -1,11 +1,10 @@
 package three_ext
 
-import kotlinext.js.Object
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 
 @JsModule("three")
-external val three: Object
+external val three: dynamic
 
 fun installCameraControls() {
-    CameraControls.install(jsObject { THREE = three });
+    CameraControls.install(jso { THREE = three });
 }

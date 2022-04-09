@@ -4,11 +4,11 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
+import mui.material.Card
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.Props
@@ -48,8 +48,9 @@ private val VisualizerView = xComponent<VisualizerProps>("Visualizer") { props -
         }
     }
 
-    card(Styles.visualizerCard on PaperStyle.root) {
+    Card {
         ref = rootEl
+        attrs.classes = jso { this.root = -Styles.visualizerCard }
 
         if (model == null) {
             +"No scene loaded!"

@@ -8,12 +8,12 @@ import baaahs.plugin.sound_analysis.OpenSoundAnalysisControl
 import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.important
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
+import kotlinx.js.jso
+import mui.material.Card
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -29,7 +29,8 @@ private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundA
     var shader by state<Shader?> { null }
     soundAnalysisVisualizerShader.onAvailable { shader = it }
 
-    card(Styles.card on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { this.root = -Styles.card }
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader

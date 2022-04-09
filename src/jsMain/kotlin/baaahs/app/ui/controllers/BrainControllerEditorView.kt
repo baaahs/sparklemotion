@@ -3,13 +3,13 @@ package baaahs.app.ui.controllers
 import baaahs.scene.EditingController
 import baaahs.scene.MutableBrainControllerConfig
 import baaahs.ui.xComponent
-import materialui.components.container.container
+import mui.material.Container
 import react.Props
 import react.RBuilder
 import react.RHandler
 
 private val BrainControllerEditorView = xComponent<BrainControllerEditorProps>("BrainControllerEditor") { props ->
-    container { +"Nothing to edit right now." }
+    Container { +"Nothing to edit right now." }
 }
 
 external interface BrainControllerEditorProps : Props {
