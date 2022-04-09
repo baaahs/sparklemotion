@@ -3,10 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
-import baaahs.ui.markdown
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import baaahs.window
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
@@ -139,6 +136,8 @@ class ShaderHelpStyles(
     }
 
     val copyButton by css {
+        color = theme.palette.primary.contrastText.asColor()
+        backgroundColor = theme.palette.secondary.main.asColor()
         position = Position.absolute
         top = .5.em
         right = .5.em
