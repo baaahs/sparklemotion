@@ -85,12 +85,15 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             }
 
             webSocket.onerror = {
-                logger.error { "WebSocket error!" }
-                console.error("WebSocket error!", it)
+                if (webSocket.readyState.toInt() == 3) {
+                    // Closed
+                } else {
+                    logger.warn { "WebSocket error! readyState = ${webSocket.readyState}" }
+                }
             }
+
             webSocket.onclose = {
-                logger.error { "WebSocket close!" }
-                console.error("WebSocket close!", it)
+                logger.info { "WebSocket closed! readyState = ${webSocket.readyState}" }
                 webSocketListener.reset(tcpConnection)
             }
 

@@ -2,26 +2,27 @@ package baaahs.app.ui.editor
 
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.html.js.onBlurFunction
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onKeyDownFunction
-import materialui.components.formcontrol.formControl
-import materialui.components.formhelpertext.formHelperText
-import materialui.components.textfield.textField
-import org.w3c.dom.events.Event
+import mui.material.FormControl
+import mui.material.FormHelperText
+import mui.material.TextField
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.buildElement
+import react.dom.events.FocusEvent
+import react.dom.events.FormEvent
+import react.dom.events.KeyboardEvent
+import react.dom.onChange
 
 private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
     val valueOnUndoStack = ref(props.getValue())
 
-    val handleChange by eventHandler(props.setValue, props.editableManager) { event: Event ->
+    val handleChange by formEventHandler(props.setValue, props.editableManager) { event: FormEvent<*> ->
         props.setValue(event.target.value)
         props.editableManager.onChange(pushToUndoStack = false)
     }
 
-    val handleBlur by eventHandler(props.editableManager) { event: Event ->
+    val handleBlur by focusEventHandler(props.editableManager) { event: FocusEvent<*> ->
         val newValue = event.target.value
         if (newValue != valueOnUndoStack.current) {
             valueOnUndoStack.current = newValue
@@ -29,29 +30,29 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
         }
     }
 
-    val handleKeyDown by eventHandler(handleBlur) { event: Event ->
+    val handleKeyDown by keyboardEventHandler(handleBlur) { event: KeyboardEvent<*> ->
         if (event.asDynamic().keyCode == 13) {
-            handleBlur(event)
+            handleBlur(event as FocusEvent<*>)
         }
     }
 
-    formControl {
-        textField {
+    FormControl {
+        TextField {
             attrs.autoFocus = props.autoFocus == true
             attrs.fullWidth = true
-            attrs.label { +props.label }
+            attrs.label = buildElement { +props.label }
             attrs.value = props.getValue()
 
             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
-            attrs.onChangeFunction = handleChange
+            attrs.onChange = handleChange
 
             // ... until we lose focus or hit return; then, push to the undo stack only if the value would change.
-            attrs.onBlurFunction = handleBlur
-            attrs.onKeyDownFunction = handleKeyDown
+            attrs.onBlur = handleBlur
+            attrs.onKeyDown = handleKeyDown
         }
 
         props.helperText?.let { helperText ->
-            formHelperText { +helperText }
+            FormHelperText { +helperText }
         }
     }
 }

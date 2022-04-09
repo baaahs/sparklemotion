@@ -48,7 +48,7 @@ external interface PositionOffsetControlPosition {
 external interface DraggableCoreProps: Props {
     var allowAnyClick: Boolean
     var cancel: String
-    var children: ReactElement
+    var children: ReactElement<*>
     var disabled: Boolean
     var enableUserSelectHack: Boolean
     var offsetParent: HTMLElement

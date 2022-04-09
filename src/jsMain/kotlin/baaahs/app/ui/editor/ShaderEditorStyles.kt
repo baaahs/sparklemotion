@@ -7,12 +7,10 @@ import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate
 import kotlinx.css.properties.transform
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.dark
-import materialui.styles.palette.paper
+import mui.material.styles.Theme
 import styled.StyleSheet
 
-class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-editor-ShaderEditor", isStatic = true) {
+class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-ShaderEditor", isStatic = true) {
     val propsAndPreview by css {
         display = Display.flex
         gap = 1.em
@@ -33,7 +31,7 @@ class ShaderEditorStyles(private val theme: MuiTheme) : StyleSheet("app-ui-edito
     }
 
     val tabsContainer by css {
-        backgroundColor = theme.palette.primary.dark
+        backgroundColor = Color(theme.palette.primary.dark.asDynamic())
     }
 
     val propsPanel by css {

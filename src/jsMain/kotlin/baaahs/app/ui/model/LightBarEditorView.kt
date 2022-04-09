@@ -4,10 +4,10 @@ import baaahs.app.ui.appContext
 import baaahs.geom.Vector3F
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightBarData
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
+import kotlinx.js.jso
+import mui.material.Container
 import react.*
 import react.dom.header
 
@@ -38,7 +38,8 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
 
     header { +"Light Bar" }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Start:" }
 
         vectorEditor {
@@ -48,7 +49,8 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"End:" }
 
         vectorEditor {
@@ -58,7 +60,8 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Length:" }
 
         with(styles) {

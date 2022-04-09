@@ -1,6 +1,6 @@
 package external
 
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.RDOMBuilder
@@ -21,13 +21,13 @@ external interface DragDropContextProps : Props, Responders {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val DragDropContext: FunctionComponent<DragDropContextProps> = reactBeautifulDndModule.DragDropContext
+private val DragDropContext: FC<DragDropContextProps> = reactBeautifulDndModule.DragDropContext
 
 fun RBuilder.dragDropContext(
     attrs: DragDropContextProps.() -> Unit,
     children: RBuilder.() -> Any
 ) =
-    child(DragDropContext, jsObject<DragDropContextProps>().apply { attrs() }) {
+    child(DragDropContext, jso<DragDropContextProps>().apply { attrs() }) {
         children()
     }
 
@@ -41,13 +41,13 @@ external interface DraggableProps : Props {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val Draggable: FunctionComponent<DraggableProps> = reactBeautifulDndModule.Draggable
+private val Draggable: FC<DraggableProps> = reactBeautifulDndModule.Draggable
 
-fun RDOMBuilder<*>.draggable(
+fun RBuilder.draggable(
     attrs: DraggableProps.() -> Unit,
-    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> ReactElement
+    children: (provided: DraggableProvided, snapshot: DraggableStateSnapshot) -> ReactElement<*>
 ) {
-    child(Draggable, jsObject<DraggableProps>().apply { attrs() }) {
+    child(Draggable, jso<DraggableProps>().apply { attrs() }) {
         child(children.unsafeCast<ReactNode>())
     }
 }
@@ -57,6 +57,19 @@ external interface DraggableStateSnapshot {
 }
 
 private val jsObj = js("Object")
+
+fun RElementBuilder<*>.copyFrom(fromProps: Props?) {
+    copyFrom(fromProps.unsafeCast<CopyableProps>())
+}
+
+fun RElementBuilder<*>.copyFrom(fromProps: CopyableProps?) {
+    if (fromProps == null) return
+
+    val from = fromProps.asDynamic()
+    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    keys.forEach { key -> attrs.asDynamic()[key] = from[key] }
+}
+
 fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     if (fromProps == null) return
 
@@ -167,19 +180,19 @@ enum class MovementMode {
 }
 
 @Suppress("UnsafeCastFromDynamic")
-private val Droppable: FunctionComponent<DroppableProps> = reactBeautifulDndModule.Droppable
+private val Droppable: FC<DroppableProps> = reactBeautifulDndModule.Droppable
 
 fun RBuilder.droppable(
     attrs: DroppableProps.() -> Unit,
-    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement
+    children: (provided: DroppableProvided, snapshot: Any) -> ReactElement<*>
 ) {
     child(
         Droppable,
-        jsObject<DroppableProps>().apply { attrs() }
+        jso<DroppableProps>().apply { attrs() }
     ) {
         childList.add(children as ReactNode)
     }
 }
 
-private val noOpDroppableProvided = jsObject<DroppableProvided> {
+private val noOpDroppableProvided = jso<DroppableProvided> {
 }

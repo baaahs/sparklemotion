@@ -28,10 +28,10 @@ external interface MosaicWindowProps<T>: Props {
     var createNode: CreateNode<T>?
         get() = definedExternally
         set(value) = definedExternally
-    var renderPreview: ((props: MosaicWindowProps<T>) -> ReactElement)?
+    var renderPreview: ((props: MosaicWindowProps<T>) -> ReactElement<*>)?
         get() = definedExternally
         set(value) = definedExternally
-    var renderToolbar: ((props: MosaicWindowProps<T>, draggable: Boolean?) -> ReactElement)?
+    var renderToolbar: ((props: MosaicWindowProps<T>, draggable: Boolean?) -> ReactElement<*>)?
         get() = definedExternally
         set(value) = definedExternally
     var onDragStart: (() -> Unit)?

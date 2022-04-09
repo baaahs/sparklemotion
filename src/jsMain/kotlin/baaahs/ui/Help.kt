@@ -1,14 +1,8 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
-import kotlinx.html.js.onClickFunction
-import materialui.components.button.button
-import materialui.components.dialog.dialog
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.link.link
 import materialui.icon
+import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
@@ -24,29 +18,29 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     val closeHelp = callback { _: Event, _: String -> open = false }
 
     div("${styles.help.name} ${props.divClass}") {
-        link {
-            attrs.onClickFunction = toggleHelp.withEvent()
-            icon(materialui.icons.HelpOutline)
+        Link {
+            attrs.onClick = toggleHelp.withMouseEvent()
+            icon(mui.icons.material.HelpOutline)
         }
     }
 
-    dialog {
+    Dialog {
         attrs.open = open
         attrs.onClose = closeHelp
 
         if (open) {
             props.title?.let {
-                dialogTitle { child(it) }
+                DialogTitle { child(it) }
             }
 
-            dialogContent {
+            DialogContent {
                 props.children?.forEach { child(it) }
             }
         }
 
-        dialogActions {
-            button {
-                attrs.onClickFunction = toggleHelp.withEvent()
+        DialogActions {
+            Button {
+                attrs.onClick = toggleHelp.withMouseEvent()
 
                 +"Close"
             }
@@ -56,7 +50,7 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
 
 external interface HelpProps : Props {
     var divClass: String?
-    var children: Array<ReactElement>?
+    var children: Array<ReactElement<*>>?
 }
 
 fun HelpProps.child(block: RBuilder.() -> Unit) {
@@ -68,18 +62,18 @@ fun HelpProps.child(block: RBuilder.() -> Unit) {
     rBuilder.childList.forEach { children.asDynamic().push(it) }
 }
 
-object materialProps : ReadWriteProperty<HelpProps, ReactElement?> {
-    override fun getValue(thisRef: HelpProps, property: KProperty<*>): ReactElement? {
+object materialProps : ReadWriteProperty<HelpProps, ReactElement<*>?> {
+    override fun getValue(thisRef: HelpProps, property: KProperty<*>): ReactElement<*>? {
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-        return thisRef.asDynamic()[property.name] as? ReactElement
+        return thisRef.asDynamic()[property.name] as? ReactElement<*>
     }
 
-    override fun setValue(thisRef: HelpProps, property: KProperty<*>, value: ReactElement?) {
+    override fun setValue(thisRef: HelpProps, property: KProperty<*>, value: ReactElement<*>?) {
         thisRef.asDynamic()[property.name] = value
     }
 }
 
-var HelpProps.title: ReactElement? by materialProps
+var HelpProps.title: ReactElement<*>? by materialProps
 fun HelpProps.title(block: RBuilder.() -> Unit) { title = buildElement(block) }
 
 fun helper(block: HelpProps.() -> Unit): HelpProps.() -> Unit {

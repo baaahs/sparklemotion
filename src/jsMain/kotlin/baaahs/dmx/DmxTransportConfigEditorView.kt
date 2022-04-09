@@ -3,19 +3,14 @@ package baaahs.dmx
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingController
 import baaahs.scene.MutableTransportConfig
-import baaahs.ui.checked
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.checkbox.checkbox
-import materialui.components.formcontrol.formControl
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.formhelpertext.formHelperText
-import react.Props
-import react.RBuilder
-import react.RHandler
+import mui.material.Checkbox
+import mui.material.FormControl
+import mui.material.FormControlLabel
+import mui.material.FormHelperText
+import react.*
 import react.dom.div
-import react.useContext
 
 private val DmxTransportConfigEditorView =
     xComponent<DmxTransportConfigEditorProps>("DmxTransportConfigEditor") { props ->
@@ -34,13 +29,13 @@ private val DmxTransportConfigEditorView =
             }
 
             div(+styles.dmxTransportConfigEditorRow) {
-                formControl {
-                    formControlLabel {
-                        attrs.label { +"Start in a fresh universe" }
-                        attrs.control {
-                            checkbox {
+                FormControl {
+                    FormControlLabel {
+                        attrs.label = buildElement { +"Start in a fresh universe" }
+                        attrs.control = buildElement {
+                            Checkbox {
                                 attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
-                                attrs.onChangeFunction = {
+                                attrs.onChange = { _, _ ->
 //                                val value = it.target.checked
 //                                mutableConfig.componentsStartAtUniverseBoundaries = value
 //                                props.editingController.onChange()
@@ -49,21 +44,20 @@ private val DmxTransportConfigEditorView =
                         }
                     }
 
-                    formHelperText {
+                    FormHelperText {
                         +"texty text text"
                     }
                 }
             }
 
             div(+styles.dmxTransportConfigEditorRow) {
-                formControlLabel {
-                    attrs.label { +"Components may span universes" }
-                    attrs.control {
-                        checkbox {
+                FormControlLabel {
+                    attrs.label = buildElement { +"Components may span universes" }
+                    attrs.control = buildElement {
+                        Checkbox {
                             attrs.checked = mutableConfig.componentMaySpanUniverses
-                            attrs.onChangeFunction = {
-                                val value = it.target.checked
-                                mutableConfig.componentMaySpanUniverses = value
+                            attrs.onChange = { _, checked ->
+                                mutableConfig.componentMaySpanUniverses = checked
                                 props.editingController.onChange()
                             }
                         }

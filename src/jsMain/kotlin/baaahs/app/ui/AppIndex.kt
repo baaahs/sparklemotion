@@ -19,20 +19,11 @@ import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
 import external.ErrorBoundary
-import kotlinext.js.jsObject
-import materialui.components.backdrop.backdrop
-import materialui.components.circularprogress.circularProgress
-import materialui.components.container.container
-import materialui.components.cssbaseline.cssBaseline
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
-import materialui.components.typography.typographyH6
+import kotlinx.js.jso
 import materialui.icon
-import materialui.styles.createMuiTheme
-import materialui.styles.muitheme.options.palette
-import materialui.styles.palette.PaletteType
-import materialui.styles.palette.options.type
-import materialui.styles.themeprovider.themeProvider
+import mui.icons.material.NotificationImportant
+import mui.material.*
+import mui.material.styles.ThemeProvider
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -60,13 +51,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleDarkModeChange = callback(handleUiSettingsChange) {
         handleUiSettingsChange { it.copy(darkMode = !it.darkMode) }
     }
-    val theme = memo(darkMode) {
-        createMuiTheme {
-            palette {
-                type = if (darkMode) PaletteType.dark else PaletteType.light
-            }
-        }
-    }
+    val theme = if (darkMode) Themes.Dark else Themes.Light
 
     val appMode = uiSettings.appMode
     val handleAppModeChange by handler(handleUiSettingsChange) { newAppMode: AppMode ->
@@ -81,7 +66,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
 
     val myAppContext = memo(uiSettings, allStyles) {
-        jsObject<AppContext> {
+        jso<AppContext> {
             this.showPlayer = props.stageManager
             this.dragNDrop = dragNDrop
             this.webClient = webClient
@@ -110,7 +95,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val myAppGlContext = memo { jsObject<AppGlContext> { this.sharedGlContext = null } }
+    val myAppGlContext = memo { jso<AppGlContext> { this.sharedGlContext = null } }
 
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
@@ -181,17 +166,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         appGlContext.Provider {
             attrs.value = myAppGlContext
 
-            themeProvider(theme) {
-                cssBaseline { }
+            ThemeProvider {
+                attrs.theme = theme
+                CssBaseline {}
 
                 div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
-                    appToolbar {
-                        attrs.appMode = appMode
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
-                        attrs.onMenuButtonClick = handleAppDrawerToggle
-                    }
-
                     appDrawer {
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen
@@ -206,15 +185,20 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onSettings = handleSettings
                     }
 
-                    div(+themeStyles.appContent) {
-                        backdrop {
-                            attrs {
-                                open = !webClient.isConnected
-                            }
+                    appToolbar {
+                        attrs.appMode = appMode
+                        attrs.editMode = editMode
+                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.onMenuButtonClick = handleAppDrawerToggle
+                    }
 
-                            container {
-                                circularProgress {}
-                                icon(materialui.icons.NotificationImportant)
+                    div(+themeStyles.appContent) {
+                        Backdrop {
+                            attrs.open = !webClient.isConnected
+
+                            Container {
+                                CircularProgress {}
+                                icon(mui.icons.material.NotificationImportant)
 
                                 typographyH6 { +"Connecting…" }
                                 +"Attempting to connect to Sparkle Motion."
@@ -223,14 +207,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                         // TODO: this doesn't actually show up for some reason?
                         if (props.webClient.isMapping) {
-                            backdrop {
-                                attrs {
-                                    open = true
-                                }
+                            Backdrop {
+                                attrs.open = true
 
-                                container {
-                                    circularProgress {}
-                                    icon(materialui.icons.NotificationImportant)
+                                Container {
+                                    CircularProgress {}
+                                    icon(mui.icons.material.NotificationImportant)
 
                                     typographyH6 { +"Mapper Running…" }
                                     +"Please wait."
@@ -239,8 +221,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         }
 
                         if (!webClient.isLoaded) {
-                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                                circularProgress {}
+                            Paper {
+                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                CircularProgress {}
                                 typographyH6 { +"Loading Show…" }
                             }
                         } else {
@@ -250,8 +233,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 when (appMode) {
                                     AppMode.Show -> {
                                         if (show == null) {
-                                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                                                icon(materialui.icons.NotificationImportant)
+                                            Paper {
+                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                NotificationImportant {}
                                                 typographyH6 { +"No open show." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }
@@ -278,8 +262,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                     AppMode.Scene -> {
                                         if (props.sceneManager.scene == null) {
-                                            paper(themeStyles.noShowLoadedPaper on PaperStyle.root) {
-                                                icon(materialui.icons.NotificationImportant)
+                                            Paper {
+                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                icon(mui.icons.material.NotificationImportant)
                                                 typographyH6 { +"No open scene." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }

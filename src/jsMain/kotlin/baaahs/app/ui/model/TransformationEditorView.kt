@@ -5,12 +5,12 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.scene.EditingEntity
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
 import kotlinx.html.unsafe
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
+import kotlinx.js.jso
+import mui.material.Container
 import react.*
 import react.dom.header
 import react.dom.span
@@ -44,7 +44,8 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
 
     header { +"Transformation" }
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Position:" }
 
         vectorEditor {
@@ -54,7 +55,8 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Rotation:" }
 
         rotationEditor {
@@ -63,7 +65,8 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
         }
     }
 
-    container(styles.transformEditSection on ContainerStyle.root) {
+    Container {
+        attrs.classes = jso { this.root = -styles.transformEditSection }
         header { +"Scale:" }
 
         vectorEditor {

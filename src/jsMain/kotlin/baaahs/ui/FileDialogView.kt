@@ -7,29 +7,14 @@ import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
 import baaahs.window
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onDoubleClickFunction
-import materialui.components.breadcrumbs.breadcrumbs
-import materialui.components.button.button
-import materialui.components.buttongroup.buttonGroup
-import materialui.components.dialog.dialog
-import materialui.components.dialog.enums.DialogMaxWidth
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
-import materialui.components.link.link
-import materialui.components.list.enums.ListStyle
-import materialui.components.list.list
-import materialui.components.listitem.listItem
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.textfield.textField
-import materialui.components.typography.typography
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.*
+import mui.system.Breakpoint
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.attrs
+import react.dom.events.FormEvent
+import react.dom.onChange
 
 private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     val appContext = useContext(appContext)
@@ -83,12 +68,12 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         }
     }
 
-    val handleFileNameChange = callback(currentDir) { event: Event ->
+    val handleFileNameChange by formEventHandler(currentDir) { event: FormEvent<*> ->
         val str = event.target.value
         selectedFile = currentDir?.resolve(str)
     }
 
-    val handleConfirm = callback(selectedFile) { _: Event ->
+    val handleConfirm by mouseEventHandler(selectedFile) {
         selectedFile?.let {
             globalLaunch { fileDialog.onSelect(it) }
         }; Unit
@@ -99,7 +84,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         Unit
     }
 
-    val handleCancel = callback { _: Event ->
+    val handleCancel by mouseEventHandler {
         globalLaunch { fileDialog.onCancel() }
         Unit
     }
@@ -127,79 +112,78 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     breadcrumbs.reverse()
 
 
-    dialog {
+    Dialog {
         ref = dialogEl
         attrs {
             open = true
             onClose = handleClose
             fullWidth = true
-            maxWidth = DialogMaxWidth.md
+            maxWidth = Breakpoint.md
         }
 
-        dialogTitle { +request.title }
+        DialogTitle { +request.title }
 
-        dialogContent {
-            breadcrumbs {
+        DialogContent {
+            Breadcrumbs {
                 breadcrumbs.forEach { parentDir ->
-                    link {
-                        attrs.onClickFunction = { currentDir = parentDir }
-                        +(if (parentDir.name.isEmpty()) "Filesystem Root" else parentDir.name)
+                    Link {
+                        attrs.onClick = { currentDir = parentDir }
+                        +(parentDir.name.ifEmpty { "Filesystem Root" })
                     }
                 }
-                typography { +currentDir!!.name }
+                Typography { +currentDir!!.name }
             }
 
-            list(fileDialogFileList on ListStyle.root) {
+            List {
+                attrs.classes = jso { root = -fileDialogFileList }
                 val parent = currentDir!!.parent
                 if (parent != null) {
-                    listItem {
-                        attrs.button = true
-                        attrs.onClickFunction = { _ -> handleFileSingleClick(parent) }
-                        attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(parent) }
-                        listItemIcon { icon(materialui.icons.Folder) }
-                        listItemText { attrs.primary { +".." } }
+                    ListItemButton {
+                        attrs.onClick = { _ -> handleFileSingleClick(parent) }
+                        attrs.onDoubleClick = { _ -> handleFileDoubleClick(parent) }
+                        ListItemIcon { icon(mui.icons.material.Folder) }
+                        ListItemText { attrs.primary = buildElement  { +".." } }
                     }
                 }
                 filesInDir.forEach { file ->
                     println("file.fullPath = ${file.fullPath}")
-                    val icon = if (file.isDirectory == true) materialui.icons.Folder else materialui.icons.InsertDriveFile
+                    val icon = if (file.isDirectory == true) mui.icons.material.Folder else mui.icons.material.InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
                     fileDialog.adjustFileDisplay(file, fileDisplay)
 
                     if (!fileDisplay.isHidden) {
-                        listItem {
-                            attrs.button = true
+                        ListItemButton {
                             attrs.dense = true
                             attrs.disabled = !fileDisplay.isSelectable
-                            attrs.onClickFunction = { _ -> handleFileSingleClick(file) }
-                            attrs.onDoubleClickFunction = { _ -> handleFileDoubleClick(file) }
-                            fileDisplay.icon?.let { listItemIcon { icon(it) } }
-                            listItemText { attrs.primary { +fileDisplay.name } }
+                            attrs.onClick = { _ -> handleFileSingleClick(file) }
+                            attrs.onDoubleClick = { _ -> handleFileDoubleClick(file) }
+                            fileDisplay.icon?.let { ListItemIcon { icon(it) } }
+                            ListItemText { attrs.primary = buildElement { +fileDisplay.name } }
                         }
                     }
                 }
             }
 
             if (isSaveAs) {
-                textField {
-                    attrs.label { +"File name…" }
+                TextField {
+                    attrs.label = buildElement { +"File name…" }
                     attrs.autoFocus = true
                     attrs.fullWidth = true
-                    attrs.onChangeFunction = handleFileNameChange
+                    attrs.onChange = handleFileNameChange
                     attrs.value = selectedFile?.name ?: request.defaultTarget?.name ?: ""
                 }
             }
         }
 
-        dialogActions {
-            buttonGroup {
-                button {
+        DialogActions {
+            ButtonGroup {
+                Button {
                     +"Cancel"
-                    attrs.onClickFunction = handleCancel
+                    attrs.onClick = handleCancel
                 }
-                button {
+                Button {
                         +if (isSaveAs) "Save" else "Open"
-                        attrs.onClickFunction = handleConfirm
+                        attrs.onClick = handleConfirm
                     attrs.disabled = selectedFile == null
                 }
             }

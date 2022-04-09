@@ -12,17 +12,10 @@ import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import kotlinx.css.em
 import kotlinx.css.padding
-import kotlinx.html.js.onClickFunction
-import materialui.components.button.enums.ButtonColor
-import materialui.components.formcontrol.enums.FormControlMargin
-import materialui.components.formcontrol.formControl
-import materialui.components.iconbutton.iconButton
-import materialui.components.list.enums.ListStyle
-import materialui.components.list.list
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
+import kotlinx.js.jso
 import materialui.icon
-import materialui.icons.Delete
+import mui.icons.material.Delete
+import mui.material.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import react.Props
@@ -111,12 +104,14 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.resize()
     }
 
-    paper(styles.editorPanes on PaperStyle.root) {
+    Paper {
+        attrs.classes = jso { this.root = -styles.editorPanes }
         div(+styles.navigatorPane) {
             header { +"Navigator" }
 
             div(+styles.navigatorPaneContent) {
-                list(styles.entityList on ListStyle.root) {
+                List {
+                    attrs.classes = jso { this.root = -styles.entityList }
                     mutableModel.entities.forEach { mutableEntity ->
                         entityListItem {
                             attrs.mutableEntity = mutableEntity
@@ -151,7 +146,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                     }
                 } else {
                     editingEntity.let {
-                        formControl {
+                        FormControl {
                             attrs.margin = FormControlMargin.dense
 
                             editingEntity.getEditorPanelViews().forEach {
@@ -160,9 +155,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                             header { +"Actions" }
 
-                            iconButton {
-                                attrs.onClickFunction = handleDeleteEntity.withEvent()
-                                attrs.color = ButtonColor.secondary
+                            IconButton {
+                                attrs.onClick = handleDeleteEntity.withMouseEvent()
+                                attrs.color = IconButtonColor.secondary
                                 icon(Delete)
                                 +"Delete Entity"
                             }

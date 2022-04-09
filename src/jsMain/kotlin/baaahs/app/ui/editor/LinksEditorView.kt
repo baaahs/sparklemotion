@@ -1,24 +1,12 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.Colors
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
-import baaahs.ui.typographyBody1
-import baaahs.ui.typographyBody2
-import baaahs.ui.typographySubtitle2
-import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import materialui.components.circularprogress.circularProgress
-import materialui.components.iconbutton.iconButton
-import materialui.components.table.table
-import materialui.components.tablebody.tableBody
-import materialui.components.tablecell.tdCell
-import materialui.components.tablecell.thCell
-import materialui.components.tablehead.tableHead
-import materialui.components.tablerow.tableRow
-import materialui.components.typography.enums.TypographyColor
-import materialui.components.typography.typography
-import materialui.components.typography.typographyH6
+import baaahs.ui.*
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.*
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -34,33 +22,38 @@ private val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         ?: lastShaderInputPorts.current
 
     if (shaderInputPorts == null) {
-        circularProgress {}
+        CircularProgress {}
         typographyH6 { +"Analyzing Shader…" }
-    } else table {
-        attrs["size"] = "small"
+    } else Table {
+        attrs.size = Size.small
 
-        tableHead {
-            tableRow {
-                thCell { typographySubtitle2 { +"Port" } }
-                thCell { typographySubtitle2 { +"Source" } }
+        TableHead {
+            TableRow {
+                TableCell { typographySubtitle2 { +"Port" } }
+                TableCell { typographySubtitle2 { +"Source" } }
             }
         }
 
-        tableBody {
+        TableBody {
             shaderInputPorts.forEach { inputPort ->
-                tableRow {
-                    tdCell {
+                TableRow {
+                    TableCell {
+                        Typography {
+
+                        }
                         typographyBody1 { b { +inputPort.title } }
                         typographyBody2 {
                             if (inputPort.contentType.isUnknown()) {
-                                attrs.color = TypographyColor.error
+                                attrs.sx = jso {
+                                    color = Colors.error
+                                }
                             }
 
                             +"(${inputPort.contentType.title})"
                         }
                     }
 
-                    tdCell {
+                    TableCell {
                         linkSourceEditor {
                             key = inputPort.id
                             attrs.editableManager = props.editableManager
@@ -73,30 +66,30 @@ private val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
 
             val extraLinks = props.editingShader.extraLinks
             if (extraLinks.isNotEmpty()) {
-                tableRow {
-                    thCell { typographySubtitle2 { +"Unknown Port" } }
-                    thCell { typographySubtitle2 { +"Old Source" } }
+                TableRow {
+                    TableCell { typographySubtitle2 { +"Unknown Port" } }
+                    TableCell { typographySubtitle2 { +"Old Source" } }
                 }
 
                 extraLinks.forEach { (portId, link) ->
-                    tableRow {
-                        tdCell {
-                            typography {
-                                attrs.color = TypographyColor.error
+                    TableRow {
+                        TableCell {
+                            Typography {
+                                attrs.sx = jso { color = Colors.error }
 
                                 code { +portId }
                             }
                         }
 
-                        tdCell {
-                            typography { +link.title }
+                        TableCell {
+                            Typography { +link.title }
 
-                            iconButton {
-                                attrs.onClickFunction = { _ ->
+                            IconButton {
+                                attrs.onClick = { _ ->
                                     props.editingShader.changeInputPortLink(portId, null)
                                     props.editableManager.onChange()
                                 }
-                                icon(materialui.icons.Delete)
+                                icon(mui.icons.material.Delete)
                             }
                         }
                     }

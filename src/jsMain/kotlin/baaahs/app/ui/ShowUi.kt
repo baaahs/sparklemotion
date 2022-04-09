@@ -6,7 +6,7 @@ import baaahs.show.live.OpenShow
 import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
-import materialui.components.portal.portal
+import mui.base.Portal
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -50,7 +50,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.editMode = props.editMode != false
         }
 
-        portal {
+        Portal {
             controlsPalette {
                 attrs.controlDisplay = controlDisplay
                 attrs.controlProps = genericControlProps

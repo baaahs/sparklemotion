@@ -7,7 +7,7 @@ import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.encodeURIComponent
 import baaahs.window
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLAnchorElement
@@ -39,7 +39,7 @@ actual object UiActions {
         val docJson = json.encodeToString(serializer, document)
         val navigator = window.navigator
         if (navigator.asDynamic()?.msSaveOrOpenBlob != null) {
-            val blob = Blob(arrayOf(docJson), jsObject { this.type = contentType })
+            val blob = Blob(arrayOf(docJson), jso { this.type = contentType })
             navigator.asDynamic().msSaveOrOpenBlob(blob, filename);
         } else {
             val a = baaahs.document.createElement("a") as HTMLAnchorElement

@@ -2,6 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
+import baaahs.ui.asColor
 import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
@@ -9,10 +10,7 @@ import kotlinx.css.properties.Timing
 import kotlinx.css.properties.border
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.contrastText
-import materialui.styles.palette.main
-import materialui.styles.palette.paper
+import mui.material.styles.Theme
 import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
@@ -205,7 +203,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
 val DataSourceOpenControl.inUseStyle get() = if (this.inUse) Styles.inUse else Styles.notInUse
 
-class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
+class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
     val static = Styles
 
     val transitionCard by css {
@@ -230,22 +228,22 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-controls-theme", isS
     }
 
     val transitionHoldButton by css {
-        backgroundColor = theme.palette.secondary.main
-            .withAlpha(.125).blend(theme.palette.background.paper)
+        backgroundColor = theme.palette.secondary.main.asColor()
+            .withAlpha(.125).blend(Color(theme.palette.background.paper))
 
         hover {
-            backgroundColor = theme.palette.secondary.main
-                .withAlpha(.25).blend(theme.palette.background.paper)
+            backgroundColor = theme.palette.secondary.main.asColor()
+                .withAlpha(.25).blend(Color(theme.palette.background.paper))
         }
     }
 
     val transitionHoldEngaged by css {
-        color = theme.palette.secondary.contrastText
-        backgroundColor = theme.palette.secondary.main
+        color = theme.palette.secondary.contrastText.asColor()
+        backgroundColor = theme.palette.secondary.main.asColor()
 
         hover {
-            backgroundColor = theme.palette.secondary.main
-                .withAlpha(.75).blend(theme.palette.background.paper)
+            backgroundColor = theme.palette.secondary.main.asColor()
+                .withAlpha(.75).blend(Color(theme.palette.background.paper))
         }
     }
 

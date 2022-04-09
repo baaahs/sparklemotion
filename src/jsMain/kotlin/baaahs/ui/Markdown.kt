@@ -1,7 +1,7 @@
 package baaahs.ui
 
 import external.markdownit.MarkdownIt
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import org.w3c.dom.HTMLElement
 import react.Props
 import react.RBuilder
@@ -11,7 +11,7 @@ import react.dom.span
 private val MarkdownView = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     val mdRef = ref<HTMLElement>()
     val mdHtml = memo(props.children) {
-        MarkdownIt(jsObject {
+        MarkdownIt(jso {
             html = true
             linkify = true
             typographer = true

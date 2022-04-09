@@ -149,7 +149,7 @@ class SimulatorPlugins(
         )
 }
 
-sealed class Plugins private constructor(
+sealed class Plugins(
     @Deprecated("Don't use this directly")
     val pluginContext: PluginContext,
     private val openPlugins: List<OpenPlugin>

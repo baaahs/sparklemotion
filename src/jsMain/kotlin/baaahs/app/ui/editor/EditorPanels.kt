@@ -11,8 +11,8 @@ import baaahs.show.mutable.MutablePatchHolder
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
-import materialui.components.divider.divider
-import materialui.components.divider.enums.DividerVariant
+import mui.material.Divider
+import mui.material.DividerVariant
 import react.dom.div
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
@@ -31,7 +31,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     ): View = renderWrapper {
         propsEditors.forEachIndexed { index, editorPanelComponent ->
             if (index > 0) {
-                divider {
+                Divider {
                     attrs.variant = DividerVariant.middle
                 }
             }

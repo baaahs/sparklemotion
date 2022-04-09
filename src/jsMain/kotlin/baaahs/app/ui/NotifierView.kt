@@ -2,15 +2,14 @@ package baaahs.app.ui
 
 import baaahs.client.Notifier
 import baaahs.ui.markdown
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import materialui.components.backdrop.backdrop
-import materialui.components.backdrop.enum.BackdropStyle
-import materialui.lab.components.alert.alert
-import materialui.lab.components.alert.enums.AlertSeverity
-import materialui.lab.components.alert.enums.AlertStyle
-import materialui.lab.components.alerttitle.alertTitle
+import kotlinx.js.jso
+import mui.material.Alert
+import mui.material.AlertColor
+import mui.material.AlertTitle
+import mui.material.Backdrop
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -23,16 +22,19 @@ private val NotifierView = xComponent<NotifierProps>("Notifier") { props ->
 
     notifier.serverNotices.let { serverNotices ->
         if (serverNotices.isNotEmpty()) {
-            backdrop(Styles.serverNoticeBackdrop on BackdropStyle.root) {
+            Backdrop {
+                attrs.classes = jso { this.root = -Styles.serverNoticeBackdrop }
                 attrs { open = true }
 
                 div {
                     serverNotices.forEach { serverNotice ->
-                        alert(Styles.serverNoticeAlertMessage on AlertStyle.message) {
-                            attrs.severity = AlertSeverity.error
+                        Alert {
+                            attrs.classes = jso { this.message = -Styles.serverNoticeAlertMessage }
+
+                            attrs.severity = AlertColor.error
                             attrs.onClose = { notifier.confirmServerNotice(serverNotice.id) }
 
-                            alertTitle {
+                            AlertTitle {
                                 +serverNotice.title
                             }
 

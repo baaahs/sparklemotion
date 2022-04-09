@@ -2,22 +2,16 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.scene.EditingEntity
-import baaahs.ui.on
+import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
-import kotlinx.css.display
-import kotlinx.css.flexDirection
-import kotlinx.html.js.onChangeFunction
-import materialui.components.container.container
-import materialui.components.container.enums.ContainerStyle
-import materialui.components.textfield.textField
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.useContext
-import styled.inlineStyles
+import csstype.FlexDirection
+import kotlinx.js.jso
+import mui.material.Container
+import mui.material.TextField
+import mui.system.sx
+import react.*
+import react.dom.onChange
 
 private val TitleAndDescriptionEditorView =
     xComponent<TitleAndDescriptionEditorProps>("TitleAndDescriptionEditor") { props ->
@@ -27,34 +21,35 @@ private val TitleAndDescriptionEditorView =
         observe(props.editingEntity)
         val mutableEntity = props.editingEntity.mutableEntity
 
-        val handleTitleChange by eventHandler(mutableEntity, props.editingEntity) {
+        val handleTitleChange by formEventHandler(mutableEntity, props.editingEntity) {
             mutableEntity.title = it.target.value
             props.editingEntity.onChange()
         }
 
-        val handleDescriptionChange by eventHandler(mutableEntity, props.editingEntity) {
+        val handleDescriptionChange by formEventHandler(mutableEntity, props.editingEntity) {
             mutableEntity.description = it.target.value
             props.editingEntity.onChange()
         }
 
-        container(styles.propertiesEditSection on ContainerStyle.root) {
-            inlineStyles {
-                display = Display.flex
+        Container {
+            attrs.classes = jso { this.root = -styles.propertiesEditSection }
+            attrs.sx {
+                display = csstype.Display.flex
                 flexDirection = FlexDirection.column
             }
 
-            textField {
-                attrs.label { +"Title" }
+            TextField {
+                attrs.label = buildElement { +"Title" }
                 attrs.fullWidth = true
-                attrs.value(mutableEntity.title)
-                attrs.onChangeFunction = handleTitleChange
+                attrs.value = mutableEntity.title
+                attrs.onChange = handleTitleChange
             }
 
-            textField {
-                attrs.label { +"Description" }
+            TextField {
+                attrs.label = buildElement { +"Description" }
                 attrs.fullWidth = true
-                attrs.value(mutableEntity.description ?: "")
-                attrs.onChangeFunction = handleDescriptionChange
+                attrs.value = mutableEntity.description ?: ""
+                attrs.onChange = handleDescriptionChange
             }
         }
     }

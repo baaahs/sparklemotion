@@ -11,7 +11,7 @@ import kotlinx.css.Color
 import kotlinx.css.backgroundColor
 import kotlinx.html.js.onClickFunction
 import materialui.icon
-import materialui.icons.MusicNote
+import mui.icons.material.MusicNote
 import react.Props
 import react.RBuilder
 import react.RHandler

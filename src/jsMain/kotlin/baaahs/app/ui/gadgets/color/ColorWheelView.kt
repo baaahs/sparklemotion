@@ -7,20 +7,18 @@ import baaahs.util.useResizeListener
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableBounds
 import external.react_draggable.DraggableData
-import kotlinext.js.jsObject
 import kotlinx.css.*
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseDownFunction
 import kotlinx.html.js.onMouseMoveFunction
 import kotlinx.html.js.onMouseUpFunction
-import kotlinx.html.label
+import kotlinx.js.jso
+import mui.material.Button
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.button
 import react.dom.canvas
 import react.dom.div
 import react.useRef
@@ -131,7 +129,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                     key = index.toString()
                     attrs.defaultClassName = +ColorWheelStyles.draggablePicker
                     attrs.defaultClassNameDragging = +ColorWheelStyles.dragging
-                    attrs.position = jsObject {
+                    attrs.position = jso {
                         x = position.x + radius
                         y = position.y + radius
                     }
@@ -157,7 +155,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                         handleColorChange()
                         true
                     }
-                    attrs.bounds = jsObject<DraggableBounds> {
+                    attrs.bounds = jso<DraggableBounds> {
                         top = 0
                         left = 0
                         right = radius * 2
@@ -197,13 +195,13 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                     var classes = +ColorWheelStyles.harmonyMode
                     if (theHarmonyMode == harmonyMode) classes += " " + ColorWheelStyles.active.name
 
-                    button {
+                    Button {
                         key = theHarmonyMode.name
-                        attrs.onClickFunction = {
+                        attrs.onClick = {
                             harmonyMode = theHarmonyMode
                         }
 
-                        attrs.label { +theHarmonyMode.name }
+                        +theHarmonyMode.name
                     }
                 }
             }

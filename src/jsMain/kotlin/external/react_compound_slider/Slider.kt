@@ -97,7 +97,7 @@ external interface SliderProps : Props {
     /**
      * Component children to render.
      */
-    var children: () -> ReactElement
+    var children: () -> ReactElement<*>
 }
 
 external interface SliderItem {

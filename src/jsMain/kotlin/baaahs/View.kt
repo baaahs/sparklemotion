@@ -2,10 +2,7 @@ package baaahs
 
 import org.w3c.dom.*
 
-@Suppress("ObsoleteKotlinJsPackages")
 val document get() = kotlinx.browser.document
-
-@Suppress("ObsoleteKotlinJsPackages")
 val window get() = kotlinx.browser.window
 
 var Element.disabled: Boolean
