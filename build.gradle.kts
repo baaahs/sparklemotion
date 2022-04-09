@@ -36,6 +36,9 @@ plugins {
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
+
+    // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
+    id("com.github.turansky.kfc.legacy-union") version "4.88.0"
 }
 
 repositories {
