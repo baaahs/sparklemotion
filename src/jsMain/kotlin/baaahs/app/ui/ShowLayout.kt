@@ -38,13 +38,11 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                     attrs.tab = currentTab
                     attrs.controlDisplay = props.controlDisplay
                     attrs.controlProps = props.controlProps
-                    attrs.editMode = props.editMode
                 }
             is OpenGridTab ->
                 gridTabLayout {
                     attrs.tab = currentTab
                     attrs.controlProps = props.controlProps
-                    attrs.editMode = props.editMode
                     attrs.tabEditor = tabEditor
                 }
             null -> { +"No tabs?" }
@@ -64,7 +62,6 @@ external interface ShowLayoutProps : Props {
     var layout: OpenLayout
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
-    var editMode: Boolean?
     var layoutEditor: Editor<MutableLayout>
 }
 

@@ -38,9 +38,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val showManager = props.showManager
     observe(showManager)
 
-    var editMode by state { false }
-    val handleEditModeChange = callback(editMode) { editMode = !editMode }
-
     val uiSettings = webClient.uiSettings
     val handleUiSettingsChange by handler(webClient, webClient.uiSettings) { callback: (UiSettings) -> UiSettings ->
         val newUiSettings = callback(webClient.uiSettings)
@@ -97,6 +94,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val myAppGlContext = memo { jso<AppGlContext> { this.sharedGlContext = null } }
 
+    val documentManager = appMode.getDocumentManager(myAppContext)
+
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
     }
@@ -140,8 +139,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     else
         themeStyles.appDrawerClosed
 
+    val editMode = observe(documentManager.editMode)
     val editModeStyle =
-        if (editMode) Styles.editModeOn else Styles.editModeOff
+        if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val show = showManager.show
 
@@ -149,7 +149,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
             when (event.key) {
                 "d" -> {
-                    editMode = !editMode
+                    editMode.toggle()
                     event.stopPropagation()
                 }
             }
@@ -177,8 +177,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onClose = handleAppDrawerToggle
                         attrs.appMode = appMode
                         attrs.onAppModeChange = handleAppModeChange
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
@@ -187,8 +186,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                     appToolbar {
                         attrs.appMode = appMode
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onMenuButtonClick = handleAppDrawerToggle
                     }
 
@@ -198,7 +196,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                             Container {
                                 CircularProgress {}
-                                icon(mui.icons.material.NotificationImportant)
+                                icon(NotificationImportant)
 
                                 typographyH6 { +"Connecting…" }
                                 +"Attempting to connect to Sparkle Motion."
@@ -212,7 +210,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 Container {
                                     CircularProgress {}
-                                    icon(mui.icons.material.NotificationImportant)
+                                    icon(NotificationImportant)
 
                                     typographyH6 { +"Mapper Running…" }
                                     +"Please wait."
@@ -264,7 +262,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         if (props.sceneManager.scene == null) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                icon(mui.icons.material.NotificationImportant)
+                                                icon(NotificationImportant)
                                                 typographyH6 { +"No open scene." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }
