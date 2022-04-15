@@ -15,6 +15,7 @@ import react.dom.div
 
 private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.showManager.editMode)
 
     val control = props.control
 
@@ -36,7 +37,7 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
         problemBadge(control)
 
-        if (!props.disableEdit) {
+        if (editMode.isAvailable && !props.disableEdit) {
             div(+Styles.editButton) {
                 attrs.onClickFunction = onEditButtonClick
 

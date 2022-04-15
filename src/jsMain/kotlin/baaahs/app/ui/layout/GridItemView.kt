@@ -5,6 +5,7 @@ import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.controls.problemBadge
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
@@ -28,7 +29,7 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
 
     problemBadge(props.control)
 
-    div(+styles.editButton) {
+    div(+styles.editButton and styles.editModeControl) {
         attrs.onClickFunction = onEditButtonClick
 
         icon(mui.icons.material.Edit)

@@ -1,6 +1,7 @@
 package baaahs.app.ui.layout
 
 import baaahs.app.ui.Styles
+import baaahs.app.ui.appContext
 import baaahs.getBang
 import baaahs.show.LegacyTab
 import baaahs.show.live.ControlDisplay
@@ -20,11 +21,13 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.header
+import react.useContext
 import styled.inlineStyles
 
 private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLayout") { props ->
-    val editMode = props.editMode == true
-    val editModeStyle = if (editMode) Styles.editModeOn else Styles.editModeOff
+    val appContext = useContext(appContext)
+    val editMode = observe(appContext.showManager.editMode)
+    val editModeStyle = if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
     val tab = props.tab
 
     val colCount = tab.columns.size
@@ -71,7 +74,6 @@ private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLay
                         attrs.panel = panel
                         attrs.controlDisplay = props.controlDisplay
                         attrs.controlProps = props.controlProps
-                        attrs.editMode = props.editMode
                     }
                 }
             }
@@ -84,7 +86,6 @@ external interface LegacyTabLayoutProps : Props {
     var tab: LegacyTab
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
-    var editMode: Boolean?
 }
 
 fun RBuilder.legacyTabLayout(handler: RHandler<LegacyTabLayoutProps>) =

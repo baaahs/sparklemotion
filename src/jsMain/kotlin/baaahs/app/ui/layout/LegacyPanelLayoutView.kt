@@ -25,7 +25,7 @@ private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") 
     val appContext = useContext(appContext)
 
     val panel = props.panel
-    val editMode = props.editMode == true
+    val editMode = observe(appContext.showManager.editMode)
 
     val handleAddButtonClick = memo { mutableMapOf<String, MouseEventHandler<*>>() }
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
@@ -37,7 +37,7 @@ private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") 
             this.droppableId = panelBucket.dropTargetId
             this.type = panelBucket.type
             this.direction = Direction.horizontal.name
-            this.isDropDisabled = !editMode
+            this.isDropDisabled = !editMode.isOn
         }) { droppableProvided, _ ->
             buildElement {
                 val style = if (Styles.controlSections.size > panelBucket.section.depth)
@@ -56,7 +56,7 @@ private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") 
                         draggable({
                             this.key = draggableId
                             this.draggableId = draggableId
-                            this.isDragDisabled = !editMode
+                            this.isDragDisabled = !editMode.isOn
                             this.index = index
                         }) { draggableProvided, _ ->
                             buildElement {
@@ -112,7 +112,6 @@ external interface PanelLayoutProps : Props {
     var panel: Panel
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
-    var editMode: Boolean?
 }
 
 fun RBuilder.legacyPanelLayout(handler: RHandler<PanelLayoutProps>) =

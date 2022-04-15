@@ -42,32 +42,13 @@ import react.dom.onDragStart
 import styled.StyleSheet
 import styled.inlineStyles
 
-enum class EditMode(val render: Boolean) {
-    Disabled(false),
-    Off(false),
-    Transitional(true),
-    On(true);
-}
-
 class LayoutGrid(
     private val columns: Int,
     private val rows: Int,
-    private val items: List<OpenGridItem>,
-    private val isEdit: Boolean = false
+    private val items: List<OpenGridItem>
 ) {
-    private val cellIsFilled =
-        if (isEdit) Array(rows) { BooleanArray(columns) } else emptyArray()
-
     val layouts: Array<Layout> = buildList<Layout> {
         items.forEach { item ->
-            if (isEdit) {
-                for (row in item.row until item.width - 1) {
-                    for (column in item.column until item.column - 1) {
-                        cellIsFilled[row][column] = true
-                    }
-                }
-            }
-
             add(jso {
                 i = item.controlId
                 x = item.column
@@ -103,7 +84,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
     var showAddMenu by state<Pair<GridItem, HTMLElement?>?> { null }
 
-    val editMode = if (props.editMode == true) EditMode.On else EditMode.Off
+    val editMode = observe(appContext.showManager.editMode)
     var dragging by state { false }
 
     val handleLayoutChange by handler(props.tabEditor) { newLayouts: Array<Layout> ->
@@ -169,38 +150,17 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
     val (layoutWidth, layoutHeight) = layoutDimens
 
-    val layoutGrid = memo(columns, rows, props.tab, props.editMode, dragging) {
-        LayoutGrid(columns, rows, props.tab.items, editMode != EditMode.Disabled && !dragging)
-    }
-
-    val children = memo(props.tab.items, layoutGrid, props.controlProps) {
-        props.tab.items.map { item ->
-            buildElement {
-                div(+styles.gridCell) {
-                    key = item.controlId
-
-                    gridItem {
-                        attrs.control = item.control
-                        attrs.controlProps = props.controlProps
-                        attrs.className = -styles.controlBox
-                    }
-                }
-            }
-        }.toTypedArray()
+    val layoutGrid = memo(columns, rows, props.tab, dragging) {
+        LayoutGrid(columns, rows, props.tab.items)
     }
 
 
     div(+styles.gridOuterContainer and
-            when (editMode) {
-                EditMode.Disabled -> +styles.editModeDisabled
-                EditMode.Off ->  +styles.editModeOff
-                EditMode.Transitional -> +styles.editModeTransitional
-                EditMode.On ->  +styles.editModeOn
-            }
+            +if (editMode.isOn) styles.editModeOn else styles.editModeOff
     ) {
         ref = containerDiv
 
-        if (editMode.render) {
+        if (editMode.isAvailable) {
             div(+styles.gridBackground) {
                 val positionParams = jso<PositionParams> {
                     margin = arrayOf(5, 5)
@@ -241,7 +201,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.margin = arrayOf(5, 5)
             attrs.layout = layoutGrid.layouts
             attrs.onLayoutChange = handleLayoutChange
-//            attrs.compactType = null
+            attrs.compactType = null
             attrs.resizeHandles = arrayOf(
                 "s", "w", "e", "n",
                 "sw", "nw", "se", "ne"
@@ -254,15 +214,27 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                     }
                 }
             }
-            attrs.isDroppable = true
+            attrs.isDraggable = editMode.isOn
+            attrs.isResizable = editMode.isOn
+            attrs.isDroppable = editMode.isOn
             attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
             attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
             attrs.onDropDragOver = handleDropDragOver
 
-            attrs.children = ReactNode(children)
+            props.tab.items.map { item ->
+                div(+styles.gridCell) {
+                    key = item.controlId
+
+                    gridItem {
+                        attrs.control = item.control
+                        attrs.controlProps = props.controlProps
+                        attrs.className = -styles.controlBox
+                    }
+                }
+            }.toTypedArray()
         }
 
-        if (props.editMode == true) {
+        if (editMode.isOn) {
             div(+styles.addControl) {
                 attrs.draggable = Draggable.htmlTrue
 
@@ -320,7 +292,6 @@ object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
 external interface GridTabLayoutProps : Props {
     var tab: OpenGridTab
     var controlProps: ControlProps
-    var editMode: Boolean?
     var tabEditor: Editor<MutableGridTab>
 }
 
