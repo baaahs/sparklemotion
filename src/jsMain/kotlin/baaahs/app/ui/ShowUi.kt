@@ -2,6 +2,7 @@ package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
 import baaahs.getBang
+import baaahs.client.document.EditMode
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
@@ -19,6 +20,8 @@ import react.useContext
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val appContext = useContext(appContext)
     val show = props.show
+    val editMode = appContext.showManager.editMode
+    observe(editMode)
 
     // TODO: Pick layout based on device characteristics.
     val currentLayoutName = "default"
@@ -36,7 +39,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
     var controlDisplay by state<ControlDisplay> { nuffin() }
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
-    onChange("show/state", props.show, props.show.getEnabledSwitchState(), props.editMode, appContext.dragNDrop) {
+    onChange("show/state", props.show, props.show.getEnabledSwitchState(), appContext.dragNDrop) {
         controlDisplay = ControlDisplay(
             props.show, appContext.showManager, appContext.dragNDrop
         )
@@ -46,11 +49,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    val genericControlProps = ControlProps(
-        props.onShowStateChange,
-        props.editMode != false,
-        controlDisplay
-    )
+    val genericControlProps = memo(
+        props.onShowStateChange, editMode, controlDisplay
+    ) {
+        ControlProps(props.onShowStateChange, editMode, controlDisplay)
+    }
 
     dragDropContext({
         onDragEnd = appContext.dragNDrop::onDragEnd
@@ -61,7 +64,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.layout = currentLayout
             attrs.controlDisplay = controlDisplay
             attrs.controlProps = genericControlProps
-            attrs.editMode = props.editMode != false
             attrs.layoutEditor = layoutEditor
         }
 
@@ -70,7 +72,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
                 attrs.controlDisplay = controlDisplay
                 attrs.controlProps = genericControlProps
                 attrs.show = props.show
-                attrs.editMode = props.editMode != false
+                attrs.editMode = props.editMode
             }
         }
     }
@@ -78,7 +80,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
 external interface ShowUiProps : Props {
     var show: OpenShow
-    var editMode: Boolean?
+    var editMode: EditMode
     var onShowStateChange: () -> Unit
 }
 

@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.client.document.EditMode
 import baaahs.show.live.ControlProps
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
@@ -28,7 +29,7 @@ private val GadgetsPreviewView = xComponent<GadgetsPreviewProps>("GadgetsPreview
     }
 
     div(+GadgetsPreviewStyles.gadgetsPreview) {
-        val previewControlProps = ControlProps({  }, false, null)
+        val previewControlProps = ControlProps({  }, EditMode(EditMode.Mode.Never), null)
 
         mutableControls.forEach { gadgetPreview ->
             val openControl = gadgetPreview.openControl

@@ -27,11 +27,11 @@ import react.dom.events.MouseEvent
 
 private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
     val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
 
-    val editMode = props.controlProps.editMode
     val onShowStateChange = props.controlProps.onShowStateChange
 
     val showPreview = appContext.uiSettings.renderButtonPreviews
@@ -67,7 +67,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
             }
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
-            isDropDisabled = !editMode
+            isDropDisabled = !editMode.isOn
         }) { sceneDropProvided, _ ->
             buildElement {
                 ToggleButtonGroup {
@@ -90,7 +90,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                         draggable({
                             this.key = buttonControl.id
                             this.draggableId = buttonControl.id
-                            this.isDragDisabled = !editMode
+                            this.isDragDisabled = !editMode.isOn
                             this.index = index
                         }) { sceneDragProvided, _ ->
 //                            div {
@@ -103,7 +103,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                                     problemBadge(buttonControl as OpenControl)
 
                                     div(+Styles.editButton) {
-                                        if (editMode) {
+                                        if (editMode.isOn) {
                                             attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                         }
 
@@ -150,7 +150,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                     child(sceneDropProvided.placeholder)
                 }
 
-                if (editMode) {
+                if (editMode.isOn) {
                     IconButton {
                         icon(mui.icons.material.AddCircleOutline)
                         attrs.onClick = {
