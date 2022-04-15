@@ -83,64 +83,64 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
 
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
-    div {
-        div(+XyPadStyles.container and props.xyPadControl.inUseStyle) {
-            div(+XyPadStyles.background) {
-                ref = backgroundRef
+
+    div(+XyPadStyles.container and props.xyPadControl.inUseStyle) {
+        div(+XyPadStyles.background) {
+            ref = backgroundRef
+            inlineStyles {
+                width = padSize.x.px
+                height = padSize.y.px
+            }
+
+            attrs.onMouseDownFunction = handleMouseDownEvent
+            attrs.onMouseUpFunction = handleMouseUpEvent
+            attrs.onMouseMoveFunction = handleMouseMoveEvent
+
+            div(+XyPadStyles.centerLine) {
                 inlineStyles {
-                    width = padSize.x.px
+                    width = 1.px
+                    left = (padSize.x / 2).px
                     height = padSize.y.px
                 }
+            }
 
-                attrs.onMouseDownFunction = handleMouseDownEvent
-                attrs.onMouseUpFunction = handleMouseUpEvent
-                attrs.onMouseMoveFunction = handleMouseMoveEvent
-
-                div(+XyPadStyles.centerLine) {
-                    inlineStyles {
-                        width = 1.px
-                        left = (padSize.x / 2).px
-                        height = padSize.y.px
-                    }
+            div(+XyPadStyles.centerLine) {
+                inlineStyles {
+                    height = 1.px
+                    top = (padSize.y / 2).px
+                    width = padSize.x.px
                 }
+            }
 
-                div(+XyPadStyles.centerLine) {
-                    inlineStyles {
-                        height = 1.px
-                        top = (padSize.y / 2).px
-                        width = padSize.x.px
-                    }
+            div(+XyPadStyles.crosshairs) {
+                ref = crosshairXRef
+                inlineStyles {
+                    width = 1.px
+                    left = crosshairPositionPx.x.px
+                    height = padSize.y.px
                 }
+            }
 
-                div(+XyPadStyles.crosshairs) {
-                    ref = crosshairXRef
-                    inlineStyles {
-                        width = 1.px
-                        left = crosshairPositionPx.x.px
-                        height = padSize.y.px
-                    }
+            div(+XyPadStyles.crosshairs) {
+                ref = crosshairYRef
+                inlineStyles {
+                    height = 1.px
+                    top = crosshairPositionPx.y.px
+                    width = padSize.x.px
                 }
+            }
 
-                div(+XyPadStyles.crosshairs) {
-                    ref = crosshairYRef
-                    inlineStyles {
-                        height = 1.px
-                        top = crosshairPositionPx.y.px
-                        width = padSize.x.px
-                    }
-                }
-
-                div(+XyPadStyles.knob) {
-                    ref = knobRef
-                    inlineStyles {
-                        width = knobSize.x.px
-                        height = knobSize.y.px
-                        left = knobPositionPx.x.px
-                        top = knobPositionPx.y.px
-                    }
+            div(+XyPadStyles.knob) {
+                ref = knobRef
+                inlineStyles {
+                    width = knobSize.x.px
+                    height = knobSize.y.px
+                    left = knobPositionPx.x.px
+                    top = knobPositionPx.y.px
                 }
             }
         }
+
         div(+Styles.dataSourceTitle) { +xyPad.title }
     }
 }
