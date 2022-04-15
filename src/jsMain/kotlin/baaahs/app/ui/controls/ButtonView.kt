@@ -37,7 +37,7 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
         onShowStateChange()
     }
 
-    div(+Styles.controlButton) {
+    div(+Styles.controlRoot and Styles.controlButton) {
         if (shaderForPreview != null) {
             div(+Styles.buttonShaderPreviewContainer) {
                 shaderPreview {

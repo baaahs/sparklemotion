@@ -5,9 +5,7 @@ import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.show.live.ControlDisplay
-import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableDocument
-import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.*
 
 interface Editable {
     val title: String
@@ -112,4 +110,27 @@ class AddControlToPanelBucket<MC : MutableControl>(
             .editControlLayout(panelBucket.panel)
             .add(mutableControl)
     }
+}
+
+class AddControlToGrid<MC : MutableControl>(
+    private val editor: Editor<MutableGridTab>,
+    private val column: Int,
+    private val row: Int,
+    private val width: Int,
+    private val height: Int,
+    private val createControlFn: (mutableShow: MutableShow) -> MC
+) : AddToContainerEditIntent<MC>() {
+    override fun createControl(mutableShow: MutableShow): MC {
+        return createControlFn(mutableShow)
+    }
+
+    override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
+        editor.edit(mutableShow) {
+            items.add(MutableGridItem(mutableControl, column, row, 1, 1))
+        }
+    }
+}
+
+interface Editor<T> {
+    fun edit(mutableShow: MutableShow, block: T.() -> Unit)
 }

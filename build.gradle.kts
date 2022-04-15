@@ -188,6 +188,8 @@ kotlin {
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
+
+                implementation(npm("react-grid-layout", "1.3.4",))
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -254,6 +256,10 @@ tasks.named<ProcessResources>("jsProcessResources") {
         into("blueprintjs")
         include("core/lib/css/blueprint.css")
         include("icons/lib/css/blueprint-icons.css")
+    }
+    from("build/js/node_modules/react-grid-layout") {
+        into("react-grid-layout")
+        include("css/styles.css")
     }
 
     doLast {

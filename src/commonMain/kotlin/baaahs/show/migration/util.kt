@@ -1,5 +1,6 @@
 package baaahs.show.migration
 
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -14,6 +15,20 @@ fun MutableMap<String, JsonElement>.mapObjsInDict(
         objMap.toJsonObj()
     }?.also { this[key] = it.toJsonObj() }
 }
+
+fun MutableMap<String, JsonElement>.mapObjsInArray(
+    key: String,
+    callback: (item: MutableMap<String, JsonElement>) -> Unit
+) {
+    (this[key] as JsonArray?)?.map { obj ->
+        val objMap = (obj as JsonObject).toMutableMap()
+        callback(objMap)
+        objMap.toJsonObj()
+    }?.also { this[key] = JsonArray(it) }
+}
+
+fun JsonObject.edit(block: MutableMap<String, JsonElement>.() -> Unit) =
+    JsonObject(toMutableMap().apply(block))
 
 fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
     forEach { (k, v) -> put(k, v) }

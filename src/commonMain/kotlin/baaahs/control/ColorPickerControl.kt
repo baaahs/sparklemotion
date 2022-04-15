@@ -61,7 +61,7 @@ data class MutableColorPickerControl(
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): ColorPickerControl {
+    override fun buildControl(showBuilder: ShowBuilder): ColorPickerControl {
         return ColorPickerControl(
             title, initialValue, showBuilder.idFor(controlledDataSource)
         )

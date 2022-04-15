@@ -83,12 +83,12 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     return buf.trim().replace(Regex("\\s+\n"), "\n")
 }
 
-fun createLayouts(vararg panelNames: String): MutableLayouts {
+fun createLayouts(mutableShow: MutableShow, vararg panelNames: String): MutableLayouts {
     return MutableLayouts(
         Layouts(
             panelNames.associateWith { Panel(it) },
             mapOf("default" to Layout(null, emptyList()))
-        )
+        ), mutableShow
     )
 }
 

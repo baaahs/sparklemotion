@@ -197,16 +197,17 @@ object SampleData {
             addPanel(transitionPanel)
 
             editLayout("default") {
-                editTab("Main") {
-                    title = "Main"
-                    columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
-                    rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
-                    areas.addAll(listOf(
-                        scenesPanel, previewPanel,
-                        backdropsPanel, controlsPanel,
-                        moreControlsPanel, transitionPanel
-                    ))
-                }
+                tabs = mutableListOf(
+                    MutableLegacyTab("Main").apply {
+                        columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
+                        rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
+                        areas.addAll(listOf(
+                            scenesPanel, previewPanel,
+                            backdropsPanel, controlsPanel,
+                            moreControlsPanel, transitionPanel
+                        ))
+                    }
+                )
             }
         }
 

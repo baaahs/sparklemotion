@@ -82,6 +82,7 @@ val RuleSet.selector: String
 
 operator fun RuleSet.unaryPlus(): String = name
 operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
+val String.className: ClassName get() = ClassName(this)
 infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
 infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name

@@ -3,7 +3,7 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.getBang
 import baaahs.show.mutable.MutableLayouts
-import baaahs.show.mutable.MutableTab
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.withSelectEvent
@@ -48,7 +48,7 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
 
 external interface LayoutAreaCellProps : Props {
     var layouts: MutableLayouts
-    var tab: MutableTab
+    var tab: MutableLegacyTab
     var columnIndex: Int
     var rowIndex: Int
     var onChange: () -> Unit

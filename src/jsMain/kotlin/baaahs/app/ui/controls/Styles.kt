@@ -145,11 +145,13 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         opacity = .75
     }
 
+    val controlRoot by css {}
+
     val controlButton by css {
         display = Display.grid
         position = Position.relative
-        width = 150.px
-        minHeight = 75.px
+//        width = 150.px
+//        minHeight = 75.px
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
@@ -164,6 +166,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
                 cursor = Cursor.move
             }
         }
+
+        button {
+            minWidth = 0.px
+            overflow = Overflow.auto
+        }
     }
 
     val buttonShaderPreviewContainer by css {
@@ -175,6 +182,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val buttonLabelWhenPreview by css {
+        grow(Grow.GROW)
         color = Color.black
         background = "radial-gradient(rgba(255,255,255,.8), transparent)"
     }

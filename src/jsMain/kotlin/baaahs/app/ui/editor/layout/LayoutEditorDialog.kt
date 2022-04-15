@@ -5,6 +5,7 @@ import acex.AceEditor
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.show.Layout
+import baaahs.show.LegacyTab
 import baaahs.show.Panel
 import baaahs.show.Show
 import baaahs.show.mutable.MutableLayout
@@ -85,7 +86,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
             val layoutsMap = getLayoutsFromJson()
             mutableLayouts.formats.clear()
             layoutsMap.forEach { (formatId, layout) ->
-                mutableLayouts.formats[formatId] = MutableLayout(layout, mutableShow.layouts.panels)
+                mutableLayouts.formats[formatId] = MutableLayout(layout, mutableShow.layouts.panels, mutableShow)
             }
         }
 
@@ -285,6 +286,7 @@ private fun Map<String, Layout>.getPanelIds(): Set<String> {
     return mutableSetOf<String>().apply {
         values.forEach { layout ->
             layout.tabs.forEach { tab ->
+                tab as LegacyTab
                 addAll(tab.areas)
             }
         }

@@ -68,14 +68,14 @@ data class MutableButtonGroupControl(
         )
     }
 
-    override fun build(showBuilder: ShowBuilder): ButtonGroupControl {
+    override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl {
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
             mutableButtonControl.buildAndStashId(showBuilder)
         })
     }
 
     override fun previewOpen(): OpenControl {
-        val buttonGroupControl = build(ShowBuilder())
+        val buttonGroupControl = buildControl(ShowBuilder())
         return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
     }
 

@@ -16,8 +16,11 @@ import org.spekframework.spek2.dsl.Skip
 object ControlDisplaySpec : Spek({
     describe<ControlDisplay> {
         val mutableShow by value {
-            MutableShow("Show")
-                .editLayouts { copyFrom(createLayouts("Panel 1", "Panel 2", "Panel 3")) }
+            MutableShow("Show").also {
+                it.editLayouts {
+                    copyFrom(createLayouts(it, "Panel 1", "Panel 2", "Panel 3"))
+                }
+            }
         }
         val show by value { mutableShow.build(ShowBuilder()) }
 

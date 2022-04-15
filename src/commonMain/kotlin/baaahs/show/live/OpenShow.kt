@@ -48,6 +48,7 @@ class OpenShow(
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
     val layouts get() = show.layouts
+    val openLayouts = show.layouts.open(openContext)
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> get() = openContext.allControls
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
@@ -137,6 +138,32 @@ class OpenShow(
         private val logger = Logger("OpenShow")
     }
 }
+
+data class OpenLayouts(
+    val panels: Map<String, Panel>,
+    val formats: Map<String, OpenLayout>
+)
+
+data class OpenLayout(
+    val mediaQuery: String?,
+    val tabs: List<OpenTab>
+)
+
+interface OpenTab
+
+data class OpenGridTab(
+    val title: String,
+    val items: List<OpenGridItem>
+) : OpenTab
+
+data class OpenGridItem(
+    val control: OpenControl,
+    val column: Int,
+    val row: Int,
+    val width: Int,
+    val height: Int,
+    val controlId: String
+)
 
 abstract class OpenShowVisitor {
     open fun visitShow(openShow: OpenShow) {
