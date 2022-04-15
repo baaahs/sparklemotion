@@ -282,12 +282,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 renderDialog?.invoke(this)
 
-                editableManagerUi {
-                    attrs.editableManager =
-                        when (appMode) {
-                            AppMode.Show -> editableManager
-                            AppMode.Scene -> sceneEditableManager
-                        }
+                if (editMode.isAvailable) {
+                    editableManagerUi {
+                        attrs.editableManager =
+                            when (appMode) {
+                                AppMode.Show -> editableManager
+                                AppMode.Scene -> sceneEditableManager
+                            }
+                    }
                 }
 
                 prompt?.let {
