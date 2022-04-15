@@ -42,7 +42,7 @@ class MutableTransitionControl : MutableControl {
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): Control {
+    override fun buildControl(showBuilder: ShowBuilder): Control {
         return TransitionControl()
     }
 

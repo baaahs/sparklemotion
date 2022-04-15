@@ -64,7 +64,7 @@ class MutableButtonControl(
         return super.getPropertiesComponents() + ButtonPropsEditor(this)
     }
 
-    override fun build(showBuilder: ShowBuilder): ButtonControl {
+    override fun buildControl(showBuilder: ShowBuilder): ButtonControl {
         return ButtonControl(
             title,
             activationType,
@@ -76,7 +76,7 @@ class MutableButtonControl(
     }
 
     override fun previewOpen(): OpenControl {
-        val buttonControl = build(ShowBuilder())
+        val buttonControl = buildControl(ShowBuilder())
         return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledDataSource)
     }
 

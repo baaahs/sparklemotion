@@ -42,7 +42,7 @@ object OpenShowSpec : Spek({
                         Layouts(
                             listOf("Panel 1", "Panel 2", "Panel 3").associateWith { Panel(it) },
                             mapOf("default" to Layout(null, emptyList()))
-                        )
+                        ), mutableShow
                     )
                 )
             }

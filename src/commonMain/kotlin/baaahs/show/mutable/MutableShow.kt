@@ -25,8 +25,6 @@ class MutableShow(
 ) : MutablePatchHolder(baseShow), MutableDocument<Show> {
     override val mutableShow: MutableShow get() = this
 
-    internal val layouts = MutableLayouts(baseShow.layouts)
-
     internal val controls = CacheBuilder<String, MutableControl> { id ->
         baseShow.controls.getBang(id, "control").createMutable(this)
     }
@@ -52,6 +50,8 @@ class MutableShow(
                 patch.priority
             )
         }
+
+    internal val layouts = MutableLayouts(baseShow.layouts, this)
 
     init {
         // Second pass required here since they might refer to each other.

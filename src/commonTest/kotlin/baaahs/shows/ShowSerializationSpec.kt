@@ -157,6 +157,8 @@ private fun forJson(show: Show): JsonObject {
                     put("mediaQuery", it.mediaQuery)
                     put("tabs", it.tabs.jsonMap {
                         buildJsonObject {
+                            it as LegacyTab
+                            put("type", "Legacy")
                             put("title", it.title)
                             put("columns", it.columns.jsonMap { JsonPrimitive(it) })
                             put("rows", it.rows.jsonMap { JsonPrimitive(it) })

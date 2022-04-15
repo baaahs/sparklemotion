@@ -7,7 +7,14 @@ import baaahs.show.live.OpenControl
 
 interface MutableControl : MutableEditable<Show> {
     var asBuiltId: String?
-    fun build(showBuilder: ShowBuilder): Control
+
+    fun buildControl(showBuilder: ShowBuilder): Control
+
+    fun build(showBuilder: ShowBuilder) : Control =
+        buildControl(showBuilder).also {
+            asBuiltId = showBuilder.idFor(it)
+        }
+
     fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
         if (log.controls.add(this)) visitor.visit(this)
     }
@@ -15,7 +22,7 @@ interface MutableControl : MutableEditable<Show> {
     fun previewOpen(): OpenControl
 
     fun buildAndStashId(showBuilder: ShowBuilder): String {
-        return showBuilder.idFor(build(showBuilder))
+        return showBuilder.idFor(buildControl(showBuilder))
             .also { asBuiltId = it }
     }
 }
