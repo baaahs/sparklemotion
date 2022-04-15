@@ -66,7 +66,7 @@ open class ShowOpener(
             .filter { (key, _) -> !controlledDataSourceIds.contains(key) }
             .map { (_, dataSource) ->
                 dataSource.buildControl()?.let { mutableControl ->
-                    val control = mutableControl.build(implicitControlsShowBuilder)
+                    val control = mutableControl.buildControl(implicitControlsShowBuilder)
                     val id = implicitControlsShowBuilder.idFor(control)
                     implicitControls[id] = control
                 } }

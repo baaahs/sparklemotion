@@ -8,7 +8,8 @@ val AllShowMigrations: List<DataMigrator.Migration> = listOf(
     V3_UpdateLayouts,
     V4_FlattenGadgetControls,
     V5_FixFixtureInfoRefs,
-    V6_FlattenPatches
+    V6_FlattenPatches,
+    V7_LegacyTabs
 )
 
 val AllSceneMigrations: List<DataMigrator.Migration> = listOf(

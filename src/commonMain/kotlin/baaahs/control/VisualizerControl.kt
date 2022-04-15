@@ -55,12 +55,12 @@ data class MutableVisualizerControl(
         )
     )
 
-    override fun build(showBuilder: ShowBuilder): VisualizerControl {
+    override fun buildControl(showBuilder: ShowBuilder): VisualizerControl {
         return VisualizerControl(surfaceDisplayMode, rotate)
     }
 
     override fun previewOpen(): OpenControl {
-        return OpenVisualizerControl(randomId(title.camelize()), build(ShowBuilder()))
+        return OpenVisualizerControl(randomId(title.camelize()), buildControl(ShowBuilder()))
     }
 }
 

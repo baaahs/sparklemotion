@@ -30,10 +30,12 @@ data class Show(
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
     val patches: Map<String, Patch> = emptyMap(),
-    val controls: Map<String, Control>  = emptyMap(),
+    val controls: Map<String, Control> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder, Editable {
-    init { validatePatchHolder() }
+    init {
+        validatePatchHolder()
+    }
 
     fun toJson(json: Json): JsonElement {
         return json.encodeToJsonElement(serializer(), this)
@@ -139,11 +141,11 @@ fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
             editLayout("default") {
-                editTab("Main") {
+                tabs.add(MutableLegacyTab("Main").apply {
                     columns.add(MutableLayoutDimen.decode("1fr"))
                     rows.add(MutableLayoutDimen.decode("1fr"))
                     areas.add(findOrCreatePanel("Controls"))
-                }
+                })
             }
         }
     }.getShow()

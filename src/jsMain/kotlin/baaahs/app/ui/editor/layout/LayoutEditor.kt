@@ -2,8 +2,8 @@ package baaahs.app.ui.editor.layout
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.MutableTab
 import baaahs.ui.Prompt
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
@@ -28,7 +28,7 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     var currentTabIndex by state { 0 }
     val mutableLayouts = props.mutableShow.layouts
     val mutableLayout = mutableLayouts.formats[props.format]!!
-    val currentTab = mutableLayout.tabs[currentTabIndex]
+    val currentTab = mutableLayout.tabs[currentTabIndex] as MutableLegacyTab
 
     val handleTabChange by syntheticEventHandler { e: SyntheticEvent<*, *>, _: Boolean ->
         currentTabIndex = e.target.value.toInt()
@@ -51,7 +51,7 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                     } else null
                 },
                 onSubmit = { name ->
-                    val newTab = MutableTab(name)
+                    val newTab = MutableLegacyTab(name)
                     mutableLayout.tabs.add(newTab)
                     props.onGridChange()
                 }

@@ -1,8 +1,12 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.editor.Editor
+import baaahs.getBang
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutableLayout
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.nuffin
 import baaahs.ui.xComponent
 import external.dragDropContext
@@ -18,7 +22,17 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
     // TODO: Pick layout based on device characteristics.
     val currentLayoutName = "default"
-    val currentLayout = show.layouts.formats[currentLayoutName] ?: error("no such layout $currentLayoutName")
+    val currentLayout = show.openLayouts.formats[currentLayoutName]
+        ?: error("no such layout $currentLayoutName")
+    val layoutEditor = memo(currentLayoutName) {
+        object : Editor<MutableLayout> {
+            override fun edit(mutableShow: MutableShow, block: MutableLayout.() -> Unit) {
+                mutableShow.editLayouts {
+                    block(formats.getBang(currentLayoutName, "layout"))
+                }
+            }
+        }
+    }
 
     var controlDisplay by state<ControlDisplay> { nuffin() }
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
@@ -48,6 +62,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
             attrs.controlDisplay = controlDisplay
             attrs.controlProps = genericControlProps
             attrs.editMode = props.editMode != false
+            attrs.layoutEditor = layoutEditor
         }
 
         Portal {

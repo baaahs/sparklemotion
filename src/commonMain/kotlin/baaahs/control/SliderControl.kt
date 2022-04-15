@@ -83,7 +83,7 @@ data class MutableSliderControl(
         )
     )
 
-    override fun build(showBuilder: ShowBuilder): SliderControl {
+    override fun buildControl(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(
             title, initialValue, minValue, maxValue, stepValue,
             showBuilder.idFor(controlledDataSource)

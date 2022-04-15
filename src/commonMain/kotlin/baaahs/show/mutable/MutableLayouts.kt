@@ -1,20 +1,17 @@
 package baaahs.show.mutable
 
 import baaahs.getBang
-import baaahs.show.Layout
-import baaahs.show.Layouts
-import baaahs.show.Panel
-import baaahs.show.Tab
+import baaahs.show.*
 
 class MutableLayouts(
     val panels: MutableMap<String, MutablePanel> = mutableMapOf(),
     val formats: MutableMap<String, MutableLayout> = mutableMapOf()
 ) {
-    constructor(baseLayouts: Layouts) : this(
+    constructor(baseLayouts: Layouts, mutableShow: MutableShow) : this(
         panels = baseLayouts.panels.mapValues { (_, v) -> MutablePanel(v) }.toMutableMap()
     ) {
         baseLayouts.formats.forEach { (id, v) ->
-            formats[id] = MutableLayout(v, panels)
+            formats[id] = MutableLayout(v, panels, mutableShow)
         }
     }
 
@@ -77,44 +74,42 @@ class MutableLayout(
     var mediaQuery: String?,
     var tabs: MutableList<MutableTab> = mutableListOf()
 ) {
-    constructor(baseLayout: Layout, panels: Map<String, MutablePanel>) : this(
+    constructor(baseLayout: Layout, panels: Map<String, MutablePanel>, mutableShow: MutableShow) : this(
         mediaQuery = baseLayout.mediaQuery,
-        tabs = baseLayout.tabs.map { MutableTab(it, panels) }.toMutableList()
+        tabs = baseLayout.tabs.map { it.edit(panels, mutableShow) }.toMutableList()
     )
 
     fun build(showBuilder: ShowBuilder): Layout {
         return Layout(mediaQuery, tabs.map { it.build(showBuilder) })
     }
-
-    fun editTab(title: String, block: MutableTab.() -> Unit): MutableLayout {
-        val tab = tabs.find { it.title == title }
-            ?: run { MutableTab(title).also { tabs.add(it) } }
-        tab.apply(block)
-        return this
-    }
 }
 
-class MutableTab(
-    var title: String,
+interface MutableTab {
+    var title: String
+
+    fun build(showBuilder: ShowBuilder): Tab
+}
+
+class MutableLegacyTab(
+    override var title: String,
     val columns: MutableList<MutableLayoutDimen> = mutableListOf(),
     val rows: MutableList<MutableLayoutDimen> = mutableListOf(),
     val areas: MutableList<MutablePanel> = mutableListOf()
-) {
-    constructor(baseTab: Tab, panels: Map<String, MutablePanel>) : this(
+) : MutableTab {
+    constructor(baseTab: LegacyTab, panels: Map<String, MutablePanel>) : this(
         title = baseTab.title,
         columns = baseTab.columns.map { MutableLayoutDimen.decode(it) }.toMutableList(),
         rows = baseTab.rows.map { MutableLayoutDimen.decode(it) }.toMutableList(),
         areas = baseTab.areas.map { panels.getBang(it, "panel") }.toMutableList()
     )
 
-    fun build(showBuilder: ShowBuilder): Tab {
-        return Tab(
+    override fun build(showBuilder: ShowBuilder): Tab =
+        LegacyTab(
             title,
             columns.map { it.build() },
             rows.map { it.build() },
             areas.map { showBuilder.idFor(it.build()) }
         )
-    }
 
     fun appendColumn() {
         duplicateColumn(columns.size - 1)
@@ -175,6 +170,36 @@ class MutableTab(
         areas.addAll(newAreas)
         rows.removeAt(index)
     }
+}
+
+class MutableGridTab(
+    override var title: String,
+    val items: MutableList<MutableGridItem>
+) : MutableTab {
+    constructor(
+        baseTab: GridTab,
+        mutableShow: MutableShow
+    ) : this(baseTab.title, baseTab.items.map { MutableGridItem(it, mutableShow) }.toMutableList())
+
+    override fun build(showBuilder: ShowBuilder): Tab =
+        GridTab(title, items.map { it.build(showBuilder) })
+}
+
+class MutableGridItem(
+    var control: MutableControl,
+    var column: Int,
+    var row: Int,
+    var width: Int = 1,
+    var height: Int = 1
+) {
+    fun build(showBuilder: ShowBuilder) =
+        GridItem(showBuilder.idFor(control.build(showBuilder)), column, row, width, height)
+
+    constructor(baseGridItem: GridItem, mutableShow: MutableShow) : this(
+        mutableShow.findControl(baseGridItem.controlId),
+        baseGridItem.column, baseGridItem.row,
+        baseGridItem.width, baseGridItem.height
+    )
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {

@@ -60,7 +60,7 @@ class MutableXyPadControl(
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = emptyList()
 
-    override fun build(showBuilder: ShowBuilder): XyPadControl {
+    override fun buildControl(showBuilder: ShowBuilder): XyPadControl {
         return XyPadControl(
             title, initialValue, minValue, maxValue,
             showBuilder.idFor(controlledDataSource)
