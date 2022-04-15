@@ -108,6 +108,16 @@ class OpenShow(
         allControls.forEach { it.applyConstraints() }
     }
 
+    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, depth: Int) {
+        super.addTo(activePatchSetBuilder, depth)
+
+        allControls.forEach {
+            if (it is OpenPatchHolder && it.isActive()) {
+                it.addTo(activePatchSetBuilder, depth + 1)
+            }
+        }
+    }
+
     fun getEnabledSwitchState(): Set<String> {
         return allControls
             .filterIsInstance<OpenButtonControl>()
