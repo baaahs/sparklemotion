@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
+import baaahs.client.document.EditMode
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
@@ -19,8 +20,9 @@ import react.dom.div
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
     val unplacedControlPaletteDiv = ref<HTMLElement>()
 
+    val editMode = observe(props.editMode)
     val editModeStyle =
-        if (props.editMode) Styles.editModeOn else Styles.editModeOff
+        if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     Draggable {
         val randomStyleForHandle = "ControlsPaletteHandle"
@@ -39,12 +41,12 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
                 typographyH6 { +"Unplaced Controls" }
 
-                if (props.editMode) {
+                if (editMode.isOn) {
                     droppable({
                         this.droppableId = props.controlDisplay.unplacedControlsDropTargetId
                         this.type = props.controlDisplay.unplacedControlsDropTarget.type
                         this.direction = Direction.vertical.name
-                        this.isDropDisabled = !props.editMode
+                        this.isDropDisabled = !editMode.isOn
                     }) { droppableProvided, _ ->
                         buildElement {
                             div(+Styles.unplacedControlsDroppable) {
@@ -56,7 +58,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                                         draggable({
                                             this.key = draggableId
                                             this.draggableId = draggableId
-                                            this.isDragDisabled = !props.editMode
+                                            this.isDragDisabled = !editMode.isOn
                                             this.index = index
                                         }) { draggableProvided, snapshot ->
                                             buildElement {
@@ -92,7 +94,7 @@ external interface ControlsPaletteProps : Props {
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
     var show: OpenShow
-    var editMode: Boolean
+    var editMode: EditMode
 }
 
 fun RBuilder.controlsPalette(handler: RHandler<ControlsPaletteProps>) =
