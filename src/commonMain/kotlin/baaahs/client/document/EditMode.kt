@@ -8,41 +8,38 @@ class EditMode(initialMode: Mode) : Observable() {
 
     val isOn: Boolean get() = mode.isOn
     val isOff: Boolean get() = !mode.isOn
-    val isTransitional: Boolean get() = mode == Mode.Transitional
+    val isAvailable: Boolean get() = mode != Mode.Never
 
     fun toggle() {
         when (mode) {
-            Mode.Never -> turnOn()
-            Mode.Off -> turnOn()
-            Mode.Transitional -> {}
+            Mode.Never, Mode.Off -> turnOn()
             Mode.On -> turnOff()
         }
     }
 
     fun turnOn() {
-        mode = Mode.Transitional
-        notifyChanged()
+        if (mode == Mode.Never) {
+            mode = Mode.Off
+            notifyChanged()
 
-        globalLaunch {
+            globalLaunch {
+                mode = Mode.On
+                notifyChanged()
+            }
+        } else {
             mode = Mode.On
             notifyChanged()
         }
     }
 
     fun turnOff() {
-        mode = Mode.Transitional
+        mode = Mode.Off
         notifyChanged()
-
-        globalLaunch {
-            mode = Mode.Off
-            notifyChanged()
-        }
     }
 
     enum class Mode(val isOn: Boolean) {
         Never(false),
         Off(false),
-        Transitional(false),
         On(true)
     }
 }

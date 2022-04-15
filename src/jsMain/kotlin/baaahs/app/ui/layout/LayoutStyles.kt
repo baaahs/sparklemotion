@@ -17,7 +17,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     private val transitionTime = .2.s
 
     val gridOuterContainer by css {
-        display = Display.grid
         position = Position.absolute
         width = 100.pct
         height = 100.pct
@@ -27,13 +26,21 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         position = Position.absolute
         width = 100.pct
         height = 100.pct
+        transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
     }
 
     val gridContainer by css {
+        position = Position.absolute
+        width = 100.pct
+        height = 100.pct
         pointerEvents = PointerEvents.none
 
         children {
             pointerEvents = PointerEvents.auto
+        }
+
+        descendants(".react-resizable-handle") {
+            zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         }
     }
 
@@ -50,11 +57,21 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         zIndex = 10
     }
 
+    private val emptyCellFgColor = theme.palette.text.primary.asColor()
+        .withAlpha(.5).blend(
+            Color(theme.palette.background.default)
+        )
+
+    private val emptyCellBgColor = theme.palette.text.primary.asColor()
+        .withAlpha(.1).blend(
+            Color(theme.palette.background.default)
+        )
     val emptyGridCell by css {
         position = Position.absolute
         display = Display.flex
         justifyContent = JustifyContent.center
         alignItems = Align.center
+        color = emptyCellFgColor
         border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
         transition(::border, transitionTime)
 
@@ -63,41 +80,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        outlineColor = theme.palette.text.primary.asColor().withAlpha(.5)
 //        outlineOffset = 6.px
 
-    }
-
-    val emptyCellFgColor = theme.palette.text.primary.asColor()
-        .withAlpha(.5).blend(
-            Color(theme.palette.background.default)
-        )
-    val emptyCellBgColor = theme.palette.text.primary.asColor()
-        .withAlpha(.1).blend(
-            Color(theme.palette.background.default)
-        )
-    val editModeDisabled by css {}
-    val editModeOff by css {
-        descendants(this@LayoutStyles, ::emptyGridCell) {
-            color = emptyCellBgColor
-            border = "0px inset $emptyCellFgColor"
-            transition(::border, transitionTime)
-        }
-    }
-    val editModeTransitional by css {
-        descendants(this@LayoutStyles, ::emptyGridCell) {
-            color = emptyCellBgColor
-            border = "0px inset $emptyCellFgColor"
-            transition(::border, transitionTime)
-        }
-    }
-    val editModeOn by css {
-        descendants(this@LayoutStyles, ::emptyGridCell) {
-            color = emptyCellBgColor
-            border = "3px inset ${emptyCellFgColor.withAlpha(.5)}"
-            transition(::border, transitionTime)
-
-            hover {
-                border = "3px inset ${emptyCellFgColor}"
-            }
-        }
     }
 
     val dropPlaceholder by css {
@@ -151,11 +133,11 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
-    val editButton by css {
-        display = Display.none
-        transition(::display, duration = 0.s)
-        opacity = 0
+    val editModeControl by css {
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
+    }
+
+    val editButton by css {
         position = Position.absolute
         right = 2.px
         bottom = (-2).px + 2.em
@@ -164,6 +146,43 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         child("svg") {
             width = .75.em
             height = .75.em
+        }
+    }
+
+    val editModeOff by css {
+        descendants(this@LayoutStyles, ::gridBackground) {
+            pointerEvents = PointerEvents.none
+            opacity = 0
+        }
+
+        descendants(this@LayoutStyles, ::editModeControl) {
+            opacity = 0
+            pointerEvents = PointerEvents.none
+        }
+
+        descendants(this@LayoutStyles, ::emptyGridCell) {
+            color = emptyCellFgColor.withAlpha(.5)
+            border = "0px inset $emptyCellFgColor"
+            transition(::border, transitionTime)
+
+            hover {
+                color = emptyCellFgColor
+            }
+        }
+    }
+    val editModeOn by css {
+        descendants(this@LayoutStyles, ::editModeControl) {
+            opacity = 1
+        }
+
+        descendants(this@LayoutStyles, ::emptyGridCell) {
+            color = emptyCellBgColor
+            border = "3px inset ${emptyCellFgColor.withAlpha(.5)}"
+            transition(::border, transitionTime)
+
+            hover {
+                border = "3px inset ${emptyCellFgColor}"
+            }
         }
     }
 
