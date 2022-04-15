@@ -59,7 +59,7 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
                 attrs.label = buildElement { +prompt.fieldLabel }
                 attrs.type = InputType.text
                 attrs.fullWidth = true
-                attrs.defaultValue(value.current!!)
+                attrs.defaultValue = value.current
                 isInvalidMessage?.let {
                     attrs.error = true
                     attrs.helperText = it.asTextNode()
