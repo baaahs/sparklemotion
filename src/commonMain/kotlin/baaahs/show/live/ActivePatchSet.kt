@@ -60,6 +60,7 @@ data class ActivePatchSet(
             items.sortedWith(
                 compareBy<Item> { it.depth }
                     .thenBy { it.layoutContainerId }
+                    .thenBy { it.patchHolder.title }
                     .thenBy { it.serial }
             ).map { it.patchHolder }
                 .flatMap { it.patches }

@@ -123,6 +123,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         top = 0.5.em
         left = 0.5.px
+        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
         declarations["writing-mode"] = "vertical-lr"
         userSelect = UserSelect.none
         pointerEvents = PointerEvents.none
@@ -139,6 +140,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val inUse by css {
+        position = Position.relative
     }
 
     val notInUse by css {
