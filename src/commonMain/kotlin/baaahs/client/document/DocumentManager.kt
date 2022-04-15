@@ -43,6 +43,7 @@ abstract class DocumentManager<T, TState>(
         private set
     private val isSynced: Boolean
         get() = editState == localState
+    val editMode = EditMode(EditMode.Mode.Never)
 
     protected val undoStack = object : UndoStack<DocumentState<T, TState>>() {
         override fun undo(): DocumentState<T, TState> {
@@ -157,6 +158,7 @@ abstract class DocumentManager<T, TState>(
         val isUnsaved get() = this@DocumentManager.isUnsaved
         val canUndo get() = undoStack.canUndo()
         val canRedo get() = undoStack.canRedo()
+        val editMode get() = this@DocumentManager.editMode
 
         suspend fun onNew(dialogHolder: DialogHolder) = this@DocumentManager.onNew(dialogHolder)
         suspend fun onNew(document: T) = this@DocumentManager.onNew(document)

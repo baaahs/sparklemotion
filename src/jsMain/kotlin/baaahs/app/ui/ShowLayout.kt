@@ -2,6 +2,7 @@ package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
 import baaahs.app.ui.editor.AddControlToPanelBucket
+import baaahs.client.document.EditMode
 import baaahs.getBang
 import baaahs.show.Layout
 import baaahs.show.live.ControlDisplay
@@ -31,8 +32,8 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     var currentTabIndex by state { 0 }
     val currentTab = props.layout.tabs.getBounded(currentTabIndex)
 
-    val editMode = props.editMode == true
-    val editModeStyle = if (editMode) Styles.editModeOn else Styles.editModeOff
+    val editMode = observe(props.editMode)
+    val editModeStyle = if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val handleAddButtonClick = memo { mutableMapOf<String, MouseEventHandler<*>>() }
     var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
@@ -86,7 +87,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                 this.droppableId = panelBucket.dropTargetId
                                 this.type = panelBucket.type
                                 this.direction = Direction.horizontal.name
-                                this.isDropDisabled = !editMode
+                                this.isDropDisabled = !editMode.isOn
                             }) { droppableProvided, _ ->
                                 buildElement {
                                     val style = if (Styles.controlSections.size > panelBucket.section.depth)
@@ -105,7 +106,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                                             draggable({
                                                 this.key = draggableId
                                                 this.draggableId = draggableId
-                                                this.isDragDisabled = !editMode
+                                                this.isDragDisabled = !editMode.isOn
                                                 this.index = index
                                             }) { draggableProvided, _ ->
                                                 buildElement {
@@ -174,7 +175,7 @@ external interface ShowLayoutProps : Props {
     var layout: Layout
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
-    var editMode: Boolean?
+    var editMode: EditMode
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =
