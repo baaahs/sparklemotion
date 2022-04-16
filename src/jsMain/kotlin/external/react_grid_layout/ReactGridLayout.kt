@@ -279,7 +279,7 @@ fun calcGridItemPosition(
 //    // Otherwise, calculate from grid units.
 //    else {
         width = calcGridItemWHPx(w, colWidth, margin[0]).roundToInt()
-        height = calcGridItemWHPx(h, rowHeight.toDouble(), margin[1]).roundToInt()
+        height = calcGridItemWHPx(h, rowHeight, margin[1]).roundToInt()
 //    }
 
 //        // If dragging, use the exact width and height as returned from dragging callbacks.
@@ -289,7 +289,7 @@ fun calcGridItemPosition(
 //        }
 //        // Otherwise, calculate from grid units.
 //        else {
-        top = ((rowHeight.toDouble() + margin[1]) * y + containerPadding[1]).roundToInt()
+        top = ((rowHeight + margin[1]) * y + containerPadding[1]).roundToInt()
         left = ((colWidth + margin[0]) * x + containerPadding[0]).roundToInt()
 //        }
     }
@@ -300,7 +300,7 @@ external interface PositionParams {
     var containerPadding: Array<Int>
     var containerWidth: Int
     var cols: Int
-    var rowHeight: Int
+    var rowHeight: Double
     var maxRows: Int
 }
 

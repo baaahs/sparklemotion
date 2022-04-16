@@ -14,6 +14,7 @@ import org.w3c.dom.events.EventTarget
 import react.RBuilder
 import react.RElementBuilder
 import react.ReactNode
+import react.Render
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
@@ -211,6 +212,9 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
         }
     }
 }
+
+fun buildElements(handler: Render): ReactNode =
+    react.buildElements(RBuilder(), handler)
 
 val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {

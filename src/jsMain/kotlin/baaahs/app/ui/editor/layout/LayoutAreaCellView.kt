@@ -20,10 +20,10 @@ private val LayoutAreaCellView = xComponent<LayoutAreaCellProps>("LayoutAreaCell
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
-    val handlePanelAreaChange by formEventHandler() { event: FormEvent<*> ->
+    val handlePanelAreaChange by formEventHandler { event: FormEvent<*> ->
         val panel = props.layouts.panels.getBang(event.target.value, "panel")
         props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = panel
-        props.onChange()
+        props.onChange(true)
         forceRender()
     }
 
@@ -51,7 +51,7 @@ external interface LayoutAreaCellProps : Props {
     var tab: MutableLegacyTab
     var columnIndex: Int
     var rowIndex: Int
-    var onChange: () -> Unit
+    var onChange: (pushToUndoStack: Boolean) -> Unit
 }
 
 fun RBuilder.layoutAreaCell(handler: RHandler<LayoutAreaCellProps>) =

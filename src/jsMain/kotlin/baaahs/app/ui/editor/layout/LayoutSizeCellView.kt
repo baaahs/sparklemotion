@@ -33,7 +33,7 @@ private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell
 
     val handleMenuUnitClick = callback(gridSizeMenuAnchor, props.dimen) { unit: String ->
         props.dimen .unit = unit
-        props.onChange()
+        props.onChange(true)
         gridSizeMenuAnchor = null
     }
     val handleMenuEmClick by mouseEventHandler(handleMenuUnitClick) { handleMenuUnitClick("em") }
@@ -50,7 +50,7 @@ private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell
 
     val handleGridSizeScalarChange by newEventHandler(props.dimen) { event: FormEvent<*> ->
         props.dimen.scalar = event.target.value.toFloat()
-        props.onChange()
+        props.onChange(true)
         forceRender()
     }
 
@@ -119,7 +119,7 @@ private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell
 external interface LayoutSizeCellProps : Props {
     var dimen: MutableLayoutDimen
     var type: String
-    var onChange: () -> Unit
+    var onChange: (pushToUndoStack: Boolean) -> Unit
     var onDuplicate: () -> Unit
     var onDelete: () -> Unit
 }
