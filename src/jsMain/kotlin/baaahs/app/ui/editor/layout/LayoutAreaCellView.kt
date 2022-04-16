@@ -16,7 +16,7 @@ import react.dom.div
 import react.dom.events.FormEvent
 import react.useContext
 
-val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
+private val LayoutAreaCellView = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
@@ -55,4 +55,4 @@ external interface LayoutAreaCellProps : Props {
 }
 
 fun RBuilder.layoutAreaCell(handler: RHandler<LayoutAreaCellProps>) =
-    child(LayoutAreaCell, handler = handler)
+    child(LayoutAreaCellView, handler = handler)
