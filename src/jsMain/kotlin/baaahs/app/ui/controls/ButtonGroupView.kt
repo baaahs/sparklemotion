@@ -75,6 +75,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                         root = -buttonGroupControl.direction
                             .decode(Styles.horizontalButtonList, Styles.verticalButtonList)
                     }
+                    attrs.color = ToggleButtonGroupColor.primary
 
                     install(sceneDropProvided)
 
@@ -148,13 +149,13 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                     }
 
                     child(sceneDropProvided.placeholder)
-                }
 
-                if (editMode.isOn) {
-                    IconButton {
-                        icon(mui.icons.material.AddCircleOutline)
-                        attrs.onClick = {
-                            appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                    if (editMode.isOn) {
+                        IconButton {
+                            icon(mui.icons.material.AddCircleOutline)
+                            attrs.onClick = {
+                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                            }
                         }
                     }
                 }

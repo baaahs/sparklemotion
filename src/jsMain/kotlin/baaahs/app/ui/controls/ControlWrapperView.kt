@@ -3,15 +3,22 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
+import baaahs.ui.className
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
 import kotlinx.html.js.onClickFunction
+import kotlinx.js.jso
 import materialui.icon
+import mui.material.Card
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 
 private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
     val appContext = useContext(appContext)
@@ -24,8 +31,8 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
         event.preventDefault()
     }
 
-    Fragment {
-//        attrs.classes = jso { root = props.className?.className ?: -Styles.controlBox }
+    Card {
+        attrs.classes = jso { root = props.className?.className ?: -Styles.controlBox }
         with (props.control.getView(props.controlProps)) {
             render()
         }
