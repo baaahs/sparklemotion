@@ -159,10 +159,14 @@ data class OpenLayout(
     val tabs: List<OpenTab>
 )
 
-interface OpenTab
+interface OpenTab {
+    val title: String
+}
 
 data class OpenGridTab(
-    val title: String,
+    override val title: String,
+    var columns: Int,
+    var rows: Int,
     val items: List<OpenGridItem>
 ) : OpenTab
 

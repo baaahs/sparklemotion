@@ -10,14 +10,30 @@ import mui.material.styles.Theme
 import styled.StyleSheet
 
 class LayoutEditorStyles(theme: Theme) : StyleSheet("app-ui-editor-LayoutEditorStyles", isStatic = true) {
+    val dialog by css {
+        width = 80.vw
+        height = 60.vh
+    }
+
     val outerContainer by css {
         display = Display.grid
-        gridTemplateColumns = GridTemplateColumns("auto auto auto")
+        gridTemplateColumns = GridTemplateColumns("min-content auto auto")
         gap = 1.em
     }
 
     val listSubheader by css {
         important(::lineHeight, LineHeight.normal)
+    }
+
+    val deleteTabIcon by css {
+        color = Color("#aa0000")
+        position = Position.absolute
+        right = 0.px
+        padding(3.px)
+
+        hover {
+            color = Color("#dd0000")
+        }
     }
 
     val editorGrid by css {

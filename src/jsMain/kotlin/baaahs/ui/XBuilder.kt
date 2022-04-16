@@ -184,7 +184,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun switchEventHandler(vararg watch: Any?, block: (event: ChangeEvent<*>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: ChangeEvent<*>, checked: Boolean) -> Unit> =
         handler(*watch, block = block)
 
-    fun syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit> =
+    fun <T> syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, value: T) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, value: T) -> Unit> =
         handler(*watch, block = block)
 
     fun <T> newEventHandler(vararg watch: Any?, block: EventHandler<T>): ReadOnlyProperty<Any?, EventHandler<T>> =

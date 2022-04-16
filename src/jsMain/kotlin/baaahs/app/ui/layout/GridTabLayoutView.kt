@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.LayoutGrid.Companion.isEmpty
+import baaahs.control.OpenButtonGroupControl
 import baaahs.show.GridItem
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridItem
@@ -45,7 +46,8 @@ import styled.inlineStyles
 class LayoutGrid(
     private val columns: Int,
     private val rows: Int,
-    private val items: List<OpenGridItem>
+    private val items: List<OpenGridItem>,
+    private val freezeButtonGgroups: Boolean
 ) {
     val layouts: Array<Layout> = buildList<Layout> {
         items.forEach { item ->
@@ -55,6 +57,7 @@ class LayoutGrid(
                 y = item.row
                 w = item.width
                 h = item.height
+                static = freezeButtonGgroups && item.control is OpenButtonGroupControl
             })
         }
     }.toTypedArray()
@@ -79,8 +82,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val styles = appContext.allStyles.layout
 
     var layoutDimens by state { window.innerWidth to window.innerHeight }
-    val columns = 12
-    val rows = 8
+    val columns = props.tab.columns
+    val rows = props.tab.rows
 
     var showAddMenu by state<Pair<GridItem, HTMLElement?>?> { null }
 
@@ -125,7 +128,11 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         e.dataTransfer?.setData("text/plain", "")
     }
 
-    val handleDragStart by handler { dragging = true }
+    val handleDragStart: ItemCallback by handler {
+            layout, oldItem, newItem, placeholder, e, element ->
+        console.log("onDragStart", layout, oldItem, newItem, placeholder, e, element)
+        dragging = true
+    }
     val handleDragStop by handler { dragging = false }
 
     val handleEmptyGridCellClick by eventHandler { e ->
@@ -149,9 +156,12 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         layoutDimens = with(containerDiv.current!!) { clientWidth to clientHeight }
     }
     val (layoutWidth, layoutHeight) = layoutDimens
+    val margin = 5
+    val itemPadding = 5
+    val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
     val layoutGrid = memo(columns, rows, props.tab, dragging) {
-        LayoutGrid(columns, rows, props.tab.items)
+        LayoutGrid(columns, rows, props.tab.items, dragging)
     }
 
 
@@ -163,11 +173,12 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         if (editMode.isAvailable) {
             div(+styles.gridBackground) {
                 val positionParams = jso<PositionParams> {
-                    margin = arrayOf(5, 5)
-                    containerPadding = arrayOf(5, 5)
+                    this.margin = arrayOf(margin, margin)
+                    containerPadding = arrayOf(itemPadding, itemPadding)
                     containerWidth = layoutWidth
                     cols = columns
-                    rowHeight = layoutDimens.second / rows
+                    rowHeight = gridRowHeight
+                    println("gridRowHeight = ${gridRowHeight}")
                     maxRows = rows
                 }
 
@@ -196,7 +207,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.width = layoutDimens.first
             attrs.autoSize = false
             attrs.cols = columns
-            attrs.rowHeight = layoutDimens.second / rows
+            attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
             attrs.margin = arrayOf(5, 5)
             attrs.layout = layoutGrid.layouts
