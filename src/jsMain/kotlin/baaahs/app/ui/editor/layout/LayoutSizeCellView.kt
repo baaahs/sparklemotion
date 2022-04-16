@@ -22,7 +22,7 @@ import react.dom.onClick
 import react.dom.span
 import react.useContext
 
-val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
+private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
