@@ -37,7 +37,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
+private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
@@ -301,4 +301,4 @@ external interface LayoutEditorDialogProps : Props {
 }
 
 fun RBuilder.layoutEditorDialog(handler: RHandler<LayoutEditorDialogProps>) =
-    child(LayoutEditorDialog, handler = handler)
+    child(LayoutEditorDialogView, handler = handler)

@@ -21,7 +21,7 @@ import react.dom.div
 import react.dom.events.SyntheticEvent
 import styled.inlineStyles
 
-val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
+private val LayoutEditorView = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
@@ -166,4 +166,4 @@ external interface LayoutEditorProps : Props {
 }
 
 fun RBuilder.layoutEditor(handler: RHandler<LayoutEditorProps>) =
-    child(LayoutEditor, handler = handler)
+    child(LayoutEditorView, handler = handler)
