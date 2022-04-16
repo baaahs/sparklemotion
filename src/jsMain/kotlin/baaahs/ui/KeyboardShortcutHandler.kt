@@ -28,3 +28,10 @@ class KeyboardShortcutHandler(private val handler: (event: KeyboardEvent) -> Uni
         target.removeEventListener("keydown", handleKeyDown)
     }
 }
+
+data class Keypress(
+    val key: String,
+    val metaKey: Boolean = false,
+    val ctrlKey: Boolean = false,
+    val shiftKey: Boolean = false
+)
