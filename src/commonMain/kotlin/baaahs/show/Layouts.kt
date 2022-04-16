@@ -55,13 +55,15 @@ data class LegacyTab(
 @Serializable @SerialName("Grid")
 data class GridTab(
     override val title: String,
+    var columns: Int = 12,
+    var rows: Int = 8,
     val items: List<GridItem>
 ) : Tab {
     override fun edit(panels: Map<String, MutablePanel>, mutableShow: MutableShow): MutableTab =
         MutableGridTab(this, mutableShow)
 
     override fun open(openContext: OpenContext): OpenTab =
-        OpenGridTab(title, items.map { it.open(openContext) })
+        OpenGridTab(title, columns, rows, items.map { it.open(openContext) })
 }
 
 @Serializable

@@ -174,15 +174,22 @@ class MutableLegacyTab(
 
 class MutableGridTab(
     override var title: String,
-    val items: MutableList<MutableGridItem>
+    var columns: Int = 12,
+    var rows: Int = 8,
+    val items: MutableList<MutableGridItem> = mutableListOf()
 ) : MutableTab {
     constructor(
         baseTab: GridTab,
         mutableShow: MutableShow
-    ) : this(baseTab.title, baseTab.items.map { MutableGridItem(it, mutableShow) }.toMutableList())
+    ) : this(
+        baseTab.title,
+        baseTab.columns,
+        baseTab.rows,
+        baseTab.items.map { MutableGridItem(it, mutableShow) }.toMutableList()
+    )
 
     override fun build(showBuilder: ShowBuilder): Tab =
-        GridTab(title, items.map { it.build(showBuilder) })
+        GridTab(title, columns, rows, items.map { it.build(showBuilder) })
 }
 
 class MutableGridItem(

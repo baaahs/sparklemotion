@@ -15,6 +15,7 @@ import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.sceneEditor
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
@@ -111,6 +112,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleLayoutEditorDialogToggle =
         callback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
+    val handleLayoutEditorChange by handler(showManager) { show: MutableShow, pushToUndoStack: Boolean ->
+        showManager.onEdit(show, pushToUndoStack)
+    }
 
     val handleShowStateChange = callback {
         showManager.onShowStateChange()
@@ -265,9 +269,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                 layoutEditorDialog {
                                                     attrs.open = layoutEditorDialogOpen
                                                     attrs.show = show
-                                                    attrs.onApply = { newMutableShow ->
-                                                        showManager.onEdit(newMutableShow)
-                                                    }
+                                                    attrs.onApply = handleLayoutEditorChange
                                                     attrs.onClose = handleLayoutEditorDialogClose
                                                 }
                                             }

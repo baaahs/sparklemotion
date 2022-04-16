@@ -57,22 +57,24 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         zIndex = 10
     }
 
-    private val emptyCellFgColor = theme.palette.text.primary.asColor()
+    private val emptyCellDimColor = theme.palette.text.primary.asColor()
         .withAlpha(.5).blend(
             Color(theme.palette.background.default)
         )
 
-    private val emptyCellBgColor = theme.palette.text.primary.asColor()
+    private val emptyCellColor = theme.palette.text.primary.asColor()
         .withAlpha(.1).blend(
             Color(theme.palette.background.default)
         )
+
     val emptyGridCell by css {
         position = Position.absolute
         display = Display.flex
         justifyContent = JustifyContent.center
         alignItems = Align.center
-        color = emptyCellFgColor
+        color = emptyCellDimColor
         border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
+        transition(::opacity, transitionTime)
         transition(::border, transitionTime)
 
 //        outlineWidth = 3.px
@@ -161,12 +163,11 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
 
         descendants(this@LayoutStyles, ::emptyGridCell) {
-            color = emptyCellFgColor.withAlpha(.5)
-            border = "0px inset $emptyCellFgColor"
-            transition(::border, transitionTime)
+            opacity = 0
+            border = "0px inset $emptyCellDimColor"
 
             hover {
-                color = emptyCellFgColor
+                color = emptyCellDimColor
             }
         }
     }
@@ -176,12 +177,13 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
 
         descendants(this@LayoutStyles, ::emptyGridCell) {
-            color = emptyCellBgColor
-            border = "3px inset ${emptyCellFgColor.withAlpha(.5)}"
+            color = emptyCellColor
+            border = "3px inset ${emptyCellColor.withAlpha(.5)}"
             transition(::border, transitionTime)
 
             hover {
-                border = "3px inset ${emptyCellFgColor}"
+                backgroundColor = theme.palette.primary.main.asColor()
+                border = "3px inset ${emptyCellColor}"
             }
         }
     }
