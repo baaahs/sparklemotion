@@ -147,10 +147,26 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     onMount {
         val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
-            when (event.key) {
-                "d" -> {
+            val keypress = with (event) { Keypress(key, metaKey, ctrlKey, shiftKey) }
+            when (keypress) {
+                Keypress("d") -> {
                     editMode.toggle()
                     event.stopPropagation()
+                }
+                Keypress("l") -> {
+                    layoutEditorDialogOpen = !layoutEditorDialogOpen
+                    event.stopPropagation()
+                }
+                Keypress("z", metaKey = true),
+                Keypress("z", ctrlKey = true) -> {
+                    documentManager.undo()
+                }
+                Keypress("z", metaKey = true, shiftKey = true),
+                Keypress("z", ctrlKey = true, shiftKey = true) -> {
+                    documentManager.redo()
+                }
+                else -> {
+                    console.log("Unhandled keypress:", keypress)
                 }
             }
         }
