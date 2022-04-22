@@ -4,7 +4,9 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.LayoutGrid.Companion.isEmpty
-import baaahs.app.ui.layout.port.*
+import baaahs.app.ui.layout.port.GridLayout
+import baaahs.app.ui.layout.port.Layout
+import baaahs.app.ui.layout.port.LayoutItem
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.GridItem
 import baaahs.show.live.ControlProps
@@ -21,7 +23,6 @@ import baaahs.window
 import csstype.ClassName
 import external.react_grid_layout.*
 import external.react_resizable.ResizeHandleAxes
-import external.react_resizable.ResizeHandleAxis
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.html.Draggable
@@ -30,19 +31,14 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Add
-import mui.icons.material.AspectRatio
 import mui.material.*
 import org.w3c.dom.DragEvent
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.svg.SVGSVGElement
 import react.*
 import react.dom.div
 import react.dom.events.DragEventHandler
-import react.dom.html.ReactHTML
 import react.dom.onDragStart
-import react.dom.svg
-import react.dom.svg.ReactSVG
 import react.dom.svg.ReactSVG.path
 import styled.StyleSheet
 import styled.inlineStyles
@@ -207,19 +203,33 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
 //        ReactGridLayout {
         println("editMode = ${editMode.isOn}")
-        child(GridLayout::class) {
-            attrs.className = +styles.gridContainer
-            attrs.width = layoutDimens.first.toDouble()
-            attrs.autoSize = false
-            attrs.cols = columns
-            attrs.rowHeight = gridRowHeight
-            attrs.maxRows = rows
-            attrs.margin = arrayOf(5, 5)
-            attrs.layout = layoutGrid.layouts.toList()
-            attrs.onLayoutChange = handleLayoutChange
-            attrs.compactType = null
-            attrs.resizeHandles = ResizeHandleAxes.toList()
-            attrs.resizeHandle = { axis, ref ->
+        val children = props.tab.items.map { item ->
+            buildElement {
+                div(+styles.gridCell) {
+                    key = item.controlId
+
+                    gridItem {
+                        attrs.control = item.control
+                        attrs.controlProps = props.controlProps
+                        attrs.className = -styles.controlBox
+                    }
+                }
+            }
+        }.toTypedArray()
+
+        val e = createElement(GridLayout::class.react, jso {
+            this.className = +styles.gridContainer
+            this.width = layoutDimens.first.toDouble()
+            this.autoSize = false
+            this.cols = columns
+            this.rowHeight = gridRowHeight
+            this.maxRows = rows
+            this.margin = arrayOf(5, 5)
+            this.layout = layoutGrid.layouts.toList()
+            this.onLayoutChange = handleLayoutChange
+            this.compactType = null
+            this.resizeHandles = ResizeHandleAxes.toList()
+            this.resizeHandle = { axis, ref ->
                 buildElement {
                     SvgIcon {
                         attrs.classes = jso {
@@ -240,25 +250,14 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //                    }
 //                }
             }
-            attrs.isDraggable = editMode.isOn
-            attrs.isResizable = editMode.isOn
-            attrs.isDroppable = editMode.isOn
-            attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
-            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
-            attrs.onDropDragOver = handleDropDragOver
-
-            props.tab.items.map { item ->
-                div(+styles.gridCell) {
-                    key = item.controlId
-
-                    gridItem {
-                        attrs.control = item.control
-                        attrs.controlProps = props.controlProps
-                        attrs.className = -styles.controlBox
-                    }
-                }
-            }.toTypedArray()
-        }
+            this.isDraggable = editMode.isOn
+            this.isResizable = editMode.isOn
+            this.isDroppable = editMode.isOn
+            this.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
+            this.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
+            this.onDropDragOver = handleDropDragOver
+        }, *children)
+        child(e)
 
         if (editMode.isOn) {
             div(+styles.addControl) {

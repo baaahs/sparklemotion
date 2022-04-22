@@ -2,13 +2,14 @@ package baaahs.app.ui.layout.port
 
 import baaahs.window
 import external.lodash.isEqual
-import external.react_grid_layout.*
-import external.react_resizable.ResizeHandleAxis
+import external.react_grid_layout.DroppingItem
+import external.react_grid_layout.GridLayoutProps
+import external.react_grid_layout.LayerEvent
+import external.react_grid_layout.PositionParams
 import kotlinx.css.LinearDimension
 import kotlinx.css.height
 import kotlinx.js.Object
 import kotlinx.js.jso
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
@@ -38,19 +39,16 @@ val layoutClassName = "react-grid-layout"
 val isFirefox = window.navigator.userAgent.contains("firefox", true)
 
 class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayoutState>(props) {
-    private val propsD = PropsWithDefaults { this.props }
-
     override fun GridLayoutState.init(props: GridLayoutProps) {
-        val propsD = PropsWithDefaults { props }
-        
+
         activeDrag = null
         layout = synchronizeLayoutWithChildren(
-            propsD.layout,
-            propsD.children.unsafeCast<ReactChildren>(),
-            propsD.cols,
+            props.layout,
+            props.children.unsafeCast<ReactChildren>(),
+            props.cols!!,
             // Legacy support for verticalCompact: false
-            compactType(propsD),
-            propsD.allowOverlap
+            compactType(props),
+            props.allowOverlap
         )
         mounted = false
         oldDragItem = null
@@ -65,7 +63,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
     override fun componentDidMount() {
         state.mounted = true
 
-        onLayoutMaybeChanged(state.layout, propsD.layout)
+        onLayoutMaybeChanged(state.layout, props.layout)
     }
 
     override fun shouldComponentUpdate(nextProps: GridLayoutProps, nextState: GridLayoutState): Boolean {
@@ -73,8 +71,8 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                 // NOTE: this is almost always unequal. Therefore the only way to get better performance
                 // from SCU is if the user intentionally memoizes children. If they do, and they can
                 // handle changes properly, performance will increase.
-                propsD.children !== nextProps.children ||
-                        !isEqual(propsD, nextProps) ||
+                props.children !== nextProps.children ||
+                        !isEqual(props, nextProps) ||
 //                        !fastRGLPropsEqual(propsD, nextProps, ::isEqual) ||
                         this.state.activeDrag != nextState.activeDrag ||
                         this.state.mounted != nextState.mounted ||
@@ -97,13 +95,13 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
      * @return {String} Container height in pixels.
      */
     fun containerHeight(): String? {
-        if (!propsD.autoSize) return null
+        if (!props.autoSize!!) return null
         val nbRow = bottom(this.state.layout)
         val containerPadding = props.containerPadding
         val containerPaddingY = if (containerPadding != null)
-            containerPadding[1] else propsD.margin?.get(1)
-        val pixels = nbRow * propsD.rowHeight +
-                (nbRow - 1) * propsD.margin[1] +
+            containerPadding[1] else props.margin!!.get(1)
+        val pixels = nbRow * props.rowHeight!! +
+                (nbRow - 1) * props.margin!![1] +
                 containerPaddingY * 2
         return "${pixels}px"
     }
@@ -128,7 +126,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             oldLayout = layout
         }
 
-        return propsD.onDragStart(layout, l, l, null, e, node)
+        return props.onDragStart(layout, l, l, null, e, node)
     }
 
     /**
@@ -144,20 +142,20 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         val node = gridDragEvent.node
         val oldDragItem = this.state.oldDragItem
         var layout = this.state.layout
-        val cols = propsD.cols
-        val allowOverlap = propsD.allowOverlap == true
-        val preventCollision = propsD.preventCollision
+        val cols = props.cols
+        val allowOverlap = props.allowOverlap == true
+        val preventCollision = props.preventCollision
         val l = getLayoutItem(layout, i)
             ?: return
 
         // Create placeholder (display only)
         val placeholder = jso<PlaceholderLayoutItem> {
-                this.w = l.w
-                this.h = l.h
-                this.x = l.x
-                this.y = l.y
-                this.placeholder = true
-                this.i = i
+            this.w = l.w
+            this.h = l.h
+            this.x = l.x
+            this.y = l.y
+            this.placeholder = true
+            this.i = i
         }
 
         // Move the element to the dragged location.
@@ -169,15 +167,15 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             y,
             isUserAction,
             preventCollision,
-            compactType(propsD),
-            cols,
+            compactType(props),
+            cols!!,
             allowOverlap
         )
 
-        propsD.onDrag(layout, oldDragItem, l, placeholder, e, node)
+        props.onDrag(layout, oldDragItem, l, placeholder, e, node)
 
         this.setState {
-            layout = if (allowOverlap) layout else compact(layout, compactType(propsD), cols)
+            layout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
             activeDrag = placeholder
         }
     }
@@ -198,9 +196,9 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
 
         val oldDragItem = this.state.oldDragItem
         var layout = this.state.layout
-        val cols = propsD.cols
-        val allowOverlap = propsD.allowOverlap == true
-        val preventCollision = propsD.preventCollision
+        val cols = props.cols
+        val allowOverlap = props.allowOverlap == true
+        val preventCollision = props.preventCollision
         val l = getLayoutItem(layout, i)
             ?: return
 
@@ -213,21 +211,21 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             y,
             isUserAction,
             preventCollision,
-            compactType(propsD),
-            cols,
+            compactType(props),
+            cols!!,
             allowOverlap
         )
 
-        propsD.onDragStop(layout, oldDragItem, l, null, e, node)
+        props.onDragStop(layout, oldDragItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else compact(layout, compactType(propsD), cols)
+        val newLayout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
         val oldLayout = this.state.oldLayout
         this.setState {
-                activeDrag = null
-                layout = newLayout
-                this.oldDragItem = null
-                this.oldLayout = null
+            activeDrag = null
+            layout = newLayout
+            this.oldDragItem = null
+            this.oldLayout = null
         }
 
         this.onLayoutMaybeChanged(newLayout, oldLayout)
@@ -237,7 +235,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         val oldLayout = oldLayout_ ?: this.state.layout
 
         if (!isEqual(oldLayout, newLayout)) {
-            propsD.onLayoutChange?.invoke(newLayout)
+            props.onLayoutChange?.invoke(newLayout)
         }
     }
 
@@ -253,7 +251,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             oldLayout = state.layout
         }
 
-        propsD.onResizeStart(layout, l, l, null, e, node)
+        props.onResizeStart(layout, l, l, null, e, node)
     }
 
     fun onResize(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
@@ -261,9 +259,9 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         val node = gridResizeEvent.node
         val layout = this.state.layout
         val oldResizeItem = this.state.oldResizeItem
-        val cols = propsD.cols
-        val allowOverlap = propsD.allowOverlap
-        val preventCollision = propsD.preventCollision
+        val cols = props.cols!!
+        val allowOverlap = props.allowOverlap!!
+        val preventCollision = props.preventCollision!!
 
         val (newLayout, l) = withLayoutItem(layout, i) { l ->
             // Something like quad tree should be used
@@ -303,17 +301,17 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
 
         // Create placeholder element (display only)
         val placeholder = jso<PlaceholderLayoutItem> {
-                this.w = l.w
-                this.h = l.h
-                this.x = l.x
-                this.y = l.y
-                this.static = true
-                this.i = i
+            this.w = l.w
+            this.h = l.h
+            this.x = l.x
+            this.y = l.y
+            this.static = true
+            this.i = i
         }
 
-        propsD.onResize(newLayout, oldResizeItem, l, placeholder, e, node)
+        props.onResize(newLayout, oldResizeItem, l, placeholder, e, node)
 
-        val compactType = compactType(propsD)
+        val compactType = compactType(props)
 
         // Re-compact the newLayout and set the drag placeholder.
         setState {
@@ -329,20 +327,20 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         val node = gridResizeEvent.node
         val layout = this.state.layout
         val oldResizeItem = this.state.oldResizeItem
-        val cols = propsD.cols
-        val allowOverlap = propsD.allowOverlap
+        val cols = props.cols!!
+        val allowOverlap = props.allowOverlap!!
         val l = getLayoutItem(layout, i)!!
 
-        propsD.onResizeStop(layout, oldResizeItem, l, null, e, node)
+        props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else compact(layout, compactType(propsD), cols)
+        val newLayout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
         val oldLayout = this.state.oldLayout
         setState {
-                this.activeDrag = null
-                this.layout = newLayout
-                this.oldResizeItem = null
-                this.oldLayout = null
+            this.activeDrag = null
+            this.layout = newLayout
+            this.oldResizeItem = null
+            this.oldLayout = null
         }
 
         this.onLayoutMaybeChanged(newLayout, oldLayout)
@@ -365,17 +363,17 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                 attrs.y = activeDrag.y
                 attrs.i = activeDrag.i
                 attrs.className = "react-grid-placeholder"
-                attrs.containerWidth = propsD.width!!
-                attrs.cols = propsD.cols
-                attrs.margin = propsD.margin
-                attrs.containerPadding = propsD.containerPadding
-                attrs.maxRows = propsD.maxRows
-                attrs.rowHeight = propsD.rowHeight
+                attrs.containerWidth = props.width!!
+                attrs.cols = props.cols!!
+                attrs.margin = props.margin!!
+                attrs.containerPadding = props.containerPadding ?: props.margin!!
+                attrs.maxRows = props.maxRows
+                attrs.rowHeight = props.rowHeight!!
                 attrs.isDraggable = false
                 attrs.isResizable = false
                 attrs.isBounded = false
-                attrs.useCSSTransforms = propsD.useCSSTransforms
-                attrs.transformScale = propsD.transformScale
+                attrs.useCSSTransforms = props.useCSSTransforms
+                attrs.transformScale = props.transformScale!!
 
                 div {}
             }
@@ -393,21 +391,21 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
     ): ReactElement<*>? {
         val l = child?.key?.let { getLayoutItem(this.state.layout, it) }
             ?: return null
-        val width = propsD.width
-        val cols = propsD.cols
-        val margin = propsD.margin
-        val containerPadding = propsD.containerPadding
-        val rowHeight = propsD.rowHeight
-        val maxRows = propsD.maxRows
-        val isDraggable = propsD.isDraggable
-        val isResizable = propsD.isResizable
-        val isBounded = propsD.isBounded
-        val useCSSTransforms = propsD.useCSSTransforms
-        val transformScale = propsD.transformScale
-        val draggableCancel = propsD.draggableCancel
-        val draggableHandle = propsD.draggableHandle
-        val resizeHandles = propsD.resizeHandles
-        val resizeHandle = propsD.resizeHandle
+        val width = props.width
+        val cols = props.cols!!
+        val margin = props.margin!!
+        val containerPadding = props.containerPadding
+        val rowHeight = props.rowHeight!!
+        val maxRows = props.maxRows
+        val isDraggable = props.isDraggable!!
+        val isResizable = props.isResizable!!
+        val isBounded = props.isBounded!!
+        val useCSSTransforms = props.useCSSTransforms!!
+        val transformScale = props.transformScale!!
+        val draggableCancel = props.draggableCancel
+        val draggableHandle = props.draggableHandle!!
+        val resizeHandles = props.resizeHandles
+        val resizeHandle = props.resizeHandle
 
         val mounted = this.state.mounted
         val droppingPosition = this.state.droppingPosition
@@ -429,7 +427,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                 attrs.containerWidth = width!!
                 attrs.cols = cols
                 attrs.margin = margin
-                attrs.containerPadding = containerPadding
+                attrs.containerPadding = containerPadding ?: margin
                 attrs.maxRows = maxRows
                 attrs.rowHeight = rowHeight
                 attrs.cancel = draggableCancel
@@ -483,15 +481,15 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             return false
         }
 
-        val droppingItem = propsD.droppingItem
-        val onDropDragOver = propsD.onDropDragOver
-        val margin = propsD.margin
-        val cols = propsD.cols
-        val rowHeight = propsD.rowHeight
-        val maxRows = propsD.maxRows
-        val width = propsD.width
-        val containerPadding = propsD.containerPadding
-        val transformScale = propsD.transformScale
+        val droppingItem = props.droppingItem
+        val onDropDragOver = props.onDropDragOver
+        val margin = props.margin!!
+        val cols = props.cols!!
+        val rowHeight = props.rowHeight!!
+        val maxRows = props.maxRows
+        val width = props.width
+        val containerPadding = props.containerPadding!!
+        val transformScale = props.transformScale!!
         // Allow user to customize the dropping item or short-circuit the drop based on the results
         // of the `onDragOver(e: Event)` callback.
         val onDragOverResult = onDropDragOver?.invoke(e.asDynamic())
@@ -560,21 +558,21 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
     }
 
     fun removeDroppingPlaceholder() {
-        val droppingItem = propsD.droppingItem
-        val cols = propsD.cols
+        val droppingItem = props.droppingItem
+        val cols = props.cols!!
         val layout = this.state.layout
 
         val newLayout = compact(
             layout.filter { l -> l.i != droppingItem?.i },
-            compactType(propsD),
+            compactType(props),
             cols
         )
 
         setState {
-                this.layout = newLayout
-                this.droppingDOMNode = null
-                this.activeDrag = null
-                this.droppingPosition = undefined
+            this.layout = newLayout
+            this.droppingDOMNode = null
+            this.activeDrag = null
+            this.droppingPosition = undefined
         }
     }
 
@@ -602,7 +600,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
     fun onDrop(e: DragEvent<*>) {
         e.preventDefault() // Prevent any browser native action
         e.stopPropagation()
-        val droppingItem = propsD.droppingItem!!
+        val droppingItem = props.droppingItem!!
         val layout = this.state.layout
         val item = layout.find { l -> l.i === droppingItem.i }
 
@@ -611,14 +609,14 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
 
         this.removeDroppingPlaceholder()
 
-        propsD.onDrop!!.invoke(layout, item, e as Event)
+        props.onDrop!!.invoke(layout, item, e as Event)
     }
 
     override fun RBuilder.render() {
-        val className = propsD.className
+        val className = props.className
 //        val style = propsD.style
-        val isDroppable = propsD.isDroppable
-        val innerRef = propsD.innerRef
+        val isDroppable = props.isDroppable!!
+        val innerRef = props.innerRef
 
         val mergedClassName = //clsx(layoutClassName, className)
             "$layoutClassName $className"
@@ -634,12 +632,13 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             attrs.onDragEnter = if (isDroppable) ::onDragEnter else noop
             attrs.onDragOver = if (isDroppable) ::onDragOver else noop
 
-            (propsD.children.unsafeCast<Array<ReactElement<*>>>()).forEach { child ->
+            (props.children.unsafeCast<Array<ReactElement<*>>>()).forEach { child ->
                 processGridItem(child)?.let { child(it) }
             }
             val droppingDOMNode = state.droppingDOMNode
             if (isDroppable &&
-                droppingDOMNode != null) {
+                droppingDOMNode != null
+            ) {
                 processGridItem(droppingDOMNode, true)?.let {
                     child(it)
                 }
@@ -651,9 +650,48 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
     companion object : RStatics<GridLayoutProps, GridLayoutState, GridLayout, Nothing>(GridLayout::class) {
         init {
             displayName = GridLayout::class.simpleName
-            getDerivedStateFromProps = { nextProps_, prevState ->
+
+            defaultProps = jso {
+                autoSize = true
+                cols = 12
+                className = ""
+                style = {}
+                draggableHandle = ""
+                draggableCancel = ""
+                containerPadding = null
+                rowHeight = 150.0
+                maxRows = Int.MAX_VALUE // infinite vertical growth
+                layout = emptyList()
+                margin = arrayOf(10, 10)
+                isBounded = false
+                isDraggable = true
+                isResizable = true
+                allowOverlap = false
+                isDroppable = false
+                useCSSTransforms = true
+                transformScale = 1.0
+//        verticalCompact = true
+                compactType = CompactType.vertical
+                preventCollision = false
+                droppingItem = jso {
+                    i = "__dropping-elem__"
+                    h = 1
+                    w = 1
+                }
+                resizeHandles = listOf("se")
+                onLayoutChange = {}.asDynamic()
+                onDragStart = {}.asDynamic()
+                onDrag = {}.asDynamic()
+                onDragStop = {}.asDynamic()
+                onResizeStart = {}.asDynamic()
+                onResize = {}.asDynamic()
+                onResizeStop = {}.asDynamic()
+                onDrop = {}.asDynamic()
+                onDropDragOver = {}.asDynamic()
+            }
+
+            getDerivedStateFromProps = { nextProps, prevState ->
                 var newLayoutBase: MutableList<LayoutItem>? = null
-                val nextProps = PropsWithDefaults { nextProps_ }
 
                 if (prevState.activeDrag == null) {
                     // Legacy support for compactType
@@ -679,7 +717,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                         val newLayout = synchronizeLayoutWithChildren(
                             newLayoutBase,
                             nextProps.children.unsafeCast<ReactChildren>(),
-                            nextProps.cols,
+                            nextProps.cols!!,
                             compactType(nextProps),
                             nextProps.allowOverlap
                         )
@@ -696,44 +734,5 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                 } else null
             }
         }
-    }
-
-    class PropsWithDefaults(private val block: () -> GridLayoutProps) {
-        private val props get() = block()
-
-        val className: String? get() = props.className
-        val width: Double? get() = props.width
-        val autoSize: Boolean get() = props.autoSize ?: true
-        val cols: Int get() = props.cols ?: 12
-        val draggableCancel: String get() = props.draggableCancel ?: ""
-        val draggableHandle: String get() = props.draggableHandle ?: ""
-        val compactType: CompactType get() = props.compactType ?: CompactType.vertical
-        val layout: List<LayoutItem>? get() = props.layout
-        val margin: Array<Int> get() = props.margin ?: arrayOf(10, 10)
-        val containerPadding: Array<Int> get() = props.containerPadding ?: arrayOf(10, 10)
-        val rowHeight: Double get() = props.rowHeight ?: 150.0
-        val maxRows: Int get() = props.maxRows
-        val droppingItem: DroppingItem? get() = props.droppingItem
-        val isDraggable: Boolean get() = props.isDraggable ?: true
-        val isResizable: Boolean get() = props.isResizable ?: true
-        val isBounded: Boolean get() = props.isBounded ?: false
-        val useCSSTransforms: Boolean get() = props.useCSSTransforms ?: true
-        val transformScale: Double get() = props.transformScale ?: 1.0
-        val allowOverlap: Boolean get() = props.allowOverlap ?: false
-        val preventCollision: Boolean get() = props.preventCollision ?: false
-        val isDroppable: Boolean get() = props.isDroppable ?: false
-        val resizeHandles: List<ResizeHandleAxis> get() = props.resizeHandles ?: listOf(/*ResizeHandleAxis.*/"se")
-        val resizeHandle: (axis: ResizeHandleAxis, ref: Ref<HTMLElement>) -> ReactElement<*> get() = props.resizeHandle
-        val onLayoutChange: ((Layout) -> Unit)? get() = props.onLayoutChange
-        val onDragStart: ItemCallback get() = props.onDragStart
-        val onDrag: ItemCallback get() = props.onDrag
-        val onDragStop: ItemCallback get() = props.onDragStop
-        val onResizeStart: ItemCallback get() = props.onResizeStart
-        val onResize: ItemCallback get() = props.onResize
-        val onResizeStop: ItemCallback get() = props.onResizeStop
-        val onDrop: ((layout: Layout, item: LayoutItem?, e: Event) -> Unit)? get() = props.onDrop
-        val onDropDragOver: ((e: DragOverEvent) -> DroppingItem?)? get() = props.onDropDragOver
-        val innerRef: Ref<HTMLDivElement>? get() = props.innerRef
-        val children: ReactNode? get() = props.children
     }
 }
