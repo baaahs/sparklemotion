@@ -1,17 +1,12 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
-import baaahs.getBang
 import baaahs.client.document.EditMode
-import baaahs.show.live.ControlDisplay
-import baaahs.show.live.ControlProps
+import baaahs.getBang
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.nuffin
 import baaahs.ui.xComponent
-import external.dragDropContext
-import mui.base.Portal
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -37,44 +32,11 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         }
     }
 
-    var controlDisplay by state<ControlDisplay> { nuffin() }
-    logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
-    onChange("show/state", props.show, props.show.getEnabledSwitchState(), appContext.dragNDrop) {
-        controlDisplay = ControlDisplay(
-            props.show, appContext.showManager, appContext.dragNDrop
-        )
-
-        withCleanup {
-            controlDisplay.release()
-        }
-    }
-
-    val genericControlProps = memo(
-        props.onShowStateChange, editMode, controlDisplay
-    ) {
-        ControlProps(props.onShowStateChange, editMode, controlDisplay)
-    }
-
-    dragDropContext({
-        onDragEnd = appContext.dragNDrop::onDragEnd
-    }) {
-        showLayout {
-            attrs.show = show
-            attrs.onShowStateChange = props.onShowStateChange
-            attrs.layout = currentLayout
-            attrs.controlDisplay = controlDisplay
-            attrs.controlProps = genericControlProps
-            attrs.layoutEditor = layoutEditor
-        }
-
-        Portal {
-            controlsPalette {
-                attrs.controlDisplay = controlDisplay
-                attrs.controlProps = genericControlProps
-                attrs.show = props.show
-                attrs.editMode = props.editMode
-            }
-        }
+    showLayout {
+        attrs.show = show
+        attrs.layout = currentLayout
+        attrs.layoutEditor = layoutEditor
+        attrs.onShowStateChange = props.onShowStateChange
     }
 }
 

@@ -15,9 +15,6 @@ import external.Direction
 import external.copyFrom
 import external.draggable
 import external.droppable
-import kotlinx.css.*
-import kotlinx.html.Draggable
-import kotlinx.html.draggable
 import kotlinx.html.js.onClickFunction
 import kotlinx.js.jso
 import materialui.icon
@@ -25,11 +22,10 @@ import mui.material.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.div
 import react.dom.events.MouseEvent
-import styled.inlineStyles
 
-private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props ->
+private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyButtonGroup") { props ->
     val appContext = useContext(appContext)
     val editMode = observe(appContext.showManager.editMode)
 
@@ -61,40 +57,6 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
 
     Card {
         attrs.classes = jso { root = -Styles.buttonGroupCard }
-
-        div {
-            inlineStyles {
-                width = 60.px
-                height = 60.px
-                backgroundColor = Color.white
-            }
-
-            attrs.onDragEnter = { e -> console.log("dragenter", e) }
-            attrs.onDragOver = { e ->
-                console.log("dragover", e);
-                e.preventDefault()
-            }
-            attrs.onDrop = { e -> console.log("drop", e) }
-            attrs.onDragLeave = { e -> console.log("dragleave", e) }
-        }
-
-        div {
-            inlineStyles {
-                width = 60.px
-                height = 60.px
-                backgroundColor = Color.orange
-            }
-
-            attrs.draggable = Draggable.htmlTrue
-            attrs.onDragStart = { e ->
-                console.log("dragstart", e)
-                e.dataTransfer.setData("Text", e.target.toString())
-            }
-            attrs.onDrag = { e ->
-//                console.log("drag", e)
-            }
-            attrs.onDragEnd = { e -> console.log("dragend", e) }
-        }
 
         droppable({
             if (dropTarget != null) {
@@ -209,10 +171,10 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : Props {
+external interface LegacyButtonGroupProps : Props {
     var controlProps: ControlProps
     var buttonGroupControl: OpenButtonGroupControl
 }
 
-fun RBuilder.buttonGroup(handler: RHandler<ButtonGroupProps>) =
-    child(ButtonGroupView, handler = handler)
+fun RBuilder.legacyButtonGroup(handler: RHandler<LegacyButtonGroupProps>) =
+    child(LegacyButtonGroupView, handler = handler)

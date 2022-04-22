@@ -40,7 +40,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         activeDrag = null
         layout = synchronizeLayoutWithChildren(
             props.layout,
-            props.children.unsafeCast<ReactChildren>(),
+            props.children?.asArray() ?: emptyArray(),
             props.cols!!,
             // Legacy support for verticalCompact: false
             compactType(props),
@@ -625,7 +625,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             attrs.onDragEnter = if (isDroppable) ::onDragEnter else noop
             attrs.onDragOver = if (isDroppable) ::onDragOver else noop
 
-            (props.children.unsafeCast<Array<ReactElement<*>>>()).forEach { child ->
+            props.children?.asArray()?.forEach { child ->
                 processGridItem(child)?.let { child(it) }
             }
             val droppingDOMNode = state.droppingDOMNode
@@ -694,8 +694,8 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                     ) {
                         newLayoutBase = nextProps.layout?.toMutableList()
                     } else if (!childrenEqual(
-                            nextProps.children.unsafeCast<ReactChildren>(),
-                            prevState.children.unsafeCast<ReactChildren>()
+                            nextProps.children?.asArray(),
+                            prevState.children?.asArray()
                         )
                     ) {
                         // If children change, also regenerate the layout. Use our state
@@ -708,7 +708,7 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                     if (newLayoutBase != null) {
                         val newLayout = synchronizeLayoutWithChildren(
                             newLayoutBase,
-                            nextProps.children.unsafeCast<ReactChildren>(),
+                            nextProps.children?.asArray() ?: emptyArray(),
                             nextProps.cols!!,
                             compactType(nextProps),
                             nextProps.allowOverlap

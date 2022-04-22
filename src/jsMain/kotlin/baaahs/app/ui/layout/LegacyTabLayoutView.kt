@@ -2,19 +2,19 @@ package baaahs.app.ui.layout
 
 import baaahs.app.ui.Styles
 import baaahs.app.ui.appContext
+import baaahs.app.ui.controlsPalette
 import baaahs.getBang
 import baaahs.show.LegacyTab
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
-import baaahs.ui.and
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import csstype.FlexDirection
 import csstype.ident
+import external.dragDropContext
 import kotlinx.css.*
 import kotlinx.js.jso
+import mui.base.Portal
 import mui.material.Paper
 import react.Props
 import react.RBuilder
@@ -48,34 +48,62 @@ private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLay
         areas.add(cols.joinToString(" ") { it.replace(" ", "") })
     }
 
-    div(+Styles.showLayout) {
-        inlineStyles {
-            gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
-            gridTemplateColumns = GridTemplateColumns(tab.columns.joinToString(" "))
-            gridTemplateRows = GridTemplateRows(tab.rows.joinToString(" "))
+    var controlDisplay by state<ControlDisplay> { nuffin() }
+    logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
+    onChange("show/state", props.show, props.show.getEnabledSwitchState(), appContext.dragNDrop) {
+        controlDisplay = ControlDisplay(
+            props.show, appContext.showManager, appContext.dragNDrop
+        )
+
+        withCleanup {
+            controlDisplay.release()
         }
+    }
 
-        tab.areas.distinct().forEach { panelId ->
-            val panel = props.show.layouts.panels.getBang(panelId, "panel")
-            Paper {
-                attrs.classes = jso { root = -Styles.layoutPanelPaper }
-                attrs.sx = jso {
-                    gridArea = ident(panelId)
-                    // TODO: panel flow direction could change here.
-                    flexDirection = FlexDirection.column
-                }
+    val genericControlProps = memo(props.onShowStateChange, controlDisplay) {
+        ControlProps(props.onShowStateChange, controlDisplay)
+    }
 
-                header { +panel.title }
+    dragDropContext({
+        onDragEnd = appContext.dragNDrop::onDragEnd
+    }) {
+        div(+Styles.showLayout) {
+            inlineStyles {
+                gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
+                gridTemplateColumns = GridTemplateColumns(tab.columns.joinToString(" "))
+                gridTemplateRows = GridTemplateRows(tab.rows.joinToString(" "))
+            }
 
+            tab.areas.distinct().forEach { panelId ->
+                val panel = props.show.layouts.panels.getBang(panelId, "panel")
                 Paper {
-                    attrs.classes = jso { root = -Styles.layoutPanel and editModeStyle }
+                    attrs.classes = jso { root = -Styles.layoutPanelPaper }
+                    attrs.sx = jso {
+                        gridArea = ident(panelId)
+                        // TODO: panel flow direction could change here.
+                        flexDirection = FlexDirection.column
+                    }
 
-                    legacyPanelLayout {
-                        attrs.panel = panel
-                        attrs.controlDisplay = props.controlDisplay
-                        attrs.controlProps = props.controlProps
+                    header { +panel.title }
+
+                    Paper {
+                        attrs.classes = jso { root = -Styles.layoutPanel and editModeStyle }
+
+                        legacyPanelLayout {
+                            attrs.panel = panel
+                            attrs.controlDisplay = controlDisplay
+                            attrs.controlProps = genericControlProps
+                        }
                     }
                 }
+            }
+        }
+
+        Portal {
+            controlsPalette {
+                attrs.controlDisplay = controlDisplay
+                attrs.controlProps = genericControlProps
+                attrs.show = props.show
             }
         }
     }
@@ -84,8 +112,7 @@ private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLay
 external interface LegacyTabLayoutProps : Props {
     var show: OpenShow
     var tab: LegacyTab
-    var controlDisplay: ControlDisplay
-    var controlProps: ControlProps
+    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.legacyTabLayout(handler: RHandler<LegacyTabLayoutProps>) =
