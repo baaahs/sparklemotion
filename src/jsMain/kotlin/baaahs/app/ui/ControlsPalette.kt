@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.controls.controlWrapper
-import baaahs.client.document.EditMode
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
@@ -18,9 +17,10 @@ import react.*
 import react.dom.div
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
+    val appContext = useContext(appContext)
+    val editMode = observe(appContext.showManager.editMode)
     val unplacedControlPaletteDiv = ref<HTMLElement>()
 
-    val editMode = observe(props.editMode)
     val editModeStyle =
         if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
@@ -94,7 +94,6 @@ external interface ControlsPaletteProps : Props {
     var controlDisplay: ControlDisplay
     var controlProps: ControlProps
     var show: OpenShow
-    var editMode: EditMode
 }
 
 fun RBuilder.controlsPalette(handler: RHandler<ControlsPaletteProps>) =

@@ -117,6 +117,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     }
 
     val handleShowStateChange = callback {
+        // TODO: don't pass this around? ... and forceRender() is unnecessary.
         showManager.onShowStateChange()
         forceRender()
     }

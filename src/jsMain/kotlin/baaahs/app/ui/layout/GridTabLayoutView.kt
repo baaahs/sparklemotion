@@ -20,6 +20,7 @@ import baaahs.util.useResizeListener
 import baaahs.window
 import csstype.ClassName
 import external.react_resizable.ResizeHandleAxes
+import external.react_resizable.ResizeHandleAxis
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.html.Draggable
@@ -161,6 +162,10 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         LayoutGrid(columns, rows, props.tab.items, draggingItem)
     }
 
+    val genericControlProps = memo(props.onShowStateChange) {
+        ControlProps(props.onShowStateChange, null)
+    }
+
 
     div(+styles.gridOuterContainer and
             +if (editMode.isOn) styles.editModeOn else styles.editModeOff
@@ -213,49 +218,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
             attrs.resizeHandles = ResizeHandleAxes.toList()
-            attrs.resizeHandle = { axis, ref ->
-                buildElement {
-                    SvgIcon {
-                        attrs.viewBox = "0 0 20 20"
-                        attrs.classes = jso {
-                            this.root = ClassName("app-ui-layout-resize-handle app-ui-layout-resize-handle-$axis")
-                        }
-
-                        when (axis.length) {
-                            1 -> { // edge (south)
-                                path {
-                                    attrs.stroke = "#111"
-                                    attrs.fill = "#aaa"
-                                    attrs.d = "M0,19 L19,19 L19,17 L0,17 Z"
-                                }
-                                path {
-                                    attrs.stroke = "#111"
-                                    attrs.fill = "#666"
-                                    attrs.d = "M10,19 L4,9 L16,9 Z"
-                                }
-                            }
-                            2 -> { // corner (south-east)
-                                path {
-                                    attrs.stroke = "#111"
-                                    attrs.fill = "#aaa"
-                                    attrs.d = "M5,19 L19,19 L19,5 L17,5 L17,17 L5,17 Z"
-                                }
-                                path {
-                                    attrs.stroke = "#111"
-                                    attrs.fill = "#666"
-                                    attrs.d = "M15,15 L5,15 L15,5 Z"
-                                }
-                            }
-                        }
-                    }
-                }
-//                AspectRatio.create {
-//                    attrs.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
-//                    classes = jso {
-//                        attrs.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
-//                    }
-//                }
-            }
+            attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }
             attrs.isDraggable = editMode.isOn
             attrs.isResizable = editMode.isOn
             attrs.isDroppable = editMode.isOn
@@ -269,7 +232,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
                     gridItem {
                         attrs.control = item.control
-                        attrs.controlProps = props.controlProps
+                        attrs.controlProps = genericControlProps
                         attrs.className = -styles.controlBox
                     }
                 }
@@ -325,6 +288,42 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 }
 
+fun buildResizeHandle(axis: ResizeHandleAxis) = buildElement {
+    SvgIcon {
+        attrs.viewBox = "0 0 20 20"
+        attrs.classes = jso {
+            this.root = ClassName("app-ui-layout-resize-handle app-ui-layout-resize-handle-$axis")
+        }
+
+        when (axis.length) {
+            1 -> { // edge (south)
+                path {
+                    attrs.stroke = "#111"
+                    attrs.fill = "#aaa"
+                    attrs.d = "M0,19 L19,19 L19,17 L0,17 Z"
+                }
+                path {
+                    attrs.stroke = "#111"
+                    attrs.fill = "#666"
+                    attrs.d = "M10,19 L4,9 L16,9 Z"
+                }
+            }
+            2 -> { // corner (south-east)
+                path {
+                    attrs.stroke = "#111"
+                    attrs.fill = "#aaa"
+                    attrs.d = "M5,19 L19,19 L19,5 L17,5 L17,17 L5,17 Z"
+                }
+                path {
+                    attrs.stroke = "#111"
+                    attrs.fill = "#666"
+                    attrs.d = "M15,15 L5,15 L15,5 Z"
+                }
+            }
+        }
+    }
+}
+
 object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
     val gridItem by css {
         border(1.px, BorderStyle.solid, Color.orange)
@@ -335,6 +334,7 @@ external interface GridTabLayoutProps : Props {
     var tab: OpenGridTab
     var controlProps: ControlProps
     var tabEditor: Editor<MutableGridTab>
+    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.gridTabLayout(handler: RHandler<GridTabLayoutProps>) =

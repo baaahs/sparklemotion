@@ -3,7 +3,6 @@ package baaahs.show.live
 import baaahs.Gadget
 import baaahs.app.ui.editor.ControlEditIntent
 import baaahs.app.ui.editor.EditIntent
-import baaahs.client.document.EditMode
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
@@ -53,9 +52,8 @@ interface ControlViews {
     fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps): View
 }
 
-data class ControlProps(
+class ControlProps(
     val onShowStateChange: () -> Unit,
-    val editMode: EditMode,
     val controlDisplay: ControlDisplay?
 )
 
