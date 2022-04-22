@@ -4,9 +4,6 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.LayoutGrid.Companion.isEmpty
-import baaahs.app.ui.layout.port.GridLayout
-import baaahs.app.ui.layout.port.Layout
-import baaahs.app.ui.layout.port.LayoutItem
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.GridItem
 import baaahs.show.live.ControlProps
@@ -15,13 +12,13 @@ import baaahs.show.live.OpenGridTab
 import baaahs.show.mutable.MutableGridItem
 import baaahs.show.mutable.MutableGridTab
 import baaahs.ui.and
+import baaahs.ui.gridlayout.*
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.window
 import csstype.ClassName
-import external.react_grid_layout.*
 import external.react_resizable.ResizeHandleAxes
 import kotlinx.css.*
 import kotlinx.css.properties.border
@@ -47,7 +44,7 @@ class LayoutGrid(
     private val columns: Int,
     private val rows: Int,
     private val items: List<OpenGridItem>,
-    private val freezeButtonGgroups: Boolean
+    private val draggingItem: String?
 ) {
     val layouts: Array<LayoutItem> = buildList<LayoutItem> {
         items.forEach { item ->
@@ -57,7 +54,7 @@ class LayoutGrid(
                 y = item.row
                 w = item.width
                 h = item.height
-                static = freezeButtonGgroups && item.control is OpenButtonGroupControl
+                static = draggingItem != null && draggingItem != i && item.control is OpenButtonGroupControl
             })
         }
     }.toTypedArray()
@@ -88,7 +85,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     var showAddMenu by state<Pair<GridItem, HTMLElement?>?> { null }
 
     val editMode = observe(appContext.showManager.editMode)
-    var dragging by state { false }
+    var draggingItem by state<String?> { null }
 
     val handleLayoutChange by handler(props.tabEditor) { newLayout: Layout ->
         val gridItems = newLayout.map { newLayoutItem ->
@@ -131,9 +128,9 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val handleDragStart: ItemCallback by handler {
             layout, oldItem, newItem, placeholder, e, element ->
         console.log("onDragStart", layout, oldItem, newItem, placeholder, e, element)
-        dragging = true
+        draggingItem = newItem.i
     }
-    val handleDragStop by handler { dragging = false }
+    val handleDragStop by handler { draggingItem = null }
 
     val handleEmptyGridCellClick by eventHandler { e ->
         val target = e.currentTarget as HTMLElement
@@ -160,8 +157,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val itemPadding = 5
     val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-    val layoutGrid = memo(columns, rows, props.tab, dragging) {
-        LayoutGrid(columns, rows, props.tab.items, dragging)
+    val layoutGrid = memo(columns, rows, props.tab, draggingItem) {
+        LayoutGrid(columns, rows, props.tab.items, draggingItem)
     }
 
 
@@ -203,8 +200,70 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
 //        ReactGridLayout {
         println("editMode = ${editMode.isOn}")
-        val children = props.tab.items.map { item ->
-            buildElement {
+
+        child(GridLayout::class) {
+            attrs.className = +styles.gridContainer
+            attrs.width = layoutDimens.first.toDouble()
+            attrs.autoSize = false
+            attrs.cols = columns
+            attrs.rowHeight = gridRowHeight
+            attrs.maxRows = rows
+            attrs.margin = arrayOf(5, 5)
+            attrs.layout = layoutGrid.layouts.toList()
+            attrs.onLayoutChange = handleLayoutChange
+            attrs.compactType = CompactType.none
+            attrs.resizeHandles = ResizeHandleAxes.toList()
+            attrs.resizeHandle = { axis, ref ->
+                buildElement {
+                    SvgIcon {
+                        attrs.viewBox = "0 0 20 20"
+                        attrs.classes = jso {
+                            this.root = ClassName("app-ui-layout-resize-handle app-ui-layout-resize-handle-$axis")
+                        }
+
+                        when (axis.length) {
+                            1 -> { // edge (south)
+                                path {
+                                    attrs.stroke = "#111"
+                                    attrs.fill = "#aaa"
+                                    attrs.d = "M0,19 L19,19 L19,17 L0,17 Z"
+                                }
+                                path {
+                                    attrs.stroke = "#111"
+                                    attrs.fill = "#666"
+                                    attrs.d = "M10,19 L4,9 L16,9 Z"
+                                }
+                            }
+                            2 -> { // corner (south-east)
+                                path {
+                                    attrs.stroke = "#111"
+                                    attrs.fill = "#aaa"
+                                    attrs.d = "M5,19 L19,19 L19,5 L17,5 L17,17 L5,17 Z"
+                                }
+                                path {
+                                    attrs.stroke = "#111"
+                                    attrs.fill = "#666"
+                                    attrs.d = "M15,15 L5,15 L15,5 Z"
+                                }
+                            }
+                        }
+                    }
+                }
+//                AspectRatio.create {
+//                    attrs.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
+//                    classes = jso {
+//                        attrs.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
+//                    }
+//                }
+            }
+            attrs.isDraggable = editMode.isOn
+            attrs.isResizable = editMode.isOn
+            attrs.isDroppable = editMode.isOn
+            attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
+            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
+            attrs.onDropDragOver = handleDropDragOver
+
+            props.tab.items.forEach { item ->
                 div(+styles.gridCell) {
                     key = item.controlId
 
@@ -215,49 +274,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                     }
                 }
             }
-        }.toTypedArray()
-
-        val e = createElement(GridLayout::class.react, jso {
-            this.className = +styles.gridContainer
-            this.width = layoutDimens.first.toDouble()
-            this.autoSize = false
-            this.cols = columns
-            this.rowHeight = gridRowHeight
-            this.maxRows = rows
-            this.margin = arrayOf(5, 5)
-            this.layout = layoutGrid.layouts.toList()
-            this.onLayoutChange = handleLayoutChange
-            this.compactType = null
-            this.resizeHandles = ResizeHandleAxes.toList()
-            this.resizeHandle = { axis, ref ->
-                buildElement {
-                    SvgIcon {
-                        attrs.classes = jso {
-                            this.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
-                        }
-
-                        path {
-                            attrs.stroke = "#111"
-                            attrs.fill = "#666"
-                            attrs.d = "M0,6 L12,6 M6,6 L3,0 L9,0 Z"
-                        }
-                    }
-                }
-//                AspectRatio.create {
-//                    this.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
-//                    classes = jso {
-//                        this.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
-//                    }
-//                }
-            }
-            this.isDraggable = editMode.isOn
-            this.isResizable = editMode.isOn
-            this.isDroppable = editMode.isOn
-            this.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
-            this.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
-            this.onDropDragOver = handleDropDragOver
-        }, *children)
-        child(e)
+        }
 
         if (editMode.isOn) {
             div(+styles.addControl) {

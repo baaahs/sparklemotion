@@ -1,6 +1,5 @@
-package baaahs.app.ui.layout.port
+package baaahs.ui.gridlayout
 
-import external.react_grid_layout.PositionParams
 import kotlinx.js.jso
 import kotlin.math.max
 import kotlin.math.min
@@ -21,17 +20,18 @@ fun calcGridColWidth(positionParams: PositionParams): Double {
     val containerWidth = positionParams.containerWidth
     val cols = positionParams.cols
     return (containerWidth - margin[0] * (cols - 1) - containerPadding[0] * 2).toDouble() / cols
-} // This can either be called:
+}
+
+// This can either be called:
 // calcGridItemWHPx(w, colWidth, margin[0])
 // or
 // calcGridItemWHPx(h, rowHeight, margin[1])
-
-
 fun calcGridItemWHPx(gridUnits: Int, colOrRowSize: Double, marginPx: Double): Double {
     // 0 * Infinity === NaN, which causes problems with resize contraints
-//    if (!Number.isFinite(gridUnits)) return gridUnits
+    if (gridUnits == Int.MAX_VALUE) return gridUnits.toDouble()
     return colOrRowSize * gridUnits + max(0, gridUnits - 1) * marginPx
 }
+
 /**
  * Return position on the page given an x, y, w, h.
  * left, top, width, height are all in pixels.
@@ -42,8 +42,6 @@ fun calcGridItemWHPx(gridUnits: Int, colOrRowSize: Double, marginPx: Double): Do
  * @param  {Number}  h                      H coordinate in grid units.
  * @return {Position}                       Object containing coords.
  */
-
-
 fun calcGridItemPosition(
     positionParams: PositionParams,
     x: Int, y: Int, w: Int, h: Int,
@@ -53,25 +51,24 @@ fun calcGridItemPosition(
     val containerPadding = positionParams.containerPadding
     val rowHeight = positionParams.rowHeight
     val colWidth = calcGridColWidth(positionParams)
-    val out = jso<Position>() // If resizing, use the exact width and height as returned from resizing callbacks.
+    val out = jso<Position>()
 
+    // If resizing, use the exact width and height as returned from resizing callbacks.
     val resizing = state?.resizing
     if (resizing != null) {
         out.width = resizing.width
         out.height = resizing.height
-    } // Otherwise, calculate from grid units.
-    else {
+    } else { // Otherwise, calculate from grid units.
         out.width = calcGridItemWHPx(w, colWidth, margin[0].toDouble()).roundToInt()
         out.height = calcGridItemWHPx(h, rowHeight, margin[1].toDouble()).roundToInt()
-    } // If dragging, use the exact width and height as returned from dragging callbacks.
+    }
 
-
+    // If dragging, use the exact width and height as returned from dragging callbacks.
     val dragging = state?.dragging
     if (dragging != null) {
         out.top = dragging.top
         out.left = dragging.left
-    } // Otherwise, calculate from grid units.
-    else {
+    } else { // Otherwise, calculate from grid units.
         out.top = ((rowHeight + margin[1]) * y + containerPadding[1]).roundToInt()
         out.left = ((colWidth + margin[0]) * x + containerPadding[0]).roundToInt()
     }
@@ -87,8 +84,6 @@ fun calcGridItemPosition(
  * @param  {Number} h                       H coordinate in grid units.
  * @return {Object}                         x and y in grid units.
  */
-
-
 fun calcXY(
     positionParams: PositionParams,
     top: Int, left: Int, w: Int, h: Int
@@ -105,8 +100,8 @@ fun calcXY(
     // (l - m) / (c + m) = x
     // x = (left - margin) / (coldWidth + margin)
 
-    var x = (left - margin[0]) / (colWidth + margin[0]).roundToInt()
-    var y = (top - margin[1]) / (rowHeight + margin[1]).roundToInt() // Capping
+    var x = ((left - margin[0]) / (colWidth + margin[0])).roundToInt()
+    var y = ((top - margin[1]) / (rowHeight + margin[1])).roundToInt() // Capping
 
     x = clamp(x, 0, cols - w)
     y = clamp(y, 0, maxRows - h)
@@ -125,8 +120,6 @@ fun calcXY(
  * @param  {Number} y                       Y coordinate in grid units.
  * @return {Object}                         w, h as grid units.
  */
-
-
 fun calcWH(
     positionParams: PositionParams,
     width: Int, height: Int,
@@ -141,8 +134,8 @@ fun calcWH(
     // ...
     // w = (width + margin) / (colWidth + margin)
 
-    var w = (width + margin[0]) / (colWidth + margin[0]).roundToInt()
-    var h = (height + margin[1]) / (rowHeight + margin[1]).roundToInt() // Capping
+    var w = ((width + margin[0]) / (colWidth + margin[0])).roundToInt()
+    var h = ((height + margin[1]) / (rowHeight + margin[1])).roundToInt() // Capping
 
     w = clamp(w, 0, cols - x)
     h = clamp(h, 0, maxRows - y)

@@ -6,10 +6,7 @@ import baaahs.ui.asColor
 import baaahs.ui.descendants
 import baaahs.ui.selector
 import kotlinx.css.*
-import kotlinx.css.properties.Timing
-import kotlinx.css.properties.border
-import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
+import kotlinx.css.properties.*
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -39,7 +36,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             pointerEvents = PointerEvents.auto
         }
 
-        descendants(".react-resizable-handle") {
+        descendants(".app-ui-layout-resize-handle") {
             zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         }
     }
@@ -47,7 +44,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val gridCell by css {
         display = Display.grid
         border(1.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.5))
-        transition(::border, )
+        transition(::border)
 
 //        outlineWidth = 3.px
 //        put("outlineStyle", "dashed")
@@ -194,14 +191,89 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             +dropPlaceholder
         }
 
-        ".react-resizable-handle" {
+        ".app-ui-layout-resize-handle" {
             position = Position.absolute
             right = (-12).px
             bottom = (-12).px
         }
 
-        ".react-resizable-hide > .react-resizable-handle" {
+        ".react-resizable-hide > .app-ui-layout-resize-handle" {
             display = Display.none
         }
+
+        ".react-grid-item.resizing.grid-item-resizing" {
+            zIndex = StyleConstants.Layers.aboveSharedGlCanvas + 1
+        }
+
+        ".react-grid-item > .app-ui-layout-resize-handle" {
+            position = Position.absolute
+            width = 20.px
+            height = 20.px
+        }
+
+        ".react-grid-item > .app-ui-layout-resize-handle::after" {
+            content = QuotedString("")
+            position = Position.absolute
+            right = 3.px
+            bottom = 3.px
+            width = 5.px
+            height = 5.px
+            borderRight = "2px solid rgba(0, 0, 0, 0.4)"
+            borderBottom = "2px solid rgba(0, 0, 0, 0.4)"
+        }
+
+        val inset = 2.px
+
+        ".react-resizable-hide > .app-ui-layout-resize-handle" {
+            display = Display.none
+        }
+
+        ".app-ui-layout-resize-handle-sw" {
+            bottom = inset
+            left = inset
+            cursor = Cursor.swResize
+            transform { rotate(90.deg) }
+        }
+        ".app-ui-layout-resize-handle-se" {
+            bottom = inset
+            right = inset
+            cursor = Cursor.seResize
+        }
+        ".app-ui-layout-resize-handle-nw" {
+            top = inset
+            left = inset
+            cursor = Cursor.nwResize
+            transform { rotate(180.deg) }
+        }
+        ".app-ui-layout-resize-handle-ne" {
+            top = inset
+            right = inset
+            cursor = Cursor.neResize
+            transform { rotate(270.deg) }
+        }
+        ".app-ui-layout-resize-handle-w" {
+            top = 50.pct
+            left = inset
+            cursor = Cursor.ewResize
+            transform { rotate(90.deg) }
+        }
+        ".app-ui-layout-resize-handle-e" {
+            top = 50.pct
+            right = inset
+            cursor = Cursor.ewResize
+            transform { rotate(270.deg) }
+        }
+        ".app-ui-layout-resize-handle-n" {
+            top = inset
+            left = 50.pct
+            cursor = Cursor.nsResize
+            transform { rotate(180.deg) }
+        }
+        ".app-ui-layout-resize-handle-s" {
+            bottom = inset
+            left = 50.pct
+            cursor = Cursor.nsResize
+        }
+
     }
 }
