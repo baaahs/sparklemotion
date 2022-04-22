@@ -1,6 +1,8 @@
 package external.react_grid_layout
 
-import baaahs.app.ui.layout.port.*
+import baaahs.app.ui.layout.port.CompactType
+import baaahs.app.ui.layout.port.Layout
+import baaahs.app.ui.layout.port.LayoutItem
 import external.react_resizable.ResizeHandleAxis
 import kotlinx.js.jso
 import org.w3c.dom.HTMLDivElement
@@ -24,6 +26,8 @@ open external class ReactGridLayoutClass(props: GridLayoutProps) : Component<Gri
 external interface GridLayoutProps : PropsWithChildren {
     /** Class applied to top-level div. */
     var className: String?
+
+    var style: dynamic
 
     /**
      * This allows setting the initial width on the server side.
@@ -54,7 +58,7 @@ external interface GridLayoutProps : PropsWithChildren {
     var draggableHandle: String? // = ''
 
     // Compaction type.
-    var compactType: baaahs.app.ui.layout.port.CompactType? // ?('vertical' | 'horizontal') = 'vertical';
+    var compactType: CompactType? // ?('vertical' | 'horizontal') = 'vertical';
 
     /**
      * Layout is an array of object with the format:

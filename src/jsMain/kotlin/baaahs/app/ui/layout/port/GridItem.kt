@@ -279,7 +279,7 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
             this.onResizeStart = ::onResizeStart
             this.onResize = ::onResize
             this.transformScale = transformScale
-            this.resizeHandles = resizeHandles?.toTypedArray()
+            this.resizeHandles = resizeHandles?.toTypedArray() ?: emptyArray()
             this.handle = resizeHandle
         }, child)
     }
@@ -557,6 +557,23 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
         newChild = mixinDraggable(newChild, isDraggable)
 
         child(newChild)
+    }
+
+    companion object : RStatics<GridItemProps, GridItemState, GridItem, Nothing>(GridItem::class) {
+        init {
+            displayName = GridItem::class.simpleName
+
+            defaultProps = jso {
+                className = ""
+                cancel = ""
+                handle = ""
+                minH = 1
+                minW = 1
+                maxH = Int.MAX_VALUE
+                maxW = Int.MAX_VALUE
+                transformScale = 1.0
+            }
+        }
     }
 }
 

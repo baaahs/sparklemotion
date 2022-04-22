@@ -2,6 +2,7 @@ package baaahs.app.ui.layout.port
 
 import baaahs.util.Logger
 import external.lodash.isEqual
+import external.react_grid_layout.GridLayoutProps
 import external.react_grid_layout.PositionParams
 import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
@@ -86,7 +87,7 @@ enum class CompactType {
 }
 
 const val isProduction = false // process.env.NODE_ENV === "production";
-const val DEBUG = false
+const val DEBUG = true
 
 /**
  * Return the bottom coordinate of the layout.
@@ -786,9 +787,9 @@ fun validateLayout(
 
 // Legacy support for verticalCompact: false
 fun compactType(
-    props: GridLayout.PropsWithDefaults // ?{ verticalCompact: boolean, compactType: CompactType }
+    props: GridLayoutProps // ?{ verticalCompact: boolean, compactType: CompactType }
 ): CompactType {
-    return /*props.verticalCompact === false ? null :*/ props.compactType
+    return /*props.verticalCompact === false ? null :*/ props.compactType ?: CompactType.vertical
 }
 
 fun log(vararg args: Any) {
