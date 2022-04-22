@@ -9,7 +9,9 @@ import kotlinx.js.jso
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.ReactElement
+import react.ReactNode
 import react.dom.events.DragEventHandler
+import react.isValidElement
 import kotlin.math.max
 import kotlin.math.min
 
@@ -799,5 +801,12 @@ val noop: DragEventHandler<*> = { }
 
 fun <T: Any> T.extend(block: T.() -> Unit): T =
     Object.assign(jso(), this, jso { block() })
+
+fun ReactNode.asArray(): ReactChildren =
+    if (this is Array<*>) {
+        unsafeCast<ReactChildren>()
+    } else if (isValidElement(this)) {
+        arrayOf(this.unsafeCast<ReactElement<*>>())
+    } else emptyArray()
 
 private val logger = Logger<GridLayout>()

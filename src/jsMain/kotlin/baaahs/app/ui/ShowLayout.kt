@@ -1,10 +1,13 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.layout.dragNDropContext
 import baaahs.app.ui.layout.gridTabLayout
 import baaahs.app.ui.layout.legacyTabLayout
 import baaahs.show.LegacyTab
-import baaahs.show.live.*
+import baaahs.show.live.OpenGridTab
+import baaahs.show.live.OpenLayout
+import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
@@ -19,6 +22,7 @@ import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex
 import kotlinx.css.position
+import kotlinx.js.jso
 import mui.material.Tab
 import mui.material.Tabs
 import mui.system.sx
@@ -55,17 +59,22 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
         when (currentTab) {
             is LegacyTab ->
-                legacyTabLayout {
-                    attrs.show = props.show
-                    attrs.tab = currentTab
-                    attrs.controlDisplay = props.controlDisplay
-                    attrs.controlProps = props.controlProps
+                dragNDropContext.Provider {
+                    attrs.value = jso { this.isLegacy = true }
+                    legacyTabLayout {
+                        attrs.show = props.show
+                        attrs.tab = currentTab
+                        attrs.onShowStateChange = props.onShowStateChange
+                    }
                 }
             is OpenGridTab ->
-                gridTabLayout {
-                    attrs.tab = currentTab
-                    attrs.controlProps = props.controlProps
-                    attrs.tabEditor = tabEditor as Editor<MutableGridTab>
+                dragNDropContext.Provider {
+                    attrs.value = jso { this.isLegacy = false }
+                    gridTabLayout {
+                        attrs.tab = currentTab
+                        attrs.tabEditor = tabEditor as Editor<MutableGridTab>
+                        attrs.onShowStateChange = props.onShowStateChange
+                    }
                 }
             null -> { +"No tabs?" }
         }
@@ -97,11 +106,9 @@ private fun <E> List<E>.getBounded(index: Int): E? {
 
 external interface ShowLayoutProps : Props {
     var show: OpenShow
-    var onShowStateChange: () -> Unit
     var layout: OpenLayout
-    var controlDisplay: ControlDisplay
-    var controlProps: ControlProps
     var layoutEditor: Editor<MutableLayout>
+    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =
