@@ -177,7 +177,7 @@ kotlin {
                 // </react-beautiful-dnd bug workaround>
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
-                implementation(npm("react-draggable", "^3.3.0"))
+                implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
@@ -189,7 +189,9 @@ kotlin {
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
 
-                implementation(npm("react-grid-layout", "1.3.4",))
+                implementation(npm("react-grid-layout", "1.3.4"))
+                implementation(npm("react-resizable", "3.0.4"))
+                implementation(npm("lodash.isequal", "4.5.0"))
             }
         }
         @Suppress("UNUSED_VARIABLE")

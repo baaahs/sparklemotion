@@ -1,7 +1,7 @@
 package baaahs.util
 
 import external.ResizeObserver
-import external.throttle
+import external.lodash.throttle
 import org.w3c.dom.Element
 import react.RBuilder
 import react.RefObject

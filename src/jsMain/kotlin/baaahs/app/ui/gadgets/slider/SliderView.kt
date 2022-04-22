@@ -3,7 +3,7 @@ package baaahs.app.ui.gadgets.slider
 import baaahs.app.ui.appContext
 import baaahs.ui.*
 import external.react_compound_slider.*
-import external.throttle
+import external.lodash.throttle
 import react.*
 import react.dom.div
 import react.dom.label
