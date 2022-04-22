@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.LayoutGrid.Companion.isEmpty
+import baaahs.app.ui.layout.port.*
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.GridItem
 import baaahs.show.live.ControlProps
@@ -19,6 +20,8 @@ import baaahs.util.useResizeListener
 import baaahs.window
 import csstype.ClassName
 import external.react_grid_layout.*
+import external.react_resizable.ResizeHandleAxes
+import external.react_resizable.ResizeHandleAxis
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.html.Draggable
@@ -28,10 +31,7 @@ import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Add
 import mui.icons.material.AspectRatio
-import mui.material.ListItemIcon
-import mui.material.ListItemText
-import mui.material.Menu
-import mui.material.MenuItem
+import mui.material.*
 import org.w3c.dom.DragEvent
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -39,7 +39,11 @@ import org.w3c.dom.svg.SVGSVGElement
 import react.*
 import react.dom.div
 import react.dom.events.DragEventHandler
+import react.dom.html.ReactHTML
 import react.dom.onDragStart
+import react.dom.svg
+import react.dom.svg.ReactSVG
+import react.dom.svg.ReactSVG.path
 import styled.StyleSheet
 import styled.inlineStyles
 
@@ -49,7 +53,7 @@ class LayoutGrid(
     private val items: List<OpenGridItem>,
     private val freezeButtonGgroups: Boolean
 ) {
-    val layouts: Array<Layout> = buildList<Layout> {
+    val layouts: Array<LayoutItem> = buildList<LayoutItem> {
         items.forEach { item ->
             add(jso {
                 i = item.controlId
@@ -71,7 +75,7 @@ class LayoutGrid(
     }
 
     companion object {
-        fun Layout.isEmpty() = i.startsWith("::empty-")
+        fun LayoutItem.isEmpty() = i.startsWith("::empty-")
 
         val newControlId = "__new_control__"
     }
@@ -90,13 +94,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val editMode = observe(appContext.showManager.editMode)
     var dragging by state { false }
 
-    val handleLayoutChange by handler(props.tabEditor) { newLayouts: Array<Layout> ->
-        val gridItems = newLayouts.map { newLayout ->
+    val handleLayoutChange by handler(props.tabEditor) { newLayout: Layout ->
+        val gridItems = newLayout.map { newLayoutItem ->
             GridItem(
-                newLayout.i,
-                newLayout.x, newLayout.y,
-                newLayout.w, newLayout.h,
-                newLayout.isEmpty()
+                newLayoutItem.i,
+                newLayoutItem.x, newLayoutItem.y,
+                newLayoutItem.w, newLayoutItem.h,
+                newLayoutItem.isEmpty()
             )
         }
 
@@ -178,7 +182,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                     containerWidth = layoutWidth
                     cols = columns
                     rowHeight = gridRowHeight
-                    println("gridRowHeight = ${gridRowHeight}")
                     maxRows = rows
                 }
 
@@ -202,28 +205,40 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             }
         }
 
-        ReactGridLayout {
+//        ReactGridLayout {
+        println("editMode = ${editMode.isOn}")
+        child(GridLayout::class) {
             attrs.className = +styles.gridContainer
-            attrs.width = layoutDimens.first
+            attrs.width = layoutDimens.first.toDouble()
             attrs.autoSize = false
             attrs.cols = columns
             attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
             attrs.margin = arrayOf(5, 5)
-            attrs.layout = layoutGrid.layouts
+            attrs.layout = layoutGrid.layouts.toList()
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = null
-            attrs.resizeHandles = arrayOf(
-                "s", "w", "e", "n",
-                "sw", "nw", "se", "ne"
-            )
+            attrs.resizeHandles = ResizeHandleAxes.toList()
             attrs.resizeHandle = { axis, ref ->
-                AspectRatio.create {
-                    this.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
-                    classes = jso {
-                        this.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
+                buildElement {
+                    SvgIcon {
+                        attrs.classes = jso {
+                            this.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
+                        }
+
+                        path {
+                            attrs.stroke = "#111"
+                            attrs.fill = "#666"
+                            attrs.d = "M0,6 L12,6 M6,6 L3,0 L9,0 Z"
+                        }
                     }
                 }
+//                AspectRatio.create {
+//                    this.ref = ref.unsafeCast<Ref<SVGSVGElement>>()
+//                    classes = jso {
+//                        this.root = ClassName("react-resizable-handle react-resizable-handle-$axis")
+//                    }
+//                }
             }
             attrs.isDraggable = editMode.isOn
             attrs.isResizable = editMode.isOn

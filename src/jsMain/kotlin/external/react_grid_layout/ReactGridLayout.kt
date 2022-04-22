@@ -1,22 +1,27 @@
 package external.react_grid_layout
 
+import baaahs.app.ui.layout.port.*
+import external.react_resizable.ResizeHandleAxis
 import kotlinx.js.jso
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.MouseEvent
 import react.*
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 @JsModule("react-grid-layout")
-external val ReactGridLayout: ElementType<ReactGridLayoutProps>
+external val ReactGridLayout: ElementType<GridLayoutProps>
 
 @JsModule("react-grid-layout")
-open external class ReactGridLayoutClass(props: ReactGridLayoutProps) : Component<ReactGridLayoutProps, State> {
+open external class ReactGridLayoutClass(props: GridLayoutProps) : Component<GridLayoutProps, State> {
+    open fun onDrag(i: String, x: Number, y: Number, event: baaahs.app.ui.layout.port.GridDragEvent)
+
     override fun render(): ReactNode?
 }
 
-external interface ReactGridLayoutProps : PropsWithChildren {
+external interface GridLayoutProps : PropsWithChildren {
     /** Class applied to top-level div. */
     var className: String?
 
@@ -25,7 +30,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
      *
      * This is required unless using the HOC <WidthProvider> or similar
      */
-    var width: Number?
+    var width: Double?
 
     /** If true, the container height swells and contracts to fit contents */
     var autoSize: Boolean? // = true
@@ -39,7 +44,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
      * If you forget the leading . it will not work.
      * .react-resizable-handle" is always prepended to this value.
      */
-    var draggableCancel: String // = ''
+    var draggableCancel: String? // = ''
 
     /**
      * A CSS selector for tags that will act as the draggable handle.
@@ -49,7 +54,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
     var draggableHandle: String? // = ''
 
     // Compaction type.
-    var compactType: String? // ?('vertical' | 'horizontal') = 'vertical';
+    var compactType: baaahs.app.ui.layout.port.CompactType? // ?('vertical' | 'horizontal') = 'vertical';
 
     /**
      * Layout is an array of object with the format:
@@ -59,17 +64,17 @@ external interface ReactGridLayoutProps : PropsWithChildren {
      * array objects like so:
      *     {i: string, x: number, y: number, w: number, h: number}
      */
-    var layout: Array<Layout>? // = null, // If not provided, use data-grid props on children
+    var layout: List<LayoutItem>? // = null, // If not provided, use data-grid props on children
 
     /** Margin between items [x, y] in px.*/
-    var margin: Array<Number>? // ?[number, number] = [10, 10],
+    var margin: Array<Int>? // ?[number, number] = [10, 10],
 
     // Padding inside the container [x, y] in px
-    var containerPadding: Array<Number>? // ?[number, number] = margin,
+    var containerPadding: Array<Int>? // ?[number, number] = margin,
 
     // Rows have a static height, but you can change this based on breakpoints
 // if you like.
-    var rowHeight: Number // = 150,
+    var rowHeight: Double? // = 150,
 
     var maxRows: Int // = Infinity
 
@@ -91,7 +96,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
 
     // If parent DOM node of ResponsiveReactGridLayout or ReactGridLayout has "transform: scale(n)" css property,
 // we should set scale coefficient to avoid render artefacts while dragging.
-    var transformScale: Number? // = 1
+    var transformScale: Double? // = 1
 
     // If true, grid can be placed one over the other.
 // If set, implies `preventCollision`.
@@ -124,13 +129,13 @@ external interface ReactGridLayoutProps : PropsWithChildren {
 // 'nw' - Northwest handle (top-left)
 // 'se' - Southeast handle (bottom-right)
 // 'ne' - Northeast handle (top-right)
-    var resizeHandles: Array<String>? // <'s' | 'w' | 'e' | 'n' | 'sw' | 'nw' | 'se' | 'ne'> = ['se']
+    var resizeHandles: List<ResizeHandleAxis>? // <'s' | 'w' | 'e' | 'n' | 'sw' | 'nw' | 'se' | 'ne'> = ['se']
 
     // Custom component for resize handles
 // See `handle` as used in https://github.com/react-grid-layout/react-resizable#resize-handle
 // Your component should have the class `.react-resizable-handle`, or you should add your custom
 // class to the `draggableCancel` prop.
-    var resizeHandle: (axis: String, ref: Ref<HTMLElement>) -> ReactElement<*>
+    var resizeHandle: (axis: ResizeHandleAxis, ref: Ref<HTMLElement>) -> ReactElement<*>
     // ... or ((resizeHandleAxis: ResizeHandleAxis, ref: ReactRef<HTMLElement>) => ReactElement<any>),
 
 //
@@ -139,7 +144,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
 
     // Callback so you can save the layout.
 // Calls back with (currentLayout) after every drag or resize stop.
-    var onLayoutChange: ((layout: Array<Layout>) -> Unit)?
+    var onLayoutChange: ((Layout) -> Unit)?
 
 //
 // All callbacks below have signature (layout, oldItem, newItem, placeholder, e, element).
@@ -169,7 +174,7 @@ external interface ReactGridLayoutProps : PropsWithChildren {
     //
 
     /** Calls when an element has been dropped into the grid from outside. */
-    var onDrop: ((layout: Layout, item: LayoutItem?, e: Event) -> Unit)?
+    var onDrop: ((layout: baaahs.app.ui.layout.port.Layout, item: LayoutItem?, e: Event) -> Unit)?
 
     // Calls when an element is being dragged over the grid from outside as above.
 // This callback should return an object to dynamically change the droppingItem size
@@ -188,49 +193,54 @@ external interface DroppingItem {
     var i: String
 
     /** width of an element */
-    var w: Number
-
-    /** height of an element */
-    var h: Number
-}
-
-external interface Layout {
-    /** id of element */
-    var i: String
-
-    /** x position of element */
-    var x: Int
-
-    /** y position of element */
-    var y: Int
-
-    /** width of element */
     var w: Int
 
-    /** height of element */
+    /** height of an element */
     var h: Int
-
-    /** min width of element */
-    var minW: Int?
-
-    /** min height of element */
-    var minH: Int?
-
-    /** max width of element */
-    var maxW: Int?
-
-    /** max height of element */
-    var maxH: Int?
-
-    var static: Boolean?
-    var isBounded: Boolean?
-    var isDraggable: Boolean?
-    var isResizable: Boolean?
 }
 
-external interface LayoutItem
+//external interface LayoutItem {
+//    /** id of element */
+//    var i: String
+//
+//    /** x position of element */
+//    var x: Int
+//
+//    /** y position of element */
+//    var y: Int
+//
+//    /** width of element */
+//    var w: Int
+//
+//    /** height of element */
+//    var h: Int
+//
+//    /** min width of element */
+//    var minW: Int?
+//
+//    /** min height of element */
+//    var minH: Int?
+//
+//    /** max width of element */
+//    var maxW: Int?
+//
+//    /** max height of element */
+//    var maxH: Int?
+//
+//    var static: Boolean?
+//    var isBounded: Boolean?
+//    var isDraggable: Boolean?
+//    var isResizable: Boolean?
+//}
 
-external interface DragOverEvent
+external class DragOverEvent : MouseEvent {
+    val nativeEvent: LayerEvent
+}
+
+external class LayerEvent : Event {
+    var layerX: Double
+    var layerY: Double
+}
 
 
 // Helper for generating column width
@@ -264,7 +274,7 @@ private fun isFinite(number: Double): Boolean =
 fun calcGridItemPosition(
     positionParams: PositionParams,
     x: Int, y: Int, w: Int, h: Int
-): Position {
+): baaahs.app.ui.layout.port.Position {
     val margin = positionParams.margin
     val containerPadding = positionParams.containerPadding
     val rowHeight = positionParams.rowHeight
@@ -302,11 +312,4 @@ external interface PositionParams {
     var cols: Int
     var rowHeight: Double
     var maxRows: Int
-}
-
-external interface Position {
-    var left: Int
-    var top: Int
-    var width: Int
-    var height: Int
 }

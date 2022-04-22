@@ -17,6 +17,12 @@ fun <E> Collection<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun <E> Array<E>.only(description: String = "item"): E {
+    if (size != 1)
+        throw IllegalArgumentException("Expected one $description, found $size: $this")
+    else return iterator().next()
+}
+
 fun <E> Collection<E>.onlyOrNull(): E? {
     return if (size != 1) null else iterator().next()
 }
