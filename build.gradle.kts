@@ -189,7 +189,7 @@ kotlin {
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
 
-                implementation(npm("react-grid-layout", "1.3.4"))
+                // used by GridLayout:
                 implementation(npm("react-resizable", "3.0.4"))
                 implementation(npm("lodash.isequal", "4.5.0"))
             }

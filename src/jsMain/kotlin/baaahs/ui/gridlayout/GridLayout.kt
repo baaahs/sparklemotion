@@ -1,11 +1,7 @@
-package baaahs.app.ui.layout.port
+package baaahs.ui.gridlayout
 
 import baaahs.window
 import external.lodash.isEqual
-import external.react_grid_layout.DroppingItem
-import external.react_grid_layout.GridLayoutProps
-import external.react_grid_layout.LayerEvent
-import external.react_grid_layout.PositionParams
 import kotlinx.css.LinearDimension
 import kotlinx.css.height
 import kotlinx.js.Object
@@ -78,7 +74,6 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
                         this.state.mounted != nextState.mounted ||
                         this.state.droppingPosition != nextState.droppingPosition
                 )
-            .also { console.log("GridLayout shouldComponentUpdate=$it") }
     }
 
     override fun componentDidUpdate(prevProps: GridLayoutProps, prevState: GridLayoutState, snapshot: Any) {
@@ -420,8 +415,6 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
         // isBounded set on child if set on parent, and child is not explicitly false
         val bounded = draggable && isBounded && l.isBounded != false
 
-        console.log("processGridItem(${l.i}): isDraggable=$isDraggable draggable=$draggable")
-
         return buildElement {
             child(GridItem::class) {
                 attrs.containerWidth = width!!
@@ -639,9 +632,8 @@ class GridLayout(props: GridLayoutProps) : RComponent<GridLayoutProps, GridLayou
             if (isDroppable &&
                 droppingDOMNode != null
             ) {
-                processGridItem(droppingDOMNode, true)?.let {
-                    child(it)
-                }
+                processGridItem(droppingDOMNode, true)
+                    ?.let { child(it) }
             }
             placeholder()?.let { child(it) }
         }

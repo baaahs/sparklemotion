@@ -1,27 +1,13 @@
-package external.react_grid_layout
+package baaahs.ui.gridlayout
 
-import baaahs.app.ui.layout.port.CompactType
-import baaahs.app.ui.layout.port.Layout
-import baaahs.app.ui.layout.port.LayoutItem
 import external.react_resizable.ResizeHandleAxis
-import kotlinx.js.jso
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
-import react.*
-import kotlin.math.max
-import kotlin.math.roundToInt
-
-@JsModule("react-grid-layout")
-external val ReactGridLayout: ElementType<GridLayoutProps>
-
-@JsModule("react-grid-layout")
-open external class ReactGridLayoutClass(props: GridLayoutProps) : Component<GridLayoutProps, State> {
-    open fun onDrag(i: String, x: Number, y: Number, event: baaahs.app.ui.layout.port.GridDragEvent)
-
-    override fun render(): ReactNode?
-}
+import react.PropsWithChildren
+import react.ReactElement
+import react.Ref
 
 external interface GridLayoutProps : PropsWithChildren {
     /** Class applied to top-level div. */
@@ -178,7 +164,7 @@ external interface GridLayoutProps : PropsWithChildren {
     //
 
     /** Calls when an element has been dropped into the grid from outside. */
-    var onDrop: ((layout: baaahs.app.ui.layout.port.Layout, item: LayoutItem?, e: Event) -> Unit)?
+    var onDrop: ((layout: Layout, item: LayoutItem?, e: Event) -> Unit)?
 
     // Calls when an element is being dragged over the grid from outside as above.
 // This callback should return an object to dynamically change the droppingItem size
@@ -192,6 +178,11 @@ external interface GridLayoutProps : PropsWithChildren {
     var innerRef: Ref<HTMLDivElement>?
 }
 
+typealias ItemCallback = (
+    layout: Layout, oldItem: LayoutItem?, newItem: LayoutItem,
+    placeholder: LayoutItem?, e: MouseEvent, element: HTMLElement
+) -> Unit
+
 external interface DroppingItem {
     /** id of an element */
     var i: String
@@ -203,40 +194,6 @@ external interface DroppingItem {
     var h: Int
 }
 
-//external interface LayoutItem {
-//    /** id of element */
-//    var i: String
-//
-//    /** x position of element */
-//    var x: Int
-//
-//    /** y position of element */
-//    var y: Int
-//
-//    /** width of element */
-//    var w: Int
-//
-//    /** height of element */
-//    var h: Int
-//
-//    /** min width of element */
-//    var minW: Int?
-//
-//    /** min height of element */
-//    var minH: Int?
-//
-//    /** max width of element */
-//    var maxW: Int?
-//
-//    /** max height of element */
-//    var maxH: Int?
-//
-//    var static: Boolean?
-//    var isBounded: Boolean?
-//    var isDraggable: Boolean?
-//    var isResizable: Boolean?
-//}
-
 external class DragOverEvent : MouseEvent {
     val nativeEvent: LayerEvent
 }
@@ -244,69 +201,6 @@ external class DragOverEvent : MouseEvent {
 external class LayerEvent : Event {
     var layerX: Double
     var layerY: Double
-}
-
-
-// Helper for generating column width
-fun calcGridColWidth(positionParams: PositionParams): Double {
-    val margin = positionParams.margin
-    val containerPadding = positionParams.containerPadding
-    val containerWidth = positionParams.containerWidth
-    val cols = positionParams.cols
-
-    return (containerWidth - margin[0] * (cols - 1) - containerPadding[0] * 2) / cols.toDouble()
-}
-
-// This can either be called:
-// calcGridItemWHPx(w, colWidth, margin[0])
-// or
-// calcGridItemWHPx(h, rowHeight, margin[1])
-fun calcGridItemWHPx(
-    gridUnits: Int,
-    colOrRowSize: Double,
-    marginPx: Int
-): Double {
-    // 0 * Infinity === NaN, which causes problems with resize contraints
-//    if (!isFinite(gridUnits)) return gridUnits
-    return colOrRowSize * gridUnits + max(0, gridUnits - 1) * marginPx
-}
-
-private fun isFinite(number: Double): Boolean =
-    number == Double.NEGATIVE_INFINITY || number == Double.POSITIVE_INFINITY
-
-// Ported from react_grid_layout/calculateUtils/calcGridItemPosition:
-fun calcGridItemPosition(
-    positionParams: PositionParams,
-    x: Int, y: Int, w: Int, h: Int
-): baaahs.app.ui.layout.port.Position {
-    val margin = positionParams.margin
-    val containerPadding = positionParams.containerPadding
-    val rowHeight = positionParams.rowHeight
-    val colWidth = calcGridColWidth(positionParams)
-
-    return jso {
-//    // If resizing, use the exact width and height as returned from resizing callbacks.
-//    if (state && state.resizing) {
-//        out.width = Math.round(state.resizing.width);
-//        out.height = Math.round(state.resizing.height);
-//    }
-//    // Otherwise, calculate from grid units.
-//    else {
-        width = calcGridItemWHPx(w, colWidth, margin[0]).roundToInt()
-        height = calcGridItemWHPx(h, rowHeight, margin[1]).roundToInt()
-//    }
-
-//        // If dragging, use the exact width and height as returned from dragging callbacks.
-//        if (state && state.dragging) {
-//            top = Math.round(state.dragging.top);
-//            left = Math.round(state.dragging.left);
-//        }
-//        // Otherwise, calculate from grid units.
-//        else {
-        top = ((rowHeight + margin[1]) * y + containerPadding[1]).roundToInt()
-        left = ((colWidth + margin[0]) * x + containerPadding[0]).roundToInt()
-//        }
-    }
 }
 
 external interface PositionParams {
