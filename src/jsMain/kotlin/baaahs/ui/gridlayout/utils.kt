@@ -1,9 +1,7 @@
-package baaahs.app.ui.layout.port
+package baaahs.ui.gridlayout
 
 import baaahs.util.Logger
 import external.lodash.isEqual
-import external.react_grid_layout.GridLayoutProps
-import external.react_grid_layout.PositionParams
 import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
 import kotlinx.js.Object
@@ -83,7 +81,8 @@ typealias ReactChildren = Array<ReactElement<*>>
 
 enum class CompactType {
     horizontal,
-    vertical
+    vertical,
+    none
 }
 
 const val isProduction = false // process.env.NODE_ENV === "production";
@@ -422,9 +421,6 @@ fun correctBounds(
  */
 fun getLayoutItem(layout: Layout, id: String): LayoutItem? =
     layout.firstOrNull { it.i == id }
-        .also {
-            console.log("getLayoutItem($id) -> ${it?.i}")
-        }
 
 /**
  * Returns the first item this layout collides with.
@@ -672,6 +668,7 @@ fun sortLayoutItems(
 ): Layout = when (compactType) {
     CompactType.horizontal -> sortLayoutItemsByColRow(layout)
     CompactType.vertical -> sortLayoutItemsByRowCol(layout)
+    else -> layout
 }
 
 /**
@@ -714,7 +711,7 @@ fun synchronizeLayoutWithChildren(
     children.forEach { child: ReactElement<*> ->
         // Child may not exist
         val key = child.key
-        if (key == null) return@forEach
+            ?: return@forEach
 
         // Don't overwrite if it already exists.
         val exists = getLayoutItem(initialLayout, key)

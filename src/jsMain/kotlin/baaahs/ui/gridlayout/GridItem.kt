@@ -1,11 +1,10 @@
-package baaahs.app.ui.layout.port
+package baaahs.ui.gridlayout
 
 import baaahs.ui.className
 import external.clsx.clsx
 import external.react_draggable.DraggableCore
 import external.react_draggable.DraggableCoreProps
 import external.react_draggable.DraggableData
-import external.react_grid_layout.PositionParams
 import external.react_resizable.*
 import kotlinx.js.Object
 import kotlinx.js.jso
@@ -107,7 +106,6 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
                 !fastPositionEqual(oldPosition, newPosition) ||
                         this.props.useCSSTransforms !== nextProps.useCSSTransforms
                 )
-            .also { console.log("GridItem(${props.i}): shouldComponentUpdate=$it ... ${nextProps.isDraggable}") }
     }
 
     override fun componentDidMount() {
@@ -219,7 +217,6 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
             this.scale = props.transformScale
             this.nodeRef = elementRef
         }, child)
-            .also { console.log("DraggableCore for ${props.i}: ", it.props) }
     }
 
     /**
@@ -279,7 +276,7 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
             this.onResizeStart = ::onResizeStart
             this.onResize = ::onResize
             this.transformScale = transformScale
-            this.resizeHandles = resizeHandles?.toTypedArray() ?: emptyArray()
+            resizeHandles?.let { this.resizeHandles = it.toTypedArray() }
             this.handle = resizeHandle
         }, child)
     }
@@ -470,6 +467,7 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
         var minW = props.minW ?: 1
         var maxW = props.maxW ?: Int.MAX_VALUE
 
+        val node = callbackData.node
         val size = callbackData.size
 
         // Get new XY
@@ -494,7 +492,7 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
         h = clamp(h, minH, maxH)
 
         this.setState {
-            this.resizing = if (handler == ::onResizeStop) null else size
+            this.resizing = if (handler === props.onResizeStop) null else size
         }
 
         handler.invoke(i, w, h, jso {
@@ -534,6 +532,7 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
                 jso {
                     this.static = props.static
                     this.resizing = state.resizing
+                    this["grid-item-resizing"] = state.resizing
                     this["react-draggable"] = isDraggable
                     this["react-draggable-dragging"] = state.dragging
                     this.dropping = droppingPosition
@@ -547,8 +546,6 @@ class GridItem(props: GridItemProps) : RComponent<GridItemProps, GridItemState>(
                 createStyle(pos)
             )
         })
-
-        console.log("$props.i: render, isDraggable=", isDraggable, ", isResizable=", isResizable)
 
         // Resizable support. This is usually on but the user can toggle it off.
         newChild = mixinResizable(newChild, pos, isResizable)
