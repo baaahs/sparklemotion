@@ -42,7 +42,6 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 
 external interface ShowUiProps : Props {
     var show: OpenShow
-    var editMode: EditMode
     var onShowStateChange: () -> Unit
 }
 

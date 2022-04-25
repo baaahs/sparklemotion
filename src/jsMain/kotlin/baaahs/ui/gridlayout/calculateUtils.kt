@@ -84,7 +84,7 @@ fun calcGridItemPosition(
  * @param  {Number} h                       H coordinate in grid units.
  * @return {Object}                         x and y in grid units.
  */
-fun calcXY(
+fun calcGridPosition(
     positionParams: PositionParams,
     top: Int, left: Int, w: Int, h: Int
 ): LayoutItemPosition {

@@ -44,7 +44,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         toolchain.openShader(props.shader!!).shaderType
     }
     val bootstrapper = shaderType.shaderPreviewBootstrapper
-    val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
+    val helper = memo(bootstrapper, sharedGlContext) {
+//        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
+        bootstrapper.createHelper(sharedGlContext)
+    }
     val previewContainer = helper.container
     val sceneManager = appContext.sceneManager
     observe(sceneManager)
@@ -74,6 +77,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     onChange("shader type", helper, shaderType, model) {
         model?.let { model ->
             val preview = helper.bootstrap(model, preRenderHook)
+//            console.log("Rememoize preview for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
+
             gl = preview.renderEngine.gl
 
             val intersectionObserver = IntersectionObserver(callback = { entries ->
