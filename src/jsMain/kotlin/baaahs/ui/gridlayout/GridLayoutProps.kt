@@ -1,15 +1,17 @@
 package baaahs.ui.gridlayout
 
 import external.react_resizable.ResizeHandleAxis
+import kotlinx.js.Object
+import kotlinx.js.jso
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
-import react.PropsWithChildren
-import react.ReactElement
-import react.Ref
+import react.*
 
 external interface GridLayoutProps : PropsWithChildren {
+    var id: String
+
     /** Class applied to top-level div. */
     var className: String?
 
@@ -175,7 +177,7 @@ external interface GridLayoutProps : PropsWithChildren {
 // You can use this instead of a regular ref and the deprecated `ReactDOM.findDOMNode()`` function.
 // Note that this type is React.Ref<HTMLDivElement> in TypeScript, Flow has a bug here
 // https://github.com/facebook/flow/issues/8671#issuecomment-862634865
-    var innerRef: Ref<HTMLDivElement>?
+//    var innerRef: Ref<HTMLDivElement>?
 }
 
 typealias ItemCallback = (
@@ -210,4 +212,22 @@ external interface PositionParams {
     var cols: Int
     var rowHeight: Double
     var maxRows: Int
+}
+
+
+// Workaround for apparent React bug?
+fun <P: Props> RStatics<P, *, *, *>.resolveDefaultProps(baseProps: P): P {
+    val defaults = defaultProps
+    return if (defaults != null && baseProps.asDynamic()["defaultsApplied"] != true) {
+        console.log("DEfaul")
+        // Resolve default props. Taken from ReactElement
+        Object.assign(jso<P> {}, baseProps).also { props: dynamic ->
+            for (propName in Object.getOwnPropertyNames(defaults)) {
+                if (props[propName] === undefined) {
+                    props[propName] = defaults.asDynamic()[propName];
+                }
+            }
+            props["defaultsApplied"] = true
+        }
+    } else baseProps
 }

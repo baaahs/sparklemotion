@@ -22,6 +22,11 @@ fun <P : Props> xComponent(
     val logger = Logger(name)
     val component = react.fc(name) { props: P ->
         val xBuilder = XBuilder(logger)
+//        if (xBuilder.firstTime) {
+//            console.log("first render", name, props)
+//        } else {
+//            console.log("re-render", name, props)
+//        }
         xBuilder.func(props)
         this.childList.addAll(xBuilder.childList)
         xBuilder.renderFinished()
@@ -47,7 +52,7 @@ private class CounterIncr {
 }
 
 class XBuilder(val logger: Logger) : react.RBuilderImpl() {
-    private var firstTime = false
+    internal var firstTime = false
     private var dataIndex = 0
     private var changeDetectorIndex = 0
 

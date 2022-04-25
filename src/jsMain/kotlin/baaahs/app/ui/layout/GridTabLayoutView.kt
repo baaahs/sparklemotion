@@ -207,6 +207,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         println("editMode = ${editMode.isOn}")
 
         child(GridLayout::class) {
+            attrs.id = "top"
             attrs.className = +styles.gridContainer
             attrs.width = layoutDimens.first.toDouble()
             attrs.autoSize = false

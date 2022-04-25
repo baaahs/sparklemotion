@@ -30,6 +30,8 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         position = Position.absolute
         width = 100.pct
         height = 100.pct
+
+        // So clicks fall through to placeholder squares:
         pointerEvents = PointerEvents.none
 
         children {
@@ -52,6 +54,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        outlineOffset = 6.px
 
         zIndex = 10
+
+        descendants(this@LayoutStyles, ::gridContainer) {
+            pointerEvents = PointerEvents.auto
+        }
     }
 
     private val emptyCellDimColor = theme.palette.text.primary.asColor()

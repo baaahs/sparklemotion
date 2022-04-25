@@ -3,12 +3,17 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.layout.LayoutGrid
 import baaahs.app.ui.layout.buildResizeHandle
+import baaahs.app.ui.layout.gridItem
+import baaahs.control.ButtonControl
 import baaahs.control.ButtonGroupControl
+import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
+import baaahs.show.live.EmptyOpenContext
 import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.GridLayout
 import baaahs.ui.gridlayout.Layout
+import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -47,7 +52,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     val cardRef = ref<Element>()
     useResizeListener(cardRef) {
         with(cardRef.current!!) {
-            console.log("resized!", clientWidth, clientHeight)
+            console.log("resized!", clientWidth, clientHeight, this)
             layoutDimens = clientWidth to clientHeight
         }
     }
@@ -66,12 +71,30 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         LayoutGrid(columns, rows, listOf(), null)
     }
 
+    val layout = listOf<LayoutItem>(
+        jso {
+            i = "first"
+            x = 1
+            y = 1
+            w = 1
+            h = 1
+        },
+        jso {
+            i = "second"
+            x = 1
+            y = 3
+            w = 1
+            h = 1
+        }
+    )
+
 
     Card {
         ref = cardRef
         attrs.classes = jso { root = -Styles.buttonGroupCard }
 
         child(GridLayout::class) {
+            attrs.id = buttonGroupControl.id
             attrs.className = +layoutStyles.gridContainer
             attrs.width = layoutWidth.toDouble()
             attrs.autoSize = false
@@ -79,7 +102,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
             attrs.margin = arrayOf(5, 5)
-            attrs.layout = layoutGrid.layouts.toList()
+            attrs.layout = layout
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
             attrs.resizeHandles = ResizeHandleAxes.toList()
@@ -89,7 +112,20 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.isDroppable = editMode.isOn
             attrs.isBounded = false
 
-            div(+layoutStyles.gridCell) {
+            layout.forEach { layoutItem ->
+                div(+layoutStyles.gridCell) {
+                    key = layoutItem.i
+
+                    gridItem {
+                        attrs.control = OpenButtonControl(
+                            layoutItem.i,
+                            ButtonControl(layoutItem.i),
+                            EmptyOpenContext
+                        )
+                        attrs.controlProps = ControlProps({}, null)
+                        attrs.className = -layoutStyles.controlBox
+                    }
+                }
             }
 //            attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
 //            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()

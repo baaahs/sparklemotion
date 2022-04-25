@@ -262,7 +262,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                             showUi {
                                                 attrs.show = showManager.openShow!!
                                                 attrs.onShowStateChange = handleShowStateChange
-                                                attrs.editMode = editMode
                                             }
 
                                             if (layoutEditorDialogOpen) {
