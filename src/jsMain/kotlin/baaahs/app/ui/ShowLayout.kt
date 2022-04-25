@@ -1,9 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
-import baaahs.app.ui.layout.dragNDropContext
-import baaahs.app.ui.layout.gridTabLayout
-import baaahs.app.ui.layout.legacyTabLayout
+import baaahs.app.ui.layout.*
 import baaahs.show.LegacyTab
 import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenLayout
@@ -51,32 +49,38 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
         }
     }
 
+    val myDragNDropContext = memo<DragNDropContext>(currentTab) {
+        when (currentTab) {
+            is LegacyTab -> jso { this.isLegacy = true }
+            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = GridLayoutContext() }
+            else -> error("huh?")
+        }
+    }
+
     sharedGlContext {
         attrs.inlineStyles = StyleElement {
             flex(1.0, 0.0, FlexBasis.zero)
             position = Position.relative
         }
 
-        when (currentTab) {
-            is LegacyTab ->
-                dragNDropContext.Provider {
-                    attrs.value = jso { this.isLegacy = true }
+        dragNDropContext.Provider {
+            attrs.value = myDragNDropContext
+            when (currentTab) {
+                is LegacyTab ->
                     legacyTabLayout {
                         attrs.show = props.show
                         attrs.tab = currentTab
                         attrs.onShowStateChange = props.onShowStateChange
                     }
-                }
-            is OpenGridTab ->
-                dragNDropContext.Provider {
-                    attrs.value = jso { this.isLegacy = false }
+
+                is OpenGridTab ->
                     gridTabLayout {
                         attrs.tab = currentTab
                         attrs.tabEditor = tabEditor as Editor<MutableGridTab>
                         attrs.onShowStateChange = props.onShowStateChange
                     }
-                }
-            null -> { +"No tabs?" }
+                null -> { +"No tabs?" }
+            }
         }
     }
 

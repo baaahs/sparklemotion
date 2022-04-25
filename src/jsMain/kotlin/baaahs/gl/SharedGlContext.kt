@@ -26,7 +26,7 @@ class SharedGlContext(
         SubJsGlContext(SubKgl(container, kgl)).also {
             subContextCount++
             updateVisibility()
-        }
+        }.also { console.log("Created new SubJsGlContext") }
 
     override fun requestAnimationFrame(callback: (Double) -> Unit) {
         error("Don't call requestAnimationFrame() on a SharedGlContext!")

@@ -6,6 +6,7 @@ import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
 import kotlinx.js.Object
 import kotlinx.js.jso
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.ReactElement
@@ -810,3 +811,13 @@ fun ReactNode.asArray(): ReactChildren =
     } else emptyArray()
 
 private val logger = Logger<GridLayout>()
+
+fun Element.isParentOf(other: Element): Boolean {
+    var current: Element? = other
+    while (current != null) {
+        val parent = current.parentElement
+        if (parent === this) return true
+        current = parent
+    }
+    return false
+}
