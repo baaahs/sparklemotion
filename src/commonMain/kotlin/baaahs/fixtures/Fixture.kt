@@ -69,12 +69,7 @@ data class PixelArrayRemoteConfig(
     val pixelLocations: List<Vector3F>
 ) : RemoteConfig {
     override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) {
-        val pixelCount = reader.readInt()
-        val pixelLocations = (0 until pixelCount).map {
-            Vector3F.parse(reader)
-        }.toTypedArray()
-
-        fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations)
+        fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations.toTypedArray())
     }
 }
 
