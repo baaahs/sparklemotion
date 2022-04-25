@@ -10,6 +10,7 @@ import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
+import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -17,6 +18,8 @@ import ch.tutteli.atrium.api.fluent.en_GB.hasSize
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
 
 object GlslAnalyzerSpec : Spek({
@@ -134,7 +137,7 @@ object GlslAnalyzerSpec : Spek({
                             """.trimIndent()
                         }
 
-                        it("crates an input for it") {
+                        it("creates an input for it") {
                             expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
                                 .containsExactly(
                                     InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
@@ -156,7 +159,7 @@ object GlslAnalyzerSpec : Spek({
                             """.trimIndent()
                         }
 
-                        it ("creates an input for it") {
+                        it("creates an input for it") {
                             expect(openShader.inputPorts).hasSize(1)
                             val inputPort = openShader.inputPorts.first()
 
@@ -184,7 +187,7 @@ object GlslAnalyzerSpec : Spek({
                                 """.trimIndent()
                             }
 
-                            it ("creates an input for it") {
+                            it("creates an input for it") {
                                 expect(openShader.inputPorts).hasSize(1)
                                 val inputPort = openShader.inputPorts.first()
 
@@ -228,13 +231,7 @@ object GlslAnalyzerSpec : Spek({
                             listOf(
                                 InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness"),
                                 InputPort("fragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates"),
-                                InputPort(
-                                    "iResolution",
-                                    ContentType.Resolution,
-                                    GlslType.Vec3,
-                                    "Resolution",
-                                    isImplicit = true
-                                ),
+                                InputPort("iResolution", ContentType.Resolution, GlslType.Vec3, "Resolution", isImplicit = true),
                                 InputPort("iTime", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
                             )
                         ) { openShader.inputPorts.map { it.copy(glslArgSite = null) } }
@@ -270,6 +267,37 @@ object GlslAnalyzerSpec : Spek({
                     it("provides a fake entry point function") {
                         expect(openShader.entryPoint.name)
                             .toEqual("invalid")
+                    }
+                }
+
+                context("with a hinted input port matching a default (heartCenter -> uv)") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
+                            // http://mathworld.wolfram.com/HeartSurface.html
+    
+                            uniform vec4 inColor; // @type color
+                            uniform float heartSize; // @@Slider default=1. min=0.25 max=2
+                            uniform vec2 heartCenter; // @@XyPad
+    
+                            void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+                                fragColor = inColor;
+                            }
+                        """.trimIndent()
+                    }
+
+                    it("creates a non-default input for it") {
+                        expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
+                            .containsExactly(
+                                InputPort("inColor", ContentType.Color, GlslType.Vec4, "In Color"),
+                                InputPort("heartSize", ContentType.Float, GlslType.Float, "Heart Size", PluginRef.from("Slider"), buildJsonObject {
+                                    put("default", JsonPrimitive("1."))
+                                    put("min", JsonPrimitive("0.25"))
+                                    put("max", JsonPrimitive("2"))
+                                }),
+                                InputPort("heartCenter", ContentType.XyCoordinate, GlslType.Vec2, "Heart Center", PluginRef.from("XyPad"), buildJsonObject {}),
+                                InputPort("fragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates")
+                            )
                     }
                 }
             }

@@ -5,8 +5,8 @@ import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
 import baaahs.window
-import kotlinext.js.jsObject
 import kotlinx.coroutines.*
+import kotlinx.js.jso
 import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
 import org.w3c.dom.events.EventTarget
@@ -22,7 +22,7 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
 
     override fun getCamera(selectedDevice: MediaDevices.Device?): MediaDevices.Camera {
         return object : MediaDevices.Camera {
-            val constraints = jsObject<dynamic> {
+            val constraints = jso<dynamic> {
                 if (selectedDevice != null) {
                     deviceId = selectedDevice.deviceId
                 }

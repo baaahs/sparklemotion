@@ -9,34 +9,16 @@ import baaahs.util.CacheBuilder
 import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
 import external.react_draggable.Draggable
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.title
-import materialui.components.container.container
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.iconbutton.iconButton
-import materialui.components.input.enums.InputStyle
-import materialui.components.input.input
-import materialui.components.inputadornment.enums.InputAdornmentPosition
-import materialui.components.listitemtext.listItemText
-import materialui.components.menu.menu
-import materialui.components.menuitem.menuItem
-import materialui.components.paper.enums.PaperStyle
-import materialui.components.paper.paper
-import materialui.components.popover.enums.PopoverOriginHorizontal
-import materialui.components.popover.enums.PopoverOriginVertical
-import materialui.components.popover.horizontal
-import materialui.components.popover.vertical
-import materialui.components.switches.switch
-import materialui.components.textfield.textField
+import kotlinx.js.jso
 import materialui.icon
-import materialui.lab.components.togglebutton.toggleButton
-import materialui.lab.components.togglebuttongroup.toggleButtonGroup
+import mui.material.*
+import org.w3c.dom.Element
 import org.w3c.dom.events.Event
-import org.w3c.dom.events.EventTarget
 import react.*
+import react.dom.events.MouseEvent
 import react.dom.header
+import react.dom.html.InputType
+import react.dom.onChange
 import kotlin.collections.set
 
 private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar", true) { props ->
@@ -44,17 +26,17 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val styles = appContext.allStyles.modelEditor
     val visualizer = props.visualizer
 
-    var newEntityMenuAnchor by state<EventTarget?> { null }
-    val handleNewEntityClick by eventHandler { newEntityMenuAnchor = it.currentTarget }
+    var newEntityMenuAnchor by state<Element?> { null }
+    val handleNewEntityClick by mouseEventHandler { newEntityMenuAnchor = it.currentTarget as Element? }
     val hideNewEntityMenu by handler { _: Event, _: String -> newEntityMenuAnchor = null }
 
-    val handleToolChange by handler(visualizer) { _: Event, value: Any? ->
+    val handleToolChange by handler(visualizer) { _: MouseEvent<*, *>, value: Any? ->
         val modeEnum = TransformMode.find(value as String)
         visualizer.transformMode = modeEnum
         forceRender()
     }
 
-    val handleLocalCoordinatesChange by eventHandler(visualizer) {
+    val handleLocalCoordinatesChange by mouseEventHandler(visualizer) {
         visualizer.transformInLocalSpace = it.target.checked
         forceRender()
     }
@@ -64,7 +46,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     val gridSnap = gridSize != null
     val gridSizeMemo = memo { mutableMapOf<TransformMode, Double?>() }
 
-    val handleGridSnapChange by eventHandler(visualizer, transformMode) {
+    val handleGridSnapChange by mouseEventHandler(visualizer, transformMode) {
         val gridEnabled = it.target.checked
         val priorGridSize = transformMode.getGridSize(visualizer)
         val newSize = if (gridEnabled) {
@@ -77,15 +59,15 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
         forceRender()
     }
 
-    val handleGridSizeChange by eventHandler(visualizer, transformMode) {
+    val handleGridSizeChange by formEventHandler(visualizer, transformMode) {
         val newSize = transformMode.fromDisplayValue(it.target.value.toDouble())
         transformMode.setGridSize(visualizer, newSize)
         forceRender()
     }
 
     val addNewEntityTypeHandlers = memo(EntityTypes) {
-        CacheBuilder<EntityType, (Event) -> Unit> {
-            { _: Event ->
+        CacheBuilder<EntityType, (MouseEvent<*, *>) -> Unit> {
+            { _: MouseEvent<*, *> ->
                 props.onAddEntity(it.createNew())
                 newEntityMenuAnchor = null
             }
@@ -95,43 +77,43 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
     Draggable {
         attrs.handle = ".handle"
 
-        paper(styles.visualizerToolbar on PaperStyle.root) {
+        Paper {
+            attrs.classes = jso { this.root = -styles.visualizerToolbar }
             attrs.elevation = 5
 
             header("handle") { +"Tools" }
 
-            container {
-                iconButton {
+            Container {
+                IconButton {
                     icon(CommonIcons.Add)
                     attrs.title = "New Entity…"
-                    attrs.onClickFunction = handleNewEntityClick
+                    attrs.onClick = handleNewEntityClick
                 }
 
-                menu {
-                    attrs.getContentAnchorEl = null
-                    attrs.anchorEl(newEntityMenuAnchor)
-                    attrs.anchorOrigin {
-                        horizontal(PopoverOriginHorizontal.left)
-                        vertical(PopoverOriginVertical.bottom)
+                Menu {
+                    attrs.anchorEl = newEntityMenuAnchor.asDynamic()
+                    attrs.anchorOrigin = jso {
+                        horizontal = "left"
+                        vertical = "bottom"
                     }
                     attrs.open = newEntityMenuAnchor != null
                     attrs.onClose = hideNewEntityMenu
 
                     EntityTypes.forEach { entityType ->
-                        menuItem {
-                            attrs.onClickFunction = addNewEntityTypeHandlers[entityType]
-                            listItemText { +entityType.addNewTitle }
+                        MenuItem {
+                            attrs.onClick = addNewEntityTypeHandlers[entityType]
+                            ListItemText { +entityType.addNewTitle }
                         }
                     }
                 }
 
-                toggleButtonGroup {
+                ToggleButtonGroup {
                     attrs.exclusive = true
                     attrs.onChange = handleToolChange
                     attrs.value = transformMode.modeName
 
                     TransformMode.values().forEach { theMode ->
-                        toggleButton {
+                        ToggleButton {
                             attrs.title = theMode.name
                             attrs.value = theMode.modeName
                             icon(theMode.icon)
@@ -140,42 +122,52 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                 }
             }
 
-            container {
-                formControlLabel {
-                    attrs.control {
-                        switch {
+            Container {
+                FormControlLabel {
+                    attrs.control = buildElement {
+                        Switch {
                             attrs.checked = gridSnap
-                            attrs.onClickFunction = handleGridSnapChange
+                            attrs.onClick = handleGridSnapChange
                         }
                     }
-                    attrs.label { typographyBody2 { +"Snap to Grid" } }
+                    attrs.label = buildElement { typographyBody2 { +"Snap to Grid" } }
                 }
 
-                textField {
+                TextField {
                     attrs.type = InputType.number
-                    attrs.InputProps = buildElement {
-                        input(+styles.gridSizeInput on InputStyle.input, +styles.partialUnderline on InputStyle.underline) {
-                            attrs.endAdornment {
-                                attrs.position = InputAdornmentPosition.end
-                                +transformMode.getGridUnitAdornment(props.modelUnit)
+                    attrs.inputProps = jso {
+
+                    }
+                    ;
+                    buildElement {
+                        Input {
+                            attrs.classes = jso {
+                                input = -styles.gridSizeInput
+                                underline = -styles.partialUnderline
+                            }
+                            attrs.endAdornment = buildElement {
+                                InputAdornment {
+                                    attrs.position = InputAdornmentPosition.end
+                                    +transformMode.getGridUnitAdornment(props.modelUnit)
+                                }
                             }
                         }
-                    }.props.unsafeCast<PropsWithChildren>()
+                    }
                     attrs.disabled = !gridSnap
-                    attrs.onChangeFunction = handleGridSizeChange
-                    attrs.value(transformMode.toDisplayValue(gridSize ?: transformMode.defaultGridSize))
+                    attrs.onChange = handleGridSizeChange
+                    attrs.value = transformMode.toDisplayValue(gridSize ?: transformMode.defaultGridSize)
                 }
             }
 
-            container {
-                formControlLabel {
-                    attrs.control {
-                        switch {
+            Container {
+                FormControlLabel {
+                    attrs.control = buildElement {
+                        Switch {
                             attrs.checked = visualizer.transformInLocalSpace
-                            attrs.onClickFunction = handleLocalCoordinatesChange
+                            attrs.onClick = handleLocalCoordinatesChange
                         }
                     }
-                    attrs.label { typographyBody2 { +"Local Coordinates" } }
+                    attrs.label = buildElement { typographyBody2 { +"Local Coordinates" } }
                 }
             }
 

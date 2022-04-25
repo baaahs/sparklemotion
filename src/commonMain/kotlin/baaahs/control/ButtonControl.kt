@@ -21,7 +21,7 @@ import kotlinx.serialization.json.JsonElement
 data class ButtonControl(
     override val title: String,
     val activationType: ActivationType = ActivationType.Toggle,
-    override val patches: List<Patch> = emptyList(),
+    override val patchIds: List<String> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
     override val controlLayout: Map<String, List<String>> = emptyMap(),
     override val controlledDataSourceId: String? = null
@@ -31,6 +31,8 @@ data class ButtonControl(
         Toggle,
         Momentary
     }
+
+    init { validatePatchHolder() }
 
     override fun suggestId(): String = title.camelize() + "Button"
 
@@ -66,7 +68,7 @@ class MutableButtonControl(
         return ButtonControl(
             title,
             activationType,
-            patches = patches.map { it.build(showBuilder) },
+            patchIds = patches.map { showBuilder.idFor(it.build(showBuilder)) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
             controlledDataSourceId = controlledDataSource?.let { showBuilder.idFor(it) }
@@ -91,6 +93,8 @@ class OpenButtonControl(
     val controlledDataSource: DataSource? = buttonControl.controlledDataSourceId?.let { openContext.getDataSource(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     val switch: Switch = Switch(buttonControl.title)
+    override val gadget: Switch
+        get() = switch
 
     val type get() = buttonControl.activationType
 
@@ -122,6 +126,5 @@ class OpenButtonControl(
 
     fun shaderForPreview(): OpenShader? =
         patches.onlyOrNull()
-            ?.shaderInstances?.onlyOrNull()
             ?.shader
 }

@@ -16,6 +16,9 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
 
 class Storage(val fs: Fs, val plugins: Plugins) {
     val fsSerializer = FsServerSideSerializer()
@@ -74,7 +77,23 @@ class Storage(val fs: Fs, val plugins: Plugins) {
 
     suspend fun loadMappingSession(f: Fs.File): MappingSession {
         val mappingJson = fs.loadFile(f)
-        val mappingSession = plugins.json.decodeFromString(MappingSession.serializer(), mappingJson!!)
+        val mappingSession = try {
+            val json = plugins.json.parseToJsonElement(mappingJson!!).jsonObject.let {
+                // Janky data migration.
+                buildJsonObject {
+                    it.entries.forEach { (k, v) ->
+                        put(k, if (k == "cameraMatrix") {
+                            if (v is JsonObject) {
+                                v["elements"]!!
+                            } else v
+                        } else v)
+                    }
+                }
+            }
+            plugins.json.decodeFromJsonElement(MappingSession.serializer(), json)
+        } catch (e: Exception) {
+            throw Exception("Error loading \"${f.fullPath}\".", e)
+        }
         mappingSession.surfaces.forEach { surface ->
             logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.name()})" }
         }

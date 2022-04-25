@@ -12,15 +12,13 @@ import kotlinx.css.Display
 import kotlinx.css.GridTemplateColumns
 import kotlinx.css.display
 import kotlinx.css.gridTemplateColumns
-import kotlinx.html.js.onChangeFunction
-import kotlinx.html.js.onClickFunction
-import materialui.components.iconbutton.iconButton
-import materialui.components.tab.tab
-import materialui.components.tabs.tabs
 import materialui.icon
-import org.w3c.dom.events.Event
+import mui.material.IconButton
+import mui.material.Tab
+import mui.material.Tabs
 import react.*
 import react.dom.div
+import react.dom.events.SyntheticEvent
 import styled.inlineStyles
 
 val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
@@ -32,11 +30,11 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     val mutableLayout = mutableLayouts.formats[props.format]!!
     val currentTab = mutableLayout.tabs[currentTabIndex]
 
-    val handleTabChange by eventHandler { e: Event ->
+    val handleTabChange by syntheticEventHandler { e: SyntheticEvent<*, *>, _: Boolean ->
         currentTabIndex = e.target.value.toInt()
     }
 
-    val handleNewTabClick by eventHandler { _: Event ->
+    val handleNewTabClick by mouseEventHandler {
         appContext.prompt(
             Prompt(
                 "Create New Tab",
@@ -62,22 +60,22 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
     }
 
     div {
-        tabs {
+        Tabs {
             attrs.value = currentTabIndex.toString()
-            attrs.onChangeFunction = handleTabChange
+            attrs.onChange = handleTabChange
 
             mutableLayout.tabs.forEachIndexed { index, tab ->
-                tab {
+                Tab {
                     attrs.value = index.toString()
-                    attrs.label { +currentTab.title }
+                    attrs.label = buildElement { +currentTab.title }
                 }
             }
 
-            tab {
+            Tab {
                 attrs.value = currentTabIndex.toString()
-                attrs.icon { icon(CommonIcons.Add) }
+                attrs.icon = buildElement { icon(CommonIcons.Add) }
                 attrs.disabled = true
-                attrs.onClickFunction = handleNewTabClick
+                attrs.onClick = handleNewTabClick
             }
         }
 
@@ -112,8 +110,8 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
                         // Extra cell on right side for "add column".
                         div(+styles.gridAreaEdge) {
                             if (rowIndex == 0) {
-                                iconButton {
-                                    attrs.onClickFunction = {
+                                IconButton {
+                                    attrs.onClick = {
                                         currentTab.appendColumn()
                                         props.onGridChange()
                                     }
@@ -149,8 +147,8 @@ val LayoutEditor = xComponent<LayoutEditorProps>("LayoutEditor") { props ->
 
             // Extra cell on bottom left for "add row".
             div(+styles.gridAreaEdge) {
-                iconButton {
-                    attrs.onClickFunction = {
+                IconButton {
+                    attrs.onClick = {
                         currentTab.appendRow()
                         props.onGridChange()
                     }

@@ -10,7 +10,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.Prompt
 import baaahs.ui.unaryPlus
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 
 class ShaderRefactor(
     private val editingShader: EditingShader,
@@ -96,7 +96,7 @@ class ShaderRefactor(
 
         extractionCandidate?.let { extr ->
             session.markUndoGroup()
-            val lastUniform = editor.find("uniform", jsObject {
+            val lastUniform = editor.find("uniform", jso {
                 needle = "uniform"
                 backwards = true
                 caseSensitive = true
@@ -115,7 +115,7 @@ class ShaderRefactor(
     }
 
     private fun point(row: Number, column: Number): Point =
-        jsObject { this.row = row; this.column = column }
+        jso { this.row = row; this.column = column }
 
     companion object {
         val glslNumberRegex = Regex("[0-9.]")

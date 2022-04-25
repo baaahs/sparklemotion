@@ -1,12 +1,11 @@
 package baaahs.mapper
 
+import baaahs.ui.asColor
 import kotlinx.css.*
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.dark
-import materialui.styles.palette.main
+import mui.material.styles.Theme
 import styled.StyleSheet
 
-class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
+class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", isStatic = true) {
     val editorPanes by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns(
@@ -44,13 +43,13 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val defaultConfigs by css {
-        backgroundColor = theme.palette.info.main
+        backgroundColor = theme.palette.info.main.asColor()
         marginTop = 1.em
         marginBottom = 1.em
         paddingBottom = 1.em
 
         header {
-            backgroundColor = theme.palette.info.main.darken(20)
+            backgroundColor = theme.palette.info.main.asColor().darken(20)
             marginBottom = 1.em
         }
 
@@ -77,7 +76,7 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val searchBarPaper by css {
-        backgroundColor = theme.palette.primary.dark.darken(20)
+        backgroundColor = theme.palette.primary.dark.asColor().darken(20)
         marginTop = 8.px
         marginBottom = 8.px
         marginLeft = 1.em
@@ -88,11 +87,12 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val expansionPanelRoot by css {
-        backgroundColor = theme.palette.primary.main
+        backgroundColor = theme.palette.primary.main.asColor()
     }
 
     val configCardOuter by css {
-        backgroundColor = theme.palette.primary.main.lighten(10)
+        backgroundColor = theme.palette.primary.main.asColor()
+            .withAlpha(.75).blend(Color(theme.palette.background.paper))
         padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {
@@ -101,7 +101,7 @@ class ControllerEditorStyles(val theme: MuiTheme) : StyleSheet("app-ui-scene-edi
     }
 
     val configCardInner by css {
-        backgroundColor = theme.palette.primary.dark
+        backgroundColor = Color(theme.palette.background.paper)
         paddingLeft = 1.em
         paddingTop = .75.em
         paddingBottom = .75.em

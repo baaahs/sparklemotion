@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.Gadget
 import baaahs.app.ui.editor.ControlEditIntent
 import baaahs.app.ui.editor.EditIntent
 import baaahs.control.*
@@ -13,6 +14,9 @@ import kotlinx.serialization.json.JsonElement
 
 interface OpenControl {
     val id: String
+    val gadget: Gadget?
+        get() = null
+
     fun isActive(): Boolean = true
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)

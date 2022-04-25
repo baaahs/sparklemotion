@@ -8,15 +8,25 @@ import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.scene.MutableScene
-import baaahs.show.live.ShaderInstanceResolver
+import baaahs.show.live.PatchResolver
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePatchHolder
-import baaahs.show.mutable.MutableShaderInstance
 import baaahs.show.mutable.ShowBuilder
 import baaahs.sm.webapi.Severity
 import baaahs.sm.webapi.severity
 import baaahs.ui.Icon
 import baaahs.ui.View
+
+data class SingleShaderSimplifiedEditorPanel(
+    private val editableManager: EditableManager<*>,
+    private val mutablePatchHolder: MutablePatchHolder
+) : DialogPanel {
+    override val title: String
+        get() = "Simplified View: ${mutablePatchHolder.title}"
+
+    override fun getView(): View =
+        editorPanelViews.forSingleShaderSimplifiedEditorPanel(editableManager, mutablePatchHolder)
+}
 
 data class GenericPropertiesEditorPanel(
     private val editableManager: EditableManager<*>,
@@ -36,7 +46,7 @@ data class GenericPropertiesEditorPanel(
         editorPanelViews.forGenericPropertiesPanel(editableManager, propsEditors)
 }
 
-data class PatchHolderEditorPanel(
+data class PatchesOverviewPanel(
     private val editableManager: EditableManager<*>,
     private val mutablePatchHolder: MutablePatchHolder
 ) : DialogPanel {
@@ -46,7 +56,9 @@ data class PatchHolderEditorPanel(
         get() = CommonIcons.Patch
 
     override fun getNestedDialogPanels(): List<DialogPanel> {
-        return mutablePatchHolder.patches.map { mutablePatch -> mutablePatch.getEditorPanel(editableManager) }
+        return mutablePatchHolder.patches.map { mutablePatch ->
+            mutablePatch.getEditorPanel(editableManager)
+        }
     }
 
     override fun getView(): View =
@@ -58,56 +70,36 @@ data class PatchEditorPanel(
     private val mutablePatch: MutablePatch
 ) : DialogPanel {
     override val title: String
-        get() = mutablePatch.surfaces.name
+        get() = mutablePatch.title
     override val listSubhead: String
-        get() = "Fixtures"
+        get() = "Shaders"
     override val icon: Icon
-        get() = CommonIcons.Fixture
+        get() = openShader.shaderType.icon
+    override val problemLevel: Severity?
+            by lazy { openPatch.problems.severity() }
 
-    override fun getNestedDialogPanels(): List<DialogPanel> {
-        return mutablePatch.mutableShaderInstances.map { mutableShaderInstance ->
-            mutableShaderInstance.getEditorPanel(this)
-        }
+    // TODO: This is a clunky way to get our cached toolchain... clean up somehow.
+    val toolchain = (editableManager.session!! as ShowEditableManager.ShowSession).toolchain
+    private val openShader = toolchain.openShader(mutablePatch.mutableShader.build())
+    private val openPatch = run {
+    val patch = mutablePatch.build(ShowBuilder())
+        PatchResolver.build(openShader, patch, emptyMap())
     }
 
     override fun getView(): View =
         editorPanelViews.forPatch(editableManager, mutablePatch)
 
-    inner class ShaderInstanceEditorPanel(
-        private val mutableShaderInstance: MutableShaderInstance
-    ) : DialogPanel {
-        // TODO: This is a clunky way to get our cached toolchain... clean up somehow.
-        val toolchain = (editableManager.session!! as ShowEditableManager.ShowSession).toolchain
-        private val openShader = toolchain.openShader(mutableShaderInstance.mutableShader.build())
-        private val liveShaderInstance = run {
-            val shaderInstance = mutableShaderInstance.build(ShowBuilder())
-            ShaderInstanceResolver.build(openShader, shaderInstance, emptyMap())
-        }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PatchEditorPanel) return false
 
-        override val title: String
-            get() = mutableShaderInstance.mutableShader.title
-        override val listSubhead: String
-            get() = "Shaders"
-        override val icon: Icon
-            get() = openShader.shaderType.icon
-        override val problemLevel: Severity?
-            by lazy { liveShaderInstance.problems.severity() }
+        if (mutablePatch != other.mutablePatch) return false
 
-        override fun getView(): View =
-            editorPanelViews.forShaderInstance(editableManager, mutablePatch, mutableShaderInstance)
+        return true
+    }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ShaderInstanceEditorPanel) return false
-
-            if (mutableShaderInstance != other.mutableShaderInstance) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return mutableShaderInstance.hashCode()
-        }
+    override fun hashCode(): Int {
+        return mutablePatch.hashCode()
     }
 }
 
@@ -149,14 +141,13 @@ data class VisualizerPropsEditor(
 }
 
 interface EditorPanelViews {
+    fun forSingleShaderSimplifiedEditorPanel(
+        editableManager: EditableManager<*>,
+        mutablePatchHolder: MutablePatchHolder
+    ): View
     fun forGenericPropertiesPanel(editableManager: EditableManager<*>, propsEditors: List<PropsEditor>): View
     fun forPatchHolder(editableManager: EditableManager<*>, mutablePatchHolder: MutablePatchHolder): View
     fun forPatch(editableManager: EditableManager<*>, mutablePatch: MutablePatch): View
-    fun forShaderInstance(
-        editableManager: EditableManager<*>,
-        mutablePatch: MutablePatch,
-        mutableShaderInstance: MutableShaderInstance
-    ): View
     fun forButton(editableManager: EditableManager<*>, mutableButtonControl: MutableButtonControl): View
     fun forButtonGroup(editableManager: EditableManager<*>, mutableButtonGroupControl: MutableButtonGroupControl): View
     fun forSlider(editableManager: EditableManager<*>, mutableSliderControl: MutableSliderControl): View

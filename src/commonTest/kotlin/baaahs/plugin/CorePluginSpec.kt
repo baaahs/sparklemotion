@@ -10,6 +10,7 @@ import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
 import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -25,8 +26,11 @@ object CorePluginSpec : Spek({
         val gl by value { FakeGlContext() }
         val glFeed by value { feed.bind(gl) }
         val program by value {
-            val linkedPatch = toolchain.autoWire(Shaders.red).acceptSuggestedLinkOptions()
-                .confirm().openForPreview(toolchain, ContentType.Color)!!
+            val mutablePatch = toolchain.autoWire(Shaders.red)
+                .acceptSuggestedLinkOptions()
+                .confirm()
+            val linkedPatch = MutablePatchSet(mutablePatch)
+                .openForPreview(toolchain, ContentType.Color)!!
             GlslProgramImpl(gl, linkedPatch) { _, _ -> null }
         }
         val programFeed by value { glFeed.bind(program) }

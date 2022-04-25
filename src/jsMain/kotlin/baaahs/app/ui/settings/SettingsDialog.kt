@@ -3,16 +3,10 @@ package baaahs.app.ui.settings
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.appContext
 import baaahs.app.ui.dialog.dialogPanels
-import baaahs.ui.withEvent
+import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import materialui.components.button.button
-import materialui.components.buttongroup.buttonGroup
-import materialui.components.dialog.dialog
-import materialui.components.dialog.enums.DialogMaxWidth
-import materialui.components.dialogactions.dialogActions
-import materialui.components.dialogcontent.dialogContent
-import materialui.components.dialogtitle.dialogTitle
+import mui.material.*
+import mui.system.Breakpoint
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -27,30 +21,30 @@ private val SettingsDialog = xComponent<SettingsDialogProps>("SettingsDialog") {
         MainSettingsPanel(props.changeUiSettings)
     )  + plugins.getSettingsPanels()
 
-    dialog {
+    Dialog {
         attrs.open = true
         attrs.onClose = { _, _ -> props.onClose() }
-        attrs.maxWidth = DialogMaxWidth.lg
+        attrs.maxWidth = Breakpoint.lg
         attrs.fullWidth = true
 
-        dialogTitle { +"Settings" }
+        DialogTitle { +"Settings" }
 
-        dialogContent {
+        DialogContent {
             dialogPanels {
                 attrs.panels = panels
             }
         }
 
-        dialogActions {
-            buttonGroup {
-                button {
+        DialogActions {
+            ButtonGroup {
+                Button {
                     attrs.disabled = true
-                    attrs.onClickFunction = props.onClose.withEvent()
+                    attrs.onClick = props.onClose.withMouseEvent()
                     +"Revert"
                 }
 
-                button {
-                    attrs.onClickFunction = props.onClose.withEvent()
+                Button {
+                    attrs.onClick = props.onClose.withMouseEvent()
                     +"Close"
                 }
             }

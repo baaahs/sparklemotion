@@ -35,6 +35,8 @@ abstract class Gadget {
     @Transient
     private val listeners = arrayListOf<Listener>()
 
+    protected val adjustmentFactor get() = 1f / 64
+
     @JsName("listen")
     fun listen(gadgetListener: GadgetListener) {
         if (findListener(gadgetListener) != -1)
@@ -83,10 +85,14 @@ abstract class Gadget {
         GadgetValueObserver(name, initialValue, serializer) { changed() }
 
     /**
-     * Implementing child classes should change their state a little bit in some valid way, as if a user had done it.
+     * Implementing child classes should change their state a little in some valid way, as if a user had done it.
      */
-    open fun adjustALittleBit() {
-    }
+    open fun adjustALittleBit() {}
+
+    /**
+     * Implementing child classes should change their state scaled to reflect the given value in the range [0..1).
+     */
+    open fun adjustInRange(value: Float) {}
 
     @Transient
     val state: MutableMap<String, JsonElement> = hashMapOf()

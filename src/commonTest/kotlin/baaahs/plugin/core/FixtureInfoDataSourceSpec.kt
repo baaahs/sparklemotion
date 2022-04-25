@@ -8,7 +8,6 @@ import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.model.MovingHead
-import baaahs.show.live.link
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek

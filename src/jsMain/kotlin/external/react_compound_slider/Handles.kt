@@ -37,7 +37,7 @@ external interface HandlesProps : Props {
 //    var emitTouch: EmitTouch?
 //        get() = definedExternally
 //        set(value) = definedExternally
-    var children: (handlesObject: HandlesObject) -> ReactElement
+    var children: (handlesObject: HandlesObject) -> ReactElement<*>
 }
 
 external interface HandleItem {

@@ -6,24 +6,15 @@ import baaahs.ui.asTextNode
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import kotlinx.html.js.onChangeFunction
-import materialui.components.divider.divider
-import materialui.components.formcontrol.formControl
-import materialui.components.formlabel.formLabel
-import materialui.components.listitemicon.listItemIcon
-import materialui.components.listitemtext.listItemText
-import materialui.components.menuitem.menuItem
-import materialui.components.select.select
 import materialui.icon
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.useContext
+import mui.material.*
+import react.*
+import react.dom.events.ChangeEvent
 
 private val SoundAnalysisSettingsPanelView =
     xComponent<SoundAnalysisSettingsPanelProps>("SoundAnalysisSettingsPanel") { _ ->
         val appContext = useContext(appContext)
-        val plugin = appContext.plugins.findPlugin<SoundAnalysisPlugin>()
+        val plugin = appContext.plugins.getPlugin<SoundAnalysisPlugin>()
         val soundAnalyzer = plugin.soundAnalyzer
         var availableAudioInputs by state { soundAnalyzer.listAudioInputs() }
         var currentAudioInput by state { soundAnalyzer.currentAudioInput }
@@ -33,37 +24,37 @@ private val SoundAnalysisSettingsPanelView =
             currentAudioInput = newAudioInput
         }
 
-        formControl {
-            formLabel { +"Audio Input" }
+        FormControl {
+            FormLabel { +"Audio Input" }
 
             val none = "_NONE_"
-            select {
-                attrs.value(currentAudioInput?.id ?: none)
-                attrs.renderValue<String> { (if (it == none) "None" else it).asTextNode() }
+            Select<SelectProps<String>> {
+                attrs.value = currentAudioInput?.id ?: none
+                attrs.renderValue = { (if (it == none) "None" else it).asTextNode() }
 
-                attrs.onChangeFunction = {
-                    val inputId = it.target.value
+                attrs.onChange = { event: ChangeEvent<*>, _: ReactNode ->
+                    val inputId = event.target.value
                     val input = availableAudioInputs.find { it.id == inputId }
                     globalLaunch {
                         soundAnalyzer.switchTo(input)
                     }
                 }
 
-                menuItem {
+                MenuItem {
                     attrs.value = none
 
-                    listItemIcon { icon(CommonIcons.None) }
-                    listItemText { +"None" }
+                    ListItemIcon { icon(CommonIcons.None) }
+                    ListItemText { +"None" }
                 }
 
-                divider {}
+                Divider {}
 
                 availableAudioInputs.forEach { audioInput ->
-                    menuItem {
+                    MenuItem {
                         attrs.value = audioInput.id
 
-                        listItemIcon { icon(CommonIcons.SoundInput) }
-                        listItemText { +audioInput.title }
+                        ListItemIcon { icon(CommonIcons.SoundInput) }
+                        ListItemText { +audioInput.title }
                     }
                 }
             }

@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
+import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.ui.Markdown
@@ -70,6 +71,8 @@ interface DataSource {
     fun getVarName(id: String): String = "in_$id"
 
     fun createFeed(showPlayer: ShowPlayer, id: String): Feed
+
+    fun link(varName: String) = OpenPatch.DataSourceLink(this, varName, emptyMap())
 
     fun suggestId(): String = title.camelize()
 

@@ -62,10 +62,6 @@ class MappingManagerImpl(
         }
     }
 
-    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {
-        val results = sessionMappingResults
-            ?: error("Mapping results requested before available.")
-
-        return results.controllerData
-    }
+    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> =
+        sessionMappingResults?.controllerData ?: emptyMap()
 }

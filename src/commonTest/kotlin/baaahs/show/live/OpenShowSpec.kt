@@ -132,7 +132,7 @@ object OpenShowSpec : Spek({
             }
         }
 
-        context("when a shader instance has weird incoming links") {
+        context("when a patch has weird incoming links") {
             beforeEachTest {
                 mutableShow.addPatch(
                     testToolchain.wireUp(
@@ -141,14 +141,14 @@ object OpenShowSpec : Spek({
                             "uniform float time;\nvoid main() { gl_FragColor = gl_FragCoord + time; }"
                         )
                     ).apply {
-                        mutableShaderInstances.only().incomingLinks["nonsense"] =
+                        incomingLinks["nonsense"] =
                             MutableConstPort("invalid", GlslType.Companion.from("?huh?"))
                     }
                 )
             }
 
             it("ignores links to unknown ports") {
-                expect(openShow.patches.only().shaderInstances.only().incomingLinks.keys)
+                expect(openShow.patches.only().incomingLinks.keys)
                     .toBe(setOf("gl_FragCoord", "time"))
             }
         }

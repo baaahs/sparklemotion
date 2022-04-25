@@ -6,8 +6,8 @@ import baaahs.device.FixtureType
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.autoWire
-import baaahs.gl.patch.LinkedPatch
-import baaahs.gl.patch.PatchResolver
+import baaahs.gl.patch.LinkedProgram
+import baaahs.gl.patch.ProgramResolver
 import baaahs.model.ModelInfo
 import baaahs.only
 import baaahs.plugin.Plugins
@@ -20,7 +20,7 @@ import baaahs.show.mutable.ShowBuilder
 
 class GuruMeditationError(fixtureType: FixtureType) {
     private val shader = fixtureType.errorIndicatorShader
-    val linkedPatch: LinkedPatch
+    val linkedProgram: LinkedProgram
 
     init {
         val plugins = Plugins.safe(Plugins.dummyContext)
@@ -36,7 +36,7 @@ class GuruMeditationError(fixtureType: FixtureType) {
         val showPlayer = FakeShowPlayer(toolchain)
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
-        linkedPatch = PatchResolver.buildPortDiagram(openPatch)
+        linkedProgram = ProgramResolver.buildPortDiagram(openPatch)
             .resolvePatch(ShaderChannel.Main, fixtureType.resultContentType, openShow.allDataSources)
             ?: error("Couldn't build guru meditation error patch.")
     }

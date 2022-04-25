@@ -35,6 +35,7 @@ import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
+import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.ServerNotices
@@ -148,6 +149,7 @@ interface PinkyModule : KModule {
                         )
                     )
                 }
+                scoped { ProdBrainSimulator(get(), get()) }
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }

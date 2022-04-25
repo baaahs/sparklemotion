@@ -2,14 +2,12 @@ package baaahs.sim.ui
 
 import baaahs.SheepSimulator
 import baaahs.ui.unaryPlus
+import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
 import baaahs.visualizer.ui.visualizerPanel
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.switches.switch
-import react.Props
-import react.RBuilder
-import react.RHandler
+import mui.material.FormControlLabel
+import mui.material.Switch
+import react.*
 import react.dom.div
 
 val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { props ->
@@ -26,14 +24,12 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
 
     div(+SimulatorStyles.modelSimulation) {
         div(+SimulatorStyles.vizToolbar) {
-            formControlLabel {
-                attrs.control {
-                    switch {
-                        attrs.checked = rotate
-                        attrs.onChangeFunction = onRotateChange
-                    }
+            FormControlLabel {
+                attrs.control = Switch.create {
+                    checked = rotate
+                    onChange = onRotateChange.withTChangeEvent()
                 }
-                attrs.label { +"Rotate" }
+                attrs.label = buildElement { +"Rotate" }
             }
         }
     }

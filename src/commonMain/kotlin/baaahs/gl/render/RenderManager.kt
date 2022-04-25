@@ -6,7 +6,7 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.LinkedProgram
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
@@ -39,8 +39,8 @@ class RenderManager(
         engineFor(renderTarget.fixture.fixtureType).removeRenderTarget(renderTarget)
     }
 
-    fun compile(fixtureType: FixtureType, linkedPatch: LinkedPatch, feedResolver: FeedResolver): GlslProgram {
-        return engineFor(fixtureType).compile(linkedPatch, feedResolver)
+    fun compile(fixtureType: FixtureType, linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
+        return engineFor(fixtureType).compile(linkedProgram, feedResolver)
     }
 
     fun setRenderPlan(renderPlan: RenderPlan) {

@@ -14,7 +14,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinNext}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinGradlePlugin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
         classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
@@ -40,6 +40,9 @@ plugins {
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
+
+    // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
+    id("com.github.turansky.kfc.legacy-union") version "4.88.0"
 }
 
 repositories {
@@ -64,7 +67,15 @@ kotlin {
                 report = true
                 sourceMaps = true
             }
+
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
         }
+
+        binaries.executable()
     }
 
     sourceSets {
@@ -153,12 +164,11 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
 
                 implementation(npm("camera-controls", "^1.25.3"))
-
-                implementation("net.subroh0508.kotlinmaterialui:core:${Versions.kotlinMaterialUi}")
-                implementation("net.subroh0508.kotlinmaterialui:lab:${Versions.kotlinMaterialUi}")
-                implementation(npm("@material-ui/icons", "~4.9.1"))
 
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
@@ -182,7 +192,6 @@ kotlin {
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
-                implementation(npm("material-ui-search-bar", "1.0.0"))
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -257,7 +266,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-//    dependsOn(webpackTask)
+    dependsOn(webpackTask)
 
     from("build/distributions") { include("sparklemotion.js") }
 

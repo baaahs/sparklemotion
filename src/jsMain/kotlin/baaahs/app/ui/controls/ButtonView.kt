@@ -5,22 +5,14 @@ import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.on
-import baaahs.ui.unaryPlus
-import baaahs.ui.withEvent
-import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onMouseDownFunction
-import kotlinx.html.js.onMouseUpFunction
-import materialui.components.button.enums.ButtonStyle
-import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
-import materialui.lab.components.togglebutton.toggleButton
+import baaahs.ui.*
+import kotlinx.js.jso
+import mui.material.ToggleButton
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
-import materialui.components.button.button as muiButton
 
 private val ButtonView = xComponent<ButtonProps>("Button") { props ->
     val appContext = useContext(appContext)
@@ -59,35 +51,35 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
                 // When previews are on:
                 //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
                 //   color: black
-                toggleButton {
+                ToggleButton {
                     if (showPreview) {
-                        attrs.classes(
-                            Styles.buttonLabelWhenPreview on ToggleButtonStyle.label,
-                            Styles.buttonSelectedWhenPreview on SelectedStyle.selected
-                        )
+                        attrs.classes = jso {
+                            root = -Styles.buttonLabelWhenPreview
+                            selected = -Styles.buttonSelectedWhenPreview
+                        }
                     }
 
                     attrs.value = "n/a"
                     // Yep, for some reason you need to set it directly or it doesn't work.
                     attrs.selected = buttonControl.isPressed
-                    attrs.onClickFunction = handleToggleClick.withEvent()
+                    attrs.onClick = handleToggleClick.withTMouseEvent()
 
                     +buttonControl.title
                 }
 
             ButtonControl.ActivationType.Momentary ->
-                muiButton {
+                ToggleButton {
                     if (showPreview) {
-                        attrs.classes(
-                            Styles.buttonLabelWhenPreview on ButtonStyle.label,
-                            Styles.buttonSelectedWhenPreview on SelectedStyle.selected
-                        )
+                        attrs.classes = jso {
+                            root = -Styles.buttonLabelWhenPreview
+                            selected = -Styles.buttonSelectedWhenPreview
+                        }
                     }
 
                     attrs.value = "n/a"
-                    attrs["selected"] = buttonControl.isPressed
-                    attrs.onMouseDownFunction = handleMomentaryPress.withEvent()
-                    attrs.onMouseUpFunction = handleMomentaryRelease.withEvent()
+                    attrs.selected = buttonControl.isPressed
+                    attrs.onMouseDown = handleMomentaryPress.withMouseEvent()
+                    attrs.onMouseUp = handleMomentaryRelease.withMouseEvent()
 
                     +buttonControl.title
                 }

@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
-import baaahs.gl.patch.LinkedPatch
+import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.glsl.UniformImpl
@@ -33,10 +33,10 @@ interface GlslProgram {
 
 class GlslProgramImpl(
     private val gl: GlContext,
-    private val linkedPatch: LinkedPatch,
+    private val linkedProgram: LinkedProgram,
     engineFeedResolver: EngineFeedResolver
 ): GlslProgram {
-    override val title: String get() = linkedPatch.rootNode.title
+    override val title: String get() = linkedProgram.rootNode.title
 
     private val vertexShader =
         gl.createVertexShader(
@@ -44,12 +44,12 @@ class GlslProgramImpl(
         )
 
     override val fragShader =
-        gl.createFragmentShader(linkedPatch.toFullGlsl(gl.glslVersion))
+        gl.createFragmentShader(linkedProgram.toFullGlsl(gl.glslVersion))
 
     val id = gl.compile(vertexShader, fragShader)
 
     private val feeds = gl.runInContext {
-        linkedPatch.dataSourceLinks.mapNotNull { (dataSource, id) ->
+        linkedProgram.dataSourceLinks.mapNotNull { (dataSource, id) ->
             val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
             if (engineFeed != null) {

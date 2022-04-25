@@ -1,6 +1,7 @@
 package baaahs.gl.preview
 
-import baaahs.device.PixelArrayDevice
+import baaahs.device.FixtureType
+import baaahs.device.PixelFormat
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayFixture
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.Path2D
+import three.js.Vector2
 
 class ProjectionPreview(
     canvas2d: HTMLCanvasElement,
@@ -33,10 +35,15 @@ class ProjectionPreview(
         .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!
         .associateWith { surface ->
             val lineVertices = surface.lines.flatMap { it.vertices }
-            val fixture = PixelArrayFixture(
-                surface, lineVertices.size, surface.name, transport = NullTransport,
-                PixelArrayDevice.PixelFormat.RGB8, 1f, lineVertices
-            )
+
+            // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
+            val fixture = object : PixelArrayFixture(
+                surface, lineVertices.size, surface.name, NullTransport,
+                PixelFormat.RGB8, 1f, lineVertices
+            ) {
+                override val fixtureType: FixtureType
+                    get() = this@ProjectionPreview.fixtureType
+            }
             renderEngine.addFixture(fixture)
         }
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
@@ -87,7 +94,7 @@ class ProjectionPreview(
             val insetWidth = width - errorMargin * 2
             val insetHeight = height - errorMargin * 2
 
-            val overflows = arrayListOf<DoubleArray>()
+            val overflows = arrayListOf<Vector2>()
 
             renderTargets.forEach { (surface, renderTarget) ->
                 val projectedVertices = renderTarget.fixtureResults as Vec2ResultType.Vec2FixtureResults
@@ -126,7 +133,7 @@ class ProjectionPreview(
                             isOverflow = true
                         }
                         if (isOverflow) {
-                            overflows.add(doubleArrayOf(overflowX, overflowY))
+                            overflows.add(Vector2(overflowX, overflowY))
                         }
 
                         vertexIndex++
@@ -139,7 +146,7 @@ class ProjectionPreview(
             // Show overflow vertices.
             context2d.fillStyle = "#ff0000"
             overflows.forEach { coords ->
-                context2d.fillRect(coords[0], coords[1], errorMargin, errorMargin)
+                context2d.fillRect(coords.x, coords.y, errorMargin, errorMargin)
             }
         }
 

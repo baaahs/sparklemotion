@@ -30,8 +30,7 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         get() = NativeVector3F().setFromMatrixScale(nativeMatrix).toVector3F()
 
     actual operator fun times(matrix: Matrix4F): Matrix4F {
-        nativeMatrix.clone().multiply(matrix.nativeMatrix)
-        return this
+        return Matrix4F(nativeMatrix.clone().multiply(matrix.nativeMatrix))
     }
 
     actual fun transform(vector: Vector3F): Vector3F {
@@ -87,12 +86,14 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         actual val identity: Matrix4F
             get() = Matrix4F()
 
-        actual fun fromPositionAndRotation(position: Vector3F, rotation: EulerAngle): Matrix4F {
-            val nativeMatrix = NativeMatrix4D()
-            nativeMatrix.makeRotationFromEuler(rotation.toThreeEuler())
-            nativeMatrix.setPosition(position.x, position.y, position.z)
-            return Matrix4F(nativeMatrix)
-        }
+        actual fun compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
+            Matrix4F(
+                NativeMatrix4D().compose(
+                    position.toVector3(),
+                    Quaternion().apply { setFromEuler(rotation.toThreeEuler()) },
+                    scale.toVector3()
+                )
+            )
     }
 }
 

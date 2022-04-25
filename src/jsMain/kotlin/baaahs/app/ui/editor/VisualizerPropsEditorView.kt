@@ -2,45 +2,37 @@ package baaahs.app.ui.editor
 
 import baaahs.control.MutableVisualizerControl
 import baaahs.control.VisualizerControl
-import baaahs.ui.checked
+import baaahs.ui.typographyH6
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onChangeFunction
-import materialui.components.formcontrol.formControl
-import materialui.components.formcontrollabel.formControlLabel
-import materialui.components.formlabel.formLabel
-import materialui.components.radio.radio
-import materialui.components.radiogroup.radioGroup
-import materialui.components.switches.switch
-import materialui.components.typography.typographyH6
+import mui.material.*
 import org.w3c.dom.HTMLInputElement
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
+import react.dom.events.ChangeEvent
+import react.dom.html.ReactHTML
 
 private val VisualizerPropsEditorView = xComponent<VisualizerPropsEditorProps>("VisualizerPropsEditor") { props ->
 
     div(+EditableStyles.propertiesSection) {
-        formControl {
-            formLabel {
-                attrs.component = "legend"
+        FormControl {
+            FormLabel {
+                attrs.component = ReactHTML.legend
                 +"Surface Display Mode"
             }
 
-            radioGroup {
-                attrs.value(props.mutableVisualizerControl.surfaceDisplayMode.name)
-                attrs.onChangeFunction = {
-                    val value = (it.target as HTMLInputElement).value
+            RadioGroup {
+                attrs.value = props.mutableVisualizerControl.surfaceDisplayMode.name
+                attrs.onChange = { _: ChangeEvent<HTMLInputElement>, value: String ->
                     props.mutableVisualizerControl.surfaceDisplayMode = VisualizerControl.SurfaceDisplayMode.valueOf(value)
                     props.editableManager.onChange()
                 }
 
                 VisualizerControl.SurfaceDisplayMode.values().forEach {
-                    formControlLabel {
+                    FormControlLabel {
                         attrs.value = it.name
-                        attrs.control { radio {} }
-                        attrs.label { +it.name }
+                        attrs.control = Radio.create()
+                        attrs.label = buildElement { +it.name }
                     }
                 }
             }
@@ -48,18 +40,17 @@ private val VisualizerPropsEditorView = xComponent<VisualizerPropsEditorProps>("
     }
 
     div(+EditableStyles.propertiesSection) {
-        formControlLabel {
-            attrs.control {
-                switch {
+        FormControlLabel {
+            attrs.control = buildElement {
+                Switch {
                     attrs.checked = props.mutableVisualizerControl.rotate
-                    attrs.onChangeFunction = {
-                        val value = it.target.checked
-                        props.mutableVisualizerControl.rotate = value
+                    attrs.onChange = { _, checked ->
+                        props.mutableVisualizerControl.rotate = checked
                         props.editableManager.onChange()
                     }
                 }
             }
-            attrs.label { typographyH6 { +"Rotate" } }
+            attrs.label = buildElement { typographyH6 { +"Rotate" } }
         }
     }
 }

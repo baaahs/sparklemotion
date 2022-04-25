@@ -38,7 +38,7 @@ data class BeatData(
         return (elapsedSinceStartOfMeasure / beatIntervalSec).toFloat()
     }
 
-    /**
+    /** TODO: This name no longer makes sense, and the shaping function should be declared in GLSL.
      * Returns 1.0 if we're on a beat, 0.0 when we're furthest from the last beat,
      * and anywhere in between otherwise.
      */

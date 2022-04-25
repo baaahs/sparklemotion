@@ -97,7 +97,7 @@ class Model(
 
     abstract class BaseEntity : Entity {
         override val transformation: Matrix4F
-                by lazy { Matrix4F.fromPositionAndRotation(position, rotation) }
+                by lazy { Matrix4F.compose(position, rotation, scale) }
 
         override val problems: Collection<Problem>
             get() = emptyList()

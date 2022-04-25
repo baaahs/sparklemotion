@@ -7,6 +7,9 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.*
 import baaahs.device.FixtureType
 import baaahs.dmx.*
+import baaahs.fixtures.MovingHeadRemoteConfig
+import baaahs.fixtures.PixelArrayRemoteConfig
+import baaahs.fixtures.RemoteConfig
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
@@ -146,7 +149,7 @@ class SimulatorPlugins(
         )
 }
 
-sealed class Plugins private constructor(
+sealed class Plugins(
     @Deprecated("Don't use this directly")
     val pluginContext: PluginContext,
     private val openPlugins: List<OpenPlugin>
@@ -271,16 +274,25 @@ sealed class Plugins private constructor(
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
         }
+
+        polymorphic(RemoteConfig::class) {
+            subclass(PixelArrayRemoteConfig::class, PixelArrayRemoteConfig.serializer())
+            subclass(MovingHeadRemoteConfig::class, MovingHeadRemoteConfig.serializer())
+        }
     }
 
     val json = Json { serializersModule = this@Plugins.serialModule }
 
-    fun <T: OpenPlugin > findPlugin(pluginKlass: KClass<T>): T {
+    fun <T: OpenPlugin > findPlugin(pluginKlass: KClass<T>): T? {
         @Suppress("UNCHECKED_CAST")
-        return openPlugins.find { it::class == pluginKlass } as T
+        return openPlugins.find { it::class == pluginKlass } as T?
     }
 
-    inline fun <reified T : OpenPlugin> findPlugin(): T = findPlugin(T::class)
+    inline fun <reified T : OpenPlugin> getPlugin(): T =
+        findPlugin(T::class) ?: error("No such plugin ${T::class.simpleName}")
+
+    inline fun <reified T : OpenPlugin> findPlugin(): T? =
+        findPlugin(T::class)
 
     fun resolveContentType(name: String): ContentType? {
         return contentTypes.byId[name]

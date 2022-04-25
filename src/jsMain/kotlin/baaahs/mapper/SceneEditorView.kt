@@ -8,18 +8,14 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import kotlinx.html.hidden
-import materialui.components.appbar.appBar
-import materialui.components.appbar.enums.AppBarPosition
-import materialui.components.tab.tab
-import materialui.components.tabs.tabs
-import materialui.styles.createMuiTheme
-import materialui.styles.muitheme.options.palette
-import materialui.styles.palette.PaletteType
-import materialui.styles.palette.options.type
+import kotlinx.js.jso
+import mui.material.*
+import mui.material.styles.createTheme
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.buildElement
 import react.dom.div
 import styled.inlineStyles
 
@@ -32,9 +28,9 @@ private enum class PageTabs {
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
     val theme = memo {
-        createMuiTheme {
-            palette { type = PaletteType.dark }
-        }
+        createTheme(jso {
+            palette = jso { mode = PaletteMode.dark }
+        })
     }
 
     observe(props.sceneManager)
@@ -52,16 +48,16 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     val mutableScene = props.sceneManager.mutableScene
 
     div(+Styles.adminRoot) {
-        appBar {
+        AppBar {
             attrs.position = AppBarPosition.relative
 
-            tabs {
+            Tabs {
                 attrs.value = selectedTab
                 attrs.onChange = handleChangeTab.asDynamic()
 
                 PageTabs.values().forEach { tab ->
-                    tab {
-                        attrs.label { +tab.name.replace("_", " ") }
+                    Tab {
+                        attrs.label = buildElement { +tab.name.replace("_", " ") }
                         attrs.value = tab.asDynamic()
                     }
                 }

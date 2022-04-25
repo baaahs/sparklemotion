@@ -11,18 +11,14 @@ import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.down
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.contrastText
-import materialui.styles.palette.dark
-import materialui.styles.transitions.create
-import materialui.styles.transitions.sharp
+import kotlinx.js.Object
+import mui.material.styles.Theme
+import mui.system.Breakpoint
 import styled.StyleSheet
 import styled.injectGlobal
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
-class AllStyles(val theme: MuiTheme) {
+class AllStyles(val theme: Theme) {
     val themeStyles = ThemeStyles(theme)
     val appUi by lazy { themeStyles }
     val editor by lazy { baaahs.ui.editor.Styles(theme) }
@@ -61,7 +57,7 @@ private fun linearRepeating(
     """.trimIndent()
 }
 
-class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = true) {
+class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true) {
     private val drawerWidth = 260.px
 
     val help by css {
@@ -70,8 +66,8 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     val global = CssBuilder().apply {
         "header" {
-            color = theme.palette.primary.contrastText
-            backgroundColor = theme.palette.primary.dark
+            color = Color(theme.palette.primary.contrastText.asDynamic())
+            backgroundColor = Color(theme.palette.primary.dark.asDynamic())
             fontSize = 0.875.rem
             fontWeight = FontWeight.w600
             lineHeight = LineHeight("48px")
@@ -86,7 +82,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
                 right = 1.em
 
                 child("a") {
-                    color = theme.palette.primary.contrastText
+                    color = Color(theme.palette.primary.contrastText.asDynamic())
                 }
             }
         }
@@ -94,18 +90,20 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
 
     private val drawerClosedShift = partial {
         transform { translateX(0.px) }
-        theme.transitions.create("transform") {
-            easing = theme.transitions.easing.sharp
-                duration = theme.transitions.duration.enteringScreen
-        }
+        transition(
+            ::transform,
+            timing = Timing(theme.transitions.easing.sharp),
+            duration = Time(theme.transitions.duration.enteringScreen.toString())
+        )
     }
 
     private val drawerOpenShift = partial {
         transform { translateX(drawerWidth) }
-        transition = theme.transitions.create("transform") {
-            easing = theme.transitions.easing.sharp
-            duration = theme.transitions.duration.leavingScreen
-        }
+        transition(
+            ::transform,
+            timing = Timing(theme.transitions.easing.sharp),
+            duration = Time(theme.transitions.duration.leavingScreen.toString())
+        )
     }
 
     val appRoot by css {
@@ -129,7 +127,7 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     }
 
     val appToolbar by css {
-        mixIn(theme.mixins.toolbar)
+        mixIn(theme.mixins.toolbar as Object)
 
         descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
@@ -224,9 +222,8 @@ class ThemeStyles(val theme: MuiTheme) : StyleSheet("app-ui-theme", isStatic = t
     val appDrawerHeader by css {
         display = Display.flex
         alignItems = Align.center
-        padding = theme.spacing(0, 1)
-        rules.addAll(theme.mixins.toolbar.rules)
-        theme.mixins.toolbar
+        padding = theme.spacing.asDynamic()(0, 1).toString()
+        mixIn(theme.mixins.toolbar)
         justifyContent = JustifyContent.flexEnd
     }
 
@@ -285,8 +282,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val layoutPanel by css {
         display = Display.flex
-        height = 100.pct
         overflow = Overflow.scroll
+        flex(1.0)
     }
 
     val layoutControls by css {
@@ -484,6 +481,11 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val global = CssBuilder().apply {
+        body {
+            fontSize = 0.875.rem
+            lineHeight = LineHeight("1.43")
+        }
+
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {
             opacity = 1
             pointerEvents = PointerEvents.auto

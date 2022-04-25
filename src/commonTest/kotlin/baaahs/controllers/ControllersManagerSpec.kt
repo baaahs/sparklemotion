@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.controller.*
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransport
 import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.Shenzarpy
@@ -132,7 +133,7 @@ object ControllersManagerSpec : Spek({
                             anonymousFixtureMapping = FixtureMapping(
                                 null, PixelArrayDevice.Config(
                                     pixelCount = 3,
-                                    pixelFormat = PixelArrayDevice.PixelFormat.RGB8,
+                                    pixelFormat = PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
                             )
@@ -165,7 +166,7 @@ object ControllersManagerSpec : Spek({
                         fakeController.controllerId to listOf(
                             FixtureMapping(
                                 modelEntity, PixelArrayDevice.Config(
-                                    3, PixelArrayDevice.PixelFormat.RGB8,
+                                    3, PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
                             )

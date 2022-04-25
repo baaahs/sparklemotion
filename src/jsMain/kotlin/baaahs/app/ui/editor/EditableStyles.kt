@@ -4,18 +4,42 @@ import baaahs.ui.StuffThatShouldComeFromTheTheme
 import baaahs.ui.child
 import baaahs.ui.important
 import kotlinx.css.*
-import materialui.styles.breakpoint.Breakpoint
-import materialui.styles.breakpoint.up
-import materialui.styles.muitheme.MuiTheme
+import mui.material.styles.Theme
+import mui.system.Breakpoint
 import styled.StyleSheet
 
-class ThemedEditableStyles(val theme: MuiTheme) : StyleSheet("app-ui-editor-Editable-themed", isStatic = true) {
+class ThemedEditableStyles(val theme: Theme) : StyleSheet("app-ui-editor-Editable-themed", isStatic = true) {
     val drawer by css {
         minHeight = 85.vh
 
         theme.breakpoints.up(Breakpoint.md)() {
             margin(horizontal = 5.em)
             important(::maxHeight, 85.vh)
+        }
+    }
+
+    val dialogContent by css {
+        padding(0.px)
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val expandSwitchLabel by css {
+        grow(Grow.GROW)
+        paddingLeft = 1.em
+    }
+
+    val singlePanel by css {
+        grow(Grow.GROW)
+        display = Display.flex
+        flexDirection = FlexDirection.column
+
+        ".ui-shaderEditor" {
+            grow(Grow.GROW)
+
+            ".ui-textEditor" {
+                height = LinearDimension.initial
+            }
         }
     }
 }

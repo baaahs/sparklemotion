@@ -4,19 +4,18 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.on
+import baaahs.ui.and
+import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
+import csstype.ident
 import kotlinx.css.StyledElement
-import kotlinx.html.js.onClickFunction
-import materialui.components.button.button
-import materialui.components.button.enums.ButtonColor
-import materialui.components.button.enums.ButtonStyle
-import materialui.components.card.card
-import materialui.components.paper.enums.PaperStyle
-import materialui.lab.components.togglebutton.enums.ToggleButtonStyle
-import materialui.lab.components.togglebutton.toggleButton
+import kotlinx.js.jso
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.Card
+import mui.material.ToggleButton
+import mui.system.sx
 import org.w3c.dom.Element
-import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -24,17 +23,22 @@ import react.dom.div
 import react.useContext
 import styled.inlineStyles
 
+object GridAreas {
+    val hold = ident("hold")
+    val go = ident("go")
+}
+
 private val Transition = xComponent<TransitionProps>("Transition") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
 
     var holdEngaged by state { false }
-    val handleHoldButtonClick by eventHandler { _: Event ->
+    val handleHoldButtonClick by mouseEventHandler {
         holdEngaged = !holdEngaged
         logger.warn { "holdEngaged: $holdEngaged" }
     }
 
-    val handleGoButtonClick by eventHandler { _: Event ->
+    val handleGoButtonClick by mouseEventHandler {
         holdEngaged = false
         logger.warn { "holdEngaged: $holdEngaged" }
     }
@@ -62,27 +66,30 @@ private val Transition = xComponent<TransitionProps>("Transition") { props ->
         }
     }
 
-    card(styles.transitionCard on PaperStyle.root) {
+    Card {
+        attrs.classes = jso { this.root = -styles.transitionCard }
         ref = rootEl
 
 //        header { +"Transitions! \uD83D\uDE1E" }
 
-        button(
-            listOfNotNull(
-                styles.transitionHoldButton,
-                if (holdEngaged) styles.transitionHoldEngaged else null
-            ) on ButtonStyle.root
-        ) {
-            inlineStyles { gridArea = "hold" }
+        Button {
+            attrs.classes = jso {
+                if (holdEngaged) {
+                    this.root = -styles.transitionHoldButton
+                } else {
+                    this.root = -styles.transitionHoldButton and styles.transitionHoldEngaged
+                }
+            }
+            attrs.sx { gridArea = GridAreas.hold }
             attrs.color = ButtonColor.secondary
-            attrs.onClickFunction = handleHoldButtonClick
+            attrs.onClick = handleHoldButtonClick
             +"Hold"
         }
 
-        button {
-            inlineStyles { gridArea = "go" }
+        Button {
+            attrs.sx { gridArea = GridAreas.go }
             attrs.disabled = !holdEngaged
-            attrs.onClickFunction = handleGoButtonClick
+            attrs.onClick = handleGoButtonClick
             +"Go"
         }
 
@@ -98,23 +105,27 @@ private val Transition = xComponent<TransitionProps>("Transition") { props ->
                 attrs.reversed = false
                 attrs.showTicks = false
 
-                attrs.onChange = handlePositionChange
+                attrs.onPositionChange = handlePositionChange
             }
         }
 
         div {
             inlineStyles { gridArea = "speed" }
             +"Speed: "
-            toggleButton(styles.speedButton on ToggleButtonStyle.label) {
+            ToggleButton {
+                attrs.classes = jso { this.root = -styles.speedButton }
                 attrs.selected = speed == ".25s"; +"¼s"
             }
-            toggleButton(styles.speedButton on ToggleButtonStyle.label) {
+            ToggleButton {
+                attrs.classes = jso { this.root = -styles.speedButton }
                 attrs.selected = speed == ".5s"; +"½s"
             }
-            toggleButton(styles.speedButton on ToggleButtonStyle.label) {
+            ToggleButton {
+                attrs.classes = jso { this.root = -styles.speedButton }
                 attrs.selected = speed == "1s"; +"1s"
             }
-            toggleButton(styles.speedButton on ToggleButtonStyle.label) {
+            ToggleButton {
+                attrs.classes = jso { this.root = -styles.speedButton }
                 attrs.selected = speed == "2s"; +"2s"
             }
         }
@@ -122,15 +133,15 @@ private val Transition = xComponent<TransitionProps>("Transition") { props ->
         div {
             inlineStyles { gridArea = "shape" }
             +"Shape: "
-            toggleButton { attrs.selected = shape == "linear"; +"Linear" }
-            toggleButton { attrs.selected = shape == "ease"; +"Ease" }
+            ToggleButton { attrs.selected = shape == "linear"; +"Linear" }
+            ToggleButton { attrs.selected = shape == "ease"; +"Ease" }
         }
 
         div {
             inlineStyles { gridArea = "effect" }
             +"Effect: "
-            toggleButton { attrs.selected = effect == "fade"; +"Fade" }
-            toggleButton { attrs.selected = effect == "dissolve"; +"Dissolve" }
+            ToggleButton { attrs.selected = effect == "fade"; +"Fade" }
+            ToggleButton { attrs.selected = effect == "dissolve"; +"Dissolve" }
         }
     }
 }

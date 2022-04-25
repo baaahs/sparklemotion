@@ -3,28 +3,22 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
-import baaahs.ui.markdown
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
+import baaahs.window
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
-import materialui.components.table.enums.TablePadding
-import materialui.components.table.table
-import materialui.components.tablebody.tableBody
-import materialui.components.tablecell.tdCell
-import materialui.components.tablecell.thCell
-import materialui.components.tablehead.tableHead
-import materialui.components.tablerow.tableRow
-import materialui.styles.muitheme.MuiTheme
-import materialui.styles.palette.contrastText
-import materialui.styles.palette.main
+import kotlinx.js.jso
+import mui.material.*
+import mui.material.styles.Theme
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.code
+import react.dom.div
 import react.dom.pre
-import react.dom.setProp
 import react.dom.span
 import react.useContext
 import styled.StyleSheet
@@ -33,58 +27,75 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderHelp
 
-    table {
-        attrs.padding = TablePadding.dense
-        setProp("stickyHeader", true)
+    Table {
+        attrs.stickyHeader = true
 
-        tableHead {
-            tableRow {
-                thCell { +"Data Source" }
-                thCell { +"Description" }
-                thCell { +"Content Type" }
+        TableHead {
+            TableRow {
+                TableCell { +"Data Source" }
+                TableCell { +"Description" }
+                TableCell { +"Content Type" }
             }
         }
 
-        tableBody {
+        TableBody {
             appContext.plugins.dataSourceBuilders.withPlugin
                 .filterNot { (_, v) -> v.internalOnly }
                 .sortedBy { (_, v) -> v.title }
                 .forEach { (plugin, dataSourceBuilder) ->
-                    tableRow {
-                        tdCell { +dataSourceBuilder.title }
+                    TableRow {
+                        TableCell { +dataSourceBuilder.title }
                         val contentType = dataSourceBuilder.contentType
-                        tdCell {
+                        TableCell {
                             markdown { +dataSourceBuilder.description }
-                            pre(+styles.code) {
-                                val type = contentType.glslType
-                                val pluginRef = PluginRef(plugin.packageName, dataSourceBuilder.resourceName)
+                            div(+styles.codeContainer) {
+                                pre(+styles.code) {
+                                    val type = contentType.glslType
+                                    val pluginRef = PluginRef(plugin.packageName, dataSourceBuilder.resourceName)
 
-                                if (type is GlslType.Struct) {
-                                    code { +"struct ${type.name} {\n" }
+                                    if (type is GlslType.Struct) {
+                                        code { +"struct ${type.name} {\n" }
 
-                                    type.fields.forEach { field ->
-                                        val typeStr = if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
-                                        val style = if (field.deprecated) styles.deprecated else styles.normal
-                                        val comment = if (field.deprecated) "Deprecated. ${field.description}" else field.description
+                                        type.fields.forEach { field ->
+                                            val typeStr = if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
+                                            val style = if (field.deprecated) styles.deprecated else styles.normal
+                                            val comment = if (field.deprecated) "Deprecated. ${field.description}" else field.description
 
-                                        code {
-                                            +"    "
-                                            span(+style) { +"$typeStr ${field.name};" }
-                                            comment?.run { +" "; span(+styles.comment) { +"// $comment" } }
-                                            +"\n"
+                                            code {
+                                                +"    "
+                                                span(+style) { +"$typeStr ${field.name};" }
+                                                comment?.run { +" "; span(+styles.comment) { +"// $comment" } }
+                                                +"\n"
+                                            }
+                                        }
+                                        code { +"};\n" }
+                                    }
+                                    val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
+
+                                    code {
+                                        +"uniform ${type.glslLiteral} $varName; "
+                                        span(+styles.comment) { +"// @@${pluginRef.shortRef()}\n" }
+                                    }
+                                }
+
+                                Button {
+                                    attrs.classes = jso { this.root = -styles.copyButton }
+                                    attrs.onClick = { event ->
+                                        val target = event.currentTarget as HTMLElement?
+                                        val pre = target
+                                            ?.parentElement
+                                            ?.getElementsByTagName("pre")
+                                            ?.get(0) as HTMLElement?
+                                        pre?.innerText?.let {
+                                            window.navigator.clipboard.writeText(it)
+                                            target?.innerText = "Copied!"
                                         }
                                     }
-                                    code { +"}\n" }
-                                }
-                                val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
-
-                                code {
-                                    +"uniform ${type.glslLiteral} $varName; "
-                                    span(+styles.comment) { +"// @@${pluginRef.shortRef()}\n" }
+                                    +"Copy…"
                                 }
                             }
                         }
-                        tdCell { code { +contentType.id } }
+                        TableCell { code { +contentType.id } }
                     }
                 }
         }
@@ -92,14 +103,18 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
 }
 
 class ShaderHelpStyles(
-    private val theme: MuiTheme
+    private val theme: Theme
 ) : StyleSheet("app-ui-editor-ShaderHelp", isStatic = true) {
+    val codeContainer by css {
+        position = Position.relative
+        color = Color(theme.palette.info.contrastText.asDynamic())
+        backgroundColor = Color(theme.palette.info.main.asDynamic())
+        padding = 0.5.em.value
+        border = "2px inset ${theme.palette.info.main}"
+    }
+
     val code by css {
         whiteSpace = WhiteSpace.preWrap
-        color = theme.palette.info.contrastText
-        backgroundColor = theme.palette.info.main
-        padding = 0.5.em.value
-        border = "2px inset ${theme.palette.info.main.value}"
 
         // Line numbers:
         before {
@@ -120,6 +135,14 @@ class ShaderHelpStyles(
         }
     }
 
+    val copyButton by css {
+        color = theme.palette.primary.contrastText.asColor()
+        backgroundColor = theme.palette.secondary.main.asColor()
+        position = Position.absolute
+        top = .5.em
+        right = .5.em
+    }
+
     val normal by css {}
 
     val deprecated by css {
@@ -128,7 +151,7 @@ class ShaderHelpStyles(
     }
 
     val comment by css {
-        color = theme.palette.info.contrastText.withAlpha(.75)
+        color = Color(theme.palette.info.contrastText.asDynamic()).withAlpha(.75)
     }
 }
 

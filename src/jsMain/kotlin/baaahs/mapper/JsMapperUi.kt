@@ -17,9 +17,9 @@ import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
 import baaahs.window
-import kotlinext.js.jsObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.js.jso
 import org.w3c.dom.CanvasImageSource
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
@@ -87,7 +87,7 @@ class JsMapperUi(
     private val clock = Clock()
 
     // onscreen renderer for registration UI:
-    private val uiRenderer = WebGLRenderer(jsObject { alpha = true })
+    private val uiRenderer = WebGLRenderer(jso { alpha = true })
     private val uiScene = Scene()
     private val uiCamera = PerspectiveCamera(45, containerDimen.aspect(), 1, 10000).also { camera ->
         camera.position.z = 1000.0
@@ -237,8 +237,8 @@ class JsMapperUi(
         perfStatsDiv.innerText = Mapper.mapperStats.summarize()
     }
 
-    override fun render(): ReactElement {
-        return createElement(SceneEditorView, jsObject {
+    override fun render(): ReactElement<*> {
+        return createElement(SceneEditorView, jso {
             sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
             mapperUi = this@JsMapperUi
             sceneManager = this@JsMapperUi.sceneManager.facade

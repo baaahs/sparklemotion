@@ -4,8 +4,6 @@ import baaahs.device.FixtureType
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.ShaderChannel
-import baaahs.show.Surfaces
-import baaahs.show.live.LiveShaderInstance
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutablePort
@@ -17,10 +15,10 @@ class AutoWirer(private val plugins: Plugins) {
         shaderChannel: ShaderChannel = ShaderChannel.Main,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
         fixtureTypes: Collection<FixtureType> = emptyList()
-    ): UnresolvedPatch {
-        val siblingsPatch = OpenPatch(shaders.map {
-            LiveShaderInstance(it, emptyMap(), shaderChannel, 0f)
-        }, Surfaces.AllSurfaces)
+    ): UnresolvedPatches {
+        val siblingPatches = shaders.map {
+            OpenPatch(it, emptyMap(), shaderChannel, 0f)
+        }
 
         val parentShow = null as OpenShow? // TODO: test with non-null?
         val channelsInfo = ChannelsInfo(
@@ -28,23 +26,43 @@ class AutoWirer(private val plugins: Plugins) {
         )
 
         // First pass: gather shader output ports.
-        val shaderInstances =
+        val unresolvedPatches =
             shaders.associateWith { openShader ->
-                val shaderInstanceOptions =
-                    ShaderInstanceOptions(openShader, shaderChannel, channelsInfo, defaultPorts, emptyMap(), plugins)
-
-                val unresolvedShaderInstance = UnresolvedShaderInstance(
-                    MutableShader(openShader.shader),
-                    openShader.inputPorts.associateWith { inputPort ->
-                        shaderInstanceOptions.inputPortLinkOptions[inputPort.id]?.toMutableList() ?: mutableListOf()
-                    },
-                    shaderChannel,
-                    0f
-                )
-
-                unresolvedShaderInstance
+                autoWire(openShader, shaderChannel, channelsInfo, defaultPorts)
             }
 
-        return UnresolvedPatch(shaderInstances.values.toList())
+        return UnresolvedPatches(unresolvedPatches.values.toList())
+    }
+
+    fun autoWire(
+        openShader: OpenShader,
+        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
+        fixtureTypes: Collection<FixtureType> = emptyList()
+    ): UnresolvedPatch {
+        val parentShow = null as OpenShow? // TODO: test with non-null?
+        val channelsInfo = ChannelsInfo(
+            parentShow, if (fixtureTypes.isEmpty()) plugins.fixtureTypes.all else fixtureTypes
+        )
+
+        return autoWire(openShader, shaderChannel, channelsInfo, defaultPorts)
+    }
+
+    private fun autoWire(
+        openShader: OpenShader,
+        shaderChannel: ShaderChannel,
+        channelsInfo: ChannelsInfo,
+        defaultPorts: Map<ContentType, MutablePort>
+    ): UnresolvedPatch {
+        val patchOptions =
+            PatchOptions(openShader, shaderChannel, channelsInfo, defaultPorts, emptyMap(), plugins)
+        return UnresolvedPatch(
+            MutableShader(openShader.shader),
+            openShader.inputPorts.associateWith { inputPort ->
+                patchOptions.inputPortLinkOptions[inputPort.id]?.toMutableList() ?: mutableListOf()
+            },
+            shaderChannel,
+            0f
+        )
     }
 }

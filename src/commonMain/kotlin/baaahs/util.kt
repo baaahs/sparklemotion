@@ -59,7 +59,7 @@ fun Int.boundedBy(range: IntRange): Int {
 
 expect val internalTimerClock: Clock
 
-expect fun doRunBlocking(block: suspend () -> Unit)
+expect fun <T> doRunBlocking(block: suspend () -> T): T
 
 expect fun decodeBase64(s: String): ByteArray
 
@@ -118,7 +118,11 @@ suspend fun throttle(targetRatePerSecond: Float, logger: Logger? = null, block: 
     val target = 1f / targetRatePerSecond
     val delayMs = ((target - elapsed) * 1000).roundToInt()
     if (delayMs <= 0) {
-        logger?.warn { "Throttled block took ${elapsed.asMillis()}ms; target is ${target.asMillis()}ms." }
+        val elapsedMs = elapsed.asMillis()
+        val targetMs = target.asMillis()
+        if (elapsedMs > targetMs * 2) {
+            logger?.warn { "Throttled block took ${elapsedMs}ms; target is ${targetMs}ms." }
+        }
         yield()
     } else {
         delay(delayMs.toLong())

@@ -7,8 +7,8 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
 import baaahs.window
-import kotlinext.js.jsObject
 import kotlinx.css.hyphenize
+import kotlinx.js.jso
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -405,7 +405,7 @@ open class BaseVisualizer(
     }
 
     fun Object3D.dispatchEvent(eventType: EventType) {
-        dispatchEvent(jsObject { type = eventType.name.hyphenize().lowercase() })
+        dispatchEvent(jso { type = eventType.name.hyphenize().lowercase() })
     }
 
     enum class EventType {

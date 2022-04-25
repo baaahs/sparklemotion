@@ -4,7 +4,7 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.getBang
 import baaahs.gl.data.Feed
-import baaahs.gl.patch.PatchResolver
+import baaahs.gl.patch.ProgramResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.show.DataSource
@@ -18,7 +18,7 @@ data class ActivePatchSet(
         renderManager: RenderManager,
         renderTargets: Collection<FixtureRenderTarget>
     ): RenderPlan {
-        val patchResolution = PatchResolver(renderTargets, this, renderManager)
+        val patchResolution = ProgramResolver(renderTargets, this, renderManager)
         return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->
             feeds.getBang(dataSource, "data feed")
         }

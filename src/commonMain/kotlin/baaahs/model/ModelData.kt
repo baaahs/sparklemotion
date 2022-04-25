@@ -8,6 +8,7 @@ import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
 import baaahs.scene.*
+import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -49,11 +50,9 @@ sealed interface EntityData {
     fun edit(): MutableEntity
 
     fun open(parentTransformation: Matrix4F): Model.Entity {
-        val transform = parentTransformation * Matrix4F.fromPositionAndRotation(position, rotation)
-        val position = transform.position
-        val rotation = transform.rotation
-        val scale = transform.scale
-        return open(position, rotation, scale)
+        val myTransformation = Matrix4F.compose(position, rotation, scale)
+        val transform = parentTransformation * myTransformation
+        return open(transform.position, transform.rotation, transform.scale)
     }
 
     fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity
@@ -264,12 +263,19 @@ class StrandCountEntityMetadataProvider(
         }
 
     companion object {
+        private val logger = Logger<StrandCountEntityMetadataProvider>()
+
         suspend fun open(file: Fs.File): StrandCountEntityMetadataProvider {
             return open(file.read() ?: error("Unknown file $file."))
         }
 
         fun openResource(name: String): StrandCountEntityMetadataProvider {
-            return open(getResource(name))
+            return try {
+                open(getResource(name))
+            } catch (e: Exception) {
+                logger.error(e) { "Couldn't load \"$name\"." }
+                StrandCountEntityMetadataProvider(emptyMap())
+            }
         }
 
         fun open(data: String): StrandCountEntityMetadataProvider {

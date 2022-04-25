@@ -125,10 +125,18 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
     abstract fun toInputPort(it: GlslCode.GlslFunction, plugins: Plugins): InputPort
 
     fun GlslCode.GlslArgSite.resolveInputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins) =
-        (wellKnownInputPortsById[name]?.copy(type = type, glslArgSite = this)
-            ?: defaultInputPortsByType[type]
+        matchWellKnownPorts()
+            ?: matchDefaults()
+            ?: toInputPort(plugins, entryPoint)
+
+    private fun GlslCode.GlslArgSite.matchWellKnownPorts() =
+        wellKnownInputPortsById[name]?.copy(type = type, glslArgSite = this)
+
+    private fun GlslCode.GlslArgSite.matchDefaults() =
+        if (hint == null)
+            defaultInputPortsByType[type]
                 ?.copy(id = name, varName = name, glslArgSite = this)
-            ?: toInputPort(plugins, entryPoint))
+        else null
 
     private fun GlslCode.ifRefersTo(inputPort: InputPort) =
         if (refersToGlobal(inputPort.id)) inputPort else null

@@ -21,7 +21,7 @@ object ModelSpec : Spek({
                     startVertex = Vector3F.origin, endVertex = Vector3F.unit3d
                 )
                 val entity =
-                    data.open(Matrix4F.fromPositionAndRotation(Vector3F(.5, .5, .5), EulerAngle.identity))
+                    data.open(Matrix4F.compose(Vector3F(.5, .5, .5), EulerAngle.identity))
                 expect(entity.position).toEqual(Vector3F(1.5, 1.5, 1.5))
             }
         }

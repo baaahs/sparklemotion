@@ -7,11 +7,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.dom.get
 
-actual fun doRunBlocking(block: suspend () -> Unit) {
-    GlobalScope.promise { block() }
+actual fun <T> doRunBlocking(block: suspend () -> T): T {
+    var value: T? = null
+    GlobalScope.promise {
+        value = block()
+    }
         .catch { t ->
             Logger("doRunBlocking").error(t) { "Error during doRunBlocking()" }
         }
+    return value!!
 }
 
 val resourcesBase: String get() = document["resourcesBase"]

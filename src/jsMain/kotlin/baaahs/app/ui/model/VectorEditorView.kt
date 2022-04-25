@@ -31,7 +31,7 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
 
 external interface VectorEditorProps : Props {
     var vector3F: Vector3F
-    var adornment: ReactElement?
+    var adornment: ReactElement<*>?
     var onChange: (Vector3F) -> Unit
 }
 

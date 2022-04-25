@@ -29,7 +29,7 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object PatchResolverSpec : Spek({
     describe("Layering of patch links") {
-        fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatch {
+        fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatchSet {
             return testToolchain.autoWire(*shaders, shaderChannel = shaderChannel)
                 .acceptSuggestedLinkOptions().confirm()
         }
@@ -105,7 +105,7 @@ object PatchResolverSpec : Spek({
 
                     addButton(mainPanel, "Orange") {
                         addPatch(autoWire(orangeShader).apply {
-                            this.mutableShaderInstances.first().incomingLinks.forEach { (k, v) ->
+                            mutablePatches.first().incomingLinks.forEach { (k, v) ->
                                 println("$k = $v")
                             }
                         })
@@ -226,7 +226,7 @@ object PatchResolverSpec : Spek({
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
-                                mutableShaderInstances.only("shader instance")
+                                mutablePatches.only("patch")
                                     .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
                         }
@@ -389,7 +389,7 @@ object PatchResolverSpec : Spek({
                                     }
                                 """.trimIndent()
                             )
-                        ).editAll {
+                        ).apply {
                             linkOptionsFor("otherColorStream").apply {
                                 clear()
                                 add(PortLinkOption(MutableShaderChannel("other")))
@@ -533,12 +533,12 @@ object PatchResolverSpec : Spek({
     }
 })
 
-private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedPatch {
+private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
     val renderManager = RenderManager { FakeGlContext() }
     val fixture = model.allEntities.first()
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture, model = model))
-    val patchResolution = PatchResolver(listOf(renderTarget), activePatchSet, renderManager)
+    val patchResolution = ProgramResolver(listOf(renderTarget), activePatchSet, renderManager)
     val portDiagram = patchResolution.portDiagrams
         .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")

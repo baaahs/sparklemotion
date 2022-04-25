@@ -18,7 +18,7 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
 import baaahs.util.globalLaunch
-import kotlinext.js.jsObject
+import kotlinx.js.jso
 import react.ReactElement
 import react.createElement
 
@@ -65,10 +65,10 @@ class WebClient(
         }
     }
 
-    override fun render(): ReactElement {
+    override fun render(): ReactElement<*> {
         println("WebClient: my link is ${webClientLink.myAddress}")
 
-        return createElement(AppIndex, jsObject {
+        return createElement(AppIndex, jso {
             this.id = "Client Window"
             this.webClient = facade
             this.stageManager = this@WebClient.stageManager

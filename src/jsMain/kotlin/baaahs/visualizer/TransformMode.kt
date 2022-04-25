@@ -1,16 +1,17 @@
 package baaahs.visualizer
 
+import baaahs.app.ui.jsIcon
 import baaahs.model.ModelUnit
+import baaahs.ui.Icon
 import baaahs.util.deg2rad
 import baaahs.util.rad2deg
-import materialui.Icon
-import materialui.icons.AspectRatio
-import materialui.icons.PanTool
-import materialui.icons.ThreeDRotation
+import mui.icons.material.AspectRatio
+import mui.icons.material.PanTool
+import mui.icons.material.ThreeDRotation
 import kotlin.math.roundToInt
 
 enum class TransformMode(val modeName: String, val icon: Icon) {
-    Move("translate", PanTool) {
+    Move("translate", jsIcon(PanTool)) {
         override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
 
         override fun getGridSize(visualizer: ModelVisualEditor.Facade): Double? =
@@ -21,7 +22,7 @@ enum class TransformMode(val modeName: String, val icon: Icon) {
         }
     },
 
-    Rotate("rotate", ThreeDRotation) {
+    Rotate("rotate", jsIcon(ThreeDRotation)) {
         override val defaultGridSize: Double
             get() = deg2rad(15.0)
 
@@ -41,7 +42,7 @@ enum class TransformMode(val modeName: String, val icon: Icon) {
             size?.let { deg2rad(size) }
     },
 
-    Scale("scale", AspectRatio) {
+    Scale("scale", jsIcon(AspectRatio)) {
         override fun getGridUnitAdornment(modelUnit: ModelUnit): String = modelUnit.display
 
         override fun getGridSize(visualizer: ModelVisualEditor.Facade): Double? =

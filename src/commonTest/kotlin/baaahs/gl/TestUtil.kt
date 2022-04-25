@@ -9,7 +9,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.show.mutable.MutableShaderInstance
+import baaahs.show.mutable.MutablePatch
 import baaahs.util.Clock
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -57,8 +57,8 @@ fun expectStatements(
 fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
     val actual = block()
     fun T.prettier() =
-        if (this is MutableShaderInstance) {
-            "MutableShaderInstance(\n" +
+        if (this is MutablePatch) {
+            "MutablePatch(\n" +
                     "    mutableShader=$mutableShader\n" +
                     "    incomingLinks=\n" +
                     "${incomingLinks.prettier("        ")}\n" +
