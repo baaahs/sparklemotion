@@ -69,13 +69,13 @@ class RemoteVisualizerClient(
                     reader.readString()
                 ).remoteConfig
                 val fixtureSimulation = fixtureSimulations[entityName]
-                fixtureSimulation?.updateVisualizerWith(remoteConfig)
+                fixtureSimulation?.itemVisualizer?.receiveRemoteConfig(remoteConfig)
             }
 
             FrameData -> {
                 val entityName = reader.readString()
                 val fixtureSimulation = fixtureSimulations[entityName]
-                fixtureSimulation?.receiveRemoteVisualizationFrameData(reader)
+                fixtureSimulation?.itemVisualizer?.receiveRemoteFrameData(reader)
             }
         }
     }

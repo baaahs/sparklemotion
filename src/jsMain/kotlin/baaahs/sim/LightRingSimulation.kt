@@ -4,9 +4,6 @@ import baaahs.controller.SacnManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
-import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightRing
 import baaahs.visualizer.EntityAdapter
@@ -66,20 +63,6 @@ actual class LightRingSimulation actual constructor(
 
     override fun stop() {
         wledSimulator.stop()
-    }
-
-    override fun updateVisualizerWith(remoteConfig: RemoteConfig) {
-        remoteConfig as PixelArrayRemoteConfig
-        itemVisualizer.vizPixels = VizPixels(
-            remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
-            LightBarSimulation.pixelVisualizationNormal,
-            lightRing.transformation,
-            remoteConfig.pixelFormat
-        )
-    }
-
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        itemVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {
