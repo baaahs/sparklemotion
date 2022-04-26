@@ -5,10 +5,8 @@ import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.model.MovingHeadAdapter
-import baaahs.sim.FixtureSimulation
 import kotlinx.serialization.Serializable
 
 /**
@@ -38,9 +36,7 @@ abstract class Fixture(
     override fun toString() = "Fixture[${hashCode()} $title]"
 }
 
-interface RemoteConfig {
-    fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) = Unit
-}
+interface RemoteConfig
 
 interface FixturePreview {
     val fixtureConfig: ConfigPreview
@@ -67,11 +63,7 @@ data class PixelArrayRemoteConfig(
     val pixelFormat: PixelFormat,
     val gammaCorrection: Float,
     val pixelLocations: List<Vector3F>
-) : RemoteConfig {
-    override fun receiveRemoteVisualizationFixtureInfo(reader: ByteArrayReader, fixtureSimulation: FixtureSimulation) {
-        fixtureSimulation.updateVisualizerWith(this, pixelCount, pixelLocations.toTypedArray())
-    }
-}
+) : RemoteConfig
 
 open class PixelArrayFixture(
     modelEntity: Model.Entity?,

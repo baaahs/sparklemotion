@@ -9,7 +9,6 @@ import baaahs.geom.boundingBox
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.LightBarSimulation
-import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityAdapter
 import kotlinx.serialization.Transient
 
@@ -94,8 +93,8 @@ open class PolyLine(
         return segments.flatMap { segment -> segment.calculatePixelLocations() }
     }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
-        LightBarSimulation(this, simulationEnv, adapter)
+    override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
+        LightBarSimulation(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
         adapter.createPolyLineVisualizer(this)

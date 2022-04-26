@@ -1,13 +1,14 @@
 package baaahs.controllers
 
-import baaahs.*
 import baaahs.controller.*
+import baaahs.describe
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransport
 import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.Shenzarpy
+import baaahs.fakeModel
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.override
@@ -15,10 +16,13 @@ import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
 import baaahs.mapping.MappingManager
+import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
+import baaahs.only
 import baaahs.scene.*
+import baaahs.toEqual
 import baaahs.ui.Observable
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.*

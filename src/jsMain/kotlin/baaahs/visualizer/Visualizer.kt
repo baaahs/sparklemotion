@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
 
 class Visualizer(
     clock: Clock
-) : BaseVisualizer(clock) {
+) : IVisualizer, BaseVisualizer(clock) {
     override val facade = Facade()
 
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
@@ -65,7 +65,13 @@ class Visualizer(
         stopRendering()
     }
 
-    fun add(itemVisualizer: ItemVisualizer<*>) {
+    override fun clear() {
+        itemVisualizers.clear()
+        scene.clear()
+        sceneNeedsUpdate = true
+    }
+
+    override fun add(itemVisualizer: ItemVisualizer<*>) {
         itemVisualizers.add(itemVisualizer)
         scene.add(itemVisualizer.obj)
         sceneNeedsUpdate = true
@@ -109,6 +115,7 @@ class Visualizer(
                 this@Visualizer.container = value
             }
 
+        fun clear() = this@Visualizer.clear()
 
         fun select(itemVisualizer: ItemVisualizer<*>) {
             this@Visualizer.selectedEntity = itemVisualizer
@@ -400,7 +407,6 @@ open class BaseVisualizer(
 
         val framerate = Framerate()
 
-        fun clear() = scene.clear()
         fun resize() = this@BaseVisualizer.resize()
     }
 

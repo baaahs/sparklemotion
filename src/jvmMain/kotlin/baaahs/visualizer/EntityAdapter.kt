@@ -1,8 +1,11 @@
 package baaahs.visualizer
 
 import baaahs.model.*
+import baaahs.sim.SimulationEnv
 
-actual class EntityAdapter : Adapter<Model.Entity> {
+actual class EntityAdapter actual constructor(
+    simulationEnv: SimulationEnv, isEditing: Boolean
+) : Adapter<Model.Entity> {
     override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> =
         TODO("not implemented")
 
