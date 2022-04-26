@@ -3,9 +3,6 @@ package baaahs.sim
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
-import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
 import baaahs.randomDelay
@@ -77,20 +74,5 @@ actual class BrainSurfaceSimulation actual constructor(
 
     override fun stop() {
         brain.stop()
-    }
-
-    override fun updateVisualizerWith(remoteConfig: RemoteConfig) {
-        remoteConfig as PixelArrayRemoteConfig
-
-        itemVisualizer.vizPixels = VizPixels(
-            remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
-            itemVisualizer.surfaceGeometry.panelNormal,
-            surface.transformation,
-            remoteConfig.pixelFormat
-        )
-    }
-
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        itemVisualizer.vizPixels?.readColors(reader)
     }
 }

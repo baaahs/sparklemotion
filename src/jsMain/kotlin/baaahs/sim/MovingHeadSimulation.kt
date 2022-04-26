@@ -6,7 +6,6 @@ import baaahs.fixtures.Fixture
 import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.Transport
 import baaahs.fixtures.TransportConfig
-import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
@@ -17,20 +16,11 @@ actual class MovingHeadSimulation actual constructor(
     private val movingHead: MovingHead,
     private val adapter: EntityAdapter
 ) : FixtureSimulation {
-    private val dmxUniverse = adapter.simulationEnv[FakeDmxUniverse::class]
-
     override val mappingData: MappingSession.SurfaceData?
         get() = null
 
-    private val dmxBufferReader = dmxUniverse.buffer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
-    private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
-
     override val itemVisualizer: MovingHeadVisualizer by lazy {
-        val visualizer = MovingHeadVisualizer(movingHead, adapter)
-        dmxUniverse.listen {
-            visualizer.receivedUpdate(adapterBuffer)
-        }
-        visualizer
+        MovingHeadVisualizer(movingHead, adapter)
     }
 
     override val previewFixture: Fixture by lazy {
@@ -43,17 +33,17 @@ actual class MovingHeadSimulation actual constructor(
         )
     }
 
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        val channelCount = reader.readShort().toInt()
-        repeat(channelCount) { i ->
-            dmxBufferReader[i] = reader.readByte()
-        }
-
-        itemVisualizer.receivedUpdate(adapterBuffer)
-    }
-
     inner class PreviewTransport : Transport {
+        private val dmxUniverse = adapter.simulationEnv[FakeDmxUniverse::class]
+        private val dmxBufferReader = dmxUniverse.buffer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
         private val movingHeadBuffer = dmxUniverse.writer(movingHead.baseDmxChannel, movingHead.adapter.dmxChannelCount)
+        private val adapterBuffer = movingHead.adapter.newBuffer(dmxBufferReader)
+
+        init {
+            dmxUniverse.listen {
+                itemVisualizer.receivedUpdate(adapterBuffer)
+            }
+        }
 
         override val name: String
             get() = movingHead.name
