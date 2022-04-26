@@ -69,7 +69,7 @@ class FixturesSimulator(
 
                     buildMap {
                         newOpenScene.model.visit { entity ->
-                            entity.createFixtureSimulation(simulationEnv, entityAdapter)
+                            entity.createFixtureSimulation(entityAdapter)
                                 ?.let { put(entity, it) }
                         }
                     }

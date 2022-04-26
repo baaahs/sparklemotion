@@ -1,13 +1,10 @@
 package baaahs
 
-import baaahs.device.FixtureType
-import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
-import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
@@ -16,7 +13,7 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
-import baaahs.model.EntityId
+import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.ModelData
 import baaahs.model.SurfaceDataForTest
@@ -27,11 +24,8 @@ import baaahs.show.ShaderChannel
 import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import baaahs.sim.SimulationEnv
 import baaahs.util.Clock
 import baaahs.util.Time
-import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.ItemVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -81,23 +75,6 @@ fun <T: Any?> toBeSpecified(): T = error("override me!")
 
 class FakeClock(var time: Time = 0.0) : Clock {
     override fun now(): Time = time
-}
-
-open class FakeModelEntity(
-    override val name: String,
-    override val fixtureType: FixtureType = PixelArrayDevice,
-    override val description: String = name,
-    override val position: Vector3F = Vector3F.origin,
-    override val rotation: EulerAngle = EulerAngle.identity,
-    override val scale: Vector3F = Vector3F.unit3d,
-    override val id: EntityId = Model.Entity.nextId()
-) : Model.BaseEntity() {
-    override val bounds: Pair<Vector3F, Vector3F>
-        get() = Vector3F.origin to Vector3F.origin
-
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter) = TODO("not implemented")
-
-    override fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<Model.Entity> = TODO("not implemented")
 }
 
 fun testModelSurface(
