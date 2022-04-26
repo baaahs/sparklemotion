@@ -4,7 +4,7 @@ import baaahs.fixtures.Fixture
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 
-class RemoteVisualizers {
+open class RemoteVisualizers {
     private val listeners = hashSetOf<RemoteVisualizerServer.Listener>()
 
     fun addListener(remoteVisualizerListener: RemoteVisualizerServer.Listener) {
