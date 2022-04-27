@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.editor.EditIntent
+import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
 import baaahs.client.SceneEditorClient
@@ -38,6 +39,7 @@ external interface AppContext {
     var sceneManager: SceneManager.Facade
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
+    var gridLayoutContext: GridLayoutContext
 
     var openEditor: (EditIntent) -> Unit
     var openSceneEditor: (EditIntent) -> Unit

@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
+import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
@@ -62,6 +63,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var prompt by state<Prompt?> { null }
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
+    val gridLayoutContext = memo { GridLayoutContext() }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
@@ -78,6 +80,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.sceneManager = props.sceneManager
             this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
+            this.gridLayoutContext = gridLayoutContext
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(

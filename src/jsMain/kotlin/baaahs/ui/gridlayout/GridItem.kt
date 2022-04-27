@@ -3,6 +3,7 @@ package baaahs.ui.gridlayout
 import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
+import baaahs.geom.Vector2D
 import baaahs.ui.className
 import external.clsx.clsx
 import external.react_draggable.DraggableCore
@@ -145,13 +146,13 @@ class GridItem(
                     this.deltaY = droppingPosition.top
             })
         } else if (shouldDrag) {
-            val deltaX = droppingPosition.left - dragging.left
-            val deltaY = droppingPosition.top - dragging.top
+            val deltaX = droppingPosition.left - dragging.x
+            val deltaY = droppingPosition.top - dragging.y
 
             this.onDrag(droppingPosition.e, jso {
                     this.node = node
-                    this.deltaX = deltaX
-                    this.deltaY = deltaY
+                    this.deltaX = deltaX.roundToInt()
+                    this.deltaY = deltaY.roundToInt()
             })
         }
     }
@@ -285,12 +286,12 @@ class GridItem(
         }, child)
     }
 
-    fun MouseEvent.findContainer(): GridLayout? {
+    fun MouseEvent.findContainer(callbackData: DraggableData): GridLayout? {
         var element = target as Element?
-        val dragging = currentTarget as? Element?
+        val dragging = callbackData.node
 
         while (element != null) {
-            if (dragging?.isParentOf(element) != true) {
+            if (!dragging.isParentOf(element)) {
                 val containerId = (element as? HTMLElement)?.dataset?.get("gridLayoutContainer")
                 if (containerId != null) {
                     return context.findLayout(containerId).gridLayout
@@ -299,14 +300,6 @@ class GridItem(
 
             element = element.parentElement
         }
-//        while (element is HTMLElement && element.dataset["gridLayoutContainer"] == null) {
-//            if (!(element.parentElement is HTMLElement?)) {
-//                console.log("weird:", element, "parent:", element.parentElement)
-//            }
-//        }
-//        return element?.let {
-//            context.findLayout(element.dataset["gridLayoutContainer"]!!).gridLayout
-//        }
         return null
     }
 
@@ -322,7 +315,7 @@ class GridItem(
                 calculatePxPositionInLayout(container, draggingNode).also { px ->
                     calcGridPosition(
                         previousContainer.getPositionParams(),
-                        px.top, px.left, this.props.w, this.props.h
+                        px.y.roundToInt(), px.x.roundToInt(), this.props.w, this.props.h
                     ).also { gridXY ->
                         layoutItem.x = gridXY.x
                         layoutItem.y = gridXY.y
@@ -333,6 +326,11 @@ class GridItem(
                 container.onItemEnter(layoutItem)
             }
             state.parentContainerRef.current = container
+            val updatedDragging = calculatePxPositionInLayout(container, draggingNode)
+            state.dragging = updatedDragging
+            setState {
+                dragging = updatedDragging
+            }
             return true
         }
         return false
@@ -344,7 +342,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node, delta and position information
      */
     fun onDragStart(e: MouseEvent, callbackData: DraggableData): Any {
-        val container = e.findContainer()
+        val container = e.findContainer(callbackData)
             ?: return Unit
         val node = callbackData.node
         maybeSwitchParentContainer(container, node)
@@ -358,8 +356,8 @@ class GridItem(
         // Call callback with this data
         val layoutItem = calcGridPosition(
             state.parentContainer.getPositionParams(),
-            newPosition.top,
-            newPosition.left,
+            newPosition.y.roundToInt(),
+            newPosition.x.roundToInt(),
             this.props.w,
             this.props.h
         )
@@ -372,19 +370,19 @@ class GridItem(
             })
     }
 
-    private fun calculatePxPositionInLayout(gridLayout: GridLayout, node: HTMLElement): PartialPosition {
-        val transformScale = this.props.transformScale
-        val clientRect = node.getBoundingClientRect()
-        val parent = gridLayout.rootElement ?: error("No root element for ${gridLayout.props.id}.")
-        val parentRect = parent.getBoundingClientRect()
-        val cLeft = clientRect.left / transformScale
-        val cTop = clientRect.top / transformScale
-        val pLeft = parentRect.left / transformScale
-        val pTop = parentRect.top / transformScale
-        return jso {
-            top = (cTop - pTop + parent.scrollTop).roundToInt()
-            left = (cLeft - pLeft + parent.scrollLeft).roundToInt()
+    private fun HTMLElement.getPosition(): Vector2D =
+        getBoundingClientRect().let {
+            Vector2D(it.left, it.top)
         }
+
+    private fun HTMLElement.getPositionMinusScroll(): Vector2D =
+        getPosition() - Vector2D(scrollLeft, scrollTop)
+
+    private fun calculatePxPositionInLayout(gridLayout: GridLayout, node: HTMLElement): Vector2D {
+        val nodePos = node.getPosition()
+        val parent = gridLayout.rootElement ?: error("No root element for ${gridLayout.props.id}.")
+        val parentPos = parent.getPositionMinusScroll()
+        return (nodePos - parentPos) / props.transformScale
     }
 
     /**
@@ -393,17 +391,28 @@ class GridItem(
      * @param  {Object} callbackData  an object with node, delta and position information
      */
     fun onDrag(e: MouseEvent, callbackData: DraggableData): Any {
-        val container = e.findContainer()
+        val container = e.findContainer(callbackData)
             ?: return Unit
         val node = callbackData.node
-        if (maybeSwitchParentContainer(container, node)) return Unit
         val deltaX = callbackData.deltaX
         val deltaY = callbackData.deltaY
 
+        if (maybeSwitchParentContainer(container, node)) {
+            setState {
+                this.dragging = Vector2D(
+                    state.dragging!!.x + deltaX,
+                    state.dragging!!.y + deltaY
+                )
+            }
+            return Unit
+        }
+
         val dragging = state.dragging
             ?: throw Error("onDrag called before onDragStart.")
-        var top = dragging.top + deltaY
-        var left = dragging.left + deltaX
+
+
+        var top = dragging.y.roundToInt() + deltaY
+        var left = dragging.x.roundToInt() + deltaX
 
         val isBounded = props.isBounded
         val i = props.i
@@ -430,7 +439,7 @@ class GridItem(
             }
         }
 
-        val newPosition: PartialPosition = jso { this.top = top; this.left = left }
+        val newPosition = Vector2D(left, top)
         this.setState {
             this.dragging = newPosition
         }
@@ -453,7 +462,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node, delta and position information
      */
     fun onDragStop(e: MouseEvent, callbackData: DraggableData): Any {
-        val container = e.findContainer()
+        val container = e.findContainer(callbackData)
             ?: return Unit
         maybeSwitchParentContainer(container, callbackData.node)
 
@@ -462,12 +471,14 @@ class GridItem(
         val w = props.w
         val h = props.h
         val i = props.i
-        val left = dragging.left
-        val top = dragging.top
-        val newPosition: PartialPosition = jso { this.top = top; this.left = left }
+        val left = dragging.x
+        val top = dragging.y
+        val newPosition = Vector2D(left, top)
         this.setState { this.dragging = null }
 
-        val position = calcGridPosition(state.parentContainer.getPositionParams(), top, left, w, h)
+        val position = calcGridPosition(
+            state.parentContainer.getPositionParams(),
+            top.roundToInt(), left.roundToInt(), w, h)
 
         container.onDragStop(
             i, position.x, position.y,
@@ -572,6 +583,7 @@ class GridItem(
         val useCSSTransforms = props.useCSSTransforms
 
         val positionParams = state.parentContainer.getPositionParams()
+//        console.log("${props.i}.parent.getPositionParams() -> ", positionParams)
         val pos = calcGridItemPosition(positionParams, x, y, w, h, state)
         val child = props.children.unsafeCast<ReactElement<GridItemProps>>()
 
@@ -635,7 +647,7 @@ private val defaultPropsWorkaround = GridItem.defaultProps
 
 external interface GridItemState : State {
     var parentContainerRef: MutableRefObject<GridLayout>
-    var dragging: PartialPosition?
+    var dragging: Vector2D?
     var resizing: Size?
 }
 

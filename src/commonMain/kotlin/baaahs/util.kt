@@ -37,6 +37,10 @@ fun Float.clamp(minValue: Float, maxValue: Float): Float {
     return max(min(this, maxValue), minValue)
 }
 
+fun Double.clamp(minValue: Double, maxValue: Double): Double {
+    return max(min(this, maxValue), minValue)
+}
+
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
 }

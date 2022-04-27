@@ -1,7 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
-import baaahs.app.ui.layout.*
+import baaahs.app.ui.layout.DragNDropContext
+import baaahs.app.ui.layout.dragNDropContext
+import baaahs.app.ui.layout.gridTabLayout
+import baaahs.app.ui.layout.legacyTabLayout
 import baaahs.show.LegacyTab
 import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenLayout
@@ -27,8 +30,10 @@ import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.useContext
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
+    val appContext = useContext(appContext)
     var currentTabIndex by state { 0 }
     val handleChangeTab by syntheticEventHandler<dynamic> { _, value ->
         currentTabIndex = value as Int
@@ -52,7 +57,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val myDragNDropContext = memo<DragNDropContext>(currentTab) {
         when (currentTab) {
             is LegacyTab -> jso { this.isLegacy = true }
-            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = GridLayoutContext() }
+            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = appContext.gridLayoutContext }
             else -> error("huh?")
         }
     }

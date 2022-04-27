@@ -15,21 +15,22 @@ class GridLayoutContext {
     private val id = nextId++
 
     init {
-        console.log("new GridLayoutContext id $id")
+        console.log("new GridLayoutContext id $id.")
     }
 
     fun findLayout(id: String): GridLayoutState =
-        layouts[id] ?: error("Unknown layout \"$id\".")
+        layouts[id]
+            ?: error("Unknown layout \"$id\" in GridLayoutContext ${this.id}.")
 
     fun registerLayout(id: String, state: GridLayoutState) {
-        console.log("GridLayoutContext: Register $id")
+        console.log("GridLayoutContext ${this.id}: Register $id")
         if (layouts.put(id, state) != null) {
             error("Layout \"$id\" already registered.")
         }
     }
 
     fun unregisterLayout(id: String) {
-        console.log("GridLayoutContext: Unregister $id")
+        console.log("GridLayoutContext ${this.id}: Unregister $id")
         if (layouts.remove(id) == null) {
             error("Layout \"$id\" not registered.")
         }
