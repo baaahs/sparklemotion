@@ -1,5 +1,6 @@
 package baaahs.ui.gridlayout
 
+import baaahs.geom.Vector2D
 import baaahs.util.Logger
 import external.lodash.isEqual
 import external.react_resizable.ResizeHandleAxis
@@ -57,9 +58,15 @@ external interface Position {
     var height: Int
 }
 
-external interface PartialPosition {
-    var left: Int
-    var top: Int
+data class PartialPosition(
+    val left: Int,
+    val top: Int
+) {
+    operator fun plus(other: PartialPosition) =
+        PartialPosition(left + other.left, top + other.top)
+
+    operator fun minus(other: PartialPosition): PartialPosition =
+        PartialPosition(left - other.left, top - other.top)
 }
 
 external interface DroppingPosition {
@@ -71,7 +78,7 @@ external interface DroppingPosition {
 external interface GridDragEvent {
     var e: MouseEvent
     var node: HTMLElement
-    var newPosition: PartialPosition
+    var newPosition: Vector2D
 }
 
 external interface GridResizeEvent {

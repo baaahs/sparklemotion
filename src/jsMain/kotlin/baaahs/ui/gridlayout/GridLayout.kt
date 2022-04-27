@@ -612,10 +612,12 @@ class GridLayout(
     }
 
     fun onItemEnter(layoutItem: LayoutItem/*, i: String, x: Int, y: Int*/) {
+        val offGridItem = Object.assign(jso(), layoutItem, jso { x = -1; y = -1 })
         setState {
-            oldDragItem = layoutItem
+            oldDragItem = offGridItem
             activeDrag = placeholderLayoutItem(layoutItem)
-            layout = state.layout + layoutItem
+            oldLayout = state.layout
+            layout = state.layout + offGridItem
         }
         console.log("GridLayout ${props.id}: ${layoutItem.i} entering", layoutItem)
     }
@@ -625,6 +627,10 @@ class GridLayout(
         return state.oldDragItem
             .also {
                 setState {
+//                    state.oldDragItem?.let { oldDragItem ->
+//                        layout = state.layout.filter { it.i != oldDragItem.i }
+//                    }
+                    oldLayout =  null
                     oldDragItem = null
                     activeDrag = null
                 }

@@ -66,8 +66,8 @@ fun calcGridItemPosition(
     // If dragging, use the exact width and height as returned from dragging callbacks.
     val dragging = state?.dragging
     if (dragging != null) {
-        out.top = dragging.top
-        out.left = dragging.left
+        out.top = dragging.y.roundToInt()
+        out.left = dragging.x.roundToInt()
     } else { // Otherwise, calculate from grid units.
         out.top = ((rowHeight + margin[1]) * y + containerPadding[1]).roundToInt()
         out.left = ((colWidth + margin[0]) * x + containerPadding[0]).roundToInt()

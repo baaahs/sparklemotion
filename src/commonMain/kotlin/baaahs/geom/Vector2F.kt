@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Vector2F(val x: Float, val y: Float) {
+    constructor(x: Double, y: Double): this(x.toFloat(), y.toFloat())
+
     operator fun plus(other: Vector2F): Vector2F = Vector2F(x + other.x, y + other.y)
 
     operator fun minus(other: Vector2F): Vector2F = Vector2F(x - other.x, y - other.y)

@@ -52,7 +52,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     val cardRef = ref<Element>()
     useResizeListener(cardRef) {
         with(cardRef.current!!) {
-            console.log("resized!", clientWidth, clientHeight, this)
+            console.log("resized ${props.buttonGroupControl.id}!", clientWidth, clientHeight, this)
             layoutDimens = clientWidth to clientHeight
         }
     }
