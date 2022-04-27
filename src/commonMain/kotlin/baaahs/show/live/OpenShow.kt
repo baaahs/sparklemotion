@@ -8,6 +8,7 @@ import baaahs.show.*
 import baaahs.show.mutable.MutableShow
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
+import baaahs.ui.Observable
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -154,16 +155,24 @@ data class OpenLayouts(
     val formats: Map<String, OpenLayout>
 )
 
-data class OpenLayout(
+class OpenLayout(
     val mediaQuery: String?,
     val tabs: List<OpenTab>
-)
+): Observable() {
+    var currentTabIndex = if (tabs.isEmpty()) null else 0
+        set(value) {
+            field = value
+            notifyChanged()
+        }
+
+    val currentTab get() = currentTabIndex?.let { tabs[it] }
+}
 
 interface OpenTab {
     val title: String
 }
 
-data class OpenGridTab(
+class OpenGridTab(
     override val title: String,
     var columns: Int,
     var rows: Int,

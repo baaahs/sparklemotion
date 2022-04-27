@@ -34,25 +34,28 @@ import react.useContext
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
-    var currentTabIndex by state { 0 }
-    val handleChangeTab by syntheticEventHandler<dynamic> { _, value ->
-        currentTabIndex = value as Int
+
+    val layout = props.layout
+    observe(layout)
+
+    val handleChangeTab by syntheticEventHandler<dynamic>(layout) { _, value ->
+        layout.currentTabIndex = value as Int
     }
 
-    val tabs = props.layout.tabs
-    val currentTab = tabs.getBounded(currentTabIndex)
-
-    val tabEditor = memo(props.layoutEditor, currentTabIndex) {
+    val tabEditor = memo(props.layoutEditor, layout.currentTabIndex) {
         object : Editor<MutableTab> {
             override fun edit(mutableShow: MutableShow, block: MutableTab.() -> Unit) {
                 mutableShow.editLayouts {
                     props.layoutEditor.edit(mutableShow) {
-                        block(this.tabs[currentTabIndex])
+                        block(this.tabs[layout.currentTabIndex ?: error("No tab selected.")])
                     }
                 }
             }
         }
     }
+
+    val tabs = layout.tabs
+    val currentTab = layout.currentTab
 
     val myDragNDropContext = memo<DragNDropContext>(currentTab) {
         when (currentTab) {
@@ -91,7 +94,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
     if (tabs.size > 1) {
         Tabs {
-            attrs.value = currentTabIndex
+            attrs.value = layout.currentTabIndex
             attrs.onChange = handleChangeTab
             tabs.forEachIndexed { index, tab ->
                 Tab {
