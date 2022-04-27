@@ -35,7 +35,7 @@ object ControlDragNDropSpec : Spek({
         val showPlayer by value { FakeShowPlayer() }
         val openShow by value { showPlayer.openShow(show) }
         val editHandler by value { FakeEditHandler() }
-        val dragNDrop by value { FakeDragNDrop() }
+        val dragNDrop by value { FakeDragNDrop<Int>() }
         val controlDisplay by value { ControlDisplay(openShow, editHandler, dragNDrop) }
 
         fun renderEditedShow(): String {
@@ -62,9 +62,9 @@ object ControlDragNDropSpec : Spek({
                 ?: error(unknown("section", sectionTitle, panelBucket.map { it.section.title }))
         }
 
-        val fromDropTarget by value { toBeSpecified<DropTarget>() }
-        val toDropTarget by value { toBeSpecified<DropTarget>() }
-        val draggedControl by value { toBeSpecified<Draggable>() }
+        val fromDropTarget by value { toBeSpecified<DropTarget<Int>>() }
+        val toDropTarget by value { toBeSpecified<DropTarget<Int>>() }
+        val draggedControl by value { toBeSpecified<Draggable<Int>>() }
 
         it("has the expected initial state") {
             expect(openShow.fakeRender(controlDisplay)).toBe(

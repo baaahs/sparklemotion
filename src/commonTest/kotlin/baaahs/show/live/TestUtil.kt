@@ -50,11 +50,11 @@ class FakeEditHandler : EditHandler<Show, ShowState> {
     }
 }
 
-class FakeDragNDrop : DragNDrop() {
+class FakeDragNDrop<P> : DragNDrop<P>() {
     fun getDropTargets() = dropTargets.all()
 
-    fun doMove(source: DropTarget, sourceIndex: Int, dest: DropTarget, destIndex: Int) {
-        onMove(source, sourceIndex, dest, destIndex)
+    fun doMove(source: DropTarget<P>, sourcePosition: P, dest: DropTarget<P>, destPosition: P) {
+        onMove(source, sourcePosition, dest, destPosition)
     }
 }
 
