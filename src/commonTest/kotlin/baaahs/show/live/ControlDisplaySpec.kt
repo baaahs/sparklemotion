@@ -28,7 +28,7 @@ object ControlDisplaySpec : Spek({
         val showOpener by value { ShowOpener(testToolchain, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
         val editHandler by value { FakeEditHandler() }
-        val dragNDrop by value { FakeDragNDrop() }
+        val dragNDrop by value { FakeDragNDrop<Int>() }
         val controlDisplay by value {
             ControlDisplay(openShow, editHandler, dragNDrop)
         }
