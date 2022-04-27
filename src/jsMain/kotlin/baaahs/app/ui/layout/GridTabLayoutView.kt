@@ -19,7 +19,6 @@ import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.window
 import csstype.ClassName
-import external.react_resizable.ResizeHandleAxes
 import external.react_resizable.ResizeHandleAxis
 import kotlinx.css.*
 import kotlinx.css.properties.border
@@ -49,14 +48,16 @@ class LayoutGrid(
 ) {
     val layouts: Array<LayoutItem> = buildList<LayoutItem> {
         items.forEach { item ->
-            add(jso {
-                i = item.controlId
-                x = item.column
-                y = item.row
-                w = item.width
-                h = item.height
-                static = draggingItem != null && draggingItem != i && item.control is OpenButtonGroupControl
-            })
+            val isStatic = draggingItem != null &&
+                    draggingItem != item.controlId &&
+                    item.control is OpenButtonGroupControl
+
+            add(LayoutItem(
+                item.column, item.row,
+                item.width, item.height,
+                item.controlId, item.control,
+                isStatic = isStatic
+            ))
         }
     }.toTypedArray()
 
@@ -142,11 +143,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 
     val handleDropDragOver by handler { e: DragOverEvent ->
-        jso<DroppingItem> {
-            i = LayoutGrid.newControlId
-            w = 1
-            h = 1
-        }
+        DroppingItem(LayoutGrid.newControlId, Unit, 1, 1)
     }
 
     val containerDiv = ref<HTMLDivElement>()
@@ -174,17 +171,17 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
         if (editMode.isAvailable) {
             div(+styles.gridBackground) {
-                val positionParams = jso<PositionParams> {
-                    this.margin = arrayOf(margin, margin)
-                    containerPadding = arrayOf(itemPadding, itemPadding)
-                    containerWidth = layoutWidth
-                    cols = columns
-                    rowHeight = gridRowHeight
-                    maxRows = rows
-                }
+                val positionParams = PositionParams(
+                    margin to margin,
+                    itemPadding to itemPadding,
+                    layoutWidth,
+                    columns,
+                    gridRowHeight,
+                    rows
+                )
 
                 layoutGrid.forEachCell { column, row ->
-                    val position = calcGridItemPosition(positionParams, column, row, 1, 1)
+                    val position = positionParams.calcGridItemPosition(column, row, 1, 1)
 
                     div(+styles.emptyGridCell) {
                         inlineStyles {
@@ -214,14 +211,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.cols = columns
             attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
-            attrs.margin = arrayOf(5, 5)
+            attrs.margin = 5 to 5
             attrs.layout = layoutGrid.layouts.toList()
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
-            attrs.resizeHandles = ResizeHandleAxes.toList()
             attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }
-            attrs.isDraggable = editMode.isOn
-            attrs.isResizable = editMode.isOn
+            attrs.disableDrag = !editMode.isOn
+            attrs.disableResize = !editMode.isOn
             attrs.isDroppable = editMode.isOn
             attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
             attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()

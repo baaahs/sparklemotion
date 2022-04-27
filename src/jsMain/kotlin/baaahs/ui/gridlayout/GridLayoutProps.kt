@@ -1,13 +1,15 @@
 package baaahs.ui.gridlayout
 
+import baaahs.clamp
+import baaahs.geom.Vector2I
 import external.react_resizable.ResizeHandleAxis
 import kotlinx.js.Object
 import kotlinx.js.jso
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import react.*
+import kotlin.math.roundToInt
 
 external interface GridLayoutProps : PropsWithChildren {
     var id: String
@@ -59,10 +61,10 @@ external interface GridLayoutProps : PropsWithChildren {
     var layout: List<LayoutItem>? // = null, // If not provided, use data-grid props on children
 
     /** Margin between items [x, y] in px.*/
-    var margin: Array<Int>? // ?[number, number] = [10, 10],
+    var margin: Pair<Int, Int>? // ?[number, number] = [10, 10],
 
     // Padding inside the container [x, y] in px
-    var containerPadding: Array<Int>? // ?[number, number] = margin,
+    var containerPadding: Pair<Int, Int>? // ?[number, number] = margin,
 
     // Rows have a static height, but you can change this based on breakpoints
 // if you like.
@@ -78,8 +80,8 @@ external interface GridLayoutProps : PropsWithChildren {
     //
 // Flags
 //
-    var isDraggable: Boolean? // = true
-    var isResizable: Boolean? // = true
+    var disableDrag: Boolean? // = true
+    var disableResize: Boolean? // = true
     var isBounded: Boolean? // = false
 
     // Uses CSS3 translate() instead of position top/left.
@@ -121,7 +123,7 @@ external interface GridLayoutProps : PropsWithChildren {
 // 'nw' - Northwest handle (top-left)
 // 'se' - Southeast handle (bottom-right)
 // 'ne' - Northeast handle (top-right)
-    var resizeHandles: List<ResizeHandleAxis>? // <'s' | 'w' | 'e' | 'n' | 'sw' | 'nw' | 'se' | 'ne'> = ['se']
+//    var resizeHandles: List<ResizeHandleAxis>? // <'s' | 'w' | 'e' | 'n' | 'sw' | 'nw' | 'se' | 'ne'> = ['se']
 
     // Custom component for resize handles
 // See `handle` as used in https://github.com/react-grid-layout/react-resizable#resize-handle
@@ -185,16 +187,18 @@ typealias ItemCallback = (
     placeholder: LayoutItem?, e: MouseEvent, element: HTMLElement
 ) -> Unit
 
-external interface DroppingItem {
+data class DroppingItem(
     /** id of an element */
-    var i: String
+    val i: String,
 
-    /** width of an element */
-    var w: Int
+    val item: Any,
 
-    /** height of an element */
-    var h: Int
-}
+    /** width of element */
+    val w: Int,
+
+    /** height of element */
+    val h: Int
+)
 
 external class DragOverEvent : MouseEvent {
     val nativeEvent: LayerEvent
@@ -205,13 +209,113 @@ external class LayerEvent : Event {
     var layerY: Double
 }
 
-external interface PositionParams {
-    var margin: Array<Int>
-    var containerPadding: Array<Int>
-    var containerWidth: Int
-    var cols: Int
-    var rowHeight: Double
-    var maxRows: Int
+data class PositionParams(
+    val margin: Pair<Int, Int>,
+    val containerPadding: Pair<Int, Int>,
+    val containerWidth: Int,
+    val cols: Int,
+    val rowHeight: Double,
+    val maxRows: Int
+) {
+    fun calcGridColWidth(): Double =
+        (containerWidth - margin.first * (cols - 1) - containerPadding.first * 2).toDouble() / cols
+
+    /**
+     * Given a height and width in pixel values, calculate grid units.
+     * @param  {Number} height                  Height in pixels.
+     * @param  {Number} width                   Width in pixels.
+     * @param  {Number} xGridUnits              X coordinate in grid units.
+     * @param  {Number} yGridUnits              Y coordinate in grid units.
+     * @return {Object}                         w, h as grid units.
+     */
+    fun calcWidthAndHeightInGridUnits(widthPx: Int, heightPx: Int, xGridUnits: Int, yGridUnits: Int): LayoutItemSize {
+        val colWidth = calcGridColWidth() // width = colWidth * w - (margin * (w - 1))
+        // ...
+        // w = (width + margin) / (colWidth + margin)
+
+        val (marginX, marginY) = margin
+        var w = ((widthPx + marginX) / (colWidth + marginX)).roundToInt()
+        var h = ((heightPx + marginY) / (rowHeight + marginY)).roundToInt() // Capping
+
+        w = w.clamp(0, cols - xGridUnits)
+        h = h.clamp(0, maxRows - yGridUnits)
+        return LayoutItemSize(w, h)
+    }
+
+    /**
+     * Translate x and y coordinates from pixels to grid units.
+     * @param  {Number} topPx                   Top position (relative to parent) in pixels.
+     * @param  {Number} leftPx                  Left position (relative to parent) in pixels.
+     * @param  {Number} widthGridUnits          W coordinate in grid units.
+     * @param  {Number} heightGridUnits         H coordinate in grid units.
+     * @return {Vector2I}                       x and y in grid units.
+     */
+    fun calcGridPosition(topPx: Int, leftPx: Int, widthGridUnits: Int, heightGridUnits: Int): Vector2I {
+        val colWidth = calcGridColWidth() // left = colWidth * x + margin * (x + 1)
+        // l = cx + m(x+1)
+        // l = cx + mx + m
+        // l - m = cx + mx
+        // l - m = x(c + m)
+        // (l - m) / (c + m) = x
+        // x = (left - margin) / (coldWidth + margin)
+
+        val (marginX, marginY) = margin
+        var x = ((leftPx - marginX) / (colWidth + marginX)).roundToInt()
+        var y = ((topPx - marginY) / (rowHeight + marginY)).roundToInt() // Capping
+
+        x = x.clamp(0, cols - widthGridUnits)
+        y = y.clamp(0, maxRows - heightGridUnits)
+        return Vector2I(x, y)
+    }
+
+    /**
+     * Return position on the page given an x, y, w, h.
+     * left, top, width, height are all in pixels.
+     * @param  {PositionParams} positionParams  Parameters of grid needed for coordinates calculations.
+     * @param  {Number}  xGridUnits             X coordinate in grid units.
+     * @param  {Number}  yGridUnits             Y coordinate in grid units.
+     * @param  {Number}  widthGridUnits         W coordinate in grid units.
+     * @param  {Number}  heightGridUnits        H coordinate in grid units.
+     * @return {Position}                       Object containing coords.
+     */
+    fun calcGridItemPosition(
+        xGridUnits: Int, yGridUnits: Int, widthGridUnits: Int, heightGridUnits: Int,
+        state: GridItemState? = null
+    ): Position {
+        val margin = margin
+        val containerPadding = containerPadding
+        val rowHeight = rowHeight
+        val colWidth = calcGridColWidth()
+
+        // If resizing, use the exact width and height as returned from resizing callbacks.
+        val resizing = state?.resizing
+        val width: Int
+        val height: Int
+        if (resizing != null) {
+            width = resizing.width
+            height = resizing.height
+        } else { // Otherwise, calculate from grid units.
+            val (marginX, marginY) = margin
+            width = calcGridItemWHPx(widthGridUnits, colWidth, marginX.toDouble()).roundToInt()
+            height = calcGridItemWHPx(heightGridUnits, rowHeight, marginY.toDouble()).roundToInt()
+        }
+
+        // If dragging, use the exact width and height as returned from dragging callbacks.
+        val dragging = state?.dragging
+        val top: Int
+        val left: Int
+        if (dragging != null) {
+            top = dragging.y.roundToInt()
+            left = dragging.x.roundToInt()
+        } else { // Otherwise, calculate from grid units.
+            val (marginX, marginY) = margin
+            val (containerPaddingX, containerPaddingY) = containerPadding
+            top = ((rowHeight + marginY) * yGridUnits + containerPaddingY).roundToInt()
+            left = ((colWidth + marginX) * xGridUnits + containerPaddingX).roundToInt()
+        }
+
+        return Position(left, top, width, height)
+    }
 }
 
 
@@ -224,7 +328,7 @@ fun <P: Props> RStatics<P, *, *, *>.resolveDefaultProps(baseProps: P): P {
         Object.assign(jso<P> {}, baseProps).also { props: dynamic ->
             for (propName in Object.getOwnPropertyNames(defaults)) {
                 if (props[propName] === undefined) {
-                    props[propName] = defaults.asDynamic()[propName];
+                    props[propName] = defaults.asDynamic()[propName]
                 }
             }
             props["defaultsApplied"] = true

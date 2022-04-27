@@ -5,7 +5,6 @@ import baaahs.app.ui.layout.LayoutGrid
 import baaahs.app.ui.layout.buildResizeHandle
 import baaahs.app.ui.layout.gridItem
 import baaahs.control.ButtonControl
-import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
@@ -18,7 +17,6 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import external.react_resizable.ResizeHandleAxes
 import kotlinx.js.jso
 import mui.material.Card
 import org.w3c.dom.Element
@@ -71,21 +69,9 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         LayoutGrid(columns, rows, listOf(), null)
     }
 
-    val layout = listOf<LayoutItem>(
-        jso {
-            i = "first"
-            x = 1
-            y = 1
-            w = 1
-            h = 1
-        },
-        jso {
-            i = "second"
-            x = 1
-            y = 3
-            w = 1
-            h = 1
-        }
+    val layout = listOf(
+        LayoutItem(1, 1, 1, 1, "first", Unit),
+        LayoutItem(1, 3, 1, 1, "second", Unit)
     )
 
 
@@ -101,14 +87,13 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.cols = columns
             attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
-            attrs.margin = arrayOf(5, 5)
+            attrs.margin = 5 to 5
             attrs.layout = layout
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
-            attrs.resizeHandles = ResizeHandleAxes.toList()
             attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }
-            attrs.isDraggable = editMode.isOn
-            attrs.isResizable = editMode.isOn
+            attrs.disableDrag = !editMode.isOn
+            attrs.disableResize = !editMode.isOn
             attrs.isDroppable = editMode.isOn
             attrs.isBounded = false
 
@@ -248,13 +233,6 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 //                }
 //            }
 //        }
-    }
-}
-
-private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T): T {
-    return when (this) {
-        ButtonGroupControl.Direction.Horizontal -> horizontal
-        ButtonGroupControl.Direction.Vertical -> vertical
     }
 }
 

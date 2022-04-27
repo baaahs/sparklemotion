@@ -30,7 +30,7 @@ data class Vector2D(val x: Double, val y: Double) {
     override fun toString(): String = "Vector2F(x=$x, y=$y)"
 
     companion object {
-        val origin = Vector2D(0f, 0f)
-        val unit2d = Vector2D(1f, 1f)
+        val origin = Vector2D(0.0, 0.0)
+        val unit2d = Vector2D(1.0, 1.0)
     }
 }

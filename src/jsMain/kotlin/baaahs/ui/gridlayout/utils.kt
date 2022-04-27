@@ -3,7 +3,6 @@ package baaahs.ui.gridlayout
 import baaahs.geom.Vector2D
 import baaahs.util.Logger
 import external.lodash.isEqual
-import external.react_resizable.ResizeHandleAxis
 import external.react_resizable.Size
 import kotlinx.js.Object
 import kotlinx.js.jso
@@ -17,63 +16,46 @@ import react.isValidElement
 import kotlin.math.max
 import kotlin.math.min
 
-external interface LayoutItem {
-    var w: Int
-    var h: Int
-    var x: Int
-    var y: Int
-    var i: String
-    var minW: Int?
-    var minH: Int?
-    var maxW: Int?
-    var maxH: Int?
-    var moved: Boolean?
-    var static: Boolean?
-    var isDraggable: Boolean?
-    var isResizable: Boolean?
-    var resizeHandles: List<ResizeHandleAxis>? // <"s" | "w" | "e" | "n" | "sw" | "nw" | "se" | "ne">?
-    var isBounded: Boolean?
+data class LayoutItem(
+    var x: Int,
+    var y: Int,
+    var w: Int,
+    var h: Int,
+    var i: String,
+    var item: Any,
+    var minW: Int? = null,
+    var minH: Int? = null,
+    var maxW: Int? = null,
+    var maxH: Int? = null,
+    var moved: Boolean = false,
+    var isStatic: Boolean = false,
+    var isDraggable: Boolean = true,
+    var isResizable: Boolean = true,
+    var isPlaceholder: Boolean = false
+) {
+    fun toStatic() =
+        LayoutItem(x, y, w, h, i, item, isStatic = true)
 }
 
-external interface LayoutItemPosition {
-    var x: Int
-    var y: Int
-}
-
-external interface LayoutItemSize {
-    var w: Int
-    var h: Int
-}
-
-external interface PlaceholderLayoutItem : LayoutItem {
-    var placeholder: Boolean?
-}
+data class LayoutItemSize(
+    val w: Int,
+    val h: Int
+)
 
 typealias Layout = List<LayoutItem>
 
-external interface Position {
-    var left: Int
-    var top: Int
-    var width: Int
-    var height: Int
-}
-
-data class PartialPosition(
+data class Position(
     val left: Int,
-    val top: Int
-) {
-    operator fun plus(other: PartialPosition) =
-        PartialPosition(left + other.left, top + other.top)
+    val top: Int,
+    val width: Int,
+    val height: Int
+)
 
-    operator fun minus(other: PartialPosition): PartialPosition =
-        PartialPosition(left - other.left, top - other.top)
-}
-
-external interface DroppingPosition {
-    var left: Int
-    var top: Int
-    var e: MouseEvent
-}
+class DroppingPosition(
+    val left: Int,
+    val top: Int,
+    val e: MouseEvent
+)
 
 external interface GridDragEvent {
     var e: MouseEvent
@@ -104,24 +86,24 @@ const val DEBUG = true
  * @param  {Array} layout Layout array.
  * @return {Number}       Bottom coordinate.
  */
-fun bottom(layout: Layout): Int {
+fun Layout.bottom(): Int {
     var max = 0
     var bottomY: Int
-    val len = layout.size
+    val len = size
     for (i in 0 until len) {
-        bottomY = layout[i].y + layout[i].h
+        bottomY = this[i].y + this[i].h
         if (bottomY > max) max = bottomY
     }
     return max
 }
 
-fun cloneLayout(layout: Layout): Layout =
-    layout.map { cloneLayoutItem(it) }
+fun Layout.cloneLayout(): Layout =
+    map { it.copy() }
 
 // Modify a layoutItem inside a layout. Returns a new Layout,
 // does not mutate. Carries over all other LayoutItems unmodified.
-fun modifyLayout(layout: Layout, layoutItem: LayoutItem): Layout =
-    layout.map {
+fun Layout.modifyLayout(layoutItem: LayoutItem): Layout =
+    map {
         if (layoutItem.i === it.i) {
             layoutItem
         } else {
@@ -131,39 +113,16 @@ fun modifyLayout(layout: Layout, layoutItem: LayoutItem): Layout =
 
 // Function to be called to modify a layout item.
 // Does defensive clones to ensure the layout is not modified.
-fun withLayoutItem(
-    layout: Layout,
+fun Layout.withLayoutItem(
     itemKey: String,
     cb: (LayoutItem) -> LayoutItem
 ): Pair<Layout, LayoutItem?> {
-    var item = getLayoutItem(layout, itemKey)
-        ?: return layout to null
+    var item = getLayoutItem(itemKey)
+        ?: return this to null
 
-    item = cb(cloneLayoutItem(item)) // defensive clone then modify
+    item = cb(item.copy()) // defensive clone then modify
     // FIXME could do this faster if we already knew the index
-    return modifyLayout(layout, item) to item
-}
-
-// Fast path to cloning, since this is monomorphic
-fun cloneLayoutItem(layoutItem: LayoutItem): LayoutItem {
-    return jso {
-        w = layoutItem.w
-        h = layoutItem.h
-        x = layoutItem.x
-        y = layoutItem.y
-        i = layoutItem.i
-        minW = layoutItem.minW
-        maxW = layoutItem.maxW
-        minH = layoutItem.minH
-        maxH = layoutItem.maxH
-        moved = layoutItem.moved
-        static = layoutItem.static
-        // These can be null/undefined
-        isDraggable = layoutItem.isDraggable
-        isResizable = layoutItem.isResizable
-        resizeHandles = layoutItem.resizeHandles
-        isBounded = layoutItem.isBounded
-    }
+    return modifyLayout(item) to item
 }
 
 /**
@@ -227,7 +186,7 @@ fun compact(
     cols: Int
 ): Layout {
     // Statics go in the compareWith array right away so items flow around them.
-    val compareWith = getStatics(layout).toMutableList()
+    val compareWith = layout.getStatics().toMutableList()
     // We go through the items by row and column.
     val sorted = sortLayoutItems(layout, compactType)
     // Holding for new items.
@@ -235,10 +194,10 @@ fun compact(
 
     val len = sorted.size
     for (i in 0 until len) {
-        var l = cloneLayoutItem(sorted[i])
+        var l = sorted[i].copy()
 
         // Don't move static elements
-        if (l.static != true) {
+        if (!l.isStatic) {
             l = compactItem(compareWith, l, compactType, cols, sorted)
 
             // Add to comparison array. We only collide with items before this one.
@@ -313,7 +272,7 @@ fun resolveCompactionCollision(
     for (i in itemIndex + 1 until layout.size) {
         val otherItem = layout[i]
         // Ignore static items
-        if (otherItem.static == true) continue
+        if (otherItem.isStatic) continue
 
         // Optimization: we can break early if we know we're past this el
         // We can do this b/c it's a sorted layout
@@ -351,20 +310,20 @@ fun compactItem(
         // Bottom 'y' possible is the bottom of the layout.
         // This allows you to do nice stuff like specify {y: Infinity}
         // This is here because the layout must be sorted in order to get the correct bottom `y`.
-        l.y = min(bottom(compareWith), l.y)
+        l.y = min(compareWith.bottom(), l.y)
         // Move the element up as far as it can go without colliding.
-        while (l.y > 0 && getFirstCollision(compareWith, l) == null) {
+        while (l.y > 0 && compareWith.getFirstCollision(l) == null) {
             l.y--
         }
     } else if (compactH) {
         // Move the element left as far as it can go without colliding.
-        while (l.x > 0 && getFirstCollision(compareWith, l) == null) {
+        while (l.x > 0 && compareWith.getFirstCollision(l) == null) {
             l.x--
         }
     }
 
     // Move it down, and keep moving it down if it's colliding.
-    var collides: LayoutItem? = getFirstCollision(compareWith, l)
+    var collides: LayoutItem? = compareWith.getFirstCollision(l)
     while (collides != null) {
         if (compactH) {
             resolveCompactionCollision(fullLayout, l, collides.x + collides.w, Axis.x)
@@ -377,7 +336,7 @@ fun compactItem(
             l.y++
         }
         
-        collides = getFirstCollision(compareWith, l)
+        collides = compareWith.getFirstCollision(l)
     }
 
     // Ensure that there are no negative positions
@@ -393,33 +352,30 @@ fun compactItem(
  * Modifies layout items.
  *
  * @param  {Array} layout Layout array.
- * @param  {Number} bounds Number of columns.
+ * @param  {Number} cols Number of columns.
  */
-fun correctBounds(
-    layout: Layout,
-    bounds: PositionParams // { cols: Int }
-): Layout {
-    val collidesWith = getStatics(layout).toMutableList()
-    val len = layout.size
+fun Layout.correctBounds(cols: Int): Layout {
+    val collidesWith = getStatics().toMutableList()
+    val len = size
     for (i in 0 until len) {
-        val l = layout[i]
+        val l = this[i]
         // Overflows right
-        if (l.x + l.w > bounds.cols) l.x = bounds.cols - l.w
+        if (l.x + l.w > cols) l.x = cols - l.w
         // Overflows left
         if (l.x < 0) {
             l.x = 0
-            l.w = bounds.cols
+            l.w = cols
         }
-        if (l.static != true) collidesWith.add(l)
+        if (!l.isStatic) collidesWith.add(l)
         else {
             // If this is static and collides with other statics, we must move it down.
             // We have to do something nicer than just letting them overlap.
-            while (getFirstCollision(collidesWith, l) != null) {
+            while (collidesWith.getFirstCollision(l) != null) {
                 l.y++
             }
         }
     }
-    return layout
+    return this
 }
 
 /**
@@ -429,8 +385,8 @@ fun correctBounds(
  * @param  {String} id     ID
  * @return {LayoutItem}    Item at ID.
  */
-fun getLayoutItem(layout: Layout, id: String): LayoutItem? =
-    layout.firstOrNull { it.i == id }
+fun Layout.getLayoutItem(id: String): LayoutItem? =
+    firstOrNull { it.i == id }
 
 /**
  * Returns the first item this layout collides with.
@@ -440,19 +396,20 @@ fun getLayoutItem(layout: Layout, id: String): LayoutItem? =
  * @param  {Object} layoutItem Layout item.
  * @return {Object|undefined}  A colliding layout item, or undefined.
  */
-fun getFirstCollision(layout: Layout, layoutItem: LayoutItem): LayoutItem? =
-    layout.firstOrNull { collides(it, layoutItem) }
+fun Layout.getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
+    firstOrNull { collides(it, layoutItem) }
 
-fun getAllCollisions(layout: Layout, layoutItem: LayoutItem): Array<LayoutItem> =
-    layout.filter { l -> collides(l, layoutItem) }.toTypedArray()
+fun Layout.getAllCollisions(layoutItem: LayoutItem): Array<LayoutItem> =
+    filter { l -> collides(l, layoutItem) }.toTypedArray()
 
 /**
  * Get all static elements.
  * @param  {Array} layout Array of layout objects.
  * @return {Array}        Array of static layout items..
  */
-fun getStatics(layout: Layout): List<LayoutItem> =
-    layout.filter { l -> l.static == true }
+fun Layout.getStatics(): List<LayoutItem> =
+    filter { l -> l.isStatic }
+
 
 /**
  * Move an element. Responsible for doing cascading movements of other elements.
@@ -479,7 +436,7 @@ fun moveElement(
 
     // If this is static and not explicitly enabled as draggable,
     // no move is possible, so we can short-circuit this immediately.
-    if (l.static == true && !(l.isDraggable == true)) return layout
+    if (l.isStatic && !l.isDraggable) return layout
 
     // Short-circuit if nothing to do.
     if (l.y == y && l.x == x) return layout
@@ -508,15 +465,15 @@ fun moveElement(
         else false
     // $FlowIgnore acceptable modification of read-only array as it was recently cloned
     if (movingUp) sorted = sorted.reversed()
-    val collisions = getAllCollisions(sorted, l)
-    val hasCollisions = collisions.size > 0
+    val collisions = sorted.getAllCollisions(l)
+    val hasCollisions = collisions.isNotEmpty()
 
     // We may have collisions. We can short-circuit if we've turned off collisions or
     // allowed overlap.
     if (hasCollisions && allowOverlap) {
         // Easy, we don't need to resolve collisions. But we *did* change the layout,
         // so clone it on the way out.
-        return cloneLayout(layout)
+        return layout.cloneLayout()
     } else if (hasCollisions && preventCollision == true) {
         // If we are preventing collision but not allowing overlap, we need to
         // revert the position of this element so it goes to where it came from, rather
@@ -536,10 +493,10 @@ fun moveElement(
         )
 
         // Short circuit so we can't infinite loop
-        if (collision.moved == true) continue
+        if (collision.moved) continue
 
         // Don't move static items - we have to move *this* element away
-        if (collision.static == true) {
+        if (collision.isStatic) {
             layout = moveElementAwayFromCollision(
                 layout,
                 collision,
@@ -583,7 +540,7 @@ fun moveElementAwayFromCollision(
     val compactH = compactType == CompactType.horizontal
     // Compact vertically if not set to horizontal
     val compactV = compactType != CompactType.horizontal
-    val preventCollision = collidesWith.static // we're already colliding (not for static items)
+    val preventCollision = collidesWith.isStatic // we're already colliding (not for static items)
 
     // If there is enough space above the collision to put this element, move it there.
     // We only do this on the main collision as this can get funky in cascades and cause
@@ -602,7 +559,7 @@ fun moveElementAwayFromCollision(
         }
 
         // No collision? If so, we can go up there; otherwise, we'll end up moving down as normal
-        if (getFirstCollision(layout, fakeItem) != null) {
+        if (layout.getFirstCollision(fakeItem) != null) {
             logger.debug {
                 "Doing reverse collision on ${itemToMove.i} up to [${fakeItem.x},${fakeItem.y}]."
             }
@@ -724,9 +681,9 @@ fun synchronizeLayoutWithChildren(
             ?: return@forEach
 
         // Don't overwrite if it already exists.
-        val exists = getLayoutItem(initialLayout, key)
+        val exists = initialLayout.getLayoutItem(key)
         if (exists != null) {
-            layout.add(cloneLayoutItem(exists))
+            layout.add(exists.copy())
         } else {
             if (!isProduction && child.props.asDynamic()._grid) {
                 console.warn(
@@ -743,25 +700,25 @@ fun synchronizeLayoutWithChildren(
                     validateLayout(listOf(g), "ReactGridLayout.children")
                 }
                 // FIXME clone not really necessary here
-                layout.add(cloneLayoutItem(g.extend { this.i = child.key!! }))
+                layout.add(g.extend { this.i = child.key!! }.copy())
             } else {
                 // Nothing provided: ensure this is added to the bottom
                 // FIXME clone not really necessary here
                 layout.add(
-                    cloneLayoutItem(jso {
-                        w = 1
-                        h = 1
-                        x = 0
-                        y = bottom(layout)
-                        i = key
-                    })
+                    jso<LayoutItem> {
+                                        w = 1
+                                        h = 1
+                                        x = 0
+                                        y = layout.bottom()
+                                        i = key
+                                    }.copy()
                 )
             }
         }
     }
 
     // Correct the layout.
-    val correctedLayout = correctBounds(layout, jso { this.cols = cols })
+    val correctedLayout = layout.correctBounds(cols)
     return if (allowOverlap == true)
         correctedLayout
     else
@@ -827,4 +784,14 @@ fun Element.isParentOf(other: Element): Boolean {
         current = parent
     }
     return false
+}
+
+// This can either be called:
+// calcGridItemWHPx(w, colWidth, margin[0])
+// or
+// calcGridItemWHPx(h, rowHeight, margin[1])
+fun calcGridItemWHPx(gridUnits: Int, colOrRowSize: Double, marginPx: Double): Double {
+    // 0 * Infinity === NaN, which causes problems with resize contraints
+    if (gridUnits == Int.MAX_VALUE) return gridUnits.toDouble()
+    return colOrRowSize * gridUnits + max(0, gridUnits - 1) * marginPx
 }
