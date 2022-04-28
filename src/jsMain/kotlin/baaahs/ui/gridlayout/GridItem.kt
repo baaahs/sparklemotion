@@ -163,10 +163,10 @@ class GridItem(
         val style: dynamic
         // CSS Transforms support (default)
         if (useCSSTransforms) {
-            style = setTransform(pos)
+            style = pos.setTransform()
         } else {
             // top,left (slow)
-            style = setTopLeft(pos)
+            style = pos.setTopLeft()
 
             // This is used for server rendering.
             if (usePercentages) {
@@ -176,6 +176,51 @@ class GridItem(
         }
 
         return style
+    }
+
+    private fun Position.setTopLeft(): dynamic {
+        return jso {
+            this.top = "${top}px"
+            this.left = "${left}px"
+            this.width = "${width}px"
+            this.height = "${height}px"
+            this.position = "absolute"
+        }
+    }
+
+    private fun Position.setTransform(): dynamic {
+        // Replace unitless items with px
+        val translate = "translate(${left}px,${top}px)"
+        return jso {
+            transform = translate
+            WebkitTransform = translate
+            MozTransform = translate
+            msTransform = translate
+            OTransform = translate
+            this.width = "${width}px"
+            this.height = "${height}px"
+            this.position = "absolute"
+        }
+    }
+
+    /**
+     * Helper to convert a number to a percentage String.
+     *
+     * @param  {Number} num Any number
+     * @return {String}     That number as a percentage.
+     */
+    private fun perc(num: Number): String {
+        return "${num.toDouble() * 100}%"
+    }
+
+    fun Element.isParentOf(other: Element): Boolean {
+        var current: Element? = other
+        while (current != null) {
+            val parent = current.parentElement
+            if (parent === this) return true
+            current = parent
+        }
+        return false
     }
 
     /**
