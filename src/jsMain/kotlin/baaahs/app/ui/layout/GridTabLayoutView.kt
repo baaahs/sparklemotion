@@ -46,7 +46,7 @@ class LayoutGrid(
     private val items: List<OpenGridItem>,
     private val draggingItem: String?
 ) {
-    val layouts: Array<LayoutItem> = buildList<LayoutItem> {
+    val layout = Layout(buildList {
         items.forEach { item ->
             val isStatic = draggingItem != null &&
                     draggingItem != item.controlId &&
@@ -58,7 +58,7 @@ class LayoutGrid(
                 item.controlId, isStatic = isStatic
             ))
         }
-    }.toTypedArray()
+    })
 
     fun forEachCell(block: (column: Int, row: Int) -> Unit) {
         for (row in 0 until rows) {
@@ -89,7 +89,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     var draggingItem by state<String?> { null }
 
     val handleLayoutChange by handler(props.tabEditor) { newLayout: Layout ->
-        val gridItems = newLayout.map { newLayoutItem ->
+        val gridItems = newLayout.items.map { newLayoutItem ->
             GridItem(
                 newLayoutItem.i,
                 newLayoutItem.x, newLayoutItem.y,
@@ -214,7 +214,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.rowHeight = gridRowHeight
             attrs.maxRows = rows
             attrs.margin = 5 to 5
-            attrs.layout = layoutGrid.layouts.toList()
+            attrs.layout = layoutGrid.layout
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
             attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }

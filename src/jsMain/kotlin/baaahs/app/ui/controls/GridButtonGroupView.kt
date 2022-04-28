@@ -69,10 +69,10 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         LayoutGrid(columns, rows, listOf(), null)
     }
 
-    val layout = listOf(
+    val layout = Layout(listOf(
         LayoutItem(1, 1, 1, 1, "first"),
         LayoutItem(1, 3, 1, 1, "second")
-    )
+    ))
 
 
     Card {
@@ -97,7 +97,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.isDroppable = editMode.isOn
             attrs.isBounded = false
 
-            layout.forEach { layoutItem ->
+            layout.items.forEach { layoutItem ->
                 div(+layoutStyles.gridCell) {
                     key = layoutItem.i
 

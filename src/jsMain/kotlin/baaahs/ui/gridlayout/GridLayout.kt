@@ -133,7 +133,7 @@ class GridLayout(
         val e = gridDragEvent.e
         val node = gridDragEvent.node
         val layout = state.layout
-        val l = layout.getLayoutItem(i)
+        val l = layout.find(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragStart() couldn't find layout $i")
             }
@@ -162,7 +162,7 @@ class GridLayout(
         val cols = props.cols
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision
-        val l = layout.getLayoutItem(i)
+        val l = layout.find(i)
             ?: state.oldDragItem?.let { if (it.i == i) it else null }
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragItem() couldn't find item $i")
@@ -211,7 +211,7 @@ class GridLayout(
         val cols = props.cols
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision
-        val l = layout.getLayoutItem(i)
+        val l = layout.find(i)
             ?: state.oldDragItem?.let { if (it.i == i) it else null }
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragStop() couldn't find layout $i")
@@ -257,7 +257,7 @@ class GridLayout(
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
         val layout = state.layout
-        val l = layout.getLayoutItem(i)
+        val l = layout.find(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onResizeStart() couldn't find layout $i")
             }
@@ -341,7 +341,7 @@ class GridLayout(
         val oldResizeItem = state.oldResizeItem
         val cols = props.cols!!
         val allowOverlap = props.allowOverlap!!
-        val l = layout.getLayoutItem(i)!!
+        val l = layout.find(i)!!
 
         props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
@@ -408,7 +408,7 @@ class GridLayout(
         child: ReactElement<*>?,
         isDroppingItem: Boolean = false
     ): ReactElement<*>? {
-        val l = child?.key?.let { state.layout.getLayoutItem(it) }
+        val l = child?.key?.let { state.layout.find(it) }
             ?: return run {
                 console.log("GridLayout(${props.id}),processGridItem() couldn't find layout ${child?.key}")
                 null
@@ -532,7 +532,7 @@ class GridLayout(
                     finalDroppingItem.i,
                     isDraggable = true
                 )
-                this.layout = layout + listOf(newItem)
+                this.layout = Layout(layout.items + listOf(newItem))
             }
         } else state.droppingPosition?.let { droppingPos ->
             val left = droppingPos.left
@@ -555,7 +555,7 @@ class GridLayout(
         val cols = props.cols!!
         val layout = state.layout
 
-        val newLayout = layout.filter { l -> l.i != droppingItem?.i }
+        val newLayout = Layout(layout.items.filter { l -> l.i != droppingItem?.i })
             .compact(compactType(props), cols)
 
         setState {
@@ -572,7 +572,7 @@ class GridLayout(
             oldDragItem = offGridItem
             activeDrag = placeholderLayoutItem(layoutItem)
             oldLayout = state.layout
-            layout = state.layout + offGridItem
+            layout = Layout(state.layout.items + offGridItem)
         }
         console.log("GridLayout ${props.id}: ${layoutItem.i} entering", layoutItem)
     }
@@ -618,7 +618,7 @@ class GridLayout(
         e.stopPropagation()
         val droppingItem = props.droppingItem!!
         val layout = state.layout
-        val item = layout.find { l -> l.i === droppingItem.i }
+        val item = layout.find(droppingItem.i)
 
         // reset dragEnter counter on drop
         dragEnterCounter = 0
@@ -679,7 +679,7 @@ class GridLayout(
                 containerPadding = null
                 rowHeight = 150.0
                 maxRows = Int.MAX_VALUE // infinite vertical growth
-                layout = emptyList()
+                layout = Layout()
                 margin = 10 to 10
                 isBounded = false
                 disableDrag = false
@@ -721,7 +721,7 @@ class GridLayout(
                         !isEqual(nextProps.layout, prevState.propsLayout) ||
                         nextProps.compactType !== prevState.compactType
                     ) {
-                        newLayoutBase = nextProps.layout?.toMutableList()
+                        newLayoutBase = nextProps.layout?.items?.toMutableList()
                     } else if (!childrenEqual(
                             nextProps.children?.asArray(),
                             prevState.children?.asArray()
@@ -730,13 +730,13 @@ class GridLayout(
                         // If children change, also regenerate the layout. Use our state
                         // as the base in case because it may be more up to date than
                         // what is in props.
-                        newLayoutBase = prevState.layout.toMutableList()
+                        newLayoutBase = prevState.layout.items.toMutableList()
                     }
 
                     // We need to regenerate the layout.
                     if (newLayoutBase != null) {
                         val newLayout = synchronizeLayoutWithChildren(
-                            newLayoutBase,
+                            Layout(newLayoutBase),
                             nextProps.children?.asArray() ?: emptyArray(),
                             nextProps.cols!!,
                             compactType(nextProps),
