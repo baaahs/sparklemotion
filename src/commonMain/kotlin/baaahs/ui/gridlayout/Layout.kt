@@ -26,14 +26,14 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         return max
     }
 
-    fun cloneLayout(): Layout =
+    private fun cloneLayout(): Layout =
         Layout(items.map { it.copy() })
 
     /**
      * Modify a layoutItem inside a layout. Returns a new Layout,
      * does not mutate. Carries over all other LayoutItems unmodified.
      */
-    fun modifyLayout(layoutItem: LayoutItem): Layout =
+    private fun modifyLayout(layoutItem: LayoutItem): Layout =
         Layout(items.map {
             if (layoutItem.i === it.i) layoutItem else it
         })
@@ -99,7 +99,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     /**
      * Before moving item down, it will check if the movement will cause collisions and move those items down before.
      */
-    fun resolveCompactionCollision(
+    private fun resolveCompactionCollision(
         item: LayoutItem,
         moveToCoord: Int,
         axis: Axis
@@ -185,7 +185,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * @param  {Object} layoutItem Layout item.
      * @return {Object|undefined}  A colliding layout item, or undefined.
      */
-    fun getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
+    private fun getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
         items.firstOrNull { collides(it, layoutItem) }
 
     fun getAllCollisions(layoutItem: LayoutItem): Array<LayoutItem> =
@@ -196,7 +196,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * @param  {Array} layout Array of layout objects.
      * @return {Array}        Array of static layout items..
      */
-    fun getStatics(): List<LayoutItem> =
+    private fun getStatics(): List<LayoutItem> =
         items.filter { l -> l.isStatic }
 
     /**
@@ -272,8 +272,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
 
         var updatedLayout = this
         // Move each item that collides away from this element.
-        for (i in 0 until collisions.size) {
-            val collision = collisions[i]
+        for (collision in collisions) {
             logger.info {
                 "Resolving collision between ${l.i} at [${l.x},${l.y}] and ${collision.i} at [${collision.x},${collision.y}]"
             }
@@ -312,7 +311,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * @param  {LayoutItem} collidesWith Layout item we're colliding with.
      * @param  {LayoutItem} itemToMove   Layout item we're moving.
      */
-    fun moveElementAwayFromCollision(
+    private fun moveElementAwayFromCollision(
         collidesWith: LayoutItem,
         itemToMove: LayoutItem,
         isUserAction_: Boolean?,
@@ -375,7 +374,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * Modifies item.
      *
      */
-    fun compactItem(
+    private fun compactItem(
         compareWith: Layout,
         l: LayoutItem,
         compactType: CompactType,
@@ -430,7 +429,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * @return {Array} Array of layout objects.
      * @return {Array}        Layout, sorted static items first.
      */
-    fun sortLayoutItems(compactType: CompactType): Layout =
+    private fun sortLayoutItems(compactType: CompactType): Layout =
         when (compactType) {
             CompactType.horizontal -> sortLayoutItemsByColRow()
             CompactType.vertical -> sortLayoutItemsByRowCol()
@@ -442,7 +441,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      *
      * Does not modify Layout.
      */
-    fun sortLayoutItemsByRowCol(): Layout =
+    private fun sortLayoutItemsByRowCol(): Layout =
         Layout(items.sortedWith { a, b ->
             if (a.y > b.y || (a.y == b.y && a.x > b.x)) {
                 1
@@ -457,37 +456,15 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      *
      * Does not modify Layout.
      */
-    fun sortLayoutItemsByColRow(): Layout =
+    private fun sortLayoutItemsByColRow(): Layout =
         Layout(items.sortedWith { a, b ->
             if (a.x > b.x || (a.x == b.x && a.y > b.y)) 1 else -1
         })
 
     /**
-     * Validate a layout. Throws errors.
-     *
-     * @param  {Array}  layout        Array of layout items.
-     * @param  {String} [contextName] Context name for errors.
-     * @throw  {Error}                Validation error.
-     */
-    fun validateLayout(contextName: String = "Layout") {
-        // LGTM!
-//        val subProps = arrayOf("x", "y", "w", "h")
-//        if (!Array.isArray(layout))
-//            throw new Error(contextName + " must be an array!")
-//
-//        items.forEachIndexed { i, item ->
-//            for (subProp in subProps) {
-//                if (item.asDynamic()[subProp] !is Number) {
-//                    throw Error("ReactGridLayout: $contextName[$i].$subProp must be a number!")
-//                }
-//            }
-//        }
-    }
-
-    /**
      * Given two layoutitems, check if they collide.
      */
-    fun collides(l1: LayoutItem, l2: LayoutItem): Boolean {
+    private fun collides(l1: LayoutItem, l2: LayoutItem): Boolean {
         if (l1.i === l2.i) return false // same element
         if (l1.x + l1.w <= l2.x) return false // l1 is left of l2
         if (l1.x >= l2.x + l2.w) return false // l1 is right of l2

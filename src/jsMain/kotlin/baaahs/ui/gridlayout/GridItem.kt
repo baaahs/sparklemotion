@@ -170,8 +170,8 @@ class GridItem(
 
             // This is used for server rendering.
             if (usePercentages) {
-                style.left = perc(pos.left / containerWidth)
-                style.width = perc(pos.width / containerWidth)
+                style.left = pct(pos.left / containerWidth)
+                style.width = pct(pos.width / containerWidth)
             }
         }
 
@@ -209,11 +209,11 @@ class GridItem(
      * @param  {Number} num Any number
      * @return {String}     That number as a percentage.
      */
-    private fun perc(num: Number): String {
+    private fun pct(num: Number): String {
         return "${num.toDouble() * 100}%"
     }
 
-    fun Element.isParentOf(other: Element): Boolean {
+    private fun Element.isParentOf(other: Element): Boolean {
         var current: Element? = other
         while (current != null) {
             val parent = current.parentElement
