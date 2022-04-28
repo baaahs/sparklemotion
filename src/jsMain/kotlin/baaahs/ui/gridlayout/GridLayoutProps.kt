@@ -60,7 +60,7 @@ external interface GridLayoutProps : PropsWithChildren {
      * array objects like so:
      *     {i: string, x: number, y: number, w: number, h: number}
      */
-    var layout: List<LayoutItem>? // = null, // If not provided, use data-grid props on children
+    var layout: Layout? // = null, // If not provided, use data-grid props on children
 
     /** Margin between items [x, y] in px.*/
     var margin: Pair<Int, Int>? // ?[number, number] = [10, 10],
