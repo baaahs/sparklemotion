@@ -8,12 +8,14 @@ import baaahs.y
 import external.lodash.isEqual
 import kotlinx.css.LinearDimension
 import kotlinx.css.height
+import kotlinx.js.Object
 import kotlinx.js.jso
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
 import react.dom.events.DragEvent
+import react.dom.events.DragEventHandler
 import styled.inlineStyles
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -754,6 +756,87 @@ class GridLayout(
                     } else null
                 } else null
             }
+        }
+
+        fun synchronizeLayoutWithChildren(
+            initialLayout_: Layout?,
+            children: ReactChildren,
+            cols: Int,
+            compactType: CompactType,
+            allowOverlap: Boolean?
+        ): Layout {
+            val initialLayout = initialLayout_ ?: Layout()
+
+            // Generate one layout item per child.
+            val layoutItems = mutableListOf<LayoutItem>()
+
+            children.forEach { child: ReactElement<*> ->
+                // Child may not exist
+                val key = child.key
+                    ?: return@forEach
+
+                // Don't overwrite if it already exists.
+                val exists = initialLayout.find(key)
+                if (exists != null) {
+                    layoutItems.add(exists.copy())
+                } else {
+                    val g = (child.props.asDynamic()["data-grid"] ?: child.props.asDynamic()._grid)
+                        .unsafeCast<LayoutItem?>()
+
+                    // Hey, this item has a data-grid property, use it.
+                    if (g != null) {
+                        // FIXME clone not really necessary here
+                        layoutItems.add(g.extend { this.i = child.key!! }.copy())
+                    } else {
+                        // Nothing provided: ensure this is added to the bottom
+                        // FIXME clone not really necessary here
+                        layoutItems.add(
+                            LayoutItem(
+                                0, Layout(layoutItems).bottom(),
+                                1, 1,
+                                key
+                            )
+                        )
+                    }
+                }
+            }
+
+            // Correct the layout.
+            val correctedLayout = Layout(layoutItems).correctBounds(cols)
+            return if (allowOverlap == true)
+                correctedLayout
+            else
+                correctedLayout.compact(compactType, cols)
+        }
+
+        // Legacy support for verticalCompact: false
+        fun compactType(
+            props: GridLayoutProps // ?{ verticalCompact: boolean, compactType: CompactType }
+        ): CompactType {
+            return /*props.verticalCompact === false ? null :*/ props.compactType ?: CompactType.vertical
+        }
+
+        private val noop: DragEventHandler<*> = { }
+
+        private fun <T: Any> T.extend(block: T.() -> Unit): T =
+            Object.assign(jso(), this, jso { block() })
+
+        fun ReactNode.asArray(): ReactChildren =
+            if (this is Array<*>) {
+                unsafeCast<ReactChildren>()
+            } else if (isValidElement(this)) {
+                arrayOf(this.unsafeCast<ReactElement<*>>())
+            } else emptyArray()
+
+        /**
+         * Comparing React `children` is a bit difficult. This is a good way to compare them.
+         * This will catch differences in keys, order, and length.
+         */
+        fun childrenEqual(a: ReactChildren?, b: ReactChildren?): Boolean {
+            return isEqual(
+                a?.map { c -> c.key },
+                b?.map { c -> c.key }
+            )
         }
     }
 }
