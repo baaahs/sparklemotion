@@ -322,7 +322,7 @@ fun <P: Props> RStatics<P, *, *, *>.resolveDefaultProps(baseProps: P): P {
     return if (defaults != null && baseProps.asDynamic()["defaultsApplied"] != true) {
         console.log("DEfaul")
         // Resolve default props. Taken from ReactElement
-        Object.assign(jso<P> {}, baseProps).also { props: dynamic ->
+        Object.assign(jso {}, baseProps).also { props: dynamic ->
             for (propName in Object.getOwnPropertyNames(defaults)) {
                 if (props[propName] === undefined) {
                     props[propName] = defaults.asDynamic()[propName]
