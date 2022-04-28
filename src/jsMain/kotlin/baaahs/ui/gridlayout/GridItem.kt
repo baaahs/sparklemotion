@@ -6,6 +6,8 @@ import baaahs.app.ui.layout.dragNDropContext
 import baaahs.clamp
 import baaahs.geom.Vector2D
 import baaahs.ui.className
+import baaahs.x
+import baaahs.y
 import external.clsx.clsx
 import external.react_draggable.DraggableCore
 import external.react_draggable.DraggableCoreProps
@@ -85,58 +87,48 @@ class GridItem(
     override fun shouldComponentUpdate(nextProps: GridItemProps, nextState: GridItemState): Boolean {
         // We can't deeply compare children. If the developer memoizes them, we can
         // use this optimization.
-        if (this.props.children !== nextProps.children) return true
-        if (this.props.droppingPosition !== nextProps.droppingPosition) return true
+        if (props.children !== nextProps.children) return true
+        if (props.droppingPosition !== nextProps.droppingPosition) return true
         // TODO memoize these calculations so they don't take so long?
         val positionParams = state.parentContainer.getPositionParams()
         val oldPosition = positionParams.calcGridItemPosition(
-            this.props.x,
-            this.props.y,
-            this.props.w,
-            this.props.h,
-            this.state
+            props.x, props.y, props.w, props.h, state
         )
         val newPosition = positionParams.calcGridItemPosition(
-            nextProps.x,
-            nextProps.y,
-            nextProps.w,
-            nextProps.h,
-            nextState
+            nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState
         )
-        return (
-                !fastPositionEqual(oldPosition, newPosition) ||
-                        this.props.useCSSTransforms !== nextProps.useCSSTransforms
-                )
+        return !fastPositionEqual(oldPosition, newPosition) ||
+                props.useCSSTransforms !== nextProps.useCSSTransforms
     }
 
     override fun componentDidMount() {
-        this.moveDroppingItem(jso {})
+        moveDroppingItem(jso {})
     }
 
     override fun componentDidUpdate(prevProps: GridItemProps, prevState: GridItemState, snapshot: Any) {
-        this.moveDroppingItem(prevProps)
+        moveDroppingItem(prevProps)
     }
 
     // When a droppingPosition is present, this means we should fire a move event, as if we had moved
     // this element by `x, y` pixels.
     private fun moveDroppingItem(prevProps: GridItemProps) {
-        val droppingPosition = this.props.droppingPosition
+        val droppingPosition = props.droppingPosition
             ?: return
 
-        val node = this.elementRef.current
+        val node = elementRef.current
             ?: return // Can't find DOM node (are we unmounted?)
 
         val prevDroppingPosition = prevProps.droppingPosition ?: DroppingPosition(0, 0, jso {
             this.asDynamic()["isFakeMouseEvent"] = true
         })
-        val dragging = this.state.dragging
+        val dragging = state.dragging
 
         val shouldDrag =
             (dragging != null && droppingPosition.left != prevDroppingPosition.left) ||
                     droppingPosition.top != prevDroppingPosition.top
 
         if (dragging == null) {
-            this.onDragStart(droppingPosition.e, jso {
+            onDragStart(droppingPosition.e, jso {
                     this.node = node
                     this.deltaX = droppingPosition.left
                     this.deltaY = droppingPosition.top
@@ -145,7 +137,7 @@ class GridItem(
             val deltaX = droppingPosition.left - dragging.x
             val deltaY = droppingPosition.top - dragging.y
 
-            this.onDrag(droppingPosition.e, jso {
+            onDrag(droppingPosition.e, jso {
                     this.node = node
                     this.deltaX = deltaX.roundToInt()
                     this.deltaY = deltaY.roundToInt()
@@ -164,9 +156,9 @@ class GridItem(
      * @return {Object}     Style object.
      */
     private fun createStyle(pos: Position): dynamic { // [key: string]: ?string } {
-        val usePercentages = this.props.usePercentages ?: false
+        val usePercentages = props.usePercentages ?: false
         val containerWidth = state.parentContainer.containerWidth
-        val useCSSTransforms = this.props.useCSSTransforms ?: true
+        val useCSSTransforms = props.useCSSTransforms ?: true
 
         val style: dynamic
         // CSS Transforms support (default)
@@ -292,7 +284,7 @@ class GridItem(
                 calculatePxPositionInLayout(container, draggingNode).also { px ->
                     previousContainer.getPositionParams().calcGridPosition(
                         px.y.roundToInt(), px.x.roundToInt(),
-                        this.props.w, this.props.h
+                        props.w, props.h
                     ).also { gridXY ->
                         layoutItem.x = gridXY.x
                         layoutItem.y = gridXY.y
@@ -326,18 +318,18 @@ class GridItem(
 
         val newPxPosition = calculatePxPositionInLayout(container, node)
 
-        this.setState {
+        setState {
             this.dragging = newPxPosition
         }
 
         // Call callback with this data
-        val newGridPosition = state.parentContainer.getPositionParams().calcGridPosition(
-            newPxPosition.y.roundToInt(), newPxPosition.x.roundToInt(),
-            this.props.w, this.props.h
-        )
+        val newGridPosition = state.parentContainer.getPositionParams()
+            .calcGridPosition(
+                newPxPosition.y.roundToInt(), newPxPosition.x.roundToInt(), props.w, props.h
+            )
 
         return container.onDragStart(
-            this.props.i, newGridPosition.x, newGridPosition.y, jso {
+            props.i, newGridPosition.x, newGridPosition.y, jso {
                 this.e = e
                 this.node = node
                 this.newPosition = newPxPosition
@@ -400,21 +392,21 @@ class GridItem(
             val offsetParent = node.offsetParent
 
             if (offsetParent != null) {
-                val (marginX, marginY) = state.parentContainer.margin
+                val margin = state.parentContainer.margin
                 val rowHeight = state.parentContainer.rowHeight
                 val bottomBoundary =
-                    offsetParent.clientHeight - calcGridItemWHPx(h, rowHeight, marginY.toDouble())
+                    offsetParent.clientHeight - calcGridItemWHPx(h, rowHeight, margin.y.toDouble())
                 top = top.clamp(0, bottomBoundary.roundToInt())
 
                 val colWidth = positionParams.calcGridColWidth()
                 val rightBoundary =
-                    containerWidth - calcGridItemWHPx(w, colWidth, marginX.toDouble())
+                    containerWidth - calcGridItemWHPx(w, colWidth, margin.x.toDouble())
                 left = left.clamp(0, rightBoundary.roundToInt())
             }
         }
 
         val newPosition = Vector2D(left, top)
-        this.setState {
+        setState {
             this.dragging = newPosition
         }
 
@@ -448,7 +440,7 @@ class GridItem(
         val left = dragging.x
         val top = dragging.y
         val newPosition = Vector2D(left, top)
-        this.setState { this.dragging = null }
+        setState { this.dragging = null }
 
         val gridPosition = state.parentContainer.getPositionParams()
             .calcGridPosition(top.roundToInt(), left.roundToInt(), w, h)
@@ -470,7 +462,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResizeStop(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return this.onResizeHandler(e, callbackData, props.onResizeStop)
+        return onResizeHandler(e, callbackData, props.onResizeStop)
     }
 
     /**
@@ -479,7 +471,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResizeStart(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return this.onResizeHandler(e, callbackData, props.onResizeStart)
+        return onResizeHandler(e, callbackData, props.onResizeStart)
     }
 
     /**
@@ -488,7 +480,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResize(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return this.onResizeHandler(e, callbackData, props.onResize)
+        return onResizeHandler(e, callbackData, props.onResize)
     }
 
     /**
@@ -529,7 +521,7 @@ class GridItem(
         w = w.clamp(minW, maxW)
         h = h.clamp(minH, maxH)
 
-        this.setState {
+        setState {
             this.resizing = if (handler === props.onResizeStop) null else size
         }
 
@@ -608,6 +600,9 @@ class GridItem(
         }
     }
 }
+
+fun RBuilder.gridItem(handler: RHandler<GridItemProps>) =
+    child(GridItem::class, handler = handler)
 
 // Workaround for bug in kotlin-react RStatics to force it to be initialized early.
 @Suppress("unused")

@@ -10,9 +10,9 @@ import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
 import baaahs.show.live.EmptyOpenContext
 import baaahs.ui.gridlayout.CompactType
-import baaahs.ui.gridlayout.GridLayout
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
+import baaahs.ui.gridlayout.gridLayout
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -70,8 +70,8 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     }
 
     val layout = listOf(
-        LayoutItem(1, 1, 1, 1, "first", Unit),
-        LayoutItem(1, 3, 1, 1, "second", Unit)
+        LayoutItem(1, 1, 1, 1, "first"),
+        LayoutItem(1, 3, 1, 1, "second")
     )
 
 
@@ -79,7 +79,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         ref = cardRef
         attrs.classes = jso { root = -Styles.buttonGroupCard }
 
-        child(GridLayout::class) {
+        gridLayout {
             attrs.id = buttonGroupControl.id
             attrs.className = +layoutStyles.gridContainer
             attrs.width = layoutWidth.toDouble()

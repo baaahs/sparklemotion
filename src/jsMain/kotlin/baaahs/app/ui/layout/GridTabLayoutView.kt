@@ -55,8 +55,7 @@ class LayoutGrid(
             add(LayoutItem(
                 item.column, item.row,
                 item.width, item.height,
-                item.controlId, item.control,
-                isStatic = isStatic
+                item.controlId, isStatic = isStatic
             ))
         }
     }.toTypedArray()
@@ -132,7 +131,10 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         console.log("onDragStart", layout, oldItem, newItem, placeholder, e, element)
         draggingItem = newItem.i
     }
-    val handleDragStop by handler { draggingItem = null }
+    val handleDragStop: ItemCallback by handler {
+            layout, oldItem, newItem, placeholder, e, element ->
+        draggingItem = null
+    }
 
     val handleEmptyGridCellClick by eventHandler { e ->
         val target = e.currentTarget as HTMLElement
@@ -203,7 +205,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 //        ReactGridLayout {
         println("editMode = ${editMode.isOn}")
 
-        child(GridLayout::class) {
+        gridLayout {
             attrs.id = "top"
             attrs.className = +styles.gridContainer
             attrs.width = layoutDimens.first.toDouble()
@@ -219,8 +221,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.disableDrag = !editMode.isOn
             attrs.disableResize = !editMode.isOn
             attrs.isDroppable = editMode.isOn
-            attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
-            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
+            attrs.onDragStart = handleDragStart
+            attrs.onDragStop = handleDragStop
             attrs.onDropDragOver = handleDropDragOver
 
             props.tab.items.forEach { item ->

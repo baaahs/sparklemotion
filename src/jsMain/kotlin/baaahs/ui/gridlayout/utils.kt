@@ -22,7 +22,6 @@ data class LayoutItem(
     var w: Int,
     var h: Int,
     var i: String,
-    var item: Any,
     var minW: Int? = null,
     var minH: Int? = null,
     var maxW: Int? = null,
@@ -34,7 +33,7 @@ data class LayoutItem(
     var isPlaceholder: Boolean = false
 ) {
     fun toStatic() =
-        LayoutItem(x, y, w, h, i, item, isStatic = true)
+        LayoutItem(x, y, w, h, i, isStatic = true)
 }
 
 data class LayoutItemSize(
@@ -180,17 +179,13 @@ fun collides(l1: LayoutItem, l2: LayoutItem): Boolean {
  *   vertically.
  * @return {Array}       Compacted Layout.
  */
-fun compact(
-    layout: Layout,
-    compactType: CompactType,
-    cols: Int
-): Layout {
+fun Layout.compact(compactType: CompactType, cols: Int): Layout {
     // Statics go in the compareWith array right away so items flow around them.
-    val compareWith = layout.getStatics().toMutableList()
+    val compareWith = getStatics().toMutableList()
     // We go through the items by row and column.
-    val sorted = sortLayoutItems(layout, compactType)
+    val sorted = sortLayoutItems(compactType)
     // Holding for new items.
-    val out = MutableList<LayoutItem?>(layout.size) { null }
+    val out = MutableList<LayoutItem?>(size) { null }
 
     val len = sorted.size
     for (i in 0 until len) {
@@ -206,7 +201,7 @@ fun compact(
         }
 
         // Add to output array to make sure they still come out in the right order.
-        out[layout.indexOf(sorted[i])] = l
+        out[indexOf(sorted[i])] = l
 
         // Clear moved flag, if it exists.
         l.moved = false
@@ -258,19 +253,18 @@ enum class Axis {
 /**
  * Before moving item down, it will check if the movement will cause collisions and move those items down before.
  */
-fun resolveCompactionCollision(
-    layout: Layout,
+fun Layout.resolveCompactionCollision(
     item: LayoutItem,
     moveToCoord: Int,
     axis: Axis
 ) {
     val sizeProp = heightWidth[axis]!!
     item[axis] += 1
-    val itemIndex = layout.indexOfFirst { layoutItem -> layoutItem.i == item.i }
+    val itemIndex = indexOfFirst { layoutItem -> layoutItem.i == item.i }
 
     // Go through each item we collide with.
-    for (i in itemIndex + 1 until layout.size) {
-        val otherItem = layout[i]
+    for (i in itemIndex + 1 until size) {
+        val otherItem = this[i]
         // Ignore static items
         if (otherItem.isStatic) continue
 
@@ -280,7 +274,6 @@ fun resolveCompactionCollision(
 
         if (collides(item, otherItem)) {
             resolveCompactionCollision(
-                layout,
                 otherItem,
                 moveToCoord + sizeProp.invoke(item),
                 axis
@@ -326,9 +319,9 @@ fun compactItem(
     var collides: LayoutItem? = compareWith.getFirstCollision(l)
     while (collides != null) {
         if (compactH) {
-            resolveCompactionCollision(fullLayout, l, collides.x + collides.w, Axis.x)
+            fullLayout.resolveCompactionCollision(l, collides.x + collides.w, Axis.x)
         } else {
-            resolveCompactionCollision(fullLayout, l, collides.y + collides.h, Axis.y)
+            fullLayout.resolveCompactionCollision(l, collides.y + collides.h, Axis.y)
         }
         // Since we can't grow without bounds horizontally, if we've overflown, var's move it down and try again.
         if (compactH && l.x + l.w > cols) {
@@ -421,8 +414,7 @@ fun Layout.getStatics(): List<LayoutItem> =
  * @param  {Number}     [x]               X position in grid units.
  * @param  {Number}     [y]               Y position in grid units.
  */
-fun moveElement(
-    layout_: Layout,
+fun Layout.moveElement(
     l: LayoutItem,
     x: Int?,
     y: Int?,
@@ -432,14 +424,12 @@ fun moveElement(
     cols: Int,
     allowOverlap: Boolean = false
 ): Layout {
-    var layout = layout_
-
     // If this is static and not explicitly enabled as draggable,
     // no move is possible, so we can short-circuit this immediately.
-    if (l.isStatic && !l.isDraggable) return layout
+    if (l.isStatic && !l.isDraggable) return this
 
     // Short-circuit if nothing to do.
-    if (l.y == y && l.x == x) return layout
+    if (l.y == y && l.x == x) return this
 
     logger.debug {
         "Moving element ${l.i} to [$x,$y] from [${l.x},${l.y}]"
@@ -456,7 +446,7 @@ fun moveElement(
     // When doing this comparison, we have to sort the items we compare with
     // to ensure, in the case of multiple collisions, that we're getting the
     // nearest collision.
-    var sorted = sortLayoutItems(layout, compactType)
+    var sorted = sortLayoutItems(compactType)
     val movingUp =
         if (compactType == CompactType.vertical && y != null)
             oldY >= y
@@ -473,7 +463,7 @@ fun moveElement(
     if (hasCollisions && allowOverlap) {
         // Easy, we don't need to resolve collisions. But we *did* change the layout,
         // so clone it on the way out.
-        return layout.cloneLayout()
+        return cloneLayout()
     } else if (hasCollisions && preventCollision == true) {
         // If we are preventing collision but not allowing overlap, we need to
         // revert the position of this element so it goes to where it came from, rather
@@ -482,9 +472,10 @@ fun moveElement(
         l.x = oldX
         l.y = oldY
         l.moved = false
-        return layout // did not change so don't clone
+        return this // did not change so don't clone
     }
 
+    var updatedLayout = this
     // Move each item that collides away from this element.
     for (i in 0 until collisions.size) {
         val collision = collisions[i]
@@ -497,8 +488,7 @@ fun moveElement(
 
         // Don't move static items - we have to move *this* element away
         if (collision.isStatic) {
-            layout = moveElementAwayFromCollision(
-                layout,
+            updatedLayout = moveElementAwayFromCollision(
                 collision,
                 l,
                 isUserAction,
@@ -506,8 +496,7 @@ fun moveElement(
                 cols
             )
         } else {
-            layout = moveElementAwayFromCollision(
-                layout,
+            updatedLayout = moveElementAwayFromCollision(
                 l,
                 collision,
                 isUserAction,
@@ -517,7 +506,7 @@ fun moveElement(
         }
     }
 
-    return layout
+    return updatedLayout
 }
 
 /**
@@ -528,8 +517,7 @@ fun moveElement(
  * @param  {LayoutItem} collidesWith Layout item we're colliding with.
  * @param  {LayoutItem} itemToMove   Layout item we're moving.
  */
-fun moveElementAwayFromCollision(
-    layout: Layout,
+fun Layout.moveElementAwayFromCollision(
     collidesWith: LayoutItem,
     itemToMove: LayoutItem,
     isUserAction_: Boolean?,
@@ -550,21 +538,20 @@ fun moveElementAwayFromCollision(
         isUserAction = false
 
         // Make a mock item so we don't modify the item here, only modify in moveElement.
-        val fakeItem: LayoutItem = jso {
-            x = if (compactH) max(collidesWith.x - itemToMove.w, 0) else itemToMove.x
-            y = if (compactV) max(collidesWith.y - itemToMove.h, 0) else itemToMove.y
-            w = itemToMove.w
-            h = itemToMove.h
+        val fakeItem = LayoutItem(
+            if (compactH) max(collidesWith.x - itemToMove.w, 0) else itemToMove.x,
+            if (compactV) max(collidesWith.y - itemToMove.h, 0) else itemToMove.y,
+            itemToMove.w,
+            itemToMove.h,
             i = "-1"
-        }
+        )
 
         // No collision? If so, we can go up there; otherwise, we'll end up moving down as normal
-        if (layout.getFirstCollision(fakeItem) != null) {
+        if (getFirstCollision(fakeItem) != null) {
             logger.debug {
                 "Doing reverse collision on ${itemToMove.i} up to [${fakeItem.x},${fakeItem.y}]."
             }
             return moveElement(
-                layout,
                 itemToMove,
                 if (compactH) fakeItem.x else undefined,
                 if (compactV) fakeItem.y else undefined,
@@ -577,7 +564,6 @@ fun moveElementAwayFromCollision(
     }
 
     return moveElement(
-        layout,
         itemToMove,
         if (compactH) itemToMove.x + 1 else undefined,
         if (compactV) itemToMove.y + 1 else undefined,
@@ -629,13 +615,12 @@ fun setTopLeft(position: Position): dynamic {
  * @return {Array} Array of layout objects.
  * @return {Array}        Layout, sorted static items first.
  */
-fun sortLayoutItems(
-    layout: Layout,
+fun Layout.sortLayoutItems(
     compactType: CompactType
 ): Layout = when (compactType) {
-    CompactType.horizontal -> sortLayoutItemsByColRow(layout)
-    CompactType.vertical -> sortLayoutItemsByRowCol(layout)
-    else -> layout
+    CompactType.horizontal -> sortLayoutItemsByColRow()
+    CompactType.vertical -> sortLayoutItemsByRowCol()
+    else -> this
 }
 
 /**
@@ -643,8 +628,8 @@ fun sortLayoutItems(
  *
  * Does not modify Layout.
  */
-fun sortLayoutItemsByRowCol(layout: Layout): Layout =
-    layout.sortedWith { a, b ->
+fun Layout.sortLayoutItemsByRowCol(): Layout =
+    sortedWith { a, b ->
         if (a.y > b.y || (a.y == b.y && a.x > b.x)) {
             1
         } else if (a.y == b.y && a.x == b.x) {
@@ -658,8 +643,8 @@ fun sortLayoutItemsByRowCol(layout: Layout): Layout =
  *
  * Does not modify Layout.
  */
-fun sortLayoutItemsByColRow(layout: Layout): Layout =
-    layout.sortedWith { a, b ->
+fun Layout.sortLayoutItemsByColRow(): Layout =
+    sortedWith { a, b ->
         if (a.x > b.x || (a.x == b.x && a.y > b.y)) 1 else -1
     }
 
@@ -697,7 +682,7 @@ fun synchronizeLayoutWithChildren(
             // Hey, this item has a data-grid property, use it.
             if (g != null) {
                 if (!isProduction) {
-                    validateLayout(listOf(g), "ReactGridLayout.children")
+                    listOf(g).validateLayout("ReactGridLayout.children")
                 }
                 // FIXME clone not really necessary here
                 layout.add(g.extend { this.i = child.key!! }.copy())
@@ -705,13 +690,11 @@ fun synchronizeLayoutWithChildren(
                 // Nothing provided: ensure this is added to the bottom
                 // FIXME clone not really necessary here
                 layout.add(
-                    jso<LayoutItem> {
-                                        w = 1
-                                        h = 1
-                                        x = 0
-                                        y = layout.bottom()
-                                        i = key
-                                    }.copy()
+                    LayoutItem(
+                        0, layout.bottom(),
+                        1, 1,
+                        key
+                    )
                 )
             }
         }
@@ -722,7 +705,7 @@ fun synchronizeLayoutWithChildren(
     return if (allowOverlap == true)
         correctedLayout
     else
-        compact(correctedLayout, compactType, cols)
+        correctedLayout.compact(compactType, cols)
 }
 
 /**
@@ -732,15 +715,14 @@ fun synchronizeLayoutWithChildren(
  * @param  {String} [contextName] Context name for errors.
  * @throw  {Error}                Validation error.
  */
-fun validateLayout(
-    layout: Layout,
+fun Layout.validateLayout(
     contextName: String = "Layout"
 ) {
     val subProps = arrayOf("x", "y", "w", "h")
 //    if (!Array.isArray(layout))
 //        throw new Error(contextName + " must be an array!")
 
-    layout.forEachIndexed { i, item ->
+    forEachIndexed { i, item ->
         for (subProp in subProps) {
             if (item.asDynamic()[subProp] is Number) {
                 throw Error("ReactGridLayout: $contextName[$i].$subProp must be a number!")
