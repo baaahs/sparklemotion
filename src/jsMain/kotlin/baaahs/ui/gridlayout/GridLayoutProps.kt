@@ -2,6 +2,8 @@ package baaahs.ui.gridlayout
 
 import baaahs.clamp
 import baaahs.geom.Vector2I
+import baaahs.x
+import baaahs.y
 import external.react_resizable.ResizeHandleAxis
 import kotlinx.js.Object
 import kotlinx.js.jso
@@ -233,9 +235,8 @@ data class PositionParams(
         // ...
         // w = (width + margin) / (colWidth + margin)
 
-        val (marginX, marginY) = margin
-        var w = ((widthPx + marginX) / (colWidth + marginX)).roundToInt()
-        var h = ((heightPx + marginY) / (rowHeight + marginY)).roundToInt() // Capping
+        var w = ((widthPx + margin.x) / (colWidth + margin.x)).roundToInt()
+        var h = ((heightPx + margin.y) / (rowHeight + margin.y)).roundToInt() // Capping
 
         w = w.clamp(0, cols - xGridUnits)
         h = h.clamp(0, maxRows - yGridUnits)
@@ -259,9 +260,8 @@ data class PositionParams(
         // (l - m) / (c + m) = x
         // x = (left - margin) / (coldWidth + margin)
 
-        val (marginX, marginY) = margin
-        var x = ((leftPx - marginX) / (colWidth + marginX)).roundToInt()
-        var y = ((topPx - marginY) / (rowHeight + marginY)).roundToInt() // Capping
+        var x = ((leftPx - margin.x) / (colWidth + margin.x)).roundToInt()
+        var y = ((topPx - margin.y) / (rowHeight + margin.y)).roundToInt() // Capping
 
         x = x.clamp(0, cols - widthGridUnits)
         y = y.clamp(0, maxRows - heightGridUnits)
@@ -295,9 +295,8 @@ data class PositionParams(
             width = resizing.width
             height = resizing.height
         } else { // Otherwise, calculate from grid units.
-            val (marginX, marginY) = margin
-            width = calcGridItemWHPx(widthGridUnits, colWidth, marginX.toDouble()).roundToInt()
-            height = calcGridItemWHPx(heightGridUnits, rowHeight, marginY.toDouble()).roundToInt()
+            width = calcGridItemWHPx(widthGridUnits, colWidth, margin.x.toDouble()).roundToInt()
+            height = calcGridItemWHPx(heightGridUnits, rowHeight, margin.y.toDouble()).roundToInt()
         }
 
         // If dragging, use the exact width and height as returned from dragging callbacks.
@@ -308,10 +307,8 @@ data class PositionParams(
             top = dragging.y.roundToInt()
             left = dragging.x.roundToInt()
         } else { // Otherwise, calculate from grid units.
-            val (marginX, marginY) = margin
-            val (containerPaddingX, containerPaddingY) = containerPadding
-            top = ((rowHeight + marginY) * yGridUnits + containerPaddingY).roundToInt()
-            left = ((colWidth + marginX) * xGridUnits + containerPaddingX).roundToInt()
+            top = ((rowHeight + margin.y) * yGridUnits + containerPadding.y).roundToInt()
+            left = ((colWidth + margin.x) * xGridUnits + containerPadding.x).roundToInt()
         }
 
         return Position(left, top, width, height)

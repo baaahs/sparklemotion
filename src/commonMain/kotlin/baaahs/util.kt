@@ -147,3 +147,6 @@ fun <T> futureAsync(scope: CoroutineScope = GlobalScope, block: suspend () -> T)
 fun <T> Deferred<T>.onAvailable(callback: (T) -> Unit) {
     this.invokeOnCompletion { callback.invoke(this.getCompleted()) }
 }
+
+val Pair<Int, Int>.x get() = first
+val Pair<Int, Int>.y get() = second

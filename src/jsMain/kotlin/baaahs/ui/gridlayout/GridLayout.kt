@@ -4,6 +4,7 @@ import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.window
+import baaahs.y
 import external.lodash.isEqual
 import kotlinx.css.LinearDimension
 import kotlinx.css.height
@@ -16,6 +17,7 @@ import react.dom.events.DragEvent
 import styled.inlineStyles
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.reflect.KClass
 
 external interface GridLayoutState : State {
     var id: String
@@ -90,18 +92,18 @@ class GridLayout(
                 props.children !== nextProps.children ||
                         !isEqual(props, nextProps) ||
 //                        !fastRGLPropsEqual(propsD, nextProps, ::isEqual) ||
-                        this.state.activeDrag != nextState.activeDrag ||
-                        this.state.mounted != nextState.mounted ||
-                        this.state.droppingPosition != nextState.droppingPosition
+                        state.activeDrag != nextState.activeDrag ||
+                        state.mounted != nextState.mounted ||
+                        state.droppingPosition != nextState.droppingPosition
                 )
     }
 
     override fun componentDidUpdate(prevProps: GridLayoutProps, prevState: GridLayoutState, snapshot: Any) {
-        if (this.state.activeDrag != null) {
-            val newLayout = this.state.layout
+        if (state.activeDrag != null) {
+            val newLayout = state.layout
             val oldLayout = prevState.layout
 
-            this.onLayoutMaybeChanged(newLayout, oldLayout)
+            onLayoutMaybeChanged(newLayout, oldLayout)
         }
     }
 
@@ -111,12 +113,11 @@ class GridLayout(
      */
     fun containerHeight(): String? {
         if (!props.autoSize!!) return null
-        val nbRow = this.state.layout.bottom()
-        val containerPadding = props.containerPadding
-        val containerPaddingY = containerPadding?.second ?: props.margin!!.second
+        val nbRow = state.layout.bottom()
+        val padding = props.containerPadding ?: props.margin!!
         val pixels = nbRow * props.rowHeight!! +
                 (nbRow - 1) * props.margin!!.second +
-                containerPaddingY * 2
+                padding.y * 2
         return "${pixels}px"
     }
 
@@ -131,7 +132,7 @@ class GridLayout(
     fun onDragStart(i: String, x: Int, y: Int, gridDragEvent: GridDragEvent): Any {
         val e = gridDragEvent.e
         val node = gridDragEvent.node
-        val layout = this.state.layout
+        val layout = state.layout
         val l = layout.getLayoutItem(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragStart() couldn't find layout $i")
@@ -156,8 +157,8 @@ class GridLayout(
     fun onDragItem(i: String, x: Int, y: Int, gridDragEvent: GridDragEvent) {
         val e = gridDragEvent.e
         val node = gridDragEvent.node
-        val oldDragItem = this.state.oldDragItem
-        var layout = this.state.layout
+        val oldDragItem = state.oldDragItem
+        var layout = state.layout
         val cols = props.cols
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision
@@ -169,8 +170,7 @@ class GridLayout(
 
         // Move the element to the dragged location.
         val isUserAction = true
-        layout = moveElement(
-            layout,
+        layout = layout.moveElement(
             l,
             x,
             y,
@@ -186,8 +186,8 @@ class GridLayout(
 
         props.onDrag(layout, oldDragItem, l, placeholder, e, node)
 
-        this.setState {
-            layout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
+        setState {
+            layout = if (allowOverlap) layout else layout.compact(compactType(props), cols)
             activeDrag = placeholder
         }
     }
@@ -204,10 +204,10 @@ class GridLayout(
         val e = gridDragEvent.e
         val node = gridDragEvent.node
 
-        if (this.state.activeDrag == null) return
+        if (state.activeDrag == null) return
 
-        val oldDragItem = this.state.oldDragItem
-        var layout = this.state.layout
+        val oldDragItem = state.oldDragItem
+        var layout = state.layout
         val cols = props.cols
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision
@@ -219,8 +219,7 @@ class GridLayout(
 
         // Move the element here
         val isUserAction = true
-        layout = moveElement(
-            layout,
+        layout = layout.moveElement(
             l,
             x,
             y,
@@ -234,20 +233,20 @@ class GridLayout(
         props.onDragStop(layout, oldDragItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
-        val oldLayout = this.state.oldLayout
-        this.setState {
+        val newLayout = if (allowOverlap) layout else layout.compact(compactType(props), cols)
+        val oldLayout = state.oldLayout
+        setState {
             activeDrag = null
             layout = newLayout
             this.oldDragItem = null
             this.oldLayout = null
         }
 
-        this.onLayoutMaybeChanged(newLayout, oldLayout)
+        onLayoutMaybeChanged(newLayout, oldLayout)
     }
 
     fun onLayoutMaybeChanged(newLayout: Layout, oldLayout_: Layout?) {
-        val oldLayout = oldLayout_ ?: this.state.layout
+        val oldLayout = oldLayout_ ?: state.layout
 
         if (!isEqual(oldLayout, newLayout)) {
             props.onLayoutChange?.invoke(newLayout)
@@ -257,13 +256,13 @@ class GridLayout(
     fun onResizeStart(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
-        val layout = this.state.layout
+        val layout = state.layout
         val l = layout.getLayoutItem(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onResizeStart() couldn't find layout $i")
             }
 
-        this.setState {
+        setState {
             oldResizeItem = l.copy()
             oldLayout = state.layout
         }
@@ -274,8 +273,8 @@ class GridLayout(
     fun onResize(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
-        val layout = this.state.layout
-        val oldResizeItem = this.state.oldResizeItem
+        val layout = state.layout
+        val oldResizeItem = state.oldResizeItem
         val cols = props.cols!!
         val allowOverlap = props.allowOverlap!!
         val preventCollision = props.preventCollision!!
@@ -326,20 +325,20 @@ class GridLayout(
         // Re-compact the newLayout and set the drag placeholder.
         setState {
             this.layout = if (allowOverlap) newLayout else {
-                compact(newLayout, compactType, cols)
+                newLayout.compact(compactType, cols)
             }
             this.activeDrag = placeholder
         }
     }
 
     private fun placeholderLayoutItem(l: LayoutItem) =
-        LayoutItem(l.x, l.y, l.w, l.h, l.i, l.item, isPlaceholder = true)
+        LayoutItem(l.x, l.y, l.w, l.h, l.i, isPlaceholder = true)
 
     fun onResizeStop(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
-        val layout = this.state.layout
-        val oldResizeItem = this.state.oldResizeItem
+        val layout = state.layout
+        val oldResizeItem = state.oldResizeItem
         val cols = props.cols!!
         val allowOverlap = props.allowOverlap!!
         val l = layout.getLayoutItem(i)!!
@@ -347,8 +346,8 @@ class GridLayout(
         props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else compact(layout, compactType(props), cols)
-        val oldLayout = this.state.oldLayout
+        val newLayout = if (allowOverlap) layout else layout.compact(compactType(props), cols)
+        val oldLayout = state.oldLayout
         setState {
             this.activeDrag = null
             this.layout = newLayout
@@ -356,7 +355,7 @@ class GridLayout(
             this.oldLayout = null
         }
 
-        this.onLayoutMaybeChanged(newLayout, oldLayout)
+        onLayoutMaybeChanged(newLayout, oldLayout)
     }
 
     val containerWidth get() = props.width!!
@@ -371,12 +370,12 @@ class GridLayout(
      * @return {Element} Placeholder div.
      */
     fun placeholder(): ReactElement<*>? {
-        val activeDrag = this.state.activeDrag
+        val activeDrag = state.activeDrag
             ?: return null
 
         // {...this.state.activeDrag} is pretty slow, actually
         return buildElement {
-            child(GridItem::class) {
+            gridItem {
                 attrs.parentContainer = this@GridLayout
                 attrs.w = activeDrag.w
                 attrs.h = activeDrag.h
@@ -409,7 +408,7 @@ class GridLayout(
         child: ReactElement<*>?,
         isDroppingItem: Boolean = false
     ): ReactElement<*>? {
-        val l = child?.key?.let { this.state.layout.getLayoutItem(it) }
+        val l = child?.key?.let { state.layout.getLayoutItem(it) }
             ?: return run {
                 console.log("GridLayout(${props.id}),processGridItem() couldn't find layout ${child?.key}")
                 null
@@ -422,15 +421,15 @@ class GridLayout(
         val draggableHandle = props.draggableHandle!!
         val resizeHandle = props.resizeHandle
 
-        val mounted = this.state.mounted
-        val droppingPosition = this.state.droppingPosition
+        val mounted = state.mounted
+        val droppingPosition = state.droppingPosition
 
         // Determine user manipulations possible.
         val draggable = !disableDrag && l.isDraggable && !l.isStatic
         val resizable = !disableResize && l.isResizable && !l.isStatic
 
         return buildElement {
-            child(GridItem::class) {
+            gridItem {
                 attrs.parentContainer = this@GridLayout
 //                attrs.containerWidth = width!!
 //                attrs.cols = cols
@@ -492,8 +491,8 @@ class GridLayout(
         // of the `onDragOver(e: Event)` callback.
         val onDragOverResult = props.onDropDragOver?.invoke(e.asDynamic())
         if (onDragOverResult == null) {
-            if (this.state.droppingDOMNode != null) {
-                this.removeDroppingPlaceholder()
+            if (state.droppingDOMNode != null) {
+                removeDroppingPlaceholder()
             }
             return false
         }
@@ -504,7 +503,7 @@ class GridLayout(
             h = onDragOverResult.h
         )
 
-        val layout = this.state.layout
+        val layout = state.layout
         // This is relative to the DOM element that this event fired for.
         val layerX = nativeEvent.layerX
         val layerY = nativeEvent.layerY
@@ -514,7 +513,7 @@ class GridLayout(
             e.asDynamic()
         )
 
-        if (this.state.droppingDOMNode == null) {
+        if (state.droppingDOMNode == null) {
             val positionParams = getPositionParams()
 
             val calculatedGridPosition = positionParams.calcGridPosition(
@@ -527,22 +526,20 @@ class GridLayout(
                     div { key = finalDroppingItem.i }
                 }
                 this.droppingPosition = droppingPosition
-                this.layout = layout +
-                        listOf(
-                            LayoutItem(
-                                calculatedGridPosition.x, calculatedGridPosition.y,
-                                1, 1, // TODO: calculate w/h
-                                finalDroppingItem.i, finalDroppingItem.item,
-                                isDraggable = true
-                            )
-                        )
+                val newItem = LayoutItem(
+                    calculatedGridPosition.x, calculatedGridPosition.y,
+                    1, 1, // TODO: calculate w/h
+                    finalDroppingItem.i,
+                    isDraggable = true
+                )
+                this.layout = layout + listOf(newItem)
             }
         } else state.droppingPosition?.let { droppingPos ->
             val left = droppingPos.left
             val top = droppingPos.top
             val shouldUpdatePosition = left != layerX.roundToInt() || top != layerY.roundToInt()
             if (shouldUpdatePosition) {
-                this.setState {
+                setState {
                     this.droppingPosition = droppingPos
                 }
             }
@@ -556,13 +553,10 @@ class GridLayout(
     fun removeDroppingPlaceholder() {
         val droppingItem = props.droppingItem
         val cols = props.cols!!
-        val layout = this.state.layout
+        val layout = state.layout
 
-        val newLayout = compact(
-            layout.filter { l -> l.i != droppingItem?.i },
-            compactType(props),
-            cols
-        )
+        val newLayout = layout.filter { l -> l.i != droppingItem?.i }
+            .compact(compactType(props), cols)
 
         setState {
             this.layout = newLayout
@@ -601,35 +595,35 @@ class GridLayout(
     fun onDragLeave(e: DragEvent<*>) {
         e.preventDefault() // Prevent any browser native action
         e.stopPropagation()
-        this.dragEnterCounter--
+        dragEnterCounter--
 
         // onDragLeave can be triggered on each layout's child.
         // But we know that count of dragEnter and dragLeave events
         // will be balanced after leaving the layout's container
         // so we can increase and decrease count of dragEnter and
         // when it'll be equal to 0 we'll remove the placeholder
-        if (this.dragEnterCounter == 0) {
-            this.removeDroppingPlaceholder()
+        if (dragEnterCounter == 0) {
+            removeDroppingPlaceholder()
         }
     }
 
     fun onDragEnter(e: DragEvent<*>) {
         e.preventDefault() // Prevent any browser native action
         e.stopPropagation()
-        this.dragEnterCounter++
+        dragEnterCounter++
     }
 
     fun onDrop(e: DragEvent<*>) {
         e.preventDefault() // Prevent any browser native action
         e.stopPropagation()
         val droppingItem = props.droppingItem!!
-        val layout = this.state.layout
+        val layout = state.layout
         val item = layout.find { l -> l.i === droppingItem.i }
 
         // reset dragEnter counter on drop
-        this.dragEnterCounter = 0
+        dragEnterCounter = 0
 
-        this.removeDroppingPlaceholder()
+        removeDroppingPlaceholder()
 
         props.onDrop!!.invoke(layout, item, e as Event)
     }
@@ -763,6 +757,9 @@ class GridLayout(
         }
     }
 }
+
+fun RBuilder.gridLayout(handler: RHandler<GridLayoutProps>) =
+    child(GridLayout::class.unsafeCast<KClass<GridLayout>>(), handler)
 
 // Workaround for bug in kotlin-react RStatics to force it to be initialized early.
 @Suppress("unused")
