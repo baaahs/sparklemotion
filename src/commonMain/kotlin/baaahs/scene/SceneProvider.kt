@@ -5,5 +5,7 @@ import baaahs.ui.IObservable
 interface SceneProvider : IObservable {
     val openScene: OpenScene?
 
-    fun addBeforeChangeListener(callback: BeforeChangeListener)
+    fun addBeforeChangeListener(callback: SceneChangeListener)
 }
+
+typealias SceneChangeListener = (OpenScene?) -> Unit
