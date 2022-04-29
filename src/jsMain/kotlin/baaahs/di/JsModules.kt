@@ -21,6 +21,8 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
+import baaahs.show.ShowMonitor
+import baaahs.show.ShowProvider
 import baaahs.sim.BrowserSandboxFs
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
@@ -66,9 +68,11 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
-            scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
-            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
+            scoped { ShowMonitor() }
+            scoped { ShowManager(get(), get(), get(), get(), get(), get(), get()) }
+            scoped<ShowProvider> { get<ShowMonitor>() }
             scoped { SceneMonitor() }
+            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
