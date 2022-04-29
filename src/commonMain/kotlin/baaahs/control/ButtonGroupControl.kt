@@ -31,8 +31,6 @@ data class ButtonGroupControl(
         Vertical
     }
 
-    override fun suggestId(): String = title.camelize() + "ButtonGroup"
-
     override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl {
         return MutableButtonGroupControl(title, direction, buttonIds.map {
             mutableShow.findControl(it) as MutableButtonControl

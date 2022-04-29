@@ -70,16 +70,16 @@ object ControlDragNDropSpec : Spek({
             expect(openShow.fakeRender(controlDisplay)).toBe(
                 """
                     Panel 1:
-                      |Show| scenesButtonGroup[*scene1Button*, scene2Button], buttonAButton, buttonBButton
+                      |Show| scenes[*scene1*, scene2], buttonA, buttonB
                       |Scene 1|
                       |Backdrop 1.1|
                     Panel 2:
                       |Show|
-                      |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
+                      |Scene 1| backdrops[*backdrop11*, backdrop12]
                       |Backdrop 1.1|
                     Panel 3:
                       |Show|
-                      |Scene 1| slider1SliderControl
+                      |Scene 1| slider1
                       |Backdrop 1.1|
                 """.trimIndent()
             )
@@ -101,7 +101,7 @@ object ControlDragNDropSpec : Spek({
                     dragNDrop.doMove(fromDropTarget, 1, fromDropTarget, 2)
 
                     expect(editHandler.updatedShow.controlLayout.getBang("panel1", "panels"))
-                        .containsExactly("scenesButtonGroup", "buttonBButton", "buttonAButton")
+                        .containsExactly("scenes", "buttonB", "buttonA")
                 }
             }
 
@@ -119,16 +119,16 @@ object ControlDragNDropSpec : Spek({
                     expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
-                              |Show| scenesButtonGroup[*scene1Button*, scene2Button], buttonBButton
-                              |Scene 1| buttonAButton
+                              |Show| scenes[*scene1*, scene2], buttonB
+                              |Scene 1| buttonA
                               |Backdrop 1.1|
                             Panel 2:
                               |Show|
-                              |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
+                              |Scene 1| backdrops[*backdrop11*, backdrop12]
                               |Backdrop 1.1|
                             Panel 3:
                               |Show|
-                              |Scene 1| slider1SliderControl
+                              |Scene 1| slider1
                               |Backdrop 1.1|
                         """.trimIndent()
                     )
@@ -137,7 +137,7 @@ object ControlDragNDropSpec : Spek({
 
             context("and dropped to a ButtonGroup") {
                 override(toDropTarget) {
-                    (openShow.allControls.find { it.id == "scenesButtonGroup" } as OpenButtonGroupControl)
+                    (openShow.allControls.find { it.id == "scenes" } as OpenButtonGroupControl)
                         .createDropTarget(controlDisplay)
                 }
 
@@ -152,16 +152,16 @@ object ControlDragNDropSpec : Spek({
                     expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
-                              |Show| scenesButtonGroup[buttonAButton, *scene1Button*, scene2Button], buttonBButton
+                              |Show| scenes[buttonA, *scene1*, scene2], buttonB
                               |Scene 1|
                               |Backdrop 1.1|
                             Panel 2:
                               |Show|
-                              |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
+                              |Scene 1| backdrops[*backdrop11*, backdrop12]
                               |Backdrop 1.1|
                             Panel 3:
                               |Show|
-                              |Scene 1| slider1SliderControl
+                              |Scene 1| slider1
                               |Backdrop 1.1|
                         """.trimIndent()
                     )
@@ -170,7 +170,7 @@ object ControlDragNDropSpec : Spek({
 
             context("from a ButtonGroup to a panel") {
                 override(fromDropTarget) {
-                    (openShow.allControls.find { it.id == "scenesButtonGroup" } as OpenButtonGroupControl)
+                    (openShow.allControls.find { it.id == "scenes" } as OpenButtonGroupControl)
                         .createDropTarget(controlDisplay)
                 }
                 override(toDropTarget) { findBucket("panel1", "Scene 1") }
@@ -186,16 +186,16 @@ object ControlDragNDropSpec : Spek({
                     expect(renderEditedShow()).toBe(
                         """
                             Panel 1:
-                              |Show| scenesButtonGroup[*scene1Button*], buttonAButton, buttonBButton
-                              |Scene 1| scene2Button
+                              |Show| scenes[*scene1*], buttonA, buttonB
+                              |Scene 1| scene2
                               |Backdrop 1.1|
                             Panel 2:
                               |Show|
-                              |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
+                              |Scene 1| backdrops[*backdrop11*, backdrop12]
                               |Backdrop 1.1|
                             Panel 3:
                               |Show|
-                              |Scene 1| slider1SliderControl
+                              |Scene 1| slider1
                               |Backdrop 1.1|
                         """.trimIndent()
                     )

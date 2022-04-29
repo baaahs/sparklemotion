@@ -114,8 +114,8 @@ object PatchResolverSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                clickButton("brightnessButton")
-                clickButton("orangeButton")
+                clickButton("brightness")
+                clickButton("orange")
 
                 kexpect(linkedPatch.toGlsl()).toBe(
                     /**language=glsl*/
@@ -234,9 +234,9 @@ object PatchResolverSpec : Spek({
                 }
 
                 it("merges layered patches into a single patch") {
-                    clickButton("brightnessButton")
-                    clickButton("orangeButton")
-                    clickButton("timeWobbleButton")
+                    clickButton("brightness")
+                    clickButton("orange")
+                    clickButton("timeWobble")
 
                     kexpect(linkedPatch.toGlsl()).toBe(
                         /**language=glsl*/

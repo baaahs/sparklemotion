@@ -34,8 +34,6 @@ data class ButtonControl(
 
     init { validatePatchHolder() }
 
-    override fun suggestId(): String = title.camelize() + "Button"
-
     override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(
             this, mutableShow,
