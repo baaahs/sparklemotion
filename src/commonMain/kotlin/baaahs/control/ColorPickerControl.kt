@@ -29,8 +29,6 @@ data class ColorPickerControl(
 
     override val controlledDataSourceId: String
 ) : Control {
-    override fun suggestId(): String = controlledDataSourceId + "Control"
-
     override fun createMutable(mutableShow: MutableShow): MutableColorPickerControl {
         return MutableColorPickerControl(
             title, initialValue,

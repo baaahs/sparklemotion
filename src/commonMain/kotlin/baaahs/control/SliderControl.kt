@@ -39,8 +39,6 @@ data class SliderControl(
 
     override val controlledDataSourceId: String
 ) : Control {
-    override fun suggestId(): String = controlledDataSourceId + "Control"
-
     override fun createMutable(mutableShow: MutableShow): MutableSliderControl {
         return MutableSliderControl(
             title, initialValue, minValue, maxValue, stepValue,
