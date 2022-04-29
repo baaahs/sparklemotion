@@ -2,13 +2,14 @@ package baaahs.show.mutable
 
 import baaahs.getBang
 import baaahs.show.*
+import baaahs.show.live.OpenGridItem
 
 class MutableLayouts(
     val panels: MutableMap<String, MutablePanel> = mutableMapOf(),
     val formats: MutableMap<String, MutableLayout> = mutableMapOf()
 ) {
     constructor(baseLayouts: Layouts, mutableShow: MutableShow) : this(
-        panels = baseLayouts.panels.mapValues { (_, v) -> MutablePanel(v) }.toMutableMap()
+        panels = baseLayouts.panels.mapValuesTo(HashMap()) { (_, v) -> MutablePanel(v) }
     ) {
         baseLayouts.formats.forEach { (id, v) ->
             formats[id] = MutableLayout(v, panels, mutableShow)
@@ -76,7 +77,7 @@ class MutableLayout(
 ) {
     constructor(baseLayout: Layout, panels: Map<String, MutablePanel>, mutableShow: MutableShow) : this(
         mediaQuery = baseLayout.mediaQuery,
-        tabs = baseLayout.tabs.map { it.edit(panels, mutableShow) }.toMutableList()
+        tabs = baseLayout.tabs.mapTo(ArrayList()) { it.edit(panels, mutableShow) }
     )
 
     fun build(showBuilder: ShowBuilder): Layout {
@@ -98,9 +99,9 @@ class MutableLegacyTab(
 ) : MutableTab {
     constructor(baseTab: LegacyTab, panels: Map<String, MutablePanel>) : this(
         title = baseTab.title,
-        columns = baseTab.columns.map { MutableLayoutDimen.decode(it) }.toMutableList(),
-        rows = baseTab.rows.map { MutableLayoutDimen.decode(it) }.toMutableList(),
-        areas = baseTab.areas.map { panels.getBang(it, "panel") }.toMutableList()
+        columns = baseTab.columns.mapTo(ArrayList()) { MutableLayoutDimen.decode(it) },
+        rows = baseTab.rows.mapTo(ArrayList()) { MutableLayoutDimen.decode(it) },
+        areas = baseTab.areas.mapTo(ArrayList()) { panels.getBang(it, "panel") }
     )
 
     override fun build(showBuilder: ShowBuilder): Tab =
@@ -174,10 +175,10 @@ class MutableLegacyTab(
 
 class MutableGridTab(
     override var title: String,
-    var columns: Int = 12,
-    var rows: Int = 8,
-    val items: MutableList<MutableGridItem> = mutableListOf()
-) : MutableTab {
+    override var columns: Int = 12,
+    override var rows: Int = 8,
+    override val items: MutableList<MutableGridItem> = mutableListOf()
+) : MutableTab, MutableIGridLayout {
     constructor(
         baseTab: GridTab,
         mutableShow: MutableShow
@@ -185,28 +186,85 @@ class MutableGridTab(
         baseTab.title,
         baseTab.columns,
         baseTab.rows,
-        baseTab.items.map { MutableGridItem(it, mutableShow) }.toMutableList()
+        baseTab.items.mapTo(ArrayList()) { MutableGridItem(it, mutableShow) }
     )
 
     override fun build(showBuilder: ShowBuilder): Tab =
         GridTab(title, columns, rows, items.map { it.build(showBuilder) })
 }
 
+class MutableGridLayout(
+    override var columns: Int = 12,
+    override var rows: Int = 8,
+    override val items: MutableList<MutableGridItem> = mutableListOf()
+) : MutableIGridLayout {
+    constructor(baseGridLayout: GridLayout, mutableShow: MutableShow) : this(
+        baseGridLayout.columns,
+        baseGridLayout.rows,
+        baseGridLayout.items.mapTo(ArrayList()) { it.edit(mutableShow) }
+    )
+
+    fun build(showBuilder: ShowBuilder): GridLayout =
+        GridLayout(columns, rows, items.map { it.build(showBuilder) })
+
+}
+
 class MutableGridItem(
     var control: MutableControl,
     var column: Int,
     var row: Int,
-    var width: Int = 1,
-    var height: Int = 1
+    var width: Int,
+    var height: Int,
+    val layout: MutableGridLayout?
 ) {
-    fun build(showBuilder: ShowBuilder) =
-        GridItem(showBuilder.idFor(control.build(showBuilder)), column, row, width, height)
-
     constructor(baseGridItem: GridItem, mutableShow: MutableShow) : this(
         mutableShow.findControl(baseGridItem.controlId),
         baseGridItem.column, baseGridItem.row,
-        baseGridItem.width, baseGridItem.height
+        baseGridItem.width, baseGridItem.height,
+        baseGridItem.layout?.edit(mutableShow)
     )
+
+    fun build(showBuilder: ShowBuilder) =
+        GridItem(
+            showBuilder.idFor(control.build(showBuilder)),
+            column, row, width, height,
+            layout?.build(showBuilder)
+        )
+}
+
+interface MutableIGridLayout {
+    var columns: Int
+    var rows: Int
+    val items: MutableList<MutableGridItem>
+
+    fun applyChanges(
+        originalItems: List<OpenGridItem>,
+        newLayout: baaahs.ui.gridlayout.Layout,
+        mutableShow: MutableShow
+    ) {
+        val oldItems = ArrayList(this.items)
+        this.items.clear()
+        newLayout.items.forEach { newLayoutItem ->
+            val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.i }
+            this.items.add(
+                if (oldItemIndex == -1) {
+                    MutableGridItem(
+                        mutableShow.findControl(newLayoutItem.i),
+                        newLayoutItem.x, newLayoutItem.y,
+                        newLayoutItem.w, newLayoutItem.h,
+                        null
+                    )
+                } else {
+                    oldItems[oldItemIndex].apply {
+                        column = newLayoutItem.x
+                        row = newLayoutItem.y
+                        width = newLayoutItem.w
+                        height = newLayoutItem.h
+                    }
+                }
+            )
+        }
+    }
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {

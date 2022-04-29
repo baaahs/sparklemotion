@@ -1,14 +1,11 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.layout.LayoutGrid
-import baaahs.app.ui.layout.buildResizeHandle
+import baaahs.app.ui.editor.AddButtonToButtonGroupEditIntent
 import baaahs.app.ui.layout.gridItem
-import baaahs.control.ButtonControl
-import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
-import baaahs.show.live.EmptyOpenContext
+import baaahs.show.live.OpenGridLayout
 import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
@@ -17,8 +14,11 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
+import external.react_resizable.buildResizeHandle
 import kotlinx.js.jso
+import materialui.icon
 import mui.material.Card
+import mui.material.IconButton
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.Props
@@ -40,8 +40,10 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     val showPreview = appContext.uiSettings.renderButtonPreviews
 
     var layoutDimens by state { 100 to 100 }
-    val columns = 2
-    val rows = 3
+    val gridLayout = props.controlProps.layout
+        ?: OpenGridLayout(1, 1, emptyList())
+    val columns = gridLayout.columns
+    val rows = gridLayout.rows
     val (layoutWidth, layoutHeight) = layoutDimens
     val margin = 5
     val itemPadding = 5
@@ -65,14 +67,11 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         event.preventDefault()
     }
 
-    val layoutGrid = memo(columns, rows) {
-        LayoutGrid(columns, rows, listOf(), null)
-    }
-
-    val layout = Layout(listOf(
-        LayoutItem(1, 1, 1, 1, "first"),
-        LayoutItem(1, 3, 1, 1, "second")
-    ))
+    val layout = Layout(gridLayout.items.map { gridItem ->
+        LayoutItem(gridItem.column, gridItem.row, gridItem.width, gridItem.height, gridItem.control.id)
+    })
+    val controls = gridLayout.items.associate { it.control.id to it.control }
+    val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
 
     Card {
@@ -91,7 +90,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.layout = layout
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
-            attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }
+            attrs.resizeHandle = ::buildResizeHandle
             attrs.disableDrag = !editMode.isOn
             attrs.disableResize = !editMode.isOn
             attrs.isDroppable = editMode.isOn
@@ -102,12 +101,8 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
                     key = layoutItem.i
 
                     gridItem {
-                        attrs.control = OpenButtonControl(
-                            layoutItem.i,
-                            ButtonControl(layoutItem.i),
-                            EmptyOpenContext
-                        )
-                        attrs.controlProps = ControlProps({}, null)
+                        attrs.control = controls[layoutItem.i]!!
+                        attrs.controlProps = props.controlProps.withLayout(layouts[layoutItem.i])
                         attrs.className = -layoutStyles.controlBox
                     }
                 }
@@ -116,123 +111,15 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 //            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
 //            attrs.onDropDragOver = handleDropDragOver
 
-//            props.tab.items.forEach { item ->
-//                div(+styles.gridCell) {
-//                    key = item.controlId
-//
-//                    gridItem {
-//                        attrs.control = item.control
-//                        attrs.controlProps = genericControlProps
-//                        attrs.className = -styles.controlBox
-//                    }
-//                }
-//            }
-
+            if (editMode.isOn) {
+                IconButton {
+                    icon(mui.icons.material.AddCircleOutline)
+                    attrs.onClick = {
+                        appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                    }
+                }
+            }
         }
-
-//        droppable({
-//            if (dropTarget != null) {
-//                droppableId = dropTarget.dropTargetId
-//                type = dropTarget.type
-//            } else {
-//                isDropDisabled = true
-//            }
-//            direction = buttonGroupControl.direction
-//                .decode(Direction.horizontal, Direction.vertical).name
-//            isDropDisabled = !editMode.isOn
-//        }) { sceneDropProvided, _ ->
-//            buildElement {
-//                ToggleButtonGroup {
-//                    attrs.classes = jso {
-//                        root = -buttonGroupControl.direction
-//                            .decode(Styles.horizontalButtonList, Styles.verticalButtonList)
-//                    }
-//                    attrs.color = ToggleButtonGroupColor.primary
-//
-//                    install(sceneDropProvided)
-//
-//                    attrs.orientation = buttonGroupControl.direction
-//                        .decode(Orientation.horizontal, Orientation.vertical)
-//                    attrs.exclusive = true
-////                    attrs.value = props.selected // ... but this is busted.
-////                    attrs.onChangeFunction = eventHandler { value: Int -> props.onSelect(value) }
-//
-//                    buttonGroupControl.buttons.forEachIndexed { index, buttonControl ->
-//                        val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
-//
-//                        draggable({
-//                            this.key = buttonControl.id
-//                            this.draggableId = buttonControl.id
-//                            this.isDragDisabled = !editMode.isOn
-//                            this.index = index
-//                        }) { sceneDragProvided, _ ->
-////                            div {
-////                                +"Handle"
-//                            buildElement {
-//                                div(+Styles.controlButton) {
-//                                    ref = sceneDragProvided.innerRef
-//                                    copyFrom(sceneDragProvided.draggableProps)
-//
-//                                    problemBadge(buttonControl as OpenControl)
-//
-//                                    div(+Styles.editButton) {
-//                                        if (editMode.isOn) {
-//                                            attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
-//                                        }
-//
-//                                        icon(mui.icons.material.Edit)
-//                                    }
-//                                    div(+Styles.dragHandle) {
-//                                        copyFrom(sceneDragProvided.dragHandleProps)
-//                                        icon(mui.icons.material.DragIndicator)
-//                                    }
-//
-//                                    if (shaderForPreview != null) {
-//                                        div(+Styles.buttonShaderPreviewContainer) {
-//                                            shaderPreview {
-//                                                attrs.shader = shaderForPreview.shader
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    ToggleButton {
-//                                        if (showPreview) {
-//                                            attrs.classes = jso {
-//                                                root = -Styles.buttonLabelWhenPreview
-//                                                selected = -Styles.buttonSelectedWhenPreview
-//                                            }
-//                                        }
-//
-//                                        attrs.value = index.toString()
-//                                        attrs.selected = buttonControl.isPressed
-//                                        attrs.onClick = { _: MouseEvent<HTMLElement, *>, _: dynamic ->
-//                                            buttonGroupControl.clickOn(index)
-//                                            onShowStateChange()
-//                                        }
-//
-//                                        +buttonControl.title
-//                                    }
-////                            }
-//                                }
-//                            }
-//                        }
-//
-////                            }
-//                    }
-//
-//                    child(sceneDropProvided.placeholder)
-//
-//                    if (editMode.isOn) {
-//                        IconButton {
-//                            icon(mui.icons.material.AddCircleOutline)
-//                            attrs.onClick = {
-//                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 }
 

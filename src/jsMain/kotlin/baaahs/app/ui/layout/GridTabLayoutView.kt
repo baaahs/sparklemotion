@@ -3,14 +3,9 @@ package baaahs.app.ui.layout
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
-import baaahs.app.ui.layout.LayoutGrid.Companion.isEmpty
-import baaahs.control.OpenButtonGroupControl
-import baaahs.show.GridItem
 import baaahs.show.live.ControlProps
-import baaahs.show.live.OpenGridItem
-import baaahs.show.live.OpenGridTab
-import baaahs.show.mutable.MutableGridItem
-import baaahs.show.mutable.MutableGridTab
+import baaahs.show.live.OpenIGridLayout
+import baaahs.show.mutable.MutableIGridLayout
 import baaahs.ui.and
 import baaahs.ui.gridlayout.*
 import baaahs.ui.unaryMinus
@@ -18,62 +13,25 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.window
-import csstype.ClassName
-import external.react_resizable.ResizeHandleAxis
+import external.react_resizable.buildResizeHandle
 import kotlinx.css.*
 import kotlinx.css.properties.border
-import kotlinx.html.Draggable
-import kotlinx.html.draggable
 import kotlinx.html.js.onClickFunction
-import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Add
-import mui.material.*
-import org.w3c.dom.DragEvent
+import mui.material.ListItemIcon
+import mui.material.ListItemText
+import mui.material.Menu
+import mui.material.MenuItem
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
-import react.dom.events.DragEventHandler
-import react.dom.onDragStart
-import react.dom.svg.ReactSVG.path
+import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
-
-class LayoutGrid(
-    private val columns: Int,
-    private val rows: Int,
-    private val items: List<OpenGridItem>,
-    private val draggingItem: String?
-) {
-    val layout = Layout(buildList {
-        items.forEach { item ->
-            val isStatic = draggingItem != null &&
-                    draggingItem != item.controlId &&
-                    item.control is OpenButtonGroupControl
-
-            add(LayoutItem(
-                item.column, item.row,
-                item.width, item.height,
-                item.controlId, isStatic = isStatic
-            ))
-        }
-    })
-
-    fun forEachCell(block: (column: Int, row: Int) -> Unit) {
-        for (row in 0 until rows) {
-            for (column in 0 until columns) {
-                block(column, row)
-            }
-        }
-    }
-
-    companion object {
-        fun LayoutItem.isEmpty() = i.startsWith("::empty-")
-
-        val newControlId = "__new_control__"
-    }
-}
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
@@ -83,52 +41,24 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val columns = props.tab.columns
     val rows = props.tab.rows
 
-    var showAddMenu by state<Pair<GridItem, HTMLElement?>?> { null }
+    var showAddMenu by state<AddMenuContext?> { null }
 
     val editMode = observe(appContext.showManager.editMode)
     var draggingItem by state<String?> { null }
 
-    val handleLayoutChange by handler(props.tabEditor) { newLayout: Layout ->
-        val gridItems = newLayout.items.map { newLayoutItem ->
-            GridItem(
-                newLayoutItem.i,
-                newLayoutItem.x, newLayoutItem.y,
-                newLayoutItem.w, newLayoutItem.h,
-                newLayoutItem.isEmpty()
-            )
-        }
-
-        var anyAddedControls = false
-        for (gridItem in gridItems) {
-            if (gridItem.controlId == LayoutGrid.newControlId) {
-                showAddMenu = gridItem to null
-                anyAddedControls = true
+    val handleLayoutChange by handler(props.tab, props.tabEditor) { newLayout: Layout ->
+        appContext.showManager.openShow?.edit {
+            val mutableShow = this
+            props.tabEditor.edit(mutableShow) {
+                applyChanges(props.tab.items, newLayout, mutableShow)
             }
+            appContext.showManager.onEdit(mutableShow)
         }
-
-        if (!anyAddedControls) {
-            appContext.showManager.openShow?.edit {
-                val mutableShow = this
-                props.tabEditor.edit(mutableShow) {
-                    this.items.clear()
-                    this.items.addAll(
-                        gridItems
-                            .filterNot { it.isEmpty }
-                            .map { MutableGridItem(it, mutableShow) }
-                    )
-                }
-                appContext.showManager.onEdit(mutableShow)
-            }
-        }
-    }
-
-    val handleAddControlDragStart by handler { e: DragEvent ->
-        e.dataTransfer?.setData("text/plain", "")
+        Unit
     }
 
     val handleDragStart: ItemCallback by handler {
             layout, oldItem, newItem, placeholder, e, element ->
-        console.log("onDragStart", layout, oldItem, newItem, placeholder, e, element)
         draggingItem = newItem.i
     }
     val handleDragStop: ItemCallback by handler {
@@ -141,11 +71,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         val dataset = target.dataset.asDynamic()
         val x = (dataset.cellX as String).toInt()
         val y = (dataset.cellY as String).toInt()
-        showAddMenu = GridItem(LayoutGrid.newControlId, x, y) to target
-    }
-
-    val handleDropDragOver by handler { e: DragOverEvent ->
-        DroppingItem(LayoutGrid.newControlId, Unit, 1, 1)
+        showAddMenu = AddMenuContext(target, x, y, 1, 1)
     }
 
     val containerDiv = ref<HTMLDivElement>()
@@ -202,9 +128,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             }
         }
 
-//        ReactGridLayout {
-        println("editMode = ${editMode.isOn}")
-
         gridLayout {
             attrs.id = "top"
             attrs.className = +styles.gridContainer
@@ -217,62 +140,40 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.layout = layoutGrid.layout
             attrs.onLayoutChange = handleLayoutChange
             attrs.compactType = CompactType.none
-            attrs.resizeHandle = { axis, ref -> buildResizeHandle(axis) }
+            attrs.resizeHandle = ::buildResizeHandle
             attrs.disableDrag = !editMode.isOn
             attrs.disableResize = !editMode.isOn
             attrs.isDroppable = editMode.isOn
             attrs.onDragStart = handleDragStart
             attrs.onDragStop = handleDragStop
-            attrs.onDropDragOver = handleDropDragOver
 
             props.tab.items.forEach { item ->
                 div(+styles.gridCell) {
-                    key = item.controlId
+                    key = item.control.id
 
                     gridItem {
                         attrs.control = item.control
-                        attrs.controlProps = genericControlProps
+                        attrs.controlProps = genericControlProps.withLayout(item.layout)
                         attrs.className = -styles.controlBox
                     }
                 }
             }
         }
-
-        if (editMode.isOn) {
-            div(+styles.addControl) {
-                attrs.draggable = Draggable.htmlTrue
-
-                // this is a hack for firefox
-                // Firefox requires some kind of initialization
-                // which we can do by adding this attribute
-                // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
-                attrs.onDragStart = handleAddControlDragStart as DragEventHandler<*>
-
-                inlineStyles {
-                    width = (layoutDimens.first / columns).px
-                    height = (layoutDimens.second / rows).px
-                }
-
-                +"New Control…"
-            }
-        }
     }
 
-    showAddMenu?.let { (gridItem, anchorEl) ->
+    showAddMenu?.let { addMenuContext ->
         Menu {
-            attrs.anchorEl = { anchorEl ?: containerDiv.current!! }
+            attrs.anchorEl = { addMenuContext.anchorEl }
             attrs.open = true
             attrs.onClose = { showAddMenu = null }
 
-            println("gridItem.column = ${gridItem.column}")
-            println("gridItem.row = ${gridItem.row}")
             appContext.plugins.addControlMenuItems.forEach { addControlMenuItem ->
                 MenuItem {
                     attrs.onClick = {
                         val editIntent = AddControlToGrid(
                             props.tabEditor,
-                            gridItem.column, gridItem.row,
-                            gridItem.width, gridItem.height,
+                            addMenuContext.column, addMenuContext.row,
+                            addMenuContext.width, addMenuContext.height,
                             addControlMenuItem.createControlFn
                         )
                         appContext.openEditor(editIntent)
@@ -287,41 +188,14 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 }
 
-fun buildResizeHandle(axis: ResizeHandleAxis) = buildElement {
-    SvgIcon {
-        attrs.viewBox = "0 0 20 20"
-        attrs.classes = jso {
-            this.root = ClassName("app-ui-layout-resize-handle app-ui-layout-resize-handle-$axis")
-        }
+private class AddMenuContext(
+    val anchorEl: HTMLElement,
+    val column: Int,
+    val row: Int,
+    val width: Int = 1,
+    val height: Int = 1
+)
 
-        when (axis.length) {
-            1 -> { // edge (south)
-                path {
-                    attrs.stroke = "#111"
-                    attrs.fill = "#aaa"
-                    attrs.d = "M0,19 L19,19 L19,17 L0,17 Z"
-                }
-                path {
-                    attrs.stroke = "#111"
-                    attrs.fill = "#666"
-                    attrs.d = "M10,19 L4,9 L16,9 Z"
-                }
-            }
-            2 -> { // corner (south-east)
-                path {
-                    attrs.stroke = "#111"
-                    attrs.fill = "#aaa"
-                    attrs.d = "M5,19 L19,19 L19,5 L17,5 L17,17 L5,17 Z"
-                }
-                path {
-                    attrs.stroke = "#111"
-                    attrs.fill = "#666"
-                    attrs.d = "M15,15 L5,15 L15,5 Z"
-                }
-            }
-        }
-    }
-}
 
 object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
     val gridItem by css {
@@ -330,9 +204,9 @@ object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
 }
 
 external interface GridTabLayoutProps : Props {
-    var tab: OpenGridTab
+    var tab: OpenIGridLayout
     var controlProps: ControlProps
-    var tabEditor: Editor<MutableGridTab>
+    var tabEditor: Editor<MutableIGridLayout>
     var onShowStateChange: () -> Unit
 }
 

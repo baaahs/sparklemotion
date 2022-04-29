@@ -153,7 +153,10 @@ class OpenShow(
 data class OpenLayouts(
     val panels: Map<String, Panel>,
     val formats: Map<String, OpenLayout>
-)
+) {
+    val currentFormatId = formats.keys.firstOrNull()
+    val currentFormat = formats[currentFormatId]
+}
 
 class OpenLayout(
     val mediaQuery: String?,
@@ -174,18 +177,30 @@ interface OpenTab {
 
 class OpenGridTab(
     override val title: String,
-    var columns: Int,
-    var rows: Int,
-    val items: List<OpenGridItem>
-) : OpenTab
+    override var columns: Int,
+    override var rows: Int,
+    override val items: List<OpenGridItem>
+) : OpenTab, OpenIGridLayout
 
-data class OpenGridItem(
+class OpenGridLayout(
+    override val columns: Int,
+    override val rows: Int,
+    override val items: List<OpenGridItem>
+) : OpenIGridLayout
+
+interface OpenIGridLayout {
+    val columns: Int
+    val rows: Int
+    val items: List<OpenGridItem>
+}
+
+class OpenGridItem(
     val control: OpenControl,
     val column: Int,
     val row: Int,
     val width: Int,
     val height: Int,
-    val controlId: String
+    val layout: OpenGridLayout?
 )
 
 abstract class OpenShowVisitor {

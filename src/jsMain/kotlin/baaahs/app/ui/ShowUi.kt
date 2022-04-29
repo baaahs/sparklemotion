@@ -1,7 +1,6 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
-import baaahs.client.document.EditMode
 import baaahs.getBang
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableLayout
@@ -19,9 +18,10 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     observe(editMode)
 
     // TODO: Pick layout based on device characteristics.
-    val currentLayoutName = "default"
+    val currentLayoutName = show.openLayouts.currentFormatId
+        ?: error("No current layout.")
     val currentLayout = show.openLayouts.formats[currentLayoutName]
-        ?: error("no such layout $currentLayoutName")
+        ?: error("No such layout $currentLayoutName.")
     val layoutEditor = memo(currentLayoutName) {
         object : Editor<MutableLayout> {
             override fun edit(mutableShow: MutableShow, block: MutableLayout.() -> Unit) {

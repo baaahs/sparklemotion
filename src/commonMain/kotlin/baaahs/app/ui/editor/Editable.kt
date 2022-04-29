@@ -113,7 +113,7 @@ class AddControlToPanelBucket<MC : MutableControl>(
 }
 
 class AddControlToGrid<MC : MutableControl>(
-    private val editor: Editor<MutableGridTab>,
+    private val editor: Editor<MutableIGridLayout>,
     private val column: Int,
     private val row: Int,
     private val width: Int,
@@ -126,7 +126,7 @@ class AddControlToGrid<MC : MutableControl>(
 
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
         editor.edit(mutableShow) {
-            items.add(MutableGridItem(mutableControl, column, row, 1, 1))
+            items.add(MutableGridItem(mutableControl, column, row, width, height, null))
         }
     }
 }

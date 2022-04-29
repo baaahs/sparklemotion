@@ -55,15 +55,36 @@ data class LegacyTab(
 @Serializable @SerialName("Grid")
 data class GridTab(
     override val title: String,
-    var columns: Int = 12,
-    var rows: Int = 8,
-    val items: List<GridItem>
-) : Tab {
-    override fun edit(panels: Map<String, MutablePanel>, mutableShow: MutableShow): MutableTab =
+    override var columns: Int,
+    override var rows: Int,
+    override val items: List<GridItem> = emptyList()
+) : Tab, IGridLayout {
+    override fun edit(panels: Map<String, MutablePanel>, mutableShow: MutableShow): MutableGridTab =
         MutableGridTab(this, mutableShow)
 
-    override fun open(openContext: OpenContext): OpenTab =
+    override fun open(openContext: OpenContext): OpenGridTab =
         OpenGridTab(title, columns, rows, items.map { it.open(openContext) })
+}
+
+@Serializable
+data class GridLayout(
+    override var columns: Int,
+    override var rows: Int,
+    override val items: List<GridItem> = emptyList()
+) : IGridLayout {
+    fun edit(mutableShow: MutableShow): MutableGridLayout =
+        MutableGridLayout(this, mutableShow)
+
+    override fun open(openContext: OpenContext): OpenGridLayout =
+        OpenGridLayout(columns, rows, items.map { it.open(openContext) })
+}
+
+interface IGridLayout {
+    var columns: Int
+    var rows: Int
+    val items: List<GridItem>
+
+    fun open(openContext: OpenContext): OpenIGridLayout
 }
 
 @Serializable
@@ -73,8 +94,15 @@ data class GridItem(
     val row: Int,
     val width: Int = 1,
     val height: Int = 1,
-    val isEmpty: Boolean = false
+    val layout: GridLayout? = null
 ) {
     fun open(openContext: OpenContext): OpenGridItem =
-        OpenGridItem(openContext.getControl(controlId), column, row, width, height, controlId)
+        OpenGridItem(
+            openContext.getControl(controlId),
+            column, row, width, height,
+            layout?.open(openContext)
+        )
+
+    fun edit(mutableShow: MutableShow): MutableGridItem =
+        MutableGridItem(this, mutableShow)
 }

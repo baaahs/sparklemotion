@@ -39,6 +39,7 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         icon(mui.icons.material.DragIndicator)
     }
 }
+
 external interface GridItemProps : PropsWithClassName, PropsWithStyle {
     var control: OpenControl
     var controlProps: ControlProps
