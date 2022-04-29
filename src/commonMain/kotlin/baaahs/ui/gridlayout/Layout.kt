@@ -130,11 +130,6 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         item[axis] = moveToCoord
     }
 
-    private val heightWidth = mapOf(
-        Axis.x to { layoutItem: LayoutItem -> layoutItem.w },
-        Axis.y to { layoutItem: LayoutItem -> layoutItem.h }
-    )
-
     /**
      * Given a layout, make sure all elements fit within its bounds.
      *
@@ -475,5 +470,10 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
 
     companion object {
         private val logger = Logger<Layout>()
+
+        private val heightWidth = mapOf(
+            Axis.x to { layoutItem: LayoutItem -> layoutItem.w },
+            Axis.y to { layoutItem: LayoutItem -> layoutItem.h }
+        )
     }
 }

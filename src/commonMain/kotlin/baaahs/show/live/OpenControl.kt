@@ -54,8 +54,12 @@ interface ControlViews {
 
 class ControlProps(
     val onShowStateChange: () -> Unit,
-    val controlDisplay: ControlDisplay?
-)
+    val controlDisplay: ControlDisplay?,
+    val layout: OpenGridLayout? = null
+) {
+    fun withLayout(layout: OpenGridLayout?): ControlProps =
+        ControlProps(onShowStateChange, controlDisplay, layout)
+}
 
 val controlViews by lazy { getControlViews() }
 expect fun getControlViews(): ControlViews

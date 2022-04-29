@@ -8,7 +8,10 @@ import baaahs.show.LegacyTab
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenShow
-import baaahs.ui.*
+import baaahs.ui.and
+import baaahs.ui.unaryMinus
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import csstype.FlexDirection
 import csstype.ident
 import external.dragDropContext
@@ -48,15 +51,13 @@ private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLay
         areas.add(cols.joinToString(" ") { it.replace(" ", "") })
     }
 
-    var controlDisplay by state<ControlDisplay> { nuffin() }
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
-    onChange("show/state", props.show, props.show.getEnabledSwitchState(), appContext.dragNDrop) {
-        controlDisplay = ControlDisplay(
-            props.show, appContext.showManager, appContext.dragNDrop
-        )
 
-        withCleanup {
-            controlDisplay.release()
+    val controlDisplay = memo(props.show, props.show.getEnabledSwitchState()) {
+        ControlDisplay(
+            props.show, appContext.showManager, appContext.dragNDrop
+        ).also {
+            withCleanup { it.release() }
         }
     }
 

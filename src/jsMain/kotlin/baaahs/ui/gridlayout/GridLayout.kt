@@ -250,7 +250,7 @@ class GridLayout(
     fun onLayoutMaybeChanged(newLayout: Layout, oldLayout_: Layout?) {
         val oldLayout = oldLayout_ ?: state.layout
 
-        if (!isEqual(oldLayout, newLayout)) {
+        if (newLayout != oldLayout) {
             props.onLayoutChange?.invoke(newLayout)
         }
     }
@@ -720,8 +720,8 @@ class GridLayout(
                     // Legacy support for compactType
                     // Allow parent to set layout directly.
                     if (
-                        !isEqual(nextProps.layout, prevState.propsLayout) ||
-                        nextProps.compactType !== prevState.compactType
+                        nextProps.layout != prevState.propsLayout ||
+                        nextProps.compactType != prevState.compactType
                     ) {
                         newLayoutBase = nextProps.layout?.items?.toMutableList()
                     } else if (!childrenEqual(

@@ -10,9 +10,9 @@ import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenLayout
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableGridTab
+import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.MutableTab
 import baaahs.ui.StyleElement
 import baaahs.ui.asTextNode
 import baaahs.ui.sharedGlContext
@@ -43,11 +43,11 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     }
 
     val tabEditor = memo(props.layoutEditor, layout.currentTabIndex) {
-        object : Editor<MutableTab> {
-            override fun edit(mutableShow: MutableShow, block: MutableTab.() -> Unit) {
+        object : Editor<MutableIGridLayout> {
+            override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
                 mutableShow.editLayouts {
                     props.layoutEditor.edit(mutableShow) {
-                        block(this.tabs[layout.currentTabIndex ?: error("No tab selected.")])
+                        block(tabs[layout.currentTabIndex ?: error("No tab selected.")] as MutableGridTab)
                     }
                 }
             }
@@ -84,7 +84,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
                 is OpenGridTab ->
                     gridTabLayout {
                         attrs.tab = currentTab
-                        attrs.tabEditor = tabEditor as Editor<MutableGridTab>
+                        attrs.tabEditor = tabEditor
                         attrs.onShowStateChange = props.onShowStateChange
                     }
                 null -> { +"No tabs?" }
