@@ -132,7 +132,8 @@ abstract class EditableManager<T>(
         var cachedIsChanged: Boolean? = null
 
         fun getEditorPanels(): List<DialogPanel> =
-            mutableEditable.getEditorPanels(this@EditableManager)
+            mutableEditable.getEditorPanels(this@EditableManager) +
+                    editIntent.getEditorPanels(this@EditableManager)
 
         fun isChanged(): Boolean {
             return cachedIsChanged

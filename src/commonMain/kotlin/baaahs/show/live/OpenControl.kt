@@ -2,12 +2,13 @@ package baaahs.show.live
 
 import baaahs.Gadget
 import baaahs.app.ui.editor.ControlEditIntent
-import baaahs.app.ui.editor.EditIntent
+import baaahs.app.ui.editor.Editor
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.View
 import kotlinx.serialization.json.JsonElement
@@ -26,7 +27,7 @@ interface OpenControl {
     fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
-    fun getEditIntent(): EditIntent? = ControlEditIntent(id)
+    fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
 }
 
 abstract class DataSourceOpenControl : OpenControl {
@@ -55,10 +56,14 @@ interface ControlViews {
 class ControlProps(
     val onShowStateChange: () -> Unit,
     val controlDisplay: ControlDisplay?,
-    val layout: OpenGridLayout? = null
+    val layout: OpenGridLayout? = null,
+    val layoutEditor: Editor<MutableIGridLayout>? = null
 ) {
-    fun withLayout(layout: OpenGridLayout?): ControlProps =
-        ControlProps(onShowStateChange, controlDisplay, layout)
+    fun withLayout(
+        layout: OpenGridLayout?,
+        editor: Editor<MutableIGridLayout>
+    ): ControlProps =
+        ControlProps(onShowStateChange, controlDisplay, layout, editor)
 }
 
 val controlViews by lazy { getControlViews() }

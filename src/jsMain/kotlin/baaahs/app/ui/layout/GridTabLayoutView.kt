@@ -6,6 +6,7 @@ import baaahs.app.ui.editor.Editor
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
 import baaahs.ui.gridlayout.*
 import baaahs.ui.unaryMinus
@@ -37,20 +38,25 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layout
 
+    val gridLayoutContext = useContext(dragNDropContext).gridLayoutContext
+    observe(gridLayoutContext)
+
     var layoutDimens by state { window.innerWidth to window.innerHeight }
-    val columns = props.tab.columns
-    val rows = props.tab.rows
+    val gridLayout = props.tab
+    val columns = gridLayout.columns
+    val rows = gridLayout.rows
 
     var showAddMenu by state<AddMenuContext?> { null }
 
     val editMode = observe(appContext.showManager.editMode)
     var draggingItem by state<String?> { null }
 
-    val handleLayoutChange by handler(props.tab, props.tabEditor) { newLayout: Layout ->
+    val gridLayoutEditor = props.tabEditor
+    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: Layout ->
         appContext.showManager.openShow?.edit {
             val mutableShow = this
-            props.tabEditor.edit(mutableShow) {
-                applyChanges(props.tab.items, newLayout, mutableShow)
+            gridLayoutEditor.edit(mutableShow) {
+                applyChanges(gridLayout.items, newLayout, mutableShow)
             }
             appContext.showManager.onEdit(mutableShow)
         }
@@ -83,8 +89,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val itemPadding = 5
     val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-    val layoutGrid = memo(columns, rows, props.tab, draggingItem) {
-        LayoutGrid(columns, rows, props.tab.items, draggingItem)
+    val layoutGrid = memo(columns, rows, gridLayout, draggingItem) {
+        LayoutGrid(columns, rows, gridLayout.items, draggingItem)
     }
 
     val genericControlProps = memo(props.onShowStateChange) {
@@ -93,7 +99,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
 
     div(+styles.gridOuterContainer and
-            +if (editMode.isOn) styles.editModeOn else styles.editModeOff
+            (+if (editMode.isOn) styles.editModeOn else styles.editModeOff) and
+            +if (gridLayoutContext.dragging) styles.dragging else styles.notDragging
     ) {
         ref = containerDiv
 
@@ -147,13 +154,24 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.onDragStart = handleDragStart
             attrs.onDragStop = handleDragStop
 
-            props.tab.items.forEach { item ->
+            gridLayout.items.forEachIndexed { index, item ->
                 div(+styles.gridCell) {
                     key = item.control.id
 
+                    val editor = object : Editor<MutableIGridLayout> {
+                        override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+                            mutableShow.editLayouts {
+                                props.tabEditor.edit(mutableShow) {
+                                    block(items[index].layout
+                                        ?: error("Couldn't find item for ${item.control.id}."))
+                                }
+                            }
+                        }
+                    }
+
                     gridItem {
                         attrs.control = item.control
-                        attrs.controlProps = genericControlProps.withLayout(item.layout)
+                        attrs.controlProps = genericControlProps.withLayout(item.layout, editor)
                         attrs.className = -styles.controlBox
                     }
                 }
@@ -171,7 +189,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                 MenuItem {
                     attrs.onClick = {
                         val editIntent = AddControlToGrid(
-                            props.tabEditor,
+                            gridLayoutEditor,
                             addMenuContext.column, addMenuContext.row,
                             addMenuContext.width, addMenuContext.height,
                             addControlMenuItem.createControlFn

@@ -70,13 +70,14 @@ data class GridTab(
 data class GridLayout(
     override var columns: Int,
     override var rows: Int,
+    var matchParent: Boolean = false,
     override val items: List<GridItem> = emptyList()
 ) : IGridLayout {
     fun edit(mutableShow: MutableShow): MutableGridLayout =
         MutableGridLayout(this, mutableShow)
 
     override fun open(openContext: OpenContext): OpenGridLayout =
-        OpenGridLayout(columns, rows, items.map { it.open(openContext) })
+        OpenGridLayout(columns, rows, matchParent, items.map { it.open(openContext) })
 }
 
 interface IGridLayout {

@@ -1,11 +1,14 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.editor.AddButtonToButtonGroupEditIntent
+import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.gridItem
 import baaahs.control.OpenButtonGroupControl
+import baaahs.forEach
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridLayout
+import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
@@ -15,10 +18,9 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
+import kotlinx.dom.hasClass
 import kotlinx.js.jso
-import materialui.icon
 import mui.material.Card
-import mui.material.IconButton
 import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.Props
@@ -41,7 +43,9 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 
     var layoutDimens by state { 100 to 100 }
     val gridLayout = props.controlProps.layout
-        ?: OpenGridLayout(1, 1, emptyList())
+        ?: OpenGridLayout(1, 1, true, emptyList())
+    val editor = props.controlProps.layoutEditor
+        ?: error("Huh? No editor provided?")
     val columns = gridLayout.columns
     val rows = gridLayout.rows
     val (layoutWidth, layoutHeight) = layoutDimens
@@ -51,14 +55,25 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 
     val cardRef = ref<Element>()
     useResizeListener(cardRef) {
-        with(cardRef.current!!) {
-            console.log("resized ${props.buttonGroupControl.id}!", clientWidth, clientHeight, this)
-            layoutDimens = clientWidth to clientHeight
+        cardRef.current?.children?.forEach {
+            if (it.hasClass("react-grid-layout")) {
+                with(it) {
+                    console.log("resized ${props.buttonGroupControl.id}!", clientWidth, clientHeight, this)
+                    layoutDimens = clientWidth to clientHeight
+                }
+            }
         }
     }
 
-    val handleLayoutChange by handler(/*props.tabEditor*/) { newLayout: Layout ->
-        console.log("newLayout", newLayout)
+    val handleLayoutChange by handler(gridLayout, editor) { newLayout: Layout ->
+        appContext.showManager.openShow?.edit {
+            val mutableShow = this
+            editor.edit(mutableShow) {
+                applyChanges(gridLayout.items, newLayout, mutableShow)
+            }
+            appContext.showManager.onEdit(mutableShow)
+        }
+        Unit
     }
 
     val handleEditButtonClick = callback(buttonGroupControl) { event: Event, index: Int ->
@@ -96,26 +111,25 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.isDroppable = editMode.isOn
             attrs.isBounded = false
 
-            layout.items.forEach { layoutItem ->
+            layout.items.forEachIndexed { index, layoutItem ->
                 div(+layoutStyles.gridCell) {
                     key = layoutItem.i
 
+                    val subEditor = object : Editor<MutableIGridLayout> {
+                        override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+                            mutableShow.editLayouts {
+                                editor.edit(mutableShow) {
+                                    block(items[index].layout
+                                        ?: error("Couldn't find item for ${layoutItem.i}."))
+                                }
+                            }
+                        }
+                    }
+
                     gridItem {
                         attrs.control = controls[layoutItem.i]!!
-                        attrs.controlProps = props.controlProps.withLayout(layouts[layoutItem.i])
+                        attrs.controlProps = props.controlProps.withLayout(layouts[layoutItem.i], subEditor)
                         attrs.className = -layoutStyles.controlBox
-                    }
-                }
-            }
-//            attrs.onDragStart = handleDragStart.unsafeCast<ItemCallback>()
-//            attrs.onDragStop = handleDragStop.unsafeCast<ItemCallback>()
-//            attrs.onDropDragOver = handleDropDragOver
-
-            if (editMode.isOn) {
-                IconButton {
-                    icon(mui.icons.material.AddCircleOutline)
-                    attrs.onClick = {
-                        appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
                     }
                 }
             }

@@ -52,6 +52,7 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
             attrs.type = props.type
             attrs.autoFocus = props.autoFocus == true
             attrs.fullWidth = true
+            attrs.disabled = props.disabled == true
             attrs.label = buildElement { +props.label }
             attrs.value = props.getValue()
 
@@ -74,6 +75,7 @@ external interface TextFieldEditorProps : Props {
     var label: String
     var helperText: String?
     var autoFocus: Boolean?
+    var disabled: Boolean?
     var getValue: () -> String
     var setValue: (String) -> Unit
     var editableManager: EditableManager<*>?

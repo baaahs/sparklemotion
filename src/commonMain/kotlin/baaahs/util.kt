@@ -31,6 +31,10 @@ fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
     return this.mapIndexed { i, t -> if (i == index) replacement else t }
 }
 
+fun <T: Any?> MutableList<T>.replaceAll(block: (T) -> T) {
+    forEachIndexed { index: Int, item: T -> this[index] = block(item) }
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
 fun Int.clamp(minValue: Int, maxValue: Int): Int =

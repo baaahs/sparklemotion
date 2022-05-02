@@ -1,32 +1,28 @@
 package baaahs.ui.gridlayout
 
 data class LayoutItem(
-    var x: Int,
-    var y: Int,
-    var w: Int,
-    var h: Int,
-    var i: String,
-    var minW: Int? = null,
-    var minH: Int? = null,
-    var maxW: Int? = null,
-    var maxH: Int? = null,
-    var moved: Boolean = false,
-    var isStatic: Boolean = false,
-    var isDraggable: Boolean = true,
-    var isResizable: Boolean = true,
-    var isPlaceholder: Boolean = false
+    val x: Int,
+    val y: Int,
+    val w: Int,
+    val h: Int,
+    val i: String,
+    val minW: Int? = null,
+    val minH: Int? = null,
+    val maxW: Int? = null,
+    val maxH: Int? = null,
+    val moved: Boolean = false,
+    val isStatic: Boolean = false,
+    val isDraggable: Boolean = true,
+    val isResizable: Boolean = true,
+    val isPlaceholder: Boolean = false
 ) {
-    operator fun get(axis: Axis) = axis[this]
-
-    operator fun set(axis: Axis, value: Int) { axis[this] = value }
-
     fun toStatic() =
         LayoutItem(x, y, w, h, i, isStatic = true)
 }
 
 data class LayoutItemSize(
-    val w: Int,
-    val h: Int
+    val width: Int,
+    val height: Int
 )
 
 data class Position(
@@ -44,32 +40,15 @@ enum class CompactType {
 
 enum class Axis {
     x {
-        override fun increment(layoutItem: LayoutItem) {
-            layoutItem.x++
-        }
+        override fun incr(item: LayoutItem) = item.copy(x = item.x + 1)
+        override fun set(item: LayoutItem, value: Int): LayoutItem = item.copy(x = value)
 
-        override fun get(layoutItem: LayoutItem): Int =
-            layoutItem.x
-
-        override fun set(layoutItem: LayoutItem, value: Int) {
-            layoutItem.x = value
-        }
     },
     y {
-        override fun increment(layoutItem: LayoutItem) {
-            layoutItem.y++
-        }
-
-        override fun get(layoutItem: LayoutItem): Int =
-            layoutItem.y
-
-        override fun set(layoutItem: LayoutItem, value: Int) {
-            layoutItem.y = value
-        }
+        override fun incr(item: LayoutItem) = item.copy(y = item.y + 1)
+        override fun set(item: LayoutItem, value: Int): LayoutItem = item.copy(y = value)
     };
 
-    abstract fun increment(layoutItem: LayoutItem)
-
-    abstract operator fun get(layoutItem: LayoutItem): Int
-    abstract operator fun set(layoutItem: LayoutItem, value: Int)
+    abstract fun incr(item: LayoutItem): LayoutItem
+    abstract fun set(item: LayoutItem, value: Int): LayoutItem
 }

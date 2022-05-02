@@ -1,5 +1,6 @@
 package baaahs.app.ui.layout
 
+import baaahs.ui.Observable
 import baaahs.ui.gridlayout.GridLayoutState
 import react.createContext
 
@@ -10,9 +11,15 @@ external interface DragNDropContext {
     var gridLayoutContext: GridLayoutContext
 }
 
-class GridLayoutContext {
+class GridLayoutContext : Observable() {
     private val layouts = hashMapOf<String, GridLayoutState>()
     private val id = nextId++
+
+    var dragging = false
+        set(value) {
+            field = value
+            notifyChanged()
+        }
 
     init {
         console.log("new GridLayoutContext id $id.")

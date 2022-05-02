@@ -1,5 +1,6 @@
 package baaahs.ui.gridlayout
 
+import baaahs.replaceAll
 import baaahs.util.Logger
 import kotlin.math.max
 import kotlin.math.min
@@ -26,33 +27,8 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         return max
     }
 
-    private fun cloneLayout(): Layout =
-        Layout(items.map { it.copy() })
-
-    /**
-     * Modify a layoutItem inside a layout. Returns a new Layout,
-     * does not mutate. Carries over all other LayoutItems unmodified.
-     */
-    private fun modifyLayout(layoutItem: LayoutItem): Layout =
-        Layout(items.map {
-            if (layoutItem.i === it.i) layoutItem else it
-        })
-
-    /**
-     * Modify a layout item, returning a new layout.
-     * Does defensive clones to ensure the layout is not modified.
-     */
-    fun withLayoutItem(
-        itemKey: String,
-        cb: (LayoutItem) -> LayoutItem
-    ): Pair<Layout, LayoutItem?> {
-        var item = find(itemKey)
-            ?: return this to null
-
-        item = cb(item.copy()) // defensive clone then modify
-        // FIXME could do this faster if we already knew the index
-        return modifyLayout(item) to item
-    }
+    private fun updateLayout(updateItem: LayoutItem): Layout =
+        Layout(items.map { if (it.i == updateItem.i) updateItem else it })
 
     /**
      * Given a layout, compact it. This involves going down each y coordinate and removing gaps
@@ -90,7 +66,9 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             out[items.indexOf(sorted[i])] = l
 
             // Clear moved flag, if it exists.
-            l.moved = false
+            if (l.moved) {
+                out.replaceAll { if (it?.i == l.i) l.copy(moved = false) else it }
+            }
         }
 
         return Layout(out.filterNotNull())
@@ -103,10 +81,11 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         item: LayoutItem,
         moveToCoord: Int,
         axis: Axis
-    ) {
+    ): LayoutItem {
+        var newItem = axis.incr(item)
+
         val sizeProp = heightWidth[axis]!!
-        item[axis] += 1
-        val itemIndex = items.indexOfFirst { layoutItem -> layoutItem.i == item.i }
+        val itemIndex = items.indexOfFirst { layoutItem -> layoutItem.i == newItem.i }
 
         // Go through each item we collide with.
         for (i in itemIndex + 1 until items.size) {
@@ -116,18 +95,19 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
 
             // Optimization: we can break early if we know we're past this el
             // We can do this b/c it's a sorted layout
-            if (otherItem.y > item.y + item.h) break
+            if (otherItem.y > newItem.y + newItem.h) break
 
-            if (collides(item, otherItem)) {
-                resolveCompactionCollision(
-                    otherItem,
-                    moveToCoord + sizeProp.invoke(item),
-                    axis
-                )
+            if (collides(newItem, otherItem)) {
+                newItem =
+                    resolveCompactionCollision(
+                        otherItem,
+                        moveToCoord + sizeProp.invoke(newItem),
+                        axis
+                    )
             }
         }
 
-        item[axis] = moveToCoord
+        return axis.set(newItem, moveToCoord)
     }
 
     /**
@@ -140,26 +120,26 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      */
     fun correctBounds(cols: Int): Layout {
         val collidesWith = getStatics().toMutableList()
-        val len = items.size
-        for (i in 0 until len) {
-            val l = items[i]
+        val newLayoutItems = ArrayList(items)
+        newLayoutItems.replaceAll { l ->
+            var newItem = l
+
             // Overflows right
-            if (l.x + l.w > cols) l.x = cols - l.w
+            if (l.x + l.w > cols) newItem = newItem.copy(x = cols - l.w)
             // Overflows left
             if (l.x < 0) {
-                l.x = 0
-                l.w = cols
+                newItem = newItem.copy(x = 0, w = cols)
             }
-            if (!l.isStatic) collidesWith.add(l)
-            else {
+            if (!l.isStatic) collidesWith.add(l) else {
                 // If this is static and collides with other statics, we must move it down.
                 // We have to do something nicer than just letting them overlap.
                 while (Layout(collidesWith).getFirstCollision(l) != null) {
-                    l.y++
+                    newItem = newItem.copy(y = newItem.y + 1)
                 }
             }
+            newItem
         }
-        return this
+        return Layout(newLayoutItems)
     }
 
     /**
@@ -183,8 +163,8 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     private fun getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
         items.firstOrNull { collides(it, layoutItem) }
 
-    fun getAllCollisions(layoutItem: LayoutItem): Array<LayoutItem> =
-        items.filter { l -> collides(l, layoutItem) }.toTypedArray()
+    fun getAllCollisions(layoutItem: LayoutItem): List<LayoutItem> =
+        items.filter { l -> collides(l, layoutItem) }
 
     /**
      * Get all static elements.
@@ -208,8 +188,8 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         l: LayoutItem,
         x: Int?,
         y: Int?,
-        isUserAction: Boolean?,
-        preventCollision: Boolean?,
+        isUserAction: Boolean,
+        preventCollision: Boolean,
         compactType: CompactType,
         cols: Int,
         allowOverlap: Boolean = false
@@ -227,16 +207,18 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         val oldX = l.x
         val oldY = l.y
 
-        // This is quite a bit faster than extending the object
-        x?.let { l.x = it }
-        y?.let { l.y = it }
-        l.moved = true
+        val newItem = l.copy(
+            x = x ?: l.x,
+            y = y ?: l.y,
+            moved = true
+        )
+        var updatedLayout = updateLayout(newItem)
 
         // If this collides with anything, move it.
         // When doing this comparison, we have to sort the items we compare with
         // to ensure, in the case of multiple collisions, that we're getting the
         // nearest collision.
-        var sorted = sortLayoutItems(compactType)
+        var sorted = updatedLayout.sortLayoutItems(compactType)
         val movingUp =
             if (compactType == CompactType.vertical && y != null)
                 oldY >= y
@@ -245,7 +227,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             else false
         // $FlowIgnore acceptable modification of read-only array as it was recently cloned
         if (movingUp) sorted = Layout(sorted.items.reversed())
-        val collisions = sorted.getAllCollisions(l)
+        val collisions = sorted.getAllCollisions(newItem)
         val hasCollisions = collisions.isNotEmpty()
 
         // We may have collisions. We can short-circuit if we've turned off collisions or
@@ -253,50 +235,39 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         if (hasCollisions && allowOverlap) {
             // Easy, we don't need to resolve collisions. But we *did* change the layout,
             // so clone it on the way out.
-            return cloneLayout()
-        } else if (hasCollisions && preventCollision == true) {
+            return updatedLayout
+        } else if (hasCollisions && preventCollision) {
             // If we are preventing collision but not allowing overlap, we need to
             // revert the position of this element so it goes to where it came from, rather
             // than the user's desired location.
             logger.info { "Collision prevented on ${l.i}, reverting." }
-            l.x = oldX
-            l.y = oldY
-            l.moved = false
             return this // did not change so don't clone
         }
 
-        var updatedLayout = this
         // Move each item that collides away from this element.
         for (collision in collisions) {
             logger.info {
-                "Resolving collision between ${l.i} at [${l.x},${l.y}] and ${collision.i} at [${collision.x},${collision.y}]"
+                "Resolving collision between ${newItem.i} at [${newItem.x},${newItem.y}] and ${collision.i} at [${collision.x},${collision.y}]"
             }
 
-            // Short circuit so we can't infinite loop
+            // Short circuit so we can't infinitely loop
             if (collision.moved) continue
 
+            val movingAxis = if (newItem.x != x) Axis.x else Axis.y
             // Don't move static items - we have to move *this* element away
-            if (collision.isStatic) {
-                updatedLayout = moveElementAwayFromCollision(
-                    collision,
-                    l,
-                    isUserAction,
-                    compactType,
-                    cols
-                )
-            } else {
-                updatedLayout = moveElementAwayFromCollision(
-                    l,
-                    collision,
-                    isUserAction,
-                    compactType,
-                    cols
-                )
-            }
+            updatedLayout =
+                if (collision.isStatic) {
+                    updatedLayout.moveElementAwayFromCollision(collision, newItem, isUserAction, compactType, cols, movingAxis)
+                } else {
+                    updatedLayout.moveElementAwayFromCollision(newItem, collision, isUserAction, compactType, cols, movingAxis)
+                }
         }
 
         return updatedLayout
     }
+
+    fun removeItem(id: String): Layout =
+        Layout(items.filter { it.i != id })
 
     /**
      * This is where the magic needs to happen - given a collision, move an element away from the collision.
@@ -309,27 +280,22 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     private fun moveElementAwayFromCollision(
         collidesWith: LayoutItem,
         itemToMove: LayoutItem,
-        isUserAction_: Boolean?,
+        isUserAction: Boolean,
         compactType: CompactType,
-        cols: Int
+        cols: Int,
+        movingAxis: Axis
     ): Layout {
-        var isUserAction = isUserAction_
         val compactH = compactType == CompactType.horizontal
-        // Compact vertically if not set to horizontal
-        val compactV = compactType != CompactType.horizontal
-        val preventCollision = collidesWith.isStatic // we're already colliding (not for static items)
+        val compactV = compactType == CompactType.vertical
 
         // If there is enough space above the collision to put this element, move it there.
         // We only do this on the main collision as this can get funky in cascades and cause
         // unwanted swapping behavior.
-        if (isUserAction == true) {
-            // Reset isUserAction flag because we're not in the main collision anymore.
-            isUserAction = false
-
+        if (isUserAction) {
             // Make a mock item so we don't modify the item here, only modify in moveElement.
             val fakeItem = LayoutItem(
-                if (compactH) max(collidesWith.x - itemToMove.w, 0) else itemToMove.x,
-                if (compactV) max(collidesWith.y - itemToMove.h, 0) else itemToMove.y,
+                if (movingAxis == Axis.x) collidesWith.x + collidesWith.w else itemToMove.x,
+                if (movingAxis == Axis.y) collidesWith.y + collidesWith.y else itemToMove.y,
                 itemToMove.w,
                 itemToMove.h,
                 i = "-1"
@@ -344,8 +310,8 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
                     itemToMove,
                     if (compactH) fakeItem.x else null,
                     if (compactV) fakeItem.y else null,
-                    isUserAction,
-                    preventCollision,
+                    false, // Reset isUserAction flag because we're not in the main collision anymore.
+                    collidesWith.isStatic, // we're already colliding (not for static items)
                     compactType,
                     cols
                 )
@@ -354,10 +320,10 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
 
         return moveElement(
             itemToMove,
-            if (compactH) itemToMove.x + 1 else null,
-            if (compactV) itemToMove.y + 1 else null,
+            if (compactH || movingAxis == Axis.x) itemToMove.x + 1 else null,
+            if (compactV || movingAxis == Axis.y) itemToMove.y + 1 else null,
             isUserAction,
-            preventCollision,
+            collidesWith.isStatic, // we're already colliding (not for static items)
             compactType,
             cols
         )
@@ -366,7 +332,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     /**
      * Compact an item in the layout.
      *
-     * Modifies item.
+     * Returns modified item.
      *
      */
     private fun compactItem(
@@ -378,44 +344,47 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     ): LayoutItem {
         val compactV = compactType == CompactType.vertical
         val compactH = compactType == CompactType.horizontal
+        var newItem = l
         if (compactV) {
             // Bottom 'y' possible is the bottom of the layout.
             // This allows you to do nice stuff like specify {y: Infinity}
             // This is here because the layout must be sorted in order to get the correct bottom `y`.
-            l.y = min(compareWith.bottom(), l.y)
+            newItem = newItem.copy(y = min(compareWith.bottom(), newItem.y))
             // Move the element up as far as it can go without colliding.
-            while (l.y > 0 && compareWith.getFirstCollision(l) == null) {
-                l.y--
+            while (newItem.y > 0 && compareWith.getFirstCollision(newItem) == null) {
+                newItem = newItem.copy(y = newItem.y - 1)
             }
         } else if (compactH) {
             // Move the element left as far as it can go without colliding.
-            while (l.x > 0 && compareWith.getFirstCollision(l) == null) {
-                l.x--
+            while (newItem.x > 0 && compareWith.getFirstCollision(newItem) == null) {
+                newItem = newItem.copy(x = newItem.x - 1)
             }
         }
 
         // Move it down, and keep moving it down if it's colliding.
-        var collides: LayoutItem? = compareWith.getFirstCollision(l)
+        var collides: LayoutItem? = compareWith.getFirstCollision(newItem)
         while (collides != null) {
-            if (compactH) {
-                fullLayout.resolveCompactionCollision(l, collides.x + collides.w, Axis.x)
+            newItem = if (compactH) {
+                fullLayout.resolveCompactionCollision(newItem, collides.x + collides.w, Axis.x)
             } else {
-                fullLayout.resolveCompactionCollision(l, collides.y + collides.h, Axis.y)
+                fullLayout.resolveCompactionCollision(newItem, collides.y + collides.h, Axis.y)
             }
             // Since we can't grow without bounds horizontally, if we've overflown, var's move it down and try again.
-            if (compactH && l.x + l.w > cols) {
-                l.x = cols - l.w
-                l.y++
+            if (compactH && newItem.x + newItem.w > cols) {
+                newItem = newItem.copy(
+                    x = cols - newItem.w,
+                    y = newItem.y + 1
+                )
             }
 
-            collides = compareWith.getFirstCollision(l)
+            collides = compareWith.getFirstCollision(newItem)
         }
 
         // Ensure that there are no negative positions
-        l.y = max(l.y, 0)
-        l.x = max(l.x, 0)
-
-        return l
+        return newItem.copy(
+            x = max(newItem.x, 0),
+            y = max(newItem.y, 0)
+        )
     }
 
     /**
@@ -454,6 +423,14 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     private fun sortLayoutItemsByColRow(): Layout =
         Layout(items.sortedWith { a, b ->
             if (a.x > b.x || (a.x == b.x && a.y > b.y)) 1 else -1
+        })
+
+    fun canonicalize(): Layout =
+        Layout(items.sortedWith { a, b ->
+            if (a.y > b.y ||
+                (a.y == b.y && a.x > b.x) ||
+                (a.y == b.y && a.x == b.x && a.i > b.i)
+            ) 1 else -1
         })
 
     /**
