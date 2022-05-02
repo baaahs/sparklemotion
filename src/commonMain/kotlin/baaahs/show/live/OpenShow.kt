@@ -1,10 +1,16 @@
 package baaahs.show.live
 
 import baaahs.ShowPlayer
+import baaahs.app.ui.dialog.DialogPanel
+import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.editor.GridLayoutEditorPanel
 import baaahs.control.OpenButtonControl
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
+import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableILayout
 import baaahs.show.mutable.MutableShow
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
@@ -185,13 +191,24 @@ class OpenGridTab(
 class OpenGridLayout(
     override val columns: Int,
     override val rows: Int,
+    val matchParent: Boolean,
     override val items: List<OpenGridItem>
 ) : OpenIGridLayout
 
-interface OpenIGridLayout {
+interface OpenILayout {
+    fun getEditorPanel(
+        editableManager: EditableManager<*>,
+        layoutEditor: Editor<MutableILayout>
+    ): DialogPanel?
+}
+
+interface OpenIGridLayout : OpenILayout {
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
+
+    override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
+        GridLayoutEditorPanel(editableManager, this, layoutEditor as Editor<MutableIGridLayout>)
 }
 
 class OpenGridItem(

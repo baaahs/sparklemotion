@@ -191,6 +191,14 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
 
+    val dragging by css {
+        descendants(this@LayoutStyles, ::gridContainer) {
+            pointerEvents = PointerEvents.auto
+        }
+    }
+    val notDragging by css {
+    }
+
 
     val global = CssBuilder().apply {
         ".react-grid-placeholder" {
@@ -226,6 +234,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             height = 5.px
             borderRight = "2px solid rgba(0, 0, 0, 0.4)"
             borderBottom = "2px solid rgba(0, 0, 0, 0.4)"
+        }
+
+        ".react-draggable-dragging, .react-draggable-dragging *" {
+            pointerEvents = PointerEvents.none
         }
 
         val inset = 2.px

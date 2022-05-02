@@ -194,18 +194,20 @@ class MutableGridTab(
 }
 
 class MutableGridLayout(
-    override var columns: Int = 12,
-    override var rows: Int = 8,
+    override var columns: Int,
+    override var rows: Int,
+    var matchParent: Boolean = true,
     override val items: MutableList<MutableGridItem> = mutableListOf()
 ) : MutableIGridLayout {
     constructor(baseGridLayout: GridLayout, mutableShow: MutableShow) : this(
         baseGridLayout.columns,
         baseGridLayout.rows,
+        baseGridLayout.matchParent,
         baseGridLayout.items.mapTo(ArrayList()) { it.edit(mutableShow) }
     )
 
     fun build(showBuilder: ShowBuilder): GridLayout =
-        GridLayout(columns, rows, items.map { it.build(showBuilder) })
+        GridLayout(columns, rows, matchParent, items.map { it.build(showBuilder) })
 
 }
 
@@ -232,7 +234,9 @@ class MutableGridItem(
         )
 }
 
-interface MutableIGridLayout {
+interface MutableILayout
+
+interface MutableIGridLayout : MutableILayout {
     var columns: Int
     var rows: Int
     val items: MutableList<MutableGridItem>

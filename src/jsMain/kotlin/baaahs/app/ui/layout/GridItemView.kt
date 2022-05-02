@@ -18,8 +18,12 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layout
 
-    val onEditButtonClick = callback(props.control) { event: Event ->
-        props.control.getEditIntent()?.let { appContext.openEditor(it) }
+    val layout = props.controlProps.layout
+    val layoutEditor = props.controlProps.layoutEditor
+    val onEditButtonClick = callback(props.control, layout, layoutEditor) { event: Event ->
+        props.control.getEditIntent()
+            ?.withLayout(layout, layoutEditor)
+            ?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 

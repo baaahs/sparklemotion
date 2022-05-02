@@ -59,3 +59,11 @@ fun calcGridItemWHPx(gridUnits: Int, colOrRowSize: Double, marginPx: Double): Do
     if (gridUnits == Int.MAX_VALUE) return gridUnits.toDouble()
     return colOrRowSize * gridUnits + max(0, gridUnits - 1) * marginPx
 }
+
+fun HTMLElement.getPosition(): Vector2D =
+    getBoundingClientRect().let {
+        Vector2D(it.left, it.top)
+    }
+
+fun HTMLElement.getPositionMinusScroll(): Vector2D =
+    getPosition() - Vector2D(scrollLeft, scrollTop)

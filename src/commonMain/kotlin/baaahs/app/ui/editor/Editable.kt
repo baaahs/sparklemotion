@@ -5,6 +5,7 @@ import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.show.live.ControlDisplay
+import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.*
 
 interface Editable {
@@ -22,6 +23,9 @@ interface MutableEditable<T> {
 
 interface EditIntent {
     fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*>
+
+    fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel>
+            = emptyList()
 
     /**
      * If a mutation might have changed how we should look up the editable, a new
@@ -50,11 +54,20 @@ class SceneEditIntent : EditIntent {
 
 data class ControlEditIntent(internal val controlId: String) : EditIntent {
     private lateinit var mutableEditable: MutableControl
+    private var layout: OpenIGridLayout? = null
+    private var layoutEditor: Editor<MutableIGridLayout>? = null
 
     override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> {
         mutableEditable = (mutableDocument as MutableShow).findControl(controlId)
         return mutableEditable
     }
+
+    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> =
+        listOfNotNull(
+            if (layout != null && layoutEditor != null) {
+                layout?.getEditorPanel(editableManager, layoutEditor!! as Editor<MutableILayout>)
+            } else null
+        )
 
     override fun refreshEditIntent(): EditIntent {
         return copy(controlId = mutableEditable.asBuiltId!!)
@@ -62,6 +75,12 @@ data class ControlEditIntent(internal val controlId: String) : EditIntent {
 
     override fun nextEditIntent(): EditIntent {
         return ControlEditIntent(mutableEditable.asBuiltId!!)
+    }
+
+    fun withLayout(layout: OpenIGridLayout?, layoutEditor: Editor<MutableIGridLayout>?): ControlEditIntent {
+        this.layout = layout
+        this.layoutEditor = layoutEditor
+        return this
     }
 }
 

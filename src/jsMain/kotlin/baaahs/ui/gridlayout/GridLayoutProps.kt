@@ -245,13 +245,13 @@ data class PositionParams(
 
     /**
      * Translate x and y coordinates from pixels to grid units.
-     * @param  {Number} topPx                   Top position (relative to parent) in pixels.
      * @param  {Number} leftPx                  Left position (relative to parent) in pixels.
+     * @param  {Number} topPx                   Top position (relative to parent) in pixels.
      * @param  {Number} widthGridUnits          W coordinate in grid units.
      * @param  {Number} heightGridUnits         H coordinate in grid units.
      * @return {Vector2I}                       x and y in grid units.
      */
-    fun calcGridPosition(topPx: Int, leftPx: Int, widthGridUnits: Int, heightGridUnits: Int): Vector2I {
+    fun calcGridPosition(leftPx: Int, topPx: Int, widthGridUnits: Int, heightGridUnits: Int): Vector2I {
         val colWidth = calcGridColWidth() // left = colWidth * x + margin * (x + 1)
         // l = cx + m(x+1)
         // l = cx + mx + m
@@ -282,9 +282,6 @@ data class PositionParams(
         xGridUnits: Int, yGridUnits: Int, widthGridUnits: Int, heightGridUnits: Int,
         state: GridItemState? = null
     ): Position {
-        val margin = margin
-        val containerPadding = containerPadding
-        val rowHeight = rowHeight
         val colWidth = calcGridColWidth()
 
         // If resizing, use the exact width and height as returned from resizing callbacks.
