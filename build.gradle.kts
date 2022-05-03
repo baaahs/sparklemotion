@@ -38,7 +38,7 @@ plugins {
     id("name.remal.check-dependency-updates") version "1.0.211"
 
     // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
-    id("com.github.turansky.kfc.legacy-union") version "4.88.0"
+    id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
 
 repositories {
