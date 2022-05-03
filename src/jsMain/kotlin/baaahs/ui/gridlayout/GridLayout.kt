@@ -245,28 +245,25 @@ class GridLayout(
             }
 
         console.log("GridLayout", props.id, "onDragStop", i, state.draggingPlaceholder)
-        val newLayout = if (state.draggingPlaceholder == null) {
-            oldLayout.removeItem(i)
-        } else {
-            val oldDragItem = state.oldDragItem
-            val cols = props.cols!!
-            val allowOverlap = props.allowOverlap == true
-            val preventCollision = props.preventCollision!!
-            val l = oldLayout.find(i)
-                ?: return run {
-                    console.log("GridLayout(${props.id}),onDragStop() couldn't find layout $i")
-                }
+        if (state.draggingPlaceholder == null) return
+        val oldDragItem = state.oldDragItem
+        val cols = props.cols!!
+        val allowOverlap = props.allowOverlap == true
+        val preventCollision = props.preventCollision!!
+        val l = oldLayout.find(i)
+            ?: return run {
+                console.log("GridLayout(${props.id}),onDragStop() couldn't find layout $i")
+            }
 
-            // Move the element here
-            val isUserAction = true
-            val newLayout = oldLayout.moveElement(
-                l, x, y, isUserAction, preventCollision, compactType(props), cols, allowOverlap
-            )
-            val newItem = newLayout.find(i) ?: return
+        // Move the element here
+        val isUserAction = true
+        var newLayout = oldLayout.moveElement(
+            l, x, y, isUserAction, preventCollision, compactType(props), cols, allowOverlap
+        )
+        val newItem = newLayout.find(i) ?: return
 
-            props.onDragStop(newLayout, oldDragItem, newItem, null, e, node)
-            if (allowOverlap) newLayout else newLayout.compact(compactType(props), cols)
-        }
+        props.onDragStop(newLayout, oldDragItem, newItem, null, e, node)
+        newLayout = if (allowOverlap) newLayout else newLayout.compact(compactType(props), cols)
 
         setState {
             this.draggingPlaceholder = null
