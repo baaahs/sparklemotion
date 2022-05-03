@@ -35,8 +35,8 @@ external interface ResizableProps : PropsWithClassName {
     var handleSize: Array<Int>? // = [10, 10]
     var lockAspectRatio: Boolean? // = false
     var axis: String? // 'both' | 'x' | 'y' | 'none' = 'both'
-    var minConstraints: Array<Int>? // = [10, 10]
-    var maxConstraints: Array<Int>? // = [Infinity, Infinity]
+    var minConstraints: Array<Number>? // = [10, 10]
+    var maxConstraints: Array<Number>? // = [Infinity, Infinity]
     var onResizeStop: (e: MouseEvent, data: ResizeCallbackData) -> Any
     var onResizeStart: (e: MouseEvent, data: ResizeCallbackData) -> Any
     var onResize: (e: MouseEvent, data: ResizeCallbackData) -> Any

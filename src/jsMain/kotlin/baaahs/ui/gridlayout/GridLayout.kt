@@ -4,7 +4,7 @@ import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.geom.Vector2D
-import baaahs.replaceAll
+import baaahs.replace
 import baaahs.window
 import baaahs.y
 import external.lodash.isEqual
@@ -316,7 +316,7 @@ class GridLayout(
         val preventCollision = props.preventCollision!!
 
         val newListItems = ArrayList(layout.items)
-        newListItems.replaceAll { l ->
+        newListItems.replace({ it.i == i }) { l ->
             var newItem = l
             // Something like quad tree should be used
             // to find collisions faster
