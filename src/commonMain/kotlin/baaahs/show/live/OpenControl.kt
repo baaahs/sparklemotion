@@ -59,9 +59,13 @@ class ControlProps(
     val layout: OpenGridLayout? = null,
     val layoutEditor: Editor<MutableIGridLayout>? = null
 ) {
+    val relevantUnplacedControls get() =
+        controlDisplay?.relevantUnplacedControls
+            ?: emptyList()
+
     fun withLayout(
         layout: OpenGridLayout?,
-        editor: Editor<MutableIGridLayout>
+        editor: Editor<MutableIGridLayout>?
     ): ControlProps =
         ControlProps(onShowStateChange, controlDisplay, layout, editor)
 }

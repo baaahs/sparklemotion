@@ -326,9 +326,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     )
 
     val unplacedControlsPalette by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
         position = Position.fixed
-        left = 5.em
-        bottom = 5.em
+        left = 3.em
+        top = 60.vh
+        width = 15.em
+        height = 33.vh
         zIndex = 100
         opacity = 0
         transition(::opacity, duration = 1.s)
@@ -346,14 +350,20 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val unplacedControlsPaper by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        grow(Grow.GROW)
         padding(1.em)
     }
 
     val unplacedControlsDroppable by css {
+        position = Position.relative
         overflowY = Overflow.scroll
-        minHeight = 4.em
-        height = 33.vh
-        maxWidth = 15.em
+//        minHeight = 4.em
+        width = 100.pct
+        height = 100.pct
+//        width = 15.em
+//        height = 33.vh
     }
 
     val controlPanelHelpText by css {

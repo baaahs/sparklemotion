@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
 import baaahs.ui.asColor
+import baaahs.ui.child
 import baaahs.ui.descendants
 import baaahs.ui.name
 import kotlinx.css.*
@@ -103,14 +104,16 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
         position = Position.relative
         marginRight = 0.em
+        minWidth = 5.em
+        minHeight = 5.em
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
@@ -143,7 +146,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val inUse by css {
-        position = Position.relative
+//        position = Position.relative
     }
 
     val notInUse by css {
@@ -160,12 +163,12 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move

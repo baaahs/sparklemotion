@@ -3,7 +3,6 @@ package baaahs.app.ui.layout
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.controls.Styles
 import baaahs.ui.asColor
-import baaahs.ui.descendants
 import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -55,7 +54,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
         zIndex = 10
 
-        descendants(this@LayoutStyles, ::gridContainer) {
+        descendants(selector(::gridContainer)) {
             pointerEvents = PointerEvents.auto
         }
     }
@@ -109,7 +108,12 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         marginRight = 0.em
 
         hover {
-            child(Styles.editButton.selector) {
+            child(deleteButton.selector) {
+                opacity = .7
+                filter = "drop-shadow(0px 0px 2px black)"
+            }
+
+            child(editButton.selector) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
@@ -141,11 +145,25 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val editModeControl by css {
         transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
     }
+    val deleteModeControl by css {
+        transition(::opacity, duration = Styles.editTransitionDuration, timing = Timing.linear)
+    }
 
+    val deleteButton by css {
+        position = Position.absolute
+        right = 1.em
+        bottom = (-2).px + (2.5).em
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
+
+        child("svg") {
+            width = .75.em
+            height = .75.em
+        }
+    }
     val editButton by css {
         position = Position.absolute
-        right = 2.px
-        bottom = (-2).px + 2.em
+        right = 1.em
+        bottom = (-2).px + 1.em
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         child("svg") {
@@ -155,17 +173,16 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val editModeOff by css {
-        descendants(this@LayoutStyles, ::gridBackground) {
+        descendants(
+            selector(::gridBackground),
+            selector(::deleteModeControl),
+            selector(::editModeControl),
+        ) {
             pointerEvents = PointerEvents.none
             opacity = 0
         }
 
-        descendants(this@LayoutStyles, ::editModeControl) {
-            opacity = 0
-            pointerEvents = PointerEvents.none
-        }
-
-        descendants(this@LayoutStyles, ::emptyGridCell) {
+        descendants(selector(::emptyGridCell)) {
             opacity = 0
             border = "0px inset $emptyCellDimColor"
 
@@ -175,24 +192,24 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         }
     }
     val editModeOn by css {
-        descendants(this@LayoutStyles, ::editModeControl) {
+        descendants(selector(::editModeControl)) {
             opacity = 1
         }
 
-        descendants(this@LayoutStyles, ::emptyGridCell) {
+        descendants(selector(::emptyGridCell)) {
             color = emptyCellColor
             border = "3px inset ${emptyCellColor.withAlpha(.5)}"
             transition(::border, transitionTime)
 
             hover {
                 backgroundColor = theme.palette.primary.main.asColor()
-                border = "3px inset ${emptyCellColor}"
+                border = "3px inset $emptyCellColor"
             }
         }
     }
 
     val dragging by css {
-        descendants(this@LayoutStyles, ::gridContainer) {
+        descendants(selector(::gridContainer)) {
             pointerEvents = PointerEvents.auto
         }
     }

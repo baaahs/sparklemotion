@@ -41,6 +41,18 @@ data class Show(
         return json.encodeToJsonElement(serializer(), this)
     }
 
+    fun findImplicitControls(): Map<String, Control> = buildMap {
+        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, dataSources)
+        dataSources
+            .map { (_, dataSource) ->
+                dataSource.buildControl()?.let { mutableControl ->
+                    val control = mutableControl.buildControl(implicitControlsShowBuilder)
+                    val id = implicitControlsShowBuilder.idFor(control)
+                    put(id, control)
+                }
+            }
+    }
+
     fun getControl(id: String): Control = controls.getBang(id, "control")
 
     fun getDataSource(id: String): DataSource = dataSources.getBang(id, "data source")

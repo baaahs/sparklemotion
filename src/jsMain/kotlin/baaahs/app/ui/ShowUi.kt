@@ -24,9 +24,17 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         ?: error("No such layout $currentLayoutName.")
     val layoutEditor = memo(currentLayoutName) {
         object : Editor<MutableLayout> {
+            override val title: String = "Layout editor"
+
             override fun edit(mutableShow: MutableShow, block: MutableLayout.() -> Unit) {
                 mutableShow.editLayouts {
                     block(formats.getBang(currentLayoutName, "layout"))
+                }
+            }
+
+            override fun delete(mutableShow: MutableShow) {
+                mutableShow.editLayouts {
+                    formats.remove(currentLayoutName)
                 }
             }
         }

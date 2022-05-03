@@ -7,6 +7,7 @@ import baaahs.app.ui.editor.AddControlToPanelBucket
 import baaahs.show.Panel
 import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
+import baaahs.show.live.LegacyControlDisplay
 import baaahs.ui.*
 import external.Direction
 import external.draggable
@@ -28,11 +29,11 @@ private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") 
     val editMode = observe(appContext.showManager.editMode)
 
     val handleAddButtonClick = memo { mutableMapOf<String, MouseEventHandler<*>>() }
-    var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
+    var showAddMenuFor by state<LegacyControlDisplay.PanelBuckets.PanelBucket?> { null }
     var showAddMenuForAnchorEl by state<Element?> { null }
 
 
-    props.controlDisplay.render(panel) { panelBucket ->
+    (props.controlDisplay as LegacyControlDisplay).render(panel) { panelBucket ->
         droppable({
             this.droppableId = panelBucket.dropTargetId
             this.type = panelBucket.type

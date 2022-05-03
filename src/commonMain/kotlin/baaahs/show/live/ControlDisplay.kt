@@ -12,18 +12,28 @@ import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
 import baaahs.util.Logger
 
-class ControlDisplay(
-    internal val show: OpenShow,
+interface ControlDisplay {
+    val show: OpenShow
+    val unplacedControls: Set<OpenControl>
+    val relevantUnplacedControls: List<OpenControl>
+    val unplacedControlsDropTarget: LegacyControlDisplay.UnplacedControlsDropTarget
+    val unplacedControlsDropTargetId: String
+
+    fun release()
+}
+
+class LegacyControlDisplay(
+    override val show: OpenShow,
     internal val editHandler: EditHandler<Show, ShowState>,
     internal val dragNDrop: DragNDrop<Int>
-) {
+) : ControlDisplay {
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
     private val placedControls = hashSetOf<OpenControl>()
-    val unplacedControls: List<OpenControl>
-    val relevantUnplacedControls: List<OpenControl>
+    override val unplacedControls: Set<OpenControl>
+    override val relevantUnplacedControls: List<OpenControl>
     private val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
-    val unplacedControlsDropTarget = UnplacedControlsDropTarget()
-    val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
+    override val unplacedControlsDropTarget = UnplacedControlsDropTarget()
+    override val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
         val unplacedControls = arrayListOf<OpenControl>()
@@ -67,7 +77,8 @@ class ControlDisplay(
             }
         }
 
-        this.unplacedControls = unplacedControls
+        unplacedControls.removeAll(placedControls)
+        this.unplacedControls = unplacedControls.toSet()
         this.relevantUnplacedControls = unplacedControls.filter { control ->
             activeDataSources.containsAll(control.controlledDataSources())
         }.sortedBy { control ->
@@ -86,7 +97,7 @@ class ControlDisplay(
         allPanelBuckets.render(panel, renderBucket)
     }
 
-    fun release() {
+    override fun release() {
         allPanelBuckets.release()
         dragNDrop.removeDropTarget(unplacedControlsDropTarget)
         additionalDropTargets.values.forEach { it.release() }
@@ -295,5 +306,5 @@ class ControlDisplay(
 }
 
 typealias RenderBucket = (
-    panelBucket: ControlDisplay.PanelBuckets.PanelBucket
+    panelBucket: LegacyControlDisplay.PanelBuckets.PanelBucket
 ) -> Unit

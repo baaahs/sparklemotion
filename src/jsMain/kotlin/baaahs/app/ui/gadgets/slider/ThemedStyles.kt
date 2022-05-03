@@ -11,14 +11,20 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val slider by css {
         position = Position.relative
-        height = 200.px
+        width = 100.pct
+        height = 100.pct
+//        height = 200.px
         marginLeft = 45.pct
+        marginTop = 5.px
+        marginBottom = 5.px
         put("touchAction", "none")
     }
 
     val wrapper by css {
+        position = Position.absolute
+        width = 100.pct
+        height = 100.pct
         display = Display.flex
-        width = 60.px
         flexDirection = FlexDirection.column
         alignItems = Align.flexStart
         fontSize = 14.px
@@ -27,6 +33,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
     }
 
     val label by css {
+        position = Position.absolute
         width = 100.pct
         flex(0.0, 0.0, FlexBasis.auto)
         textAlign = TextAlign.center
@@ -143,7 +150,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val tickText by css {
         position = Position.absolute
-        right = (-30).px
+//        right = (-30).px
         marginTop = (-5).px
         marginLeft = 20.px
         fontSize = 10.px

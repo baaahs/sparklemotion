@@ -1,9 +1,11 @@
 package baaahs.app.ui.layout
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.controlsPalette
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.show.live.ControlProps
+import baaahs.show.live.GridLayoutControlDisplay
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
@@ -12,6 +14,7 @@ import baaahs.ui.gridlayout.*
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.unknown
 import baaahs.util.useResizeListener
 import baaahs.window
 import external.react_resizable.buildResizeHandle
@@ -19,6 +22,7 @@ import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.html.js.onClickFunction
 import materialui.icon
+import mui.base.Portal
 import mui.icons.material.Add
 import mui.material.ListItemIcon
 import mui.material.ListItemText
@@ -36,6 +40,7 @@ import styled.inlineStyles
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
+    val showManager = observe(appContext.showManager)
     val styles = appContext.allStyles.layout
 
     val gridLayoutContext = useContext(dragNDropContext).gridLayoutContext
@@ -93,8 +98,15 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         LayoutGrid(columns, rows, gridLayout.items, draggingItem)
     }
 
-    val genericControlProps = memo(props.onShowStateChange) {
-        ControlProps(props.onShowStateChange, null)
+    val openShow = showManager.openShow!!
+    val enabledSwitchState = openShow.getEnabledSwitchState()
+    val controlDisplay = memo(openShow, enabledSwitchState) {
+        GridLayoutControlDisplay(openShow)
+            .also { withCleanup { it.release() } }
+    }
+
+    val genericControlProps = memo(props.onShowStateChange, controlDisplay) {
+        ControlProps(props.onShowStateChange, controlDisplay)
     }
 
 
@@ -158,13 +170,26 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                 div(+styles.gridCell) {
                     key = item.control.id
 
+                    val gridItemId = item.control.id
                     val editor = object : Editor<MutableIGridLayout> {
+                        override val title: String = "Grid tab layout editor for $gridItemId"
+
                         override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
                             mutableShow.editLayouts {
                                 props.tabEditor.edit(mutableShow) {
-                                    block(items[index].layout
-                                        ?: error("Couldn't find item for ${item.control.id}."))
+                                    val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
+                                        ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
+                                    block(
+                                        gridItem.layout
+                                            ?: error("No layout for $gridItemId.")
+                                    )
                                 }
+                            }
+                        }
+
+                        override fun delete(mutableShow: MutableShow) {
+                            props.tabEditor.edit(mutableShow) {
+                                items.removeAt(index)
                             }
                         }
                     }
@@ -202,6 +227,14 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                     ListItemText { +addControlMenuItem.label }
                 }
             }
+        }
+    }
+
+    Portal {
+        controlsPalette {
+            attrs.controlDisplay = controlDisplay
+            attrs.controlProps = genericControlProps
+            attrs.show = openShow
         }
     }
 }

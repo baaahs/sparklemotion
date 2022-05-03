@@ -44,10 +44,20 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
     val tabEditor = memo(props.layoutEditor, layout.currentTabIndex) {
         object : Editor<MutableIGridLayout> {
+            override val title: String = "Tab editor (${layout.currentTab?.title})"
+
             override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
                 mutableShow.editLayouts {
                     props.layoutEditor.edit(mutableShow) {
                         block(tabs[layout.currentTabIndex ?: error("No tab selected.")] as MutableGridTab)
+                    }
+                }
+            }
+
+            override fun delete(mutableShow: MutableShow) {
+                mutableShow.editLayouts {
+                    props.layoutEditor.edit(mutableShow) {
+                        tabs.removeAt(layout.currentTabIndex ?: error("No tab selected."))
                     }
                 }
             }

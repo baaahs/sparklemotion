@@ -36,8 +36,6 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
-
     val onShowStateChange = props.controlProps.onShowStateChange
 
     val showPreview = appContext.uiSettings.renderButtonPreviews
@@ -117,11 +115,21 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
                     key = layoutItem.i
 
                     val subEditor = object : Editor<MutableIGridLayout> {
+                        override val title: String = "Grid buttongroup layout editor for ${layoutItem.i}"
+
                         override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
                             mutableShow.editLayouts {
                                 editor.edit(mutableShow) {
                                     block(items[index].layout
                                         ?: error("Couldn't find item for ${layoutItem.i}."))
+                                }
+                            }
+                        }
+
+                        override fun delete(mutableShow: MutableShow) {
+                            mutableShow.editLayouts {
+                                editor.edit(mutableShow) {
+                                    items.removeAt(index)
                                 }
                             }
                         }
