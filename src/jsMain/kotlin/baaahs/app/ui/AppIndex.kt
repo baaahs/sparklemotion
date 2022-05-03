@@ -157,6 +157,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
             val keypress = with (event) { Keypress(key, metaKey, ctrlKey, shiftKey) }
             when (keypress) {
+                Keypress("Escape") -> {
+                    handleAppDrawerToggle()
+                    event.stopPropagation()
+                }
                 Keypress("d") -> {
                     editMode.toggle()
                     event.stopPropagation()
