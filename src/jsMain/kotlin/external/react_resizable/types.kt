@@ -22,7 +22,8 @@ fun buildResizeHandle(axis: ResizeHandleAxis, ref: Ref<HTMLElement>) = buildElem
     SvgIcon {
         attrs.viewBox = "0 0 20 20"
         attrs.classes = jso {
-            this.root = ClassName("app-ui-layout-resize-handle app-ui-layout-resize-handle-$axis")
+            this.root = ClassName("app-ui-layout-resize-handle " +
+                    "app-ui-layout-resize-handle-$axis react-resizable-handle")
         }
 
         when (axis.length) {

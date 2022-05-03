@@ -35,6 +35,14 @@ fun <T: Any?> MutableList<T>.replaceAll(block: (T) -> T) {
     forEachIndexed { index: Int, item: T -> this[index] = block(item) }
 }
 
+fun <T: Any?> MutableList<T>.replace(predicate: (T) -> Boolean, block: (T) -> T) {
+    forEachIndexed { index: Int, item: T ->
+        if (predicate(item)) {
+            this[index] = block(item)
+        }
+    }
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
 fun Int.clamp(minValue: Int, maxValue: Int): Int =

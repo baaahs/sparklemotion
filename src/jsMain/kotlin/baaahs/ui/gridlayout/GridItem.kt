@@ -96,7 +96,7 @@ class GridItem(
         val newPosition = positionParams.calcGridItemPosition(
             nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState
         )
-        return !fastPositionEqual(oldPosition, newPosition) ||
+        return oldPosition != newPosition ||
                 props.useCSSTransforms !== nextProps.useCSSTransforms
     }
 
@@ -271,17 +271,15 @@ class GridItem(
         // Calculate min/max valraints using our min & maxes
         val mins = positionParams.calcGridItemPosition(0, 0, minW, minH)
         val maxes = positionParams.calcGridItemPosition(0, 0, maxW, maxH)
-        val minConstraints = arrayOf(mins.width, mins.height)
-        val maxConstraints = arrayOf(
-                min(maxes.width, maxWidth),
-                min(maxes.height, Int.MAX_VALUE)
+        val minConstraints = arrayOf<Number>(mins.width, mins.height)
+        val maxConstraints = arrayOf<Number>(
+                min(maxes.width, maxWidth).let { if (it == Int.MAX_VALUE) Double.POSITIVE_INFINITY else it },
+                min(maxes.height, Int.MAX_VALUE).let { if (it == Int.MAX_VALUE) Double.POSITIVE_INFINITY else it }
         )
         return createElement(Resizable, jso {
             // These are opts for the resize handle itself
             this.draggableOpts = jso {
-                jso {
-                    disabled = !isResizable
-                }
+                disabled = !isResizable
             }
             if (!isResizable) {
                 this.className = "react-resizable-hide".className
@@ -523,7 +521,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResizeStop(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, props.onResizeStop)
+        return onResizeHandler(e, callbackData, "onResizeStop")
     }
 
     /**
@@ -532,7 +530,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResizeStart(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, props.onResizeStart)
+        return onResizeHandler(e, callbackData, "onResizeStart")
     }
 
     /**
@@ -541,7 +539,7 @@ class GridItem(
      * @param  {Object} callbackData  an object with node and size information
      */
     private fun onResize(e: MouseEvent, callbackData: ResizeCallbackData) {
-        return onResizeHandler(e, callbackData, props.onResize)
+        return onResizeHandler(e, callbackData, "onResize")
     }
 
     /**
@@ -552,8 +550,10 @@ class GridItem(
      * @param  {String} handlerName Handler name to wrap.
      * @return {Function}           Handler function.
      */
-    private fun onResizeHandler(e: MouseEvent, callbackData: ResizeCallbackData, handler: GridItemCallback<GridResizeEvent>?) {
-        if (handler == null) return
+    private fun onResizeHandler(e: MouseEvent, callbackData: ResizeCallbackData, handlerName: String) {
+        val handler = props.asDynamic()[handlerName] as GridItemCallback<GridResizeEvent>
+            ?: return
+
         val cols = state.parentContainer.cols
         val x = props.x
         val y = props.y
@@ -583,7 +583,7 @@ class GridItem(
         h = h.clamp(minH, maxH)
 
         setState {
-            this.resizing = if (handler === props.onResizeStop) null else size
+            this.resizing = if (handlerName == "onResizeStop") null else size
         }
 
         handler.invoke(i, w, h, jso {
