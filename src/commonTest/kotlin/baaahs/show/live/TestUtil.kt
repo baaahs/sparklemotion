@@ -71,7 +71,7 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
 
     layouts.panels.values.forEach { panel ->
         buf.append("${panel.title}:\n")
-        controlDisplay.render(panel) { panelBucket ->
+        (controlDisplay as LegacyControlDisplay).render(panel) { panelBucket ->
             buf.append("  |${panelBucket.section.title}|")
             if (panelBucket.controls.isNotEmpty()) {
                 buf.append(" ${panelBucket.controls.joinToString(", ") { it.control.fakeRender() }}")
@@ -134,8 +134,8 @@ fun MutableShow.addFixtureControls() {
     }
 }
 
-fun ControlDisplay.renderBuckets(panel: Panel): List<ControlDisplay.PanelBuckets.PanelBucket> {
-    val buckets = arrayListOf<ControlDisplay.PanelBuckets.PanelBucket>()
+fun LegacyControlDisplay.renderBuckets(panel: Panel): List<LegacyControlDisplay.PanelBuckets.PanelBucket> {
+    val buckets = arrayListOf<LegacyControlDisplay.PanelBuckets.PanelBucket>()
     render(panel) { panelBucket -> buckets.add(panelBucket) }
     return buckets
 }

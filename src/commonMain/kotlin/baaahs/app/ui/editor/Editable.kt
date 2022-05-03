@@ -4,7 +4,7 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
-import baaahs.show.live.ControlDisplay
+import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.*
 
@@ -117,7 +117,7 @@ data class AddButtonToButtonGroupEditIntent(
 }
 
 class AddControlToPanelBucket<MC : MutableControl>(
-    private val panelBucket: ControlDisplay.PanelBuckets.PanelBucket,
+    private val panelBucket: LegacyControlDisplay.PanelBuckets.PanelBucket,
     private val createControlFn: (mutableShow: MutableShow) -> MC
 ) : AddToContainerEditIntent<MC>() {
     override fun createControl(mutableShow: MutableShow): MC {
@@ -151,5 +151,7 @@ class AddControlToGrid<MC : MutableControl>(
 }
 
 interface Editor<T> {
+    val title: String
     fun edit(mutableShow: MutableShow, block: T.() -> Unit)
+    fun delete(mutableShow: MutableShow)
 }

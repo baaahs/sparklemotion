@@ -5,8 +5,8 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.controlsPalette
 import baaahs.getBang
 import baaahs.show.LegacyTab
-import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
+import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.ui.and
 import baaahs.ui.unaryMinus
@@ -54,11 +54,8 @@ private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLay
     logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
 
     val controlDisplay = memo(props.show, props.show.getEnabledSwitchState()) {
-        ControlDisplay(
-            props.show, appContext.showManager, appContext.dragNDrop
-        ).also {
-            withCleanup { it.release() }
-        }
+        LegacyControlDisplay(props.show, appContext.showManager, appContext.dragNDrop)
+            .also { withCleanup { it.release() } }
     }
 
     val genericControlProps = memo(props.onShowStateChange, controlDisplay) {

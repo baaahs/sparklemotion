@@ -30,7 +30,7 @@ object ControlDisplaySpec : Spek({
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop<Int>() }
         val controlDisplay by value {
-            ControlDisplay(openShow, editHandler, dragNDrop)
+            LegacyControlDisplay(openShow, editHandler, dragNDrop)
         }
 
         context("empty show") {

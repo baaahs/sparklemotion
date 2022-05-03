@@ -137,10 +137,10 @@ class OpenButtonGroupControl(
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =
-        ButtonGroupDropTarget(controlDisplay)
+        ButtonGroupDropTarget(controlDisplay as LegacyControlDisplay)
 
     inner class ButtonGroupDropTarget(
-        private val controlDisplay: ControlDisplay
+        private val controlDisplay: LegacyControlDisplay
     ) : DropTarget<Int> {
         override val dropTargetId = controlDisplay.dragNDrop.addDropTarget(this)
         override val type: String get() = "ControlContainer"
@@ -153,10 +153,10 @@ class OpenButtonGroupControl(
         }
 
         override fun willAccept(draggable: Draggable<Int>): Boolean {
-            return draggable is ControlDisplay.PlaceableControl
+            return draggable is LegacyControlDisplay.PlaceableControl
         }
 
-        override fun getDraggable(position: Int): Draggable<Int> = object : ControlDisplay.PlaceableControl {
+        override fun getDraggable(position: Int): Draggable<Int> = object : LegacyControlDisplay.PlaceableControl {
             override val mutableShow: MutableShow by lazy { controlDisplay.show.edit() }
             override lateinit var mutableControl: MutableControl
 
@@ -174,14 +174,14 @@ class OpenButtonGroupControl(
         }
 
         override fun insertDraggable(draggable: Draggable<Int>, position: Int) {
-            draggable as ControlDisplay.PlaceableControl
+            draggable as LegacyControlDisplay.PlaceableControl
             draggable.mutableShow.findButtonGroup()
                 .buttons
                 .add(position, draggable.mutableControl as MutableButtonControl)
         }
 
         override fun removeDraggable(draggable: Draggable<Int>) {
-            draggable as ControlDisplay.PlaceableControl
+            draggable as LegacyControlDisplay.PlaceableControl
             draggable.remove()
         }
 

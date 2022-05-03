@@ -5,6 +5,7 @@ import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.controls.problemBadge
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -19,27 +20,43 @@ import react.dom.onMouseDown
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layout
+    val showManager = appContext.showManager
 
+    val control = props.control
     val layout = props.controlProps.layout
     val layoutEditor = props.controlProps.layoutEditor
 
     // We're inside a draggable; prevent the mousedown from starting a drag.
-    val handleEditMouseDown by mouseEventHandler() { e: MouseEvent<*, *> ->
-        e.stopPropagation()
-    }
+    val handleEditMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
+    val handleDeleteMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
 
-    val handleEditButtonClick = callback(props.control, layout, layoutEditor) { event: Event ->
-        props.control.getEditIntent()
+    val handleEditButtonClick = callback(control, layout, layoutEditor) { event: Event ->
+        control.getEditIntent()
             ?.withLayout(layout, layoutEditor)
             ?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 
-    with (props.control.getView(props.controlProps)) {
+    val handleDeleteButtonClick = callback(control, layoutEditor, showManager.show) { event: Event ->
+        val mutableShow = MutableShow(showManager.show!!)
+        layoutEditor!!.delete(mutableShow)
+        showManager.onEdit(mutableShow, true)
+
+        event.preventDefault()
+    }
+
+    with (control.getView(props.controlProps)) {
         render()
     }
 
-    problemBadge(props.control)
+    problemBadge(control)
+
+    div(+styles.deleteButton and styles.deleteModeControl) {
+        attrs.onMouseDown = handleDeleteMouseDown
+        attrs.onClickFunction = handleDeleteButtonClick
+
+        icon(mui.icons.material.Delete)
+    }
 
     div(+styles.editButton and styles.editModeControl) {
         attrs.onMouseDown = handleEditMouseDown

@@ -2,12 +2,10 @@ package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
 import baaahs.ui.*
-import external.react_compound_slider.*
 import external.lodash.throttle
+import external.react_compound_slider.*
 import react.*
 import react.dom.div
-import react.dom.label
-import react.dom.setProp
 import kotlin.math.floor
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
@@ -41,10 +39,10 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     }
 
     div(+styles.wrapper) {
-        label(+styles.label) {
-            setProp("htmlFor", "range-slider")
-            props.title
-        }
+//        label(+styles.label) {
+//            setProp("htmlFor", "range-slider")
+//            +props.title
+//        }
 
         Slider {
             attrs.className = styles.slider.name

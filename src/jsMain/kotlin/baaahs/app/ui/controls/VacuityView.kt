@@ -15,8 +15,7 @@ private val VacuityView = xComponent<VacuityProps>("Vacuity") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
 
-    val controlDisplay = props.controlProps.controlDisplay
-    val relevantUnplacedControls = controlDisplay?.relevantUnplacedControls ?: emptyList()
+    val relevantUnplacedControls = props.controlProps.relevantUnplacedControls
 
     div(+styles.vacuityContainer) {
         relevantUnplacedControls.forEachIndexed { index, unplacedControl ->

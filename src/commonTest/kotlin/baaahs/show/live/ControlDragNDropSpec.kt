@@ -4,7 +4,6 @@ import baaahs.control.OpenButtonGroupControl
 import baaahs.getBang
 import baaahs.gl.override
 import baaahs.show.Panel
-import baaahs.show.live.ControlDisplay.PanelBuckets.PanelBucket
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -36,11 +35,11 @@ object ControlDragNDropSpec : Spek({
         val openShow by value { showPlayer.openShow(show) }
         val editHandler by value { FakeEditHandler() }
         val dragNDrop by value { FakeDragNDrop<Int>() }
-        val controlDisplay by value { ControlDisplay(openShow, editHandler, dragNDrop) }
+        val controlDisplay by value { LegacyControlDisplay(openShow, editHandler, dragNDrop) }
 
         fun renderEditedShow(): String {
             val editedOpenShow = showPlayer.openShow(editHandler.updatedShow, openShow.getShowState())
-            val newControlDisplay = ControlDisplay(editedOpenShow, editHandler, dragNDrop)
+            val newControlDisplay = LegacyControlDisplay(editedOpenShow, editHandler, dragNDrop)
             return editedOpenShow.fakeRender(newControlDisplay)
         }
 
@@ -56,7 +55,7 @@ object ControlDragNDropSpec : Spek({
             }
         }
 
-        fun findBucket(panelId: String, sectionTitle: String): PanelBucket {
+        fun findBucket(panelId: String, sectionTitle: String): LegacyControlDisplay.PanelBuckets.PanelBucket {
             val panelBucket = panelBuckets.getBang(panelId, "panel")
             return panelBucket.find { it.section.title == sectionTitle }
                 ?: error(unknown("section", sectionTitle, panelBucket.map { it.section.title }))

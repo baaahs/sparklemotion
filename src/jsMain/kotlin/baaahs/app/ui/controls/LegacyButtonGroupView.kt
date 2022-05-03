@@ -6,6 +6,7 @@ import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
+import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenControl
 import baaahs.ui.install
 import baaahs.ui.unaryMinus
@@ -30,7 +31,8 @@ private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyBu
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
+    val controlDisplay = props.controlProps.controlDisplay as LegacyControlDisplay?
+    val dropTarget = controlDisplay?.dropTargetFor(buttonGroupControl)
 
     val onShowStateChange = props.controlProps.onShowStateChange
 

@@ -96,6 +96,9 @@ infix fun String.and(that: String): String = "$this $that"
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     child(".${styleSheet.name}-${rule.name}") { block() }
 
+fun StyleSheet.selector(rule: KProperty0<RuleSet>) =
+    ".$name-${rule.name}"
+
 fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     descendants(".${styleSheet.name}-${rule.name}") { block() }
 
