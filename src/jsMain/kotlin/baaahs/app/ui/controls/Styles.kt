@@ -24,6 +24,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
             transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
         }
     }
+    val buttonGroupCardBackgroundHackHackHack by css {
+        backgroundColor = Color("#0000007f")
+    }
 
     val horizontalButtonList by css {
         padding(2.px)

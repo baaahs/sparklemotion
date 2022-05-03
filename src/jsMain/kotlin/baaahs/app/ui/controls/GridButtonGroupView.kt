@@ -9,6 +9,7 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.and
 import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
@@ -91,7 +92,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 
     Card {
         ref = cardRef
-        attrs.classes = jso { root = -Styles.buttonGroupCard }
+        attrs.classes = jso { root = -Styles.buttonGroupCard and Styles.buttonGroupCardBackgroundHackHackHack }
 
         gridLayout {
             attrs.id = buttonGroupControl.id
