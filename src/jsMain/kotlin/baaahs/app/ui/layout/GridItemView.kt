@@ -13,6 +13,8 @@ import materialui.icon
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import react.dom.events.MouseEvent
+import react.dom.onMouseDown
 
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val appContext = useContext(appContext)
@@ -20,7 +22,13 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
 
     val layout = props.controlProps.layout
     val layoutEditor = props.controlProps.layoutEditor
-    val onEditButtonClick = callback(props.control, layout, layoutEditor) { event: Event ->
+
+    // We're inside a draggable; prevent the mousedown from starting a drag.
+    val handleEditMouseDown by mouseEventHandler() { e: MouseEvent<*, *> ->
+        e.stopPropagation()
+    }
+
+    val handleEditButtonClick = callback(props.control, layout, layoutEditor) { event: Event ->
         props.control.getEditIntent()
             ?.withLayout(layout, layoutEditor)
             ?.let { appContext.openEditor(it) }
@@ -34,7 +42,8 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     problemBadge(props.control)
 
     div(+styles.editButton and styles.editModeControl) {
-        attrs.onClickFunction = onEditButtonClick
+        attrs.onMouseDown = handleEditMouseDown
+        attrs.onClickFunction = handleEditButtonClick
 
         icon(mui.icons.material.Edit)
     }

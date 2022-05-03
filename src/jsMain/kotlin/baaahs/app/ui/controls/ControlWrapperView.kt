@@ -26,9 +26,9 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
     val control = props.control
 
-    val onEditButtonClick = callback(control) { event: Event ->
+    val handleEditButtonClick = callback(control) { e: Event ->
         control.getEditIntent()?.let { appContext.openEditor(it) }
-        event.preventDefault()
+        e.preventDefault()
     }
 
     Card {
@@ -46,7 +46,7 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
         if (editMode.isAvailable && !props.disableEdit) {
             div(+Styles.editButton) {
-                attrs.onClickFunction = onEditButtonClick
+                attrs.onClickFunction = handleEditButtonClick
 
                 icon(mui.icons.material.Edit)
             }
