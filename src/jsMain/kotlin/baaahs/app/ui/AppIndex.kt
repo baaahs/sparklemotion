@@ -198,7 +198,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.theme = theme
                 CssBaseline {}
 
-                div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
+                Paper {
+                    attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
+
                     appDrawer {
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen

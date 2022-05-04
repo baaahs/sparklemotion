@@ -128,15 +128,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         display = Display.block
         position = Position.absolute
         top = 0.5.em
-        left = 0.5.px
-        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
+        left = 1.5.px
+//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
         declarations["writing-mode"] = "vertical-lr"
         userSelect = UserSelect.none
         pointerEvents = PointerEvents.none
-    }
-
-    val dataSourceLonelyTitle by css {
-        fontWeight = FontWeight.bold
     }
 
     val beatLinkedSwitch by css {

@@ -44,15 +44,8 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
     val gridCell by css {
         display = Display.grid
-        border(1.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.5))
-        transition(::border)
 
-//        outlineWidth = 3.px
-//        put("outlineStyle", "dashed")
-//        outlineColor = theme.palette.text.primary.asColor().withAlpha(.5)
-//        outlineOffset = 6.px
-
-        zIndex = 10
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         descendants(selector(::gridContainer)) {
             pointerEvents = PointerEvents.auto
