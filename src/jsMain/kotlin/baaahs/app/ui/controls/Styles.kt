@@ -2,10 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
-import baaahs.ui.asColor
-import baaahs.ui.child
-import baaahs.ui.descendants
-import baaahs.ui.name
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.border
@@ -123,18 +120,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
     }
 
-    val dataSourceTitle by css {
-        fontWeight = FontWeight.w500
-        display = Display.block
-        position = Position.absolute
-        top = 0.5.em
-        left = 1.5.px
-//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
-        declarations["writing-mode"] = "vertical-lr"
-        userSelect = UserSelect.none
-        pointerEvents = PointerEvents.none
-    }
-
     val beatLinkedSwitch by css {
         position = Position.absolute
         left = 0.px
@@ -237,6 +222,19 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 //            transform { rotate((-90).deg) }
 //            declarations["transformOrigin"] = "top right"
 //        }
+    }
+
+    val dataSourceTitle by css {
+        fontWeight = FontWeight.w500
+        display = Display.block
+        position = Position.absolute
+        top = 0.5.em
+        left = 1.5.px
+        color = theme.paperHighContrast
+//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
+        declarations["writing-mode"] = "vertical-lr"
+        userSelect = UserSelect.none
+        pointerEvents = PointerEvents.none
     }
 
     val transitionHoldButton by css {

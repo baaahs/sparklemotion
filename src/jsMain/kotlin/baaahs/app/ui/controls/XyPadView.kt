@@ -1,6 +1,7 @@
 package baaahs.app.ui.controls
 
 import baaahs.Gadget
+import baaahs.app.ui.appContext
 import baaahs.control.OpenXyPadControl
 import baaahs.geom.Vector2F
 import baaahs.show.live.ControlProps
@@ -13,15 +14,15 @@ import kotlinx.html.js.onMouseMoveFunction
 import kotlinx.html.js.onMouseUpFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
-import react.useRef
 import styled.StyleSheet
 import styled.inlineStyles
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
+    val appContext = useContext(appContext)
+    val controlsStyles = appContext.allStyles.controls
+
     val padSize = Vector2F(200f, 200f)
     val knobSize = Vector2F(20f, 20f)
     val helper = memo(padSize, knobSize, props.xyPadControl) {
@@ -141,7 +142,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
             }
         }
 
-        div(+Styles.dataSourceTitle) { +xyPad.title }
+        div(+controlsStyles.dataSourceTitle) { +xyPad.title }
     }
 }
 
