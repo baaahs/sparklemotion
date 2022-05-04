@@ -69,7 +69,7 @@ fun OpenControl.fakeRender(): String {
 fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     val buf = StringBuilder()
 
-    layouts.panels.values.forEach { panel ->
+    layouts.panels.entries.sortedBy { (k, v) -> k }.forEach { (_, panel) ->
         buf.append("${panel.title}:\n")
         (controlDisplay as LegacyControlDisplay).render(panel) { panelBucket ->
             buf.append("  |${panelBucket.section.title}|")
