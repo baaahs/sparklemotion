@@ -15,8 +15,8 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         height = 100.pct
 //        height = 200.px
         marginLeft = 45.pct
-        marginTop = 5.px
-        marginBottom = 5.px
+        marginTop = 15.px
+        marginBottom = 15.px
         put("touchAction", "none")
     }
 
@@ -30,6 +30,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         fontSize = 14.px
         marginBottom = 8.px
         put("textShadow", "0px 1px 1px black")
+        border = "2px groove #555"
     }
 
     val label by css {
