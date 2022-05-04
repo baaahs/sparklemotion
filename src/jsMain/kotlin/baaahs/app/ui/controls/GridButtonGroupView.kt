@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.gridItem
+import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.forEach
 import baaahs.show.live.ControlProps
@@ -23,11 +24,13 @@ import kotlinx.dom.hasClass
 import kotlinx.js.jso
 import mui.material.Card
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
+import react.dom.html.ReactHTML
 import react.useContext
 
 private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGroup") { props ->
@@ -87,6 +90,15 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     val controls = gridLayout.items.associate { it.control.id to it.control }
     val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
+    val handleGridItemClick by mouseEventHandler(gridLayout.items) { e ->
+        (e.currentTarget as HTMLElement).dataset["gridIndex"]?.toInt()?.let { clickedIndex ->
+            gridLayout.items.forEachIndexed { index, it ->
+                (it.control as? OpenButtonControl)?.isPressed = index == clickedIndex
+            }
+            onShowStateChange()
+            e.stopPropagation()
+        }
+    }
 
     Card {
         ref = cardRef
@@ -111,8 +123,13 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
             attrs.isBounded = false
 
             layout.items.forEachIndexed { index, layoutItem ->
-                div(+layoutStyles.gridCell) {
+                child(ReactHTML.div) {
                     key = layoutItem.i
+                    attrs.className = -layoutStyles.gridCell
+                    if (editMode.isOff) {
+                        attrs.asDynamic()["data-grid-index"] = index
+                        attrs.onClickCapture = handleGridItemClick
+                    }
 
                     val subEditor = object : Editor<MutableIGridLayout> {
                         override val title: String = "Grid buttongroup layout editor for ${layoutItem.i}"
