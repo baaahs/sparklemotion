@@ -7,6 +7,7 @@ import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import mui.material.Typography
 import mui.material.TypographyProps
+import mui.material.styles.Theme
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
@@ -236,3 +237,12 @@ val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
 fun csstype.Color.asColor(): Color = Color(this.unsafeCast<String>())
+
+fun Theme.paperContrast(amount: Double) =
+    palette.text.primary.asColor()
+        .withAlpha(amount)
+        .blend(Color(palette.background.paper))
+
+val Theme.paperLowContrast get() = paperContrast(.25)
+val Theme.paperMediumContrast get() = paperContrast(.5)
+val Theme.paperHighContrast get() = paperContrast(.75)
