@@ -78,6 +78,7 @@ private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyBu
                             .decode(Styles.horizontalButtonList, Styles.verticalButtonList)
                     }
                     attrs.color = ToggleButtonGroupColor.primary
+                    attrs.value = "n/a"
 
                     install(sceneDropProvided)
 
