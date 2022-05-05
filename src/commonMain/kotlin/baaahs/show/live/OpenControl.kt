@@ -22,7 +22,8 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int) {}
+    fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
