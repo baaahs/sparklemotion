@@ -4,10 +4,6 @@ import baaahs.controller.SacnManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
-import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightRing
 import baaahs.visualizer.EntityAdapter
@@ -17,7 +13,6 @@ import baaahs.visualizer.toVector3
 
 actual class LightRingSimulation actual constructor(
     val lightRing: LightRing,
-    private val simulationEnv: SimulationEnv,
     adapter: EntityAdapter
 ) : FixtureSimulation {
     // Assuming circumference is in inches, specify 1.5 LEDs per inch, or about 60 per meter.
@@ -46,7 +41,7 @@ actual class LightRingSimulation actual constructor(
             by lazy { LightRingVisualizer(lightRing, vizPixels) }
 
     val wledSimulator by lazy {
-        val wledsSimulator = simulationEnv[WledsSimulator::class]
+        val wledsSimulator = adapter.simulationEnv[WledsSimulator::class]
         wledsSimulator.createFakeWledDevice(lightRing.name, vizPixels)
     }
 
@@ -68,20 +63,6 @@ actual class LightRingSimulation actual constructor(
 
     override fun stop() {
         wledSimulator.stop()
-    }
-
-    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-        remoteConfig as PixelArrayRemoteConfig
-        itemVisualizer.vizPixels = VizPixels(
-            pixelLocations.map { it.toVector3() }.toTypedArray(),
-            LightBarSimulation.pixelVisualizationNormal,
-            lightRing.transformation,
-            remoteConfig.pixelFormat
-        )
-    }
-
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-        itemVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {

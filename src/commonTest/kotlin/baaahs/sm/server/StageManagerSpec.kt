@@ -4,6 +4,7 @@ import baaahs.*
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
+import baaahs.fixtures.StubFixtureManager
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.*
 import baaahs.gl.render.RenderManager
@@ -23,7 +24,6 @@ import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
-import baaahs.visualizer.remote.RemoteVisualizerServer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -323,21 +323,3 @@ object StageManagerSpec : Spek({
         }
     }
 })
-
-open class StubFixtureManager : FixtureManager {
-    override val facade: FixtureManagerImpl.Facade
-        get() = TODO("not implemented")
-
-    override fun addFrameListener(frameListener: FrameListener):Unit = TODO("not implemented")
-    override fun removeFrameListener(frameListener: FrameListener):Unit = TODO("not implemented")
-    override fun activePatchSetChanged(activePatchSet: ActivePatchSet):Unit = TODO("not implemented")
-    override fun hasActiveRenderPlan(): Boolean = TODO("not implemented")
-    override fun maybeUpdateRenderPlans(): Boolean = TODO("not implemented")
-    override fun sendFrame():Unit = TODO("not implemented")
-    override fun newRemoteVisualizerServer(): RemoteVisualizerServer = TODO("not implemented")
-    override fun addRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener):Unit = TODO("not implemented")
-    override fun removeRemoteVisualizerListener(listener: RemoteVisualizerServer.Listener):Unit =
-        TODO("not implemented")
-    override fun fixturesChanged(addedFixtures: Collection<Fixture>, removedFixtures: Collection<Fixture>):Unit =
-        TODO("not implemented")
-}

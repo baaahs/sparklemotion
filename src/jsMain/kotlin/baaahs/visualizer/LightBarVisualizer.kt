@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.geom.Vector3F
+import baaahs.io.ByteArrayReader
 import baaahs.model.LightBar
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
@@ -205,5 +206,9 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         }
 
         pixelsPreview.setLocations(pixelLocations)
+    }
+
+    override fun receiveRemoteFrameData(reader: ByteArrayReader) {
+        vizPixels?.readColors(reader)
     }
 }

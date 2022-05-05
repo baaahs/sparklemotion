@@ -8,7 +8,6 @@ import baaahs.fixtures.FixtureMapping
 import baaahs.geom.*
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
-import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
@@ -77,7 +76,7 @@ class Model(
         val problems: Collection<Problem>
         val id: EntityId
 
-        fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation?
+        fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation?
         fun createVisualizer(adapter: EntityAdapter): ItemVisualizer<out Entity>
 
         fun findById(id: EntityId): Entity? =
@@ -163,8 +162,8 @@ class Model(
 
         open fun allVertices(): Collection<Vector3F> = geometry.vertices
 
-        override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
-            BrainSurfaceSimulation(this, simulationEnv, adapter)
+        override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
+            BrainSurfaceSimulation(this, adapter)
 
         override fun createVisualizer(adapter: EntityAdapter) =
             adapter.createSurfaceVisualizer(this)

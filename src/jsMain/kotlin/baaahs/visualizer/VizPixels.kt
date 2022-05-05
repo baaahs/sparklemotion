@@ -152,7 +152,7 @@ class VizPixels(
 
     fun clamp(f: Float): Float = min(1f, max(f, 0f))
 
-    fun readColors(reader: ByteArrayReader ) {
+    fun readColors(reader: ByteArrayReader) {
         val pixelCount = reader.readInt()
         val minPixCount = min(size, pixelCount)
         for (i in 0 until minPixCount) {

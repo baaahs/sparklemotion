@@ -24,9 +24,14 @@ import baaahs.scene.SceneProvider
 import baaahs.show.ShowMonitor
 import baaahs.show.ShowProvider
 import baaahs.sim.BrowserSandboxFs
+import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.PixelArranger
+import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import org.koin.core.module.Module
@@ -103,7 +108,16 @@ class JsMonitorWebClientModule : KModule {
             scoped<IFileDialog> { get<FileDialog>() }
             scoped { Notifier(get()) }
             scoped { Visualizer(get()) }
-            scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
+            scoped {
+                val simulationEnv = SimulationEnv {
+                    component(get<Clock>())
+                    component(FakeDmxUniverse())
+                    component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
+                    component(get<Visualizer>())
+                }
+                val entityAdapter = EntityAdapter(simulationEnv)
+                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), entityAdapter, get())
+            }
             scoped { MonitorUi(get(), get()) }
         }
     }

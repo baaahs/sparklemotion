@@ -3,6 +3,8 @@ package baaahs.visualizer
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.MutableDmxTransportConfig
+import baaahs.fixtures.RemoteConfig
+import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.IObservable
@@ -42,6 +44,14 @@ interface ItemVisualizer<T: Any> : IObservable {
     }
 
     fun applyStyles()
+
+    fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
+        // No-op by default.
+    }
+
+    fun receiveRemoteFrameData(reader: ByteArrayReader) {
+        // No-op by default.
+    }
 }
 
 interface VisualizerBuilder {
