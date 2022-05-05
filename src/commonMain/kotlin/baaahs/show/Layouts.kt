@@ -50,6 +50,12 @@ data class LegacyTab(
 
     override fun open(openContext: OpenContext): OpenTab =
         this
+
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        builder.show.controlLayout.forEach { (panel, openControls) ->
+            openControls.forEach { openControl -> openControl.legacyAddTo(builder, panel, depth + 1) }
+        }
+    }
 }
 
 @Serializable @SerialName("Grid")

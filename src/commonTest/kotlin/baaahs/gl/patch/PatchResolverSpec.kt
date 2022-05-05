@@ -80,7 +80,12 @@ object PatchResolverSpec : Spek({
         val mainPanel = MutablePanel(Panel("Main"))
         val mutableShow by value {
             MutableShow("test show") {
-                editLayouts { panels["main"] = mainPanel }
+                editLayouts {
+                    panels["main"] = mainPanel
+                    editLayout("default") {
+                        tabs.add(MutableLegacyTab("Tab"))
+                    }
+                }
             }
         }
         val show by value {

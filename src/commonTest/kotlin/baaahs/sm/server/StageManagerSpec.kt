@@ -17,6 +17,7 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.*
 import baaahs.show.Shader
 import baaahs.show.live.ActivePatchSet
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -82,6 +83,9 @@ object StageManagerSpec : Spek({
                 MutableShow("test show") {
                     editLayouts {
                         panels["panel"] = panel
+                        editLayout("default") {
+                            tabs.add(MutableLegacyTab("Tab"))
+                        }
                     }
 
                     addPatch(

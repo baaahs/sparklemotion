@@ -115,14 +115,10 @@ class OpenShow(
         allControls.forEach { it.applyConstraints() }
     }
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, depth: Int) {
-        super.addTo(activePatchSetBuilder, depth)
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        super.addTo(builder, depth)
 
-        allControls.forEach {
-            if (it is OpenPatchHolder && it.isActive()) {
-                it.addTo(activePatchSetBuilder, depth + 1)
-            }
-        }
+        openLayouts.currentFormat?.addTo(builder, depth + 1)
     }
 
     fun getEnabledSwitchState(): Set<String> {
@@ -175,10 +171,16 @@ class OpenLayout(
         }
 
     val currentTab get() = currentTabIndex?.let { tabs[it] }
+
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        currentTab?.addTo(builder, depth + 1)
+    }
 }
 
 interface OpenTab {
     val title: String
+
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int)
 }
 
 class OpenGridTab(
@@ -186,7 +188,13 @@ class OpenGridTab(
     override var columns: Int,
     override var rows: Int,
     override val items: List<OpenGridItem>
-) : OpenTab, OpenIGridLayout
+) : OpenTab, OpenIGridLayout {
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        items.forEach { item ->
+            item.control.addTo(builder, depth + 1)
+        }
+    }
+}
 
 class OpenGridLayout(
     override val columns: Int,

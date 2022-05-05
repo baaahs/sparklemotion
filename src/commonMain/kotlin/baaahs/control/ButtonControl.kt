@@ -106,10 +106,12 @@ class OpenButtonControl(
 
     override fun applyState(state: Map<String, JsonElement>) = switch.applyState(state)
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
-        if (isPressed) {
-            addTo(activePatchSetBuilder, depth)
-        }
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        if (isPressed) super<OpenPatchHolder>.addTo(builder, depth)
+    }
+
+    override fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
+        if (isPressed) super<OpenPatchHolder>.legacyAddTo(builder, panel, depth)
     }
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =

@@ -132,8 +132,8 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
-        buttons.forEach { it.addTo(activePatchSetBuilder, panel, depth + 1) }
+    override fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
+        buttons.forEach { it.legacyAddTo(builder, panel, depth + 1) }
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =

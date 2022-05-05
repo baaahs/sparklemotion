@@ -87,7 +87,8 @@ fun createLayouts(mutableShow: MutableShow, vararg panelNames: String): MutableL
     return MutableLayouts(
         Layouts(
             panelNames.associateWith { Panel(it) },
-            mapOf("default" to Layout(null, emptyList()))
+            mapOf("default" to Layout(null,
+                listOf(LegacyTab("Legacy Tab", emptyList(), emptyList(), emptyList()))))
         ), mutableShow
     )
 }
