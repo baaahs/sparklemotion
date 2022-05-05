@@ -12,6 +12,7 @@ import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
 import baaahs.plugin.Plugins
+import baaahs.ui.KeyboardShortcutHandler
 import baaahs.ui.Prompt
 import baaahs.ui.ReactBeautifulDragNDrop
 import baaahs.util.Clock
@@ -34,6 +35,7 @@ external interface AppContext {
     var uiSettings: UiSettings
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
+    var keyboardShortcutHandler: KeyboardShortcutHandler
     var clock: Clock
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade

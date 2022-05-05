@@ -109,13 +109,15 @@ class WebClient(
         val isConnected: Boolean
             get() = pubSub.isConnected
 
+        val serverIsOnline: Boolean
+            get() = this@WebClient.pinkyState != null
+                    && clientData != null
+
+        val showManagerIsReady: Boolean
+            get() = showManager.everSynched
+
         val fsRoot: Fs.File?
             get() = this@WebClient.clientData?.fsRoot
-
-        val isLoaded: Boolean
-            get() = this@WebClient.pinkyState == PinkyState.Running
-                    && clientData != null
-                    && showManager.everSynched
 
         val isMapping: Boolean
             get() = this@WebClient.pinkyState == PinkyState.Mapping

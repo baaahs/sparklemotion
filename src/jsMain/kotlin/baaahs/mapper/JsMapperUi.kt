@@ -10,6 +10,8 @@ import baaahs.getValue
 import baaahs.imaging.*
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
+import baaahs.ui.Keypress
+import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
 import baaahs.ui.value
 import baaahs.util.Logger
@@ -48,7 +50,7 @@ class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
     val clickedStop = mapperUi::clickedStop
     val clickedGoToSurface = mapperUi::clickedGoToSurface
     val loadMappingSession = mapperUi::loadMappingSession
-    val onKeydown = { event: Event -> mapperUi.gotUiKeypress(event as KeyboardEvent) }
+    val keyHandler = mapperUi::gotUiKeypress
 }
 
 class MapperStatus : Observable() {
@@ -136,6 +138,8 @@ class JsMapperUi(
         width: Int,
         height: Int
     ) {
+        onLaunch()
+
         this.ui2dCanvas = ui2dCanvas
         this.diffCanvas = diffCanvas
         this.snapshotCanvas = snapshotCanvas
@@ -156,9 +160,11 @@ class JsMapperUi(
     }
 
     fun onUnmount() {
+        onClose()
     }
 
-    fun gotUiKeypress(event: KeyboardEvent) {
+    fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
+        var result = KeypressResult.Handled
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -176,8 +182,10 @@ class JsMapperUi(
         } else if (event.key.length == 1) {
             commandProgress += event.key
             checkProgress()
-        }
+        } else result = KeypressResult.NotHandled
         showMessage2(commandProgress)
+
+        return result
     }
 
     private fun checkProgress() {
