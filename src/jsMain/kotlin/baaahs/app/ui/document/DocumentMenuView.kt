@@ -51,10 +51,13 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
                                             }
                                             is Option -> {
                                                 ListItem {
+                                                    attrs.disableGutters = true
+
                                                     ListItemButton {
                                                         attrs.onClick = option.onSelect.withMouseEvent()
+
+                                                        ListItemText { +option.title }
                                                     }
-                                                    ListItemText { +option.title }
                                                 }
                                             }
                                         }

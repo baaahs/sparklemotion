@@ -28,6 +28,8 @@ data class ActivePatchSet(
         activePatches.filter { patch -> patch.matches(fixture) }
 
     interface Builder {
+        val show: OpenShow
+
         fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String = "")
     }
 
@@ -35,7 +37,7 @@ data class ActivePatchSet(
         val Empty = ActivePatchSet(emptyList(), emptyMap(), emptyMap())
 
         fun build(
-            root: OpenPatchHolder,
+            show: OpenShow,
             allDataSources: Map<String, DataSource>,
             feeds: Map<DataSource, Feed>
         ): ActivePatchSet {
@@ -43,11 +45,14 @@ data class ActivePatchSet(
             var nextSerial = 0
 
             val builder = object : Builder {
+                override val show: OpenShow
+                    get() = show
+
                 override fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String) {
                     items.add(Item(patchHolder, depth, layoutContainerId, nextSerial++))
                 }
             }
-            root.addTo(builder, 0)
+            show.addTo(builder, 0)
 
             return ActivePatchSet(
                 sort(items),
@@ -60,6 +65,7 @@ data class ActivePatchSet(
             items.sortedWith(
                 compareBy<Item> { it.depth }
                     .thenBy { it.layoutContainerId }
+                    .thenBy { it.patchHolder.title }
                     .thenBy { it.serial }
             ).map { it.patchHolder }
                 .flatMap { it.patches }

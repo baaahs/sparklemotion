@@ -41,7 +41,7 @@ class MutableBeatLinkControl : MutableControl {
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): BeatLinkControl {
+    override fun buildControl(showBuilder: ShowBuilder): BeatLinkControl {
         return BeatLinkControl()
     }
 

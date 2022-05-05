@@ -1,0 +1,1 @@
+{"model":{"title":"Tech Demo","entities":[{"type":"MovingHead","title":"Mover","baseDmxChannel":1}],"units":"Inches"},"controllers":{"DMX:usb idAC00JW89":{"type":"DirectDMX","title":"usb name FT232R USB UART","fixtures":[{"entityId":"Mover","fixtureConfig":{"type":"MovingHead","adapter":{"type":"Shenzarpy"}},"transportConfig":{"type":"DMX","startChannel":1}}]}}}

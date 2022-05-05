@@ -2,6 +2,7 @@ package baaahs.show
 
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.Editable
+import baaahs.camelize
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableControl
@@ -12,7 +13,7 @@ interface Control : Editable {
 
     val controlledDataSourceId: String? get() = null
 
-    fun suggestId(): String = "control"
+    fun suggestId(): String = title.camelize()
 
     /** Don't call this directly; use [MutableShow.findControl]. */
     fun createMutable(mutableShow: MutableShow): MutableControl

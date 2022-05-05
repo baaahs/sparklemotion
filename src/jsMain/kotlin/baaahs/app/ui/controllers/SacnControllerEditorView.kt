@@ -29,6 +29,11 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
         props.editingController.onChange()
     }
 
+    val handleUniversesChange by handler(mutableConfig, props.editingController) { value: Int ->
+        mutableConfig.universes = value
+        props.editingController.onChange()
+    }
+
     Container {
         attrs.classes = jso { root = -styles.propertiesEditSection }
         attrs.sx {
@@ -51,9 +56,7 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
         }
 
         with (appContext.allStyles.modelEditor) {
-            numberTextField("Universes", mutableConfig.universes, onChange = {
-                mutableConfig.universes = it
-            })
+            numberTextField("Universes", mutableConfig.universes, onChange = handleUniversesChange)
         }
     }
 }

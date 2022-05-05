@@ -6,7 +6,7 @@ import external.DropReason
 import external.DropResult
 import external.ResponderProvided
 
-class ReactBeautifulDragNDrop : DragNDrop() {
+class ReactBeautifulDragNDrop : DragNDrop<Int>() {
     fun onDragEnd(dropResult: DropResult, responderProvided: ResponderProvided) {
         if (dropResult.reason == DropReason.DROP.name) {
             val dropSourceLoc = dropResult.source
@@ -21,7 +21,7 @@ class ReactBeautifulDragNDrop : DragNDrop() {
         }
     }
 
-    private fun findTarget(location: DraggableLocation): DropTarget? {
+    private fun findTarget(location: DraggableLocation): DropTarget<Int>? {
         val dropTarget = dropTargets[location.droppableId]
         if (dropTarget == null) {
             logger.warn { "No such drop target ${location.droppableId}" }

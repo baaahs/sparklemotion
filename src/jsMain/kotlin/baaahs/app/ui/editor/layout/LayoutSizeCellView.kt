@@ -22,7 +22,7 @@ import react.dom.onClick
 import react.dom.span
 import react.useContext
 
-val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
+private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
@@ -33,7 +33,7 @@ val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { pro
 
     val handleMenuUnitClick = callback(gridSizeMenuAnchor, props.dimen) { unit: String ->
         props.dimen .unit = unit
-        props.onChange()
+        props.onChange(true)
         gridSizeMenuAnchor = null
     }
     val handleMenuEmClick by mouseEventHandler(handleMenuUnitClick) { handleMenuUnitClick("em") }
@@ -50,7 +50,7 @@ val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { pro
 
     val handleGridSizeScalarChange by newEventHandler(props.dimen) { event: FormEvent<*> ->
         props.dimen.scalar = event.target.value.toFloat()
-        props.onChange()
+        props.onChange(true)
         forceRender()
     }
 
@@ -119,7 +119,7 @@ val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { pro
 external interface LayoutSizeCellProps : Props {
     var dimen: MutableLayoutDimen
     var type: String
-    var onChange: () -> Unit
+    var onChange: (pushToUndoStack: Boolean) -> Unit
     var onDuplicate: () -> Unit
     var onDelete: () -> Unit
 }

@@ -1,13 +1,20 @@
 package baaahs.show.live
 
 import baaahs.ShowPlayer
+import baaahs.app.ui.dialog.DialogPanel
+import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.editor.GridLayoutEditorPanel
 import baaahs.control.OpenButtonControl
 import baaahs.getBang
 import baaahs.randomId
 import baaahs.show.*
+import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableILayout
 import baaahs.show.mutable.MutableShow
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
+import baaahs.ui.Observable
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -48,6 +55,7 @@ class OpenShow(
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
     val id = randomId("show")
     val layouts get() = show.layouts
+    val openLayouts = show.layouts.open(openContext)
     val allDataSources = show.dataSources
     val allControls: List<OpenControl> get() = openContext.allControls
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
@@ -107,6 +115,12 @@ class OpenShow(
         allControls.forEach { it.applyConstraints() }
     }
 
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        super.addTo(builder, depth)
+
+        openLayouts.currentFormat?.addTo(builder, depth + 1)
+    }
+
     fun getEnabledSwitchState(): Set<String> {
         return allControls
             .filterIsInstance<OpenButtonControl>()
@@ -137,6 +151,82 @@ class OpenShow(
         private val logger = Logger("OpenShow")
     }
 }
+
+data class OpenLayouts(
+    val panels: Map<String, Panel>,
+    val formats: Map<String, OpenLayout>
+) {
+    val currentFormatId = formats.keys.firstOrNull()
+    val currentFormat = formats[currentFormatId]
+}
+
+class OpenLayout(
+    val mediaQuery: String?,
+    val tabs: List<OpenTab>
+): Observable() {
+    var currentTabIndex = if (tabs.isEmpty()) null else 0
+        set(value) {
+            field = value
+            notifyChanged()
+        }
+
+    val currentTab get() = currentTabIndex?.let { tabs[it] }
+
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        currentTab?.addTo(builder, depth + 1)
+    }
+}
+
+interface OpenTab {
+    val title: String
+
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int)
+}
+
+class OpenGridTab(
+    override val title: String,
+    override var columns: Int,
+    override var rows: Int,
+    override val items: List<OpenGridItem>
+) : OpenTab, OpenIGridLayout {
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        items.forEach { item ->
+            item.control.addTo(builder, depth + 1)
+        }
+    }
+}
+
+class OpenGridLayout(
+    override val columns: Int,
+    override val rows: Int,
+    val matchParent: Boolean,
+    override val items: List<OpenGridItem>
+) : OpenIGridLayout
+
+interface OpenILayout {
+    fun getEditorPanel(
+        editableManager: EditableManager<*>,
+        layoutEditor: Editor<MutableILayout>
+    ): DialogPanel?
+}
+
+interface OpenIGridLayout : OpenILayout {
+    val columns: Int
+    val rows: Int
+    val items: List<OpenGridItem>
+
+    override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
+        GridLayoutEditorPanel(editableManager, this, layoutEditor as Editor<MutableIGridLayout>)
+}
+
+class OpenGridItem(
+    val control: OpenControl,
+    val column: Int,
+    val row: Int,
+    val width: Int,
+    val height: Int,
+    val layout: OpenGridLayout?
+)
 
 abstract class OpenShowVisitor {
     open fun visitShow(openShow: OpenShow) {

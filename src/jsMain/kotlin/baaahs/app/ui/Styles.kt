@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
+import baaahs.app.ui.layout.LayoutStyles
 import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
@@ -25,6 +26,7 @@ class AllStyles(val theme: Theme) {
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val editableManager by lazy { ThemedEditableStyles(theme) }
+    val layout by lazy { LayoutStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
     val controllerEditor by lazy { ControllerEditorStyles(theme) }
     val modelEditor by lazy { ModelEditorStyles(theme) }
@@ -36,6 +38,7 @@ class AllStyles(val theme: Theme) {
         injectGlobal(Styles.global)
         injectGlobal(appUi.global)
         injectGlobal(ControlsStyles.global)
+        injectGlobal(layout.global)
     }
 }
 
@@ -323,9 +326,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     )
 
     val unplacedControlsPalette by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
         position = Position.fixed
-        left = 5.em
-        bottom = 5.em
+        left = 3.em
+        top = 60.vh
+        width = 15.em
+        height = 33.vh
         zIndex = 100
         opacity = 0
         transition(::opacity, duration = 1.s)
@@ -343,14 +350,20 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val unplacedControlsPaper by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        grow(Grow.GROW)
         padding(1.em)
     }
 
     val unplacedControlsDroppable by css {
+        position = Position.relative
         overflowY = Overflow.scroll
-        minHeight = 4.em
-        height = 33.vh
-        maxWidth = 15.em
+//        minHeight = 4.em
+        width = 100.pct
+        height = 100.pct
+//        width = 15.em
+//        height = 33.vh
     }
 
     val controlPanelHelpText by css {

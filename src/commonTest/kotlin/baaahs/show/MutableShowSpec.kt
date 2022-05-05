@@ -28,7 +28,12 @@ object MutableShowSpec : Spek({
                 addPatch(shader0)
 
                 val mainPanel = MutablePanel(Panel("Main"))
-                editLayouts { panels["main"] = mainPanel }
+                editLayouts {
+                    panels["main"] = mainPanel
+                    editLayout("default") {
+                        tabs.add(MutableLegacyTab("Tab"))
+                    }
+                }
 
                 addButtonGroup(mainPanel, "scene 1") {
                     addButton("patchset 1a") { addPatch(shader1a) }

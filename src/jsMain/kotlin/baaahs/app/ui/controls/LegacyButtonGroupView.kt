@@ -6,6 +6,7 @@ import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonGroupControl
 import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
+import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenControl
 import baaahs.ui.install
 import baaahs.ui.unaryMinus
@@ -25,13 +26,14 @@ import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
 
-private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props ->
+private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyButtonGroup") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
-    val dropTarget = props.controlProps.controlDisplay?.dropTargetFor(buttonGroupControl)
+    val controlDisplay = props.controlProps.controlDisplay as LegacyControlDisplay?
+    val dropTarget = controlDisplay?.dropTargetFor(buttonGroupControl)
 
-    val editMode = props.controlProps.editMode
     val onShowStateChange = props.controlProps.onShowStateChange
 
     val showPreview = appContext.uiSettings.renderButtonPreviews
@@ -67,7 +69,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
             }
             direction = buttonGroupControl.direction
                 .decode(Direction.horizontal, Direction.vertical).name
-            isDropDisabled = !editMode
+            isDropDisabled = !editMode.isOn
         }) { sceneDropProvided, _ ->
             buildElement {
                 ToggleButtonGroup {
@@ -75,6 +77,8 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                         root = -buttonGroupControl.direction
                             .decode(Styles.horizontalButtonList, Styles.verticalButtonList)
                     }
+                    attrs.color = ToggleButtonGroupColor.primary
+                    attrs.value = "n/a"
 
                     install(sceneDropProvided)
 
@@ -90,7 +94,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                         draggable({
                             this.key = buttonControl.id
                             this.draggableId = buttonControl.id
-                            this.isDragDisabled = !editMode
+                            this.isDragDisabled = !editMode.isOn
                             this.index = index
                         }) { sceneDragProvided, _ ->
 //                            div {
@@ -103,7 +107,7 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                                     problemBadge(buttonControl as OpenControl)
 
                                     div(+Styles.editButton) {
-                                        if (editMode) {
+                                        if (editMode.isOn) {
                                             attrs.onClickFunction = { event -> handleEditButtonClick(event, index) }
                                         }
 
@@ -148,13 +152,13 @@ private val ButtonGroupView = xComponent<ButtonGroupProps>("SceneList") { props 
                     }
 
                     child(sceneDropProvided.placeholder)
-                }
 
-                if (editMode) {
-                    IconButton {
-                        icon(mui.icons.material.AddCircleOutline)
-                        attrs.onClick = {
-                            appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                    if (editMode.isOn) {
+                        IconButton {
+                            icon(mui.icons.material.AddCircleOutline)
+                            attrs.onClick = {
+                                appContext.openEditor(AddButtonToButtonGroupEditIntent(buttonGroupControl.id))
+                            }
                         }
                     }
                 }
@@ -170,10 +174,10 @@ private fun <T> ButtonGroupControl.Direction.decode(horizontal: T, vertical: T):
     }
 }
 
-external interface ButtonGroupProps : Props {
+external interface LegacyButtonGroupProps : Props {
     var controlProps: ControlProps
     var buttonGroupControl: OpenButtonGroupControl
 }
 
-fun RBuilder.buttonGroup(handler: RHandler<ButtonGroupProps>) =
-    child(ButtonGroupView, handler = handler)
+fun RBuilder.legacyButtonGroup(handler: RHandler<LegacyButtonGroupProps>) =
+    child(LegacyButtonGroupView, handler = handler)

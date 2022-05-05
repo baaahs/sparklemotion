@@ -38,7 +38,7 @@ plugins {
     id("name.remal.check-dependency-updates") version "1.0.211"
 
     // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
-    id("com.github.turansky.kfc.legacy-union") version "4.88.0"
+    id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
 
 repositories {
@@ -177,7 +177,7 @@ kotlin {
                 // </react-beautiful-dnd bug workaround>
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
-                implementation(npm("react-draggable", "^3.3.0"))
+                implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
@@ -188,6 +188,10 @@ kotlin {
                 implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
+
+                // used by GridLayout:
+                implementation(npm("react-resizable", "3.0.4"))
+                implementation(npm("lodash.isequal", "4.5.0"))
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -254,6 +258,10 @@ tasks.named<ProcessResources>("jsProcessResources") {
         into("blueprintjs")
         include("core/lib/css/blueprint.css")
         include("icons/lib/css/blueprint-icons.css")
+    }
+    from("build/js/node_modules/react-grid-layout") {
+        into("react-grid-layout")
+        include("css/styles.css")
     }
 
     doLast {
