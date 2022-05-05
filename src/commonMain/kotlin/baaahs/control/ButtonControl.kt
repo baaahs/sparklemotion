@@ -34,8 +34,6 @@ data class ButtonControl(
 
     init { validatePatchHolder() }
 
-    override fun suggestId(): String = title.camelize() + "Button"
-
     override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(
             this, mutableShow,
@@ -64,7 +62,7 @@ class MutableButtonControl(
         return super.getPropertiesComponents() + ButtonPropsEditor(this)
     }
 
-    override fun build(showBuilder: ShowBuilder): ButtonControl {
+    override fun buildControl(showBuilder: ShowBuilder): ButtonControl {
         return ButtonControl(
             title,
             activationType,
@@ -76,7 +74,7 @@ class MutableButtonControl(
     }
 
     override fun previewOpen(): OpenControl {
-        val buttonControl = build(ShowBuilder())
+        val buttonControl = buildControl(ShowBuilder())
         return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledDataSource)
     }
 
@@ -108,10 +106,12 @@ class OpenButtonControl(
 
     override fun applyState(state: Map<String, JsonElement>) = switch.applyState(state)
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
-        if (isPressed) {
-            addTo(activePatchSetBuilder, depth)
-        }
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        if (isPressed) super<OpenPatchHolder>.addTo(builder, depth)
+    }
+
+    override fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
+        if (isPressed) super<OpenPatchHolder>.legacyAddTo(builder, panel, depth)
     }
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =

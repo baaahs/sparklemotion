@@ -13,6 +13,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.StyleSheet
+import styled.inlineStyles
 
 private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext") { props ->
     val appContext = useContext(appContext)
@@ -53,6 +54,11 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     if (useSharedContexts) {
         div(+SharedGlContextStyles.container) {
             ref = canvasParentRef
+            props.inlineStyles?.let { styler ->
+                inlineStyles {
+                    with (styler) { invoke() }
+                }
+            }
 
             baaahs.app.ui.appGlContext.Provider {
                 attrs.value = appGlContext
@@ -65,8 +71,13 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     }
 }
 
+fun interface StyleElement {
+    fun StyledElement.invoke()
+}
+
 external interface SharedGlContextProps : PropsWithChildren {
     var inFront: Boolean?
+    var inlineStyles: StyleElement?
 }
 
 fun RBuilder.sharedGlContext(handler: RHandler<SharedGlContextProps>) =

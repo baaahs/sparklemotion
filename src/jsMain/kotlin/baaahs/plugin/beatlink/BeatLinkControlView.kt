@@ -57,8 +57,6 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader
-                attrs.width = 300.px
-                attrs.height = 200.px
             }
 
             div(+Styles.bpm) { ref = bpmDiv }
@@ -74,6 +72,7 @@ object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)
+        userSelect = UserSelect.none
     }
 
     val div by css {
@@ -85,8 +84,7 @@ object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
         bottom = 0.px
         left = 0.px
         color = Color.white
-        backgroundColor = Color.black
-        fontWeight = FontWeight.bolder
+        put("textShadow", "0px 1px 1px black")
     }
 
     val confidence by css {
@@ -94,8 +92,7 @@ object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
         bottom = 0.px
         right = 0.px
         color = Color.white
-        backgroundColor = Color.black
-        fontWeight = FontWeight.bolder
+        put("textShadow", "0px 1px 1px black")
     }
 }
 

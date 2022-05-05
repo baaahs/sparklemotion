@@ -3,7 +3,7 @@ package baaahs.app.ui.editor.layout
 import baaahs.app.ui.appContext
 import baaahs.getBang
 import baaahs.show.mutable.MutableLayouts
-import baaahs.show.mutable.MutableTab
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.withSelectEvent
@@ -16,14 +16,14 @@ import react.dom.div
 import react.dom.events.FormEvent
 import react.useContext
 
-val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
+private val LayoutAreaCellView = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
-    val handlePanelAreaChange by formEventHandler() { event: FormEvent<*> ->
+    val handlePanelAreaChange by formEventHandler { event: FormEvent<*> ->
         val panel = props.layouts.panels.getBang(event.target.value, "panel")
         props.tab.areas[props.rowIndex * props.tab.columns.size + props.columnIndex] = panel
-        props.onChange()
+        props.onChange(true)
         forceRender()
     }
 
@@ -48,11 +48,11 @@ val LayoutAreaCell = xComponent<LayoutAreaCellProps>("LayoutAreaCell") { props -
 
 external interface LayoutAreaCellProps : Props {
     var layouts: MutableLayouts
-    var tab: MutableTab
+    var tab: MutableLegacyTab
     var columnIndex: Int
     var rowIndex: Int
-    var onChange: () -> Unit
+    var onChange: (pushToUndoStack: Boolean) -> Unit
 }
 
 fun RBuilder.layoutAreaCell(handler: RHandler<LayoutAreaCellProps>) =
-    child(LayoutAreaCell, handler = handler)
+    child(LayoutAreaCellView, handler = handler)

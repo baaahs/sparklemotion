@@ -31,8 +31,6 @@ data class ButtonGroupControl(
         Vertical
     }
 
-    override fun suggestId(): String = title.camelize() + "ButtonGroup"
-
     override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl {
         return MutableButtonGroupControl(title, direction, buttonIds.map {
             mutableShow.findControl(it) as MutableButtonControl
@@ -68,14 +66,14 @@ data class MutableButtonGroupControl(
         )
     }
 
-    override fun build(showBuilder: ShowBuilder): ButtonGroupControl {
+    override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl {
         return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
             mutableButtonControl.buildAndStashId(showBuilder)
         })
     }
 
     override fun previewOpen(): OpenControl {
-        val buttonGroupControl = build(ShowBuilder())
+        val buttonGroupControl = buildControl(ShowBuilder())
         return OpenButtonGroupControl(randomId(title.camelize()), buttonGroupControl, EmptyOpenContext)
     }
 
@@ -134,40 +132,40 @@ class OpenButtonGroupControl(
         }
     }
 
-    override fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
-        buttons.forEach { it.addTo(activePatchSetBuilder, panel, depth + 1) }
+    override fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
+        buttons.forEach { it.legacyAddTo(builder, panel, depth + 1) }
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =
-        ButtonGroupDropTarget(controlDisplay)
+        ButtonGroupDropTarget(controlDisplay as LegacyControlDisplay)
 
     inner class ButtonGroupDropTarget(
-        private val controlDisplay: ControlDisplay
-    ) : DropTarget {
+        private val controlDisplay: LegacyControlDisplay
+    ) : DropTarget<Int> {
         override val dropTargetId = controlDisplay.dragNDrop.addDropTarget(this)
         override val type: String get() = "ControlContainer"
 
-        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+        override fun moveDraggable(fromPosition: Int, toPosition: Int) {
             controlDisplay.show.edit {
                 findButtonGroup()
-                    .moveButton(fromIndex, toIndex)
+                    .moveButton(fromPosition, toPosition)
             }.commit(controlDisplay.editHandler)
         }
 
-        override fun willAccept(draggable: Draggable): Boolean {
-            return draggable is ControlDisplay.PlaceableControl
+        override fun willAccept(draggable: Draggable<Int>): Boolean {
+            return draggable is LegacyControlDisplay.PlaceableControl
         }
 
-        override fun getDraggable(index: Int): Draggable = object : ControlDisplay.PlaceableControl {
+        override fun getDraggable(position: Int): Draggable<Int> = object : LegacyControlDisplay.PlaceableControl {
             override val mutableShow: MutableShow by lazy { controlDisplay.show.edit() }
             override lateinit var mutableControl: MutableControl
 
-            override fun willMoveTo(destination: DropTarget): Boolean = true
+            override fun willMoveTo(destination: DropTarget<Int>): Boolean = true
 
             override fun remove() {
                 mutableControl = mutableShow.findButtonGroup()
                     .buttons
-                    .removeAt(index)
+                    .removeAt(position)
             }
 
             override fun onMove() {
@@ -175,15 +173,15 @@ class OpenButtonGroupControl(
             }
         }
 
-        override fun insertDraggable(draggable: Draggable, index: Int) {
-            draggable as ControlDisplay.PlaceableControl
+        override fun insertDraggable(draggable: Draggable<Int>, position: Int) {
+            draggable as LegacyControlDisplay.PlaceableControl
             draggable.mutableShow.findButtonGroup()
                 .buttons
-                .add(index, draggable.mutableControl as MutableButtonControl)
+                .add(position, draggable.mutableControl as MutableButtonControl)
         }
 
-        override fun removeDraggable(draggable: Draggable) {
-            draggable as ControlDisplay.PlaceableControl
+        override fun removeDraggable(draggable: Draggable<Int>) {
+            draggable as LegacyControlDisplay.PlaceableControl
             draggable.remove()
         }
 

@@ -17,6 +17,7 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.*
 import baaahs.show.Shader
 import baaahs.show.live.ActivePatchSet
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -82,6 +83,9 @@ object StageManagerSpec : Spek({
                 MutableShow("test show") {
                     editLayouts {
                         panels["panel"] = panel
+                        editLayout("default") {
+                            tabs.add(MutableLegacyTab("Tab"))
+                        }
                     }
 
                     addPatch(
@@ -151,7 +155,7 @@ object StageManagerSpec : Spek({
                     }
 
                     val colorPickerGadget by value {
-                        stageManager.useGadget<ColorPicker>("colorColorPickerControl")
+                        stageManager.useGadget<ColorPicker>("color")
                     }
 
                     it("wires it up as a color picker") {
@@ -211,8 +215,8 @@ object StageManagerSpec : Spek({
                     val clientPub by value { pubSub.client("client") }
                     beforeEachTest {
                         activePatchSets.clear()
-                        val backdrop1Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop1Button", GadgetDataSerializer)) {}
-                        val backdrop2Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop2Button", GadgetDataSerializer)) {}
+                        val backdrop1Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop1", GadgetDataSerializer)) {}
+                        val backdrop2Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop2", GadgetDataSerializer)) {}
                         dispatcher.runCurrent()
                         backdrop1Channel.onChange(mapOf("enabled" to JsonPrimitive(false)))
                         backdrop2Channel.onChange(mapOf("enabled" to JsonPrimitive(true)))

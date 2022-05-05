@@ -25,7 +25,7 @@ data class VacuityControl(
     /** The name for this vacuity. */
     override val title: String
 ) : Control {
-    override fun suggestId(): String = "Vacuity"
+    override fun suggestId(): String = "vacuity"
 
     override fun createMutable(mutableShow: MutableShow): MutableVacuityControl =
         MutableVacuityControl(title)
@@ -44,7 +44,7 @@ data class MutableVacuityControl(
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): VacuityControl = VacuityControl(title)
+    override fun buildControl(showBuilder: ShowBuilder): VacuityControl = VacuityControl(title)
 
     override fun previewOpen(): OpenVacuityControl {
         return OpenVacuityControl(randomId(title.camelize()), title)

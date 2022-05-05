@@ -7,6 +7,7 @@ import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import mui.material.Typography
 import mui.material.TypographyProps
+import mui.material.styles.Theme
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
@@ -14,6 +15,7 @@ import org.w3c.dom.events.EventTarget
 import react.RBuilder
 import react.RElementBuilder
 import react.ReactNode
+import react.Render
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
@@ -82,6 +84,7 @@ val RuleSet.selector: String
 
 operator fun RuleSet.unaryPlus(): String = name
 operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
+val String.className: ClassName get() = ClassName(this)
 infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
 infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
@@ -93,6 +96,9 @@ infix fun String.and(that: String): String = "$this $that"
 
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     child(".${styleSheet.name}-${rule.name}") { block() }
+
+fun StyleSheet.selector(rule: KProperty0<RuleSet>) =
+    ".$name-${rule.name}"
 
 fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     descendants(".${styleSheet.name}-${rule.name}") { block() }
@@ -211,6 +217,9 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
     }
 }
 
+fun buildElements(handler: Render): ReactNode =
+    react.buildElements(RBuilder(), handler)
+
 val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
     baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
@@ -228,3 +237,12 @@ val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
 fun csstype.Color.asColor(): Color = Color(this.unsafeCast<String>())
+
+fun Theme.paperContrast(amount: Double) =
+    palette.text.primary.asColor()
+        .withAlpha(amount)
+        .blend(Color(palette.background.paper))
+
+val Theme.paperLowContrast get() = paperContrast(.25)
+val Theme.paperMediumContrast get() = paperContrast(.5)
+val Theme.paperHighContrast get() = paperContrast(.75)

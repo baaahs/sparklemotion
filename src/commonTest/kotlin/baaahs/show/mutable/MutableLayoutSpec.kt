@@ -6,14 +6,14 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 object MutableLayoutSpec : Spek({
-    describe<MutableTab> {
+    describe<MutableLegacyTab> {
         val columns by value { mutableListOf(1.fr, 2.fr) }
         val rows by value { mutableListOf(3.fr, 4.fr) }
         val areas by value { mutableListOf(
             "a".panel, "b".panel,
             "c".panel, "d".panel,
         ) }
-        val tab by value { MutableTab("main", columns, rows, areas) }
+        val tab by value { MutableLegacyTab("main", columns, rows, areas) }
 
         context("appending a column") {
             beforeEachTest { tab.appendColumn() }

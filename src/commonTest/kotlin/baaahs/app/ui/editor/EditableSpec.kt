@@ -21,7 +21,7 @@ object EditableSpec : Spek({
 
                 .also { println("it = ${it}") }
         }
-        val editIntent by value { ControlEditIntent("mainButtonButton") }
+        val editIntent by value { ControlEditIntent("mainButton") }
         val editableManager by value {
             ShowEditableManager { }
                 .apply { openEditor(baseShow, editIntent, testToolchain) }
@@ -40,7 +40,7 @@ object EditableSpec : Spek({
 
             it("provides an appropriate refreshed edit intent for the undo stack") {
                 val newEditIntent = (editableManager.session!!.editIntent as ControlEditIntent)
-                expect(newEditIntent.controlId).toBe("newTitleForButtonButton")
+                expect(newEditIntent.controlId).toBe("newTitleForButton")
             }
         }
     }

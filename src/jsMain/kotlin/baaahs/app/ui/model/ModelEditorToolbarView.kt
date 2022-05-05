@@ -135,10 +135,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
 
                 TextField {
                     attrs.type = InputType.number
-                    attrs.inputProps = jso {
-
-                    }
-                    ;
+                    attrs.inputProps = jso {}
                     buildElement {
                         Input {
                             attrs.classes = jso {

@@ -4,6 +4,7 @@ package baaahs.show
 
 import baaahs.app.ui.editor.Editable
 import baaahs.camelize
+import baaahs.control.MutableVisualizerControl
 import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
@@ -30,13 +31,27 @@ data class Show(
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),
     val patches: Map<String, Patch> = emptyMap(),
-    val controls: Map<String, Control>  = emptyMap(),
+    val controls: Map<String, Control> = emptyMap(),
     val dataSources: Map<String, DataSource> = emptyMap()
 ) : PatchHolder, Editable {
-    init { validatePatchHolder() }
+    init {
+        validatePatchHolder()
+    }
 
     fun toJson(json: Json): JsonElement {
         return json.encodeToJsonElement(serializer(), this)
+    }
+
+    fun findImplicitControls(): Map<String, Control> = buildMap {
+        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, dataSources)
+        dataSources
+            .map { (_, dataSource) ->
+                dataSource.buildControl()?.let { mutableControl ->
+                    val control = mutableControl.buildControl(implicitControlsShowBuilder)
+                    val id = implicitControlsShowBuilder.idFor(control)
+                    put(id, control)
+                }
+            }
     }
 
     fun getControl(id: String): Control = controls.getBang(id, "control")
@@ -139,11 +154,9 @@ fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
             editLayout("default") {
-                editTab("Main") {
-                    columns.add(MutableLayoutDimen.decode("1fr"))
-                    rows.add(MutableLayoutDimen.decode("1fr"))
-                    areas.add(findOrCreatePanel("Controls"))
-                }
+                tabs.add(MutableGridTab("Main").apply {
+                    items.add(MutableGridItem(MutableVisualizerControl(), 9, 0, 3, 2, null))
+                })
             }
         }
     }.getShow()

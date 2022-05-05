@@ -9,6 +9,10 @@ config.resolve.alias = {
     js: path.resolve(__dirname, "../../../../src/jsMain/js/"),
 };
 
+config.watchOptions = {
+    ignored: ['**/*.kt']
+};
+
 if (config.devServer) {
     config.devServer = config.devServer || {};
 

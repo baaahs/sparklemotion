@@ -2,9 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
-import baaahs.ui.asColor
-import baaahs.ui.descendants
-import baaahs.ui.name
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.border
@@ -23,6 +21,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         descendants(this@Styles, ::controlButton) {
             transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
         }
+    }
+    val buttonGroupCardBackgroundHackHackHack by css {
+        backgroundColor = Color("#0000007f")
     }
 
     val horizontalButtonList by css {
@@ -100,14 +101,16 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
         position = Position.relative
         marginRight = 0.em
+        minWidth = 5.em
+        minHeight = 5.em
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
@@ -117,21 +120,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
     }
 
-    val dataSourceTitle by css {
-        fontWeight = FontWeight.w500
-        display = Display.block
-        position = Position.absolute
-        top = 0.5.em
-        left = 0.5.px
-        declarations["writing-mode"] = "vertical-lr"
-        userSelect = UserSelect.none
-        pointerEvents = PointerEvents.none
-    }
-
-    val dataSourceLonelyTitle by css {
-        fontWeight = FontWeight.bold
-    }
-
     val beatLinkedSwitch by css {
         position = Position.absolute
         left = 0.px
@@ -139,30 +127,38 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val inUse by css {
+//        position = Position.relative
     }
 
     val notInUse by css {
         opacity = .75
     }
 
+    val controlRoot by css {}
+
     val controlButton by css {
         display = Display.grid
         position = Position.relative
-        width = 150.px
-        minHeight = 75.px
+//        width = 150.px
+//        minHeight = 75.px
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
             }
+        }
+
+        button {
+            minWidth = 0.px
+            overflow = Overflow.auto
         }
     }
 
@@ -175,6 +171,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val buttonLabelWhenPreview by css {
+        grow(Grow.GROW)
         color = Color.black
         background = "radial-gradient(rgba(255,255,255,.8), transparent)"
     }
@@ -225,6 +222,19 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 //            transform { rotate((-90).deg) }
 //            declarations["transformOrigin"] = "top right"
 //        }
+    }
+
+    val dataSourceTitle by css {
+        fontWeight = FontWeight.w500
+        display = Display.block
+        position = Position.absolute
+        top = 0.5.em
+        left = 1.5.px
+        color = theme.paperHighContrast
+//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
+        declarations["writing-mode"] = "vertical-lr"
+        userSelect = UserSelect.none
+        pointerEvents = PointerEvents.none
     }
 
     val transitionHoldButton by css {

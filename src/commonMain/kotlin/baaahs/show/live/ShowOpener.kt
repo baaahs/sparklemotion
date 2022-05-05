@@ -7,7 +7,6 @@ import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
 import baaahs.internalTimerClock
 import baaahs.show.*
-import baaahs.show.mutable.ShowBuilder
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 import baaahs.util.elapsedMs
@@ -57,19 +56,7 @@ open class ShowOpener(
         allPatches.getBang(it, "patch")
 
     fun openShow(showState: ShowState? = null): OpenShow {
-        val controlledDataSourceIds = show.controls.mapNotNull { (_, control) ->
-            control.controlledDataSourceId
-        }.toSet()
-
-        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(show.controls, show.dataSources)
-        show.dataSources
-            .filter { (key, _) -> !controlledDataSourceIds.contains(key) }
-            .map { (_, dataSource) ->
-                dataSource.buildControl()?.let { mutableControl ->
-                    val control = mutableControl.build(implicitControlsShowBuilder)
-                    val id = implicitControlsShowBuilder.idFor(control)
-                    implicitControls[id] = control
-                } }
+        implicitControls.putAll(show.findImplicitControls())
 
         val implicitOpenControls = implicitControls.keys.map { getControl(it) }
 

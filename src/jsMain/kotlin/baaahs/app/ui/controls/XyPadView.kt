@@ -1,6 +1,7 @@
 package baaahs.app.ui.controls
 
 import baaahs.Gadget
+import baaahs.app.ui.appContext
 import baaahs.control.OpenXyPadControl
 import baaahs.geom.Vector2F
 import baaahs.show.live.ControlProps
@@ -13,15 +14,15 @@ import kotlinx.html.js.onMouseMoveFunction
 import kotlinx.html.js.onMouseUpFunction
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
-import react.useRef
 import styled.StyleSheet
 import styled.inlineStyles
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
+    val appContext = useContext(appContext)
+    val controlsStyles = appContext.allStyles.controls
+
     val padSize = Vector2F(200f, 200f)
     val knobSize = Vector2F(20f, 20f)
     val helper = memo(padSize, knobSize, props.xyPadControl) {
@@ -83,65 +84,65 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
 
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
-    div {
-        div(+XyPadStyles.container and props.xyPadControl.inUseStyle) {
-            div(+XyPadStyles.background) {
-                ref = backgroundRef
+
+    div(+XyPadStyles.container and props.xyPadControl.inUseStyle) {
+        div(+XyPadStyles.background) {
+            ref = backgroundRef
+            inlineStyles {
+                width = padSize.x.px
+                height = padSize.y.px
+            }
+
+            attrs.onMouseDownFunction = handleMouseDownEvent
+            attrs.onMouseUpFunction = handleMouseUpEvent
+            attrs.onMouseMoveFunction = handleMouseMoveEvent
+
+            div(+XyPadStyles.centerLine) {
                 inlineStyles {
-                    width = padSize.x.px
+                    width = 1.px
+                    left = (padSize.x / 2).px
                     height = padSize.y.px
                 }
+            }
 
-                attrs.onMouseDownFunction = handleMouseDownEvent
-                attrs.onMouseUpFunction = handleMouseUpEvent
-                attrs.onMouseMoveFunction = handleMouseMoveEvent
-
-                div(+XyPadStyles.centerLine) {
-                    inlineStyles {
-                        width = 1.px
-                        left = (padSize.x / 2).px
-                        height = padSize.y.px
-                    }
+            div(+XyPadStyles.centerLine) {
+                inlineStyles {
+                    height = 1.px
+                    top = (padSize.y / 2).px
+                    width = padSize.x.px
                 }
+            }
 
-                div(+XyPadStyles.centerLine) {
-                    inlineStyles {
-                        height = 1.px
-                        top = (padSize.y / 2).px
-                        width = padSize.x.px
-                    }
+            div(+XyPadStyles.crosshairs) {
+                ref = crosshairXRef
+                inlineStyles {
+                    width = 1.px
+                    left = crosshairPositionPx.x.px
+                    height = padSize.y.px
                 }
+            }
 
-                div(+XyPadStyles.crosshairs) {
-                    ref = crosshairXRef
-                    inlineStyles {
-                        width = 1.px
-                        left = crosshairPositionPx.x.px
-                        height = padSize.y.px
-                    }
+            div(+XyPadStyles.crosshairs) {
+                ref = crosshairYRef
+                inlineStyles {
+                    height = 1.px
+                    top = crosshairPositionPx.y.px
+                    width = padSize.x.px
                 }
+            }
 
-                div(+XyPadStyles.crosshairs) {
-                    ref = crosshairYRef
-                    inlineStyles {
-                        height = 1.px
-                        top = crosshairPositionPx.y.px
-                        width = padSize.x.px
-                    }
-                }
-
-                div(+XyPadStyles.knob) {
-                    ref = knobRef
-                    inlineStyles {
-                        width = knobSize.x.px
-                        height = knobSize.y.px
-                        left = knobPositionPx.x.px
-                        top = knobPositionPx.y.px
-                    }
+            div(+XyPadStyles.knob) {
+                ref = knobRef
+                inlineStyles {
+                    width = knobSize.x.px
+                    height = knobSize.y.px
+                    left = knobPositionPx.x.px
+                    top = knobPositionPx.y.px
                 }
             }
         }
-        div(+Styles.dataSourceTitle) { +xyPad.title }
+
+        div(+controlsStyles.dataSourceTitle) { +xyPad.title }
     }
 }
 

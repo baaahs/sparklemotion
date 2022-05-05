@@ -5,6 +5,7 @@ import acex.AceEditor
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.show.Layout
+import baaahs.show.LegacyTab
 import baaahs.show.Panel
 import baaahs.show.Show
 import baaahs.show.mutable.MutableLayout
@@ -36,7 +37,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
+private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.layoutEditor
 
@@ -45,6 +46,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         Json {
             isLenient = true
             prettyPrint = true
+            serializersModule = appContext.plugins.serialModule
         }
     }
     val mutableShow by state { MutableShow(props.show) }
@@ -80,16 +82,16 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         withCleanup { baaahs.window.clearInterval(interval) }
     }
 
-    val handleApply by mouseEventHandler(props.onApply) {
+    val handleApplyCode by mouseEventHandler(props.onApply) {
         if (showCode) {
             val layoutsMap = getLayoutsFromJson()
             mutableLayouts.formats.clear()
             layoutsMap.forEach { (formatId, layout) ->
-                mutableLayouts.formats[formatId] = MutableLayout(layout, mutableShow.layouts.panels)
+                mutableLayouts.formats[formatId] = MutableLayout(layout, mutableShow.layouts.panels, mutableShow)
             }
         }
 
-        props.onApply(mutableShow)
+        props.onApply(mutableShow, true)
     }
 
     val handlePanelsClick by mouseEventHandler { currentFormat = null }
@@ -97,20 +99,22 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         mutableLayouts.formats.keys.associateWith { { _: MouseEvent<*, *> -> currentFormat = it } }
     }
 
-    val handleGridChange by handler(handleApply) {
+    val handleLayoutChange by handler(props.onApply) { pushToUndoStack: Boolean ->
         changed.current = true
-        props.onApply(mutableShow)
+        props.onApply(mutableShow, pushToUndoStack)
     }
 
     val handleShowCodeButton by mouseEventHandler { showCode = !showCode }
-    val handleClose = callback(props.onClose) { _: Event, _: String -> props.onClose() }
-    val handleCancel by mouseEventHandler(props.onClose) { props.onClose() }
+    val handleDialogClose = callback(props.onClose) { _: Event, _: String -> props.onClose() }
+    val handleCloseButton by mouseEventHandler(props.onClose) { props.onClose() }
 
     Dialog {
-        attrs.classes = jso { this.paper = ClassName(DraggablePaperHandleClassName) }
+        attrs.classes = jso {
+            paper = ClassName(+styles.dialog and DraggablePaperHandleClassName)
+        }
         attrs.open = props.open
         attrs.maxWidth = Breakpoint.lg
-        attrs.onClose = handleClose
+        attrs.onClose = handleDialogClose
         attrs.PaperComponent = DraggablePaper
 
         DialogTitle {
@@ -174,8 +178,8 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                             attrs {
                                 mode = "glsl"
                                 theme = "tomorrow_night_bright"
-                                width = "100%"
-                                height = "30vh"
+                                width = "calc(min(60em, 80vw))"
+                                height = "calc(min(30em, 80vh))"
                                 showGutter = true
                                 this.onChange = { _, _ -> changed.current = true }
                                 defaultValue = jsonStr
@@ -204,7 +208,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                             // Notify EditableManager of changes as we type, but don't push them to the undo stack...
                                             attrs.onChange = { event: FormEvent<HTMLDivElement> ->
                                                 panel.title = event.target.value
-                                                props.onApply(mutableShow)
+                                                props.onApply(mutableShow, false)
                                             }
 
                                             // ... until we lose focus or hit return; then, push to the undo stack only if the value would change.
@@ -215,7 +219,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                             attrs.onClick = {
                                                 if (baaahs.window.confirm("Delete panel \"${panel.title}\"? This might be bad news if anything is still placed in it.")) {
                                                     mutableLayouts.panels.remove(panelId)
-                                                    props.onApply(mutableShow)
+                                                    props.onApply(mutableShow, true)
                                                 }
                                             }
                                             icon(mui.icons.material.Delete)
@@ -244,7 +248,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                                                 onSubmit = { name ->
                                                     val newPanel = Panel(name)
                                                     mutableLayouts.panels[newPanel.suggestId()] = MutablePanel(newPanel)
-                                                    props.onApply(mutableShow)
+                                                    props.onApply(mutableShow, true)
                                                 }
                                             )
                                         )
@@ -257,7 +261,7 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
                             layoutEditor {
                                 attrs.mutableShow = mutableShow
                                 attrs.format = showFormat
-                                attrs.onGridChange = handleGridChange
+                                attrs.onLayoutChange = handleLayoutChange
                             }
                         }
                     }
@@ -266,16 +270,24 @@ val LayoutEditorDialog = xComponent<LayoutEditorDialogProps>("LayoutEditorWindow
         }
 
         DialogActions {
-            Button {
-                +"Cancel"
-                attrs.color = ButtonColor.secondary
-                attrs.onClick = handleCancel
-            }
-            Button {
-                +"Apply"
-                attrs.disabled = errorMessage != null
-                attrs.color = ButtonColor.primary
-                attrs.onClick = handleApply
+            if (showCode) {
+                Button {
+                    +"Cancel"
+                    attrs.color = ButtonColor.secondary
+                    attrs.onClick = handleCloseButton
+                }
+                Button {
+                    +"Apply"
+                    attrs.disabled = errorMessage != null
+                    attrs.color = ButtonColor.primary
+                    attrs.onClick = handleApplyCode
+                }
+            } else {
+                Button {
+                    +"Close"
+                    attrs.color = ButtonColor.primary
+                    attrs.onClick = handleCloseButton
+                }
             }
         }
     }
@@ -285,6 +297,7 @@ private fun Map<String, Layout>.getPanelIds(): Set<String> {
     return mutableSetOf<String>().apply {
         values.forEach { layout ->
             layout.tabs.forEach { tab ->
+                tab as LegacyTab
                 addAll(tab.areas)
             }
         }
@@ -294,9 +307,9 @@ private fun Map<String, Layout>.getPanelIds(): Set<String> {
 external interface LayoutEditorDialogProps : Props {
     var open: Boolean
     var show: Show
-    var onApply: (MutableShow) -> Unit
+    var onApply: (show: MutableShow, pushToUndoStack: Boolean) -> Unit
     var onClose: () -> Unit
 }
 
 fun RBuilder.layoutEditorDialog(handler: RHandler<LayoutEditorDialogProps>) =
-    child(LayoutEditorDialog, handler = handler)
+    child(LayoutEditorDialogView, handler = handler)

@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
+import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
@@ -15,6 +16,7 @@ import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
 import baaahs.mapper.JsMapperUi
 import baaahs.mapper.sceneEditor
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
@@ -37,9 +39,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     observe(sceneManager)
     val showManager = props.showManager
     observe(showManager)
-
-    var editMode by state { false }
-    val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
     val uiSettings = webClient.uiSettings
     val handleUiSettingsChange by handler(webClient, webClient.uiSettings) { callback: (UiSettings) -> UiSettings ->
@@ -64,6 +63,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var prompt by state<Prompt?> { null }
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
+    val gridLayoutContext = memo { GridLayoutContext() }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
@@ -80,6 +80,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.sceneManager = props.sceneManager
             this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
+            this.gridLayoutContext = gridLayoutContext
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(
@@ -97,6 +98,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val myAppGlContext = memo { jso<AppGlContext> { this.sharedGlContext = null } }
 
+    val documentManager = appMode.getDocumentManager(myAppContext)
+
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
     }
@@ -112,8 +115,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleLayoutEditorDialogToggle =
         callback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
+    val handleLayoutEditorChange by handler(showManager) { show: MutableShow, pushToUndoStack: Boolean ->
+        showManager.onEdit(show, pushToUndoStack)
+    }
 
     val handleShowStateChange = callback {
+        // TODO: don't pass this around? ... and forceRender() is unnecessary.
         showManager.onShowStateChange()
         forceRender()
     }
@@ -140,17 +147,38 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     else
         themeStyles.appDrawerClosed
 
+    val editMode = observe(documentManager.editMode)
     val editModeStyle =
-        if (editMode) Styles.editModeOn else Styles.editModeOff
+        if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val show = showManager.show
 
     onMount {
         val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
-            when (event.key) {
-                "d" -> {
-                    editMode = !editMode
+            val keypress = with (event) { Keypress(key, metaKey, ctrlKey, shiftKey) }
+            when (keypress) {
+                Keypress("Escape") -> {
+                    handleAppDrawerToggle()
                     event.stopPropagation()
+                }
+                Keypress("d") -> {
+                    editMode.toggle()
+                    event.stopPropagation()
+                }
+                Keypress("l") -> {
+                    layoutEditorDialogOpen = !layoutEditorDialogOpen
+                    event.stopPropagation()
+                }
+                Keypress("z", metaKey = true),
+                Keypress("z", ctrlKey = true) -> {
+                    documentManager.undo()
+                }
+                Keypress("z", metaKey = true, shiftKey = true),
+                Keypress("z", ctrlKey = true, shiftKey = true) -> {
+                    documentManager.redo()
+                }
+                else -> {
+                    console.log("Unhandled keypress:", keypress)
                 }
             }
         }
@@ -170,15 +198,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.theme = theme
                 CssBaseline {}
 
-                div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
+                Paper {
+                    attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
+
                     appDrawer {
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen
                         attrs.onClose = handleAppDrawerToggle
                         attrs.appMode = appMode
                         attrs.onAppModeChange = handleAppModeChange
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
@@ -187,8 +216,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                     appToolbar {
                         attrs.appMode = appMode
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onMenuButtonClick = handleAppDrawerToggle
                     }
 
@@ -198,7 +226,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                             Container {
                                 CircularProgress {}
-                                icon(mui.icons.material.NotificationImportant)
+                                icon(NotificationImportant)
 
                                 typographyH6 { +"Connecting…" }
                                 +"Attempting to connect to Sparkle Motion."
@@ -212,7 +240,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 Container {
                                     CircularProgress {}
-                                    icon(mui.icons.material.NotificationImportant)
+                                    icon(NotificationImportant)
 
                                     typographyH6 { +"Mapper Running…" }
                                     +"Please wait."
@@ -243,7 +271,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                             showUi {
                                                 attrs.show = showManager.openShow!!
                                                 attrs.onShowStateChange = handleShowStateChange
-                                                attrs.editMode = editMode
                                             }
 
                                             if (layoutEditorDialogOpen) {
@@ -251,9 +278,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                 layoutEditorDialog {
                                                     attrs.open = layoutEditorDialogOpen
                                                     attrs.show = show
-                                                    attrs.onApply = { newMutableShow ->
-                                                        showManager.onEdit(newMutableShow)
-                                                    }
+                                                    attrs.onApply = handleLayoutEditorChange
                                                     attrs.onClose = handleLayoutEditorDialogClose
                                                 }
                                             }
@@ -264,7 +289,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         if (props.sceneManager.scene == null) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                icon(mui.icons.material.NotificationImportant)
+                                                icon(NotificationImportant)
                                                 typographyH6 { +"No open scene." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }
@@ -284,12 +309,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 renderDialog?.invoke(this)
 
-                editableManagerUi {
-                    attrs.editableManager =
-                        when (appMode) {
-                            AppMode.Show -> editableManager
-                            AppMode.Scene -> sceneEditableManager
-                        }
+                if (editMode.isAvailable) {
+                    editableManagerUi {
+                        attrs.editableManager =
+                            when (appMode) {
+                                AppMode.Show -> editableManager
+                                AppMode.Scene -> sceneEditableManager
+                            }
+                    }
                 }
 
                 prompt?.let {

@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.controls.problemBadge
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
+import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import csstype.ClassName
@@ -30,7 +31,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     observe(sceneManager)
     val scene = sceneManager.scene
 
-    val documentManager = props.appMode.getDocumentManager(appContext)
+    val documentManager = props.documentManager
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
@@ -61,7 +62,11 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
-    val editMode = props.editMode == true || props.appMode == AppMode.Scene
+
+    val editMode = observe(props.documentManager.editMode)
+    val handleEditModeChange by handler {
+        props.documentManager.editMode.toggle()
+    }
 
     AppBar {
         attrs.classes = jso { this.root = -themeStyles.appToolbar }
@@ -89,7 +94,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (showManager.isUnsaved) i { +" (Unsaved)" }
                     problemBadge(show, themeStyles.problemBadge)
 
-                    if (props.appMode == AppMode.Show && editMode) {
+                    if (props.appMode == AppMode.Show && editMode.isOn) {
                         span(+themeStyles.editButton) {
                             icon(mui.icons.material.Edit)
                             attrs.onClickFunction = handleShowEditButtonClick.withEvent()
@@ -112,7 +117,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     }
                     if (sceneManager.isUnsaved) i { +" (Unsaved)" }
 
-                    if (props.appMode == AppMode.Scene && editMode) {
+                    if (props.appMode == AppMode.Scene && editMode.isOn) {
                         span(+themeStyles.editButton) {
                             icon(mui.icons.material.Edit)
                             attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
@@ -128,7 +133,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
             div(+themeStyles.appToolbarActions) {
                 div {
                     inlineStyles {
-                        if (!editMode && !documentManager.isUnsaved) {
+                        if (!editMode.isOn && !documentManager.isUnsaved) {
                             opacity = 0
                         }
                         transition("opacity", duration = .5.s, timing = Timing.linear)
@@ -178,8 +183,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     FormControlLabel {
                         attrs.control = buildElement {
                             Switch {
-                                attrs.checked = props.editMode
-                                attrs.onChange = props.onEditModeChange.withTChangeEvent()
+                                attrs.checked = editMode.isOn
+                                attrs.onChange = handleEditModeChange.withTChangeEvent()
                             }
                         }
                         attrs.label = buildElement { typographyH6 { +"Design Mode" } }
@@ -229,8 +234,7 @@ private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
     var appMode: AppMode
-    var editMode: Boolean?
-    var onEditModeChange: () -> Unit
+    var documentManager: DocumentManager<*, *>.Facade
     var onMenuButtonClick: () -> Unit
 }
 

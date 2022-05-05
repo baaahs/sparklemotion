@@ -16,8 +16,11 @@ import org.spekframework.spek2.dsl.Skip
 object ControlDisplaySpec : Spek({
     describe<ControlDisplay> {
         val mutableShow by value {
-            MutableShow("Show")
-                .editLayouts { copyFrom(createLayouts("Panel 1", "Panel 2", "Panel 3")) }
+            MutableShow("Show").also {
+                it.editLayouts {
+                    copyFrom(createLayouts(it, "Panel 1", "Panel 2", "Panel 3"))
+                }
+            }
         }
         val show by value { mutableShow.build(ShowBuilder()) }
 
@@ -25,9 +28,9 @@ object ControlDisplaySpec : Spek({
         val showOpener by value { ShowOpener(testToolchain, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
         val editHandler by value { FakeEditHandler() }
-        val dragNDrop by value { FakeDragNDrop() }
+        val dragNDrop by value { FakeDragNDrop<Int>() }
         val controlDisplay by value {
-            ControlDisplay(openShow, editHandler, dragNDrop)
+            LegacyControlDisplay(openShow, editHandler, dragNDrop)
         }
 
         context("empty show") {
@@ -58,16 +61,16 @@ object ControlDisplaySpec : Spek({
             it("renders controls correctly") {
                 expect(openShow.fakeRender(controlDisplay)).toBe("""
                         Panel 1:
-                          |Show| scenesButtonGroup[*scene1Button*, scene2Button]
+                          |Show| scenes[*scene1*, scene2]
                           |Scene 1|
                           |Backdrop 1.1|
                         Panel 2:
                           |Show|
-                          |Scene 1| backdropsButtonGroup[*backdrop11Button*, backdrop12Button]
+                          |Scene 1| backdrops[*backdrop11*, backdrop12]
                           |Backdrop 1.1|
                         Panel 3:
                           |Show|
-                          |Scene 1| slider1SliderControl
+                          |Scene 1| slider1
                           |Backdrop 1.1|
                     """.trimIndent())
             }
@@ -77,7 +80,7 @@ object ControlDisplaySpec : Spek({
                 skip = Skip.Yes("Figure out how this should work and fix it")
             ) {
                 expect(controlDisplay.unplacedControls.map { it.id }.toSet())
-                    .toBe(setOf("slider2SliderControl", "backdrop21Button", "backdrop22Button", "backdropsButtonGroup2"))
+                    .toBe(setOf("slider2", "backdrop21", "backdrop22", "backdrops2"))
             }
 
             it("has the first item in the button group selected by default") {

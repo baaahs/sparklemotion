@@ -80,7 +80,12 @@ object PatchResolverSpec : Spek({
         val mainPanel = MutablePanel(Panel("Main"))
         val mutableShow by value {
             MutableShow("test show") {
-                editLayouts { panels["main"] = mainPanel }
+                editLayouts {
+                    panels["main"] = mainPanel
+                    editLayout("default") {
+                        tabs.add(MutableLegacyTab("Tab"))
+                    }
+                }
             }
         }
         val show by value {
@@ -114,8 +119,8 @@ object PatchResolverSpec : Spek({
             }
 
             it("merges layered patches into a single patch") {
-                clickButton("brightnessButton")
-                clickButton("orangeButton")
+                clickButton("brightness")
+                clickButton("orange")
 
                 kexpect(linkedPatch.toGlsl()).toBe(
                     /**language=glsl*/
@@ -234,9 +239,9 @@ object PatchResolverSpec : Spek({
                 }
 
                 it("merges layered patches into a single patch") {
-                    clickButton("brightnessButton")
-                    clickButton("orangeButton")
-                    clickButton("timeWobbleButton")
+                    clickButton("brightness")
+                    clickButton("orange")
+                    clickButton("timeWobble")
 
                     kexpect(linkedPatch.toGlsl()).toBe(
                         /**language=glsl*/

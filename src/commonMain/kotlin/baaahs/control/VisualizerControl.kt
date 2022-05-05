@@ -2,7 +2,9 @@ package baaahs.control
 
 import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
-import baaahs.app.ui.editor.*
+import baaahs.app.ui.editor.EditableManager
+import baaahs.app.ui.editor.GenericPropertiesEditorPanel
+import baaahs.app.ui.editor.VisualizerPropsEditor
 import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
@@ -55,12 +57,12 @@ data class MutableVisualizerControl(
         )
     )
 
-    override fun build(showBuilder: ShowBuilder): VisualizerControl {
+    override fun buildControl(showBuilder: ShowBuilder): VisualizerControl {
         return VisualizerControl(surfaceDisplayMode, rotate)
     }
 
     override fun previewOpen(): OpenControl {
-        return OpenVisualizerControl(randomId(title.camelize()), build(ShowBuilder()))
+        return OpenVisualizerControl(randomId(title.camelize()), buildControl(ShowBuilder()))
     }
 }
 
@@ -77,9 +79,6 @@ class OpenVisualizerControl(
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forVisualizer(this, controlProps)
-
-    override fun getEditIntent(): EditIntent =
-        ControlEditIntent(id)
 
     val rotate get() = visualizerControl.rotate
 }

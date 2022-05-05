@@ -20,6 +20,8 @@ import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableLayoutDimen
+import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -56,13 +58,23 @@ object ShowSerializationSpec : Spek({
                 FakePlugin.Builder("some.plugin", listOf(FakeDataSource.Builder))
             }
             override(origShow) {
-                SampleData.createSimpleShow {
+                MutableShow("Untitled").apply {
+                    editLayouts {
+                        editLayout("default") {
+                            tabs.add(MutableLegacyTab("Main").apply {
+                                columns.add(MutableLayoutDimen.decode("1fr"))
+                                rows.add(MutableLayoutDimen.decode("1fr"))
+                                areas.add(findOrCreatePanel("Controls"))
+                            })
+                        }
+                    }
+
                     addButton(findPanel("controls"), "Button") {
                         addPatch(Shaders.red) {
                             link("somePort", FakeDataSource("foo"))
                         }
                     }
-                }.getShow()
+                }.build()
             }
             override(showJson) { origShow.toJson(buildPlugins(fakePluginBuilder).json) }
 
@@ -157,6 +169,8 @@ private fun forJson(show: Show): JsonObject {
                     put("mediaQuery", it.mediaQuery)
                     put("tabs", it.tabs.jsonMap {
                         buildJsonObject {
+                            it as LegacyTab
+                            put("type", "Legacy")
                             put("title", it.title)
                             put("columns", it.columns.jsonMap { JsonPrimitive(it) })
                             put("rows", it.rows.jsonMap { JsonPrimitive(it) })

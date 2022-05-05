@@ -82,6 +82,23 @@
         "mediaQuery": null,
         "tabs": [
           {
+            "type": "Grid",
+            "title": "Grid Layout",
+            "items": [
+              {
+                "controlId": "bandlimitedSynthesis1Button",
+                "column": 0,
+                "row": 0
+              },
+              {
+                "controlId": "fireButton",
+                "column": 0,
+                "row": 1
+              }
+            ]
+          },
+          {
+            "type": "Legacy",
             "title": "Main",
             "columns": [
               "1fr",

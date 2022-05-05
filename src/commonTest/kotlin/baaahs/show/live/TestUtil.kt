@@ -50,11 +50,11 @@ class FakeEditHandler : EditHandler<Show, ShowState> {
     }
 }
 
-class FakeDragNDrop : DragNDrop() {
+class FakeDragNDrop<P> : DragNDrop<P>() {
     fun getDropTargets() = dropTargets.all()
 
-    fun doMove(source: DropTarget, sourceIndex: Int, dest: DropTarget, destIndex: Int) {
-        onMove(source, sourceIndex, dest, destIndex)
+    fun doMove(source: DropTarget<P>, sourcePosition: P, dest: DropTarget<P>, destPosition: P) {
+        onMove(source, sourcePosition, dest, destPosition)
     }
 }
 
@@ -69,9 +69,9 @@ fun OpenControl.fakeRender(): String {
 fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     val buf = StringBuilder()
 
-    layouts.panels.values.forEach { panel ->
+    layouts.panels.entries.sortedBy { (k, v) -> k }.forEach { (_, panel) ->
         buf.append("${panel.title}:\n")
-        controlDisplay.render(panel) { panelBucket ->
+        (controlDisplay as LegacyControlDisplay).render(panel) { panelBucket ->
             buf.append("  |${panelBucket.section.title}|")
             if (panelBucket.controls.isNotEmpty()) {
                 buf.append(" ${panelBucket.controls.joinToString(", ") { it.control.fakeRender() }}")
@@ -83,12 +83,13 @@ fun OpenShow.fakeRender(controlDisplay: ControlDisplay): String {
     return buf.trim().replace(Regex("\\s+\n"), "\n")
 }
 
-fun createLayouts(vararg panelNames: String): MutableLayouts {
+fun createLayouts(mutableShow: MutableShow, vararg panelNames: String): MutableLayouts {
     return MutableLayouts(
         Layouts(
             panelNames.associateWith { Panel(it) },
-            mapOf("default" to Layout(null, emptyList()))
-        )
+            mapOf("default" to Layout(null,
+                listOf(LegacyTab("Legacy Tab", emptyList(), emptyList(), emptyList()))))
+        ), mutableShow
     )
 }
 
@@ -134,8 +135,8 @@ fun MutableShow.addFixtureControls() {
     }
 }
 
-fun ControlDisplay.renderBuckets(panel: Panel): List<ControlDisplay.PanelBuckets.PanelBucket> {
-    val buckets = arrayListOf<ControlDisplay.PanelBuckets.PanelBucket>()
+fun LegacyControlDisplay.renderBuckets(panel: Panel): List<LegacyControlDisplay.PanelBuckets.PanelBucket> {
+    val buckets = arrayListOf<LegacyControlDisplay.PanelBuckets.PanelBucket>()
     render(panel) { panelBucket -> buckets.add(panelBucket) }
     return buckets
 }

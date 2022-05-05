@@ -18,6 +18,7 @@ import baaahs.show.*
 import baaahs.show.live.OpenPatchHolder
 import baaahs.show.live.OpenShow
 import baaahs.show.live.PatchResolver
+import baaahs.unknown
 import baaahs.util.CacheBuilder
 
 class MutableShow(
@@ -25,10 +26,12 @@ class MutableShow(
 ) : MutablePatchHolder(baseShow), MutableDocument<Show> {
     override val mutableShow: MutableShow get() = this
 
-    internal val layouts = MutableLayouts(baseShow.layouts)
-
+    private val implicitControls: Map<String, Control> = baseShow.findImplicitControls()
     internal val controls = CacheBuilder<String, MutableControl> { id ->
-        baseShow.controls.getBang(id, "control").createMutable(this)
+        (baseShow.controls[id]
+            ?: implicitControls[id]
+            ?: error(unknown("control", id, baseShow.controls.keys + implicitControls.keys))
+        ).createMutable(this).also { it.asBuiltId = id }
     }
 
     internal val dataSources = baseShow.dataSources
@@ -52,6 +55,8 @@ class MutableShow(
                 patch.priority
             )
         }
+
+    internal val layouts = MutableLayouts(baseShow.layouts, this)
 
     init {
         // Second pass required here since they might refer to each other.

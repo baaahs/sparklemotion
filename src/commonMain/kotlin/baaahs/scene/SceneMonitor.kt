@@ -7,12 +7,12 @@ class SceneMonitor(
     openScene: OpenScene? = null,
     private val observable: Observable = Observable()
 ) : SceneProvider, IObservable by observable {
-    private val beforeChangeListeners = arrayListOf<BeforeChangeListener>()
+    private val beforeChangeListeners = arrayListOf<SceneChangeListener>()
 
     override var openScene: OpenScene? = openScene
         private set
 
-    override fun addBeforeChangeListener(callback: BeforeChangeListener) {
+    override fun addBeforeChangeListener(callback: SceneChangeListener) {
         beforeChangeListeners.add(callback)
     }
 
@@ -23,5 +23,3 @@ class SceneMonitor(
         observable.notifyChanged()
     }
 }
-
-typealias BeforeChangeListener = (OpenScene?) -> Unit

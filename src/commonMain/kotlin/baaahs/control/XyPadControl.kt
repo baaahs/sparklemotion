@@ -31,9 +31,6 @@ data class XyPadControl(
 
     override val controlledDataSourceId: String
 ) : Control {
-
-    override fun suggestId(): String = title.camelize() + "XyPad"
-
     override fun createMutable(mutableShow: MutableShow): MutableXyPadControl {
         return MutableXyPadControl(
             title, initialValue, minValue, maxValue,
@@ -60,7 +57,7 @@ class MutableXyPadControl(
 
     override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> = emptyList()
 
-    override fun build(showBuilder: ShowBuilder): XyPadControl {
+    override fun buildControl(showBuilder: ShowBuilder): XyPadControl {
         return XyPadControl(
             title, initialValue, minValue, maxValue,
             showBuilder.idFor(controlledDataSource)

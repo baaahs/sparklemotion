@@ -12,6 +12,7 @@ import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
 import baaahs.show.SampleData
 import baaahs.show.Show
+import baaahs.show.ShowMonitor
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableDocument
@@ -28,6 +29,7 @@ class ShowManager(
     private val toolchain: Toolchain,
     notifier: Notifier,
     fileDialog: IFileDialog,
+    private val showMonitor: ShowMonitor,
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show, ShowState>(
     ShowDocumentType, pubSub, ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
@@ -94,6 +96,8 @@ class ShowManager(
         openShow = newOpenShow?.also { it.use() }
 
         update(newShow, newFile, newIsUnsaved)
+
+        showMonitor.onChange(newOpenShow)
     }
 
     inner class Facade : DocumentManager<Show, ShowState>.Facade() {
