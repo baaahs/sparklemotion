@@ -4,6 +4,7 @@ package baaahs.show
 
 import baaahs.app.ui.editor.Editable
 import baaahs.camelize
+import baaahs.control.MutableVisualizerControl
 import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.getBang
@@ -153,10 +154,8 @@ fun buildEmptyShow(): Show {
     return MutableShow("Untitled").apply {
         editLayouts {
             editLayout("default") {
-                tabs.add(MutableLegacyTab("Main").apply {
-                    columns.add(MutableLayoutDimen.decode("1fr"))
-                    rows.add(MutableLayoutDimen.decode("1fr"))
-                    areas.add(findOrCreatePanel("Controls"))
+                tabs.add(MutableGridTab("Main").apply {
+                    items.add(MutableGridItem(MutableVisualizerControl(), 9, 0, 3, 2, null))
                 })
             }
         }
