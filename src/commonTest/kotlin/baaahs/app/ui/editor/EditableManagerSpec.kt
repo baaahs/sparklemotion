@@ -41,7 +41,7 @@ object EditableManagerSpec : Spek({
         }
 
         context("when there's an active session") {
-            val baseShow by value { SampleData.sampleShow }
+            val baseShow by value { SampleData.sampleLegacyShow }
             val editIntent by value<EditIntent> { ShowEditIntent() }
             val session: EditableManager<Show>.Session by value { editableManager.session!! }
 

@@ -8,7 +8,7 @@ import baaahs.show.Surfaces
 import org.spekframework.spek2.Spek
 
 object MutableShowVisitorSpec : Spek({
-    val show by value { MutableShow(SampleData.sampleShow) }
+    val show by value { MutableShow(SampleData.sampleLegacyShow) }
 
     describe<MutableShowVisitor> {
         val visitor by value { CollectingVisitor() }

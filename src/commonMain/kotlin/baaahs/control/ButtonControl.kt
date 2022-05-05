@@ -106,7 +106,7 @@ class OpenButtonControl(
 
     override fun applyState(state: Map<String, JsonElement>) = switch.applyState(state)
 
-    override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {
         if (isPressed) super<OpenPatchHolder>.addTo(builder, depth)
     }
 

@@ -98,7 +98,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex(0.0, 0.0)
         position = Position.relative
         marginRight = 0.em
         minWidth = 5.em
@@ -263,5 +263,6 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 
     val vacuityContainer by css {
         display = Display.flex
+        overflow = Overflow.scroll
     }
 }
