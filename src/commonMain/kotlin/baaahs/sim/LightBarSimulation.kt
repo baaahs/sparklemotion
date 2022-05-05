@@ -5,6 +5,5 @@ import baaahs.visualizer.EntityAdapter
 
 expect class LightBarSimulation(
     pixelArray: PixelArray,
-    simulationEnv: SimulationEnv,
     adapter: EntityAdapter
 ) : FixtureSimulation

@@ -8,7 +8,6 @@ import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.mapper.MappingSession
 import baaahs.sim.FixtureSimulation
-import baaahs.sim.SimulationEnv
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
@@ -38,7 +37,7 @@ class ImportedEntityGroup(
         listOfNotNull(importerError)
             .map { Problem("Import error: $name", importerError?.message ?: "Unknown error.") }
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
         ObjGroupSimulation(adapter)
 
     inner class ObjGroupSimulation(adapter: EntityAdapter) : FixtureSimulation {

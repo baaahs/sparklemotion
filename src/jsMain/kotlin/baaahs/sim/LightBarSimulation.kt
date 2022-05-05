@@ -4,9 +4,6 @@ import baaahs.controller.SacnManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.RemoteConfig
-import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayReader
 import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
 import baaahs.model.PixelArray
@@ -15,7 +12,6 @@ import baaahs.visualizer.*
 
 actual class LightBarSimulation actual constructor(
     val pixelArray: PixelArray,
-    private val simulationEnv: SimulationEnv,
     private val adapter: EntityAdapter
 ) : FixtureSimulation {
 
@@ -50,7 +46,7 @@ actual class LightBarSimulation actual constructor(
     }
 
     val wledSimulator by lazy {
-        val wledsSimulator = simulationEnv[WledsSimulator::class]
+        val wledsSimulator = adapter.simulationEnv[WledsSimulator::class]
         wledsSimulator.createFakeWledDevice(pixelArray.name, vizPixels)
     }
 
@@ -72,19 +68,6 @@ actual class LightBarSimulation actual constructor(
 
     override fun stop() {
         wledSimulator.stop()
-    }
-
-    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-//        entityVisualizer.vizPixels = VizPixels(
-//            pixelLocations.map { it.toVector3() }.toTypedArray(),
-//            pixelVisualizationNormal,
-//            pixelArray.transformation,
-//            fixtureConfig as PixelArrayDevice.Config
-//        )
-    }
-
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-//        entityVisualizer.vizPixels?.readColors(reader)
     }
 
     companion object {

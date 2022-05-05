@@ -58,7 +58,7 @@ class ClientPreview(
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
-                entity.createFixtureSimulation(simulationEnv, adapter)?.let { simulation ->
+                entity.createFixtureSimulation(adapter)?.let { simulation ->
                     theVisualizer.add(simulation.itemVisualizer)
                     simulation.previewFixture
                 }

@@ -10,7 +10,6 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.MovingHeadSimulation
-import baaahs.sim.SimulationEnv
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.movers.clamp
 import baaahs.visualizer.movers.scale
@@ -182,7 +181,7 @@ class MovingHead(
     override val fixtureType: FixtureType
         get() = MovingHeadDevice
 
-    override fun createFixtureSimulation(simulationEnv: SimulationEnv, adapter: EntityAdapter): FixtureSimulation =
+    override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
         MovingHeadSimulation(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =

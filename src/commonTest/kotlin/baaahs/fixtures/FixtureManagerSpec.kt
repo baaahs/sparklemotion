@@ -1,6 +1,5 @@
 package baaahs.fixtures
 
-import baaahs.FakeModelEntity
 import baaahs.describe
 import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
@@ -14,6 +13,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.only
 import baaahs.scene.OpenScene
