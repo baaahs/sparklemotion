@@ -27,6 +27,8 @@ import react.dom.client.createRoot
 import three_ext.installCameraControls
 
 fun main(args: Array<String>) {
+    window.asDynamic().LoggerConfig = LoggerConfig
+
     @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
     ConsoleFormatters.install()
     installCameraControls()

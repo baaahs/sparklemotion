@@ -13,6 +13,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val screen by css {
         width = 100.pct
         height = 100.pct
+        position = Position.relative
     }
     
     val controls by css {

@@ -253,8 +253,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         top = 0.px
         left = 0.px
-        width = 100.pct
-        height = 100.pct
+        bottom = 0.px
+        right = 0.px
         position = Position.absolute
         display = Display.flex
         flexDirection = FlexDirection.column

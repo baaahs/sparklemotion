@@ -4,7 +4,6 @@ import baaahs.client.WebClient
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
-import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -23,7 +22,6 @@ class SheepSimulator(
 
     init {
         window.asDynamic().simulator = this
-        window.asDynamic().LoggerConfig = LoggerConfig
     }
 
     suspend fun start() = coroutineScope {

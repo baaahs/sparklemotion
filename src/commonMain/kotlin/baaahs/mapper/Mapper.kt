@@ -75,7 +75,7 @@ class Mapper(
         mapperScope.launch { start() }
     }
 
-    fun start() = doRunBlocking {
+    fun start() {
         link = network.link("mapper")
         udpSocket = link.listenFragmentingUdp(0, this)
         webSocketClient = WebSocketClient(link, pinkyAddress)

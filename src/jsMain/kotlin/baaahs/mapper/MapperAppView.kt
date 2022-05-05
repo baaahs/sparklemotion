@@ -42,10 +42,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             screenRef.current!!.offsetWidth, screenRef.current!!.offsetHeight
         )
 
-        screenRef.current!!.focus()
-        screenRef.current!!.addEventListener("keydown", uiActions.onKeydown)
+        val handler = appContext.keyboardShortcutHandler.handle(uiActions.keyHandler)
 
         withCleanup {
+            handler.remove()
             ui.onUnmount()
 
         }
