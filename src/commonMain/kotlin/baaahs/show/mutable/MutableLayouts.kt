@@ -1,5 +1,6 @@
 package baaahs.show.mutable
 
+import baaahs.control.*
 import baaahs.getBang
 import baaahs.show.*
 import baaahs.show.live.OpenGridItem
@@ -79,6 +80,10 @@ class MutableLayout(
         mediaQuery = baseLayout.mediaQuery,
         tabs = baseLayout.tabs.mapTo(ArrayList()) { it.edit(panels, mutableShow) }
     )
+
+    fun addTab(title: String, block: MutableGridTab.() -> Unit) {
+        tabs.add(MutableGridTab(title).apply(block))
+    }
 
     fun build(showBuilder: ShowBuilder): Layout {
         return Layout(mediaQuery, tabs.map { it.build(showBuilder) })
@@ -217,7 +222,7 @@ class MutableGridItem(
     var row: Int,
     var width: Int,
     var height: Int,
-    val layout: MutableGridLayout?
+    val layout: MutableGridLayout? = null
 ) {
     constructor(baseGridItem: GridItem, mutableShow: MutableShow) : this(
         mutableShow.findControl(baseGridItem.controlId),
@@ -240,6 +245,49 @@ interface MutableIGridLayout : MutableILayout {
     var columns: Int
     var rows: Int
     val items: MutableList<MutableGridItem>
+
+    fun addControl(
+        control: MutableControl, column: Int, row: Int, width: Int = 1, height: Int = 1,
+        layout: (MutableGridLayout.() -> Unit)? = null
+    ) {
+        items.add(MutableGridItem(control, column, row, width, height, layout?.let {
+            MutableGridLayout(width, height, true).apply(it)
+        }))
+    }
+
+    fun addButton(
+        title: String, column: Int, row: Int, width: Int = 1, height: Int = 1, mutableShow: MutableShow,
+        block: MutableButtonControl.() -> Unit
+    ) {
+        addControl(
+            MutableButtonControl(ButtonControl(title), mutableShow).apply(block),
+            column, row, width, height
+        )
+    }
+
+    fun addButtonGroup(
+        title: String, column: Int, row: Int, width: Int = 1, height: Int = 1, mutableShow: MutableShow,
+        layout: (MutableGridLayout.() -> Unit)? = null
+    ) {
+        addControl(
+            MutableButtonGroupControl(title, mutableShow = mutableShow),
+            column, row, width, height, layout
+        )
+    }
+
+    fun addVisualizer(column: Int, row: Int, width: Int = 1, height: Int = 1) {
+        addControl(
+            MutableVisualizerControl(),
+            column, row, width, height
+        )
+    }
+
+    fun addVacuity(column: Int, row: Int, width: Int = 1, height: Int = 1) {
+        addControl(
+            MutableVacuityControl("Vacuity"),
+            column, row, width, height
+        )
+    }
 
     fun applyChanges(
         originalItems: List<OpenGridItem>,

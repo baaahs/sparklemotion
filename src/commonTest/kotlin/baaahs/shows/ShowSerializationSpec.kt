@@ -388,7 +388,7 @@ object TestSampleData {
     private val beatLinkPlugin = plugins.getPlugin<BeatLinkPlugin>()
 
     val sampleShowWithBeatLink: Show
-        get() = MutableShow(SampleData.sampleShow).apply {
+        get() = MutableShow(SampleData.sampleLegacyShow).apply {
             addPatch(
                 Shader(
                     "BeatLink",

@@ -191,7 +191,7 @@ class OpenGridTab(
 ) : OpenTab, OpenIGridLayout {
     override fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
         items.forEach { item ->
-            item.control.addTo(builder, depth + 1)
+            item.control.addTo(builder, depth + 1, item.layout)
         }
     }
 }

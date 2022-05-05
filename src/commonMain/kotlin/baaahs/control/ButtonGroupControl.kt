@@ -44,7 +44,7 @@ data class ButtonGroupControl(
 
 data class MutableButtonGroupControl(
     override var title: String,
-    var direction: ButtonGroupControl.Direction,
+    var direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Vertical,
     val buttons: MutableList<MutableButtonControl> = arrayListOf(),
     val mutableShow: MutableShow
 ) : MutableControl {
@@ -134,6 +134,12 @@ class OpenButtonGroupControl(
 
     override fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
         buttons.forEach { it.legacyAddTo(builder, panel, depth + 1) }
+    }
+
+    override fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {
+        layout?.items?.forEach { item ->
+            item.control.addTo(builder, depth + 1, item.layout)
+        }
     }
 
     fun createDropTarget(controlDisplay: ControlDisplay) =

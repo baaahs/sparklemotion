@@ -65,7 +65,7 @@ class ShowManager(
             Option("Sample template") {
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
             },
-            Option("Fancy template") {
+            Option("Fancy template (old layout)") {
                 makeNew { fromResources("Honcho.sparkle") }
             }
         ))

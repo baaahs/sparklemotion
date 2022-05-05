@@ -22,7 +22,7 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(builder: ActivePatchSet.Builder, depth: Int) {}
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {}
     fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun resetToDefault() {}

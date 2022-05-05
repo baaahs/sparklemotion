@@ -117,7 +117,7 @@ object PinkySpec : Spek({
         }
 
         beforeEachTest {
-            pinky.switchTo(SampleData.sampleShow)
+            pinky.switchTo(SampleData.sampleLegacyShow)
 
             doRunBlocking {
                 panelMappings.forEach { (brainId, surface) ->
