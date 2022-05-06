@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UiSettings(
-    val darkMode: Boolean = false,
+    val darkMode: Boolean = true,
     val useSharedContexts: Boolean = true,
-    val renderButtonPreviews: Boolean = false,
+    val renderButtonPreviews: Boolean = true,
     val appMode: AppMode = AppMode.Show
 )
