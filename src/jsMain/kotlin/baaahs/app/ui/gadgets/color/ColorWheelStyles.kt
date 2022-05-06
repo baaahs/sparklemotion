@@ -1,10 +1,13 @@
 package baaahs.app.ui.gadgets.color
 
+import baaahs.ui.name
+import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.properties.boxShadow
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
+import baaahs.app.ui.controls.Styles as ControlStyles
 
 object ColorWheelStyles : StyleSheet("app-ui-gadgets-color", isStatic = true) {
     val root by css {
@@ -94,6 +97,15 @@ object ColorWheelStyles : StyleSheet("app-ui-gadgets-color", isStatic = true) {
         descendants("+ &") {
             borderLeft = "1px solid rgba(13, 13, 13, 0.91)"
 
+        }
+    }
+
+    val global = CssBuilder().apply {
+        ".${ControlStyles.notExplicitlySized.name}" {
+            descendants(selector(::root)) {
+                minWidth = 150.px
+                minHeight = 150.px
+            }
         }
     }
 }
