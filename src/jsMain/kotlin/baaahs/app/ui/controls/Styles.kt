@@ -135,6 +135,8 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         opacity = .75
     }
 
+    val notExplicitlySized by css {}
+
     val controlRoot by css {}
 
     val controlButton by css {

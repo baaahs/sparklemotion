@@ -21,6 +21,7 @@ import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
 import react.dom.events.MouseEventHandler
+import baaahs.app.ui.controls.Styles as ControlStyles
 
 private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") { props ->
     val appContext = useContext(appContext)
@@ -46,7 +47,7 @@ private val LegacyPanelLayoutView = xComponent<PanelLayoutProps>("PanelLayout") 
                 else
                     Styles.controlSections.last()
 
-                div(+Styles.layoutControls and style) {
+                div(+Styles.layoutControls and style and ControlStyles.notExplicitlySized) {
                     install(droppableProvided)
 
                     div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
