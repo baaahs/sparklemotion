@@ -16,6 +16,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val buttonGroupCard by css {
         display = Display.flex
+        flexDirection = FlexDirection.column
         overflowY = Overflow.scroll
 
         descendants(this@Styles, ::controlButton) {

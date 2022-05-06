@@ -7,10 +7,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import mui.material.*
 import org.w3c.dom.HTMLInputElement
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.create
+import react.*
 import react.dom.div
 import react.dom.events.ChangeEvent
 import react.dom.html.ReactHTML
@@ -25,6 +22,19 @@ private val ButtonGroupPropsEditorView =
                 attrs.getValue = { props.mutableButtonGroupControl.title }
                 attrs.setValue = { value -> props.mutableButtonGroupControl.title = value }
                 attrs.editableManager = props.editableManager
+            }
+
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
+                        attrs.checked = props.mutableButtonGroupControl.showTitle
+                        attrs.onChange = { _, checked ->
+                            props.mutableButtonGroupControl.showTitle = checked
+                            props.editableManager.onChange()
+                        }
+                    }
+                }
+                attrs.label = buildElement { +"Show Title" }
             }
         }
 
