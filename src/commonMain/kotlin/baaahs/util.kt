@@ -23,6 +23,11 @@ fun <E> Array<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun FloatArray.resize(size: Int, init: (Int) -> Float): FloatArray =
+    FloatArray(size) { i ->
+        if (i < size) get(i) else init(i)
+    }
+
 fun <E> Collection<E>.onlyOrNull(): E? {
     return if (size != 1) null else iterator().next()
 }

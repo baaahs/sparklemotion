@@ -319,11 +319,13 @@ data class BrainControllerConfig(
     override fun edit(): MutableControllerConfig =
         MutableBrainControllerConfig(this)
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
-        override val fixtureConfig: ConfigPreview
-            get() = TODO("not implemented")
-        override val transportConfig: ConfigPreview
-            get() = TODO("not implemented")
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+        return object : FixturePreview {
+            override val fixtureConfig: ConfigPreview
+                get() = fixtureConfig.preview()
+            override val transportConfig: ConfigPreview
+                get() = transportConfig.preview()
+        }
     }
 }
 

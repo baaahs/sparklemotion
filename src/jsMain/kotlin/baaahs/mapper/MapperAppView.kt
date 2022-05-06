@@ -51,8 +51,14 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         }
     }
 
+    val handleSelectEntityPixel by handler { entityName: String?, index: Int? ->
+        ui.selectEntityPixel(entityName, index)
+    }
+
     useResizeListener(screenRef) {
-        screenRef.current?.let { el -> ui.onResize(el.offsetWidth, el.offsetHeight) }
+        screenRef.current?.let { el ->
+            ui.onResize(el.offsetWidth, el.offsetHeight)
+        }
     }
 
 
@@ -101,7 +107,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     option {
                         attrs.label = name
                         attrs.value = name
-                        if (name == ui.selectedMappingSession) {
+                        if (name == ui.selectedMappingSessionName) {
                             attrs.selected = true
                         }
                     }
@@ -193,6 +199,14 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
         statusBar {
             attrs.mapperStatus = props.mapperUi.mapperStatus
+        }
+
+        ui.selectedMappingSession?.let { session ->
+            mappingSession {
+                attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
+                attrs.session = session
+                attrs.onSelectEntityPixel = handleSelectEntityPixel
+            }
         }
 
         div(+styles.perfStats) {
