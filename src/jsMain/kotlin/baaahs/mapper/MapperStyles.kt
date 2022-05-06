@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.scaleX
@@ -131,5 +132,40 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         width = 400.px
         background = "rgba(0, 0, 0, .5)"
         height = 250.px
+    }
+
+    val sessionInfo by css {
+        position = Position.absolute
+        top = 30.px
+        padding = "20px"
+        fontSize = 7.pt
+        overflow = Overflow.scroll
+        background = "rgba(0, 0, 0, .5)"
+    }
+
+    val pixels by css {
+        child("div") {
+            display = Display.inlineBlock
+            width = 8.px
+            height = 8.px
+            margin(1.px)
+            border = "1px solid transparent"
+        }
+    }
+
+    val skippedPixel by css {
+        backgroundColor = Color.grey
+    }
+
+    val unmappedPixel by css {
+        backgroundColor = Color.red
+    }
+
+    val mappedPixel by css {
+        backgroundColor = Color.green
+    }
+
+    val selectedPixel by css {
+        important(::border, "1px solid yellow")
     }
 }
