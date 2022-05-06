@@ -249,11 +249,15 @@ class MutableImportedEntityGroup(
     val problems get() = (getImporterResults()?.errors ?: emptyList()).map { Problem("", it.message) } +
             listOfNotNull(importFail).map { Problem("", it.message) }
 
+    private val baseEntityMetadata = baseImportedEntityData.entityMetadata
+
     private fun getImporterResults(): Importer.Results? =
         importerResults ?: try {
             importFail = null
-            ObjImporter.doImport(objData, objDataIsFileRef, title) {
-                metadata?.getMetadataFor(this.build())?.expectedPixelCount
+            ObjImporter.doImport(objData, objDataIsFileRef, title, id) { childName ->
+                val fromProvider = metadata?.getMetadataFor(childName)
+                baseEntityMetadata[childName]?.plus(fromProvider)
+                    ?: fromProvider
             }.also {
                 importerResults = it
             }
@@ -262,20 +266,31 @@ class MutableImportedEntityGroup(
             null
         }
 
-    override val children: MutableList<MutableEntity> get() =
-        (getImporterResults()?.entities ?: emptyList()).map {
-            object : MutableEntity(it.title, null, Vector3F.origin, EulerAngle.identity, Vector3F.origin, Model.Entity.nextId()) {
-                override fun build(): EntityData {
-                    return SurfaceDataForTest(it.title)
-                }
-
-                override fun getEditorPanels(): List<EntityEditorPanel<in MutableEntity>> =
-                    emptyList()
-            }
+    override val children: MutableList<MutableEntity> =
+        (getImporterResults()?.entities ?: emptyList()).map { childEntity ->
+            val entityMetadata = baseImportedEntityData.entityMetadata[childEntity.name]
+                ?: EntityMetadata.defaults
+            MutableChildMetadata(
+                childEntity,
+                entityMetadata.position ?: Vector3F.origin,
+                entityMetadata.rotation ?: EulerAngle.identity,
+                entityMetadata.scale ?: Vector3F.unit3d
+            )
         }.toMutableList()
 
     override fun build(): ImportedEntityData =
-        ImportedEntityData(title, description, position, rotation, scale, id, objData, objDataIsFileRef, metadata)
+        ImportedEntityData(
+            title, description,
+            position, rotation, scale, id,
+            objData, objDataIsFileRef, metadata,
+            buildMap {
+                children.forEach { child ->
+                    val entityMetadata = EntityMetadata(child.position, child.rotation, child.scale)
+                    if (!entityMetadata.isDefaults())
+                        put(child.title, entityMetadata)
+                }
+            }
+        )
 
     override fun getEditorPanels() = listOf(
         TitleAndDescEntityEditorPanel,
@@ -287,6 +302,40 @@ class MutableImportedEntityGroup(
         importerResults = null
         importFail = null
         getImporterResults()
+    }
+
+    inner class MutableChildMetadata(
+        private val childEntity: Model.Entity,
+        position: Vector3F,
+        rotation: EulerAngle,
+        scale: Vector3F
+    ) : MutableEntity(
+        childEntity.title, null, position, rotation, scale, childEntity.id
+    ) {
+        val childId = nextChildId++
+
+        init {
+            println("New MutableChildMeta(parent=${this@MutableImportedEntityGroup.id}).child for ${childEntity.title}, id=${childEntity.id} childId=$childId")
+            if (childEntity.title == "F3P") {
+                Exception().printStackTrace()
+            }
+        }
+
+        override fun build(): EntityData =
+            SurfaceDataForTest(
+                childEntity.title, childEntity.description,
+                position, rotation, scale, id
+            )
+
+        override fun getEditorPanels(): List<EntityEditorPanel<in MutableEntity>> =
+            listOf(
+                TitleAndDescEntityEditorPanel,
+                TransformEntityEditorPanel
+            )
+    }
+
+    companion object {
+        var nextChildId = 0
     }
 }
 
