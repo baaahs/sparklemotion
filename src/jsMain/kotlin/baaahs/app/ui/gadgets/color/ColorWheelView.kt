@@ -23,6 +23,7 @@ import react.dom.canvas
 import react.dom.div
 import react.useRef
 import styled.inlineStyles
+import kotlin.math.min
 
 private const val pickerRadius = 12
 
@@ -47,8 +48,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
 
     val checkRadius = {
         val el = containerDiv.current!!
-        val clientWidth = el.clientWidth
-        val newRadius = clientWidth / 2
+        val newRadius = min(el.clientWidth, el.clientHeight) / 2
         if (radius != newRadius) {
             radius = newRadius
         }
