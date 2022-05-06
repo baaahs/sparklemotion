@@ -91,7 +91,7 @@ class Model(
         companion object {
             private var _nextId = 1
 
-            fun nextId(): EntityId = _nextId++
+            fun nextId(): EntityId = _nextId++.toString()
         }
     }
 
@@ -196,4 +196,4 @@ class Model(
     }
 }
 
-typealias EntityId = Int
+typealias EntityId = String

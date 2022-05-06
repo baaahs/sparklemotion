@@ -1,7 +1,9 @@
 package baaahs.model.importers
 
+import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.io.getResource
+import baaahs.model.EntityMetadata
 import baaahs.model.Importer
 import baaahs.model.Model
 import baaahs.util.Logger
@@ -12,7 +14,8 @@ object ObjImporter : Importer {
     fun import(
         objText: String,
         objName: String = "OBJ file",
-        expectedPixelCount: (name: String) -> Int? = { null }
+        idPrefix: String,
+        getEntityMetadata: (name: String) -> EntityMetadata? = { null }
     ): Importer.Results {
         val allVertices: MutableList<Vector3F> = mutableListOf()
         val geometry = Model.Geometry(allVertices)
@@ -57,7 +60,7 @@ object ObjImporter : Importer {
                     }
                     "g", "o" -> {
                         buildSurface()
-                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, expectedPixelCount)
+                        objBuilder = ObjBuilder(name = args.joinToString(" "), geometry, idPrefix, getEntityMetadata)
                     }
                     "f" -> {
                         val vertIs = try {
@@ -110,12 +113,27 @@ object ObjImporter : Importer {
         return Results(surfaces, allVertices, errors)
     }
 
-    private class ObjBuilder(val name: String, val geometry: Model.Geometry, val expectedPixelCount: (name: String) -> Int?) {
+    private class ObjBuilder(
+        val name: String,
+        val geometry: Model.Geometry,
+        val idPrefix: String,
+        val getEntityMetadata: (name: String) -> EntityMetadata?
+    ) {
         val faces = mutableListOf<Model.Face>()
         val lines = mutableListOf<Model.Line>()
 
-        fun build(): Model.Surface =
-            Model.Surface(name, name, expectedPixelCount(name), faces, lines, geometry)
+        fun build(): Model.Surface {
+            val entityMetadata = getEntityMetadata(name)
+            return Model.Surface(
+                name, null,
+                entityMetadata?.expectedPixelCount,
+                faces, lines, geometry,
+                entityMetadata?.position ?: Vector3F.origin,
+                entityMetadata?.rotation ?: EulerAngle.identity,
+                entityMetadata?.scale ?: Vector3F.unit3d,
+                id = "$idPrefix:$name"
+            )
+        }
     }
 
     class Results(
@@ -129,10 +147,11 @@ object ObjImporter : Importer {
         objData: String,
         objDataIsFileRef: Boolean,
         title: String,
-        expectedPixelCount: (name: String) -> Int? = { null }
+        idPrefix: String,
+        getEntityMetadata: (name: String) -> EntityMetadata? = { null }
     ): Importer.Results {
         val data = if (objDataIsFileRef) getResource(objData) else objData
         val name = if (objDataIsFileRef) objData else title
-        return import(data, name, expectedPixelCount)
+        return import(data, name, idPrefix, getEntityMetadata)
     }
 }
