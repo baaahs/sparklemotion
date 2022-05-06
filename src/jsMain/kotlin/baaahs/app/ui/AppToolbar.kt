@@ -158,7 +158,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (props.appMode == AppMode.Scene) {
                         IconButton {
                             icon(mui.icons.material.Sync)
-                            attrs.disabled = documentManager.isSynched
+                            attrs.disabled = documentManager.isSynced
                             attrs.onClick = handleSync
 
                             typographyH6 { +"Sync" }

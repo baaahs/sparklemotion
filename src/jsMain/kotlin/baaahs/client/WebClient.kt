@@ -114,7 +114,7 @@ class WebClient(
                     && clientData != null
 
         val showManagerIsReady: Boolean
-            get() = showManager.everSynched
+            get() = showManager.everSynced
 
         val fsRoot: Fs.File?
             get() = this@WebClient.clientData?.fsRoot
