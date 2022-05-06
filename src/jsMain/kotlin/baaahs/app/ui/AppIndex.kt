@@ -155,8 +155,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val show = showManager.show
 
-    onMount {
+    onMount(keyboardShortcutHandler) {
         keyboardShortcutHandler.listen(window)
+        withCleanup { keyboardShortcutHandler.unlisten(window) }
+    }
+
+    onMount(keyboardShortcutHandler, handleAppDrawerToggle, editMode, documentManager) {
         val handler = keyboardShortcutHandler.handle { keypress, event ->
             when (keypress) {
                 Keypress("Escape") -> {
@@ -186,7 +190,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
 
         withCleanup {
-            keyboardShortcutHandler.unlisten(window)
             handler.remove()
         }
     }
