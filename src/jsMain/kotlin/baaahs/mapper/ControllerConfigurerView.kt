@@ -99,6 +99,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 //                    TableCell { +"Pixels" }
 //                    TableCell { +"Mapped" }
                             TableCell { +"Status" }
+                            TableCell { +"Firmware" }
                         }
                     }
 
@@ -141,6 +142,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                             +"Offline"
                                         }
                                     }
+                                    TableCell { +(state?.firmwareVersion ?: "") }
                                 }
                             }
                         }
