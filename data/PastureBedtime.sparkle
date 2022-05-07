@@ -82,7 +82,7 @@
             "items": [
               {
                 "controlId": "vacuity",
-                "column": 8,
+                "column": 2,
                 "row": 2,
                 "width": 4,
                 "height": 2
@@ -181,6 +181,16 @@
                       "controlId": "solidColor2",
                       "column": 1,
                       "row": 5
+                    },
+                    {
+                      "controlId": "danceyCubes2",
+                      "column": 0,
+                      "row": 6
+                    },
+                    {
+                      "controlId": "colorDiffusionFlow2",
+                      "column": 1,
+                      "row": 6
                     }
                   ]
                 }
@@ -225,6 +235,27 @@
                 "column": 7,
                 "row": 4,
                 "height": 2
+              },
+              {
+                "controlId": "scanner2",
+                "column": 4,
+                "row": 0
+              },
+              {
+                "controlId": "sparklez",
+                "column": 5,
+                "row": 0
+              },
+              {
+                "controlId": "soundAnalysis",
+                "column": 8,
+                "row": 0,
+                "width": 2
+              },
+              {
+                "controlId": "soundBrightness",
+                "column": 6,
+                "row": 0
               }
             ]
           },
@@ -285,7 +316,7 @@
     },
     "brightness": {
       "title": "Brightness",
-      "src": "uniform float brightness; // @@Slider min=0 max=1.25 default=1\nuniform float beatBrightness; // @Slider min=0 max=2 default=0\nuniform float beat;\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * mix(brightness, brightness * beat, beatBrightness) , clampedColor.a);\n}"
+      "src": "uniform float brightness; // @@Slider min=0 max=1.25 default=1\n\nuniform float beatBrightness; // @Slider min=0 max=2 default=0\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb *\n        mix(\n            brightness,\n            brightness * beatInfo.intensity,\n            beatBrightness * beatInfo.confidence\n        ),\n        clampedColor.a\n    );\n}"
     },
     "saturation": {
       "title": "Saturation",
@@ -473,11 +504,23 @@
     },
     "solidColor2": {
       "title": "Solid Color",
-      "src": "uniform vec3 color; // @type=color\n\n// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(color, 1.);\n}"
+      "src": "uniform vec4 color; // @@ColorPicker\n\n// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(color.rgb, 1.);\n}"
+    },
+    "danceyCubes": {
+      "title": "Dancey Cubes",
+      "src": "uniform float mysterNumber;\n\nvec3 palette(float d){\n\treturn mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);\n}\n\nvec2 rotate(vec2 p,float a){\n\tfloat c = cos(a);\n    float s = sin(a);\n    return p*mat2(c,s,-s,c);\n}\n\nfloat map(vec3 p){\n    for( int i = 0; i<8; ++i){\n        float t = iTime*0.2;\n        p.xz =rotate(p.xz,t);\n        p.xy =rotate(p.xy,t*mysterNumber);\n        p.xz = abs(p.xz);\n        p.xz-=.5;\n\t}\n\treturn dot(sign(p),p)/5.;\n}\n\nvec4 rm (vec3 ro, vec3 rd){\n    float t = 0.;\n    vec3 col = vec3(0.);\n    float d;\n    for(float i =0.; i<64.; i++){\n\t\tvec3 p = ro + rd*t;\n        d = map(p)*.5;\n        if(d<0.02){\n            break;\n        }\n        if(d>100.){\n        \tbreak;\n        }\n        //col+=vec3(0.6,0.8,0.8)/(400.*(d));\n        col+=palette(length(p)*.1)/(400.*(d));\n        t+=d;\n    }\n    return vec4(col,1./(d*100.));\n}\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;\n\tvec3 ro = vec3(0.,0.,-50.);\n    ro.xz = rotate(ro.xz,iTime);\n    vec3 cf = normalize(-ro);\n    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));\n    vec3 cu = normalize(cross(cf,cs));\n    \n    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;\n    \n    vec3 rd = normalize(uuv-ro);\n    \n    vec4 col = rm(ro,rd);\n    \n    \n    fragColor = col;\n    fragColor.a = 1.;\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"fractal pyramid\",\n\t\"description\": \"coding my new screensaver\",\n\t\"model\": \"car\"\n}\n*/"
+    },
+    "colorDiffusionFlow2": {
+      "title": "Color Diffusion Flow",
+      "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"DESCRIPTION\": \"from http://glslsandbox.com/e#35553.0\",\n  \"CATEGORIES\": [\n    \"fluid\",\n    \"liquid\"\n  ],\n  \"INPUTS\": [\n  \t{\n\t\t\t\"NAME\" :\t\"rate1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.9,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t {\n\t\t\t\"NAME\" :\t\"rate2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.6,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"loopcycle\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t85.0,\n\t\t\t\"MIN\" :\t20.0,\n\t\t\t\"MAX\" :\t100.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.45,\n\t\t\t\"MIN\" :\t-2.5,\n\t\t\t\"MAX\" :\t2.5\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.0,\n\t\t\t\"MIN\" :\t-1.25,\n\t\t\t\"MAX\" :\t1.125\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.33,\n\t\t\t\"MIN\" :\t0.01,\n\t\t\t\"MAX\" :\t3.1459\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.22,\n\t\t\t\"MIN\" :\t-0.497,\n\t\t\t\"MAX\" :\t0.497\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"nudge\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.095,\n\t\t\t\"MIN\" :\t0.001,\n\t\t\t\"MAX\" :\t0.01\n\t},\n\t{\n      \t\t\t\"NAME\" :\t\"depthX\",\n      \t\t\t\"TYPE\" : \t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.85,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t},\n    \t{\n      \t\t\t\"NAME\" :\t\"depthY\",\n      \t\t\t\"TYPE\" :\t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.25,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t}\n  ]\n}*/\n\n///////////////////////////////////////////\n// ColorDiffusionFlow  by mojovideotech\n//\n// based on :\n// glslsandbox.com/\\e#35553.0\n//\n// Creative Commons Attribution-NonCommercial-ShareAlike 3.0\n///////////////////////////////////////////\n\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n \n#define \tpi   \t3.141592653589793\n\nvoid main() {\n\tfloat T = TIME * rate1;\n\tfloat TT = TIME * rate2;\n\tvec2 p=(2.*isf_FragNormCoord);\n\tfor(int i=1;i<11;i++) {\n    \tvec2 newp = p;\n        float ii = float(i);  \n    \tnewp.x+=depthX/ii*sin(ii*pi*p.y+T*nudge+cos((TT/(5.0*ii))*ii));\n    \tnewp.y+=depthY/ii*cos(ii*pi*p.x+TT+nudge+sin((T/(5.0*ii))*ii));\n    \tp = newp +log(DATE.w)/loopcycle;\n  }\n  vec3 col=vec3(cos(p.x+p.y+3.0*color1)*0.5+0.5,sin(p.x+p.y+6.0*cycle1)*0.5+0.5,(sin(p.x+p.y+9.0*color2)+cos(p.x+p.y+12.0*cycle2))*0.25+.5);\n  gl_FragColor=vec4(col*col, 1.0);\n}"
     },
     "wobble": {
       "title": "Wobble",
       "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
+    },
+    "soundBrightness": {
+      "title": "Sound Brightness",
+      "src": "uniform float soundBrightness; // @Slider min=0 max=2 default=0\n\nstruct SoundAnalysis {\n    int bucketCount;\n    int sampleHistoryCount;\n    sampler2D buckets;\n    float maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * mix(soundAnalysis.maxMagnitude, 1., soundBrightness) , clampedColor.a);\n}"
     }
   },
   "patches": {
@@ -508,6 +551,10 @@
         "brightness": {
           "type": "datasource",
           "dataSourceId": "brightnessSlider"
+        },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
         },
         "inColor": {
           "type": "shader-channel",
@@ -1426,6 +1473,84 @@
         }
       }
     },
+    "danceyCubes-patch": {
+      "shaderId": "danceyCubes",
+      "incomingLinks": {
+        "iTime": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "fragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "iResolution": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "mysterNumber": {
+          "type": "datasource",
+          "dataSourceId": "mysterNumberSlider"
+        }
+      }
+    },
+    "colorDiffusionFlow2-patch": {
+      "shaderId": "colorDiffusionFlow2",
+      "incomingLinks": {
+        "DATE": {
+          "type": "datasource",
+          "dataSourceId": "date"
+        },
+        "TIME": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "nudge": {
+          "type": "datasource",
+          "dataSourceId": "nudgeSlider"
+        },
+        "rate1": {
+          "type": "datasource",
+          "dataSourceId": "rate1Slider"
+        },
+        "rate2": {
+          "type": "datasource",
+          "dataSourceId": "rate2Slider"
+        },
+        "loopcycle": {
+          "type": "datasource",
+          "dataSourceId": "loopcycleSlider"
+        },
+        "color1": {
+          "type": "datasource",
+          "dataSourceId": "color1Slider"
+        },
+        "color2": {
+          "type": "datasource",
+          "dataSourceId": "color2Slider"
+        },
+        "cycle1": {
+          "type": "datasource",
+          "dataSourceId": "cycle1Slider"
+        },
+        "cycle2": {
+          "type": "datasource",
+          "dataSourceId": "cycle2Slider"
+        },
+        "depthX": {
+          "type": "datasource",
+          "dataSourceId": "depthXSlider"
+        },
+        "depthY": {
+          "type": "datasource",
+          "dataSourceId": "depthYSlider"
+        },
+        "isf_FragNormCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
     "wobble-patch": {
       "shaderId": "wobble",
       "incomingLinks": {
@@ -1442,6 +1567,28 @@
           "dataSourceId": "wobbleAmountSlider"
         }
       }
+    },
+    "soundBrightness-patch": {
+      "shaderId": "soundBrightness",
+      "incomingLinks": {
+        "brightness": {
+          "type": "datasource",
+          "dataSourceId": "brightnessSlider"
+        },
+        "soundAnalysis": {
+          "type": "datasource",
+          "dataSourceId": "soundAnalysis"
+        },
+        "soundBrightness": {
+          "type": "datasource",
+          "dataSourceId": "soundBrightnessSlider"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "priority": 10.0
     }
   },
   "controls": {
@@ -1495,6 +1642,7 @@
     "brightness": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
+      "initialValue": 0.25,
       "maxValue": 1.25,
       "controlledDataSourceId": "brightnessSlider"
     },
@@ -1981,7 +2129,6 @@
     "heart": {
       "type": "baaahs.Core:Button",
       "title": "Heart",
-      "activationType": "Momentary",
       "patchIds": [
         "heart-patch"
       ]
@@ -2018,6 +2165,20 @@
         "solidColor2-patch"
       ]
     },
+    "danceyCubes2": {
+      "type": "baaahs.Core:Button",
+      "title": "Dancey Cubes",
+      "patchIds": [
+        "danceyCubes-patch"
+      ]
+    },
+    "colorDiffusionFlow2": {
+      "type": "baaahs.Core:Button",
+      "title": "Color Diffusion Flow",
+      "patchIds": [
+        "colorDiffusionFlow2-patch"
+      ]
+    },
     "wobble": {
       "type": "baaahs.Core:Button",
       "title": "Wobble",
@@ -2037,6 +2198,16 @@
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
       "controlledDataSourceId": "wobbleAmountSlider"
+    },
+    "soundAnalysis": {
+      "type": "baaahs.SoundAnalysis:SoundAnalysis"
+    },
+    "soundBrightness": {
+      "type": "baaahs.Core:Button",
+      "title": "Sound Brightness",
+      "patchIds": [
+        "soundBrightness-patch"
+      ]
     }
   },
   "dataSources": {
@@ -2052,9 +2223,12 @@
     "brightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
-      "initialValue": 1.0,
+      "initialValue": 0.25,
       "minValue": 0.0,
       "maxValue": 1.25
+    },
+    "beatInfo": {
+      "type": "baaahs.BeatLink:BeatInfo"
     },
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
@@ -2318,16 +2492,30 @@
       "minValue": 0.25,
       "maxValue": 2.0
     },
-    "beatInfo": {
-      "type": "baaahs.BeatLink:BeatInfo"
-    },
     "heartCenterXyPad": {
       "type": "baaahs.Core:XyPad",
       "title": "Heart Center"
     },
+    "mysterNumberSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Myster Number",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "soundAnalysis": {
+      "type": "baaahs.SoundAnalysis:SoundAnalysis"
+    },
+    "soundBrightnessSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Sound Brightness",
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
