@@ -386,6 +386,7 @@ class FakeController(
         override val title: String get() = TODO("not implemented")
         override val address: String get() = TODO("not implemented")
         override val onlineSince: Time get() = TODO("not implemented")
+        override val firmwareVersion: String? get() = TODO("not implemented")
     }
     override val transportType: TransportType
         get() = DmxTransport

@@ -60,7 +60,8 @@ class DirectDmxController(
     data class State(
         override val title: String,
         override val address: String?,
-        override val onlineSince: Time?
+        override val onlineSince: Time?,
+        override val firmwareVersion: String? = null
     ) : ControllerState()
 
     inner class DirectDmxTransport(
