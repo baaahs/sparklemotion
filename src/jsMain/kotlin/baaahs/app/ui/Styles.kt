@@ -153,18 +153,28 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val title by css {
-        display = Display.inlineBlock
+        display = Display.flex
+        userSelect = UserSelect.none
     }
 
     val titleHeader by css {
         position = Position.absolute
         top = 0.em
+        fontSize = .7.em
+        opacity = .6
+    }
+    val titleFooter by css {
+        position = Position.absolute
+        bottom = 5.px
         fontSize = .6.em
+        opacity = .6
+
+        child("svg") {
+            fontSize = 1.em
+        }
     }
 
-    val inactive by css {
-
-    }
+    val inactive by css {}
 
     val problemBadge by css {
         paddingLeft = 1.em
@@ -180,6 +190,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         top = 0.5.em
         right = 0.5.em
         fontSize = 0.6.rem
+        userSelect = UserSelect.none
     }
 
     val appToolbarProblemsIcon by css {
@@ -499,6 +510,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         body {
             fontSize = 0.875.rem
             lineHeight = LineHeight("1.43")
+        }
+
+        button {
+            fontFamily = "inherit"
         }
 
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {

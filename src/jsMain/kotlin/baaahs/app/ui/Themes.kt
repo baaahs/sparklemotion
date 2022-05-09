@@ -23,6 +23,18 @@ object Themes {
                         }
                     }
                 }
+                MuiFormControlLabel = jso {
+                    styleOverrides = jso {
+                        root = jso {
+                            userSelect = "none"
+                        }
+                    }
+                }
+            }
+            typography = jso {
+                button = jso {
+                    textTransform = "none"
+                }
             }
         }
     )

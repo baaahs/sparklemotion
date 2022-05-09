@@ -5,6 +5,8 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
+import mui.icons.material.SvgIconComponent
+import mui.material.SvgIconProps
 import mui.material.Typography
 import mui.material.TypographyProps
 import mui.material.styles.Theme
@@ -12,10 +14,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.RBuilder
-import react.RElementBuilder
-import react.ReactNode
-import react.Render
+import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
@@ -84,6 +83,7 @@ val RuleSet.selector: String
 
 operator fun RuleSet.unaryPlus(): String = name
 operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
+operator fun SvgIconComponent.unaryPlus(): ReactElement<SvgIconProps> = create()
 val String.className: ClassName get() = ClassName(this)
 infix fun String.and(ruleSet: RuleSet?): String = if (ruleSet == null) this else this + " " + ruleSet.name
 infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)

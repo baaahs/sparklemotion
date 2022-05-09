@@ -9,6 +9,8 @@ import baaahs.util.globalLaunch
 import baaahs.window
 import kotlinx.js.jso
 import materialui.icon
+import mui.icons.material.Folder
+import mui.icons.material.InsertDriveFile
 import mui.material.*
 import mui.system.Breakpoint
 import org.w3c.dom.events.Event
@@ -52,7 +54,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         }
     }
 
-    val handleFileDoubleClick = callback(isSaveAs) { file: Fs.File ->
+    val handleFileDoubleClick = callback(isSaveAs, fileDialog) { file: Fs.File ->
         globalLaunch {
             if (file.fs.isDirectory(file)) {
                 currentDir = file
@@ -73,18 +75,18 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         selectedFile = currentDir?.resolve(str)
     }
 
-    val handleConfirm by mouseEventHandler(selectedFile) {
+    val handleConfirm by mouseEventHandler(selectedFile, fileDialog) {
         selectedFile?.let {
             globalLaunch { fileDialog.onSelect(it) }
         }; Unit
     }
 
-    val handleClose = callback { _: Event, _: String ->
+    val handleClose = callback(fileDialog) { _: Event, _: String ->
         globalLaunch { fileDialog.onCancel() }
         Unit
     }
 
-    val handleCancel by mouseEventHandler {
+    val handleCancel by mouseEventHandler(fileDialog) {
         globalLaunch { fileDialog.onCancel() }
         Unit
     }
@@ -141,13 +143,13 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     ListItemButton {
                         attrs.onClick = { _ -> handleFileSingleClick(parent) }
                         attrs.onDoubleClick = { _ -> handleFileDoubleClick(parent) }
-                        ListItemIcon { icon(mui.icons.material.Folder) }
+                        ListItemIcon { icon(Folder) }
                         ListItemText { attrs.primary = buildElement  { +".." } }
                     }
                 }
                 filesInDir.forEach { file ->
                     println("file.fullPath = ${file.fullPath}")
-                    val icon = if (file.isDirectory == true) mui.icons.material.Folder else mui.icons.material.InsertDriveFile
+                    val icon = if (file.isDirectory == true) Folder else InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
                     fileDialog.adjustFileDisplay(file, fileDisplay)
 

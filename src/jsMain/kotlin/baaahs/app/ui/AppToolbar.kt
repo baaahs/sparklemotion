@@ -12,9 +12,12 @@ import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.unsafe
 import kotlinx.js.jso
 import materialui.icon
+import mui.icons.material.*
 import mui.material.*
+import mui.material.Link
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
@@ -86,11 +89,14 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 div(+themeStyles.titleHeader) { +"Show:" }
 
                 if (show != null) {
-                    b {
-                        +show.title
-                        showManager.file?.let { attrs["title"] = it.toString() }
+                    showManager.file?.let {
+                        div(+themeStyles.titleFooter) {
+                            icon(Save)
+                            span { attrs.unsafe { +"&nbsp;" } }
+                            +it.toString()
+                        }
                     }
-
+                    b { +show.title }
                     if (showManager.isUnsaved) i { +" (Unsaved)" }
                     problemBadge(show, themeStyles.problemBadge)
 
@@ -111,10 +117,14 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 div(+themeStyles.titleHeader) { +"Scene:" }
 
                 if (scene != null) {
-                    b {
-                        +scene.title
-                        sceneManager.file?.let { attrs["title"] = it.toString() }
+                    sceneManager.file?.let {
+                        div(+themeStyles.titleFooter) {
+                            icon(Save)
+                            span { attrs.unsafe { +"&nbsp;" } }
+                            +it.toString()
+                        }
                     }
+                    b { +scene.title }
                     if (sceneManager.isUnsaved) i { +" (Unsaved)" }
 
                     if (props.appMode == AppMode.Scene && editMode.isOn) {
@@ -139,44 +149,44 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
-                    IconButton {
-                        icon(mui.icons.material.Undo)
+                    Button {
+                        attrs.startIcon = +Undo
                         attrs.disabled = !documentManager.canUndo
                         attrs.onClick = handleUndo
 
-                        typographyH6 { +"Undo" }
+                        +"Undo"
                     }
 
-                    IconButton {
-                        icon(mui.icons.material.Redo)
+                    Button {
+                        attrs.startIcon = +Redo
                         attrs.disabled = !documentManager.canRedo
                         attrs.onClick = handleRedo
 
-                        typographyH6 { +"Redo" }
+                        +"Redo"
                     }
 
                     if (props.appMode == AppMode.Scene) {
-                        IconButton {
-                            icon(mui.icons.material.Sync)
+                        Button {
+                            attrs.startIcon = +Sync
                             attrs.disabled = documentManager.isSynced
                             attrs.onClick = handleSync
 
-                            typographyH6 { +"Sync" }
+                            +"Sync"
                         }
                     }
 
                     if (!documentManager.isLoaded) {
-                        IconButton {
-                            icon(mui.icons.material.FileCopy)
+                        Button {
+                            attrs.startIcon = +FileCopy
                             attrs.onClick = handleSaveAs
-                            typographyH6 { +"Save As…" }
+                            +"Save As…"
                         }
                     } else {
-                        IconButton {
-                            icon(mui.icons.material.Save)
+                        Button {
+                            attrs.startIcon = +Save
                             attrs.disabled = !documentManager.isUnsaved
                             attrs.onClick = handleSave
-                            typographyH6 { +"Save" }
+                            +"Save"
                         }
                     }
 
@@ -187,7 +197,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                                 attrs.onChange = handleEditModeChange.withTChangeEvent()
                             }
                         }
-                        attrs.label = buildElement { typographyH6 { +"Design Mode" } }
+                        attrs.disableTypography = true
+                        attrs.label = "Design Mode".asTextNode()
                     }
                 }
 
