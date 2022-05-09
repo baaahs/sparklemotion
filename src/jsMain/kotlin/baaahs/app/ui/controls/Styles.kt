@@ -174,14 +174,17 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val buttonLabelWhenPreview by css {
-        grow(Grow.GROW)
-        color = Color.black
-        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+        important(::color, Color.white)
+        put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
+        border(5.px, BorderStyle.dotted, Color.transparent)
+        important(::backgroundColor, Color.transparent)
     }
 
     val buttonSelectedWhenPreview by css {
-        border(5.px, BorderStyle.solid, Color.orange.withAlpha(.75))
-        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+        important(::color, Color.white)
+        put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
+        border(5.px, BorderStyle.dotted, Color.orange)
+        important(::backgroundColor, Color.transparent)
     }
 
     val inputLabel by css {

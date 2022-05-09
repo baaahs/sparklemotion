@@ -95,7 +95,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                             attrs.onChange = handleEditModeChange
                         }
                     }
-                    attrs.label = buildElement { typographyH6 { +"Design Mode" } }
+                    attrs.label = "Design Mode".asTextNode()
                 }
             }
 
@@ -123,7 +123,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                         }
                     }
                     attrs.onChange = handleDarkModeChange
-                    attrs.label = buildElement { typographyH6 { +"Dark Mode" } }
+                    attrs.label = "Dark Mode".asTextNode()
                 }
             }
 

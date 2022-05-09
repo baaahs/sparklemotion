@@ -212,6 +212,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val buttonGroupHeader by css {
         padding(2.px, 1.em)
         lineHeight = LineHeight.normal
+        userSelect = UserSelect.none
     }
 
     val global = CssBuilder().apply {

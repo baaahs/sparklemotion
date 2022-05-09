@@ -163,40 +163,31 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         handleAppDrawerToggle, handleAppModeChange
     ) {
         val handler = keyboardShortcutHandler.handle { keypress, event ->
+            var result: KeypressResult? = null
+
             when (keypress) {
-                Keypress("Escape") -> {
-                    handleAppDrawerToggle()
-                    KeypressResult.Handled
-                }
-                Keypress("d") -> {
-                    editMode.toggle()
-                    KeypressResult.Handled
-                }
+                Keypress("Escape") -> handleAppDrawerToggle()
+                Keypress("d") -> editMode.toggle()
                 Keypress("l") -> {
                     layoutEditorDialogOpen = !layoutEditorDialogOpen
-                    KeypressResult.Handled
                 }
-                Keypress("s") -> {
-                    handleAppModeChange(appMode.otherOne)
-                    KeypressResult.Handled
-                }
+                Keypress("s") -> handleAppModeChange(appMode.otherOne)
                 Keypress("s", metaKey = true),
                 Keypress("s", ctrlKey = true) -> {
                     myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
-                    KeypressResult.Handled
                 }
                 Keypress("z", metaKey = true),
                 Keypress("z", ctrlKey = true) -> {
                     documentManager.undo()
-                    KeypressResult.Handled
                 }
                 Keypress("z", metaKey = true, shiftKey = true),
                 Keypress("z", ctrlKey = true, shiftKey = true) -> {
                     documentManager.redo()
-                    KeypressResult.Handled
                 }
-                else -> KeypressResult.NotHandled
+                else -> result = KeypressResult.NotHandled
             }
+
+            result ?: KeypressResult.Handled
         }
 
         withCleanup {

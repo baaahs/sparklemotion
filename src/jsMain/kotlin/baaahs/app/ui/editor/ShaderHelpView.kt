@@ -115,6 +115,7 @@ class ShaderHelpStyles(
 
     val code by css {
         whiteSpace = WhiteSpace.preWrap
+        userSelect = UserSelect.all
 
         // Line numbers:
         before {

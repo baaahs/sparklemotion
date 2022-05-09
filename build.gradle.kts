@@ -185,7 +185,6 @@ kotlin {
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("markdown-it", "~11.0.0"))
-                implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
 
@@ -250,9 +249,6 @@ tasks.named<ProcessResources>("jsProcessResources") {
     from("build/js/node_modules/@fortawesome") {
         include("fontawesome-free/css/all.min.css")
         include("fontawesome-free/webfonts/*")
-    }
-    from("build/js/node_modules/normalize.css") {
-        include("normalize.css")
     }
     from("build/js/node_modules/@blueprintjs") {
         into("blueprintjs")
