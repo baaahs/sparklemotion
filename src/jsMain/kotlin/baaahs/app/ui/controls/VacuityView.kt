@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.control.OpenVacuityControl
 import baaahs.show.live.ControlProps
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.Props
@@ -17,7 +18,7 @@ private val VacuityView = xComponent<VacuityProps>("Vacuity") { props ->
 
     val relevantUnplacedControls = props.controlProps.relevantUnplacedControls
 
-    div(+styles.vacuityContainer) {
+    div(+styles.vacuityContainer and Styles.notExplicitlySized) {
         relevantUnplacedControls.forEachIndexed { index, unplacedControl ->
 //                val draggableId = "unplaced-${unplacedControl.id}"
 //                draggable({

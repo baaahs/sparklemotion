@@ -106,7 +106,7 @@ abstract class MutablePatchHolder(
         direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Horizontal,
         block: MutableButtonGroupControl.() -> Unit
     ): MutableButtonGroupControl {
-        val control = MutableButtonGroupControl(title, direction, mutableListOf(), mutableShow)
+        val control = MutableButtonGroupControl(title, direction, mutableShow = mutableShow)
         control.block()
         addControl(panel, control)
         return control

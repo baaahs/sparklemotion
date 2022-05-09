@@ -64,6 +64,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
     val gridLayoutContext = memo { GridLayoutContext() }
+    val keyboardShortcutHandler = memo { KeyboardShortcutHandler() }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
@@ -75,6 +76,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.uiSettings = uiSettings
             this.allStyles = allStyles
             this.prompt = { prompt = it }
+            this.keyboardShortcutHandler = keyboardShortcutHandler
             this.clock = JsClock
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
@@ -136,10 +138,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handlePromptClose = callback { prompt = null }
 
-    val forceAppDrawerOpen = webClient.isLoaded && when (appMode) {
-        AppMode.Show -> !showManager.isLoaded
-        AppMode.Scene -> !sceneManager.isLoaded
-    }
+    val forceAppDrawerOpen = webClient.serverIsOnline &&
+            documentManager.everSynced && !documentManager.isLoaded
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
@@ -153,38 +153,42 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val show = showManager.show
 
-    onMount {
-        val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
-            val keypress = with (event) { Keypress(key, metaKey, ctrlKey, shiftKey) }
+    onMount(keyboardShortcutHandler) {
+        keyboardShortcutHandler.listen(window)
+        withCleanup { keyboardShortcutHandler.unlisten(window) }
+    }
+
+    onMount(keyboardShortcutHandler, handleAppDrawerToggle, editMode, documentManager) {
+        val handler = keyboardShortcutHandler.handle { keypress, event ->
             when (keypress) {
                 Keypress("Escape") -> {
                     handleAppDrawerToggle()
-                    event.stopPropagation()
+                    KeypressResult.Handled
                 }
                 Keypress("d") -> {
                     editMode.toggle()
-                    event.stopPropagation()
+                    KeypressResult.Handled
                 }
                 Keypress("l") -> {
                     layoutEditorDialogOpen = !layoutEditorDialogOpen
-                    event.stopPropagation()
+                    KeypressResult.Handled
                 }
                 Keypress("z", metaKey = true),
                 Keypress("z", ctrlKey = true) -> {
                     documentManager.undo()
+                    KeypressResult.Handled
                 }
                 Keypress("z", metaKey = true, shiftKey = true),
                 Keypress("z", ctrlKey = true, shiftKey = true) -> {
                     documentManager.redo()
+                    KeypressResult.Handled
                 }
-                else -> {
-                    console.log("Unhandled keypress:", keypress)
-                }
+                else -> KeypressResult.NotHandled
             }
         }
-        keyboardShortcutHandler.listen(window)
+
         withCleanup {
-            keyboardShortcutHandler.unlisten(window)
+            handler.remove()
         }
     }
 
@@ -233,26 +237,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                         }
 
-                        // TODO: this doesn't actually show up for some reason?
-                        if (props.webClient.isMapping) {
-                            Backdrop {
-                                attrs.open = true
-
-                                Container {
-                                    CircularProgress {}
-                                    icon(NotificationImportant)
-
-                                    typographyH6 { +"Mapper Running…" }
-                                    +"Please wait."
-                                }
-                            }
-                        }
-
-                        if (!webClient.isLoaded) {
+                        if (!webClient.serverIsOnline) {
                             Paper {
                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                 CircularProgress {}
-                                typographyH6 { +"Loading Show…" }
+                                typographyH6 { +"Connecting…" }
+                                +"Sparkle Motion is initializing."
                             }
                         } else {
                             ErrorBoundary {
@@ -260,12 +250,30 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 when (appMode) {
                                     AppMode.Show -> {
-                                        if (show == null) {
+                                        if (!webClient.showManagerIsReady) {
+                                            Paper {
+                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                NotificationImportant {}
+                                                typographyH6 { +"Connecting…" }
+                                                +"Show manager is initializing."
+                                            }
+                                        } else if (show == null) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                                 NotificationImportant {}
                                                 typographyH6 { +"No open show." }
                                                 p { +"Maybe you'd like to open one? " }
+                                            }
+                                        } else if (props.webClient.isMapping) {
+                                            Backdrop {
+                                                attrs.open = true
+                                                Container {
+                                                    CircularProgress {}
+                                                    icon(NotificationImportant)
+
+                                                    typographyH6 { +"Mapper Running…" }
+                                                    +"Please wait."
+                                                }
                                             }
                                         } else {
                                             showUi {

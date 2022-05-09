@@ -87,7 +87,8 @@ class BrainManager(
         val brainId = BrainId(msg.brainId)
 
         logger.debug {
-            "Hello from $brainId (surface=${msg.surfaceName ?: "[unknown]"}) at $brainAddress"
+            "Hello from $brainId (surface=${msg.surfaceName ?: "[unknown]"}) " +
+                    "at $brainAddress [firmware=${msg.firmwareVersion}]"
         }
 
         // Decide whether or not to tell this brain it should use a different firmware
@@ -111,7 +112,7 @@ class BrainManager(
 
         val config = controllerConfigs[brainId.asControllerId()]
         val controller = BrainController(
-            brainAddress, brainId,
+            brainAddress, brainId, msg,
             config?.defaultFixtureConfig,
             config?.defaultTransportConfig,
             isSimulatedBrain
@@ -129,6 +130,7 @@ class BrainManager(
     inner class BrainController(
         private val brainAddress: Network.Address,
         private val brainId: BrainId,
+        private val helloMessage: BrainHelloMessage,
         override val defaultFixtureConfig: FixtureConfig?,
         override val defaultTransportConfig: TransportConfig?,
         private val isSimulatedBrain: Boolean,
@@ -138,7 +140,7 @@ class BrainManager(
             get() = brainId.asControllerId()
 
         override val state: ControllerState
-            get() = State(brainId.uuid, brainAddress.asString(), startedAt)
+            get() = State(brainId.uuid, brainAddress.asString(), startedAt, helloMessage.firmwareVersion)
 
         override val transportType: TransportType
             get() = BrainTransportType
@@ -163,7 +165,8 @@ class BrainManager(
     data class State(
         override val title: String,
         override val address: String?,
-        override val onlineSince: Time?
+        override val onlineSince: Time?,
+        override val firmwareVersion: String?
     ) : ControllerState()
 
     inner class BrainTransport(
@@ -319,11 +322,13 @@ data class BrainControllerConfig(
     override fun edit(): MutableControllerConfig =
         MutableBrainControllerConfig(this)
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview = object : FixturePreview {
-        override val fixtureConfig: ConfigPreview
-            get() = TODO("not implemented")
-        override val transportConfig: ConfigPreview
-            get() = TODO("not implemented")
+    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+        return object : FixturePreview {
+            override val fixtureConfig: ConfigPreview
+                get() = fixtureConfig.preview()
+            override val transportConfig: ConfigPreview
+                get() = transportConfig.preview()
+        }
     }
 }
 

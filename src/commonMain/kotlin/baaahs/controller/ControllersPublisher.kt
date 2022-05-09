@@ -33,6 +33,7 @@ abstract class ControllerState : Observable() {
     abstract val title: String
     abstract val address: String?
     abstract val onlineSince: Time?
+    abstract val firmwareVersion: String?
 
     open fun matches(controllerMatcher: ControllerMatcher): Boolean =
         controllerMatcher.matches(title, address)

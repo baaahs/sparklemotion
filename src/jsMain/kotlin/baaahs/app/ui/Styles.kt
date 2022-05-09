@@ -4,6 +4,7 @@ import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
+import baaahs.app.ui.gadgets.color.ColorWheelStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.app.ui.layout.LayoutStyles
 import baaahs.app.ui.model.ModelEditorStyles
@@ -38,6 +39,7 @@ class AllStyles(val theme: Theme) {
         injectGlobal(Styles.global)
         injectGlobal(appUi.global)
         injectGlobal(ControlsStyles.global)
+        injectGlobal(ColorWheelStyles.global)
         injectGlobal(layout.global)
     }
 }
@@ -253,8 +255,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         top = 0.px
         left = 0.px
-        width = 100.pct
-        height = 100.pct
+        bottom = 0.px
+        right = 0.px
         position = Position.absolute
         display = Display.flex
         flexDirection = FlexDirection.column

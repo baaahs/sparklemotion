@@ -23,6 +23,7 @@ import kotlinx.serialization.json.JsonElement
 data class ButtonGroupControl(
     override val title: String,
     val direction: Direction = Direction.Horizontal,
+    val showTitle: Boolean? = false,
     val buttonIds: List<String>
 ) : Control {
 
@@ -31,11 +32,13 @@ data class ButtonGroupControl(
         Vertical
     }
 
-    override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl {
-        return MutableButtonGroupControl(title, direction, buttonIds.map {
-            mutableShow.findControl(it) as MutableButtonControl
-        }.toMutableList(), mutableShow)
-    }
+    override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl =
+        MutableButtonGroupControl(
+            title, direction, showTitle,
+            buttonIds.map {
+                mutableShow.findControl(it) as MutableButtonControl
+            }.toMutableList(), mutableShow
+        )
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonGroupControl {
         return OpenButtonGroupControl(id, this, openContext)
@@ -45,6 +48,7 @@ data class ButtonGroupControl(
 data class MutableButtonGroupControl(
     override var title: String,
     var direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Vertical,
+    var showTitle: Boolean? = false,
     val buttons: MutableList<MutableButtonControl> = arrayListOf(),
     val mutableShow: MutableShow
 ) : MutableControl {
@@ -66,11 +70,12 @@ data class MutableButtonGroupControl(
         )
     }
 
-    override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl {
-        return ButtonGroupControl(title, direction, buttons.map { mutableButtonControl ->
-            mutableButtonControl.buildAndStashId(showBuilder)
-        })
-    }
+    override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl =
+        ButtonGroupControl(title, direction, showTitle,
+            buttons.map { mutableButtonControl ->
+                mutableButtonControl.buildAndStashId(showBuilder)
+            }
+        )
 
     override fun previewOpen(): OpenControl {
         val buttonGroupControl = buildControl(ShowBuilder())
@@ -94,6 +99,8 @@ class OpenButtonGroupControl(
 ) : OpenControl, ControlContainer {
     val title: String
         get() = buttonGroupControl.title
+
+    val showTitle: Boolean = buttonGroupControl.showTitle ?: false
 
     override fun getState(): Map<String, JsonElement>? = null
 

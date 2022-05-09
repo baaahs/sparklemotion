@@ -85,7 +85,10 @@ class BrainSimulator(
                 if (lastInstructionsReceivedAt != null) {
                     logger.info { "[$id] haven't heard from Pinky in ${elapsedSinceMessage}s" }
                 }
-                udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
+                udpSocket.broadcastUdp(
+                    Ports.PINKY,
+                    BrainHelloMessage(id, modelElementName, "simulator-firmware")
+                )
             }
 
             delay(5000)

@@ -25,20 +25,22 @@ private val StatusBar = xComponent<StatusBarProps>("StatusBar") { props ->
 
     div(+styles.message2) { +(props.mapperStatus.message2 ?: "") }
 
-    div(+styles.table) {
-        table {
-            thead {
-                tr {
-                    th { +"Panel" }
-                    th { +"Centroid dist" }
-                }
-            }
-
-            tbody {
-                orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
+    if (orderedPanels.isNotEmpty()) {
+        div(+styles.table) {
+            table {
+                thead {
                     tr {
-                        td { +visibleSurface.entity.name }
-                        td { +"$distance" }
+                        th { +"Panel" }
+                        th { +"Centroid dist" }
+                    }
+                }
+
+                tbody {
+                    orderedPanels.subList(0, min(5, orderedPanels.size)).forEach { (visibleSurface, distance) ->
+                        tr {
+                            td { +visibleSurface.entity.name }
+                            td { +"$distance" }
+                        }
                     }
                 }
             }

@@ -6,11 +6,11 @@ import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import baaahs.util.JsClock
 import kotlinx.html.hidden
-import kotlinx.js.jso
-import mui.material.*
-import mui.material.styles.createTheme
+import mui.material.AppBar
+import mui.material.AppBarPosition
+import mui.material.Tab
+import mui.material.Tabs
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
@@ -27,15 +27,7 @@ private enum class PageTabs {
 }
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
-    val theme = memo {
-        createTheme(jso {
-            palette = jso { mode = PaletteMode.dark }
-        })
-    }
-
     observe(props.sceneManager)
-    val clock = memo { JsClock }
-    val plugins = props.sceneEditorClient.plugins
 
     var selectedTab by state { PageTabs.Model }
     val handleChangeTab by handler { _: Event, tab: PageTabs ->

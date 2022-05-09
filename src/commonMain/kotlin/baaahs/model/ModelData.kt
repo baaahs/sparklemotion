@@ -69,15 +69,18 @@ data class ImportedEntityData(
     val objData: String,
     val objDataIsFileRef: Boolean,
     @Polymorphic
-    val metadata: EntityMetadataProvider? = null
+    val metadata: EntityMetadataProvider? = null,
+    val entityMetadata: Map<String, EntityMetadata> = emptyMap()
 ) : EntityData {
     override fun edit(): MutableEntity = MutableImportedEntityGroup(this)
 
     override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): ImportedEntityGroup {
         var importFail: Exception? = null
         val importerResults = try {
-            ObjImporter.doImport(objData, objDataIsFileRef, title) {
-                metadata?.getMetadataFor(this)?.expectedPixelCount
+            ObjImporter.doImport(objData, objDataIsFileRef, title, id) { childName ->
+                val fromProvider = metadata?.getMetadataFor(childName)
+                entityMetadata[childName]?.plus(fromProvider)
+                    ?: fromProvider
             }
         } catch (e: Exception) {
             importFail = e
@@ -229,38 +232,19 @@ data class SurfaceDataForTest(
 
 @Polymorphic
 sealed interface EntityMetadataProvider {
-    fun getMetadataFor(entity: EntityData): EntityMetadata
-    fun getMetadataFor(entity: Model.Entity): EntityMetadata
+    fun getMetadataFor(title: String): EntityMetadata
 }
 
 @Serializable
 class ConstEntityMetadataProvider(val pixelCount: Int?): EntityMetadataProvider {
-    override fun getMetadataFor(entity: EntityData): EntityMetadata =
-        object : EntityMetadata {
-            override val expectedPixelCount: Int? get() = pixelCount
-        }
-
-    override fun getMetadataFor(entity: Model.Entity): EntityMetadata =
-        object : EntityMetadata {
-            override val expectedPixelCount: Int? get() = pixelCount
-        }
+    override fun getMetadataFor(title: String): EntityMetadata =
+        EntityMetadata(null, null, null, pixelCount)
 }
 
 @Serializable
-class StrandCountEntityMetadataProvider(
-    val data: Map<String, Int>
-) : EntityMetadataProvider {
-    override fun getMetadataFor(entity: EntityData): EntityMetadata =
-        object : EntityMetadata {
-            override val expectedPixelCount: Int?
-                get() = data[entity.title]
-        }
-
-    override fun getMetadataFor(entity: Model.Entity): EntityMetadata =
-        object : EntityMetadata {
-            override val expectedPixelCount: Int?
-                get() = data[entity.title]
-        }
+class StrandCountEntityMetadataProvider(val data: Map<String, Int>) : EntityMetadataProvider {
+    override fun getMetadataFor(title: String) =
+        EntityMetadata(null, null, null, data[title])
 
     companion object {
         private val logger = Logger<StrandCountEntityMetadataProvider>()
@@ -287,6 +271,24 @@ class StrandCountEntityMetadataProvider(
     }
 }
 
-interface EntityMetadata {
-    val expectedPixelCount: Int?
+@Serializable
+data class EntityMetadata(
+    val position: Vector3F? = Vector3F.origin,
+    val rotation: EulerAngle? = EulerAngle.identity,
+    val scale: Vector3F? = Vector3F.unit3d,
+    val expectedPixelCount: Int? = null
+) {
+    fun isDefaults(): Boolean = this == defaults
+
+    operator fun plus(other: EntityMetadata?): EntityMetadata =
+        EntityMetadata(
+            position ?: other?.position,
+            rotation ?: other?.rotation,
+            scale ?: other?.scale,
+            expectedPixelCount ?: other?.expectedPixelCount
+        )
+
+    companion object {
+        val defaults = EntityMetadata()
+    }
 }
