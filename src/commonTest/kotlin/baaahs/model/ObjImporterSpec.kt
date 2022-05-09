@@ -31,7 +31,7 @@ class ObjImporterSpec : Spek({
                 l 4 1
             """.trimIndent()
         }
-        val results by value { ObjImporter.import(objData) }
+        val results by value { ObjImporter.import(objData, idPrefix = "") }
 
         it("imports simple OBJ data") {
             expect(results.entities).size.toEqual(1)
