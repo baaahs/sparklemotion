@@ -158,7 +158,10 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         withCleanup { keyboardShortcutHandler.unlisten(window) }
     }
 
-    onMount(keyboardShortcutHandler, handleAppDrawerToggle, editMode, documentManager) {
+    onMount(
+        myAppContext, keyboardShortcutHandler, documentManager, editMode,
+        handleAppDrawerToggle, handleAppModeChange
+    ) {
         val handler = keyboardShortcutHandler.handle { keypress, event ->
             when (keypress) {
                 Keypress("Escape") -> {
@@ -171,6 +174,15 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 }
                 Keypress("l") -> {
                     layoutEditorDialogOpen = !layoutEditorDialogOpen
+                    KeypressResult.Handled
+                }
+                Keypress("s") -> {
+                    handleAppModeChange(appMode.otherOne)
+                    KeypressResult.Handled
+                }
+                Keypress("s", metaKey = true),
+                Keypress("s", ctrlKey = true) -> {
+                    myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
                     KeypressResult.Handled
                 }
                 Keypress("z", metaKey = true),
@@ -346,14 +358,17 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
 enum class AppMode {
     Show {
+        override val otherOne: AppMode get() = Scene
         override fun getDocumentManager(appContext: AppContext): ShowManager.Facade =
             appContext.showManager
     },
     Scene {
+        override val otherOne: AppMode get() = Show
         override fun getDocumentManager(appContext: AppContext): SceneManager.Facade =
             appContext.sceneManager
     };
 
+    abstract val otherOne: AppMode
     abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *>.Facade
 }
 
