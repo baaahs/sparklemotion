@@ -100,7 +100,11 @@ abstract class DocumentManager<T, TState>(
     }
 
     suspend fun onSave() {
-        serverCommands.saveCommand(SaveCommand())
+        if (file == null) {
+            onSaveAs()
+        } else {
+            serverCommands.saveCommand(SaveCommand())
+        }
     }
 
     suspend fun onSaveAs() {
