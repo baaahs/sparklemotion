@@ -25,11 +25,11 @@ import kotlinx.js.jso
 import mui.material.Card
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.header
 import react.dom.html.ReactHTML
 import react.useContext
 
@@ -40,8 +40,6 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 
     val buttonGroupControl = props.buttonGroupControl
     val onShowStateChange = props.controlProps.onShowStateChange
-
-    val showPreview = appContext.uiSettings.renderButtonPreviews
 
     var layoutDimens by state { 100 to 100 }
     val gridLayout = props.controlProps.layout
@@ -78,12 +76,6 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
         Unit
     }
 
-    val handleEditButtonClick = callback(buttonGroupControl) { event: Event, index: Int ->
-        val button = buttonGroupControl.buttons[index]
-        button.getEditIntent()?.let { appContext.openEditor(it) }
-        event.preventDefault()
-    }
-
     val layout = Layout(gridLayout.items.map { gridItem ->
         LayoutItem(gridItem.column, gridItem.row, gridItem.width, gridItem.height, gridItem.control.id)
     })
@@ -103,6 +95,12 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
     Card {
         ref = cardRef
         attrs.classes = jso { root = -Styles.buttonGroupCard and Styles.buttonGroupCardBackgroundHackHackHack }
+
+        if (buttonGroupControl.title.isNotBlank() && buttonGroupControl.showTitle) {
+            header(+layoutStyles.buttonGroupHeader) {
+                +buttonGroupControl.title
+            }
+        }
 
         gridLayout {
             attrs.id = buttonGroupControl.id

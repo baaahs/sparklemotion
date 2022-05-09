@@ -39,7 +39,7 @@ abstract class DocumentManager<T, TState>(
     private var documentAsSaved: T? = null
     val isLoaded: Boolean
         get() = document != null
-    var everSynched: Boolean = false
+    var everSynced: Boolean = false
         private set
     private val isSynced: Boolean
         get() = editState == localState
@@ -128,7 +128,7 @@ abstract class DocumentManager<T, TState>(
         file = newFile
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
-        everSynched = true
+        everSynced = true
     }
 
     fun isModified(newDocument: T): Boolean {
@@ -154,7 +154,8 @@ abstract class DocumentManager<T, TState>(
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
-        val isSynched get() = this@DocumentManager.isSynced
+        val isSynced get() = this@DocumentManager.isSynced
+        val everSynced get() = this@DocumentManager.everSynced
         val isUnsaved get() = this@DocumentManager.isUnsaved
         val canUndo get() = undoStack.canUndo()
         val canRedo get() = undoStack.canRedo()

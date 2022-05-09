@@ -26,7 +26,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val gridContainer by css {
-        position = Position.absolute
+        position = Position.relative
         width = 100.pct
         height = 100.pct
 
@@ -209,6 +209,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val notDragging by css {
     }
 
+    val buttonGroupHeader by css {
+        padding(2.px, 1.em)
+        lineHeight = LineHeight.normal
+    }
 
     val global = CssBuilder().apply {
         ".react-grid-placeholder" {

@@ -1,22 +1,22 @@
 package baaahs.mapper
 
-import baaahs.MediaDevices
+import baaahs.*
 import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
-import baaahs.context2d
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
-import baaahs.getValue
 import baaahs.imaging.*
 import baaahs.model.Model
 import baaahs.sim.HostedWebApp
+import baaahs.ui.Keypress
+import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
 import baaahs.ui.value
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
-import baaahs.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.js.jso
@@ -32,11 +32,15 @@ import react.createElement
 import react.dom.br
 import react.dom.i
 import three.js.*
+import three.js.Color
 import three_ext.*
 import three_ext.Matrix4
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+import kotlin.math.ceil
+import kotlin.math.log2
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
@@ -48,7 +52,7 @@ class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
     val clickedStop = mapperUi::clickedStop
     val clickedGoToSurface = mapperUi::clickedGoToSurface
     val loadMappingSession = mapperUi::loadMappingSession
-    val onKeydown = { event: Event -> mapperUi.gotUiKeypress(event as KeyboardEvent) }
+    val keyHandler = mapperUi::gotUiKeypress
 }
 
 class MapperStatus : Observable() {
@@ -111,11 +115,13 @@ class JsMapperUi(
     private lateinit var perfStatsDiv: HTMLElement
 
     val sessions = arrayListOf<String>()
-    var selectedMappingSession: String? by notifyOnChange(null)
+    var selectedMappingSessionName: String? by notifyOnChange(null)
+    var selectedMappingSession: MappingSession? by notifyOnChange(null)
 
     var pauseButtonEnabled by notifyOnChange(true)
     var playButtonEnabled by notifyOnChange(true)
 
+    private val entitiesByName = mutableMapOf<String, Model.Entity>()
     private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
@@ -124,6 +130,8 @@ class JsMapperUi(
     val mapperStatus = MapperStatus()
 
     var redoFn: (() -> Unit)? by notifyOnChange(null)
+
+    private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -136,6 +144,8 @@ class JsMapperUi(
         width: Int,
         height: Int
     ) {
+        onLaunch()
+
         this.ui2dCanvas = ui2dCanvas
         this.diffCanvas = diffCanvas
         this.snapshotCanvas = snapshotCanvas
@@ -156,9 +166,11 @@ class JsMapperUi(
     }
 
     fun onUnmount() {
+        onClose()
     }
 
-    fun gotUiKeypress(event: KeyboardEvent) {
+    fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
+        var result = KeypressResult.Handled
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -176,8 +188,10 @@ class JsMapperUi(
         } else if (event.key.length == 1) {
             commandProgress += event.key
             checkProgress()
-        }
+        } else result = KeypressResult.NotHandled
         showMessage2(commandProgress)
+
+        return result
     }
 
     private fun checkProgress() {
@@ -293,6 +307,9 @@ class JsMapperUi(
     }
 
     override fun addWireframe(model: Model) {
+        entitiesByName.clear()
+        entityDepictions.clear()
+
         model.allEntities
             .groupBy { (it as? Model.EntityWithGeometry)?.geometry }
             .forEach { (geometry, entities) ->
@@ -301,6 +318,8 @@ class JsMapperUi(
                     ?.toTypedArray()
 
                 entities.forEach { entity ->
+                    entitiesByName[entity.name] = entity
+
                     // TODO: Add wireframe depiction for other entity types.
                     if (entity is Model.Surface) {
                         entityDepictions[entity] = createEntityDepiction(entity, vertices)
@@ -365,6 +384,83 @@ class JsMapperUi(
         return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
     }
 
+    class PixelData(private val initialPixelCount: Int) {
+        private val pixelsGeom = BufferGeometry()
+        private val pixelsMaterial = PointsMaterial().apply {
+            vertexColors = true
+            size = 5
+        }
+        val points = Points(pixelsGeom, pixelsMaterial)
+        private var maxPixel = initialPixelCount
+        internal val pixelLocations = mutableMapOf<Int, Vector3?>()
+        private var positions = FloatArray(maxPixel * 3) { 0f }
+        private var colors = FloatArray(maxPixel * 3) { 0f }
+        private val positionsAttr = Float32BufferAttribute(positions, 3).also {
+            it.usage = DynamicDrawUsage
+            pixelsGeom.setAttribute("position", it)
+        }
+        private val colorsAttr = Float32BufferAttribute(colors, 3).also {
+            it.usage = DynamicDrawUsage
+            pixelsGeom.setAttribute("color", it)
+        }
+
+        fun setPixel(index: Int, modelPosition: Vector3F?) {
+            if (index > maxPixel) {
+                // Round up to the nearest power of two.
+                val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
+                resize(newMax)
+            }
+            setPixel(index, modelPosition)
+        }
+
+        fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
+            pixelLocations.clear()
+            resize(pixels.size)
+            pixels.forEachIndexed { index, pixelData ->
+                setPixel(pixelData, index)
+            }
+        }
+
+        private fun setPixel(pixelData: MappingSession.SurfaceData.PixelData?, index: Int) {
+            val location = pixelData?.modelPosition?.toVector3()
+            pixelLocations[index] = location
+            setPixelLocation(index, location ?: Vector3F.origin.toVector3())
+            setPixelColor(index, normalColor)
+        }
+
+        fun setPixelColor(i: Int, color: Color) {
+            colors[i * 3] = color.r.toFloat()
+            colors[i * 3 + 1] = color.g.toFloat()
+            colors[i * 3 + 2] = color.b.toFloat()
+            colorsAttr.needsUpdate = true
+        }
+
+        fun setPixelLocation(i: Int, loc: Vector3) {
+            positions[i * 3] = loc.x.toFloat()
+            positions[i * 3 + 1] = loc.y.toFloat()
+            positions[i * 3 + 2] = loc.z.toFloat()
+            positionsAttr.needsUpdate = true
+        }
+
+        fun reset() {
+            pixelLocations.clear()
+            resize(initialPixelCount)
+        }
+
+        private fun resize(size: Int) {
+            positions = positions.resize(size * 3) { 0f }
+            positionsAttr.array = positions.asDynamic()
+            positionsAttr.count = size
+            positionsAttr.needsUpdate = true
+
+            colors = colors.resize(size * 3) { 0f }
+            colorsAttr.array = colors.asDynamic()
+            colorsAttr.count = size
+            colorsAttr.needsUpdate = true
+            maxPixel = size
+        }
+    }
+
     inner class PanelInfo(
         val surface: Model.Surface,
         val faces: List<Face3>,
@@ -375,26 +471,17 @@ class JsMapperUi(
         override val entity: Model.Entity
             get() = surface
 
-        private val pixelsGeom = BufferGeometry()
-        private val pixelsMaterial = PointsMaterial().apply {
-            color = Color(0x00FF00)
-            size = 5
+        private var pixelsInScene = false
+        private var pixelData = PixelData(surface.expectedPixelCount ?: 256).also {
+            if (pixelsInScene) uiScene.add(it.points)
         }
-        private var pixelsInScene = true
-        private val pixelsPoints = Points(pixelsGeom, pixelsMaterial).also {
-            if (pixelsInScene) uiScene.add(it)
-        }
-        private val pixelLocations = mutableMapOf<Int, Vector3?>()
-        private var maxPixel = -1
 
         val pixelsInModelSpace: List<Vector3F?>
             get() {
                 val vectors = mutableListOf<Vector3F?>()
-                for (i in 0..(pixelLocations.keys.maxOrNull()!!)) {
-                    val position = pixelLocations[i]
-                    vectors.add(position?.let {
-                        Vector3F(it.x.toFloat(), it.y.toFloat(), it.z.toFloat())
-                    })
+                for (i in 0..(pixelData.pixelLocations.keys.maxOrNull()!!)) {
+                    val position = pixelData.pixelLocations[i]
+                    vectors.add(position?.toVector3F())
                 }
                 return vectors
             }
@@ -449,7 +536,7 @@ class JsMapperUi(
 
         fun select() {
             lineMaterial.color.r = 1.0
-            lineMaterial.color.g = 0.0
+            lineMaterial.color.g = 1.0
         }
 
         fun deselect() {
@@ -478,43 +565,37 @@ class JsMapperUi(
         var boxOnScreen: Box2? = null
 
         override fun setPixel(index: Int, modelPosition: Vector3F?) {
-            pixelLocations[index] = modelPosition?.toVector3()
-            if (index > maxPixel) maxPixel = index
-            updatePixels()
+            pixelData.setPixel(index, modelPosition)
+        }
+
+        override fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
+            pixelData.setPixels(pixels)
         }
 
         override fun showPixels() {
             if (!pixelsInScene) {
-                uiScene.add(pixelsPoints)
+                uiScene.add(pixelData.points)
                 pixelsInScene = true
             }
         }
 
         fun hidePixels() {
             if (pixelsInScene) {
-                uiScene.remove(pixelsPoints)
+                uiScene.remove(pixelData.points)
                 pixelsInScene = false
             }
         }
 
         override fun resetPixels() {
-            pixelLocations.clear()
-            maxPixel = -1
-            updatePixels()
+            pixelData.reset()
         }
 
-        private fun updatePixels() {
-            if (pixelsInScene) {
-                val positions = Array((maxPixel + 1) * 3) { 0f }
-                (0 until maxPixel).forEach { i ->
-                    val loc = pixelLocations[i] ?: Vector3(0, 0, 0)
-                    positions[i * 3] = loc.x.toFloat()
-                    positions[i * 3 + 1] = loc.y.toFloat()
-                    positions[i * 3 + 2] = loc.z.toFloat()
-                }
+        fun selectPixel(pixelIndex: Int) {
+            pixelData.setPixelColor(pixelIndex, selectedColor)
+        }
 
-                pixelsGeom.setAttribute("position", Float32BufferAttribute(positions, 3))
-            }
+        fun deselectPixel(pixelIndex: Int) {
+            pixelData.setPixelColor(pixelIndex, normalColor)
         }
     }
 
@@ -531,6 +612,9 @@ class JsMapperUi(
     override fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction> {
         return entityDepictions.values.toList()
     }
+
+    fun findVisualizer(entityName: String): PanelInfo? =
+        entitiesByName[entityName]?.let { entityDepictions[it] }
 
     override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
         val visibleSurfaces = mutableListOf<MapperUi.VisibleSurface>()
@@ -580,10 +664,6 @@ class JsMapperUi(
             val positionInModel = intersect?.point
 
             panelInfo.setPixel(pixelIndex, positionInModel?.toVector3F())
-        }
-
-        override fun setPixel(pixelIndex: Int, panelSpacePosition: Vector3F?) {
-            panelInfo.setPixel(pixelIndex, panelSpacePosition)
         }
 
         override fun translatePixelToPanelSpace(uv: Uv): Vector2F? {
@@ -814,9 +894,44 @@ class JsMapperUi(
 
     fun loadMappingSession(event: Event) {
         val mappingSessionToLoad = event.target?.value
-        selectedMappingSession = mappingSessionToLoad
+        selectedMappingSessionName = mappingSessionToLoad
 
-        listener.loadMappingSession(mappingSessionToLoad)
+        if (mappingSessionToLoad != null) {
+            globalLaunch {
+                val session = listener.loadMappingSession(mappingSessionToLoad)
+
+                val surfaceVisualizers = getAllSurfaceVisualizers().associateBy {
+                    it.resetPixels()
+                    it.entity.name
+                }
+
+                session.surfaces.forEach { surfaceData ->
+                    val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.entityName, "visible surface")
+                    surfaceData.pixels?.let { pixels ->
+                        surfaceVisualizer.setPixels(pixels)
+                    }
+
+                    surfaceVisualizer.showPixels()
+                }
+
+                selectedMappingSession = session
+            }
+        }
+    }
+
+    fun selectEntityPixel(entityName: String?, index: Int?) {
+        selectedEntityAndPixel?.let { (entity, pixelIndex) ->
+            entity.deselect()
+            if (pixelIndex != null) entity.deselectPixel(pixelIndex)
+        }
+
+        selectedEntityAndPixel = entityName?.let {
+            findVisualizer(it)?.let { panelInfo ->
+                panelInfo.select()
+                if (index != null) panelInfo.selectPixel(index)
+                panelInfo to index
+            }
+        }
     }
 
     private fun goToSurface(name: String) {
@@ -846,6 +961,9 @@ class JsMapperUi(
 
     companion object {
         internal val logger = Logger<JsMapperUi>()
+
+        val normalColor = Color(0, 0, 1)
+        val selectedColor = Color(1, 1, 0)
     }
 }
 

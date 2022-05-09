@@ -75,7 +75,7 @@ class Mapper(
         mapperScope.launch { start() }
     }
 
-    fun start() = doRunBlocking {
+    fun start() {
         link = network.link("mapper")
         udpSocket = link.listenFragmentingUdp(0, this)
         webSocketClient = WebSocketClient(link, pinkyAddress)
@@ -130,28 +130,10 @@ class Mapper(
         openCamera()
     }
 
-    override fun loadMappingSession(name: String?) {
-        val surfaceVisualizers = mapperUi.getAllSurfaceVisualizers().associateBy {
-            it.resetPixels()
-            it.entity.name
+    override suspend fun loadMappingSession(name: String): MappingSession =
+        withContext(mapperScope.coroutineContext) {
+            webSocketClient.loadSession(name)
         }
-
-        if (name != null) {
-            mapperScope.launch {
-                val session = webSocketClient.loadSession(name)
-                session.surfaces.forEach { surfaceData ->
-                    val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.entityName, "visible surface")
-                    surfaceData.pixels?.forEachIndexed { index, pixelData ->
-                        if (pixelData?.modelPosition != null) {
-                            surfaceVisualizer.setPixel(index, pixelData.modelPosition)
-                        }
-                    }
-
-                    surfaceVisualizer.showPixels()
-                }
-            }
-        }
-    }
 
     private fun openCamera() {
         if (this::camera.isInitialized) camera.close()
@@ -425,8 +407,7 @@ class Mapper(
                 ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
             }
             showDiffImage(deltaBitmap)
-            val pixelOnImageName = "not-really-an-image.png"
-//            val pixelOnImageName = webSocketClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
+            val pixelOnImageName = webSocketClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
 
             brainsToMap.values.forEach { brainToMap ->
                 stats.identifyPixel.time {
@@ -924,13 +905,14 @@ interface MapperUi {
         fun onClose()
 
         fun useCamera(selectedDevice: MediaDevices.Device?)
-        fun loadMappingSession(name: String?)
+        suspend fun loadMappingSession(name: String): MappingSession
     }
 
     interface EntityDepiction {
         val entity: Model.Entity
 
         fun setPixel(index: Int, modelPosition: Vector3F?)
+        fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>)
         fun showPixels()
         fun resetPixels()
     }
@@ -941,7 +923,6 @@ interface MapperUi {
         val pixelsInModelSpace: List<Vector3F?>
         fun translatePixelToPanelSpace(uv: Uv): Vector2F?
         fun setPixel(pixelIndex: Int, uv: Uv)
-        fun setPixel(pixelIndex: Int, panelSpacePosition: Vector3F?)
         fun showPixels()
         fun hidePixels()
         fun resetPixels()

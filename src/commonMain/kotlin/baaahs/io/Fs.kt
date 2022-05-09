@@ -62,17 +62,21 @@ interface Fs {
             return if (parent.isRoot) {
                 true
             } else {
-                parentPath.startsWith("${parent.fullPath}/")
+                "${parentPath}/".startsWith("${parent.fullPath}/")
             }
         }
 
-        fun resolve(relPath: String, isDirectory: Boolean? = null): File {
-            return if (isRoot) {
+        fun resolve(relPath: String, isDirectory: Boolean? = null): File =
+            if (isRoot) {
                 File(fs, relPath, isDirectory)
             } else {
                 File(fs, "${fullPath}/$relPath", isDirectory)
             }
-        }
+
+        fun relativeTo(relPath: File): String =
+            if (!relPath.isRoot && isWithin(relPath)) {
+                fullPath.substring(relPath.fullPath.length + 1)
+            } else fullPath
 
 //  TODO  fun resolve(relPath: String, isDirectory: Boolean? = null): RemoteFile {
 //            val resolvedPathParts = ArrayList(pathParts)

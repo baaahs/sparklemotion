@@ -39,11 +39,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val entityList by css {
-        child("li") {
-            display = Display.flex
-            flexDirection = FlexDirection.column
-            alignItems = Align.inherit
-        }
+        marginLeft = 1.em
     }
 
     val visualizerPane by css {

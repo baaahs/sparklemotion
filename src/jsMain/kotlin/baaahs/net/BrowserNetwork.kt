@@ -48,7 +48,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             toAddress as BrowserAddress
             val proto = if (toAddress.isSSL) "wss" else "ws"
             val maybeSlash = if (path.startsWith("/")) "" else "/"
-            val url = "$proto://${toAddress.host}:$port$maybeSlash$path"
+            val url = "$proto://${toAddress.host}:${toAddress.port}$maybeSlash$path"
             val webSocket = WebSocket(url)
             webSocket.binaryType = BinaryType.ARRAYBUFFER
 
