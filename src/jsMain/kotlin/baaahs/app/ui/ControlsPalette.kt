@@ -27,6 +27,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.*
 import react.dom.div
+import react.dom.header
 
 val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
     val appContext = useContext(appContext)
@@ -68,7 +69,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                     attrs.classes = jso { root = -Styles.unplacedControlsPaper }
                     attrs.elevation = 3
 
-                    typographyH6 { +"Unplaced Controls" }
+                    header { +"Unplaced Controls" }
 
                     div(+Styles.unplacedControlsDroppable) {
                         ref = containerDiv

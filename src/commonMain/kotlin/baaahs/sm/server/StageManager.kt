@@ -234,7 +234,7 @@ class StageManager(
         }
 
         override fun getDocumentState(): DocumentState<Scene, Unit>? {
-            return document?.let { DocumentState(it, Unit, false, null) }
+            return document?.let { DocumentState(it, Unit, isUnsaved, file) }
         }
 
         override fun notifyOfDocumentChanges(fromClientUpdate: Boolean) {

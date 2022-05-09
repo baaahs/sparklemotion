@@ -42,6 +42,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val title by css {
         fontSize = 18.px
         color = Color.white
+        userSelect = UserSelect.none
     }
 
     val menu by css {

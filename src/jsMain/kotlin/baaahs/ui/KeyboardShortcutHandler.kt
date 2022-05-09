@@ -26,6 +26,7 @@ class KeyboardShortcutHandler {
                 }
                 if (handled) {
                     e.stopPropagation()
+                    e.preventDefault()
                 } else {
                     console.log("Unhandled keypress:", keypress)
                 }
