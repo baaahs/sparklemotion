@@ -211,6 +211,7 @@ fun jsonFor(control: Control): JsonElement {
             put("type", "baaahs.Core:ButtonGroup")
             put("title", control.title)
             put("direction", control.direction.name)
+            put("showTitle", control.showTitle)
             put("buttonIds", control.buttonIds.jsonMap { JsonPrimitive(it) })
         }
         is ColorPickerControl -> buildJsonObject {
