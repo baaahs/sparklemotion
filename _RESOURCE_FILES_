@@ -28,7 +28,6 @@ fonts/press-start-2p-v8-latin-regular.woff2
 index.html
 loading.gif
 monitor/index.html
-normalize.css
 react-mosaic-component.css
 shader-libraries/built-in/Brightness.glsl
 shader-libraries/built-in/Fireball.glsl
