@@ -180,7 +180,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
             ShaderBuilder.State.Compiling -> {
-                div { +"Building..." }
+                div { +"Building…" }
             }
 
             ShaderBuilder.State.Success -> {
@@ -217,6 +217,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
         position = Position.relative
         width = 100.pct
         height = 100.pct
+        userSelect = UserSelect.none
 
         child("canvas") {
             position = Position.absolute
