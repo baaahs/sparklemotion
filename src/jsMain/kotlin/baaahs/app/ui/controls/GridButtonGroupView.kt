@@ -10,7 +10,6 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.and
 import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
@@ -35,6 +34,7 @@ import react.useContext
 
 private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGroup") { props ->
     val appContext = useContext(appContext)
+    val controlStyles = appContext.allStyles.controls
     val layoutStyles = appContext.allStyles.layout
     val editMode = observe(appContext.showManager.editMode)
 
@@ -94,7 +94,7 @@ private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGr
 
     Card {
         ref = cardRef
-        attrs.classes = jso { root = -Styles.buttonGroupCard and Styles.buttonGroupCardBackgroundHackHackHack }
+        attrs.classes = jso { root = -controlStyles.buttonGroupCard }
 
         if (buttonGroupControl.title.isNotBlank() && buttonGroupControl.showTitle) {
             header(+layoutStyles.buttonGroupHeader) {

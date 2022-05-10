@@ -144,6 +144,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             }
         }
 
+        transition(::backgroundColor, 300.ms)
+
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
@@ -460,7 +462,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             paddingBottom = 1.em
         }
 
-        descendants(ControlsStyles, ControlsStyles::buttonGroupCard) {
+        descendants(".app-ui-controls-buttonGroupCard") {
             descendants(ControlsStyles, ControlsStyles::controlButton) {
                 transform { scale(.9) }
             }
