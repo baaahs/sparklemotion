@@ -1,5 +1,6 @@
 package baaahs.ui.gridlayout
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
@@ -157,7 +158,7 @@ class GridItem(
     private fun createStyle(pos: Position): dynamic { // [key: string]: ?string } {
         val usePercentages = props.usePercentages ?: false
         val containerWidth = state.parentContainer.containerWidth
-        val useCSSTransforms = props.useCSSTransforms ?: true
+        val useCSSTransforms = SparkleMotion.USE_CSS_TRANSFORM // props.useCSSTransforms ?: true
 
         val style: dynamic
         // CSS Transforms support (default)
@@ -597,7 +598,7 @@ class GridItem(
         val isDraggable = props.isDraggable
         val isResizable = props.isResizable
         val droppingPosition = props.droppingPosition
-        val useCSSTransforms = props.useCSSTransforms
+        val useCSSTransforms = SparkleMotion.USE_CSS_TRANSFORM // props.useCSSTransforms
 
         val positionParams = state.parentContainer.getPositionParams()
 //        console.log("${props.i}.parent.getPositionParams() -> ", positionParams)

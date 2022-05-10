@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
 import baaahs.ui.*
@@ -24,7 +25,9 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         }
     }
     val buttonGroupCardBackgroundHackHackHack by css {
-        backgroundColor = Color("#0000007f")
+        if (SparkleMotion.USE_CSS_TRANSFORM) {
+            backgroundColor = Color("#0000007f")
+        }
     }
 
     val horizontalButtonList by css {
