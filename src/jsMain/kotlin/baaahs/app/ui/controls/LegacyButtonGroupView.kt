@@ -28,6 +28,7 @@ import react.dom.events.MouseEvent
 
 private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyButtonGroup") { props ->
     val appContext = useContext(appContext)
+    val controlStyles = appContext.allStyles.controls
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
@@ -58,7 +59,7 @@ private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyBu
     }
 
     Card {
-        attrs.classes = jso { root = -Styles.buttonGroupCard }
+        attrs.classes = jso { root = -controlStyles.buttonGroupCard }
 
         droppable({
             if (dropTarget != null) {

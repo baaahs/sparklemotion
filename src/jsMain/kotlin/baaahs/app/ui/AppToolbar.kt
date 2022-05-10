@@ -73,6 +73,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
 
     AppBar {
         attrs.classes = jso { this.root = -themeStyles.appToolbar }
+        if (editMode.isOn) attrs.color = AppBarColor.secondary
         attrs.component = ReactHTML.div
         attrs.position = AppBarPosition.relative
 

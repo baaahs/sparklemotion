@@ -15,21 +15,6 @@ import styled.StyleSheet
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val editTransitionDuration = 0.25.s
 
-    val buttonGroupCard by css {
-        display = Display.flex
-        flexDirection = FlexDirection.column
-        overflowY = Overflow.scroll
-
-        descendants(this@Styles, ::controlButton) {
-            transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
-        }
-    }
-    val buttonGroupCardBackgroundHackHackHack by css {
-        if (SparkleMotion.USE_CSS_TRANSFORM) {
-            backgroundColor = Color("#0000007f")
-        }
-    }
-
     val horizontalButtonList by css {
         padding(2.px)
         position = Position.relative
@@ -273,5 +258,20 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
     val vacuityContainer by css {
         display = Display.flex
         overflow = Overflow.scroll
+    }
+
+    val buttonGroupCard by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        overflowY = Overflow.scroll
+        backgroundColor = if (SparkleMotion.USE_CSS_TRANSFORM) {
+            Color("#0000007f")
+        } else {
+            theme.paperLowContrast
+        }
+
+        descendants(Styles, Styles::controlButton) {
+            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
+        }
     }
 }
