@@ -64,8 +64,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                 attrs.onClose = handleDrawerClose
 
                 DialogTitle {
-                    attrs.classes = jso { this.root = -DialogStyles.dialogTitle }
-                    typographyH6 { +"Editing ${props.editableManager.uiTitle}" }
+                    +"Editing ${props.editableManager.uiTitle}"
 
                     div(+DialogStyles.dialogTitleButtons) {
                         Button {

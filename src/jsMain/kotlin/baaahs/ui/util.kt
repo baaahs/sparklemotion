@@ -10,6 +10,7 @@ import mui.material.SvgIconProps
 import mui.material.Typography
 import mui.material.TypographyProps
 import mui.material.styles.Theme
+import mui.material.styles.TypographyVariant
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
@@ -143,61 +144,61 @@ fun RElementBuilder<*>.install(droppableProvided: DroppableProvided) {
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h1"
+        attrs.variant = TypographyVariant.h1
         block()
     }
 
 inline fun RBuilder.typographyH2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h2"
+        attrs.variant = TypographyVariant.h2
         block()
     }
 
 inline fun RBuilder.typographyH3(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h3"
+        attrs.variant = TypographyVariant.h3
         block()
     }
 
 inline fun RBuilder.typographyH4(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h4"
+        attrs.variant = TypographyVariant.h4
         block()
     }
 
 inline fun RBuilder.typographyH5(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h5"
+        attrs.variant = TypographyVariant.h5
         block()
     }
 
 inline fun RBuilder.typographyH6(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h6"
+        attrs.variant = TypographyVariant.h6
         block()
     }
 
 inline fun RBuilder.typographySubtitle1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { //    (*classMap, factory = { DIV(mapOf(), it) })
-        attrs.variant = "subtitle1"
+        attrs.variant = TypographyVariant.subtitle1
         block()
     }
 
 inline fun RBuilder.typographySubtitle2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { // (*classMap, factory = { DIV(mapOf(), it) }) {
-        attrs.variant = "subtitle2"
+        attrs.variant = TypographyVariant.subtitle2
         block()
     }
 
 inline fun RBuilder.typographyBody1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body1"
+        attrs.variant = TypographyVariant.body1
         block()
     }
 
 inline fun RBuilder.typographyBody2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body2"
+        attrs.variant = TypographyVariant.body2
         block()
     }
 
