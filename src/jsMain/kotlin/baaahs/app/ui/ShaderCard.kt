@@ -10,6 +10,7 @@ import baaahs.ui.xComponent
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
+import mui.material.styles.TypographyVariant
 import mui.system.sx
 import react.Props
 import react.RBuilder
@@ -59,7 +60,7 @@ val ShaderCard = xComponent<ShaderCardProps>("ShaderCard") { props ->
             attrs.classes = jso { this.root = -styles.shaderCardActions }
             Typography {
                 attrs.classes = jso { this.root = -styles.shaderCardContent }
-                attrs.variant = "body2"
+                attrs.variant = TypographyVariant.body2
                 attrs.sx {
                     display = csstype.Display.block
                     color = Colors.secondary
