@@ -40,4 +40,5 @@ open external class OrbitControls(theObject: Any, domElement: Any) : EventDispat
 
     fun update()
     fun dispose()
+    fun saveState()
 }
