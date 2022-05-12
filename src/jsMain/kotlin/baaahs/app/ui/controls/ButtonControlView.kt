@@ -14,7 +14,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 
-private val ButtonView = xComponent<ButtonProps>("Button") { props ->
+private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
 
     val buttonControl = props.buttonControl
@@ -96,5 +96,5 @@ external interface ButtonProps : Props {
     var buttonControl: OpenButtonControl
 }
 
-fun RBuilder.button(handler: RHandler<ButtonProps>) =
-    child(ButtonView, handler = handler)
+fun RBuilder.buttonControl(handler: RHandler<ButtonProps>) =
+    child(ButtonControlView, handler = handler)

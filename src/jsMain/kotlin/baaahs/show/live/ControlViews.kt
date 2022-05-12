@@ -10,7 +10,7 @@ import react.useContext
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
-        button {
+        buttonControl {
             attrs.controlProps = controlProps
             attrs.buttonControl = openButtonControl
         }
@@ -19,12 +19,12 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps) = renderWrapper {
         val isLegacyLayout = useContext(dragNDropContext).isLegacy
         if (isLegacyLayout) {
-            legacyButtonGroup {
+            legacyButtonGroupControl {
                 attrs.controlProps = controlProps
                 attrs.buttonGroupControl = openButtonGroupControl
             }
         } else {
-            gridButtonGroup {
+            gridButtonGroupControl {
                 attrs.controlProps = controlProps
                 attrs.buttonGroupControl = openButtonGroupControl
             }
@@ -46,14 +46,14 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps) = renderWrapper {
-        transition {
+        transitionControl {
             attrs.controlProps = controlProps
             attrs.transitionControl = openTransitionControl
         }
     }
 
     override fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps) = renderWrapper {
-        vacuity {
+        vacuityControl {
             attrs.controlProps = controlProps
             attrs.vacuityControl = openVacuityControl
         }
@@ -67,7 +67,7 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps)  = renderWrapper {
-        xyPad {
+        xyPadControl {
             attrs.controlProps = controlProps
             attrs.xyPadControl = openXyPadControl
         }

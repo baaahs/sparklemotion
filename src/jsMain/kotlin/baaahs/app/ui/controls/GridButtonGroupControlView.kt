@@ -32,7 +32,7 @@ import react.dom.header
 import react.dom.html.ReactHTML
 import react.useContext
 
-private val GridButtonGroupView = xComponent<GridButtonGroupProps>("GridButtonGroup") { props ->
+private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridButtonGroupControl") { props ->
     val appContext = useContext(appContext)
     val controlStyles = appContext.allStyles.controls
     val layoutStyles = appContext.allStyles.layout
@@ -166,5 +166,5 @@ external interface GridButtonGroupProps : Props {
     var buttonGroupControl: OpenButtonGroupControl
 }
 
-fun RBuilder.gridButtonGroup(handler: RHandler<GridButtonGroupProps>) =
-    child(GridButtonGroupView, handler = handler)
+fun RBuilder.gridButtonGroupControl(handler: RHandler<GridButtonGroupProps>) =
+    child(GridButtonGroupControlView, handler = handler)
