@@ -1,7 +1,10 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.*
+import baaahs.ui.disableScroll
+import baaahs.ui.enableScroll
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import external.lodash.throttle
 import external.react_compound_slider.*
 import react.*
@@ -38,6 +41,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         arrayOf(props.minValue, props.maxValue)
     }
 
+    val showSecondSlider = props.floorPosition != null
+
     div(+styles.wrapper) {
 //        label(+styles.label) {
 //            setProp("htmlFor", "range-slider")
@@ -45,7 +50,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 //        }
 
         Slider {
-            attrs.className = styles.slider.name
+            attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 3
@@ -109,7 +114,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             Tracks {
                 attrs.left = false
-                attrs.right = props.floorPosition == null
+                attrs.right = !showSecondSlider
                 attrs.children = { tracksObject ->
                     buildElement {
                         div(+styles.tracks) {
