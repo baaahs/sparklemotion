@@ -149,7 +149,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
         button {
             minWidth = 0.px
-            overflow = Overflow.auto
         }
     }
 

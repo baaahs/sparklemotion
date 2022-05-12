@@ -1,5 +1,8 @@
 package baaahs.ui
 
+import baaahs.context2d
+import baaahs.document
+import baaahs.window
 import csstype.ClassName
 import external.DroppableProvided
 import external.copyFrom
@@ -12,6 +15,8 @@ import mui.material.TypographyProps
 import mui.material.styles.Theme
 import mui.material.styles.TypographyVariant
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -247,3 +252,25 @@ fun Theme.paperContrast(amount: Double) =
 val Theme.paperLowContrast get() = paperContrast(.25)
 val Theme.paperMediumContrast get() = paperContrast(.5)
 val Theme.paperHighContrast get() = paperContrast(.75)
+
+fun HTMLElement.fitText() {
+    val parentEl = parentElement!!
+    val margin = with(window.getComputedStyle(parentEl)) {
+        marginLeft.replace("px", "").toDouble() +
+                marginRight.replace("px", "").toDouble()
+    }
+    val font = window.getComputedStyle(this).font
+    val buttonWidth = parentEl.clientWidth - margin
+    val canvas = document.createElement("canvas") as HTMLCanvasElement
+    val ctx = canvas.context2d()
+    ctx.font = font
+    val width = innerText.split(Regex("\\s+")).maxOf { word ->
+        ctx.measureText(word).width
+    }
+    style.transform =
+        if (width > buttonWidth) {
+            "scaleX(${buttonWidth / width})"
+        } else {
+            ""
+        }
+}
