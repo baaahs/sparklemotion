@@ -412,6 +412,7 @@ class GlslParser {
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
                     if (trimmed.isNotEmpty()) {
+
                         if (trimmed == "const") {
                             // Ignore.
                         } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
@@ -420,6 +421,8 @@ class GlslParser {
                             type = GlslType.from(trimmed)
                         } else if (name == null) {
                             name = trimmed
+                        } else if (trimmed.matches(arrayParam)) {
+                            name += trimmed
                         } else {
                             throw context.glslError("Unexpected token \"$trimmed\".")
                         }
@@ -474,6 +477,11 @@ class GlslParser {
                         )
                     )
                 }
+            }
+
+            companion object {                        // Otherwise we get "Invalid regular expression: Lone quantifier brackets":
+                @Suppress("RegExpRedundantEscape")
+                val arrayParam = Regex("^\\[\\d+\\]$")
             }
         }
 
