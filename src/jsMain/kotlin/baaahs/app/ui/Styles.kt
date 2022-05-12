@@ -91,6 +91,25 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
                 }
             }
         }
+
+        ".app-ui-editModeOn .app-ui-theme-appToolbar" {
+            backgroundImage = Image(linearRepeating(
+                theme.palette.secondary.main.asColor().withAlpha(.35),
+                theme.palette.secondary.main.asColor().withAlpha(.15)
+            ))
+        }
+
+        ".app-ui-editModeOn .app-ui-theme-appContent" {
+            backgroundImage = Image(linearRepeating(
+                theme.palette.secondary.dark.asColor().withAlpha(.25),
+                theme.palette.secondary.dark.asColor().withAlpha(.10)
+            ))
+        }
+
+        ".app-ui-editModeOff .app-ui-theme-editButton" {
+            visibility = Visibility.hidden
+            userSelect = UserSelect.none
+        }
     }
 
     private val drawerClosedShift = partial {
@@ -127,6 +146,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         display = Display.flex
         flexDirection = FlexDirection.column
 
+        transition(::background, 300.ms)
+
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
@@ -144,7 +165,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             }
         }
 
-        transition(::backgroundColor, 300.ms)
+        transition(::background, 300.ms)
 
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }

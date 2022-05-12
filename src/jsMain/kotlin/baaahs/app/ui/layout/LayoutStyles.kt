@@ -72,6 +72,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         justifyContent = JustifyContent.center
         alignItems = Align.center
         color = emptyCellDimColor
+        backgroundColor = theme.palette.background.default.asDynamic()
         border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
         transition(::opacity, transitionTime)
         transition(::border, transitionTime)
