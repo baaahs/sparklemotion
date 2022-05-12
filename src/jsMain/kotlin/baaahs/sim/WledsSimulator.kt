@@ -2,7 +2,6 @@ package baaahs.sim
 
 import baaahs.Color
 import baaahs.controller.SacnLink
-import baaahs.dmx.Dmx
 import baaahs.net.Network
 import baaahs.randomDelay
 import baaahs.sm.brain.proto.Pixels
@@ -77,7 +76,9 @@ class FakeWledDevice(
         udpSocket = link.listenUdp(SacnLink.sAcnPort, object : Network.UdpListener {
             override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                 val dataFrame = SacnLink.readDataFrame(bytes)
-                val channelOffset = (dataFrame.universe - 1) * Dmx.channelsPerUniverse
+//                val usedChannelsPerUniverse = Dmx.channelsPerUniverse
+                val usedChannelsPerUniverse = 170 * 3 // Whole pixels only.
+                val channelOffset = (dataFrame.universe - 1) * usedChannelsPerUniverse
                 val channels = dataFrame.channels
 
                 for (i in 0 until channels.size / 3) {
