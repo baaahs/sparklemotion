@@ -3,17 +3,12 @@ package baaahs.sim
 import baaahs.Color
 import baaahs.controller.SacnLink
 import baaahs.net.Network
-import baaahs.randomDelay
 import baaahs.sm.brain.proto.Pixels
 import baaahs.util.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class WledsSimulator(
     private val network: Network
 ) {
-    private val wledScope = CoroutineScope(Dispatchers.Main)
     internal val fakeWledDevices: MutableList<FakeWledDevice> = mutableListOf()
 
     fun createFakeWledDevice(name: String, vizPixels: Pixels): FakeWledDevice {
@@ -24,8 +19,6 @@ class WledsSimulator(
         val link = network.link(FakeNetwork.FakeAddress(id))
         val fakeWledDevice = FakeWledDevice(link, id, vizPixels)
         fakeWledDevices.add(fakeWledDevice)
-
-        wledScope.launch { randomDelay(1000); fakeWledDevice.start() }
 
         return fakeWledDevice
     }

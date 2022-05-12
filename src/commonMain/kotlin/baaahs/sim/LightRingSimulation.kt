@@ -6,4 +6,4 @@ import baaahs.visualizer.EntityAdapter
 expect class LightRingSimulation(
     lightRing: LightRing,
     adapter: EntityAdapter
-) : FixtureSimulation
+) : PixelArraySimulation

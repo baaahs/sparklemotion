@@ -3,7 +3,7 @@ package baaahs.sim
 import baaahs.model.PixelArray
 import baaahs.visualizer.EntityAdapter
 
-expect class LightBarSimulation(
+expect abstract class PixelArraySimulation(
     pixelArray: PixelArray,
     adapter: EntityAdapter
-) : PixelArraySimulation
+) : FixtureSimulation
