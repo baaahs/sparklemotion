@@ -6,8 +6,11 @@ import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
+import baaahs.util.useResizeListener
 import kotlinx.js.jso
 import mui.material.ToggleButton
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -37,6 +40,12 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         onShowStateChange()
     }
 
+    val buttonRef = ref<HTMLButtonElement>()
+    val titleDivRef = ref<HTMLDivElement>()
+    useResizeListener(buttonRef) {
+        titleDivRef.current!!.fitText()
+    }
+
     div(+Styles.controlRoot and Styles.controlButton) {
         if (shaderForPreview != null) {
             div(+Styles.buttonShaderPreviewContainer) {
@@ -52,6 +61,8 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
                 //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
                 //   color: black
                 ToggleButton {
+                    ref = buttonRef
+
                     if (showPreview) {
                         attrs.classes = jso {
                             root = -Styles.buttonLabelWhenPreview
@@ -64,11 +75,16 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
                     attrs.selected = buttonControl.isPressed
                     attrs.onClick = handleToggleClick.withTMouseEvent()
 
-                    +buttonControl.title
+                    div {
+                        ref = titleDivRef
+                        +buttonControl.title
+                    }
                 }
 
             ButtonControl.ActivationType.Momentary ->
                 ToggleButton {
+                    ref = buttonRef
+
                     if (showPreview) {
                         attrs.classes = jso {
                             root = -Styles.buttonLabelWhenPreview
@@ -81,7 +97,10 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
                     attrs.onMouseDown = handleMomentaryPress.withMouseEvent()
                     attrs.onMouseUp = handleMomentaryRelease.withMouseEvent()
 
-                    +buttonControl.title
+                    div {
+                        ref = titleDivRef
+                        +buttonControl.title
+                    }
                 }
         }
     }
