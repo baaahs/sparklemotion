@@ -6,13 +6,15 @@ import kotlin.math.max
 import kotlin.math.min
 
 class DynamicDmxAllocator(
-    val dmxUniverses: DmxUniverses
-) {
     private val channelsPerUniverse: Int = Dmx.channelsPerUniverse
-
+) {
     private var nextChannel = 0
 
-    fun allocate(config: DmxTransportConfig?, componentCount: Int, bytesPerComponent: Int): StaticDmxMapping {
+    fun allocate(
+        componentCount: Int,
+        bytesPerComponent: Int,
+        config: DmxTransportConfig? = null
+    ): StaticDmxMapping {
         val startChannel = config?.startChannel
         if (startChannel != null) {
             if (startChannel >= nextChannel) {
@@ -30,7 +32,7 @@ class DynamicDmxAllocator(
         return StaticDmxMapping(
             nextChannel, componentCount, bytesPerComponent,
             !componentMaySpanUniverses
-        ).also { nextChannel = it.calculateEndChannel(dmxUniverses) + 1 }
+        ).also { nextChannel = it.calculateEndChannel(channelsPerUniverse) + 1 }
     }
 }
 
@@ -43,7 +45,7 @@ class DmxUniverses(
 
     fun validate(staticDmxMapping: StaticDmxMapping) {
         val startChannel = staticDmxMapping.startChannel
-        val endChannel = staticDmxMapping.calculateEndChannel(this)
+        val endChannel = staticDmxMapping.calculateEndChannel(channelsPerUniverse)
 
         if (startChannel >= channels.size)
             error("Start channel $startChannel won't fit in $universeCount universes")
@@ -72,7 +74,6 @@ class DmxUniverses(
 
 /**
  * @param startChannel Zero-based DMX channel.
- * @param channelCount Number of channels.
  */
 data class StaticDmxMapping(
     val startChannel: Int,
@@ -80,9 +81,8 @@ data class StaticDmxMapping(
     val bytesPerComponent: Int,
     val componentsStartAtUniverseBoundaries: Boolean
 ) {
-    fun calculateEndChannel(dmxUniverses: DmxUniverses): Int =
+    fun calculateEndChannel(channelsPerUniverse: Int = Dmx.channelsPerUniverse): Int =
         if (componentsStartAtUniverseBoundaries) {
-            val channelsPerUniverse = dmxUniverses.channelsPerUniverse
             val componentsPerUniverse = channelsPerUniverse / bytesPerComponent
             val startUniverseIndex = startChannel / channelsPerUniverse
             val startChannelIndex = startChannel % channelsPerUniverse
@@ -103,8 +103,11 @@ data class StaticDmxMapping(
                 componentsInLeftoversUniverse * bytesPerComponent
             }
 
-            lastUniverseIndex * dmxUniverses.channelsPerUniverse + lastChannelInLastUniverse - 1
+            lastUniverseIndex * channelsPerUniverse + lastChannelInLastUniverse - 1
         } else startChannel + componentCount * bytesPerComponent - 1
+
+    fun calculateEndUniverse(channelsPerUniverse: Int = Dmx.channelsPerUniverse): Int =
+        (calculateEndChannel(channelsPerUniverse) + channelsPerUniverse - 1) / channelsPerUniverse
 
     fun writeBytes(
         byteArray: ByteArray,
@@ -112,7 +115,7 @@ data class StaticDmxMapping(
         startIndex: Int = 0,
         endIndex: Int = byteArray.size
     ) {
-        val channelCount = calculateEndChannel(dmxUniverses) + 1
+        val channelCount = calculateEndChannel(dmxUniverses.channelsPerUniverse) + 1
         val safeEndIndex = min(endIndex, channelCount)
         dmxUniverses.copyBytes(byteArray, startChannel, startIndex, safeEndIndex)
     }
@@ -157,7 +160,9 @@ data class StaticDmxMapping(
     fun preview(dmxUniverses: DmxUniverses): ConfigPreview = object : ConfigPreview {
         override fun summary(): List<Pair<String, String?>> = listOf(
             "Start" to dmxUniverses.describeChannel(startChannel),
-            "End" to dmxUniverses.describeChannel(calculateEndChannel(dmxUniverses))
+            "End" to dmxUniverses.describeChannel(
+                calculateEndChannel(dmxUniverses.channelsPerUniverse)
+            )
         )
     }
 }
