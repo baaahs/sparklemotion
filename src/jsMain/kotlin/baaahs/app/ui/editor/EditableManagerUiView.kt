@@ -94,7 +94,9 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             attrs.FallbackComponent = ErrorDisplay
 
                             val dialogPanel = editorPanels[0]
-                            div(+styles.singlePanel) {
+                            val classes = +styles.singlePanel and
+                                    if (dialogPanel.noMargin) styles.singlePanelNoMargin else null
+                            div(classes) {
                                 with (dialogPanel.getView()) { render() }
                             }
                         }

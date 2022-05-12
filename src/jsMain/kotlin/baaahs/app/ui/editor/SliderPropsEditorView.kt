@@ -22,7 +22,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
         FormControl {
             FormLabel {
                 attrs.component = ReactHTML.legend
-                +"Surface Display Mode"
+                +"Slider Properties"
             }
 
             with(styles) {
