@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.controlsPalette
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
+import baaahs.control.OpenButtonGroupControl
 import baaahs.show.live.ControlProps
 import baaahs.show.live.GridLayoutControlDisplay
 import baaahs.show.live.OpenIGridLayout
@@ -167,7 +168,10 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.onDragStop = handleDragStop
 
             gridLayout.items.forEachIndexed { index, item ->
-                div(+styles.gridCell) {
+                val gridCellStyles = +styles.gridCell and
+                        if (item.control is OpenButtonGroupControl) styles.groupGridCell else null
+
+                div(gridCellStyles) {
                     key = item.control.id
 
                     val gridItemId = item.control.id

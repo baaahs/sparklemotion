@@ -91,8 +91,8 @@ infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
-infix fun String.and(that: String): String = "$this $that"
+infix fun String.and(that: String?): String =
+    if (that == null) this else "$this $that"
 
 
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =

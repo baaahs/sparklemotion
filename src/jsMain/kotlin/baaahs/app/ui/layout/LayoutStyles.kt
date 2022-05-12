@@ -48,6 +48,12 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         descendants(selector(::gridContainer)) {
             pointerEvents = PointerEvents.auto
         }
+
+        zIndex = StyleConstants.Layers.aboveSharedGlCanvas
+    }
+
+    val groupGridCell by css {
+        put(::zIndex.name, "unset")
     }
 
     private val emptyCellDimColor = theme.palette.text.primary.asColor()
