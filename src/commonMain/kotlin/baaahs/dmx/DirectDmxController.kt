@@ -35,7 +35,7 @@ class DirectDmxController(
     private var dynamicDmxAllocator: DynamicDmxAllocator? = null
 
     override fun beforeFixtureResolution() {
-        dynamicDmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
+        dynamicDmxAllocator = DynamicDmxAllocator()
     }
 
     override fun afterFixtureResolution() {
@@ -50,7 +50,7 @@ class DirectDmxController(
         bytesPerComponent: Int
     ): Transport {
         val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-            transportConfig as DmxTransportConfig, componentCount, bytesPerComponent
+            componentCount, bytesPerComponent, transportConfig as DmxTransportConfig
         )
         return DirectDmxTransport(transportConfig, staticDmxMapping)
     }
@@ -108,7 +108,7 @@ class DirectDmxController(
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
 
     companion object {
-        val controllerType = "DMX"
+        const val controllerType = "DMX"
     }
 }
 
@@ -142,7 +142,7 @@ data class DirectDmxControllerConfig(
 
     // TODO: This is pretty dumb, find a better way to do this.
     override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
-        dmxAllocator = DynamicDmxAllocator(DmxUniverses(1))
+        dmxAllocator = DynamicDmxAllocator()
         try {
             return super.buildFixturePreviews(tempModel)
         } finally {
@@ -152,11 +152,11 @@ data class DirectDmxControllerConfig(
 
     override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
-            transportConfig as DmxTransportConfig,
             fixtureConfig.componentCount ?: 1,
-            fixtureConfig.bytesPerComponent
+            fixtureConfig.bytesPerComponent,
+            transportConfig as DmxTransportConfig
         )
-        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+        val dmxPreview = staticDmxMapping.preview(DmxUniverses(1))
 
         return object : FixturePreview {
             override val fixtureConfig: ConfigPreview

@@ -31,7 +31,7 @@ class SacnController(
     private var sequenceNumber = 0
 
     override fun beforeFixtureResolution() {
-        dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses)
+        dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses.channelsPerUniverse)
     }
 
     override fun afterFixtureResolution() {
@@ -46,7 +46,7 @@ class SacnController(
         bytesPerComponent: Int
     ): Transport {
         val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-            transportConfig as DmxTransportConfig?, componentCount, bytesPerComponent
+            componentCount, bytesPerComponent, transportConfig as DmxTransportConfig?
         )
         return SacnTransport(transportConfig, staticDmxMapping)
             .also { dmxUniverses.validate(staticDmxMapping) }

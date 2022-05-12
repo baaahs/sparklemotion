@@ -110,15 +110,15 @@ class SacnManager(
 
                         withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
+                            val bytesPerPixel = if (wledJson.info.leds.rgbw) 4 else 3
 
+                            val universeCount = DynamicDmxAllocator()
+                                .allocate(pixelCount, bytesPerPixel)
+                                .calculateEndUniverse(channelsPerUniverse)
                             val sacnController = SacnController(
-                                id,
-                                sacnLink,
-                                wledAddress,
+                                id, sacnLink, wledAddress,
                                 PixelArrayDevice.Config(pixelCount),
-                                null,
-                                pixelCount  * 3 / channelsPerUniverse + 1,
-                                onlineSince
+                                null, universeCount, onlineSince
                             )
                             notifyListeners { onAdd(sacnController) }
                         }
@@ -180,7 +180,7 @@ data class SacnControllerConfig(
 
     // TODO: This is pretty dumb, find a better way to do this.
     override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
-        dmxAllocator = DynamicDmxAllocator(DmxUniverses(universes))
+        dmxAllocator = DynamicDmxAllocator()
         try {
             return super.buildFixturePreviews(tempModel)
         } finally {
@@ -190,11 +190,12 @@ data class SacnControllerConfig(
 
     override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
-            transportConfig as DmxTransportConfig,
             fixtureConfig.componentCount!!,
-            fixtureConfig.bytesPerComponent
+            fixtureConfig.bytesPerComponent,
+            transportConfig as DmxTransportConfig
         )
-        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+        val dmxUniverses = DmxUniverses(universes)
+        val dmxPreview = staticDmxMapping.preview(dmxUniverses)
 
         return object : FixturePreview {
             override val fixtureConfig: ConfigPreview
