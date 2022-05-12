@@ -204,6 +204,26 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         filter = "drop-shadow(0px 0px 2px white)"
     }
 
+    val editModeButton by css {
+        padding = "5px 1em"
+        marginLeft = 1.em
+        marginRight = 1.em
+        color = theme.palette.primary.contrastText.asColor()
+        important(::backgroundColor, theme.palette.primary.main.asColor())
+        borderColor = theme.palette.primary.contrastText.asColor()
+
+        svg {
+            fontSize = 18.px
+            marginRight = 0.25.em
+        }
+    }
+
+    val editModeButtonSelected by css {
+        important(::color, theme.palette.error.contrastText.asColor())
+        important(::backgroundColor, theme.palette.error.main.asColor())
+        important(::borderColor, theme.palette.error.contrastText.asColor())
+    }
+
     val editButton by css {
         paddingLeft = 1.em
     }
@@ -280,6 +300,10 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         within(appDrawerOpen) {
             width = 100.pct - drawerWidth
         }
+    }
+
+    val showTabs by css {
+        background = theme.palette.background.paper
     }
 }
 

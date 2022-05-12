@@ -13,10 +13,7 @@ import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.StyleElement
-import baaahs.ui.asTextNode
-import baaahs.ui.sharedGlContext
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import csstype.Flex
 import csstype.number
 import kotlinx.css.FlexBasis
@@ -34,6 +31,7 @@ import react.useContext
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUi
 
     val layout = props.layout
     observe(layout)
@@ -104,6 +102,7 @@ val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
 
     if (tabs.size > 1) {
         Tabs {
+            attrs.classes = jso { this.root = -styles.showTabs }
             attrs.value = layout.currentTabIndex
             attrs.onChange = handleChangeTab
             tabs.forEachIndexed { index, tab ->
