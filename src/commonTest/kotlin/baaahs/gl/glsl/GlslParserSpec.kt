@@ -46,6 +46,8 @@ object GlslParserSpec : Spek({
                         fragColor = vec4(uv.xy, 0., 1.);
                     }
                     
+                    void anotherFunc(vec3 color[3]) {}
+                    
                     void main() {
                         mainFunc(gl_FragColor, gl_FragCoord);
                     }
@@ -108,13 +110,22 @@ object GlslParserSpec : Spek({
                                 lineNumber = 18
                             ),
                             GlslFunction(
+                                "anotherFunc",
+                                GlslType.Void,
+                                params = listOf(
+                                    GlslParam("color[3]", GlslType.Vec3),
+                                ),
+                                fullText = "void anotherFunc(vec3 color[3]) {}",
+                                lineNumber = 24
+                            ),
+                            GlslFunction(
                                 "main",
                                 GlslType.Void,
                                 params = emptyList(),
                                 fullText = "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
                                         "}",
-                                lineNumber = 24
+                                lineNumber = 26
                             )
                         ), { glslParser.findStatements(shaderText) }, true
                     )
@@ -148,6 +159,7 @@ object GlslParserSpec : Spek({
                     expect(glslCode.functions.map { it.prettify() })
                         .containsExactly(
                             "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
+                            "void anotherFunc(in vec3 color[3])",
                             "void main()"
                         )
                 }
