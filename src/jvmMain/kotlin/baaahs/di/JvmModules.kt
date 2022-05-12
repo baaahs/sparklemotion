@@ -17,7 +17,7 @@ import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
@@ -63,7 +63,7 @@ class JvmPinkyModule(
         }
 
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
-        get() = newSingleThreadContext("Pinky Main")
+        get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
     override val Scope.renderManager: RenderManager

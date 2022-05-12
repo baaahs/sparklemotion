@@ -15,19 +15,20 @@ import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableSacnControllerConfig
-import baaahs.util.Clock
-import baaahs.util.Delta
-import baaahs.util.Logger
-import baaahs.util.Time
-import kotlinx.coroutines.*
+import baaahs.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.CoroutineContext
 
 class SacnManager(
     private val link: Network.Link,
-    private val mainDispatcher: CoroutineDispatcher,
+    private val coroutineContext: CoroutineContext,
     private val clock: Clock
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
@@ -103,11 +104,11 @@ class SacnManager(
                 logger.debug { "Resolved ${service.type} at $id — $wledAddress:$wledPort" }
 
                 if (wledAddress != null) {
-                    CoroutineScope(Dispatchers.Default).launch {
+                    CoroutineScope(Dispatchers.Default + coroutineExceptionHandler).launch {
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
                         val wledJson = json.decodeFromString(WledJson.serializer(), wledJsonStr)
 
-                        withContext(mainDispatcher) {
+                        withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
 
                             val sacnController = SacnController(
