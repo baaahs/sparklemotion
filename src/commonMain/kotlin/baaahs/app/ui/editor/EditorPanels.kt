@@ -25,6 +25,8 @@ data class SingleShaderSimplifiedEditorPanel(
 ) : DialogPanel {
     override val title: String
         get() = "Simplified View: ${mutablePatchHolder.title}"
+    override val noMargin: Boolean
+        get() = true
 
     override fun getView(): View =
         editorPanelViews.forSingleShaderSimplifiedEditorPanel(editableManager, mutablePatchHolder)

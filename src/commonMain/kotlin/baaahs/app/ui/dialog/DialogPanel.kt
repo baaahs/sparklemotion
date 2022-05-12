@@ -9,6 +9,7 @@ interface DialogPanel {
     val listSubhead: String? get() = null
     val icon: Icon? get() = null
     val problemLevel: Severity? get() = null
+    val noMargin: Boolean get() = false
 
     fun getNestedDialogPanels(): List<DialogPanel> = emptyList()
     fun getView(): View

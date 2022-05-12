@@ -13,9 +13,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val slider by css {
         position = Position.relative
-        width = 100.pct
         height = 100.pct
-//        height = 200.px
         marginLeft = 45.pct
         marginTop = 15.px
         marginBottom = 15.px
