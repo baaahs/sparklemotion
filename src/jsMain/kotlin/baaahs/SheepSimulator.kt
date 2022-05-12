@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.client.WebClient
+import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
@@ -29,7 +30,8 @@ class SheepSimulator(
         launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
-        fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
+        val controllersManager = pinkyScope.get<ControllersManager>()
+        fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
 
         launch { pinky.startAndRun() }
 

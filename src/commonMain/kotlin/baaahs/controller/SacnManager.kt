@@ -35,6 +35,7 @@ class SacnManager(
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
     private var lastConfig: Map<ControllerId, SacnControllerConfig> = emptyMap()
     private var controllers: Map<ControllerId, SacnController> = emptyMap()
+    private var discoveredControllers: MutableMap<ControllerId, SacnController> = hashMapOf()
 
     override fun start() {
         startWledDiscovery()
@@ -50,6 +51,14 @@ class SacnManager(
                 if (v is T) put(k, v)
             }
         }
+
+    override fun reset() {
+        discoveredControllers.forEach { (_, controller) ->
+            controller.release()
+            notifyListeners { onRemove(controller) }
+        }
+        discoveredControllers.clear()
+    }
 
     override fun stop() {
         TODO("not implemented")
@@ -120,6 +129,7 @@ class SacnManager(
                                 PixelArrayDevice.Config(pixelCount),
                                 null, universeCount, onlineSince
                             )
+                            discoveredControllers[sacnController.controllerId] = sacnController
                             notifyListeners { onAdd(sacnController) }
                         }
                     }
