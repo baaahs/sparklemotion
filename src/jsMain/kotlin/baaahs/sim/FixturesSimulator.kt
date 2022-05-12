@@ -1,5 +1,6 @@
 package baaahs.sim
 
+import baaahs.controller.ControllersManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
@@ -29,7 +30,8 @@ class FixturesSimulator(
     private val dmxUniverse: FakeDmxUniverse,
     private val clock: Clock,
     private val pixelArranger: PixelArranger,
-    private val simMappingManager: SimMappingManager
+    private val simMappingManager: SimMappingManager,
+    private val controllersManager: ControllersManager
 ) {
     val facade = Facade()
 
@@ -53,6 +55,7 @@ class FixturesSimulator(
                 oldFixtureSimulator.stop()
             }
             visualizer.facade.clear()
+            controllersManager.reset()
 
             fixtureSimulations =
                 if (newOpenScene == null) {

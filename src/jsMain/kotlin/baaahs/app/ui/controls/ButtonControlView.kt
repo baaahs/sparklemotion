@@ -6,15 +6,18 @@ import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
+import baaahs.util.useResizeListener
 import kotlinx.js.jso
 import mui.material.ToggleButton
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
 
-private val ButtonView = xComponent<ButtonProps>("Button") { props ->
+private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
 
     val buttonControl = props.buttonControl
@@ -37,6 +40,12 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
         onShowStateChange()
     }
 
+    val buttonRef = ref<HTMLButtonElement>()
+    val titleDivRef = ref<HTMLDivElement>()
+    useResizeListener(buttonRef) {
+        titleDivRef.current!!.fitText()
+    }
+
     div(+Styles.controlRoot and Styles.controlButton) {
         if (shaderForPreview != null) {
             div(+Styles.buttonShaderPreviewContainer) {
@@ -52,6 +61,8 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
                 //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
                 //   color: black
                 ToggleButton {
+                    ref = buttonRef
+
                     if (showPreview) {
                         attrs.classes = jso {
                             root = -Styles.buttonLabelWhenPreview
@@ -64,11 +75,16 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
                     attrs.selected = buttonControl.isPressed
                     attrs.onClick = handleToggleClick.withTMouseEvent()
 
-                    +buttonControl.title
+                    div {
+                        ref = titleDivRef
+                        +buttonControl.title
+                    }
                 }
 
             ButtonControl.ActivationType.Momentary ->
                 ToggleButton {
+                    ref = buttonRef
+
                     if (showPreview) {
                         attrs.classes = jso {
                             root = -Styles.buttonLabelWhenPreview
@@ -81,7 +97,10 @@ private val ButtonView = xComponent<ButtonProps>("Button") { props ->
                     attrs.onMouseDown = handleMomentaryPress.withMouseEvent()
                     attrs.onMouseUp = handleMomentaryRelease.withMouseEvent()
 
-                    +buttonControl.title
+                    div {
+                        ref = titleDivRef
+                        +buttonControl.title
+                    }
                 }
         }
     }
@@ -96,5 +115,5 @@ external interface ButtonProps : Props {
     var buttonControl: OpenButtonControl
 }
 
-fun RBuilder.button(handler: RHandler<ButtonProps>) =
-    child(ButtonView, handler = handler)
+fun RBuilder.buttonControl(handler: RHandler<ButtonProps>) =
+    child(ButtonControlView, handler = handler)

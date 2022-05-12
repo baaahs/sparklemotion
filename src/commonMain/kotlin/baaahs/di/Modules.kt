@@ -123,7 +123,7 @@ interface PinkyModule : KModule {
                 scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(PinkyModule.pinkyMainDispatcher), get()) }
+                scoped { SacnManager(get(), get(pinkyContext), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> {

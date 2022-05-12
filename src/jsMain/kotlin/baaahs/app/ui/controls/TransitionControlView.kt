@@ -28,7 +28,7 @@ object GridAreas {
     val go = ident("go")
 }
 
-private val Transition = xComponent<TransitionProps>("Transition") { props ->
+private val TransitionControlView = xComponent<TransitionProps>("TransitionControl") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
 
@@ -155,5 +155,5 @@ external interface TransitionProps : Props {
     var transitionControl: OpenTransitionControl
 }
 
-fun RBuilder.transition(handler: RHandler<TransitionProps>) =
-    child(Transition, handler = handler)
+fun RBuilder.transitionControl(handler: RHandler<TransitionProps>) =
+    child(TransitionControlView, handler = handler)

@@ -33,6 +33,7 @@ class ThemedEditableStyles(val theme: Theme) : StyleSheet("app-ui-editor-Editabl
         grow(Grow.GROW)
         display = Display.flex
         flexDirection = FlexDirection.column
+        padding = "24px 16px"
 
         ".ui-shaderEditor" {
             grow(Grow.GROW)
@@ -41,6 +42,10 @@ class ThemedEditableStyles(val theme: Theme) : StyleSheet("app-ui-editor-Editabl
                 height = LinearDimension.initial
             }
         }
+    }
+
+    val singlePanelNoMargin by css {
+        padding = "0"
     }
 }
 

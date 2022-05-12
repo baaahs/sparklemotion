@@ -13,9 +13,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val slider by css {
         position = Position.relative
-        width = 100.pct
         height = 100.pct
-//        height = 200.px
         marginLeft = 45.pct
         marginTop = 15.px
         marginBottom = 15.px
@@ -96,7 +94,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val altHandleWrapper by css {
         position = Position.absolute
-        zIndex = 2
+        zIndex = 10
 
         descendants("path") {
             put("fill", "darkorange")
@@ -105,18 +103,12 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val altHandleLeft by css {
         position = Position.absolute
-        width = 15.px
-        height = 15.px
+        width = 30.px
+        height = 20.px
         transform.translateY((-50).pct)
+        paddingLeft = 10.px
+        top = 5.px
         right = (-1).px
-    }
-
-    val altHandleRight by css {
-        position = Position.absolute
-        width = 15.px
-        height = 15.px
-        transform.translateY((-50).pct)
-        left = 4.px
     }
 
     val railBackground by css {

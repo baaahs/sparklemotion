@@ -18,9 +18,7 @@ import three.js.*
 import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 import kotlin.reflect.KClass
 
 class Visualizer(
@@ -258,6 +256,42 @@ open class BaseVisualizer(
         })
     }
 
+    fun fitCameraToObject(offset: Double = 1.25) {
+        val boundingBox = Box3()
+        boundingBox.setFromObject(scene)
+
+        val center = boundingBox.getCenter(Vector3())
+        val size = boundingBox.getSize(Vector3())
+
+        // get the max side of the bounding box (fits to width OR height as needed )
+        val fov = camera.fov.toDouble() * (PI / 180)
+        val fovh = 2*atan(tan(fov/2) * camera.aspect.toDouble())
+        val dx = size.z / 2 + abs( size.x / 2 / tan( fovh / 2 ) )
+        val dy = size.z / 2 + abs( size.y / 2 / tan( fov / 2 ) )
+        var cameraZ = max(dx, dy)
+
+        cameraZ *= offset // zoom out a little so that objects don't fill the screen
+
+        camera.position.x = center.x
+        camera.position.y = center.y
+        camera.position.z = cameraZ
+
+        val minZ = boundingBox.min.z
+        val cameraToFarEdge = if (minZ < 0) -minZ + cameraZ else cameraZ - minZ
+
+        camera.far = cameraToFarEdge * 3
+        camera.updateProjectionMatrix()
+
+        val controls = orbitControlsExtension.orbitControls
+        // set camera to rotate around center of loaded object
+        controls.target = center
+
+        // prevent camera from zooming out far enough to create far plane cutoff
+        controls.maxDistance = cameraToFarEdge * 2
+
+        controls.saveState()
+    }
+
     fun <T : Extension> findExtension(tClass: KClass<T>): T {
         return activeExtensions.getBang(tClass, "visualizer extension") as T
     }
@@ -353,6 +387,7 @@ open class BaseVisualizer(
         val startTime = clock.now()
         if (sceneNeedsUpdate) {
             realScene.updateMatrixWorld()
+            fitCameraToObject()
             sceneNeedsUpdate = false
         }
         renderer.render(realScene, camera)

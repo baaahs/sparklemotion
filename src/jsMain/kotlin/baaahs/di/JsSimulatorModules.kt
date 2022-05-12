@@ -4,6 +4,7 @@ import baaahs.MediaDevices
 import baaahs.PinkySettings
 import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
+import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
@@ -61,10 +62,10 @@ class JsSimulatorModule(
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
             single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
-            single { (plugins: Plugins) ->
+            single { (controllersManager: ControllersManager) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
-                    get(), get(), get()
+                    get(), get(), get(), controllersManager
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }

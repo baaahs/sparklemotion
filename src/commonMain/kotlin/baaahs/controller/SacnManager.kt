@@ -1,35 +1,41 @@
 package baaahs.controller
 
 import baaahs.device.PixelArrayDevice
-import baaahs.dmx.*
 import baaahs.dmx.Dmx.Companion.channelsPerUniverse
-import baaahs.fixtures.*
-import baaahs.io.ByteArrayWriter
+import baaahs.dmx.DmxTransportConfig
+import baaahs.dmx.DmxUniverses
+import baaahs.dmx.DynamicDmxAllocator
+import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixturePreview
+import baaahs.fixtures.TransportConfig
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableSacnControllerConfig
-import baaahs.util.Clock
-import baaahs.util.Delta
-import baaahs.util.Logger
-import baaahs.util.Time
-import kotlinx.coroutines.*
+import baaahs.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.CoroutineContext
 
 class SacnManager(
     private val link: Network.Link,
-    private val mainDispatcher: CoroutineDispatcher,
+    private val coroutineContext: CoroutineContext,
     private val clock: Clock
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
     private var lastConfig: Map<ControllerId, SacnControllerConfig> = emptyMap()
     private var controllers: Map<ControllerId, SacnController> = emptyMap()
+    private var discoveredControllers: MutableMap<ControllerId, SacnController> = hashMapOf()
 
     override fun start() {
         startWledDiscovery()
@@ -46,6 +52,14 @@ class SacnManager(
             }
         }
 
+    override fun reset() {
+        discoveredControllers.forEach { (_, controller) ->
+            controller.release()
+            notifyListeners { onRemove(controller) }
+        }
+        discoveredControllers.clear()
+    }
+
     override fun stop() {
         TODO("not implemented")
     }
@@ -55,7 +69,7 @@ class SacnManager(
             Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<ControllerId, SacnControllerConfig> {
                 override fun onAdd(key: ControllerId, value: SacnControllerConfig) {
                     val controller = SacnController(
-                        key.id, value.address,
+                        key.id, sacnLink, link.createAddress(value.address),
                         value.defaultFixtureConfig, value.defaultTransportConfig,
                         value.universes, clock.now()
                     )
@@ -73,7 +87,7 @@ class SacnManager(
         lastConfig = configs
     }
 
-    fun startWledDiscovery() {
+    private fun startWledDiscovery() {
         CoroutineScope(Dispatchers.Default).launch {
             listenForWleds(link)
         }
@@ -99,21 +113,23 @@ class SacnManager(
                 logger.debug { "Resolved ${service.type} at $id — $wledAddress:$wledPort" }
 
                 if (wledAddress != null) {
-                    CoroutineScope(Dispatchers.Default).launch {
+                    CoroutineScope(Dispatchers.Default + coroutineExceptionHandler).launch {
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
                         val wledJson = json.decodeFromString(WledJson.serializer(), wledJsonStr)
 
-                        withContext(mainDispatcher) {
+                        withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
+                            val bytesPerPixel = if (wledJson.info.leds.rgbw) 4 else 3
 
+                            val universeCount = DynamicDmxAllocator()
+                                .allocate(pixelCount, bytesPerPixel)
+                                .calculateEndUniverse(channelsPerUniverse)
                             val sacnController = SacnController(
-                                id,
-                                wledAddress.asString(),
+                                id, sacnLink, wledAddress,
                                 PixelArrayDevice.Config(pixelCount),
-                                null,
-                                pixelCount  * 3 / channelsPerUniverse + 1,
-                                onlineSince
+                                null, universeCount, onlineSince
                             )
+                            discoveredControllers[sacnController.controllerId] = sacnController
                             notifyListeners { onAdd(sacnController) }
                         }
                     }
@@ -129,95 +145,6 @@ class SacnManager(
         override val onlineSince: Time?,
         override val firmwareVersion: String? = null
     ) : ControllerState()
-
-    inner class SacnController(
-        val id: String,
-        val address: String,
-        override val defaultFixtureConfig: FixtureConfig?,
-        override val defaultTransportConfig: TransportConfig?,
-        private val universeCount: Int,
-        val onlineSince: Time?
-    ) : Controller {
-        override val controllerId: ControllerId = ControllerId(controllerTypeName, id)
-        override val state: ControllerState =
-            State(controllerId.name(), address, onlineSince)
-        override val transportType: TransportType
-            get() = DmxTransport
-
-        private val dmxUniverses = DmxUniverses(universeCount)
-        private var dynamicDmxAllocator: DynamicDmxAllocator? = null
-
-        private val node = sacnLink.deviceAt(link.createAddress(address))
-        val stats get() = node.stats
-        private var sequenceNumber = 0
-
-        override fun beforeFixtureResolution() {
-            dynamicDmxAllocator = DynamicDmxAllocator(dmxUniverses)
-        }
-
-        override fun afterFixtureResolution() {
-            dynamicDmxAllocator = null
-        }
-
-        override fun createTransport(
-            entity: Model.Entity?,
-            fixtureConfig: FixtureConfig,
-            transportConfig: TransportConfig?,
-            componentCount: Int,
-            bytesPerComponent: Int
-        ): Transport {
-            val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-                transportConfig as DmxTransportConfig?, componentCount, bytesPerComponent
-            )
-            return SacnTransport(transportConfig, staticDmxMapping)
-                .also { dmxUniverses.validate(staticDmxMapping) }
-        }
-
-        override fun getAnonymousFixtureMappings(): List<FixtureMapping> = emptyList()
-
-        inner class SacnTransport(
-            transportConfig: DmxTransportConfig?,
-            private val staticDmxMapping: StaticDmxMapping
-        ) : Transport {
-            override val name: String get() = id
-            override val controller: Controller
-                get() = this@SacnController
-            override val config: TransportConfig? = transportConfig
-
-            override fun deliverBytes(byteArray: ByteArray) {
-                staticDmxMapping.writeBytes(byteArray, dmxUniverses)
-            }
-
-            override fun deliverComponents(
-                componentCount: Int,
-                bytesPerComponent: Int,
-                fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
-            ) {
-                staticDmxMapping.writeComponents(componentCount, bytesPerComponent, dmxUniverses, fn)
-            }
-        }
-
-        override fun afterFrame() {
-            sequenceNumber++
-            for (universeIndex in 0 until universeCount) {
-                val maxChannel = dmxUniverses.universeMaxChannel[universeIndex]
-                if (maxChannel > 0) {
-                    node.sendDataPacket(
-                        dmxUniverses.channels,
-                        universeIndex + 1,
-                        universeIndex * channelsPerUniverse,
-                        maxChannel,
-                        sequenceNumber
-                    )
-                }
-                dmxUniverses.universeMaxChannel[universeIndex] = 0
-            }
-        }
-
-        fun release() {
-            logger.debug { "Releasing SacnController $id." }
-        }
-    }
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName = "SACN"
@@ -263,7 +190,7 @@ data class SacnControllerConfig(
 
     // TODO: This is pretty dumb, find a better way to do this.
     override fun buildFixturePreviews(tempModel: Model): List<FixturePreview> {
-        dmxAllocator = DynamicDmxAllocator(DmxUniverses(universes))
+        dmxAllocator = DynamicDmxAllocator()
         try {
             return super.buildFixturePreviews(tempModel)
         } finally {
@@ -273,11 +200,12 @@ data class SacnControllerConfig(
 
     override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
-            transportConfig as DmxTransportConfig,
             fixtureConfig.componentCount!!,
-            fixtureConfig.bytesPerComponent
+            fixtureConfig.bytesPerComponent,
+            transportConfig as DmxTransportConfig
         )
-        val dmxPreview = staticDmxMapping.preview(dmxAllocator!!.dmxUniverses)
+        val dmxUniverses = DmxUniverses(universes)
+        val dmxPreview = staticDmxMapping.preview(dmxUniverses)
 
         return object : FixturePreview {
             override val fixtureConfig: ConfigPreview

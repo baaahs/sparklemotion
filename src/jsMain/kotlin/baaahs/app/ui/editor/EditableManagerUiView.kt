@@ -64,8 +64,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                 attrs.onClose = handleDrawerClose
 
                 DialogTitle {
-                    attrs.classes = jso { this.root = -DialogStyles.dialogTitle }
-                    typographyH6 { +"Editing ${props.editableManager.uiTitle}" }
+                    +"Editing ${props.editableManager.uiTitle}"
 
                     div(+DialogStyles.dialogTitleButtons) {
                         Button {
@@ -95,7 +94,9 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             attrs.FallbackComponent = ErrorDisplay
 
                             val dialogPanel = editorPanels[0]
-                            div(+styles.singlePanel) {
+                            val classes = +styles.singlePanel and
+                                    if (dialogPanel.noMargin) styles.singlePanelNoMargin else null
+                            div(classes) {
                                 with (dialogPanel.getView()) { render() }
                             }
                         }
