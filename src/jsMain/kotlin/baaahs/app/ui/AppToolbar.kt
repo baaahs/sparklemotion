@@ -19,9 +19,12 @@ import mui.icons.material.*
 import mui.material.*
 import mui.material.Link
 import org.w3c.dom.events.Event
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.*
 import react.dom.html.ReactHTML
+import react.useContext
 import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
@@ -152,6 +155,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     Button {
                         attrs.startIcon = +Undo
                         attrs.disabled = !documentManager.canUndo
+                        attrs.variant = ButtonVariant.contained
+                        attrs.size = Size.small
                         attrs.onClick = handleUndo
 
                         +"Undo"
@@ -160,6 +165,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     Button {
                         attrs.startIcon = +Redo
                         attrs.disabled = !documentManager.canRedo
+                        attrs.variant = ButtonVariant.contained
+                        attrs.size = Size.small
                         attrs.onClick = handleRedo
 
                         +"Redo"
@@ -169,6 +176,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         Button {
                             attrs.startIcon = +Sync
                             attrs.disabled = documentManager.isSynced
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSync
 
                             +"Sync"
@@ -178,6 +187,8 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (!documentManager.isLoaded) {
                         Button {
                             attrs.startIcon = +FileCopy
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSaveAs
                             +"Save As…"
                         }
@@ -185,20 +196,29 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         Button {
                             attrs.startIcon = +Save
                             attrs.disabled = !documentManager.isUnsaved
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSave
                             +"Save"
                         }
                     }
 
-                    FormControlLabel {
-                        attrs.control = buildElement {
-                            Switch {
-                                attrs.checked = editMode.isOn
-                                attrs.onChange = handleEditModeChange.withTChangeEvent()
-                            }
+                    ToggleButton {
+                        attrs.classes = jso {
+                            this.root = -themeStyles.editModeButton
+                            this.selected = -themeStyles.editModeButtonSelected
                         }
-                        attrs.disableTypography = true
-                        attrs.label = "Design Mode".asTextNode()
+//                        attrs.variant = ButtonVariant.contained
+                        attrs.color = ToggleButtonColor.error
+                        attrs.selected = editMode.isOn
+                        attrs.onClick = handleEditModeChange.withTMouseEvent()
+
+                        if (editMode.isOn) {
+                            LockOpen { attrs.fontSize = SvgIconSize.small }
+                        } else {
+                            Lock { attrs.fontSize = SvgIconSize.small }
+                        }
+                        +"Edit"
                     }
                 }
 
