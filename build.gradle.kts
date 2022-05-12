@@ -161,7 +161,7 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMuiIcons}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
 
                 implementation(npm("camera-controls", "^1.25.3"))

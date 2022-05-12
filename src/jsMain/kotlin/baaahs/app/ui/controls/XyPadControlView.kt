@@ -19,7 +19,7 @@ import react.dom.div
 import styled.StyleSheet
 import styled.inlineStyles
 
-private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
+private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
@@ -190,5 +190,5 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     }
 }
 
-fun RBuilder.xyPad(handler: RHandler<XyPadProps>) =
-    child(XyPadView, handler = handler)
+fun RBuilder.xyPadControl(handler: RHandler<XyPadProps>) =
+    child(XyPadControlView, handler = handler)

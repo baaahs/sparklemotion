@@ -9,7 +9,9 @@ import kotlin.math.roundToInt
 fun Float?.percent() = this?.let { "${(it * 100f).roundToInt()}%" } ?: "—%"
 
 fun globalLaunch(block: suspend CoroutineScope.() -> Unit) =
-    GlobalScope.launch(coroutineExceptionHandler) { block.invoke(this) }
+    GlobalScope.launch(coroutineExceptionHandler) {
+        block.invoke(this)
+    }
 
 expect val coroutineExceptionHandler: CoroutineExceptionHandler
 

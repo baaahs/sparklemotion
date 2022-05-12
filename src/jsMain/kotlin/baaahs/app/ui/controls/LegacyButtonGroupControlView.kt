@@ -26,8 +26,9 @@ import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
 
-private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyButtonGroup") { props ->
+private val LegacyButtonGroupControlView = xComponent<LegacyButtonGroupProps>("LegacyButtonControlGroup") { props ->
     val appContext = useContext(appContext)
+    val controlStyles = appContext.allStyles.controls
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
@@ -58,7 +59,7 @@ private val LegacyButtonGroupView = xComponent<LegacyButtonGroupProps>("LegacyBu
     }
 
     Card {
-        attrs.classes = jso { root = -Styles.buttonGroupCard }
+        attrs.classes = jso { root = -controlStyles.buttonGroupCard }
 
         droppable({
             if (dropTarget != null) {
@@ -179,5 +180,5 @@ external interface LegacyButtonGroupProps : Props {
     var buttonGroupControl: OpenButtonGroupControl
 }
 
-fun RBuilder.legacyButtonGroup(handler: RHandler<LegacyButtonGroupProps>) =
-    child(LegacyButtonGroupView, handler = handler)
+fun RBuilder.legacyButtonGroupControl(handler: RHandler<LegacyButtonGroupProps>) =
+    child(LegacyButtonGroupControlView, handler = handler)

@@ -100,9 +100,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     if (showManager.isUnsaved) i { +" (Unsaved)" }
                     problemBadge(show, themeStyles.problemBadge)
 
-                    if (props.appMode == AppMode.Show && editMode.isOn) {
+                    if (props.appMode == AppMode.Show) {
                         span(+themeStyles.editButton) {
-                            icon(mui.icons.material.Edit)
+                            icon(Edit)
                             attrs.onClickFunction = handleShowEditButtonClick.withEvent()
                         }
                     }
@@ -127,9 +127,9 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                     b { +scene.title }
                     if (sceneManager.isUnsaved) i { +" (Unsaved)" }
 
-                    if (props.appMode == AppMode.Scene && editMode.isOn) {
+                    if (props.appMode == AppMode.Scene) {
                         span(+themeStyles.editButton) {
-                            icon(mui.icons.material.Edit)
+                            icon(Edit)
                             attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
                         }
                     }

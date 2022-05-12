@@ -1,5 +1,8 @@
 package baaahs.ui
 
+import baaahs.context2d
+import baaahs.document
+import baaahs.window
 import csstype.ClassName
 import external.DroppableProvided
 import external.copyFrom
@@ -10,7 +13,10 @@ import mui.material.SvgIconProps
 import mui.material.Typography
 import mui.material.TypographyProps
 import mui.material.styles.Theme
+import mui.material.styles.TypographyVariant
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
@@ -90,8 +96,8 @@ infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
-infix fun String.and(that: String): String = "$this $that"
+infix fun String.and(that: String?): String =
+    if (that == null) this else "$this $that"
 
 
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
@@ -143,61 +149,61 @@ fun RElementBuilder<*>.install(droppableProvided: DroppableProvided) {
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h1"
+        attrs.variant = TypographyVariant.h1
         block()
     }
 
 inline fun RBuilder.typographyH2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h2"
+        attrs.variant = TypographyVariant.h2
         block()
     }
 
 inline fun RBuilder.typographyH3(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h3"
+        attrs.variant = TypographyVariant.h3
         block()
     }
 
 inline fun RBuilder.typographyH4(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h4"
+        attrs.variant = TypographyVariant.h4
         block()
     }
 
 inline fun RBuilder.typographyH5(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h5"
+        attrs.variant = TypographyVariant.h5
         block()
     }
 
 inline fun RBuilder.typographyH6(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h6"
+        attrs.variant = TypographyVariant.h6
         block()
     }
 
 inline fun RBuilder.typographySubtitle1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { //    (*classMap, factory = { DIV(mapOf(), it) })
-        attrs.variant = "subtitle1"
+        attrs.variant = TypographyVariant.subtitle1
         block()
     }
 
 inline fun RBuilder.typographySubtitle2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { // (*classMap, factory = { DIV(mapOf(), it) }) {
-        attrs.variant = "subtitle2"
+        attrs.variant = TypographyVariant.subtitle2
         block()
     }
 
 inline fun RBuilder.typographyBody1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body1"
+        attrs.variant = TypographyVariant.body1
         block()
     }
 
 inline fun RBuilder.typographyBody2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body2"
+        attrs.variant = TypographyVariant.body2
         block()
     }
 
@@ -246,3 +252,25 @@ fun Theme.paperContrast(amount: Double) =
 val Theme.paperLowContrast get() = paperContrast(.25)
 val Theme.paperMediumContrast get() = paperContrast(.5)
 val Theme.paperHighContrast get() = paperContrast(.75)
+
+fun HTMLElement.fitText() {
+    val parentEl = parentElement!!
+    val margin = with(window.getComputedStyle(parentEl)) {
+        marginLeft.replace("px", "").toDouble() +
+                marginRight.replace("px", "").toDouble()
+    }
+    val font = window.getComputedStyle(this).font
+    val buttonWidth = parentEl.clientWidth - margin
+    val canvas = document.createElement("canvas") as HTMLCanvasElement
+    val ctx = canvas.context2d()
+    ctx.font = font
+    val width = innerText.split(Regex("\\s+")).maxOf { word ->
+        ctx.measureText(word).width
+    }
+    style.transform =
+        if (width > buttonWidth) {
+            "scaleX(${buttonWidth / width})"
+        } else {
+            ""
+        }
+}

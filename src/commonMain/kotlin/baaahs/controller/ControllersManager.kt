@@ -26,7 +26,7 @@ class ControllersManager(
         controllerManagers.forEach { controllerManager ->
             controllerManager.addListener(object : ControllerListener {
                 override fun onAdd(controller: Controller) {
-                    logger.debug { "onAdd($controller)" }
+                    logger.debug { "onAdd(${controller.controllerId})" }
                     if (controllers.containsKey(controller.controllerId))
                         error("Already know about ${controller.controllerId}")
 
@@ -39,7 +39,7 @@ class ControllersManager(
                 }
 
                 override fun onRemove(controller: Controller) {
-                    logger.debug { "onRemove($controller)" }
+                    logger.debug { "onRemove(${controller.controllerId})" }
                     val liveController = controllers.remove(controller.controllerId)
                         ?: error("Don't know about ${controller.controllerId}")
 
@@ -116,6 +116,12 @@ class ControllersManager(
             }
         } finally {
             deferFixtureRefresh = false
+        }
+    }
+
+    fun reset() {
+        controllerManagers.forEach {
+            it.reset()
         }
     }
 

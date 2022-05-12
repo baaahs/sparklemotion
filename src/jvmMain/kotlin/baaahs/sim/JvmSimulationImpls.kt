@@ -21,7 +21,7 @@ actual class BrainSurfaceSimulation actual constructor(
 actual class LightBarSimulation actual constructor(
     pixelArray: PixelArray,
     adapter: EntityAdapter
-) : FixtureSimulation {
+) : PixelArraySimulation(pixelArray, adapter) {
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
@@ -31,7 +31,7 @@ actual class LightBarSimulation actual constructor(
 actual class LightRingSimulation actual constructor(
     lightRing: LightRing,
     adapter: EntityAdapter
-) : FixtureSimulation {
+) : PixelArraySimulation(lightRing, adapter) {
     override val mappingData: MappingSession.SurfaceData? = null
     override val itemVisualizer get() = TODO("not implemented")
     override val previewFixture: Fixture get() = TODO("not implemented")
