@@ -175,6 +175,11 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         display = Display.flex
     }
 
+    val appToolbarEditModeActions by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+    }
+
     val title by css {
         display = Display.flex
         userSelect = UserSelect.none
