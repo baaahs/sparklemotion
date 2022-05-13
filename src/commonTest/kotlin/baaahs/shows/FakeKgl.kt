@@ -483,4 +483,13 @@ open class StubGlslProgram : GlslProgram {
     override fun getUniform(name: String): Uniform? = TODO("not implemented")
     override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
     override fun use(): Unit = TODO("not implemented")
-    override fun release(): Unit = TODO("not implemented") }
+    override fun release(): Unit = TODO("not implemented")
+}
+
+class FakeGlslProgram(
+    val uniforms: MutableMap<String, FakeUniform?> = mutableMapOf()
+) : StubGlslProgram() {
+    override fun getUniform(name: String): Uniform? {
+        return uniforms.getOrPut(name) { FakeUniform() }
+    }
+}
