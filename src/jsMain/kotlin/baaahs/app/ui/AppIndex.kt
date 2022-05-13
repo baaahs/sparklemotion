@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.settings.UiSettings
+import baaahs.app.ui.diagnostics.diagnosticsPanel
 import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
@@ -121,6 +122,11 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         showManager.onEdit(show, pushToUndoStack)
     }
 
+    var showDiagnostics by state { false }
+    val handleShowDiagnosticsChange by handler {
+        showDiagnostics = !showDiagnostics
+    }
+
     val handleShowStateChange = callback {
         // TODO: don't pass this around? ... and forceRender() is unnecessary.
         showManager.onShowStateChange()
@@ -218,6 +224,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
+                        attrs.showDiagnostics = showDiagnostics
+                        attrs.onShowDiagnosticsChange = handleShowDiagnosticsChange
                         attrs.onSettings = handleSettings
                     }
 
@@ -342,6 +350,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 }
 
                 fileDialog {}
+
+                if (showDiagnostics) {
+                    diagnosticsPanel {
+
+                    }
+                }
             }
         }
     }

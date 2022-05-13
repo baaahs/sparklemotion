@@ -9,8 +9,10 @@ import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.Direction
+import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.div
+import react.dom.events.ChangeEvent
 import react.dom.events.SyntheticEvent
 
 val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
@@ -39,6 +41,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         props.onDarkModeChange()
     }
 
+    val handleShowDiagnosticsChange by handler { _: ChangeEvent<HTMLInputElement>, _: Boolean ->
+        props.onShowDiagnosticsChange()
+    }
 
     Drawer {
         attrs.classes = jso {
@@ -122,7 +127,6 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                             attrs.onChange = handleDarkModeChange
                         }
                     }
-                    attrs.onChange = handleDarkModeChange
                     attrs.label = "Dark Mode".asTextNode()
                 }
             }
@@ -132,6 +136,22 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     attrs.onClick = props.onSettings.withMouseEvent()
                     ListItemIcon { icon(CommonIcons.Settings) }
                     ListItemText { +"Settings" }
+                }
+            }
+        }
+
+        Divider {}
+
+        List {
+            ListItem {
+                FormControlLabel {
+                    attrs.control = buildElement {
+                        Switch {
+                            attrs.checked = props.showDiagnostics
+                            attrs.onChange = handleShowDiagnosticsChange
+                        }
+                    }
+                    attrs.label = "Diagnostics".asTextNode()
                 }
             }
         }
@@ -152,6 +172,9 @@ external interface AppDrawerProps : Props {
 
     var darkMode: Boolean?
     var onDarkModeChange: () -> Unit
+
+    var showDiagnostics: Boolean?
+    var onShowDiagnosticsChange: () -> Unit
 
     var onSettings: () -> Unit
 }

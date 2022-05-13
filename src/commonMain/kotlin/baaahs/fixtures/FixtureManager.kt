@@ -10,6 +10,7 @@ import baaahs.show.live.ActivePatchSet
 import baaahs.sm.server.FrameListener
 import baaahs.timeSync
 import baaahs.util.Logger
+import baaahs.util.Monitor
 import baaahs.visualizer.remote.RemoteVisualizerServer
 import baaahs.visualizer.remote.RemoteVisualizers
 
@@ -34,7 +35,8 @@ interface FixtureManager : FixtureListener {
 class FixtureManagerImpl(
     private val renderManager: RenderManager,
     private val plugins: Plugins,
-    initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
+    initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap(),
+    private val renderPlanMonitor: Monitor<RenderPlan?> = Monitor(null)
 ) : FixtureManager {
     override val facade = Facade()
 
@@ -45,7 +47,11 @@ class FixtureManagerImpl(
     private var currentActivePatchSet: ActivePatchSet = ActivePatchSet.Empty
     private var activePatchSetChanged = false
     internal var currentRenderPlan: RenderPlan? = null
-        private set
+        get() = renderPlanMonitor.value
+        private set(value) {
+            renderPlanMonitor.value = value
+            field = value
+        }
 
     private val remoteVisualizers = RemoteVisualizers()
 
