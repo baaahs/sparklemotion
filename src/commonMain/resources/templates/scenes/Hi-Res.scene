@@ -1,0 +1,17 @@
+{
+  "model": {
+    "title": "Hi-Res",
+    "entities": [
+      {
+        "type": "Grid",
+        "title": "Hi-Res",
+        "rows": 240,
+        "columns": 320,
+        "rowGap": 3,
+        "columnGap": 3,
+        "zigZag": true
+      }
+    ],
+    "units": "Centimeters"
+  }
+}
