@@ -1,5 +1,5 @@
 {
-  "title": "Grid Layout Show",
+  "title": "Pasture Bedtime",
   "patchIds": [
     "flatProjection-patch",
     "darkness-patch",
@@ -191,6 +191,11 @@
                       "controlId": "colorDiffusionFlow2",
                       "column": 1,
                       "row": 6
+                    },
+                    {
+                      "controlId": "quiver",
+                      "column": 0,
+                      "row": 7
                     }
                   ]
                 }
@@ -256,6 +261,31 @@
                 "controlId": "soundBrightness",
                 "column": 6,
                 "row": 0
+              },
+              {
+                "controlId": "thatSAllFolks",
+                "column": 2,
+                "row": 1
+              },
+              {
+                "controlId": "timeScaler",
+                "column": 3,
+                "row": 1
+              },
+              {
+                "controlId": "beatShift",
+                "column": 4,
+                "row": 1
+              },
+              {
+                "controlId": "zigZag",
+                "column": 5,
+                "row": 1
+              },
+              {
+                "controlId": "blackout",
+                "column": 6,
+                "row": 1
               }
             ]
           },
@@ -328,7 +358,7 @@
     },
     "sharpyDefault": {
       "title": "Sharpy Default",
-      "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    float pan = 0.;\n    float tilt = .5;\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = mod(time/20., 1.);\n    return MovingHeadParams(pan, tilt, colorWheel, 1.);\n    // return vec4(fixtureInfo.position.x, fixtureInfo.position.z, 0., 0.);\n}"
+      "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\nuniform FixtureInfo fixtureInfo;\n\nuniform float pan; // @@Slider min=3.14159 max=6.283\nuniform float tilt; // @@Slider min=-1.2217 max=1.2217\n\n// @return moving-head-params\nMovingHeadParams main() {\n    // float pan = sin(time/5.) / 2. + .5;\n    // float tilt = sin(time/5.) / 4. + .5;\n    // float pan = pan; // + mod(time/20., 1.);\n    // float tilt = tilt + mod(time/20., 1.);\n    // float pan = mod(time * 2., 1.);\n    // float tilt = mod(time * 2., 1.);\n    float colorWheel = 0.;//mod(time/20., 1.);\n    return MovingHeadParams(pan * 10., tilt * 10., colorWheel, 1.);\n    // return vec4(fixtureInfo.position.x, fixtureInfo.position.z, 0., 0.);\n}"
     },
     "untitledFilterShader": {
       "title": "Untitled Filter Shader",
@@ -492,7 +522,7 @@
     },
     "heart": {
       "title": "Heart",
-      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform vec4 inColor; // @type color\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) / heartSize - vec3(heartCenter, 0.);\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = inColor;\n}"
+      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform vec4 inColor; // @type color\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) / (heartSize * .25) - vec3(-heartCenter.x * 2., heartCenter.y * 2., 0.);\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = inColor;\n}"
     },
     "plaid": {
       "title": "Plaid",
@@ -500,7 +530,7 @@
     },
     "fireball": {
       "title": "Fireball",
-      "src": "// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    //vec3 color = vec3(0.3059, 0.1922, 0.0431);\n    vec3 color = vec3(0.7333, 0.2902, 0.0314);\n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n\n}"
+      "src": "// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    vec3 color = vec3(0.3059, 0.1922, 0.0431);\n  //  vec3 color = vec3((1. + sin(beatInfo.beat)) * 0.5, 0.2902, 0.0314);\n    // vec3 color = vec3((1. + sin(beatInfo.beat)) * 0.5, 0.2902, 0.0614);\n    \n    \n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n\n}"
     },
     "solidColor2": {
       "title": "Solid Color",
@@ -521,6 +551,26 @@
     "soundBrightness": {
       "title": "Sound Brightness",
       "src": "uniform float soundBrightness; // @Slider min=0 max=2 default=0\n\nstruct SoundAnalysis {\n    int bucketCount;\n    int sampleHistoryCount;\n    sampler2D buckets;\n    float maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * mix(soundAnalysis.maxMagnitude, 1., soundBrightness) , clampedColor.a);\n}"
+    },
+    "thatSAllFolks": {
+      "title": "That's all, folks!",
+      "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec4 inColor, vec2 uvIn) {\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = sin(-length(p) * 60. * (0.8+ beatInfo.intensity * 0.2) + time * speed); // * beatInfo.intensity;\n    \n    float nr = inColor.rgb.r * d;\n    float ng = inColor.rgb.g * d;\n    float nb = inColor.rgb.b * d;\n    return vec4(nr, ng, nb, 1.0);\n}"
+    },
+    "timeScaler": {
+      "title": "Time Scaler",
+      "src": "uniform float timeShift; // @@Slider default=0 min=-1 max=1\n\n// @return time\n// @param inTime time\nfloat main(float inTime) {\n    return inTime * timeShift;\n}"
+    },
+    "beatShift": {
+      "title": "Beat Shift",
+      "src": "struct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float beatTimeShiftAmount; // @@Slider default=.5 min=0 max=2\n\n// @return time\n// @param inTime time\nfloat main(float inTime) {\n    return inTime + beatInfo.intensity * beatTimeShiftAmount;\n}"
+    },
+    "zigZag": {
+      "title": "Zig Zag",
+      "src": "uniform float time;\nuniform float zig; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * zig;\n}"
+    },
+    "blackout": {
+      "title": "Blackout",
+      "src": "// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(0., 0., 0., 1.);\n}"
     }
   },
   "patches": {
@@ -598,6 +648,14 @@
     "sharpyDefault-patch": {
       "shaderId": "sharpyDefault",
       "incomingLinks": {
+        "pan": {
+          "type": "datasource",
+          "dataSourceId": "panSlider"
+        },
+        "tilt": {
+          "type": "datasource",
+          "dataSourceId": "tiltSlider"
+        },
         "time": {
           "type": "datasource",
           "dataSourceId": "time"
@@ -606,7 +664,8 @@
           "type": "datasource",
           "dataSourceId": "fixtureInfo"
         }
-      }
+      },
+      "priority": -10.0
     },
     "untitledFilterShader-patch": {
       "shaderId": "untitledFilterShader",
@@ -1450,6 +1509,10 @@
           "type": "shader-channel",
           "shaderChannel": "main"
         },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
         "resolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
@@ -1589,6 +1652,92 @@
         }
       },
       "priority": 10.0
+    },
+    "thatSAllFolks-patch": {
+      "shaderId": "thatSAllFolks",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "speed": {
+          "type": "datasource",
+          "dataSourceId": "speedSlider"
+        },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "timeScaler-patch": {
+      "shaderId": "timeScaler",
+      "incomingLinks": {
+        "timeShift": {
+          "type": "datasource",
+          "dataSourceId": "timeShiftSlider"
+        },
+        "inTime": {
+          "type": "shader-channel",
+          "shaderChannel": "time"
+        }
+      },
+      "shaderChannel": "time",
+      "priority": 1.0
+    },
+    "beatShift-patch": {
+      "shaderId": "beatShift",
+      "incomingLinks": {
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "inTime": {
+          "type": "shader-channel",
+          "shaderChannel": "time"
+        },
+        "beatTimeShiftAmount": {
+          "type": "datasource",
+          "dataSourceId": "beatTimeShiftAmountSlider"
+        }
+      },
+      "shaderChannel": "time",
+      "priority": 1.0
+    },
+    "zigZag-patch": {
+      "shaderId": "zigZag",
+      "incomingLinks": {
+        "zig": {
+          "type": "datasource",
+          "dataSourceId": "zigSlider"
+        },
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "blackout-patch": {
+      "shaderId": "blackout",
+      "incomingLinks": {
+        "uvIn": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "priority": 6.0
     }
   },
   "controls": {
@@ -1649,6 +1798,7 @@
     "beatBrightness": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
+      "initialValue": 0.0,
       "controlledDataSourceId": "beatBrightnessSlider"
     },
     "saturation": {
@@ -2208,6 +2358,42 @@
       "patchIds": [
         "soundBrightness-patch"
       ]
+    },
+    "thatSAllFolks": {
+      "type": "baaahs.Core:Button",
+      "title": "That's all, folks!",
+      "patchIds": [
+        "thatSAllFolks-patch"
+      ]
+    },
+    "timeScaler": {
+      "type": "baaahs.Core:Button",
+      "title": "Time Scaler",
+      "patchIds": [
+        "timeScaler-patch"
+      ]
+    },
+    "beatShift": {
+      "type": "baaahs.Core:Button",
+      "title": "Beat Shift",
+      "patchIds": [
+        "beatShift-patch"
+      ]
+    },
+    "zigZag": {
+      "type": "baaahs.Core:Button",
+      "title": "Zig Zag",
+      "patchIds": [
+        "zigZag-patch"
+      ]
+    },
+    "blackout": {
+      "type": "baaahs.Core:Button",
+      "title": "Blackout",
+      "activationType": "Momentary",
+      "patchIds": [
+        "blackout-patch"
+      ]
     }
   },
   "dataSources": {
@@ -2233,7 +2419,7 @@
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 1.0,
+      "initialValue": 0.0,
       "minValue": 0.0,
       "maxValue": 1.25
     },
@@ -2250,6 +2436,20 @@
       "initialValue": 1.0,
       "minValue": 0.75,
       "maxValue": 1.25
+    },
+    "panSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Pan",
+      "initialValue": 1.0,
+      "minValue": 3.14159,
+      "maxValue": 6.283
+    },
+    "tiltSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tilt",
+      "initialValue": 1.0,
+      "minValue": -1.2217,
+      "maxValue": 1.2217
     },
     "time": {
       "type": "baaahs.Core:Time"
@@ -2516,6 +2716,34 @@
     "soundBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Sound Brightness",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "speedSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Speed",
+      "initialValue": 10.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
+    },
+    "timeShiftSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Time Shift",
+      "initialValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0
+    },
+    "beatTimeShiftAmountSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Beat Time Shift Amount",
+      "initialValue": 1.0,
+      "minValue": 0.5,
+      "maxValue": 2.0
+    },
+    "zigSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zig",
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
