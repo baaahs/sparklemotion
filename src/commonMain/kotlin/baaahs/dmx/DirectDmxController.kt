@@ -68,9 +68,11 @@ class DirectDmxController(
         override val config: DmxTransportConfig,
         staticDmxMapping: StaticDmxMapping
     ) : Transport {
+        val startChannel = staticDmxMapping.startChannel
+        val endChannel = staticDmxMapping.calculateEndChannel()
+
         private val buffer = run {
-            val (start, end) = staticDmxMapping
-            universe.writer(start, end - start + 1)
+            universe.writer(startChannel, endChannel - startChannel + 1)
         }
 
         override val name: String
