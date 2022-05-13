@@ -23,7 +23,7 @@ private val MovingHeadFixtureConfigEditorView =
 
         betterSelect<MovingHeadAdapter?> {
             attrs.label = "Adapter"
-            attrs.values = MovingHeadAdapter.all
+            attrs.values = listOf(null) + MovingHeadAdapter.all
             attrs.renderValueOption = { adapter -> buildElement { +(adapter?.id ?: "Default") } }
             attrs.value = mutableConfig.adapter
             attrs.onChange = handleAdapterChange
