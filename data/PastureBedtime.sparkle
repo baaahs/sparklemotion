@@ -594,10 +594,6 @@
     "brightness-patch": {
       "shaderId": "brightness",
       "incomingLinks": {
-        "beat": {
-          "type": "datasource",
-          "dataSourceId": "beatLink"
-        },
         "brightness": {
           "type": "datasource",
           "dataSourceId": "brightnessSlider"
@@ -743,15 +739,7 @@
     "smpteColorBars-patch": {
       "shaderId": "smpteColorBars",
       "incomingLinks": {
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
-        "gl_FragCoord": {
           "type": "shader-channel",
           "shaderChannel": "main"
         },
@@ -764,12 +752,7 @@
     },
     "green-patch": {
       "shaderId": "green",
-      "incomingLinks": {
-        "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        }
-      },
+      "incomingLinks": {},
       "shaderChannel": "other"
     },
     "blue-patch": {
@@ -789,10 +772,6 @@
           "type": "datasource",
           "dataSourceId": "time"
         },
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
         "fragCoord": {
           "type": "shader-channel",
           "shaderChannel": "main"
@@ -810,10 +789,6 @@
         "iTime": {
           "type": "datasource",
           "dataSourceId": "time"
-        },
-        "sm_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
         },
         "fragCoord": {
           "type": "shader-channel",
@@ -2403,9 +2378,6 @@
     "pixelLocation": {
       "type": "baaahs.Core:PixelLocation"
     },
-    "beatLink": {
-      "type": "baaahs.BeatLink:BeatLink"
-    },
     "brightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
@@ -2468,6 +2440,9 @@
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
+    },
+    "beatLink": {
+      "type": "baaahs.BeatLink:BeatLink"
     },
     "scaleSlider": {
       "type": "baaahs.Core:Slider",
