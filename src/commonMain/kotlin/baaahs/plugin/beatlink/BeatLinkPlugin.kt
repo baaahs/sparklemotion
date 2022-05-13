@@ -214,9 +214,14 @@ class BeatLinkPlugin internal constructor(
         }
     }
 
-    class Args(parser: ArgParser) {
-        val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
+    class ParserArgs(parser: ArgParser) : Args {
+        override val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
             .default(true)
+    }
+
+    interface Args {
+        val enableBeatLink: Boolean
+        val beatSource: BeatSource? get() = null
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {
@@ -248,10 +253,12 @@ class BeatLinkPlugin internal constructor(
         private val simulatorDefaultBpm = BeatData(0.0, 500, confidence = 1f)
         private val unknownBpm = BeatData(0.0, 500, confidence = 0f)
 
-        override fun getArgs(parser: ArgParser): Args = Args(parser)
+        override fun getArgs(parser: ArgParser): Args = ParserArgs(parser)
 
         override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin {
-            val beatSource = if (args.enableBeatLink) createServerBeatSource(pluginContext) else BeatSource.None
+            val beatSource = if (args.enableBeatLink) {
+                args.beatSource ?: createServerBeatSource(pluginContext)
+            } else BeatSource.None
             return BeatLinkPlugin(
                 PubSubPublisher(beatSource, pluginContext),
                 pluginContext
@@ -314,7 +321,12 @@ class BeatLinkPlugin internal constructor(
         }
 
         init {
-            beatSource.addObserver { channel.onChange(it.getBeatData()) }
+            beatSource.addObserver {
+                val newBeatData = it.getBeatData()
+                beatData = newBeatData
+                notifyChanged()
+                channel.onChange(newBeatData)
+            }
         }
 
         override fun getBeatData(): BeatData = beatData
