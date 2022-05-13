@@ -7,7 +7,9 @@ import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import csstype.ClassName
+import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
+import kotlinx.css.pointerEvents
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
@@ -144,10 +146,11 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
             div(+themeStyles.appToolbarActions) {
-                div {
+                div(+themeStyles.appToolbarEditModeActions) {
                     inlineStyles {
                         if (!editMode.isOn && !documentManager.isUnsaved) {
                             opacity = 0
+                            pointerEvents = PointerEvents.none
                         }
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
