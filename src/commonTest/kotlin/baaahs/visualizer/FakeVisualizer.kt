@@ -1,13 +1,13 @@
 package baaahs.visualizer
 
 class FakeVisualizer(
-    val entityVisualizers: MutableList<ItemVisualizer<*>> = mutableListOf()
+    val itemVisualizers: MutableList<ItemVisualizer<*>> = mutableListOf()
 ) : IVisualizer {
-    override fun add(entityVisualizer: ItemVisualizer<*>) {
-        entityVisualizers.add(entityVisualizer)
+    override fun add(itemVisualizer: ItemVisualizer<*>) {
+        itemVisualizers.add(itemVisualizer)
     }
 
     override fun clear() {
-        entityVisualizers.clear()
+        itemVisualizers.clear()
     }
 }
