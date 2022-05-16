@@ -150,6 +150,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
         gridLayout {
             attrs.id = "top"
+            attrs.gridLayout = GridLayoutCommon()
             attrs.className = +styles.gridContainer
             attrs.width = layoutDimens.first.toDouble()
             attrs.autoSize = false

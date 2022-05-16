@@ -6,15 +6,15 @@ import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.clamp
 import baaahs.geom.Vector2D
+import baaahs.geom.Vector2I
 import baaahs.ui.className
 import baaahs.ui.isParentOf
-import baaahs.x
-import baaahs.y
 import external.clsx.clsx
 import external.react_draggable.DraggableCore
 import external.react_draggable.DraggableCoreProps
 import external.react_draggable.DraggableData
 import external.react_resizable.*
+import external.react_resizable.Size
 import kotlinx.js.Object
 import kotlinx.js.jso
 import org.w3c.dom.Element
@@ -28,6 +28,8 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 external interface GridItemProps : Props {
+    var common: GridItemCommon
+
     var children: ReactElement<*>
     var parentContainer: GridLayout
 //    var cols: Int
@@ -93,10 +95,10 @@ class GridItem(
         // TODO memoize these calculations so they don't take so long?
         val positionParams = state.parentContainer.getPositionParams()
         val oldPosition = positionParams.calcGridItemPosition(
-            props.x, props.y, props.w, props.h, state
+            props.x, props.y, props.w, props.h, state.toCommon()
         )
         val newPosition = positionParams.calcGridItemPosition(
-            nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState
+            nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState.toCommon()
         )
         return oldPosition != newPosition ||
                 props.useCSSTransforms !== nextProps.useCSSTransforms
@@ -427,15 +429,10 @@ class GridItem(
             val offsetParent = node.offsetParent
 
             if (offsetParent != null) {
-                val margin = state.parentContainer.margin
-                val rowHeight = state.parentContainer.rowHeight
-                val bottomBoundary =
-                    offsetParent.clientHeight - calcGridItemWHPx(h, rowHeight, margin.y.toDouble())
+                val bottomBoundary = offsetParent.clientHeight - positionParams.calcGridItemHeightPx(h)
                 top = top.clamp(0, bottomBoundary.roundToInt())
 
-                val colWidth = positionParams.calcGridColWidth()
-                val rightBoundary =
-                    containerWidth - calcGridItemWHPx(w, colWidth, margin.x.toDouble())
+                val rightBoundary = containerWidth - positionParams.calcGridItemWidthPx(w)
                 left = left.clamp(0, rightBoundary.roundToInt())
             }
         }
@@ -593,7 +590,7 @@ class GridItem(
 
         val positionParams = state.parentContainer.getPositionParams()
 //        console.log("${props.i}.parent.getPositionParams() -> ", positionParams)
-        val pos = positionParams.calcGridItemPosition(props.x, props.y, props.w, props.h, state)
+        val pos = positionParams.calcGridItemPosition(props.x, props.y, props.w, props.h, state.toCommon())
         val child = props.children.unsafeCast<ReactElement<GridItemProps>>()
 
         // Create the child element. We clone the existing element but modify its className and style.
@@ -663,5 +660,8 @@ external interface GridItemState : State {
     var draggingFromContainer: GridLayout?
     var resizing: Size?
 }
+
+fun GridItemState.toCommon() =
+    GridItemStateCommon(dragging, resizing?.let { Vector2I(it.width, it.height) })
 
 typealias GridItemCallback<Data> = (i: String, w: Int, h: Int, data: Data) -> Any

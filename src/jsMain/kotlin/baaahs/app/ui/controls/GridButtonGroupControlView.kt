@@ -10,11 +10,7 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.gridlayout.CompactType
-import baaahs.ui.gridlayout.Layout
-import baaahs.ui.gridlayout.LayoutItem
-import baaahs.ui.gridlayout.gridLayout
-import baaahs.ui.isParentOf
+import baaahs.ui.gridlayout.*
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -110,6 +106,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
         gridLayout {
             attrs.id = buttonGroupControl.id
+            attrs.gridLayout = GridLayoutCommon()
             attrs.className = +layoutStyles.gridContainer
             attrs.width = layoutWidth.toDouble()
             attrs.autoSize = false

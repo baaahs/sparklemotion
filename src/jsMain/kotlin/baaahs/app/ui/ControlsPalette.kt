@@ -8,10 +8,7 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.ui.*
-import baaahs.ui.gridlayout.CompactType
-import baaahs.ui.gridlayout.Layout
-import baaahs.ui.gridlayout.LayoutItem
-import baaahs.ui.gridlayout.gridLayout
+import baaahs.ui.gridlayout.*
 import baaahs.util.useResizeListener
 import external.Direction
 import external.draggable
@@ -92,6 +89,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
                                 gridLayout {
                                     attrs.id = "_control_palette_"
+                                    attrs.gridLayout = GridLayoutCommon()
                                     attrs.className = +styles.gridContainer
                                     attrs.width = paletteWidth.toDouble()
                                     attrs.autoSize = false
