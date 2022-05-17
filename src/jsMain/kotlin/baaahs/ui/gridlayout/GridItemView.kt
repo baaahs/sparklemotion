@@ -31,7 +31,7 @@ external interface GridItemProps : Props {
     var common: GridItemCommon
 
     var children: ReactElement<*>
-    var parentContainer: GridLayout
+    var parentGridLayoutView: GridLayoutView
 //    var cols: Int
 //    var containerWidth: Double
 //    var margin: Array<Int>
@@ -73,11 +73,11 @@ external interface GridItemProps : Props {
     var onResizeStop: GridItemCallback<GridResizeEvent>?
 }
 
-class GridItem(
+class GridItemView(
     props: GridItemProps, context: DragNDropContext
 ) : RComponent<GridItemProps, GridItemState>(props) {
     override fun GridItemState.init(props: GridItemProps) {
-        parentContainer = props.parentContainer
+        parentContainer = props.parentGridLayoutView
         resizing = null
         dragging = null
 //        className = props.className
@@ -293,7 +293,7 @@ class GridItem(
 
     var lastDragEl: Element? = null
     var lastDragOver: Element? = null
-    private fun MouseEvent.findContainer(callbackData: DraggableData): GridLayout? {
+    private fun MouseEvent.findContainer(callbackData: DraggableData): GridLayoutView? {
         var element = target as Element?
         val dragging = callbackData.node
         if (dragging != lastDragEl || element != lastDragOver) {
@@ -305,7 +305,7 @@ class GridItem(
             if (!dragging.isParentOf(element)) {
                 val containerId = (element as? HTMLElement)?.dataset?.get("gridLayoutContainer")
                 if (containerId != null) {
-                    return context.findLayout(containerId).gridLayout
+                    return context.findLayout(containerId).gridLayoutView
                 }
             }
 
@@ -314,7 +314,7 @@ class GridItem(
         return null
     }
 
-    private fun maybeSwitchParentContainer(container: GridLayout, draggingNode: HTMLElement): Boolean {
+    private fun maybeSwitchParentContainer(container: GridLayoutView, draggingNode: HTMLElement): Boolean {
         val previousContainer = state.parentContainer
         if (previousContainer != container) {
             val layoutItem = previousContainer.onItemExit()
@@ -417,7 +417,7 @@ class GridItem(
         var left = dragging.x.roundToInt() + deltaX
         var top = dragging.y.roundToInt() + deltaY
 
-        val isBounded = props.parentContainer.isBounded
+        val isBounded = props.parentGridLayoutView.isBounded
         val i = props.i
         val w = props.w
         val h = props.h
@@ -627,9 +627,9 @@ class GridItem(
         child(newChild)
     }
 
-    companion object : RStatics<GridItemProps, GridItemState, GridItem, Context<DragNDropContext>>(GridItem::class) {
+    companion object : RStatics<GridItemProps, GridItemState, GridItemView, Context<DragNDropContext>>(GridItemView::class) {
         init {
-            displayName = GridItem::class.simpleName
+            displayName = GridItemView::class.simpleName
 
             contextType = dragNDropContext
 
@@ -648,16 +648,16 @@ class GridItem(
 }
 
 fun RBuilder.gridItem(handler: RHandler<GridItemProps>) =
-    child(GridItem::class, handler = handler)
+    child(GridItemView::class, handler = handler)
 
 // Workaround for bug in kotlin-react RStatics to force it to be initialized early.
 @Suppress("unused")
-private val defaultPropsWorkaround = GridItem.defaultProps
+private val defaultPropsWorkaround = GridItemView.defaultProps
 
 external interface GridItemState : State {
-    var parentContainer: GridLayout
+    var parentContainer: GridLayoutView
     var dragging: Vector2D?
-    var draggingFromContainer: GridLayout?
+    var draggingFromContainer: GridLayoutView?
     var resizing: Size?
 }
 

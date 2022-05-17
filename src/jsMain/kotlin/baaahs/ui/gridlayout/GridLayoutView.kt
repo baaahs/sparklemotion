@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
 
 external interface GridLayoutState : State {
     var id: String
-    var gridLayout: GridLayout
+    var gridLayoutView: GridLayoutView
 
     var draggingPlaceholder: LayoutItem?
     var layout: Layout
@@ -45,12 +45,12 @@ external interface GridLayoutState : State {
 val layoutClassName = "react-grid-layout"
 val isFirefox = window.navigator.userAgent.contains("firefox", true)
 
-class GridLayout(
+class GridLayoutView(
     props: GridLayoutProps, context: DragNDropContext
 ) : RComponent<GridLayoutProps, GridLayoutState>(props) {
     override fun GridLayoutState.init(props: GridLayoutProps) {
         id = props.id
-        gridLayout = this@GridLayout
+        gridLayoutView = this@GridLayoutView
 
         draggingPlaceholder = null
         layout = synchronizeLayoutWithChildren(
@@ -410,7 +410,7 @@ class GridLayout(
         // {...this.state.activeDrag} is pretty slow, actually
         return buildElement {
             gridItem {
-                attrs.parentContainer = this@GridLayout
+                attrs.parentGridLayoutView = this@GridLayoutView
                 attrs.w = activeDrag.w
                 attrs.h = activeDrag.h
                 attrs.x = activeDrag.x
@@ -467,7 +467,7 @@ class GridLayout(
 
         return buildElement {
             gridItem {
-                attrs.parentContainer = this@GridLayout
+                attrs.parentGridLayoutView = this@GridLayoutView
 //                attrs.containerWidth = width!!
 //                attrs.cols = cols
 //                attrs.margin = margin
@@ -698,11 +698,11 @@ class GridLayout(
         }
     }
 
-    companion object : RStatics<GridLayoutProps, GridLayoutState, GridLayout, Context<DragNDropContext>>(GridLayout::class) {
+    companion object : RStatics<GridLayoutProps, GridLayoutState, GridLayoutView, Context<DragNDropContext>>(GridLayoutView::class) {
         const val debug = true
 
         init {
-            displayName = GridLayout::class.simpleName
+            displayName = GridLayoutView::class.simpleName
 
             contextType = dragNDropContext
 
@@ -865,8 +865,8 @@ class GridLayout(
 }
 
 fun RBuilder.gridLayout(handler: RHandler<GridLayoutProps>) =
-    child(GridLayout::class.unsafeCast<KClass<GridLayout>>(), handler)
+    child(GridLayoutView::class.unsafeCast<KClass<GridLayoutView>>(), handler)
 
 // Workaround for bug in kotlin-react RStatics to force it to be initialized early.
 @Suppress("unused")
-private val defaultPropsWorkaround = GridLayout.defaultProps
+private val defaultPropsWorkaround = GridLayoutView.defaultProps
