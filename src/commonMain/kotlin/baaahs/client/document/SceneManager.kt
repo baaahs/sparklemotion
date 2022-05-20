@@ -51,7 +51,8 @@ class SceneManager(
             Divider,
             DialogMenuItem.Header("From Template:"),
             Option("BAAAHS") { makeNew { sceneFromResources("BAAAHS.scene") } },
-            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
+//            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
+            Option("Hi-Res") { makeNew { sceneFromResources("Hi-Res.scene") } },
             Option("Honcho") { makeNew { sceneFromResources("Honcho.scene") } },
             Option("Playa2021") { makeNew { sceneFromResources("Playa2021.scene") } }
         ))

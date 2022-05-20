@@ -4,6 +4,16 @@
   "license": null,
   "entries": [
     {
+      "id": "beatshift",
+      "title": "Beat Shift",
+      "description": "Adjusts time by beat intensity.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=filter"
+      ],
+      "srcFile": "BeatShift.glsl"
+    },
+    {
       "id": "brightness",
       "title": "Brightness",
       "description": "Adjusts brightness.",
@@ -73,6 +83,16 @@
         "@type=filter"
       ],
       "srcFile": "Saturation.glsl"
+    },
+    {
+      "id": "sparklez",
+      "title": "Sparklez™",
+      "description": "Adds sparkles.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=filter"
+      ],
+      "srcFile": "Sparklez.glsl"
     },
     {
       "id": "wobble",

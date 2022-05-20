@@ -66,14 +66,14 @@ object RemoteVisualizerClientSpec : Spek({
         afterEachTest { coroutineScope.cleanupTestCoroutines() }
 
         it("should populate the visualizer with model entities") {
-            expect(fakeVisualizer.entityVisualizers).containsExactly(
+            expect(fakeVisualizer.itemVisualizers).containsExactly(
                 FakeItemVisualizer(entity)
             )
         }
 
         context("receiving pixel array fixture data") {
             it("updates the visualizer with remote config data") {
-                val visualizer = fakeVisualizer.entityVisualizers.only() as FakeItemVisualizer
+                val visualizer = fakeVisualizer.itemVisualizers.only() as FakeItemVisualizer
                 expect(visualizer.remoteConfig.pixelCount).toEqual(2)
                 expect(visualizer.remoteConfig.pixelLocations).containsExactly(Vector3F.origin, Vector3F.unit3d)
             }
@@ -90,7 +90,7 @@ object RemoteVisualizerClientSpec : Spek({
             }
 
             it("updates the visualizer with pixel colors") {
-                val visualizer = fakeVisualizer.entityVisualizers.only() as FakeItemVisualizer
+                val visualizer = fakeVisualizer.itemVisualizers.only() as FakeItemVisualizer
                 expect(visualizer.pixelColors).containsExactly(Color.MAGENTA, Color.GREEN)
             }
         }

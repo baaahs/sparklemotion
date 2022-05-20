@@ -115,7 +115,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
             div {
                 inlineStyles {
                     display = Display.grid
-                    gridTemplateColumns = GridTemplateColumns("1fr 1fr 1fr")
+                    gridTemplateColumns = GridTemplateColumns("repeat(auto-fit, minmax(180px, 1fr))")
                     gap = 1.em
                 }
 

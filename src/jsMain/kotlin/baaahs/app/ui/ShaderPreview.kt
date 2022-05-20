@@ -31,7 +31,7 @@ import styled.inlineStyles
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
-    val sharedGlContext = useContext(appGlContext).sharedGlContext
+    val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain ?: appContext.toolchain
 
     val canvasParent = ref<HTMLDivElement>()
@@ -277,6 +277,7 @@ external interface ShaderPreviewProps : Props {
     var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
     var dumpShader: Boolean?
+    var noSharedGlContext: Boolean?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =
