@@ -7,6 +7,7 @@ import baaahs.app.ui.layout.dragNDropContext
 import baaahs.clamp
 import baaahs.geom.Vector2D
 import baaahs.ui.className
+import baaahs.ui.isParentOf
 import baaahs.x
 import baaahs.y
 import external.clsx.clsx
@@ -211,16 +212,6 @@ class GridItem(
      */
     private fun pct(num: Number): String {
         return "${num.toDouble() * 100}%"
-    }
-
-    private fun Element.isParentOf(other: Element): Boolean {
-        var current: Element? = other
-        while (current != null) {
-            val parent = current.parentElement
-            if (parent === this) return true
-            current = parent
-        }
-        return false
     }
 
     /**

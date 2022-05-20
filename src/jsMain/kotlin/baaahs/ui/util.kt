@@ -274,3 +274,13 @@ fun HTMLElement.fitText() {
             ""
         }
 }
+
+fun Element.isParentOf(other: Element): Boolean {
+    var current: Element? = other
+    while (current != null) {
+        val parent = current.parentElement
+        if (parent === this) return true
+        current = parent
+    }
+    return false
+}
