@@ -45,7 +45,9 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
         }
 
         if (isConsoleOpen) console { attrs.simulator = simulator }
-        if (isGlslPaletteOpen) generatedGlslPalette { attrs.pinky = simulator.pinky }
+        if (isGlslPaletteOpen) generatedGlslPalette {
+            attrs.renderPlanMonitor = simulator.pinky.fixtureManager.renderPlanMonitor
+        }
     }
 }
 
