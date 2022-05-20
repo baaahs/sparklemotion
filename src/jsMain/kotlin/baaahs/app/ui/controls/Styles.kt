@@ -74,6 +74,16 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
     }
 
+    val visualizerMenuAffordance by css {
+        position = Position.absolute
+        padding(2.px)
+        backgroundColor = Color.white.withAlpha(.5)
+        width = 2.em
+        height = 2.em
+        right = .5.em
+        bottom = .5.em
+    }
+
     val dragHandle by css {
         display = Display.none
         transition(::display, duration = 0.s)
