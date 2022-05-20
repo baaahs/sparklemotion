@@ -46,6 +46,19 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         titleDivRef.current!!.fitText()
     }
 
+    var lightboxOpen by state { false }
+    onMount(buttonRef.current) {
+        val buttonEl = buttonRef.current
+        if (buttonEl != null) {
+            buttonEl.setAttribute("data-long-press-delay", "750")
+            buttonEl.addEventListener("long-press", callback = {
+                if (appContext.showManager.editMode.isOff) {
+                    lightboxOpen = true
+                }
+            })
+        }
+    }
+
     div(+Styles.controlRoot and Styles.controlButton) {
         if (shaderForPreview != null) {
             div(+Styles.buttonShaderPreviewContainer) {
@@ -102,6 +115,14 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
                         +buttonControl.title
                     }
                 }
+        }
+    }
+
+    if (lightboxOpen && shaderForPreview != null) {
+        patchMod {
+            attrs.title = buttonControl.title
+            attrs.shader = shaderForPreview.shader
+            attrs.onClose = { lightboxOpen = false }
         }
     }
 }

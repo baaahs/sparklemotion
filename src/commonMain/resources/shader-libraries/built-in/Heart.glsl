@@ -1,7 +1,6 @@
 // Heart
 // From http://mathworld.wolfram.com/HeartSurface.html
 
-uniform vec4 inColor; // @type color
 uniform float heartSize; // @@Slider default=1. min=0.25 max=2
 uniform vec2 heartCenter; // @@XyPad
 
@@ -13,6 +12,10 @@ struct BeatInfo {
 };
 
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
+
+// @param fragCoord uv-coordinate
+// @return color
+vec4 upstreamColor(vec2 fragCoord);
 
 float f(vec3 p) {
     vec3 pp = p * p;
@@ -52,7 +55,7 @@ vec3 normal(vec2 p) {
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    vec3 p = vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) / heartSize - vec3(heartCenter, 0.);
+    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(heartCenter.xy, 0.)) * 4. / heartSize * .5;
     float beat = beatInfo.beat;
     float s = sin(beat * 4.0);
     s *= s;
@@ -70,5 +73,5 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
         fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);
     }
     else
-    fragColor = inColor;
+    fragColor = upstreamColor(fragCoord);
 }

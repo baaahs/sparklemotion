@@ -166,6 +166,8 @@ kotlin {
 
                 implementation(npm("camera-controls", "^1.25.3"))
 
+                implementation(npm("long-press-event", "^2.4.4"))
+
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
                 // <react-beautiful-dnd bug workaround>
@@ -246,6 +248,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
+    from("build/js/node_modules/long-press-event/dist") { include("long-press-event.min.js") }
     from("build/js/node_modules/@fortawesome") {
         include("fontawesome-free/css/all.min.css")
         include("fontawesome-free/webfonts/*")

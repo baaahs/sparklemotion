@@ -1,6 +1,6 @@
 package baaahs.visualizer
 
 interface IVisualizer {
-    fun add(entityVisualizer: ItemVisualizer<*>)
+    fun add(itemVisualizer: ItemVisualizer<*>)
     fun clear()
 }
