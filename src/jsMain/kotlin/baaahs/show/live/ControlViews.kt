@@ -60,7 +60,7 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps) = renderWrapper {
-        visualizer {
+        visualizerControl {
             attrs.controlProps = controlProps
             attrs.visualizerControl = openVisualizerControl
         }

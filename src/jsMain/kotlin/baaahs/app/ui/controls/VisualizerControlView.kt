@@ -16,7 +16,7 @@ import react.RBuilder
 import react.RHandler
 import react.useContext
 
-private val VisualizerControlView = xComponent<VisualizerProps>("VisualizerControl") { props ->
+private val VisualizerControlView = xComponent<VisualizerControlProps>("VisualizerControl") { props ->
     val appContext = useContext(appContext)
 
     val sceneManager = appContext.sceneManager
@@ -58,10 +58,10 @@ private val VisualizerControlView = xComponent<VisualizerProps>("VisualizerContr
     }
 }
 
-external interface VisualizerProps : Props {
+external interface VisualizerControlProps : Props {
     var controlProps: ControlProps
     var visualizerControl: OpenVisualizerControl
 }
 
-fun RBuilder.visualizer(handler: RHandler<VisualizerProps>) =
+fun RBuilder.visualizerControl(handler: RHandler<VisualizerControlProps>) =
     child(VisualizerControlView, handler = handler)
