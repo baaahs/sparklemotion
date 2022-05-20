@@ -11,6 +11,7 @@ import baaahs.show.live.OpenGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.gridlayout.*
+import baaahs.ui.isParentOf
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
