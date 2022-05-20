@@ -14,6 +14,7 @@ import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
+import baaahs.ui.isParentOf
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -83,12 +84,17 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
     val handleGridItemClick by mouseEventHandler(gridLayout.items) { e ->
-        (e.currentTarget as HTMLElement).dataset["gridIndex"]?.toInt()?.let { clickedIndex ->
-            gridLayout.items.forEachIndexed { index, it ->
-                (it.control as? OpenButtonControl)?.isPressed = index == clickedIndex
-            }
-            onShowStateChange()
-            e.stopPropagation()
+        if (cardRef.current?.isParentOf(e.target as Element) == true) {
+            (e.currentTarget as HTMLElement)
+                .dataset["gridIndex"]
+                ?.toInt()
+                ?.let { clickedIndex ->
+                    gridLayout.items.forEachIndexed { index, it ->
+                        (it.control as? OpenButtonControl)?.isPressed = index == clickedIndex
+                    }
+                    onShowStateChange()
+                    e.stopPropagation()
+                }
         }
     }
 
