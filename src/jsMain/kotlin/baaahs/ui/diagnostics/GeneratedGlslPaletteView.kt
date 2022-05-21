@@ -18,7 +18,7 @@ import react.dom.div
 import react.dom.i
 import react.dom.pre
 
-val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslPalette") { props ->
+val GeneratedGlslPaletteView = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslPalette") { props ->
     observe(props.renderPlanMonitor)
 
     val renderPlans = props.renderPlanMonitor.value
@@ -82,4 +82,4 @@ external interface GeneratedGlslPaletteProps : Props {
 }
 
 fun RBuilder.generatedGlslPalette(handler: RHandler<GeneratedGlslPaletteProps>) =
-    child(GeneratedGlslPalette, handler = handler)
+    child(GeneratedGlslPaletteView, handler = handler)
