@@ -115,6 +115,23 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
         maxHeight = 50.vh
         maxWidth = 50.em
         overflow = Overflow.scroll
+
+        th {
+            nthChild("even") {
+                background = "#530"
+            }
+            nthChild("odd") {
+                background = "#035"
+            }
+        }
+
+        td {
+            border = "2px dashed orange"
+        }
+    }
+
+    val box by css {
+//        border = "2px dashed orange"
     }
 }
 

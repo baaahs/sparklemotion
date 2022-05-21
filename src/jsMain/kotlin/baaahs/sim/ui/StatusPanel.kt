@@ -2,6 +2,7 @@ package baaahs.sim.ui
 
 import baaahs.SheepSimulator
 import baaahs.ui.asTextNode
+import baaahs.ui.diagnostics.generatedGlslPalette
 import baaahs.ui.unaryPlus
 import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
