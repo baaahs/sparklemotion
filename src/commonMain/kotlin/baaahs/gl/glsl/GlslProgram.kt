@@ -33,7 +33,7 @@ interface GlslProgram {
 
 class GlslProgramImpl(
     private val gl: GlContext,
-    private val linkedProgram: LinkedProgram,
+    val linkedProgram: LinkedProgram,
     engineFeedResolver: EngineFeedResolver
 ): GlslProgram {
     override val title: String get() = linkedProgram.rootNode.title

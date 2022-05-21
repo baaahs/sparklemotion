@@ -4,7 +4,8 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
-import baaahs.sim.ui.generatedGlslPalette
+import baaahs.ui.diagnostics.dagPalette
+import baaahs.ui.diagnostics.generatedGlslPalette
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
@@ -61,9 +62,9 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
     var showGlsl by state { false }
-    val handleToggleShowGlsl by handler { showGlsl = !showGlsl }
+    val handleToggleShowGlsl by handler { showGlsl = !showGlsl; menuAnchor = null }
     var showDag by state { false }
-    val handleToggleShowDag by handler { showDag = !showDag }
+    val handleToggleShowDag by handler { showDag = !showDag; menuAnchor = null }
 
     Card {
         ref = rootEl
@@ -105,6 +106,12 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
 
     if (showGlsl && clientPreview != null) {
         generatedGlslPalette {
+            attrs.renderPlanMonitor = clientPreview.renderPlanMonitor
+        }
+    }
+
+    if (showDag && clientPreview != null) {
+        dagPalette {
             attrs.renderPlanMonitor = clientPreview.renderPlanMonitor
         }
     }

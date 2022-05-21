@@ -1,6 +1,13 @@
-package baaahs.sim.ui
+package baaahs.ui.diagnostics
 
 import baaahs.fixtures.RenderPlan
+import baaahs.gl.glsl.GlslProgramImpl
+import baaahs.gl.patch.DefaultValueNode
+import baaahs.gl.patch.ExprNode
+import baaahs.gl.patch.ProgramNode
+import baaahs.show.live.LinkedPatch
+import baaahs.show.live.OpenPatch
+import baaahs.sim.ui.Styles
 import baaahs.ui.*
 import baaahs.util.Monitor
 import external.react_draggable.Draggable
@@ -13,11 +20,9 @@ import mui.material.Tabs
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
-import react.dom.i
-import react.dom.pre
+import react.dom.*
 
-val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslPalette") { props ->
+val DagPalette = xComponent<DagPaletteProps>("DagPalette") { props ->
     observe(props.renderPlanMonitor)
 
     val renderPlans = props.renderPlanMonitor.value
@@ -38,7 +43,7 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
                     attrs.classes = jso { this.root = -Styles.glslCodePaper }
                     attrs.elevation = 3
 
-                    typographyH6 { +"Generated GLSL" }
+                    typographyH6 { +"Directed Acyclic Graph, ish. One day." }
 
                     div(+Styles.glslCodeDiv) {
                         if (renderPlans == null) {
@@ -64,9 +69,12 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
 
                             val (_, renderPlan) = plans[selectedTabIndex]
                             renderPlan.programs.forEach { programRenderPlan ->
-                                programRenderPlan.program?.fragShader?.source
-                                    ?.let { glsl -> pre { +glsl } }
-                                    ?: i { +"No program!" }
+                                val program = programRenderPlan.program as? GlslProgramImpl
+                                val linkedProgram = program?.linkedProgram
+
+                                if (linkedProgram != null) {
+                                    describe(linkedProgram.rootNode)
+                                }
                             }
                         }
                     }
@@ -76,9 +84,48 @@ val GeneratedGlslPalette = xComponent<GeneratedGlslPaletteProps>("GeneratedGlslP
     }
 }
 
-external interface GeneratedGlslPaletteProps : Props {
+private fun RBuilder.describe(node: OpenPatch.DataSourceLink) {
+    div(+Styles.box) { +"Data Source: ${node.title}" }
+}
+
+private fun RBuilder.describe(node: DefaultValueNode) {
+    div(+Styles.box) { +"Default Value: ${node.getExpression("pfx").s}" }
+}
+
+private fun RBuilder.describe(node: ExprNode) {
+    div(+Styles.box) { +"Expression: ${node.getExpression("pfx").s}" }
+}
+
+private fun RBuilder.describe(node: LinkedPatch) {
+    div(+Styles.box) {
+        header { +"Patch: ${node.title}" }
+
+        table {
+            node.incomingLinks.forEach { (id, toNode) ->
+                val inputPort = node.shader.inputPorts.first { it.id == id }
+
+                tr {
+                    th { +inputPort.title }
+                    td { describe(toNode) }
+                }
+            }
+        }
+    }
+}
+
+private fun RBuilder.describe(node: ProgramNode) {
+    when (node) {
+        is OpenPatch.DataSourceLink -> describe(node)
+        is DefaultValueNode -> describe(node)
+        is ExprNode -> describe(node)
+        is LinkedPatch -> describe(node)
+        else -> error("Huh? Unknown node type ${node::class}")
+    }
+}
+
+external interface DagPaletteProps : Props {
     var renderPlanMonitor: Monitor<RenderPlan?>
 }
 
-fun RBuilder.generatedGlslPalette(handler: RHandler<GeneratedGlslPaletteProps>) =
-    child(GeneratedGlslPalette, handler = handler)
+fun RBuilder.dagPalette(handler: RHandler<DagPaletteProps>) =
+    child(DagPalette, handler = handler)
