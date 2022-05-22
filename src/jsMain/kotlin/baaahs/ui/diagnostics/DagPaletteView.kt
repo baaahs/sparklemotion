@@ -8,15 +8,14 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
 import baaahs.sim.ui.Styles
-import baaahs.ui.*
+import baaahs.ui.asTextNode
+import baaahs.ui.components.palette
+import baaahs.ui.typographyH6
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
 import baaahs.util.Monitor
-import external.react_draggable.Draggable
 import kotlinx.css.UserSelect
 import kotlinx.css.userSelect
-import kotlinx.js.jso
-import materialui.icon
-import mui.base.Portal
-import mui.material.Paper
 import mui.material.Tab
 import mui.material.Tabs
 import react.Props
@@ -32,65 +31,49 @@ val DagPaletteView = xComponent<DagPaletteProps>("DagPalette") { props ->
 
     var selectedTabIndex by state { 0 }
 
-    Portal {
-        Draggable {
-            val randomStyleForHandle = "PinkyPanelHandle"
-            attrs.handle = ".$randomStyleForHandle"
+    palette {
+        typographyH6 { +"Directed Acyclic Graph, ish. One day." }
 
-            div(+Styles.glslCodeSheet) {
-                div(+Styles.dragHandle and randomStyleForHandle) {
-                    icon(mui.icons.material.DragIndicator)
-                }
+        div(+Styles.glslContentDiv) {
+            if (renderPlans == null) {
+                i { +"No plans!" }
+            } else {
+                val plans = renderPlans.entries.toList()
 
-                Paper {
-                    attrs.classes = jso { this.root = -Styles.glslCodePaper }
-                    attrs.elevation = 3
+                Tabs {
+                    attrs.value = selectedTabIndex
+                    attrs.onChange = { _, value ->
+                        selectedTabIndex = value
+                    }
 
-                    typographyH6 { +"Directed Acyclic Graph, ish. One day." }
-
-                    div(+Styles.glslCodeDiv) {
-                        if (renderPlans == null) {
-                            i { +"No plans!" }
-                        } else {
-                            val plans = renderPlans.entries.toList()
-
-                            Tabs {
-                                attrs.value = selectedTabIndex
-                                attrs.onChange = { _, value ->
-                                    selectedTabIndex = value
-                                }
-
-                                plans.forEachIndexed { index, (fixtureType, fixtureTypeRenderPlans) ->
-                                    fixtureTypeRenderPlans.forEach { programRenderPlan ->
-                                        Tab {
-                                            attrs.value = index
-                                            attrs.label =
-                                                "${fixtureType.title}: ${programRenderPlan.renderTargets.size} fixtures".asTextNode()
-                                        }
-                                    }
-                                }
-                            }
-
-                            val (_, renderPlan) = plans[selectedTabIndex]
-                            renderPlan.programs.forEach { programRenderPlan ->
-                                val program = programRenderPlan.program as? GlslProgramImpl
-                                val linkedProgram = program?.linkedProgram
-                                if (linkedProgram != null) {
-                                    pre {
-                                        inlineStyles {
-                                            userSelect = UserSelect.all
-                                        }
-                                        dag {
-                                            attrs.rootNode = linkedProgram.rootNode
-                                        }
-
-                                        +DotDag(linkedProgram.rootNode).text
-                                    }
-
-                                    describe(linkedProgram.rootNode)
-                                }
+                    plans.forEachIndexed { index, (fixtureType, fixtureTypeRenderPlans) ->
+                        fixtureTypeRenderPlans.forEach { programRenderPlan ->
+                            Tab {
+                                attrs.value = index
+                                attrs.label =
+                                    "${fixtureType.title}: ${programRenderPlan.renderTargets.size} fixtures".asTextNode()
                             }
                         }
+                    }
+                }
+
+                val (_, renderPlan) = plans[selectedTabIndex]
+                renderPlan.programs.forEach { programRenderPlan ->
+                    val program = programRenderPlan.program as? GlslProgramImpl
+                    val linkedProgram = program?.linkedProgram
+                    if (linkedProgram != null) {
+                        pre {
+                            inlineStyles {
+                                userSelect = UserSelect.all
+                            }
+                            dag {
+                                attrs.rootNode = linkedProgram.rootNode
+                            }
+
+                            +DotDag(linkedProgram.rootNode).text
+                        }
+
+                        describe(linkedProgram.rootNode)
                     }
                 }
             }
