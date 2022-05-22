@@ -46,12 +46,13 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             attrs.displayEmpty = true
             attrs.margin = InputBaseMargin.dense
             attrs.size = Size.small
-            attrs.value = props.values.indexOf(props.value).also {
+            attrs.value = props.values.indexOf(props.value).let {
                 if (it == -1) {
                     fun Any.render() = props.renderValueOption?.invoke(this) ?: this.toString()
-                    error("Value ${props.value?.render() ?: "null"} not found " +
-                            "in [${props.values.map { it?.render() ?: "null" }.joinToString(", ")}]")
-                }
+                    this@xComponent.logger.error { ("Value ${props.value?.render() ?: "null"} not found " +
+                            "in [${props.values.map { it?.render() ?: "null" }.joinToString(", ")}]") }
+                    null
+                } else it
             }
             attrs.renderValue = renderSelected
             attrs.onChange = handleChange

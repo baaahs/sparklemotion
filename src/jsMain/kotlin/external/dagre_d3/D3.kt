@@ -1,5 +1,11 @@
-@file:JsModule("d3")
-
 package external.dagre_d3
 
-external fun select(arg: dynamic): dynamic
+@JsModule("d3")
+external val d3: D3
+
+external class D3 {
+    val event: dynamic
+
+    fun select(arg: dynamic): dynamic
+    fun zoom(): dynamic
+}

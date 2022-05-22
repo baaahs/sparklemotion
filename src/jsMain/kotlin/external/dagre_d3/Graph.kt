@@ -5,7 +5,8 @@ package external.dagre_d3
 
 //external val dagreD3: DagreD3
 
-external class Graph {
+external class Graph(options: dynamic) {
+    fun graph(): dynamic
     fun setGraph(graph: dynamic): Graph
     fun setNode(id: dynamic, options: GraphOptions): Graph
     fun setEdge(fromId: dynamic, toId: dynamic, options: GraphOptions): Graph
