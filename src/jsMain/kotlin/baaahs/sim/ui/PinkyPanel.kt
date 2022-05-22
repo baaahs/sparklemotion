@@ -81,12 +81,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
 
 object Styles : StyleSheet("sim-pinky", isStatic = true) {
     val glslCodeSheet by css {
-        position = Position.fixed
-        left = 5.em
-        bottom = 5.em
-        zIndex = 100
-        maxHeight = 50.vh
-        maxWidth = 50.em
         display = Display.flex
         flexDirection = FlexDirection.column
 
@@ -111,27 +105,11 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
         flexDirection = FlexDirection.column
     }
 
-    val glslCodeDiv by css {
-        maxHeight = 50.vh
-        maxWidth = 50.em
+    val glslContentDiv by css {
         overflow = Overflow.scroll
-
-        th {
-            nthChild("even") {
-                background = "#530"
-            }
-            nthChild("odd") {
-                background = "#035"
-            }
-        }
-
-        td {
-            border = "2px dashed orange"
-        }
     }
 
     val box by css {
-//        border = "2px dashed orange"
     }
 }
 

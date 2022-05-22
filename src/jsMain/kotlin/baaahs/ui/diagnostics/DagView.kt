@@ -1,10 +1,12 @@
 package baaahs.ui.diagnostics
 
+import baaahs.app.ui.appContext
 import baaahs.gl.patch.DefaultValueNode
 import baaahs.gl.patch.ExprNode
 import baaahs.gl.patch.ProgramNode
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
+import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.dagre_d3.Graph
 import external.dagre_d3.render
@@ -17,8 +19,12 @@ import react.RBuilder
 import react.RHandler
 import react.dom.svg
 import react.dom.svg.ReactSVG.g
+import react.useContext
 
 private val DagView = xComponent<DagProps>("Dag") { props ->
+    val appContext = useContext(appContext)
+    val style = appContext.allStyles.uiComponents
+
     val svgRef = ref<SVGGElement>()
     val gRef = ref<SVGGElement>()
 
@@ -39,9 +45,13 @@ private val DagView = xComponent<DagProps>("Dag") { props ->
             // Run the renderer. This is what draws the final graph.
             renderer(svgGroup, g)
             val graphHuh = (g.asDynamic()).graph()
-            svgRef.current!!.style.width = graphHuh.width + "px"
-            svgRef.current!!.style.height = graphHuh.height + "px"
+            val svgEl = svgRef.current!!
+            svgEl.style.width = graphHuh.width + "px"
+            svgEl.style.height = graphHuh.height + "px"
 
+            val xCenterOffset = (svgEl.clientWidth - g.asDynamic().graph().width as Int) / 2;
+            gEl.style.transform = "translate($xCenterOffset, 20)"
+            svgEl.style.height = "${g.asDynamic().graph().height as Int + 40}px"
             // Center the graph
 //            val xCenterOffset: Unit = (svg.attr("width") - g.graph().width) / 2
 //            svgGroup.attr("transform", "translate($xCenterOffset, 20)")
@@ -49,7 +59,7 @@ private val DagView = xComponent<DagProps>("Dag") { props ->
         }
     }
 
-    svg {
+    svg(+style.dagSvg) {
         ref = svgRef
         g {
             ref = gRef
@@ -79,27 +89,28 @@ class Dag(rootNode: ProgramNode) {
     fun declareLink(fromId: String, toId: String, label: String) {
         graph.setEdge(fromId, toId, jso {
             this.label = label
+            this.style = "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;"
         })
     }
 
     fun visit(node: OpenPatch.DataSourceLink) =
         nodes.getOrPut(node) {
             "DS${nextNode++}".also {
-                declareNode(it, node.title, "rect")
+                declareNode(it, node.title, "rect", "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;")
             }
         }
 
     fun visit(node: DefaultValueNode) =
         nodes.getOrPut(node) {
             "V${nextNode++}".also {
-                declareNode(it, node.getExpression("pfx").s, "ellipse")
+                declareNode(it, node.getExpression("pfx").s, "ellipse", "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;")
             }
         }
 
     fun visit(node: ExprNode) =
         nodes.getOrPut(node) {
             "E${nextNode++}".also {
-                declareNode(it, node.getExpression("pfx").s, "ellipse")
+                declareNode(it, node.getExpression("pfx").s, "ellipse", "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;")
             }
         }
 

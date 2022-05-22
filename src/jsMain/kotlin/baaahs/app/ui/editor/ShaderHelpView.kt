@@ -133,6 +133,13 @@ class ShaderHelpStyles(
                 marginLeft = LinearDimension.auto
                 textAlign = TextAlign.right
             }
+
+            nthChild("even") {
+                background = theme.palette.info.main.asColor()
+                    .withAlpha(.1)
+                    .blend(Color(theme.palette.background.paper))
+                    .value
+            }
         }
     }
 
