@@ -84,16 +84,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         bottom = .5.em
     }
 
-    val dagAffordance by css {
-        position = Position.absolute
-        padding(2.px)
-        backgroundColor = Color.white.withAlpha(.5)
-        width = 2.em
-        height = 2.em
-        right = 3.em
-        bottom = .5.em
-    }
-
     val dragHandle by css {
         display = Display.none
         transition(::display, duration = 0.s)
