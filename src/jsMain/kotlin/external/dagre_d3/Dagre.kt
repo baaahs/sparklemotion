@@ -1,6 +1,9 @@
-@file:JsModule("dagre-d3")
-
 package external.dagre_d3
 
-external fun render()
-external fun layout(graph: Graph)
+@JsModule("dagre-d3")
+external val dagreD3: DagreD3
+
+external class DagreD3 {
+    fun render(): Renderer
+    fun layout(graph: Graph)
+}

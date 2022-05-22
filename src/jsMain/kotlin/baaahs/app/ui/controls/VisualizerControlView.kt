@@ -5,8 +5,7 @@ import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
-import baaahs.ui.diagnostics.dagPalette
-import baaahs.ui.diagnostics.generatedGlslPalette
+import baaahs.ui.diagnostics.diagnosticsPalette
 import baaahs.util.useResizeListener
 import kotlinx.html.js.onClickFunction
 import kotlinx.js.jso
@@ -58,17 +57,15 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
     val showMenu = callback { event: Event -> menuAnchor = event.target as Element? }
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
-    var showGlsl by state { false }
-    val handleToggleShowGlsl by handler { showGlsl = !showGlsl; menuAnchor = null }
-    var showDag by state { false }
-    val handleToggleShowDag by handler { showDag = !showDag; menuAnchor = null }
+    var showDiagnostics by state { false }
+    val handleToggleShowDiagnostics by handler { showDiagnostics = !showDiagnostics; menuAnchor = null }
 
     Card {
         ref = rootEl
         attrs.classes = jso { this.root = -Styles.visualizerCard }
 
         div(+Styles.dagAffordance) {
-            attrs.onClickFunction = handleToggleShowDag.withEvent()
+            attrs.onClickFunction = handleToggleShowDiagnostics.withEvent()
             icon(Settings)
         }
         div(+Styles.visualizerMenuAffordance) {
@@ -92,27 +89,15 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
             attrs.onClose = hideMenu
 
             MenuItem {
-                attrs.onClick = handleToggleShowDag.withMouseEvent()
-                Checkbox { attrs.checked = showDag }
-                ListItemText { +if (showGlsl) "Hide DAG" else "Show DAG" }
-            }
-
-            MenuItem {
-                attrs.onClick = handleToggleShowGlsl.withMouseEvent()
-                Checkbox { attrs.checked = showGlsl }
-                ListItemText { +if (showGlsl) "Hide GLSL" else "Show GLSL" }
+                attrs.onClick = handleToggleShowDiagnostics.withMouseEvent()
+                Checkbox { attrs.checked = showDiagnostics }
+                ListItemText { +if (showDiagnostics) "Hide Diagnostics" else "Show Diagnostics" }
             }
         }
     }
 
-    if (showGlsl && clientPreview != null) {
-        generatedGlslPalette {
-            attrs.renderPlanMonitor = clientPreview.renderPlanMonitor
-        }
-    }
-
-    if (showDag && clientPreview != null) {
-        dagPalette {
+    if (showDiagnostics && clientPreview != null) {
+        diagnosticsPalette {
             attrs.renderPlanMonitor = clientPreview.renderPlanMonitor
         }
     }
