@@ -44,6 +44,7 @@ class ClientPreview(
         get() = (document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 15f
 
     val visualizer: Visualizer.Facade get() = theVisualizer.facade
+    val renderPlanMonitor get() = fixtureManager.facade.renderPlanMonitor
 
     init {
         val pixelArranger = SwirlyPixelArranger(0.2f, 3f)
