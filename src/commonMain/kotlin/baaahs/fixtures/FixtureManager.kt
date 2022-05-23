@@ -10,6 +10,7 @@ import baaahs.show.live.ActivePatchSet
 import baaahs.sm.server.FrameListener
 import baaahs.timeSync
 import baaahs.util.Logger
+import baaahs.util.Monitor
 import baaahs.visualizer.remote.RemoteVisualizerServer
 import baaahs.visualizer.remote.RemoteVisualizers
 
@@ -34,6 +35,7 @@ interface FixtureManager : FixtureListener {
 class FixtureManagerImpl(
     private val renderManager: RenderManager,
     private val plugins: Plugins,
+    private val renderPlanMonitor: Monitor<RenderPlan?> = Monitor(null),
     initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
 ) : FixtureManager {
     override val facade = Facade()
@@ -130,6 +132,7 @@ class FixtureManagerImpl(
             val elapsedMs = timeSync {
                 currentRenderPlan = activePatchSet.createRenderPlan(renderManager, renderTargets.values)
             }
+            renderPlanMonitor.onChange(currentRenderPlan)
 
             logger.info {
                 "New render plan created: ${currentRenderPlan?.describe() ?: "none!"}; took ${elapsedMs}ms"
@@ -174,6 +177,8 @@ class FixtureManagerImpl(
             get() = this@FixtureManagerImpl.getFixtureCount()
         val pixelCount: Int
             get() = this@FixtureManagerImpl.renderTargets.values.sumOf { it.pixelCount }
+        val renderPlanMonitor: Monitor<RenderPlan?>
+            get() = this@FixtureManagerImpl.renderPlanMonitor
         val currentRenderPlan: RenderPlan?
             get() = this@FixtureManagerImpl.currentRenderPlan
     }

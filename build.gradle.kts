@@ -168,6 +168,9 @@ kotlin {
 
                 implementation(npm("long-press-event", "^2.4.4"))
 
+                // For diagnostics:
+                implementation(npm("dagre-d3", "^0.6.4"))
+
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
                 // <react-beautiful-dnd bug workaround>

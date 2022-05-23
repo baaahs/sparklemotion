@@ -11,6 +11,7 @@ import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.*
+import baaahs.ui.components.UiComponentStyles
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.js.Object
@@ -34,6 +35,7 @@ class AllStyles(val theme: Theme) {
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val shaderHelp by lazy { ShaderHelpStyles(theme) }
+    val uiComponents by lazy { UiComponentStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)
