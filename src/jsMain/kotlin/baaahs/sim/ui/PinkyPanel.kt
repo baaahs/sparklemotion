@@ -105,7 +105,7 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
         flexDirection = FlexDirection.column
     }
 
-    val glslContentDiv by css {
+    val contentDiv by css {
         overflow = Overflow.scroll
     }
 

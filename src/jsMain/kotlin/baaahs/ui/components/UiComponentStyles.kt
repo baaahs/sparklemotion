@@ -47,6 +47,7 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
     }
 
     val paper by css {
+        flexGrow = 1.0
         display = Display.flex
         flexDirection = FlexDirection.column
         overflow = Overflow.hidden
@@ -63,6 +64,7 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
     val code by css {
         whiteSpace = WhiteSpace.preWrap
         userSelect = UserSelect.all
+        margin = "0"
 
         // Line numbers:
         before {
@@ -72,6 +74,7 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
         code {
             display = Display.block
             declarations["counterIncrement"] = "listing"
+            whiteSpace = WhiteSpace.pre
 
             before {
                 declarations["content"] = "counter(listing) \". \""
@@ -89,6 +92,8 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
     }
 
     val dagSvg by css {
+        flexGrow = 1.0
         backgroundColor = Color.whiteSmoke
+        height = 100.vh // So we occupy some space in a Flex layout.
     }
 }

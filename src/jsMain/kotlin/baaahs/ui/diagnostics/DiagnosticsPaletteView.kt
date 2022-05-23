@@ -1,6 +1,5 @@
 package baaahs.ui.diagnostics
 
-import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.device.FixtureType
 import baaahs.fixtures.ProgramRenderPlan
@@ -17,11 +16,8 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.i
-import react.useContext
 
 val DiagnosticsPaletteView = xComponent<DiagnosticsPaletteProps>("DiagnosticsPalette") { props ->
-    val appContext = useContext(appContext)
-
     observe(props.renderPlanMonitor)
 
     val renderPlans = props.renderPlanMonitor.value
@@ -77,10 +73,6 @@ val DiagnosticsPaletteView = xComponent<DiagnosticsPaletteProps>("DiagnosticsPal
                 }
             }
         }
-//        div(+Styles.glslCodeSheet) {
-//            Paper {
-//            }
-//        }
     }
 }
 
