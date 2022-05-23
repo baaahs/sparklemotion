@@ -19,7 +19,7 @@ private val GlslView = xComponent<GlslProps>("Glsl") { props ->
     val styles = appContext.allStyles.uiComponents
 
     val program = props.program
-    div(+Styles.glslContentDiv and styles.codeContainer) {
+    div(+Styles.contentDiv and styles.codeContainer) {
         pre(+styles.code) {
             program.fragShader.source
                 .let { glsl ->

@@ -5,19 +5,17 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import baaahs.util.globalLaunch
 import external.dagre_d3.d3
 import external.dagre_d3.dagreD3
-import kotlinx.css.UserSelect
-import kotlinx.css.userSelect
 import org.w3c.dom.svg.SVGGElement
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.pre
 import react.dom.svg
 import react.dom.svg.ReactSVG.g
 import react.useContext
-import styled.inlineStyles
+import kotlin.math.min
 
 private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -26,70 +24,65 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     val svgRef = ref<SVGGElement>()
     val gRef = ref<SVGGElement>()
 
-    val program = props.program as? GlslProgramImpl
-    val linkedProgram = program?.linkedProgram
+    val dagGraph = memo(props.program) {
+        val program = props.program as? GlslProgramImpl
+        val linkedProgram = program?.linkedProgram
+        val dag = linkedProgram?.let { Dag().apply { visit(it) } }
+        dag?.graph
+    }
 
-    onMount(gRef.current) {
-        gRef.current?.let { gEl ->
-            val svg = d3.select(svgRef.current!!)
-            val g = d3.select(gEl)
+    val zoom = memo {
+        d3.zoom()
+            .scaleExtent(arrayOf(1/3, 3))
+    }
+    onMount {
+        val d3Svg = d3.select(svgRef.current!!)
+        val d3G = d3.select(gRef.current!!)
 
-            val zoom = d3.zoom().on("zoom") {
-                g.attr("transform", d3.event.transform);
+        zoom.on("zoom") {
+            d3G.attr("transform", d3.event.transform)
+        }
+
+        d3Svg.call(zoom)
+    }
+
+    val zoomToFit by handler(dagGraph) {
+        val gEl = gRef.current!!
+        val svgEl = svgRef.current!!
+        console.log("svg width=${svgEl.clientWidth} height=${svgEl.clientHeight}")
+        val graph = dagGraph!!.graph()
+        val xScale = svgEl.clientWidth / (graph.width as Double)
+        val yScale = svgEl.clientHeight / (graph.height as Double)
+
+        val transform = d3.zoomIdentity.scale(min(xScale, yScale))
+        d3.select(gEl).transition().duration(750)
+            .call(zoom.transform, transform)
+    }
+
+    onMount(dagGraph, zoomToFit) {
+        val gEl = gRef.current!!
+        if (dagGraph != null) {
+            // Set up an SVG group so that we can translate the final graph.
+            val d3G = d3.select(gEl)
+
+            dagGraph.graph().transition = { selection: dynamic ->
+                selection.transition().duration(500)
             }
-            svg.call(zoom)
+
+            // Run the renderer. This is what draws the final graph.
+            dagreD3.render()(d3G, dagGraph)
+
+            globalLaunch {
+                zoomToFit()
+            }
         }
     }
 
-    onMount(gRef.current, linkedProgram) {
-        gRef.current?.let { gEl ->
-//            gEl.clear()
 
-            if (linkedProgram != null) {
-                val dag = Dag()
-                dag.visit(linkedProgram)
-                val g = dag.graph
-
-                // Set up an SVG group so that we can translate the final graph.
-//            val svgEl = select(gEl)
-                val svgGroup = d3.select(gEl)
-
-                g.graph().transition = { selection: dynamic ->
-                    selection.transition().duration(500)
-                }
-
-                // Run the renderer. This is what draws the final graph.
-                dagreD3.render()(svgGroup, g)
-
-                val graphHuh = g.graph()
-                val svgEl = svgRef.current!!
-                svgEl.style.width = graphHuh.width + "px"
-                svgEl.style.height = graphHuh.height + "px"
-
-                // Center the graph
-                val xCenterOffset = (svgEl.clientWidth - g.asDynamic().graph().width as Int) / 2;
-                gEl.style.transform = "translate($xCenterOffset, 20)"
-                svgEl.style.height = "${g.asDynamic().graph().height as Int + 40}px"
-            }
-        }
-    }
-
-    if (linkedProgram != null) {
-        pre {
-            inlineStyles {
-                userSelect = UserSelect.all
-            }
-
-//            +DotDag(linkedProgram.rootNode).text
-        }
-
-//        describe(linkedProgram.rootNode)
-
-        svg(+style.dagSvg) {
-            ref = svgRef
-            g {
-                ref = gRef
-            }
+    svg(+style.dagSvg) {
+        ref = svgRef
+        g {
+            ref = gRef
         }
     }
 }

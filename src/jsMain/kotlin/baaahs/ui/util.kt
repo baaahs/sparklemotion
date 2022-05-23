@@ -91,8 +91,12 @@ operator fun RuleSet.unaryPlus(): String = name
 operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
 operator fun SvgIconComponent.unaryPlus(): ReactElement<SvgIconProps> = create()
 val String.className: ClassName get() = ClassName(this)
-infix fun String.and(ruleSet: RuleSet?): String = if (ruleSet == null) this else this + " " + ruleSet.name
-infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
+infix fun String.and(ruleSet: RuleSet?): String =
+    if (ruleSet == null) this else this + " " + ruleSet.name
+infix fun ClassName.and(ruleSet: RuleSet): ClassName =
+    ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
+infix fun ClassName.and(className: String?): ClassName =
+    if (className == null) this else ClassName(this.unsafeCast<String>() + " " + className)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }

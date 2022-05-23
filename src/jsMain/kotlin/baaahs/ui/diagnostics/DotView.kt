@@ -3,45 +3,32 @@ package baaahs.ui.diagnostics
 import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
+import baaahs.sim.ui.Styles
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.css.UserSelect
-import kotlinx.css.userSelect
-import org.w3c.dom.svg.SVGGElement
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.code
+import react.dom.div
 import react.dom.pre
-import react.dom.svg
-import react.dom.svg.ReactSVG.g
 import react.useContext
-import styled.inlineStyles
 
 private val DotView = xComponent<DotProps>("Dot", isPure = true) { props ->
     val appContext = useContext(appContext)
-    val style = appContext.allStyles.uiComponents
-
-    val svgRef = ref<SVGGElement>()
-    val gRef = ref<SVGGElement>()
+    val styles = appContext.allStyles.uiComponents
 
     val program = props.program as? GlslProgramImpl
     val linkedProgram = program?.linkedProgram
 
     if (linkedProgram != null) {
-        pre {
-            inlineStyles {
-                userSelect = UserSelect.all
-            }
-
-            +Dag().apply { visit(linkedProgram) }.text
-        }
-
-//        describe(linkedProgram.rootNode)
-
-        svg(+style.dagSvg) {
-            ref = svgRef
-            g {
-                ref = gRef
+        div(+Styles.contentDiv and styles.codeContainer) {
+            pre(+styles.code) {
+                Dag().apply { visit(linkedProgram) }.text
+                    .split("\n").forEach { line ->
+                        code { +"    "; +line; +"\n" }
+                    }
             }
         }
     }
