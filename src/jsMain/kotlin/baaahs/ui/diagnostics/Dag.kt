@@ -1,5 +1,6 @@
 package baaahs.ui.diagnostics
 
+import baaahs.device.FixtureType
 import baaahs.gl.patch.DefaultValueNode
 import baaahs.gl.patch.ExprNode
 import baaahs.gl.patch.ProgramNode
@@ -36,7 +37,18 @@ class Dag : ProgramVisitor() {
             this.label = label
             this.style = "fill: none; stroke: #66f; stroke-width: 3px; stroke-dasharray: 5, 5;"
         })
-        buf.append("    $fromId -> $toId [style=\"fill: none; stroke: #66f; stroke-width: 3px; stroke-dasharray: 5, 5;\"];\n")
+        buf.append("    $fromId -> $toId [style=\"fill: none; stroke: #66f; stroke-width: 3px;\"];\n")
+    }
+
+    override fun visitFixtureType(fixtureType: FixtureType) {
+        nodes.getOrPut(fixtureType) {
+            "FT${fixtureType.id}".also {
+                declareNode(
+                    it, fixtureType.title, "rect",
+                    "fill: #afa; stroke: #060; stroke-width: 3px;"
+                )
+            }
+        }
     }
 
     override fun visitDataSource(node: OpenPatch.DataSourceLink) {
@@ -64,7 +76,10 @@ class Dag : ProgramVisitor() {
     override fun visitExpr(node: ExprNode) {
         nodes.getOrPut(node) {
             "E${nextNode++}".also {
-                declareNode(it, node.getExpression("pfx").s, "ellipse", "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;")
+                declareNode(
+                    it, node.getExpression("pfx").s, "ellipse",
+                    "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;"
+                )
             }
         }
     }
@@ -79,5 +94,9 @@ class Dag : ProgramVisitor() {
 
     override fun visitLink(fromNode: ProgramNode, inputPort: InputPort, toNode: ProgramNode) {
         declareLink(nodes[fromNode]!!, nodes[toNode]!!, inputPort.title)
+    }
+
+    override fun visitLink(fromNode: ProgramNode, toNode: FixtureType) {
+        declareLink(nodes[fromNode]!!, nodes[toNode]!!, toNode.resultContentType.title)
     }
 }
