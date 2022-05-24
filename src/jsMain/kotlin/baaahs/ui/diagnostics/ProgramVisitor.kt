@@ -1,5 +1,6 @@
 package baaahs.ui.diagnostics
 
+import baaahs.device.FixtureType
 import baaahs.gl.patch.DefaultValueNode
 import baaahs.gl.patch.ExprNode
 import baaahs.gl.patch.LinkedProgram
@@ -8,14 +9,16 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
 
-open class ProgramVisitor {
-    open fun visitDataSource(node: OpenPatch.DataSourceLink) {}
+abstract class ProgramVisitor {
+    abstract fun visitFixtureType(fixtureType: FixtureType)
 
-    open fun visitDefault(node: DefaultValueNode) {}
+    abstract fun visitDataSource(node: OpenPatch.DataSourceLink)
 
-    open fun visitExpr(node: ExprNode) {}
+    abstract fun visitDefault(node: DefaultValueNode)
 
-    open fun visitPatchInternal(node: LinkedPatch) {
+    abstract fun visitExpr(node: ExprNode)
+
+    private fun visitPatchInternal(node: LinkedPatch) {
         visitPatch(node)
 
         node.incomingLinks.forEach { (linkId, toNode) ->
@@ -26,9 +29,11 @@ open class ProgramVisitor {
         }
     }
 
-    open fun visitPatch(node: LinkedPatch) {}
+    abstract fun visitPatch(node: LinkedPatch)
 
-    open fun visitLink(fromNode: ProgramNode, inputPort: InputPort, toNode: ProgramNode) {}
+    abstract fun visitLink(fromNode: ProgramNode, inputPort: InputPort, toNode: ProgramNode)
+
+    abstract fun visitLink(fromNode: ProgramNode, toNode: FixtureType)
 
     open fun visitNode(node: ProgramNode) =
         when (node) {
@@ -39,7 +44,9 @@ open class ProgramVisitor {
             else -> error("Huh? Unknown node type ${node::class}")
         }
 
-    open fun visit(program: LinkedProgram) {
+    open fun visit(fixtureType: FixtureType, program: LinkedProgram) {
+        visitFixtureType(fixtureType)
         visitNode(program.rootNode)
+        visitLink(program.rootNode, fixtureType)
     }
 }

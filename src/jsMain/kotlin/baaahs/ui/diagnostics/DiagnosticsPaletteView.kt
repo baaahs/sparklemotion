@@ -64,9 +64,18 @@ val DiagnosticsPaletteView = xComponent<DiagnosticsPaletteProps>("DiagnosticsPal
                 val program = subject.programRenderPlan.program
                 if (program != null) {
                     when (selectedDiagnostic) {
-                        "DAG" -> dag { attrs.program = program }
-                        "GLSL" -> glsl { attrs.program = program }
-                        "DOT" -> dot { attrs.program = program }
+                        "DAG" -> dag {
+                            attrs.fixtureType = subject.fixtureType
+                            attrs.program = program
+                        }
+                        "GLSL" -> glsl {
+                            attrs.fixtureType = subject.fixtureType
+                            attrs.program = program
+                        }
+                        "DOT" -> dot {
+                            attrs.fixtureType = subject.fixtureType
+                            attrs.program = program
+                        }
                     }
                 } else {
                     i { +"No program!" }
