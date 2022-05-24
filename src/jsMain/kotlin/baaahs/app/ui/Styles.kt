@@ -173,6 +173,19 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
 
+    val appToolbarTabs by css {
+        grow(Grow.GROW)
+    }
+
+    val appToolbarTab by css {
+        flex(1.0, 0.0, FlexBasis.zero)
+        flexDirection = FlexDirection.row
+    }
+
+    val appToolbarTabSelected by css {
+        important(::color, theme.palette.text.primary.asColor())
+    }
+
     val appToolbarActions by css {
         display = Display.flex
     }
