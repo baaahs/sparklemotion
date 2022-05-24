@@ -100,6 +100,8 @@ class OpenButtonControl(
         get() = switch.enabled
         set(value) { switch.enabled = value }
 
+    val expandsOnLongPress: Boolean get() = type != ButtonControl.ActivationType.Momentary
+
     override fun isActive(): Boolean = isPressed
 
     override fun getState(): Map<String, JsonElement> = switch.state
