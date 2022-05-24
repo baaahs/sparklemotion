@@ -225,6 +225,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.appMode = appMode
                         attrs.documentManager = documentManager
                         attrs.onMenuButtonClick = handleAppDrawerToggle
+                        attrs.onAppModeChange = handleAppModeChange
                     }
 
                     div(+themeStyles.appContent) {
