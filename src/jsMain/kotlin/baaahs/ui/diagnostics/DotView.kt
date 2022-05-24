@@ -1,6 +1,7 @@
 package baaahs.ui.diagnostics
 
 import baaahs.app.ui.appContext
+import baaahs.device.FixtureType
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.sim.ui.Styles
@@ -25,7 +26,7 @@ private val DotView = xComponent<DotProps>("Dot", isPure = true) { props ->
     if (linkedProgram != null) {
         div(+Styles.contentDiv and styles.codeContainer) {
             pre(+styles.code) {
-                Dag().apply { visit(linkedProgram) }.text
+                Dag().apply { visit(props.fixtureType, linkedProgram) }.text
                     .split("\n").forEach { line ->
                         code { +"    "; +line; +"\n" }
                     }
@@ -35,7 +36,7 @@ private val DotView = xComponent<DotProps>("Dot", isPure = true) { props ->
 }
 
 external interface DotProps : Props {
-    var dot: Boolean?
+    var fixtureType: FixtureType
     var program: GlslProgram
 }
 

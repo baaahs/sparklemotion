@@ -1,6 +1,7 @@
 package baaahs.ui.diagnostics
 
 import baaahs.app.ui.appContext
+import baaahs.device.FixtureType
 import baaahs.gl.glsl.GlslProgram
 import baaahs.sim.ui.Styles
 import baaahs.ui.and
@@ -32,6 +33,7 @@ private val GlslView = xComponent<GlslProps>("Glsl") { props ->
 }
 
 external interface GlslProps : Props {
+    var fixtureType: FixtureType
     var program: GlslProgram
 }
 
