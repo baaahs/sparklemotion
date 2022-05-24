@@ -1,6 +1,5 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.problemBadge
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.client.document.DocumentManager
@@ -13,20 +12,18 @@ import kotlinx.css.pointerEvents
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.unsafe
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.*
+import mui.icons.material.Menu
 import mui.material.*
 import mui.material.Link
+import mui.material.Tab
 import org.w3c.dom.events.Event
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.dom.*
+import react.*
+import react.dom.div
+import react.dom.h4
 import react.dom.html.ReactHTML
-import react.useContext
 import styled.inlineStyles
 
 val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
@@ -64,8 +61,12 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         }
     }
 
+    val handleAppModeTabClick by syntheticEventHandler<AppMode>(props.onAppModeChange) { _, value ->
+        props.onAppModeChange(value)
+    }
+
     val show = showManager.openShow
-    val showProblemsSeverity = showManager.showProblems.map { it.severity }.maxOrNull()
+    val showProblemsSeverity = showManager.showProblems.maxOfOrNull { it.severity }
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
@@ -86,62 +87,46 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 attrs.color = IconButtonColor.inherit
                 attrs.edge = IconButtonEdge.start
                 attrs.onClick = props.onMenuButtonClick.withMouseEvent()
-                icon(mui.icons.material.Menu)
+                icon(Menu)
             }
 
-            typographyH6 {
-                attrs.classes = jso { this.root = -themeStyles.title }
-                div(+themeStyles.titleHeader) { +"Show:" }
+            Tabs {
+                attrs.classes = jso { this.root = -themeStyles.appToolbarTabs }
+                attrs.value = props.appMode
+                attrs.onChange = handleAppModeTabClick
 
-                if (show != null) {
-                    showManager.file?.let {
-                        div(+themeStyles.titleFooter) {
-                            icon(Save)
-                            span { attrs.unsafe { +"&nbsp;" } }
-                            +it.toString()
+                val tabClasses = jso<TabClasses> {
+                    this.root = -themeStyles.appToolbarTab
+                    this.selected = -themeStyles.appToolbarTabSelected
+                }
+                Tab {
+                    attrs.classes = tabClasses
+                    attrs.value = AppMode.Show
+                    attrs.label = buildElement {
+                        appToolbarTab {
+                            attrs.currentAppMode = props.appMode
+                            attrs.value = AppMode.Show
+                            attrs.document = show
+                            attrs.documentManager = showManager
+                            attrs.onEditButtonClick = handleShowEditButtonClick
                         }
                     }
-                    b { +show.title }
-                    if (showManager.isUnsaved) i { +" (Unsaved)" }
-                    problemBadge(show, themeStyles.problemBadge)
-
-                    if (props.appMode == AppMode.Show) {
-                        span(+themeStyles.editButton) {
-                            icon(Edit)
-                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                }
+                Tab {
+                    attrs.classes = tabClasses
+                    attrs.value = AppMode.Scene
+                    attrs.label = buildElement {
+                        appToolbarTab {
+                            attrs.currentAppMode = props.appMode
+                            attrs.value = AppMode.Scene
+                            attrs.document = sceneManager.openScene
+                            attrs.documentManager = sceneManager
+                            attrs.onEditButtonClick = handleSceneEditButtonClick
                         }
                     }
-                } else {
-                    i { +"None" }
                 }
             }
 
-            typographyH6 {
-                attrs.classes = jso { this.root = -themeStyles.title }
-
-                div(+themeStyles.titleHeader) { +"Scene:" }
-
-                if (scene != null) {
-                    sceneManager.file?.let {
-                        div(+themeStyles.titleFooter) {
-                            icon(Save)
-                            span { attrs.unsafe { +"&nbsp;" } }
-                            +it.toString()
-                        }
-                    }
-                    b { +scene.title }
-                    if (sceneManager.isUnsaved) i { +" (Unsaved)" }
-
-                    if (props.appMode == AppMode.Scene) {
-                        span(+themeStyles.editButton) {
-                            icon(Edit)
-                            attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
-                        }
-                    }
-                } else {
-                    i { +"None" }
-                }
-            }
 
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
@@ -270,6 +255,7 @@ external interface AppToolbarProps : Props {
     var appMode: AppMode
     var documentManager: DocumentManager<*, *>.Facade
     var onMenuButtonClick: () -> Unit
+    var onAppModeChange: (AppMode) -> Unit
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =

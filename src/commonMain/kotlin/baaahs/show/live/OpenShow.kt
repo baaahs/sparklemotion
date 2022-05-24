@@ -5,6 +5,7 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.editor.GridLayoutEditorPanel
+import baaahs.client.document.OpenDocument
 import baaahs.control.OpenButtonControl
 import baaahs.getBang
 import baaahs.randomId
@@ -52,7 +53,7 @@ class OpenShow(
     private val showPlayer: ShowPlayer,
     private val openContext: OpenContext,
     internal val implicitControls: List<OpenControl>,
-) : OpenPatchHolder(show, openContext), RefCounted by RefCounter() {
+) : OpenPatchHolder(show, openContext), RefCounted by RefCounter(), OpenDocument {
     val id = randomId("show")
     val layouts get() = show.layouts
     val openLayouts = show.layouts.open(openContext)
