@@ -5,6 +5,7 @@ import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.geom.toThreeEuler
 import baaahs.imaging.*
 import baaahs.model.Model
 import baaahs.net.Network
@@ -318,22 +319,21 @@ class JsMapper(
         entitiesByName.clear()
         entityDepictions.clear()
 
-        model.allEntities
-            .groupBy { (it as? Model.EntityWithGeometry)?.geometry }
-            .forEach { (geometry, entities) ->
-                val vertices = geometry?.vertices
-                    ?.map { v -> Vector3(v.x, v.y, v.z) }
-                    ?.toTypedArray()
+        val geometries = mutableMapOf<Model.Geometry, Array<Vector3>>()
 
-                entities.forEach { entity ->
-                    entitiesByName[entity.name] = entity
+        model.visit { entity ->
+            entitiesByName[entity.name] = entity
 
-                    // TODO: Add wireframe depiction for other entity types.
-                    if (entity is Model.Surface) {
-                        entityDepictions[entity] = createEntityDepiction(entity, vertices)
-                    }
+            // TODO: Add wireframe depiction for other entity types.
+            if (entity is Model.Surface) {
+                val vertices = geometries.getOrPut(entity.geometry) {
+                    entity.geometry.vertices
+                        .map { v -> Vector3(v.x, v.y, v.z) }
+                        .toTypedArray()
                 }
+                entityDepictions[entity] = createEntityDepiction(entity, vertices)
             }
+        }
 
         uiScene.add(wireframe)
 
@@ -346,10 +346,9 @@ class JsMapper(
         uiControls.fitToBox(boundingBox, false)
     }
 
-    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>?): PanelInfo {
+    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>): PanelInfo {
         val surface = entity
 
-        if (vertices == null) error("No vertices for surface ${entity.name}!")
         val geom = Geometry()
         geom.vertices = vertices
 
@@ -368,7 +367,8 @@ class JsMapper(
 
         val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
         val mesh = Mesh(geom, panelMaterial)
-        mesh.asDynamic().name = surface.name
+        entity.transform(mesh)
+        mesh.name = surface.name
         uiScene.add(mesh)
 
         val lineMaterial = LineBasicMaterial().apply {
@@ -382,7 +382,11 @@ class JsMapper(
             lineGeom.setFromPoints(line.vertices.map { pt ->
                 pt.toVector3() + surfaceNormal
             }.toTypedArray())
-            wireframe.add(Line(lineGeom, lineMaterial))
+            wireframe.add(
+                Line(lineGeom, lineMaterial).apply {
+                    entity.transform(this)
+                }
+            )
         }
 
         geom.faces = panelFaces.toTypedArray()
@@ -972,6 +976,12 @@ class JsMapper(
         val normalColor = Color(0, 0, 1)
         val selectedColor = Color(1, 1, 0)
     }
+}
+
+private fun Model.Entity.transform(obj: Object3D) {
+    obj.position.copy(position.toVector3())
+    obj.rotation.copy(rotation.toThreeEuler())
+    obj.scale.copy(scale.toVector3())
 }
 
 private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
