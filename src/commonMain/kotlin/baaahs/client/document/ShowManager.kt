@@ -62,6 +62,9 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
+            Option("Pasture Bedtime") {
+                makeNew { fromResources("PastureBedtime.sparkle") }
+            },
             Option("Sample template") {
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
             },
