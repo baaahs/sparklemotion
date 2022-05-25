@@ -39,7 +39,7 @@ abstract class Mapper(
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
     private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-) : Observable(), Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
+) : Observable(), Network.UdpListener, CoroutineScope by MainScope() {
     private val facade = Facade()
 
     private var selectedDevice: MediaDevices.Device? = null
@@ -72,7 +72,7 @@ abstract class Mapper(
         }
     }
 
-    override fun onLaunch() {
+    open fun onLaunch() {
         mapperScope.launch { start() }
     }
 
@@ -95,7 +95,7 @@ abstract class Mapper(
         }
     }
 
-    override fun onStart() {
+    fun onStart() {
         isPaused = false
 
         if (!isRunning) {
@@ -107,15 +107,15 @@ abstract class Mapper(
         }
     }
 
-    override fun onPause() {
+    fun onPause() {
         isPaused = true
     }
 
-    override fun onStop() {
+    fun onStop() {
         onClose()
     }
 
-    override fun onClose() {
+    open fun onClose() {
         logger.info { "Shutting down Mapper..." }
         isRunning = false
         if (this::camera.isInitialized) camera.close()
@@ -126,12 +126,12 @@ abstract class Mapper(
         close()
     }
 
-    override fun useCamera(selectedDevice: MediaDevices.Device?) {
+    fun useCamera(selectedDevice: MediaDevices.Device?) {
         this.selectedDevice = selectedDevice
         openCamera()
     }
 
-    override suspend fun loadMappingSession(name: String): MappingSession =
+    suspend fun loadMappingSession(name: String): MappingSession =
         withContext(mapperScope.coroutineContext) {
             webSocketClient.loadSession(name)
         }
@@ -452,7 +452,7 @@ abstract class Mapper(
                 return
             }
 
-            val surfaceBallot = Ballot<MapperUi.VisibleSurface>()
+            val surfaceBallot = Ballot<VisibleSurface>()
             var tries = 1000
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
                 val uv = sampleLocations.random()
@@ -795,12 +795,12 @@ abstract class Mapper(
     abstract fun showMessage(message: String)
     abstract fun showMessage2(message: String)
     abstract fun setRedo(fn: (suspend () -> Unit)?)
-    abstract fun lockUi(): MapperUi.CameraOrientation
+    abstract fun lockUi(): CameraOrientation
     abstract fun unlockUi()
-    abstract fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction>
-    abstract fun getVisibleSurfaces(): List<MapperUi.VisibleSurface>
-    abstract fun showCandidates(orderedPanels: List<Pair<MapperUi.VisibleSurface, Float>>)
-    abstract fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface?
+    abstract fun getAllSurfaceVisualizers(): List<EntityDepiction>
+    abstract fun getVisibleSurfaces(): List<VisibleSurface>
+    abstract fun showCandidates(orderedPanels: List<Pair<VisibleSurface, Float>>)
+    abstract fun intersectingSurface(uv: Uv, visibleSurfaces: List<VisibleSurface>): VisibleSurface?
     abstract fun showStats(total: Int, mapped: Int, visible: Int)
     abstract fun close()
     abstract fun addExistingSession(name: String)
@@ -815,7 +815,7 @@ abstract class Mapper(
 
         var changeRegion: MediaDevices.Region? = null
         var guessedEntity: Model.Entity? = null
-        var guessedVisibleSurface: MapperUi.VisibleSurface? = null
+        var guessedVisibleSurface: VisibleSurface? = null
         var panelDeltaBitmap: Bitmap? = null
         var deltaImageName: String? = null
         val pixelMapData: MutableMap<Int, PixelMapData> = mutableMapOf()
@@ -874,19 +874,6 @@ abstract class Mapper(
 
 
     inner class Facade : baaahs.ui.Facade() {
-    }
-}
-
-interface MapperUi {
-    interface Listener {
-        fun onLaunch()
-        fun onStart()
-        fun onPause()
-        fun onStop()
-        fun onClose()
-
-        fun useCamera(selectedDevice: MediaDevices.Device?)
-        suspend fun loadMappingSession(name: String): MappingSession
     }
 
     interface EntityDepiction {

@@ -80,7 +80,7 @@ class JsMapper(
     mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : Mapper(
     network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
-), MapperUi, HostedWebApp {
+), HostedWebApp {
     override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
     var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
 
