@@ -26,6 +26,14 @@ import react.createElement
 import react.dom.client.createRoot
 import three_ext.installCameraControls
 
+val _init_ =
+    document.getElementById("_patience_")?.let { patience ->
+        patience.innerHTML = arrayOf(
+            "Reticulating Splines…",
+            "Grooming Llamas…"
+        ).random()
+    }
+
 fun main(args: Array<String>) {
     window.asDynamic().LoggerConfig = LoggerConfig
 
