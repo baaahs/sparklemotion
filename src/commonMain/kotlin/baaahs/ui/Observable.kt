@@ -44,7 +44,7 @@ class RemovableObserver<T : IObservable>(
     fun remove() = observable.removeObserver(this)
 }
 
-private class NotifyOnChangeProperty<V>(initialValue: V) : ReadWriteProperty<Observable, V> {
+class NotifyOnChangeProperty<V>(initialValue: V) : ReadWriteProperty<Observable, V> {
     private var value = initialValue
 
     override fun getValue(thisRef: Observable, property: KProperty<*>): V = value

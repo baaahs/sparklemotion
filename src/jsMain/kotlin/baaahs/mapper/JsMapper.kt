@@ -7,16 +7,21 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.imaging.*
 import baaahs.model.Model
+import baaahs.net.Network
+import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Keypress
 import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
 import baaahs.ui.value
+import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.js.jso
@@ -42,8 +47,9 @@ import kotlin.math.ceil
 import kotlin.math.log2
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import three.js.Clock as ThreeJsClock
 
-class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
+class MemoizedJsMapper(mapperUi: JsMapper) {
     val changedCamera = mapperUi::changedCamera
     val clickedPlay = mapperUi::clickedPlay
     val clickedPause = mapperUi::clickedPause
@@ -51,7 +57,7 @@ class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
     val clickedStart = mapperUi::clickedStart
     val clickedStop = mapperUi::clickedStop
     val clickedGoToSurface = mapperUi::clickedGoToSurface
-    val loadMappingSession = mapperUi::loadMappingSession
+    val onLoadMappingSession = mapperUi::onLoadMappingSession
     val keyHandler = mapperUi::gotUiKeypress
 }
 
@@ -59,22 +65,24 @@ class MapperStatus : Observable() {
     var message: String? by notifyOnChange(null)
     var message2: String? by notifyOnChange(null)
     var stats: (RBuilder.() -> Unit)? by notifyOnChange(null)
-    var orderedPanels: List<Pair<JsMapperUi.VisibleSurface, Float>> by notifyOnChange(emptyList())
+    var orderedPanels: List<Pair<JsMapper.VisibleSurface, Float>> by notifyOnChange(emptyList())
 }
 
-class JsMapperUi(
+class JsMapper(
     private val sceneEditorClient: SceneEditorClient,
     private val sceneManager: SceneManager,
-    private val statusListener: StatusListener? = null
-) : Observable(), MapperUi, HostedWebApp {
-    private lateinit var listener: MapperUi.Listener
-
+    private val statusListener: StatusListener? = null,
+    network: Network,
+    sceneProvider: SceneProvider,
+    mediaDevices: MediaDevices,
+    pinkyAddress: Network.Address,
+    clock: Clock,
+    mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+) : Mapper(
+    network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
+), MapperUi, HostedWebApp {
     override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
     var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
-
-    override fun listen(listener: MapperUi.Listener) {
-        this.listener = listener
-    }
 
     // Bounds of mapper container.
     private var browserDimen = Dimen(512, 384)
@@ -88,7 +96,7 @@ class JsMapperUi(
     // Best-fit dimensions of mapping area and camera image.
     private var viewportDimen = browserDimen
 
-    private val clock = Clock()
+    private val threeJsClock = ThreeJsClock()
 
     // onscreen renderer for registration UI:
     private val uiRenderer = WebGLRenderer(jso { alpha = true })
@@ -238,7 +246,7 @@ class JsMapperUi(
 
     private fun drawAnimationFrame() {
         if (!uiLocked) {
-            uiControls.update(clock.getDelta())
+            uiControls.update(threeJsClock.getDelta())
         }
         uiRenderer.render(uiScene, uiCamera)
 
@@ -253,20 +261,20 @@ class JsMapperUi(
 
     override fun render(): ReactElement<*> {
         return createElement(SceneEditorView, jso {
-            sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
-            mapperUi = this@JsMapperUi
-            sceneManager = this@JsMapperUi.sceneManager.facade
+            sceneEditorClient = this@JsMapper.sceneEditorClient.facade
+            mapperUi = this@JsMapper
+            sceneManager = this@JsMapper.sceneManager.facade
         })
     }
 
     override fun onLaunch() {
-        listener.onLaunch()
+        super<Mapper>.onLaunch()
     }
 
     override fun onClose() {
         statusListener?.mapperStatusChanged(false)
 
-        listener.onClose()
+        super.onClose()
         sceneEditorClient.onClose()
     }
 
@@ -854,17 +862,17 @@ class JsMapperUi(
         val selectedDeviceId = event.target?.value
         selectedDevice = devices.find { it.deviceId == selectedDeviceId }
 
-        listener.useCamera(selectedDevice)
+        useCamera(selectedDevice)
     }
 
     fun clickedPlay() {
         showPauseMode(false)
-        listener.onStart()
+        onStart()
     }
 
     fun clickedPause() {
         showPauseMode(true)
-        listener.onPause()
+        onPause()
     }
 
     fun clickedRedo() {
@@ -878,11 +886,11 @@ class JsMapperUi(
     }
 
     fun clickedStart() {
-        listener.onStart()
+        onStart()
     }
 
     fun clickedStop() {
-        listener.onStop()
+        onStop()
     }
 
     fun clickedGoToSurface() {
@@ -892,13 +900,12 @@ class JsMapperUi(
         }
     }
 
-    fun loadMappingSession(event: Event) {
-        val mappingSessionToLoad = event.target?.value
-        selectedMappingSessionName = mappingSessionToLoad
+    fun onLoadMappingSession(sessionName: String?) {
+        selectedMappingSessionName = sessionName
 
-        if (mappingSessionToLoad != null) {
+        if (sessionName != null) {
             globalLaunch {
-                val session = listener.loadMappingSession(mappingSessionToLoad)
+                val session = loadMappingSession(sessionName)
 
                 val surfaceVisualizers = getAllSurfaceVisualizers().associateBy {
                     it.resetPixels()
@@ -960,7 +967,7 @@ class JsMapperUi(
     }
 
     companion object {
-        internal val logger = Logger<JsMapperUi>()
+        internal val logger = Logger<JsMapper>()
 
         val normalColor = Color(0, 0, 1)
         val selectedColor = Color(1, 1, 0)

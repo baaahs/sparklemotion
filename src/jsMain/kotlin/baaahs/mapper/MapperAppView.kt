@@ -1,15 +1,13 @@
 package baaahs.mapper
 
-import baaahs.ui.unaryPlus
-import baaahs.ui.withEvent
-import baaahs.ui.withMouseEvent
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import baaahs.util.useResizeListener
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.tabIndex
 import mui.material.Button
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
 
@@ -19,7 +17,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val ui = props.mapperUi
     observe(ui)
-    val uiActions = memo(ui) { MemoizedJsMapperUi(ui) }
+    val uiActions = memo(ui) { MemoizedJsMapper(ui) }
 
     // onscreen renderer for registration UI:
     val wireframe = ui.wireframe
@@ -53,6 +51,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val handleSelectEntityPixel by handler { entityName: String?, index: Int? ->
         ui.selectEntityPixel(entityName, index)
+    }
+
+    val handleLoadMappingSession by handler(uiActions.onLoadMappingSession) { event: Event ->
+        uiActions.onLoadMappingSession(event.target?.value)
     }
 
     useResizeListener(screenRef) {
@@ -96,7 +98,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             }
 
             select {
-                attrs.onChangeFunction = uiActions.loadMappingSession
+                attrs.onChangeFunction = handleLoadMappingSession
 
                 option {
                     attrs.label = "-"
@@ -216,8 +218,8 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 }
 
 external interface MapperAppViewProps : Props {
-    var mapperUi: JsMapperUi
-    var statusListener: JsMapperUi.StatusListener?
+    var mapperUi: JsMapper
+    var statusListener: JsMapper.StatusListener?
 }
 
 fun RBuilder.mapperApp(handler: RHandler<MapperAppViewProps>) =
