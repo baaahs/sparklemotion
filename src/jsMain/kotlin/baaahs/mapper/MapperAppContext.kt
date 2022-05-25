@@ -13,6 +13,6 @@ external interface MapperAppContext {
     var sceneEditorClient: SceneEditorClient.Facade
     var plugins: Plugins
     var allStyles: AllStyles
-    var keyboardShortcutHandler: KeyboardShortcutHandler
+    var keyboard: KeyboardShortcutHandler
     var clock: Clock
 }
