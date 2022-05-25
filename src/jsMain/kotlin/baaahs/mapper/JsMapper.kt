@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.*
+import baaahs.client.ClientStorage
 import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
 import baaahs.geom.Vector2F
@@ -44,10 +45,7 @@ import three_ext.Matrix4
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.ceil
-import kotlin.math.log2
-import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.*
 import three.js.Clock as ThreeJsClock
 
 class MemoizedJsMapper(mapperUi: JsMapper) {
@@ -78,6 +76,7 @@ class JsMapper(
     mediaDevices: MediaDevices,
     pinkyAddress: Network.Address,
     clock: Clock,
+    private val clientStorage: ClientStorage,
     mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : Mapper(
     network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
@@ -134,13 +133,14 @@ class JsMapper(
     private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
-    private var cameraZRotation = 0f
+    private var cameraZRotation = 0.0
 
     val mapperStatus = MapperStatus()
 
     var redoFn: (() -> Unit)? by notifyOnChange(null)
 
     private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
+    private val cameraPositions = mutableMapOf<String, CameraPosition>()
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -180,6 +180,8 @@ class JsMapper(
 
     fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
         var result = KeypressResult.Handled
+
+        val isDigit = event.code.startsWith("Digit")
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -189,18 +191,58 @@ class JsMapper(
             }
             checkProgress()
         } else if (commandProgress.isEmpty() && event.code == "KeyQ") {
-            updateCameraRotation(if (event.shiftKey) 0.025f else 0.1f)
+            adjustCameraZRotation(if (event.shiftKey) PI * 2 / 256 else PI * 2 / 64)
         } else if (commandProgress.isEmpty() && event.code == "KeyW") {
-            updateCameraRotation(if (event.shiftKey) -0.025f else -0.1f)
+            adjustCameraZRotation(if (event.shiftKey) -PI * 2 / 256 else -PI * 2 / 64)
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
-            cameraZRotation = 0f
-        } else if (event.key.length == 1) {
-            commandProgress += event.key
-            checkProgress()
-        } else result = KeypressResult.NotHandled
+            cameraZRotation = 0.0
+            updateCameraRotation()
+        } else {
+            if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
+                loadCameraPosition(event.code.substring(5))
+            } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
+                saveCameraPosition(event.code.substring(5))
+            } else if (event.key.length == 1) {
+                commandProgress += event.key
+                checkProgress()
+            } else if (keypress.ctrlKey || keypress.metaKey) {
+                result = KeypressResult.NotHandled
+            }
+        }
         showMessage2(commandProgress)
 
         return result
+    }
+
+    private fun saveCameraPosition(key: String) {
+        cameraPositions[key] = CameraPosition(
+            uiControls.getPosition().toVector3F(),
+            uiControls.getTarget().toVector3F(),
+            uiCamera.rotation.z.toDouble()
+        )
+        showMessage("Saved camera position to ctrl-${key}.")
+
+        globalLaunch {
+            clientStorage.saveMapperData(MapperData(cameraPositions))
+
+        }
+    }
+
+    private fun loadCameraPosition(key: String) {
+        val position = cameraPositions[key]
+        if (position != null) {
+            cameraZRotation = position.zRotation
+            updateCameraRotation()
+            uiControls.setLookAt(
+                position.position.x, position.position.y, position.position.z,
+                position.target.x, position.target.y, position.target.z,
+                true
+            )
+
+            showMessage("Loaded camera position from ctrl-${key}.")
+        } else {
+            showMessage("No camera position for ctrl-${key}.")
+        }
     }
 
     private fun checkProgress() {
@@ -215,16 +257,19 @@ class JsMapper(
     }
 
     private fun resetCameraRotation() {
-        cameraZRotation = 0f
-        updateCameraRotation(0f)
+        cameraZRotation = 0.0
+        updateCameraRotation()
     }
 
-    private fun updateCameraRotation(angle: Float) {
+    private fun adjustCameraZRotation(angle: Double) {
         cameraZRotation += angle
-        uiCamera.up.set(0, 1, 0)
+        updateCameraRotation()
+    }
 
+    private fun updateCameraRotation() {
+        uiCamera.up.set(0, 1, 0)
         val cameraAngle = Matrix4()
-        val rotated = cameraAngle.makeRotationZ(cameraZRotation.toDouble())
+        val rotated = cameraAngle.makeRotationZ(cameraZRotation)
         uiCamera.up.applyMatrix4(rotated)
     }
 
@@ -270,6 +315,12 @@ class JsMapper(
 
     override fun onLaunch() {
         super<Mapper>.onLaunch()
+
+        globalLaunch {
+            clientStorage.loadMapperData()?.let {
+                cameraPositions.putAll(it.cameraPositions)
+            }
+        }
     }
 
     override fun onClose() {

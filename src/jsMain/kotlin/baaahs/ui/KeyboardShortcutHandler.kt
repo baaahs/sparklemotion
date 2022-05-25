@@ -64,4 +64,10 @@ data class Keypress(
     val metaKey: Boolean = false,
     val ctrlKey: Boolean = false,
     val shiftKey: Boolean = false
-)
+) {
+    val modifiers get() = listOf(
+        mapOf(true to "meta")[metaKey],
+        mapOf(true to "ctrl")[ctrlKey],
+        mapOf(true to "shift")[shiftKey]
+    ).filterNotNull().joinToString("-")
+}
