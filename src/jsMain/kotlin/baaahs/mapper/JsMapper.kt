@@ -197,17 +197,15 @@ class JsMapper(
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
             cameraZRotation = 0.0
             updateCameraRotation()
-        } else {
-            if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
-                loadCameraPosition(event.code.substring(5))
-            } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
-                saveCameraPosition(event.code.substring(5))
-            } else if (event.key.length == 1) {
-                commandProgress += event.key
-                checkProgress()
-            } else if (keypress.ctrlKey || keypress.metaKey) {
-                result = KeypressResult.NotHandled
-            }
+        } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
+            loadCameraPosition(event.code.substring(5))
+        } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
+            saveCameraPosition(event.code.substring(5))
+        } else if (event.key.length == 1) {
+            commandProgress += event.key
+            checkProgress()
+        } else if (keypress.ctrlKey || keypress.metaKey) {
+            result = KeypressResult.NotHandled
         }
         showMessage2(commandProgress)
 
@@ -220,7 +218,7 @@ class JsMapper(
             uiControls.getTarget().toVector3F(),
             uiCamera.rotation.z.toDouble()
         )
-        showMessage("Saved camera position to ctrl-${key}.")
+        showMessage("Saved camera position `$key`.")
 
         globalLaunch {
             clientStorage.saveMapperData(MapperData(cameraPositions))
@@ -239,15 +237,21 @@ class JsMapper(
                 true
             )
 
-            showMessage("Loaded camera position from ctrl-${key}.")
+            showMessage("Loaded camera position from `$key`.")
         } else {
-            showMessage("No camera position for ctrl-${key}.")
+            showMessage("No camera position for `$key`.")
         }
     }
 
     private fun checkProgress() {
         if (commandProgress.startsWith("/") && commandProgress.length > 1) {
             selectSurfacesMatching(commandProgress.substring(1))
+        } else if (commandProgress.startsWith("m") && commandProgress.length > 1) {
+            saveCameraPosition(commandProgress.substring(1))
+            commandProgress = ""
+        } else if (commandProgress.startsWith("'") && commandProgress.length > 1) {
+            loadCameraPosition(commandProgress.substring(1))
+            commandProgress = ""
         }
     }
 
