@@ -304,7 +304,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         } else {
                                             sceneEditor {
                                                 attrs.sceneEditorClient = props.sceneEditorClient
-                                                attrs.mapperUi = props.mapperUi
+                                                attrs.mapper = props.mapper
                                                 attrs.sceneManager = sceneManager
                                             }
                                         }
@@ -368,7 +368,7 @@ external interface AppIndexProps : Props {
     var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapper
+    var mapper: JsMapper
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

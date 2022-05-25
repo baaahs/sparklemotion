@@ -29,7 +29,7 @@ class WebClient(
     private val sceneProvider: SceneProvider,
     private val storage: ClientStorage,
     private val sceneEditorClient: SceneEditorClient,
-    private val mapperUi: JsMapper,
+    private val mapper: JsMapper,
     remoteFsSerializer: RemoteFsSerializer,
     private val notifier: Notifier,
     private val fileDialog: FileDialog,
@@ -76,7 +76,7 @@ class WebClient(
             this.sceneManager = this@WebClient.sceneManager.facade
 
             this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
-            this.mapperUi = this@WebClient.mapperUi
+            this.mapper = this@WebClient.mapper
         })
     }
 

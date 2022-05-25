@@ -29,14 +29,14 @@ private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppW
         attrs.value = myAppContext
 
         mapperApp {
-            attrs.mapperUi = props.mapperUi
+            attrs.mapper = props.mapper
         }
     }
 }
 
 external interface MapperAppWrapperProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapper
+    var mapper: JsMapper
 }
 
 fun RBuilder.mapperAppWrapper(handler: RHandler<MapperAppWrapperProps>) =

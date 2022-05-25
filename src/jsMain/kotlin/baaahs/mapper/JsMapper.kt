@@ -312,7 +312,7 @@ class JsMapper(
     override fun render(): ReactElement<*> {
         return createElement(SceneEditorView, jso {
             sceneEditorClient = this@JsMapper.sceneEditorClient.facade
-            mapperUi = this@JsMapper
+            mapper = this@JsMapper
             sceneManager = this@JsMapper.sceneManager.facade
         })
     }
@@ -534,7 +534,7 @@ class JsMapper(
         val mesh: Mesh<*, *>,
         val geom: Geometry,
         private val lineMaterial: LineBasicMaterial
-    ) : MapperUi.EntityDepiction {
+    ) : EntityDepiction {
         override val entity: Model.Entity
             get() = surface
 
@@ -667,7 +667,7 @@ class JsMapper(
     }
 
 
-    override fun lockUi(): MapperUi.CameraOrientation {
+    override fun lockUi(): Mapper.CameraOrientation {
         uiLocked = true
         return CameraOrientation.from(uiCamera)
     }
@@ -676,15 +676,15 @@ class JsMapper(
         uiLocked = false
     }
 
-    override fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction> {
+    override fun getAllSurfaceVisualizers(): List<EntityDepiction> {
         return entityDepictions.values.toList()
     }
 
     fun findVisualizer(entityName: String): PanelInfo? =
         entitiesByName[entityName]?.let { entityDepictions[it] }
 
-    override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
-        val visibleSurfaces = mutableListOf<MapperUi.VisibleSurface>()
+    override fun getVisibleSurfaces(): List<Mapper.VisibleSurface> {
+        val visibleSurfaces = mutableListOf<Mapper.VisibleSurface>()
         val screenBox = getScreenBox()
         val screenCenter = screenBox.center
         val cameraOrientation = CameraOrientation.from(uiCamera)
@@ -721,7 +721,7 @@ class JsMapper(
         override val boxOnScreen: MediaDevices.Region,
         val panelInfo: PanelInfo,
         cameraOrientation: CameraOrientation
-    ) : MapperUi.VisibleSurface {
+    ) : Mapper.VisibleSurface {
         private val camera = cameraOrientation.createCamera()
 
         override val pixelsInModelSpace: List<Vector3F?> get() = panelInfo.pixelsInModelSpace
@@ -771,7 +771,7 @@ class JsMapper(
     }
 
     data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4F, override val aspect: Double) :
-        MapperUi.CameraOrientation {
+        Mapper.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
                 matrix.fromArray(cameraMatrix.elements.toDoubleArray())
@@ -791,7 +791,7 @@ class JsMapper(
         }
     }
 
-    override fun showCandidates(orderedPanels: List<Pair<MapperUi.VisibleSurface, Float>>) {
+    override fun showCandidates(orderedPanels: List<Pair<Mapper.VisibleSurface, Float>>) {
         orderedPanels as List<Pair<VisibleSurface, Float>>
 
         val firstGuess = orderedPanels.first()
@@ -800,7 +800,7 @@ class JsMapper(
         mapperStatus.orderedPanels = orderedPanels
     }
 
-    override fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
+    override fun intersectingSurface(uv: Uv, visibleSurfaces: List<Mapper.VisibleSurface>): Mapper.VisibleSurface? {
         val raycaster = Raycaster()
         val pixelVector = uv.toVector2()
         raycaster.setFromCamera(pixelVector, uiCamera)
