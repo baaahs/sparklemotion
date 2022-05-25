@@ -15,7 +15,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val appContext = useContext(mapperAppContext)
     val styles = appContext.allStyles.mapper
 
-    val ui = props.mapperUi
+    val ui = props.mapper
     observe(ui)
     val uiActions = memo(ui) { MemoizedJsMapper(ui) }
 
@@ -200,7 +200,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         }
 
         statusBar {
-            attrs.mapperStatus = props.mapperUi.mapperStatus
+            attrs.mapperStatus = props.mapper.mapperStatus
         }
 
         ui.selectedMappingSession?.let { session ->
@@ -218,7 +218,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 }
 
 external interface MapperAppViewProps : Props {
-    var mapperUi: JsMapper
+    var mapper: JsMapper
     var statusListener: JsMapper.StatusListener?
 }
 
