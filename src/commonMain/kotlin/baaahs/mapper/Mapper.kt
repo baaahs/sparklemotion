@@ -17,6 +17,7 @@ import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.proto.*
+import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -31,15 +32,14 @@ import kotlin.random.Random
 /** [SolidBrainShader] appears to be busted as of 2020/09. */
 const val USE_SOLID_SHADERS = false
 
-class Mapper(
+abstract class Mapper(
     private val network: Network,
-    private val sceneProvider: SceneProvider,
-    private val mapperUi: MapperUi,
+    sceneProvider: SceneProvider,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
     private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
+) : Observable(), Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
     private val facade = Facade()
 
     private var selectedDevice: MediaDevices.Device? = null
@@ -62,11 +62,12 @@ class Mapper(
     private val sessions: MutableList<String> = arrayListOf()
     private val stats = mapperStats
 
+    abstract var devices: List<MediaDevices.Device>
+
     init {
-        mapperUi.listen(this)
         sceneProvider.addObserver(fireImmediately = true) {
             it.openScene?.model?.let {
-                mapperUi.addWireframe(it)
+                addWireframe(it)
             }
         }
     }
@@ -82,7 +83,7 @@ class Mapper(
 
         launch {
             webSocketClient.listSessions().forEach {
-                mapperUi.addExistingSession(it)
+                addExistingSession(it)
                 sessions.add(it)
             }
 
@@ -90,7 +91,7 @@ class Mapper(
         }
 
         launch {
-            mapperUi.devices = mediaDevices.enumerate()
+            devices = mediaDevices.enumerate()
         }
     }
 
@@ -122,7 +123,7 @@ class Mapper(
         suppressShowsJob?.cancel()
         udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
 
-        mapperUi.close()
+        close()
     }
 
     override fun useCamera(selectedDevice: MediaDevices.Device?) {
@@ -143,23 +144,7 @@ class Mapper(
     }
 
     private fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
-        mapperUi.showLiveCamImage(image, changeRegion)
-    }
-    private fun showSnapshot(bitmap: Bitmap) { mapperUi.showSnapshot(bitmap) }
-    private fun showBaseImage(bitmap: Bitmap) { mapperUi.showBaseImage(bitmap) }
-    private fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null) =
-        mapperUi.showDiffImage(deltaBitmap, changeRegion)
-    private fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? =
-        null) { mapperUi.showPanelMask(bitmap, changeRegion) }
-    private fun showMessage(message: String) { mapperUi.showMessage(message) }
-    private fun showMessage2(message: String) { mapperUi.showMessage2(message) }
-    private fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> = mapperUi.getVisibleSurfaces()
-    private fun lockUi(): MapperUi.CameraOrientation = mapperUi.lockUi()
-    private fun unlockUi() { mapperUi.lockUi() }
-    private fun showStats(total: Int, mapped: Int, visible: Int) = mapperUi.showStats(total, mapped, visible)
-    private fun setRedo(fn: (suspend () -> Unit)?) { mapperUi.setRedo(fn) }
-    private fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
-        return mapperUi.intersectingSurface(uv, visibleSurfaces)
+        showLiveCamImage(image, changeRegion)
     }
 
     private suspend fun startNewSession() {
@@ -575,7 +560,7 @@ class Mapper(
 
     private fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
         isPaused = true
-        mapperUi.pauseForUserInteraction()
+        pauseForUserInteraction()
         showMessage2(message)
     }
 
@@ -801,6 +786,26 @@ class Mapper(
         return image
     }
 
+    abstract fun addWireframe(model: Model)
+    abstract fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
+    abstract fun showSnapshot(bitmap: Bitmap)
+    abstract fun showBaseImage(bitmap: Bitmap)
+    abstract fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
+    abstract fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
+    abstract fun showMessage(message: String)
+    abstract fun showMessage2(message: String)
+    abstract fun setRedo(fn: (suspend () -> Unit)?)
+    abstract fun lockUi(): MapperUi.CameraOrientation
+    abstract fun unlockUi()
+    abstract fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction>
+    abstract fun getVisibleSurfaces(): List<MapperUi.VisibleSurface>
+    abstract fun showCandidates(orderedPanels: List<Pair<MapperUi.VisibleSurface, Float>>)
+    abstract fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface?
+    abstract fun showStats(total: Int, mapped: Int, visible: Int)
+    abstract fun close()
+    abstract fun addExistingSession(name: String)
+    abstract fun pauseForUserInteraction()
+
     inner class BrainToMap(val address: Network.Address, val brainId: String) {
         val port get() = Ports.BRAIN
 
@@ -873,30 +878,6 @@ class Mapper(
 }
 
 interface MapperUi {
-    var devices: List<MediaDevices.Device>
-
-    fun listen(listener: Listener)
-
-    fun addWireframe(model: Model)
-    fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
-    fun showSnapshot(bitmap: Bitmap)
-    fun showBaseImage(bitmap: Bitmap)
-    fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
-    fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
-    fun showMessage(message: String)
-    fun showMessage2(message: String)
-    fun setRedo(fn: (suspend () -> Unit)?)
-    fun lockUi(): CameraOrientation
-    fun unlockUi()
-    fun getAllSurfaceVisualizers(): List<EntityDepiction>
-    fun getVisibleSurfaces(): List<VisibleSurface>
-    fun showCandidates(orderedPanels: List<Pair<VisibleSurface, Float>>)
-    fun intersectingSurface(uv: Uv, visibleSurfaces: List<VisibleSurface>): VisibleSurface?
-    fun showStats(total: Int, mapped: Int, visible: Int)
-    fun close()
-    fun addExistingSession(name: String)
-    fun pauseForUserInteraction()
-
     interface Listener {
         fun onLaunch()
         fun onStart()

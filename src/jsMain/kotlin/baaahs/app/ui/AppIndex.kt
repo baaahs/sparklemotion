@@ -14,7 +14,7 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
-import baaahs.mapper.JsMapperUi
+import baaahs.mapper.JsMapper
 import baaahs.mapper.sceneEditor
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -372,7 +372,7 @@ external interface AppIndexProps : Props {
     var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapperUi: JsMapper
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

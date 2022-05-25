@@ -102,7 +102,7 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
 
 external interface SceneEditorViewProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapperUi: JsMapper
     var sceneManager: SceneManager.Facade
 }
 
