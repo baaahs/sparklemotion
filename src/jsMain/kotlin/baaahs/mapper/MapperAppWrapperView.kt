@@ -20,7 +20,7 @@ private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppW
             this.sceneEditorClient = props.sceneEditorClient
             this.plugins = plugins
             this.allStyles = appContext.allStyles
-            this.keyboardShortcutHandler = appContext.keyboardShortcutHandler
+            this.keyboard = appContext.keyboard
             this.clock = clock
         }
     }

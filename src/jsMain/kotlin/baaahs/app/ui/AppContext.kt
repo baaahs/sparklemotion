@@ -35,7 +35,7 @@ external interface AppContext {
     var uiSettings: UiSettings
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
-    var keyboardShortcutHandler: KeyboardShortcutHandler
+    var keyboard: KeyboardShortcutHandler
     var clock: Clock
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade

@@ -5,6 +5,8 @@ import baaahs.getBang
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
+import baaahs.ui.Keypress
+import baaahs.ui.KeypressResult
 import baaahs.ui.xComponent
 import react.Props
 import react.RBuilder
@@ -16,6 +18,19 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val show = props.show
     val editMode = appContext.showManager.editMode
     observe(editMode)
+
+    val keyboard = appContext.keyboard
+    onMount(keyboard, editMode, props.onLayoutEditorDialogToggle) {
+        keyboard.handle { keypress, _ ->
+            var result: KeypressResult? = null
+            when (keypress) {
+                Keypress("d") -> editMode.toggle()
+                Keypress("l") -> props.onLayoutEditorDialogToggle
+                else -> result = KeypressResult.NotHandled
+            }
+            result ?: KeypressResult.Handled
+        }
+    }
 
     // TODO: Pick layout based on device characteristics.
     val currentLayoutName = show.openLayouts.currentFormatId
@@ -51,6 +66,7 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
 external interface ShowUiProps : Props {
     var show: OpenShow
     var onShowStateChange: () -> Unit
+    var onLayoutEditorDialogToggle: () -> Unit
 }
 
 fun RBuilder.showUi(handler: RHandler<ShowUiProps>) =
