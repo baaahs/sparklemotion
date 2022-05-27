@@ -6,6 +6,7 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_draggable.Draggable
+import kotlinx.html.tabIndex
 import materialui.icon
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
@@ -14,6 +15,8 @@ import react.RBuilder
 import react.RHandler
 import react.dom.*
 import react.useContext
+import kotlin.math.max
+import kotlin.math.min
 
 private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession") { props ->
     val appContext = useContext(mapperAppContext)
@@ -21,19 +24,46 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
 
     var selectedSurface by state<MappingSession.SurfaceData?> { null }
     var selectedPixelIndex by state<Int?> { null }
+    val pixelData = selectedPixelIndex?.let { i ->
+        val pixels = selectedSurface?.pixels
+        if (pixels != null && i >= 0 && i < pixels.size) pixels[i] else null
+    }
 
-    val handleSelectSurface by handler { surface: MappingSession.SurfaceData? ->
+    val handleSelectSurface by handler(props.onSelectEntityPixel) { surface: MappingSession.SurfaceData? ->
         selectedSurface = surface
         selectedPixelIndex = null
         props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, null)
         Unit
     }
 
-    val handlePixelClick by mouseEventHandler(props.onSelectEntityPixel) { e ->
+    val handlePixelClick by mouseEventHandler(props.onSelectEntityPixel, pixelData) { e ->
         (e.target as? HTMLElement)?.let {
             val i = it.dataset["pixelIndex"]?.toIntOrNull()
             selectedPixelIndex = i
             props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, i)
+        }
+    }
+
+    val handleKeyDown by keyboardEventHandler(props.onSelectEntityPixel) { e ->
+        when (e.key) {
+            "ArrowLeft" -> {
+                selectedPixelIndex?.let { i ->
+                    val newIndex = max(i - 1, 0)
+                    selectedPixelIndex = newIndex
+                    props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, newIndex)
+                }
+                e.stopPropagation()
+                e.preventDefault()
+            }
+            "ArrowRight" -> {
+                selectedPixelIndex?.let { i ->
+                    val newIndex = min(i + 1, selectedSurface!!.myPixelCount - 1)
+                    selectedPixelIndex = newIndex
+                    props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, newIndex)
+                }
+                e.stopPropagation()
+                e.preventDefault()
+            }
         }
     }
 
@@ -42,6 +72,9 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
         attrs.handle = ".$styleForDragHandle"
 
         div(+styles.sessionInfo) {
+            attrs.tabIndex = "-1" // So we can receive key events.
+            attrs.onKeyDown = handleKeyDown
+
             div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
                 icon(mui.icons.material.DragIndicator)
             }
@@ -62,8 +95,8 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
                 }
 
                 div(+styles.pixels) {
-                    val maxPixel = surface.pixelCount ?: surface.pixels?.size ?: 0
-                    for (i in 0 until maxPixel) {
+                    val pixelCount = surface.myPixelCount
+                    for (i in 0 until pixelCount) {
                         val pixel = surface.pixels?.get(i)
                         div(
                             +when {
@@ -81,8 +114,8 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
                 div {
                     +"Selected Pixel: ${selectedPixelIndex ?: "None"}"
                     div {
-                        selectedPixelIndex?.let {
-                            surface.pixels?.get(it)?.modelPosition?.let { v ->
+                        if (pixelData != null) {
+                            pixelData.modelPosition?.let { v ->
                                 div { b { +"x: " }; +v.x.toString() }
                                 div { b { +"y: " }; +v.y.toString() }
                                 div { b { +"z: " }; +v.z.toString() }
@@ -94,6 +127,8 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
         }
     }
 }
+
+private val MappingSession.SurfaceData.myPixelCount get() = pixelCount ?: pixels?.size ?: 0
 
 external interface MappingSessionProps : Props {
     var name: String

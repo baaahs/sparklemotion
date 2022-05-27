@@ -14,6 +14,7 @@ data class MappingSession(
     val startedAt: Double,
     val surfaces: List<SurfaceData>, // TODO: rename to items?
     val cameraMatrix: Matrix4F? = null,
+    val cameraPosition: CameraPosition? = null,
     val baseImage: String? = null,
     val version: Int = 0,
     val savedAt: Double = DateTime.nowUnix(),

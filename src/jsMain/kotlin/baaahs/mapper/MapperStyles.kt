@@ -21,28 +21,28 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         position = Position.absolute
         zIndex = 1
     }
-    
-    val mapping2dCanvas by css {
+
+    val fillParent by css {
         position = Position.absolute
-        display = Display.block
         top = 0.px
         bottom = 0.px
         left = 0.px
         right = 0.px
+    }
+
+    val mapping2dCanvas by css(fillParent) {
         margin = "auto"
     }
     
-    val mapping3dContainer by css {
+    val mapping3dContainer by css(fillParent) {
         canvas {
-            position = Position.absolute
-            display = Display.block
-            top = 0.px
-            bottom = 0.px
-            left = 0.px
-            right = 0.px
             margin = "auto"
             put("mix-blend-mode", "lighten")
         }
+    }
+
+    val savedImage by css(fillParent) {
+        display = Display.none
     }
 
     val snapshotDiv by css {
