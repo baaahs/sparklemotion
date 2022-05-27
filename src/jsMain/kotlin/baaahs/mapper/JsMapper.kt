@@ -8,6 +8,8 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.imaging.*
+import baaahs.imaging.Image
+import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.scene.SceneProvider
@@ -27,10 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.js.jso
-import org.w3c.dom.CanvasImageSource
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
@@ -81,6 +80,14 @@ class JsMapper(
 ) : Mapper(
     network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
 ), HostedWebApp {
+    var mappingEnabled: Boolean = false
+        set(value) {
+            if (value != field) {
+                if (value) clickedStart() else clickedStop()
+                field = value
+            }
+        }
+
     override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
     var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
 
@@ -112,8 +119,8 @@ class JsMapper(
     private var uiLocked: Boolean by notifyOnChange(false)
 
     private lateinit var ui2dCanvas: HTMLCanvasElement
-
     private val ui3dCanvas = uiRenderer.domElement
+    private lateinit var savedImage: HTMLImageElement
 
     private lateinit var snapshotCanvas: HTMLCanvasElement
     private lateinit var baseCanvas: HTMLCanvasElement
@@ -151,11 +158,13 @@ class JsMapper(
         panelMaskCanvas: HTMLCanvasElement,
         perfStatsDiv: HTMLElement,
         width: Int,
-        height: Int
+        height: Int,
+        savedImage: HTMLImageElement
     ) {
         onLaunch()
 
         this.ui2dCanvas = ui2dCanvas
+        this.savedImage = savedImage
         this.diffCanvas = diffCanvas
         this.snapshotCanvas = snapshotCanvas
         this.baseCanvas = baseCanvas
@@ -337,11 +346,18 @@ class JsMapper(
     fun onResize(width: Int, height: Int) {
         browserDimen = Dimen(width, height)
         resize()
+        notifyChanged()
     }
 
     private fun onCamResize(dimen: Dimen) {
         lastCamImageDimen = dimen
         resize()
+        notifyChanged()
+    }
+
+    fun setSizes() {
+        if (::ui2dCanvas.isInitialized)
+            resize()
     }
 
     private fun resize() {
@@ -361,8 +377,6 @@ class JsMapper(
         diffCanvas.resize(thumbnailDimen)
         baseCanvas.resize(thumbnailDimen)
         panelMaskCanvas.resize(thumbnailDimen)
-
-        notifyChanged()
     }
 
     private fun HTMLCanvasElement.resize(dimen: Dimen) {
@@ -451,7 +465,7 @@ class JsMapper(
         return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
     }
 
-    class PixelData(private val initialPixelCount: Int) {
+    inner class PixelsInfo(private val initialPixelCount: Int) {
         private val pixelsGeom = BufferGeometry()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
@@ -459,7 +473,7 @@ class JsMapper(
         }
         val points = Points(pixelsGeom, pixelsMaterial)
         private var maxPixel = initialPixelCount
-        internal val pixelLocations = mutableMapOf<Int, Vector3?>()
+        internal val pixelDatas = mutableMapOf<Int, PixelData?>()
         private var positions = FloatArray(maxPixel * 3) { 0f }
         private var colors = FloatArray(maxPixel * 3) { 0f }
         private val positionsAttr = Float32BufferAttribute(positions, 3).also {
@@ -471,27 +485,29 @@ class JsMapper(
             pixelsGeom.setAttribute("color", it)
         }
 
-        fun setPixel(index: Int, modelPosition: Vector3F?) {
-            if (index > maxPixel) {
-                // Round up to the nearest power of two.
-                val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
-                resize(newMax)
-            }
-            setPixel(index, modelPosition)
-        }
-
-        fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
-            pixelLocations.clear()
+        fun setPixels(pixels: List<PixelData?>) {
+            pixelDatas.clear()
             resize(pixels.size)
             pixels.forEachIndexed { index, pixelData ->
                 setPixel(pixelData, index)
             }
         }
 
-        private fun setPixel(pixelData: MappingSession.SurfaceData.PixelData?, index: Int) {
-            val location = pixelData?.modelPosition?.toVector3()
-            pixelLocations[index] = location
-            setPixelLocation(index, location ?: Vector3F.origin.toVector3())
+        private fun setPixel(pixelData: PixelData?, index: Int) {
+            val location = pixelData?.modelPosition
+            updatePixel(index, pixelData)
+        }
+
+        fun updatePixel(index: Int, pixelData: PixelData?) {
+            if (index > maxPixel) {
+                // Round up to the nearest power of two.
+                val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
+                resize(newMax)
+            }
+
+            pixelDatas[index] = pixelData
+            val position = pixelData?.modelPosition?.toVector3()
+            setPixelLocation(index, position ?: Vector3F.origin.toVector3())
             setPixelColor(index, normalColor)
         }
 
@@ -510,7 +526,7 @@ class JsMapper(
         }
 
         fun reset() {
-            pixelLocations.clear()
+            pixelDatas.clear()
             resize(initialPixelCount)
         }
 
@@ -539,16 +555,16 @@ class JsMapper(
             get() = surface
 
         private var pixelsInScene = false
-        private var pixelData = PixelData(surface.expectedPixelCount ?: 256).also {
+        private var pixelsInfo = PixelsInfo(surface.expectedPixelCount ?: 256).also {
             if (pixelsInScene) uiScene.add(it.points)
         }
 
         val pixelsInModelSpace: List<Vector3F?>
             get() {
                 val vectors = mutableListOf<Vector3F?>()
-                for (i in 0..(pixelData.pixelLocations.keys.maxOrNull()!!)) {
-                    val position = pixelData.pixelLocations[i]
-                    vectors.add(position?.toVector3F())
+                for (i in 0..(pixelsInfo.pixelDatas.keys.maxOrNull()!!)) {
+                    val position = pixelsInfo.pixelDatas[i]
+                    vectors.add(position?.modelPosition)
                 }
                 return vectors
             }
@@ -631,45 +647,48 @@ class JsMapper(
 
         var boxOnScreen: Box2? = null
 
-        override fun setPixel(index: Int, modelPosition: Vector3F?) {
-            pixelData.setPixel(index, modelPosition)
+        override fun setPixel(index: Int, modelPosition: Vector3F?/*, deltaImage: String? = null*/) {
+            pixelsInfo.updatePixel(index, PixelData(modelPosition))
         }
 
-        override fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
-            pixelData.setPixels(pixels)
+        override fun setPixels(pixels: List<PixelData?>) {
+            pixelsInfo.setPixels(pixels)
         }
 
         override fun showPixels() {
             if (!pixelsInScene) {
-                uiScene.add(pixelData.points)
+                uiScene.add(pixelsInfo.points)
                 pixelsInScene = true
             }
         }
 
         fun hidePixels() {
             if (pixelsInScene) {
-                uiScene.remove(pixelData.points)
+                uiScene.remove(pixelsInfo.points)
                 pixelsInScene = false
             }
         }
 
         override fun resetPixels() {
-            pixelData.reset()
+            pixelsInfo.reset()
         }
 
+        fun getPixelData(pixelIndex: Int): PixelData? =
+            pixelsInfo.pixelDatas[pixelIndex]
+
         fun selectPixel(pixelIndex: Int) {
-            pixelData.setPixelColor(pixelIndex, selectedColor)
+            pixelsInfo.setPixelColor(pixelIndex, selectedColor)
         }
 
         fun deselectPixel(pixelIndex: Int) {
-            pixelData.setPixelColor(pixelIndex, normalColor)
+            pixelsInfo.setPixelColor(pixelIndex, normalColor)
         }
     }
 
 
     override fun lockUi(): Mapper.CameraOrientation {
         uiLocked = true
-        return CameraOrientation.from(uiCamera)
+        return CameraOrientation.from(uiCamera, uiControls)
     }
 
     override fun unlockUi() {
@@ -687,7 +706,7 @@ class JsMapper(
         val visibleSurfaces = mutableListOf<Mapper.VisibleSurface>()
         val screenBox = getScreenBox()
         val screenCenter = screenBox.center
-        val cameraOrientation = CameraOrientation.from(uiCamera)
+        val cameraOrientation = CameraOrientation.from(uiCamera, uiControls)
 
         entityDepictions.forEach { (entity, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
@@ -770,7 +789,11 @@ class JsMapper(
         }
     }
 
-    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4F, override val aspect: Double) :
+    data class CameraOrientation(
+        override val cameraMatrix: baaahs.geom.Matrix4F,
+        override val cameraPosition: CameraPosition,
+        override val aspect: Double
+    ) :
         Mapper.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
@@ -782,9 +805,17 @@ class JsMapper(
         }
 
         companion object {
-            fun from(camera: PerspectiveCamera): CameraOrientation {
+            fun from(
+                camera: PerspectiveCamera,
+                controls: CameraControls
+            ): CameraOrientation {
                 return CameraOrientation(
                     baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
+                    CameraPosition(
+                        controls.getPosition().toVector3F(),
+                        controls.getTarget().toVector3F(),
+                        camera.rotation.z.toDouble()
+                    ),
                     camera.aspect.toDouble()
                 )
             }
@@ -835,11 +866,7 @@ class JsMapper(
             onCamResize(image.dimen)
         }
 
-        CanvasBitmap(ui2dCanvas).drawImage(
-            image,
-            0, 0, image.width, image.height,
-            0, 0, viewportDimen.width, viewportDimen.height,
-        )
+        paintCamImage(image)
 
         changeRegion?.apply {
             val ui2dCtx = ui2dCanvas.getContext("2d") as CanvasRenderingContext2D
@@ -847,6 +874,14 @@ class JsMapper(
             ui2dCtx.strokeStyle = "#ff0000"
             ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
         }
+    }
+
+    private fun paintCamImage(image: Image) {
+        CanvasBitmap(ui2dCanvas).drawImage(
+            image,
+            0, 0, image.width, image.height,
+            0, 0, viewportDimen.width, viewportDimen.height,
+        )
     }
 
     override fun showSnapshot(bitmap: Bitmap) =
@@ -989,12 +1024,29 @@ class JsMapper(
         selectedEntityAndPixel?.let { (entity, pixelIndex) ->
             entity.deselect()
             if (pixelIndex != null) entity.deselectPixel(pixelIndex)
+            savedImage.style.display = "none"
         }
 
         selectedEntityAndPixel = entityName?.let {
             findVisualizer(it)?.let { panelInfo ->
                 panelInfo.select()
-                if (index != null) panelInfo.selectPixel(index)
+                if (index != null) {
+                    panelInfo.selectPixel(index)
+
+                    val pixelData = panelInfo.getPixelData(index)
+                    pixelData?.deltaImage?.let { deltaImageName ->
+                        globalLaunch {
+                            val url = webSocketClient.getImageUrl(deltaImageName)
+                                ?: error("No url for \"$deltaImageName\".")
+                            savedImage.src = url
+                            savedImage.style.display = "block"
+//                            val img = org.w3c.dom.Image()
+//                            img.src = url
+//                            paintCamImage(DomImage(img))
+                        }
+                    }
+                }
+
                 panelInfo to index
             }
         }

@@ -1,13 +1,21 @@
 package baaahs.ui
 
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.events.KeyboardEvent
 
-class KeyboardShortcutHandler {
+class KeyboardShortcutHandler(val target: EventTarget? = null) {
     private val handlers = arrayListOf<Handler>()
+
+    init {
+        if (target != null) {
+            listen(target)
+            (target as? HTMLElement)?.tabIndex = -1
+        }
+    }
 
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
     private val handleKeyDown = { e: KeyboardEvent ->
@@ -34,12 +42,19 @@ class KeyboardShortcutHandler {
         }
     } as EventListener
 
-    fun listen(target: EventTarget) {
+    fun listen(target: EventTarget): EventTarget {
         target.addEventListener("keydown", handleKeyDown)
+        return target
     }
 
     fun unlisten(target: EventTarget) {
         target.removeEventListener("keydown", handleKeyDown)
+    }
+
+    fun release() {
+        if (target != null) {
+            unlisten(target)
+        }
     }
 
     fun handle(handler: (keypress: Keypress, event: KeyboardEvent) -> KeypressResult): Handler =

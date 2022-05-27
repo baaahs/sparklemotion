@@ -91,6 +91,8 @@ expect fun <T> doRunBlocking(block: suspend () -> T): T
 
 expect fun decodeBase64(s: String): ByteArray
 
+expect fun encodeBase64(b: ByteArray): String
+
 internal suspend fun time(function: suspend () -> Unit) = internalTimerClock.time(function)
 internal suspend fun Clock.time(function: suspend () -> Unit): Int {
     val then = now()

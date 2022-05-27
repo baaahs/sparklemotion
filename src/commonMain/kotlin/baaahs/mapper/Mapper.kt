@@ -1,6 +1,8 @@
 package baaahs.mapper
 
-import baaahs.*
+import baaahs.Color
+import baaahs.MediaDevices
+import baaahs.SparkleMotion
 import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
@@ -48,7 +50,7 @@ abstract class Mapper(
 
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
-    private lateinit var webSocketClient: WebSocketClient
+    internal lateinit var webSocketClient: WebSocketClient
     private var isRunning: Boolean = false
     private var isPaused: Boolean = false
     private var newIncomingImage: Image? = null
@@ -143,7 +145,7 @@ abstract class Mapper(
         }
     }
 
-    private fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
+    fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
         showLiveCamImage(image, changeRegion)
     }
 
@@ -308,7 +310,13 @@ abstract class Mapper(
 
             // Save data.
             val mappingSession =
-                MappingSession(sessionStartTime.unixMillis, surfaces, cameraOrientation.cameraMatrix, baseImageName)
+                MappingSession(
+                    sessionStartTime.unixMillis,
+                    surfaces,
+                    cameraOrientation.cameraMatrix,
+                    cameraOrientation.cameraPosition,
+                    baseImageName
+                )
             webSocketClient.saveSession(mappingSession)
 
             // We're done!
@@ -338,14 +346,14 @@ abstract class Mapper(
 //                        logger.debug { "    $pixelIndex -> ${position?.x},${position?.y}" }
 //                    }
 
-                    val pixels = visibleSurface.pixelsInModelSpace.mapIndexed { index, vector3F ->
+                    val pixels = visibleSurface.pixelsInModelSpace.mapIndexed { index, modelPosition ->
                         val pixelMapData = brainToMap.pixelMapData[index]
                         val pixelChangeRegion = pixelMapData?.pixelChangeRegion
                         val screenPosition = pixelChangeRegion?.let {
                             visibleSurface.translatePixelToPanelSpace(Uv.fromXY(it.centerX, it.centerY, it.sourceDimen))
                         }
                         MappingSession.SurfaceData.PixelData(
-                            vector3F,
+                            modelPosition,
                             screenPosition,
                             pixelMapData?.deltaImageName
                         )
@@ -414,7 +422,10 @@ abstract class Mapper(
             waitForDelivery() // ... of resetting to black above.
         }
 
-        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
+        private suspend fun detectBrains(
+            index: Int,
+            brainToMap: BrainToMap
+        ): Ballot<VisibleSurface>? {
             showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
 
             deliverer.send(brainToMap, solidColorBuffer(activeColor))
@@ -449,7 +460,7 @@ abstract class Mapper(
 
             if (sampleLocations.isEmpty()) {
                 logger.warn { "Failed to match anything up with ${brainToMap.brainId}, bailing." }
-                return
+                return null
             }
 
             val surfaceBallot = Ballot<VisibleSurface>()
@@ -466,10 +477,17 @@ abstract class Mapper(
             if (tries == 0 || surfaceBallot.noVotes()) {
                 logger.warn {
                     "Failed to cast sufficient votes (${surfaceBallot.totalVotes}) after 1000 tries" +
-                        " on ${brainToMap.brainId}, bailing."
+                            " on ${brainToMap.brainId}, bailing."
                 }
-                return
+                return null
             }
+
+            return surfaceBallot
+        }
+
+        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
+            val surfaceBallot = detectBrains(index, brainToMap)
+                ?: return
 
             //                val orderedPanels = visibleSurfaces.map { visiblePanel ->
             //                    visiblePanel to visiblePanel.boxOnScreen.distanceTo(surfaceChangeRegion)
@@ -811,7 +829,9 @@ abstract class Mapper(
 
         var expectedPixelCount: Int? = null
         val expectedPixelCountOrDefault: Int
-            get() = expectedPixelCount ?: SparkleMotion.DEFAULT_PIXEL_COUNT
+            get() = (guessedEntity as? Model.Surface)?.expectedPixelCount
+                ?: expectedPixelCount
+                ?: SparkleMotion.DEFAULT_PIXEL_COUNT
 
         var changeRegion: MediaDevices.Region? = null
         var guessedEntity: Model.Entity? = null
@@ -898,6 +918,7 @@ abstract class Mapper(
 
     interface CameraOrientation {
         val cameraMatrix: Matrix4F
+        val cameraPosition: CameraPosition
         val aspect: Double
     }
 }
