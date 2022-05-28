@@ -46,7 +46,7 @@ class BeatLinkBeatSource(
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
         val virtualCdj = VirtualCdj.getInstance()
-        virtualCdj.useStandardPlayerNumber = true
+        virtualCdj.useStandardPlayerNumber = false
         virtualCdj.addLifecycleListener(object : LifecycleListener {
             override fun stopped(sender: LifecycleParticipant?) {
                 logger.info { "VirtualCdj stopped!" }
