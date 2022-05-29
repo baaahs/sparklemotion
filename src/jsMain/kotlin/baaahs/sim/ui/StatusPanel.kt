@@ -2,7 +2,7 @@ package baaahs.sim.ui
 
 import baaahs.SheepSimulator
 import baaahs.ui.asTextNode
-import baaahs.ui.diagnostics.diagnosticsPalette
+import baaahs.ui.diagnostics.patchDiagnostics
 import baaahs.ui.unaryPlus
 import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
@@ -46,7 +46,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
         }
 
         if (isConsoleOpen) console { attrs.simulator = simulator }
-        if (isGlslPaletteOpen) diagnosticsPalette {
+        if (isGlslPaletteOpen) patchDiagnostics {
             attrs.renderPlanMonitor = simulator.pinky.fixtureManager.renderPlanMonitor
         }
     }

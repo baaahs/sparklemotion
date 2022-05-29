@@ -2,10 +2,7 @@ package baaahs.ui.components
 
 import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
-import baaahs.ui.and
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
@@ -23,6 +20,7 @@ import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
 
@@ -67,8 +65,17 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
                         this.height = layoutDimens.y.px
                     }
 
-                    div(+styles.dragHandle and styleForDragHandle) {
-                        icon(mui.icons.material.DragIndicator)
+                    div(+styles.paletteActions) {
+                        div(+styles.dragHandle and styleForDragHandle) {
+                            icon(mui.icons.material.DragIndicator)
+                        }
+
+                        props.onClose?.let { handleOnClose ->
+                            div(+styles.closeBox) {
+                                attrs.onClick = handleOnClose.withMouseEvent()
+                                icon(mui.icons.material.Close)
+                            }
+                        }
                     }
 
                     Paper {
@@ -86,6 +93,7 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
 external interface PaletteProps : PropsWithChildren {
     var initialWidth: Int?
     var initialHeight: Int?
+    var onClose: (() -> Unit)?
 }
 
 fun RBuilder.palette(handler: RHandler<PaletteProps>) =

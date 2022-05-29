@@ -17,7 +17,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.i
 
-val DiagnosticsPaletteView = xComponent<DiagnosticsPaletteProps>("DiagnosticsPalette") { props ->
+val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics") { props ->
     observe(props.renderPlanMonitor)
 
     val renderPlans = props.renderPlanMonitor.value
@@ -37,6 +37,7 @@ val DiagnosticsPaletteView = xComponent<DiagnosticsPaletteProps>("DiagnosticsPal
     palette {
         attrs.initialWidth = window.innerWidth / 3
         attrs.initialHeight = window.innerHeight * 2 / 3
+        attrs.onClose = props.onClose
 
         typographyH6 { +"Patch Diagnostics" }
 
@@ -93,9 +94,10 @@ private data class Subject(
         "${fixtureType.title}: ${programRenderPlan.renderTargets.size} fixtures"
 }
 
-external interface DiagnosticsPaletteProps : Props {
+external interface PatchDiagnosticsProps : Props {
     var renderPlanMonitor: Monitor<RenderPlan?>
+    var onClose: (() -> Unit)?
 }
 
-fun RBuilder.diagnosticsPalette(handler: RHandler<DiagnosticsPaletteProps>) =
-    child(DiagnosticsPaletteView, handler = handler)
+fun RBuilder.patchDiagnostics(handler: RHandler<PatchDiagnosticsProps>) =
+    child(PatchDiagnosticsView, handler = handler)

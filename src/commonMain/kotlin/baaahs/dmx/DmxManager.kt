@@ -1,9 +1,11 @@
 package baaahs.dmx
 
+import baaahs.PubSub
 import baaahs.controller.BaseControllerManager
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
+import baaahs.plugin.Plugins
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
@@ -11,6 +13,7 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
 
 interface DmxManager {
     fun allOff()
@@ -35,15 +38,26 @@ interface DmxManager {
 class DmxManagerImpl(
     private val dmxDriver: Dmx.Driver,
     private val clock: Clock,
-    private val fakeDmxUniverse: FakeDmxUniverse // For fallback.){}
+    private val fakeDmxUniverse: FakeDmxUniverse, // For fallback.
+    pubSub: PubSub.Server,
+    private val universeListener: DmxUniverseListener? = null,
+    plugins: Plugins
 ) : BaseControllerManager(DmxManager.controllerTypeName), DmxManager {
     private val attachedDevices = findAttachedDevices()
     override val dmxUniverse = findDmxUniverse(attachedDevices)
 
+    init {
+        pubSub.listenOnCommandChannel(createCommandPort(plugins.serialModule)) { command ->
+            ListDmxUniverses.Response(universeListener?.lastFrames ?: emptyMap())
+        }
+    }
+
     override fun start() {
         if (attachedDevices.isNotEmpty()) {
             attachedDevices.forEach { device ->
-                notifyListeners { onAdd(DirectDmxController(device, clock)) }
+                notifyListeners {
+                    onAdd(DirectDmxController(device, clock, universeListener))
+                }
             }
         }
     }
@@ -67,7 +81,7 @@ class DmxManagerImpl(
                 logger.warn { "Multiple DMX USB devices found, using ${dmxDevices.first()}." }
             }
 
-            return dmxDevices.first().asUniverse()
+            return dmxDevices.first().asUniverse(universeListener)
         }
 
         logger.warn { "No DMX USB devices found, DMX will be disabled." }
@@ -76,6 +90,12 @@ class DmxManagerImpl(
 
     companion object {
         internal val logger = DmxManager.logger
+
+        fun createCommandPort(serializersModule: SerializersModule) = PubSub.CommandPort(
+            "pinky/dmx/universes",
+            ListDmxUniverses.serializer(), ListDmxUniverses.Response.serializer(),
+            serializersModule
+        )
     }
 }
 
@@ -86,3 +106,9 @@ data class DmxInfo(
     val type: String,
     val universe: Int?
 )
+
+@Serializable
+class ListDmxUniverses() {
+    @Serializable
+    class Response(val universes: Map<String, DmxUniverseListener.LastFrame>)
+}
