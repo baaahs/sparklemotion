@@ -15,7 +15,8 @@ class SacnController(
     override val defaultFixtureConfig: FixtureConfig?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
-    onlineSince: Time?
+    onlineSince: Time?,
+    private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId = ControllerId(SacnManager.controllerTypeName, id)
     override val state: ControllerState =
@@ -91,6 +92,8 @@ class SacnController(
             }
             dmxUniverses.universeMaxChannel[universeIndex] = 0
         }
+
+        universeListener?.onSend(controllerId.name(), dmxUniverses.channels)
     }
 
     fun release() {

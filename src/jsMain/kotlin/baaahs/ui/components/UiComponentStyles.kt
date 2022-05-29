@@ -21,20 +21,28 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
         transition(::opacity, duration = 1.s)
 
         hover {
-            descendants(selector(::dragHandle), selector(::resizeHandle)) {
+            descendants(selector(::paletteActions)) {
                 opacity = 1
             }
         }
     }
 
-    val dragHandle by css {
+    val paletteActions by css {
         opacity = .2
-        transition(::visibility, duration = 0.25.s, timing = Timing.linear)
+        transition(::opacity, duration = 0.25.s, timing = Timing.linear)
         position = Position.absolute
         right = 2.px
         top = 0.5.em
+        display = Display.flex
+        flexDirection = FlexDirection.row
         zIndex = 101
+    }
+
+    val dragHandle by css {
 //        cursor = Cursor.grab
+    }
+
+    val closeBox by css {
     }
 
     val resizeHandle by css {
