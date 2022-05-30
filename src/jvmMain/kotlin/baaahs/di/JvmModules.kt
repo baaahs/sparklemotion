@@ -2,6 +2,7 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PinkySettings
+import baaahs.SparkleMotion
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.gl.GlBase
@@ -68,7 +69,7 @@ class JvmPinkyModule(
         get() = JvmFtdiDmxDriver
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
-            RenderManager { GlBase.manager.createContext() }
+            RenderManager { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
         }
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
