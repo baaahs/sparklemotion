@@ -525,7 +525,7 @@
     },
     "zigZag": {
       "title": "Zig Zag",
-      "src": "uniform float time;\nuniform float zig; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * zig;\n}"
+      "src": "uniform float time;\nuniform float zig; // @type float\nuniform float amplitude; // @@Slider default=0.1 min=0.05 max=0.2\nuniform float period; // @@Slider default=10. min=5 max=20\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    int y = int(uvIn.y * 10.);\n    float beat = mix(beatInfo.confidence, time, beatInfo.intensity);\n    \n    return vec2(uvIn.x, uvIn.y + sin(uvIn.x * period + beat * 10.) * amplitude);\n}"
     },
     "blackout": {
       "title": "Blackout",
@@ -570,7 +570,7 @@
           "dataSourceId": "beatBrightnessSlider"
         }
       },
-      "priority": 10
+      "priority": 10.0
     },
     "saturation-patch": {
       "shaderId": "saturation",
@@ -584,7 +584,7 @@
           "dataSourceId": "saturationSlider"
         }
       },
-      "priority": 10
+      "priority": 10.0
     },
     "scale-patch": {
       "shaderId": "scale",
@@ -598,7 +598,7 @@
           "shaderChannel": "main"
         }
       },
-      "priority": 10
+      "priority": 10.0
     },
     "sharpyDefault-patch": {
       "shaderId": "sharpyDefault",
@@ -620,7 +620,7 @@
           "dataSourceId": "fixtureInfo"
         }
       },
-      "priority": -10
+      "priority": -10.0
     },
     "untitledFilterShader-patch": {
       "shaderId": "untitledFilterShader",
@@ -693,7 +693,7 @@
           "dataSourceId": "centerXyPad"
         }
       },
-      "priority": 1
+      "priority": 1.0
     },
     "smpteColorBars-patch": {
       "shaderId": "smpteColorBars",
@@ -1585,7 +1585,7 @@
           "shaderChannel": "main"
         }
       },
-      "priority": 10
+      "priority": 10.0
     },
     "thatSAllFolks-patch": {
       "shaderId": "thatSAllFolks",
@@ -1625,7 +1625,7 @@
         }
       },
       "shaderChannel": "time",
-      "priority": 1
+      "priority": 1.0
     },
     "beatShift-patch": {
       "shaderId": "beatShift",
@@ -1644,7 +1644,7 @@
         }
       },
       "shaderChannel": "time",
-      "priority": 1
+      "priority": 1.0
     },
     "zigZag-patch": {
       "shaderId": "zigZag",
@@ -1660,6 +1660,18 @@
         "uvIn": {
           "type": "shader-channel",
           "shaderChannel": "main"
+        },
+        "amplitude": {
+          "type": "datasource",
+          "dataSourceId": "amplitudeSlider"
+        },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "period": {
+          "type": "datasource",
+          "dataSourceId": "periodSlider"
         }
       }
     },
@@ -1671,7 +1683,7 @@
           "shaderChannel": "main"
         }
       },
-      "priority": 6
+      "priority": 6.0
     }
   },
   "controls": {
@@ -1731,7 +1743,7 @@
     "beatBrightness": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 0,
+      "initialValue": 0.0,
       "controlledDataSourceId": "beatBrightnessSlider"
     },
     "saturation": {
@@ -1877,7 +1889,7 @@
       "type": "baaahs.Core:Slider",
       "title": "Gamma",
       "minValue": 0.5,
-      "maxValue": 2,
+      "maxValue": 2.0,
       "controlledDataSourceId": "gammaSlider"
     },
     "tint": {
@@ -2009,17 +2021,17 @@
     "conflagration": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15,
-      "minValue": 5,
-      "maxValue": 20,
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0,
       "controlledDataSourceId": "conflagrationSlider"
     },
     "intensity2": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15,
-      "minValue": 5,
-      "maxValue": 20,
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0,
       "controlledDataSourceId": "intensitySlider2"
     },
     "spaceRings": {
@@ -2055,9 +2067,9 @@
     "zoom": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2,
-      "minValue": 1,
-      "maxValue": 10,
+      "initialValue": 2.0,
+      "minValue": 1.0,
+      "maxValue": 10.0,
       "controlledDataSourceId": "zoomSlider"
     },
     "hippieTrap": {
@@ -2332,7 +2344,7 @@
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
       "initialValue": 0.25,
-      "minValue": 0,
+      "minValue": 0.0,
       "maxValue": 1.25
     },
     "beatInfo": {
@@ -2341,35 +2353,35 @@
     "beatBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Brightness",
-      "initialValue": 0,
-      "minValue": 0,
+      "initialValue": 0.0,
+      "minValue": 0.0,
       "maxValue": 1.25
     },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
-      "initialValue": 1,
-      "minValue": 0,
+      "initialValue": 1.0,
+      "minValue": 0.0,
       "maxValue": 1.25
     },
     "sizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Size",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 0.75,
       "maxValue": 1.25
     },
     "panSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Pan",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 3.14159,
       "maxValue": 6.283
     },
     "tiltSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Tilt",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": -1.2217,
       "maxValue": 1.2217
     },
@@ -2387,9 +2399,9 @@
     "fadeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Fade",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "beatLink": {
       "type": "baaahs.BeatLink:BeatLink"
@@ -2397,9 +2409,9 @@
     "scaleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Scale",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "centerXyPad": {
       "type": "baaahs.Core:XyPad",
@@ -2409,9 +2421,9 @@
     "beatSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "resolution": {
       "type": "baaahs.Core:Resolution"
@@ -2420,22 +2432,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Size",
       "initialValue": 0.1,
-      "minValue": 0,
-      "maxValue": 1
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "tintSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Tint",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "gammaSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Gamma",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 0.5,
-      "maxValue": 2
+      "maxValue": 2.0
     },
     "tintColorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
@@ -2450,37 +2462,37 @@
     "deformationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Deformation",
-      "initialValue": 2,
-      "minValue": 1,
-      "maxValue": 4
+      "initialValue": 2.0,
+      "minValue": 1.0,
+      "maxValue": 4.0
     },
     "rednessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Redness",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "checkerboardSizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Checkerboard Size",
       "initialValue": 0.1,
       "minValue": 0.001,
-      "maxValue": 1
+      "maxValue": 1.0
     },
     "whitenessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Whiteness",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "tightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Tightness",
-      "initialValue": 20,
-      "minValue": 1,
-      "maxValue": 400
+      "initialValue": 20.0,
+      "minValue": 1.0,
+      "maxValue": 400.0
     },
     "date": {
       "type": "baaahs.Core:Date"
@@ -2496,22 +2508,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Rate1",
       "initialValue": 1.9,
-      "minValue": -3,
-      "maxValue": 3
+      "minValue": -3.0,
+      "maxValue": 3.0
     },
     "rate2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Rate2",
       "initialValue": 0.6,
-      "minValue": -3,
-      "maxValue": 3
+      "minValue": -3.0,
+      "maxValue": 3.0
     },
     "loopcycleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Loopcycle",
-      "initialValue": 85,
-      "minValue": 20,
-      "maxValue": 100
+      "initialValue": 85.0,
+      "minValue": 20.0,
+      "maxValue": 100.0
     },
     "color1Slider": {
       "type": "baaahs.Core:Slider",
@@ -2523,7 +2535,7 @@
     "color2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Color2",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": -1.25,
       "maxValue": 1.125
     },
@@ -2558,37 +2570,37 @@
     "intensitySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "conflagrationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15,
-      "minValue": 5,
-      "maxValue": 20
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     },
     "intensitySlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Intensity",
-      "initialValue": 15,
-      "minValue": 5,
-      "maxValue": 20
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     },
     "zoomSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 2,
-      "minValue": 1,
-      "maxValue": 10
+      "initialValue": 2.0,
+      "minValue": 1.0,
+      "maxValue": 10.0
     },
     "twistSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Twist",
       "initialValue": 0.2,
-      "minValue": -4,
-      "maxValue": 4
+      "minValue": -4.0,
+      "maxValue": 4.0
     },
     "pixelIndex": {
       "type": "baaahs.Core:PixelIndex"
@@ -2599,30 +2611,30 @@
     "beatWarpinessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Warpiness",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 0.5,
-      "maxValue": 3
+      "maxValue": 3.0
     },
     "rippleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "fakeybeatSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Fakeybeat",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 5
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 5.0
     },
     "heartSizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Heart Size",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 0.25,
-      "maxValue": 2
+      "maxValue": 2.0
     },
     "heartCenterXyPad": {
       "type": "baaahs.Core:XyPad",
@@ -2631,16 +2643,16 @@
     "mysterNumberSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Myster Number",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "soundAnalysis": {
       "type": "baaahs.SoundAnalysis:SoundAnalysis"
@@ -2648,37 +2660,51 @@
     "soundBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Sound Brightness",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "speedSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Speed",
-      "initialValue": 10,
-      "minValue": 5,
-      "maxValue": 20
+      "initialValue": 10.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     },
     "timeShiftSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Time Shift",
-      "initialValue": 0,
-      "minValue": -1,
-      "maxValue": 1
+      "initialValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0
     },
     "beatTimeShiftAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Time Shift Amount",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": 0.5,
-      "maxValue": 2
+      "maxValue": 2.0
     },
     "zigSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zig",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "amplitudeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Amplitude",
+      "initialValue": 0.1,
+      "minValue": 0.05,
+      "maxValue": 0.2
+    },
+    "periodSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Period",
+      "initialValue": 10.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     }
   },
   "version": 7
