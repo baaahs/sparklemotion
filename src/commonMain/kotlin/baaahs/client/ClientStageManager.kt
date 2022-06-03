@@ -2,6 +2,7 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
+import baaahs.midi.MidiDevices
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
@@ -9,6 +10,7 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.util.globalLaunch
 import baaahs.sm.webapi.ShowControlCommands
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +22,7 @@ class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
     sceneProvider: SceneProvider,
+    private val midiDevices: MidiDevices,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : BaseShowPlayer(toolchain, SceneProviderWithFallback(sceneProvider)) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
@@ -30,6 +33,16 @@ class ClientStageManager(
 
     private val showControlCommands = ShowControlCommands.IMPL
         .createSender(pubSub)
+
+    init {
+        globalLaunch {
+            midiDevices.listTransmitters().forEach { midiTransmitter ->
+                midiTransmitter.listen { midiMessage ->
+                    println("MIDI from ${midiTransmitter.id}: $midiMessage")
+                }
+            }
+        }
+    }
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
