@@ -6,6 +6,8 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.io.Fs
 import baaahs.io.RealFs
+import baaahs.midi.JvmMidiDevices
+import baaahs.midi.MidiDevices
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -19,6 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
+import javax.sound.midi.MidiMessage
+import javax.sound.midi.MidiSystem
+import javax.sound.midi.Receiver
+import javax.sound.midi.ShortMessage
 
 class JvmPlatformModule(
     private val clock_: Clock
@@ -39,6 +45,37 @@ class JvmPinkyModule(
     private val startupArgs: Array<String>
 ) : PinkyModule {
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
+
+    init {
+        val name = "iCON iControls V2.04 Port 1"
+        val transmitters = MidiSystem.getMidiDeviceInfo().mapNotNull { info ->
+            println("${info.name}: ${info.javaClass.simpleName}\n  DESC=${info.description}\n  VENDOR=${info.vendor}\n  VERSION=${info.version}")
+            val device = MidiSystem.getMidiDevice(info)
+            val maxTransmitters = device.maxTransmitters
+            if (maxTransmitters == -1 || maxTransmitters > 0) {
+                device
+            } else null
+        }
+        val transmitterDevice = transmitters.firstOrNull { it.deviceInfo.description == name }
+        transmitterDevice?.let {
+            it.open()
+            val transmitter = it.transmitter
+            transmitter.receiver = object : Receiver {
+                override fun close() {
+                    println("close!")
+                }
+
+                override fun send(message: MidiMessage?, timeStamp: Long) {
+                    when (message) {
+                        is ShortMessage -> println("MIDI: " +
+                                "channel=${message.channel} command=${message.command} " +
+                                "data1=${message.data1} data2=${message.data2}")
+                        else -> println("send! $message $timeStamp")
+                    }
+                }
+            }
+        }
+    }
 
     override val Scope.serverPlugins: ServerPlugins
         get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
@@ -63,6 +100,8 @@ class JvmPinkyModule(
         get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
+    override val Scope.midiDevices: MidiDevices
+        get() = JvmMidiDevices()
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }
