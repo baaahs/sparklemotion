@@ -28,6 +28,8 @@ import baaahs.util.asMillis
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlin.math.ceil
+import kotlin.math.log2
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -45,6 +47,7 @@ abstract class Mapper(
     private val facade = Facade()
 
     private var selectedDevice: MediaDevices.Device? = null
+
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
 
@@ -60,7 +63,7 @@ abstract class Mapper(
 
     private val activeColor = Color(0x07, 0xFF, 0x07)
     private val inactiveColor = Color(0x01, 0x00, 0x01)
-    
+
     private val sessions: MutableList<String> = arrayListOf()
     private val stats = mapperStats
 
@@ -222,6 +225,21 @@ abstract class Mapper(
             sendToAllReliably(relevantBrains) { it.pixelShaderBuffer }
         }
 
+        private suspend fun turnOnPixelsByMask(maskBit: Int, invert: Boolean) {
+            resetToBase()
+            val mask = 1 shl maskBit
+            brainsToMap.values.forEach { brainToMap ->
+                for (i in 0 until brainToMap.expectedPixelCountOrDefault) {
+                    val pixelOn = if (i and mask != 0) !invert else invert
+                    if (pixelOn) {
+                        brainToMap.pixelShaderBuffer[i] = 1
+                    }
+                }
+            }
+
+            sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
+        }
+
         suspend fun start() {
             showMessage("CALIBRLATING…")
             logger.info { "Visible surfaces: ${visibleSurfaces.joinToString { it.entity.name }}" }
@@ -281,14 +299,72 @@ abstract class Mapper(
                     pixelIndexX * pixelStep % maxPixelForTheseBrains + pixelIndexX * pixelStep / maxPixelForTheseBrains
 
 
-                for (pixelIndexX in 0 until maxPixelForTheseBrains) {
-                    // Reorder so we get e.g. 0, 4, 8, ..., 1, 5, 9, ..., 2, 6, 10, ..., 3, 7, 11, ...
-                    val pixelIndex = actualPixelIndex(pixelIndexX)
-                    identifyPixel(pixelIndex, maxPixelForTheseBrains, pixelIndexX)
+                val useBitMaskAlgorithm = true
+                if (useBitMaskAlgorithm) {
+                    val neededBits = ceil(log2(maxPixelForTheseBrains.toDouble())).toInt()
+                    val maskBitmaps = arrayListOf<Pair<Bitmap, Bitmap>>()
+
+                    for (b in 0 until neededBits) {
+                        val bitmap0 = captureMaskedPixelsImage(b, false)
+                        delay(250)
+                        val bitmap1 = captureMaskedPixelsImage(b, true)
+                        delay(250)
+                        maskBitmaps.add(bitmap0 to bitmap1)
+                    }
+
+                    for (pixelIndex in 0 until maxPixelForTheseBrains) {
+                        val progress = (pixelIndex.toFloat() / maxPixelForTheseBrains * 100).roundToInt()
+                        showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains ($progress%)…")
+                        var compositeBitmap: Bitmap? = null
+
+                        for (b in 0 until neededBits) {
+                            val shouldBeOn = pixelIndex ushr b and 1 == 1
+
+                            val mask = maskBitmaps[b].let { if (shouldBeOn) it.first else it.second }
+                            if (compositeBitmap == null) {
+                                compositeBitmap = mask.clone()
+                            } else {
+                                compositeBitmap.darken(mask)
+                            }
+                            showDiffImage(compositeBitmap)
+                        }
+
+                        val analysis = stats.diffImage.time {
+                            ImageProcessing.analyze(compositeBitmap!!)
+                        }
+                        val pixelChangeRegion = stats.detectChangeRegion.time {
+                            analysis.detectChangeRegion(.9f)
+                        }
+                        showDiffImage(compositeBitmap!!, pixelChangeRegion)
+//                        delay(500)
+
+                        brainsToMap.values.forEach { brainToMap ->
+                            val visibleSurface = brainToMap.guessedVisibleSurface
+
+                            logger.debug { "* analysis: hasBrightSpots=${analysis.hasBrightSpots()}" }
+                            logger.debug { "* pixelChangeRegion=$pixelChangeRegion" }
+                            if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
+                                val centerUv = pixelChangeRegion.centerUv
+                                visibleSurface?.setPixel(pixelIndex, centerUv)
+                                val pixelOnImageName = "fancy-mask-pixel-$pixelIndex.png"
+                                brainToMap.pixelMapData[pixelIndex] = PixelMapData(pixelChangeRegion, pixelOnImageName)
+                                logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
+                            } else {
+                                showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
+                                logger.debug { "looks like no pixel $pixelIndex for ${brainToMap.brainId}…" }
+                            }
+                        }
+                    }
+                } else {
+                    for (pixelIndexX in 0 until maxPixelForTheseBrains) {
+                        // Reorder so we get e.g. 0, 4, 8, ..., 1, 5, 9, ..., 2, 6, 10, ..., 3, 7, 11, ...
+                        val pixelIndex = actualPixelIndex(pixelIndexX)
+                        identifyPixel(pixelIndex, maxPixelForTheseBrains, pixelIndexX)
 
 //                    pauseForUserInteraction()
-                    waitUntilUnpaused()
-                    allPixelsOff()
+                        waitUntilUnpaused()
+                        allPixelsOff()
+                    }
                 }
                 logger.info { "done identifying pixels..." }
 
@@ -325,6 +401,23 @@ abstract class Mapper(
             unlockUi()
 
             retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
+        }
+
+        private suspend fun captureMaskedPixelsImage(maskBit: Int, invert: Boolean): Bitmap {
+            turnOnPixelsByMask(maskBit, invert)
+            val pixelOnBitmap = stats.captureImage.stime {
+                slowCamDelay()
+                getBrightImageBitmap(2)
+            }
+
+            showBaseImage(baseBitmap!!)
+            stats.diffImage.time {
+                ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
+            }
+            showDiffImage(deltaBitmap)
+            val thisDelta = deltaBitmap
+            deltaBitmap = NativeBitmap(deltaBitmap.width, deltaBitmap.height)
+            return thisDelta
         }
 
         private fun gatherResults(): List<MappingSession.SurfaceData> {
@@ -679,7 +772,7 @@ abstract class Mapper(
                     if (it.failAt < now) {
                         logger.debug {
                             "Timed out waiting after ${now - it.sentAt}s for ${it.brainToMap.brainId}" +
-                                " pong ${it.key.stringify()}"
+                                    " pong ${it.key.stringify()}"
                         }
                         it.failed()
                         true

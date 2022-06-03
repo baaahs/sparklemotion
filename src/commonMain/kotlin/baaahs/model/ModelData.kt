@@ -27,11 +27,17 @@ data class ModelData(
         Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units)
 }
 
-enum class ModelUnit(val display: String) {
-    Inches("\""),
-    Feet("'"),
-    Centimeters("cm"),
-    Meters("m");
+enum class ModelUnit(val display: String, val inCentimeters: Double) {
+    Inches("\"", 2.54),
+    Feet("'", 2.54 * 12),
+    Centimeters("cm", 1.0),
+    Meters("m", 100.0);
+
+    fun toCm(value: Double) = value * inCentimeters
+    fun toCm(value: Float): Float = (value * inCentimeters).toFloat()
+
+    fun fromCm(value: Double) = value / inCentimeters
+    fun fromCm(value: Float): Float = (value / inCentimeters).toFloat()
 
     companion object {
         val default = Centimeters
