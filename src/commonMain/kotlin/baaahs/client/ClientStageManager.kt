@@ -2,18 +2,21 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
+import baaahs.midi.MidiDevices
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.util.globalLaunch
 import kotlinx.serialization.json.JsonElement
 
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    sceneProvider: SceneProvider
+    sceneProvider: SceneProvider,
+    private val midiDevices: MidiDevices
 ) : BaseShowPlayer(toolchain, sceneProvider) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
@@ -21,6 +24,15 @@ class ClientStageManager(
     val activePatchSet: ActivePatchSet
         get() = openShow!!.buildActivePatchSet()
 
+    init {
+        globalLaunch {
+            midiDevices.listTransmitters().forEach { midiTransmitter ->
+                midiTransmitter.listen { midiMessage ->
+                    println("MIDI from ${midiTransmitter.id}: $midiMessage")
+                }
+            }
+        }
+    }
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
     }
