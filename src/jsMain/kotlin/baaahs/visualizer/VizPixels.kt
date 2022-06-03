@@ -21,7 +21,8 @@ class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
     val transformation: Matrix4F,
-    val pixelFormat: PixelFormat
+    val pixelFormat: PixelFormat,
+    val pixelSizeRange: ClosedFloatingPointRange<Float> = 2f..5f
 ) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()
@@ -45,7 +46,9 @@ class VizPixels(
 
         val rotator = Rotator(vector3FacingForward, normal)
         planeGeometry = BufferGeometryUtils.mergeBufferGeometries(positions.map { position ->
-            PlaneBufferGeometry(pixelDimension(), pixelDimension()).apply {
+            val pixelWidth = pixelSizeRange.interpolate(Random.nextFloat())
+            val pixelHeight = pixelSizeRange.interpolate(Random.nextFloat())
+            PlaneBufferGeometry(pixelWidth, pixelHeight).apply {
                 rotator.rotate(this)
                 translate(position.x, position.y, position.z)
             }
@@ -53,7 +56,8 @@ class VizPixels(
         planeGeometry.setAttribute("color", vertexColorBufferAttr)
     }
 
-    private fun pixelDimension() = 4 + Random.nextFloat() * 8
+    fun ClosedFloatingPointRange<Float>.interpolate(fl: Float) =
+        fl * (endInclusive - start) + start
 
     private val pixelsMesh = Mesh(planeGeometry, MeshBasicMaterial().apply {
         side = FrontSide
