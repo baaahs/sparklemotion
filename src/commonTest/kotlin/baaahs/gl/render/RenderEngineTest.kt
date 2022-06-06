@@ -2,6 +2,7 @@ package baaahs.gl.render
 
 import baaahs.Color
 import baaahs.device.PixelArrayDevice
+import baaahs.doRunBlocking
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayFixture
@@ -74,7 +75,7 @@ class RenderEngineTest {
         val renderTarget = renderEngine.addFixture(fakeSurface())
         renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
-        renderEngine.draw()
+        drawAndFinish()
 
         expectColor(
             Color(0f, .1f, .5f),
@@ -103,7 +104,7 @@ class RenderEngineTest {
         renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget))
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").position = .1f
-        renderEngine.draw()
+        drawAndFinish()
 
         expectColor(
             Color(0f, .1f, .1f),
@@ -112,7 +113,7 @@ class RenderEngineTest {
         ) { renderTarget.colors.toList() }
 
         fakeShowPlayer.getGadget<Slider>("blueSlider").position = .2f
-        renderEngine.draw()
+        drawAndFinish()
 
         expectColor(
             Color(0f, .1f, .2f),
@@ -141,7 +142,7 @@ class RenderEngineTest {
         val renderTarget3 = renderEngine.addFixture(fakeSurface("s3"))
         renderEngine.setRenderPlan(renderPlanFor(glslProgram, renderTarget1, renderTarget2, renderTarget3))
 
-        renderEngine.draw()
+        drawAndFinish()
 
         expectColor(
             Color(0f, .1f, .5f),
@@ -187,7 +188,7 @@ class RenderEngineTest {
 //        renderTarget1.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .2f))
 //        renderTarget2.uniforms.updateFrom(arrayOf(1f, 1f, 1f, 1f, 1f, 1f, .3f))
 
-        renderEngine.draw()
+        drawAndFinish()
 
         expectColor(
             Color(0f, .1f, .2f),
@@ -269,6 +270,13 @@ class RenderEngineTest {
         }
     }
 
+    private fun drawAndFinish() {
+        doRunBlocking {
+            renderEngine.draw()
+            renderEngine.finish()
+        }
+    }
+
     // More forgiving color equality checking, allows each channel to be off by one.
     fun expectColor(vararg expected: Color, actualFn: () -> List<Color>) {
         val actual = actualFn()
@@ -306,5 +314,5 @@ private val directXyProjection = Shader(
     """.trimIndent()
 )
 
-val FixtureRenderTarget.colors: ColorResultType.ColorFixtureResults
-    get() = TODO("PixelArrayDevice.getColorResults(this.fixtureResults)")
+val FixtureRenderTarget.colors: ColorResultType.ColorFixtureResults get() =
+    this.fixtureResults as ColorResultType.ColorFixtureResults
