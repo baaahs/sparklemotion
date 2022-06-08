@@ -22,6 +22,6 @@ val resourcesBase: String get() = document["resourcesBase"]
 
 actual val internalTimerClock: Clock = JsClock
 
-actual fun decodeBase64(s: String): ByteArray {
-    return window.atob(s).encodeToByteArray()
-}
+actual fun decodeBase64(s: String): ByteArray = window.atob(s).encodeToByteArray()
+
+actual fun encodeBase64(b: ByteArray): String = window.btoa(b.decodeToString())

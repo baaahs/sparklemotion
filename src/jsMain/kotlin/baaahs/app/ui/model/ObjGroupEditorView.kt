@@ -2,6 +2,7 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
+import baaahs.model.ConstEntityMetadataProvider
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
 import baaahs.ui.*
@@ -25,6 +26,11 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
 
     val handleObjDataChange by formEventHandler(mutableEntity, props.editingEntity) {
         mutableEntity.objData = it.target.value
+        props.editingEntity.onChange()
+    }
+
+    val handleExpectedPixelCountChange by handler(mutableEntity, props.editingEntity) { newValue: Int? ->
+        mutableEntity.metadata = ConstEntityMetadataProvider(newValue)
         props.editingEntity.onChange()
     }
 
@@ -65,6 +71,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             }
         } else {
             TextField {
+                attrs.classes = jso { this.root = -styles.objImportTextField }
                 attrs.fullWidth = true
                 attrs.multiline = true
                 attrs.rows = 6
@@ -85,6 +92,16 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
                     }
                 }
             }
+        }
+    }
+
+    val metadata = mutableEntity.metadata
+    if (metadata is ConstEntityMetadataProvider) {
+        with(styles) {
+            numberTextField(
+                "Expected Pixels:", metadata.pixelCount,
+                onChange = handleExpectedPixelCountChange
+            )
         }
     }
 }

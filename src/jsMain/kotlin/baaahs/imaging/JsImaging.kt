@@ -132,6 +132,42 @@ abstract class JsImage : Image {
     )
 }
 
+class DomImage(val image: org.w3c.dom.Image) : JsImage() {
+    override val width: Int
+        get() = image.width
+    override val height: Int
+        get() = image.height
+
+    override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
+        ctx.drawImage(image, x.toDouble(), y.toDouble())
+    }
+
+    override fun draw(
+        ctx: CanvasRenderingContext2D,
+        sX: Int,
+        sY: Int,
+        sWidth: Int,
+        sHeight: Int,
+        dX: Int,
+        dY: Int,
+        dWidth: Int,
+        dHeight: Int
+    ) {
+        ctx.drawImage(
+            image,
+            sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
+            dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
+        )
+
+    }
+
+    override fun toBitmap(): Bitmap {
+        val bitmap = NativeBitmap(width, height)
+        bitmap.drawImage(this)
+        return bitmap
+    }
+}
+
 class WebGlImage(private val webGlContext: WebGLRenderingContext) : JsImage() {
     override val width: Int
         get() = webGlContext.drawingBufferWidth
@@ -172,7 +208,7 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
     }
 
     override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
-        ctx.drawImage(imageBitmap, 0.0, 0.0)
+        ctx.drawImage(imageBitmap, x.toDouble(), y.toDouble())
     }
 
     override fun draw(

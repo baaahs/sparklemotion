@@ -7,6 +7,7 @@ import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxManagerImpl
+import baaahs.dmx.DmxUniverseListener
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.FixturePublisher
@@ -110,7 +111,9 @@ interface PinkyModule : KModule {
                 scoped<PubSub.Endpoint> { get<PubSub.Server>() }
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
-                scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
+                scoped { DmxUniverseListener(get()) }
+                scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
+                scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse), get(), get(), get()) }
                 scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
                 scoped { RenderManager(get(named("PinkyGlContext"))) }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
@@ -121,7 +124,7 @@ interface PinkyModule : KModule {
                 scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(pinkyContext), get()) }
+                scoped { SacnManager(get(), get(pinkyContext), get(), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> {

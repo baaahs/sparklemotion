@@ -76,20 +76,20 @@
         "tabs": [
           {
             "type": "Grid",
-            "title": "Grid",
+            "title": "Surfaces",
             "columns": 12,
             "rows": 6,
             "items": [
               {
                 "controlId": "vacuity",
-                "column": 2,
+                "column": 3,
                 "row": 2,
-                "width": 4,
+                "width": 7,
                 "height": 2
               },
               {
                 "controlId": "heart",
-                "column": 2,
+                "column": 3,
                 "row": 0
               },
               {
@@ -116,10 +116,10 @@
                 "controlId": "newButtonGroup3",
                 "column": 0,
                 "row": 0,
-                "width": 2,
+                "width": 3,
                 "height": 6,
                 "layout": {
-                  "columns": 2,
+                  "columns": 3,
                   "rows": 8,
                   "items": [
                     {
@@ -134,92 +134,80 @@
                     },
                     {
                       "controlId": "checkerboard",
-                      "column": 1,
-                      "row": 1
+                      "column": 2,
+                      "row": 0
                     },
                     {
                       "controlId": "circularDependency",
-                      "column": 1,
-                      "row": 2
+                      "column": 2,
+                      "row": 3
                     },
                     {
                       "controlId": "pinks",
                       "column": 0,
-                      "row": 1
+                      "row": 3
                     },
                     {
                       "controlId": "spaceRings",
-                      "column": 0,
+                      "column": 1,
                       "row": 2
                     },
                     {
                       "controlId": "plaid",
                       "column": 0,
-                      "row": 3
+                      "row": 2
                     },
                     {
                       "controlId": "fireball",
                       "column": 1,
-                      "row": 3
+                      "row": 1
                     },
                     {
                       "controlId": "bandlimitedSynthesis1",
-                      "column": 0,
-                      "row": 5
+                      "column": 2,
+                      "row": 2
                     },
                     {
                       "controlId": "yasQueen",
                       "column": 1,
-                      "row": 4
+                      "row": 3
                     },
                     {
                       "controlId": "orangeSnowflake",
-                      "column": 0,
-                      "row": 4
+                      "column": 2,
+                      "row": 1
                     },
                     {
                       "controlId": "solidColor2",
-                      "column": 1,
-                      "row": 5
+                      "column": 2,
+                      "row": 7
                     },
                     {
                       "controlId": "danceyCubes2",
                       "column": 0,
-                      "row": 6
+                      "row": 4
                     },
                     {
                       "controlId": "colorDiffusionFlow2",
                       "column": 1,
-                      "row": 6
+                      "row": 4
                     },
                     {
                       "controlId": "quiver",
-                      "column": 0,
-                      "row": 7
+                      "column": 2,
+                      "row": 4
                     }
                   ]
                 }
               },
               {
                 "controlId": "wobble",
-                "column": 3,
+                "column": 4,
                 "row": 0
-              },
-              {
-                "controlId": "deformation",
-                "column": 6,
-                "row": 4,
-                "height": 2
               },
               {
                 "controlId": "size",
                 "column": 5,
-                "row": 4,
-                "height": 2
-              },
-              {
-                "controlId": "beatBrightness",
-                "column": 3,
                 "row": 4,
                 "height": 2
               },
@@ -231,96 +219,67 @@
               },
               {
                 "controlId": "brightness",
-                "column": 2,
+                "column": 3,
                 "row": 4,
                 "height": 2
               },
               {
                 "controlId": "wobbleAmount",
-                "column": 7,
+                "column": 6,
                 "row": 4,
                 "height": 2
               },
               {
                 "controlId": "scanner2",
-                "column": 4,
+                "column": 5,
                 "row": 0
               },
               {
                 "controlId": "sparklez",
-                "column": 5,
+                "column": 6,
                 "row": 0
               },
               {
                 "controlId": "soundAnalysis",
-                "column": 8,
-                "row": 0,
+                "column": 10,
+                "row": 1,
                 "width": 2
               },
               {
                 "controlId": "soundBrightness",
-                "column": 6,
+                "column": 7,
                 "row": 0
               },
               {
                 "controlId": "thatSAllFolks",
-                "column": 2,
-                "row": 1
-              },
-              {
-                "controlId": "timeScaler",
                 "column": 3,
                 "row": 1
               },
               {
+                "controlId": "timeScaler",
+                "column": 7,
+                "row": 1
+              },
+              {
                 "controlId": "beatShift",
-                "column": 4,
+                "column": 6,
                 "row": 1
               },
               {
                 "controlId": "zigZag",
-                "column": 5,
+                "column": 4,
                 "row": 1
               },
               {
                 "controlId": "blackout",
-                "column": 6,
+                "column": 5,
                 "row": 1
               }
             ]
           },
           {
-            "type": "Legacy",
-            "title": "Old",
-            "columns": [
-              "1fr",
-              "3fr",
-              "1fr",
-              "1fr"
-            ],
-            "rows": [
-              "2fr",
-              "5fr",
-              "3fr"
-            ],
-            "areas": [
-              "backdrops",
-              "filters",
-              "filters",
-              "preview",
-              "backdrops",
-              "controls",
-              "controls",
-              "controls",
-              "backdrops",
-              "moreControls",
-              "transition",
-              "transition"
-            ]
-          },
-          {
             "type": "Grid",
-            "title": "Empty",
+            "title": "Movers",
             "columns": 6,
             "rows": 4,
             "items": [
@@ -338,7 +297,7 @@
   "shaders": {
     "flatProjection": {
       "title": "Flat Projection",
-      "src": "\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"
+      "src": "\n// Cylindrical Projection\n// !SparkleMotion:internal\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\nconst float PI = 3.141592654;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(pixelOffset.x, pixelOffset.y);\n    // vec3 normalDelta = normalize(pixelOffset);\n    // float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]\n    // if (theta < 0.0) theta += (2.0f * PI);                 // theta in range [0,2π)\n    // float u = theta / (2.0f * PI);                         // u in range [0,1)\n    // float v = (pixelOffset.y + modelInfo.extents.y / 2.0f) / modelInfo.extents.y;\n    // return vec2(u, v);\n}\n"
     },
     "darkness": {
       "title": "Darkness",
@@ -474,7 +433,7 @@
     },
     "quiver": {
       "title": "Quiver",
-      "src": "////////////////////////////////////////////////////////////////////////////////\n//\n// Playing around with simplex noise and polar-coords with a lightning-themed\n// scene.\n//\n// Copyright 2019 Mirco Müller\n//\n// Author(s):\n//   Mirco \"MacSlow\" Müller <macslow@gmail.com>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License version 3, as published\n// by the Free Software Foundation.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranties of\n// MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR\n// PURPOSE.  See the GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this program.  If not, see <http://www.gnu.org/licenses/>.\n//\n////////////////////////////////////////////////////////////////////////////////\n\nmat2 r2d (in float degree)\n{\n\tfloat rad = radians (degree);\n\tfloat c = cos (rad);\n\tfloat s = sin (rad);\n\treturn mat2 (vec2 (c, s),vec2 (-s, c));\n}\n\n// using a slightly adapted implementation of iq's simplex noise from\n// https://www.shadertoy.com/view/Msf3WH with hash(), noise() and fbm()\nvec2 hash (in vec2 p)\n{\n\tp = vec2 (dot (p, vec2 (127.1, 311.7)),\n\t\t\t  dot (p, vec2 (269.5, 183.3)));\n\n\treturn -1. + 2.*fract (sin (p)*43758.5453123);\n}\n\nfloat noise (in vec2 p)\n{\n    const float K1 = .366025404;\n    const float K2 = .211324865;\n\n\tvec2 i = floor (p + (p.x + p.y)*K1);\n\t\n    vec2 a = p - i + (i.x + i.y)*K2;\n    vec2 o = step (a.yx, a.xy);    \n    vec2 b = a - o + K2;\n\tvec2 c = a - 1. + 2.*K2;\n\n    vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);\n\n\tvec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),\n\t\t\t\t\t\t   dot (b, hash (i + o)),\n\t\t\t\t\t\t   dot (c, hash (i + 1.)));\n\n    return dot (n, vec3 (70.));\n}\n\nfloat fbm (in vec2 p)\n{\n\tmat2 rot = r2d (27.5);\n    float d = noise (p); p *= rot;\n    d += .5*noise (p); p *= rot;\n    d += .25*noise (p); p *= rot;\n    d += .125*noise (p); p *= rot;\n    d += .0625*noise (p);\n\td /= (1. + .5 + .25 + .125 + .0625);\n\treturn .5 + .5*d;\n}\n\nvec2 mapToScreen (in vec2 p, in float scale)\n{\n    vec2 res = p;\n    res = res * 2. - 1.;\n    res.x *= iResolution.x / iResolution.y;\n    res *= scale;\n    \n    return res;\n}\n\nvec2 cart2polar (in vec2 cart)\n{\n    float r = length (cart);\n    float phi = atan (cart.y, cart.x);\n    return vec2 (r, phi); \n}\n\nvec2 polar2cart (in vec2 polar)\n{\n    float x = polar.x*cos (polar.y);\n    float y = polar.x*sin (polar.y);\n    return vec2 (x, y); \n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = mapToScreen (fragCoord.xy/iResolution.xy, 2.5);\n\n\tuv *= r2d (12.*iTime);\n    float len = length (uv);\n\tfloat thickness = .25;\n    float haze = 2.5;\n\n    // distort UVs a bit\n    uv = cart2polar (uv);\n    uv.y += .2*(.5 + .5*sin(cos (uv.x)*len));\n    uv = polar2cart (uv);\n\n    float d1 = abs ((uv.x*haze)*thickness / (uv.x + fbm (uv + 1.25*iTime)));\n    float d2 = abs ((uv.y*haze)*thickness / (uv.y + fbm (uv - 1.5*iTime)));\n    float d3 = abs ((uv.x*uv.y*haze)*thickness / (uv.x*uv.y + fbm (uv - 2.*iTime)));\n    vec3 col = vec3 (.0);\n    float size = .075;\n\tcol += d1*size*vec3 (.1, .8, 2.);\n\tcol += d2*size*vec3 (2., .1, .8);\n\tcol += d3*size*vec3 (.8, 2., .1);\n\n    fragColor = vec4 (col, 1.);\n}\n"
+      "src": "uniform float twist; // @@Slider default=.2 min=-4 max=4\n\n////////////////////////////////////////////////////////////////////////////////\n//\n// Playing around with simplex noise and polar-coords with a lightning-themed\n// scene.\n//\n// Copyright 2019 Mirco Müller\n//\n// Author(s):\n//   Mirco \"MacSlow\" Müller <macslow@gmail.com>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License version 3, as published\n// by the Free Software Foundation.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranties of\n// MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR\n// PURPOSE.  See the GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this program.  If not, see <http://www.gnu.org/licenses/>.\n//\n////////////////////////////////////////////////////////////////////////////////\n\nmat2 r2d (in float degree)\n{\n\tfloat rad = radians (degree);\n\tfloat c = cos (rad);\n\tfloat s = sin (rad);\n\treturn mat2 (vec2 (c, s),vec2 (-s, c));\n}\n\n// using a slightly adapted implementation of iq's simplex noise from\n// https://www.shadertoy.com/view/Msf3WH with hash(), noise() and fbm()\nvec2 hash (in vec2 p)\n{\n\tp = vec2 (dot (p, vec2 (127.1, 311.7)),\n\t\t\t  dot (p, vec2 (269.5, 183.3)));\n\n\treturn -1. + 2.*fract (sin (p)*43758.5453123);\n}\n\nfloat noise (in vec2 p)\n{\n    const float K1 = .366025404;\n    const float K2 = .211324865;\n\n\tvec2 i = floor (p + (p.x + p.y)*K1);\n\t\n    vec2 a = p - i + (i.x + i.y)*K2;\n    vec2 o = step (a.yx, a.xy);    \n    vec2 b = a - o + K2;\n\tvec2 c = a - 1. + 2.*K2;\n\n    vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);\n\n\tvec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),\n\t\t\t\t\t\t   dot (b, hash (i + o)),\n\t\t\t\t\t\t   dot (c, hash (i + 1.)));\n\n    return dot (n, vec3 (70.));\n}\n\nfloat fbm (in vec2 p)\n{\n\tmat2 rot = r2d (27.5);\n    float d = noise (p); p *= rot;\n    d += .5*noise (p); p *= rot;\n    d += .25*noise (p); p *= rot;\n    d += .125*noise (p); p *= rot;\n    d += .0625*noise (p);\n\td /= (1. + .5 + .25 + .125 + .0625);\n\treturn .5 + .5*d;\n}\n\nvec2 mapToScreen (in vec2 p, in float scale)\n{\n    vec2 res = p;\n    res = res * 2. - 1.;\n    res.x *= iResolution.x / iResolution.y;\n    res *= scale;\n    \n    return res;\n}\n\nvec2 cart2polar (in vec2 cart)\n{\n    float r = length (cart);\n    float phi = atan (cart.y, cart.x);\n    return vec2 (r, phi); \n}\n\nvec2 polar2cart (in vec2 polar)\n{\n    float x = polar.x*cos (polar.y);\n    float y = polar.x*sin (polar.y);\n    return vec2 (x, y); \n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = mapToScreen (fragCoord.xy/iResolution.xy, 2.5);\n\n\tuv *= r2d (12.*iTime);\n    float len = length (uv);\n\tfloat thickness = .25;\n    float haze = 2.5;\n\n    // distort UVs a bit\n    uv = cart2polar (uv);\n    uv.y += twist * (.5 + .5*sin(cos (uv.x)*len));\n    uv = polar2cart (uv);\n\n    float d1 = abs ((uv.x*haze)*thickness / (uv.x + fbm (uv + 1.25*iTime)));\n    float d2 = abs ((uv.y*haze)*thickness / (uv.y + fbm (uv - 1.5*iTime)));\n    float d3 = abs ((uv.x*uv.y*haze)*thickness / (uv.x*uv.y + fbm (uv - 2.*iTime)));\n    vec3 col = vec3 (.0);\n    float size = .075;\n\tcol += d1*size*vec3 (.1, .8, 2.);\n\tcol += d2*size*vec3 (2., .1, .8);\n\tcol += d3*size*vec3 (.8, 2., .1);\n\n    fragColor = vec4 (col, 1.);\n}\n"
     },
     "redYellowGreenBlue": {
       "title": "Red Yellow Green Blue",
@@ -510,7 +469,7 @@
     },
     "scanner2": {
       "title": "Scanner",
-      "src": "uniform float time;\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn, vec4 inColor) {\n    vec4 c = inColor;\n    float width = .025;\n\n    float xScan = cos(time) / 2. + .5;\n    if (abs(uvIn.x - xScan) < width) {\n        c.rgb *= .5;\n        c.r = 0.; // 1. - c.r;\n    }\n\n    float yScan = sin(time) / 2. + .5;\n    if (abs(uvIn.y - yScan) < width) {\n        c.rgb *= .5;\n        c.g = 0.; //  = 1. - c.g;\n    }\n\n    return vec4(c.r, c.g, c.b, 1.);\n}"
+      "src": "uniform float time;\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 c = upstreamColor(uvIn);\n    float width = .025;\n\n    float xScan = cos(time) / 2. + .5;\n    if (abs(uvIn.x - xScan) < width) {\n        c.rgb *= .5;\n        c.r = 0.; // 1. - c.r;\n    }\n\n    float yScan = sin(time) / 2. + .5;\n    if (abs(uvIn.y - yScan) < width) {\n        c.rgb *= .5;\n        c.g = 0.; //  = 1. - c.g;\n    }\n\n    return vec4(c.r, c.g, c.b, 1.);\n}"
     },
     "sparklez": {
       "title": "Sparklez™",
@@ -522,7 +481,7 @@
     },
     "heart": {
       "title": "Heart",
-      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform vec4 inColor; // @type color\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) / (heartSize * .25) - vec3(-heartCenter.x * 2., heartCenter.y * 2., 0.);\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = inColor;\n}"
+      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(heartCenter.xy, 0.)) * 4. / heartSize * .5;\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = upstreamColor(fragCoord);\n}"
     },
     "plaid": {
       "title": "Plaid",
@@ -554,7 +513,7 @@
     },
     "thatSAllFolks": {
       "title": "That's all, folks!",
-      "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec4 inColor, vec2 uvIn) {\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = sin(-length(p) * 60. * (0.8+ beatInfo.intensity * 0.2) + time * speed); // * beatInfo.intensity;\n    \n    float nr = inColor.rgb.r * d;\n    float ng = inColor.rgb.g * d;\n    float nb = inColor.rgb.b * d;\n    return vec4(nr, ng, nb, 1.0);\n}"
+      "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = sin(-length(p) * 60. * (0.8+ beatInfo.intensity * 0.2) + time * speed); // * beatInfo.intensity;\n\n    vec4 inColor = upstreamColor(uvIn);\n    float nr = inColor.rgb.r * d;\n    float ng = inColor.rgb.g * d;\n    float nb = inColor.rgb.b * d;\n    return vec4(nr, ng, nb, 1.0);\n}"
     },
     "timeScaler": {
       "title": "Time Scaler",
@@ -566,7 +525,7 @@
     },
     "zigZag": {
       "title": "Zig Zag",
-      "src": "uniform float time;\nuniform float zig; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * zig;\n}"
+      "src": "uniform float time;\nuniform float zig; // @type float\nuniform float amplitude; // @@Slider default=0.1 min=0.05 max=0.2\nuniform float period; // @@Slider default=10. min=5 max=20\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    int y = int(uvIn.y * 10.);\n    float beat = mix(beatInfo.confidence, time, beatInfo.intensity);\n    \n    return vec2(uvIn.x, uvIn.y + sin(uvIn.x * period + beat * 10.) * amplitude);\n}"
     },
     "blackout": {
       "title": "Blackout",
@@ -1235,6 +1194,10 @@
           "type": "datasource",
           "dataSourceId": "time"
         },
+        "twist": {
+          "type": "datasource",
+          "dataSourceId": "twistSlider"
+        },
         "fragCoord": {
           "type": "shader-channel",
           "shaderChannel": "main"
@@ -1382,7 +1345,7 @@
           "type": "shader-channel",
           "shaderChannel": "main"
         },
-        "inColor": {
+        "upstreamColor": {
           "type": "shader-channel",
           "shaderChannel": "main"
         }
@@ -1442,13 +1405,13 @@
           "type": "datasource",
           "dataSourceId": "beatInfo"
         },
-        "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
-        },
         "heartCenter": {
           "type": "datasource",
           "dataSourceId": "heartCenterXyPad"
+        },
+        "upstreamColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
         }
       }
     },
@@ -1609,10 +1572,6 @@
     "soundBrightness-patch": {
       "shaderId": "soundBrightness",
       "incomingLinks": {
-        "brightness": {
-          "type": "datasource",
-          "dataSourceId": "brightnessSlider"
-        },
         "soundAnalysis": {
           "type": "datasource",
           "dataSourceId": "soundAnalysis"
@@ -1647,7 +1606,7 @@
           "type": "datasource",
           "dataSourceId": "beatInfo"
         },
-        "inColor": {
+        "upstreamColor": {
           "type": "shader-channel",
           "shaderChannel": "main"
         }
@@ -1701,6 +1660,18 @@
         "uvIn": {
           "type": "shader-channel",
           "shaderChannel": "main"
+        },
+        "amplitude": {
+          "type": "datasource",
+          "dataSourceId": "amplitudeSlider"
+        },
+        "beatInfo": {
+          "type": "datasource",
+          "dataSourceId": "beatInfo"
+        },
+        "period": {
+          "type": "datasource",
+          "dataSourceId": "periodSlider"
         }
       }
     },
@@ -1766,7 +1737,6 @@
     "brightness": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
-      "initialValue": 0.25,
       "maxValue": 1.25,
       "controlledDataSourceId": "brightnessSlider"
     },
@@ -2311,14 +2281,6 @@
         "wobble-patch"
       ]
     },
-    "deformation": {
-      "type": "baaahs.Core:Slider",
-      "title": "Deformation",
-      "initialValue": 2.0,
-      "minValue": 1.0,
-      "maxValue": 4.0,
-      "controlledDataSourceId": "deformationSlider"
-    },
     "wobbleAmount": {
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
@@ -2633,6 +2595,13 @@
       "minValue": 1.0,
       "maxValue": 10.0
     },
+    "twistSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Twist",
+      "initialValue": 0.2,
+      "minValue": -4.0,
+      "maxValue": 4.0
+    },
     "pixelIndex": {
       "type": "baaahs.Core:PixelIndex"
     },
@@ -2722,6 +2691,20 @@
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
+    },
+    "amplitudeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Amplitude",
+      "initialValue": 0.1,
+      "minValue": 0.05,
+      "maxValue": 0.2
+    },
+    "periodSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Period",
+      "initialValue": 10.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     }
   },
   "version": 7

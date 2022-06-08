@@ -1,6 +1,7 @@
 package baaahs.controller
 
 import baaahs.device.PixelArrayDevice
+import baaahs.dmx.Dmx
 import baaahs.dmx.Dmx.Companion.channelsPerUniverse
 import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.DmxUniverses
@@ -29,7 +30,8 @@ import kotlin.coroutines.CoroutineContext
 class SacnManager(
     private val link: Network.Link,
     private val coroutineContext: CoroutineContext,
-    private val clock: Clock
+    private val clock: Clock,
+    private val universeListener: Dmx.UniverseListener? = null
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
     private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
@@ -71,7 +73,8 @@ class SacnManager(
                     val controller = SacnController(
                         key.id, sacnLink, link.createAddress(value.address),
                         value.defaultFixtureConfig, value.defaultTransportConfig,
-                        value.universes, clock.now()
+                        value.universes, clock.now(),
+                        universeListener
                     )
                     put(controller.controllerId, controller)
                     notifyListeners { onAdd(controller) }
@@ -127,7 +130,8 @@ class SacnManager(
                             val sacnController = SacnController(
                                 id, sacnLink, wledAddress,
                                 PixelArrayDevice.Config(pixelCount),
-                                null, universeCount, onlineSince
+                                null, universeCount, onlineSince,
+                                universeListener
                             )
                             discoveredControllers[sacnController.controllerId] = sacnController
                             notifyListeners { onAdd(sacnController) }

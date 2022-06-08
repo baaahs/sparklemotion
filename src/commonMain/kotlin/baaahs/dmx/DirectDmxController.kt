@@ -18,7 +18,8 @@ import kotlinx.serialization.Transient
 
 class DirectDmxController(
     private val device: Dmx.Device,
-    clock: Clock
+    clock: Clock,
+    private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId
         get() = ControllerId(controllerType, device.id)
@@ -31,7 +32,7 @@ class DirectDmxController(
         get() = DmxTransport
     override val defaultTransportConfig: TransportConfig?
         get() = null
-    private val universe = device.asUniverse()
+    private val universe = device.asUniverse(universeListener)
     private var dynamicDmxAllocator: DynamicDmxAllocator? = null
 
     override fun beforeFixtureResolution() {

@@ -12,8 +12,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.Mapper
+import baaahs.mapper.JsMapper
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -66,7 +65,8 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
+            scoped {
+                ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { ClientStageManager(get(), get(), get()) }
@@ -82,10 +82,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapperUi(get(), get()).also {
-                    // This has side-effects on mapperUi. Ugly.
-                    Mapper(get(), get(), it, get(), get(named(Qualifier.PinkyAddress)), get())
-                }
+                JsMapper(get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
         }
     }

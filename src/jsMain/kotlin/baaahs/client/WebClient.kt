@@ -7,11 +7,13 @@ import baaahs.app.ui.AppIndex
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
+import baaahs.dmx.DmxManagerImpl
+import baaahs.dmx.ListDmxUniverses
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibraries
-import baaahs.mapper.JsMapperUi
+import baaahs.mapper.JsMapper
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
@@ -29,7 +31,7 @@ class WebClient(
     private val sceneProvider: SceneProvider,
     private val storage: ClientStorage,
     private val sceneEditorClient: SceneEditorClient,
-    private val mapperUi: JsMapperUi,
+    private val mapper: JsMapper,
     remoteFsSerializer: RemoteFsSerializer,
     private val notifier: Notifier,
     private val fileDialog: FileDialog,
@@ -57,6 +59,9 @@ class WebClient(
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
+    private val listDmxUniverses = pubSub.commandSender(
+        DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule))
+
     private var uiSettings = UiSettings()
 
     init {
@@ -76,7 +81,7 @@ class WebClient(
             this.sceneManager = this@WebClient.sceneManager.facade
 
             this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
-            this.mapperUi = this@WebClient.mapperUi
+            this.mapper = this@WebClient.mapper
         })
     }
 
@@ -137,5 +142,9 @@ class WebClient(
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
+
+        suspend fun listDmxUniverses() =
+            listDmxUniverses.invoke(ListDmxUniverses())
+
     }
 }

@@ -34,7 +34,7 @@ class FakeNetwork(
         return FakeLink(address)
     }
 
-    var packetLossRate: Float = .05f
+    var packetLossRate: Float = .005f
     var packetsReceived: Int = 0
     var packetsDropped: Int = 0
     var packetsQueued: Int = 0

@@ -9,12 +9,15 @@ class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
     private val buf = ByteArray(513) // DMX wants byte 0 to always be 0
     private val dmxTransmitter = DmxTransmitter(usbDevice).apply { start() }
 
-    override fun asUniverse(): Dmx.Universe = object : Dmx.Universe() {
+    override fun asUniverse(
+        universeListener: Dmx.UniverseListener?
+    ): Dmx.Universe = object : Dmx.Universe() {
         override fun writer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
             Dmx.Buffer(buf, baseChannel, channelCount)
 
         override fun sendFrame() {
             dmxTransmitter.update(buf)
+            universeListener?.onSend(id, buf)
         }
 
         override fun allOff() {

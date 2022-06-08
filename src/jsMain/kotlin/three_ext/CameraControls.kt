@@ -7,9 +7,13 @@ import org.w3c.dom.Element
 import three.js.Box3
 import three.js.Camera
 import three.js.Mesh
+import three.js.Vector3
 
 @JsName("default")
 external class CameraControls(camera: Camera, domElement: Element) {
+    fun getPosition(out: Vector3? = definedExternally): Vector3
+    fun getTarget(out: Vector3? = definedExternally): Vector3
+
     fun update(delta: Number)
 
     fun fitToBox(

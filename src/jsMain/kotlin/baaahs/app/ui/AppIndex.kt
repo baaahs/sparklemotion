@@ -14,7 +14,7 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
-import baaahs.mapper.JsMapperUi
+import baaahs.mapper.JsMapper
 import baaahs.mapper.sceneEditor
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -64,7 +64,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
     val gridLayoutContext = memo { GridLayoutContext() }
-    val keyboardShortcutHandler = memo { KeyboardShortcutHandler() }
+    val keyboard = memo { KeyboardShortcutHandler() }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
@@ -76,7 +76,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.uiSettings = uiSettings
             this.allStyles = allStyles
             this.prompt = { prompt = it }
-            this.keyboardShortcutHandler = keyboardShortcutHandler
+            this.keyboard = keyboard
             this.clock = JsClock
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
@@ -153,25 +153,20 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val show = showManager.show
 
-    onMount(keyboardShortcutHandler) {
-        keyboardShortcutHandler.listen(window)
-        withCleanup { keyboardShortcutHandler.unlisten(window) }
+    onMount(keyboard) {
+        keyboard.listen(window)
+        withCleanup { keyboard.unlisten(window) }
     }
 
     onMount(
-        myAppContext, keyboardShortcutHandler, documentManager, editMode,
+        myAppContext, keyboard, documentManager, editMode,
         handleAppDrawerToggle, handleAppModeChange
     ) {
-        val handler = keyboardShortcutHandler.handle { keypress, event ->
+        val handler = keyboard.handle { keypress, _ ->
             var result: KeypressResult? = null
 
             when (keypress) {
                 Keypress("Escape") -> handleAppDrawerToggle()
-                Keypress("d") -> editMode.toggle()
-                Keypress("l") -> {
-                    layoutEditorDialogOpen = !layoutEditorDialogOpen
-                }
-                Keypress("s") -> handleAppModeChange(appMode.otherOne)
                 Keypress("s", metaKey = true),
                 Keypress("s", ctrlKey = true) -> {
                     myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
@@ -283,6 +278,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                             showUi {
                                                 attrs.show = showManager.openShow!!
                                                 attrs.onShowStateChange = handleShowStateChange
+                                                attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                                             }
 
                                             if (layoutEditorDialogOpen) {
@@ -308,7 +304,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         } else {
                                             sceneEditor {
                                                 attrs.sceneEditorClient = props.sceneEditorClient
-                                                attrs.mapperUi = props.mapperUi
+                                                attrs.mapper = props.mapper
                                                 attrs.sceneManager = sceneManager
                                             }
                                         }
@@ -372,7 +368,7 @@ external interface AppIndexProps : Props {
     var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapper: JsMapper
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

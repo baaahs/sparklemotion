@@ -20,7 +20,7 @@ private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppW
             this.sceneEditorClient = props.sceneEditorClient
             this.plugins = plugins
             this.allStyles = appContext.allStyles
-            this.keyboardShortcutHandler = appContext.keyboardShortcutHandler
+            this.keyboard = appContext.keyboard
             this.clock = clock
         }
     }
@@ -29,14 +29,14 @@ private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppW
         attrs.value = myAppContext
 
         mapperApp {
-            attrs.mapperUi = props.mapperUi
+            attrs.mapper = props.mapper
         }
     }
 }
 
 external interface MapperAppWrapperProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapper: JsMapper
 }
 
 fun RBuilder.mapperAppWrapper(handler: RHandler<MapperAppWrapperProps>) =
