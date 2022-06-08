@@ -56,7 +56,7 @@ object PinkySpec : Spek({
         val plugins by value { testPlugins() }
         val storage by value { Storage(fakeFs, plugins) }
         val link by value { network.link("pinky") }
-        val renderManager by value { fakeGlslContext.runInContext { RenderManager { fakeGlslContext } } }
+        val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val toolchain by value { RootToolchain(plugins) }
         val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }

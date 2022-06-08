@@ -10,13 +10,10 @@ import baaahs.gl.patch.LinkedProgram
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
-class RenderManager(
-    private val createContext: () -> GlContext
-) {
+class RenderManager(glContext: GlContext) {
     private val renderEngines = CacheBuilder<FixtureType, ModelRenderEngine> { fixtureType ->
-        val gl = createContext()
         ModelRenderEngine(
-            gl, fixtureType, resultDeliveryStrategy = pickResultDeliveryStrategy(gl)
+            glContext, fixtureType, resultDeliveryStrategy = pickResultDeliveryStrategy(glContext)
         )
     }
 
