@@ -6,8 +6,6 @@ import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
-import baaahs.gl.GlBase
-import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
@@ -96,8 +94,6 @@ class JsSimPinkyModule(
         get() = simMappingManager
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
-    override val Scope.renderManager: RenderManager
-        get() = RenderManager { GlBase.manager.createContext() }
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor

@@ -96,7 +96,7 @@ class PixelLocationFeed(
                     val pixelLocations = fixture.pixelLocations
 
                     buffer.scoped(renderTarget).also { view ->
-                        for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.pixelCount)) {
+                        for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.componentCount)) {
                             val location = pixelLocations[pixelIndex]
                             view[pixelIndex, 0] = location.x
                             view[pixelIndex, 1] = location.y

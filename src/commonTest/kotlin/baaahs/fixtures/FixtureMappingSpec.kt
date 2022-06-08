@@ -36,7 +36,7 @@ object FixtureMappingSpec : Spek({
                 it("creates a fixture for that entity") {
                     expect(fixture).isA<PixelArrayFixture>() {
                         feature { f(it::modelEntity) }.toEqual(entity)
-                        feature { f(it::pixelCount) }.toEqual(1)
+                        feature { f(it::componentCount) }.toEqual(1)
                         feature { f(it::componentCount) }.toEqual(1)
                         feature { f(it::gammaCorrection) }.toEqual(1f)
                         feature { f(it::pixelLocations) }.toEqual(emptyList())

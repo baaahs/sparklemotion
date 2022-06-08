@@ -75,27 +75,27 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         renderTarget: FixtureRenderTarget,
         callback: ((Int) -> Float)? = null
     ) = object : BufferView<Float> {
-        val offset = renderTarget.pixel0Index
-        val size = renderTarget.pixelCount
+        val offset = renderTarget.component0Index
+        val size = renderTarget.componentCount
 
-        override fun set(pixelIndex: Int, t: Float) = set(pixelIndex, 0, t)
+        override fun set(componentIndex: Int, t: Float) = set(componentIndex, 0, t)
 
-        override fun set(pixelIndex: Int, index: Int, t: Float) {
-            if (pixelIndex > size) throw IndexOutOfBoundsException("$pixelIndex > $size")
-            floats[(offset + pixelIndex) * stride + index] = t
+        override fun set(componentIndex: Int, index: Int, t: Float) {
+            if (componentIndex > size) throw IndexOutOfBoundsException("$componentIndex > $size")
+            floats[(offset + componentIndex) * stride + index] = t
         }
 
-        override fun get(pixelIndex: Int): Float = get(pixelIndex, 0)
+        override fun get(componentIndex: Int): Float = get(componentIndex, 0)
 
-        override fun get(pixelIndex: Int, index: Int): Float {
-            if (pixelIndex > size) throw IndexOutOfBoundsException("$pixelIndex > $size")
-            return floats[(offset + pixelIndex) * stride]
+        override fun get(componentIndex: Int, index: Int): Float {
+            if (componentIndex > size) throw IndexOutOfBoundsException("$componentIndex > $size")
+            return floats[(offset + componentIndex) * stride]
         }
     }.also {
         if (callback != null) {
-            val offset = renderTarget.pixel0Index
-            for (pixelIndex in 0 until renderTarget.pixelCount) {
-                floats[(offset + pixelIndex) * stride] = callback.invoke(pixelIndex)
+            val offset = renderTarget.component0Index
+            for (componentIndex in 0 until renderTarget.componentCount) {
+                floats[(offset + componentIndex) * stride] = callback.invoke(componentIndex)
             }
         }
     }

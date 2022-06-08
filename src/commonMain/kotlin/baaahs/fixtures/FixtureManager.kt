@@ -175,8 +175,8 @@ class FixtureManagerImpl(
     inner class Facade : baaahs.ui.Facade() {
         val fixtureCount: Int
             get() = this@FixtureManagerImpl.getFixtureCount()
-        val pixelCount: Int
-            get() = this@FixtureManagerImpl.renderTargets.values.sumOf { it.pixelCount }
+        val componentCount: Int
+            get() = this@FixtureManagerImpl.renderTargets.values.sumOf { it.componentCount }
         val renderPlanMonitor: Monitor<RenderPlan?>
             get() = this@FixtureManagerImpl.renderPlanMonitor
         val currentRenderPlan: RenderPlan?

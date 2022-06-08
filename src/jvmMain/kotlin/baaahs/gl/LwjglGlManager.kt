@@ -4,6 +4,7 @@ import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GLCapabilities
 
 class LwjglGlManager : GlManager() {
@@ -17,6 +18,8 @@ class LwjglGlManager : GlManager() {
         get() = window != 0L
 
     override fun createContext(trace: Boolean): GlContext {
+        logger.warn { "DANGER!!! LwjglGlManager.createContext() doesn't actually create a new context!" }
+
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
         checkCapabilities()
@@ -72,7 +75,7 @@ class LwjglGlManager : GlManager() {
                 logger.warn { "NO_GPU=true; GLSL not available." }
                 0L
             } else {
-//            GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
+                GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err))
                 check(GLFW.glfwInit()) { "Unable to initialize GLFW" }
 
                 GLFW.glfwDefaultWindowHints()
