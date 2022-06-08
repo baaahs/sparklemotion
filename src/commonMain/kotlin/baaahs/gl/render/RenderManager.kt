@@ -57,6 +57,11 @@ class RenderManager(
         renderEngines.values.forEach { it.logStatus() }
     }
 
+    fun release() {
+        renderEngines.values.forEach { it.release() }
+        renderEngines.clear()
+    }
+
     companion object {
         private val logger = Logger<RenderManager>()
     }
