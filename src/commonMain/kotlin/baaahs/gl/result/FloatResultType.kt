@@ -15,23 +15,23 @@ object FloatResultType : FloatsResultType<FloatResultType.ResultBuffer>(
     }
 
     class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
-        operator fun get(pixelIndex: Int): Float {
-            val offset = pixelIndex * type.stride
+        operator fun get(componentIndex: Int): Float {
+            val offset = componentIndex * type.stride
 
             return floatBuffer[offset]
         }
 
         override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
-            return FloatFixtureResults(this, bufferOffset, fixture.pixelCount)
+            return FloatFixtureResults(this, bufferOffset, fixture.componentCount)
         }
     }
 
     class FloatFixtureResults(
         private val buffer: ResultBuffer,
-        pixelOffset: Int,
-        pixelCount: Int
-    ) : FixtureResults(pixelOffset, pixelCount) {
-        operator fun get(pixelIndex: Int): Float = buffer[pixelOffset + pixelIndex]
+        componentOffset: Int,
+        componentCount: Int
+    ) : FixtureResults(componentOffset, componentCount) {
+        operator fun get(componentIndex: Int): Float = buffer[componentOffset + componentIndex]
 
         override fun send(remoteVisualizers: RemoteVisualizers) = TODO("FloatFixtureResults.send() not implemented")
     }

@@ -162,8 +162,8 @@ object ModelRenderEngineSpec : Spek({
                     }
 
                     it("should generate a RenderTarget with appropriate rects") {
-                        expect(fixture1Target.pixel0Index).toEqual(0)
-                        expect(fixture1Target.pixelCount).toEqual(maxFramebufferWidth)
+                        expect(fixture1Target.component0Index).toEqual(0)
+                        expect(fixture1Target.componentCount).toEqual(maxFramebufferWidth)
 
                         expect(fixture1Target.rect0Index).toEqual(0)
                         expect(fixture1Target.rects).toEqual(listOf(

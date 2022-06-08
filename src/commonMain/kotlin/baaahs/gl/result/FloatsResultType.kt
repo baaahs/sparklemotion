@@ -7,7 +7,7 @@ import com.danielgergely.kgl.GL_FLOAT
 /** This doesn't work on iOS devices as of iOS 14.7. */
 abstract class FloatsResultType<T : FloatsResultType.Buffer>(
     private val floatCount: Int,
-    override val readPixelFormat: Int
+    override val readFormat: Int
 ) : ResultType<T> {
     override val readType: Int
         get() = GL_FLOAT

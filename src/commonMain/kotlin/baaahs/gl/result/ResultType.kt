@@ -3,7 +3,7 @@ package baaahs.gl.result
 import baaahs.gl.GlContext
 
 interface ResultType<T : ResultBuffer> {
-    val readPixelFormat: Int
+    val readFormat: Int
     val readType: Int
     val stride: Int
 

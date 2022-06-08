@@ -23,7 +23,7 @@ interface ResultStorage {
         }
 
         override fun getFixtureResults(fixture: Fixture, bufferOffset: Int): FixtureResults {
-            return object : FixtureResults(bufferOffset, fixture.pixelCount) {
+            return object : FixtureResults(bufferOffset, fixture.componentCount) {
                 override fun send(remoteVisualizers: RemoteVisualizers) {
                     TODO("not implemented")
                 }

@@ -18,8 +18,8 @@ object Vec2ResultType : FloatsResultType<Vec2ResultType.ResultBuffer>(
     }
 
     class ResultBuffer(gl: GlContext, index: Int, type: FloatsResultType<ResultBuffer>) : Buffer(gl, index, type) {
-        operator fun get(pixelIndex: Int): Vector2F {
-            val offset = pixelIndex * type.stride
+        operator fun get(componentIndex: Int): Vector2F {
+            val offset = componentIndex * type.stride
 
             return Vector2F(
                 x = floatBuffer[offset],
@@ -28,16 +28,16 @@ object Vec2ResultType : FloatsResultType<Vec2ResultType.ResultBuffer>(
         }
 
         override fun getFixtureView(fixture: Fixture, bufferOffset: Int): FixtureResults {
-            return Vec2FixtureResults(this, bufferOffset, fixture.pixelCount)
+            return Vec2FixtureResults(this, bufferOffset, fixture.componentCount)
         }
     }
 
     class Vec2FixtureResults(
         private val buffer: ResultBuffer,
-        pixelOffset: Int,
-        pixelCount: Int
-    ) : FixtureResults(pixelOffset, pixelCount) {
-        operator fun get(pixelIndex: Int): Vector2F = buffer[pixelOffset + pixelIndex]
+        componentOffset: Int,
+        componentCount: Int
+    ) : FixtureResults(componentOffset, componentCount) {
+        operator fun get(componentIndex: Int): Vector2F = buffer[componentOffset + componentIndex]
 
         override fun send(remoteVisualizers: RemoteVisualizers) {
             TODO("Vec2FixtureResults.send() not implemented")

@@ -85,7 +85,7 @@ class PixelIndexFeed(
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
             if (renderTarget is FixtureRenderTarget) {
                 buffer.scoped(renderTarget).also { view ->
-                    for (pixelIndex in 0 until renderTarget.pixelCount) {
+                    for (pixelIndex in 0 until renderTarget.componentCount) {
                         view[pixelIndex] = pixelIndex.toFloat()
                     }
                 }

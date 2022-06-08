@@ -201,7 +201,7 @@ class RenderEngineTest {
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { ModelRenderEngine.mapFixturePixelsToRects(4, 4, createSurface("A", 3)) }
+        )) { ModelRenderEngine.mapFixtureComponentsToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -210,7 +210,7 @@ class RenderEngineTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { ModelRenderEngine.mapFixturePixelsToRects(3, 4, createSurface("A", 7)) }
+        )) { ModelRenderEngine.mapFixtureComponentsToRects(3, 4, createSurface("A", 7)) }
     }
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
