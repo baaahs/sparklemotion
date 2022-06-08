@@ -2,11 +2,8 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PinkySettings
-import baaahs.SparkleMotion
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
-import baaahs.gl.GlBase
-import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
@@ -19,7 +16,6 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
@@ -43,7 +39,6 @@ class JvmPinkyModule(
     private val startupArgs: Array<String>
 ) : PinkyModule {
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
-    private val pinkyGlContext = GlBase.manager.createContext(SparkleMotion.TRACE_GLSL)
 
     override val Scope.serverPlugins: ServerPlugins
         get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
@@ -68,10 +63,6 @@ class JvmPinkyModule(
         get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
-    override val Scope.renderManager: RenderManager
-        get() = runBlocking(get(named("PinkyContext"))) {
-            RenderManager { pinkyGlContext }
-        }
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }
