@@ -45,6 +45,13 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
         return filename
     }
 
+    suspend fun getImageUrl(filename: String): String? {
+        return sendCommand(
+            "getImageUrl",
+            JsonPrimitive(filename)
+        ).jsonPrimitive.contentOrNull
+    }
+
     suspend fun saveSession(mappingSession: MappingSession) {
         sendCommand("saveSession",
             WebSocketRouter.json.encodeToJsonElement(MappingSession.serializer(), mappingSession)

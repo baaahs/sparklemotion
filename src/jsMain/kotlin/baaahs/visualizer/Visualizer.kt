@@ -2,7 +2,7 @@ package baaahs.visualizer
 
 import baaahs.document
 import baaahs.getBang
-import baaahs.mapper.JsMapperUi
+import baaahs.mapper.JsMapper
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.asMillis
@@ -123,7 +123,7 @@ class Visualizer(
 
 open class BaseVisualizer(
     private val clock: Clock
-) : JsMapperUi.StatusListener {
+) : JsMapper.StatusListener {
     open val facade = Facade()
 
     private var stopRendering: Boolean = false

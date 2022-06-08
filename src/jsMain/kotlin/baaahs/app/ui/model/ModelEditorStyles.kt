@@ -5,6 +5,7 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
+import kotlinx.css.properties.lh
 import kotlinx.js.jso
 import mui.material.*
 import mui.material.styles.Theme
@@ -85,10 +86,11 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         }
 
         header {
+            color = Color.inherit
             backgroundColor = Color.inherit
             fontSize = LinearDimension.inherit
             fontWeight = FontWeight.inherit
-            lineHeight = LineHeight.inherit
+            lineHeight = 1.5.em.lh
             padding = ".5em 0 0 0"
         }
     }
@@ -109,6 +111,15 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         before {
             right = LinearDimension.inherit
             width = 100.pct - 1.5.em
+        }
+    }
+
+    val objImportTextField by css {
+        textarea {
+            fontSize = .8.em
+            fontFamily = "monospace"
+            lineHeight = LineHeight("1.1")
+            whiteSpace = WhiteSpace.nowrap
         }
     }
 

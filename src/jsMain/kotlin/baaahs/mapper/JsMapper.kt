@@ -1,29 +1,35 @@
 package baaahs.mapper
 
 import baaahs.*
+import baaahs.client.ClientStorage
 import baaahs.client.SceneEditorClient
 import baaahs.client.document.SceneManager
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
+import baaahs.geom.toThreeEuler
 import baaahs.imaging.*
+import baaahs.imaging.Image
+import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.model.Model
+import baaahs.net.Network
+import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.ui.Keypress
 import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
 import baaahs.ui.value
+import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.util.toDoubleArray
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.js.jso
-import org.w3c.dom.CanvasImageSource
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
+import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
@@ -38,12 +44,10 @@ import three_ext.Matrix4
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.ceil
-import kotlin.math.log2
-import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.*
+import three.js.Clock as ThreeJsClock
 
-class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
+class MemoizedJsMapper(mapperUi: JsMapper) {
     val changedCamera = mapperUi::changedCamera
     val clickedPlay = mapperUi::clickedPlay
     val clickedPause = mapperUi::clickedPause
@@ -51,7 +55,7 @@ class MemoizedJsMapperUi(mapperUi: JsMapperUi) {
     val clickedStart = mapperUi::clickedStart
     val clickedStop = mapperUi::clickedStop
     val clickedGoToSurface = mapperUi::clickedGoToSurface
-    val loadMappingSession = mapperUi::loadMappingSession
+    val onLoadMappingSession = mapperUi::onLoadMappingSession
     val keyHandler = mapperUi::gotUiKeypress
 }
 
@@ -59,22 +63,33 @@ class MapperStatus : Observable() {
     var message: String? by notifyOnChange(null)
     var message2: String? by notifyOnChange(null)
     var stats: (RBuilder.() -> Unit)? by notifyOnChange(null)
-    var orderedPanels: List<Pair<JsMapperUi.VisibleSurface, Float>> by notifyOnChange(emptyList())
+    var orderedPanels: List<Pair<JsMapper.VisibleSurface, Float>> by notifyOnChange(emptyList())
 }
 
-class JsMapperUi(
+class JsMapper(
     private val sceneEditorClient: SceneEditorClient,
     private val sceneManager: SceneManager,
-    private val statusListener: StatusListener? = null
-) : Observable(), MapperUi, HostedWebApp {
-    private lateinit var listener: MapperUi.Listener
+    private val statusListener: StatusListener? = null,
+    network: Network,
+    sceneProvider: SceneProvider,
+    mediaDevices: MediaDevices,
+    pinkyAddress: Network.Address,
+    clock: Clock,
+    private val clientStorage: ClientStorage,
+    mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+) : Mapper(
+    network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
+), HostedWebApp {
+    var mappingEnabled: Boolean = false
+        set(value) {
+            if (value != field) {
+                if (value) clickedStart() else clickedStop()
+                field = value
+            }
+        }
 
     override var devices: List<MediaDevices.Device> by notifyOnChange(emptyList())
     var selectedDevice: MediaDevices.Device? by notifyOnChange(null)
-
-    override fun listen(listener: MapperUi.Listener) {
-        this.listener = listener
-    }
 
     // Bounds of mapper container.
     private var browserDimen = Dimen(512, 384)
@@ -88,7 +103,7 @@ class JsMapperUi(
     // Best-fit dimensions of mapping area and camera image.
     private var viewportDimen = browserDimen
 
-    private val clock = Clock()
+    private val threeJsClock = ThreeJsClock()
 
     // onscreen renderer for registration UI:
     private val uiRenderer = WebGLRenderer(jso { alpha = true })
@@ -104,8 +119,8 @@ class JsMapperUi(
     private var uiLocked: Boolean by notifyOnChange(false)
 
     private lateinit var ui2dCanvas: HTMLCanvasElement
-
     private val ui3dCanvas = uiRenderer.domElement
+    private lateinit var savedImage: HTMLImageElement
 
     private lateinit var snapshotCanvas: HTMLCanvasElement
     private lateinit var baseCanvas: HTMLCanvasElement
@@ -125,13 +140,14 @@ class JsMapperUi(
     private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
-    private var cameraZRotation = 0f
+    private var cameraZRotation = 0.0
 
     val mapperStatus = MapperStatus()
 
     var redoFn: (() -> Unit)? by notifyOnChange(null)
 
     private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
+    private val cameraPositions = mutableMapOf<String, CameraPosition>()
 
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
@@ -142,11 +158,13 @@ class JsMapperUi(
         panelMaskCanvas: HTMLCanvasElement,
         perfStatsDiv: HTMLElement,
         width: Int,
-        height: Int
+        height: Int,
+        savedImage: HTMLImageElement
     ) {
         onLaunch()
 
         this.ui2dCanvas = ui2dCanvas
+        this.savedImage = savedImage
         this.diffCanvas = diffCanvas
         this.snapshotCanvas = snapshotCanvas
         this.baseCanvas = baseCanvas
@@ -171,6 +189,8 @@ class JsMapperUi(
 
     fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
         var result = KeypressResult.Handled
+
+        val isDigit = event.code.startsWith("Digit")
         if (event.code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
@@ -180,23 +200,67 @@ class JsMapperUi(
             }
             checkProgress()
         } else if (commandProgress.isEmpty() && event.code == "KeyQ") {
-            updateCameraRotation(if (event.shiftKey) 0.025f else 0.1f)
+            adjustCameraZRotation(if (event.shiftKey) PI * 2 / 256 else PI * 2 / 64)
         } else if (commandProgress.isEmpty() && event.code == "KeyW") {
-            updateCameraRotation(if (event.shiftKey) -0.025f else -0.1f)
+            adjustCameraZRotation(if (event.shiftKey) -PI * 2 / 256 else -PI * 2 / 64)
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
-            cameraZRotation = 0f
+            cameraZRotation = 0.0
+            updateCameraRotation()
+        } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
+            loadCameraPosition(event.code.substring(5))
+        } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
+            saveCameraPosition(event.code.substring(5))
         } else if (event.key.length == 1) {
             commandProgress += event.key
             checkProgress()
-        } else result = KeypressResult.NotHandled
+        } else if (keypress.ctrlKey || keypress.metaKey) {
+            result = KeypressResult.NotHandled
+        }
         showMessage2(commandProgress)
 
         return result
     }
 
+    private fun saveCameraPosition(key: String) {
+        cameraPositions[key] = CameraPosition(
+            uiControls.getPosition().toVector3F(),
+            uiControls.getTarget().toVector3F(),
+            uiCamera.rotation.z.toDouble()
+        )
+        showMessage("Saved camera position `$key`.")
+
+        globalLaunch {
+            clientStorage.saveMapperData(MapperData(cameraPositions))
+
+        }
+    }
+
+    private fun loadCameraPosition(key: String) {
+        val position = cameraPositions[key]
+        if (position != null) {
+            cameraZRotation = position.zRotation
+            updateCameraRotation()
+            uiControls.setLookAt(
+                position.position.x, position.position.y, position.position.z,
+                position.target.x, position.target.y, position.target.z,
+                true
+            )
+
+            showMessage("Loaded camera position from `$key`.")
+        } else {
+            showMessage("No camera position for `$key`.")
+        }
+    }
+
     private fun checkProgress() {
         if (commandProgress.startsWith("/") && commandProgress.length > 1) {
             selectSurfacesMatching(commandProgress.substring(1))
+        } else if (commandProgress.startsWith("m") && commandProgress.length > 1) {
+            saveCameraPosition(commandProgress.substring(1))
+            commandProgress = ""
+        } else if (commandProgress.startsWith("'") && commandProgress.length > 1) {
+            loadCameraPosition(commandProgress.substring(1))
+            commandProgress = ""
         }
     }
 
@@ -206,16 +270,19 @@ class JsMapperUi(
     }
 
     private fun resetCameraRotation() {
-        cameraZRotation = 0f
-        updateCameraRotation(0f)
+        cameraZRotation = 0.0
+        updateCameraRotation()
     }
 
-    private fun updateCameraRotation(angle: Float) {
+    private fun adjustCameraZRotation(angle: Double) {
         cameraZRotation += angle
-        uiCamera.up.set(0, 1, 0)
+        updateCameraRotation()
+    }
 
+    private fun updateCameraRotation() {
+        uiCamera.up.set(0, 1, 0)
         val cameraAngle = Matrix4()
-        val rotated = cameraAngle.makeRotationZ(cameraZRotation.toDouble())
+        val rotated = cameraAngle.makeRotationZ(cameraZRotation)
         uiCamera.up.applyMatrix4(rotated)
     }
 
@@ -238,7 +305,7 @@ class JsMapperUi(
 
     private fun drawAnimationFrame() {
         if (!uiLocked) {
-            uiControls.update(clock.getDelta())
+            uiControls.update(threeJsClock.getDelta())
         }
         uiRenderer.render(uiScene, uiCamera)
 
@@ -253,31 +320,44 @@ class JsMapperUi(
 
     override fun render(): ReactElement<*> {
         return createElement(SceneEditorView, jso {
-            sceneEditorClient = this@JsMapperUi.sceneEditorClient.facade
-            mapperUi = this@JsMapperUi
-            sceneManager = this@JsMapperUi.sceneManager.facade
+            sceneEditorClient = this@JsMapper.sceneEditorClient.facade
+            mapper = this@JsMapper
+            sceneManager = this@JsMapper.sceneManager.facade
         })
     }
 
     override fun onLaunch() {
-        listener.onLaunch()
+        super<Mapper>.onLaunch()
+
+        globalLaunch {
+            clientStorage.loadMapperData()?.let {
+                cameraPositions.putAll(it.cameraPositions)
+            }
+        }
     }
 
     override fun onClose() {
         statusListener?.mapperStatusChanged(false)
 
-        listener.onClose()
+        super.onClose()
         sceneEditorClient.onClose()
     }
 
     fun onResize(width: Int, height: Int) {
         browserDimen = Dimen(width, height)
         resize()
+        notifyChanged()
     }
 
     private fun onCamResize(dimen: Dimen) {
         lastCamImageDimen = dimen
         resize()
+        notifyChanged()
+    }
+
+    fun setSizes() {
+        if (::ui2dCanvas.isInitialized)
+            resize()
     }
 
     private fun resize() {
@@ -297,8 +377,6 @@ class JsMapperUi(
         diffCanvas.resize(thumbnailDimen)
         baseCanvas.resize(thumbnailDimen)
         panelMaskCanvas.resize(thumbnailDimen)
-
-        notifyChanged()
     }
 
     private fun HTMLCanvasElement.resize(dimen: Dimen) {
@@ -310,22 +388,21 @@ class JsMapperUi(
         entitiesByName.clear()
         entityDepictions.clear()
 
-        model.allEntities
-            .groupBy { (it as? Model.EntityWithGeometry)?.geometry }
-            .forEach { (geometry, entities) ->
-                val vertices = geometry?.vertices
-                    ?.map { v -> Vector3(v.x, v.y, v.z) }
-                    ?.toTypedArray()
+        val geometries = mutableMapOf<Model.Geometry, Array<Vector3>>()
 
-                entities.forEach { entity ->
-                    entitiesByName[entity.name] = entity
+        model.visit { entity ->
+            entitiesByName[entity.name] = entity
 
-                    // TODO: Add wireframe depiction for other entity types.
-                    if (entity is Model.Surface) {
-                        entityDepictions[entity] = createEntityDepiction(entity, vertices)
-                    }
+            // TODO: Add wireframe depiction for other entity types.
+            if (entity is Model.Surface) {
+                val vertices = geometries.getOrPut(entity.geometry) {
+                    entity.geometry.vertices
+                        .map { v -> Vector3(v.x, v.y, v.z) }
+                        .toTypedArray()
                 }
+                entityDepictions[entity] = createEntityDepiction(entity, vertices)
             }
+        }
 
         uiScene.add(wireframe)
 
@@ -338,10 +415,9 @@ class JsMapperUi(
         uiControls.fitToBox(boundingBox, false)
     }
 
-    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>?): PanelInfo {
+    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>): PanelInfo {
         val surface = entity
 
-        if (vertices == null) error("No vertices for surface ${entity.name}!")
         val geom = Geometry()
         geom.vertices = vertices
 
@@ -360,7 +436,8 @@ class JsMapperUi(
 
         val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
         val mesh = Mesh(geom, panelMaterial)
-        mesh.asDynamic().name = surface.name
+        entity.transform(mesh)
+        mesh.name = surface.name
         uiScene.add(mesh)
 
         val lineMaterial = LineBasicMaterial().apply {
@@ -374,7 +451,11 @@ class JsMapperUi(
             lineGeom.setFromPoints(line.vertices.map { pt ->
                 pt.toVector3() + surfaceNormal
             }.toTypedArray())
-            wireframe.add(Line(lineGeom, lineMaterial))
+            wireframe.add(
+                Line(lineGeom, lineMaterial).apply {
+                    entity.transform(this)
+                }
+            )
         }
 
         geom.faces = panelFaces.toTypedArray()
@@ -384,7 +465,7 @@ class JsMapperUi(
         return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
     }
 
-    class PixelData(private val initialPixelCount: Int) {
+    inner class PixelsInfo(private val initialPixelCount: Int) {
         private val pixelsGeom = BufferGeometry()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
@@ -392,7 +473,7 @@ class JsMapperUi(
         }
         val points = Points(pixelsGeom, pixelsMaterial)
         private var maxPixel = initialPixelCount
-        internal val pixelLocations = mutableMapOf<Int, Vector3?>()
+        internal val pixelDatas = mutableMapOf<Int, PixelData?>()
         private var positions = FloatArray(maxPixel * 3) { 0f }
         private var colors = FloatArray(maxPixel * 3) { 0f }
         private val positionsAttr = Float32BufferAttribute(positions, 3).also {
@@ -404,27 +485,29 @@ class JsMapperUi(
             pixelsGeom.setAttribute("color", it)
         }
 
-        fun setPixel(index: Int, modelPosition: Vector3F?) {
-            if (index > maxPixel) {
-                // Round up to the nearest power of two.
-                val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
-                resize(newMax)
-            }
-            setPixel(index, modelPosition)
-        }
-
-        fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
-            pixelLocations.clear()
+        fun setPixels(pixels: List<PixelData?>) {
+            pixelDatas.clear()
             resize(pixels.size)
             pixels.forEachIndexed { index, pixelData ->
                 setPixel(pixelData, index)
             }
         }
 
-        private fun setPixel(pixelData: MappingSession.SurfaceData.PixelData?, index: Int) {
-            val location = pixelData?.modelPosition?.toVector3()
-            pixelLocations[index] = location
-            setPixelLocation(index, location ?: Vector3F.origin.toVector3())
+        private fun setPixel(pixelData: PixelData?, index: Int) {
+            val location = pixelData?.modelPosition
+            updatePixel(index, pixelData)
+        }
+
+        fun updatePixel(index: Int, pixelData: PixelData?) {
+            if (index > maxPixel) {
+                // Round up to the nearest power of two.
+                val newMax = ceil(log2(index.toDouble())).pow(2).toInt()
+                resize(newMax)
+            }
+
+            pixelDatas[index] = pixelData
+            val position = pixelData?.modelPosition?.toVector3()
+            setPixelLocation(index, position ?: Vector3F.origin.toVector3())
             setPixelColor(index, normalColor)
         }
 
@@ -443,7 +526,7 @@ class JsMapperUi(
         }
 
         fun reset() {
-            pixelLocations.clear()
+            pixelDatas.clear()
             resize(initialPixelCount)
         }
 
@@ -467,21 +550,21 @@ class JsMapperUi(
         val mesh: Mesh<*, *>,
         val geom: Geometry,
         private val lineMaterial: LineBasicMaterial
-    ) : MapperUi.EntityDepiction {
+    ) : EntityDepiction {
         override val entity: Model.Entity
             get() = surface
 
         private var pixelsInScene = false
-        private var pixelData = PixelData(surface.expectedPixelCount ?: 256).also {
+        private var pixelsInfo = PixelsInfo(surface.expectedPixelCount ?: 256).also {
             if (pixelsInScene) uiScene.add(it.points)
         }
 
         val pixelsInModelSpace: List<Vector3F?>
             get() {
                 val vectors = mutableListOf<Vector3F?>()
-                for (i in 0..(pixelData.pixelLocations.keys.maxOrNull()!!)) {
-                    val position = pixelData.pixelLocations[i]
-                    vectors.add(position?.toVector3F())
+                for (i in 0..(pixelsInfo.pixelDatas.keys.maxOrNull()!!)) {
+                    val position = pixelsInfo.pixelDatas[i]
+                    vectors.add(position?.modelPosition)
                 }
                 return vectors
             }
@@ -564,63 +647,66 @@ class JsMapperUi(
 
         var boxOnScreen: Box2? = null
 
-        override fun setPixel(index: Int, modelPosition: Vector3F?) {
-            pixelData.setPixel(index, modelPosition)
+        override fun setPixel(index: Int, modelPosition: Vector3F?/*, deltaImage: String? = null*/) {
+            pixelsInfo.updatePixel(index, PixelData(modelPosition))
         }
 
-        override fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>) {
-            pixelData.setPixels(pixels)
+        override fun setPixels(pixels: List<PixelData?>) {
+            pixelsInfo.setPixels(pixels)
         }
 
         override fun showPixels() {
             if (!pixelsInScene) {
-                uiScene.add(pixelData.points)
+                uiScene.add(pixelsInfo.points)
                 pixelsInScene = true
             }
         }
 
         fun hidePixels() {
             if (pixelsInScene) {
-                uiScene.remove(pixelData.points)
+                uiScene.remove(pixelsInfo.points)
                 pixelsInScene = false
             }
         }
 
         override fun resetPixels() {
-            pixelData.reset()
+            pixelsInfo.reset()
         }
 
+        fun getPixelData(pixelIndex: Int): PixelData? =
+            pixelsInfo.pixelDatas[pixelIndex]
+
         fun selectPixel(pixelIndex: Int) {
-            pixelData.setPixelColor(pixelIndex, selectedColor)
+            pixelsInfo.setPixelColor(pixelIndex, selectedColor)
         }
 
         fun deselectPixel(pixelIndex: Int) {
-            pixelData.setPixelColor(pixelIndex, normalColor)
+            pixelsInfo.setPixelColor(pixelIndex, normalColor)
         }
     }
 
 
-    override fun lockUi(): MapperUi.CameraOrientation {
+    override fun lockUi(): Mapper.CameraOrientation {
         uiLocked = true
-        return CameraOrientation.from(uiCamera)
+        return CameraOrientation.from(uiCamera, uiControls)
     }
 
     override fun unlockUi() {
         uiLocked = false
     }
 
-    override fun getAllSurfaceVisualizers(): List<MapperUi.EntityDepiction> {
+    override fun getAllSurfaceVisualizers(): List<EntityDepiction> {
         return entityDepictions.values.toList()
     }
 
     fun findVisualizer(entityName: String): PanelInfo? =
         entitiesByName[entityName]?.let { entityDepictions[it] }
 
-    override fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> {
-        val visibleSurfaces = mutableListOf<MapperUi.VisibleSurface>()
+    override fun getVisibleSurfaces(): List<Mapper.VisibleSurface> {
+        val visibleSurfaces = mutableListOf<Mapper.VisibleSurface>()
         val screenBox = getScreenBox()
         val screenCenter = screenBox.center
-        val cameraOrientation = CameraOrientation.from(uiCamera)
+        val cameraOrientation = CameraOrientation.from(uiCamera, uiControls)
 
         entityDepictions.forEach { (entity, panelInfo) ->
             val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
@@ -654,7 +740,7 @@ class JsMapperUi(
         override val boxOnScreen: MediaDevices.Region,
         val panelInfo: PanelInfo,
         cameraOrientation: CameraOrientation
-    ) : MapperUi.VisibleSurface {
+    ) : Mapper.VisibleSurface {
         private val camera = cameraOrientation.createCamera()
 
         override val pixelsInModelSpace: List<Vector3F?> get() = panelInfo.pixelsInModelSpace
@@ -703,8 +789,12 @@ class JsMapperUi(
         }
     }
 
-    data class CameraOrientation(override val cameraMatrix: baaahs.geom.Matrix4F, override val aspect: Double) :
-        MapperUi.CameraOrientation {
+    data class CameraOrientation(
+        override val cameraMatrix: baaahs.geom.Matrix4F,
+        override val cameraPosition: CameraPosition,
+        override val aspect: Double
+    ) :
+        Mapper.CameraOrientation {
         fun createCamera(): PerspectiveCamera {
             return PerspectiveCamera(45, aspect, 1, 10000).apply {
                 matrix.fromArray(cameraMatrix.elements.toDoubleArray())
@@ -715,16 +805,24 @@ class JsMapperUi(
         }
 
         companion object {
-            fun from(camera: PerspectiveCamera): CameraOrientation {
+            fun from(
+                camera: PerspectiveCamera,
+                controls: CameraControls
+            ): CameraOrientation {
                 return CameraOrientation(
                     baaahs.geom.Matrix4F(camera.matrix.elements.map { it.toFloat() }.toFloatArray()),
+                    CameraPosition(
+                        controls.getPosition().toVector3F(),
+                        controls.getTarget().toVector3F(),
+                        camera.rotation.z.toDouble()
+                    ),
                     camera.aspect.toDouble()
                 )
             }
         }
     }
 
-    override fun showCandidates(orderedPanels: List<Pair<MapperUi.VisibleSurface, Float>>) {
+    override fun showCandidates(orderedPanels: List<Pair<Mapper.VisibleSurface, Float>>) {
         orderedPanels as List<Pair<VisibleSurface, Float>>
 
         val firstGuess = orderedPanels.first()
@@ -733,7 +831,7 @@ class JsMapperUi(
         mapperStatus.orderedPanels = orderedPanels
     }
 
-    override fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
+    override fun intersectingSurface(uv: Uv, visibleSurfaces: List<Mapper.VisibleSurface>): Mapper.VisibleSurface? {
         val raycaster = Raycaster()
         val pixelVector = uv.toVector2()
         raycaster.setFromCamera(pixelVector, uiCamera)
@@ -768,11 +866,7 @@ class JsMapperUi(
             onCamResize(image.dimen)
         }
 
-        CanvasBitmap(ui2dCanvas).drawImage(
-            image,
-            0, 0, image.width, image.height,
-            0, 0, viewportDimen.width, viewportDimen.height,
-        )
+        paintCamImage(image)
 
         changeRegion?.apply {
             val ui2dCtx = ui2dCanvas.getContext("2d") as CanvasRenderingContext2D
@@ -780,6 +874,14 @@ class JsMapperUi(
             ui2dCtx.strokeStyle = "#ff0000"
             ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
         }
+    }
+
+    private fun paintCamImage(image: Image) {
+        CanvasBitmap(ui2dCanvas).drawImage(
+            image,
+            0, 0, image.width, image.height,
+            0, 0, viewportDimen.width, viewportDimen.height,
+        )
     }
 
     override fun showSnapshot(bitmap: Bitmap) =
@@ -854,17 +956,17 @@ class JsMapperUi(
         val selectedDeviceId = event.target?.value
         selectedDevice = devices.find { it.deviceId == selectedDeviceId }
 
-        listener.useCamera(selectedDevice)
+        useCamera(selectedDevice)
     }
 
     fun clickedPlay() {
         showPauseMode(false)
-        listener.onStart()
+        onStart()
     }
 
     fun clickedPause() {
         showPauseMode(true)
-        listener.onPause()
+        onPause()
     }
 
     fun clickedRedo() {
@@ -878,11 +980,11 @@ class JsMapperUi(
     }
 
     fun clickedStart() {
-        listener.onStart()
+        onStart()
     }
 
     fun clickedStop() {
-        listener.onStop()
+        onStop()
     }
 
     fun clickedGoToSurface() {
@@ -892,13 +994,12 @@ class JsMapperUi(
         }
     }
 
-    fun loadMappingSession(event: Event) {
-        val mappingSessionToLoad = event.target?.value
-        selectedMappingSessionName = mappingSessionToLoad
+    fun onLoadMappingSession(sessionName: String?) {
+        selectedMappingSessionName = sessionName
 
-        if (mappingSessionToLoad != null) {
+        if (sessionName != null) {
             globalLaunch {
-                val session = listener.loadMappingSession(mappingSessionToLoad)
+                val session = loadMappingSession(sessionName)
 
                 val surfaceVisualizers = getAllSurfaceVisualizers().associateBy {
                     it.resetPixels()
@@ -923,12 +1024,29 @@ class JsMapperUi(
         selectedEntityAndPixel?.let { (entity, pixelIndex) ->
             entity.deselect()
             if (pixelIndex != null) entity.deselectPixel(pixelIndex)
+            savedImage.style.display = "none"
         }
 
         selectedEntityAndPixel = entityName?.let {
             findVisualizer(it)?.let { panelInfo ->
                 panelInfo.select()
-                if (index != null) panelInfo.selectPixel(index)
+                if (index != null) {
+                    panelInfo.selectPixel(index)
+
+                    val pixelData = panelInfo.getPixelData(index)
+                    pixelData?.deltaImage?.let { deltaImageName ->
+                        globalLaunch {
+                            val url = webSocketClient.getImageUrl(deltaImageName)
+                                ?: error("No url for \"$deltaImageName\".")
+                            savedImage.src = url
+                            savedImage.style.display = "block"
+//                            val img = org.w3c.dom.Image()
+//                            img.src = url
+//                            paintCamImage(DomImage(img))
+                        }
+                    }
+                }
+
                 panelInfo to index
             }
         }
@@ -960,11 +1078,17 @@ class JsMapperUi(
     }
 
     companion object {
-        internal val logger = Logger<JsMapperUi>()
+        internal val logger = Logger<JsMapper>()
 
         val normalColor = Color(0, 0, 1)
         val selectedColor = Color(1, 1, 0)
     }
+}
+
+private fun Model.Entity.transform(obj: Object3D) {
+    obj.position.copy(position.toVector3())
+    obj.rotation.copy(rotation.toThreeEuler())
+    obj.scale.copy(scale.toVector3())
 }
 
 private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)

@@ -66,6 +66,15 @@ class Storage(val fs: Fs, val plugins: Plugins) {
         fs.saveFile(file, imageData)
     }
 
+    suspend fun loadImage(name: String): ByteArray? {
+        val file = fs.resolve("mapping-sessions", "images", name)
+        return fs.loadFile(file)?.let { contents ->
+            ByteArray(contents.length) { i ->
+                contents[i].code.toByte()
+            }
+        }
+    }
+
     suspend fun loadMappingData(scene: OpenScene): SessionMappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", scene.model.name)

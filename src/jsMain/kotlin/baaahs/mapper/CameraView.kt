@@ -16,7 +16,7 @@ private val CameraView = xComponent<CameraViewProps>("CameraView") { props ->
 }
 
 external interface CameraViewProps : Props {
-    var mapperUi: MapperUi
+    var mapper: Mapper
     var width: Int
     var height: Int
 }

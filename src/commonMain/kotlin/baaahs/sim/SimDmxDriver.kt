@@ -12,11 +12,24 @@ class SimDmxDevice(private val fakeDmxUniverse: FakeDmxUniverse) : Dmx.Device {
     override val id: String get() = "dmx-simulator"
     override val name: String get() = "DMX Simulator"
 
-    override fun asUniverse(): Dmx.Universe = fakeDmxUniverse
+    override fun asUniverse(universeListener: Dmx.UniverseListener?) =
+        object : Dmx.Universe() {
+            override fun writer(baseChannel: Int, channelCount: Int): Dmx.Buffer =
+                fakeDmxUniverse.writer(baseChannel, channelCount)
+
+            override fun sendFrame() {
+                fakeDmxUniverse.sendFrame()
+                universeListener?.onSend(id, fakeDmxUniverse.channels)
+            }
+
+            override fun allOff() {
+                fakeDmxUniverse.allOff()
+            }
+        }
 }
 
 class FakeDmxUniverse : Dmx.Universe() {
-    private val channels = ByteArray(512)
+    internal val channels = ByteArray(512)
     private val listeners = mutableListOf<() -> Unit>()
 
     override fun writer(baseChannel: Int, channelCount: Int) =

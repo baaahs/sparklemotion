@@ -4,7 +4,8 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.diagnostics.diagnosticsPalette
+import baaahs.ui.diagnostics.dmxDiagnostics
+import baaahs.ui.diagnostics.patchDiagnostics
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
@@ -60,8 +61,11 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
     val showMenu = callback { event: Event -> menuAnchor = event.target as Element? }
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
-    var showDiagnostics by state { false }
-    val handleToggleShowDiagnostics by handler { showDiagnostics = !showDiagnostics; menuAnchor = null }
+    var showPatchDiagnostics by state { false }
+    val handleToggleShowPatchDiagnostics by handler { showPatchDiagnostics = !showPatchDiagnostics; menuAnchor = null }
+
+    var showDmxDiagnostics by state { false }
+    val handleToggleShowDmxDiagnostics by handler { showDmxDiagnostics = !showDmxDiagnostics; menuAnchor = null }
 
     Card {
         ref = rootEl
@@ -88,16 +92,29 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
             attrs.onClose = hideMenu
 
             MenuItem {
-                attrs.onClick = handleToggleShowDiagnostics.withMouseEvent()
-                Checkbox { attrs.checked = showDiagnostics }
-                ListItemText { +if (showDiagnostics) "Hide Diagnostics" else "Show Diagnostics" }
+                attrs.onClick = handleToggleShowPatchDiagnostics.withMouseEvent()
+                Checkbox { attrs.checked = showPatchDiagnostics }
+                ListItemText { +if (showPatchDiagnostics) "Hide Patch Diagnostics" else "Show Patch Diagnostics" }
+            }
+
+            MenuItem {
+                attrs.onClick = handleToggleShowDmxDiagnostics.withMouseEvent()
+                Checkbox { attrs.checked = showDmxDiagnostics }
+                ListItemText { +if (showDmxDiagnostics) "Hide DMX Diagnostics" else "Show DMX Diagnostics" }
             }
         }
     }
 
-    if (showDiagnostics && clientPreview != null) {
-        diagnosticsPalette {
+    if (showPatchDiagnostics && clientPreview != null) {
+        patchDiagnostics {
             attrs.renderPlanMonitor = clientPreview.renderPlanMonitor
+            attrs.onClose = handleToggleShowPatchDiagnostics
+        }
+    }
+
+    if (showDmxDiagnostics && clientPreview != null) {
+        dmxDiagnostics {
+            attrs.onClose = handleToggleShowDmxDiagnostics
         }
     }
 }
