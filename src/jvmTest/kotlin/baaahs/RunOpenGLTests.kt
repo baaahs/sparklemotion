@@ -2,8 +2,10 @@ package baaahs
 
 import baaahs.gl.LwjglGlManager
 import baaahs.gl.render.RenderEngineTest
+import baaahs.gl.render.RenderManagerTest
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
+import org.junit.platform.launcher.EngineFilter
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import org.junit.platform.launcher.TestExecutionListener
 import org.junit.platform.launcher.TestIdentifier
@@ -13,7 +15,8 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener
 import java.io.PrintWriter
 
 val testsRequiringOpenGL = listOf(
-    RenderEngineTest::class
+    RenderEngineTest::class,
+    RenderManagerTest::class
 )
 
 fun main() {
@@ -21,6 +24,7 @@ fun main() {
 
     val request: LauncherDiscoveryRequest =
         LauncherDiscoveryRequestBuilder.request()
+            .filters(EngineFilter.excludeEngines("spek2"))
             .selectors(testsRequiringOpenGL.map { selectClass(it.java) })
             .build()
     val launcher = LauncherFactory.create()

@@ -1,9 +1,6 @@
 package baaahs.di
 
-import baaahs.MediaDevices
-import baaahs.Pinky
-import baaahs.PinkySettings
-import baaahs.PubSub
+import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
 import baaahs.controller.SacnManager
@@ -13,6 +10,7 @@ import baaahs.dmx.DmxManagerImpl
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.FixturePublisher
+import baaahs.gl.GlBase
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
@@ -83,7 +81,6 @@ interface PinkyModule : KModule {
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.backupMappingManager: MappingManager? get() = null
     val Scope.dmxDriver: Dmx.Driver
-    val Scope.renderManager: RenderManager
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
 
@@ -114,7 +111,8 @@ interface PinkyModule : KModule {
                 scoped<PubSub.IServer> { get<PubSub.Server>() }
                 scoped { dmxDriver }
                 scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse)) }
-                scoped { renderManager }
+                scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
+                scoped { RenderManager(get(named("PinkyGlContext"))) }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
                 scoped { Storage(get(), get()) }
                 scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }

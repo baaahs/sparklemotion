@@ -4,8 +4,6 @@ import baaahs.MediaDevices
 import baaahs.PinkySettings
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
-import baaahs.gl.GlBase
-import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
@@ -18,7 +16,6 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
@@ -66,10 +63,6 @@ class JvmPinkyModule(
         get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
-    override val Scope.renderManager: RenderManager
-        get() = runBlocking(get(named("PinkyContext"))) {
-            RenderManager { GlBase.manager.createContext() }
-        }
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }

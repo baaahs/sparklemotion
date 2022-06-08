@@ -32,7 +32,7 @@ class ClientPreview(
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
-    private val renderManager = RenderManager { glContext }
+    private val renderManager = RenderManager(glContext)
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(clock)

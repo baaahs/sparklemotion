@@ -13,7 +13,7 @@ import com.danielgergely.kgl.GL_UNSIGNED_BYTE
 
 object ColorResultType : ResultType<ColorResultType.Buffer> {
     private val renderPixelFormat: Int = GlContext.GL_RGBA8
-    override val readPixelFormat: Int
+    override val readFormat: Int
         get() = GL_RGBA
     override val readType: Int
         get() = GL_UNSIGNED_BYTE
@@ -34,8 +34,8 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
             byteBuffer = ByteBuffer(size * stride)
         }
 
-        operator fun get(pixelIndex: Int): Color {
-            val offset = pixelIndex * stride
+        operator fun get(componentIndex: Int): Color {
+            val offset = componentIndex * stride
 
             return Color(
                 red = byteBuffer[offset],
@@ -52,19 +52,19 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
     class ColorFixtureResults(
         private val buffer: Buffer,
-        pixelOffset: Int,
+        componentOffset: Int,
         private val fixture: Fixture,
-    ) : FixtureResults(pixelOffset, fixture.pixelCount), Pixels {
+    ) : FixtureResults(componentOffset, fixture.componentCount), Pixels {
         private val transport = fixture.transport
 
         override val size: Int
-            get() = pixelCount
+            get() = componentCount
 
         private val fixtureConfig = fixture as PixelArrayFixture
         private val pixelFormat = fixtureConfig.pixelFormat
         private val bytesPerPixel = pixelFormat.channelsPerPixel
 
-        override operator fun get(i: Int): Color = buffer[pixelOffset + i]
+        override operator fun get(i: Int): Color = buffer[componentOffset + i]
 
         override fun set(i: Int, color: Color) = TODO("not implemented")
 
@@ -72,24 +72,24 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
         override fun iterator(): Iterator<Color> {
             return iterator {
-                for (i in 0 until pixelCount) yield(get(i))
+                for (i in 0 until componentCount) yield(get(i))
             }
         }
 
         override fun send(remoteVisualizers: RemoteVisualizers) {
-            transport.deliverComponents(pixelCount, bytesPerPixel) { i, buf ->
+            transport.deliverComponents(componentCount, bytesPerPixel) { i, buf ->
                 pixelFormat.writeColor(this[i], buf)
             }
 
             val remoteVisualizersBytes by lazy {
                 val buf = ByteArrayWriter()
-                for (i in 0 until pixelCount) {
+                for (i in 0 until componentCount) {
                     pixelFormat.writeColor(this[i], buf)
                 }
                 buf.toBytes()
             }
             remoteVisualizers.sendFrameData(fixture.modelEntity) { out ->
-                out.writeInt(fixture.pixelCount)
+                out.writeInt(fixture.componentCount)
                 out.writeBytes(remoteVisualizersBytes)
             }
         }

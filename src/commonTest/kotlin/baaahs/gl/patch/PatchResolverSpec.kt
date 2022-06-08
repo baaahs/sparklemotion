@@ -540,7 +540,7 @@ object PatchResolverSpec : Spek({
 
 private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
-    val renderManager = RenderManager { FakeGlContext() }
+    val renderManager = RenderManager(FakeGlContext())
     val fixture = model.allEntities.first()
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture, model = model))
     val patchResolution = ProgramResolver(listOf(renderTarget), activePatchSet, renderManager)

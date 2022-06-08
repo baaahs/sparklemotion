@@ -64,7 +64,7 @@ class PixelCountFeed(
             override val isValid: Boolean = uniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
-                uniform?.set(renderTarget.pixelCount)
+                uniform?.set(renderTarget.componentCount)
             }
         }
     }

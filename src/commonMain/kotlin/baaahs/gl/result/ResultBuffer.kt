@@ -11,7 +11,7 @@ abstract class ResultBuffer(
     val type: ResultType<*>,
     private val storageFormat: Int
 ) {
-    var pixelCount: Int = 0
+    var componentCount: Int = 0
         private set
 
     private var curWidth = 0
@@ -32,7 +32,7 @@ abstract class ResultBuffer(
         curHeight = height
 
         val bufferSize = width * height
-        pixelCount = bufferSize
+        componentCount = bufferSize
         if (cpuBufferSize != bufferSize) {
             resizeBuffer(bufferSize)
             cpuBufferSize = bufferSize

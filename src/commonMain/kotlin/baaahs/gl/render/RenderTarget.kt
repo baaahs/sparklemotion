@@ -7,7 +7,7 @@ import baaahs.visualizer.remote.RemoteVisualizers
 
 interface RenderTarget {
     val fixture: Fixture
-    val pixelCount: Int
+    val componentCount: Int
 
     fun sendFrame(remoteVisualizers: RemoteVisualizers)
     fun release()
@@ -17,14 +17,14 @@ class FixtureRenderTarget(
     override val fixture: Fixture,
     val rect0Index: Int,
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
-    override val pixelCount: Int,
-    val pixel0Index: Int,
+    override val componentCount: Int,
+    val component0Index: Int,
     private val resultStorage: ResultStorage
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set
 
-    val fixtureResults = resultStorage.getFixtureResults(fixture, pixel0Index)
+    val fixtureResults = resultStorage.getFixtureResults(fixture, component0Index)
 
     override fun sendFrame(remoteVisualizers: RemoteVisualizers) {
         fixtureResults.send(remoteVisualizers)
@@ -40,6 +40,6 @@ class FixtureRenderTarget(
     }
 
     override fun toString(): String {
-        return "RenderTarget(fixture=$fixture, rect0Index=$rect0Index, rects=$rects, pixel0Index=$pixel0Index)"
+        return "RenderTarget(fixture=$fixture, rect0Index=$rect0Index, rects=$rects, pixel0Index=$component0Index)"
     }
 }
