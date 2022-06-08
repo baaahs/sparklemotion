@@ -26,7 +26,7 @@ class SyncResultDeliveryStrategy : ResultDeliveryStrategy {
             frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
                 gpuBuffer.readPixels(
                     0, 0, gpuBuffer.curWidth, gpuBuffer.curHeight,
-                    resultType.readPixelFormat, resultType.readType, it.cpuBuffer
+                    resultType.readFormat, resultType.readType, it.cpuBuffer
                 )
             }
         }

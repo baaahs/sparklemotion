@@ -72,7 +72,7 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
             styledDiv {
                 +"Pixel count:"
                 span {
-                    +pinky.fixtureManager.pixelCount.toString()
+                    +pinky.fixtureManager.componentCount.toString()
                 }
             }
         }

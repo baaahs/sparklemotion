@@ -103,7 +103,7 @@ class ProjectionPreview(
                 val path = Path2D()
                 surface.lines.forEach { line ->
                     line.vertexIndices.forEachIndexed { vIndex, _ ->
-                        val vec2 = projectedVertices[renderTarget.pixel0Index + vertexIndex]
+                        val vec2 = projectedVertices[renderTarget.component0Index + vertexIndex]
                         val u = vec2.x.toDouble()
                         val v = 1 - vec2.y.toDouble()
 
