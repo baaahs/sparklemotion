@@ -14,4 +14,8 @@ class CacheBuilder<K, V>(val createFn: (K) -> V) {
     }
 
     fun getBang(key: K, type: String): V = get(key) ?: error(unknown(type, key, map.keys))
+
+    fun clear() {
+        map.clear()
+    }
 }

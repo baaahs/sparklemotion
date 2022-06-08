@@ -43,6 +43,7 @@ class JvmPinkyModule(
     private val startupArgs: Array<String>
 ) : PinkyModule {
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
+    private val pinkyGlContext = GlBase.manager.createContext(SparkleMotion.TRACE_GLSL)
 
     override val Scope.serverPlugins: ServerPlugins
         get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
@@ -69,7 +70,7 @@ class JvmPinkyModule(
         get() = JvmFtdiDmxDriver
     override val Scope.renderManager: RenderManager
         get() = runBlocking(get(named("PinkyContext"))) {
-            RenderManager { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
+            RenderManager { pinkyGlContext }
         }
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()

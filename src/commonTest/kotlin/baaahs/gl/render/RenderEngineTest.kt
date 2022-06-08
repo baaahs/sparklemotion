@@ -11,10 +11,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.gl.result.ColorResultType
 import baaahs.plugin.core.datasource.ColorPickerDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
-import baaahs.show.Shader
 import baaahs.shows.FakeShowPlayer
 import baaahs.testModelSurface
 import kotlin.math.abs
@@ -26,14 +24,6 @@ class RenderEngineTest {
     // TODO: Do something better.
 //    @BeforeTest
 //    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
-
-    fun glslAvailable(): Boolean {
-        val available = GlBase.manager.available
-        if (!available) {
-            println("WARNING: OpenGL not available, skipping test!")
-        }
-        return available
-    }
 
     private lateinit var glContext: GlContext
     private lateinit var renderEngine: ModelRenderEngine
@@ -292,27 +282,3 @@ class RenderEngineTest {
     operator fun Color.minus(other: Color) =
         Color(abs(redI - other.redI), abs(greenI - other.greenI), abs(blueI - other.blueI), abs(alphaI - other.alphaI))
 }
-
-private val directXyProjection = Shader(
-    "Direct XY Projection",
-    /**language=glsl*/
-    """
-        // Direct XY Projection
-        // !SparkleMotion:internal
-
-        struct ModelInfo {
-            vec3 center;
-            vec3 extents;
-        };
-        uniform ModelInfo modelInfo;
-
-        // @return uv-coordinate
-        // @param pixelLocation xyz-coordinate
-        vec2 main(vec3 pixelLocation) {
-            return vec2(pixelLocation.x, pixelLocation.y);
-        }
-    """.trimIndent()
-)
-
-val FixtureRenderTarget.colors: ColorResultType.ColorFixtureResults get() =
-    this.fixtureResults as ColorResultType.ColorFixtureResults

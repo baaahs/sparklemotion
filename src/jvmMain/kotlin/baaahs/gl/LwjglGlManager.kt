@@ -18,6 +18,8 @@ class LwjglGlManager : GlManager() {
         get() = window != 0L
 
     override fun createContext(trace: Boolean): GlContext {
+        logger.warn { "DANGER!!! LwjglGlManager.createContext() doesn't actually create a new context!" }
+
         if (!available) throw RuntimeException("GLSL not available")
         GLFW.glfwMakeContextCurrent(window)
         checkCapabilities()
