@@ -1,12 +1,10 @@
 package external.midi
 
-import org.w3c.dom.Navigator
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.dom.events.EventHandler
-import kotlin.js.Promise
 
-fun Navigator.requestMIDIAccess(options: MIDIOptions? = definedExternally): Promise<MIDIAccess>
+//external fun Navigator.requestMIDIAccess(options: MIDIOptions? = definedExternally): Promise<MIDIAccess>
 
 external interface MIDIOptions {
     var sysex: Boolean
