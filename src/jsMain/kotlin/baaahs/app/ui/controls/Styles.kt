@@ -212,27 +212,6 @@ val DataSourceOpenControl.inUseStyle get() = if (this.inUse) Styles.inUse else S
 class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
     val static = Styles
 
-    val transitionCard by css {
-        display = Display.grid
-        gridTemplateColumns = GridTemplateColumns.auto
-        gridTemplateRows = GridTemplateRows("auto auto auto 1fr")
-        gridTemplateAreas = GridTemplateAreas("""
-            "speed speed fader"
-            "shape shape fader"
-            "effect effect fader"
-            "hold go fader"
-        """)
-        gap = .25.em
-
-//        header {
-//            position = Position.absolute
-//            right = 1.em
-//            top = 0.px
-//            transform { rotate((-90).deg) }
-//            declarations["transformOrigin"] = "top right"
-//        }
-    }
-
     val dataSourceTitle by css {
         fontWeight = FontWeight.w500
         display = Display.block
@@ -244,6 +223,52 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
         declarations["writing-mode"] = "vertical-lr"
         userSelect = UserSelect.none
         pointerEvents = PointerEvents.none
+    }
+
+    val transitionCard by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+        gap = .25.em
+
+//        header {
+//            position = Position.absolute
+//            right = 1.em
+//            top = 0.px
+//            transform { rotate((-90).deg) }
+//            declarations["transformOrigin"] = "top right"
+//        }
+    }
+
+    val transitionTrackFader by css {
+        minWidth = 2.5.em
+        position = Position.relative
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        marginRight = 5.px
+    }
+
+    val transitionTrackOnAir by css {
+        border = "1px groove"
+        position = Position.relative
+        fontSize = .75.em
+        marginBottom = 1.em
+        userSelect = UserSelect.none
+    }
+
+    val transitionTrackOnAirNow by css {
+        color = Color.black
+        backgroundColor = Color.orange
+    }
+
+    val transitionTrackOnScreenButton by css {
+        fontWeight = FontWeight.w500
+//        position = Position.absolute
+        padding = "0"
+        marginTop = .75.em
+        color = theme.paperHighContrast
+//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
+//        userSelect = UserSelect.none
+//        pointerEvents = PointerEvents.none
     }
 
     val transitionHoldButton by css {

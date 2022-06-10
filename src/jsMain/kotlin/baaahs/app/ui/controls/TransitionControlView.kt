@@ -1,20 +1,19 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.gadgets.slider.slider
+import baaahs.app.ui.controls.transition.TransitionTrack
+import baaahs.app.ui.controls.transition.trackFader
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import csstype.ident
 import kotlinx.css.StyledElement
 import kotlinx.js.jso
 import mui.material.Button
 import mui.material.ButtonColor
 import mui.material.Card
 import mui.material.ToggleButton
-import mui.system.sx
 import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
@@ -22,11 +21,6 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.inlineStyles
-
-object GridAreas {
-    val hold = ident("hold")
-    val go = ident("go")
-}
 
 private val TransitionControlView = xComponent<TransitionProps>("TransitionControl") { props ->
     val appContext = useContext(appContext)
@@ -56,6 +50,19 @@ private val TransitionControlView = xComponent<TransitionProps>("TransitionContr
     val shape by state { "ease" }
     val effect by state { "fade" }
 
+    val tracks = memo {
+        listOf(
+            TransitionTrack("A").also { it.position = 1f; it.onScreen = true },
+            TransitionTrack("B").also { it.position = 0f }
+        )
+    }
+
+    val handleTrackActivate by handler { transitionTrack: TransitionTrack ->
+        tracks.forEach {
+            it.onScreen = it == transitionTrack
+        }
+    }
+
 //    val transition = clientPreview.transition
     onMount {
 //        transition.container = rootEl.current as HTMLDivElement
@@ -72,76 +79,68 @@ private val TransitionControlView = xComponent<TransitionProps>("TransitionContr
 
 //        header { +"Transitions! \uD83D\uDE1E" }
 
-        Button {
-            attrs.classes = jso {
-                if (holdEngaged) {
-                    this.root = -styles.transitionHoldButton
-                } else {
-                    this.root = -styles.transitionHoldButton and styles.transitionHoldEngaged
+        tracks.forEach {
+            trackFader {
+                attrs.transitionTrack = it
+                attrs.onActivate = handleTrackActivate
+            }
+        }
+
+        div {
+            Button {
+                attrs.classes = jso {
+                    if (holdEngaged) {
+                        this.root = -styles.transitionHoldButton
+                    } else {
+                        this.root = -styles.transitionHoldButton and styles.transitionHoldEngaged
+                    }
+                }
+                attrs.color = ButtonColor.secondary
+                attrs.onClick = handleHoldButtonClick
+                +"Hold"
+            }
+
+            Button {
+                attrs.disabled = !holdEngaged
+                attrs.onClick = handleGoButtonClick
+                +"Go"
+            }
+        }
+
+        div {
+            div {
+                +"Speed: "
+                ToggleButton {
+                    attrs.classes = jso { this.root = -styles.speedButton }
+                    attrs.selected = speed == ".25s"; +"¼s"
+                }
+                ToggleButton {
+                    attrs.classes = jso { this.root = -styles.speedButton }
+                    attrs.selected = speed == ".5s"; +"½s"
+                }
+                ToggleButton {
+                    attrs.classes = jso { this.root = -styles.speedButton }
+                    attrs.selected = speed == "1s"; +"1s"
+                }
+                ToggleButton {
+                    attrs.classes = jso { this.root = -styles.speedButton }
+                    attrs.selected = speed == "2s"; +"2s"
                 }
             }
-            attrs.sx { gridArea = GridAreas.hold }
-            attrs.color = ButtonColor.secondary
-            attrs.onClick = handleHoldButtonClick
-            +"Hold"
-        }
 
-        Button {
-            attrs.sx { gridArea = GridAreas.go }
-            attrs.disabled = !holdEngaged
-            attrs.onClick = handleGoButtonClick
-            +"Go"
-        }
-
-        div {
-            inlineStyles { gridArea = "fader" }
-
-            slider {
-                attrs.title = "Manual"
-                attrs.position = position
-                attrs.contextPosition = null
-                attrs.minValue = 0f
-                attrs.maxValue = 1f
-                attrs.reversed = false
-                attrs.showTicks = false
-
-                attrs.onPositionChange = handlePositionChange
+            div {
+                inlineStyles { gridArea = "shape" }
+                +"Shape: "
+                ToggleButton { attrs.selected = shape == "linear"; +"Linear" }
+                ToggleButton { attrs.selected = shape == "ease"; +"Ease" }
             }
-        }
 
-        div {
-            inlineStyles { gridArea = "speed" }
-            +"Speed: "
-            ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
-                attrs.selected = speed == ".25s"; +"¼s"
+            div {
+                inlineStyles { gridArea = "effect" }
+                +"Effect: "
+                ToggleButton { attrs.selected = effect == "fade"; +"Fade" }
+                ToggleButton { attrs.selected = effect == "dissolve"; +"Dissolve" }
             }
-            ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
-                attrs.selected = speed == ".5s"; +"½s"
-            }
-            ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
-                attrs.selected = speed == "1s"; +"1s"
-            }
-            ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
-                attrs.selected = speed == "2s"; +"2s"
-            }
-        }
-
-        div {
-            inlineStyles { gridArea = "shape" }
-            +"Shape: "
-            ToggleButton { attrs.selected = shape == "linear"; +"Linear" }
-            ToggleButton { attrs.selected = shape == "ease"; +"Ease" }
-        }
-
-        div {
-            inlineStyles { gridArea = "effect" }
-            +"Effect: "
-            ToggleButton { attrs.selected = effect == "fade"; +"Fade" }
-            ToggleButton { attrs.selected = effect == "dissolve"; +"Dissolve" }
         }
     }
 }

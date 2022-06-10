@@ -23,6 +23,7 @@ import styled.inlineStyles
 private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
+    val sliderStyles = appContext.allStyles.gadgetsSlider
 
     val sliderControl = props.sliderControl
     val title = sliderControl.slider.title
@@ -62,40 +63,40 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     }
 
     div(+sliderControl.inUseStyle) {
-        slider {
-            attrs.title = slider.title
-//        attrs.position = channel.value
-            attrs.position = position
-            if (beatLinked) {
-                attrs.floorPosition = floorPosition
-            }
-            attrs.contextPosition = null
-            attrs.minValue = slider.minValue
-            attrs.maxValue = slider.maxValue
-            attrs.stepValue = slider.stepValue
-            attrs.reversed = true
-            attrs.showTicks = true
-            if (slider.maxValue  <= 2) {
-                attrs.ticksScale = 100f
-            }
-
-            attrs.onPositionChange = handlePositionChange
-            attrs.onFloorPositionChange = handleFloorPositionChange
-        }
-
-        div(+Styles.beatLinkedSwitch) {
-            attrs.onClickFunction = handleToggleBeatLinked.withEvent()
-
-            if (beatLinked) {
-                inlineStyles {
-                    backgroundColor = Color.orange
+        div(+sliderStyles.wrapper) {
+            slider {
+//                attrs.position = channel.value
+                attrs.position = position
+                if (beatLinked) {
+                    attrs.floorPosition = floorPosition
                 }
+                attrs.contextPosition = null
+                attrs.minValue = slider.minValue
+                attrs.maxValue = slider.maxValue
+                attrs.stepValue = slider.stepValue
+                attrs.reversed = true
+                attrs.showTicks = true
+                if (slider.maxValue <= 2) {
+                    attrs.ticksScale = 100f
+                }
+
+                attrs.onPositionChange = handlePositionChange
+                attrs.onFloorPositionChange = handleFloorPositionChange
             }
-            icon(MusicNote)
+
+            div(+Styles.beatLinkedSwitch) {
+                attrs.onClickFunction = handleToggleBeatLinked.withEvent()
+
+                if (beatLinked) {
+                    inlineStyles {
+                        backgroundColor = Color.orange
+                    }
+                }
+                icon(MusicNote)
+            }
+
+            div(+controlsStyles.dataSourceTitle) { +title }
         }
-
-
-        div(+controlsStyles.dataSourceTitle) { +title }
     }
 }
 
