@@ -1,7 +1,9 @@
 package baaahs.ui.components
 
+import baaahs.app.ui.AppContext
 import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
+import baaahs.sim.ui.simulatorContext
 import baaahs.ui.*
 import external.react_draggable.Draggable
 import external.react_resizable.Resizable
@@ -27,8 +29,8 @@ import styled.inlineStyles
 private var nextId = 0
 
 private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
-    val appContext = useContext(appContext)
-    val styles = appContext.allStyles.uiComponents
+    val styles = getUiComponentStyles()
+
     val frameRef = ref<HTMLElement>()
 
     var layoutDimens by state {
@@ -88,6 +90,14 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
             }
         }
     }
+}
+
+private fun getUiComponentStyles(): UiComponentStyles {
+    // We might be in App or SimulatorApp. Issue #452. Gross.
+    @Suppress("RedundantNullableReturnType")
+    val appContext: AppContext? = useContext(appContext)
+    return appContext?.allStyles?.uiComponents
+        ?: useContext(simulatorContext).uiComponentStyles
 }
 
 external interface PaletteProps : PropsWithChildren {
