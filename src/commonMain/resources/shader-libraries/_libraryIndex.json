@@ -9,6 +9,7 @@
       "description": "Adjusts time by beat intensity.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/BeatShift.glsl"
@@ -19,6 +20,7 @@
       "description": "Adjusts brightness.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/Brightness.glsl"
@@ -39,6 +41,7 @@
       "description": "Sharpys centered and white!",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=mover"
       ],
       "srcFile": "effects/Movers On.glsl"
@@ -49,6 +52,7 @@
       "description": "Hue, saturation, & brightness adjustments.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/HSB.glsl"
@@ -59,6 +63,7 @@
       "description": "Beating heart.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/Heart.glsl"
@@ -80,6 +85,7 @@
       "description": "Adjusts saturation.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/Saturation.glsl"
@@ -90,6 +96,7 @@
       "description": "Adds sparkles.",
       "lastModifiedMs": 0,
       "tags": [
+        "@filter",
         "@type=filter"
       ],
       "srcFile": "effects/Sparklez.glsl"
@@ -101,6 +108,466 @@
       "lastModifiedMs": 0,
       "tags": [],
       "srcFile": "Wobble.glsl"
+    },
+    {
+      "id": "acid-at-the-disco",
+      "title": "Acid at the Disco",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/AcidAtTheDisco.glsl"
+    },
+    {
+      "id": "aquatic-flood",
+      "title": "Aquatic Flood",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/AquaticFlood.glsl"
+    },
+    {
+      "id": "blue-dream",
+      "title": "Blue Dream",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BlueDream.glsl"
+    },
+    {
+      "id": "blues-clues",
+      "title": "Blues Clues",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BluesClues.glsl"
+    },
+    {
+      "id": "blue-steel",
+      "title": "Blue Steel",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BlueSteel.glsl"
+    },
+    {
+      "id": "circular-dependency",
+      "title": "Circular Dependency",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/CircularDependency.glsl"
+    },
+    {
+      "id": "colorgasm",
+      "title": "Colorgasm",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Colorgasm.glsl"
+    },
+    {
+      "id": "devils-playground",
+      "title": "Devil's Playground",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/DevilsPlayground.glsl"
+    },
+    {
+      "id": "evolution-of-acid",
+      "title": "Evolution of Acid",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/EvolutionOfAcid.glsl"
+    },
+    {
+      "id": "faerie-pulse",
+      "title": "Faerie Pulse",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/FaeriePulse.glsl"
+    },
+    {
+      "id": "fire-clouds",
+      "title": "Fire Clouds",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/FireClouds.glsl"
+    },
+    {
+      "id": "fire-dancer",
+      "title": "Fire Dancer",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/FireDancer.glsl"
+    },
+    {
+      "id": "fire-pulsation",
+      "title": "Fire Pulsation",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/FirePulsation.glsl"
+    },
+    {
+      "id": "first-raymarches",
+      "title": "First Raymarches",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/FirstRaymarches.glsl"
+    },
+    {
+      "id": "gadzooks",
+      "title": "Gadzooks",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Gadzooks.glsl"
+    },
+    {
+      "id": "gaias-orgasm",
+      "title": "Gaia's Orgasm",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GaiasOrgasm.glsl"
+    },
+    {
+      "id": "garden-party",
+      "title": "Garden Party",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GardenParty.glsl"
+    },
+    {
+      "id": "geometric-biology",
+      "title": "Geometric Biology",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GeometricBiology.glsl"
+    },
+    {
+      "id": "gooey-red-innards",
+      "title": "Gooey Red Innards",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GooeyRedInnards.glsl"
+    },
+    {
+      "id": "g-spot",
+      "title": "G Spot",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/GSpot.glsl"
+    },
+    {
+      "id": "huearthquake",
+      "title": "Huearthquake",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Huearthquake.glsl"
+    },
+    {
+      "id": "huenami",
+      "title": "Huenami",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Huenami.glsl"
+    },
+    {
+      "id": "hypno-swirl",
+      "title": "HypnoSwirl",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/HypnoSwirl.glsl"
+    },
+    {
+      "id": "jacobian-undistortion",
+      "title": "Jacobian Undistortion",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/JacobianUndistortion.glsl"
+    },
+    {
+      "id": "orange-snowflake",
+      "title": "Orange Snowflake",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/OrangeSnowflake.glsl"
+    },
+    {
+      "id": "orange-tang",
+      "title": "Orange Tang",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/OrangeTang.glsl"
+    },
+    {
+      "id": "picassos-nightmare",
+      "title": "Picasso's Nightmare",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/PicassosNightmare.glsl"
+    },
+    {
+      "id": "poolside-delight",
+      "title": "Poolside Delight",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/PoolsideDelight.glsl"
+    },
+    {
+      "id": "purple-lightning",
+      "title": "Purple Lightning",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/PurpleLightning.glsl"
+    },
+    {
+      "id": "rainbow-trianglez",
+      "title": "Rainbow Trianglez",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/RainbowTrianglez.glsl"
+    },
+    {
+      "id": "red-bristles",
+      "title": "Red Bristles",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/RedBristles.glsl"
+    },
+    {
+      "id": "red-sea",
+      "title": "Red Sea",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/RedSea.glsl"
+    },
+    {
+      "id": "red-sine",
+      "title": "Red Sine",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/RedSine.glsl"
+    },
+    {
+      "id": "red-waves",
+      "title": "Red Waves",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/RedWaves.glsl"
+    },
+    {
+      "id": "seascape",
+      "title": "Seascape",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Seascape.glsl"
+    },
+    {
+      "id": "shattered-web",
+      "title": "Shattered Web",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/ShatteredWeb.glsl"
+    },
+    {
+      "id": "snow",
+      "title": "snow",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Snow.glsl"
+    },
+    {
+      "id": "solid-color",
+      "title": "Solid Color",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/SolidColor.glsl"
+    },
+    {
+      "id": "spastic-rainbow",
+      "title": "Spastic Rainbow",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/SpasticRainbow.glsl"
+    },
+    {
+      "id": "strings",
+      "title": "Strings",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Strings.glsl"
+    },
+    {
+      "id": "sunset-delight",
+      "title": "Sunset Delight",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/SunsetDelight.glsl"
+    },
+    {
+      "id": "tv-test-pattern",
+      "title": "TV Test Pattern",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/TvTestPattern.glsl"
+    },
+    {
+      "id": "waves",
+      "title": "Waves",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Waves.glsl"
+    },
+    {
+      "id": "wobbly-color-grid",
+      "title": "Wobbly Color Grid",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/WobblyColorGrid.glsl"
+    },
+    {
+      "id": "yas-queen",
+      "title": "Yas Queen",
+      "description": "YAAAAS KWEEEEEEEN!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/YasQueen.glsl"
+    },
+    {
+      "id": "zebra-madness",
+      "title": "Zebra Madness",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/ZebraMadness.glsl"
     }
   ]
 }
