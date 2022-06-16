@@ -180,6 +180,16 @@
       "srcFile": "shaders/Colorgasm.glsl"
     },
     {
+      "id": "complex-trippy-shit-1",
+      "title": "Complex Trippy Shit #1",
+      "description": "It's complex-valued trippy shit!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/ComplexTrippyShit1.glsl"
+    },
+    {
       "id": "devils-playground",
       "title": "Devil's Playground",
       "description": "A cool shader!",
