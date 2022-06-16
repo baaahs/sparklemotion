@@ -11,7 +11,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "BeatShift.glsl"
+      "srcFile": "effects/BeatShift.glsl"
     },
     {
       "id": "brightness",
@@ -21,7 +21,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "Brightness.glsl"
+      "srcFile": "effects/Brightness.glsl"
     },
     {
       "id": "fireball",
@@ -31,7 +31,7 @@
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "Fireball.glsl"
+      "srcFile": "shaders/Fireball.glsl"
     },
     {
       "id": "movers-on",
@@ -41,7 +41,7 @@
       "tags": [
         "@type=mover"
       ],
-      "srcFile": "Movers On.glsl"
+      "srcFile": "effects/Movers On.glsl"
     },
     {
       "id": "hsb",
@@ -51,7 +51,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "HSB.glsl"
+      "srcFile": "effects/HSB.glsl"
     },
     {
       "id": "heart",
@@ -61,7 +61,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "Heart.glsl"
+      "srcFile": "effects/Heart.glsl"
     },
     {
       "id": "movers-swirl",
@@ -72,7 +72,7 @@
         "@filter",
         "@type=mover"
       ],
-      "srcFile": "Movers Swirl.glsl"
+      "srcFile": "effects/Movers Swirl.glsl"
     },
     {
       "id": "saturation",
@@ -82,7 +82,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "Saturation.glsl"
+      "srcFile": "effects/Saturation.glsl"
     },
     {
       "id": "sparklez",
@@ -92,7 +92,7 @@
       "tags": [
         "@type=filter"
       ],
-      "srcFile": "Sparklez.glsl"
+      "srcFile": "effects/Sparklez.glsl"
     },
     {
       "id": "wobble",
