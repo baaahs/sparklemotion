@@ -34,7 +34,7 @@ class SacnManager(
     private val universeListener: Dmx.UniverseListener? = null
 ) : BaseControllerManager(controllerTypeName) {
     private val senderCid = "SparkleMotion000".encodeToByteArray()
-    private val sacnLink = SacnLink(link, senderCid, "SparkleMotion")
+    private val sacnLink = SacnLink(link, senderCid, "SparkleMotion", clock)
     private var lastConfig: Map<ControllerId, SacnControllerConfig> = emptyMap()
     private var controllers: Map<ControllerId, SacnController> = emptyMap()
     private var discoveredControllers: MutableMap<ControllerId, SacnController> = hashMapOf()
@@ -147,7 +147,9 @@ class SacnManager(
         override val title: String,
         override val address: String,
         override val onlineSince: Time?,
-        override val firmwareVersion: String? = null
+        override val firmwareVersion: String? = null,
+        override val lastErrorMessage: String? = null,
+        override val lastErrorAt: Time? = null
     ) : ControllerState()
 
     companion object : ControllerManager.Meta {
