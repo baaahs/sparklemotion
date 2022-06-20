@@ -7,6 +7,7 @@ import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
+import baaahs.ui.sharedGlContext
 import baaahs.ui.value
 import baaahs.ui.xComponent
 import baaahs.util.CacheBuilder
@@ -112,20 +113,22 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
             Divider {}
 
-            div {
-                inlineStyles {
-                    display = Display.grid
-                    gridTemplateColumns = GridTemplateColumns("repeat(auto-fit, minmax(180px, 1fr))")
-                    gap = 1.em
-                }
+            sharedGlContext {
+                div {
+                    inlineStyles {
+                        display = Display.grid
+                        gridTemplateColumns = GridTemplateColumns("repeat(auto-fit, minmax(180px, 1fr))")
+                        gap = 1.em
+                    }
 
-                matches.forEach { match ->
-                    shaderCard {
-                        key = match.id
-                        attrs.mutablePatch = MutablePatch(MutableShader(match.shader))
-                        attrs.onSelect = handleShaderSelect[match]
-                        attrs.onDelete = null
-                        attrs.toolchain = toolchain
+                    matches.forEach { match ->
+                        shaderCard {
+                            key = match.id
+                            attrs.mutablePatch = MutablePatch(MutableShader(match.shader))
+                            attrs.onSelect = handleShaderSelect[match]
+                            attrs.onDelete = null
+                            attrs.toolchain = toolchain
+                        }
                     }
                 }
             }
