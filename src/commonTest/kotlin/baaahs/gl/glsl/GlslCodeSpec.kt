@@ -118,6 +118,15 @@ object GlslCodeSpec : Spek({
                         }
                     }
                 }
+
+                context("with leading generic textual comment") {
+                    override(text) { "varying vec4 otherColor; // HSB @@ColorPicker default=orange" }
+
+                    it("builds a PluginRef") {
+                        expect(variable.hint?.pluginRef)
+                            .toEqual(PluginRef("baaahs.Core", "ColorPicker"))
+                    }
+                }
             }
         }
 
