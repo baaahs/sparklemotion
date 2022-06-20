@@ -13,6 +13,7 @@ class GlslParser {
 
     private class Context {
         val macros: MutableMap<String, Macro> = hashMapOf()
+        var macroDepth = 0
         val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
         var outputEnabled = true
         val enabledStack = mutableListOf<Boolean>()
@@ -91,7 +92,14 @@ class GlslParser {
             val macro = macros[value]
             return when {
                 macro == null -> null
-                macro.params == null -> parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                macro.params == null -> {
+                    macroDepth++
+                    if (macroDepth >= maxMacroDepth)
+                        throw glslError("Max macro depth exceeded for \"$value\".")
+
+                    parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                        .also { macroDepth-- }
+                }
                 else -> ParseState.MacroExpansion(this, parseState, macro)
             }
         }
@@ -714,6 +722,7 @@ class GlslParser {
 
     companion object {
         private val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
+        private const val maxMacroDepth = 10
 
         /** Chomp leading whitespace. */
         private fun chomp(text: String, lineNumber: Int?): Pair<String, Int?> {
