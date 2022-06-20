@@ -28,6 +28,11 @@ object GlslCodeSpec : Spek({
                 expectValue(GlslCode.GlslVar("i", GlslType.Int, "int i;")) { variable }
             }
 
+            context("with underscores") {
+                override(text) { "int _i_i;" }
+                expectValue(GlslCode.GlslVar("_i_i", GlslType.Int, "int _i_i;")) { variable }
+            }
+
             context("arrays") {
                 override(text) { "vec4 colorsArray[9];" }
                 expectValue(GlslCode.GlslVar("colorsArray", GlslType.Vec4, "vec4 colorsArray[9];")) { variable }
@@ -140,6 +145,17 @@ object GlslCodeSpec : Spek({
                         "rand", GlslType.Float,
                         listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 1)),
                         "float rand(vec2 uv) { return fract(sin(dot(uv.xy,vec2(12.9898,78.233))) * 43758.5453); }"
+                    )
+                ) { function }
+            }
+
+            context("with param names containing underscores") {
+                override(text) { "float rand(vec2 _u_v) { return fract(sin(dot(_u_v.xy,vec2(12.9898,78.233))) * 43758.5453); }" }
+                expectValue(
+                    GlslCode.GlslFunction(
+                        "rand", GlslType.Float,
+                        listOf(GlslCode.GlslParam("_u_v", GlslType.Vec2, isIn = true, lineNumber = 1)),
+                        "float rand(vec2 _u_v) { return fract(sin(dot(_u_v.xy,vec2(12.9898,78.233))) * 43758.5453); }"
                     )
                 ) { function }
             }
