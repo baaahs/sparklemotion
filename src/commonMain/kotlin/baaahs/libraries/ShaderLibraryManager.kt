@@ -55,7 +55,8 @@ class ShaderLibraryManager(
                 indexFile.description,
                 indexFile.license,
                 indexFile.entries.map { fileEntry ->
-                    val src = libDir.resolve(fileEntry.srcFile).read()!!
+                    val src = libDir.resolve(fileEntry.srcFile).read()
+                        ?: error("No such file \"${fileEntry.srcFile}\" in shader library \"${indexFile.title}\".")
 
                     ShaderLibrary.Entry(
                         fileEntry.id,
