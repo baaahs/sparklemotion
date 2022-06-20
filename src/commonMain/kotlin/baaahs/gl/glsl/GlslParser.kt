@@ -37,7 +37,7 @@ class GlslParser {
 
                 if (before.isNotEmpty()) {
                     // Further tokenize text blocks to isolate symbol strings.
-                    Regex("(.*?)([A-Za-z][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
+                    Regex("(.*?)([A-Za-z_][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
                         val (nonSymbol, symbol) = beforeMatch.destructured
                         if (nonSymbol.isNotEmpty())
                             state = state.visit(nonSymbol)
