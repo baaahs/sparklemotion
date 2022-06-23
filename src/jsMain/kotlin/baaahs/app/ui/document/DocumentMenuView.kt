@@ -5,8 +5,11 @@ import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
 import baaahs.ui.DialogMenuItem.*
+import csstype.*
+import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
+import org.w3c.files.FileReader
 import react.*
 
 private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { props ->
@@ -91,6 +94,11 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
         launch { documentManager.onDownload() }
     }
 
+    var showUpload by state { false }
+    val handleUpload by mouseEventHandler(documentManager) {
+        launch { showUpload = documentManager.confirmCloseIfUnsaved() }
+    }
+
     val handleClose = callback(documentManager) {
         launch { documentManager.onClose() }
     }
@@ -133,6 +141,12 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
     }
 
     ListItemButton {
+        attrs.onClick = handleUpload
+        ListItemIcon { icon(CommonIcons.Upload) }
+        ListItemText { attrs.primary = buildElement { +"Upload $typeTitle…" } }
+    }
+
+    ListItemButton {
         attrs.disabled = !documentManager.isLoaded
         attrs.onClick = handleClose.withMouseEvent()
         ListItemIcon { icon(mui.icons.material.Close) }
@@ -140,6 +154,50 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
     }
 
     renderDialog?.invoke(this)
+
+    if (showUpload) {
+        Modal {
+            attrs.open = true
+
+            Box {
+                attrs.sx = jso {
+                    this.position = Position.absolute
+                    this.top = 50.pct
+                    this.left = 50.pct
+                    this.transform = translate((-50).pct)
+                    this.width = 400.px
+                    this.backgroundColor = Color("background.paper")
+                    this.border = Border(2.px, LineStyle.solid, NamedColor.black)
+                    this.boxShadow = "24".unsafeCast<BoxShadow>()
+                    this.padding = 4.px
+                }
+
+                fileUpload {
+                    attrs.fileType = documentManager.documentType.fileType
+                    attrs.onUpload = { files ->
+                        console.log("Uploaded!", files)
+
+                        files.forEach { file ->
+                            val reader = FileReader()
+
+                            reader.onabort = { console.log("file reading was aborted") }
+                            reader.onerror = { console.log("file reading has failed") }
+                            reader.onload = {
+                                // Do whatever you want with the file contents
+                                val binaryStr = reader.result
+                                launch {
+                                    documentManager.onUpload(file.name, binaryStr)
+                                    showUpload = false
+                                }
+                            }
+                            reader.readAsText(file)
+                        }
+                    }
+                    attrs.onCancel = { showUpload = false }
+                }
+            }
+        }
+    }
 }
 
 external interface DocumentMenuProps : Props {

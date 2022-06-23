@@ -12,9 +12,20 @@ class FileDisplay(
 
 abstract class FileType {
     open val title: String get() = "File"
-    abstract val extension: String?
+    open val titleLower: String get() = title.lowercase()
+    open val indefiniteArticle: String get() = "a"
+    open val indefiniteTitle: String get() = "$indefiniteArticle $title"
+    open val indefiniteTitleLower: String get() = "$indefiniteArticle $titleLower"
 
-    abstract fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay)
+    abstract val extension: String?
+    open val contentTypeMasks: List<String> get() = emptyList()
+    open val matchingExtensions: List<String> get() = listOfNotNull(extension)
+
+    open fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
+        if (file.isDirectory == false && matchingExtensions.isNotEmpty()) {
+            fileDisplay.isSelectable = matchingExtensions.any { file.name.endsWith(it) }
+        }
+    }
 
     object Any : FileType() {
         override val extension: String? get() = null
@@ -27,22 +38,28 @@ abstract class FileType {
     object Show : FileType() {
         override val title: String get() = "Show"
         override val extension: String get() = ".sparkle"
-
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            if (file.isDirectory == false) {
-                fileDisplay.isSelectable = file.name.endsWith(".sparkle")
-            }
-        }
+        override val matchingExtensions: List<String>
+            get() = listOf(".sparkle", ".sparkle.json")
+        override val contentTypeMasks: List<String>
+            get() = listOf("application/json", "x-application/json")
     }
 
     object Scene : FileType() {
         override val title: String get() = "Scene"
         override val extension: String get() = ".scene"
+        override val matchingExtensions: List<String>
+            get() = listOf(".scene", ".scene.json")
+        override val contentTypeMasks: List<String>
+            get() = listOf("application/json", "x-application/json")
+    }
 
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            if (file.isDirectory == false) {
-                fileDisplay.isSelectable = file.name.endsWith(".scene")
-            }
-        }
+    object Image : FileType() {
+        override val title: String get() = "Image"
+        override val indefiniteArticle: String get() = "an"
+        override val extension: String? get() = null
+        override val contentTypeMasks: List<String>
+            get() = listOf("image/*")
+        override val matchingExtensions: List<String>
+            get() = listOf(".jpg", ".gif", ".png")
     }
 }
