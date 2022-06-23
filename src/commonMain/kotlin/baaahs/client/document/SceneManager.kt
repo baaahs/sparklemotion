@@ -87,6 +87,11 @@ class SceneManager(
         UiActions.downloadScene(document!!, plugins)
     }
 
+    override suspend fun onUpload(name: String, content: dynamic) {
+        val scene = plugins.json.decodeFromString(Scene.serializer(), content)
+        onNew(scene)
+    }
+
     override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {
         localState = documentState
 

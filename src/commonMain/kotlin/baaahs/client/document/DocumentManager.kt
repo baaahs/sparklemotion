@@ -119,6 +119,8 @@ abstract class DocumentManager<T, TState>(
     
     abstract suspend fun onDownload()
 
+    abstract suspend fun onUpload(name: String, content: dynamic)
+
     suspend fun onClose() {
         confirmCloseIfUnsaved() || return
 
@@ -155,6 +157,7 @@ abstract class DocumentManager<T, TState>(
     }
 
     abstract inner class Facade : baaahs.ui.Facade(), EditHandler<T, TState> {
+        val documentType get() = this@DocumentManager.documentType
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
@@ -173,6 +176,8 @@ abstract class DocumentManager<T, TState>(
         suspend fun onSaveAs() = this@DocumentManager.onSaveAs()
         suspend fun onSaveAs(file: Fs.File) = this@DocumentManager.onSaveAs(file)
         suspend fun onDownload() = this@DocumentManager.onDownload()
+        fun confirmCloseIfUnsaved() = this@DocumentManager.confirmCloseIfUnsaved()
+        suspend fun onUpload(name: String, content: dynamic) = this@DocumentManager.onUpload(name, content)
         suspend fun onClose() = this@DocumentManager.onClose()
         fun sync() {
             this@DocumentManager.editState = localState

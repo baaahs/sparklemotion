@@ -5,6 +5,7 @@ import baaahs.ui.Icon
 actual fun getCommonIcons(): PlatformIcons = object : PlatformIcons {
     override val Add: Icon = FakeIcon
     override val Download: Icon = FakeIcon
+    override val Upload: Icon = FakeIcon
     override val Reload: Icon = FakeIcon
     override val Fixture: Icon = FakeIcon
     override val Patch: Icon = FakeIcon
