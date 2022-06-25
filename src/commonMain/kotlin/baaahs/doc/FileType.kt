@@ -41,7 +41,7 @@ abstract class FileType {
         override val matchingExtensions: List<String>
             get() = listOf(".sparkle", ".sparkle.json")
         override val contentTypeMasks: List<String>
-            get() = listOf("application/json", "x-application/json")
+            get() = listOf("application/json", "x-application/json", "text/plain")
     }
 
     object Scene : FileType() {
@@ -50,7 +50,7 @@ abstract class FileType {
         override val matchingExtensions: List<String>
             get() = listOf(".scene", ".scene.json")
         override val contentTypeMasks: List<String>
-            get() = listOf("application/json", "x-application/json")
+            get() = listOf("application/json", "x-application/json", "text/plain")
     }
 
     object Image : FileType() {
