@@ -75,7 +75,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
             attrs.stepValue = slider.stepValue
             attrs.reversed = true
             attrs.showTicks = true
-            if (slider.maxValue  <= 2) {
+            if (slider.maxValue <= 2) {
                 attrs.ticksScale = 100f
             }
 
