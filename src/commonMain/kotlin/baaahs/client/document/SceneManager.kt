@@ -87,7 +87,7 @@ class SceneManager(
         UiActions.downloadScene(document!!, plugins)
     }
 
-    override suspend fun onUpload(name: String, content: dynamic) {
+    override suspend fun onUpload(name: String, content: String) {
         val scene = plugins.json.decodeFromString(Scene.serializer(), content)
         onNew(scene)
     }
