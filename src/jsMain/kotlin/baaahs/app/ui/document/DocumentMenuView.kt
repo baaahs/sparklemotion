@@ -184,9 +184,9 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
                             reader.onerror = { console.log("file reading has failed") }
                             reader.onload = {
                                 // Do whatever you want with the file contents
-                                val binaryStr = reader.result
+                                val result = reader.result
                                 launch {
-                                    documentManager.onUpload(file.name, binaryStr)
+                                    documentManager.onUpload(file.name, result)
                                     showUpload = false
                                 }
                             }

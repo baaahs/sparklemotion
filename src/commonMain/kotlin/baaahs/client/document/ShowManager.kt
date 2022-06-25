@@ -82,7 +82,7 @@ class ShowManager(
         UiActions.downloadShow(document!!, toolchain.plugins)
     }
 
-    override suspend fun onUpload(name: String, content: dynamic) {
+    override suspend fun onUpload(name: String, content: String) {
         val show = toolchain.plugins.json.decodeFromString(ShowMigrator, content)
         onNew(show)
     }

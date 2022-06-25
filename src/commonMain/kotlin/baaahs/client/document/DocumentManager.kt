@@ -119,7 +119,7 @@ abstract class DocumentManager<T, TState>(
     
     abstract suspend fun onDownload()
 
-    abstract suspend fun onUpload(name: String, content: dynamic)
+    abstract suspend fun onUpload(name: String, content: String)
 
     suspend fun onClose() {
         confirmCloseIfUnsaved() || return
@@ -177,7 +177,7 @@ abstract class DocumentManager<T, TState>(
         suspend fun onSaveAs(file: Fs.File) = this@DocumentManager.onSaveAs(file)
         suspend fun onDownload() = this@DocumentManager.onDownload()
         fun confirmCloseIfUnsaved() = this@DocumentManager.confirmCloseIfUnsaved()
-        suspend fun onUpload(name: String, content: dynamic) = this@DocumentManager.onUpload(name, content)
+        suspend fun onUpload(name: String, content: String) = this@DocumentManager.onUpload(name, content)
         suspend fun onClose() = this@DocumentManager.onClose()
         fun sync() {
             this@DocumentManager.editState = localState
