@@ -174,7 +174,7 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
 
                 fileUpload {
                     attrs.fileType = documentManager.documentType.fileType
-                    attrs.onUpload = { files ->
+                    attrs.onUpload = { files, rejections ->
                         console.log("Uploaded!", files)
 
                         files.forEach { file ->

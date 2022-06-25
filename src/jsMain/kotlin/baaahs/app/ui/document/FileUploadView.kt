@@ -1,5 +1,6 @@
 package baaahs.app.ui.document
 
+import FileRejection
 import baaahs.app.ui.appContext
 import baaahs.doc.FileType
 import baaahs.ui.*
@@ -36,22 +37,25 @@ private val FileUploadView = xComponent<FileUploadProps>("FileUpload") { props -
             attrs.accept = accept
             console.log("accept:", accept)
         }
+        if (props.maxFiles != null) {
+            attrs.maxFiles = props.maxFiles
+        }
         attrs.onDrop = props.onUpload
         attrs.onFileDialogCancel
 
-        renderDropzone { callbackProps ->
+        renderDropzone { dropzoneState ->
             div(+styles.container) {
-                mixin(callbackProps.getRootProps())
+                mixin(dropzoneState.getRootProps())
 
                 div(+styles.upload
-                        and callbackProps.isDragAccept.then(styles.dragAccept)
-                        and callbackProps.isDragActive.then(styles.dragActive)
-                        and callbackProps.isDragReject.then(styles.dragReject)
-                        and callbackProps.isFileDialogActive.then(styles.fileDialogActive)
-                        and callbackProps.isFocused.then(styles.focused)
+                        and dropzoneState.isDragAccept.then(styles.dragAccept)
+                        and dropzoneState.isDragActive.then(styles.dragActive)
+                        and dropzoneState.isDragReject.then(styles.dragReject)
+                        and dropzoneState.isFileDialogActive.then(styles.fileDialogActive)
+                        and dropzoneState.isFocused.then(styles.focused)
                 ) {
                     input {
-                        mixin(callbackProps.getInputProps())
+                        mixin(dropzoneState.getInputProps())
                     }
 
                     icon(FileUpload) {
@@ -60,14 +64,48 @@ private val FileUploadView = xComponent<FileUploadProps>("FileUpload") { props -
                     }
 
                     p {
-                        if (callbackProps.isDragReject) {
+                        if (dropzoneState.isDragAccept) { +"dragAccept" }
+                        if (dropzoneState.isDragActive) { +"dragActive" }
+                        if (dropzoneState.isDragReject) { +"dragReject" }
+                        if (dropzoneState.isFileDialogActive) { +"fileDialogActive" }
+                        if (dropzoneState.isFocused) { +"focused" }
+
+                        if (dropzoneState.isDragReject) {
                             +"That's not ${fileType.indefiniteTitleLower}."
-                        } else if (callbackProps.isDragActive) {
+                        } else if (dropzoneState.isDragActive) {
                             +"yom yom it's ${fileType.indefiniteTitleLower}!"
                         } else {
                             +"Drop ${fileType.indefiniteTitleLower} here, or "
                             span(+styles.linkink) { +"browse" }
                             +"…"
+                        }
+                    }
+
+                    if (dropzoneState.acceptedFiles.isNotEmpty()) {
+                        div {
+                            header { +"Accepted: " }
+
+                            ul {
+                                dropzoneState.acceptedFiles.forEach { file ->
+                                    li { +file.name }
+                                }
+                            }
+                        }
+                    }
+
+                    if (dropzoneState.fileRejections.isNotEmpty()) {
+                        div {
+                            header { +"Rejected: " }
+
+                            ul {
+                                dropzoneState.fileRejections.forEach { rejection ->
+                                    li {
+                                        +rejection.file.name
+                                        p { +": " }
+                                        +rejection.errors.joinToString()
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -83,7 +121,8 @@ private val FileUploadView = xComponent<FileUploadProps>("FileUpload") { props -
 
 external interface FileUploadProps : Props {
     var fileType: FileType
-    var onUpload: (Array<File>) -> Unit
+    var maxFiles: Int?
+    var onUpload: (acceptedFiles: Array<File>, fileRejections: Array<FileRejection>) -> Unit
     var onCancel: () -> Unit
 }
 
