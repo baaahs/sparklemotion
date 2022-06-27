@@ -116,7 +116,7 @@ class JvmNetwork : Network {
                 try {
                     udpSocket.send(packetOut)
                 } catch (e: IOException) {
-                    throw IOException("sending to $toAddress: ${e.message}", e)
+                    throw IOException("sending to $toAddress: ${e.message}")
                 }
             }
 

@@ -10,10 +10,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
-import baaahs.show.SampleData
-import baaahs.show.Show
-import baaahs.show.ShowMonitor
-import baaahs.show.ShowState
+import baaahs.show.*
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
@@ -83,6 +80,11 @@ class ShowManager(
 
     override suspend fun onDownload() {
         UiActions.downloadShow(document!!, toolchain.plugins)
+    }
+
+    override suspend fun onUpload(name: String, content: String) {
+        val show = toolchain.plugins.json.decodeFromString(ShowMigrator, content)
+        onNew(show)
     }
 
     override fun switchTo(documentState: DocumentState<Show, ShowState>?, isLocalEdit: Boolean) {

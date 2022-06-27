@@ -46,7 +46,9 @@ open class NullController(
         override val title: String,
         override val address: String?,
         override val onlineSince: Time?,
-        override val firmwareVersion: String? = null
+        override val firmwareVersion: String? = null,
+        override val lastErrorMessage: String? = null,
+        override val lastErrorAt: Time? = null
     ) : ControllerState()
 
     override fun createTransport(

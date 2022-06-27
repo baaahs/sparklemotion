@@ -16,10 +16,7 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.scene.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
-import baaahs.util.Clock
-import baaahs.util.Logger
-import baaahs.util.Time
-import baaahs.util.asMillis
+import baaahs.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.KSerializer
@@ -139,8 +136,15 @@ class BrainManager(
         override val controllerId: ControllerId
             get() = brainId.asControllerId()
 
-        override val state: ControllerState
-            get() = State(brainId.uuid, brainAddress.asString(), startedAt, helloMessage.firmwareVersion)
+        var lastError: Exception? = null
+            internal set
+        var lastErrorAt: Time? = null
+            internal set
+
+        override val state: ControllerState get() = State(
+            brainId.uuid, brainAddress.asString(), startedAt, helloMessage.firmwareVersion,
+            lastError?.message, lastErrorAt
+        )
 
         override val transportType: TransportType
             get() = BrainTransportType
@@ -166,7 +170,9 @@ class BrainManager(
         override val title: String,
         override val address: String?,
         override val onlineSince: Time?,
-        override val firmwareVersion: String?
+        override val firmwareVersion: String?,
+        override val lastErrorMessage: String? = null,
+        override val lastErrorAt: Time? = null
     ) : ControllerState()
 
     inner class BrainTransport(
@@ -177,9 +183,6 @@ class BrainManager(
         val firmwareVersion: String? = null,
         val idfVersion: String? = null
     ) : Transport {
-        var hadException: Boolean = false
-            private set
-
         private var pixelBuffer = pixelShader.createBuffer(0)
 
         override val name: String
@@ -232,20 +235,24 @@ class BrainManager(
 
         private fun deliverShaderMessage() {
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
-            try {
-                if (!isSimulatedBrain)
-                    udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
-            } catch (e: Exception) {
-                // Couldn't send to Brain? Schedule to remove it.
-                hadException = true
-                notifyListeners { onError(brainController) }
-                //                pendingBrains[brainId] = this
+            val now = clock.now()
+            if (brainController.lastErrorAt?.isBefore(now - waitPeriodAfterNetworkError) != false) {
+                try {
+                    if (!isSimulatedBrain)
+                        udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)
+                } catch (e: Exception) {
+                    // Couldn't send to Brain? Schedule to remove it.
+                    brainController.lastError = e
+                    brainController.lastErrorAt = now
+                    notifyListeners { onError(brainController) }
+                    //                pendingBrains[brainId] = this
 
-                logger.error(e) { "Error sending to $brainId, will take offline" }
+                    logger.error(e) { "Error sending to $brainId, will take offline" }
+                }
+
+                networkStats.packetsSent++
+                networkStats.bytesSent += message.size
             }
-
-            networkStats.packetsSent++
-            networkStats.bytesSent += message.size
         }
     }
 
@@ -266,6 +273,8 @@ class BrainManager(
 
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String = "Brain"
+
+        const val waitPeriodAfterNetworkError = 5
 
         private const val defaultPixelCount = 2048
         override val defaultFixtureConfig = PixelArrayDevice.Config(
