@@ -20,10 +20,10 @@ import org.w3c.dom.HTMLCanvasElement
 import kotlin.math.roundToInt
 
 private val Float.short: String
-    get() = try {
+    get() = if (isNaN()) toString() else try {
         ((this * 100).roundToInt() / 100.0).toString()
     } catch(e: Exception) {
-        this.toString()
+        toString()
     }
 
 class MovingHeadPreview(

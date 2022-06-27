@@ -10,6 +10,7 @@ import external.react_compound_slider.*
 import react.*
 import react.dom.div
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
@@ -132,6 +133,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             }
 
             if (props.showTicks != false) {
+                val ticksScale = props.ticksScale ?: 1f
+
                 Ticks {
                     attrs.count = 10
                     attrs.children = { ticksObject ->
@@ -142,7 +145,11 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                         key = tick.id
                                         attrs.tick = tick
                                         attrs.format = { item ->
-                                            floor(item.value.toFloat() * (props.ticksScale ?: 1f)).toString()
+                                            if (ticksScale != 1f) {
+                                                floor(item.value.toFloat() * ticksScale).toString()
+                                            } else {
+                                                ((item.value.toFloat() * 100f).roundToInt().toFloat() / 100f).toString()
+                                            }
                                         }
                                     }
                                 }

@@ -183,6 +183,7 @@ kotlin {
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^4.4.4"))
+                implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))

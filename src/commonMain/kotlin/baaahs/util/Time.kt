@@ -9,6 +9,7 @@ fun Interval(n: Number): Time = n.toDouble()
 
 fun Time.elapsedMs() = ((internalTimerClock.now() - this) * 10000).roundToInt() / 10.0
 fun Time.makeSafeForGlsl() = (this % 10000.0).toFloat()
+fun Time.isBefore(otherTime: Time) = this < otherTime
 
 interface Clock {
     fun now(): Time

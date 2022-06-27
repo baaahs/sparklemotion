@@ -68,53 +68,38 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             }
         }
 
-        when (buttonControl.type) {
-            ButtonControl.ActivationType.Toggle ->
-                // When previews are on:
-                //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
-                //   color: black
-                ToggleButton {
-                    ref = buttonRef
+        // When previews are on:
+        //   background: radial-gradient(rgba(255, 255, 255, .75), transparent);
+        //   color: black
+        ToggleButton {
+            ref = buttonRef
 
-                    if (showPreview) {
-                        attrs.classes = jso {
-                            root = -Styles.buttonLabelWhenPreview
-                            selected = -Styles.buttonSelectedWhenPreview
-                        }
-                    }
+            if (showPreview) {
+                attrs.classes = jso {
+                    root = -Styles.buttonLabelWhenPreview
+                    selected = -Styles.buttonSelectedWhenPreview
+                }
+            }
 
-                    attrs.value = "n/a"
-                    // Yep, for some reason you need to set it directly or it doesn't work.
-                    attrs.selected = buttonControl.isPressed
+            attrs.value = "n/a"
+            // Yep, for some reason you need to set it directly or it doesn't work.
+            attrs.selected = buttonControl.isPressed
+
+            when (buttonControl.type) {
+                ButtonControl.ActivationType.Toggle -> {
                     attrs.onClick = handleToggleClick.withTMouseEvent()
-
-                    div {
-                        ref = titleDivRef
-                        +buttonControl.title
-                    }
                 }
 
-            ButtonControl.ActivationType.Momentary ->
-                ToggleButton {
-                    ref = buttonRef
-
-                    if (showPreview) {
-                        attrs.classes = jso {
-                            root = -Styles.buttonLabelWhenPreview
-                            selected = -Styles.buttonSelectedWhenPreview
-                        }
-                    }
-
-                    attrs.value = "n/a"
-                    attrs.selected = buttonControl.isPressed
+                ButtonControl.ActivationType.Momentary -> {
                     attrs.onMouseDown = handleMomentaryPress.withMouseEvent()
                     attrs.onMouseUp = handleMomentaryRelease.withMouseEvent()
-
-                    div {
-                        ref = titleDivRef
-                        +buttonControl.title
-                    }
                 }
+            }
+
+            div {
+                ref = titleDivRef
+                +buttonControl.title
+            }
         }
     }
 

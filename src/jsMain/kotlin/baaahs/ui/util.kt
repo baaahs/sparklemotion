@@ -93,8 +93,8 @@ operator fun SvgIconComponent.unaryPlus(): ReactElement<SvgIconProps> = create()
 val String.className: ClassName get() = ClassName(this)
 infix fun String.and(ruleSet: RuleSet?): String =
     if (ruleSet == null) this else this + " " + ruleSet.name
-infix fun ClassName.and(ruleSet: RuleSet): ClassName =
-    ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
+infix fun ClassName.and(ruleSet: RuleSet?): ClassName =
+    if (ruleSet == null) this else ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
 infix fun ClassName.and(className: String?): ClassName =
     if (className == null) this else ClassName(this.unsafeCast<String>() + " " + className)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
@@ -102,7 +102,8 @@ infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
 infix fun String.and(that: String?): String =
     if (that == null) this else "$this $that"
-
+fun <T> Boolean.then(value: T): T? =
+    if (this) value else null
 
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     child(".${styleSheet.name}-${rule.name}") { block() }
