@@ -17,6 +17,17 @@ fun <E> Collection<E>.only(description: String = "item"): E {
     else return iterator().next()
 }
 
+fun <E> Array<E>.only(description: String = "item"): E {
+    if (size != 1)
+        throw IllegalArgumentException("Expected one $description, found $size: $this")
+    else return iterator().next()
+}
+
+fun FloatArray.resize(size: Int, init: (Int) -> Float): FloatArray =
+    FloatArray(size) { i ->
+        if (i < size) get(i) else init(i)
+    }
+
 fun <E> Collection<E>.onlyOrNull(): E? {
     return if (size != 1) null else iterator().next()
 }
@@ -25,11 +36,28 @@ fun <T> List<T>.replacing(index: Int, replacement: T): List<T> {
     return this.mapIndexed { i, t -> if (i == index) replacement else t }
 }
 
+fun <T: Any?> MutableList<T>.replaceAll(block: (T) -> T) {
+    forEachIndexed { index: Int, item: T -> this[index] = block(item) }
+}
+
+fun <T: Any?> MutableList<T>.replace(predicate: (T) -> Boolean, block: (T) -> T) {
+    forEachIndexed { index: Int, item: T ->
+        if (predicate(item)) {
+            this[index] = block(item)
+        }
+    }
+}
+
 fun toRadians(degrees: Float) = (degrees * PI / 180).toFloat()
 
-fun Float.clamp(minValue: Float, maxValue: Float): Float {
-    return max(min(this, maxValue), minValue)
-}
+fun Int.clamp(minValue: Int, maxValue: Int): Int =
+    max(min(this, maxValue), minValue)
+
+fun Float.clamp(minValue: Float, maxValue: Float): Float =
+    max(min(this, maxValue), minValue)
+
+fun Double.clamp(minValue: Double, maxValue: Double): Double =
+    max(min(this, maxValue), minValue)
 
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())
@@ -62,6 +90,8 @@ expect val internalTimerClock: Clock
 expect fun <T> doRunBlocking(block: suspend () -> T): T
 
 expect fun decodeBase64(s: String): ByteArray
+
+expect fun encodeBase64(b: ByteArray): String
 
 internal suspend fun time(function: suspend () -> Unit) = internalTimerClock.time(function)
 internal suspend fun Clock.time(function: suspend () -> Unit): Int {
@@ -136,3 +166,6 @@ fun <T> futureAsync(scope: CoroutineScope = GlobalScope, block: suspend () -> T)
 fun <T> Deferred<T>.onAvailable(callback: (T) -> Unit) {
     this.invokeOnCompletion { callback.invoke(this.getCompleted()) }
 }
+
+val Pair<Int, Int>.x get() = first
+val Pair<Int, Int>.y get() = second

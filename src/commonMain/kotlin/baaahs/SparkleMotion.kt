@@ -8,6 +8,11 @@ object SparkleMotion {
     const val PIXEL_COUNT_UNKNOWN = -1
 
     const val EXTRA_ASSERTIONS = true
+    const val TRACE_GLSL = false
+
+    // This theoretically _may_ (but doesn't appear to, on Chrome at least) slow down client framerate.
+    // See https://www.paulirish.com/2012/why-moving-elements-with-translate-is-better-than-posabs-topleft/
+    const val USE_CSS_TRANSFORM = false
 
     val logger = Logger<SparkleMotion>()
 }

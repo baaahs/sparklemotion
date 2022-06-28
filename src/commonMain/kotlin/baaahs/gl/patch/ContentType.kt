@@ -93,7 +93,7 @@ class ContentType(
         )
         val XyCoordinate = ContentType("xy-coordinate", "X/Y Coordinate", GlslType.Vec2)
         val ModelInfo = ContentType("model-info", "Model Info", MoreTypes.ModelInfo.glslType)
-        val Mouse = ContentType("mouse", "Mouse", GlslType.Vec2)
+        val Mouse = ContentType("mouse", "Mouse", GlslType.Vec4)
         val XyzCoordinate = ContentType("xyz-coordinate", "X/Y/Z Coordinate", GlslType.Vec3)
         val Color = ContentType("color", "Color", GlslType.Vec4) { type ->
             if (type == GlslType.Vec4) GlslExpr("vec4(0., 0., 0., 1.)") else type.defaultInitializer

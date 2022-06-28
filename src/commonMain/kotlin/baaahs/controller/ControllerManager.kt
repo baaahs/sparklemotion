@@ -12,6 +12,7 @@ interface ControllerManager {
     fun removeListener(controllerListener: ControllerListener)
     fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>)
     fun start()
+    fun reset() {}
     fun stop()
 
     interface Meta {

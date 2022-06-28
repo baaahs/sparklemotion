@@ -6,7 +6,7 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
     var offset = offset
         set(value) {
             if (value > bytes.size) {
-                throw IllegalStateException("array index out of bounds")
+                throw IllegalStateException("array index out of bounds ($value > ${bytes.size})")
             }
             field = value
         }

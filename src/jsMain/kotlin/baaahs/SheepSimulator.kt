@@ -1,10 +1,10 @@
 package baaahs
 
 import baaahs.client.WebClient
+import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
-import baaahs.util.LoggerConfig
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -23,7 +23,6 @@ class SheepSimulator(
 
     init {
         window.asDynamic().simulator = this
-        window.asDynamic().LoggerConfig = LoggerConfig
     }
 
     suspend fun start() = coroutineScope {
@@ -31,7 +30,8 @@ class SheepSimulator(
         launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
-        fixturesSimulator = pinkyScope.get(parameters = { parametersOf(pinky.plugins) })
+        val controllersManager = pinkyScope.get<ControllersManager>()
+        fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
 
         launch { pinky.startAndRun() }
 

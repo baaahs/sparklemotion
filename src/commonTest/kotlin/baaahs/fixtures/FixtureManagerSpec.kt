@@ -1,6 +1,5 @@
 package baaahs.fixtures
 
-import baaahs.FakeModelEntity
 import baaahs.describe
 import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
@@ -14,6 +13,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.only
 import baaahs.scene.OpenScene
@@ -35,12 +35,12 @@ object FixtureManagerSpec : Spek({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
-        val renderManager by value { RenderManager { FakeGlContext() } }
+        val renderManager by value { RenderManager(FakeGlContext()) }
         val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:
-        val fixtureManager by value { FixtureManagerImpl(renderManager, testPlugins(), renderTargets) }
+        val fixtureManager by value { FixtureManagerImpl(renderManager, testPlugins(), initialRenderTargets = renderTargets) }
 
         context("when fixtures of multiple types have been added") {
             val fogginess by value { ContentType("fogginess", "Fogginess", GlslType.Float) }

@@ -6,11 +6,14 @@ import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.ProgramRenderPlan
+import baaahs.geom.Vector2D
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
+import baaahs.model.PixelArray
 import baaahs.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,21 +34,42 @@ class ProjectionPreview(
     private val fixtureType = ProjectionPreviewDevice
     override val renderEngine = ModelRenderEngine(gl, fixtureType)
     private var projectionProgram: GlslProgram? = null
-    private val renderTargets = model.allEntities
-        .filterIsInstance<Model.Surface>() // TODO: Display all entity types, not just surfaces!
-        .associateWith { surface ->
-            val lineVertices = surface.lines.flatMap { it.vertices }
+    private val renderTargets: Map<Model.Entity, FixtureRenderTarget>
 
-            // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
-            val fixture = object : PixelArrayFixture(
-                surface, lineVertices.size, surface.name, NullTransport,
-                PixelFormat.RGB8, 1f, lineVertices
-            ) {
-                override val fixtureType: FixtureType
-                    get() = this@ProjectionPreview.fixtureType
+    init {
+        renderTargets = buildMap {
+            model.visit { entity ->
+                when (entity) {
+                    is Model.Surface -> {
+                        val lineVertices = entity.lines.flatMap { it.vertices }
+
+                        // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
+                        val fixture = object : PixelArrayFixture(
+                            entity, lineVertices.size, entity.name, NullTransport,
+                            PixelFormat.RGB8, 1f, lineVertices
+                        ) {
+                            override val fixtureType: FixtureType
+                                get() = this@ProjectionPreview.fixtureType
+                        }
+                        put(entity, renderEngine.addFixture(fixture))
+                    }
+                    is PixelArray -> {
+                        val pixelCount = entity.defaultFixtureConfig?.componentCount ?: 100
+                        // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
+                        val fixture = object : PixelArrayFixture(
+                            entity, pixelCount, entity.name, NullTransport,
+                            PixelFormat.RGB8, 1f, entity.calculatePixelLocalLocations(pixelCount)
+                        ) {
+                            override val fixtureType: FixtureType
+                                get() = this@ProjectionPreview.fixtureType
+                        }
+                        put(entity, renderEngine.addFixture(fixture))
+                    }
+                }
             }
-            renderEngine.addFixture(fixture)
         }
+    }
+
     private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
 
     override fun start() {
@@ -91,52 +115,77 @@ class ProjectionPreview(
             context2d.fillRect(0.0, 0.0, width.toDouble(), height.toDouble())
 
             val errorMargin = 3.0
-            val insetWidth = width - errorMargin * 2
-            val insetHeight = height - errorMargin * 2
-
             val overflows = arrayListOf<Vector2>()
 
-            renderTargets.forEach { (surface, renderTarget) ->
+            renderTargets.forEach { (entity, renderTarget) ->
                 val projectedVertices = renderTarget.fixtureResults as Vec2ResultType.Vec2FixtureResults
+
+                fun getPoint(vertexIndex: Int, errorMargin: Double): Vector2D {
+                    val insetWidth = width - errorMargin * 2
+                    val insetHeight = height - errorMargin * 2
+
+                    val vec2 = projectedVertices[renderTarget.component0Index + vertexIndex]
+                    val u = vec2.x.toDouble()
+                    val v = 1 - vec2.y.toDouble()
+
+                    val point = Vector2D(
+                        u * insetWidth + errorMargin,
+                        v * insetHeight + errorMargin
+                    )
+
+                    var overflowX = point.x + (errorMargin - 1) / 2
+                    var overflowY = point.y + (errorMargin - 1) / 2
+                    var isOverflow = false
+                    if (u < 0) {
+                        overflowX = 0.0
+                        isOverflow = true
+                    } else if (u >= 1) {
+                        overflowX = insetWidth + errorMargin
+                        isOverflow = true
+                    }
+                    if (v < 0) {
+                        overflowY = 0.0
+                        isOverflow = true
+                    } else if (v >= 1) {
+                        overflowY = insetHeight + errorMargin
+                        isOverflow = true
+                    }
+                    if (isOverflow) {
+                        overflows.add(Vector2(overflowX, overflowY))
+                    }
+                    return point
+                }
+
                 var vertexIndex = 0
 
                 val path = Path2D()
-                surface.lines.forEach { line ->
-                    line.vertexIndices.forEachIndexed { vIndex, _ ->
-                        val vec2 = projectedVertices[renderTarget.pixel0Index + vertexIndex]
-                        val u = vec2.x.toDouble()
-                        val v = 1 - vec2.y.toDouble()
+                when (entity) {
+                    is Model.Surface -> {
+                        entity.lines.forEach { line ->
+                            line.vertexIndices.forEachIndexed { vIndex, _ ->
+                                val point = getPoint(vertexIndex, errorMargin)
+                                if (vIndex == 0) {
+                                    path.moveTo(point.x, point.y)
+                                } else {
+                                    path.lineTo(point.x, point.y)
+                                }
 
-                        val pointX = u * insetWidth + errorMargin
-                        val pointY = v * insetHeight + errorMargin
-                        if (vIndex == 0) {
-                            path.moveTo(pointX, pointY)
-                        } else {
-                            path.lineTo(pointX, pointY)
+                                vertexIndex++
+                            }
                         }
+                    }
+                    is PixelArray -> {
+                        val fixture = renderTarget.fixture as PixelArrayFixture
+                        (0 until fixture.componentCount).forEach { pIndex ->
+                            val point = getPoint(vertexIndex, errorMargin)
+                            context2d.fillStyle = "#ffffff"
+                            context2d.fillRect(point.x, point.y, 3.0, 3.0)
 
-                        var overflowX = pointX + (errorMargin - 1) / 2
-                        var overflowY = pointY + (errorMargin - 1) / 2
-                        var isOverflow = false
-                        if (u < 0) {
-                            overflowX = 0.0
-                            isOverflow = true
-                        } else if (u >= 1) {
-                            overflowX = insetWidth + errorMargin
-                            isOverflow = true
+                            vertexIndex++
                         }
-                        if (v < 0) {
-                            overflowY = 0.0
-                            isOverflow = true
-                        } else if (v >= 1) {
-                            overflowY = insetHeight + errorMargin
-                            isOverflow = true
-                        }
-                        if (isOverflow) {
-                            overflows.add(Vector2(overflowX, overflowY))
-                        }
-
-                        vertexIndex++
+                    }
+                    else -> {
+                        // TODO
                     }
                 }
                 path.closePath()

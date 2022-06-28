@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
+import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
@@ -13,8 +14,9 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
-import baaahs.mapper.JsMapperUi
+import baaahs.mapper.JsMapper
 import baaahs.mapper.sceneEditor
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
@@ -37,9 +39,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     observe(sceneManager)
     val showManager = props.showManager
     observe(showManager)
-
-    var editMode by state { false }
-    val handleEditModeChange = callback(editMode) { editMode = !editMode }
 
     val uiSettings = webClient.uiSettings
     val handleUiSettingsChange by handler(webClient, webClient.uiSettings) { callback: (UiSettings) -> UiSettings ->
@@ -64,6 +63,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     var prompt by state<Prompt?> { null }
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
+    val gridLayoutContext = memo { GridLayoutContext() }
+    val keyboard = memo { KeyboardShortcutHandler() }
 
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
@@ -75,11 +76,13 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.uiSettings = uiSettings
             this.allStyles = allStyles
             this.prompt = { prompt = it }
+            this.keyboard = keyboard
             this.clock = JsClock
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
             this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
+            this.gridLayoutContext = gridLayoutContext
 
             this.openEditor = { editIntent ->
                 editableManager.openEditor(
@@ -97,6 +100,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val myAppGlContext = memo { jso<AppGlContext> { this.sharedGlContext = null } }
 
+    val documentManager = appMode.getDocumentManager(myAppContext)
+
     onChange("global styles", allStyles) {
         allStyles.injectGlobals()
     }
@@ -112,8 +117,12 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val handleLayoutEditorDialogToggle =
         callback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
     val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
+    val handleLayoutEditorChange by handler(showManager) { show: MutableShow, pushToUndoStack: Boolean ->
+        showManager.onEdit(show, pushToUndoStack)
+    }
 
     val handleShowStateChange = callback {
+        // TODO: don't pass this around? ... and forceRender() is unnecessary.
         showManager.onShowStateChange()
         forceRender()
     }
@@ -129,10 +138,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val handlePromptClose = callback { prompt = null }
 
-    val forceAppDrawerOpen = webClient.isLoaded && when (appMode) {
-        AppMode.Show -> !showManager.isLoaded
-        AppMode.Scene -> !sceneManager.isLoaded
-    }
+    val forceAppDrawerOpen = webClient.serverIsOnline &&
+            documentManager.everSynced && !documentManager.isLoaded
     val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
@@ -140,23 +147,46 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     else
         themeStyles.appDrawerClosed
 
+    val editMode = observe(documentManager.editMode)
     val editModeStyle =
-        if (editMode) Styles.editModeOn else Styles.editModeOff
+        if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val show = showManager.show
 
-    onMount {
-        val keyboardShortcutHandler = KeyboardShortcutHandler { event ->
-            when (event.key) {
-                "d" -> {
-                    editMode = !editMode
-                    event.stopPropagation()
+    onMount(keyboard) {
+        keyboard.listen(window)
+        withCleanup { keyboard.unlisten(window) }
+    }
+
+    onMount(
+        myAppContext, keyboard, documentManager, editMode,
+        handleAppDrawerToggle, handleAppModeChange
+    ) {
+        val handler = keyboard.handle { keypress, _ ->
+            var result: KeypressResult? = null
+
+            when (keypress) {
+                Keypress("Escape") -> handleAppDrawerToggle()
+                Keypress("s", metaKey = true),
+                Keypress("s", ctrlKey = true) -> {
+                    myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
                 }
+                Keypress("z", metaKey = true),
+                Keypress("z", ctrlKey = true) -> {
+                    documentManager.undo()
+                }
+                Keypress("z", metaKey = true, shiftKey = true),
+                Keypress("z", ctrlKey = true, shiftKey = true) -> {
+                    documentManager.redo()
+                }
+                else -> result = KeypressResult.NotHandled
             }
+
+            result ?: KeypressResult.Handled
         }
-        keyboardShortcutHandler.listen(window)
+
         withCleanup {
-            keyboardShortcutHandler.unlisten(window)
+            handler.remove()
         }
     }
 
@@ -170,15 +200,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                 attrs.theme = theme
                 CssBaseline {}
 
-                div(+themeStyles.appRoot and appDrawerStateStyle and editModeStyle) {
+                Paper {
+                    attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
+
                     appDrawer {
                         attrs.open = renderAppDrawerOpen
                         attrs.forcedOpen = forceAppDrawerOpen
                         attrs.onClose = handleAppDrawerToggle
                         attrs.appMode = appMode
                         attrs.onAppModeChange = handleAppModeChange
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
@@ -187,9 +218,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                     appToolbar {
                         attrs.appMode = appMode
-                        attrs.editMode = editMode
-                        attrs.onEditModeChange = handleEditModeChange
+                        attrs.documentManager = documentManager
                         attrs.onMenuButtonClick = handleAppDrawerToggle
+                        attrs.onAppModeChange = handleAppModeChange
                     }
 
                     div(+themeStyles.appContent) {
@@ -198,33 +229,19 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                             Container {
                                 CircularProgress {}
-                                icon(mui.icons.material.NotificationImportant)
+                                icon(NotificationImportant)
 
                                 typographyH6 { +"Connecting…" }
                                 +"Attempting to connect to Sparkle Motion."
                             }
                         }
 
-                        // TODO: this doesn't actually show up for some reason?
-                        if (props.webClient.isMapping) {
-                            Backdrop {
-                                attrs.open = true
-
-                                Container {
-                                    CircularProgress {}
-                                    icon(mui.icons.material.NotificationImportant)
-
-                                    typographyH6 { +"Mapper Running…" }
-                                    +"Please wait."
-                                }
-                            }
-                        }
-
-                        if (!webClient.isLoaded) {
+                        if (!webClient.serverIsOnline) {
                             Paper {
                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                 CircularProgress {}
-                                typographyH6 { +"Loading Show…" }
+                                typographyH6 { +"Connecting…" }
+                                +"Sparkle Motion is initializing."
                             }
                         } else {
                             ErrorBoundary {
@@ -232,18 +249,36 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 when (appMode) {
                                     AppMode.Show -> {
-                                        if (show == null) {
+                                        if (!webClient.showManagerIsReady) {
+                                            Paper {
+                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                NotificationImportant {}
+                                                typographyH6 { +"Connecting…" }
+                                                +"Show manager is initializing."
+                                            }
+                                        } else if (show == null) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                                 NotificationImportant {}
                                                 typographyH6 { +"No open show." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }
+                                        } else if (props.webClient.isMapping) {
+                                            Backdrop {
+                                                attrs.open = true
+                                                Container {
+                                                    CircularProgress {}
+                                                    icon(NotificationImportant)
+
+                                                    typographyH6 { +"Mapper Running…" }
+                                                    +"Please wait."
+                                                }
+                                            }
                                         } else {
                                             showUi {
                                                 attrs.show = showManager.openShow!!
                                                 attrs.onShowStateChange = handleShowStateChange
-                                                attrs.editMode = editMode
+                                                attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                                             }
 
                                             if (layoutEditorDialogOpen) {
@@ -251,9 +286,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                 layoutEditorDialog {
                                                     attrs.open = layoutEditorDialogOpen
                                                     attrs.show = show
-                                                    attrs.onApply = { newMutableShow ->
-                                                        showManager.onEdit(newMutableShow)
-                                                    }
+                                                    attrs.onApply = handleLayoutEditorChange
                                                     attrs.onClose = handleLayoutEditorDialogClose
                                                 }
                                             }
@@ -264,14 +297,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         if (props.sceneManager.scene == null) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                icon(mui.icons.material.NotificationImportant)
+                                                icon(NotificationImportant)
                                                 typographyH6 { +"No open scene." }
                                                 p { +"Maybe you'd like to open one? " }
                                             }
                                         } else {
                                             sceneEditor {
                                                 attrs.sceneEditorClient = props.sceneEditorClient
-                                                attrs.mapperUi = props.mapperUi
+                                                attrs.mapper = props.mapper
                                                 attrs.sceneManager = sceneManager
                                             }
                                         }
@@ -284,12 +317,14 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                 renderDialog?.invoke(this)
 
-                editableManagerUi {
-                    attrs.editableManager =
-                        when (appMode) {
-                            AppMode.Show -> editableManager
-                            AppMode.Scene -> sceneEditableManager
-                        }
+                if (editMode.isAvailable) {
+                    editableManagerUi {
+                        attrs.editableManager =
+                            when (appMode) {
+                                AppMode.Show -> editableManager
+                                AppMode.Scene -> sceneEditableManager
+                            }
+                    }
                 }
 
                 prompt?.let {
@@ -311,14 +346,17 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
 enum class AppMode {
     Show {
+        override val otherOne: AppMode get() = Scene
         override fun getDocumentManager(appContext: AppContext): ShowManager.Facade =
             appContext.showManager
     },
     Scene {
+        override val otherOne: AppMode get() = Show
         override fun getDocumentManager(appContext: AppContext): SceneManager.Facade =
             appContext.sceneManager
     };
 
+    abstract val otherOne: AppMode
     abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *>.Facade
 }
 
@@ -330,7 +368,7 @@ external interface AppIndexProps : Props {
     var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapper: JsMapper
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

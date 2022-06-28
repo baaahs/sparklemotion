@@ -32,7 +32,7 @@ class ClientPreview(
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
-    private val renderManager = RenderManager { glContext }
+    private val renderManager = RenderManager(glContext)
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(clock)
@@ -44,6 +44,7 @@ class ClientPreview(
         get() = (document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 15f
 
     val visualizer: Visualizer.Facade get() = theVisualizer.facade
+    val renderPlanMonitor get() = fixtureManager.facade.renderPlanMonitor
 
     init {
         val pixelArranger = SwirlyPixelArranger(0.2f, 3f)
@@ -58,7 +59,7 @@ class ClientPreview(
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
-                entity.createFixtureSimulation(simulationEnv, adapter)?.let { simulation ->
+                entity.createFixtureSimulation(adapter)?.let { simulation ->
                     theVisualizer.add(simulation.itemVisualizer)
                     simulation.previewFixture
                 }

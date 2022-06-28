@@ -89,7 +89,7 @@ object BrainManagerSpec : Spek({
                 it("applies that config") {
                     val fixture = listener.added.only("fixture")
                     expect(fixture).isA<PixelArrayFixture> {
-                        feature { f(it::pixelCount) }.toEqual(123)
+                        feature { f(it::componentCount) }.toEqual(123)
                     }
                 }
             }

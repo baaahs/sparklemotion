@@ -1,10 +1,9 @@
 package baaahs.app.ui.controls
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.StyleConstants
 import baaahs.show.live.DataSourceOpenControl
-import baaahs.ui.asColor
-import baaahs.ui.descendants
-import baaahs.ui.name
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.border
@@ -15,15 +14,6 @@ import styled.StyleSheet
 
 object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val editTransitionDuration = 0.25.s
-
-    val buttonGroupCard by css {
-        display = Display.flex
-        overflowY = Overflow.scroll
-
-        descendants(this@Styles, ::controlButton) {
-            transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
-        }
-    }
 
     val horizontalButtonList by css {
         padding(2.px)
@@ -84,6 +74,16 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         flex(1.0, 0.0)
     }
 
+    val visualizerMenuAffordance by css {
+        position = Position.absolute
+        padding(2.px)
+        backgroundColor = Color.white.withAlpha(.5)
+        width = 2.em
+        height = 2.em
+        right = .5.em
+        bottom = .5.em
+    }
+
     val dragHandle by css {
         display = Display.none
         transition(::display, duration = 0.s)
@@ -97,17 +97,19 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex(0.0, 0.0)
         position = Position.relative
         marginRight = 0.em
+        minWidth = 5.em
+        minHeight = 5.em
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
@@ -117,21 +119,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         transition(::transform, duration = editTransitionDuration, timing = Timing.linear)
     }
 
-    val dataSourceTitle by css {
-        fontWeight = FontWeight.w500
-        display = Display.block
-        position = Position.absolute
-        top = 0.5.em
-        left = 0.5.px
-        declarations["writing-mode"] = "vertical-lr"
-        userSelect = UserSelect.none
-        pointerEvents = PointerEvents.none
-    }
-
-    val dataSourceLonelyTitle by css {
-        fontWeight = FontWeight.bold
-    }
-
     val beatLinkedSwitch by css {
         position = Position.absolute
         left = 0.px
@@ -139,30 +126,39 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val inUse by css {
+//        position = Position.relative
     }
 
     val notInUse by css {
         opacity = .75
     }
 
+    val notExplicitlySized by css {}
+
+    val controlRoot by css {}
+
     val controlButton by css {
         display = Display.grid
         position = Position.relative
-        width = 150.px
-        minHeight = 75.px
+//        width = 150.px
+//        minHeight = 75.px
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
-            child(".${editButton.name}") {
+            child(this@Styles, ::editButton) {
                 opacity = .7
                 filter = "drop-shadow(0px 0px 2px black)"
             }
 
-            child(".${dragHandle.name}") {
+            child(this@Styles, ::dragHandle) {
                 opacity = 1
                 filter = "drop-shadow(0px 0px 2px black)"
                 cursor = Cursor.move
             }
+        }
+
+        button {
+            minWidth = 0.px
         }
     }
 
@@ -174,14 +170,24 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         height = 100.pct
     }
 
+    val lightboxShaderPreviewContainer by css {
+        width = 300.px
+        height = 300.px
+        cursor = Cursor.grab
+    }
+
     val buttonLabelWhenPreview by css {
-        color = Color.black
-        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+        important(::color, Color.white)
+        put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
+        border(5.px, BorderStyle.dotted, Color.transparent)
+        important(::backgroundColor, Color.transparent)
     }
 
     val buttonSelectedWhenPreview by css {
-        border(5.px, BorderStyle.solid, Color.orange.withAlpha(.75))
-        background = "radial-gradient(rgba(255,255,255,.8), transparent)"
+        important(::color, Color.white)
+        put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
+        border(5.px, BorderStyle.dotted, Color.orange)
+        important(::backgroundColor, Color.transparent)
     }
 
     val inputLabel by css {
@@ -227,6 +233,19 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 //        }
     }
 
+    val dataSourceTitle by css {
+        fontWeight = FontWeight.w500
+        display = Display.block
+        position = Position.absolute
+        top = 0.5.em
+        left = 1.5.px
+        color = theme.paperHighContrast
+//        put("text-shadow", "1px 1px 3px black, -1px -1px 3px black")
+        declarations["writing-mode"] = "vertical-lr"
+        userSelect = UserSelect.none
+        pointerEvents = PointerEvents.none
+    }
+
     val transitionHoldButton by css {
         backgroundColor = theme.palette.secondary.main.asColor()
             .withAlpha(.125).blend(Color(theme.palette.background.paper))
@@ -253,5 +272,21 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 
     val vacuityContainer by css {
         display = Display.flex
+        overflow = Overflow.scroll
+    }
+
+    val buttonGroupCard by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        overflowY = Overflow.scroll
+        backgroundColor = if (SparkleMotion.USE_CSS_TRANSFORM) {
+            Color("#0000007f")
+        } else {
+            theme.paperLowContrast
+        }
+
+        descendants(Styles, Styles::controlButton) {
+            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
+        }
     }
 }

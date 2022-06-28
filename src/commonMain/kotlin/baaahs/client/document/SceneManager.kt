@@ -51,7 +51,8 @@ class SceneManager(
             Divider,
             DialogMenuItem.Header("From Template:"),
             Option("BAAAHS") { makeNew { sceneFromResources("BAAAHS.scene") } },
-            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
+//            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
+            Option("Hi-Res") { makeNew { sceneFromResources("Hi-Res.scene") } },
             Option("Honcho") { makeNew { sceneFromResources("Honcho.scene") } },
             Option("Playa2021") { makeNew { sceneFromResources("Playa2021.scene") } }
         ))
@@ -84,6 +85,11 @@ class SceneManager(
 
     override suspend fun onDownload() {
         UiActions.downloadScene(document!!, plugins)
+    }
+
+    override suspend fun onUpload(name: String, content: String) {
+        val scene = plugins.json.decodeFromString(Scene.serializer(), content)
+        onNew(scene)
     }
 
     override fun switchTo(documentState: DocumentState<Scene, Unit>?, isLocalEdit: Boolean) {

@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.appContext
 import baaahs.control.OpenColorPickerControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.unaryPlus
@@ -8,8 +9,12 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.useContext
 
 private val ColorPickerControlView = xComponent<ColorPickerControlProps>("ColorPickerControl") { props ->
+    val appContext = useContext(appContext)
+    val controlsStyles = appContext.allStyles.controls
+
     val colorPickerControl = props.colorPickerControl
 
     div(+props.colorPickerControl.inUseStyle) {
@@ -17,7 +22,7 @@ private val ColorPickerControlView = xComponent<ColorPickerControlProps>("ColorP
             attrs.gadget = colorPickerControl.colorPicker
         }
 
-        div(+Styles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
+        div(+controlsStyles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
     }
 }
 

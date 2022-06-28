@@ -1,23 +1,33 @@
 package baaahs.show.live
 
 import baaahs.app.ui.controls.*
+import baaahs.app.ui.layout.dragNDropContext
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
+import react.useContext
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
-        button {
+        buttonControl {
             attrs.controlProps = controlProps
             attrs.buttonControl = openButtonControl
         }
     }
 
     override fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps) = renderWrapper {
-        buttonGroup {
-            attrs.controlProps = controlProps
-            attrs.buttonGroupControl = openButtonGroupControl
+        val isLegacyLayout = useContext(dragNDropContext).isLegacy
+        if (isLegacyLayout) {
+            legacyButtonGroupControl {
+                attrs.controlProps = controlProps
+                attrs.buttonGroupControl = openButtonGroupControl
+            }
+        } else {
+            gridButtonGroupControl {
+                attrs.controlProps = controlProps
+                attrs.buttonGroupControl = openButtonGroupControl
+            }
         }
     }
 
@@ -36,28 +46,28 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps) = renderWrapper {
-        transition {
+        transitionControl {
             attrs.controlProps = controlProps
             attrs.transitionControl = openTransitionControl
         }
     }
 
     override fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps) = renderWrapper {
-        vacuity {
+        vacuityControl {
             attrs.controlProps = controlProps
             attrs.vacuityControl = openVacuityControl
         }
     }
 
     override fun forVisualizer(openVisualizerControl: OpenVisualizerControl, controlProps: ControlProps) = renderWrapper {
-        visualizer {
+        visualizerControl {
             attrs.controlProps = controlProps
             attrs.visualizerControl = openVisualizerControl
         }
     }
 
     override fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps)  = renderWrapper {
-        xyPad {
+        xyPadControl {
             attrs.controlProps = controlProps
             attrs.xyPadControl = openXyPadControl
         }

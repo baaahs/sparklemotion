@@ -1,6 +1,8 @@
 package baaahs.mapper
 
-import baaahs.*
+import baaahs.Color
+import baaahs.MediaDevices
+import baaahs.SparkleMotion
 import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
@@ -17,6 +19,7 @@ import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.proto.*
+import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -31,15 +34,14 @@ import kotlin.random.Random
 /** [SolidBrainShader] appears to be busted as of 2020/09. */
 const val USE_SOLID_SHADERS = false
 
-class Mapper(
+abstract class Mapper(
     private val network: Network,
-    private val sceneProvider: SceneProvider,
-    private val mapperUi: MapperUi,
+    sceneProvider: SceneProvider,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
     private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-) : Network.UdpListener, MapperUi.Listener, CoroutineScope by MainScope() {
+) : Observable(), Network.UdpListener, CoroutineScope by MainScope() {
     private val facade = Facade()
 
     private var selectedDevice: MediaDevices.Device? = null
@@ -48,7 +50,7 @@ class Mapper(
 
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
-    private lateinit var webSocketClient: WebSocketClient
+    internal lateinit var webSocketClient: WebSocketClient
     private var isRunning: Boolean = false
     private var isPaused: Boolean = false
     private var newIncomingImage: Image? = null
@@ -62,27 +64,28 @@ class Mapper(
     private val sessions: MutableList<String> = arrayListOf()
     private val stats = mapperStats
 
+    abstract var devices: List<MediaDevices.Device>
+
     init {
-        mapperUi.listen(this)
         sceneProvider.addObserver(fireImmediately = true) {
             it.openScene?.model?.let {
-                mapperUi.addWireframe(it)
+                addWireframe(it)
             }
         }
     }
 
-    override fun onLaunch() {
+    open fun onLaunch() {
         mapperScope.launch { start() }
     }
 
-    fun start() = doRunBlocking {
+    fun start() {
         link = network.link("mapper")
         udpSocket = link.listenFragmentingUdp(0, this)
         webSocketClient = WebSocketClient(link, pinkyAddress)
 
         launch {
             webSocketClient.listSessions().forEach {
-                mapperUi.addExistingSession(it)
+                addExistingSession(it)
                 sessions.add(it)
             }
 
@@ -90,11 +93,11 @@ class Mapper(
         }
 
         launch {
-            mapperUi.devices = mediaDevices.enumerate()
+            devices = mediaDevices.enumerate()
         }
     }
 
-    override fun onStart() {
+    fun onStart() {
         isPaused = false
 
         if (!isRunning) {
@@ -106,15 +109,15 @@ class Mapper(
         }
     }
 
-    override fun onPause() {
+    fun onPause() {
         isPaused = true
     }
 
-    override fun onStop() {
+    fun onStop() {
         onClose()
     }
 
-    override fun onClose() {
+    open fun onClose() {
         logger.info { "Shutting down Mapper..." }
         isRunning = false
         if (this::camera.isInitialized) camera.close()
@@ -122,36 +125,18 @@ class Mapper(
         suppressShowsJob?.cancel()
         udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
 
-        mapperUi.close()
+        close()
     }
 
-    override fun useCamera(selectedDevice: MediaDevices.Device?) {
+    fun useCamera(selectedDevice: MediaDevices.Device?) {
         this.selectedDevice = selectedDevice
         openCamera()
     }
 
-    override fun loadMappingSession(name: String?) {
-        val surfaceVisualizers = mapperUi.getAllSurfaceVisualizers().associateBy {
-            it.resetPixels()
-            it.entity.name
+    suspend fun loadMappingSession(name: String): MappingSession =
+        withContext(mapperScope.coroutineContext) {
+            webSocketClient.loadSession(name)
         }
-
-        if (name != null) {
-            mapperScope.launch {
-                val session = webSocketClient.loadSession(name)
-                session.surfaces.forEach { surfaceData ->
-                    val surfaceVisualizer = surfaceVisualizers.getBang(surfaceData.entityName, "visible surface")
-                    surfaceData.pixels?.forEachIndexed { index, pixelData ->
-                        if (pixelData?.modelPosition != null) {
-                            surfaceVisualizer.setPixel(index, pixelData.modelPosition)
-                        }
-                    }
-
-                    surfaceVisualizer.showPixels()
-                }
-            }
-        }
-    }
 
     private fun openCamera() {
         if (this::camera.isInitialized) camera.close()
@@ -160,24 +145,8 @@ class Mapper(
         }
     }
 
-    private fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
-        mapperUi.showLiveCamImage(image, changeRegion)
-    }
-    private fun showSnapshot(bitmap: Bitmap) { mapperUi.showSnapshot(bitmap) }
-    private fun showBaseImage(bitmap: Bitmap) { mapperUi.showBaseImage(bitmap) }
-    private fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null) =
-        mapperUi.showDiffImage(deltaBitmap, changeRegion)
-    private fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? =
-        null) { mapperUi.showPanelMask(bitmap, changeRegion) }
-    private fun showMessage(message: String) { mapperUi.showMessage(message) }
-    private fun showMessage2(message: String) { mapperUi.showMessage2(message) }
-    private fun getVisibleSurfaces(): List<MapperUi.VisibleSurface> = mapperUi.getVisibleSurfaces()
-    private fun lockUi(): MapperUi.CameraOrientation = mapperUi.lockUi()
-    private fun unlockUi() { mapperUi.lockUi() }
-    private fun showStats(total: Int, mapped: Int, visible: Int) = mapperUi.showStats(total, mapped, visible)
-    private fun setRedo(fn: (suspend () -> Unit)?) { mapperUi.setRedo(fn) }
-    private fun intersectingSurface(uv: Uv, visibleSurfaces: List<MapperUi.VisibleSurface>): MapperUi.VisibleSurface? {
-        return mapperUi.intersectingSurface(uv, visibleSurfaces)
+    fun showCamImage(image: Image, changeRegion: MediaDevices.Region? = null) {
+        showLiveCamImage(image, changeRegion)
     }
 
     private suspend fun startNewSession() {
@@ -341,7 +310,13 @@ class Mapper(
 
             // Save data.
             val mappingSession =
-                MappingSession(sessionStartTime.unixMillis, surfaces, cameraOrientation.cameraMatrix, baseImageName)
+                MappingSession(
+                    sessionStartTime.unixMillis,
+                    surfaces,
+                    cameraOrientation.cameraMatrix,
+                    cameraOrientation.cameraPosition,
+                    baseImageName
+                )
             webSocketClient.saveSession(mappingSession)
 
             // We're done!
@@ -371,14 +346,14 @@ class Mapper(
 //                        logger.debug { "    $pixelIndex -> ${position?.x},${position?.y}" }
 //                    }
 
-                    val pixels = visibleSurface.pixelsInModelSpace.mapIndexed { index, vector3F ->
+                    val pixels = visibleSurface.pixelsInModelSpace.mapIndexed { index, modelPosition ->
                         val pixelMapData = brainToMap.pixelMapData[index]
                         val pixelChangeRegion = pixelMapData?.pixelChangeRegion
                         val screenPosition = pixelChangeRegion?.let {
                             visibleSurface.translatePixelToPanelSpace(Uv.fromXY(it.centerX, it.centerY, it.sourceDimen))
                         }
                         MappingSession.SurfaceData.PixelData(
-                            vector3F,
+                            modelPosition,
                             screenPosition,
                             pixelMapData?.deltaImageName
                         )
@@ -425,8 +400,7 @@ class Mapper(
                 ImageProcessing.diff(pixelOnBitmap, baseBitmap!!, deltaBitmap)
             }
             showDiffImage(deltaBitmap)
-            val pixelOnImageName = "not-really-an-image.png"
-//            val pixelOnImageName = webSocketClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
+            val pixelOnImageName = webSocketClient.saveImage(sessionStartTime, "pixel-$pixelIndex", deltaBitmap)
 
             brainsToMap.values.forEach { brainToMap ->
                 stats.identifyPixel.time {
@@ -448,7 +422,10 @@ class Mapper(
             waitForDelivery() // ... of resetting to black above.
         }
 
-        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
+        private suspend fun detectBrains(
+            index: Int,
+            brainToMap: BrainToMap
+        ): Ballot<VisibleSurface>? {
             showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
 
             deliverer.send(brainToMap, solidColorBuffer(activeColor))
@@ -483,10 +460,10 @@ class Mapper(
 
             if (sampleLocations.isEmpty()) {
                 logger.warn { "Failed to match anything up with ${brainToMap.brainId}, bailing." }
-                return
+                return null
             }
 
-            val surfaceBallot = Ballot<MapperUi.VisibleSurface>()
+            val surfaceBallot = Ballot<VisibleSurface>()
             var tries = 1000
             while (surfaceBallot.totalVotes < 10 && tries-- > 0) {
                 val uv = sampleLocations.random()
@@ -500,10 +477,17 @@ class Mapper(
             if (tries == 0 || surfaceBallot.noVotes()) {
                 logger.warn {
                     "Failed to cast sufficient votes (${surfaceBallot.totalVotes}) after 1000 tries" +
-                        " on ${brainToMap.brainId}, bailing."
+                            " on ${brainToMap.brainId}, bailing."
                 }
-                return
+                return null
             }
+
+            return surfaceBallot
+        }
+
+        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
+            val surfaceBallot = detectBrains(index, brainToMap)
+                ?: return
 
             //                val orderedPanels = visibleSurfaces.map { visiblePanel ->
             //                    visiblePanel to visiblePanel.boxOnScreen.distanceTo(surfaceChangeRegion)
@@ -594,7 +578,7 @@ class Mapper(
 
     private fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
         isPaused = true
-        mapperUi.pauseForUserInteraction()
+        pauseForUserInteraction()
         showMessage2(message)
     }
 
@@ -820,16 +804,38 @@ class Mapper(
         return image
     }
 
+    abstract fun addWireframe(model: Model)
+    abstract fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
+    abstract fun showSnapshot(bitmap: Bitmap)
+    abstract fun showBaseImage(bitmap: Bitmap)
+    abstract fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
+    abstract fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
+    abstract fun showMessage(message: String)
+    abstract fun showMessage2(message: String)
+    abstract fun setRedo(fn: (suspend () -> Unit)?)
+    abstract fun lockUi(): CameraOrientation
+    abstract fun unlockUi()
+    abstract fun getAllSurfaceVisualizers(): List<EntityDepiction>
+    abstract fun getVisibleSurfaces(): List<VisibleSurface>
+    abstract fun showCandidates(orderedPanels: List<Pair<VisibleSurface, Float>>)
+    abstract fun intersectingSurface(uv: Uv, visibleSurfaces: List<VisibleSurface>): VisibleSurface?
+    abstract fun showStats(total: Int, mapped: Int, visible: Int)
+    abstract fun close()
+    abstract fun addExistingSession(name: String)
+    abstract fun pauseForUserInteraction()
+
     inner class BrainToMap(val address: Network.Address, val brainId: String) {
         val port get() = Ports.BRAIN
 
         var expectedPixelCount: Int? = null
         val expectedPixelCountOrDefault: Int
-            get() = expectedPixelCount ?: SparkleMotion.DEFAULT_PIXEL_COUNT
+            get() = (guessedEntity as? Model.Surface)?.expectedPixelCount
+                ?: expectedPixelCount
+                ?: SparkleMotion.DEFAULT_PIXEL_COUNT
 
         var changeRegion: MediaDevices.Region? = null
         var guessedEntity: Model.Entity? = null
-        var guessedVisibleSurface: MapperUi.VisibleSurface? = null
+        var guessedVisibleSurface: VisibleSurface? = null
         var panelDeltaBitmap: Bitmap? = null
         var deltaImageName: String? = null
         val pixelMapData: MutableMap<Int, PixelMapData> = mutableMapOf()
@@ -889,48 +895,12 @@ class Mapper(
 
     inner class Facade : baaahs.ui.Facade() {
     }
-}
-
-interface MapperUi {
-    var devices: List<MediaDevices.Device>
-
-    fun listen(listener: Listener)
-
-    fun addWireframe(model: Model)
-    fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
-    fun showSnapshot(bitmap: Bitmap)
-    fun showBaseImage(bitmap: Bitmap)
-    fun showDiffImage(deltaBitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
-    fun showPanelMask(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null)
-    fun showMessage(message: String)
-    fun showMessage2(message: String)
-    fun setRedo(fn: (suspend () -> Unit)?)
-    fun lockUi(): CameraOrientation
-    fun unlockUi()
-    fun getAllSurfaceVisualizers(): List<EntityDepiction>
-    fun getVisibleSurfaces(): List<VisibleSurface>
-    fun showCandidates(orderedPanels: List<Pair<VisibleSurface, Float>>)
-    fun intersectingSurface(uv: Uv, visibleSurfaces: List<VisibleSurface>): VisibleSurface?
-    fun showStats(total: Int, mapped: Int, visible: Int)
-    fun close()
-    fun addExistingSession(name: String)
-    fun pauseForUserInteraction()
-
-    interface Listener {
-        fun onLaunch()
-        fun onStart()
-        fun onPause()
-        fun onStop()
-        fun onClose()
-
-        fun useCamera(selectedDevice: MediaDevices.Device?)
-        fun loadMappingSession(name: String?)
-    }
 
     interface EntityDepiction {
         val entity: Model.Entity
 
         fun setPixel(index: Int, modelPosition: Vector3F?)
+        fun setPixels(pixels: List<MappingSession.SurfaceData.PixelData?>)
         fun showPixels()
         fun resetPixels()
     }
@@ -941,7 +911,6 @@ interface MapperUi {
         val pixelsInModelSpace: List<Vector3F?>
         fun translatePixelToPanelSpace(uv: Uv): Vector2F?
         fun setPixel(pixelIndex: Int, uv: Uv)
-        fun setPixel(pixelIndex: Int, panelSpacePosition: Vector3F?)
         fun showPixels()
         fun hidePixels()
         fun resetPixels()
@@ -949,6 +918,7 @@ interface MapperUi {
 
     interface CameraOrientation {
         val cameraMatrix: Matrix4F
+        val cameraPosition: CameraPosition
         val aspect: Double
     }
 }

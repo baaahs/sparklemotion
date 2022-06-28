@@ -37,12 +37,6 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
                 +"<path d=\"M 10 5 L 0 0 L 0 10 L 10 5 Z\"/>"
             }
         }
-
-        svg(+styles.altHandleRight) {
-            attrs.unsafe {
-                +"<path d=\"M 0 5 L 10 0 L 10 10 L 0 5 Z\"/>"
-            }
-        }
     }
 }
 

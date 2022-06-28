@@ -39,10 +39,11 @@ abstract class DocumentManager<T, TState>(
     private var documentAsSaved: T? = null
     val isLoaded: Boolean
         get() = document != null
-    var everSynched: Boolean = false
+    var everSynced: Boolean = false
         private set
     private val isSynced: Boolean
         get() = editState == localState
+    val editMode = EditMode(EditMode.Mode.Never)
 
     protected val undoStack = object : UndoStack<DocumentState<T, TState>>() {
         override fun undo(): DocumentState<T, TState> {
@@ -99,7 +100,11 @@ abstract class DocumentManager<T, TState>(
     }
 
     suspend fun onSave() {
-        serverCommands.saveCommand(SaveCommand())
+        if (file == null) {
+            onSaveAs()
+        } else {
+            serverCommands.saveCommand(SaveCommand())
+        }
     }
 
     suspend fun onSaveAs() {
@@ -114,6 +119,8 @@ abstract class DocumentManager<T, TState>(
     
     abstract suspend fun onDownload()
 
+    abstract suspend fun onUpload(name: String, content: String)
+
     suspend fun onClose() {
         confirmCloseIfUnsaved() || return
 
@@ -127,7 +134,7 @@ abstract class DocumentManager<T, TState>(
         file = newFile
         isUnsaved = newIsUnsaved
         if (!newIsUnsaved) documentAsSaved = newDocument
-        everSynched = true
+        everSynced = true
     }
 
     fun isModified(newDocument: T): Boolean {
@@ -150,13 +157,16 @@ abstract class DocumentManager<T, TState>(
     }
 
     abstract inner class Facade : baaahs.ui.Facade(), EditHandler<T, TState> {
+        val documentType get() = this@DocumentManager.documentType
         val documentTypeTitle get() = this@DocumentManager.documentType.title
         val file get() = this@DocumentManager.file
         val isLoaded get() = this@DocumentManager.isLoaded
-        val isSynched get() = this@DocumentManager.isSynced
+        val isSynced get() = this@DocumentManager.isSynced
+        val everSynced get() = this@DocumentManager.everSynced
         val isUnsaved get() = this@DocumentManager.isUnsaved
         val canUndo get() = undoStack.canUndo()
         val canRedo get() = undoStack.canRedo()
+        val editMode get() = this@DocumentManager.editMode
 
         suspend fun onNew(dialogHolder: DialogHolder) = this@DocumentManager.onNew(dialogHolder)
         suspend fun onNew(document: T) = this@DocumentManager.onNew(document)
@@ -166,6 +176,8 @@ abstract class DocumentManager<T, TState>(
         suspend fun onSaveAs() = this@DocumentManager.onSaveAs()
         suspend fun onSaveAs(file: Fs.File) = this@DocumentManager.onSaveAs(file)
         suspend fun onDownload() = this@DocumentManager.onDownload()
+        fun confirmCloseIfUnsaved() = this@DocumentManager.confirmCloseIfUnsaved()
+        suspend fun onUpload(name: String, content: String) = this@DocumentManager.onUpload(name, content)
         suspend fun onClose() = this@DocumentManager.onClose()
         fun sync() {
             this@DocumentManager.editState = localState

@@ -1,13 +1,14 @@
 package baaahs.controllers
 
-import baaahs.*
 import baaahs.controller.*
+import baaahs.describe
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransport
 import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.Shenzarpy
+import baaahs.fakeModel
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.override
@@ -15,10 +16,13 @@ import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
 import baaahs.mapping.MappingManager
+import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.ModelManager
 import baaahs.model.MovingHead
+import baaahs.only
 import baaahs.scene.*
+import baaahs.toEqual
 import baaahs.ui.Observable
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.*
@@ -148,7 +152,7 @@ object ControllersManagerSpec : Spek({
 
                     it("generates pixel positions within the model bounds") {
                         expect(addedFixture).isA<PixelArrayFixture> {
-                            feature(PixelArrayFixture::pixelCount)
+                            feature(PixelArrayFixture::componentCount)
                                 .toBe(3)
                             feature(PixelArrayFixture::pixelLocations)
                                 .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
@@ -182,7 +186,7 @@ object ControllersManagerSpec : Spek({
 
                 it("generates pixel positions within the entity bounds") {
                     expect(addedFixture).isA<PixelArrayFixture> {
-                        feature(PixelArrayFixture::pixelCount)
+                        feature(PixelArrayFixture::componentCount)
                             .toBe(3)
                         feature(PixelArrayFixture::pixelLocations)
                             .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, modelEntity, model!!))
@@ -209,7 +213,7 @@ object ControllersManagerSpec : Spek({
 
                     it("uses the pixel data") {
                         expect(addedFixture).isA<PixelArrayFixture> {
-                            feature(PixelArrayFixture::pixelCount)
+                            feature(PixelArrayFixture::componentCount)
                                 .toBe(3)
                             feature(PixelArrayFixture::pixelLocations)
                                 .toBe(
@@ -231,7 +235,7 @@ object ControllersManagerSpec : Spek({
 
                 it("finds model entity mapping for the controller and creates a fixture with the model's ") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.pixelCount).toBe(59)
+                    expect(addedFixture.componentCount).toBe(59)
                     expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
                         feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                             .toBe(emptyList())
@@ -249,7 +253,7 @@ object ControllersManagerSpec : Spek({
 
                     it("finds model entity mapping for the controller and creates a fixture with the model's ") {
                         expect(addedFixture.modelEntity).toBe(modelEntity)
-                        expect(addedFixture.pixelCount).toBe(59)
+                        expect(addedFixture.componentCount).toBe(59)
                         expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
                             feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                                 .toBe(emptyList())
@@ -264,7 +268,7 @@ object ControllersManagerSpec : Spek({
 
                     it("ignores it, because we use the most specific fixture type to filter out others") {
                         expect(addedFixture.modelEntity).toBe(modelEntity)
-                        expect(addedFixture.pixelCount).toBe(1)
+                        expect(addedFixture.componentCount).toBe(1)
                         expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
                             feature(FixtureTypeForTest.DtftFixture::pixelLocations)
                                 .toBe(emptyList())
@@ -280,7 +284,7 @@ object ControllersManagerSpec : Spek({
 
                 it("creates an appropriate fixture") {
                     expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.pixelCount).toBe(1)
+                    expect(addedFixture.componentCount).toBe(1)
                     expect(addedFixture.fixtureType).toBe(MovingHeadDevice)
                     expect(addedFixture).isA<MovingHeadFixture>()
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
@@ -386,6 +390,9 @@ class FakeController(
         override val title: String get() = TODO("not implemented")
         override val address: String get() = TODO("not implemented")
         override val onlineSince: Time get() = TODO("not implemented")
+        override val firmwareVersion: String get() = TODO("not implemented")
+        override val lastErrorMessage: String get() = TODO("Not yet implemented")
+        override val lastErrorAt: Time get() = TODO("Not yet implemented")
     }
     override val transportType: TransportType
         get() = DmxTransport

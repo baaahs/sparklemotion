@@ -41,7 +41,7 @@ class MutableSoundAnalysisControl : MutableControl {
         return emptyList()
     }
 
-    override fun build(showBuilder: ShowBuilder): SoundAnalysisControl {
+    override fun buildControl(showBuilder: ShowBuilder): SoundAnalysisControl {
         return SoundAnalysisControl()
     }
 

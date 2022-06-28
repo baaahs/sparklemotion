@@ -1,14 +1,18 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.document.FileUploadStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
+import baaahs.app.ui.gadgets.color.ColorWheelStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
+import baaahs.app.ui.layout.LayoutStyles
 import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.*
+import baaahs.ui.components.UiComponentStyles
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.js.Object
@@ -25,17 +29,22 @@ class AllStyles(val theme: Theme) {
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val editableManager by lazy { ThemedEditableStyles(theme) }
+    val layout by lazy { LayoutStyles(theme) }
     val layoutEditor by lazy { LayoutEditorStyles(theme) }
     val controllerEditor by lazy { ControllerEditorStyles(theme) }
     val modelEditor by lazy { ModelEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val shaderHelp by lazy { ShaderHelpStyles(theme) }
+    val uiComponents by lazy { UiComponentStyles(theme) }
+    val fileUploadStyles by lazy { FileUploadStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)
         injectGlobal(appUi.global)
         injectGlobal(ControlsStyles.global)
+        injectGlobal(ColorWheelStyles.global)
+        injectGlobal(layout.global)
     }
 }
 
@@ -86,6 +95,25 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
                 }
             }
         }
+
+        ".app-ui-editModeOn .app-ui-theme-appToolbar" {
+            backgroundImage = Image(linearRepeating(
+                theme.palette.secondary.main.asColor().withAlpha(.35),
+                theme.palette.secondary.main.asColor().withAlpha(.15)
+            ))
+        }
+
+        ".app-ui-editModeOn .app-ui-theme-appContent" {
+            backgroundImage = Image(linearRepeating(
+                theme.palette.secondary.dark.asColor().withAlpha(.25),
+                theme.palette.secondary.dark.asColor().withAlpha(.10)
+            ))
+        }
+
+        ".app-ui-editModeOff .app-ui-theme-editButton" {
+            visibility = Visibility.hidden
+            userSelect = UserSelect.none
+        }
     }
 
     private val drawerClosedShift = partial {
@@ -122,6 +150,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         display = Display.flex
         flexDirection = FlexDirection.column
 
+        transition(::background, 300.ms)
+
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
@@ -139,31 +169,81 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             }
         }
 
+        transition(::background, 300.ms)
+
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
+
+    val appToolbarTabs by css {
+        grow(Grow.GROW)
+    }
+
+    val appToolbarTab by css {
+        flex(1.0, 0.0, FlexBasis.zero)
+        flexDirection = FlexDirection.row
+    }
+
+    val appToolbarTabSelected by css {
+        important(::color, theme.palette.text.primary.asColor())
     }
 
     val appToolbarActions by css {
         display = Display.flex
     }
 
+    val appToolbarEditModeActions by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+    }
+
     val title by css {
-        display = Display.inlineBlock
+        display = Display.flex
+        userSelect = UserSelect.none
     }
 
     val titleHeader by css {
         position = Position.absolute
         top = 0.em
+        fontSize = .7.em
+        opacity = .6
+    }
+    val titleFooter by css {
+        position = Position.absolute
+        bottom = 5.px
         fontSize = .6.em
+        opacity = .6
+
+        child("svg") {
+            fontSize = 1.em
+        }
     }
 
-    val inactive by css {
-
-    }
+    val inactive by css {}
 
     val problemBadge by css {
         paddingLeft = 1.em
         filter = "drop-shadow(0px 0px 2px white)"
+    }
+
+    val editModeButton by css {
+        padding = "5px 1em"
+        marginLeft = 1.em
+        marginRight = 1.em
+        color = theme.palette.primary.contrastText.asColor()
+        important(::backgroundColor, theme.palette.primary.main.asColor())
+        borderColor = theme.palette.primary.contrastText.asColor()
+
+        svg {
+            fontSize = 18.px
+            marginRight = 0.25.em
+        }
+    }
+
+    val editModeButtonSelected by css {
+        important(::color, theme.palette.error.contrastText.asColor())
+        important(::backgroundColor, theme.palette.error.main.asColor())
+        important(::borderColor, theme.palette.error.contrastText.asColor())
     }
 
     val editButton by css {
@@ -175,6 +255,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         top = 0.5.em
         right = 0.5.em
         fontSize = 0.6.rem
+        userSelect = UserSelect.none
     }
 
     val appToolbarProblemsIcon by css {
@@ -242,6 +323,10 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             width = 100.pct - drawerWidth
         }
     }
+
+    val showTabs by css {
+        background = theme.palette.background.paper
+    }
 }
 
 object Styles : StyleSheet("app-ui", isStatic = true) {
@@ -250,8 +335,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
         top = 0.px
         left = 0.px
-        width = 100.pct
-        height = 100.pct
+        bottom = 0.px
+        right = 0.px
         position = Position.absolute
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -323,9 +408,13 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     )
 
     val unplacedControlsPalette by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
         position = Position.fixed
-        left = 5.em
-        bottom = 5.em
+        left = 3.em
+        top = 60.vh
+        width = 15.em
+        height = 33.vh
         zIndex = 100
         opacity = 0
         transition(::opacity, duration = 1.s)
@@ -343,14 +432,20 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     }
 
     val unplacedControlsPaper by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        grow(Grow.GROW)
         padding(1.em)
     }
 
     val unplacedControlsDroppable by css {
+        position = Position.relative
         overflowY = Overflow.scroll
-        minHeight = 4.em
-        height = 33.vh
-        maxWidth = 15.em
+//        minHeight = 4.em
+        width = 100.pct
+        height = 100.pct
+//        width = 15.em
+//        height = 33.vh
     }
 
     val controlPanelHelpText by css {
@@ -434,7 +529,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             paddingBottom = 1.em
         }
 
-        descendants(ControlsStyles, ControlsStyles::buttonGroupCard) {
+        descendants(".app-ui-controls-buttonGroupCard") {
             descendants(ControlsStyles, ControlsStyles::controlButton) {
                 transform { scale(.9) }
             }
@@ -484,6 +579,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         body {
             fontSize = 0.875.rem
             lineHeight = LineHeight("1.43")
+        }
+
+        button {
+            fontFamily = "inherit"
         }
 
         ".${editModeOn.name}.${unplacedControlsPalette.name}" {

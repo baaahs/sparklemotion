@@ -1,5 +1,7 @@
 package baaahs.visualizer.movers
 
+import baaahs.dmx.Dmx
+import baaahs.io.ByteArrayReader
 import baaahs.model.MovingHead
 import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
@@ -42,9 +44,18 @@ class MovingHeadVisualizer(
         holder.add(sharpyVisualizer.group)
     }
 
-    internal fun receivedUpdate(buffer: MovingHead.Buffer) {
-        val state = physicalModel.update(buffer)
+    override fun receiveRemoteFrameData(reader: ByteArrayReader) {
+        val channelCount = reader.readShort().toInt()
+        val dmxBuffer = Dmx.Buffer(ByteArray(channelCount))
+        repeat(channelCount) { i ->
+            dmxBuffer[i] = reader.readByte()
+        }
+        val adapterBuffer = item.adapter.newBuffer(dmxBuffer)
+        receivedUpdate(adapterBuffer)
+    }
 
+    fun receivedUpdate(adapterBuffer: MovingHead.Buffer) {
+        val state = physicalModel.update(adapterBuffer)
         sharpyVisualizer.update(state)
     }
 }

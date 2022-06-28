@@ -9,14 +9,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.plugin.core.datasource.TimeDataSource
-import baaahs.show.Layout
-import baaahs.show.Layouts
-import baaahs.show.Panel
-import baaahs.show.Shader
-import baaahs.show.mutable.MutableConstPort
-import baaahs.show.mutable.MutableLayouts
-import baaahs.show.mutable.MutableShow
-import baaahs.show.mutable.ShowBuilder
+import baaahs.show.*
+import baaahs.show.mutable.*
 import baaahs.shows.FakeShowPlayer
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -28,7 +22,15 @@ import kotlin.collections.set
 
 object OpenShowSpec : Spek({
     describe<OpenShow> {
-        val mutableShow by value { MutableShow("Show") }
+        val mutableShow by value {
+            MutableShow("Show") {
+                editLayouts {
+                    editLayout("default") {
+                        tabs.add(MutableLegacyTab("Tab"))
+                    }
+                }
+            }
+        }
         val show by value { mutableShow.build(ShowBuilder()) }
 
         val showPlayer by value { FakeShowPlayer() }
@@ -41,8 +43,13 @@ object OpenShowSpec : Spek({
                     MutableLayouts(
                         Layouts(
                             listOf("Panel 1", "Panel 2", "Panel 3").associateWith { Panel(it) },
-                            mapOf("default" to Layout(null, emptyList()))
-                        )
+                            mapOf(
+                                "default" to Layout(
+                                    null,
+                                    listOf(LegacyTab("Tab", emptyList(), emptyList(), emptyList()))
+                                )
+                            )
+                        ), mutableShow
                     )
                 )
             }
@@ -129,6 +136,8 @@ object OpenShowSpec : Spek({
                     .toEqual(Slider("Slider"))
                 expect(implicitSlider.controlledDataSource)
                     .toEqual(show.dataSources.values.only("datasource"))
+
+                expect(openShow.implicitControls).containsExactly(implicitSlider)
             }
         }
 

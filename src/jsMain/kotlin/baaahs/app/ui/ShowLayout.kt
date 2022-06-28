@@ -1,162 +1,119 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.controlWrapper
-import baaahs.app.ui.editor.AddControlToPanelBucket
-import baaahs.getBang
-import baaahs.show.Layout
-import baaahs.show.live.ControlDisplay
-import baaahs.show.live.ControlProps
+import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.layout.DragNDropContext
+import baaahs.app.ui.layout.dragNDropContext
+import baaahs.app.ui.layout.gridTabLayout
+import baaahs.app.ui.layout.legacyTabLayout
+import baaahs.show.LegacyTab
+import baaahs.show.live.OpenGridTab
+import baaahs.show.live.OpenLayout
 import baaahs.show.live.OpenShow
+import baaahs.show.mutable.MutableGridTab
+import baaahs.show.mutable.MutableIGridLayout
+import baaahs.show.mutable.MutableLayout
+import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import csstype.FlexDirection
-import csstype.ident
-import external.Direction
-import external.draggable
-import external.droppable
-import kotlinx.css.*
+import csstype.Flex
+import csstype.number
+import kotlinx.css.FlexBasis
+import kotlinx.css.Position
+import kotlinx.css.flex
+import kotlinx.css.position
 import kotlinx.js.jso
-import materialui.icon
-import mui.material.*
-import org.w3c.dom.Element
-import react.*
-import react.dom.div
-import react.dom.events.MouseEvent
-import react.dom.events.MouseEventHandler
-import react.dom.header
-import styled.inlineStyles
+import mui.material.Tab
+import mui.material.Tabs
+import mui.system.sx
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.useContext
 
 val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
+    val styles = appContext.allStyles.appUi
 
-    var currentTabIndex by state { 0 }
-    val currentTab = props.layout.tabs.getBounded(currentTabIndex)
+    val layout = props.layout
+    observe(layout)
 
-    val editMode = props.editMode == true
-    val editModeStyle = if (editMode) Styles.editModeOn else Styles.editModeOff
+    val handleChangeTab by syntheticEventHandler<dynamic>(layout) { _, value ->
+        layout.currentTabIndex = value as Int
+    }
 
-    val handleAddButtonClick = memo { mutableMapOf<String, MouseEventHandler<*>>() }
-    var showAddMenuFor by state<ControlDisplay.PanelBuckets.PanelBucket?> { null }
-    var showAddMenuForAnchorEl by state<Element?> { null }
+    val tabEditor = memo(props.layoutEditor, layout.currentTabIndex) {
+        object : Editor<MutableIGridLayout> {
+            override val title: String = "Tab editor (${layout.currentTab?.title})"
 
-    sharedGlContext {
-        div(+Styles.showLayout) {
-            if (currentTab != null) {
-                val colCount = currentTab.columns.size
-                val rowCount = currentTab.rows.size
-                if (currentTab.areas.size != colCount * rowCount) {
-                    error("Invalid layout! " +
-                            "Area count (${currentTab.areas.size} != cell count " +
-                            "($colCount columns * $rowCount rows)")
-                }
-
-                val areas = mutableListOf<String>()
-                currentTab.rows.indices.forEach { rowIndex ->
-                    val cols = mutableListOf<String>()
-
-                    currentTab.columns.indices.forEach { columnIndex ->
-                        cols.add(currentTab.areas[rowIndex * colCount + columnIndex])
+            override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+                mutableShow.editLayouts {
+                    props.layoutEditor.edit(mutableShow) {
+                        block(tabs[layout.currentTabIndex ?: error("No tab selected.")] as MutableGridTab)
                     }
-                    areas.add(cols.joinToString(" ") { it.replace(" ", "") })
-                }
-
-                inlineStyles {
-                    gridTemplateAreas = GridTemplateAreas(areas.joinToString(" ") { "\"$it\"" })
-                    gridTemplateColumns = GridTemplateColumns(currentTab.columns.joinToString(" "))
-                    gridTemplateRows = GridTemplateRows(currentTab.rows.joinToString(" "))
                 }
             }
 
-            currentTab?.areas?.distinct()?.forEach { panelId ->
-                val panel = props.show.layouts.panels.getBang(panelId, "panel")
-                Paper {
-                    attrs.classes = jso { root = -Styles.layoutPanelPaper }
-                    attrs.sx = jso {
-                        gridArea = ident(panelId)
-                        // TODO: panel flow direction could change here.
-                        flexDirection = FlexDirection.column
-                    }
-
-                    header { +panel.title }
-
-                    Paper {
-                        attrs.classes = jso { root = -Styles.layoutPanel and editModeStyle }
-
-                        props.controlDisplay.render(panel) { panelBucket ->
-                            droppable({
-                                this.droppableId = panelBucket.dropTargetId
-                                this.type = panelBucket.type
-                                this.direction = Direction.horizontal.name
-                                this.isDropDisabled = !editMode
-                            }) { droppableProvided, _ ->
-                                buildElement {
-                                    val style = if (Styles.controlSections.size > panelBucket.section.depth)
-                                        Styles.controlSections[panelBucket.section.depth]
-                                    else
-                                        Styles.controlSections.last()
-
-                                    div(+Styles.layoutControls and style) {
-                                        install(droppableProvided)
-
-                                        div(+Styles.controlPanelHelpText) { +panelBucket.section.title }
-                                        panelBucket.controls.forEachIndexed { index, placedControl ->
-                                            val control = placedControl.control
-                                            val draggableId = control.id
-
-                                            draggable({
-                                                this.key = draggableId
-                                                this.draggableId = draggableId
-                                                this.isDragDisabled = !editMode
-                                                this.index = index
-                                            }) { draggableProvided, _ ->
-                                                buildElement {
-                                                    controlWrapper {
-                                                        attrs.control = control
-                                                        attrs.controlProps = props.controlProps
-                                                        attrs.draggableProvided = draggableProvided
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        child(droppableProvided.placeholder)
-
-                                        IconButton {
-                                            attrs.classes = jso { root = -Styles.addToSectionButton }
-                                            attrs.onClick = handleAddButtonClick.getOrPut(panelBucket.suggestId()) {
-                                                { event: MouseEvent<*, *> ->
-                                                    showAddMenuFor = panelBucket
-                                                    showAddMenuForAnchorEl = event.currentTarget
-                                                }
-                                            }
-                                            icon(mui.icons.material.AddCircleOutline)
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            override fun delete(mutableShow: MutableShow) {
+                mutableShow.editLayouts {
+                    props.layoutEditor.edit(mutableShow) {
+                        tabs.removeAt(layout.currentTabIndex ?: error("No tab selected."))
                     }
                 }
             }
         }
     }
 
-    showAddMenuFor?.let { panelBucket ->
-        Menu {
-            attrs.anchorEl = showAddMenuForAnchorEl.asDynamic()
-            attrs.open = true
-            attrs.onClose = { showAddMenuFor = null }
+    val tabs = layout.tabs
+    val currentTab = layout.currentTab
 
-            appContext.plugins.addControlMenuItems.forEach { addControlMenuItem ->
-                MenuItem {
-                    attrs.onClick = {
-                        val editIntent = AddControlToPanelBucket(panelBucket, addControlMenuItem.createControlFn)
-                        appContext.openEditor(editIntent)
-                        showAddMenuFor = null
+    val myDragNDropContext = memo<DragNDropContext>(currentTab) {
+        when (currentTab) {
+            is LegacyTab -> jso { this.isLegacy = true }
+            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = appContext.gridLayoutContext }
+            else -> error("huh?")
+        }
+    }
+
+    sharedGlContext {
+        attrs.inlineStyles = StyleElement {
+            flex(1.0, 0.0, FlexBasis.zero)
+            position = Position.relative
+        }
+
+        dragNDropContext.Provider {
+            attrs.value = myDragNDropContext
+            when (currentTab) {
+                is LegacyTab ->
+                    legacyTabLayout {
+                        attrs.show = props.show
+                        attrs.tab = currentTab
+                        attrs.onShowStateChange = props.onShowStateChange
                     }
 
-                    ListItemIcon { icon(addControlMenuItem.icon) }
-                    ListItemText { +addControlMenuItem.label }
+                is OpenGridTab ->
+                    gridTabLayout {
+                        attrs.tab = currentTab
+                        attrs.tabEditor = tabEditor
+                        attrs.onShowStateChange = props.onShowStateChange
+                    }
+                null -> { +"No tabs?" }
+            }
+        }
+    }
+
+    if (tabs.size > 1) {
+        Tabs {
+            attrs.classes = jso { this.root = -styles.showTabs }
+            attrs.value = layout.currentTabIndex
+            attrs.onChange = handleChangeTab
+            tabs.forEachIndexed { index, tab ->
+                Tab {
+                    attrs.value = index
+                    attrs.label = tab.title.asTextNode()
                 }
+            }
+
+            attrs.sx {
+                flex = Flex(number(0.0), number(0.0))
             }
         }
     }
@@ -170,11 +127,9 @@ private fun <E> List<E>.getBounded(index: Int): E? {
 
 external interface ShowLayoutProps : Props {
     var show: OpenShow
+    var layout: OpenLayout
+    var layoutEditor: Editor<MutableLayout>
     var onShowStateChange: () -> Unit
-    var layout: Layout
-    var controlDisplay: ControlDisplay
-    var controlProps: ControlProps
-    var editMode: Boolean?
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =

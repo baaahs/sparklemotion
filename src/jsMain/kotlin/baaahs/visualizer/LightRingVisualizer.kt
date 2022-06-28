@@ -1,6 +1,10 @@
 package baaahs.visualizer
 
+import baaahs.fixtures.PixelArrayRemoteConfig
+import baaahs.fixtures.RemoteConfig
+import baaahs.io.ByteArrayReader
 import baaahs.model.LightRing
+import baaahs.sim.LightBarSimulation
 import three.js.*
 import three_ext.clear
 
@@ -68,6 +72,20 @@ class LightRingVisualizer(
         ringMesh.material = ringMaterial
 
         pixelsPreview.setLocations(pixelLocations.map { it.toVector3() }.toTypedArray())
+    }
+
+    override fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
+        remoteConfig as PixelArrayRemoteConfig
+        vizPixels = VizPixels(
+            remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
+            LightBarSimulation.pixelVisualizationNormal,
+            item.transformation,
+            remoteConfig.pixelFormat
+        )
+    }
+
+    override fun receiveRemoteFrameData(reader: ByteArrayReader) {
+        vizPixels?.readColors(reader)
     }
 
     companion object {

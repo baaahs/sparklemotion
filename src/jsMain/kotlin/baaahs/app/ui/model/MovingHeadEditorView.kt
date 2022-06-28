@@ -9,11 +9,8 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import kotlinx.js.jso
 import mui.material.Container
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.header
-import react.useContext
 
 private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHeadEditor") { props ->
     val appContext = useContext(appContext)
@@ -34,6 +31,7 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
         betterSelect<MovingHeadAdapter> {
             attrs.label = "Adapter"
             attrs.values = MovingHeadAdapter.all
+            attrs.renderValueOption = { adapter -> buildElement { +adapter.id } }
             attrs.value = mutableEntity.adapter
             attrs.onChange = handleAdapterChange
         }

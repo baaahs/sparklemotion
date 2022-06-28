@@ -7,9 +7,12 @@ import org.w3c.dom.events.MouseEvent
 import react.ElementType
 import react.Props
 import react.ReactElement
+import react.Ref
 
 @JsName("default")
 external val Draggable : ElementType<DraggableProps>
+
+external val DraggableCore : ElementType<DraggableCoreProps>
 
 external interface DraggableCoreState {
     var dragging: Boolean
@@ -27,12 +30,12 @@ external interface DraggableBounds {
 
 external interface DraggableData {
     var node: HTMLElement
-    var x: Number
-    var y: Number
-    var deltaX: Number
-    var deltaY: Number
-    var lastX: Number
-    var lastY: Number
+    var x: Int
+    var y: Int
+    var deltaX: Int
+    var deltaY: Int
+    var lastX: Int
+    var lastY: Int
 }
 
 external interface ControlPosition {
@@ -58,6 +61,8 @@ external interface DraggableCoreProps: Props {
     var onDrag: DraggableEventHandler
     var onStop: DraggableEventHandler
     var onMouseDown: (e: MouseEvent) -> Unit
+    var scale: Number
+    var nodeRef: Ref<*>?
 }
 
 external interface DraggableProps: DraggableCoreProps {
@@ -69,7 +74,6 @@ external interface DraggableProps: DraggableCoreProps {
     var defaultPosition: ControlPosition
     var positionOffset: PositionOffsetControlPosition
     var position: ControlPosition
-    var scale: Number
 }
 
 external interface RDraggableState {

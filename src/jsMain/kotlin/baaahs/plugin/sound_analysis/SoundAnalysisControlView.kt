@@ -1,10 +1,13 @@
 package baaahs.plugin.SoundAnalysis
 
+import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
 import baaahs.futureAsync
 import baaahs.io.getResourceAsync
 import baaahs.onAvailable
+import baaahs.plugin.sound_analysis.AudioInput
 import baaahs.plugin.sound_analysis.OpenSoundAnalysisControl
+import baaahs.plugin.sound_analysis.SoundAnalysisPlugin
 import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.important
@@ -14,10 +17,12 @@ import baaahs.ui.xComponent
 import kotlinx.css.*
 import kotlinx.js.jso
 import mui.material.Card
+import org.w3c.dom.HTMLElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.StyleSheet
 
 private val soundAnalysisVisualizerShader =
@@ -26,6 +31,21 @@ private val soundAnalysisVisualizerShader =
     }
 
 private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundAnalysisControl") { _ ->
+    val appContext = useContext(appContext)
+    val soundAnalyzer = appContext.plugins.getPlugin<SoundAnalysisPlugin>().soundAnalyzer
+
+    val inputDiv = ref<HTMLElement>()
+
+    fun update(audioInput: AudioInput?) {
+        inputDiv.current!!.innerText = audioInput?.title ?: "No Input"
+    }
+
+    onMount(soundAnalyzer) {
+        val listener = soundAnalyzer.listen { _, audioInput -> update(audioInput) }
+        update(soundAnalyzer.currentAudioInput)
+        withCleanup { soundAnalyzer.unlisten(listener) }
+    }
+
     var shader by state<Shader?> { null }
     soundAnalysisVisualizerShader.onAvailable { shader = it }
 
@@ -34,9 +54,9 @@ private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundA
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader
-                attrs.width = 300.px
-                attrs.height = 200.px
             }
+
+            div(+Styles.input) { ref = inputDiv }
         }
     }
 }
@@ -48,28 +68,19 @@ object Styles : StyleSheet("plugin-SoundAnalysis", isStatic = true) {
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)
+        userSelect = UserSelect.none
     }
 
     val div by css {
         position = Position.relative
     }
 
-    val bpm by css {
+    val input by css {
         position = Position.absolute
         bottom = 0.px
         left = 0.px
         color = Color.white
-        backgroundColor = Color.black
-        fontWeight = FontWeight.bolder
-    }
-
-    val confidence by css {
-        position = Position.absolute
-        bottom = 0.px
-        right = 0.px
-        color = Color.white
-        backgroundColor = Color.black
-        fontWeight = FontWeight.bolder
+        put("textShadow", "0px 1px 1px black")
     }
 }
 

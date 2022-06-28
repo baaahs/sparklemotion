@@ -25,7 +25,7 @@ private fun <T : BrainShader.Buffer> send(srcBrainShader: BrainShader<T>, srcBuf
 
     @Suppress("UNCHECKED_CAST")
     val dstBrainShader: BrainShader<T> = srcBrainShader.idBrain.reader.parse(reader) as BrainShader<T>
-    val dstBuf = dstBrainShader.createBuffer(fixture.pixelCount)
+    val dstBuf = dstBrainShader.createBuffer(fixture.componentCount)
     dstBuf.read(reader)
     return Pair(dstBrainShader, dstBuf)
 }
@@ -39,7 +39,7 @@ internal fun <T : BrainShader.Buffer> transmit(srcBuf: T, fixture: Fixture): T {
 @Suppress("UNCHECKED_CAST")
 internal fun <T : BrainShader.Buffer> render(srcBuf: T, fixture: Fixture): Pixels {
     val (dstBrainShader: BrainShader<T>, dstBuf) = send(srcBuf.brainShader as BrainShader<T>, srcBuf, fixture)
-    val pixels = FakePixels(fixture.pixelCount)
+    val pixels = FakePixels(fixture.componentCount)
     val renderer = dstBrainShader.createRenderer()
     renderer.beginFrame(dstBuf, pixels.size)
     for (i in pixels.indices) {

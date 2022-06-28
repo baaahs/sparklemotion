@@ -1,19 +1,22 @@
 package baaahs.app.ui.gadgets.color
 
+import baaahs.ui.name
+import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.properties.boxShadow
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
 import styled.StyleSheet
+import baaahs.app.ui.controls.Styles as ControlStyles
 
-object ColorWheelStyles : StyleSheet("ui", isStatic = true) {
+object ColorWheelStyles : StyleSheet("app-ui-gadgets-color", isStatic = true) {
     val root by css {
         borderRadius = .5.em
         color = Color.black
         display = Display.inlineBlock
         position = Position.relative
-        minHeight = 200.px
-        minWidth = 200.px
+        width = 100.pct
+        height = 100.pct
     }
 
     val dragging by css {}
@@ -38,9 +41,9 @@ object ColorWheelStyles : StyleSheet("ui", isStatic = true) {
         cursor = Cursor.grab
         width = 20.px
         height = 20.px
-        backgroundColor = Color.white
+        backgroundColor = Color.transparent
         borderRadius = 100.pct
-        border = "2px solid white"
+        border = "2px solid black"
         transition(::borderColor, .1.s)
         transition(::color, 0.s)
 
@@ -94,6 +97,15 @@ object ColorWheelStyles : StyleSheet("ui", isStatic = true) {
         descendants("+ &") {
             borderLeft = "1px solid rgba(13, 13, 13, 0.91)"
 
+        }
+    }
+
+    val global = CssBuilder().apply {
+        ".${ControlStyles.notExplicitlySized.name}" {
+            descendants(selector(::root)) {
+                minWidth = 150.px
+                minHeight = 150.px
+            }
         }
     }
 }

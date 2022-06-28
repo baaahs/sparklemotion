@@ -99,6 +99,9 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 //                    TableCell { +"Pixels" }
 //                    TableCell { +"Mapped" }
                             TableCell { +"Status" }
+                            TableCell { +"Firmware" }
+                            TableCell { +"Last Error" }
+                            TableCell { +"Last Error At" }
                         }
                     }
 
@@ -111,7 +114,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 3
+                                            attrs.colSpan = 6
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header { +controllerId.controllerType }
                                         }
@@ -140,6 +143,14 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                         } else {
                                             +"Offline"
                                         }
+                                    }
+                                    TableCell { +(state?.firmwareVersion ?: "") }
+                                    TableCell { +(state?.lastErrorMessage ?: "") }
+                                    TableCell {
+                                        +(state?.lastErrorAt?.let {
+                                            DateTime(it * 1000)
+                                                .toString(DateFormat.FORMAT1)
+                                        } ?: "")
                                     }
                                 }
                             }

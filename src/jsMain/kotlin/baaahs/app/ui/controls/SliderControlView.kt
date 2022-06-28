@@ -1,6 +1,7 @@
 package baaahs.app.ui.controls
 
 import baaahs.GadgetListener
+import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.show.live.ControlProps
@@ -16,9 +17,13 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.inlineStyles
 
 private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
+    val appContext = useContext(appContext)
+    val controlsStyles = appContext.allStyles.controls
+
     val sliderControl = props.sliderControl
     val title = sliderControl.slider.title
 //    val channel = props.sliderControl.channel
@@ -70,7 +75,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
             attrs.stepValue = slider.stepValue
             attrs.reversed = true
             attrs.showTicks = true
-            if (slider.maxValue  <= 2) {
+            if (slider.maxValue <= 2) {
                 attrs.ticksScale = 100f
             }
 
@@ -90,7 +95,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         }
 
 
-        div(+Styles.dataSourceTitle) { +title }
+        div(+controlsStyles.dataSourceTitle) { +title }
     }
 }
 

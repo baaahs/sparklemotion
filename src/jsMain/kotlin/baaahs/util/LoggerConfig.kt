@@ -32,4 +32,9 @@ object LoggerConfig {
             allLevels[id] = LogLevel.valueOf(level)
         }
     }
+
+    @JsName("setDefault")
+    fun setDefault(level: String) {
+        defaultLevel = LogLevel.valueOf(level)
+    }
 }

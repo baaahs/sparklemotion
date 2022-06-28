@@ -47,7 +47,7 @@ object SceneManagerSpec : Spek({
             expect(sceneManager.document).toBe(null)
             expect(sceneManager.isUnsaved).toBe(false)
             expect(sceneManager.isLoaded).toBe(false)
-            expect(sceneManager.everSynched).toBe(false)
+            expect(sceneManager.everSynced).toBe(false)
         }
 
         context("when a scene is loaded") {
@@ -62,7 +62,7 @@ object SceneManagerSpec : Spek({
                 expect(sceneManager.document).toEqual(newScene)
                 expect(sceneManager.isUnsaved).toBe(false)
                 expect(sceneManager.isLoaded).toBe(true)
-                expect(sceneManager.everSynched).toBe(true)
+                expect(sceneManager.everSynced).toBe(true)
             }
 
             context("while editing the scene") {

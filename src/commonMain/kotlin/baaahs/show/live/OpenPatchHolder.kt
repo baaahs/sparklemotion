@@ -20,11 +20,14 @@ open class OpenPatchHolder(
             openContext.getPanel(panelId) to controlRefs.map { openContext.getControl(it) }
         }.toMap()
 
-    fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, depth: Int) {
-        activePatchSetBuilder.add(this, depth)
+    open fun addTo(builder: ActivePatchSet.Builder, depth: Int) {
+        builder.add(this, depth)
+    }
 
+    open fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {
+        builder.add(this, depth)
         controlLayout.forEach { (panel, openControls) ->
-            openControls.forEach { openControl -> openControl.addTo(activePatchSetBuilder, panel, depth + 1) }
+            openControls.forEach { openControl -> openControl.legacyAddTo(builder, panel, depth + 1) }
         }
     }
 }

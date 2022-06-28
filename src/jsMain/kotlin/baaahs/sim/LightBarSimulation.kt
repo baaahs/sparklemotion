@@ -1,45 +1,19 @@
 package baaahs.sim
 
-import baaahs.controller.SacnManager
-import baaahs.device.PixelFormat
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayFixture
-import baaahs.fixtures.RemoteConfig
-import baaahs.geom.Vector3F
-import baaahs.io.ByteArrayReader
-import baaahs.mapper.MappingSession
 import baaahs.model.LightBar
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
-import baaahs.visualizer.*
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.LightBarVisualizer
+import baaahs.visualizer.PixelArrayVisualizer
+import baaahs.visualizer.PolyLineVisualizer
 
 actual class LightBarSimulation actual constructor(
-    val pixelArray: PixelArray,
-    private val simulationEnv: SimulationEnv,
+    pixelArray: PixelArray,
     private val adapter: EntityAdapter
-) : FixtureSimulation {
+) : PixelArraySimulation(pixelArray, adapter) {
 
-    private val pixelLocations by lazy { pixelArray.calculatePixelLocalLocations(59) }
-    private val vizPixels by lazy {
-        VizPixels(
-            pixelLocations.map { it.toVector3() }.toTypedArray(),
-            pixelVisualizationNormal,
-            pixelArray.transformation,
-            PixelFormat.default
-        )
-    }
-
-    override val mappingData: MappingSession.SurfaceData
-        get() {
-            val pixelsVecs = pixelLocations.map { MappingSession.SurfaceData.PixelData(it) }
-            return MappingSession.SurfaceData(
-                SacnManager.controllerTypeName,
-                "wled-X${pixelArray.name}X",
-                pixelArray.name,
-                pixelLocations.size,
-                pixelsVecs
-            )
-        }
+    override val pixelLocations by lazy { pixelArray.calculatePixelLocalLocations(59) }
 
     override val itemVisualizer: PixelArrayVisualizer<*> by lazy {
         when (pixelArray) {
@@ -49,43 +23,6 @@ actual class LightBarSimulation actual constructor(
         }
     }
 
-    val wledSimulator by lazy {
-        val wledsSimulator = simulationEnv[WledsSimulator::class]
-        wledsSimulator.createFakeWledDevice(pixelArray.name, vizPixels)
-    }
-
-    override val previewFixture: Fixture by lazy {
-        PixelArrayFixture(
-            pixelArray,
-            pixelLocations.size,
-            pixelArray.name,
-            PixelArrayPreviewTransport(pixelArray.name, vizPixels),
-            PixelFormat.default,
-            1f,
-            pixelLocations
-        )
-    }
-
-    override fun start() {
-        wledSimulator.start()
-    }
-
-    override fun stop() {
-        wledSimulator.stop()
-    }
-
-    override fun updateVisualizerWith(remoteConfig: RemoteConfig, pixelCount: Int, pixelLocations: Array<Vector3F>) {
-//        entityVisualizer.vizPixels = VizPixels(
-//            pixelLocations.map { it.toVector3() }.toTypedArray(),
-//            pixelVisualizationNormal,
-//            pixelArray.transformation,
-//            fixtureConfig as PixelArrayDevice.Config
-//        )
-    }
-
-    override fun receiveRemoteVisualizationFrameData(reader: ByteArrayReader) {
-//        entityVisualizer.vizPixels?.readColors(reader)
-    }
 
     companion object {
         val pixelVisualizationNormal = three_ext.vector3FacingForward

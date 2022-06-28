@@ -26,8 +26,8 @@ class ModelRenderEngine(
 ) : RenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
     private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
-    var pixelCount: Int = 0
-    var nextPixelOffset: Int = 0
+    var componentCount: Int = 0
+    var nextComponentOffset: Int = 0
     var nextRectOffset: Int = 0
 
     private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
@@ -59,15 +59,15 @@ class ModelRenderEngine(
             )
         }
 
-        val rects = mapFixturePixelsToRects(
-            nextPixelOffset,
+        val rects = mapFixtureComponentsToRects(
+            nextComponentOffset,
             maxFramebufferWidth,
             fixture
         )
         val renderTarget = FixtureRenderTarget(
-            fixture, nextRectOffset, rects, fixture.pixelCount, nextPixelOffset, resultStorage
+            fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage
         )
-        nextPixelOffset += fixture.pixelCount
+        nextComponentOffset += fixture.componentCount
         nextRectOffset += rects.size
 
         renderTargetsToAdd.add(renderTarget)
@@ -129,16 +129,16 @@ class ModelRenderEngine(
         }
 
         if (renderTargetsToAdd.isNotEmpty()) {
-            val newPixelCount = nextPixelOffset
+            val newComponentCount = nextComponentOffset
 
             arrangement.release()
 
             renderTargets.addAll(renderTargetsToAdd)
-            arrangement = gl.runInContext { Arrangement(newPixelCount, renderTargetsToAdd) }
+            arrangement = gl.runInContext { Arrangement(newComponentCount, renderTargetsToAdd) }
 
             renderTargetsToAdd.clear()
 
-            pixelCount = newPixelCount
+            componentCount = newComponentCount
         }
     }
 
@@ -153,20 +153,20 @@ class ModelRenderEngine(
     }
 
     fun logStatus() {
-        logger.info { "Rendering $pixelCount pixels for ${renderTargets.size} ${fixtureType.title} fixtures."}
+        logger.info { "Rendering $componentCount components for ${renderTargets.size} ${fixtureType.title} fixtures."}
     }
 
     val Int.bufWidth: Int get() = max(minTextureWidth, min(this, maxFramebufferWidth))
     val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
-    inner class Arrangement(val pixelCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
+    inner class Arrangement(val componentCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
         init {
-            logger.info { "Creating ${fixtureType::class.simpleName} arrangement with $pixelCount pixels" }
+            logger.info { "Creating ${fixtureType::class.simpleName} arrangement with $componentCount components" }
         }
 
-        val pixWidth = pixelCount.bufWidth
-        val pixHeight = pixelCount.bufHeight
+        val pixWidth = componentCount.bufWidth
+        val pixHeight = componentCount.bufHeight
         val safeWidth = max(pixWidth, 1.bufWidth)
         val safeHeight = max(pixHeight, 1.bufHeight)
 
@@ -192,7 +192,7 @@ class ModelRenderEngine(
             })
 
         fun release() {
-            logger.debug { "Release arrangement with ${renderTargets.count()} fixtures and $pixelCount pixels" }
+            logger.debug { "Release arrangement with ${renderTargets.count()} fixtures and $componentCount components" }
 
             quad.release()
         }
@@ -230,7 +230,7 @@ class ModelRenderEngine(
         private const val fbMaxPixWidth = 1024
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */
-        internal fun mapFixturePixelsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
+        internal fun mapFixtureComponentsToRects(nextPix: Int, pixWidth: Int, fixture: Fixture): List<Quad.Rect> {
             fun makeQuad(offsetPix: Int, widthPix: Int): Quad.Rect {
                 val xStartPixel = offsetPix % pixWidth
                 val yStartPixel = offsetPix / pixWidth
@@ -244,17 +244,17 @@ class ModelRenderEngine(
                 )
             }
 
-            var nextPixelOffset = nextPix
-            var pixelsLeft = fixture.pixelCount
+            var nextComponentOffset = nextPix
+            var componentsLeft = fixture.componentCount
             val rects = mutableListOf<Quad.Rect>()
-            while (pixelsLeft > 0) {
-                val rowPixelOffset = nextPixelOffset % pixWidth
+            while (componentsLeft > 0) {
+                val rowPixelOffset = nextComponentOffset % pixWidth
                 val rowPixelsLeft = pixWidth - rowPixelOffset
-                val rowPixelsTaken = min(pixelsLeft, rowPixelsLeft)
-                rects.add(makeQuad(nextPixelOffset, rowPixelsTaken))
+                val rowPixelsTaken = min(componentsLeft, rowPixelsLeft)
+                rects.add(makeQuad(nextComponentOffset, rowPixelsTaken))
 
-                nextPixelOffset += rowPixelsTaken
-                pixelsLeft -= rowPixelsTaken
+                nextComponentOffset += rowPixelsTaken
+                componentsLeft -= rowPixelsTaken
             }
             return rects
         }

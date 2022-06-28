@@ -1,14 +1,16 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.*
+import baaahs.ui.disableScroll
+import baaahs.ui.enableScroll
+import baaahs.ui.unaryPlus
+import baaahs.ui.xComponent
+import external.lodash.throttle
 import external.react_compound_slider.*
-import external.throttle
 import react.*
 import react.dom.div
-import react.dom.label
-import react.dom.setProp
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
@@ -40,14 +42,16 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         arrayOf(props.minValue, props.maxValue)
     }
 
+    val showSecondSlider = props.floorPosition != null
+
     div(+styles.wrapper) {
-        label(+styles.label) {
-            setProp("htmlFor", "range-slider")
-            props.title
-        }
+//        label(+styles.label) {
+//            setProp("htmlFor", "range-slider")
+//            +props.title
+//        }
 
         Slider {
-            attrs.className = styles.slider.name
+            attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 3
@@ -111,7 +115,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             Tracks {
                 attrs.left = false
-                attrs.right = props.floorPosition == null
+                attrs.right = !showSecondSlider
                 attrs.children = { tracksObject ->
                     buildElement {
                         div(+styles.tracks) {
@@ -129,6 +133,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             }
 
             if (props.showTicks != false) {
+                val ticksScale = props.ticksScale ?: 1f
+
                 Ticks {
                     attrs.count = 10
                     attrs.children = { ticksObject ->
@@ -139,7 +145,11 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                         key = tick.id
                                         attrs.tick = tick
                                         attrs.format = { item ->
-                                            floor(item.value.toFloat() * (props.ticksScale ?: 1f)).toString()
+                                            if (ticksScale != 1f) {
+                                                floor(item.value.toFloat() * ticksScale).toString()
+                                            } else {
+                                                ((item.value.toFloat() * 100f).roundToInt().toFloat() / 100f).toString()
+                                            }
                                         }
                                     }
                                 }

@@ -23,10 +23,7 @@ import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
-import baaahs.show.UnknownDataSource
-import baaahs.show.appearsToBePurposeBuiltFor
+import baaahs.show.*
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.sim.BridgeClient
 import baaahs.sm.brain.BrainControllerConfig
@@ -278,6 +275,11 @@ sealed class Plugins(
         polymorphic(RemoteConfig::class) {
             subclass(PixelArrayRemoteConfig::class, PixelArrayRemoteConfig.serializer())
             subclass(MovingHeadRemoteConfig::class, MovingHeadRemoteConfig.serializer())
+        }
+
+        polymorphic(Tab::class) {
+            subclass(LegacyTab::class, LegacyTab.serializer())
+            subclass(GridTab::class, GridTab.serializer())
         }
     }
 

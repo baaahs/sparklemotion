@@ -6,14 +6,18 @@ import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.model.ModelUnit
 import baaahs.scene.MutableScene
-import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutablePatchHolder
+import baaahs.show.mutable.*
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import mui.material.Divider
 import mui.material.DividerVariant
+import mui.material.FormControlLabel
+import mui.material.Switch
+import react.buildElement
 import react.dom.div
+import react.dom.h2
+import react.dom.html.InputType
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forSingleShaderSimplifiedEditorPanel(
@@ -146,6 +150,59 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 attrs.onChange = { value ->
                     mutableScene.model.units = value
                     editableManager.onChange()
+                }
+            }
+        }
+    }
+
+    override fun forGridLayout(
+        editableManager: EditableManager<*>,
+        editor: Editor<MutableIGridLayout>
+    ): View = renderWrapper {
+        editor.edit(editableManager.currentMutableDocument as MutableShow) {
+            val layout = this
+
+            val canMatchParent = layout is MutableGridLayout
+            val matchParent = (layout as? MutableGridLayout)?.matchParent == true
+
+            div(+EditableStyles.propertiesSection) {
+                h2 { +"Grid layout!" }
+
+                if (canMatchParent) {
+                    FormControlLabel {
+//                    attrs.classes = jso { this.root = -styles.expandSwitchLabel }
+
+                        attrs.control = buildElement {
+                            Switch {
+                                attrs.checked = matchParent
+                                attrs.onChange = { _, checked ->
+                                    (layout as MutableGridLayout).matchParent = checked
+                                    editableManager.onChange()
+                                }
+                            }
+                        }
+                        attrs.label = buildElement { +"Match Parent" }
+                    }
+                }
+
+                div {
+                    textFieldEditor {
+                        attrs.type = InputType.number
+                        attrs.label = "Columns"
+                        attrs.disabled = matchParent
+                        attrs.getValue = { layout.columns.toString() }
+                        attrs.setValue = { newValue -> layout.columns = newValue.toInt() }
+                        attrs.onChange = { _ -> editableManager.onChange() }
+                    }
+
+                    textFieldEditor {
+                        attrs.type = InputType.number
+                        attrs.label = "Rows"
+                        attrs.disabled = matchParent
+                        attrs.getValue = { layout.rows.toString() }
+                        attrs.setValue = { newValue -> layout.rows = newValue.toInt() }
+                        attrs.onChange = { _ -> editableManager.onChange() }
+                    }
                 }
             }
         }

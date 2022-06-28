@@ -13,6 +13,7 @@ class GlslParser {
 
     private class Context {
         val macros: MutableMap<String, Macro> = hashMapOf()
+        var macroDepth = 0
         val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
         var outputEnabled = true
         val enabledStack = mutableListOf<Boolean>()
@@ -36,7 +37,7 @@ class GlslParser {
 
                 if (before.isNotEmpty()) {
                     // Further tokenize text blocks to isolate symbol strings.
-                    Regex("(.*?)([A-Za-z][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
+                    Regex("(.*?)([A-Za-z_][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
                         val (nonSymbol, symbol) = beforeMatch.destructured
                         if (nonSymbol.isNotEmpty())
                             state = state.visit(nonSymbol)
@@ -91,7 +92,14 @@ class GlslParser {
             val macro = macros[value]
             return when {
                 macro == null -> null
-                macro.params == null -> parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                macro.params == null -> {
+                    macroDepth++
+                    if (macroDepth >= maxMacroDepth)
+                        throw glslError("Max macro depth exceeded for \"$value\".")
+
+                    parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                        .also { macroDepth-- }
+                }
                 else -> ParseState.MacroExpansion(this, parseState, macro)
             }
         }
@@ -412,6 +420,7 @@ class GlslParser {
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
                     if (trimmed.isNotEmpty()) {
+
                         if (trimmed == "const") {
                             // Ignore.
                         } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
@@ -420,6 +429,8 @@ class GlslParser {
                             type = GlslType.from(trimmed)
                         } else if (name == null) {
                             name = trimmed
+                        } else if (trimmed.matches(arrayParam)) {
+                            name += trimmed
                         } else {
                             throw context.glslError("Unexpected token \"$trimmed\".")
                         }
@@ -474,6 +485,11 @@ class GlslParser {
                         )
                     )
                 }
+            }
+
+            companion object {                        // Otherwise we get "Invalid regular expression: Lone quantifier brackets":
+                @Suppress("RegExpRedundantEscape")
+                val arrayParam = Regex("^\\[\\d+\\]$")
             }
         }
 
@@ -706,6 +722,7 @@ class GlslParser {
 
     companion object {
         private val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
+        private const val maxMacroDepth = 10
 
         /** Chomp leading whitespace. */
         private fun chomp(text: String, lineNumber: Int?): Pair<String, Int?> {

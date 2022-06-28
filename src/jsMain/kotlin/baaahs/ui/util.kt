@@ -1,19 +1,26 @@
 package baaahs.ui
 
+import baaahs.context2d
+import baaahs.document
+import baaahs.window
 import csstype.ClassName
 import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
+import mui.icons.material.SvgIconComponent
+import mui.material.SvgIconProps
 import mui.material.Typography
 import mui.material.TypographyProps
+import mui.material.styles.Theme
+import mui.material.styles.TypographyVariant
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import react.RBuilder
-import react.RElementBuilder
-import react.ReactNode
+import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
@@ -82,17 +89,27 @@ val RuleSet.selector: String
 
 operator fun RuleSet.unaryPlus(): String = name
 operator fun RuleSet.unaryMinus(): ClassName = ClassName(name)
-infix fun String.and(ruleSet: RuleSet): String = this + " " + ruleSet.name
-infix fun ClassName.and(ruleSet: RuleSet): ClassName = ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
+operator fun SvgIconComponent.unaryPlus(): ReactElement<SvgIconProps> = create()
+val String.className: ClassName get() = ClassName(this)
+infix fun String.and(ruleSet: RuleSet?): String =
+    if (ruleSet == null) this else this + " " + ruleSet.name
+infix fun ClassName.and(ruleSet: RuleSet?): ClassName =
+    if (ruleSet == null) this else ClassName(this.unsafeCast<String>() + " " + ruleSet.name)
+infix fun ClassName.and(className: String?): ClassName =
+    if (className == null) this else ClassName(this.unsafeCast<String>() + " " + className)
 infix fun <T> RuleSet.on(clazz: T): Pair<T, String> = clazz to name
 infix fun <T> String.on(clazz: T): Pair<T, String> = clazz to this
 infix fun <T> List<RuleSet>.on(clazz: T): Pair<T, String> = clazz to joinToString(" ") { it.name }
-infix fun RuleSet.and(that: RuleSet): MutableList<RuleSet> = mutableListOf(this, that)
-infix fun String.and(that: String): String = "$this $that"
-
+infix fun String.and(that: String?): String =
+    if (that == null) this else "$this $that"
+fun <T> Boolean.then(value: T): T? =
+    if (this) value else null
 
 fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     child(".${styleSheet.name}-${rule.name}") { block() }
+
+fun StyleSheet.selector(rule: KProperty0<RuleSet>) =
+    ".$name-${rule.name}"
 
 fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     descendants(".${styleSheet.name}-${rule.name}") { block() }
@@ -137,61 +154,61 @@ fun RElementBuilder<*>.install(droppableProvided: DroppableProvided) {
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h1"
+        attrs.variant = TypographyVariant.h1
         block()
     }
 
 inline fun RBuilder.typographyH2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h2"
+        attrs.variant = TypographyVariant.h2
         block()
     }
 
 inline fun RBuilder.typographyH3(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h3"
+        attrs.variant = TypographyVariant.h3
         block()
     }
 
 inline fun RBuilder.typographyH4(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h4"
+        attrs.variant = TypographyVariant.h4
         block()
     }
 
 inline fun RBuilder.typographyH5(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h5"
+        attrs.variant = TypographyVariant.h5
         block()
     }
 
 inline fun RBuilder.typographyH6(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "h6"
+        attrs.variant = TypographyVariant.h6
         block()
     }
 
 inline fun RBuilder.typographySubtitle1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { //    (*classMap, factory = { DIV(mapOf(), it) })
-        attrs.variant = "subtitle1"
+        attrs.variant = TypographyVariant.subtitle1
         block()
     }
 
 inline fun RBuilder.typographySubtitle2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography { // (*classMap, factory = { DIV(mapOf(), it) }) {
-        attrs.variant = "subtitle2"
+        attrs.variant = TypographyVariant.subtitle2
         block()
     }
 
 inline fun RBuilder.typographyBody1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body1"
+        attrs.variant = TypographyVariant.body1
         block()
     }
 
 inline fun RBuilder.typographyBody2(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
-        attrs.variant = "body2"
+        attrs.variant = TypographyVariant.body2
         block()
     }
 
@@ -211,6 +228,9 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
     }
 }
 
+fun buildElements(handler: Render): ReactNode =
+    react.buildElements(RBuilder(), handler)
+
 val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
     baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
@@ -228,3 +248,44 @@ val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
 fun csstype.Color.asColor(): Color = Color(this.unsafeCast<String>())
+
+fun Theme.paperContrast(amount: Double) =
+    palette.text.primary.asColor()
+        .withAlpha(amount)
+        .blend(Color(palette.background.paper))
+
+val Theme.paperLowContrast get() = paperContrast(.25)
+val Theme.paperMediumContrast get() = paperContrast(.5)
+val Theme.paperHighContrast get() = paperContrast(.75)
+
+fun HTMLElement.fitText() {
+    val parentEl = parentElement!!
+    val margin = with(window.getComputedStyle(parentEl)) {
+        marginLeft.replace("px", "").toDouble() +
+                marginRight.replace("px", "").toDouble()
+    }
+    val font = window.getComputedStyle(this).font
+    val buttonWidth = parentEl.clientWidth - margin
+    val canvas = document.createElement("canvas") as HTMLCanvasElement
+    val ctx = canvas.context2d()
+    ctx.font = font
+    val width = innerText.split(Regex("\\s+")).maxOf { word ->
+        ctx.measureText(word).width
+    }
+    style.transform =
+        if (width > buttonWidth) {
+            "scaleX(${buttonWidth / width})"
+        } else {
+            ""
+        }
+}
+
+fun Element.isParentOf(other: Element): Boolean {
+    var current: Element? = other
+    while (current != null) {
+        val parent = current.parentElement
+        if (parent === this) return true
+        current = parent
+    }
+    return false
+}

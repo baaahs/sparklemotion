@@ -2,8 +2,7 @@ package baaahs.show
 
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.control.ButtonGroupControl.Direction.Horizontal
-import baaahs.control.ButtonGroupControl.Direction.Vertical
+import baaahs.control.ButtonGroupControl
 import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
@@ -178,9 +177,92 @@ object SampleData {
 
     val sampleShow: Show get() = createSampleShow().getShow()
 
-    fun createSimpleShow(block: MutableShow.() -> Unit = {}) = MutableShow(buildEmptyShow()).apply(block)
-
     fun createSampleShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
+        val scenesPanel = MutablePanel("Scenes")
+        val backdropsPanel = MutablePanel("Backdrops")
+        val moreControlsPanel = MutablePanel("More Controls")
+        val previewPanel = MutablePanel("Preview")
+        val controlsPanel = MutablePanel("Controls")
+        val transitionPanel = MutablePanel("Transition")
+
+        addPatch(uvShader)
+        addPatch(showDefaultPaint)
+        addPatch(brightnessFilter)
+        addPatch(saturationFilter)
+
+        val color = ColorPickerDataSource("Color", Color.WHITE)
+        val brightness = SliderDataSource(
+            "Brightness", 1f, 0f, 1.25f, null
+        )
+        val saturation = SliderDataSource(
+            "Saturation", 1f, 0f, 1.25f, null
+        )
+        val checkerboardSize = SliderDataSource(
+            "Checkerboard Size", .1f, .001f, 1f, null
+        )
+
+        editLayouts {
+            addPanel(scenesPanel)
+            addPanel(backdropsPanel)
+            addPanel(moreControlsPanel)
+            addPanel(previewPanel)
+            addPanel(controlsPanel)
+            addPanel(transitionPanel)
+
+            editLayout("default") {
+                addTab("Main") {
+                    columns = 18
+                    rows = 8
+
+                    addButtonGroup("Backdrops", 0, 0, 4, 8, this@MutableShow) {
+                        columns = 2
+
+                        addButton("Red Yellow Green", 0, 0, mutableShow = this@MutableShow) {
+                            addPatch(redYellowGreenPatch)
+                        }
+
+                        addButton("Fire", 1, 0, mutableShow = this@MutableShow) {
+                            addPatch(fireBallPatch)
+                        }
+
+                        addButton("Blue Aqua Green", 0, 1, mutableShow = this@MutableShow) {
+                            addPatch(blueAquaGreenPatch)
+                        }
+
+                        addButton("Checkerboard", 1, 1, mutableShow = this@MutableShow) {
+                            addPatch(
+                                wireUp(
+                                    Shaders.checkerboard,
+                                    mapOf("checkerboardSize" to checkerboardSize.editor())
+                                )
+                            )
+                        }
+                    }
+
+                    addControl(color.buildControl(), 4, 6, 3, 2)
+                    addControl(brightness.buildControl(), 7, 6, 1, 2)
+                    addControl(saturation.buildControl(), 8, 6, 1, 2)
+
+                    addButton("Wobble", 4, 0, 2, mutableShow = this@MutableShow) {
+                        addPatch(wireUp(Shaders.ripple))
+                    }
+
+                    if (withHeadlightsMode) {
+                        addButton("Headlights Mode", 4, 2, 2, mutableShow = this@MutableShow) {
+                            addPatch(headlightsMode)
+                        }
+                    }
+
+                    addVisualizer(12, 0, 6, 3)
+                    addVacuity(4, 4, 14, 2)
+                }
+            }
+        }
+    }
+
+    val sampleLegacyShow: Show get() = createSampleLegacyShow().getShow()
+
+    fun createSampleLegacyShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
         val scenesPanel = MutablePanel("Scenes")
         val backdropsPanel = MutablePanel("Backdrops")
         val moreControlsPanel = MutablePanel("More Controls")
@@ -197,16 +279,17 @@ object SampleData {
             addPanel(transitionPanel)
 
             editLayout("default") {
-                editTab("Main") {
-                    title = "Main"
-                    columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
-                    rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
-                    areas.addAll(listOf(
-                        scenesPanel, previewPanel,
-                        backdropsPanel, controlsPanel,
-                        moreControlsPanel, transitionPanel
-                    ))
-                }
+                tabs = mutableListOf(
+                    MutableLegacyTab("Main").apply {
+                        columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
+                        rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
+                        areas.addAll(listOf(
+                            scenesPanel, previewPanel,
+                            backdropsPanel, controlsPanel,
+                            moreControlsPanel, transitionPanel
+                        ))
+                    }
+                )
             }
         }
 
@@ -230,9 +313,10 @@ object SampleData {
         addPatch(saturationFilter)
 
         addButtonGroup(
-            scenesPanel, "Scenes", Horizontal) {
+            scenesPanel, "Scenes", ButtonGroupControl.Direction.Horizontal
+        ) {
             addButton("Pleistocene") {
-                addButtonGroup(backdropsPanel, "Backdrops", Vertical) {
+                addButtonGroup(backdropsPanel, "Backdrops", ButtonGroupControl.Direction.Vertical) {
                     addButton("Red Yellow Green") {
                         addPatch(redYellowGreenPatch)
                     }
@@ -255,7 +339,7 @@ object SampleData {
             }
 
             addButton("Holocene") {
-                addButtonGroup(backdropsPanel, "Backdrops", Vertical) {
+                addButtonGroup(backdropsPanel, "Backdrops", ButtonGroupControl.Direction.Vertical) {
                     addButton("Blue Aqua Green") {
                         addPatch(blueAquaGreenPatch)
                     }

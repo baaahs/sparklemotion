@@ -72,7 +72,7 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
             styledDiv {
                 +"Pixel count:"
                 span {
-                    +pinky.fixtureManager.pixelCount.toString()
+                    +pinky.fixtureManager.componentCount.toString()
                 }
             }
         }
@@ -81,12 +81,6 @@ class PinkyPanel(props: PinkyPanelProps) : BComponent<PinkyPanelProps, PinkyPane
 
 object Styles : StyleSheet("sim-pinky", isStatic = true) {
     val glslCodeSheet by css {
-        position = Position.fixed
-        left = 5.em
-        bottom = 5.em
-        zIndex = 100
-        maxHeight = 50.vh
-        maxWidth = 50.em
         display = Display.flex
         flexDirection = FlexDirection.column
 
@@ -111,10 +105,11 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
         flexDirection = FlexDirection.column
     }
 
-    val glslCodeDiv by css {
-        maxHeight = 50.vh
-        maxWidth = 50.em
+    val contentDiv by css {
         overflow = Overflow.scroll
+    }
+
+    val box by css {
     }
 }
 

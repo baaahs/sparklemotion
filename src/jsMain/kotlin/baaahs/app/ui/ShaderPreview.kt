@@ -31,7 +31,7 @@ import styled.inlineStyles
 
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
-    val sharedGlContext = useContext(appGlContext).sharedGlContext
+    val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain ?: appContext.toolchain
 
     val canvasParent = ref<HTMLDivElement>()
@@ -44,7 +44,10 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         toolchain.openShader(props.shader!!).shaderType
     }
     val bootstrapper = shaderType.shaderPreviewBootstrapper
-    val helper = memo(bootstrapper, sharedGlContext) { bootstrapper.createHelper(sharedGlContext) }
+    val helper = memo(bootstrapper, sharedGlContext) {
+//        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
+        bootstrapper.createHelper(sharedGlContext)
+    }
     val previewContainer = helper.container
     val sceneManager = appContext.sceneManager
     observe(sceneManager)
@@ -74,6 +77,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     onChange("shader type", helper, shaderType, model) {
         model?.let { model ->
             val preview = helper.bootstrap(model, preRenderHook)
+//            console.log("Rememoize preview for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
+
             gl = preview.renderEngine.gl
 
             val intersectionObserver = IntersectionObserver(callback = { entries ->
@@ -155,10 +160,8 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     useResizeListener(canvasParent) {
         // Tell Kotlin controller the window was resized
         canvasParent.current?.let { parent ->
-            shaderPreview?.resize(
-                parent.clientWidth,
-                parent.clientHeight
-            )
+            helper.resize(parent.clientWidth.px, parent.clientHeight.px)
+            shaderPreview?.resize(parent.clientWidth, parent.clientHeight)
         }
     }
 
@@ -177,7 +180,7 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
             ShaderBuilder.State.Compiling -> {
-                div { +"Building..." }
+                div { +"Building…" }
             }
 
             ShaderBuilder.State.Success -> {
@@ -214,6 +217,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
         position = Position.relative
         width = 100.pct
         height = 100.pct
+        userSelect = UserSelect.none
 
         child("canvas") {
             position = Position.absolute
@@ -273,6 +277,7 @@ external interface ShaderPreviewProps : Props {
     var adjustGadgets: GadgetAdjuster.Mode?
     var toolchain: Toolchain?
     var dumpShader: Boolean?
+    var noSharedGlContext: Boolean?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

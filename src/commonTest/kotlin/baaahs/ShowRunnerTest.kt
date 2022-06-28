@@ -59,7 +59,7 @@ class ShowRunnerTest {
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }
-        val renderManager = RenderManager { fakeGlslContext }
+        val renderManager = RenderManager(fakeGlslContext)
         val plugins = testPlugins()
         fixtureManager = FixtureManagerImpl(renderManager, plugins)
         stageManager = StageManager(
@@ -67,7 +67,7 @@ class ShowRunnerTest {
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor()
         )
-        stageManager.switchTo(SampleData.sampleShow)
+        stageManager.switchTo(SampleData.sampleLegacyShow)
         stageManager.switchToScene(testSceneData())
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()
@@ -219,7 +219,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame(true) // Create show and request gadgets.
         expect(renderTargets.size).toBe(1)
 
-        val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
+        val originalSlider = stageManager.useGadget<Slider>("brightness")
         expect(originalSlider.position).toBe(1.0f)
         originalSlider.position = 0.5f
 
@@ -227,7 +227,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame(true) // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
-        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightness")
         expect(recreatedSlider.position).toBe(0.5f)
     }
 
@@ -241,7 +241,7 @@ class ShowRunnerTest {
 
         expect(serverNetwork.packetsToSend.size).toBe(0)
 
-        val originalSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
+        val originalSlider = stageManager.useGadget<Slider>("brightness")
         expect(originalSlider.position).toBe(1.0f)
         originalSlider.position = 0.5f
 
@@ -249,7 +249,7 @@ class ShowRunnerTest {
         stageManager.renderAndSendNextFrame(true) // Recreate show and restore gadget state.
         expect(renderTargets.size).toBe(2)
 
-        val recreatedSlider = stageManager.useGadget<Slider>("brightnessSliderControl")
+        val recreatedSlider = stageManager.useGadget<Slider>("brightness")
         expect(recreatedSlider.position).toBe(0.5f)
     }
 

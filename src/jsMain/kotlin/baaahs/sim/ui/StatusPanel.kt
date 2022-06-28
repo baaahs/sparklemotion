@@ -1,6 +1,8 @@
 package baaahs.sim.ui
 
 import baaahs.SheepSimulator
+import baaahs.ui.asTextNode
+import baaahs.ui.diagnostics.patchDiagnostics
 import baaahs.ui.unaryPlus
 import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
@@ -29,7 +31,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                         attrs.onChange = handleIsConsoleOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label = buildElement { +"Open" }
+                attrs.label = "Open".asTextNode()
             }
 
             FormControlLabel {
@@ -39,12 +41,14 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                         attrs.onChange = handleIsGlslPaletteOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label = buildElement { +"Show GLSL" }
+                attrs.label = "Show GLSL".asTextNode()
             }
         }
 
         if (isConsoleOpen) console { attrs.simulator = simulator }
-        if (isGlslPaletteOpen) generatedGlslPalette { attrs.pinky = simulator.pinky }
+        if (isGlslPaletteOpen) patchDiagnostics {
+            attrs.renderPlanMonitor = simulator.pinky.fixtureManager.renderPlanMonitor
+        }
     }
 }
 

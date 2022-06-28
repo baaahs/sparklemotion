@@ -5,7 +5,8 @@ import mui.icons.material.*
 
 actual fun getCommonIcons() = object : PlatformIcons {
     override val Add get() = jsIcon(AddCircleOutline)
-    override val Download get() = jsIcon(GetApp)
+    override val Download get() = jsIcon(mui.icons.material.Download)
+    override val Upload get() = jsIcon(mui.icons.material.Upload)
     override val Reload get() = jsIcon(Cached)
 
     override val Fixture get() = jsIcon(Airplay)

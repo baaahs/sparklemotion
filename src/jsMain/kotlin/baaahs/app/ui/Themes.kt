@@ -14,6 +14,28 @@ object Themes {
     val Dark = createTheme(
         jso {
             palette = jso { mode = PaletteMode.dark }
+            components = jso {
+                MuiListSubheader = jso {
+                    styleOverrides = jso {
+                        root = jso {
+                            backgroundColor = "inherit"
+                            lineHeight = "inherit"
+                        }
+                    }
+                }
+                MuiFormControlLabel = jso {
+                    styleOverrides = jso {
+                        root = jso {
+                            userSelect = "none"
+                        }
+                    }
+                }
+            }
+            typography = jso {
+                button = jso {
+                    textTransform = "none"
+                }
+            }
         }
     )
 }

@@ -1,6 +1,8 @@
 package baaahs.app.ui.gadgets.slider
 
-import baaahs.ui.asColor
+import baaahs.ui.paperHighContrast
+import baaahs.ui.paperLowContrast
+import baaahs.ui.paperMediumContrast
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
@@ -11,22 +13,28 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val slider by css {
         position = Position.relative
-        height = 200.px
+        height = 100.pct
         marginLeft = 45.pct
+        marginTop = 15.px
+        marginBottom = 15.px
         put("touchAction", "none")
     }
 
     val wrapper by css {
+        position = Position.absolute
+        width = 100.pct
+        height = 100.pct
         display = Display.flex
-        width = 60.px
         flexDirection = FlexDirection.column
         alignItems = Align.flexStart
         fontSize = 14.px
         marginBottom = 8.px
-        put("textShadow", "0px 1px 1px black")
+        put("textShadow", "0px 1px 1px ${theme.paperHighContrast}")
+        border = "2px groove ${theme.paperLowContrast}"
     }
 
     val label by css {
+        position = Position.absolute
         width = 100.pct
         flex(0.0, 0.0, FlexBasis.auto)
         textAlign = TextAlign.center
@@ -86,7 +94,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val altHandleWrapper by css {
         position = Position.absolute
-        zIndex = 2
+        zIndex = 10
 
         descendants("path") {
             put("fill", "darkorange")
@@ -95,18 +103,12 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val altHandleLeft by css {
         position = Position.absolute
-        width = 15.px
-        height = 15.px
+        width = 30.px
+        height = 20.px
         transform.translateY((-50).pct)
+        paddingLeft = 10.px
+        top = 5.px
         right = (-1).px
-    }
-
-    val altHandleRight by css {
-        position = Position.absolute
-        width = 15.px
-        height = 15.px
-        transform.translateY((-50).pct)
-        left = 4.px
     }
 
     val railBackground by css {
@@ -125,9 +127,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         transform.translateX((-50).pct)
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
-        backgroundColor = theme.palette.text.primary.asColor()
-            .withAlpha(.25)
-            .blend(Color(theme.palette.background.paper))
+        backgroundColor = theme.paperLowContrast
         boxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
         boxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
     }
@@ -138,16 +138,16 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         marginLeft = 10.px
         height = 1.px
         width = 6.px
-        backgroundColor = rgb(200, 200, 200)
+        backgroundColor = theme.paperMediumContrast
     }
 
     val tickText by css {
         position = Position.absolute
-        right = (-30).px
+//        right = (-30).px
         marginTop = (-5).px
         marginLeft = 20.px
         fontSize = 10.px
-        color = Color("#aeaeae")
+        color = theme.paperMediumContrast
         transform.translateY(50.pct)
         pointerEvents = PointerEvents.none
         userSelect = UserSelect.none

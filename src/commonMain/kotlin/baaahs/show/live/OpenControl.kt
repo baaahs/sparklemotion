@@ -2,12 +2,13 @@ package baaahs.show.live
 
 import baaahs.Gadget
 import baaahs.app.ui.editor.ControlEditIntent
-import baaahs.app.ui.editor.EditIntent
+import baaahs.app.ui.editor.Editor
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.mutable.MutableControl
+import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.View
 import kotlinx.serialization.json.JsonElement
@@ -21,12 +22,13 @@ interface OpenControl {
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
     fun controlledDataSources(): Set<DataSource> = emptySet()
-    fun addTo(activePatchSetBuilder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
+    fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {}
+    fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
     fun resetToDefault() {}
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
-    fun getEditIntent(): EditIntent? = ControlEditIntent(id)
+    fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
 }
 
 abstract class DataSourceOpenControl : OpenControl {
@@ -52,11 +54,22 @@ interface ControlViews {
     fun forXyPad(openXyPadControl: OpenXyPadControl, controlProps: ControlProps): View
 }
 
-data class ControlProps(
+class ControlProps(
     val onShowStateChange: () -> Unit,
-    val editMode: Boolean,
-    val controlDisplay: ControlDisplay?
-)
+    val controlDisplay: ControlDisplay?,
+    val layout: OpenGridLayout? = null,
+    val layoutEditor: Editor<MutableIGridLayout>? = null
+) {
+    val relevantUnplacedControls get() =
+        controlDisplay?.relevantUnplacedControls
+            ?: emptyList()
+
+    fun withLayout(
+        layout: OpenGridLayout?,
+        editor: Editor<MutableIGridLayout>?
+    ): ControlProps =
+        ControlProps(onShowStateChange, controlDisplay, layout, editor)
+}
 
 val controlViews by lazy { getControlViews() }
 expect fun getControlViews(): ControlViews

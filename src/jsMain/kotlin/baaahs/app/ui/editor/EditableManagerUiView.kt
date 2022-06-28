@@ -7,8 +7,9 @@ import baaahs.ui.*
 import external.ErrorBoundary
 import kotlinx.html.js.onSubmitFunction
 import kotlinx.js.jso
-import materialui.icon
 import mui.base.Portal
+import mui.icons.material.Redo
+import mui.icons.material.Undo
 import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
@@ -63,26 +64,25 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                 attrs.onClose = handleDrawerClose
 
                 DialogTitle {
-                    attrs.classes = jso { this.root = -DialogStyles.dialogTitle }
-                    typographyH6 { +"Editing ${props.editableManager.uiTitle}" }
+                    +"Editing ${props.editableManager.uiTitle}"
 
                     div(+DialogStyles.dialogTitleButtons) {
-                        IconButton {
+                        Button {
                             attrs.classes = jso { this.root = -Styles.buttons }
-                            icon(mui.icons.material.Undo)
+                            attrs.startIcon = +Undo
                             attrs.disabled = !props.editableManager.canUndo()
                             attrs.onClick = handleUndo
 
-                            typographyH6 { +"Undo" }
+                            +"Undo"
                         }
 
-                        IconButton {
+                        Button {
                             attrs.classes = jso { this.root = -Styles.buttons }
-                            icon(mui.icons.material.Redo)
+                            attrs.startIcon = +Redo
                             attrs.disabled = !props.editableManager.canRedo()
                             attrs.onClick = handleRedo
 
-                            typographyH6 { +"Redo" }
+                            +"Redo"
                         }
                     }
                 }
@@ -94,7 +94,9 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             attrs.FallbackComponent = ErrorDisplay
 
                             val dialogPanel = editorPanels[0]
-                            div(+styles.singlePanel) {
+                            val classes = +styles.singlePanel and
+                                    if (dialogPanel.noMargin) styles.singlePanelNoMargin else null
+                            div(classes) {
                                 with (dialogPanel.getView()) { render() }
                             }
                         }

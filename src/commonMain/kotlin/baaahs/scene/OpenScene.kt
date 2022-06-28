@@ -1,5 +1,6 @@
 package baaahs.scene
 
+import baaahs.client.document.OpenDocument
 import baaahs.controller.Controller
 import baaahs.controller.ControllerId
 import baaahs.fixtures.Fixture
@@ -12,7 +13,10 @@ import baaahs.util.Logger
 class OpenScene(
     val model: Model,
     val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
-) {
+) : OpenDocument {
+    override val title: String
+        get() = model.name
+
     val allProblems: List<Problem>
         get() = buildList {
             model.visit { entity -> addAll(entity.problems) }

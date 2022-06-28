@@ -25,7 +25,10 @@ class BrowserSandboxFs(
     }
 
     override suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean) {
-        saveFile(file, content.toString(), allowOverwrite)
+        val byteStr = buildString {
+            content.forEach { append((it.toInt() and 0xff).toChar()) }
+        }
+        saveFile(file, byteStr, allowOverwrite)
     }
 
     override suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean) {
@@ -54,13 +57,29 @@ class BrowserSandboxFs(
         updateFileList(getFileList() - file.fullPath)
     }
 
-    private fun keyName(file: Fs.File): String = "sm.fs:${basePath}${file.fullPath}"
+    private fun keyName(file: Fs.File): String = "$filePrefix$basePath${file.fullPath}"
 
-    private fun getFileList() = (storage.getItem("sm.fs:keys") ?: "")
-        .split("\n")
-        .filter { it.isNotEmpty() }
+    private fun getFileList() =
+        storage.getItem(keysKey)
+            ?.split("\n")
+            ?.filter { it.isNotEmpty() }
+            ?: rebuildFileList()
+
+    private fun rebuildFileList(): List<String> =
+        (0 until storage.length).mapNotNull { i ->
+            storage.key(i)?.let {
+                if (it != keysKey && it.startsWith(filePrefix)) {
+                    it.substring(filePrefix.length)
+                } else null
+            }
+        }
 
     private fun updateFileList(keys: List<String>) {
-        storage.setItem("sm.fs:keys", keys.joinToString("\n"))
+        storage.setItem(keysKey, keys.joinToString("\n"))
+    }
+
+    private companion object {
+        const val filePrefix = "sm.fs:"
+        const val keysKey = "sm.fs:keys"
     }
 }

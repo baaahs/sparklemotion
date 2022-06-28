@@ -1,12 +1,13 @@
 package baaahs.app.ui
 
-import baaahs.show.live.ControlDisplay
-import baaahs.show.live.ControlProps
+import baaahs.app.ui.editor.Editor
+import baaahs.getBang
 import baaahs.show.live.OpenShow
-import baaahs.ui.nuffin
+import baaahs.show.mutable.MutableLayout
+import baaahs.show.mutable.MutableShow
+import baaahs.ui.Keypress
+import baaahs.ui.KeypressResult
 import baaahs.ui.xComponent
-import external.dragDropContext
-import mui.base.Portal
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -15,56 +16,57 @@ import react.useContext
 val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     val appContext = useContext(appContext)
     val show = props.show
+    val editMode = appContext.showManager.editMode
+    observe(editMode)
 
-    // TODO: Pick layout based on device characteristics.
-    val currentLayoutName = "default"
-    val currentLayout = show.layouts.formats[currentLayoutName] ?: error("no such layout $currentLayoutName")
-
-    var controlDisplay by state<ControlDisplay> { nuffin() }
-    logger.info { "switch state is ${props.show.getEnabledSwitchState()}" }
-    onChange("show/state", props.show, props.show.getEnabledSwitchState(), props.editMode, appContext.dragNDrop) {
-        controlDisplay = ControlDisplay(
-            props.show, appContext.showManager, appContext.dragNDrop
-        )
-
-        withCleanup {
-            controlDisplay.release()
+    val keyboard = appContext.keyboard
+    onMount(keyboard, editMode, props.onLayoutEditorDialogToggle) {
+        keyboard.handle { keypress, _ ->
+            var result: KeypressResult? = null
+            when (keypress) {
+                Keypress("d") -> editMode.toggle()
+                Keypress("l") -> props.onLayoutEditorDialogToggle
+                else -> result = KeypressResult.NotHandled
+            }
+            result ?: KeypressResult.Handled
         }
     }
 
-    val genericControlProps = ControlProps(
-        props.onShowStateChange,
-        props.editMode != false,
-        controlDisplay
-    )
+    // TODO: Pick layout based on device characteristics.
+    val currentLayoutName = show.openLayouts.currentFormatId
+        ?: error("No current layout.")
+    val currentLayout = show.openLayouts.formats[currentLayoutName]
+        ?: error("No such layout $currentLayoutName.")
+    val layoutEditor = memo(currentLayoutName) {
+        object : Editor<MutableLayout> {
+            override val title: String = "Layout editor"
 
-    dragDropContext({
-        onDragEnd = appContext.dragNDrop::onDragEnd
-    }) {
-        showLayout {
-            attrs.show = show
-            attrs.onShowStateChange = props.onShowStateChange
-            attrs.layout = currentLayout
-            attrs.controlDisplay = controlDisplay
-            attrs.controlProps = genericControlProps
-            attrs.editMode = props.editMode != false
-        }
+            override fun edit(mutableShow: MutableShow, block: MutableLayout.() -> Unit) {
+                mutableShow.editLayouts {
+                    block(formats.getBang(currentLayoutName, "layout"))
+                }
+            }
 
-        Portal {
-            controlsPalette {
-                attrs.controlDisplay = controlDisplay
-                attrs.controlProps = genericControlProps
-                attrs.show = props.show
-                attrs.editMode = props.editMode != false
+            override fun delete(mutableShow: MutableShow) {
+                mutableShow.editLayouts {
+                    formats.remove(currentLayoutName)
+                }
             }
         }
+    }
+
+    showLayout {
+        attrs.show = show
+        attrs.layout = currentLayout
+        attrs.layoutEditor = layoutEditor
+        attrs.onShowStateChange = props.onShowStateChange
     }
 }
 
 external interface ShowUiProps : Props {
     var show: OpenShow
-    var editMode: Boolean?
     var onShowStateChange: () -> Unit
+    var onLayoutEditorDialogToggle: () -> Unit
 }
 
 fun RBuilder.showUi(handler: RHandler<ShowUiProps>) =

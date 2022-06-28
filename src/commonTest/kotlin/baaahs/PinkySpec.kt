@@ -17,8 +17,6 @@ import baaahs.model.Model
 import baaahs.net.FragmentingUdpSocket
 import baaahs.net.Network
 import baaahs.net.TestNetwork
-import baaahs.plugin.beatlink.BeatData
-import baaahs.plugin.beatlink.BeatSource
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
@@ -34,7 +32,6 @@ import baaahs.sm.brain.proto.Type
 import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
-import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -59,7 +56,7 @@ object PinkySpec : Spek({
         val plugins by value { testPlugins() }
         val storage by value { Storage(fakeFs, plugins) }
         val link by value { network.link("pinky") }
-        val renderManager by value { fakeGlslContext.runInContext { RenderManager { fakeGlslContext } } }
+        val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val toolchain by value { RootToolchain(plugins) }
         val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }
@@ -117,7 +114,7 @@ object PinkySpec : Spek({
         }
 
         beforeEachTest {
-            pinky.switchTo(SampleData.sampleShow)
+            pinky.switchTo(SampleData.sampleLegacyShow)
 
             doRunBlocking {
                 panelMappings.forEach { (brainId, surface) ->
@@ -227,8 +224,4 @@ object PinkySpec : Spek({
 
 private fun Pinky.updateFixtures() {
 //    fixtureManager.maybeUpdateRenderPlans()
-}
-
-class StubBeatSource : Observable(), BeatSource {
-    override fun getBeatData(): BeatData = BeatData(0.0, 0, confidence = 0f)
 }

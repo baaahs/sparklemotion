@@ -22,6 +22,11 @@ fun <P : Props> xComponent(
     val logger = Logger(name)
     val component = react.fc(name) { props: P ->
         val xBuilder = XBuilder(logger)
+//        if (xBuilder.firstTime) {
+//            console.log("first render", name, props)
+//        } else {
+//            console.log("re-render", name, props)
+//        }
         xBuilder.func(props)
         this.childList.addAll(xBuilder.childList)
         xBuilder.renderFinished()
@@ -47,7 +52,7 @@ private class CounterIncr {
 }
 
 class XBuilder(val logger: Logger) : react.RBuilderImpl() {
-    private var firstTime = false
+    internal var firstTime = false
     private var dataIndex = 0
     private var changeDetectorIndex = 0
 
@@ -103,11 +108,12 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
-    fun observe(item: IObservable) {
+    fun <T: IObservable> observe(item: T): T {
         onChange("observe", item) {
             val observer = item.addObserver { forceRender() }
             withCleanup { observer.remove() }
         }
+        return item
     }
 
     fun onChange(name: String, vararg watch: Any?, callback: ChangeDetector.() -> Unit) {
@@ -183,7 +189,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun switchEventHandler(vararg watch: Any?, block: (event: ChangeEvent<*>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: ChangeEvent<*>, checked: Boolean) -> Unit> =
         handler(*watch, block = block)
 
-    fun syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, checked: Boolean) -> Unit> =
+    fun <T> syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, value: T) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, value: T) -> Unit> =
         handler(*watch, block = block)
 
     fun <T> newEventHandler(vararg watch: Any?, block: EventHandler<T>): ReadOnlyProperty<Any?, EventHandler<T>> =

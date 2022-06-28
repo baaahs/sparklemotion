@@ -1,5 +1,9 @@
 package baaahs.dmx
 
+import baaahs.util.Clock
+import baaahs.util.Time
+import kotlinx.serialization.Serializable
+
 interface Dmx {
     interface Driver {
         fun findDmxDevices(): List<Device>
@@ -14,7 +18,7 @@ interface Dmx {
     interface Device {
         val id: String
         val name: String
-        fun asUniverse(): Universe
+        fun asUniverse(universeListener: UniverseListener?): Universe
     }
 
     abstract class Universe {
@@ -56,7 +60,27 @@ interface Dmx {
         val offset: Int
     }
 
+    interface UniverseListener {
+        fun onSend(name: String, channels: ByteArray)
+    }
+
     companion object {
         const val channelsPerUniverse = 512
     }
+}
+
+class DmxUniverseListener(
+    val clock: Clock
+) : Dmx.UniverseListener {
+    val lastFrames = mutableMapOf<String, LastFrame>()
+
+    override fun onSend(name: String, channels: ByteArray) {
+        lastFrames[name] = LastFrame(clock.now(), channels.copyOf())
+    }
+
+    @Serializable
+    class LastFrame(
+        val time: Time,
+        val channels: ByteArray
+    )
 }

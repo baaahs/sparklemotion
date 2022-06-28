@@ -1,6 +1,6 @@
 package baaahs.mapper
 
-import baaahs.app.ui.AllStyles
+import baaahs.app.ui.appContext
 import baaahs.client.SceneEditorClient
 import baaahs.ui.xComponent
 import kotlinx.js.jso
@@ -9,15 +9,18 @@ import mui.material.styles.useTheme
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.useContext
 
 private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppWrapper") { props ->
+    val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
 
     val myAppContext = memo(theme) {
         jso<MapperAppContext> {
             this.sceneEditorClient = props.sceneEditorClient
             this.plugins = plugins
-            this.allStyles = AllStyles(theme)
+            this.allStyles = appContext.allStyles
+            this.keyboard = appContext.keyboard
             this.clock = clock
         }
     }
@@ -26,14 +29,14 @@ private val MapperAppWrapperView = xComponent<MapperAppWrapperProps>("MapperAppW
         attrs.value = myAppContext
 
         mapperApp {
-            attrs.mapperUi = props.mapperUi
+            attrs.mapper = props.mapper
         }
     }
 }
 
 external interface MapperAppWrapperProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapperUi: JsMapperUi
+    var mapper: JsMapper
 }
 
 fun RBuilder.mapperAppWrapper(handler: RHandler<MapperAppWrapperProps>) =

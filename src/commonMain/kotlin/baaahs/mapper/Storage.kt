@@ -22,6 +22,7 @@ import kotlinx.serialization.json.jsonObject
 
 class Storage(val fs: Fs, val plugins: Plugins) {
     val fsSerializer = FsServerSideSerializer()
+    val mappingSessionsDir = fs.resolve("mapping-sessions")
 
     private val configFile = fs.resolve("config.json")
 
@@ -37,8 +38,17 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun listSessions(): List<Fs.File> {
-        val mappingSessionsDir = fs.resolve("mapping-sessions")
-        return fs.listFiles(mappingSessionsDir).filter { it.name.endsWith(".json") }
+        return buildList {
+            mappingSessionsDir.recurse {
+                if (it.name.endsWith(".json")) add(it)
+            }
+        }
+    }
+
+    private suspend fun Fs.File.recurse(block: (Fs.File) -> Unit) {
+        fs.listFiles(this).forEach {
+            if (fs.isDirectory(it)) it.recurse(block) else block(it)
+        }
     }
 
     suspend fun saveSession(mappingSession: MappingSession): Fs.File {
@@ -54,6 +64,15 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun saveImage(name: String, imageData: ByteArray) {
         val file = fs.resolve("mapping-sessions", "images", name)
         fs.saveFile(file, imageData)
+    }
+
+    suspend fun loadImage(name: String): ByteArray? {
+        val file = fs.resolve("mapping-sessions", "images", name)
+        return fs.loadFile(file)?.let { contents ->
+            ByteArray(contents.length) { i ->
+                contents[i].code.toByte()
+            }
+        }
     }
 
     suspend fun loadMappingData(scene: OpenScene): SessionMappingResults {

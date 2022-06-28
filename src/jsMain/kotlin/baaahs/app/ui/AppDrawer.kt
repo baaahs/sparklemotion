@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.document.documentMenu
+import baaahs.client.document.DocumentManager
 import baaahs.ui.*
 import kotlinx.js.jso
 import materialui.icon
@@ -21,8 +22,9 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         props.onAppModeChange(AppMode.valueOf(value))
     }
 
-    val handleEditModeChange by switchEventHandler(props.onEditModeChange) { _, _ ->
-        props.onEditModeChange()
+    val editMode = observe(props.documentManager.editMode)
+    val handleEditModeChange by switchEventHandler(editMode) { _, _ ->
+        editMode.toggle()
     }
 
     val handleClose by handler(props.onClose) { _: dynamic, _: String ->
@@ -79,10 +81,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
 
         List {
             documentMenu {
-                attrs.documentManager = when (props.appMode) {
-                    AppMode.Show -> appContext.showManager
-                    AppMode.Scene -> appContext.sceneManager
-                }
+                attrs.documentManager = props.documentManager
             }
 
             Divider {}
@@ -92,11 +91,11 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                 FormControlLabel {
                     attrs.control = buildElement {
                         Switch {
-                            attrs.checked = props.editMode
+                            attrs.checked = editMode.isOn
                             attrs.onChange = handleEditModeChange
                         }
                     }
-                    attrs.label = buildElement { typographyH6 { +"Design Mode" } }
+                    attrs.label = "Design Mode".asTextNode()
                 }
             }
 
@@ -124,7 +123,7 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                         }
                     }
                     attrs.onChange = handleDarkModeChange
-                    attrs.label = buildElement { typographyH6 { +"Dark Mode" } }
+                    attrs.label = "Dark Mode".asTextNode()
                 }
             }
 
@@ -147,8 +146,7 @@ external interface AppDrawerProps : Props {
     var appMode: AppMode
     var onAppModeChange: (AppMode) -> Unit
 
-    var editMode: Boolean?
-    var onEditModeChange: () -> Unit
+    var documentManager: DocumentManager<*, *>.Facade
 
     var onLayoutEditorDialogToggle: () -> Unit
 

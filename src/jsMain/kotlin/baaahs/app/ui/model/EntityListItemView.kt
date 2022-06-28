@@ -27,16 +27,16 @@ private val EntityListItemView: ComponentType<EntityListItemProps> = xComponent(
         attrs.onMouseDown = handleClick
 
         ListItemText { +mutableEntity.title }
+    }
 
-        if (mutableEntity is MutableEntityGroup) {
-            List {
-                attrs.classes = jso { this.root = -styles.entityList }
-                mutableEntity.children.forEach { child ->
-                    entityListItem {
-                        attrs.mutableEntity = child
-                        attrs.selectedMutableEntity = props.selectedMutableEntity
-                        attrs.onSelect = props.onSelect
-                    }
+    if (mutableEntity is MutableEntityGroup) {
+        List {
+            attrs.classes = jso { this.root = -styles.entityList }
+            mutableEntity.children.forEach { child ->
+                entityListItem {
+                    attrs.mutableEntity = child
+                    attrs.selectedMutableEntity = props.selectedMutableEntity
+                    attrs.onSelect = props.onSelect
                 }
             }
         }

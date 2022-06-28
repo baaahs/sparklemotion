@@ -12,8 +12,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
-import baaahs.mapper.JsMapperUi
-import baaahs.mapper.Mapper
+import baaahs.mapper.JsMapper
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -21,10 +20,17 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
+import baaahs.show.ShowMonitor
+import baaahs.show.ShowProvider
 import baaahs.sim.BrowserSandboxFs
+import baaahs.sim.FakeDmxUniverse
+import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.PixelArranger
+import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import org.koin.core.module.Module
@@ -59,24 +65,24 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<PubSub.Endpoint> { get<PubSub.Client>() }
             scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             scoped<Plugins> { get<ClientPlugins>() }
-            scoped { ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
+            scoped {
+                ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { ClientStageManager(get(), get(), get()) }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
-            scoped { ShowManager(get(), get(), get(), get(), get(), get()) }
-            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
+            scoped { ShowMonitor() }
+            scoped { ShowManager(get(), get(), get(), get(), get(), get(), get()) }
+            scoped<ShowProvider> { get<ShowMonitor>() }
             scoped { SceneMonitor() }
+            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapperUi(get(), get()).also {
-                    // This has side-effects on mapperUi. Ugly.
-                    Mapper(get(), get(), it, get(), get(named(Qualifier.PinkyAddress)), get())
-                }
+                JsMapper(get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
         }
     }
@@ -99,7 +105,16 @@ class JsMonitorWebClientModule : KModule {
             scoped<IFileDialog> { get<FileDialog>() }
             scoped { Notifier(get()) }
             scoped { Visualizer(get()) }
-            scoped { RemoteVisualizerClient(get(), pinkyAddress(), get(), get(), get(), get()) }
+            scoped {
+                val simulationEnv = SimulationEnv {
+                    component(get<Clock>())
+                    component(FakeDmxUniverse())
+                    component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
+                    component(get<Visualizer>())
+                }
+                val entityAdapter = EntityAdapter(simulationEnv)
+                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), entityAdapter, get())
+            }
             scoped { MonitorUi(get(), get()) }
         }
     }

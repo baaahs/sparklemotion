@@ -115,6 +115,7 @@ class ShaderHelpStyles(
 
     val code by css {
         whiteSpace = WhiteSpace.preWrap
+        userSelect = UserSelect.all
 
         // Line numbers:
         before {
@@ -131,6 +132,13 @@ class ShaderHelpStyles(
                 paddingLeft = LinearDimension.auto
                 marginLeft = LinearDimension.auto
                 textAlign = TextAlign.right
+            }
+
+            nthChild("even") {
+                background = theme.palette.info.main.asColor()
+                    .withAlpha(.1)
+                    .blend(Color(theme.palette.background.paper))
+                    .value
             }
         }
     }

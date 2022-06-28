@@ -4,9 +4,9 @@ import baaahs.model.*
 import baaahs.sim.SimulationEnv
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
-actual class EntityAdapter(
+actual class EntityAdapter actual constructor(
     val simulationEnv: SimulationEnv,
-    private val isEditing: Boolean = false
+    private val isEditing: Boolean
 ) : Adapter<Model.Entity> {
     override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
         return (entity.createVisualizer(this) as ItemVisualizer<Model.Entity>)

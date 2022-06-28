@@ -1,22 +1,28 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.controls.problemBadge
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
+import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
 import csstype.ClassName
+import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
+import kotlinx.css.pointerEvents
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import kotlinx.html.js.onClickFunction
 import kotlinx.js.jso
 import materialui.icon
+import mui.icons.material.*
+import mui.icons.material.Menu
 import mui.material.*
+import mui.material.Link
+import mui.material.Tab
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.*
+import react.dom.div
+import react.dom.h4
 import react.dom.html.ReactHTML
 import styled.inlineStyles
 
@@ -30,7 +36,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
     observe(sceneManager)
     val scene = sceneManager.scene
 
-    val documentManager = props.appMode.getDocumentManager(appContext)
+    val documentManager = props.documentManager
 
     val handleShowEditButtonClick = callback {
         appContext.openEditor(ShowEditIntent())
@@ -55,13 +61,21 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
         }
     }
 
+    val handleAppModeTabClick by syntheticEventHandler<AppMode>(props.onAppModeChange) { _, value ->
+        props.onAppModeChange(value)
+    }
+
     val show = showManager.openShow
-    val showProblemsSeverity = showManager.showProblems.map { it.severity }.maxOrNull()
+    val showProblemsSeverity = showManager.showProblems.maxOfOrNull { it.severity }
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
-    val editMode = props.editMode == true || props.appMode == AppMode.Scene
+
+    val editMode = observe(props.documentManager.editMode)
+    val handleEditModeChange by handler {
+        props.documentManager.editMode.toggle()
+    }
 
     AppBar {
         attrs.classes = jso { this.root = -themeStyles.appToolbar }
@@ -73,116 +87,126 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                 attrs.color = IconButtonColor.inherit
                 attrs.edge = IconButtonEdge.start
                 attrs.onClick = props.onMenuButtonClick.withMouseEvent()
-                icon(mui.icons.material.Menu)
+                icon(Menu)
             }
 
-            typographyH6 {
-                attrs.classes = jso { this.root = -themeStyles.title }
-                div(+themeStyles.titleHeader) { +"Show:" }
+            Tabs {
+                attrs.classes = jso { this.root = -themeStyles.appToolbarTabs }
+                attrs.value = props.appMode
+                attrs.onChange = handleAppModeTabClick
 
-                if (show != null) {
-                    b {
-                        +show.title
-                        showManager.file?.let { attrs["title"] = it.toString() }
-                    }
-
-                    if (showManager.isUnsaved) i { +" (Unsaved)" }
-                    problemBadge(show, themeStyles.problemBadge)
-
-                    if (props.appMode == AppMode.Show && editMode) {
-                        span(+themeStyles.editButton) {
-                            icon(mui.icons.material.Edit)
-                            attrs.onClickFunction = handleShowEditButtonClick.withEvent()
+                val tabClasses = jso<TabClasses> {
+                    this.root = -themeStyles.appToolbarTab
+                    this.selected = -themeStyles.appToolbarTabSelected
+                }
+                Tab {
+                    attrs.classes = tabClasses
+                    attrs.value = AppMode.Show
+                    attrs.label = buildElement {
+                        appToolbarTab {
+                            attrs.currentAppMode = props.appMode
+                            attrs.value = AppMode.Show
+                            attrs.document = show
+                            attrs.documentManager = showManager
+                            attrs.onEditButtonClick = handleShowEditButtonClick
                         }
                     }
-                } else {
-                    i { +"None" }
+                }
+                Tab {
+                    attrs.classes = tabClasses
+                    attrs.value = AppMode.Scene
+                    attrs.label = buildElement {
+                        appToolbarTab {
+                            attrs.currentAppMode = props.appMode
+                            attrs.value = AppMode.Scene
+                            attrs.document = sceneManager.openScene
+                            attrs.documentManager = sceneManager
+                            attrs.onEditButtonClick = handleSceneEditButtonClick
+                        }
+                    }
                 }
             }
 
-            typographyH6 {
-                attrs.classes = jso { this.root = -themeStyles.title }
-
-                div(+themeStyles.titleHeader) { +"Scene:" }
-
-                if (scene != null) {
-                    b {
-                        +scene.title
-                        sceneManager.file?.let { attrs["title"] = it.toString() }
-                    }
-                    if (sceneManager.isUnsaved) i { +" (Unsaved)" }
-
-                    if (props.appMode == AppMode.Scene && editMode) {
-                        span(+themeStyles.editButton) {
-                            icon(mui.icons.material.Edit)
-                            attrs.onClickFunction = handleSceneEditButtonClick.withEvent()
-                        }
-                    }
-                } else {
-                    i { +"None" }
-                }
-            }
 
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
             div(+themeStyles.appToolbarActions) {
-                div {
+                div(+themeStyles.appToolbarEditModeActions) {
                     inlineStyles {
-                        if (!editMode && !documentManager.isUnsaved) {
+                        if (!editMode.isOn && !documentManager.isUnsaved) {
                             opacity = 0
+                            pointerEvents = PointerEvents.none
                         }
                         transition("opacity", duration = .5.s, timing = Timing.linear)
                     }
 
-                    IconButton {
-                        icon(mui.icons.material.Undo)
+                    Button {
+                        attrs.startIcon = +Undo
                         attrs.disabled = !documentManager.canUndo
+                        attrs.variant = ButtonVariant.contained
+                        attrs.size = Size.small
                         attrs.onClick = handleUndo
 
-                        typographyH6 { +"Undo" }
+                        +"Undo"
                     }
 
-                    IconButton {
-                        icon(mui.icons.material.Redo)
+                    Button {
+                        attrs.startIcon = +Redo
                         attrs.disabled = !documentManager.canRedo
+                        attrs.variant = ButtonVariant.contained
+                        attrs.size = Size.small
                         attrs.onClick = handleRedo
 
-                        typographyH6 { +"Redo" }
+                        +"Redo"
                     }
 
                     if (props.appMode == AppMode.Scene) {
-                        IconButton {
-                            icon(mui.icons.material.Sync)
-                            attrs.disabled = documentManager.isSynched
+                        Button {
+                            attrs.startIcon = +Sync
+                            attrs.disabled = documentManager.isSynced
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSync
 
-                            typographyH6 { +"Sync" }
+                            +"Sync"
                         }
                     }
 
                     if (!documentManager.isLoaded) {
-                        IconButton {
-                            icon(mui.icons.material.FileCopy)
+                        Button {
+                            attrs.startIcon = +FileCopy
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSaveAs
-                            typographyH6 { +"Save As…" }
+                            +"Save As…"
                         }
                     } else {
-                        IconButton {
-                            icon(mui.icons.material.Save)
+                        Button {
+                            attrs.startIcon = +Save
                             attrs.disabled = !documentManager.isUnsaved
+                            attrs.variant = ButtonVariant.contained
+                            attrs.size = Size.small
                             attrs.onClick = handleSave
-                            typographyH6 { +"Save" }
+                            +"Save"
                         }
                     }
 
-                    FormControlLabel {
-                        attrs.control = buildElement {
-                            Switch {
-                                attrs.checked = props.editMode
-                                attrs.onChange = props.onEditModeChange.withTChangeEvent()
-                            }
+                    ToggleButton {
+                        attrs.classes = jso {
+                            this.root = -themeStyles.editModeButton
+                            this.selected = -themeStyles.editModeButtonSelected
                         }
-                        attrs.label = buildElement { typographyH6 { +"Design Mode" } }
+//                        attrs.variant = ButtonVariant.contained
+                        attrs.color = ToggleButtonColor.error
+                        attrs.selected = editMode.isOn
+                        attrs.onClick = handleEditModeChange.withTMouseEvent()
+
+                        if (editMode.isOn) {
+                            LockOpen { attrs.fontSize = SvgIconSize.small }
+                        } else {
+                            Lock { attrs.fontSize = SvgIconSize.small }
+                        }
+                        +"Edit"
                     }
                 }
 
@@ -229,9 +253,9 @@ private val Severity.cssClass get() = name.lowercase() + "Severity"
 
 external interface AppToolbarProps : Props {
     var appMode: AppMode
-    var editMode: Boolean?
-    var onEditModeChange: () -> Unit
+    var documentManager: DocumentManager<*, *>.Facade
     var onMenuButtonClick: () -> Unit
+    var onAppModeChange: (AppMode) -> Unit
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =

@@ -12,18 +12,28 @@ import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
 import baaahs.util.Logger
 
-class ControlDisplay(
-    internal val show: OpenShow,
+interface ControlDisplay {
+    val show: OpenShow
+    val unplacedControls: Set<OpenControl>
+    val relevantUnplacedControls: List<OpenControl>
+    val unplacedControlsDropTarget: LegacyControlDisplay.UnplacedControlsDropTarget
+    val unplacedControlsDropTargetId: String
+
+    fun release()
+}
+
+class LegacyControlDisplay(
+    override val show: OpenShow,
     internal val editHandler: EditHandler<Show, ShowState>,
-    internal val dragNDrop: DragNDrop
-) {
+    internal val dragNDrop: DragNDrop<Int>
+) : ControlDisplay {
     private val allPanelBuckets = AllPanelBuckets(show.layouts)
     private val placedControls = hashSetOf<OpenControl>()
-    val unplacedControls: List<OpenControl>
-    val relevantUnplacedControls: List<OpenControl>
+    override val unplacedControls: Set<OpenControl>
+    override val relevantUnplacedControls: List<OpenControl>
     private val additionalDropTargets = mutableMapOf<OpenControl, OpenButtonGroupControl.ButtonGroupDropTarget>()
-    val unplacedControlsDropTarget = UnplacedControlsDropTarget()
-    val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
+    override val unplacedControlsDropTarget = UnplacedControlsDropTarget()
+    override val unplacedControlsDropTargetId = dragNDrop.addDropTarget(unplacedControlsDropTarget)
 
     init {
         val unplacedControls = arrayListOf<OpenControl>()
@@ -67,7 +77,8 @@ class ControlDisplay(
             }
         }
 
-        this.unplacedControls = unplacedControls
+        unplacedControls.removeAll(placedControls)
+        this.unplacedControls = unplacedControls.toSet()
         this.relevantUnplacedControls = unplacedControls.filter { control ->
             activeDataSources.containsAll(control.controlledDataSources())
         }.sortedBy { control ->
@@ -86,13 +97,13 @@ class ControlDisplay(
         allPanelBuckets.render(panel, renderBucket)
     }
 
-    fun release() {
+    override fun release() {
         allPanelBuckets.release()
         dragNDrop.removeDropTarget(unplacedControlsDropTarget)
         additionalDropTargets.values.forEach { it.release() }
     }
 
-    fun dropTargetFor(buttonGroupControl: OpenButtonGroupControl): DropTarget {
+    fun dropTargetFor(buttonGroupControl: OpenButtonGroupControl): DropTarget<Int> {
         return additionalDropTargets.getOrPut(buttonGroupControl) {
             buttonGroupControl.createDropTarget(this)
         }
@@ -162,7 +173,7 @@ class ControlDisplay(
             byContainer.clear()
         }
 
-        inner class PanelBucket(val section: Section) : DropTarget {
+        inner class PanelBucket(val section: Section) : DropTarget<Int> {
             val panel: Panel get() = this@PanelBuckets.panel
 
             val controls = mutableListOf<PlacedControl>()
@@ -183,32 +194,32 @@ class ControlDisplay(
                 return "${panel.title} ${section.title} $type".camelize()
             }
 
-            override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+            override fun moveDraggable(fromPosition: Int, toPosition: Int) {
                 show.edit {
                     val mutablePatchHolder = findPatchHolder(section.container)
                     val mutableControls = mutablePatchHolder.editControlLayout(panel)
-                    val mutableControl = mutableControls.removeAt(fromIndex)
-                    mutableControls.add(toIndex, mutableControl)
+                    val mutableControl = mutableControls.removeAt(fromPosition)
+                    mutableControls.add(toPosition, mutableControl)
                 }.commit(editHandler)
             }
 
-            override fun willAccept(draggable: Draggable): Boolean {
+            override fun willAccept(draggable: Draggable<Int>): Boolean {
                 return draggable is PlaceableControl
             }
 
-            override fun getDraggable(index: Int): Draggable {
-                return controls[index]
+            override fun getDraggable(position: Int): Draggable<Int> {
+                return controls[position]
             }
 
-            override fun insertDraggable(draggable: Draggable, index: Int) {
+            override fun insertDraggable(draggable: Draggable<Int>, position: Int) {
                 draggable as PlaceableControl
                 draggable.mutableShow
                     .findPatchHolder(section.container)
                     .editControlLayout(panel)
-                    .add(index, draggable.mutableControl)
+                    .add(position, draggable.mutableControl)
             }
 
-            override fun removeDraggable(draggable: Draggable) {
+            override fun removeDraggable(draggable: Draggable<Int>) {
                 draggable as PlaceableControl
                 draggable.remove()
             }
@@ -229,27 +240,27 @@ class ControlDisplay(
         }
     }
 
-    inner class UnplacedControlsDropTarget : DropTarget {
+    inner class UnplacedControlsDropTarget : DropTarget<Int> {
         override val type: String get() = "ControlContainer"
         override val dropTargetId: String get() = "not implemented"
 
-        override fun moveDraggable(fromIndex: Int, toIndex: Int) {
+        override fun moveDraggable(fromPosition: Int, toPosition: Int) {
             // No-op.
         }
 
-        override fun willAccept(draggable: Draggable): Boolean {
+        override fun willAccept(draggable: Draggable<Int>): Boolean {
             return draggable is PlaceableControl
         }
 
-        override fun getDraggable(index: Int): Draggable {
-            return UnplacedControl(index)
+        override fun getDraggable(position: Int): Draggable<Int> {
+            return UnplacedControl(position)
         }
 
-        override fun insertDraggable(draggable: Draggable, index: Int) {
+        override fun insertDraggable(draggable: Draggable<Int>, position: Int) {
             // No-op.
         }
 
-        override fun removeDraggable(draggable: Draggable) {
+        override fun removeDraggable(draggable: Draggable<Int>) {
             // No-op.
         }
     }
@@ -273,7 +284,7 @@ class ControlDisplay(
         }
     }
 
-    interface PlaceableControl : Draggable {
+    interface PlaceableControl : Draggable<Int> {
         val mutableShow: MutableShow
         val mutableControl: MutableControl
 
@@ -295,5 +306,5 @@ class ControlDisplay(
 }
 
 typealias RenderBucket = (
-    panelBucket: ControlDisplay.PanelBuckets.PanelBucket
+    panelBucket: LegacyControlDisplay.PanelBuckets.PanelBucket
 ) -> Unit

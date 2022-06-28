@@ -42,7 +42,7 @@ plugins {
     id("name.remal.check-dependency-updates") version "1.0.211"
 
     // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
-    id("com.github.turansky.kfc.legacy-union") version "4.88.0"
+    id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
 
 repositories {
@@ -165,10 +165,15 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMui}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMuiIcons}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
 
                 implementation(npm("camera-controls", "^1.25.3"))
+
+                implementation(npm("long-press-event", "^2.4.4"))
+
+                // For diagnostics:
+                implementation(npm("dagre-d3", "^0.6.4"))
 
                 // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
 //                implementation(npm("react-beautiful-dnd", "^13.0.0"))
@@ -181,7 +186,8 @@ kotlin {
                 // </react-beautiful-dnd bug workaround>
 
                 implementation(npm("react-compound-slider", "^3.3.1"))
-                implementation(npm("react-draggable", "^3.3.0"))
+                implementation(npm("react-draggable", "^4.4.4"))
+                implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^4.0.0"))
@@ -189,9 +195,12 @@ kotlin {
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("markdown-it", "~11.0.0"))
-                implementation(npm("normalize.css", "^7.0.0"))
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
+
+                // used by GridLayout:
+                implementation(npm("react-resizable", "3.0.4"))
+                implementation(npm("lodash.isequal", "4.5.0"))
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -247,17 +256,19 @@ tasks.named<ProcessResources>("jsProcessResources") {
 
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
+    from("build/js/node_modules/long-press-event/dist") { include("long-press-event.min.js") }
     from("build/js/node_modules/@fortawesome") {
         include("fontawesome-free/css/all.min.css")
         include("fontawesome-free/webfonts/*")
-    }
-    from("build/js/node_modules/normalize.css") {
-        include("normalize.css")
     }
     from("build/js/node_modules/@blueprintjs") {
         into("blueprintjs")
         include("core/lib/css/blueprint.css")
         include("icons/lib/css/blueprint-icons.css")
+    }
+    from("build/js/node_modules/react-grid-layout") {
+        into("react-grid-layout")
+        include("css/styles.css")
     }
 
     doLast {
