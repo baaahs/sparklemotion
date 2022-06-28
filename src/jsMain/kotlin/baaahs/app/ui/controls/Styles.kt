@@ -273,6 +273,17 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
     val vacuityContainer by css {
         display = Display.flex
         overflow = Overflow.scroll
+        borderWidth = .25.em
+        borderStyle = "inset".asDynamic()
+        borderColor = theme.paperMediumContrast
+        borderRadius = 10.px
+        padding = ".25em"
+        background = "linear-gradient(" +
+                "-185deg, " +
+                "${theme.paperLowContrast}, " +
+                "${theme.palette.background.paper}, " +
+                "${theme.paperLowContrast}" +
+                ")"
     }
 
     val buttonGroupCard by css {

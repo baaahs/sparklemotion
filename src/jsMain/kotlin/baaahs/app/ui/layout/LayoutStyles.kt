@@ -45,9 +45,9 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val gridCell by css {
         display = Display.grid
 
-        descendants(selector(::gridContainer)) {
-            pointerEvents = PointerEvents.auto
-        }
+//        descendants(selector(::gridContainer)) {
+//            pointerEvents = PointerEvents.auto
+//        }
 
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
     }
