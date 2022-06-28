@@ -224,7 +224,7 @@ class GlslCode(
                     val tag = match.groupValues[1].trim()
 
                     if (tag.startsWith("@")) {
-                        val string = commentString.trimStart('@').trim()
+                        val string = tag.trimStart('@').trim()
 
                         val parts = string.split(" ")
                         val type = parts.first()
