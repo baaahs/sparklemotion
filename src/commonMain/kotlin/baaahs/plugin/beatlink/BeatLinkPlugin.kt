@@ -5,6 +5,7 @@ import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.Feed
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
@@ -59,57 +60,63 @@ class BeatLinkPlugin internal constructor(
             classSerializer(BeatLinkControl.serializer())
         )
 
-    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
+    override val dataSourceBuilders
         get() = listOf(
-            object : DataSourceBuilder<BeatLinkDataSource> {
-                override val title: String get() = "Beat Link"
-                override val description: String
-                    get() = "A float representing the current beat intensity, between 0 and 1."
-                override val resourceName: String get() = "BeatLink"
-                override val contentType: ContentType get() = beatDataContentType
-                override val serializerRegistrar
-                    get() = objectSerializer("$id:BeatLink", beatLinkDataSource)
-
-                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-                    inputPort.contentType == beatDataContentType
-                            || suggestedContentTypes.contains(beatDataContentType)
-                            || inputPort.type == GlslType.Float
-
-                override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource
-            },
-            object : DataSourceBuilder<BeatInfoDataSource> {
-                override val title: String get() = "Beat Info"
-                override val description: String get() = "A struct containing information about the beat."
-                override val resourceName: String get() = "BeatInfo"
-                override val contentType: ContentType get() = beatInfoContentType
-                override val serializerRegistrar
-                    get() = objectSerializer("baaahs.BeatLink:BeatInfo", beatInfoDataSource)
-
-                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-                    inputPort.contentType == beatInfoContentType
-                            || suggestedContentTypes.contains(beatInfoContentType)
-                            || inputPort.type == beatInfoStruct
-
-                override fun build(inputPort: InputPort): BeatInfoDataSource = beatInfoDataSource
-            },
-            object : DataSourceBuilder<RawBeatInfoDataSource> {
-                override val title: String get() = "Raw Beat Data"
-                override val description: String get() = "A struct containing low-level information about the beat."
-                override val resourceName: String get() = "RawBeatInfo"
-                override val contentType: ContentType get() = rawBeatInfoContentType
-                override val serializerRegistrar
-                    get() = objectSerializer("baaahs.BeatLink:RawBeatInfo", rawBeatInfoDataSource)
-                override val internalOnly: Boolean
-                    get() = true
-
-                override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-                    inputPort.contentType == rawBeatInfoContentType
-                            || suggestedContentTypes.contains(rawBeatInfoContentType)
-                            || inputPort.type == rawBeatInfoStruct
-
-                override fun build(inputPort: InputPort): RawBeatInfoDataSource = rawBeatInfoDataSource
-            }
+            BeatLinkDataSourceBuilder(),
+            BeatInfoDataSourceBuilder(),
+            RawBeatInfoDataSourceBuilder()
         )
+
+    inner class BeatLinkDataSourceBuilder : DataSourceBuilder<BeatLinkDataSource> {
+        override val title: String get() = "Beat Link"
+        override val description: String
+            get() = "A float representing the current beat intensity, between 0 and 1."
+        override val resourceName: String get() = "BeatLink"
+        override val contentType: ContentType get() = beatDataContentType
+        override val serializerRegistrar
+            get() = objectSerializer("$id:BeatLink", beatLinkDataSource)
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+            inputPort.contentType == beatDataContentType
+                    || suggestedContentTypes.contains(beatDataContentType)
+                    || inputPort.type == GlslType.Float
+
+        override fun build(inputPort: InputPort): BeatLinkDataSource = beatLinkDataSource
+    }
+
+    inner class BeatInfoDataSourceBuilder : DataSourceBuilder<BeatInfoDataSource> {
+        override val title: String get() = "Beat Info"
+        override val description: String get() = "A struct containing information about the beat."
+        override val resourceName: String get() = "BeatInfo"
+        override val contentType: ContentType get() = beatInfoContentType
+        override val serializerRegistrar
+            get() = objectSerializer("$id:BeatInfo", beatInfoDataSource)
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+            inputPort.contentType == beatInfoContentType
+                    || suggestedContentTypes.contains(beatInfoContentType)
+                    || inputPort.type == beatInfoStruct
+
+        override fun build(inputPort: InputPort): BeatInfoDataSource = beatInfoDataSource
+    }
+
+    inner class RawBeatInfoDataSourceBuilder : DataSourceBuilder<RawBeatInfoDataSource> {
+        override val title: String get() = "Raw Beat Data"
+        override val description: String get() = "A struct containing low-level information about the beat."
+        override val resourceName: String get() = "RawBeatInfo"
+        override val contentType: ContentType get() = rawBeatInfoContentType
+        override val serializerRegistrar
+            get() = objectSerializer("$id:RawBeatInfo", rawBeatInfoDataSource)
+        override val internalOnly: Boolean
+            get() = true
+
+        override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
+            inputPort.contentType == rawBeatInfoContentType
+                    || suggestedContentTypes.contains(rawBeatInfoContentType)
+                    || inputPort.type == rawBeatInfoStruct
+
+        override fun build(inputPort: InputPort): RawBeatInfoDataSource = rawBeatInfoDataSource
+    }
 
     @SerialName("baaahs.BeatLink:BeatLink")
     inner class BeatLinkDataSource internal constructor() : DataSource {
@@ -119,8 +126,8 @@ class BeatLinkPlugin internal constructor(
 
         override fun getType(): GlslType = GlslType.Float
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
-            return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+            return object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
                         SingleUniformFeed(glslProgram, this@BeatLinkDataSource, id) { uniform ->
@@ -139,9 +146,9 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = beatInfoContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             val varPrefix = getVarName(id)
-            return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
+            return object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {
@@ -179,9 +186,9 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = rawBeatInfoContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): baaahs.gl.data.Feed {
+        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
             val varPrefix = getVarName(id)
-            return object : baaahs.gl.data.Feed, RefCounted by RefCounter() {
+            return object : Feed, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {

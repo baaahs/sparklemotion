@@ -56,5 +56,23 @@ object FilterShaderSpec : Spek({
                     .toEqual(shaderType)
             }
         }
+
+        context("when an input port has an explicit PluginRef") {
+            override(shaderText) {
+                """
+                    // @param uv uv-coordinate
+                    // @@baaahs.TestPlugin:TestPlugin
+                    vec4 videoIn(vec2 uv);
+                    
+                    // @return color
+                    vec4 main() { ... }
+                """.trimIndent()
+            }
+
+            it("shouldn't count as a filter") {
+                expect(FilterShader.matches(shaderAnalysis))
+                    .toEqual(ShaderType.MatchLevel.NoMatch)
+            }
+        }
     }
 })

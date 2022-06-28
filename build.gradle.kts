@@ -128,7 +128,11 @@ kotlin {
                 implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
                 implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
+                // MDNS support:
                 implementation("org.jmdns:jmdns:3.5.7")
+
+                // VideoInPlugin:
+                implementation("com.github.sarxos:webcam-capture:0.3.12")
             }
         }
         @Suppress("UNUSED_VARIABLE")

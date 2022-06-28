@@ -389,6 +389,26 @@ object GlslCodeSpec : Spek({
                         .toBe(PluginRef("baaahs.FooPlugin", "Thing"))
                 }
             }
+
+            context("when there's text before the plugin ref") {
+                override(glslVar) {
+                    GlslCode.GlslVar(
+                        "varName", GlslType.Float, isUniform = true,
+                        comments = listOf(" comment here @@$hintClassStr", "  key=value", "  key2=value2")
+                    )
+                }
+
+                it("parses the PluginRef") {
+                    expect(glslVar.hint!!.pluginRef)
+                        .toBe(PluginRef("whatever.package.Plugin", "Thing"))
+
+                    expect(glslVar.hint!!.config)
+                        .toBe(buildJsonObject {
+                            put("key", "value")
+                            put("key2", "value2")
+                        })
+                }
+            }
         }
 
         it("englishizes camel case names") {

@@ -230,6 +230,16 @@ abstract class GlContext(
             }
         }
 
+        fun uploadTexture(
+            level: Int,
+            internalFormat: Int,
+            border: Int,
+            resource: TextureResource
+        ) {
+            stats.texImage2D++
+            check { texImage2D(GL_TEXTURE_2D, level, internalFormat, border, resource) }
+        }
+
         fun uploadTexture(level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, buffer: Buffer, offset: Int = 0) {
             stats.texImage2D++
             check { texImage2D(GL_TEXTURE_2D, level, internalFormat, width, height, border, format, type, buffer, offset) }

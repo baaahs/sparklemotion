@@ -73,7 +73,13 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                     val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
 
                                     code {
+                                        val funDef = dataSourceBuilder.funDef(varName)
+                                    if (funDef != null) {
+                                        +funDef
+                                        +" "
+                                    } else {
                                         +"uniform ${type.glslLiteral} $varName; "
+                                    }
                                         span(+styles.comment) { +"// @@${pluginRef.shortRef()}\n" }
                                     }
                                 }

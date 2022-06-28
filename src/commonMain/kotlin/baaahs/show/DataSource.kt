@@ -7,6 +7,8 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.OpenPlugin
+import baaahs.plugin.PluginRef
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
@@ -48,6 +50,8 @@ interface DataSourceBuilder<T : DataSource> {
                 inputPort.dataTypeIs(contentType.glslType)
 
     fun build(inputPort: InputPort): T
+
+    fun funDef(varName: String): String? = null
 }
 
 internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
@@ -93,6 +97,8 @@ interface DataSource {
             buf.append("\n")
         }
     }
+
+    fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) = Unit
 }
 
 enum class UpdateMode {
