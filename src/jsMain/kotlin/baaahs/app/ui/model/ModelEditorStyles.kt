@@ -160,8 +160,8 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
                 }
             }
             attrs.InputLabelProps = jso {
-                attrs.classes = jso { this.root = -ControlStyles.inputLabel }
-                shrink = true
+                this.classes = jso { this.root = -ControlStyles.inputLabel }
+                this.shrink = true
             }
             attrs.onChange = cachedOnChange
             if (value != null) attrs.value = value
