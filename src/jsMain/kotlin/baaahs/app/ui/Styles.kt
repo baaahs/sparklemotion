@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.document.FileUploadStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
@@ -36,6 +37,7 @@ class AllStyles(val theme: Theme) {
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
     val shaderHelp by lazy { ShaderHelpStyles(theme) }
     val uiComponents by lazy { UiComponentStyles(theme) }
+    val fileUploadStyles by lazy { FileUploadStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)

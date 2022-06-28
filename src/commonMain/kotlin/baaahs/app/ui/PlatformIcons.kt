@@ -7,6 +7,7 @@ import baaahs.ui.Icon
 interface PlatformIcons {
     val Add: Icon
     val Download: Icon
+    val Upload: Icon
     val Reload: Icon
 
     val Fixture: Icon

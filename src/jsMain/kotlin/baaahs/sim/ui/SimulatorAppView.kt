@@ -3,6 +3,7 @@ package baaahs.sim.ui
 import baaahs.SheepSimulator
 import baaahs.document
 import baaahs.sim.HostedWebApp
+import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.window
@@ -28,16 +29,19 @@ val simulatorContext = createContext<SimulatorContext>()
 
 external interface SimulatorContext {
     var styles: ThemedSimulatorStyles
+    var uiComponentStyles: UiComponentStyles
 }
 
 val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
     val theme = createTheme(jso {})
     val simulatorStyles = ThemedSimulatorStyles(theme)
     injectGlobal(simulatorStyles.global)
+    val uiComponentStyles = UiComponentStyles(theme)
 
     val mySimulatorContext = memo {
         jso<SimulatorContext> {
             this.styles = simulatorStyles
+            this.uiComponentStyles = uiComponentStyles
         }
     }
 

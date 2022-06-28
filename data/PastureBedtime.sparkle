@@ -4,7 +4,7 @@
     "flatProjection-patch",
     "darkness-patch",
     "brightness-patch",
-    "saturation-patch",
+    "hsv-patch",
     "scale-patch",
     "sharpyDefault-patch"
   ],
@@ -196,6 +196,11 @@
                       "controlId": "quiver",
                       "column": 2,
                       "row": 4
+                    },
+                    {
+                      "controlId": "primeWaves",
+                      "column": 2,
+                      "row": 5
                     }
                   ]
                 }
@@ -207,7 +212,7 @@
               },
               {
                 "controlId": "size",
-                "column": 5,
+                "column": 6,
                 "row": 4,
                 "height": 2
               },
@@ -225,7 +230,7 @@
               },
               {
                 "controlId": "wobbleAmount",
-                "column": 6,
+                "column": 7,
                 "row": 4,
                 "height": 2
               },
@@ -274,6 +279,33 @@
                 "controlId": "blackout",
                 "column": 5,
                 "row": 1
+              },
+              {
+                "controlId": "moversManual",
+                "column": 8,
+                "row": 0
+              },
+              {
+                "controlId": "moversSwirlFilter",
+                "column": 10,
+                "row": 2
+              },
+              {
+                "controlId": "aim",
+                "column": 8,
+                "row": 1,
+                "width": 2
+              },
+              {
+                "controlId": "spectrumSlider",
+                "column": 11,
+                "row": 2
+              },
+              {
+                "controlId": "hue",
+                "column": 5,
+                "row": 4,
+                "height": 2
               }
             ]
           },
@@ -284,9 +316,11 @@
             "rows": 4,
             "items": [
               {
-                "controlId": "fireball",
-                "column": 0,
-                "row": 0
+                "controlId": "visualizer",
+                "column": 4,
+                "row": 2,
+                "width": 2,
+                "height": 2
               }
             ]
           }
@@ -307,9 +341,9 @@
       "title": "Brightness",
       "src": "uniform float brightness; // @@Slider min=0 max=1.25 default=1\n\nuniform float beatBrightness; // @Slider min=0 max=2 default=0\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb *\n        mix(\n            brightness,\n            brightness * beatInfo.intensity,\n            beatBrightness * beatInfo.confidence\n        ),\n        clampedColor.a\n    );\n}"
     },
-    "saturation": {
-      "title": "Saturation",
-      "src": "uniform float saturation; // @@Slider min=0 max=1.25 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n \n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    if (saturation == 1.) return inColor;\n\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.y *= saturation;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
+    "hsv": {
+      "title": "HSV",
+      "src": "uniform float hue; // @@Slider min=0 max=1.25 default=1\nuniform float saturation; // @@Slider min=0 max=1.25 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n \n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    if (saturation == 1.) return inColor;\n\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.x += hue;\n    hsv.y *= saturation;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
     },
     "scale": {
       "title": "Scale",
@@ -481,7 +515,7 @@
     },
     "heart": {
       "title": "Heart",
-      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(heartCenter.xy, 0.)) * 4. / heartSize * .5;\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = upstreamColor(fragCoord);\n}"
+      "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(-heartCenter.x, heartCenter.y, 0.)) * 4. / heartSize * .5;\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = upstreamColor(fragCoord);\n}"
     },
     "plaid": {
       "title": "Plaid",
@@ -503,6 +537,10 @@
       "title": "Color Diffusion Flow",
       "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"DESCRIPTION\": \"from http://glslsandbox.com/e#35553.0\",\n  \"CATEGORIES\": [\n    \"fluid\",\n    \"liquid\"\n  ],\n  \"INPUTS\": [\n  \t{\n\t\t\t\"NAME\" :\t\"rate1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.9,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t {\n\t\t\t\"NAME\" :\t\"rate2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.6,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"loopcycle\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t85.0,\n\t\t\t\"MIN\" :\t20.0,\n\t\t\t\"MAX\" :\t100.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.45,\n\t\t\t\"MIN\" :\t-2.5,\n\t\t\t\"MAX\" :\t2.5\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.0,\n\t\t\t\"MIN\" :\t-1.25,\n\t\t\t\"MAX\" :\t1.125\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.33,\n\t\t\t\"MIN\" :\t0.01,\n\t\t\t\"MAX\" :\t3.1459\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.22,\n\t\t\t\"MIN\" :\t-0.497,\n\t\t\t\"MAX\" :\t0.497\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"nudge\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.095,\n\t\t\t\"MIN\" :\t0.001,\n\t\t\t\"MAX\" :\t0.01\n\t},\n\t{\n      \t\t\t\"NAME\" :\t\"depthX\",\n      \t\t\t\"TYPE\" : \t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.85,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t},\n    \t{\n      \t\t\t\"NAME\" :\t\"depthY\",\n      \t\t\t\"TYPE\" :\t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.25,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t}\n  ]\n}*/\n\n///////////////////////////////////////////\n// ColorDiffusionFlow  by mojovideotech\n//\n// based on :\n// glslsandbox.com/\\e#35553.0\n//\n// Creative Commons Attribution-NonCommercial-ShareAlike 3.0\n///////////////////////////////////////////\n\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n \n#define \tpi   \t3.141592653589793\n\nvoid main() {\n\tfloat T = TIME * rate1;\n\tfloat TT = TIME * rate2;\n\tvec2 p=(2.*isf_FragNormCoord);\n\tfor(int i=1;i<11;i++) {\n    \tvec2 newp = p;\n        float ii = float(i);  \n    \tnewp.x+=depthX/ii*sin(ii*pi*p.y+T*nudge+cos((TT/(5.0*ii))*ii));\n    \tnewp.y+=depthY/ii*cos(ii*pi*p.x+TT+nudge+sin((T/(5.0*ii))*ii));\n    \tp = newp +log(DATE.w)/loopcycle;\n  }\n  vec3 col=vec3(cos(p.x+p.y+3.0*color1)*0.5+0.5,sin(p.x+p.y+6.0*cycle1)*0.5+0.5,(sin(p.x+p.y+9.0*color2)+cos(p.x+p.y+12.0*cycle2))*0.25+.5);\n  gl_FragColor=vec4(col*col, 1.0);\n}"
     },
+    "primeWaves": {
+      "title": "Prime Waves",
+      "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"CATEGORIES\" : [\n    \"Generator\",\n    \"waves\"\n  ],\n  \"DESCRIPTION\" : \"\",\n  \"INPUTS\" : [\n    {\n      \"NAME\" : \"center\",\n      \"TYPE\" : \"point2D\",\n       \"DEFAULT\": [\n\t\t-2,\n\t\t-1\n\t  ],\n      \"MAX\" : [\n        10,\n        10\n      ],\n      \"MIN\" : [\n        -10,\n        -10\n      ]\n    },\n    {\n\t\t\"NAME\": \"rate\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": -1,\n\t\t\"MIN\": -3,\n\t\t\"MAX\": 3\n\t},\n\t{\n\t\t\"NAME\": \"zoom\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 5,\n\t\t\"MIN\": -10,\n\t\t\"MAX\": 10\n\t},\n\t{\n\t\t\"NAME\": \"depth\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 0.6,\n\t\t\"MIN\": 0.0,\n\t\t\"MAX\": 1.0\n\t},\n\t{\n\t\t\"NAME\": \"rxy\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 11,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t},\n\t{\n\t\t\"NAME\": \"rxz\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 13,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t}\n  ]\n}\n*/\n\n// PrimeWaves by mojovideotech\n// based on:\n// glslsandbox.com/e#21344.0\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nvec2 distort(vec2 p)\n{\n    float theta  = atan(p.y, p.x);\n    float radius = length(p);\n    radius = pow(radius, 1.0+depth);\n    p.x = radius * cos(theta);\n    p.y = radius * sin(theta);\n    return 0.5 * (p + 1.0);\n}\n\t\nvec4 pattern(vec2 p)\n{\n\tvec2 m=mod(p.xy+p.x+p.y,2.)-1.;\n\treturn vec4(length(m+p*0.1));\n}\n\nfloat hash(float n)\n{\n\treturn fract(sin(n)*29712.15073);\n}\n\nfloat noise(vec3 x, float y, float z)\n{\n\tvec3 p=floor(x); vec3 f=fract(x);\n\tf=f*f*(3.0-2.0*f);\n\tfloat n=p.x+p.y*y+p.z*z;\n\tfloat r1=mix(mix(hash(n+0.0),hash(n+1.0),f.x),mix(hash(n+y),hash(n+y+1.0),f.x),f.y);\n    float r2=mix(mix(hash(n+z),hash(n+z+1.0),f.x),mix(hash(n+y+z),hash(n+y+z+1.0),f.x),f.y);\n\treturn mix(r1,r2,f.z);\n}\nvoid main( void ) {\n\t\n\tfloat RY = 0.0;\tfloat RZ = 0.0;\n\tif (rxy <= 1.)\t\t\t{\tRY += 11.;\t}\n\telse if (rxy <= 2.)\t\t{\tRY += 13.; \t}\n\telse if (rxy <= 3.)\t\t{\tRY += 17.; \t}\n\telse if (rxy <= 4.)\t\t{\tRY += 19.; \t}\n\telse if (rxy <= 5.)\t\t{\tRY += 23.; \t}\n\telse if (rxy <= 6.)\t\t{\tRY += 29.; \t}\n\telse if (rxy <= 8.)\t\t{\tRY += 31.; \t}\n\telse if (rxy <= 9.)\t\t{\tRY += 37.; \t}\n\telse if (rxy <= 10.)\t{\tRY += 41.; \t}\n\telse if (rxy <= 11.)\t{\tRY += 43.; \t}\n\telse if (rxy <= 12.)\t{\tRY += 47.; \t}\n\telse if (rxy <= 13.)\t{\tRY += 53.; \t}\n\telse if (rxy <= 14.)\t{\tRY += 59.; \t}\n\telse if (rxy <= 15.)\t{\tRY += 61.; \t}\n\telse if (rxy <= 16.)\t{\tRY += 67.; \t}\n\tif (rxz <= 1.)\t\t\t{\tRZ += 11.; \t}\n\telse if (rxz <= 2.)\t\t{\tRZ += 13.; \t}\n\telse if (rxz <= 3.)\t\t{\tRZ += 17.; \t}\n\telse if (rxz <= 4.)\t\t{\tRZ += 19.; \t}\n\telse if (rxz <= 5.)\t\t{\tRZ += 23.; \t}\n\telse if (rxz <= 6.)\t\t{\tRZ += 29.; \t}\n\telse if (rxz <= 8.)\t\t{\tRZ += 31.; \t}\n\telse if (rxz <= 9.)\t\t{\tRZ += 37.; \t}\n\telse if (rxz <= 10.)\t{\tRZ += 41.; \t}\n\telse if (rxz <= 11.)\t{\tRZ += 43.; \t}\n\telse if (rxz <= 12.)\t{\tRZ += 47.; \t}\n\telse if (rxz <= 13.)\t{\tRZ += 53.; \t}\n\telse if (rxz <= 14.)\t{\tRZ += 59.; \t}\n\telse if (rxz <= 15.)\t{\tRZ += 61.; \t}\n\telse if (rxz <= 16.)\t{\tRZ += 67.; \t}\n\t\n\tvec2 pos = ( gl_FragCoord.xy / RENDERSIZE.xy * zoom )+center;\n\tfloat col = noise(pos.xyx + (TIME*rate),RY,RZ);\n\tvec4 c = pattern(distort(pos+col));\n\t  c.xy = distort(c.xy);\n\tgl_FragColor = vec4(c.x - col, sin(c.y) - col, cos(c.z), 1.0);\n\n}"
+    },
     "wobble": {
       "title": "Wobble",
       "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
@@ -513,7 +551,7 @@
     },
     "thatSAllFolks": {
       "title": "That's all, folks!",
-      "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = sin(-length(p) * 60. * (0.8+ beatInfo.intensity * 0.2) + time * speed); // * beatInfo.intensity;\n\n    vec4 inColor = upstreamColor(uvIn);\n    float nr = inColor.rgb.r * d;\n    float ng = inColor.rgb.g * d;\n    float nb = inColor.rgb.b * d;\n    return vec4(nr, ng, nb, 1.0);\n}"
+      "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\nuniform float ringDensity; // @@Slider default=60. min=10 max=120\nuniform vec2 thatsAllFolksCenter; // @@XyPad\nuniform float finality; // @@Slider default=.5 min=0 max=1\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 inColor = upstreamColor(uvIn);\n    vec2 p = uvIn - .5 + vec2(thatsAllFolksCenter.x, -thatsAllFolksCenter.y) * 2.;\n    float directMod = sin(time * 0.01);\n    float d = mix(1. - finality, 1., sin(-length(p) * ringDensity * (0.8+ beatInfo.intensity * 0.2) + time * speed)); // * beatInfo.intensity;\n    return vec4(inColor.rgb * d, 1.0);\n}"
     },
     "timeScaler": {
       "title": "Time Scaler",
@@ -525,11 +563,27 @@
     },
     "zigZag": {
       "title": "Zig Zag",
-      "src": "uniform float time;\nuniform float zig; // @type float\nuniform float amplitude; // @@Slider default=0.1 min=0.05 max=0.2\nuniform float period; // @@Slider default=10. min=5 max=20\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    int y = int(uvIn.y * 10.);\n    float beat = mix(beatInfo.confidence, time, beatInfo.intensity);\n    \n    return vec2(uvIn.x, uvIn.y + sin(uvIn.x * period + beat * 10.) * amplitude);\n}"
+      "src": "uniform float time;\n// uniform float zig; // @type float\nuniform float zig; // @@Slider default=10. min=0 max=20\nuniform float zag; // @@Slider default=0.1 min=0.0 max=0.2\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    int y = int(uvIn.y * 10.);\n    // float beat = mix(beatInfo.confidence, time, beatInfo.beat / 4.);\n    \n    return vec2(uvIn.x, uvIn.y + sin(uvIn.x * zig + time * 10.) * zag);\n}"
     },
     "blackout": {
       "title": "Blackout",
       "src": "// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(0., 0., 0., 1.);\n}"
+    },
+    "moversManual": {
+      "title": "Movers Manual",
+      "src": "uniform float pan; // @@Slider min=0 max=9.425 default=0\nuniform float tilt; // @@Slider min=-2.2 max=2.2 default=0\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param upstream moving-head-params\n// @param result moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams result) {\n    result = upstream;\n    // result.pan += sin(time);// * .1;\n    // result.tilt += sin(time);// * .1;\n    // result.colorWheel += sin(time);// * .1;\n    // result.dimmer += sin(time);// * .1;\n\n    result.pan = pan;\n    result.tilt = tilt;\n    result.colorWheel = 0.;\n    result.dimmer = 1.;\n}"
+    },
+    "moversSwirlFilter": {
+      "title": "Movers Swirl Filter",
+      "src": "struct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform float time;\n\n// @param upstream moving-head-params\n// @param result moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams result) {\n    result = upstream;\n    result.pan += sin(time * 2.);\n    result.tilt += sin(time * 3.);\n}"
+    },
+    "aim": {
+      "title": "Aim",
+      "src": "const float PI = 3.141592654;\nconst float panScale = 540. / PI / 180.;\nconst float tiltScale = 125. / PI / 180.;\n\nstruct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform FixtureInfo fixtureInfo;\n\nuniform float targetX; // @@Slider default=0 min=-10 max=10\nuniform float targetY; // @@Slider default=0 min=-10 max=10\nuniform float targetZ; // @@Slider default=0 min=-10 max=10\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    vec3 target = vec3(targetX, targetY, targetZ);\n    // target = vec3(0., 0., 0.);\n\n    // vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.transformation).xyz);\n    vec3 direction = normalize(target - fixtureInfo.position);\n    float theta = atan(direction.z, direction.x);\n    float phi = atan(length(direction.xz), direction.y);\n    \n    params.pan = theta;// * panScale;\n    params.tilt = phi;// * tiltScale + .5;\n    params.colorWheel = 0.;\n    params.dimmer = 1.;\n\n    // params.pan = direction.x;\n    // params.tilt = direction.y;\n    // params.colorWheel = direction.z;\n}\n"
+    },
+    "spectrumSlider": {
+      "title": "Spectrum Slider",
+      "src": "uniform float pixelIndex; // @type pixel-index\nuniform float pixelCount; // @type pixel-count\n\nstruct SoundAnalysis {\n    int bucketCount;\n    int sampleHistoryCount;\n    sampler2D buckets;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\nvec4 main() {\n    float pixelPos = gl_FragCoord.y;\n    float historyPos = gl_FragCoord.x / 3.;\n    if (pixelCount > 0) {\n        pixelPos = float(pixelIndex) / float(pixelCount);\n        historyPos = 0.;\n    }\n    float magnitude = texture(soundAnalysis.buckets, vec2(pixelPos, historyPos)).x;\n    // inColor = vec4(0.);\n    vec3 eqColor = vec3(\n        magnitude,\n        (magnitude - .333) * 3. / 2.,\n        (magnitude - .666) * 3.\n    );\n    eqColor = clamp(eqColor, 0., 1.);\n    vec4 inColor = upstreamColor(gl_FragCoord);\n    return vec4(inColor.rg * magnitude, inColor.b, 1.);\n}"
     }
   },
   "patches": {
@@ -572,9 +626,13 @@
       },
       "priority": 10.0
     },
-    "saturation-patch": {
-      "shaderId": "saturation",
+    "hsv-patch": {
+      "shaderId": "hsv",
       "incomingLinks": {
+        "hue": {
+          "type": "datasource",
+          "dataSourceId": "hueSlider"
+        },
         "inColor": {
           "type": "shader-channel",
           "shaderChannel": "main"
@@ -1552,6 +1610,47 @@
         }
       }
     },
+    "primeWaves-patch": {
+      "shaderId": "primeWaves",
+      "incomingLinks": {
+        "rxy": {
+          "type": "datasource",
+          "dataSourceId": "rxySlider"
+        },
+        "rxz": {
+          "type": "datasource",
+          "dataSourceId": "rxzSlider"
+        },
+        "TIME": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "rate": {
+          "type": "datasource",
+          "dataSourceId": "rateSlider"
+        },
+        "zoom": {
+          "type": "datasource",
+          "dataSourceId": "zoomSlider2"
+        },
+        "depth": {
+          "type": "datasource",
+          "dataSourceId": "depthSlider"
+        },
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "RENDERSIZE": {
+          "type": "datasource",
+          "dataSourceId": "resolution"
+        },
+        "center": {
+          "type": "datasource",
+          "dataSourceId": "centerXyPad2"
+        }
+      }
+    },
     "wobble-patch": {
       "shaderId": "wobble",
       "incomingLinks": {
@@ -1602,6 +1701,10 @@
           "type": "datasource",
           "dataSourceId": "speedSlider"
         },
+        "thatsAllFolksCenter": {
+          "type": "datasource",
+          "dataSourceId": "thatsAllFolksCenterXyPad"
+        },
         "beatInfo": {
           "type": "datasource",
           "dataSourceId": "beatInfo"
@@ -1609,6 +1712,14 @@
         "upstreamColor": {
           "type": "shader-channel",
           "shaderChannel": "main"
+        },
+        "ringDensity": {
+          "type": "datasource",
+          "dataSourceId": "ringDensitySlider"
+        },
+        "finality": {
+          "type": "datasource",
+          "dataSourceId": "finalitySlider"
         }
       }
     },
@@ -1649,6 +1760,10 @@
     "zigZag-patch": {
       "shaderId": "zigZag",
       "incomingLinks": {
+        "zag": {
+          "type": "datasource",
+          "dataSourceId": "zagSlider"
+        },
         "zig": {
           "type": "datasource",
           "dataSourceId": "zigSlider"
@@ -1661,17 +1776,9 @@
           "type": "shader-channel",
           "shaderChannel": "main"
         },
-        "amplitude": {
-          "type": "datasource",
-          "dataSourceId": "amplitudeSlider"
-        },
         "beatInfo": {
           "type": "datasource",
           "dataSourceId": "beatInfo"
-        },
-        "period": {
-          "type": "datasource",
-          "dataSourceId": "periodSlider"
         }
       }
     },
@@ -1684,6 +1791,107 @@
         }
       },
       "priority": 6.0
+    },
+    "moversManual-patch": {
+      "shaderId": "moversManual",
+      "incomingLinks": {
+        "pan": {
+          "type": "datasource",
+          "dataSourceId": "panSlider"
+        },
+        "tilt": {
+          "type": "datasource",
+          "dataSourceId": "tiltSlider"
+        },
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "upstream": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
+    },
+    "moversSwirlFilter-patch": {
+      "shaderId": "moversSwirlFilter",
+      "incomingLinks": {
+        "time": {
+          "type": "datasource",
+          "dataSourceId": "time"
+        },
+        "upstream": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      },
+      "priority": 1.0
+    },
+    "aim-patch": {
+      "shaderId": "aim",
+      "incomingLinks": {
+        "x": {
+          "type": "datasource",
+          "dataSourceId": "xSlider"
+        },
+        "y": {
+          "type": "datasource",
+          "dataSourceId": "ySlider"
+        },
+        "z": {
+          "type": "datasource",
+          "dataSourceId": "zSlider"
+        },
+        "xyPad": {
+          "type": "datasource",
+          "dataSourceId": "xyPadXyPad"
+        },
+        "fixtureInfo": {
+          "type": "datasource",
+          "dataSourceId": "fixtureInfo"
+        },
+        "targetX": {
+          "type": "datasource",
+          "dataSourceId": "targetXSlider"
+        },
+        "targetY": {
+          "type": "datasource",
+          "dataSourceId": "targetYSlider"
+        },
+        "targetZ": {
+          "type": "datasource",
+          "dataSourceId": "targetZSlider"
+        }
+      }
+    },
+    "spectrumSlider-patch": {
+      "shaderId": "spectrumSlider",
+      "incomingLinks": {
+        "gl_FragCoord": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "soundAnalysis": {
+          "type": "datasource",
+          "dataSourceId": "soundAnalysis"
+        },
+        "inColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        },
+        "pixelIndex": {
+          "type": "shader-channel",
+          "shaderChannel": "time"
+        },
+        "pixelCount": {
+          "type": "shader-channel",
+          "shaderChannel": "time"
+        },
+        "upstreamColor": {
+          "type": "shader-channel",
+          "shaderChannel": "main"
+        }
+      }
     }
   },
   "controls": {
@@ -2274,6 +2482,13 @@
         "colorDiffusionFlow2-patch"
       ]
     },
+    "primeWaves": {
+      "type": "baaahs.Core:Button",
+      "title": "Prime Waves",
+      "patchIds": [
+        "primeWaves-patch"
+      ]
+    },
     "wobble": {
       "type": "baaahs.Core:Button",
       "title": "Wobble",
@@ -2331,6 +2546,40 @@
       "patchIds": [
         "blackout-patch"
       ]
+    },
+    "moversManual": {
+      "type": "baaahs.Core:Button",
+      "title": "Movers Manual",
+      "patchIds": [
+        "moversManual-patch"
+      ]
+    },
+    "moversSwirlFilter": {
+      "type": "baaahs.Core:Button",
+      "title": "Movers Swirl Filter",
+      "patchIds": [
+        "moversSwirlFilter-patch"
+      ]
+    },
+    "aim": {
+      "type": "baaahs.Core:Button",
+      "title": "Aim",
+      "patchIds": [
+        "aim-patch"
+      ]
+    },
+    "spectrumSlider": {
+      "type": "baaahs.Core:Button",
+      "title": "Spectrum Slider",
+      "patchIds": [
+        "spectrumSlider-patch"
+      ]
+    },
+    "hue": {
+      "type": "baaahs.Core:Slider",
+      "title": "Hue",
+      "maxValue": 1.25,
+      "controlledDataSourceId": "hueSlider"
     }
   },
   "dataSources": {
@@ -2357,6 +2606,13 @@
       "minValue": 0.0,
       "maxValue": 1.25
     },
+    "hueSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Hue",
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.25
+    },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
@@ -2370,20 +2626,6 @@
       "initialValue": 1.0,
       "minValue": 0.75,
       "maxValue": 1.25
-    },
-    "panSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Pan",
-      "initialValue": 1.0,
-      "minValue": 3.14159,
-      "maxValue": 6.283
-    },
-    "tiltSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Tilt",
-      "initialValue": 1.0,
-      "minValue": -1.2217,
-      "maxValue": 1.2217
     },
     "time": {
       "type": "baaahs.Core:Time"
@@ -2647,6 +2889,57 @@
       "minValue": 0.0,
       "maxValue": 1.0
     },
+    "rxySlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rxy",
+      "initialValue": 11.0,
+      "minValue": 1.0,
+      "maxValue": 17.0
+    },
+    "rxzSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rxz",
+      "initialValue": 13.0,
+      "minValue": 1.0,
+      "maxValue": 17.0
+    },
+    "rateSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Rate",
+      "initialValue": -1.0,
+      "minValue": -3.0,
+      "maxValue": 3.0
+    },
+    "zoomSlider2": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zoom",
+      "initialValue": 5.0,
+      "minValue": -10.0,
+      "maxValue": 10.0
+    },
+    "depthSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Depth",
+      "initialValue": 0.6,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    "centerXyPad2": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Center",
+      "initialValue": {
+        "x": -2.0,
+        "y": -1.0
+      },
+      "minValue": {
+        "x": -10.0,
+        "y": -10.0
+      },
+      "maxValue": {
+        "x": 10.0,
+        "y": 10.0
+      }
+    },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
@@ -2671,6 +2964,24 @@
       "minValue": 5.0,
       "maxValue": 20.0
     },
+    "thatsAllFolksCenterXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Thats All Folks Center"
+    },
+    "ringDensitySlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Ring Density",
+      "initialValue": 60.0,
+      "minValue": 30.0,
+      "maxValue": 120.0
+    },
+    "finalitySlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Finality",
+      "initialValue": 0.5,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
     "timeShiftSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Time Shift",
@@ -2685,26 +2996,79 @@
       "minValue": 0.5,
       "maxValue": 2.0
     },
+    "zagSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Zag",
+      "initialValue": 0.1,
+      "minValue": 0.0,
+      "maxValue": 0.2
+    },
     "zigSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zig",
-      "initialValue": 1.0,
+      "initialValue": 10.0,
       "minValue": 0.0,
+      "maxValue": 20.0
+    },
+    "panSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Pan",
+      "initialValue": 0.0,
+      "minValue": 0.0,
+      "maxValue": 9.425
+    },
+    "tiltSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tilt",
+      "initialValue": 0.0,
+      "minValue": -1.0,
       "maxValue": 1.0
     },
-    "amplitudeSlider": {
+    "xSlider": {
       "type": "baaahs.Core:Slider",
-      "title": "Amplitude",
-      "initialValue": 0.1,
-      "minValue": 0.05,
-      "maxValue": 0.2
+      "title": "X",
+      "initialValue": 0.0,
+      "minValue": -10.0,
+      "maxValue": 50.0
     },
-    "periodSlider": {
+    "ySlider": {
       "type": "baaahs.Core:Slider",
-      "title": "Period",
-      "initialValue": 10.0,
-      "minValue": 5.0,
-      "maxValue": 20.0
+      "title": "Y",
+      "initialValue": 0.0,
+      "minValue": -10.0,
+      "maxValue": 50.0
+    },
+    "zSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Z",
+      "initialValue": 0.0,
+      "minValue": -10.0,
+      "maxValue": 50.0
+    },
+    "xyPadXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Xy Pad"
+    },
+    "targetXSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Target X",
+      "initialValue": 240.0,
+      "minValue": -100.0,
+      "maxValue": 500.0
+    },
+    "targetYSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Target Y",
+      "initialValue": 0.0,
+      "minValue": 0.0,
+      "maxValue": 400.0
+    },
+    "targetZSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Target Z",
+      "initialValue": 0.0,
+      "minValue": -200.0,
+      "maxValue": 200.0
     }
   },
   "version": 7

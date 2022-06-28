@@ -4,15 +4,18 @@ import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import baaahs.util.Logger
-import baaahs.util.Stats
+import baaahs.util.*
 import kotlin.math.min
 
 class SacnLink(
     link: Network.Link,
     private val senderCid: ByteArray,
-    sourceName: String
+    sourceName: String,
+    private val clock: Clock
 ) {
+    var lastError: Exception? = null
+    var lastErrorAt: Time? = null
+
     init {
         if (senderCid.size != 16) error("Nope! Sender CID nees to be 16 bytes.")
     }
@@ -47,7 +50,17 @@ class SacnLink(
             data: ByteArray, universe: Int = 1, dataOffset: Int = 0, dataLength: Int = -1, sequenceNumber: Int = -1
         ) {
             val seqNum = if (sequenceNumber == -1) this.sequenceNumber++ else sequenceNumber
-            this@SacnLink.sendDataPacket(address, seqNum, universe, data, dataOffset, dataLength)
+
+            val now = clock.now()
+            if (lastErrorAt?.isBefore(now - waitPeriodAfterNetworkError) != false) {
+                try {
+                    this@SacnLink.sendDataPacket(address, seqNum, universe, data, dataOffset, dataLength)
+                } catch (e: Exception) {
+                    logger.error { "Failed to send packet to ${address.asString()}: ${e.message}" }
+                    lastError = e
+                    lastErrorAt = now
+                }
+            }
         }
     }
 
@@ -160,6 +173,7 @@ class SacnLink(
 
     companion object {
         const val sAcnPort = 5568
+        const val waitPeriodAfterNetworkError = 5
 
         const val VECTOR_ROOT_E131_DATA = 0x4
         private const val VECTOR_ROOT_E131_EXTENDED = 0x8

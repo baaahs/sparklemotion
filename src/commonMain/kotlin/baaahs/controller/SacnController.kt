@@ -10,17 +10,20 @@ import baaahs.util.Time
 
 class SacnController(
     val id: String,
-    sacnLink: SacnLink,
-    address: Network.Address,
+    private val sacnLink: SacnLink,
+    private val address: Network.Address,
     override val defaultFixtureConfig: FixtureConfig?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
-    onlineSince: Time?,
+    private val onlineSince: Time?,
     private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId = ControllerId(SacnManager.controllerTypeName, id)
-    override val state: ControllerState =
-        SacnManager.State(controllerId.name(), address.asString(), onlineSince)
+    override val state: ControllerState get() = SacnManager.State(
+        controllerId.name(), address.asString(), onlineSince, null,
+        sacnLink.lastError?.message,
+        sacnLink.lastErrorAt
+    )
     override val transportType: TransportType
         get() = DmxTransport
 
