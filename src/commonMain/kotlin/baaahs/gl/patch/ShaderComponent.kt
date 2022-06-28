@@ -120,11 +120,9 @@ class ShaderComponent(
         buf.append(fn.toGlsl(index) {
             if (it == fn.name) namespace.qualify(it) else it
         })
-        buf.append(" {\n")
-
         val destComponent = findUpstreamComponent(link)
-        destComponent.appendInvokeAndSet(buf, inputPort.injectedData)
-        buf.append("    return ", destComponent.outputVar, ";\n")
+        buf.append(" {\n")
+        destComponent.appendInvokeAndReturn(buf, inputPort)
         buf.append("}\n")
     }
 
@@ -142,6 +140,11 @@ class ShaderComponent(
         val invocationGlsl = linkedPatch.shader.invoker(namespace, resolvedPortMap).toGlsl(resultVar)
         buf.append("    ", invocationGlsl, ";\n")
         buf.append("\n")
+    }
+
+    override fun appendInvokeAndReturn(buf: StringBuilder, inputPort: InputPort) {
+        appendInvokeAndSet(buf, inputPort.injectedData)
+        buf.append("    return ", outputVar, ";\n")
     }
 
     override fun getExpression(prefix: String): GlslExpr {

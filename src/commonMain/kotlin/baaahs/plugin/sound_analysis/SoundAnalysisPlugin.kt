@@ -51,18 +51,8 @@ class SoundAnalysisPlugin internal constructor(
             classSerializer(SoundAnalysisControl.serializer())
         )
 
-    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
-        get() = listOf(
-            object : DataSourceBuilder<SoundAnalysisDataSource> {
-                override val title: String get() = "Sound Analysis"
-                override val description: String get() = "Spectral analysis of sound input."
-                override val resourceName: String get() = "SoundAnalysis"
-                override val contentType: ContentType get() = soundAnalysisContentType
-                override val serializerRegistrar get() = objectSerializer("$id:$resourceName", dataSource)
-
-                override fun build(inputPort: InputPort): SoundAnalysisDataSource = dataSource
-            }
-        )
+    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> =
+        listOf(SoundAnalysisDataSourceBuilder())
 
     internal val dataSource = SoundAnalysisDataSource()
 
@@ -77,6 +67,16 @@ class SoundAnalysisPlugin internal constructor(
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
             SoundAnalysisFeed(getVarName(id), soundAnalyzer, historySize)
+    }
+
+    inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisDataSource> {
+        override val title: String get() = "Sound Analysis"
+        override val description: String get() = "Spectral analysis of sound input."
+        override val resourceName: String get() = "SoundAnalysis"
+        override val contentType: ContentType get() = soundAnalysisContentType
+        override val serializerRegistrar get() = objectSerializer("$id:$resourceName", dataSource)
+
+        override fun build(inputPort: InputPort): SoundAnalysisDataSource = dataSource
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {
