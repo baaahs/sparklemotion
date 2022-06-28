@@ -9,38 +9,37 @@ uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
 
-#define time (time + 100.0)
 #define PI 3.14159265358979323846
 
 float box(vec2 _st, vec2 _size, float _smoothEdges){
-    _size = vec2(1.75)-_size*0.75;
-    vec2 aa = vec2(_smoothEdges*0.5);
-    vec2 uv = smoothstep(_size,_size+aa,_st);
-    uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);
-    return uv.x*uv.y;
+	_size = vec2(1.75)-_size*0.75;
+	vec2 aa = vec2(_smoothEdges*0.5);
+	vec2 uv = smoothstep(_size,_size+aa,_st);
+	uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);
+	return uv.x*uv.y;
 }
 
 vec2 tile(vec2 _st, float _zoom){
-    _st *= _zoom;
-    return fract(_st);
+	_st *= _zoom;
+	return fract(_st);
 }
 
 vec2 rotate2D(vec2 _st, float _angle, vec2 shift){
-    _st -= 0.5 + shift.x;
-    _st =  mat2(cos(_angle),-sin(_angle),
-                sin(_angle),cos(_angle)) * _st;
-    _st += 0.5 + shift.y;
-    return _st;
+	_st -= 0.5 + shift.x;
+	_st =  mat2(cos(_angle),-sin(_angle),
+	sin(_angle),cos(_angle)) * _st;
+	_st += 0.5 + shift.y;
+	return _st;
 }
 
 void main(void){
 	vec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 5.0;
 	vec2 vv = v; vec2 vvv = v;
-	float tm = time*0.02;
+	float tm = (time + 100.)*0.02;
 	vec2 mspt = (vec2(
-			sin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),
-			cos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)
-			)+15.0)*0.03;
+	sin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),
+	cos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)
+	)+15.0)*0.03;
 
 
 	vec2 simple = (vec2(sin(tm), cos(tm)) + 1.5) * 0.15;
