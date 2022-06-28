@@ -107,7 +107,7 @@
       "description": "It's wobbly!",
       "lastModifiedMs": 0,
       "tags": [],
-      "srcFile": "Wobble.glsl"
+      "srcFile": "effects/Wobble.glsl"
     },
     {
       "id": "acid-at-the-disco",
