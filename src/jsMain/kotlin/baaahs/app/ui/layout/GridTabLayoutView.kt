@@ -42,7 +42,7 @@ import styled.inlineStyles
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
     val showManager = observe(appContext.showManager)
-    val styles = appContext.allStyles.layout
+    val layoutStyles = appContext.allStyles.layout
 
     val gridLayoutContext = useContext(dragNDropContext).gridLayoutContext
     observe(gridLayoutContext)
@@ -111,14 +111,14 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 
 
-    div(+styles.gridOuterContainer and
-            (+if (editMode.isOn) styles.editModeOn else styles.editModeOff) and
-            +if (gridLayoutContext.dragging) styles.dragging else styles.notDragging
+    div(+layoutStyles.gridOuterContainer and
+            (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) and
+            +if (gridLayoutContext.dragging) layoutStyles.dragging else layoutStyles.notDragging
     ) {
         ref = containerDiv
 
         if (editMode.isAvailable) {
-            div(+styles.gridBackground) {
+            div(+layoutStyles.gridBackground) {
                 val positionParams = PositionParams(
                     margin to margin,
                     itemPadding to itemPadding,
@@ -131,7 +131,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                 layoutGrid.forEachCell { column, row ->
                     val position = positionParams.calcGridItemPosition(column, row, 1, 1)
 
-                    div(+styles.emptyGridCell) {
+                    div(+layoutStyles.emptyGridCell) {
                         inlineStyles {
                             top = position.top.px
                             left = position.left.px
@@ -150,7 +150,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
         gridLayout {
             attrs.id = "top"
-            attrs.className = +styles.gridContainer
+            attrs.className = +layoutStyles.gridContainer
             attrs.width = layoutDimens.first.toDouble()
             attrs.autoSize = false
             attrs.cols = columns
@@ -168,8 +168,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.onDragStop = handleDragStop
 
             gridLayout.items.forEachIndexed { index, item ->
-                val gridCellStyles = +styles.gridCell and
-                        if (item.control is OpenButtonGroupControl) styles.groupGridCell else null
+                val gridCellStyles = +layoutStyles.gridCell and
+                        if (item.control is OpenButtonGroupControl) layoutStyles.groupGridCell else null
 
                 div(gridCellStyles) {
                     key = item.control.id
@@ -201,7 +201,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                     gridItem {
                         attrs.control = item.control
                         attrs.controlProps = genericControlProps.withLayout(item.layout, editor)
-                        attrs.className = -styles.controlBox
+                        attrs.className = -layoutStyles.controlBox
                     }
                 }
             }
@@ -243,7 +243,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 }
 
-private class AddMenuContext(
+class AddMenuContext(
     val anchorEl: HTMLElement,
     val column: Int,
     val row: Int,
