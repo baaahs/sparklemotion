@@ -70,6 +70,7 @@ class OpenShow(
             val unknownDataSources = allDataSources.values
                 .filterIsInstance<UnknownDataSource>()
             unknownDataSources
+                .asSequence()
                 .map { ds -> ds.pluginRef }
                 .groupBy { it.pluginId }
                 .map { (pluginId, pluginRefs) ->
@@ -77,7 +78,7 @@ class OpenShow(
                             pluginRefs.map { it.resourceName }.sorted()
                 }
                 .sortedBy { (desc, _) -> desc.title }
-                .associate { it }
+                .associate { (desc, resources) -> desc to resources.distinct().sorted() }
         }
 
     val allProblems: List<Problem>
