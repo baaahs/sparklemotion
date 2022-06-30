@@ -152,6 +152,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val show = showManager.show
+    val openShow = showManager.openShow;
+
+    val autoMode = uiSettings.autoMode
+    val handleAutoModeChange = callback(handleUiSettingsChange) {
+        handleUiSettingsChange { it.copy(autoMode = !it.autoMode) }
+        if (openShow == null) return@callback;
+        if (autoMode) {
+            openShow.startAutoMode();
+        }
+        else {
+            openShow.stopAutoMode();
+        };
+    }
+
+    if (autoMode && openShow != null) {
+        openShow.startAutoMode();
+    }
 
     onMount(keyboard) {
         keyboard.listen(window)
@@ -213,6 +230,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
+                        attrs.autoMode = autoMode
+                        attrs.onAutoModeChange = handleAutoModeChange
                         attrs.onSettings = handleSettings
                     }
 

@@ -65,6 +65,17 @@ class OpenShow(
         dataSource to feed
     }
 
+    val allFilterButtonControls: List<OpenButtonControl> get() = run {
+        allControls.filterIsInstance<OpenButtonControl>()
+            .filter { patches.any { it.isFilter } }
+    }
+
+    private val autoMode = AutoMode(this);
+
+    fun startAutoMode() = autoMode.start();
+    fun stopAutoMode() = autoMode.stop();
+
+
     val missingPlugins: List<PluginDesc>
         get() = run {
             val unknownDataSources = allDataSources.values
@@ -108,6 +119,7 @@ class OpenShow(
         ActivePatchSet.build(this, allDataSources, feeds)
 
     override fun onRelease() {
+        autoMode.stop().clean();
         openContext.release()
         feeds.values.forEach { it.disuse() }
     }

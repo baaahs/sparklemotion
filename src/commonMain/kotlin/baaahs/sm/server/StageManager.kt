@@ -67,6 +67,8 @@ class StageManager(
     }
 
     override fun <T : Gadget> useGadget(id: String): T {
+        showRunner.let {
+        }
         return gadgetManager.useGadget(id)
     }
 
