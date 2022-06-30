@@ -9,7 +9,7 @@ object LoggerConfig {
     var defaultLevel = LogLevel.WARN
 
     val stringLevels = mapOf<String, LogLevel>(
-
+        "AutoMode" to LogLevel.INFO
     )
 
     val classLevels = mapOf<KClass<*>, LogLevel>(
