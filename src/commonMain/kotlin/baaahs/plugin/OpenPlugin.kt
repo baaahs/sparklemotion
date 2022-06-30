@@ -160,5 +160,6 @@ class PluginContext(
 data class AddControlMenuItem(
     val label: String,
     val icon: Icon,
+    val validForButtonGroup: Boolean = false,
     val createControlFn: (mutableShow: MutableShow) -> MutableControl
 )
