@@ -240,7 +240,13 @@ val enableScroll = {
 }
 
 object Events {
-    const val primaryButton = 1
+    object Button {
+        const val primary = 0
+    }
+
+    object ButtonMask {
+        const val primary = 1
+    }
 }
 
 val Event.buttons: Int get() = asDynamic().buttons as Int
