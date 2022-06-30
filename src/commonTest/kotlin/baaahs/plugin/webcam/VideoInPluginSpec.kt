@@ -2,7 +2,6 @@ package baaahs.plugin.webcam
 
 import baaahs.describe
 import baaahs.gl.RootToolchain
-import baaahs.gl.autoWire
 import baaahs.gl.openShader
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
@@ -11,6 +10,7 @@ import baaahs.plugin.ClientPlugins
 import baaahs.plugin.Plugins
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Shader
+import baaahs.show.mutable.MutablePatchSet
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.TextureResource
@@ -49,6 +49,7 @@ object VideoInPluginSpec : Spek({
         val openShader by value { toolchain.openShader(Shader("video", shader)) }
         val glsl by value {
             toolchain.autoWire(openShader).acceptSuggestedLinkOptions().confirm()
+                .let { MutablePatchSet(it) }
                 .openForPreview(toolchain, ContentType.Color)!!
                 .toGlsl().trim()
         }
@@ -69,7 +70,7 @@ object VideoInPluginSpec : Spek({
                     layout(location = 0) out vec4 sm_result;
 
                     // Data source: Video In
-                    uniform sampler2D ds_videoIn_texture;
+                    uniform sampler2D ds_in_videoIn_texture;
 
                     // Shader: video; namespace: p0
                     // video
@@ -78,7 +79,7 @@ object VideoInPluginSpec : Spek({
 
                     #line 3 0
                     vec4 p0_video_videoIn(vec2 uv) {
-                        return texture(ds_videoIn_texture, uv);
+                        return texture(ds_in_videoIn_texture, uv);
                     }
 
                     #line 7 0

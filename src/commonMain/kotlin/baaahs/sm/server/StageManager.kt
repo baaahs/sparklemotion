@@ -79,7 +79,7 @@ class StageManager(
                     "The following plugin(s) are unavailable, " +
                             "so some features may not work as expected:\n" +
                             "* " + missingPlugins.entries.joinToString("\n* ") { (desc, resources) ->
-                        "desc.title (${resources.joinToString()})"
+                        "${desc.title} (${resources.joinToString()})"
                     })
             }
         }
