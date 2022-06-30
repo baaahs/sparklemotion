@@ -65,25 +65,27 @@ class OpenShow(
         dataSource to feed
     }
 
-    val missingPlugins: List<PluginDesc>
+    val missingPlugins: Map<PluginDesc, List<String>>
         get() = run {
             val unknownDataSources = allDataSources.values
                 .filterIsInstance<UnknownDataSource>()
             unknownDataSources
-                .map { ds -> ds.pluginRef.pluginId }
-                .distinct()
-                .map { pluginId ->
-                    PluginDesc(pluginId, pluginId, null, null, null)
+                .map { ds -> ds.pluginRef }
+                .groupBy { it.pluginId }
+                .map { (pluginId, pluginRefs) ->
+                    PluginDesc(pluginId, pluginId, null, null, null) to
+                            pluginRefs.map { it.resourceName }.sorted()
                 }
-                .sortedBy { it.title }
+                .sortedBy { (desc, _) -> desc.title }
+                .associate { it }
         }
 
     val allProblems: List<Problem>
         get() = buildList {
-            addAll(missingPlugins.map { desc ->
+            addAll(missingPlugins.map { (desc, resources) ->
                 Problem(
                     "Missing plugin \"${desc.title}\".",
-                    "Some things may not work properly.",
+                    "Some things may not work properly. (${resources.joinToString()})",
                     severity = Severity.WARN
                 )
             })
