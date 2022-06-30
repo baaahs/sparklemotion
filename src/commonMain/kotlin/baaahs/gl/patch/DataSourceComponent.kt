@@ -2,6 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
 
 class DataSourceComponent(
@@ -35,7 +36,17 @@ class DataSourceComponent(
         dataSource.appendInvokeAndSet(buf, varName)
     }
 
+    override fun appendInvokeAndReturn(buf: StringBuilder, inputPort: InputPort) {
+        buf.append("    return ")
+        dataSource.appendInvoke(buf, varName, inputPort)
+        buf.append(";\n")
+    }
+
     override fun getExpression(prefix: String): GlslExpr {
         return GlslExpr(dataSource.getVarName(varName))
+    }
+
+    override fun toString(): String {
+        return "DataSourceComponent(dataSource=$dataSource, varName='$varName')"
     }
 }

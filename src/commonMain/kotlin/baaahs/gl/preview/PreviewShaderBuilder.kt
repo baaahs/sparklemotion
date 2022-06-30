@@ -29,6 +29,7 @@ import baaahs.show.mutable.MutablePatchSet
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.util.Logger
+import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -126,8 +127,8 @@ class PreviewShaderBuilder(
         fun unsupported(): Unit = error("transitionTo($newState) not supported")
         when (newState) {
             ShaderBuilder.State.Unbuilt -> unsupported()
-            ShaderBuilder.State.Analyzing -> coroutineScope.launch { analyze() }
-            ShaderBuilder.State.Linking -> coroutineScope.launch { link() }
+            ShaderBuilder.State.Analyzing -> coroutineScope.launch(coroutineExceptionHandler) { analyze() }
+            ShaderBuilder.State.Linking -> coroutineScope.launch(coroutineExceptionHandler) { link() }
             ShaderBuilder.State.Linked -> { } // No-op; an observer will handle it.
             ShaderBuilder.State.Compiling -> unsupported()
             ShaderBuilder.State.Success -> unsupported()
@@ -182,7 +183,7 @@ class PreviewShaderBuilder(
         notifyChanged()
         logger.debug { "Transition to $state for ${shader.title}"}
 
-        coroutineScope.launch {
+        coroutineScope.launch(coroutineExceptionHandler) {
             val showPlayer = object : BaseShowPlayer(toolchain, sceneProvider) {}
 
             compile(renderEngine) { id, dataSource ->

@@ -15,7 +15,8 @@ import baaahs.util.RefCounter
 class FakeOpenShader(
     override val inputPorts: List<InputPort>,
     override val outputPort: OutputPort,
-    override val title: String = "Test shader"
+    override val title: String = "Test shader",
+    override val shaderType: ShaderType = ShaderType.Unknown
 ) : OpenShader, RefCounted by RefCounter() {
     override val shader: Shader
         get() = Shader(title, "fake src for $title")
@@ -35,9 +36,6 @@ class FakeOpenShader(
     ): GlslCode.Invoker = object : GlslCode.Invoker {
         override fun toGlsl(resultVar: String): String = "// invocationGlsl for $title;\n"
     }
-
-    override val shaderType: ShaderType
-        get() = TODO("not implemented")
 
     override val shaderDialect: ShaderDialect
         get() = TODO("not implemented")

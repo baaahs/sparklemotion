@@ -30,7 +30,7 @@ interface ShaderType {
 
 
     fun ShaderAnalysis.anyInputIs(contentType: ContentType) =
-        inputPorts.any { it.contentType == contentType }
+        inputPorts.any { it.contentType == contentType && it.pluginRef == null }
 
     fun ShaderAnalysis.outputIs(contentType: ContentType) =
         outputPorts.firstOrNull()?.contentType == contentType
