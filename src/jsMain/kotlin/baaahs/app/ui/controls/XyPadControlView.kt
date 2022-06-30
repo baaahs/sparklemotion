@@ -6,7 +6,6 @@ import baaahs.control.OpenXyPadControl
 import baaahs.geom.Vector2F
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
-import baaahs.ui.Events.primaryButton
 import kotlinx.css.*
 import kotlinx.css.properties.boxShadow
 import kotlinx.html.js.onMouseDownFunction
@@ -65,7 +64,7 @@ private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
     }
 
     val handleMouseDownEvent by eventHandler(handleMouseEvent) { e: Event ->
-        if (e.buttons == primaryButton) mouseDraggingState.current = true
+        if (e.buttons == Events.ButtonMask.primary) mouseDraggingState.current = true
         handleMouseEvent(e)
         e.preventDefault()
     }
@@ -77,7 +76,7 @@ private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
     }
 
     val handleMouseMoveEvent by eventHandler(handleMouseEvent) { e: Event ->
-        if (mouseDraggingState.current == true && e.buttons == primaryButton)
+        if (mouseDraggingState.current == true && e.buttons == Events.ButtonMask.primary)
             handleMouseEvent(e)
         e.preventDefault()
     }

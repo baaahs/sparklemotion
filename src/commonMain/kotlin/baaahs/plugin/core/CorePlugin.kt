@@ -35,7 +35,7 @@ class CorePlugin(
     override val dataSourceBuilders get() = Companion.dataSourceBuilders
 
     override val addControlMenuItems: List<AddControlMenuItem> get() = listOf(
-        AddControlMenuItem("New Button…", CommonIcons.Button) { mutableShow ->
+        AddControlMenuItem("New Button…", CommonIcons.Button, true) { mutableShow ->
             MutableButtonControl(ButtonControl("New Button"), mutableShow)
         },
 

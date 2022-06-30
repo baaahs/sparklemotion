@@ -1,9 +1,9 @@
 package baaahs.app.ui.layout
 
+import baaahs.SparkleMotion
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.controls.Styles
-import baaahs.ui.asColor
-import baaahs.ui.selector
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
@@ -45,9 +45,9 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val gridCell by css {
         display = Display.grid
 
-        descendants(selector(::gridContainer)) {
-            pointerEvents = PointerEvents.auto
-        }
+//        descendants(selector(::gridContainer)) {
+//            pointerEvents = PointerEvents.auto
+//        }
 
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
     }
@@ -216,10 +216,37 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     val notDragging by css {
     }
 
+    val buttonGroupCard by css {
+        display = Display.grid
+        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
+        overflowY = Overflow.scroll
+        backgroundColor = if (SparkleMotion.USE_CSS_TRANSFORM) {
+            Color("#0000007f")
+        } else {
+            theme.paperLowContrast
+        }
+
+        descendants(Styles, Styles::controlButton) {
+            transition(::transform, duration = Styles.editTransitionDuration, timing = Timing.linear)
+        }
+
+        child(this@LayoutStyles, this@LayoutStyles::gridContainer) {
+            gridColumn = GridColumn("1")
+            gridRow = GridRow("2")
+        }
+        child(this@LayoutStyles, this@LayoutStyles::gridBackground) {
+            gridColumn = GridColumn("1")
+            gridRow = GridRow("2")
+            position = Position.relative
+        }
+    }
+
     val buttonGroupHeader by css {
         padding(2.px, 1.em)
         lineHeight = LineHeight.normal
         userSelect = UserSelect.none
+        gridColumn = GridColumn("1")
+        gridRow = GridRow("1")
     }
 
     val global = CssBuilder().apply {

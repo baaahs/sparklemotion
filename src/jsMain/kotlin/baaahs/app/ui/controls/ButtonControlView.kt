@@ -11,6 +11,7 @@ import kotlinx.js.jso
 import mui.material.ToggleButton
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.events.MouseEvent
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -51,8 +52,9 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
-            buttonEl.addEventListener("long-press", callback = {
-                if (appContext.showManager.editMode.isOff) {
+            buttonEl.addEventListener("long-press", callback = { e ->
+                e as MouseEvent
+                if (e.button.toInt() == Events.Button.primary && appContext.showManager.editMode.isOff) {
                     lightboxOpen = true
                 }
             })

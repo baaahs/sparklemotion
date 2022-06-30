@@ -95,7 +95,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                 attrs.width = (radius * 2).toString()
                 attrs.height = (radius * 2).toString()
                 attrs.onMouseDownFunction = { e: Event ->
-                    if (e.buttons == Events.primaryButton) {
+                    if (e.buttons == Events.ButtonMask.primary) {
                         mouseDraggingState.current = true
                         updateColors(e, selectedIndex ?: 0)
                         handleColorChange()

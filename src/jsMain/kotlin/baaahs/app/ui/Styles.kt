@@ -48,7 +48,7 @@ class AllStyles(val theme: Theme) {
     }
 }
 
-private fun linearRepeating(
+fun linearRepeating(
     color1: Color,
     color2: Color,
     interval: LinearDimension = 10.px,
