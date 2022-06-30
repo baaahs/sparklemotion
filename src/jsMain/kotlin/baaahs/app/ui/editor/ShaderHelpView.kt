@@ -57,9 +57,11 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                         code { +"struct ${type.name} {\n" }
 
                                         type.fields.forEach { field ->
-                                            val typeStr = if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
+                                            val typeStr =
+                                                if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
                                             val style = if (field.deprecated) styles.deprecated else styles.normal
-                                            val comment = if (field.deprecated) "Deprecated. ${field.description}" else field.description
+                                            val comment =
+                                                if (field.deprecated) "Deprecated. ${field.description}" else field.description
 
                                             code {
                                                 +"    "
@@ -73,7 +75,13 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                     val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
 
                                     code {
-                                        +"uniform ${type.glslLiteral} $varName; "
+                                        val funDef = dataSourceBuilder.funDef(varName)
+                                        if (funDef != null) {
+                                            +funDef
+                                            +" "
+                                        } else {
+                                            +"uniform ${type.glslLiteral} $varName; "
+                                        }
                                         span(+styles.comment) { +"// @@${pluginRef.shortRef()}\n" }
                                     }
                                 }
