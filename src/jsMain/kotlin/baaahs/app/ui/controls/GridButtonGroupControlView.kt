@@ -125,7 +125,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     Card {
         ref = cardRef
         attrs.classes = jso {
-            root = -controlStyles.buttonGroupCard and
+            root = -layoutStyles.buttonGroupCard and
                     (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) // and
 //                    +if (gridLayoutContext.dragging) layoutStyles.dragging else layoutStyles.notDragging
         }
