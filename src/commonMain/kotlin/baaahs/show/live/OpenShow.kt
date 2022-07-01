@@ -66,15 +66,16 @@ class OpenShow(
     }
 
     val allFilterButtonControls: List<OpenButtonControl> get() = run {
-        allControls.filterIsInstance<OpenButtonControl>()
-            .filter { patches.any { it.isFilter } }
+//        allControls.filterIsInstance<OpenButtonControl>()
+//            .filter { patches.any { it.inEqualsOut } && inUse() }
+        val currentTab = openLayouts.currentFormat?.currentTab as OpenGridTab;
+        currentTab.items.map { it.control }.filterIsInstance<OpenButtonControl>()
     }
 
-    private val autoMode = AutoMode(this);
+    private val autoMode = AutoMode(this)
 
-    fun startAutoMode() = autoMode.start();
-    fun stopAutoMode() = autoMode.stop();
-
+    fun startAutoMode() = autoMode.start()
+    fun stopAutoMode() = autoMode.stop()
 
     val missingPlugins: List<PluginDesc>
         get() = run {
@@ -119,7 +120,7 @@ class OpenShow(
         ActivePatchSet.build(this, allDataSources, feeds)
 
     override fun onRelease() {
-        autoMode.stop().clean();
+        autoMode.stop();
         openContext.release()
         feeds.values.forEach { it.disuse() }
     }

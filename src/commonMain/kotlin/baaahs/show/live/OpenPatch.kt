@@ -37,6 +37,13 @@ class OpenPatch(
             }
         }
 
+    val inEqualsOut: Boolean
+        get() = with(shader) {
+            inputPorts.any {
+                it.contentType == outputPort.contentType
+            }
+        }
+
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {

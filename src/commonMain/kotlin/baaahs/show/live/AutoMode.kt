@@ -13,6 +13,7 @@ class AutoMode(
     private val openShow: OpenShow
 ) {
 
+    var indexSeed = 13;
     var autoMode = false;
     var running = false;
     val isRunning: Boolean get() = run {
@@ -27,9 +28,9 @@ class AutoMode(
 
     fun start() {
         if (isRunning) return
+        running = true
         autoMode = true
-        gadgetWizard = CoroutineScope(Dispatchers.Main).launch {
-            running = true
+        gadgetWizard = CoroutineScope(Dispatchers.Unconfined).launch {
             playWithButtons()
         }
     }
@@ -37,29 +38,26 @@ class AutoMode(
     var frequency = 5000L
 
     private suspend fun playWithButtons() {
-        var randomIndex = 0
-        var controls: List<OpenButtonControl> = openShow.allFilterButtonControls
+        val controls: List<OpenButtonControl> = openShow.allFilterButtonControls
         logger.info { "Controls " + controls.joinToString { it.gadget.title } }
+        val random = Random(indexSeed++)
+        var control: OpenButtonControl
         while (autoModeOn) {
-            controls = openShow.allFilterButtonControls
-            randomIndex = Random.nextInt(0, controls.size);
-            controls[randomIndex].gadget.enabled = !controls[randomIndex].gadget.enabled
-            logger.info { "Pushed $randomIndex ${controls[randomIndex].gadget.title}" }
+            control = controls.random(random)
+            // This doesn't update the UI :(
+            control.click()
+            logger.info { "Pushed ${control.gadget.title}" }
             delay(frequency) // TODO: Config this
         }
         logger.info { "Stopped" }
         running = false
     }
 
-    fun stop(): AutoMode {
+    fun stop() {
         logger.info { "Stop Called" }
         autoMode = false;
-        return this
-    }
-
-    fun clean() {
-        GlobalScope.launch {
-            gadgetWizard?.join()
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            gadgetWizard?.cancelAndJoin()
         }
         gadgetWizard = null
     }
