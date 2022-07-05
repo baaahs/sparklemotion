@@ -2,6 +2,7 @@ package baaahs.fixtures
 
 import baaahs.device.FixtureType
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -202,5 +203,7 @@ class FixtureTypeRenderPlan(
 
 class ProgramRenderPlan(
     val program: GlslProgram?,
-    val renderTargets: List<RenderTarget>
+    val renderTargets: List<RenderTarget>,
+    val linkedProgram: LinkedProgram? = null,
+    val source: String? = null
 )
