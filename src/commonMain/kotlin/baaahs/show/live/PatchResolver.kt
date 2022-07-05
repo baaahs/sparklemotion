@@ -44,7 +44,7 @@ class PatchResolver(
             .mapValues { (_, portRef) ->
                 when (portRef) {
                     is DataSourceRef -> findDataSource(portRef.dataSourceId).link(portRef.dataSourceId)
-                    is ShaderChannelRef -> OpenPatch.ShaderChannelLink(portRef.shaderChannel)
+                    is StreamRef -> OpenPatch.StreamLink(portRef.stream)
                     is OutputPortRef -> TODO()
                     is ConstPortRef -> OpenPatch.ConstLink(portRef.glsl, GlslType.from(portRef.type))
                 }
@@ -69,7 +69,7 @@ class PatchResolver(
             return OpenPatch(
                 shader,
                 links,
-                patch.shaderChannel,
+                patch.stream,
                 patch.priority,
                 extraLinks = extraLinks,
                 missingLinks = missingLinks.toSet()

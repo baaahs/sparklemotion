@@ -9,22 +9,22 @@ import baaahs.gl.openShader
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.OpenShow
 import baaahs.show.live.OpenShowVisitor
 import baaahs.show.mutable.*
 import baaahs.util.Logger
 
-class ChannelsInfo {
-    internal val shaderChannels: MutableMap<ContentType, MutableSet<MutableShaderChannel>>
+class StreamsInfo {
+    internal val streams: MutableMap<ContentType, MutableSet<MutableStream>>
     internal val fixtureTypes: Collection<FixtureType>
 
     constructor(
         parentShow: OpenShow? = null,
         fixtureTypes: Collection<FixtureType>
     ) {
-        val shaderChannels = shaderChannelsFromFixtureTypes(fixtureTypes)
+        val streams = streamsFromFixtureTypes(fixtureTypes)
 
         parentShow?.let {
             object : OpenShowVisitor() {
@@ -32,13 +32,13 @@ class ChannelsInfo {
                     super.visitPatch(openPatch)
 
                     val contentType = openPatch.shader.outputPort.contentType
-                    shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                        .add(openPatch.shaderChannel.toMutable())
+                    streams.getOrPut(contentType, ::mutableSetOf)
+                        .add(openPatch.stream.toMutable())
                 }
             }.visitShow(parentShow)
         }
 
-        this.shaderChannels = shaderChannels
+        this.streams = streams
         this.fixtureTypes = fixtureTypes
     }
 
@@ -47,49 +47,49 @@ class ChannelsInfo {
         fixtureTypes: Collection<FixtureType>,
         toolchain: Toolchain
     ) {
-        val shaderChannels = shaderChannelsFromFixtureTypes(fixtureTypes)
+        val streams = streamsFromFixtureTypes(fixtureTypes)
 
         parentMutableShow?.accept(object : MutableShowVisitor {
             override fun visit(mutablePatch: MutablePatch) {
                 try {
                     val shader = mutablePatch.mutableShader.build()
                     val contentType = toolchain.openShader(shader).outputPort.contentType
-                    shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                        .add(mutablePatch.shaderChannel)
+                    streams.getOrPut(contentType, ::mutableSetOf)
+                        .add(mutablePatch.stream)
                 } catch (e: Exception) {
                     // It's okay, just ignore it.
                 }
             }
         })
-        this.shaderChannels = shaderChannels
+        this.streams = streams
         this.fixtureTypes = fixtureTypes
     }
 
-    private fun shaderChannelsFromFixtureTypes(fixtureTypes: Collection<FixtureType>): MutableMap<ContentType, MutableSet<MutableShaderChannel>> {
-        val shaderChannels = mutableMapOf<ContentType, MutableSet<MutableShaderChannel>>()
+    private fun streamsFromFixtureTypes(fixtureTypes: Collection<FixtureType>): MutableMap<ContentType, MutableSet<MutableStream>> {
+        val streams = mutableMapOf<ContentType, MutableSet<MutableStream>>()
 
         val likelyPipelineArtifactTypes = fixtureTypes.flatMap { it.likelyPipelines }.map { it.second }
         likelyPipelineArtifactTypes.forEach { contentType ->
-            shaderChannels.getOrPut(contentType, ::mutableSetOf)
-                .add(ShaderChannel.Main.toMutable())
+            streams.getOrPut(contentType, ::mutableSetOf)
+                .add(Stream.Main.toMutable())
         }
-        return shaderChannels
+        return streams
     }
 
-    operator fun get(contentType: ContentType): Set<MutableShaderChannel>? {
-        return shaderChannels[contentType]
+    operator fun get(contentType: ContentType): Set<MutableStream>? {
+        return streams[contentType]
     }
 }
 
 class PatchOptions(
     shader: OpenShader,
-    val shaderChannel: ShaderChannel = ShaderChannel.Main,
-    channelsInfo: ChannelsInfo,
+    val stream: Stream = Stream.Main,
+    streamsInfo: StreamsInfo,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
     currentLinks: Map<String, MutablePort>,
     private val plugins: Plugins
 ) {
-    val shaderChannels: List<MutableShaderChannel>
+    val streams: List<MutableStream>
     val inputPortLinkOptions: Map<String, List<LinkOption>>
 
     init {
@@ -113,19 +113,19 @@ class PatchOptions(
                         )
                     } else {
                         PortLinkOption(
-                            MutableShaderChannel(shaderChannel.id),
+                            MutableStream(stream.id),
                             isExactContentType = isExactContentType,
                             isDefaultBinding = true,
                         )
                     }
                 )
 
-                channelsInfo[contentType]?.forEach { mutableShaderChannel ->
+                streamsInfo[contentType]?.forEach { mutableStream ->
                     options.add(
                         PortLinkOption(
                             // TODO: this is dumb and broken.
-                            mutableShaderChannel,
-                            isShaderChannel = true,
+                            mutableStream,
+                            isStream = true,
                             isExactContentType = isExactContentType
                         )
                     )
@@ -134,9 +134,9 @@ class PatchOptions(
                 if (contentType == shader.outputPort.contentType) {
                     options.add(
                         PortLinkOption(
-                            shaderChannel.toMutable(),
+                            stream.toMutable(),
                             createsFilter = true,
-                            isShaderChannel = true,
+                            isStream = true,
                             isExactContentType = isExactContentType
                         )
                     )
@@ -171,7 +171,7 @@ class PatchOptions(
             inputPort.id to sortedOptions
         }
 
-        this.shaderChannels = channelsInfo.shaderChannels.values.flatten().sortedBy { it.title }
+        this.streams = streamsInfo.streams.values.flatten().sortedBy { it.title }
         this.inputPortLinkOptions = map
     }
 

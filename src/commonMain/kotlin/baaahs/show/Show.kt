@@ -74,7 +74,7 @@ data class Show(
 data class Patch(
     val shaderId: String,
     val incomingLinks: Map<String, PortRef>,
-    val shaderChannel: ShaderChannel = ShaderChannel.Main,
+    val stream: Stream = Stream.Main,
     val priority: Float = 0f
 
     // TODO: Fixture matcher (previously called "Surfaces") will eventually go here.
@@ -123,16 +123,15 @@ data class Shader(
     fun suggestId(): String = title.camelize()
 }
 
-@Serializable(with = ShaderChannel.ShaderChannelSerializer::class)
-data class ShaderChannel(val id: String) {
-    fun toMutable(): MutableShaderChannel = MutableShaderChannel(id)
+@Serializable(with = Stream.Serializer::class)
+data class Stream(val id: String) {
+    fun toMutable(): MutableStream = MutableStream(id)
 
     companion object {
-        val Main = ShaderChannel("main")
+        val Main = Stream("main")
     }
 
-    class ShaderChannelSerializer :
-        KSerializer<ShaderChannel> {
+    class Serializer : KSerializer<Stream> {
         override val descriptor: SerialDescriptor
             get() = PrimitiveSerialDescriptor(
                 "id",
@@ -140,11 +139,11 @@ data class ShaderChannel(val id: String) {
             )
 
 
-        override fun deserialize(decoder: Decoder): ShaderChannel {
-            return ShaderChannel(decoder.decodeString())
+        override fun deserialize(decoder: Decoder): Stream {
+            return Stream(decoder.decodeString())
         }
 
-        override fun serialize(encoder: Encoder, value: ShaderChannel) {
+        override fun serialize(encoder: Encoder, value: Stream) {
             encoder.encodeString(value.id)
         }
     }

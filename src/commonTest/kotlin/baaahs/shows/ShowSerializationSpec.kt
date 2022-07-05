@@ -300,9 +300,9 @@ private fun jsonFor(portRef: PortRef): JsonObject {
             put("type", "datasource")
             put("dataSourceId", portRef.dataSourceId)
         }
-        is ShaderChannelRef -> buildJsonObject {
-            put("type", "shader-channel")
-            put("shaderChannel", portRef.shaderChannel.id)
+        is StreamRef -> buildJsonObject {
+            put("type", "stream")
+            put("stream", portRef.stream.id)
         }
         is OutputPortRef -> buildJsonObject {
             put("type", "output")
@@ -320,7 +320,7 @@ private fun jsonFor(shader: Shader) = buildJsonObject {
 private fun jsonFor(patch: Patch) = buildJsonObject {
     put("shaderId", patch.shaderId)
     put("incomingLinks", patch.incomingLinks.jsonMap { jsonFor(it) })
-    put("shaderChannel", patch.shaderChannel.id)
+    put("stream", patch.stream.id)
     put("priority", patch.priority)
 }
 

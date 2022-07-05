@@ -12,7 +12,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
@@ -51,7 +51,7 @@ class ProgramResolver(
             portDiagrams.mapValues { (fixtureType, devicePortDiagrams) ->
                 val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
                     val linkedPatch = portDiagram.resolvePatch(
-                        ShaderChannel.Main,
+                        Stream.Main,
                         fixtureType.resultContentType,
                         dataSources
                     )

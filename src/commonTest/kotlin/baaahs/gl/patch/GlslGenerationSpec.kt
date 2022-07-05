@@ -10,7 +10,7 @@ import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.core.FixtureInfoDataSource
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.plugin.core.datasource.*
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
@@ -61,7 +61,7 @@ object GlslGenerationSpec : Spek({
                         "blueness",
                         SliderDataSource("Blueness", 0f, 0f, 1f, null)
                     )
-                    shaderChannel = ShaderChannel.Main.editor()
+                    stream = Stream.Main.editor()
                 }
             }
 
@@ -153,7 +153,7 @@ object GlslGenerationSpec : Spek({
                 mutablePatchSet.addPatch(mainShader) {
                     link("resolution", ResolutionDataSource())
                     link("fragCoord", RasterCoordinateDataSource())
-                    shaderChannel = ShaderChannel.Main.editor()
+                    stream = Stream.Main.editor()
                 }
             }
 
@@ -236,7 +236,7 @@ object GlslGenerationSpec : Spek({
                     link("iResolution", ResolutionDataSource())
                     link("iTime", TimeDataSource())
                     link("fragCoord", RasterCoordinateDataSource())
-                    shaderChannel = ShaderChannel.Main.editor()
+                    stream = Stream.Main.editor()
                 }
             }
 
@@ -316,15 +316,15 @@ object GlslGenerationSpec : Spek({
                     addPatch(cylindricalProjection) {
                         link("pixelLocation", PixelLocationDataSource())
                         link("modelInfo", ModelInfoDataSource())
-                        shaderChannel = ShaderChannel.Main.editor()
+                        stream = Stream.Main.editor()
                     }
 
                     addPatch(mainShader) {
-                        link("gl_FragCoord", ShaderChannel.Main.toMutable())
+                        link("gl_FragCoord", Stream.Main.toMutable())
                         link("resolution", ResolutionDataSource())
                         link("time", TimeDataSource())
                         link("blueness", SliderDataSource("Blueness", 0f, 0f, 1f, null))
-                        shaderChannel = ShaderChannel.Main.editor()
+                        stream = Stream.Main.editor()
                     }
                 }
             }
@@ -449,7 +449,7 @@ object GlslGenerationSpec : Spek({
             }
         }
 
-        describe("mixing from another channel") {
+        describe("mixing from another stream") {
             val otherShaderActualChannel by value { "other" }
 
             override(shaderText) {
@@ -492,13 +492,13 @@ object GlslGenerationSpec : Spek({
                 mutablePatchSet.addPatch(mainPaintShader)
                 mutablePatchSet.addPatch(otherPaintShader) {
                     link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
-                    shaderChannel = MutableShaderChannel.from(otherShaderActualChannel)
+                    stream = MutableStream.from(otherShaderActualChannel)
                 }
 
                 mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
-                    link("inColor", MutableShaderChannel("main"))
-                    link("inColor2", MutableShaderChannel("other"))
+                    link("inColor", MutableStream("main"))
+                    link("inColor2", MutableStream("other"))
                 }
             }
 
@@ -572,7 +572,7 @@ object GlslGenerationSpec : Spek({
                 )
             }
 
-            context("when there's no paint shader on the other channel") {
+            context("when there's no paint shader on the other stream") {
                 override(otherShaderActualChannel) { "notOther" }
 
                 it("should give a warning") {
@@ -941,8 +941,8 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
-                    link("channelA", MutableShaderChannel("channelA"))
-                    link("channelB", MutableShaderChannel("channelB"))
+                    link("channelA", MutableStream("channelA"))
+                    link("channelB", MutableStream("channelB"))
                     link("time", MutableDataSourcePort(TimeDataSource()))
                     link("uvIn", MutableDataSourcePort(RasterCoordinateDataSource()))
                 }
@@ -950,13 +950,13 @@ object GlslGenerationSpec : Spek({
                 mutablePatchSet.addPatch(channelAShader) {
                     link("gl_FragCoord", MutableConstPort("var from downstream", GlslType.Vec4))
                     link("time", MutableDataSourcePort(TimeDataSource()))
-                    shaderChannel = MutableShaderChannel.from("channelA")
+                    stream = MutableStream.from("channelA")
                 }
 
                 mutablePatchSet.addPatch(channelBShader) {
                     link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
                     link("time", MutableConstPort("var from downstream", GlslType.Vec4))
-                    shaderChannel = MutableShaderChannel.from("channelB")
+                    stream = MutableStream.from("channelB")
                 }
             }
 

@@ -178,7 +178,7 @@ object EditingShaderSpec : Spek({
                 it("should set some reasonable defaults") {
                     expect(mutablePatch.incomingLinks.mapValues { (_, port) -> port.title })
                         .toBe(mapOf(
-                            "inColor" to "Main Channel",
+                            "inColor" to "Main Stream",
                             "theScale" to "The Scale Slider",
                             "time" to "Time"
                         ))
@@ -232,13 +232,13 @@ object EditingShaderSpec : Spek({
 
                 it("should be listed in link options") {
                     expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
-                            Channel:
-                            - Main Channel
                             Data Source:
                             - BeatLink
                             - Custom slider Slider (advanced)
                             * The Scale Slider
                             - Time
+                            Stream:
+                            - Main Stream
                         """.trimIndent())
                 }
             }
@@ -276,24 +276,24 @@ object EditingShaderSpec : Spek({
                 it("suggests reasonable link options for scale") {
                     expect(editingShader.linkOptionsFor("theScale").stringify())
                         .toBe("""
-                            Channel:
-                            - Main Channel
                             Data Source:
                             - BeatLink
                             * The Scale Slider
                             - Time
+                            Stream:
+                            - Main Stream
                         """.trimIndent())
                 }
 
                 it("suggests reasonable link options for time") {
                     expect(editingShader.linkOptionsFor("time").stringify())
                         .toBe("""
-                            Channel:
-                            - Main Channel
                             Data Source:
                             - BeatLink (advanced)
                             * Time
                             - Time Slider (advanced)
+                            Stream:
+                            - Main Stream
                         """.trimIndent())
                 }
 
@@ -301,30 +301,30 @@ object EditingShaderSpec : Spek({
                     // Should never include ourself.
                     expect(editingShader.linkOptionsFor("inColor").stringify())
                         .toBe("""
-                            Channel:
-                            * Main Channel
                             Data Source:
                             - Date (advanced)
                             - In Color Color Picker
+                            Stream:
+                            * Main Stream
                         """.trimIndent())
                 }
 
-                context("when another patch has shader on a different shader channel") {
+                context("when another patch has shader on a different stream") {
                     override(beforeBuildingShader) {
-                        { patchOnButton.shaderChannel = MutableShaderChannel("other") }
+                        { patchOnButton.stream = MutableStream("other") }
                     }
 
                     context("and its result type matches this input's type") {
-                        it("should include that shader channel as an option") {
+                        it("should include that stream as an option") {
                             // Should never include ourself.
                             expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
-                                    Channel:
-                                    * Main Channel
-                                    - Other Channel
                                     Data Source:
                                     - Date (advanced)
                                     - In Color Color Picker
+                                    Stream:
+                                    * Main Stream
+                                    - Other Stream
                                 """.trimIndent())
                         }
                     }
@@ -332,14 +332,14 @@ object EditingShaderSpec : Spek({
                     context("and its result type doesn't match this input's type") {
                         override(shaderForButton) { Shaders.flipY } // distortion
 
-                        it("shouldn't include that shader channel as an option") {
+                        it("shouldn't include that stream as an option") {
                             expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
-                                    Channel:
-                                    * Main Channel
                                     Data Source:
                                     - Date (advanced)
                                     - In Color Color Picker
+                                    Stream:
+                                    * Main Stream
                                 """.trimIndent())
                         }
                     }

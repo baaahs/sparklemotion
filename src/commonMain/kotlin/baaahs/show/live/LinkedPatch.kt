@@ -6,12 +6,12 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.patch.ShaderComponent
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 
 class LinkedPatch(
     val shader: OpenShader,
     val incomingLinks: Map<String, ProgramNode>,
-    val shaderChannel: ShaderChannel,
+    val stream: Stream,
     val priority: Float,
     val injectedPorts: Set<String> = emptySet()
 ) : ProgramNode {

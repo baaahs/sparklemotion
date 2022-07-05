@@ -97,8 +97,8 @@ object MutableShowSpec : Spek({
                 val openShader by value { FakeOpenShader(inputPorts, outputPort) }
                 val mutableShader by value { MutableShader("Test shader", "Src for shader") }
                 val incomingLinks by value { mutableMapOf<String, MutablePort>() }
-                val shaderChannel by value { ShaderChannel.Main.toMutable() }
-                val patch by value { MutablePatch(mutableShader, incomingLinks, shaderChannel) }
+                val stream by value { Stream.Main.toMutable() }
+                val patch by value { MutablePatch(mutableShader, incomingLinks, stream) }
 
                 context("with no input port links") {
                     it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
@@ -110,15 +110,15 @@ object MutableShowSpec : Spek({
 
                     it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
 
-                    context("linked to a shader channel") {
-                        override(incomingLinks) { mapOf("color" to ShaderChannel.Main.toMutable()) }
+                    context("linked to a stream") {
+                        override(incomingLinks) { mapOf("color" to Stream.Main.toMutable()) }
 
                         context("on the same channel") {
                             it("is a filter") { expect(patch.isFilter(openShader)).toBe(true) }
                         }
 
                         context("on a different channel") {
-                            override(shaderChannel) { ShaderChannel("other").toMutable() }
+                            override(stream) { Stream("other").toMutable() }
                             it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
                         }
                     }

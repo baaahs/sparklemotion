@@ -2,16 +2,16 @@ package baaahs.gl.patch
 
 import baaahs.app.ui.editor.LinkOption
 import baaahs.gl.shader.InputPort
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableStream
 import baaahs.unknown
 
 class UnresolvedPatch(
     val mutableShader: MutableShader,
     val incomingLinksOptions: Map<InputPort, MutableList<LinkOption>>,
-    var shaderChannel: ShaderChannel = ShaderChannel.Main,
+    var stream: Stream = Stream.Main,
     var priority: Float
 ) {
     fun isAmbiguous() = incomingLinksOptions.values.any { it.size > 1 }
@@ -27,10 +27,10 @@ class UnresolvedPatch(
 
     fun acceptSymbolicChannelLinks() {
         incomingLinksOptions.values.forEach { options ->
-            val shaderChannelOptions = options.filter { it.getMutablePort() is MutableShaderChannel }
-            if (options.size > 1 && shaderChannelOptions.size == 1) {
+            val streamOptions = options.filter { it.getMutablePort() is MutableStream }
+            if (options.size > 1 && streamOptions.size == 1) {
                 options.clear()
-                options.add(shaderChannelOptions.first())
+                options.add(streamOptions.first())
             }
         }
     }
@@ -60,7 +60,7 @@ class UnresolvedPatch(
                     (fromPortOptions.firstOrNull()?.getMutablePort()
                         ?: port.type.mutableDefaultInitializer)
         }.toMutableMap(),
-        MutableShaderChannel(shaderChannel.id),
+        MutableStream(stream.id),
         priority
     )
 

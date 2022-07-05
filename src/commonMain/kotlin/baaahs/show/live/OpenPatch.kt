@@ -9,7 +9,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.Surfaces
 import baaahs.show.UnknownDataSource
 import baaahs.sm.webapi.Problem
@@ -18,7 +18,7 @@ import baaahs.sm.webapi.Severity
 class OpenPatch(
     val shader: OpenShader,
     val incomingLinks: Map<String, Link>,
-    val shaderChannel: ShaderChannel,
+    val stream: Stream,
     val priority: Float = 0f,
     val extraLinks: Set<String> = emptySet(),
     val missingLinks: Set<String> = emptySet(),
@@ -32,7 +32,7 @@ class OpenPatch(
         get() = with(shader) {
             inputPorts.any {
                 it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
-                    link is ShaderChannelLink && link.shaderChannel == shaderChannel
+                    link is StreamLink && link.stream == stream
                 } == true
             }
         }
@@ -107,7 +107,7 @@ class OpenPatch(
         }
 
         return if (injectedPorts.isNotEmpty()) {
-            OpenPatch(shader, newLinks, shaderChannel, priority, extraLinks, missingLinks, injectedPorts)
+            OpenPatch(shader, newLinks, stream, priority, extraLinks, missingLinks, injectedPorts)
         } else this
     }
 
@@ -124,11 +124,11 @@ class OpenPatch(
             }
         }
 
-        return LinkedPatch(shader, resolvedIncomingLinks, shaderChannel, priority, injectedPorts)
+        return LinkedPatch(shader, resolvedIncomingLinks, stream, priority, injectedPorts)
     }
 
     override fun toString(): String {
-        return "OpenPatch(shader=${shader.title}, incomingLinks=${incomingLinks.keys.sorted()}, shaderChannel=$shaderChannel)"
+        return "OpenPatch(shader=${shader.title}, incomingLinks=${incomingLinks.keys.sorted()}, stream=$stream)"
     }
 
     fun matches(fixture: Fixture) = surfaces.matches(fixture)
@@ -160,7 +160,7 @@ class OpenPatch(
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
             resolver.resolveChannel(
                 inputPort.copy(contentType = dataSource.contentType),
-                ShaderChannel(varName)
+                Stream(varName)
             )
 
         override fun buildComponent(
@@ -187,9 +187,9 @@ class OpenPatch(
         }
     }
 
-    data class ShaderChannelLink(val shaderChannel: ShaderChannel) : Link {
+    data class StreamLink(val stream: Stream) : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
-            resolver.resolveChannel(inputPort, shaderChannel)
+            resolver.resolveChannel(inputPort, stream)
     }
 
     data class ConstLink(val glsl: String, val type: GlslType) : Link {

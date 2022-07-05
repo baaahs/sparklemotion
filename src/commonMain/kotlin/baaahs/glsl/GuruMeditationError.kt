@@ -13,7 +13,7 @@ import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
 import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
@@ -37,7 +37,7 @@ class GuruMeditationError(fixtureType: FixtureType) {
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
         linkedProgram = ProgramResolver.buildPortDiagram(openPatch)
-            .resolvePatch(ShaderChannel.Main, fixtureType.resultContentType, openShow.allDataSources)
+            .resolvePatch(Stream.Main, fixtureType.resultContentType, openShow.allDataSources)
             ?: error("Couldn't build guru meditation error patch.")
     }
 }

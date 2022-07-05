@@ -17,7 +17,7 @@ import baaahs.shaders.fakeFixture
 import baaahs.show.DataSource
 import baaahs.show.Panel
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.*
@@ -29,8 +29,8 @@ import org.spekframework.spek2.style.specification.describe
 @Suppress("unused")
 object PatchResolverSpec : Spek({
     describe("Layering of patch links") {
-        fun autoWire(vararg shaders: Shader, shaderChannel: ShaderChannel = ShaderChannel.Main): MutablePatchSet {
-            return testToolchain.autoWire(*shaders, shaderChannel = shaderChannel)
+        fun autoWire(vararg shaders: Shader, stream: Stream = Stream.Main): MutablePatchSet {
+            return testToolchain.autoWire(*shaders, stream = stream)
                 .acceptSuggestedLinkOptions().confirm()
         }
 
@@ -230,7 +230,7 @@ object PatchResolverSpec : Spek({
                 beforeEachTest {
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
-                            addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")).apply {
+                            addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
                                 mutablePatches.only("patch")
                                     .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
                             })
@@ -375,7 +375,7 @@ object PatchResolverSpec : Spek({
                                       gl_FragColor = vec4(time, time, time, gl_FragCoord.x);
                                     }
                                 """.trimIndent()
-                            ), shaderChannel = ShaderChannel("main")
+                            ), stream = Stream("main")
                         )
                     )
                     addPatch(
@@ -397,12 +397,12 @@ object PatchResolverSpec : Spek({
                         ).apply {
                             linkOptionsFor("otherColorStream").apply {
                                 clear()
-                                add(PortLinkOption(MutableShaderChannel("other")))
+                                add(PortLinkOption(MutableStream("other")))
                             }
                         }.acceptSuggestedLinkOptions().confirm()
                     )
-                    addPatch(autoWire(orangeShader, shaderChannel = ShaderChannel("other")))
-                    addPatch(autoWire(wobblyTimeFilter, shaderChannel = ShaderChannel("time")))
+                    addPatch(autoWire(orangeShader, stream = Stream("other")))
+                    addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")))
                 }
             }
 
@@ -548,5 +548,5 @@ private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatc
         .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")
         .first
-    return portDiagram.resolvePatch(ShaderChannel.Main, Color, dataSources)!!
+    return portDiagram.resolvePatch(Stream.Main, Color, dataSources)!!
 }

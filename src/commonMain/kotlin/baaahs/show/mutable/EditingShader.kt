@@ -7,7 +7,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.randomId
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -106,12 +106,12 @@ class EditingShader(
         return patchOptions
     }
 
-    fun getShaderChannelOptions(excludeMain: Boolean = false): List<MutableShaderChannel> {
-        return mutableListOf<MutableShaderChannel>().apply {
-            getPatchOptions()?.shaderChannels?.let { addAll(it) }
-            if (excludeMain) removeAll { it.id == ShaderChannel.Main.id }
-            if (none { it.id == mutablePatch.shaderChannel.id }) {
-                add(0, mutablePatch.shaderChannel)
+    fun getStreamOptions(excludeMain: Boolean = false): List<MutableStream> {
+        return mutableListOf<MutableStream>().apply {
+            getPatchOptions()?.streams?.let { addAll(it) }
+            if (excludeMain) removeAll { it.id == Stream.Main.id }
+            if (none { it.id == mutablePatch.stream.id }) {
+                add(0, mutablePatch.stream)
             }
         }.sortedBy { it.title }
     }
