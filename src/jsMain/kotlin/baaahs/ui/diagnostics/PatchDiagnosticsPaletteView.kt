@@ -4,6 +4,7 @@ import baaahs.app.ui.editor.betterSelect
 import baaahs.device.FixtureType
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
+import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.ui.asTextNode
 import baaahs.ui.components.palette
 import baaahs.ui.typographyH6
@@ -62,24 +63,34 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
             }
 
             selectedSubject?.let { subject ->
-                val program = subject.programRenderPlan.program
-                if (program != null) {
-                    when (selectedDiagnostic) {
-                        "DAG" -> dag {
-                            attrs.fixtureType = subject.fixtureType
-                            attrs.program = program
-                        }
-                        "GLSL" -> glsl {
-                            attrs.fixtureType = subject.fixtureType
-                            attrs.program = program
-                        }
-                        "DOT" -> dot {
-                            attrs.fixtureType = subject.fixtureType
-                            attrs.program = program
-                        }
-                    }
-                } else {
-                    i { +"No program!" }
+                val programRenderPlan = subject.programRenderPlan
+                val linkedProgram = programRenderPlan.linkedProgram
+                val program = programRenderPlan.program as? GlslProgramImpl
+
+                when (selectedDiagnostic) {
+                    "DAG" ->
+                        if (linkedProgram != null) {
+                            dag {
+                                attrs.fixtureType = subject.fixtureType
+                                attrs.linkedProgram = linkedProgram
+                            }
+                        } else i { +"No program!" }
+
+                    "GLSL" ->
+                        if (program != null) {
+                            glsl {
+                                attrs.fixtureType = subject.fixtureType
+                                attrs.source = programRenderPlan.source ?: program.fragShader.source
+                            }
+                        } else i { +"No program!" }
+
+                    "DOT" ->
+                        if (linkedProgram != null) {
+                            dot {
+                                attrs.fixtureType = subject.fixtureType
+                                attrs.linkedProgram = linkedProgram
+                            }
+                        } else i { +"No program!" }
                 }
             }
         }
