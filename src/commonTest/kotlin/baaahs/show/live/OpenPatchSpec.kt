@@ -7,7 +7,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.PluginRef
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.UnknownDataSource
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
@@ -23,8 +23,8 @@ object OpenPatchSpec : Spek({
         val inputPorts by value { listOf<InputPort>() }
         val outputPort by value { OutputPort(ContentType.Color) }
         val links by value { mapOf<String, OpenPatch.Link>() }
-        val shaderChannel by value { ShaderChannel.Main }
-        val instance by value { OpenPatch(FakeOpenShader(inputPorts, outputPort), links, shaderChannel) }
+        val stream by value { Stream.Main }
+        val instance by value { OpenPatch(FakeOpenShader(inputPorts, outputPort), links, stream) }
 
         context(".isFilter") {
             context("with no input port links") {
@@ -37,15 +37,15 @@ object OpenPatchSpec : Spek({
 
                 it("isn't a filter") { expect(instance.isFilter).toBe(false) }
 
-                context("linked to a shader channel") {
-                    override(links) { mapOf("color" to OpenPatch.ShaderChannelLink(ShaderChannel.Main)) }
+                context("linked to a stream") {
+                    override(links) { mapOf("color" to OpenPatch.StreamLink(Stream.Main)) }
 
                     context("on the same channel") {
                         it("is a filter") { expect(instance.isFilter).toBe(true) }
                     }
 
                     context("on a different channel") {
-                        override(shaderChannel) { ShaderChannel("other") }
+                        override(stream) { Stream("other") }
                         it("isn't a filter") { expect(instance.isFilter).toBe(false) }
                     }
                 }

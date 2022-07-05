@@ -3,7 +3,7 @@ package baaahs.gl.patch
 import baaahs.getBang
 import baaahs.gl.shader.InputPort
 import baaahs.show.DataSource
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
@@ -25,7 +25,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
         fun add(patch: OpenPatch) {
             val outputPort = patch.shader.outputPort
-            val track = Track(patch.shaderChannel, outputPort.contentType)
+            val track = Track(patch.stream, outputPort.contentType)
             addToChannel(track, patch, level)
 
             level++
@@ -37,12 +37,12 @@ class PortDiagram(val patches: List<OpenPatch>) {
     }
 
     fun resolvePatch(
-        shaderChannel: ShaderChannel,
+        stream: Stream,
         contentType: ContentType,
         dataSources: Map<String, DataSource>
     ): LinkedProgram? {
         val resolver = Resolver(dataSources)
-        val track = Track(shaderChannel, contentType)
+        val track = Track(stream, contentType)
         val rootProgramNode = resolver.resolve(track)
 
         return if (rootProgramNode != null) {
@@ -54,9 +54,9 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    data class Track(val shaderChannel: ShaderChannel, val contentType: ContentType) {
+    data class Track(val stream: Stream, val contentType: ContentType) {
         override fun toString(): String {
-            return "Track[${shaderChannel.id}/${contentType.id}]"
+            return "Track[${stream.id}/${contentType.id}]"
         }
     }
 
@@ -124,12 +124,12 @@ class PortDiagram(val patches: List<OpenPatch>) {
                 .resolve(injectedData)
         }
 
-        fun resolveChannel(inputPort: InputPort, shaderChannel: ShaderChannel): ProgramNode {
+        fun resolveChannel(inputPort: InputPort, stream: Stream): ProgramNode {
             val contentType = inputPort.contentType
 
-            val track = Track(shaderChannel, contentType)
+            val track = Track(stream, contentType)
             return resolve(track, inputPort.injectedData.values.toSet())
-                ?: tryDataSource(shaderChannel, contentType)
+                ?: tryDataSource(stream, contentType)
                 ?: run {
                     addWarning("No upstream shader found, using default for ${contentType.id}.")
                     DefaultValueNode(contentType)
@@ -149,10 +149,10 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
 
         private fun tryDataSource(
-            shaderChannel: ShaderChannel,
+            stream: Stream,
             contentType: ContentType
         ): OpenPatch.DataSourceLink? {
-            return dataSourceChannelLinks[shaderChannel.id to contentType]
+            return dataSourceChannelLinks[stream.id to contentType]
         }
 
 

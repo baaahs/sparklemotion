@@ -57,7 +57,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
     val shaderProperties by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns("50% 50%")
-        gridTemplateAreas = GridTemplateAreas("\"name name\" \"priority channel\" \"returnType returnType\"")
+        gridTemplateAreas = GridTemplateAreas("\"name name\" \"priority stream\" \"returnType returnType\"")
         gap = 1.em
         alignContent = Align.start
 
@@ -71,8 +71,8 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
         declarations["gridArea"] = "priority"
     }
 
-    val shaderChannel by css {
-        declarations["gridArea"] = "channel"
+    val stream by css {
+        declarations["gridArea"] = "stream"
     }
 
     val shaderReturnType by css {

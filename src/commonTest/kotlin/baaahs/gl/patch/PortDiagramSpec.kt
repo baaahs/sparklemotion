@@ -6,7 +6,7 @@ import baaahs.gl.patch.PortDiagram.ChannelEntry
 import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.fakeShader
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -18,13 +18,13 @@ object PortDiagramSpec : Spek({
     describe<PortDiagram> {
         context("shader prioritization") {
             fun Shader.enliven(links: Map<String, OpenPatch.Link> = emptyMap()) =
-                OpenPatch(testToolchain.openShader(this), links, ShaderChannel.Main, 0f)
+                OpenPatch(testToolchain.openShader(this), links, Stream.Main, 0f)
 
             val shaderA by value { fakeShader("Shader A").enliven() }
             val shaderB by value { fakeShader("Shader B").enliven() }
             val filterShaderA by value {
                 fakeShader("Shader A", FilterShader)
-                    .enliven(mapOf("inColor" to OpenPatch.ShaderChannelLink(ShaderChannel.Main)))
+                    .enliven(mapOf("inColor" to OpenPatch.StreamLink(Stream.Main)))
             }
 
             it("shaders with higher priority always come first") {

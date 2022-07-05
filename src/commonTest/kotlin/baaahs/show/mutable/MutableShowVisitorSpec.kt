@@ -56,7 +56,7 @@ object MutableShowVisitorSpec : Spek({
                         "Shader Ripple" to 1,
                         "Shader Saturation" to 1,
                         "Shader XY Projection" to 1,
-                        "Shader channel main" to 1,
+                        "Stream main" to 1,
                         "Surfaces All Surfaces" to 1,
                     )
                 ) { visitorCounts }
@@ -88,8 +88,8 @@ class CollectingVisitor : MutableShowVisitor {
         items.add("Shader ${mutableShader.title}")
     }
 
-    override fun visit(mutableShaderChannel: MutableShaderChannel) {
-        items.add("Shader channel ${mutableShaderChannel.id}")
+    override fun visit(mutableStream: MutableStream) {
+        items.add("Stream ${mutableStream.id}")
     }
 
     override fun visit(dataSource: DataSource) {

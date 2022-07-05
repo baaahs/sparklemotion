@@ -62,7 +62,7 @@ fun <T> expects(expected: Collection<T>, block: () -> Collection<T>) {
                     "    mutableShader=$mutableShader\n" +
                     "    incomingLinks=\n" +
                     "${incomingLinks.prettier("        ")}\n" +
-                    "    shaderChannel=$shaderChannel\n" +
+                    "    stream=$stream\n" +
                     "    priority=$priority\n" +
                     ")"
         } else this.toString()
