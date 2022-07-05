@@ -7,7 +7,7 @@ class VisitationLog {
     val patches = mutableSetOf<MutablePatch>()
     val surfaces = mutableSetOf<Surfaces>()
     val shaders = mutableSetOf<MutableShader>()
-    val shaderChannels = mutableSetOf<MutableShaderChannel>()
+    val streams = mutableSetOf<MutableStream>()
     val controls = mutableSetOf<MutableControl>()
     val dataSources = mutableSetOf<MutableDataSourcePort>()
 }

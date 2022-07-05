@@ -29,29 +29,29 @@ data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
 }
 fun DataSource.editor() = MutableDataSourcePort(this)
 
-data class MutableShaderChannel(val id: String) : MutablePort {
-    override val title: String get() = "${id.englishize()} Channel"
-    override val icon: Icon get() = CommonIcons.ShaderChannel
-    override val groupName: String get() = "Channel:"
+data class MutableStream(val id: String) : MutablePort {
+    override val title: String get() = "${id.englishize()} Stream"
+    override val icon: Icon get() = CommonIcons.Stream
+    override val groupName: String get() = "Stream:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
-        ShaderChannelRef(build())
+        StreamRef(build())
 
-    fun build(): ShaderChannel =
-        ShaderChannel(id)
+    fun build(): Stream =
+        Stream(id)
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
-        if (log.shaderChannels.add(this)) visitor.visit(this)
+        if (log.streams.add(this)) visitor.visit(this)
     }
 
     companion object {
-        fun from(id: String): MutableShaderChannel {
+        fun from(id: String): MutableStream {
             return if (id.isNotBlank())
-                MutableShaderChannel(id) else ShaderChannel.Main.toMutable()
+                MutableStream(id) else Stream.Main.toMutable()
         }
     }
 }
-fun ShaderChannel.editor() = MutableShaderChannel(this.id)
+fun Stream.editor() = MutableStream(this.id)
 
 data class MutableOutputPort(private val portId: String) : MutablePort {
     override val title: String get() = "$portId Output"

@@ -20,7 +20,7 @@ import baaahs.model.SurfaceDataForTest
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -112,7 +112,7 @@ class TestRenderContext(
 
     fun createProgram(shaderSrc: String, incomingLinks: Map<String, ProgramNode>): GlslProgram {
         val openShader = testToolchain.openShader(Shader("Title", shaderSrc))
-        val linkedPatch = LinkedPatch(openShader, incomingLinks, ShaderChannel.Main, 0f)
+        val linkedPatch = LinkedPatch(openShader, incomingLinks, Stream.Main, 0f)
         val linkedProgram = ProgramLinker(linkedPatch).buildLinkedProgram()
         return renderEngine.compile(linkedProgram) { id, dataSource -> dataSource.createFeed(showPlayer, id) }
     }

@@ -16,7 +16,7 @@ import baaahs.plugin.core.datasource.ResolutionDataSource
 import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.plugin.core.datasource.TimeDataSource
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.live.LinkedPatch
 import baaahs.show.mutable.MutablePatch
@@ -55,9 +55,9 @@ object AutoWirerSpec : Spek({
                 )
             }
             val shaders by value { listOf<OpenShader>(mainShader) }
-            val shaderChannel by value { ShaderChannel.Main }
+            val stream by value { Stream.Main }
             val suggestions by value {
-                autoWirer.autoWire(shaders, shaderChannel = shaderChannel, fixtureTypes = listOf(fixtureType))
+                autoWirer.autoWire(shaders, stream = stream, fixtureTypes = listOf(fixtureType))
             }
             val patches by value { suggestions.acceptSuggestedLinkOptions().confirm() }
             val mutableLinks by value { patches.mutablePatches.only().incomingLinks }
@@ -68,14 +68,14 @@ object AutoWirerSpec : Spek({
                 override(portContentType) { ContentType.UvCoordinate }
 
                 it("suggests the shader's channel") {
-                    expect(portLink).toBe(ShaderChannel.Main.editor())
+                    expect(portLink).toBe(Stream.Main.editor())
                 }
 
                 context("even when it's on on a different channel") {
-                    override(shaderChannel) { ShaderChannel("other") }
+                    override(stream) { Stream("other") }
 
-                    it("suggests the main channel") {
-                        expect(portLink).toBe(ShaderChannel.Main.editor())
+                    it("suggests the main stream") {
+                        expect(portLink).toBe(Stream.Main.editor())
                     }
                 }
             }
@@ -98,7 +98,7 @@ object AutoWirerSpec : Spek({
                         }
 
                         context("and the shader's channel matches the data source's channel") {
-                            override(shaderChannel) { ShaderChannel("time") }
+                            override(stream) { Stream("time") }
 
                             it("suggests the data source's channel") {
                                 expect(portLink).toBe(TimeDataSource().editor())
@@ -131,15 +131,15 @@ object AutoWirerSpec : Spek({
             context("when input port's content type matches the shader's output type") {
                 override(outContentType) { portContentType }
 
-                it("suggests pulling from the shader channel, making it a filter") {
-                    expect(portLink).toBe(ShaderChannel.Main.editor())
+                it("suggests pulling from the stream, making it a filter") {
+                    expect(portLink).toBe(Stream.Main.editor())
                 }
 
-                context("when shader is on another channel") {
-                    override(shaderChannel) { ShaderChannel("other") }
+                context("when shader is on another stream") {
+                    override(stream) { Stream("other") }
 
-                    it("suggests pulling from that shader channel, making it a filter") {
-                        expect(portLink).toBe(ShaderChannel("other").editor())
+                    it("suggests pulling from that stream, making it a filter") {
+                        expect(portLink).toBe(Stream("other").editor())
                     }
                 }
             }
@@ -153,7 +153,7 @@ object AutoWirerSpec : Spek({
                 }
 
                 it("suggests pulling from channel") {
-                    expect(portLink).toBe(ShaderChannel("main").editor())
+                    expect(portLink).toBe(Stream("main").editor())
                 }
             }
         }
@@ -215,9 +215,9 @@ object AutoWirerSpec : Spek({
                     )
             }
 
-            it("picks Main channel for gl_FragCoord") {
+            it("picks Main stream for gl_FragCoord") {
                 expect(mutableLinks["gl_FragCoord"])
-                    .toBe(ShaderChannel.Main.editor())
+                    .toBe(Stream.Main.editor())
 
                 expect(links["gl_FragCoord"])
                     .toBe(DefaultValueNode(ContentType.UvCoordinate))
@@ -256,10 +256,10 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "fragCoord" to ShaderChannel.Main.editor(),
+                                    "fragCoord" to Stream.Main.editor(),
                                     "resolution" to ResolutionDataSource().editor(),
                                 ),
-                                shaderChannel = ShaderChannel.Main.editor(),
+                                stream = Stream.Main.editor(),
                                 priority = 0f
                             )
                         )
@@ -297,9 +297,9 @@ object AutoWirerSpec : Spek({
                                     "iTime" to TimeDataSource().editor(),
                                     "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
                                     "iResolution" to ResolutionDataSource().editor(),
-                                    "fragCoord" to ShaderChannel.Main.editor()
+                                    "fragCoord" to Stream.Main.editor()
                                 ),
-                                shaderChannel = ShaderChannel.Main.editor(),
+                                stream = Stream.Main.editor(),
                                 priority = 0f
                             )
                         )
@@ -337,9 +337,9 @@ object AutoWirerSpec : Spek({
                                     "time" to TimeDataSource().editor(),
                                     "resolution" to ResolutionDataSource().editor(),
                                     "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
-                                    "gl_FragCoord" to ShaderChannel.Main.editor()
+                                    "gl_FragCoord" to Stream.Main.editor()
                                 ),
-                                shaderChannel = ShaderChannel.Main.editor()
+                                stream = Stream.Main.editor()
                             ),
                             uvPatch.apply {
                                 incomingLinks.putAll(
@@ -348,7 +348,7 @@ object AutoWirerSpec : Spek({
                                         "pixelLocation" to PixelLocationDataSource().editor()
                                     )
                                 )
-                                shaderChannel = ShaderChannel.Main.editor()
+                                stream = Stream.Main.editor()
                             }
                         )
                     ) { patchSet.mutablePatches }
@@ -380,9 +380,9 @@ object AutoWirerSpec : Spek({
                                 hashMapOf(
                                     "brightness" to SliderDataSource("Brightness", 1f, 0f, 1f, null)
                                         .editor(),
-                                    "colorIn" to ShaderChannel.Main.editor()
+                                    "colorIn" to Stream.Main.editor()
                                 ),
-                                shaderChannel = ShaderChannel.Main.editor()
+                                stream = Stream.Main.editor()
                             )
                         )
                     ) { patchSet.mutablePatches }
@@ -410,9 +410,9 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "uvIn" to ShaderChannel.Main.editor()
+                                    "uvIn" to Stream.Main.editor()
                                 ),
-                                shaderChannel = ShaderChannel.Main.editor()
+                                stream = Stream.Main.editor()
                             )
                         )
                     ) { patchSet.mutablePatches }

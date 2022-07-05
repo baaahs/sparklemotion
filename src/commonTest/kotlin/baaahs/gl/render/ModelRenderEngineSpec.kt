@@ -73,7 +73,7 @@ object ModelRenderEngineSpec : Spek({
             val openShader by value { testToolchain.openShader(shader) }
             val incomingLinks by value { mapOf("gl_FragCoord" to dataSource.link("coord")) }
             val linkedPatch by value {
-                val rootNode = LinkedPatch(openShader, incomingLinks, ShaderChannel.Main, 0f)
+                val rootNode = LinkedPatch(openShader, incomingLinks, Stream.Main, 0f)
                 ProgramLinker(rootNode).buildLinkedProgram()
             }
             val program by value {
