@@ -42,8 +42,8 @@ class MutableShow(
         .mapValues { (_, shader) -> MutableShader(shader) }
         .toMutableMap()
 
-    private val shaderChannels = CacheBuilder<ShaderChannel, MutableShaderChannel> {
-        MutableShaderChannel(it.id)
+    private val streams = CacheBuilder<Stream, MutableStream> {
+        MutableStream(it.id)
     }
 
     private val allPatches = baseShow.patches
@@ -51,7 +51,7 @@ class MutableShow(
             MutablePatch(
                 findShader(patch.shaderId),
                 hashMapOf(),
-                shaderChannels[patch.shaderChannel],
+                streams[patch.stream],
                 patch.priority
             )
         }
@@ -148,13 +148,13 @@ class MutableShow(
 data class MutablePatch(
     val mutableShader: MutableShader,
     val incomingLinks: MutableMap<String, MutablePort> = hashMapOf(),
-    var shaderChannel: MutableShaderChannel = ShaderChannel.Main.editor(),
+    var stream: MutableStream = Stream.Main.editor(),
     var priority: Float = 0f
 ) {
     constructor(basePatch: Patch, show: MutableShow) : this(
         show.findShader(basePatch.shaderId),
         basePatch.incomingLinks.mapValues { (_, v) -> v.dereference(show) }.toMutableMap(),
-        basePatch.shaderChannel.toMutable(),
+        basePatch.stream.toMutable(),
         basePatch.priority
     )
 
@@ -173,10 +173,10 @@ data class MutablePatch(
         }
     }
 
-    fun findShaderChannels(): List<MutableShaderChannel> {
+    fun findStreams(): List<MutableStream> {
         return (incomingLinks.values.map { link ->
-            link as? MutableShaderChannel
-        } + shaderChannel).filterNotNull()
+            link as? MutableStream
+        } + stream).filterNotNull()
     }
 
     fun link(portId: String, toPort: DataSource) {
@@ -193,7 +193,7 @@ data class MutablePatch(
             incomingLinks.mapValues { (_, portRef) ->
                 portRef.toRef(showBuilder)
             },
-            shaderChannel.build(),
+            stream.build(),
             priority
         )
     }
@@ -201,7 +201,7 @@ data class MutablePatch(
     fun accept(visitor: MutableShowVisitor, log: VisitationLog = VisitationLog()) {
         if (log.patches.add(this)) visitor.visit(this)
         mutableShader.accept(visitor, log)
-        shaderChannel.accept(visitor, log)
+        stream.accept(visitor, log)
         incomingLinks.forEach { (_, port) -> port.accept(visitor, log) }
         surfaces.accept(visitor, log)
     }
@@ -209,7 +209,7 @@ data class MutablePatch(
     fun isFilter(openShader: OpenShader): Boolean = with(openShader) {
         inputPorts.any {
             it.contentType == outputPort.contentType && incomingLinks[it.id]?.let { link ->
-                link is MutableShaderChannel && link.id == shaderChannel.id
+                link is MutableStream && link.id == stream.id
             } == true
         }
     }
@@ -250,7 +250,7 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
                 .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
         val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)
-        return portDiagram.resolvePatch(ShaderChannel.Main, resultContentType, showBuilder.getDataSources())
+        return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getDataSources())
     }
 
 }

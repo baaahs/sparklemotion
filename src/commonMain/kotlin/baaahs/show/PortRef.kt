@@ -17,10 +17,10 @@ data class DataSourceRef(val dataSourceId: String) : PortRef() {
         mutableShow.dataSources.getBang(dataSourceId, "datasource")
 }
 
-@Serializable @SerialName("shader-channel")
-data class ShaderChannelRef(val shaderChannel: ShaderChannel) : PortRef() {
+@Serializable @SerialName("stream")
+data class StreamRef(val stream: Stream) : PortRef() {
     override fun dereference(mutableShow: MutableShow): MutablePort =
-        MutableShaderChannel(shaderChannel.id)
+        MutableStream(stream.id)
 }
 
 @Serializable @SerialName("output")

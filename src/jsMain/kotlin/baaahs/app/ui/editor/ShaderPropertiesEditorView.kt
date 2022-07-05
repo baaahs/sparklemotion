@@ -4,10 +4,10 @@ import baaahs.app.ui.Colors
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.englishize
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
-import baaahs.show.mutable.MutableShaderChannel
+import baaahs.show.mutable.MutableStream
 import baaahs.ui.*
 import materialui.icon
 import mui.material.*
@@ -34,24 +34,24 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
         props.editableManager.onChange()
     }
 
-    val handleSelectShaderChannel by eventHandler(handleUpdate) { event: Event ->
+    val handleSelectStream by eventHandler(handleUpdate) { event: Event ->
         val channelId = event.target.value
         if (channelId == "__new__") {
             appContext.prompt(Prompt(
-                "Create A New Channel",
-                "Enter the name of the new channel.",
-                fieldLabel = "Channel Name",
+                "Create A New Stream",
+                "Enter the name of the new stream.",
+                fieldLabel = "Stream Name",
                 cancelButtonLabel = "Cancel",
                 submitButtonLabel = "Create",
                 onSubmit = { name ->
                     handleUpdate {
-                        shaderChannel = MutableShaderChannel.from(name)
+                        stream = MutableStream.from(name)
                     }
                 }
             ))
         } else {
             handleUpdate {
-                shaderChannel = MutableShaderChannel.from(channelId)
+                stream = MutableStream.from(channelId)
             }
         }
     }
@@ -69,30 +69,30 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
             }
         }
 
-        div(+shaderEditorStyles.shaderChannel) {
+        div(+shaderEditorStyles.stream) {
             FormControl {
-                val main = ShaderChannel.Main
-                InputLabel { +"Channel" }
+                val main = Stream.Main
+                InputLabel { +"Stream" }
                 Select<SelectProps<String>> {
                     attrs.renderValue = { it.asTextNode() }
-                    attrs.value = patch.shaderChannel.id
-                    attrs.onChange = handleSelectShaderChannel.withSelectEvent()
+                    attrs.value = patch.stream.id
+                    attrs.onChange = handleSelectStream.withSelectEvent()
 
                     MenuItem {
                         attrs.value = main.id
-                        ListItemIcon { icon(CommonIcons.ShaderChannel) }
+                        ListItemIcon { icon(CommonIcons.Stream) }
                         ListItemText { +"${main.id.englishize()} (default)" }
                     }
 
                     Divider {}
 
-                    val shaderChannels = editingShader.getShaderChannelOptions(excludeMain = true)
-                    shaderChannels.forEach { shaderChannel ->
-                        if (shaderChannel.id != main.id) {
+                    val streams = editingShader.getStreamOptions(excludeMain = true)
+                    streams.forEach { stream ->
+                        if (stream.id != main.id) {
                             MenuItem {
-                                attrs.value = shaderChannel.id
-                                ListItemIcon { icon(CommonIcons.ShaderChannel) }
-                                ListItemText { +shaderChannel.id.englishize() }
+                                attrs.value = stream.id
+                                ListItemIcon { icon(CommonIcons.Stream) }
+                                ListItemText { +stream.id.englishize() }
                             }
                         }
                     }

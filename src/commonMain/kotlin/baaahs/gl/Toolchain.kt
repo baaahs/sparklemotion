@@ -6,7 +6,7 @@ import baaahs.gl.patch.*
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShow
@@ -33,14 +33,14 @@ interface Toolchain {
     fun autoWire(
         shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        stream: Stream = Stream.Main,
         fixtureTypes: Collection<FixtureType> = emptyList()
     ): UnresolvedPatches
 
     fun autoWire(
         openShader: OpenShader,
         defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-        shaderChannel: ShaderChannel = ShaderChannel.Main,
+        stream: Stream = Stream.Main,
         fixtureTypes: Collection<FixtureType> = emptyList()
     ): UnresolvedPatch
 }
@@ -92,11 +92,11 @@ class RootToolchain(
         parentMutableShow: MutableShow,
         mutablePatch: MutablePatch
     ): PatchOptions = stats.autoWire.time {
-        val channelsInfo = ChannelsInfo(parentMutableShow, emptyList(), this)
+        val streamsInfo = StreamsInfo(parentMutableShow, emptyList(), this)
         PatchOptions(
             currentOpenShader,
-            ShaderChannel.Main,
-            channelsInfo,
+            Stream.Main,
+            streamsInfo,
             currentLinks = mutablePatch.incomingLinks,
             plugins = plugins
         )
@@ -105,18 +105,18 @@ class RootToolchain(
     override fun autoWire(
         shaders: Collection<OpenShader>,
         defaultPorts: Map<ContentType, MutablePort>,
-        shaderChannel: ShaderChannel,
+        stream: Stream,
         fixtureTypes: Collection<FixtureType>
     ): UnresolvedPatches =
-        autoWirer.autoWire(shaders, shaderChannel, defaultPorts, fixtureTypes)
+        autoWirer.autoWire(shaders, stream, defaultPorts, fixtureTypes)
 
     override fun autoWire(
         openShader: OpenShader,
         defaultPorts: Map<ContentType, MutablePort>,
-        shaderChannel: ShaderChannel,
+        stream: Stream,
         fixtureTypes: Collection<FixtureType>
     ): UnresolvedPatch =
-        autoWirer.autoWire(openShader, shaderChannel, defaultPorts, fixtureTypes)
+        autoWirer.autoWire(openShader, stream, defaultPorts, fixtureTypes)
 }
 
 class CachingToolchain(

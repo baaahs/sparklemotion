@@ -6,7 +6,7 @@ import baaahs.gl.patch.UnresolvedPatch
 import baaahs.gl.patch.UnresolvedPatches
 import baaahs.gl.shader.OpenShader
 import baaahs.show.Shader
-import baaahs.show.ShaderChannel
+import baaahs.show.Stream
 import baaahs.show.mutable.MutablePort
 import baaahs.show.mutable.MutableShader
 
@@ -19,29 +19,29 @@ fun Toolchain.openShader(mutableShader: MutableShader): OpenShader =
 fun Toolchain.autoWire(
     vararg shaders: Shader,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-    shaderChannel: ShaderChannel = ShaderChannel.Main,
+    stream: Stream = Stream.Main,
     fixtureTypes: Collection<FixtureType> = emptyList()
 ): UnresolvedPatches {
     val openShaders = shaders.map { openShader(it) }
-    return autoWire(openShaders, defaultPorts, shaderChannel, fixtureTypes)
+    return autoWire(openShaders, defaultPorts, stream, fixtureTypes)
 }
 
 fun Toolchain.autoWire(
     shader: Shader,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-    shaderChannel: ShaderChannel = ShaderChannel.Main,
+    stream: Stream = Stream.Main,
     fixtureTypes: Collection<FixtureType> = emptyList()
 ): UnresolvedPatch {
     val openShader = openShader(shader)
-    return autoWire(openShader, defaultPorts, shaderChannel, fixtureTypes)
+    return autoWire(openShader, defaultPorts, stream, fixtureTypes)
 }
 
 fun Toolchain.autoWire(
     vararg shaders: OpenShader,
     defaultPorts: Map<ContentType, MutablePort> = emptyMap(),
-    shaderChannel: ShaderChannel = ShaderChannel.Main,
+    stream: Stream = Stream.Main,
     fixtureTypes: Collection<FixtureType> = emptyList()
 ): UnresolvedPatches =
-    autoWire(shaders.toList(), defaultPorts, shaderChannel, fixtureTypes)
+    autoWire(shaders.toList(), defaultPorts, stream, fixtureTypes)
 
 fun Toolchain.withCache(name: String) = CachingToolchain(this, name)
