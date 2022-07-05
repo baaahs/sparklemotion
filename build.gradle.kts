@@ -131,6 +131,9 @@ kotlin {
                 // MDNS support:
                 implementation("org.jmdns:jmdns:3.5.7")
 
+                // To support animated GIFs:
+                implementation("com.madgag:animated-gif-lib:1.4")
+
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
             }
@@ -198,7 +201,10 @@ kotlin {
                 implementation(npm("@blueprintjs/core", "^3.24.0"))
                 implementation(npm("@blueprintjs/icons", "^3.14.0"))
 
-                // used by GridLayout:
+                // To support animated GIFs:
+                implementation(npm("gifuct-js", "2.1.2"))
+
+                // Used by GridLayout:
                 implementation(npm("react-resizable", "3.0.4"))
                 implementation(npm("lodash.isequal", "4.5.0"))
             }

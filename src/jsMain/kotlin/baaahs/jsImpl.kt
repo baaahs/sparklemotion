@@ -22,6 +22,13 @@ val resourcesBase: String get() = document["resourcesBase"]
 
 actual val internalTimerClock: Clock = JsClock
 
-actual fun decodeBase64(s: String): ByteArray = window.atob(s).encodeToByteArray()
+actual fun decodeBase64(s: String): ByteArray =
+    window.atob(s).let { binaryStr ->
+        ByteArray(binaryStr.length) { i ->
+            binaryStr.asDynamic().charCodeAt(i)
+        }.also { console.log(it) }
+    }
 
-actual fun encodeBase64(b: ByteArray): String = window.btoa(b.decodeToString())
+// TODO: this is probably busted, fix!
+actual fun encodeBase64(b: ByteArray): String =
+    window.btoa(b.decodeToString())

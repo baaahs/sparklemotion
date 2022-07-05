@@ -9,6 +9,6 @@ actual fun <T> doRunBlocking(block: suspend () -> T): T = runBlocking { block() 
 
 actual val internalTimerClock: Clock = SystemClock
 
-actual fun decodeBase64(s: String): ByteArray = Base64.getDecoder().decode(s)
+actual fun decodeBase64(s: String): ByteArray = Base64.getMimeDecoder().decode(s)
 
-actual fun encodeBase64(b: ByteArray): String = Base64.getEncoder().encodeToString(b)
+actual fun encodeBase64(b: ByteArray): String = Base64.getMimeEncoder().encodeToString(b)

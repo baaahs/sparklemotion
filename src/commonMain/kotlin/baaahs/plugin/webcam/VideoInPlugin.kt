@@ -54,17 +54,16 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
         override fun appendDeclaration(buf: StringBuilder, id: String) {
             val textureUniformId = "ds_${getVarName(id)}_texture"
-            buf.append("""
-                uniform sampler2D $textureUniformId;
-
-            """.trimIndent())
+            /**language=glsl*/
+            buf.append("uniform sampler2D $textureUniformId;\n")
         }
 
         override fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) {
             val fn = inputPort.glslArgSite as GlslCode.GlslFunction
 
             val textureUniformId = "ds_${getVarName(varName)}_texture"
-            buf.append("texture($textureUniformId, ${fn.params[0].name})")
+            val uvParamName = fn.params[0].name
+            buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
         }
 
         override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
@@ -74,7 +73,8 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
                     private val texture = gl.check { createTexture() }
 
                     override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
-                        val videoUniform = glslProgram.getUniform("ds_${getVarName(id)}_texture")
+                        val textureId = "ds_${getVarName(id)}_texture"
+                        val videoUniform = glslProgram.getUniform(textureId)
                         override val isValid: Boolean
                             get() = videoUniform != null
 
