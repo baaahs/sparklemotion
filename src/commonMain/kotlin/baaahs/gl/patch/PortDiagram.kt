@@ -8,25 +8,24 @@ import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
 class PortDiagram(val patches: List<OpenPatch>) {
-    private val candidates: Map<Track, Candidates>
+    internal val candidates: Map<Track, Candidates>
     private val resolvedNodes = hashMapOf<OpenPatch, ProgramNode>()
 
     init {
-        val candidates = hashMapOf<Track, MutableList<ChannelEntry>>()
+        val candidates = hashMapOf<Track, MutableList<TrackEntry>>()
         var level = 0
 
-        fun addToChannel(track: Track, openPatch: OpenPatch, level: Int) {
-            val channelTypeCandidates = candidates.getOrPut(track) { arrayListOf() }
-            if (channelTypeCandidates.any { it.openPatch == openPatch }) {
+        fun addToChannel(openPatch: OpenPatch, level: Int) {
+            val track = openPatch.track()
+            val trackCandidates = candidates.getOrPut(track) { arrayListOf() }
+            if (trackCandidates.any { it.openPatch == openPatch }) {
                 error("candidates for $track already include ${openPatch.shader.title}")
             }
-            channelTypeCandidates.add(ChannelEntry(openPatch, openPatch.priority, level))
+            trackCandidates.add(TrackEntry(openPatch, level = level))
         }
 
         fun add(patch: OpenPatch) {
-            val outputPort = patch.shader.outputPort
-            val track = Track(patch.stream, outputPort.contentType)
-            addToChannel(track, patch, level)
+            addToChannel(patch, level)
 
             level++
         }
@@ -60,16 +59,16 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    internal class Candidates(entries: List<ChannelEntry>) {
+    internal class Candidates(entries: List<TrackEntry>) {
         companion object {
             val comparator =
-                compareByDescending<ChannelEntry> { it.priority }
+                compareByDescending<TrackEntry> { it.priority }
                     .thenByDescending { it.typePriority }
                     .thenByDescending { it.level }
                     .thenBy { it.openPatch.shader.title }
         }
 
-        private val sortedEntries = entries.sortedWith(comparator)
+        internal val sortedEntries = entries.sortedWith(comparator)
 
         fun iterator(): Iterator<OpenPatch> {
             return sortedEntries
@@ -215,7 +214,11 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    class ChannelEntry(val openPatch: OpenPatch, val priority: Float, val level: Int) {
+    class TrackEntry(
+        val openPatch: OpenPatch,
+        val priority: Float = openPatch.priority,
+        val level: Int = 0
+    ) {
         val typePriority: Int get() = if (openPatch.isFilter) 1 else 0
 
         override fun toString(): String {

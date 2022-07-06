@@ -19,21 +19,29 @@ import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.ActivePatchSet
+import baaahs.show.live.LinkedPatch
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
+import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 object PatchResolverSpec : Spek({
-    describe("Layering of patch links") {
-        fun autoWire(vararg shaders: Shader, stream: Stream = Stream.Main): MutablePatchSet {
-            return testToolchain.autoWire(*shaders, stream = stream)
-                .acceptSuggestedLinkOptions().confirm()
-        }
+    fun autoWire(
+        vararg shaders: Shader,
+        stream: Stream = Stream.Main,
+        block: (UnresolvedPatches.() -> Unit)? = null
+    ): MutablePatchSet {
+        return testToolchain.autoWire(*shaders, stream = stream)
+            .apply { block?.invoke(this) }
+            .acceptSuggestedLinkOptions().confirm()
+    }
 
+    describe("Layering of patch links") {
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
             Shader(
@@ -92,7 +100,7 @@ object PatchResolverSpec : Spek({
             val show = mutableShow.build(ShowBuilder())
             ShowOpener(testToolchain, show, FakeShowPlayer()).openShow()
         }
-        val linkedPatch by value { generateLinkedPatch(show.allDataSources, show.buildActivePatchSet()) }
+        val linkedPatch by value { generateLinkedProgram(show.allDataSources, show.buildActivePatchSet()) }
 
         fun clickButton(id: String) {
             (show.allControls.associateBy { it.id }.getBang(id, "control") as OpenButtonControl)
@@ -536,9 +544,355 @@ object PatchResolverSpec : Spek({
             }
         }
     }
+
+    describe("when a node is reachable by multiple paths") {
+        val pinksShader by value {
+            testToolchain.import(
+                """
+                    // Pinks
+                    uniform vec2 resolution;
+                    uniform float redness;
+                    void main(void) {
+                        gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);
+                    }
+                """.trimIndent()
+            )
+        }
+
+        val projectionShader by value {
+            testToolchain.import(
+                """
+                    // UV Projection
+                    struct ModelInfo {
+                        vec3 center;
+                        vec3 extents;
+                    };
+                    uniform ModelInfo modelInfo;
+
+                    // @return uv-coordinate
+                    // @param pixelLocation xyz-coordinate
+                    vec2 main(vec3 pixelLocation) {
+                        vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;
+                        return vec2(pixelOffset.x, pixelOffset.y);
+                    }
+
+                """.trimIndent()
+            )
+        }
+
+        val wobbleShader by value {
+            testToolchain.import(
+                """
+                    // Wobble
+                    uniform float time;
+                    uniform float wobbleAmount; // @type float
+
+                    // @return uv-coordinate
+                    // @param uvIn uv-coordinate
+                    vec2 main(vec2 uvIn) {
+                        vec2 p = -1.0 + 2.0 * uvIn;
+                        float len = length(p);
+                        return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;
+                    }
+                """.trimIndent()
+            )
+        }
+
+        val scaleShader by value {
+            testToolchain.import(
+                """
+                    // Scale
+                    uniform float size; // @@Slider min=0.25 max=4 default=1
+
+                    // @return uv-coordinate
+                    // @param uvIn uv-coordinate
+                    vec2 main(vec2 uvIn) {
+                      return (uvIn - .5) / size + .5;
+                    }
+                """.trimIndent()
+            )
+        }
+
+        val hsvShader by value {
+            testToolchain.import(
+                """
+                    // HSV
+                    uniform float hue; // @@Slider min=0 max=1.25 default=1
+                    uniform float saturation; // @@Slider min=0 max=1.25 default=1
+                    uniform float brightness; // @@Slider min=0 max=1.25 default=1
+
+                    vec3 rgb2hsv(vec3 c) { return vec3(c); }
+                    vec3 hsv2rgb(vec3 c) { return vec3(c); }
+
+                    // @return color
+                    // @param inColor color
+                    vec4 main(vec4 inColor) {
+                        if (saturation == 1.) return inColor;
+
+                        vec4 clampedColor = clamp(inColor, 0., 1.);
+                        vec3 hsv = rgb2hsv(clampedColor.rgb);
+                        hsv.x += hue;
+                        hsv.y *= saturation;
+                        hsv.z *= brightness;
+                        return vec4(hsv2rgb(hsv), clampedColor.a);
+                    }
+                """.trimIndent()
+            )
+        }
+
+        val badgerShader by value {
+            testToolchain.import(
+                """
+                    // Badger Overlay
+
+                    // @@Image
+                    // @param uv uv-coordinate
+                    // @return color
+                    vec4 image(vec2 uv);
+
+                    // @param uv uv-coordinate
+                    // @return color
+                    vec4 upstreamImage(vec2 uv);
+
+                    // @return color
+                    vec4 main() {
+                        vec4 c = image(gl_FragCoord);
+                        return mix(upstreamImage(gl_FragCoord), c, c.a);
+                    }
+                """.trimIndent()
+            )
+        }
+
+        val show by value {
+            MutableShow("show") {
+                addPatch(
+                    autoWire(
+                        pinksShader,
+                        badgerShader,
+                        projectionShader,
+                        wobbleShader,
+                        scaleShader,
+                        hsvShader
+                    ) {
+                        editShader(scaleShader) { priority = 10f }
+                        editShader(hsvShader) { priority = 10f }
+                    }
+                )
+            }.build(ShowBuilder())
+                .let {
+                    ShowOpener(testToolchain, it, FakeShowPlayer()).openShow()
+                }
+        }
+
+        val linkedProgram by value {
+            generateLinkedProgram(show.allDataSources, show.buildActivePatchSet())
+        }
+
+        it("correctly finds the max reference depth of that node") {
+            val linkNodes = linkedProgram.linkNodes
+                .filter { (p,l) -> p is LinkedPatch }
+                .values
+                .sortedBy { it.index }
+                .map { it.toString() }
+
+            expect(linkNodes).containsExactly(
+                "LinkNode(UV Projection, id='uvProjection', maxObservedDepth=5, index=0)",
+                "LinkNode(Wobble, id='wobble', maxObservedDepth=4, index=1)",
+                "LinkNode(Scale, id='scale', maxObservedDepth=3, index=2)",
+                "LinkNode(Pinks, id='pinks', maxObservedDepth=2, index=3)",
+                "LinkNode(Badger Overlay, id='badgerOverlay', maxObservedDepth=1, index=4)",
+                "LinkNode(HSV, id='hsv', maxObservedDepth=0, index=5)",
+            )
+        }
+
+        it("generates GLSL with nodes called in the right order") {
+            kexpect(linkedProgram.toGlsl()).toBe(
+                /**language=glsl*/
+                """
+                    #ifdef GL_ES
+                    precision mediump float;
+                    #endif
+
+                    // SparkleMotion-generated GLSL
+
+                    layout(location = 0) out vec4 sm_result;
+
+                    struct FixtureInfo {
+                        vec3 position;
+                        vec3 rotation;
+                        mat4 transformation;
+                    };
+
+                    struct ModelInfo {
+                        vec3 center;
+                        vec3 extents;
+                    };
+
+                    // Data source: Brightness Slider
+                    uniform float in_brightnessSlider;
+
+                    // Data source: Fixture Info
+                    uniform FixtureInfo in_fixtureInfo;
+
+                    // Data source: Hue Slider
+                    uniform float in_hueSlider;
+
+                    // Data source: Image
+                    uniform sampler2D ds_in_imageImage_texture;
+
+                    // Data source: Model Info
+                    uniform ModelInfo in_modelInfo;
+
+                    // Data source: Pixel Location
+                    uniform sampler2D ds_pixelLocation_texture;
+                    vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                        vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                        vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                        return xyzwInModel.xyz;
+                    }
+                    vec3 in_pixelLocation;
+
+                    // Data source: Redness Slider
+                    uniform float in_rednessSlider;
+
+                    // Data source: Resolution
+                    uniform vec2 in_resolution;
+
+                    // Data source: Saturation Slider
+                    uniform float in_saturationSlider;
+
+                    // Data source: Size Slider
+                    uniform float in_sizeSlider;
+
+                    // Data source: Time
+                    uniform float in_time;
+
+                    // Data source: Wobble Amount Slider
+                    uniform float in_wobbleAmountSlider;
+
+                    // Shader: UV Projection; namespace: p0
+                    // UV Projection
+
+                    vec2 p0_uvProjectioni_result = vec2(0.);
+
+                    #line 10 0
+                    vec2 p0_uvProjection_main(vec3 pixelLocation) {
+                        vec3 pixelOffset = (pixelLocation - in_modelInfo.center) / in_modelInfo.extents + .5;
+                        return vec2(pixelOffset.x, pixelOffset.y);
+                    }
+
+                    // Shader: Wobble; namespace: p1
+                    // Wobble
+
+                    vec2 p1_wobblei_result = vec2(0.);
+
+                    #line 7 1
+                    vec2 p1_wobble_main(vec2 uvIn) {
+                        vec2 p = -1.0 + 2.0 * uvIn;
+                        float len = length(p);
+                        return uvIn + (p/len)*sin(len*12.0-in_time*4.0)*0.1 * in_wobbleAmountSlider;
+                    }
+
+                    // Shader: Scale; namespace: p2
+                    // Scale
+
+                    vec2 p2_scalei_result = vec2(0.);
+
+                    #line 6 2
+                    vec2 p2_scale_main(vec2 uvIn) {
+                      return (uvIn - .5) / in_sizeSlider + .5;
+                    }
+
+                    // Shader: Pinks; namespace: p3
+                    // Pinks
+
+                    vec4 p3_pinks_gl_FragColor = vec4(0., 0., 0., 1.);
+                    vec2 p3_global_gl_FragCoord = vec2(0.);
+
+                    #line 4 3
+                    void p3_pinks_main(void) {
+                        p3_pinks_gl_FragColor = vec4(in_rednessSlider, p2_scalei_result.xy / in_resolution, 1.0);
+                    }
+
+                    // Shader: Badger Overlay; namespace: p4
+                    // Badger Overlay
+
+                    vec4 p4_badgerOverlayi_result = vec4(0., 0., 0., 1.);
+
+                    #line 6 4
+                    vec4 p4_badgerOverlay_image(vec2 uv) {
+                        return texture(ds_in_imageImage_texture, vec2(uv.x, 1. - uv.y));
+                    }
+
+                    #line 10 4
+                    vec4 p4_badgerOverlay_upstreamImage(vec2 uv) {
+                        // Invoke Pinks
+                        p3_global_gl_FragCoord = uv;
+                        p3_pinks_main();
+
+                        return p3_pinks_gl_FragColor;
+                    }
+
+                    #line 13 4
+                    vec4 p4_badgerOverlay_main() {
+                        vec4 c = p4_badgerOverlay_image(p2_scalei_result);
+                        return mix(p4_badgerOverlay_upstreamImage(p2_scalei_result), c, c.a);
+                    }
+
+                    // Shader: HSV; namespace: p5
+                    // HSV
+
+                    vec4 p5_hsvi_result = vec4(0., 0., 0., 1.);
+
+                    #line 6 5
+                    vec3 p5_hsv_rgb2hsv(vec3 c) { return vec3(c); }
+
+                    #line 7 5
+                    vec3 p5_hsv_hsv2rgb(vec3 c) { return vec3(c); }
+
+                    #line 11 5
+                    vec4 p5_hsv_main(vec4 inColor) {
+                        if (in_saturationSlider == 1.) return inColor;
+
+                        vec4 clampedColor = clamp(inColor, 0., 1.);
+                        vec3 hsv = p5_hsv_rgb2hsv(clampedColor.rgb);
+                        hsv.x += in_hueSlider;
+                        hsv.y *= in_saturationSlider;
+                        hsv.z *= in_brightnessSlider;
+                        return vec4(p5_hsv_hsv2rgb(hsv), clampedColor.a);
+                    }
+
+
+                    #line 10001
+                    void main() {
+                        // Invoke Pixel Location
+                        in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
+                        // Invoke UV Projection
+                        p0_uvProjectioni_result = p0_uvProjection_main(in_pixelLocation);
+
+                        // Invoke Wobble
+                        p1_wobblei_result = p1_wobble_main(p0_uvProjectioni_result);
+
+                        // Invoke Scale
+                        p2_scalei_result = p2_scale_main(p1_wobblei_result);
+
+                        // Invoke Badger Overlay
+                        p4_badgerOverlayi_result = p4_badgerOverlay_main();
+
+                        // Invoke HSV
+                        p5_hsvi_result = p5_hsv_main(p4_badgerOverlayi_result);
+
+                        sm_result = p5_hsvi_result;
+                    }
+
+                """.trimIndent()
+            )
+        }
+    }
 })
 
-private fun generateLinkedPatch(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
+private fun generateLinkedProgram(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
     val renderManager = RenderManager(FakeGlContext())
     val fixture = model.allEntities.first()

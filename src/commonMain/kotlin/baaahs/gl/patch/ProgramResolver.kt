@@ -71,7 +71,7 @@ class ProgramResolver(
                         }
                     }
 
-                    ProgramRenderPlan(program, renderTargets, linkedPatch, source)
+                    ProgramRenderPlan(program, renderTargets, linkedPatch, source, portDiagram)
                 }
 
                 FixtureTypeRenderPlan(programsRenderPlans)
