@@ -134,9 +134,9 @@ class ShaderHelpStyles(
             declarations["counterIncrement"] = "listing"
 
             before {
-                declarations["content"] = "counter(listing) \". \""
+                declarations["content"] = "counter(listing) \"  \""
                 display = Display.inlineBlock
-                width = 2.em
+                width = 4.em
                 paddingLeft = LinearDimension.auto
                 marginLeft = LinearDimension.auto
                 textAlign = TextAlign.right

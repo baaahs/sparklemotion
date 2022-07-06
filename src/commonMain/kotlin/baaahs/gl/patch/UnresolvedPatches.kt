@@ -5,10 +5,12 @@ import baaahs.show.mutable.MutablePatchSet
 import baaahs.util.Logger
 
 class UnresolvedPatches(private val unresolvedPatches: List<UnresolvedPatch>) {
-    fun editShader(shader: Shader): UnresolvedPatch {
+    fun editShader(shader: Shader, callback: UnresolvedPatch.() -> Unit): UnresolvedPatches {
         // TODO: src == src is probably the wrong check here:
-        return unresolvedPatches.find { it.mutableShader.src == shader.src }
-            ?: error("Couldn't find shader \"${shader.title}\"")
+        val match = (unresolvedPatches.find { it.mutableShader.src == shader.src }
+            ?: error("Couldn't find shader \"${shader.title}\""))
+        match.callback()
+        return this
     }
 
     fun editAll(callback: UnresolvedPatch.() -> Unit): UnresolvedPatches {

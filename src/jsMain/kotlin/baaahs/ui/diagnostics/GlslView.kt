@@ -23,7 +23,7 @@ private val GlslView = xComponent<GlslProps>("Glsl") { props ->
             props.source
                 .let { glsl ->
                     glsl.split("\n").forEach { line ->
-                        code { +"    "; +line; +"\n" }
+                        code { +line; +"\n" }
                     }
                 }
         }

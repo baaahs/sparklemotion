@@ -25,7 +25,7 @@ private val DotView = xComponent<DotProps>("Dot", isPure = true) { props ->
         pre(+styles.code) {
             Dag().apply { visit(props.fixtureType, linkedProgram) }.text
                 .split("\n").forEach { line ->
-                    code { +"    "; +line; +"\n" }
+                    code { +line; +"\n" }
                 }
         }
     }

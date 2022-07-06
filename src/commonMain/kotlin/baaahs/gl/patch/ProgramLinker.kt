@@ -33,20 +33,16 @@ class ProgramLinker(
         componentBuilder.getBang(programNode, "program node")
 
     fun visit(programNode: ProgramNode) {
-        var newlyCreated = false
         linkNodes.getOrPut(programNode) {
-            newlyCreated = true
             LinkNode(programNode, programNode.getNodeId(this))
         }.also {
             it.atDepth(curDepth)
 
-            if (newlyCreated) {
-                curDepth++
-                try {
-                    programNode.traverse(this)
-                } finally {
-                    curDepth--
-                }
+            curDepth++
+            try {
+                programNode.traverse(this)
+            } finally {
+                curDepth--
             }
         }
     }
@@ -78,7 +74,7 @@ class ProgramLinker(
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedProgram(rootNode, components, dataSourceLinks, warnings)
+        return LinkedProgram(rootNode, components, dataSourceLinks, warnings, linkNodes)
     }
 
     fun visit(openShader: OpenShader) {
@@ -167,5 +163,9 @@ class LinkNode(
 
     fun atDepth(depth: Int) {
         if (depth > maxObservedDepth) maxObservedDepth = depth
+    }
+
+    override fun toString(): String {
+        return "LinkNode(${programNode.title}, id='$id', maxObservedDepth=$maxObservedDepth, index=$index)"
     }
 }
