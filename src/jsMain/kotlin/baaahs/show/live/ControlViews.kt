@@ -38,6 +38,13 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
         }
     }
 
+    override fun forImagePicker(openImagePickerControl: OpenImagePickerControl, controlProps: ControlProps) = renderWrapper {
+        imagePickerControl {
+            attrs.controlProps = controlProps
+            attrs.imagePickerControl = openImagePickerControl
+        }
+    }
+
     override fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps) = renderWrapper {
         sliderControl {
             attrs.controlProps = controlProps
