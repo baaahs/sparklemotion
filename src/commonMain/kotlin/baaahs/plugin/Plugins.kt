@@ -30,6 +30,7 @@ import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
+import baaahs.util.Logger
 import baaahs.util.Time
 import kotlinx.cli.ArgParser
 import kotlinx.serialization.KSerializer
@@ -220,6 +221,7 @@ sealed class Plugins(
                     (obj.keys - "type").forEach { put(it, obj[it]!!) }
                 })
             } catch (e: Exception) {
+                logger.error(e) { "Failed to deserialize datasource $type." }
                 UnknownDataSource(
                     pluginRef, e.message ?: "wha? unknown datasource?", ContentType.Unknown, obj
                 )
@@ -379,6 +381,8 @@ sealed class Plugins(
     }
 
     companion object {
+        private val logger = Logger<Plugins>()
+
         fun buildForServer(
             pluginContext: PluginContext,
             plugins: List<Plugin<*>>,

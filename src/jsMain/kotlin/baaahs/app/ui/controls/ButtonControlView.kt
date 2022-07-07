@@ -23,7 +23,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val buttonControl = props.buttonControl
     val onShowStateChange = props.controlProps.onShowStateChange
     val showPreview = appContext.uiSettings.renderButtonPreviews
-    val shaderForPreview = if (showPreview) buttonControl.shaderForPreview() else null
+    val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
     val handleToggleClick by eventHandler(onShowStateChange) {
         buttonControl.click()
@@ -61,10 +61,11 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     }
 
     div(+Styles.controlRoot and Styles.controlButton) {
-        if (shaderForPreview != null) {
+        if (patchForPreview != null) {
             div(+Styles.buttonShaderPreviewContainer) {
                 shaderPreview {
-                    attrs.shader = shaderForPreview.shader
+                    attrs.shader = patchForPreview.shader.shader
+//                    attrs.patch = patchForPreview
                 }
             }
         }
@@ -104,10 +105,10 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         }
     }
 
-    if (lightboxOpen && shaderForPreview != null) {
+    if (lightboxOpen && patchForPreview != null) {
         patchMod {
             attrs.title = buttonControl.title
-            attrs.shader = shaderForPreview.shader
+            attrs.shader = patchForPreview.shader.shader
             attrs.onClose = { lightboxOpen = false }
         }
     }

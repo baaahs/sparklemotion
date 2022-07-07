@@ -126,7 +126,9 @@ class OpenButtonControl(
         isPressed = !isPressed
     }
 
-    fun shaderForPreview(): OpenShader? =
+    fun patchForPreview() =
         patches.onlyOrNull()
-            ?.shader
+
+    fun shaderForPreview(): OpenShader? =
+        patchForPreview()?.shader
 }

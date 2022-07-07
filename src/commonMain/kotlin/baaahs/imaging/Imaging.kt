@@ -69,5 +69,7 @@ expect fun imageFromDataUrl(dataUrl: String): Image
 
 expect fun createWritableBitmap(width: Int, height: Int): Bitmap
 
-internal fun String.looksLikeGif(): Boolean =
-    startsWith("data:image/png;base64,R0lG")
+private val startsLikeGif = Regex("^data:image/[a-z]+;base64,R0lG")
+internal fun String.looksLikeGif(): Boolean {
+    return startsLikeGif.matchesAt(this, 0)
+}

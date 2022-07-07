@@ -47,6 +47,7 @@ interface ControlViews {
     fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View
     fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps): View
     fun forColorPicker(openColorPickerControl: OpenColorPickerControl, controlProps: ControlProps): View
+    fun forImagePicker(openImagePickerControl: OpenImagePickerControl, controlProps: ControlProps): View
     fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps): View
     fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps): View
     fun forVacuity(openVacuityControl: OpenVacuityControl, controlProps: ControlProps): View
