@@ -1,5 +1,6 @@
 package baaahs.app.ui.controls
 
+import baaahs.Gadget
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl
@@ -30,6 +31,10 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         onShowStateChange()
     }
 
+    val handleOnClickOnServer by handler {_: Gadget ->
+        onShowStateChange()
+    }
+
     val handleMomentaryPress by eventHandler(onShowStateChange) {
         if (!buttonControl.isPressed) buttonControl.click()
         onShowStateChange()
@@ -56,6 +61,11 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
                     lightboxOpen = true
                 }
             })
+        }
+
+        buttonControl.switch.listen(handleOnClickOnServer)
+        withCleanup {
+            buttonControl.switch.unlisten(handleOnClickOnServer)
         }
     }
 

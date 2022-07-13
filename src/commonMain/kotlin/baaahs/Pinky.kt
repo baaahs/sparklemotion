@@ -144,6 +144,11 @@ class Pinky(
                     config?.runningShowPath?.let { path ->
                         launch { stageManager.showDocumentService.load(path) }
                     }
+
+                    config?.autoModeOn?.let { mode ->
+                        logger.info { "Automode on/off" }
+                        stageManager.handleAutoMode(mode)
+                    }
                 }
             }.join()
 
@@ -284,11 +289,13 @@ class Pinky(
 @Serializable
 data class PinkyConfig(
     val runningShowPath: String? = null,
-    val runningScenePath: String? = null
+    val runningScenePath: String? = null,
+    val autoModeOn: Boolean = true
 )
 
 data class PinkySettings(
     var targetFramerate: Float = 30f, // Frames per second
+    var autoModeOn: Boolean = true
 )
 
 @Serializable

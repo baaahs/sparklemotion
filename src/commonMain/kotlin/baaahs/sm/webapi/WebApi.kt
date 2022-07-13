@@ -4,6 +4,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibrary
 import baaahs.randomId
+import baaahs.show.live.AutoModeState
 import baaahs.ui.Icon
 import kotlinx.serialization.Serializable
 
@@ -11,6 +12,9 @@ import kotlinx.serialization.Serializable
 data class ClientData(
     val fsRoot: Fs.File
 )
+
+@Serializable
+class AutoModeCommand(val autoModeState: AutoModeState)
 
 @Serializable
 class NewCommand<T>(val template: T? = null)

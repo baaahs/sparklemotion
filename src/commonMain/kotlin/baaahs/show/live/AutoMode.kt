@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.ShowRunner
 import baaahs.control.OpenButtonControl
 import baaahs.doRunBlocking
 import baaahs.util.Logger
@@ -10,26 +11,36 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
 class AutoMode(
-    private val openShow: OpenShow
+    private var availableControls: List<OpenButtonControl> = emptyList(),
+    private val showRunner: ShowRunner?
 ) {
-
-    var indexSeed = 13;
     var autoMode = false;
     var running = false;
-    val isRunning: Boolean get() = run {
-        running
-    }
+    val isRunning: Boolean get() = running
 
-    val autoModeOn: Boolean get() = run {
-        autoMode
-    }
+    val autoModeOn: Boolean get() = autoMode
 
     var gadgetWizard: Job? = null
 
-    fun start() {
+    private val randomizer: Random = Random
+
+    fun setShow(openShow: OpenShow?) {
+        stop()
+        availableControls = openShow?.allFilterButtonControls ?: emptyList()
+        start()
+    }
+
+    fun setState(newState: AutoModeState) {
+        autoMode = newState == AutoModeState.On
+        if (autoModeOn) start()
+        else stop()
+    }
+
+    private fun start() {
+        logger.info { "Start Called" }
         if (isRunning) return
+        logger.info { "running...." }
         running = true
-        autoMode = true
         gadgetWizard = CoroutineScope(Dispatchers.Unconfined).launch {
             playWithButtons()
         }
@@ -38,27 +49,23 @@ class AutoMode(
     var frequency = 5000L
 
     private suspend fun playWithButtons() {
-        val controls: List<OpenButtonControl> = openShow.allFilterButtonControls
-        logger.info { "Controls " + controls.joinToString { it.gadget.title } }
-        val random = Random(indexSeed++)
         var control: OpenButtonControl
-        while (autoModeOn) {
-            control = controls.random(random)
-            // This doesn't update the UI :(
-            control.click()
+        logger.info { "Controls ${availableControls.joinToString()}" }
+        while (autoModeOn && availableControls.isNotEmpty()) {
+            control = availableControls.random(randomizer)
+            control.forceClickChange()
             logger.info { "Pushed ${control.gadget.title}" }
             delay(frequency) // TODO: Config this
         }
         logger.info { "Stopped" }
-        running = false
     }
 
-    fun stop() {
+    private fun stop() {
         logger.info { "Stop Called" }
-        autoMode = false;
         CoroutineScope(Dispatchers.Unconfined).launch {
             gadgetWizard?.cancelAndJoin()
         }
+        running = false
         gadgetWizard = null
     }
 

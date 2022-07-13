@@ -6,6 +6,7 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.ui.*
 import mui.material.*
 import react.*
+import react.dom.onChange
 
 class MainSettingsPanel(
     private var changeUiSettings: ((UiSettings) -> UiSettings) -> Unit
@@ -33,7 +34,9 @@ private val MainSettingsPanelView = xComponent<MainSettingsPanelProps>("MainSett
     val handleUseSharedContextsChange by handler(uiSettings) {
         props.changeUiSettings { it.copy(useSharedContexts = !it.useSharedContexts) }
     }
-
+    val handleAutoModeFrequencyChange by handler(uiSettings) {
+        props.changeUiSettings { it.copy(autoModeFrequency = it.autoModeFrequency) }
+    }
 
     List {
         ListItem {
@@ -80,6 +83,27 @@ private val MainSettingsPanelView = xComponent<MainSettingsPanelProps>("MainSett
             }
         }
     }
+//
+//    Divider {}
+//
+//    List {
+//        ListItem {
+//            FormControlLabel {
+//                attrs.control = buildElement {
+//                     TextField {
+//                         attrs.label = buildElement { +"Auto Mode Interval" }
+//                         attrs.value = uiSettings.autoModeFrequency
+//                         attrs.onChange = handleAutoModeFrequencyChange
+//                         attrs.required = true
+//
+//                        // attrs.checked = uiSettings.useSharedContexts
+//                        // attrs.onChange = handleUseSharedContextsChange.withTChangeEvent()
+//                    }
+//                }
+//                attrs.label = buildElement { typographyH6 { +"Use Shared Contexts" } }
+//            }
+//        }
+//    }
 }
 
 external interface MainSettingsPanelProps : Props {

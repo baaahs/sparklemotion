@@ -18,12 +18,17 @@ import baaahs.show.DataSource
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
+import baaahs.show.live.AutoMode
+import baaahs.show.live.AutoModeState
+import baaahs.show.live.AutoModeWizard
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
 import baaahs.ui.addObserver
 import baaahs.util.Clock
+import baaahs.util.Logger
 import baaahs.util.globalLaunch
+import kotlinx.serialization.modules.SerializersModule
 
 class StageManager(
     toolchain: Toolchain,
@@ -41,6 +46,8 @@ class StageManager(
 
     private val fsSerializer = storage.fsSerializer
     private var gadgetsChanged: Boolean = false
+
+    private var autoModeWizard = AutoModeWizard(pubSub, AutoMode(emptyList(), null));
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
@@ -67,8 +74,6 @@ class StageManager(
     }
 
     override fun <T : Gadget> useGadget(id: String): T {
-        showRunner.let {
-        }
         return gadgetManager.useGadget(id)
     }
 
@@ -146,6 +151,19 @@ class StageManager(
         renderManager.logStatus()
     }
 
+    fun handleAutoMode(autoModeOn: Boolean) {
+        logger.info { "Handled auto mode toggle" }
+        val newState = if (autoModeOn) AutoModeState.On else AutoModeState.Off
+        pubSub.publish(Topics.autoMode, newState) {
+            logger.info { "published auto mode" }
+        }
+        autoModeWizard.setState(newState)
+    }
+
+    companion object {
+        private val logger = Logger("AutoMode")
+    }
+
     inner class ShowDocumentService : DocumentService<Show, ShowState>(
         pubSub, storage,
         ShowState.createTopic(
@@ -207,6 +225,8 @@ class StageManager(
             updateRunningShowPath(file)
 
             notifyOfDocumentChanges(fromClientUpdate)
+
+            autoModeWizard.setShow(showRunner!!.openShow)
         }
     }
 

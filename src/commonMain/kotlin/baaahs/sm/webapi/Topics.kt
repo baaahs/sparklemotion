@@ -9,6 +9,8 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
 import baaahs.plugin.Plugins
+import baaahs.show.live.AutoMode
+import baaahs.show.live.AutoModeState
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
@@ -25,6 +27,8 @@ object Topics {
 
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
+
+    val autoMode = PubSub.Topic("autoModeSate", AutoModeState.serializer())
 
     fun createControllerStates(plugins: Plugins) =
         PubSub.Topic(

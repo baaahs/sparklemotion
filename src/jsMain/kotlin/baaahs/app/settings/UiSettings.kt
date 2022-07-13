@@ -9,5 +9,6 @@ data class UiSettings(
     val autoMode: Boolean = false,
     val useSharedContexts: Boolean = true,
     val renderButtonPreviews: Boolean = true,
-    val appMode: AppMode = AppMode.Show
+    val appMode: AppMode = AppMode.Show,
+    val autoModeFrequency: Long = 5000L
 )

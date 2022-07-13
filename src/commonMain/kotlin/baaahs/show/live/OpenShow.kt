@@ -72,11 +72,6 @@ class OpenShow(
         currentTab.items.map { it.control }.filterIsInstance<OpenButtonControl>()
     }
 
-    private val autoMode = AutoMode(this)
-
-    fun startAutoMode() = autoMode.start()
-    fun stopAutoMode() = autoMode.stop()
-
     val missingPlugins: List<PluginDesc>
         get() = run {
             val unknownDataSources = allDataSources.values
@@ -120,7 +115,6 @@ class OpenShow(
         ActivePatchSet.build(this, allDataSources, feeds)
 
     override fun onRelease() {
-        autoMode.stop();
         openContext.release()
         feeds.values.forEach { it.disuse() }
     }

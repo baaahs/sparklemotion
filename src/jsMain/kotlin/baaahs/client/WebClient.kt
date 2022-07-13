@@ -17,8 +17,10 @@ import baaahs.mapper.JsMapper
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
+import baaahs.show.live.AutoModeState
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
+import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import kotlinx.js.jso
 import react.ReactElement
@@ -55,6 +57,14 @@ class WebClient(
             pinkyState = newState
             facade.notifyChanged()
         }
+
+        pubSub.subscribe(Topics.autoMode) { newAutoMode ->
+            logger.info { "Successful subscribe then publish" }
+            val newMode = newAutoMode == AutoModeState.On
+            val newSettings = uiSettings.copy(autoMode = newMode)
+            updateUiSettings(newSettings, saveToStorage = true)
+            facade.notifyChanged()
+        }
     }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
@@ -88,6 +98,10 @@ class WebClient(
     override fun onClose() {
         showManager.release()
         pubSub.removeStateChangeListener(pubSubListener)
+    }
+
+    companion object {
+        private val logger = Logger("AutoMode")
     }
 
     private fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {

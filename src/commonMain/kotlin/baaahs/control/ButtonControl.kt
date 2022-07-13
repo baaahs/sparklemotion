@@ -126,6 +126,11 @@ class OpenButtonControl(
         isPressed = !isPressed
     }
 
+    fun forceClickChange() {
+        click()
+        switch.changed()
+    }
+
     fun shaderForPreview(): OpenShader? =
         patches.onlyOrNull()
             ?.shader
