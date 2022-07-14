@@ -246,7 +246,7 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
         }
 
         val resolvedPatches =
-            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources())
+            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources(), toolchain)
                 .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
         val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)

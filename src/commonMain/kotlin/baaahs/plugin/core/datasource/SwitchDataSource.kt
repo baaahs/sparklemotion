@@ -43,7 +43,6 @@ data class SwitchDataSource(
     override fun getType(): GlslType = GlslType.Bool
     override val contentType: ContentType
         get() = ContentType.Boolean
-    override fun suggestId(): String = title.camelize()
 
     fun createGadget(): ButtonControl =
         ButtonControl(buttonTitle, activationType)
