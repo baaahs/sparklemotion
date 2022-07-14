@@ -27,6 +27,12 @@ class FakeOpenShader(
     override val entryPoint: GlslCode.GlslFunction
         get() = TODO("not implemented")
 
+    override val shaderDialect: ShaderDialect
+        get() = TODO("not implemented")
+
+    override val errors: List<GlslError>
+        get() = emptyList()
+
     override fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String =
         "// GLSL for $title"
 
@@ -36,10 +42,4 @@ class FakeOpenShader(
     ): GlslCode.Invoker = object : GlslCode.Invoker {
         override fun toGlsl(resultVar: String): String = "// invocationGlsl for $title;\n"
     }
-
-    override val shaderDialect: ShaderDialect
-        get() = TODO("not implemented")
-
-    override val errors: List<GlslError>
-        get() = emptyList()
 }

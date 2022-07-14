@@ -83,7 +83,6 @@ data class ColorPickerDataSource(
     override fun getType(): GlslType = GlslType.Vec4
     override val contentType: ContentType
         get() = ContentType.Color
-    override fun suggestId(): String = title.camelize()
 
     fun createGadget(): ColorPicker = ColorPicker(colorPickerTitle, initialValue)
 }

@@ -44,8 +44,6 @@ data class XyPadDataSource(
     override val contentType: ContentType
         get() = ContentType.XyCoordinate
 
-    override fun suggestId(): String = "$title XY Pad".camelize()
-
     override fun buildControl(): MutableControl =
         MutableXyPadControl(title, initialValue, minValue, maxValue, this)
 

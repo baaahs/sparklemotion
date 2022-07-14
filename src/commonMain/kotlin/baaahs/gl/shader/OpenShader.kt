@@ -1,5 +1,6 @@
 package baaahs.gl.shader
 
+import baaahs.app.ui.patchmod.*
 import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace

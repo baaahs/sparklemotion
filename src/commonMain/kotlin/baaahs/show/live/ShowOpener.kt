@@ -1,9 +1,11 @@
 package baaahs.show.live
 
+import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.OpenShader
 import baaahs.internalTimerClock
 import baaahs.show.*
@@ -36,10 +38,20 @@ open class ShowOpener(
     private val resolver = PatchResolver(
         openShaders,
         show.patches,
-        show.dataSources
+        show.dataSources,
+        toolchain,
+        object : GadgetProvider {
+            override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) =
+                showPlayer.registerGadget(id, gadget)
+
+            override fun <T : Gadget> useGadget(id: String): T =
+                showPlayer.useGadget(id)
+        }
     )
 
     private val allPatches = resolver.getResolvedPatches()
+    override val allPatchModDataSources: List<DataSource>
+        get() = allPatches.values.flatMap { it.patchMods.flatMap { it.dataSources } }
 
     override fun findControl(id: String): OpenControl? =
         if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
@@ -78,4 +90,9 @@ open class ShowOpener(
     companion object {
         private val logger = Logger<ShowOpener>()
     }
+}
+
+interface GadgetProvider {
+    fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource? = null)
+    fun <T : Gadget> useGadget(id: String): T = error("override me?")
 }

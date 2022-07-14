@@ -1,6 +1,7 @@
 package baaahs.show.live
 
 import baaahs.Gadget
+import baaahs.ShowPlayer
 import baaahs.app.ui.editor.ControlEditIntent
 import baaahs.app.ui.editor.Editor
 import baaahs.control.*
@@ -29,6 +30,7 @@ interface OpenControl {
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
     fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
+    fun initPatchMods(showPlayer: ShowPlayer) {}
 }
 
 abstract class DataSourceOpenControl : OpenControl {

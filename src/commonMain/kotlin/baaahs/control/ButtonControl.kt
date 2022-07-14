@@ -122,13 +122,11 @@ class OpenButtonControl(
     override fun getView(controlProps: ControlProps): View =
         controlViews.forButton(this, controlProps)
 
+    override fun initPatchMods(showPlayer: ShowPlayer) {
+
+    }
+
     fun click() {
         isPressed = !isPressed
     }
-
-    fun patchForPreview() =
-        patches.onlyOrNull()
-
-    fun shaderForPreview(): OpenShader? =
-        patchForPreview()?.shader
 }

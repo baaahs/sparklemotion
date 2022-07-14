@@ -87,7 +87,7 @@ data class PatchEditorPanel(
     private val openShader = toolchain.openShader(mutablePatch.mutableShader.build())
     private val openPatch = run {
     val patch = mutablePatch.build(ShowBuilder())
-        PatchResolver.build(openShader, patch, emptyMap())
+        PatchResolver.build(openShader, patch, emptyMap(), toolchain)
     }
 
     override fun getView(): View =
