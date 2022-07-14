@@ -8,11 +8,11 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 object XyPadControlSpec : Spek({
-    describe<OpenXyPadControl.Helper> {
+    describe<XyPad.Helper> {
         val xyPad by value { XyPad("Brightness") }
         val padSize by value { Vector2F(200f, 200f) }
         val knobSize by value { Vector2F(20f, 20f) }
-        val helper by value { OpenXyPadControl.Helper(xyPad, padSize, knobSize) }
+        val helper by value { XyPad.Helper(xyPad, padSize, knobSize) }
 
         it("calculates knob positions, taking knob size into account") {
             expect(helper.knobPositionPx).toEqual(Vector2F(90f, 90f))
