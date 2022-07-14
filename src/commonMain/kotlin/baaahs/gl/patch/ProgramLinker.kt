@@ -90,7 +90,7 @@ interface ProgramNode {
 
     fun getNodeId(programLinker: ProgramLinker): String
 
-    fun traverse(programLinker: ProgramLinker, depth: Int = 0)
+    fun traverse(programLinker: ProgramLinker)
 
     fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component
 }
@@ -119,7 +119,7 @@ data class DefaultValueNode(
         return contentType.glslType.defaultInitializer
     }
 
-    override fun traverse(programLinker: ProgramLinker, depth: Int) {
+    override fun traverse(programLinker: ProgramLinker) {
     }
 
     override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
@@ -133,7 +133,7 @@ abstract class ExprNode : ProgramNode, Component {
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
-    override fun traverse(programLinker: ProgramLinker, depth: Int) {}
+    override fun traverse(programLinker: ProgramLinker) {}
 
     override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
         return this

@@ -36,31 +36,6 @@ data class ActivePatchSet(
     companion object {
         val Empty = ActivePatchSet(emptyList(), emptyMap(), emptyMap())
 
-        fun build(
-            show: OpenShow,
-            allDataSources: Map<String, DataSource>,
-            feeds: Map<DataSource, Feed>
-        ): ActivePatchSet {
-            val items = arrayListOf<Item>()
-            var nextSerial = 0
-
-            val builder = object : Builder {
-                override val show: OpenShow
-                    get() = show
-
-                override fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String) {
-                    items.add(Item(patchHolder, depth, layoutContainerId, nextSerial++))
-                }
-            }
-            show.addTo(builder, 0)
-
-            return ActivePatchSet(
-                sort(items),
-                allDataSources,
-                feeds
-            )
-        }
-
         internal fun sort(items: List<Item>) =
             items.sortedWith(
                 compareBy<Item> { it.depth }

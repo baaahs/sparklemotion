@@ -1,6 +1,7 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
@@ -108,7 +109,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     if (lightboxOpen && patchForPreview != null) {
         patchMod {
             attrs.title = buttonControl.title
-            attrs.shader = patchForPreview.shader.shader
+            attrs.patchHolder = buttonControl
             attrs.onClose = { lightboxOpen = false }
         }
     }
