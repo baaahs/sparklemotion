@@ -1,6 +1,8 @@
 package baaahs.show.live
 
 import baaahs.getValue
+import baaahs.gl.shader.OpenShader
+import baaahs.onlyOrNull
 import baaahs.show.Panel
 import baaahs.show.PatchHolder
 import baaahs.sm.webapi.Severity
@@ -30,4 +32,10 @@ open class OpenPatchHolder(
             openControls.forEach { openControl -> openControl.legacyAddTo(builder, panel, depth + 1) }
         }
     }
+
+    fun patchForPreview() =
+        patches.onlyOrNull()
+
+    fun shaderForPreview(): OpenShader? =
+        patchForPreview()?.shader
 }

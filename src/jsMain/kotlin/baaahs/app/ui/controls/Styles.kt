@@ -170,12 +170,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         height = 100.pct
     }
 
-    val lightboxShaderPreviewContainer by css {
-        width = 300.px
-        height = 300.px
-        cursor = Cursor.grab
-    }
-
     val buttonLabelWhenPreview by css {
         important(::color, Color.white)
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
