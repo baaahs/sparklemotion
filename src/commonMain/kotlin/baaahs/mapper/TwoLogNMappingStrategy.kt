@@ -11,14 +11,18 @@ import kotlin.math.roundToInt
 class TwoLogNMappingStrategy : MappingStrategy() {
     override suspend fun capturePixelData(
         mapper: Mapper,
+        stats: MapperStats,
+        ui: MapperUi,
         session: Mapper.Session,
         brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
-        Context(mapper, session, brainsToMap).capturePixelData()
+        Context(mapper, stats, ui, session, brainsToMap).capturePixelData()
     }
 
     class Context(
         val mapper: Mapper,
+        val stats: MapperStats,
+        val ui: MapperUi,
         val session: Mapper.Session,
         val brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
@@ -38,7 +42,7 @@ class TwoLogNMappingStrategy : MappingStrategy() {
 
             for (pixelIndex in 0 until maxPixelForTheseBrains) {
                 val progress = (pixelIndex.toFloat() / maxPixelForTheseBrains * 100).roundToInt()
-                mapper.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains ($progress%)…")
+                ui.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains ($progress%)…")
                 var compositeBitmap: Bitmap? = null
 
                 for (b in 0 until neededBits) {
@@ -50,16 +54,16 @@ class TwoLogNMappingStrategy : MappingStrategy() {
                     } else {
                         compositeBitmap.darken(mask)
                     }
-                    mapper.showDiffImage(compositeBitmap)
+                    ui.showDiffImage(compositeBitmap)
                 }
 
-                val analysis = mapper.stats.diffImage.time {
+                val analysis = stats.diffImage.time {
                     ImageProcessing.analyze(compositeBitmap!!)
                 }
-                val pixelChangeRegion = mapper.stats.detectChangeRegion.time {
+                val pixelChangeRegion = stats.detectChangeRegion.time {
                     analysis.detectChangeRegion(.9f)
                 }
-                mapper.showDiffImage(compositeBitmap!!, pixelChangeRegion)
+                ui.showDiffImage(compositeBitmap!!, pixelChangeRegion)
                 //                        delay(500)
 
                 brainsToMap.values.forEach { brainToMap ->
@@ -74,7 +78,7 @@ class TwoLogNMappingStrategy : MappingStrategy() {
                         brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
-                        mapper.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
+                        ui.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
                         Mapper.logger.debug { "looks like no pixel $pixelIndex for ${brainToMap.brainId}…" }
                     }
                 }
@@ -83,16 +87,16 @@ class TwoLogNMappingStrategy : MappingStrategy() {
 
         private suspend fun captureMaskedPixelsImage(maskBit: Int, invert: Boolean): Bitmap {
             turnOnPixelsByMask(maskBit, invert)
-            val pixelOnBitmap = mapper.stats.captureImage.stime {
+            val pixelOnBitmap = stats.captureImage.stime {
                 mapper.slowCamDelay()
                 mapper.getBrightImageBitmap(2)
             }
 
-            mapper.showBaseImage(session.baseBitmap!!)
-            mapper.stats.diffImage.time {
+            ui.showBaseImage(session.baseBitmap!!)
+            stats.diffImage.time {
                 ImageProcessing.diff(pixelOnBitmap, session.baseBitmap!!, session.deltaBitmap)
             }
-            mapper.showDiffImage(session.deltaBitmap)
+            ui.showDiffImage(session.deltaBitmap)
             val thisDelta = session.deltaBitmap
             session.deltaBitmap = NativeBitmap(session.deltaBitmap.width, session.deltaBitmap.height)
             return thisDelta
