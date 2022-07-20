@@ -6,6 +6,6 @@ abstract class MappingStrategy {
     abstract suspend fun capturePixelData(
         mapper: Mapper,
         session: Mapper.Session,
-        brainsToMap: MutableMap<Network.Address, Mapper.BrainToMap>
+        brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     )
 }

@@ -56,7 +56,7 @@ abstract class Mapper(
     private var newIncomingImage: Image? = null
 
     private var suppressShowsJob: Job? = null
-    private val brainsToMap: MutableMap<Network.Address, BrainToMap> = mutableMapOf()
+    private val brainsToMap: MutableMap<Network.Address, MappableBrain> = mutableMapOf()
 
     private val activeColor = Color(0x07, 0xFF, 0x07)
     private val inactiveColor = Color(0x01, 0x00, 0x01)
@@ -362,11 +362,11 @@ abstract class Mapper(
 
         private suspend fun detectBrains(
             index: Int,
-            brainToMap: BrainToMap
+            mappableBrain: MappableBrain
         ): Ballot<VisibleSurface>? {
-            showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${brainToMap.brainId})…")
+            showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${mappableBrain.brainId})…")
 
-            deliverer.send(brainToMap, solidColorBuffer(activeColor))
+            deliverer.send(mappableBrain, solidColorBuffer(activeColor))
             deliverer.await()
             slowCamDelay()
             slowCamDelay()
@@ -379,13 +379,13 @@ abstract class Mapper(
             val surfaceAnalysis = ImageProcessing.diff(surfaceOnBitmap, baseBitmap!!, deltaBitmap)
             val surfaceChangeRegion = surfaceAnalysis.detectChangeRegion(.25f)
             logger.debug {
-                "surfaceChangeRegion(${brainToMap.brainId}) =" +
+                "surfaceChangeRegion(${mappableBrain.brainId}) =" +
                         " $surfaceChangeRegion ${surfaceChangeRegion.width}x${surfaceChangeRegion.height}"
             }
             showDiffImage(deltaBitmap, surfaceChangeRegion)
             showPanelMask(deltaBitmap, surfaceChangeRegion)
 
-            brainToMap.changeRegion = surfaceChangeRegion
+            mappableBrain.changeRegion = surfaceChangeRegion
 
             val thresholdValue = surfaceAnalysis.thresholdValueFor(.25f)
             //                val pxAboveThreshold = surfaceAnalysis.hist.sumValues(thresholdValue..255)
@@ -397,7 +397,7 @@ abstract class Mapper(
             }
 
             if (sampleLocations.isEmpty()) {
-                logger.warn { "Failed to match anything up with ${brainToMap.brainId}, bailing." }
+                logger.warn { "Failed to match anything up with ${mappableBrain.brainId}, bailing." }
                 return null
             }
 
@@ -415,7 +415,7 @@ abstract class Mapper(
             if (tries == 0 || surfaceBallot.noVotes()) {
                 logger.warn {
                     "Failed to cast sufficient votes (${surfaceBallot.totalVotes}) after 1000 tries" +
-                            " on ${brainToMap.brainId}, bailing."
+                            " on ${mappableBrain.brainId}, bailing."
                 }
                 return null
             }
@@ -423,8 +423,8 @@ abstract class Mapper(
             return surfaceBallot
         }
 
-        private suspend fun identifyBrain(index: Int, brainToMap: BrainToMap, retryCount: Int = 0) {
-            val surfaceBallot = detectBrains(index, brainToMap)
+        private suspend fun identifyBrain(index: Int, mappableBrain: MappableBrain, retryCount: Int = 0) {
+            val surfaceBallot = detectBrains(index, mappableBrain)
                 ?: return
 
             //                val orderedPanels = visibleSurfaces.map { visiblePanel ->
@@ -437,16 +437,16 @@ abstract class Mapper(
             val firstGuess = surfaceBallot.winner()
             val firstGuessSurface = firstGuess.entity
 
-            showMessage("$index / ${brainsToMap.size}: ${brainToMap.brainId} — surface is ${firstGuessSurface.name}?")
+            showMessage("$index / ${brainsToMap.size}: ${mappableBrain.brainId} — surface is ${firstGuessSurface.name}?")
             showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
 
-            logger.info { "Guessed panel ${firstGuessSurface.name} for ${brainToMap.brainId}" }
-            brainToMap.guessedEntity = firstGuessSurface
-            brainToMap.guessedVisibleSurface = firstGuess
-            brainToMap.expectedPixelCount = (firstGuessSurface as? Model.Surface)?.expectedPixelCount
-            brainToMap.panelDeltaBitmap = deltaBitmap.clone()
-            brainToMap.deltaImageName =
-                webSocketClient.saveImage(sessionStartTime, "brain-${brainToMap.brainId}-$retryCount", deltaBitmap)
+            logger.info { "Guessed panel ${firstGuessSurface.name} for ${mappableBrain.brainId}" }
+            mappableBrain.guessedEntity = firstGuessSurface
+            mappableBrain.guessedVisibleSurface = firstGuess
+            mappableBrain.expectedPixelCount = (firstGuessSurface as? Model.Surface)?.expectedPixelCount
+            mappableBrain.panelDeltaBitmap = deltaBitmap.clone()
+            mappableBrain.deltaImageName =
+                webSocketClient.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)
         }
     }
 
@@ -476,16 +476,16 @@ abstract class Mapper(
     }
 
     internal suspend fun sendToAllReliably(
-        brains: Collection<BrainToMap>,
-        fn: (BrainToMap) -> BrainShader.Buffer
+        brains: Collection<MappableBrain>,
+        fn: (MappableBrain) -> BrainShader.Buffer
     ) {
         sendToAll(brains, fn)
         waitForDelivery()
     }
 
     private fun sendToAll(
-        brains: Collection<BrainToMap>,
-        fn: (BrainToMap) -> BrainShader.Buffer
+        brains: Collection<MappableBrain>,
+        fn: (MappableBrain) -> BrainShader.Buffer
     ) {
         brains.forEach {
             deliverer.send(it, fn(it))
@@ -537,15 +537,15 @@ abstract class Mapper(
         private val outstanding = mutableMapOf<List<Byte>, DeliveryAttempt>()
         private val pongs = Channel<PingMessage>()
 
-        fun send(brainToMap: BrainToMap, buffer: BrainShader.Buffer) {
-            val deliveryAttempt = DeliveryAttempt(brainToMap, buffer)
+        fun send(mappableBrain: MappableBrain, buffer: BrainShader.Buffer) {
+            val deliveryAttempt = DeliveryAttempt(mappableBrain, buffer)
 //            logger.debug { "attempting reliable delivery with key ${deliveryAttempt.key.stringify()}" }
             outstanding[deliveryAttempt.key] = deliveryAttempt
             deliveryAttempt.attemptDelivery()
         }
 
         suspend fun await(retryAfterSeconds: Double = .25, failAfterSeconds: Double = 10.0) {
-            logger.debug { "Waiting pongs from ${outstanding.values.map { it.brainToMap.brainId }}..." }
+            logger.debug { "Waiting pongs from ${outstanding.values.map { it.mappableBrain.brainId }}..." }
 
             outstanding.values.forEach {
                 it.retryAt = it.sentAt + retryAfterSeconds
@@ -554,7 +554,7 @@ abstract class Mapper(
 
             while (outstanding.isNotEmpty()) {
                 val waitingFor =
-                    outstanding.values.map { it.brainToMap.guessedEntity?.name ?: it.brainToMap.brainId }
+                    outstanding.values.map { it.mappableBrain.guessedEntity?.name ?: it.mappableBrain.brainId }
                         .sorted()
                 showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
 //                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
@@ -566,7 +566,7 @@ abstract class Mapper(
                 outstanding.values.removeAll {
                     if (it.failAt < now) {
                         logger.debug {
-                            "Timed out waiting after ${now - it.sentAt}s for ${it.brainToMap.brainId}" +
+                            "Timed out waiting after ${now - it.sentAt}s for ${it.mappableBrain.brainId}" +
                                     " pong ${it.key.stringify()}"
                         }
                         it.failed()
@@ -576,7 +576,7 @@ abstract class Mapper(
 
                         if (it.retryAt < now) {
                             logger.warn {
-                                "Haven't heard from ${it.brainToMap.brainId} after ${now - it.sentAt}s," +
+                                "Haven't heard from ${it.mappableBrain.brainId} after ${now - it.sentAt}s," +
                                         " retrying (attempt ${++it.retryCount})..."
                             }
                             it.attemptDelivery()
@@ -618,7 +618,7 @@ abstract class Mapper(
 
     class TimeoutException(message: String) : Exception(message)
 
-    inner class DeliveryAttempt(val brainToMap: BrainToMap, val buffer: BrainShader.Buffer) {
+    inner class DeliveryAttempt(val mappableBrain: MappableBrain, val buffer: BrainShader.Buffer) {
         private val tag = Random.nextBytes(8)
         val key get() = tag.toList()
         val sentAt = clock.now()
@@ -627,15 +627,15 @@ abstract class Mapper(
         var retryCount = 0
 
         fun attemptDelivery() {
-            udpSocket.sendUdp(brainToMap.address, brainToMap.port, BrainShaderMessage(buffer.brainShader, buffer, tag))
+            udpSocket.sendUdp(mappableBrain.address, mappableBrain.port, BrainShaderMessage(buffer.brainShader, buffer, tag))
         }
 
         fun succeeded() {
-            logger.debug { "${brainToMap.brainId} shader message pong after ${clock.now() - sentAt}s" }
+            logger.debug { "${mappableBrain.brainId} shader message pong after ${clock.now() - sentAt}s" }
         }
 
         fun failed() {
-            logger.error { "${brainToMap.brainId} shader message pong not received after ${clock.now() - sentAt}s" }
+            logger.error { "${mappableBrain.brainId} shader message pong not received after ${clock.now() - sentAt}s" }
         }
     }
 
@@ -644,11 +644,11 @@ abstract class Mapper(
         when (val message = parse(bytes)) {
             is BrainHelloMessage -> {
                 logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
-                val brainToMap = brainsToMap.getOrPut(fromAddress) { BrainToMap(fromAddress, message.brainId) }
+                val mappableBrain = brainsToMap.getOrPut(fromAddress) { MappableBrain(fromAddress, message.brainId) }
                 showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
 
                 // Less voltage causes less LED glitches.
-                brainToMap.shade { solidColor(Color.GREEN.withBrightness(.4f)) }
+                mappableBrain.shade { solidColor(Color.GREEN.withBrightness(.4f)) }
             }
 
             is PingMessage -> {
@@ -712,7 +712,7 @@ abstract class Mapper(
     abstract fun addExistingSession(name: String)
     abstract fun pauseForUserInteraction()
 
-    inner class BrainToMap(val address: Network.Address, val brainId: String) {
+    inner class MappableBrain(val address: Network.Address, val brainId: String) {
         val port get() = Ports.BRAIN
 
         var expectedPixelCount: Int? = null
