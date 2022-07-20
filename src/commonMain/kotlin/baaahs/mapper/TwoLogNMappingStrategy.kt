@@ -12,7 +12,7 @@ class TwoLogNMappingStrategy : MappingStrategy() {
     override suspend fun capturePixelData(
         mapper: Mapper,
         session: Mapper.Session,
-        brainsToMap: MutableMap<Network.Address, Mapper.BrainToMap>
+        brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
         Context(mapper, session, brainsToMap).capturePixelData()
     }
@@ -20,7 +20,7 @@ class TwoLogNMappingStrategy : MappingStrategy() {
     class Context(
         val mapper: Mapper,
         val session: Mapper.Session,
-        val brainsToMap: MutableMap<Network.Address, Mapper.BrainToMap>
+        val brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
         suspend fun capturePixelData() {
             val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }

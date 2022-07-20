@@ -9,7 +9,7 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
     override suspend fun capturePixelData(
         mapper: Mapper,
         session: Mapper.Session,
-        brainsToMap: MutableMap<Network.Address, Mapper.BrainToMap>
+        brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
         Context(mapper, session, brainsToMap).capturePixelData()
     }
@@ -17,7 +17,7 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
     class Context(
         val mapper: Mapper,
         val session: Mapper.Session,
-        val brainsToMap: MutableMap<Network.Address, Mapper.BrainToMap>
+        val brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
     ) {
         suspend fun capturePixelData() {
             val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }
@@ -86,17 +86,17 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
 
         private fun identifyBrainPixel(
             pixelIndex: Int,
-            brainToMap: Mapper.BrainToMap,
+            mappableBrain: Mapper.MappableBrain,
             pixelOnBitmap: Bitmap,
             deltaBitmap: Bitmap,
             pixelOnImageName: String
         ) {
-            mapper.showMessage("MAPPING PIXEL $pixelIndex / ${Mapper.maxPixelsPerBrain} (${brainToMap.brainId})…")
-            val surfaceChangeRegion = brainToMap.changeRegion
-            val visibleSurface = brainToMap.guessedVisibleSurface
+            mapper.showMessage("MAPPING PIXEL $pixelIndex / ${Mapper.maxPixelsPerBrain} (${mappableBrain.brainId})…")
+            val surfaceChangeRegion = mappableBrain.changeRegion
+            val visibleSurface = mappableBrain.guessedVisibleSurface
 
             if (surfaceChangeRegion != null && surfaceChangeRegion.sqPix() > 0 && visibleSurface != null) {
-                mapper.showPanelMask(brainToMap.panelDeltaBitmap!!)
+                mapper.showPanelMask(mappableBrain.panelDeltaBitmap!!)
 
                 mapper.showBaseImage(session.baseBitmap!!)
                 mapper.showSnapshot(pixelOnBitmap)
@@ -105,7 +105,7 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
                         pixelOnBitmap,
                         session.baseBitmap!!,
                         deltaBitmap,
-                        brainToMap.panelDeltaBitmap!!,
+                        mappableBrain.panelDeltaBitmap!!,
                         surfaceChangeRegion
                     )
                 }
@@ -113,9 +113,9 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
                     analysis.detectChangeRegion(.9f)
                 }
                 mapper.showDiffImage(deltaBitmap, pixelChangeRegion)
-                mapper.showPanelMask(brainToMap.panelDeltaBitmap!!, pixelChangeRegion)
+                mapper.showPanelMask(mappableBrain.panelDeltaBitmap!!, pixelChangeRegion)
                 Mapper.logger.debug {
-                    "pixelChangeRegion($pixelIndex,${brainToMap.guessedEntity?.name} =" +
+                    "pixelChangeRegion($pixelIndex,${mappableBrain.guessedEntity?.name} =" +
                             " $pixelChangeRegion ${pixelChangeRegion.width}x${pixelChangeRegion.height}"
                 }
 
@@ -125,11 +125,11 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
                 if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
                     val centerUv = pixelChangeRegion.centerUv
                     visibleSurface.setPixel(pixelIndex, centerUv)
-                    brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
-                    Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
+                    mappableBrain.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
+                    Mapper.logger.debug { "$pixelIndex/${mappableBrain.brainId}: centerUv = $centerUv" }
                 } else {
-                    mapper.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
-                    Mapper.logger.debug { "looks like no pixel $pixelIndex for ${brainToMap.brainId}…" }
+                    mapper.showMessage2("looks like no pixel $pixelIndex for ${mappableBrain.brainId}…")
+                    Mapper.logger.debug { "looks like no pixel $pixelIndex for ${mappableBrain.brainId}…" }
                 }
             }
         }
