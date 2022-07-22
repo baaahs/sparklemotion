@@ -108,11 +108,14 @@ class JsMapper(
     // onscreen renderer for registration UI:
     private val uiRenderer = WebGLRenderer(jso { alpha = true })
     private val uiScene = Scene()
-    private val uiCamera = PerspectiveCamera(45, containerDimen.aspect(), 1, 10000).also { camera ->
+    val uiCamera = PerspectiveCamera(45, containerDimen.aspect(), 1, 10000).also { camera ->
         camera.position.z = 1000.0
         uiScene.add(camera)
     }
-    private val uiControls: CameraControls = CameraControls(uiCamera, uiRenderer.domElement)
+    private val uiControls: CameraControls =
+        CameraControls(uiCamera, uiRenderer.domElement).apply {
+            dampingFactor = .5
+        }
     val wireframe = Object3D()
 
     private val selectedSurfaces = mutableListOf<PanelInfo>()
@@ -200,9 +203,21 @@ class JsMapper(
             }
             checkProgress()
         } else if (commandProgress.isEmpty() && event.code == "KeyQ") {
-            adjustCameraZRotation(if (event.shiftKey) PI * 2 / 256 else PI * 2 / 64)
+            adjustCameraRotation(clockwise = false, fine = event.shiftKey)
         } else if (commandProgress.isEmpty() && event.code == "KeyW") {
-            adjustCameraZRotation(if (event.shiftKey) -PI * 2 / 256 else -PI * 2 / 64)
+            adjustCameraRotation(clockwise = true, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "Minus") {
+            adjustCameraZoom(zoomIn = false, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "Equal") {
+            adjustCameraZoom(zoomIn = true, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "ArrowUp") {
+            adjustCameraY(moveUp = true, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "ArrowDown") {
+            adjustCameraY(moveUp = false, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "ArrowLeft") {
+            adjustCameraX(moveRight = false, fine = event.shiftKey)
+        } else if (commandProgress.isEmpty() && event.code == "ArrowRight") {
+            adjustCameraX(moveRight = true, fine = event.shiftKey)
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
             cameraZRotation = 0.0
             updateCameraRotation()
@@ -267,6 +282,29 @@ class JsMapper(
     private fun resetCameraRotation() {
         cameraZRotation = 0.0
         updateCameraRotation()
+    }
+
+    fun adjustCameraX(moveRight: Boolean, fine: Boolean = false) {
+        val offset = uiControls.getFocalOffset()
+        val amount = (if (moveRight) -1 else 1) * if (fine) 1 else 10
+        uiControls.setFocalOffset(offset.x + amount, offset.y, offset.z, true)
+    }
+
+    fun adjustCameraY(moveUp: Boolean, fine: Boolean = false) {
+        val offset = uiControls.getFocalOffset()
+        val amount = (if (moveUp) -1 else 1) * if (fine) 1 else 10
+        uiControls.setFocalOffset(offset.x, offset.y + amount, offset.z, true)
+    }
+
+    fun adjustCameraZoom(zoomIn: Boolean, fine: Boolean = false) {
+        val amount = if (zoomIn) 1 else -1
+        uiControls.dolly(if (fine) amount else amount * 10, true)
+    }
+
+    fun adjustCameraRotation(clockwise: Boolean, fine: Boolean = false) {
+        val fullTurn = if (clockwise) PI * 2 else -PI * 2
+        val amount = if (fine) fullTurn / 360 else fullTurn / 60
+        adjustCameraZRotation(amount)
     }
 
     private fun adjustCameraZRotation(angle: Double) {

@@ -262,9 +262,9 @@ abstract class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                val useBitMaskAlgorithm = true
+                val useTwoLogNAlgorithm = true
                 val mappingStrategy =
-                    if (useBitMaskAlgorithm) TwoLogNMappingStrategy() else OneAtATimeMappingStrategy()
+                    if (useTwoLogNAlgorithm) TwoLogNMappingStrategy() else OneAtATimeMappingStrategy()
                 mappingStrategy.capturePixelData(
                     this@Mapper, stats, ui, this@Session, brainsToMap, mapperBackend
                 )
