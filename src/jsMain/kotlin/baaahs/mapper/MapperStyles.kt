@@ -22,6 +22,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         display = Display.flex
         flexDirection = FlexDirection.column
         height = 100.pct
+        margin(0.em, 1.em)
 
         button {
             minWidth = 0.px

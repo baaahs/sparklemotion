@@ -58,6 +58,8 @@ abstract class Mapper(
 
     abstract var devices: List<MediaDevices.Device>
 
+    var mappingStrategy: MappingStrategy = TwoLogNMappingStrategy
+
     init {
         sceneProvider.addObserver(fireImmediately = true) {
             it.openScene?.model?.let {
@@ -262,9 +264,6 @@ abstract class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                val useTwoLogNAlgorithm = true
-                val mappingStrategy =
-                    if (useTwoLogNAlgorithm) TwoLogNMappingStrategy() else OneAtATimeMappingStrategy()
                 mappingStrategy.capturePixelData(
                     this@Mapper, stats, ui, this@Session, brainsToMap, mapperBackend
                 )

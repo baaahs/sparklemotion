@@ -5,7 +5,10 @@ import baaahs.net.Network
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
-class OneAtATimeMappingStrategy : MappingStrategy() {
+object OneAtATimeMappingStrategy : MappingStrategy() {
+    override val title: String
+        get() = "One At A Time"
+
     override suspend fun capturePixelData(
         mapper: Mapper,
         stats: MapperStats,

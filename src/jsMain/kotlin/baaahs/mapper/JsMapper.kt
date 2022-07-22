@@ -19,7 +19,6 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.Keypress
 import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
-import baaahs.ui.value
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
@@ -32,7 +31,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.js.jso
 import org.w3c.dom.*
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.RBuilder
 import react.ReactElement
@@ -51,6 +49,7 @@ import three.js.Clock as ThreeJsClock
 
 class MemoizedJsMapper(mapperUi: JsMapper) {
     val changedCamera = mapperUi::changedCamera
+    val changedMappingStrategy = mapperUi::changedMappingStrategy
     val clickedPlay = mapperUi::clickedPlay
     val clickedPause = mapperUi::clickedPause
     val clickedRedo = mapperUi::clickedRedo
@@ -294,7 +293,7 @@ class JsMapper(
 
     fun adjustCameraY(moveUp: Boolean, fine: Boolean = false) {
         val offset = uiControls.getFocalOffset()
-        val amount = (if (moveUp) -1 else 1) * if (fine) 1 else 10
+        val amount = (if (moveUp) 1 else -1) * if (fine) 1 else 10
         uiControls.setFocalOffset(offset.x, offset.y + amount, offset.z, true)
     }
 
@@ -999,11 +998,14 @@ class JsMapper(
         }
     }
 
-    fun changedCamera(event: Event) {
-        val selectedDeviceId = event.target?.value
-        selectedDevice = devices.find { it.deviceId == selectedDeviceId }
+    fun changedCamera(device: MediaDevices.Device?) {
+        selectedDevice = device
+        useCamera(device)
+    }
 
-        useCamera(selectedDevice)
+    fun changedMappingStrategy(mappingStrategy: MappingStrategy) {
+        this.mappingStrategy = mappingStrategy
+        notifyChanged()
     }
 
     fun clickedPlay() {
