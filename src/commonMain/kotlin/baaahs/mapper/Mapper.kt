@@ -1,9 +1,7 @@
 package baaahs.mapper
 
-import baaahs.Color
 import baaahs.MediaDevices
 import baaahs.SparkleMotion
-import baaahs.api.ws.WebSocketClient
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
@@ -13,21 +11,17 @@ import baaahs.imaging.Image
 import baaahs.imaging.NativeBitmap
 import baaahs.model.Model
 import baaahs.net.Network
-import baaahs.net.listenFragmentingUdp
 import baaahs.scene.SceneProvider
-import baaahs.shaders.PixelBrainShader
 import baaahs.shaders.SolidBrainShader
 import baaahs.sm.brain.BrainManager
-import baaahs.sm.brain.proto.*
+import baaahs.sm.brain.proto.BrainShader
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Stats
-import baaahs.util.asMillis
 import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlin.random.Random
 
 /** [SolidBrainShader] appears to be busted as of 2020/09. */
@@ -40,7 +34,7 @@ abstract class Mapper(
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
     private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-) : Observable(), Network.UdpListener, CoroutineScope by MainScope() {
+) : Observable(), CoroutineScope by MainScope() {
     private val facade = Facade()
 
     abstract val ui: MapperUi
@@ -50,18 +44,14 @@ abstract class Mapper(
     // TODO: getCamera should just return max available size?
     lateinit var camera: MediaDevices.Camera
 
-    private lateinit var link: Network.Link
-    private lateinit var udpSocket: Network.UdpSocket
-    internal lateinit var webSocketClient: WebSocketClient
+    protected lateinit var mapperBackend: MapperBackend
+    private lateinit var udpSockets: UdpSockets
     private var isRunning: Boolean = false
     private var isPaused: Boolean = false
     private var newIncomingImage: Image? = null
 
     private var suppressShowsJob: Job? = null
     private val brainsToMap: MutableMap<Network.Address, MappableBrain> = mutableMapOf()
-
-    private val activeColor = Color(0x07, 0xFF, 0x07)
-    private val inactiveColor = Color(0x01, 0x00, 0x01)
 
     private val sessions: MutableList<String> = arrayListOf()
     private val stats = mapperStats
@@ -81,12 +71,12 @@ abstract class Mapper(
     }
 
     fun start() {
-        link = network.link("mapper")
-        udpSocket = link.listenFragmentingUdp(0, this)
-        webSocketClient = WebSocketClient(link, pinkyAddress)
+        val link = network.link("mapper")
+        udpSockets = UdpSockets(link, clock, brainsToMap, this, ui)
+        mapperBackend = MapperBackend(link, pinkyAddress, udpSockets)
 
         launch {
-            webSocketClient.listSessions().forEach {
+            mapperBackend.listSessions().forEach {
                 ui.addExistingSession(it)
                 sessions.add(it)
             }
@@ -125,7 +115,7 @@ abstract class Mapper(
         if (this::camera.isInitialized) camera.close()
 
         suppressShowsJob?.cancel()
-        udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(false))
+        mapperBackend.adviseMapperStatus(false)
 
         ui.close()
     }
@@ -137,7 +127,7 @@ abstract class Mapper(
 
     suspend fun loadMappingSession(name: String): MappingSession =
         withContext(mapperScope.coroutineContext) {
-            webSocketClient.loadSession(name)
+            mapperBackend.loadSession(name)
         }
 
     private fun openCamera() {
@@ -156,9 +146,9 @@ abstract class Mapper(
 
         // shut down Pinky, advertise for Brains...
         retry {
-            udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(true))
+            mapperBackend.adviseMapperStatus(true)
             delay(1000L)
-            udpSocket.broadcastUdp(Ports.BRAIN, solidColor(inactiveColor))
+            udpSockets.allDark()
         }
 
         // keep Pinky from waking up while we're running...
@@ -169,7 +159,7 @@ abstract class Mapper(
         val brainIdRequestJob = coroutineScope {
             launch {
                 while (isPaused) {
-                    udpSocket.broadcastUdp(Ports.BRAIN, BrainIdRequest())
+                    udpSockets.requestBrainIds()
                     delay(1000L)
                 }
             }
@@ -224,7 +214,7 @@ abstract class Mapper(
             logger.info { "Visible surfaces: ${visibleSurfaces.joinToString { it.entity.name }}" }
 
             // Blackout for base image.
-            sendToAllReliably(brainsToMap.values) { solidColorBuffer(inactiveColor) }
+            sendToAllReliably(brainsToMap.values) { MapperUtil.solidColorBuffer(MapperUtil.inactiveColor) }
             delay(1000L) // wait for focus
 
             // Create base image from the brightest of a few samples.
@@ -232,7 +222,7 @@ abstract class Mapper(
             baseBitmap = bitmap
             deltaBitmap = NativeBitmap(bitmap.width, bitmap.height)
 
-            val baseImageName = webSocketClient.saveImage(sessionStartTime, "base", bitmap)
+            val baseImageName = mapperBackend.saveImage(sessionStartTime, "base", bitmap)
 
             ui.showMessage("MAPPING…")
             ui.showStats(brainsToMap.size, 0, -1)
@@ -254,8 +244,8 @@ abstract class Mapper(
                     waitUntilUnpaused()
                     ui.setRedo(null)
 
-                    deliverer.send(brainToMap, solidColorBuffer(inactiveColor))
-                    deliverer.await()
+                    udpSockets.deliverer.send(brainToMap, MapperUtil.solidColorBuffer(MapperUtil.inactiveColor))
+                    udpSockets.deliverer.await()
                 }
 
                 delay(1000L)
@@ -276,7 +266,7 @@ abstract class Mapper(
                 val mappingStrategy =
                     if (useBitMaskAlgorithm) TwoLogNMappingStrategy() else OneAtATimeMappingStrategy()
                 mappingStrategy.capturePixelData(
-                    this@Mapper, stats, ui, this@Session, brainsToMap
+                    this@Mapper, stats, ui, this@Session, brainsToMap, mapperBackend
                 )
                 logger.info { "done identifying pixels..." }
 
@@ -305,14 +295,16 @@ abstract class Mapper(
                     cameraOrientation.cameraPosition,
                     baseImageName
                 )
-            webSocketClient.saveSession(mappingSession)
+            mapperBackend.saveSession(mappingSession)
 
             // We're done!
 
             isRunning = false
             ui.unlockUi()
 
-            retry { udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning)) }
+            retry {
+                mapperBackend.adviseMapperStatus(isRunning)
+            }
         }
 
 
@@ -370,8 +362,8 @@ abstract class Mapper(
         ): Ballot<VisibleSurface>? {
             ui.showMessage("MAPPING SURFACE $index / ${brainsToMap.size} (${mappableBrain.brainId})…")
 
-            deliverer.send(mappableBrain, solidColorBuffer(activeColor))
-            deliverer.await()
+            udpSockets.deliverer.send(mappableBrain, MapperUtil.solidColorBuffer(MapperUtil.activeColor))
+            udpSockets.deliverer.await()
             slowCamDelay()
             slowCamDelay()
             slowCamDelay()
@@ -450,7 +442,7 @@ abstract class Mapper(
             mappableBrain.expectedPixelCount = (firstGuessSurface as? Model.Surface)?.expectedPixelCount
             mappableBrain.panelDeltaBitmap = deltaBitmap.clone()
             mappableBrain.deltaImageName =
-                webSocketClient.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)
+                mapperBackend.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)
         }
     }
 
@@ -470,7 +462,7 @@ abstract class Mapper(
 
     private fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
         isPaused = true
-        pauseForUserInteraction()
+        ui.pauseForUserInteraction()
         ui.showMessage2(message)
     }
 
@@ -492,12 +484,12 @@ abstract class Mapper(
         fn: (MappableBrain) -> BrainShader.Buffer
     ) {
         brains.forEach {
-            deliverer.send(it, fn(it))
+            udpSockets.deliverer.send(it, fn(it))
         }
     }
 
     internal suspend fun waitForDelivery() {
-        deliverer.await()
+        udpSockets.deliverer.await()
     }
 
     private suspend fun retry(fn: suspend () -> Unit) {
@@ -511,157 +503,13 @@ abstract class Mapper(
         suppressShowsJob = launch(CoroutineName("Suppress Pinky")) {
             while (isRunning) {
                 delay(10000L)
-                udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
-            }
-        }
-    }
-
-    private fun solidColor(color: Color): BrainShaderMessage {
-        val buf = solidColorBuffer(color)
-        return BrainShaderMessage(buf.brainShader, buf)
-    }
-
-    private fun solidColorBuffer(color: Color): BrainShader.Buffer {
-        return if (USE_SOLID_SHADERS) {
-            val solidShader = SolidBrainShader()
-            solidShader.createBuffer(maxPixelsPerBrain).apply { this.color = color }
-        } else {
-            val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-            pixelShader.createBuffer(maxPixelsPerBrain).apply {
-                palette[0] = Color.BLACK
-                palette[1] = color
-                setAll(1)
-            }
-        }
-    }
-
-    private val deliverer = ReliableShaderMessageDeliverer()
-
-    inner class ReliableShaderMessageDeliverer {
-        private val outstanding = mutableMapOf<List<Byte>, DeliveryAttempt>()
-        private val pongs = Channel<PingMessage>()
-
-        fun send(mappableBrain: MappableBrain, buffer: BrainShader.Buffer) {
-            val deliveryAttempt = DeliveryAttempt(mappableBrain, buffer)
-//            logger.debug { "attempting reliable delivery with key ${deliveryAttempt.key.stringify()}" }
-            outstanding[deliveryAttempt.key] = deliveryAttempt
-            deliveryAttempt.attemptDelivery()
-        }
-
-        suspend fun await(retryAfterSeconds: Double = .25, failAfterSeconds: Double = 10.0) {
-            logger.debug { "Waiting pongs from ${outstanding.values.map { it.mappableBrain.brainId }}..." }
-
-            outstanding.values.forEach {
-                it.retryAt = it.sentAt + retryAfterSeconds
-                it.failAt = it.sentAt + failAfterSeconds
-            }
-
-            while (outstanding.isNotEmpty()) {
-                val waitingFor =
-                    outstanding.values.map { it.mappableBrain.guessedEntity?.name ?: it.mappableBrain.brainId }
-                        .sorted()
-                ui.showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
-//                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
-
-                var sleepUntil = Double.MAX_VALUE
-
-                val now = clock.now()
-
-                outstanding.values.removeAll {
-                    if (it.failAt < now) {
-                        logger.debug {
-                            "Timed out waiting after ${now - it.sentAt}s for ${it.mappableBrain.brainId}" +
-                                    " pong ${it.key.stringify()}"
-                        }
-                        it.failed()
-                        true
-                    } else {
-                        if (sleepUntil > it.failAt) sleepUntil = it.failAt
-
-                        if (it.retryAt < now) {
-                            logger.warn {
-                                "Haven't heard from ${it.mappableBrain.brainId} after ${now - it.sentAt}s," +
-                                        " retrying (attempt ${++it.retryCount})..."
-                            }
-                            it.attemptDelivery()
-                            it.retryAt = now + retryAfterSeconds
-                        }
-                        if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
-                        false
-                    }
-                }
-
-                val timeoutSec = sleepUntil - now
-//                logger.debug { "Before pongs.receive() withTimeout(${timeoutSec}s)" }
-                val pong = withTimeoutOrNull(timeoutSec.asMillis()) {
-                    pongs.receive()
-                }
-
-                if (pong != null) {
-                    val pongTag = pong.data.toList()
-//                    logger.debug { "Received pong(${pongTag.stringify()})" }
-
-                    val deliveryAttempt = outstanding.remove(pongTag)
-                    if (deliveryAttempt != null) {
-                        deliveryAttempt.succeeded()
-                    } else {
-                        logger.warn { "huh? no such pong tag ${pongTag.stringify()}!" }
-                    }
-                }
-
-                ui.showMessage2("")
-            }
-        }
-
-        fun gotPong(pingMessage: PingMessage) {
-            launch {
-                pongs.send(pingMessage)
+                mapperBackend.adviseMapperStatus(isRunning)
             }
         }
     }
 
     class TimeoutException(message: String) : Exception(message)
 
-    inner class DeliveryAttempt(val mappableBrain: MappableBrain, val buffer: BrainShader.Buffer) {
-        private val tag = Random.nextBytes(8)
-        val key get() = tag.toList()
-        val sentAt = clock.now()
-        var retryAt = 0.0
-        var failAt = 0.0
-        var retryCount = 0
-
-        fun attemptDelivery() {
-            udpSocket.sendUdp(mappableBrain.address, mappableBrain.port, BrainShaderMessage(buffer.brainShader, buffer, tag))
-        }
-
-        fun succeeded() {
-            logger.debug { "${mappableBrain.brainId} shader message pong after ${clock.now() - sentAt}s" }
-        }
-
-        fun failed() {
-            logger.error { "${mappableBrain.brainId} shader message pong not received after ${clock.now() - sentAt}s" }
-        }
-    }
-
-    override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
-//        logger.debug { "Mapper received message from $fromAddress:$fromPort ${bytes[0]}" }
-        when (val message = parse(bytes)) {
-            is BrainHelloMessage -> {
-                logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
-                val mappableBrain = brainsToMap.getOrPut(fromAddress) { MappableBrain(fromAddress, message.brainId) }
-                ui.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
-
-                // Less voltage causes less LED glitches.
-                mappableBrain.shade { solidColor(Color.GREEN.withBrightness(.4f)) }
-            }
-
-            is PingMessage -> {
-                if (message.isPong) {
-                    deliverer.gotPong(message)
-                }
-            }
-        }
-    }
 
     private fun haveImage(image: Image) {
 //        println("image: $image")
@@ -694,34 +542,6 @@ abstract class Mapper(
             image = getImage()
         }
         return image
-    }
-
-    inner class MappableBrain(val address: Network.Address, val brainId: String) {
-        val port get() = Ports.BRAIN
-
-        var expectedPixelCount: Int? = null
-        val expectedPixelCountOrDefault: Int
-            get() = (guessedEntity as? Model.Surface)?.expectedPixelCount
-                ?: expectedPixelCount
-                ?: SparkleMotion.DEFAULT_PIXEL_COUNT
-
-        var changeRegion: MediaDevices.Region? = null
-        var guessedEntity: Model.Entity? = null
-        var guessedVisibleSurface: VisibleSurface? = null
-        var panelDeltaBitmap: Bitmap? = null
-        var deltaImageName: String? = null
-        val pixelMapData: MutableMap<Int, PixelMapData> = mutableMapOf()
-
-        private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
-        val pixelShaderBuffer = pixelShader.createBuffer(maxPixelsPerBrain).apply {
-            palette[0] = Color.BLACK
-            palette[1] = Color.WHITE
-            setAll(0)
-        }
-
-        fun shade(shaderMessage: () -> BrainShaderMessage) {
-            udpSocket.sendUdp(address, Ports.BRAIN, shaderMessage())
-        }
     }
 
     class PixelMapData(val pixelChangeRegion: MediaDevices.Region, val deltaImageName: String)
@@ -759,11 +579,6 @@ abstract class Mapper(
 
         internal const val maxPixelsPerBrain = SparkleMotion.MAX_PIXEL_COUNT
     }
-
-    fun List<Byte>.stringify(): String {
-        return joinToString("") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }
-    }
-
 
     inner class Facade : baaahs.ui.Facade() {
     }
@@ -814,4 +629,8 @@ data class Uv(val u: Float, val v: Float) {
         fun fromXY(x: Number, y: Number, screenDimen: Dimen): Uv =
             Uv(x.toFloat() / screenDimen.width, y.toFloat() / screenDimen.height)
     }
+}
+
+fun List<Byte>.stringify(): String {
+    return joinToString("") { (it.toInt() and 0xff).toString(16).padStart(2, '0') }
 }

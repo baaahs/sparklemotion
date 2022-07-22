@@ -11,9 +11,10 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
         stats: MapperStats,
         ui: MapperUi,
         session: Mapper.Session,
-        brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
+        brainsToMap: MutableMap<Network.Address, MappableBrain>,
+        mapperBackend: MapperBackend
     ) {
-        Context(mapper, stats, ui, session, brainsToMap).capturePixelData()
+        Context(mapper, stats, ui, session, brainsToMap, mapperBackend).capturePixelData()
     }
 
     class Context(
@@ -21,7 +22,8 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
         val stats: MapperStats,
         val ui: MapperUi,
         val session: Mapper.Session,
-        val brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
+        val brainsToMap: MutableMap<Network.Address, MappableBrain>,
+        val mapperBackend: MapperBackend
     ) {
         suspend fun capturePixelData() {
             val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }
@@ -66,7 +68,7 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
                 ImageProcessing.diff(pixelOnBitmap, session.baseBitmap!!, session.deltaBitmap)
             }
             ui.showDiffImage(session.deltaBitmap)
-            val pixelOnImageName = mapper.webSocketClient.saveImage(session.sessionStartTime, "pixel-$pixelIndex", session.deltaBitmap)
+            val pixelOnImageName = mapperBackend.saveImage(session.sessionStartTime, "pixel-$pixelIndex", session.deltaBitmap)
 
             brainsToMap.values.forEach { brainToMap ->
                 stats.identifyPixel.time {
@@ -90,7 +92,7 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
 
         private fun identifyBrainPixel(
             pixelIndex: Int,
-            mappableBrain: Mapper.MappableBrain,
+            mappableBrain: MappableBrain,
             pixelOnBitmap: Bitmap,
             deltaBitmap: Bitmap,
             pixelOnImageName: String

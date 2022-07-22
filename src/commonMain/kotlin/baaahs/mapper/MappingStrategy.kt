@@ -8,6 +8,7 @@ abstract class MappingStrategy {
         stats: MapperStats,
         ui: MapperUi,
         session: Mapper.Session,
-        brainsToMap: MutableMap<Network.Address, Mapper.MappableBrain>
+        brainsToMap: MutableMap<Network.Address, MappableBrain>,
+        mapperBackend: MapperBackend
     )
 }

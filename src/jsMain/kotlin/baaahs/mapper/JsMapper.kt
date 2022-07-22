@@ -1044,7 +1044,7 @@ class JsMapper(
                     val pixelData = panelInfo.getPixelData(index)
                     pixelData?.deltaImage?.let { deltaImageName ->
                         globalLaunch {
-                            val url = webSocketClient.getImageUrl(deltaImageName)
+                            val url = mapperBackend.getImageUrl(deltaImageName)
                                 ?: error("No url for \"$deltaImageName\".")
                             savedImage.src = url
                             savedImage.style.display = "block"
