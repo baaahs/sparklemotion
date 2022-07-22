@@ -1,9 +1,10 @@
 package baaahs.mapper
 
+import baaahs.MediaDevices
+import baaahs.app.ui.editor.betterSelect
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
-import kotlinx.html.js.onChangeFunction
 import kotlinx.html.tabIndex
 import mui.material.Button
 import mui.material.FormControlLabel
@@ -11,7 +12,6 @@ import mui.material.Switch
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import react.*
 import react.dom.*
@@ -69,8 +69,8 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         ui.selectEntityPixel(entityName, index)
     }
 
-    val handleLoadMappingSession by handler(uiActions.onLoadMappingSession) { event: Event ->
-        uiActions.onLoadMappingSession(event.target?.value)
+    val handleLoadMappingSession by handler(uiActions.onLoadMappingSession) { name: String? ->
+        uiActions.onLoadMappingSession(name)
     }
 
     useResizeListener(screenRef) {
@@ -92,6 +92,32 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             header { +"Mapping Tools" }
 
             div(+styles.controls) {
+                FormControlLabel {
+                    attrs.control = buildElement {
+                        Switch {
+                            attrs.checked = ui.mappingEnabled
+                            attrs.onChange = handleMappingEnabledChange
+                        }
+                    }
+                    attrs.label = "Mapping".asTextNode()
+                }
+
+                betterSelect<MediaDevices.Device?> {
+                    attrs.label = "Camera:"
+                    attrs.values = listOf(null) + ui.devices
+                    attrs.renderValueOption = { device -> buildElement { +(device?.label ?: "None") } }
+                    attrs.onChange = uiActions.changedCamera
+                    attrs.value = ui.selectedDevice
+                }
+
+                betterSelect<MappingStrategy> {
+                    attrs.label = "Mapping Strategy:"
+                    attrs.values = MappingStrategy.options
+                    attrs.renderValueOption = { mappingStrategy -> buildElement { +mappingStrategy.title } }
+                    attrs.onChange = uiActions.changedMappingStrategy
+                    attrs.value = ui.mappingStrategy
+                }
+
                 div(+styles.controlsRow) {
                     div {
                         Button {
@@ -143,18 +169,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                div {
-                    FormControlLabel {
-                        attrs.control = buildElement {
-                            Switch {
-                                attrs.checked = ui.mappingEnabled
-                                attrs.onChange = handleMappingEnabledChange
-                            }
-                        }
-                        attrs.label = "Mapping".asTextNode()
-                    }
-                }
-
                 div(+styles.controlsRow) {
                     Button {
                         i(classes = "fas fa-play") {}
@@ -181,53 +195,13 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                div(+styles.controlsRow) {
-                    div {
-                        div {
-                            p { +"Camera:" }
-
-                            select {
-                                attrs.onChangeFunction = uiActions.changedCamera
-
-                                option {
-                                    attrs.label = "Unknown"
-                                    attrs.value = ""
-                                }
-
-                                ui.devices.forEach { device ->
-                                    option {
-                                        attrs.label = device.label
-                                        attrs.value = device.deviceId
-                                        if (device == ui.selectedDevice) {
-                                            attrs.selected = true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        div {
-                            p { +"Load Mapping Data:" }
-
-                            select {
-                                attrs.onChangeFunction = handleLoadMappingSession
-
-                                option {
-                                    attrs.label = "-"
-                                    attrs.value = ""
-                                }
-
-                                ui.sessions.forEach { name ->
-                                    option {
-                                        attrs.label = name
-                                        attrs.value = name
-                                        if (name == ui.selectedMappingSessionName) {
-                                            attrs.selected = true
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                div {
+                    betterSelect<String?> {
+                        attrs.label = "Load Mapping Data:"
+                        attrs.values = listOf(null) + ui.sessions.map { it }
+                        attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
+                        attrs.value = ui.selectedMappingSessionName
+                        attrs.onChange = handleLoadMappingSession
                     }
                 }
             }

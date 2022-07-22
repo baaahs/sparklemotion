@@ -8,7 +8,10 @@ import kotlin.math.ceil
 import kotlin.math.log2
 import kotlin.math.roundToInt
 
-class TwoLogNMappingStrategy : MappingStrategy() {
+object TwoLogNMappingStrategy : MappingStrategy() {
+    override val title: String
+        get() = "2 log(n)"
+
     override suspend fun capturePixelData(
         mapper: Mapper,
         stats: MapperStats,
