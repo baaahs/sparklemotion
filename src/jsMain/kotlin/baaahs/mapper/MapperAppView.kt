@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.ui.*
+import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.tabIndex
@@ -11,6 +12,7 @@ import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.KeyboardEvent
 import react.*
 import react.dom.*
 
@@ -21,9 +23,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val ui = props.mapper
     observe(ui)
     val uiActions = memo(ui) { MemoizedJsMapper(ui) }
-
-    // onscreen renderer for registration UI:
-    val wireframe = ui.wireframe
 
     val screenRef = useRef<HTMLElement>(null)
     val ui2dCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -40,6 +39,8 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         forceRender()
     }
 
+    val shiftDown = ref(false)
+
     // init:
     onMount {
         ui.onMount(
@@ -50,7 +51,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             savedImageRef.current!!
         )
 
-        val handler = appContext.keyboard.handle(uiActions.keyHandler)
+        val handler = appContext.keyboard.handle { keypress: Keypress, event: KeyboardEvent ->
+            shiftDown.current = keypress.shiftKey
+            uiActions.keyHandler(keypress, event)
+        }
 
         withCleanup {
             handler.remove()
@@ -75,82 +79,154 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         }
     }
 
+    fun moveIsFine(): Boolean = shiftDown.current == true
 
     div(+styles.screen) {
         ref = screenRef
         attrs.tabIndex = "-1" // So we can receive key events.
 
-        div(+styles.controls) {
-            FormControlLabel {
-                attrs.control = buildElement {
-                    Switch {
-                        attrs.checked = ui.mappingEnabled
-                        attrs.onChange = handleMappingEnabledChange
+        palette {
+            attrs.initialWidth = 240
+            attrs.initialHeight = 400
+
+            header { +"Mapping Tools" }
+
+            div(+styles.controls) {
+                div(+styles.controlsRow) {
+                    div {
+                        Button {
+                            attrs.title = "Zoom Out (-)"
+                            i(classes = "fas fa-search-minus") {}
+                            attrs.onClick = { ui.adjustCameraZoom(zoomIn = false, fine = moveIsFine()) }
+                        }
+                        Button {
+                            attrs.title = "Zoom In (+)"
+                            i(classes = "fas fa-search-plus") {}
+                            attrs.onClick = { ui.adjustCameraZoom(zoomIn = true, fine = moveIsFine()) }
+                        }
                     }
-                }
-                attrs.label = "Mapping".asTextNode()
-            }
 
-            Button { +"▲"; attrs.onClick = { wireframe.position.y += 10 } }
-            Button { +"▼"; attrs.onClick = { wireframe.position.y -= 10 } }
-//            Button { i(classes="fas fa-crosshairs"); attrs.onClick = { target() } }
-            Button {
-                i(classes = "fas fa-play") {}
-                attrs.disabled = !ui.playButtonEnabled
-                attrs.onClick = uiActions.clickedPlay.withMouseEvent()
-            }
-            Button {
-                i(classes = "fas fa-pause") {}
-                attrs.disabled = !ui.pauseButtonEnabled
-                attrs.onClick = uiActions.clickedPause.withMouseEvent()
-            }
-            Button {
-                i(classes = "fas fa-redo") {}
-                attrs.disabled = ui.redoFn != null
-                attrs.onClick = uiActions.clickedRedo.withMouseEvent()
-            }
-            Button {
-                i(classes = "fas fa-stop") {}
-                attrs.onClick = uiActions.clickedStop.withMouseEvent()
-            }
-            Button {
-                i(classes = "fas fa-sign-in-alt") {}
-                attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
-            }
+                    Button {
+                        attrs.title = "Left (◀)"
+                        i(classes = "fas fa-arrow-left") {}
+                        attrs.onClick = { ui.adjustCameraX(moveRight = false, fine = moveIsFine()) }
+                    }
+                    div {
+                        Button {
+                            attrs.title = "Up (▲)"
+                            i(classes = "fas fa-arrow-up") {}
+                            attrs.onClick = { ui.adjustCameraY(moveUp = true, fine = moveIsFine()) }
+                        }
+                        Button {
+                            attrs.title = "Down (▼)"
+                            i(classes = "fas fa-arrow-down") {}
+                            attrs.onClick = { ui.adjustCameraY(moveUp = false, fine = moveIsFine()) }
+                        }
+                    }
+                    Button {
+                        attrs.title = "Right (▶)"
+                        i(classes = "fas fa-arrow-right") {}
+                        attrs.onClick = { ui.adjustCameraX(moveRight = true, fine = moveIsFine()) }
+                    }
 
-            select {
-                attrs.onChangeFunction = handleLoadMappingSession
-
-                option {
-                    attrs.label = "-"
-                    attrs.value = ""
-                }
-
-                ui.sessions.forEach { name ->
-                    option {
-                        attrs.label = name
-                        attrs.value = name
-                        if (name == ui.selectedMappingSessionName) {
-                            attrs.selected = true
+                    div {
+                        Button {
+                            attrs.title = "Rotate Counter-clockwise (Q)"
+                            i(classes = "fas fa-undo") {}
+                            attrs.onClick = { ui.adjustCameraRotation(clockwise = false, fine = moveIsFine()) }
+                        }
+                        Button {
+                            attrs.title = "Rotate Clockwise (Q)"
+                            i(classes = "fas fa-redo") {}
+                            attrs.onClick = { ui.adjustCameraRotation(clockwise = true, fine = moveIsFine()) }
                         }
                     }
                 }
-            }
 
-            select {
-                attrs.onChangeFunction = uiActions.changedCamera
-
-                option {
-                    attrs.label = "Unknown"
-                    attrs.value = ""
+                div {
+                    FormControlLabel {
+                        attrs.control = buildElement {
+                            Switch {
+                                attrs.checked = ui.mappingEnabled
+                                attrs.onChange = handleMappingEnabledChange
+                            }
+                        }
+                        attrs.label = "Mapping".asTextNode()
+                    }
                 }
 
-                ui.devices.forEach { device ->
-                    option {
-                        attrs.label = device.label
-                        attrs.value = device.deviceId
-                        if (device == ui.selectedDevice) {
-                            attrs.selected = true
+                div(+styles.controlsRow) {
+                    Button {
+                        i(classes = "fas fa-play") {}
+                        attrs.disabled = !ui.playButtonEnabled
+                        attrs.onClick = uiActions.clickedPlay.withMouseEvent()
+                    }
+                    Button {
+                        i(classes = "fas fa-pause") {}
+                        attrs.disabled = !ui.pauseButtonEnabled
+                        attrs.onClick = uiActions.clickedPause.withMouseEvent()
+                    }
+                    Button {
+                        i(classes = "fas fa-redo") {}
+                        attrs.disabled = ui.redoFn != null
+                        attrs.onClick = uiActions.clickedRedo.withMouseEvent()
+                    }
+                    Button {
+                        i(classes = "fas fa-stop") {}
+                        attrs.onClick = uiActions.clickedStop.withMouseEvent()
+                    }
+                    Button {
+                        i(classes = "fas fa-sign-in-alt") {}
+                        attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
+                    }
+                }
+
+                div(+styles.controlsRow) {
+                    div {
+                        div {
+                            p { +"Camera:" }
+
+                            select {
+                                attrs.onChangeFunction = uiActions.changedCamera
+
+                                option {
+                                    attrs.label = "Unknown"
+                                    attrs.value = ""
+                                }
+
+                                ui.devices.forEach { device ->
+                                    option {
+                                        attrs.label = device.label
+                                        attrs.value = device.deviceId
+                                        if (device == ui.selectedDevice) {
+                                            attrs.selected = true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        div {
+                            p { +"Load Mapping Data:" }
+
+                            select {
+                                attrs.onChangeFunction = handleLoadMappingSession
+
+                                option {
+                                    attrs.label = "-"
+                                    attrs.value = ""
+                                }
+
+                                ui.sessions.forEach { name ->
+                                    option {
+                                        attrs.label = name
+                                        attrs.value = name
+                                        if (name == ui.selectedMappingSessionName) {
+                                            attrs.selected = true
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

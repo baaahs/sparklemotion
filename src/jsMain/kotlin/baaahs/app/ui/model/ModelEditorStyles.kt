@@ -114,7 +114,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         }
     }
 
-    val objImportTextField by css {
+    val jsonEditorTextField by css {
         textarea {
             fontSize = .8.em
             fontFamily = "monospace"
