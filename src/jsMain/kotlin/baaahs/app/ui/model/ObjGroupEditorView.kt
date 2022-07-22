@@ -2,19 +2,33 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.betterSelect
 import baaahs.model.ConstEntityMetadataProvider
+import baaahs.model.StrandCountEntityMetadataProvider
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
 import baaahs.ui.*
 import kotlinx.js.jso
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import materialui.icon
 import mui.material.*
 import react.*
 import react.dom.*
+import react.dom.events.FormEvent
 
 private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
+
+    val json = memo {
+        Json {
+            isLenient = true
+            prettyPrint = true
+            serializersModule = appContext.plugins.serialModule
+        }
+    }
 
     observe(props.editingEntity)
     val mutableEntity = props.editingEntity.mutableEntity
@@ -29,8 +43,38 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         props.editingEntity.onChange()
     }
 
-    val handleExpectedPixelCountChange by handler(mutableEntity, props.editingEntity) { newValue: Int? ->
+    val handleMetadataTypeChange by handler(mutableEntity, props.editingEntity) { value: String? ->
+        mutableEntity.metadata = when (value) {
+            "Constant" -> ConstEntityMetadataProvider(null)
+            "Per Entity" -> StrandCountEntityMetadataProvider(emptyMap())
+            null -> null
+            else -> error("Unknown metadata type $value.")
+        }
+        props.editingEntity.onChange()
+    }
+
+    val handleConstMetadataChange by handler(mutableEntity, props.editingEntity) { newValue: Int? ->
         mutableEntity.metadata = ConstEntityMetadataProvider(newValue)
+        props.editingEntity.onChange()
+    }
+
+    var metadataError by state<String?> { null }
+    val handleStrandCountMetadataChange by formEventHandler(
+        mutableEntity,
+        props.editingEntity
+    ) { event: FormEvent<*>? ->
+        try {
+            mutableEntity.metadata =
+                StrandCountEntityMetadataProvider(
+                    json.decodeFromString(
+                        MapSerializer(String.serializer(), Int.serializer()),
+                        event!!.target.value
+                    )
+                )
+            metadataError = null
+        } catch (e: Exception) {
+            metadataError = e.message
+        }
         props.editingEntity.onChange()
     }
 
@@ -71,7 +115,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             }
         } else {
             TextField {
-                attrs.classes = jso { this.root = -styles.objImportTextField }
+                attrs.classes = jso { this.root = -styles.jsonEditorTextField }
                 attrs.fullWidth = true
                 attrs.multiline = true
                 attrs.rows = 6
@@ -95,13 +139,50 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         }
     }
 
+    header { +"Metadata" }
+
     val metadata = mutableEntity.metadata
-    if (metadata is ConstEntityMetadataProvider) {
-        with(styles) {
-            numberTextField(
-                "Expected Pixels:", metadata.pixelCount,
-                onChange = handleExpectedPixelCountChange
-            )
+    Container {
+        betterSelect<String?> {
+            attrs.label = "Adapter"
+            attrs.values = listOf(null, "Constant", "Per Entity")
+            attrs.renderValueOption = { adapter -> buildElement { +(adapter ?: "None" ) } }
+            attrs.value = mutableEntity.metadata?.let {
+                when (it) {
+                    is ConstEntityMetadataProvider -> "Constant"
+                    is StrandCountEntityMetadataProvider -> "Per Entity"
+                }
+            }
+            attrs.onChange = handleMetadataTypeChange
+        }
+
+        when (metadata) {
+            is ConstEntityMetadataProvider -> {
+                with(styles) {
+                    numberTextField(
+                        "Expected Pixels:", metadata.pixelCount,
+                        onChange = handleConstMetadataChange
+                    )
+                }
+            }
+            is StrandCountEntityMetadataProvider -> {
+                TextField {
+                    attrs.classes = jso { this.root = -styles.jsonEditorTextField }
+                    attrs.fullWidth = true
+                    attrs.multiline = true
+                    attrs.rows = 6
+                    attrs.defaultValue =
+                        json.encodeToString(
+                            MapSerializer(String.serializer(), Int.serializer()),
+                            metadata.data
+                        )
+                    attrs.error = metadataError != null
+                    attrs.label = "Pixel counts:".asTextNode()
+                    attrs.onChange = handleStrandCountMetadataChange
+                }
+            }
+            null -> {}
+            else -> error("Unknown metadata type ${metadata::class}.")
         }
     }
 }
