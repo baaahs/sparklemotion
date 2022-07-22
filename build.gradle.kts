@@ -168,7 +168,7 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMuiIcons}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
 
-                implementation(npm("camera-controls", "^1.25.3"))
+                implementation(npm("camera-controls", "^1.35.0"))
 
                 implementation(npm("long-press-event", "^2.4.4"))
 

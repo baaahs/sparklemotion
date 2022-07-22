@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.ui.asColor
 import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
@@ -18,8 +19,30 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
     
     val controls by css {
-        position = Position.absolute
-        zIndex = 1
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        height = 100.pct
+
+        button {
+            minWidth = 0.px
+            padding = "5px"
+            margin = "2px"
+            backgroundColor = theme.palette.primary.main.asColor().withAlpha(.2)
+        }
+    }
+
+    val controlsRow by css {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+        width = 100.pct
+        justifyContent = JustifyContent.spaceBetween
+        alignItems = Align.center
+        margin(1.em, 0.em)
+
+        div {
+            display = Display.flex
+            flexDirection = FlexDirection.column
+        }
     }
 
     val fillParent by css {
