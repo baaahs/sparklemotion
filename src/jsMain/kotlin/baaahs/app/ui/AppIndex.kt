@@ -224,18 +224,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
 
                     div(+themeStyles.appContent) {
-                        Backdrop {
-                            attrs.open = !webClient.isConnected
-
-                            Container {
-                                CircularProgress {}
-                                icon(NotificationImportant)
-
-                                typographyH6 { +"Connecting…" }
-                                +"Attempting to connect to Sparkle Motion."
-                            }
-                        }
-
                         if (!webClient.serverIsOnline) {
                             Paper {
                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
@@ -310,6 +298,18 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        Backdrop {
+                            attrs.open = !webClient.isConnected
+
+                            Container {
+                                CircularProgress {}
+                                icon(NotificationImportant)
+
+                                typographyH6 { +"Connecting…" }
+                                +"Attempting to connect to Sparkle Motion."
                             }
                         }
                     }
