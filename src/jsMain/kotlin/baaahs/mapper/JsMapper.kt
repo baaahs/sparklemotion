@@ -241,13 +241,14 @@ class JsMapper(
         cameraPositions[key] = CameraPosition(
             uiControls.getPosition().toVector3F(),
             uiControls.getTarget().toVector3F(),
+            uiCamera.zoom.toDouble(),
+            uiControls.getFocalOffset().toVector3F(),
             uiCamera.rotation.z.toDouble()
         )
         ui.showMessage("Saved camera position `$key`.")
 
         globalLaunch {
             clientStorage.saveMapperData(MapperData(cameraPositions))
-
         }
     }
 
@@ -261,6 +262,7 @@ class JsMapper(
                 position.target.x, position.target.y, position.target.z,
                 true
             )
+            uiControls.setFocalOffset(position.focalOffset.x, position.focalOffset.y, position.focalOffset.z, true)
 
             ui.showMessage("Loaded camera position from `$key`.")
         } else {
@@ -933,6 +935,8 @@ class JsMapper(
                     CameraPosition(
                         controls.getPosition().toVector3F(),
                         controls.getTarget().toVector3F(),
+                        camera.zoom.toDouble(),
+                        controls.getFocalOffset().toVector3F(),
                         camera.rotation.z.toDouble()
                     ),
                     camera.aspect.toDouble()
