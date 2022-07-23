@@ -1,0 +1,2621 @@
+{
+  "startedAt": 1.657950938741E12,
+  "surfaces": [
+    {
+      "brainId": "C78434",
+      "panelName": "9D",
+      "pixelCount": 300,
+      "pixels": [
+        {
+          "modelPosition": {
+            "x": -126.6829,
+            "y": 88.66,
+            "z": -106.04504
+          },
+          "screenPosition": {
+            "x": 0.08071644,
+            "y": 0.88416386
+          },
+          "deltaImage": "20220716-055538/pixel-4.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -125.11955,
+            "y": 86.64898,
+            "z": -105.693596
+          },
+          "screenPosition": {
+            "x": 0.11000307,
+            "y": 0.8559961
+          },
+          "deltaImage": "20220716-055538/pixel-5.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -125.57362,
+            "y": 86.054306,
+            "z": -104.13557
+          },
+          "deltaImage": "20220716-055538/pixel-6.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -124.678276,
+            "y": 84.237366,
+            "z": -103.64266
+          },
+          "deltaImage": "20220716-055538/pixel-7.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -123.99066,
+            "y": 85.71018,
+            "z": -104.521545
+          },
+          "screenPosition": {
+            "x": 0.13323984,
+            "y": 0.833647
+          },
+          "deltaImage": "20220716-055538/pixel-8.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -122.83846,
+            "y": 83.92229,
+            "z": -104.128494
+          },
+          "screenPosition": {
+            "x": 0.15742189,
+            "y": 0.8103888
+          },
+          "deltaImage": "20220716-055538/pixel-9.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -124.147316,
+            "y": 82.11764,
+            "z": -102.89345
+          },
+          "deltaImage": "20220716-055538/pixel-10.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -122.07188,
+            "y": 81.916405,
+            "z": -103.509094
+          },
+          "deltaImage": "20220716-055538/pixel-11.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -120.80949,
+            "y": 81.7976,
+            "z": -103.88513
+          },
+          "screenPosition": {
+            "x": 0.19041567,
+            "y": 0.7786555
+          },
+          "deltaImage": "20220716-055538/pixel-12.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -118.99124,
+            "y": 78.765785,
+            "z": -104.315956
+          },
+          "screenPosition": {
+            "x": 0.22480626,
+            "y": 0.74557877
+          },
+          "deltaImage": "20220716-055538/pixel-13.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -120.556625,
+            "y": 79.73361,
+            "z": -103.06604
+          },
+          "deltaImage": "20220716-055538/pixel-14.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -122.65263,
+            "y": 80.36848,
+            "z": -102.63352
+          },
+          "deltaImage": "20220716-055538/pixel-15.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -122.8272,
+            "y": 78.60491,
+            "z": -101.80117
+          },
+          "deltaImage": "20220716-055538/pixel-16.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -121.73605,
+            "y": 78.46674,
+            "z": -102.11065
+          },
+          "deltaImage": "20220716-055538/pixel-17.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -119.59623,
+            "y": 78.35998,
+            "z": -102.78954
+          },
+          "deltaImage": "20220716-055538/pixel-18.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.77832,
+            "y": 77.78085,
+            "z": -103.15218
+          },
+          "screenPosition": {
+            "x": 0.24759711,
+            "y": 0.7236586
+          },
+          "deltaImage": "20220716-055538/pixel-19.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -119.213936,
+            "y": 76.83378,
+            "z": -102.25011
+          },
+          "deltaImage": "20220716-055538/pixel-20.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -121.225,
+            "y": 77.129486,
+            "z": -101.697716
+          },
+          "deltaImage": "20220716-055538/pixel-21.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -122.190704,
+            "y": 75.7124,
+            "z": -100.748955
+          },
+          "deltaImage": "20220716-055538/pixel-22.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -120.86527,
+            "y": 74.990395,
+            "z": -100.881935
+          },
+          "deltaImage": "20220716-055538/pixel-23.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -119.687836,
+            "y": 75.21074,
+            "z": -101.37785
+          },
+          "deltaImage": "20220716-055538/pixel-24.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.9343,
+            "y": 74.53715,
+            "z": -101.67724
+          },
+          "deltaImage": "20220716-055538/pixel-25.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.452,
+            "y": 74.46912,
+            "z": -102.48926
+          },
+          "screenPosition": {
+            "x": 0.29363868,
+            "y": 0.67937595
+          },
+          "deltaImage": "20220716-055538/pixel-26.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -116.00953,
+            "y": 73.88292,
+            "z": -102.04319
+          },
+          "deltaImage": "20220716-055538/pixel-27.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.98011,
+            "y": 72.96253,
+            "z": -100.97139
+          },
+          "deltaImage": "20220716-055538/pixel-28.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -119.60488,
+            "y": 73.825066,
+            "z": -100.79851
+          },
+          "deltaImage": "20220716-055538/pixel-29.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -120.56992,
+            "y": 72.75683,
+            "z": -100.0029
+          },
+          "deltaImage": "20220716-055538/pixel-30.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -119.35201,
+            "y": 71.761086,
+            "z": -99.97941
+          },
+          "deltaImage": "20220716-055538/pixel-31.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.89715,
+            "y": 71.57686,
+            "z": -100.392044
+          },
+          "deltaImage": "20220716-055538/pixel-32.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.52238,
+            "y": 71.23509,
+            "z": -101.0476
+          },
+          "deltaImage": "20220716-055538/pixel-33.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.06551,
+            "y": 72.09738,
+            "z": -101.91971
+          },
+          "screenPosition": {
+            "x": 0.32483757,
+            "y": 0.649369
+          },
+          "deltaImage": "20220716-055538/pixel-34.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.107994,
+            "y": 72.26696,
+            "z": -101.979645
+          },
+          "screenPosition": {
+            "x": 0.32296705,
+            "y": 0.65116805
+          },
+          "deltaImage": "20220716-055538/pixel-35.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.59141,
+            "y": 70.781845,
+            "z": -101.8429
+          },
+          "screenPosition": {
+            "x": 0.34663898,
+            "y": 0.6284005
+          },
+          "deltaImage": "20220716-055538/pixel-36.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.66398,
+            "y": 69.43987,
+            "z": -100.89083
+          },
+          "deltaImage": "20220716-055538/pixel-37.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.58942,
+            "y": 69.74526,
+            "z": -100.37172
+          },
+          "deltaImage": "20220716-055538/pixel-38.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.21619,
+            "y": 69.56129,
+            "z": -99.739365
+          },
+          "deltaImage": "20220716-055538/pixel-39.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -118.96972,
+            "y": 70.23488,
+            "z": -99.43997
+          },
+          "deltaImage": "20220716-055538/pixel-40.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -118.844284,
+            "y": 68.67963,
+            "z": -98.80069
+          },
+          "deltaImage": "20220716-055538/pixel-41.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -118.50446,
+            "y": 67.323006,
+            "z": -98.32119
+          },
+          "deltaImage": "20220716-055538/pixel-42.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.30579,
+            "y": 67.458565,
+            "z": -98.78714
+          },
+          "deltaImage": "20220716-055538/pixel-43.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.5496,
+            "y": 68.18033,
+            "z": -99.69916
+          },
+          "deltaImage": "20220716-055538/pixel-44.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.13854,
+            "y": 67.467995,
+            "z": -99.86542
+          },
+          "deltaImage": "20220716-055538/pixel-45.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.95358,
+            "y": 68.58701,
+            "z": -101.097
+          },
+          "deltaImage": "20220716-055538/pixel-46.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.867966,
+            "y": 68.596695,
+            "z": -101.13028
+          },
+          "deltaImage": "20220716-055538/pixel-47.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.35824,
+            "y": 66.56176,
+            "z": -100.41103
+          },
+          "deltaImage": "20220716-055538/pixel-48.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.35824,
+            "y": 66.56176,
+            "z": -100.41103
+          },
+          "deltaImage": "20220716-055538/pixel-49.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.393196,
+            "y": 65.5469,
+            "z": -99.275986
+          },
+          "deltaImage": "20220716-055538/pixel-50.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.4412,
+            "y": 65.864334,
+            "z": -99.05972
+          },
+          "deltaImage": "20220716-055538/pixel-51.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -116.324165,
+            "y": 66.000145,
+            "z": -98.480675
+          },
+          "deltaImage": "20220716-055538/pixel-52.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.9735,
+            "y": 65.20328,
+            "z": -97.571976
+          },
+          "deltaImage": "20220716-055538/pixel-53.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -117.63368,
+            "y": 63.846653,
+            "z": -97.092476
+          },
+          "deltaImage": "20220716-055538/pixel-54.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.75006,
+            "y": 64.05968,
+            "z": -97.82468
+          },
+          "deltaImage": "20220716-055538/pixel-55.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.95272,
+            "y": 63.914185,
+            "z": -98.370445
+          },
+          "deltaImage": "20220716-055538/pixel-56.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.00671,
+            "y": 63.175163,
+            "z": -98.70643
+          },
+          "deltaImage": "20220716-055538/pixel-57.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.48613,
+            "y": 63.783085,
+            "z": -99.48863
+          },
+          "deltaImage": "20220716-055538/pixel-58.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.65271,
+            "y": 66.2056,
+            "z": -100.49416
+          },
+          "deltaImage": "20220716-055538/pixel-59.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.73347,
+            "y": 65.69922,
+            "z": -100.58392
+          },
+          "deltaImage": "20220716-055538/pixel-60.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.744774,
+            "y": 61.852055,
+            "z": -99.91091
+          },
+          "deltaImage": "20220716-055538/pixel-61.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.48613,
+            "y": 63.783085,
+            "z": -99.48863
+          },
+          "deltaImage": "20220716-055538/pixel-62.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.93946,
+            "y": 61.726425,
+            "z": -98.43325
+          },
+          "deltaImage": "20220716-055538/pixel-63.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.144325,
+            "y": 61.389877,
+            "z": -97.53795
+          },
+          "deltaImage": "20220716-055538/pixel-64.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.004715,
+            "y": 62.13858,
+            "z": -97.235245
+          },
+          "deltaImage": "20220716-055538/pixel-65.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -116.88834,
+            "y": 61.925552,
+            "z": -96.503044
+          },
+          "deltaImage": "20220716-055538/pixel-66.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -116.52728,
+            "y": 60.48414,
+            "z": -95.993576
+          },
+          "deltaImage": "20220716-055538/pixel-67.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.071754,
+            "y": 60.64875,
+            "z": -96.559364
+          },
+          "deltaImage": "20220716-055538/pixel-68.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.973755,
+            "y": 58.977303,
+            "z": -95.5207
+          },
+          "deltaImage": "20220716-055538/pixel-69.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.19698,
+            "y": 59.265434,
+            "z": -96.24959
+          },
+          "deltaImage": "20220716-055538/pixel-70.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.63327,
+            "y": 60.05262,
+            "z": -97.125015
+          },
+          "deltaImage": "20220716-055538/pixel-71.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.20517,
+            "y": 60.101036,
+            "z": -97.29142
+          },
+          "deltaImage": "20220716-055538/pixel-72.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.09278,
+            "y": 59.878075,
+            "z": -97.57093
+          },
+          "deltaImage": "20220716-055538/pixel-73.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.12287,
+            "y": 60.449623,
+            "z": -98.48957
+          },
+          "deltaImage": "20220716-055538/pixel-74.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.53792,
+            "y": 61.152016,
+            "z": -99.33502
+          },
+          "deltaImage": "20220716-055538/pixel-75.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -105.590576,
+            "y": 61.110676,
+            "z": -99.977325
+          },
+          "screenPosition": {
+            "x": 0.4824709,
+            "y": 0.4977578
+          },
+          "deltaImage": "20220716-055538/pixel-77.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.35075,
+            "y": 60.378983,
+            "z": -100.07702
+          },
+          "screenPosition": {
+            "x": 0.4972469,
+            "y": 0.48354632
+          },
+          "deltaImage": "20220716-055538/pixel-78.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.40142,
+            "y": 59.301056,
+            "z": -99.24813
+          },
+          "deltaImage": "20220716-055538/pixel-79.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.08638,
+            "y": 59.223595,
+            "z": -98.98188
+          },
+          "deltaImage": "20220716-055538/pixel-80.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.33505,
+            "y": 58.358944,
+            "z": -97.8402
+          },
+          "deltaImage": "20220716-055538/pixel-81.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.82753,
+            "y": 58.216057,
+            "z": -97.61054
+          },
+          "deltaImage": "20220716-055538/pixel-82.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.37421,
+            "y": 58.189617,
+            "z": -96.73527
+          },
+          "deltaImage": "20220716-055538/pixel-83.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.05916,
+            "y": 58.112156,
+            "z": -96.46902
+          },
+          "deltaImage": "20220716-055538/pixel-84.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.2804,
+            "y": 57.3637,
+            "z": -95.72672
+          },
+          "deltaImage": "20220716-055538/pixel-85.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.564026,
+            "y": 57.567295,
+            "z": -95.380646
+          },
+          "deltaImage": "20220716-055538/pixel-86.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -116.10517,
+            "y": 57.393,
+            "z": -94.78157
+          },
+          "deltaImage": "20220716-055538/pixel-87.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.54545,
+            "y": 56.08715,
+            "z": -94.73805
+          },
+          "deltaImage": "20220716-055538/pixel-88.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -115.40364,
+            "y": 54.9438,
+            "z": -93.94576
+          },
+          "deltaImage": "20220716-055538/pixel-89.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.54125,
+            "y": 55.24162,
+            "z": -94.70793
+          },
+          "deltaImage": "20220716-055538/pixel-90.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.21315,
+            "y": 55.914963,
+            "z": -95.45354
+          },
+          "deltaImage": "20220716-055538/pixel-91.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.16315,
+            "y": 56.64405,
+            "z": -96.129265
+          },
+          "deltaImage": "20220716-055538/pixel-92.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.89523,
+            "y": 56.37739,
+            "z": -96.78151
+          },
+          "deltaImage": "20220716-055538/pixel-93.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.99457,
+            "y": 57.35116,
+            "z": -97.51386
+          },
+          "deltaImage": "20220716-055538/pixel-94.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.13771,
+            "y": 57.79683,
+            "z": -97.99983
+          },
+          "deltaImage": "20220716-055538/pixel-95.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.367134,
+            "y": 57.883976,
+            "z": -98.29938
+          },
+          "deltaImage": "20220716-055538/pixel-96.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.12732,
+            "y": 57.152283,
+            "z": -98.39907
+          },
+          "deltaImage": "20220716-055538/pixel-97.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.6116,
+            "y": 58.256897,
+            "z": -99.058235
+          },
+          "deltaImage": "20220716-055538/pixel-98.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.693695,
+            "y": 57.05284,
+            "z": -98.841675
+          },
+          "deltaImage": "20220716-055538/pixel-99.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.97312,
+            "y": 56.410904,
+            "z": -98.465485
+          },
+          "deltaImage": "20220716-055538/pixel-100.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.469795,
+            "y": 57.11355,
+            "z": -98.265945
+          },
+          "deltaImage": "20220716-055538/pixel-101.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -107.09922,
+            "y": 55.534218,
+            "z": -97.02096
+          },
+          "deltaImage": "20220716-055538/pixel-103.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.19656,
+            "y": 55.4714,
+            "z": -96.28213
+          },
+          "deltaImage": "20220716-055538/pixel-104.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.15895,
+            "y": 55.798515,
+            "z": -96.09915
+          },
+          "deltaImage": "20220716-055538/pixel-105.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.31781,
+            "y": 54.09802,
+            "z": -94.96064
+          },
+          "deltaImage": "20220716-055538/pixel-106.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.08838,
+            "y": 54.01087,
+            "z": -94.6611
+          },
+          "deltaImage": "20220716-055538/pixel-107.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.30962,
+            "y": 53.26242,
+            "z": -93.91881
+          },
+          "deltaImage": "20220716-055538/pixel-108.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -114.53086,
+            "y": 52.51397,
+            "z": -93.17651
+          },
+          "deltaImage": "20220716-055538/pixel-109.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.862946,
+            "y": 51.830692,
+            "z": -93.44262
+          },
+          "deltaImage": "20220716-055538/pixel-110.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.64171,
+            "y": 52.579144,
+            "z": -94.18491
+          },
+          "deltaImage": "20220716-055538/pixel-111.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.315605,
+            "y": 52.20597,
+            "z": -94.47105
+          },
+          "deltaImage": "20220716-055538/pixel-112.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.371796,
+            "y": 53.359,
+            "z": -95.29662
+          },
+          "deltaImage": "20220716-055538/pixel-113.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.65808,
+            "y": 54.25034,
+            "z": -96.26858
+          },
+          "deltaImage": "20220716-055538/pixel-114.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.07998,
+            "y": 54.40291,
+            "z": -96.53152
+          },
+          "deltaImage": "20220716-055538/pixel-115.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.75741,
+            "y": 55.22411,
+            "z": -97.00093
+          },
+          "deltaImage": "20220716-055538/pixel-116.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.68264,
+            "y": 54.674034,
+            "z": -97.46342
+          },
+          "deltaImage": "20220716-055538/pixel-117.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.6333,
+            "y": 55.05428,
+            "z": -97.985985
+          },
+          "deltaImage": "20220716-055538/pixel-118.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.02025,
+            "y": 56.22171,
+            "z": -99.38398
+          },
+          "screenPosition": {
+            "x": 0.5576653,
+            "y": 0.42543608
+          },
+          "deltaImage": "20220716-055538/pixel-119.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -100.3896,
+            "y": 54.83745,
+            "z": -100.13433
+          },
+          "screenPosition": {
+            "x": 0.5732755,
+            "y": 0.41042224
+          },
+          "deltaImage": "20220716-055538/pixel-120.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.30853,
+            "y": 53.98343,
+            "z": -97.965805
+          },
+          "deltaImage": "20220716-055538/pixel-121.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.22977,
+            "y": 53.443287,
+            "z": -97.41658
+          },
+          "deltaImage": "20220716-055538/pixel-122.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.58397,
+            "y": 53.351425,
+            "z": -96.5779
+          },
+          "deltaImage": "20220716-055538/pixel-123.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.41892,
+            "y": 53.169807,
+            "z": -96.21512
+          },
+          "deltaImage": "20220716-055538/pixel-124.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.00941,
+            "y": 52.615265,
+            "z": -95.09347
+          },
+          "deltaImage": "20220716-055538/pixel-125.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.86074,
+            "y": 52.021744,
+            "z": -94.88369
+          },
+          "deltaImage": "20220716-055538/pixel-126.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.69703,
+            "y": 51.142445,
+            "z": -94.214584
+          },
+          "deltaImage": "20220716-055538/pixel-127.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.98198,
+            "y": 50.64836,
+            "z": -93.562195
+          },
+          "deltaImage": "20220716-055538/pixel-128.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.86561,
+            "y": 50.435333,
+            "z": -92.829994
+          },
+          "deltaImage": "20220716-055538/pixel-129.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -113.29703,
+            "y": 48.642723,
+            "z": -91.8978
+          },
+          "deltaImage": "20220716-055538/pixel-130.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.45588,
+            "y": 49.025326,
+            "z": -92.68994
+          },
+          "deltaImage": "20220716-055538/pixel-131.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.59416,
+            "y": 48.974304,
+            "z": -93.29896
+          },
+          "deltaImage": "20220716-055538/pixel-132.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.85036,
+            "y": 47.21099,
+            "z": -91.421616
+          },
+          "deltaImage": "20220716-055538/pixel-133.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.34283,
+            "y": 49.151207,
+            "z": -93.122604
+          },
+          "deltaImage": "20220716-055538/pixel-134.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.62558,
+            "y": 48.848175,
+            "z": -93.911285
+          },
+          "deltaImage": "20220716-055538/pixel-135.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.354546,
+            "y": 51.181175,
+            "z": -94.34771
+          },
+          "deltaImage": "20220716-055538/pixel-136.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.7092,
+            "y": 51.96811,
+            "z": -96.26813
+          },
+          "deltaImage": "20220716-055538/pixel-137.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.976234,
+            "y": 51.72814,
+            "z": -96.75064
+          },
+          "deltaImage": "20220716-055538/pixel-138.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.89041,
+            "y": 48.799255,
+            "z": -95.83487
+          },
+          "deltaImage": "20220716-055538/pixel-139.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.165184,
+            "y": 48.51609,
+            "z": -94.60012
+          },
+          "deltaImage": "20220716-055538/pixel-140.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.305214,
+            "y": 51.561424,
+            "z": -94.870285
+          },
+          "deltaImage": "20220716-055538/pixel-141.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.97092,
+            "y": 52.435753,
+            "z": -96.04524
+          },
+          "deltaImage": "20220716-055538/pixel-142.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.955,
+            "y": 51.643353,
+            "z": -96.72067
+          },
+          "deltaImage": "20220716-055538/pixel-143.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.11938,
+            "y": 52.17381,
+            "z": -97.23662
+          },
+          "deltaImage": "20220716-055538/pixel-144.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -100.28953,
+            "y": 54.70871,
+            "z": -100.11183
+          },
+          "screenPosition": {
+            "x": 0.5751503,
+            "y": 0.40861905
+          },
+          "deltaImage": "20220716-055538/pixel-146.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.20479,
+            "y": 51.308662,
+            "z": -98.18494
+          },
+          "deltaImage": "20220716-055538/pixel-147.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.29195,
+            "y": 51.456764,
+            "z": -96.86374
+          },
+          "deltaImage": "20220716-055538/pixel-148.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.89041,
+            "y": 48.799255,
+            "z": -95.83487
+          },
+          "deltaImage": "20220716-055538/pixel-149.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.576904,
+            "y": 50.96268,
+            "z": -96.21136
+          },
+          "deltaImage": "20220716-055538/pixel-150.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.39748,
+            "y": 50.14645,
+            "z": -95.23609
+          },
+          "deltaImage": "20220716-055538/pixel-151.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.61452,
+            "y": 48.552467,
+            "z": -94.46368
+          },
+          "deltaImage": "20220716-055538/pixel-152.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.326904,
+            "y": 48.358807,
+            "z": -93.798035
+          },
+          "deltaImage": "20220716-055538/pixel-153.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.084435,
+            "y": 46.939365,
+            "z": -92.57971
+          },
+          "deltaImage": "20220716-055538/pixel-154.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.77558,
+            "y": 46.66092,
+            "z": -91.8841
+          },
+          "deltaImage": "20220716-055538/pixel-155.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -112.27625,
+            "y": 45.270527,
+            "z": -90.76562
+          },
+          "deltaImage": "20220716-055538/pixel-156.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.09462,
+            "y": 44.645348,
+            "z": -91.231415
+          },
+          "deltaImage": "20220716-055538/pixel-157.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.08223,
+            "y": 45.047318,
+            "z": -92.09012
+          },
+          "deltaImage": "20220716-055538/pixel-158.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.967186,
+            "y": 46.219715,
+            "z": -92.982254
+          },
+          "screenPosition": {
+            "x": 1.0554203,
+            "y": 1.4445751
+          },
+          "deltaImage": "20220716-055538/pixel-159.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.29727,
+            "y": 46.58295,
+            "z": -93.70783
+          },
+          "screenPosition": {
+            "x": 1.0380923,
+            "y": 1.1661533
+          },
+          "deltaImage": "20220716-055538/pixel-160.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.15878,
+            "y": 45.778507,
+            "z": -94.080414
+          },
+          "screenPosition": {
+            "x": 1.0892047,
+            "y": 0.89102954
+          },
+          "deltaImage": "20220716-055538/pixel-161.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.89041,
+            "y": 48.799255,
+            "z": -95.83487
+          },
+          "deltaImage": "20220716-055538/pixel-162.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.89041,
+            "y": 48.799255,
+            "z": -95.83487
+          },
+          "deltaImage": "20220716-055538/pixel-163.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.099266,
+            "y": 48.452774,
+            "z": -95.95128
+          },
+          "deltaImage": "20220716-055538/pixel-164.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -100.23708,
+            "y": 51.68916,
+            "z": -97.66251
+          },
+          "deltaImage": "20220716-055538/pixel-165.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -96.43533,
+            "y": 47.759563,
+            "z": -97.229095
+          },
+          "deltaImage": "20220716-055538/pixel-167.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.331345,
+            "y": 49.22767,
+            "z": -97.56884
+          },
+          "deltaImage": "20220716-055538/pixel-168.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.571625,
+            "y": 46.671955,
+            "z": -96.36693
+          },
+          "deltaImage": "20220716-055538/pixel-169.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -100.567635,
+            "y": 46.68189,
+            "z": -95.35522
+          },
+          "deltaImage": "20220716-055538/pixel-170.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.18887,
+            "y": 46.350056,
+            "z": -94.999054
+          },
+          "screenPosition": {
+            "x": 1.0611244,
+            "y": 0.59609836
+          },
+          "deltaImage": "20220716-055538/pixel-171.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.69507,
+            "y": 45.10752,
+            "z": -93.60438
+          },
+          "screenPosition": {
+            "x": 1.1268274,
+            "y": 0.99892503
+          },
+          "deltaImage": "20220716-055538/pixel-172.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.68622,
+            "y": 44.62076,
+            "z": -92.715706
+          },
+          "screenPosition": {
+            "x": 1.1535745,
+            "y": 1.3219002
+          },
+          "deltaImage": "20220716-055538/pixel-173.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.844406,
+            "y": 43.269104,
+            "z": -91.73035
+          },
+          "screenPosition": {
+            "x": 1.2343158,
+            "y": 1.5646739
+          },
+          "deltaImage": "20220716-055538/pixel-174.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.83423,
+            "y": 43.480022,
+            "z": -91.14799
+          },
+          "deltaImage": "20220716-055538/pixel-175.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -111.48909,
+            "y": 42.831013,
+            "z": -89.96309
+          },
+          "deltaImage": "20220716-055538/pixel-176.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -109.69375,
+            "y": 41.638996,
+            "z": -90.049385
+          },
+          "screenPosition": {
+            "x": 1.2585446,
+            "y": 2.0115657
+          },
+          "deltaImage": "20220716-055538/pixel-177.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.126495,
+            "y": 41.23181,
+            "z": -90.74153
+          },
+          "deltaImage": "20220716-055538/pixel-178.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.775826,
+            "y": 42.518044,
+            "z": -91.76348
+          },
+          "screenPosition": {
+            "x": 1.2804288,
+            "y": 1.4411548
+          },
+          "deltaImage": "20220716-055538/pixel-179.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.12516,
+            "y": 44.01259,
+            "z": -92.97849
+          },
+          "screenPosition": {
+            "x": 1.1901182,
+            "y": 1.1136996
+          },
+          "deltaImage": "20220716-055538/pixel-180.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.23667,
+            "y": 43.728924,
+            "z": -93.83374
+          },
+          "screenPosition": {
+            "x": 1.2060971,
+            "y": 0.71696347
+          },
+          "deltaImage": "20220716-055538/pixel-181.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -100.10039,
+            "y": 44.81653,
+            "z": -94.69591
+          },
+          "screenPosition": {
+            "x": 1.1464572,
+            "y": 0.51957875
+          },
+          "deltaImage": "20220716-055538/pixel-182.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.738,
+            "y": 44.072796,
+            "z": -94.49275
+          },
+          "screenPosition": {
+            "x": 1.1870744,
+            "y": 0.50437367
+          },
+          "deltaImage": "20220716-055538/pixel-183.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.40238,
+            "y": 45.644802,
+            "z": -95.97402
+          },
+          "screenPosition": {
+            "x": 1.1052711,
+            "y": 0.15233514
+          },
+          "deltaImage": "20220716-055538/pixel-184.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -92.90903,
+            "y": 45.281063,
+            "z": -97.33844
+          },
+          "screenPosition": {
+            "x": 0.7125541,
+            "y": 0.27646455
+          },
+          "deltaImage": "20220716-055538/pixel-186.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.90482,
+            "y": 44.43553,
+            "z": -97.30832
+          },
+          "screenPosition": {
+            "x": 0.72688884,
+            "y": 0.26267743
+          },
+          "deltaImage": "20220716-055538/pixel-187.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -93.299965,
+            "y": 42.272358,
+            "z": -95.88683
+          },
+          "screenPosition": {
+            "x": 1.2769839,
+            "y": -0.18152459
+          },
+          "deltaImage": "20220716-055538/pixel-189.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.350174,
+            "y": 44.48184,
+            "z": -96.160164
+          },
+          "screenPosition": {
+            "x": 1.1667163,
+            "y": -0.03875563
+          },
+          "deltaImage": "20220716-055538/pixel-190.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -96.317215,
+            "y": 42.36708,
+            "z": -94.90509
+          },
+          "screenPosition": {
+            "x": 1.2758576,
+            "y": 0.15361601
+          },
+          "deltaImage": "20220716-055538/pixel-191.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.54133,
+            "y": 43.16184,
+            "z": -94.49923
+          },
+          "screenPosition": {
+            "x": 1.2359524,
+            "y": 0.39080462
+          },
+          "deltaImage": "20220716-055538/pixel-192.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.9119,
+            "y": 42.658073,
+            "z": -93.81356
+          },
+          "screenPosition": {
+            "x": 1.2645639,
+            "y": 0.58718324
+          },
+          "deltaImage": "20220716-055538/pixel-193.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.9119,
+            "y": 42.658073,
+            "z": -93.81356
+          },
+          "screenPosition": {
+            "x": 1.2645639,
+            "y": 0.58718324
+          },
+          "deltaImage": "20220716-055538/pixel-194.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -104.08734,
+            "y": 41.40114,
+            "z": -91.84646
+          },
+          "screenPosition": {
+            "x": 1.344129,
+            "y": 1.2334124
+          },
+          "deltaImage": "20220716-055538/pixel-196.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.86057,
+            "y": 39.918633,
+            "z": -90.934296
+          },
+          "screenPosition": {
+            "x": 1.4360757,
+            "y": 1.4263206
+          },
+          "deltaImage": "20220716-055538/pixel-197.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.50991,
+            "y": 39.121765,
+            "z": -90.0256
+          },
+          "deltaImage": "20220716-055538/pixel-198.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.177826,
+            "y": 39.805046,
+            "z": -89.75948
+          },
+          "deltaImage": "20220716-055538/pixel-199.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -110.44574,
+            "y": 40.071705,
+            "z": -89.10725
+          },
+          "screenPosition": {
+            "x": 1.3341266,
+            "y": 2.1288204
+          },
+          "deltaImage": "20220716-055538/pixel-200.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.71611,
+            "y": 38.08754,
+            "z": -88.82398
+          },
+          "deltaImage": "20220716-055538/pixel-201.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.32629,
+            "y": 37.460003,
+            "z": -89.02021
+          },
+          "deltaImage": "20220716-055538/pixel-202.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.7358,
+            "y": 38.01454,
+            "z": -90.14185
+          },
+          "screenPosition": {
+            "x": 1.5521926,
+            "y": 1.5022279
+          },
+          "deltaImage": "20220716-055538/pixel-203.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.19333,
+            "y": 38.886513,
+            "z": -91.04725
+          },
+          "screenPosition": {
+            "x": 1.4905343,
+            "y": 1.2194225
+          },
+          "deltaImage": "20220716-055538/pixel-204.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -98.07541,
+            "y": 40.5988,
+            "z": -93.53361
+          },
+          "screenPosition": {
+            "x": 1.3733659,
+            "y": 0.43844968
+          },
+          "deltaImage": "20220716-055538/pixel-206.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.07541,
+            "y": 40.5988,
+            "z": -93.53361
+          },
+          "screenPosition": {
+            "x": 1.3733659,
+            "y": 0.43844968
+          },
+          "deltaImage": "20220716-055538/pixel-207.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.31701,
+            "y": 39.428513,
+            "z": -93.95603
+          },
+          "screenPosition": {
+            "x": 1.4269073,
+            "y": 0.15156244
+          },
+          "deltaImage": "20220716-055538/pixel-208.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -94.5212,
+            "y": 41.523907,
+            "z": -95.14454
+          },
+          "screenPosition": {
+            "x": 1.3165778,
+            "y": -0.019793496
+          },
+          "deltaImage": "20220716-055538/pixel-209.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.93538,
+            "y": 39.63657,
+            "z": -95.19409
+          },
+          "screenPosition": {
+            "x": 1.4052724,
+            "y": -0.23119332
+          },
+          "deltaImage": "20220716-055538/pixel-210.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -88.747055,
+            "y": 39.860977,
+            "z": -97.51709
+          },
+          "screenPosition": {
+            "x": 0.79137844,
+            "y": 0.2006516
+          },
+          "deltaImage": "20220716-055538/pixel-212.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -87.16858,
+            "y": 36.775215,
+            "z": -95.55628
+          },
+          "screenPosition": {
+            "x": 1.5257564,
+            "y": -0.60834295
+          },
+          "deltaImage": "20220716-055538/pixel-213.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -89.22012,
+            "y": 38.28702,
+            "z": -95.5233
+          },
+          "screenPosition": {
+            "x": 1.4620979,
+            "y": -0.46093163
+          },
+          "deltaImage": "20220716-055538/pixel-214.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -90.39689,
+            "y": 38.41551,
+            "z": -95.18054
+          },
+          "screenPosition": {
+            "x": 1.4602487,
+            "y": -0.34735116
+          },
+          "deltaImage": "20220716-055538/pixel-215.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -92.003746,
+            "y": 37.449062,
+            "z": -94.2119
+          },
+          "screenPosition": {
+            "x": 1.5149417,
+            "y": -0.14467695
+          },
+          "deltaImage": "20220716-055538/pixel-216.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -93.51967,
+            "y": 39.283016,
+            "z": -94.5018
+          },
+          "screenPosition": {
+            "x": 1.4281735,
+            "y": -0.047081344
+          },
+          "deltaImage": "20220716-055538/pixel-217.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.21348,
+            "y": 37.60921,
+            "z": -93.193565
+          },
+          "screenPosition": {
+            "x": 1.5220662,
+            "y": 0.2106784
+          },
+          "deltaImage": "20220716-055538/pixel-218.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.42254,
+            "y": 38.118195,
+            "z": -92.32838
+          },
+          "screenPosition": {
+            "x": 1.5105712,
+            "y": 0.5869007
+          },
+          "deltaImage": "20220716-055538/pixel-219.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.59178,
+            "y": 39.145348,
+            "z": -92.72128
+          },
+          "screenPosition": {
+            "x": 1.4545957,
+            "y": 0.56521744
+          },
+          "deltaImage": "20220716-055538/pixel-220.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -105.44533,
+            "y": 36.27767,
+            "z": -89.139786
+          },
+          "deltaImage": "20220716-055538/pixel-223.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -108.676956,
+            "y": 36.173767,
+            "z": -87.99826
+          },
+          "deltaImage": "20220716-055538/pixel-224.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.18161,
+            "y": 34.773445,
+            "z": -87.89149
+          },
+          "deltaImage": "20220716-055538/pixel-225.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.15064,
+            "y": 33.695267,
+            "z": -88.1076
+          },
+          "screenPosition": {
+            "x": 1.7664415,
+            "y": 1.7319425
+          },
+          "deltaImage": "20220716-055538/pixel-226.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -103.37188,
+            "y": 35.02992,
+            "z": -89.29596
+          },
+          "screenPosition": {
+            "x": 1.725397,
+            "y": 1.435342
+          },
+          "deltaImage": "20220716-055538/pixel-227.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.339584,
+            "y": 34.64942,
+            "z": -89.81838
+          },
+          "screenPosition": {
+            "x": 1.7298634,
+            "y": 1.1448812
+          },
+          "deltaImage": "20220716-055538/pixel-228.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.81901,
+            "y": 35.257343,
+            "z": -90.60058
+          },
+          "screenPosition": {
+            "x": 1.6813304,
+            "y": 0.8995023
+          },
+          "deltaImage": "20220716-055538/pixel-229.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.68539,
+            "y": 34.949593,
+            "z": -90.85012
+          },
+          "screenPosition": {
+            "x": 1.6899039,
+            "y": 0.758156
+          },
+          "deltaImage": "20220716-055538/pixel-230.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.024994,
+            "y": 35.450752,
+            "z": -92.31122
+          },
+          "screenPosition": {
+            "x": 1.6355394,
+            "y": 0.27359882
+          },
+          "deltaImage": "20220716-055538/pixel-231.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -93.65375,
+            "y": 36.30336,
+            "z": -93.15004
+          },
+          "screenPosition": {
+            "x": 1.58211,
+            "y": 0.08056469
+          },
+          "deltaImage": "20220716-055538/pixel-232.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.34535,
+            "y": 34.820602,
+            "z": -93.282875
+          },
+          "deltaImage": "20220716-055538/pixel-233.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -89.35221,
+            "y": 36.35388,
+            "z": -94.63102
+          },
+          "screenPosition": {
+            "x": 1.5563728,
+            "y": -0.38139674
+          },
+          "deltaImage": "20220716-055538/pixel-234.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -87.51239,
+            "y": 36.038807,
+            "z": -95.116844
+          },
+          "deltaImage": "20220716-055538/pixel-235.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -84.68961,
+            "y": 34.96299,
+            "z": -95.60252
+          },
+          "screenPosition": {
+            "x": 0.86220944,
+            "y": 0.1325266
+          },
+          "deltaImage": "20220716-055538/pixel-236.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -86.55333,
+            "y": 33.967495,
+            "z": -94.534035
+          },
+          "deltaImage": "20220716-055538/pixel-237.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -88.28629,
+            "y": 34.207462,
+            "z": -94.05152
+          },
+          "deltaImage": "20220716-055538/pixel-238.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -89.6801,
+            "y": 32.741966,
+            "z": -92.93635
+          },
+          "deltaImage": "20220716-055538/pixel-239.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.60421,
+            "y": 33.745037,
+            "z": -92.72356
+          },
+          "deltaImage": "20220716-055538/pixel-240.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -92.7624,
+            "y": 32.39338,
+            "z": -91.7382
+          },
+          "deltaImage": "20220716-055538/pixel-241.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -94.73164,
+            "y": 32.17067,
+            "z": -90.97272
+          },
+          "deltaImage": "20220716-055538/pixel-243.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.21061,
+            "y": 33.9829,
+            "z": -90.926476
+          },
+          "deltaImage": "20220716-055538/pixel-244.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.339584,
+            "y": 34.64942,
+            "z": -89.81838
+          },
+          "screenPosition": {
+            "x": 1.7298634,
+            "y": 1.1448812
+          },
+          "deltaImage": "20220716-055538/pixel-245.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.79204,
+            "y": 32.086132,
+            "z": -89.89775
+          },
+          "deltaImage": "20220716-055538/pixel-246.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -100.46681,
+            "y": 32.219585,
+            "z": -89.04913
+          },
+          "deltaImage": "20220716-055538/pixel-247.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.21016,
+            "y": 33.104103,
+            "z": -88.16738
+          },
+          "deltaImage": "20220716-055538/pixel-248.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.90243,
+            "y": 31.272509,
+            "z": -88.14706
+          },
+          "deltaImage": "20220716-055538/pixel-249.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.32034,
+            "y": 31.435013,
+            "z": -87.398285
+          },
+          "deltaImage": "20220716-055538/pixel-250.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.1095,
+            "y": 32.82801,
+            "z": -87.74135
+          },
+          "deltaImage": "20220716-055538/pixel-251.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -107.87056,
+            "y": 32.602943,
+            "z": -86.70629
+          },
+          "deltaImage": "20220716-055538/pixel-252.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.41769,
+            "y": 31.372198,
+            "z": -86.659454
+          },
+          "deltaImage": "20220716-055538/pixel-253.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -106.2292,
+            "y": 29.213741,
+            "z": -85.77711
+          },
+          "deltaImage": "20220716-055538/pixel-254.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.131195,
+            "y": 29.625393,
+            "z": -86.6691
+          },
+          "deltaImage": "20220716-055538/pixel-255.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.926994,
+            "y": 29.613102,
+            "z": -87.41124
+          },
+          "deltaImage": "20220716-055538/pixel-256.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.53032,
+            "y": 29.535387,
+            "z": -88.18998
+          },
+          "deltaImage": "20220716-055538/pixel-257.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.18031,
+            "y": 30.472782,
+            "z": -89.05878
+          },
+          "deltaImage": "20220716-055538/pixel-258.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -96.18917,
+            "y": 30.959541,
+            "z": -89.94745
+          },
+          "deltaImage": "20220716-055538/pixel-259.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -94.15754,
+            "y": 30.230206,
+            "z": -90.31672
+          },
+          "deltaImage": "20220716-055538/pixel-260.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -92.957535,
+            "y": 31.063446,
+            "z": -91.088974
+          },
+          "deltaImage": "20220716-055538/pixel-261.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.07324,
+            "y": 31.62531,
+            "z": -91.974335
+          },
+          "deltaImage": "20220716-055538/pixel-262.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -89.21352,
+            "y": 30.52777,
+            "z": -92.123886
+          },
+          "deltaImage": "20220716-055538/pixel-263.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -87.43542,
+            "y": 31.51358,
+            "z": -93.15909
+          },
+          "deltaImage": "20220716-055538/pixel-264.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -86.06484,
+            "y": 32.01735,
+            "z": -93.84476
+          },
+          "deltaImage": "20220716-055538/pixel-265.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -84.41484,
+            "y": 33.16305,
+            "z": -94.90662
+          },
+          "deltaImage": "20220716-055538/pixel-266.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -82.59408,
+            "y": 31.94606,
+            "z": -96.13391
+          },
+          "screenPosition": {
+            "x": 0.9066436,
+            "y": 0.089789905
+          },
+          "deltaImage": "20220716-055538/pixel-267.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -82.64273,
+            "y": 31.009312,
+            "z": -94.56341
+          },
+          "deltaImage": "20220716-055538/pixel-268.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -84.97636,
+            "y": 30.48382,
+            "z": -93.5416
+          },
+          "deltaImage": "20220716-055538/pixel-269.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -86.77702,
+            "y": 28.88512,
+            "z": -92.23006
+          },
+          "deltaImage": "20220716-055538/pixel-270.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -89.388084,
+            "y": 28.764208,
+            "z": -91.291534
+          },
+          "deltaImage": "20220716-055538/pixel-271.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.07723,
+            "y": 29.532276,
+            "z": -91.0554
+          },
+          "deltaImage": "20220716-055538/pixel-272.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -93.26219,
+            "y": 28.413261,
+            "z": -89.823814
+          },
+          "deltaImage": "20220716-055538/pixel-273.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -96.64316,
+            "y": 28.55404,
+            "z": -88.73891
+          },
+          "deltaImage": "20220716-055538/pixel-274.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -98.24869,
+            "y": 28.285275,
+            "z": -88.076584
+          },
+          "deltaImage": "20220716-055538/pixel-275.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.22479,
+            "y": 27.512741,
+            "z": -86.72859
+          },
+          "deltaImage": "20220716-055538/pixel-276.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.87213,
+            "y": 27.762392,
+            "z": -86.27936
+          },
+          "deltaImage": "20220716-055538/pixel-277.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -105.37567,
+            "y": 27.915215,
+            "z": -85.49731
+          },
+          "deltaImage": "20220716-055538/pixel-278.webp"
+        },
+        {
+          "modelPosition": null
+        },
+        {
+          "modelPosition": {
+            "x": -103.62413,
+            "y": 26.1951,
+            "z": -85.33722
+          },
+          "deltaImage": "20220716-055538/pixel-280.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -104.1206,
+            "y": 23.959177,
+            "z": -84.18862
+          },
+          "deltaImage": "20220716-055538/pixel-281.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -102.471924,
+            "y": 24.407206,
+            "z": -84.94417
+          },
+          "deltaImage": "20220716-055538/pixel-282.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -101.25002,
+            "y": 25.504496,
+            "z": -85.839615
+          },
+          "deltaImage": "20220716-055538/pixel-283.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.4925,
+            "y": 26.923935,
+            "z": -87.057945
+          },
+          "deltaImage": "20220716-055538/pixel-284.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -99.13344,
+            "y": 24.436003,
+            "z": -86.089005
+          },
+          "deltaImage": "20220716-055538/pixel-285.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -97.375916,
+            "y": 25.855442,
+            "z": -87.307335
+          },
+          "deltaImage": "20220716-055538/pixel-286.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.87658,
+            "y": 26.548153,
+            "z": -88.11951
+          },
+          "deltaImage": "20220716-055538/pixel-287.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -95.45114,
+            "y": 25.201212,
+            "z": -87.67329
+          },
+          "deltaImage": "20220716-055538/pixel-288.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -94.12171,
+            "y": 26.572235,
+            "z": -88.72521
+          },
+          "deltaImage": "20220716-055538/pixel-289.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.72171,
+            "y": 28.238716,
+            "z": -90.26973
+          },
+          "deltaImage": "20220716-055538/pixel-290.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -91.8538,
+            "y": 26.305576,
+            "z": -89.37745
+          },
+          "deltaImage": "20220716-055538/pixel-291.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -90.09694,
+            "y": 27.376177,
+            "z": -90.44262
+          },
+          "deltaImage": "20220716-055538/pixel-292.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -88.3195,
+            "y": 28.013147,
+            "z": -91.32467
+          },
+          "deltaImage": "20220716-055538/pixel-293.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -88.81531,
+            "y": 26.126064,
+            "z": -90.32922
+          },
+          "deltaImage": "20220716-055538/pixel-294.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -86.502914,
+            "y": 26.736345,
+            "z": -91.381
+          },
+          "deltaImage": "20220716-055538/pixel-295.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -85.08853,
+            "y": 27.768213,
+            "z": -92.31304
+          },
+          "deltaImage": "20220716-055538/pixel-296.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -83.25071,
+            "y": 26.40662,
+            "z": -92.33939
+          },
+          "deltaImage": "20220716-055538/pixel-297.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -84.31663,
+            "y": 28.553038,
+            "z": -92.91889
+          },
+          "deltaImage": "20220716-055538/pixel-298.webp"
+        },
+        {
+          "modelPosition": {
+            "x": -81.63986,
+            "y": 29.4661,
+            "z": -94.226974
+          },
+          "deltaImage": "20220716-055538/pixel-299.webp"
+        }
+      ],
+      "deltaImage": "20220716-055538/brain-CB2B04-0.webp"
+    }
+  ],
+  "cameraMatrix": [
+    -0.22984608,
+    0.917597,
+    -0.32432482,
+    0.0,
+    0.9269223,
+    0.104829036,
+    -0.36031362,
+    0.0,
+    -0.296624,
+    -0.38344058,
+    -0.87463564,
+    0.0,
+    -127.31749,
+    24.46065,
+    -168.32816,
+    1.0
+  ],
+  "cameraPosition": {
+    "position": {
+      "x": -127.31749,
+      "y": 24.46065,
+      "z": -168.32816
+    },
+    "target": {
+      "x": -102.14525,
+      "y": 57.000355,
+      "z": -94.10443
+    },
+    "zRotation": -1.8138605932985867
+  },
+  "baseImage": "20220716-055538/base.webp",
+  "savedAt": 1.657951015268E12
+}
