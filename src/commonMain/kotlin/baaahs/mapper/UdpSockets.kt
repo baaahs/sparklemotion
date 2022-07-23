@@ -69,6 +69,8 @@ class UdpSockets(
         }
 
         suspend fun await(retryAfterSeconds: Double = .25, failAfterSeconds: Double = 10.0) {
+            val oldMessage2 = ui.message2
+
             Mapper.logger.debug { "Waiting pongs from ${outstanding.values.map { it.mappableBrain.brainId }}..." }
 
             outstanding.values.forEach {
@@ -80,7 +82,7 @@ class UdpSockets(
                 val waitingFor =
                     outstanding.values.map { it.mappableBrain.guessedEntity?.name ?: it.mappableBrain.brainId }
                         .sorted()
-                ui.showMessage2("Waiting for PONG from ${waitingFor.joinToString(",")}")
+                ui.message2 = "Waiting for PONG from ${waitingFor.joinToString(",")}"
 //                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
 
                 var sleepUntil = Double.MAX_VALUE
@@ -129,7 +131,7 @@ class UdpSockets(
                     }
                 }
 
-                ui.showMessage2("")
+                ui.message2 = oldMessage2
             }
         }
 

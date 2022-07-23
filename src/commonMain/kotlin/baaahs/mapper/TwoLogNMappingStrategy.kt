@@ -36,17 +36,22 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             val neededBits = ceil(log2(maxPixelForTheseBrains.toDouble())).toInt()
             val maskBitmaps = arrayListOf<Pair<Bitmap, Bitmap>>()
 
+            ui.message = "Capturing pixel masks…"
             for (b in 0 until neededBits) {
+                ui.message2 = "${b * 2 + 1} of ${neededBits * 2} steps"
                 val bitmap0 = captureMaskedPixelsImage(b, false)
-                delay(250)
+
+                ui.message2 = "${b * 2 + 2} of ${neededBits * 2} steps"
                 val bitmap1 = captureMaskedPixelsImage(b, true)
-                delay(250)
+
                 maskBitmaps.add(bitmap0 to bitmap1)
             }
 
+            ui.message = "Deriving pixel locations…"
             for (pixelIndex in 0 until maxPixelForTheseBrains) {
                 val progress = (pixelIndex.toFloat() / maxPixelForTheseBrains * 100).roundToInt()
-                ui.showMessage("MAPPING PIXEL $pixelIndex / $maxPixelForTheseBrains ($progress%)…")
+                ui.message2 = "$pixelIndex of $maxPixelForTheseBrains pixels — $progress%"
+
                 var compositeBitmap: Bitmap? = null
 
                 for (b in 0 until neededBits) {
@@ -68,7 +73,8 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                     analysis.detectChangeRegion(.9f)
                 }
                 ui.showDiffImage(compositeBitmap!!, pixelChangeRegion)
-                //                        delay(500)
+//                mapper.pauseForUserInteraction(ui.message2 ?: "???")
+//                mapper.waitUntilUnpaused()
 
                 brainsToMap.values.forEach { brainToMap ->
                     val visibleSurface = brainToMap.guessedVisibleSurface
@@ -82,15 +88,19 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                         brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
-                        ui.showMessage2("looks like no pixel $pixelIndex for ${brainToMap.brainId}…")
+                        ui.message2 = "looks like no pixel $pixelIndex for ${brainToMap.brainId}…"
                         Mapper.logger.debug { "looks like no pixel $pixelIndex for ${brainToMap.brainId}…" }
                     }
                 }
+
+                delay(1)
             }
         }
 
         private suspend fun captureMaskedPixelsImage(maskBit: Int, invert: Boolean): Bitmap {
             turnOnPixelsByMask(maskBit, invert)
+            delay(125)
+
             val pixelOnBitmap = stats.captureImage.stime {
                 mapper.slowCamDelay()
                 mapper.getBrightImageBitmap(2)
@@ -103,6 +113,8 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             ui.showDiffImage(session.deltaBitmap)
             val thisDelta = session.deltaBitmap
             session.deltaBitmap = createWritableBitmap(session.deltaBitmap.width, session.deltaBitmap.height)
+
+            delay(125)
             return thisDelta
         }
 
