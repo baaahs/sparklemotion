@@ -81,9 +81,13 @@ class SacnManager(
                 }
 
                 override fun onRemove(key: ControllerId, value: SacnControllerConfig) {
-                    val oldController = controllers[key]!!
-                    oldController.release()
-                    notifyListeners { onRemove(oldController) }
+                    val oldController = controllers[key]
+                    if (oldController == null) {
+                        logger.warn { "Unknown controller \"$key\" removed." }
+                    } else {
+                        oldController.release()
+                        notifyListeners { onRemove(oldController) }
+                    }
                 }
             })
         }
