@@ -6,6 +6,9 @@ import baaahs.imaging.Image
 import baaahs.model.Model
 
 interface MapperUi {
+    var message: String?
+    var message2: String?
+
     fun addWireframe(model: Model)
     fun showLiveCamImage(image: Image, changeRegion: MediaDevices.Region? = null)
     fun showSnapshot(bitmap: Bitmap)

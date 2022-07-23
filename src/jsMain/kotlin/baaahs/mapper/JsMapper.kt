@@ -693,6 +693,13 @@ class JsMapper(
         entitiesByName[entityName]?.let { entityDepictions[it] }
 
     override val ui: MapperUi = object : MapperUi {
+        override var message: String?
+            get() = mapperStatus.message
+            set(value) { mapperStatus.message = value }
+        override var message2: String?
+            get() = mapperStatus.message2
+            set(value) { mapperStatus.message2 = value }
+
         override fun addWireframe(model: Model) {
             entitiesByName.clear()
             entityDepictions.clear()

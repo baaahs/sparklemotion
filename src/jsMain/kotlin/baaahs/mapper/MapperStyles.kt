@@ -71,28 +71,28 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
 
     val snapshotDiv by css {
         position = Position.absolute
-        top = 0.pct + 10.px
+        top = 0.pct + 5.px
         right = 10.px
         border = "1px groove white"
     }
 
     val baseDiv by css {
         position = Position.absolute
-        top = 25.pct + 20.px
+        top = 25.pct + 10.px
         right = 10.px
         border = "1px groove white"
     }
 
     val diffDiv by css {
         position = Position.absolute
-        top = 50.pct + 30.px
+        top = 50.pct + 15.px
         right = 10.px
         border = "1px groove white"
     }
 
     val panelMaskDiv by css {
         position = Position.absolute
-        top = 75.pct + 40.px
+        top = 75.pct + 20.px
         right = 10.px
         border = "1px groove white"
     }

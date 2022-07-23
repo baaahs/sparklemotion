@@ -459,7 +459,7 @@ abstract class Mapper(
         return bitmap
     }
 
-    private fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
+    fun pauseForUserInteraction(message: String = "PRESS PLAY WHEN READY") {
         isPaused = true
         ui.pauseForUserInteraction()
         ui.showMessage2(message)
