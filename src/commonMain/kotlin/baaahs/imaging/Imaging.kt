@@ -1,6 +1,7 @@
 package baaahs.imaging
 
 import baaahs.MediaDevices
+import com.danielgergely.kgl.ByteBuffer
 
 /**
  * An immutable, but possibly changing over time, image source.
@@ -13,6 +14,11 @@ interface Image {
     val dimen: Dimen get() = Dimen(width, height)
 
     fun toBitmap(): Bitmap
+    fun hasChanged(): Boolean = true
+
+    companion object {
+        fun fromDataUrl(dataUrl: String) = imageFromDataUrl(dataUrl)
+    }
 }
 
 /** A mutable, static image. */
@@ -42,6 +48,11 @@ interface Bitmap {
         fn: (data: UByteClampedArray) -> Boolean
     )
 
+    fun withGlBuffer(
+        region: MediaDevices.Region = MediaDevices.Region.containing(this),
+        fn: (data: ByteBuffer) -> Unit
+    )
+
     fun asImage(): Image
     fun toDataUrl(): String
 
@@ -54,4 +65,11 @@ interface UByteClampedArray {
     operator fun set(index: Int, value: UByte)
 }
 
-expect class NativeBitmap(width: Int, height: Int) : Bitmap
+expect fun imageFromDataUrl(dataUrl: String): Image
+
+expect fun createWritableBitmap(width: Int, height: Int): Bitmap
+
+private val startsLikeGif = Regex("^data:image/[a-z]+;base64,R0lG")
+internal fun String.looksLikeGif(): Boolean {
+    return startsLikeGif.matchesAt(this, 0)
+}

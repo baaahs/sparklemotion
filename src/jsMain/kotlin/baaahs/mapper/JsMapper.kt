@@ -7,7 +7,9 @@ import baaahs.client.document.SceneManager
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
-import baaahs.imaging.*
+import baaahs.imaging.Bitmap
+import baaahs.imaging.CanvasBitmap
+import baaahs.imaging.Dimen
 import baaahs.imaging.Image
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.model.Model
@@ -977,7 +979,6 @@ class JsMapper(
         val ctx2d = getContext("2d") as CanvasRenderingContext2D
         ctx2d.resetTransform()
         val renderBitmap = when (bitmap) { // TODO: huh?
-            is NativeBitmap -> bitmap.canvas
             is CanvasBitmap -> bitmap.canvas
             else -> bitmap as CanvasImageSource
         }

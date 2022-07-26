@@ -1,5 +1,6 @@
 package baaahs.visualizer.remote
 
+import baaahs.client.document.SceneManager
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.net.Network
@@ -20,6 +21,7 @@ class RemoteVisualizerClient(
     link: Network.Link,
     address: Network.Address,
     private val visualizer: IVisualizer,
+    sceneManager: SceneManager,
     sceneMonitor: SceneMonitor,
     entityAdapter: EntityAdapter,
     private val plugins: Plugins
@@ -28,6 +30,9 @@ class RemoteVisualizerClient(
     private lateinit var tcpConnection: Network.TcpConnection
 
     init {
+        // Make sure SceneManager is initialized.
+        sceneManager.facade
+
         sceneMonitor.addObserver(fireImmediately = true) {
             visualizer.clear()
 

@@ -122,6 +122,7 @@ class CorePlugin(
             ColorPickerDataSource,
             DateDataSource,
             FixtureInfoDataSource,
+            ImageDataSource,
             ModelInfoDataSource,
             PixelCoordsTextureDataSource,
             PreviewResolutionDataSource,

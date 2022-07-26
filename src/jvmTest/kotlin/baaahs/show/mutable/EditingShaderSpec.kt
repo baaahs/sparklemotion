@@ -304,6 +304,7 @@ object EditingShaderSpec : Spek({
                             Data Source:
                             - Date (advanced)
                             - In Color Color Picker
+                            - In Color Image
                             Stream:
                             * Main Stream
                         """.trimIndent())
@@ -322,6 +323,7 @@ object EditingShaderSpec : Spek({
                                     Data Source:
                                     - Date (advanced)
                                     - In Color Color Picker
+                                    - In Color Image
                                     Stream:
                                     * Main Stream
                                     - Other Stream
@@ -338,6 +340,7 @@ object EditingShaderSpec : Spek({
                                     Data Source:
                                     - Date (advanced)
                                     - In Color Color Picker
+                                    - In Color Image
                                     Stream:
                                     * Main Stream
                                 """.trimIndent())

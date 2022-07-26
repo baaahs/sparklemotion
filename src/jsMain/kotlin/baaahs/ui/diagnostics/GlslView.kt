@@ -2,7 +2,6 @@ package baaahs.ui.diagnostics
 
 import baaahs.app.ui.appContext
 import baaahs.device.FixtureType
-import baaahs.gl.glsl.GlslProgram
 import baaahs.sim.ui.Styles
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
@@ -19,13 +18,12 @@ private val GlslView = xComponent<GlslProps>("Glsl") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.uiComponents
 
-    val program = props.program
     div(+Styles.contentDiv and styles.codeContainer) {
         pre(+styles.code) {
-            program.fragShader.source
+            props.source
                 .let { glsl ->
                     glsl.split("\n").forEach { line ->
-                        code { +"    "; +line; +"\n" }
+                        code { +line; +"\n" }
                     }
                 }
         }
@@ -34,7 +32,7 @@ private val GlslView = xComponent<GlslProps>("Glsl") { props ->
 
 external interface GlslProps : Props {
     var fixtureType: FixtureType
-    var program: GlslProgram
+    var source: String
 }
 
 fun RBuilder.glsl(handler: RHandler<GlslProps>) =

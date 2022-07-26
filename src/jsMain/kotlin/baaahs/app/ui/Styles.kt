@@ -13,6 +13,7 @@ import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.*
 import baaahs.ui.components.UiComponentStyles
+import baaahs.ui.diagnostics.DiagnosticsStyles
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.js.Object
@@ -38,6 +39,7 @@ class AllStyles(val theme: Theme) {
     val shaderHelp by lazy { ShaderHelpStyles(theme) }
     val uiComponents by lazy { UiComponentStyles(theme) }
     val fileUploadStyles by lazy { FileUploadStyles(theme) }
+    val diagnosticsStyles by lazy { DiagnosticsStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)

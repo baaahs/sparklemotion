@@ -939,12 +939,25 @@ object GlslGenerationSpec : Spek({
             }
 
             beforeEachTest {
+                mutablePatchSet.addPatch(testToolchain.import(
+                    """
+                        // Projection
+                        // @return uv-coordinate
+                        // @param pixelLocation xyz-coordinate
+                        vec2 main(vec3 pixelLocation) {
+                            return vec2(pixelLocation.xy);
+                        }
+                    """.trimIndent()
+                )) {
+                    link("pixelLocation", MutableDataSourcePort(RasterCoordinateDataSource()))
+                }
+
                 mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
                     link("channelA", MutableStream("channelA"))
                     link("channelB", MutableStream("channelB"))
                     link("time", MutableDataSourcePort(TimeDataSource()))
-                    link("uvIn", MutableDataSourcePort(RasterCoordinateDataSource()))
+                    link("uvIn", MutableStream("main"))
                 }
 
                 mutablePatchSet.addPatch(channelAShader) {
@@ -960,7 +973,7 @@ object GlslGenerationSpec : Spek({
                 }
             }
 
-            it("generates GLSL") {
+            it("generates GLSL, with injected data correctly resolved") {
                 kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
@@ -978,58 +991,68 @@ object GlslGenerationSpec : Spek({
                         // Data source: Raster Coordinate
                         uniform vec2 ds_rasterCoordinate_offset;
                         vec4 in_rasterCoordinate;
-                        
+
                         // Data source: Time
                         uniform float in_time;
 
-                        // Shader: Channel A Shader; namespace: p0
+                        // Shader: Projection; namespace: p0
+                        // Projection
+
+                        vec2 p0_projectioni_result = vec2(0.);
+
+                        #line 4 0
+                        vec2 p0_projection_main(vec3 pixelLocation) {
+                            return vec2(pixelLocation.xy);
+                        }
+
+                        // Shader: Channel A Shader; namespace: p1
                         // Channel A Shader
 
-                        vec4 p0_channelAShader_gl_FragColor = vec4(0., 0., 0., 1.);
-                        vec2 p0_global_gl_FragCoord = vec2(0.);
-
-                        #line 3 0
-                        void p0_channelAShader_main(void) { p0_channelAShader_gl_FragColor = vec4(1. * in_time, 0., p0_global_gl_FragCoord.y, 1.); }
-
-                        // Shader: Channel B Shader; namespace: p1
-                        // Channel B Shader
-
-                        vec4 p1_channelBShader_fragColor = vec4(0., 0., 0., 1.);
-                        float p1_global_time = 0.;
+                        vec4 p1_channelAShader_gl_FragColor = vec4(0., 0., 0., 1.);
+                        vec2 p1_global_gl_FragCoord = vec2(0.);
 
                         #line 3 1
-                        void p1_channelBShader_mainImage(out vec4 fragColor, in vec2 fragCoord) {
-                            fragColor = vec4(0., 1. * p1_global_time, fragCoord.x, 1.);
+                        void p1_channelAShader_main(void) { p1_channelAShader_gl_FragColor = vec4(1. * in_time, 0., p0_projectioni_result.y, 1.); }
+
+                        // Shader: Channel B Shader; namespace: p2
+                        // Channel B Shader
+
+                        vec4 p2_channelBShader_fragColor = vec4(0., 0., 0., 1.);
+                        float p2_global_time = 0.;
+
+                        #line 3 2
+                        void p2_channelBShader_mainImage(out vec4 fragColor, in vec2 fragCoord) {
+                            fragColor = vec4(0., 1. * p2_global_time, fragCoord.x, 1.);
                         }
 
-                        // Shader: Cross-fade shader; namespace: p2
+                        // Shader: Cross-fade shader; namespace: p3
                         // Cross-fade shader
 
-                        vec4 p2_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
+                        vec4 p3_crossFadeShaderi_result = vec4(0., 0., 0., 1.);
 
-                        #line 6 2
-                        vec4 p2_crossFadeShader_channelA(vec2 uv) {
+                        #line 6 3
+                        vec4 p3_crossFadeShader_channelA(vec2 uv) {
                             // Invoke Channel A Shader
-                            p0_global_gl_FragCoord = uv;
-                            p0_channelAShader_main();
+                            p1_global_gl_FragCoord = uv;
+                            p1_channelAShader_main();
 
-                            return p0_channelAShader_gl_FragColor;
+                            return p1_channelAShader_gl_FragColor;
                         }
 
-                        #line 10 2
-                        vec4 p2_crossFadeShader_channelB(float time) {
+                        #line 10 3
+                        vec4 p3_crossFadeShader_channelB(float time) {
                             // Invoke Channel B Shader
-                            p1_global_time = time;
-                            p1_channelBShader_mainImage(p1_channelBShader_fragColor, in_rasterCoordinate.xy);
+                            p2_global_time = time;
+                            p2_channelBShader_mainImage(p2_channelBShader_fragColor, in_rasterCoordinate.xy);
 
-                            return p1_channelBShader_fragColor;
+                            return p2_channelBShader_fragColor;
                         }
 
-                        #line 17 2
-                        vec4 p2_crossFadeShader_main(vec2 uvIn) {
+                        #line 17 3
+                        vec4 p3_crossFadeShader_main(vec2 uvIn) {
                             return mix(
-                                p2_crossFadeShader_channelA(uvIn - in_fadeSlider),
-                                p2_crossFadeShader_channelB(in_time / 2.),
+                                p3_crossFadeShader_channelA(uvIn - in_fadeSlider),
+                                p3_crossFadeShader_channelB(in_time / 2.),
                                 in_fadeSlider
                             );
                         }
@@ -1040,10 +1063,13 @@ object GlslGenerationSpec : Spek({
                             // Invoke Raster Coordinate
                             in_rasterCoordinate = gl_FragCoord - vec4(ds_rasterCoordinate_offset, 0., 0.);
 
-                            // Invoke Cross-fade shader
-                            p2_crossFadeShaderi_result = p2_crossFadeShader_main(in_rasterCoordinate.xy);
+                            // Invoke Projection
+                            p0_projectioni_result = p0_projection_main(in_rasterCoordinate);
 
-                            sm_result = p2_crossFadeShaderi_result;
+                            // Invoke Cross-fade shader
+                            p3_crossFadeShaderi_result = p3_crossFadeShader_main(p0_projectioni_result);
+
+                            sm_result = p3_crossFadeShaderi_result;
                         }
                     """.trimIndent()
                 )

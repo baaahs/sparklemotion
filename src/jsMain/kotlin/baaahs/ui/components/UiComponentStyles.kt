@@ -83,11 +83,12 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
             display = Display.block
             declarations["counterIncrement"] = "listing"
             whiteSpace = WhiteSpace.pre
+            userSelect = UserSelect.all
 
             before {
-                declarations["content"] = "counter(listing) \". \""
+                declarations["content"] = "counter(listing) \"  \""
                 display = Display.inlineBlock
-                width = 2.em
+                width = 4.em
                 paddingLeft = LinearDimension.auto
                 marginLeft = LinearDimension.auto
                 textAlign = TextAlign.right
