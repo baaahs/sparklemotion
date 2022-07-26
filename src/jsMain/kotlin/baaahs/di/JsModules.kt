@@ -113,7 +113,7 @@ class JsMonitorWebClientModule : KModule {
                     component(get<Visualizer>())
                 }
                 val entityAdapter = EntityAdapter(simulationEnv)
-                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), entityAdapter, get())
+                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), get(), entityAdapter, get())
             }
             scoped { MonitorUi(get(), get()) }
         }

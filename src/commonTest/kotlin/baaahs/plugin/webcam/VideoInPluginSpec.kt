@@ -79,7 +79,7 @@ object VideoInPluginSpec : Spek({
 
                     #line 3 0
                     vec4 p0_video_videoIn(vec2 uv) {
-                        return texture(ds_in_videoIn_texture, uv);
+                        return texture(ds_in_videoIn_texture, vec2(uv.x, 1. - uv.y));
                     }
 
                     #line 7 0

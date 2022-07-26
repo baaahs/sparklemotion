@@ -2,8 +2,7 @@ package baaahs.ui.diagnostics
 
 import baaahs.app.ui.appContext
 import baaahs.device.FixtureType
-import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.GlslProgramImpl
+import baaahs.gl.patch.LinkedProgram
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
@@ -25,11 +24,10 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     val svgRef = ref<SVGGElement>()
     val gRef = ref<SVGGElement>()
 
-    val dagGraph = memo(props.fixtureType, props.program) {
-        val program = props.program as? GlslProgramImpl
-        val linkedProgram = program?.linkedProgram
-        val dag = linkedProgram?.let { Dag().apply { visit(props.fixtureType, it) } }
-        dag?.graph
+    val dagGraph = memo(props.fixtureType, props.linkedProgram) {
+        Dag().apply {
+            visit(props.fixtureType, props.linkedProgram)
+        }.graph
     }
 
     val zoom = memo {
@@ -50,7 +48,7 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     val zoomToFit by handler(dagGraph) {
         val gEl = gRef.current!!
         val svgEl = svgRef.current!!
-        val graph = dagGraph!!.graph()
+        val graph = dagGraph.graph()
         val xScale = svgEl.clientWidth / (graph.width as Double)
         val yScale = svgEl.clientHeight / (graph.height as Double)
 
@@ -61,23 +59,21 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
 
     onMount(dagGraph, zoomToFit) {
         val gEl = gRef.current!!
-        if (dagGraph != null) {
-            // Set up an SVG group so that we can translate the final graph.
-            val d3G = d3.select(gEl)
+        // Set up an SVG group so that we can translate the final graph.
+        val d3G = d3.select(gEl)
 
-            val graph = dagGraph.graph()
-            graph.marginx = 5
-            graph.marginy = 5
-            graph.transition = { selection: dynamic ->
-                selection.transition().duration(500)
-            }
+        val graph = dagGraph.graph()
+        graph.marginx = 5
+        graph.marginy = 5
+        graph.transition = { selection: dynamic ->
+            selection.transition().duration(500)
+        }
 
-            // Run the renderer. This is what draws the final graph.
-            dagreD3.render()(d3G, dagGraph)
+        // Run the renderer. This is what draws the final graph.
+        dagreD3.render()(d3G, dagGraph)
 
-            globalLaunch {
-                zoomToFit()
-            }
+        globalLaunch {
+            zoomToFit()
         }
     }
 
@@ -92,7 +88,7 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
 
 external interface DagProps : Props {
     var fixtureType: FixtureType
-    var program: GlslProgram
+    var linkedProgram: LinkedProgram
 }
 
 fun RBuilder.dag(handler: RHandler<DagProps>) =

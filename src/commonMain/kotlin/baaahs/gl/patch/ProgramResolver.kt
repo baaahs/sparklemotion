@@ -1,7 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.ShowRunner
-import baaahs.device.FixtureType
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
@@ -55,11 +53,25 @@ class ProgramResolver(
                         fixtureType.resultContentType,
                         dataSources
                     )
+
+                    var source: String? = null
                     val program = linkedPatch?.let {
-                        buildProgram(it, fixtureType, feedResolver)
+                        try {
+                            renderManager.compile(fixtureType, it, feedResolver)
+                        } catch (e: GlslException) {
+                            logger.error(e) { "Error preparing program." }
+                            if (e is CompilationException) {
+                                source = e.source
+                                e.source?.let { logger.error { it } }
+                            }
+
+                            renderManager.compile(
+                                fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
+                            )
+                        }
                     }
 
-                    ProgramRenderPlan(program, renderTargets)
+                    ProgramRenderPlan(program, renderTargets, linkedPatch, source, portDiagram)
                 }
 
                 FixtureTypeRenderPlan(programsRenderPlans)
@@ -67,22 +79,6 @@ class ProgramResolver(
         )
     }
 
-    private fun buildProgram(
-        linkedProgram: LinkedProgram,
-        fixtureType: FixtureType,
-        feedResolver: FeedResolver
-    ) = try {
-        renderManager.compile(fixtureType, linkedProgram, feedResolver)
-    } catch (e: GlslException) {
-        logger.error(e) { "Error preparing program" }
-        if (e is CompilationException) {
-            e.source?.let { ShowRunner.logger.info { it } }
-        }
-
-        renderManager.compile(
-            fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
-        )
-    }
 
     companion object {
         private val logger = Logger<ProgramResolver>()

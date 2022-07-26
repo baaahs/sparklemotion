@@ -111,6 +111,9 @@ class OpenPatch(
         } else this
     }
 
+    fun track() =
+        PortDiagram.Track(stream, shader.outputPort.contentType)
+
     fun finalResolve(resolver: PortDiagram.Resolver): ProgramNode {
         val resolvedIncomingLinks = incomingLinks.mapValues { (portId, link) ->
             val inputPort = shader.findInputPort(portId)
@@ -200,15 +203,16 @@ class OpenPatch(
 
     class InjectedDataLink : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
-            return object : ExprNode() {
-                override val title: String get() = "InjectedDataLink(${inputPort.id})"
-                override val outputPort: OutputPort get() = OutputPort(inputPort.contentType)
-                override val resultType: GlslType get() = inputPort.contentType.glslType
+            return resolver.resolve(PortDiagram.Track(Stream("main"), inputPort.contentType), inputPort.injectedData.values.toSet())
+                ?: object : ExprNode() {
+                    override val title: String get() = "InjectedDataLink(${inputPort.id})"
+                    override val outputPort: OutputPort get() = OutputPort(inputPort.contentType)
+                    override val resultType: GlslType get() = inputPort.contentType.glslType
 
-                override fun getExpression(prefix: String): GlslExpr {
-                    return GlslExpr("${prefix}_global_${inputPort.id}")
+                    override fun getExpression(prefix: String): GlslExpr {
+                        return GlslExpr("${prefix}_global_${inputPort.id}")
+                    }
                 }
-            }
         }
     }
 

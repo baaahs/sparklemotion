@@ -1,12 +1,16 @@
 package baaahs.visualizer.remote
 
 import baaahs.*
+import baaahs.client.Notifier
+import baaahs.client.document.FakeFileDialog
+import baaahs.client.document.SceneManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.FakeFixtureManager
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.geom.Vector3F
 import baaahs.gl.testPlugins
+import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.model.FakeModelEntity
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
@@ -18,7 +22,6 @@ import baaahs.visualizer.FakeItemVisualizer
 import baaahs.visualizer.FakeVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import ext.kotlinx_coroutines_test.TestCoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
@@ -27,25 +30,33 @@ import org.spekframework.spek2.Spek
 @OptIn(InternalCoroutinesApi::class)
 object RemoteVisualizerClientSpec : Spek({
     describe<RemoteVisualizerClient> {
-        val dispatcher by value { TestCoroutineDispatcher() }
+        val pubSubRig by value { TestRig() }
+        val dispatcher by value { pubSubRig.dispatcher }
         val coroutineScope by value { TestCoroutineScope(dispatcher) }
         val network by value { FakeNetwork(coroutineScope = coroutineScope) }
         val serverLink by value { network.link("server") }
         val clientLink by value { network.link("server") }
         val fakeFixtureManager by value { FakeFixtureManager() }
+        val plugins by value { testPlugins() }
+        val entity by value { FakeModelEntity("fake entity") }
+        val sceneMonitor by value { SceneMonitor(OpenScene(modelForTest(entity))) }
+        val sceneManager by value {
+            SceneManager(
+                pubSubRig.client1, PubSubRemoteFsClientBackend(pubSubRig.client1),
+                plugins, Notifier(pubSubRig.client1), FakeFileDialog(), sceneMonitor
+            )
+        }
         val server by value {
             RemoteVisualizerServer(fakeFixtureManager, testPlugins()).also { server ->
                 serverLink.startHttpServer(Ports.PINKY_UI_TCP)
                     .listenWebSocket("/ws/visualizer") { server }
             }
         }
-        val entity by value { FakeModelEntity("fake entity") }
-        val sceneMonitor by value { SceneMonitor(OpenScene(modelForTest(entity))) }
         val fakeVisualizer by value { FakeVisualizer() }
         val client by value {
             RemoteVisualizerClient(
                 clientLink, serverLink.myAddress,
-                fakeVisualizer, sceneMonitor,
+                fakeVisualizer, sceneManager, sceneMonitor,
                 EntityAdapter(SimulationEnv {  }), testPlugins()
             )
         }

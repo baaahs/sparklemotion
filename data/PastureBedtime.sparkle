@@ -201,6 +201,11 @@
                       "controlId": "primeWaves",
                       "column": 2,
                       "row": 5
+                    },
+                    {
+                      "controlId": "image",
+                      "column": 1,
+                      "row": 6
                     }
                   ]
                 }
@@ -306,6 +311,11 @@
                 "column": 5,
                 "row": 4,
                 "height": 2
+              },
+              {
+                "controlId": "imageOverlay",
+                "column": 11,
+                "row": 3
               }
             ]
           },
@@ -405,8 +415,8 @@
       "title": "Bandlimited Synthesis 1 ",
       "src": "uniform float deformation; // @@Slider default=2.0 min=1 max=4\n// The MIT License\n// Copyright © 2020 Inigo Quilez\n// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n// A simple way to prevent aliasing of cosine functions (the color\n// palette in this case is made of 8 layers) by attenuating them\n// when their oscillations become smaller than a pixel. Left is\n// direct use of cos(x), right is band-limited cos(x).\n//\n// Box-filtering of cos(x):\n//\n// (1/w)∫cos(t)dt with t ∈ (x-½w, x+½w)\n// = [sin(x+½w) - sin(x-½w)]/w\n// = cos(x)·sin(½w)/(½w)\n//\n// Can approximate smoothstep(2π,0,w) ≈ sin(w/2)/(w/2),\n// which you can also see as attenuating cos(x) when it \n// oscilates more than once per pixel. More info:\n//\n// https://iquilezles.org/www/articles/bandlimiting/bandlimiting.htm\n//\n// Related Shader:\n//   https://www.shadertoy.com/view/WtScDt\n//   https://www.shadertoy.com/view/wtXfRH\n//   https://www.shadertoy.com/view/3tScWd\n\n\n// box-filted cos(x)\nvec3 fcos( in vec3 x )\n{\n    vec3 w = fwidth(x);\n    return cos(x) * sin(0.5*w)/(0.5*w);       // exact\n    // return cos(x) * smoothstep(6.2832,0.0,w); // approx\n}\n\n// pick raw cosine, or band-limited cosine\nbool  mode = false;\nvec3  mcos( vec3 x){return mode?cos(x):fcos(x);}\n\n// color palette, made of 8 cos functions\n// (see https://iquilezles.org/www/articles/palettes/palettes.htm)\nvec3 getColor( in float t )\n{\n    vec3 col = vec3(0.6,0.5,0.4);\n    col += 0.14*mcos(6.2832*t*  1.0+vec3(0.0,0.5,0.6));\n    col += 0.13*mcos(6.2832*t*  3.1+vec3(0.5,0.6,1.0));\n    col += 0.12*mcos(6.2832*t*  5.1+vec3(0.1,0.7,1.1));\n    col += 0.11*mcos(6.2832*t*  9.1+vec3(0.1,0.5,1.2));\n    col += 0.10*mcos(6.2832*t* 17.1+vec3(0.0,0.3,0.9));\n    col += 0.09*mcos(6.2832*t* 31.1+vec3(0.1,0.5,1.3));\n    col += 0.08*mcos(6.2832*t* 65.1+vec3(0.1,0.5,1.3));\n    col += 0.07*mcos(6.2832*t*131.1+vec3(0.3,0.2,0.8));\n    return col;\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord )\n{\n    // coordiantes\n\tvec2 q = (2.0*(fragCoord + vec2(1.75, .0))-iResolution.xy)/iResolution.y;\n\n    // separation\n    float th = /*(iMouse.z>0.001) ? (2.0*iMouse.x-iResolution.x)/iResolution.y :*/ 1.8*sin(iTime);\n    mode = (q.x<th);\n    \n    // deformation\n    vec2 p = deformation*q/dot(q,q);\n\n    // animation\n    p.xy += 0.05*iTime;\n\n    // texture\n    vec3 col = min(getColor(p.x),getColor(p.y));\n\n    // vignetting\n    col *= 1.5 - 0.2*length(q);\n    \n    // separation\n    col *= smoothstep(0.005,0.010,abs(q.x-th));\n    \n    // palette\n    if( q.y<-0.9 ) col = getColor( fragCoord.x/iResolution.x );\n\n    fragColor = vec4( col, 1.0 );\n}"
     },
-    "anotherGlslHueTestPattern": {
-      "title": "Another GLSL Hue Test Pattern",
+    "pinks": {
+      "title": "Pinks",
       "src": "uniform vec2 resolution;\nuniform float redness;\nvoid main(void) {\n    gl_FragColor = vec4(redness, gl_FragCoord.xy / resolution, 1.0);\n}"
     },
     "blueHearts": {
@@ -541,6 +551,10 @@
       "title": "Prime Waves",
       "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"CATEGORIES\" : [\n    \"Generator\",\n    \"waves\"\n  ],\n  \"DESCRIPTION\" : \"\",\n  \"INPUTS\" : [\n    {\n      \"NAME\" : \"center\",\n      \"TYPE\" : \"point2D\",\n       \"DEFAULT\": [\n\t\t-2,\n\t\t-1\n\t  ],\n      \"MAX\" : [\n        10,\n        10\n      ],\n      \"MIN\" : [\n        -10,\n        -10\n      ]\n    },\n    {\n\t\t\"NAME\": \"rate\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": -1,\n\t\t\"MIN\": -3,\n\t\t\"MAX\": 3\n\t},\n\t{\n\t\t\"NAME\": \"zoom\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 5,\n\t\t\"MIN\": -10,\n\t\t\"MAX\": 10\n\t},\n\t{\n\t\t\"NAME\": \"depth\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 0.6,\n\t\t\"MIN\": 0.0,\n\t\t\"MAX\": 1.0\n\t},\n\t{\n\t\t\"NAME\": \"rxy\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 11,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t},\n\t{\n\t\t\"NAME\": \"rxz\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 13,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t}\n  ]\n}\n*/\n\n// PrimeWaves by mojovideotech\n// based on:\n// glslsandbox.com/e#21344.0\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nvec2 distort(vec2 p)\n{\n    float theta  = atan(p.y, p.x);\n    float radius = length(p);\n    radius = pow(radius, 1.0+depth);\n    p.x = radius * cos(theta);\n    p.y = radius * sin(theta);\n    return 0.5 * (p + 1.0);\n}\n\t\nvec4 pattern(vec2 p)\n{\n\tvec2 m=mod(p.xy+p.x+p.y,2.)-1.;\n\treturn vec4(length(m+p*0.1));\n}\n\nfloat hash(float n)\n{\n\treturn fract(sin(n)*29712.15073);\n}\n\nfloat noise(vec3 x, float y, float z)\n{\n\tvec3 p=floor(x); vec3 f=fract(x);\n\tf=f*f*(3.0-2.0*f);\n\tfloat n=p.x+p.y*y+p.z*z;\n\tfloat r1=mix(mix(hash(n+0.0),hash(n+1.0),f.x),mix(hash(n+y),hash(n+y+1.0),f.x),f.y);\n    float r2=mix(mix(hash(n+z),hash(n+z+1.0),f.x),mix(hash(n+y+z),hash(n+y+z+1.0),f.x),f.y);\n\treturn mix(r1,r2,f.z);\n}\nvoid main( void ) {\n\t\n\tfloat RY = 0.0;\tfloat RZ = 0.0;\n\tif (rxy <= 1.)\t\t\t{\tRY += 11.;\t}\n\telse if (rxy <= 2.)\t\t{\tRY += 13.; \t}\n\telse if (rxy <= 3.)\t\t{\tRY += 17.; \t}\n\telse if (rxy <= 4.)\t\t{\tRY += 19.; \t}\n\telse if (rxy <= 5.)\t\t{\tRY += 23.; \t}\n\telse if (rxy <= 6.)\t\t{\tRY += 29.; \t}\n\telse if (rxy <= 8.)\t\t{\tRY += 31.; \t}\n\telse if (rxy <= 9.)\t\t{\tRY += 37.; \t}\n\telse if (rxy <= 10.)\t{\tRY += 41.; \t}\n\telse if (rxy <= 11.)\t{\tRY += 43.; \t}\n\telse if (rxy <= 12.)\t{\tRY += 47.; \t}\n\telse if (rxy <= 13.)\t{\tRY += 53.; \t}\n\telse if (rxy <= 14.)\t{\tRY += 59.; \t}\n\telse if (rxy <= 15.)\t{\tRY += 61.; \t}\n\telse if (rxy <= 16.)\t{\tRY += 67.; \t}\n\tif (rxz <= 1.)\t\t\t{\tRZ += 11.; \t}\n\telse if (rxz <= 2.)\t\t{\tRZ += 13.; \t}\n\telse if (rxz <= 3.)\t\t{\tRZ += 17.; \t}\n\telse if (rxz <= 4.)\t\t{\tRZ += 19.; \t}\n\telse if (rxz <= 5.)\t\t{\tRZ += 23.; \t}\n\telse if (rxz <= 6.)\t\t{\tRZ += 29.; \t}\n\telse if (rxz <= 8.)\t\t{\tRZ += 31.; \t}\n\telse if (rxz <= 9.)\t\t{\tRZ += 37.; \t}\n\telse if (rxz <= 10.)\t{\tRZ += 41.; \t}\n\telse if (rxz <= 11.)\t{\tRZ += 43.; \t}\n\telse if (rxz <= 12.)\t{\tRZ += 47.; \t}\n\telse if (rxz <= 13.)\t{\tRZ += 53.; \t}\n\telse if (rxz <= 14.)\t{\tRZ += 59.; \t}\n\telse if (rxz <= 15.)\t{\tRZ += 61.; \t}\n\telse if (rxz <= 16.)\t{\tRZ += 67.; \t}\n\t\n\tvec2 pos = ( gl_FragCoord.xy / RENDERSIZE.xy * zoom )+center;\n\tfloat col = noise(pos.xyx + (TIME*rate),RY,RZ);\n\tvec4 c = pattern(distort(pos+col));\n\t  c.xy = distort(c.xy);\n\tgl_FragColor = vec4(c.x - col, sin(c.y) - col, cos(c.z), 1.0);\n\n}"
     },
+    "image": {
+      "title": "Image",
+      "src": "// Image\n\n// @param uv uv-coordinate\n// @return color\nvec4 upstreamImage(vec2 uv);\n\n// @return color\nvec4 main() {\n    vec4 c = upstreamImage(gl_FragCoord);\n    // if (c.g > c.r && c.g > c.b) c = vec4(0.);\n    return c;\n}"
+    },
     "wobble": {
       "title": "Wobble",
       "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
@@ -584,6 +598,10 @@
     "spectrumSlider": {
       "title": "Spectrum Slider",
       "src": "uniform float pixelIndex; // @type pixel-index\nuniform float pixelCount; // @type pixel-count\n\nstruct SoundAnalysis {\n    int bucketCount;\n    int sampleHistoryCount;\n    sampler2D buckets;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\nvec4 main() {\n    float pixelPos = gl_FragCoord.y;\n    float historyPos = gl_FragCoord.x / 3.;\n    if (pixelCount > 0) {\n        pixelPos = float(pixelIndex) / float(pixelCount);\n        historyPos = 0.;\n    }\n    float magnitude = texture(soundAnalysis.buckets, vec2(pixelPos, historyPos)).x;\n    // inColor = vec4(0.);\n    vec3 eqColor = vec3(\n        magnitude,\n        (magnitude - .333) * 3. / 2.,\n        (magnitude - .666) * 3.\n    );\n    eqColor = clamp(eqColor, 0., 1.);\n    vec4 inColor = upstreamColor(gl_FragCoord);\n    return vec4(inColor.rg * magnitude, inColor.b, 1.);\n}"
+    },
+    "imageOverlay": {
+      "title": "Image Overlay",
+      "src": "uniform float nyanSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 nyanCenter; // @@XyPad\n\nvec4 image(vec2 uv); // @@Image\n\n// param uv uv-coordinate\n// @return color\nvec4 upstream(vec2 uv);\n\n// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    vec2 uv = (uvIn - nyanCenter - .5) * nyanSize + .5;\n    vec4 imagePx = image(uv);\n    vec4 upstreamPx = upstream(uvIn);\n    return vec4(mix(upstreamPx, imagePx, imagePx.a).rgb, 1.);\n}"
     }
   },
   "patches": {
@@ -616,8 +634,8 @@
           "dataSourceId": "beatInfo"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "beatBrightness": {
           "type": "datasource",
@@ -634,8 +652,8 @@
           "dataSourceId": "hueSlider"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "saturation": {
           "type": "datasource",
@@ -652,8 +670,8 @@
           "dataSourceId": "sizeSlider"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       },
       "priority": 10.0
@@ -684,8 +702,8 @@
       "shaderId": "untitledFilterShader",
       "incomingLinks": {
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -697,12 +715,12 @@
           "dataSourceId": "fadeSlider"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "inColor2": {
-          "type": "shader-channel",
-          "shaderChannel": "other"
+          "type": "stream",
+          "stream": "other"
         }
       }
     },
@@ -714,16 +732,16 @@
           "dataSourceId": "fadeSlider"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "channelA": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "channelB": {
-          "type": "shader-channel",
-          "shaderChannel": "other"
+          "type": "stream",
+          "stream": "other"
         }
       }
     },
@@ -743,8 +761,8 @@
           "dataSourceId": "scaleSlider"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "center": {
           "type": "datasource",
@@ -757,20 +775,20 @@
       "shaderId": "smpteColorBars",
       "incomingLinks": {
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         }
       },
-      "shaderChannel": "other"
+      "stream": "other"
     },
     "green-patch": {
       "shaderId": "green",
       "incomingLinks": {},
-      "shaderChannel": "other"
+      "stream": "other"
     },
     "blue-patch": {
       "shaderId": "blue",
@@ -780,7 +798,7 @@
           "dataSourceId": "time"
         }
       },
-      "shaderChannel": "other"
+      "stream": "other"
     },
     "moarHippies-patch": {
       "shaderId": "moarHippies",
@@ -790,15 +808,15 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         }
       },
-      "shaderChannel": "other"
+      "stream": "other"
     },
     "plots-patch": {
       "shaderId": "plots",
@@ -808,15 +826,15 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         }
       },
-      "shaderChannel": "other"
+      "stream": "other"
     },
     "isfShader-patch": {
       "shaderId": "isfShader",
@@ -834,20 +852,20 @@
           "dataSourceId": "gammaSlider"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "tintColor": {
           "type": "datasource",
           "dataSourceId": "tintColorColorPicker"
         },
         "inputImage": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "RENDERSIZE": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "alphaMode": {
           "type": "datasource",
@@ -871,12 +889,12 @@
           "dataSourceId": "scaleSlider"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "center": {
           "type": "datasource",
@@ -892,8 +910,8 @@
           "dataSourceId": "time"
         },
         "inParams": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -905,8 +923,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -918,12 +936,12 @@
         }
       }
     },
-    "anotherGlslHueTestPattern-patch": {
-      "shaderId": "anotherGlslHueTestPattern",
+    "pinks-patch": {
+      "shaderId": "pinks",
       "incomingLinks": {
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "redness": {
           "type": "datasource",
@@ -943,8 +961,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -960,16 +978,16 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         },
         "iMouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -977,8 +995,8 @@
       "shaderId": "checkerboard",
       "incomingLinks": {
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "checkerboardSize": {
           "type": "datasource",
@@ -998,16 +1016,16 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "tightness": {
           "type": "datasource",
@@ -1043,8 +1061,8 @@
           "dataSourceId": "loopcycleSlider"
         },
         "isf_FragNormCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "color1": {
           "type": "datasource",
@@ -1080,16 +1098,16 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         },
         "iMouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1101,8 +1119,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1122,8 +1140,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1139,8 +1157,8 @@
           "dataSourceId": "time"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1160,12 +1178,12 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1185,8 +1203,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1198,8 +1216,8 @@
           "dataSourceId": "time"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1215,8 +1233,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1232,12 +1250,12 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1257,8 +1275,8 @@
           "dataSourceId": "twistSlider"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1274,8 +1292,8 @@
           "dataSourceId": "time"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1291,8 +1309,8 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1304,12 +1322,12 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1321,8 +1339,8 @@
       "shaderId": "solidColor",
       "incomingLinks": {
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "color": {
           "type": "datasource",
@@ -1363,7 +1381,7 @@
           "dataSourceId": "beatWarpinessSlider"
         }
       },
-      "shaderChannel": "time"
+      "stream": "time"
     },
     "timeWobble-patch": {
       "shaderId": "timeWobble",
@@ -1373,7 +1391,7 @@
           "dataSourceId": "time"
         }
       },
-      "shaderChannel": "time"
+      "stream": "time"
     },
     "ripples-patch": {
       "shaderId": "ripples",
@@ -1383,8 +1401,8 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "ripple": {
           "type": "datasource",
@@ -1400,12 +1418,12 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "upstreamColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1417,16 +1435,16 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
           "dataSourceId": "resolution"
         },
         "upstreamColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1442,7 +1460,7 @@
           "dataSourceId": "fakeybeatSlider"
         }
       },
-      "shaderChannel": "time"
+      "stream": "time"
     },
     "heart-patch": {
       "shaderId": "heart",
@@ -1452,8 +1470,8 @@
           "dataSourceId": "heartSizeSlider"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1468,8 +1486,8 @@
           "dataSourceId": "heartCenterXyPad"
         },
         "upstreamColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1481,12 +1499,12 @@
           "dataSourceId": "time"
         },
         "mouse": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "resolution": {
           "type": "datasource",
@@ -1502,8 +1520,8 @@
           "dataSourceId": "time"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "beatInfo": {
           "type": "datasource",
@@ -1523,8 +1541,8 @@
       "shaderId": "solidColor2",
       "incomingLinks": {
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "color": {
           "type": "datasource",
@@ -1540,8 +1558,8 @@
           "dataSourceId": "time"
         },
         "fragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "iResolution": {
           "type": "datasource",
@@ -1605,8 +1623,8 @@
           "dataSourceId": "depthYSlider"
         },
         "isf_FragNormCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1638,8 +1656,8 @@
           "dataSourceId": "depthSlider"
         },
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "RENDERSIZE": {
           "type": "datasource",
@@ -1651,6 +1669,19 @@
         }
       }
     },
+    "image-patch": {
+      "shaderId": "image",
+      "incomingLinks": {
+        "gl_FragCoord": {
+          "type": "stream",
+          "stream": "main"
+        },
+        "upstreamImage": {
+          "type": "datasource",
+          "dataSourceId": "upstreamImageImage"
+        }
+      }
+    },
     "wobble-patch": {
       "shaderId": "wobble",
       "incomingLinks": {
@@ -1659,8 +1690,8 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "wobbleAmount": {
           "type": "datasource",
@@ -1680,8 +1711,8 @@
           "dataSourceId": "soundBrightnessSlider"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       },
       "priority": 10.0
@@ -1694,8 +1725,8 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "speed": {
           "type": "datasource",
@@ -1710,8 +1741,8 @@
           "dataSourceId": "beatInfo"
         },
         "upstreamColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "ringDensity": {
           "type": "datasource",
@@ -1731,11 +1762,11 @@
           "dataSourceId": "timeShiftSlider"
         },
         "inTime": {
-          "type": "shader-channel",
-          "shaderChannel": "time"
+          "type": "stream",
+          "stream": "time"
         }
       },
-      "shaderChannel": "time",
+      "stream": "time",
       "priority": 1.0
     },
     "beatShift-patch": {
@@ -1746,15 +1777,15 @@
           "dataSourceId": "beatInfo"
         },
         "inTime": {
-          "type": "shader-channel",
-          "shaderChannel": "time"
+          "type": "stream",
+          "stream": "time"
         },
         "beatTimeShiftAmount": {
           "type": "datasource",
           "dataSourceId": "beatTimeShiftAmountSlider"
         }
       },
-      "shaderChannel": "time",
+      "stream": "time",
       "priority": 1.0
     },
     "zigZag-patch": {
@@ -1773,8 +1804,8 @@
           "dataSourceId": "time"
         },
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "beatInfo": {
           "type": "datasource",
@@ -1786,8 +1817,8 @@
       "shaderId": "blackout",
       "incomingLinks": {
         "uvIn": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       },
       "priority": 6.0
@@ -1808,8 +1839,8 @@
           "dataSourceId": "time"
         },
         "upstream": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       }
     },
@@ -1821,8 +1852,8 @@
           "dataSourceId": "time"
         },
         "upstream": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         }
       },
       "priority": 1.0
@@ -1868,28 +1899,69 @@
       "shaderId": "spectrumSlider",
       "incomingLinks": {
         "gl_FragCoord": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "soundAnalysis": {
           "type": "datasource",
           "dataSourceId": "soundAnalysis"
         },
         "inColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
         },
         "pixelIndex": {
-          "type": "shader-channel",
-          "shaderChannel": "time"
+          "type": "stream",
+          "stream": "time"
         },
         "pixelCount": {
-          "type": "shader-channel",
-          "shaderChannel": "time"
+          "type": "stream",
+          "stream": "time"
         },
         "upstreamColor": {
-          "type": "shader-channel",
-          "shaderChannel": "main"
+          "type": "stream",
+          "stream": "main"
+        }
+      }
+    },
+    "imageOverlay-patch": {
+      "shaderId": "imageOverlay",
+      "incomingLinks": {
+        "n": {
+          "type": "datasource",
+          "dataSourceId": "nSlider"
+        },
+        "uvIn": {
+          "type": "stream",
+          "stream": "main"
+        },
+        "image": {
+          "type": "datasource",
+          "dataSourceId": "imageImage"
+        },
+        "heartSize": {
+          "type": "datasource",
+          "dataSourceId": "heartSizeSlider"
+        },
+        "nyanSize": {
+          "type": "datasource",
+          "dataSourceId": "nyanSizeSlider"
+        },
+        "upstream": {
+          "type": "stream",
+          "stream": "main"
+        },
+        "heartCenter": {
+          "type": "datasource",
+          "dataSourceId": "heartCenterXyPad"
+        },
+        "nyanSie": {
+          "type": "datasource",
+          "dataSourceId": "nyanSieSlider"
+        },
+        "nyanCenter": {
+          "type": "datasource",
+          "dataSourceId": "nyanCenterXyPad"
         }
       }
     }
@@ -2150,7 +2222,7 @@
       "type": "baaahs.Core:Button",
       "title": "Pinks",
       "patchIds": [
-        "anotherGlslHueTestPattern-patch"
+        "pinks-patch"
       ]
     },
     "blueHearts": {
@@ -2489,6 +2561,13 @@
         "primeWaves-patch"
       ]
     },
+    "image": {
+      "type": "baaahs.Core:Button",
+      "title": "Image",
+      "patchIds": [
+        "image-patch"
+      ]
+    },
     "wobble": {
       "type": "baaahs.Core:Button",
       "title": "Wobble",
@@ -2580,6 +2659,13 @@
       "title": "Hue",
       "maxValue": 1.25,
       "controlledDataSourceId": "hueSlider"
+    },
+    "imageOverlay": {
+      "type": "baaahs.Core:Button",
+      "title": "Image Overlay",
+      "patchIds": [
+        "imageOverlay-patch"
+      ]
     }
   },
   "dataSources": {
@@ -2626,6 +2712,20 @@
       "initialValue": 1.0,
       "minValue": 0.75,
       "maxValue": 1.25
+    },
+    "panSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Pan",
+      "initialValue": 0.0,
+      "minValue": 0.0,
+      "maxValue": 9.425
+    },
+    "tiltSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Tilt",
+      "initialValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0
     },
     "time": {
       "type": "baaahs.Core:Time"
@@ -2940,6 +3040,10 @@
         "y": 10.0
       }
     },
+    "upstreamImageImage": {
+      "type": "baaahs.Core:Image",
+      "imageTitle": "Upstream Image"
+    },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Wobble Amount",
@@ -3010,20 +3114,6 @@
       "minValue": 0.0,
       "maxValue": 20.0
     },
-    "panSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Pan",
-      "initialValue": 0.0,
-      "minValue": 0.0,
-      "maxValue": 9.425
-    },
-    "tiltSlider": {
-      "type": "baaahs.Core:Slider",
-      "title": "Tilt",
-      "initialValue": 0.0,
-      "minValue": -1.0,
-      "maxValue": 1.0
-    },
     "xSlider": {
       "type": "baaahs.Core:Slider",
       "title": "X",
@@ -3069,7 +3159,36 @@
       "initialValue": 0.0,
       "minValue": -200.0,
       "maxValue": 200.0
+    },
+    "nSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "N",
+      "initialValue": 1.0,
+      "minValue": 0.25,
+      "maxValue": 2.0
+    },
+    "imageImage": {
+      "type": "baaahs.Core:Image",
+      "imageTitle": "Image"
+    },
+    "nyanSizeSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Nyan Size",
+      "initialValue": 1.0,
+      "minValue": 0.25,
+      "maxValue": 2.0
+    },
+    "nyanSieSlider": {
+      "type": "baaahs.Core:Slider",
+      "title": "Nyan Sie",
+      "initialValue": 1.0,
+      "minValue": 0.25,
+      "maxValue": 2.0
+    },
+    "nyanCenterXyPad": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Nyan Center"
     }
   },
-  "version": 7
+  "version": 8
 }

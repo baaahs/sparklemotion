@@ -328,7 +328,8 @@ class SoundAnalysisFeed(
     private val historySize: Int
 ) : Feed, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
     private var bucketCount = 0
-    private var textureBuffer = FloatArray(0)
+    private var sampleBuffer = FloatArray(0)
+    private var textureBuffer = FloatBuffer(sampleBuffer)
     private var maxMagnitude = 0f
 
     init { soundAnalyzer.listen(this) }
@@ -338,19 +339,21 @@ class SoundAnalysisFeed(
             bucketCount = analysis.frequencies.size
 
             val bufferSize = bucketCount * historySize
-            textureBuffer = FloatArray(bufferSize)
+            sampleBuffer = FloatArray(bufferSize)
+            textureBuffer = FloatBuffer(sampleBuffer)
         }
 
         // Shift historical data down one row.
-        textureBuffer.copyInto(textureBuffer, bucketCount, 0, bucketCount * historySize - bucketCount)
+        sampleBuffer.copyInto(sampleBuffer, bucketCount, 0, bucketCount * historySize - bucketCount)
 
         // Copy this sample's data into the buffer.
         var max = 0f
         analysis.magnitudes.forEachIndexed { index, magnitude ->
             val normalizedMagnitude = magnitude * bucketCount
-            textureBuffer[index] = normalizedMagnitude
+            sampleBuffer[index] = normalizedMagnitude
             if (normalizedMagnitude > max) max = normalizedMagnitude
         }
+        textureBuffer.put(sampleBuffer)
         maxMagnitude = max
     }
 
@@ -382,10 +385,7 @@ class SoundAnalysisFeed(
                 with(textureUnit) {
                     bindTexture(texture)
                     configure(GL_LINEAR, GL_LINEAR)
-                    uploadTexture(
-                        0, GL_R32F, bucketCount, historySize, 0,
-                        GL_RED, GL_FLOAT, FloatBuffer(textureBuffer)
-                    )
+                    uploadTexture(0, GL_R32F, bucketCount, historySize, 0, GL_RED, GL_FLOAT, textureBuffer)
                 }
                 bucketsUniform?.set(textureUnit)
                 maxMagnitudeUniform?.set(maxMagnitude)

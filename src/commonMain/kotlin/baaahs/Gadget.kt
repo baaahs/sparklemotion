@@ -114,6 +114,7 @@ abstract class Gadget {
         val serialModule = SerializersModule {
             polymorphic(Gadget::class) {
                 subclass(ColorPicker::class, ColorPicker.serializer())
+                subclass(ImagePicker::class, ImagePicker.serializer())
                 subclass(PalettePicker::class, PalettePicker.serializer())
                 subclass(Slider::class, Slider.serializer())
                 subclass(Switch::class, Switch.serializer())

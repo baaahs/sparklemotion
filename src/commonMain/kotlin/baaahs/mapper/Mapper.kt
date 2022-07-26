@@ -8,7 +8,7 @@ import baaahs.geom.Vector3F
 import baaahs.imaging.Bitmap
 import baaahs.imaging.Dimen
 import baaahs.imaging.Image
-import baaahs.imaging.NativeBitmap
+import baaahs.imaging.createWritableBitmap
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.scene.SceneProvider
@@ -220,7 +220,7 @@ abstract class Mapper(
             // Create base image from the brightest of a few samples.
             val bitmap = getBrightImageBitmap(5)
             baseBitmap = bitmap
-            deltaBitmap = NativeBitmap(bitmap.width, bitmap.height)
+            deltaBitmap = createWritableBitmap(bitmap.width, bitmap.height)
 
             val baseImageName = mapperBackend.saveImage(sessionStartTime, "base", bitmap)
 

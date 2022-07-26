@@ -1,7 +1,6 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
-import baaahs.camelize
 import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
 import baaahs.gl.GlContext
@@ -44,7 +43,6 @@ data class SliderDataSource(
     override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType
         get() = ContentType.Float
-    override fun suggestId(): String = title.camelize()
 
     fun createGadget(): Slider =
         Slider(sliderTitle, initialValue, minValue, maxValue, stepValue)
