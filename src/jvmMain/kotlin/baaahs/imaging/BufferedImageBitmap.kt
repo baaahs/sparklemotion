@@ -40,6 +40,10 @@ class BufferedImageBitmap(
         TODO("subtract() not implemented")
     }
 
+    override fun multiply(other: Bitmap) {
+        TODO("not implemented")
+    }
+
     override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
         TODO("withData() not implemented")
     }

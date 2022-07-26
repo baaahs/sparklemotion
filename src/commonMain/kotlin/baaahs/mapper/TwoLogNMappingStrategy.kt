@@ -4,6 +4,10 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.createWritableBitmap
 import baaahs.net.Network
 import kotlinx.coroutines.delay
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
 import kotlin.math.ceil
 import kotlin.math.log2
 import kotlin.math.roundToInt
@@ -12,39 +16,63 @@ object TwoLogNMappingStrategy : MappingStrategy() {
     override val title: String
         get() = "2 log(n)"
 
-    override suspend fun capturePixelData(
+    override val sessionMetadataSerializer: KSerializer<out SessionMetadata>
+        get() = serializer()
+//    override val entityMetadataSerializer: KSerializer<out EntityMetadata>
+//        get() = serializer()
+    override val pixelMetadataSerializer: KSerializer<out PixelMetadata>
+        get() = TwoLogNPixelMetadata.serializer()
+
+    override fun beginSession(
         mapper: Mapper,
+        session: Mapper.Session,
         stats: MapperStats,
         ui: MapperUi,
-        session: Mapper.Session,
         brainsToMap: MutableMap<Network.Address, MappableBrain>,
         mapperBackend: MapperBackend
-    ) {
-        Context(mapper, stats, ui, session, brainsToMap).capturePixelData()
-    }
+    ) = Session(mapper, stats, ui, session, brainsToMap, mapperBackend)
 
-    class Context(
+    class Slice(
+        val bitmapA: Bitmap,
+        val bitmapB: Bitmap,
+        val bitmapAnd: Bitmap
+    )
+
+    class Session(
         val mapper: Mapper,
         val stats: MapperStats,
         val ui: MapperUi,
         val session: Mapper.Session,
-        val brainsToMap: MutableMap<Network.Address, MappableBrain>
-    ) {
-        suspend fun capturePixelData() {
+        val brainsToMap: MutableMap<Network.Address, MappableBrain>,
+        val mapperBackend: MapperBackend
+    ) : MappingStrategy.Session {
+        override suspend fun captureControllerData(mappableBrain: MappableBrain) {
+        }
+
+        override suspend fun capturePixelData() {
             val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }
 
-            val neededBits = ceil(log2(maxPixelForTheseBrains.toDouble())).toInt()
-            val maskBitmaps = arrayListOf<Pair<Bitmap, Bitmap>>()
+            val pixelSlices = ceil(log2(maxPixelForTheseBrains.toDouble())).toInt()
+            session.metadata = TwoLogNSessionMetadata(pixelSlices)
+            val slices = arrayListOf<Slice>()
 
             ui.message = "Capturing pixel masks…"
-            for (b in 0 until neededBits) {
-                ui.message2 = "${b * 2 + 1} of ${neededBits * 2} steps"
+            for (b in 0 until pixelSlices) {
+                ui.message2 = "${b * 2 + 1} of ${pixelSlices * 2} steps"
                 val bitmap0 = captureMaskedPixelsImage(b, false)
 
-                ui.message2 = "${b * 2 + 2} of ${neededBits * 2} steps"
+                ui.message2 = "${b * 2 + 2} of ${pixelSlices * 2} steps"
                 val bitmap1 = captureMaskedPixelsImage(b, true)
 
-                maskBitmaps.add(bitmap0 to bitmap1)
+                val bitmapBoth = bitmap0.clone()
+                bitmapBoth.darken(bitmap1)
+                bitmap0.subtract(bitmapBoth)
+                bitmap1.subtract(bitmapBoth)
+                slices.add(Slice(bitmap0, bitmap1, bitmapBoth))
+
+                mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, false), bitmap0)
+                mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, true), bitmap1)
+                mapperBackend.saveImage(session.sessionStartTime, maskedImageName(b, "both"), bitmapBoth)
             }
 
             ui.message = "Deriving pixel locations…"
@@ -52,29 +80,22 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                 val progress = (pixelIndex.toFloat() / maxPixelForTheseBrains * 100).roundToInt()
                 ui.message2 = "$pixelIndex of $maxPixelForTheseBrains pixels — $progress%"
 
-                var compositeBitmap: Bitmap? = null
+                val compositeBitmap = reconstructFromSlices(slices, pixelIndex)
 
-                for (b in 0 until neededBits) {
-                    val shouldBeOn = pixelIndex ushr b and 1 == 1
-
-                    val mask = maskBitmaps[b].let { if (shouldBeOn) it.first else it.second }
-                    if (compositeBitmap == null) {
-                        compositeBitmap = mask.clone()
-                    } else {
-                        compositeBitmap.darken(mask)
-                    }
-                    ui.showDiffImage(compositeBitmap)
-                }
+//                ui.showPanelMask(mask)
+                ui.showDiffImage(compositeBitmap)
 
                 val analysis = stats.diffImage.time {
-                    ImageProcessing.analyze(compositeBitmap!!)
+                    ImageProcessing.analyze(compositeBitmap)
                 }
                 val pixelChangeRegion = stats.detectChangeRegion.time {
                     analysis.detectChangeRegion(.9f)
                 }
-                ui.showDiffImage(compositeBitmap!!, pixelChangeRegion)
+                ui.showDiffImage(compositeBitmap, pixelChangeRegion)
 //                mapper.pauseForUserInteraction(ui.message2 ?: "???")
 //                mapper.waitUntilUnpaused()
+
+                val pixelOnImageName = mapperBackend.saveImage(session.sessionStartTime, "pixel-$pixelIndex", compositeBitmap)
 
                 brainsToMap.values.forEach { brainToMap ->
                     val visibleSurface = brainToMap.guessedVisibleSurface
@@ -84,8 +105,10 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                     if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
                         val centerUv = pixelChangeRegion.centerUv
                         visibleSurface?.setPixel(pixelIndex, centerUv)
-                        val pixelOnImageName = "fancy-mask-pixel-$pixelIndex.png"
-                        brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
+                        brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
+                            pixelChangeRegion,
+                            TwoLogNPixelMetadata(pixelOnImageName)
+                        )
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
                         ui.message2 = "looks like no pixel $pixelIndex for ${brainToMap.brainId}…"
@@ -95,6 +118,25 @@ object TwoLogNMappingStrategy : MappingStrategy() {
 
                 delay(1)
             }
+        }
+
+        private fun reconstructFromSlices(
+            slices: ArrayList<Slice>,
+            pixelIndex: Int
+        ): Bitmap {
+            var compositeBitmap: Bitmap? = null
+
+            for (b in 0 until slices.size) {
+                val shouldBeOn = pixelIndex ushr b and 1 == 1
+
+                val mask = slices[b].let { if (shouldBeOn) it.bitmapA else it.bitmapB }
+                if (compositeBitmap == null) {
+                    compositeBitmap = mask.clone()
+                } else {
+                    compositeBitmap.darken(mask)
+                }
+            }
+            return compositeBitmap!!
         }
 
         private suspend fun captureMaskedPixelsImage(maskBit: Int, invert: Boolean): Bitmap {
@@ -133,4 +175,25 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             mapper.sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
         }
     }
+
+    fun maskedImageName(mapBit: Int, invert: Boolean) =
+        maskedImageName(mapBit, if (invert) "B" else "A")
+
+    fun maskedImageName(mapBit: Int, type: String) =
+        "mask-$mapBit$type"
+
+    @Serializable @SerialName("TwoLogN")
+    data class TwoLogNSessionMetadata(
+        val pixelSlices: Int
+    ) : SessionMetadata
+
+//    @Serializable @SerialName("TwoLogN")
+//    data class TwoLogNEntityMetadata(
+//        val deltaImage: String? = null
+//    ) : EntityMetadata
+
+    @Serializable @SerialName("TwoLogN")
+    data class TwoLogNPixelMetadata(
+        val deltaImage: String? = null
+    ) : PixelMetadata
 }

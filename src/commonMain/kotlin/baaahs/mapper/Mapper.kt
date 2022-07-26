@@ -1,8 +1,8 @@
 package baaahs.mapper
 
+import baaahs.Color
 import baaahs.MediaDevices
 import baaahs.SparkleMotion
-import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.imaging.Bitmap
@@ -11,6 +11,7 @@ import baaahs.imaging.Image
 import baaahs.imaging.createWritableBitmap
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
 import baaahs.shaders.SolidBrainShader
 import baaahs.sm.brain.BrainManager
@@ -28,6 +29,7 @@ import kotlin.random.Random
 const val USE_SOLID_SHADERS = false
 
 abstract class Mapper(
+    private val plugins: Plugins,
     private val network: Network,
     sceneProvider: SceneProvider,
     private val mediaDevices: MediaDevices,
@@ -45,7 +47,7 @@ abstract class Mapper(
     lateinit var camera: MediaDevices.Camera
 
     protected lateinit var mapperBackend: MapperBackend
-    private lateinit var udpSockets: UdpSockets
+    protected lateinit var udpSockets: UdpSockets
     private var isRunning: Boolean = false
     private var isPaused: Boolean = false
     private var newIncomingImage: Image? = null
@@ -74,8 +76,15 @@ abstract class Mapper(
 
     fun start() {
         val link = network.link("mapper")
-        udpSockets = UdpSockets(link, clock, brainsToMap, this, ui)
-        mapperBackend = MapperBackend(link, pinkyAddress, udpSockets)
+        udpSockets = UdpSockets(link, clock, this, ui) { mappableBrain ->
+            brainsToMap[mappableBrain.address] = mappableBrain
+
+            ui.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
+
+            // Less voltage causes less LED glitches.
+            mappableBrain.shade { MapperUtil.solidColor(Color.GREEN.withBrightness(.4f)) }
+        }
+        mapperBackend = MapperBackend(plugins, link, pinkyAddress, udpSockets)
 
         launch {
             mapperBackend.listSessions().forEach {
@@ -121,6 +130,8 @@ abstract class Mapper(
 
         ui.close()
     }
+
+    abstract fun onNewSession(sessionName: String, mappingSession: MappingSession)
 
     fun useCamera(selectedDevice: MediaDevices.Device?) {
         this.selectedDevice = selectedDevice
@@ -186,10 +197,15 @@ abstract class Mapper(
 
     inner class Session {
         internal val sessionStartTime = DateTime.now()
+        private val mappingStrategySession = mappingStrategy.beginSession(
+            this@Mapper, this@Session, stats, ui, brainsToMap, mapperBackend
+        )
+
         private val visibleSurfaces = ui.getVisibleSurfaces()
         internal var baseBitmap: Bitmap? = null
-        private val cameraOrientation = ui.lockUi()
+        private val cameraPosition = ui.lockUi()
         internal lateinit var deltaBitmap: Bitmap
+        var metadata: MappingStrategy.SessionMetadata? = null
 
         internal fun resetToBase() {
             brainsToMap.values.forEach {
@@ -264,9 +280,7 @@ abstract class Mapper(
                 sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
                 delay(1000L)
 
-                mappingStrategy.capturePixelData(
-                    this@Mapper, stats, ui, this@Session, brainsToMap, mapperBackend
-                )
+                mappingStrategySession.capturePixelData()
                 logger.info { "done identifying pixels..." }
 
                 logger.info { "done identifying things... $isRunning" }
@@ -290,11 +304,13 @@ abstract class Mapper(
                 MappingSession(
                     sessionStartTime.unixMillis,
                     surfaces,
-                    cameraOrientation.cameraMatrix,
-                    cameraOrientation.cameraPosition,
-                    baseImageName
+                    null,
+                    cameraPosition,
+                    baseImageName,
+                    metadata
                 )
-            mapperBackend.saveSession(mappingSession)
+            val sessionName: String = mapperBackend.saveSession(mappingSession)
+            onNewSession(sessionName, mappingSession)
 
             // We're done!
 
@@ -335,7 +351,7 @@ abstract class Mapper(
                         MappingSession.SurfaceData.PixelData(
                             modelPosition,
                             screenPosition,
-                            pixelMapData?.deltaImageName
+                            pixelMapData?.mappingStrategyData
                         )
                     }
 
@@ -442,6 +458,7 @@ abstract class Mapper(
             mappableBrain.panelDeltaBitmap = deltaBitmap.clone()
             mappableBrain.deltaImageName =
                 mapperBackend.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)
+            mappingStrategySession.captureControllerData(mappableBrain)
         }
     }
 
@@ -543,7 +560,10 @@ abstract class Mapper(
         return image
     }
 
-    class PixelMapData(val pixelChangeRegion: MediaDevices.Region, val deltaImageName: String)
+    class PixelMapData(
+        val pixelChangeRegion: MediaDevices.Region,
+        val mappingStrategyData: MappingStrategy.PixelMetadata
+    )
 
     private class Ballot<T> {
         private val box = hashMapOf<String, Vote<T>>()
@@ -600,12 +620,6 @@ abstract class Mapper(
         fun showPixels()
         fun hidePixels()
         fun resetPixels()
-    }
-
-    interface CameraOrientation {
-        val cameraMatrix: Matrix4F
-        val cameraPosition: CameraPosition
-        val aspect: Double
     }
 }
 

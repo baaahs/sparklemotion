@@ -38,7 +38,7 @@ class JsSimulatorModule(
     private val bridgeNetwork_: BrowserNetwork,
     private val pinkyAddress_: Network.Address,
     private val pixelDensity: Float = 0.2f,
-    private val pixelSpacing: Float = 2f,
+    private val pixelSpacing: Float = 10f,
     private val simMappingManager: SimMappingManager
 ) : SimulatorModule {
     override val Scope.fs: Fs

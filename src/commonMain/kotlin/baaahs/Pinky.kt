@@ -69,7 +69,7 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter(coroutineContext) { PinkyMapperHandlers(storage).register(this) }
+            WebSocketRouter(plugins, coroutineContext) { PinkyMapperHandlers(storage).register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {

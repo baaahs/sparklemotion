@@ -5,7 +5,9 @@ import baaahs.app.ui.editor.betterSelect
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
+import external.react_draggable.Draggable
 import kotlinx.html.tabIndex
+import materialui.icon
 import mui.material.Button
 import mui.material.FormControlLabel
 import mui.material.Switch
@@ -69,8 +71,12 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         ui.selectEntityPixel(entityName, index)
     }
 
-    val handleLoadMappingSession by handler(uiActions.onLoadMappingSession) { name: String? ->
-        uiActions.onLoadMappingSession(name)
+    val handleLoadMappingSession by handler(uiActions.loadMappingSession) { name: String? ->
+        uiActions.loadMappingSession(name)
+    }
+
+    val handleLoadImage by handler(uiActions.loadMappingSession) { name: String? ->
+        uiActions.loadImage(name, true)
     }
 
     useResizeListener(screenRef) {
@@ -87,7 +93,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
         palette {
             attrs.initialWidth = 240
-            attrs.initialHeight = 400
+            attrs.initialHeight = 500
 
             header { +"Mapping Tools" }
 
@@ -119,57 +125,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 }
 
                 div(+styles.controlsRow) {
-                    div {
-                        Button {
-                            attrs.title = "Zoom Out (-)"
-                            i(classes = "fas fa-search-minus") {}
-                            attrs.onClick = { ui.adjustCameraZoom(zoomIn = false, fine = moveIsFine()) }
-                        }
-                        Button {
-                            attrs.title = "Zoom In (+)"
-                            i(classes = "fas fa-search-plus") {}
-                            attrs.onClick = { ui.adjustCameraZoom(zoomIn = true, fine = moveIsFine()) }
-                        }
-                    }
-
-                    Button {
-                        attrs.title = "Left (◀)"
-                        i(classes = "fas fa-arrow-left") {}
-                        attrs.onClick = { ui.adjustCameraX(moveRight = false, fine = moveIsFine()) }
-                    }
-                    div {
-                        Button {
-                            attrs.title = "Up (▲)"
-                            i(classes = "fas fa-arrow-up") {}
-                            attrs.onClick = { ui.adjustCameraY(moveUp = true, fine = moveIsFine()) }
-                        }
-                        Button {
-                            attrs.title = "Down (▼)"
-                            i(classes = "fas fa-arrow-down") {}
-                            attrs.onClick = { ui.adjustCameraY(moveUp = false, fine = moveIsFine()) }
-                        }
-                    }
-                    Button {
-                        attrs.title = "Right (▶)"
-                        i(classes = "fas fa-arrow-right") {}
-                        attrs.onClick = { ui.adjustCameraX(moveRight = true, fine = moveIsFine()) }
-                    }
-
-                    div {
-                        Button {
-                            attrs.title = "Rotate Counter-clockwise (Q)"
-                            i(classes = "fas fa-undo") {}
-                            attrs.onClick = { ui.adjustCameraRotation(clockwise = false, fine = moveIsFine()) }
-                        }
-                        Button {
-                            attrs.title = "Rotate Clockwise (Q)"
-                            i(classes = "fas fa-redo") {}
-                            attrs.onClick = { ui.adjustCameraRotation(clockwise = true, fine = moveIsFine()) }
-                        }
-                    }
-                }
-
-                div(+styles.controlsRow) {
                     Button {
                         i(classes = "fas fa-play") {}
                         attrs.disabled = !ui.playButtonEnabled
@@ -195,13 +150,27 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                div {
+                betterSelect<String?> {
+                    attrs.label = "Load Session:"
+                    attrs.values = listOf(null) + ui.sessions.map { it }
+                    attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
+                    attrs.value = ui.selectedMappingSessionName
+                    attrs.onChange = handleLoadMappingSession
+                }
+
+                ui.selectedMappingSession?.let { session ->
+                    mappingSession {
+                        attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
+                        attrs.session = session
+                        attrs.onSelectEntityPixel = handleSelectEntityPixel
+                    }
+
                     betterSelect<String?> {
-                        attrs.label = "Load Mapping Data:"
-                        attrs.values = listOf(null) + ui.sessions.map { it }
+                        attrs.label = "Load Image:"
+                        attrs.values = listOf(null) + ui.images.map { it }
                         attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
-                        attrs.value = ui.selectedMappingSessionName
-                        attrs.onChange = handleLoadMappingSession
+                        attrs.value = ui.selectedImageName
+                        attrs.onChange = handleLoadImage
                     }
                 }
             }
@@ -211,9 +180,9 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             ref = ui2dCanvasRef
         }
 
-        img(classes = +styles.savedImage) { ref = savedImageRef }
-
-        div(+styles.mapping3dContainer) { ref = ui3dDivRef }
+        div(+styles.mapping3dContainer) {
+            ref = ui3dDivRef
+        }
 
         div(+styles.snapshotDiv) {
             div(+styles.thumbnailTitle) { +"Snapshot" }
@@ -228,6 +197,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         div(+styles.diffDiv) {
             div(+styles.thumbnailTitle) { +"Diff" }
             canvas { ref = diffCanvasRef }
+            img(classes = +styles.savedImage) { ref = savedImageRef }
         }
 
         div(+styles.panelMaskDiv) {
@@ -239,16 +209,113 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
             attrs.mapperStatus = props.mapper.mapperStatus
         }
 
+        div(+styles.perfStats) {
+            ref = perfStatsRef
+        }
+
         ui.selectedMappingSession?.let { session ->
-            mappingSession {
-                attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
-                attrs.session = session
-                attrs.onSelectEntityPixel = handleSelectEntityPixel
+            val metadata = session.metadata
+            val sessionId = ui.selectedMappingSessionName?.findSessionId()
+            if (metadata is TwoLogNMappingStrategy.TwoLogNSessionMetadata) {
+                Draggable {
+                    val styleForDragHandle = "MappingSessionDragHandleTwoN"
+                    attrs.handle = ".$styleForDragHandle"
+
+                    div(+styles.threeDControls) {
+                        div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
+                            icon(mui.icons.material.DragIndicator)
+                        }
+
+                        div(+styles.twoLogNMasks) {
+                            for (slice in 0 until metadata.pixelSlices) {
+                                div {
+                                    +slice.toString()
+
+                                    mapperImage {
+                                        attrs.mapper = props.mapper
+                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, false)}.webp"
+                                        attrs.width = 100
+                                    }
+                                    mapperImage {
+                                        attrs.mapper = props.mapper
+                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, true)}.webp"
+                                        attrs.width = 100
+                                    }
+                                    mapperImage {
+                                        attrs.mapper = props.mapper
+                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, "both")}.webp"
+                                        attrs.width = 100
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        div(+styles.perfStats) {
-            ref = perfStatsRef
+        Draggable {
+            val styleForDragHandle = "MappingSessionDragHandle"
+            attrs.handle = ".$styleForDragHandle"
+
+            div(+styles.threeDControls) {
+                div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
+                    icon(mui.icons.material.DragIndicator)
+                }
+
+                div(+styles.controls) {
+                    div(+styles.controlsRow) {
+                        div {
+                            Button {
+                                attrs.title = "Zoom Out (-)"
+                                i(classes = "fas fa-search-minus") {}
+                                attrs.onClick = { ui.adjustCameraZoom(zoomIn = false, fine = moveIsFine()) }
+                            }
+                            Button {
+                                attrs.title = "Zoom In (+)"
+                                i(classes = "fas fa-search-plus") {}
+                                attrs.onClick = { ui.adjustCameraZoom(zoomIn = true, fine = moveIsFine()) }
+                            }
+                        }
+
+                        Button {
+                            attrs.title = "Left (◀)"
+                            i(classes = "fas fa-arrow-left") {}
+                            attrs.onClick = { ui.adjustCameraX(moveRight = false, fine = moveIsFine()) }
+                        }
+                        div {
+                            Button {
+                                attrs.title = "Up (▲)"
+                                i(classes = "fas fa-arrow-up") {}
+                                attrs.onClick = { ui.adjustCameraY(moveUp = true, fine = moveIsFine()) }
+                            }
+                            Button {
+                                attrs.title = "Down (▼)"
+                                i(classes = "fas fa-arrow-down") {}
+                                attrs.onClick = { ui.adjustCameraY(moveUp = false, fine = moveIsFine()) }
+                            }
+                        }
+                        Button {
+                            attrs.title = "Right (▶)"
+                            i(classes = "fas fa-arrow-right") {}
+                            attrs.onClick = { ui.adjustCameraX(moveRight = true, fine = moveIsFine()) }
+                        }
+
+                        div {
+                            Button {
+                                attrs.title = "Rotate Counter-clockwise (Q)"
+                                i(classes = "fas fa-undo") {}
+                                attrs.onClick = { ui.adjustCameraRotation(clockwise = false, fine = moveIsFine()) }
+                            }
+                            Button {
+                                attrs.title = "Rotate Clockwise (Q)"
+                                i(classes = "fas fa-redo") {}
+                                attrs.onClick = { ui.adjustCameraRotation(clockwise = true, fine = moveIsFine()) }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
