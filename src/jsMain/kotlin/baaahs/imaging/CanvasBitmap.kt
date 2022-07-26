@@ -54,6 +54,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         apply(other, "difference")
     }
 
+    override fun multiply(other: Bitmap) {
+        apply(other, "multiply")
+    }
+
     override fun toDataUrl(): String = canvas.toDataURL("image/webp")
 
     override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {

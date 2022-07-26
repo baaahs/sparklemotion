@@ -1,19 +1,18 @@
 package baaahs.api.ws
 
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.util.Logger
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
 import kotlin.coroutines.CoroutineContext
 
 class WebSocketRouter(
-    val coroutineContext: CoroutineContext,
+    private val plugins: Plugins,
+    private val coroutineContext: CoroutineContext,
     handlers: HandlerBuilder.() -> Unit
 ) : Network.WebSocketListener {
-    companion object {
-        val json = Json
-        val logger = Logger("WebSocketEndpoint")
-    }
+    val json = plugins.json
 
     private val handlerMap = HandlerBuilder(json).apply { handlers() }.handlerMap.toMap()
 
@@ -57,5 +56,9 @@ class WebSocketRouter(
         fun handle(command: String, handler: suspend (List<JsonElement>) -> JsonElement) {
             handlerMap[command] = handler
         }
+    }
+
+    companion object {
+        val logger = Logger<WebSocketRouter>()
     }
 }

@@ -5,9 +5,9 @@ import baaahs.ui.and
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_draggable.Draggable
+import kotlinx.css.pct
+import kotlinx.css.width
 import kotlinx.html.tabIndex
-import materialui.icon
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 import react.Props
@@ -15,6 +15,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.*
 import react.useContext
+import styled.inlineStyles
 import kotlin.math.max
 import kotlin.math.min
 
@@ -67,59 +68,61 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
         }
     }
 
-    Draggable {
-        val styleForDragHandle = "MappingSessionDragHandle"
-        attrs.handle = ".$styleForDragHandle"
+    div(+styles.sessionInfo) {
+        attrs.tabIndex = "-1" // So we can receive key events.
+        attrs.onKeyDown = handleKeyDown
 
-        div(+styles.sessionInfo) {
-            attrs.tabIndex = "-1" // So we can receive key events.
-            attrs.onKeyDown = handleKeyDown
+        betterSelect<MappingSession.SurfaceData?> {
+            attrs.label = "Entity:"
+            attrs.values = listOf(null) + props.session.surfaces
+            attrs.value = selectedSurface
+            attrs.renderValueOption = { (it?.entityName ?: "-").asTextNode() }
+            attrs.onChange = handleSelectSurface
+        }
 
-            div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
-                icon(mui.icons.material.DragIndicator)
-            }
+        selectedSurface?.let { surface ->
+            table {
+                inlineStyles { width = 100.pct }
+                thead {
+                    tr {
+                        th { +"Pixels" }
+                        th { +"Attempted" }
+                        th { +"Mapped" }
+                    }
 
-            header { +props.name }
-
-            betterSelect<MappingSession.SurfaceData?> {
-                attrs.values = listOf(null) + props.session.surfaces
-                attrs.renderValueOption = { (it?.entityName ?: "-").asTextNode() }
-                attrs.onChange = handleSelectSurface
-            }
-
-            selectedSurface?.let { surface ->
-                ul {
-                    li { +"Pixel Count: ${surface.pixelCount}" }
-                    li { +"Pixels Attempted: ${surface.pixels?.count { it != null } ?: 0}" }
-                    li { +"Pixels Mapped: ${surface.pixels?.filterNotNull()?.count { it.modelPosition != null } ?: 0}" }
-                }
-
-                div(+styles.pixels) {
-                    val pixelCount = surface.myPixelCount
-                    for (i in 0 until pixelCount) {
-                        val pixel = surface.pixels?.get(i)
-                        div(
-                            +when {
-                                pixel == null -> styles.skippedPixel
-                                pixel.modelPosition == null -> styles.unmappedPixel
-                                else -> styles.mappedPixel
-                            } and if (i == selectedPixelIndex) styles.selectedPixel else null
-                        ) {
-                            attrs["data-pixel-index"] = i.toString()
-                            attrs.onClick = handlePixelClick
-                        }
+                    tr {
+                        td { +surface.pixelCount.toString() }
+                        td { +(surface.pixels?.count { it != null } ?: 0).toString() }
+                        td { +(surface.pixels?.filterNotNull()?.count { it.modelPosition != null } ?: 0).toString() }
                     }
                 }
+            }
 
+            div(+styles.pixels) {
+                val pixelCount = surface.myPixelCount
+                for (i in 0 until pixelCount) {
+                    val pixel = surface.pixels?.get(i)
+                    div(
+                        +when {
+                            pixel == null -> styles.skippedPixel
+                            pixel.modelPosition == null -> styles.unmappedPixel
+                            else -> styles.mappedPixel
+                        } and if (i == selectedPixelIndex) styles.selectedPixel else null
+                    ) {
+                        attrs["data-pixel-index"] = i.toString()
+                        attrs.onClick = handlePixelClick
+                    }
+                }
+            }
+
+            div {
+                +"Selected Pixel: ${selectedPixelIndex ?: "None"}"
                 div {
-                    +"Selected Pixel: ${selectedPixelIndex ?: "None"}"
-                    div {
-                        if (pixelData != null) {
-                            pixelData.modelPosition?.let { v ->
-                                div { b { +"x: " }; +v.x.toString() }
-                                div { b { +"y: " }; +v.y.toString() }
-                                div { b { +"z: " }; +v.z.toString() }
-                            }
+                    if (pixelData != null) {
+                        pixelData.modelPosition?.let { v ->
+                            div { b { +"x: " }; +v.x.toString() }
+                            div { b { +"y: " }; +v.y.toString() }
+                            div { b { +"z: " }; +v.z.toString() }
                         }
                     }
                 }

@@ -21,14 +21,15 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 
 class Storage(val fs: Fs, val plugins: Plugins) {
+    val json = Json(plugins.json) { isLenient = true }
     val fsSerializer = FsServerSideSerializer()
     val mappingSessionsDir = fs.resolve("mapping-sessions")
+    val imagesDir = mappingSessionsDir.resolve("images")
 
     private val configFile = fs.resolve("config.json")
 
     companion object {
         private val logger = Logger("Storage")
-        val json = Json { isLenient = true }
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
 
@@ -52,22 +53,28 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun saveSession(mappingSession: MappingSession): Fs.File {
-        val file =
-            fs.resolve(
-                "mapping-sessions",
-                "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
-            )
+        val name = "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
+        val file = mappingSessionsDir.resolve(name)
         fs.saveFile(file, json.encodeToString(MappingSession.serializer(), mappingSession))
         return file
     }
 
+    suspend fun listImages(sessionName: String?): List<Fs.File> {
+        val startingDir = if (sessionName == null) imagesDir else imagesDir.resolve(sessionName)
+        return buildList {
+            startingDir.recurse {
+                if (it.name.endsWith(".webp")) add(it)
+            }
+        }
+    }
+
     suspend fun saveImage(name: String, imageData: ByteArray) {
-        val file = fs.resolve("mapping-sessions", "images", name)
+        val file = imagesDir.resolve(name)
         fs.saveFile(file, imageData)
     }
 
     suspend fun loadImage(name: String): ByteArray? {
-        val file = fs.resolve("mapping-sessions", "images", name)
+        val file = imagesDir.resolve(name)
         return fs.loadFile(file)?.let { contents ->
             ByteArray(contents.length) { i ->
                 contents[i].code.toByte()
@@ -90,7 +97,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadMappingSession(name: String): MappingSession {
-        val file = fs.resolve("mapping-sessions", name)
+        val file = mappingSessionsDir.resolve(name)
         return loadMappingSession(file)
     }
 
@@ -111,7 +118,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
             }
             plugins.json.decodeFromJsonElement(MappingSession.serializer(), json)
         } catch (e: Exception) {
-            throw Exception("Error loading \"${f.fullPath}\".", e)
+            throw Exception("Error loading \"${f.fullPath}\": ${e.message}.", e)
         }
         mappingSession.surfaces.forEach { surface ->
             logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.name()})" }

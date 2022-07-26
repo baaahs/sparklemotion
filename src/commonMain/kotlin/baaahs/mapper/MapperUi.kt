@@ -18,7 +18,7 @@ interface MapperUi {
     fun showMessage(message: String)
     fun showMessage2(message: String)
     fun setRedo(fn: (suspend () -> Unit)?)
-    fun lockUi(): Mapper.CameraOrientation
+    fun lockUi(): CameraPosition
     fun unlockUi()
     fun getAllSurfaceVisualizers(): List<Mapper.EntityDepiction>
     fun getVisibleSurfaces(): List<Mapper.VisibleSurface>

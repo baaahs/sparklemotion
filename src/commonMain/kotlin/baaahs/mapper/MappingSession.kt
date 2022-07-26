@@ -12,10 +12,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MappingSession(
     val startedAt: Double,
-    val surfaces: List<SurfaceData>, // TODO: rename to items?
-    val cameraMatrix: Matrix4F? = null,
+    val surfaces: List<SurfaceData>, // TODO: Rename to entities.
+    val cameraMatrix: Matrix4F? = null, // TODO: Remove.
     val cameraPosition: CameraPosition? = null,
     val baseImage: String? = null,
+    val metadata: MappingStrategy.SessionMetadata? = null,
     val version: Int = 0,
     val savedAt: Double = DateTime.nowUnix(),
     val notes: String? = null
@@ -43,7 +44,7 @@ data class MappingSession(
         data class PixelData(
             val modelPosition: Vector3F?,
             val screenPosition: Vector2F? = null,
-            val deltaImage: String? = null
+            val metadata: MappingStrategy.PixelMetadata? = null
         )
 
         /**

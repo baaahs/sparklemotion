@@ -44,8 +44,7 @@ actual class BrainSurfaceSimulation actual constructor(
                 pixelPositions.size,
                 pixelPositions.map {
                     MappingSession.SurfaceData.PixelData(it.toVector3F(), null, null)
-                },
-                null, null
+                }
             )
         }
 

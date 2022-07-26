@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.Color
 import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.sm.brain.proto.*
@@ -14,12 +13,14 @@ import kotlin.random.Random
 class UdpSockets(
     link: Network.Link,
     private val clock: Clock,
-    private val brainsToMap: MutableMap<Network.Address, MappableBrain>,
     private val mapper: Mapper,
-    private val ui: MapperUi
+    private val ui: MapperUi,
+    private val onMappableBrain: (MappableBrain) -> Unit
 ): Network.UdpListener {
     private val udpSocket = link.listenFragmentingUdp(0, this)
     val deliverer = ReliableShaderMessageDeliverer()
+
+    private val mappableBrains: MutableMap<Network.Address, MappableBrain> = mutableMapOf()
 
     fun adviseMapperStatus(isRunning: Boolean) {
         udpSocket.broadcastUdp(Ports.PINKY, MapperHelloMessage(isRunning))
@@ -33,20 +34,22 @@ class UdpSockets(
         udpSocket.broadcastUdp(Ports.BRAIN, BrainIdRequest())
     }
 
+    fun pixelOnByBroadcast(pixelIndex: Int) {
+        val brainShader = MapperUtil.singlePixelOnBuffer(pixelIndex)
+        udpSocket.broadcastUdp(Ports.BRAIN, BrainShaderMessage(brainShader.brainShader, brainShader))
+    }
+
     override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
 //        logger.debug { "Mapper received message from $fromAddress:$fromPort ${bytes[0]}" }
         when (val message = parse(bytes)) {
             is BrainHelloMessage -> {
                 Mapper.logger.debug { "Heard from Brain ${message.brainId} surface=${message.surfaceName ?: "unknown"}" }
-                val mappableBrain = brainsToMap.getOrPut(fromAddress) {
+                val mappableBrain = mappableBrains.getOrPut(fromAddress) {
                     MappableBrain(fromAddress, message.brainId) { message ->
                         udpSocket.sendUdp(fromAddress, fromPort, message)
                     }
                 }
-                ui.showMessage("${brainsToMap.size} SURFACES DISCOVERED!")
-
-                // Less voltage causes less LED glitches.
-                mappableBrain.shade { MapperUtil.solidColor(Color.GREEN.withBrightness(.4f)) }
+                onMappableBrain(mappableBrain)
             }
 
             is PingMessage -> {

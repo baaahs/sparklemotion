@@ -19,6 +19,9 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
+import baaahs.mapper.MappingStrategy
+import baaahs.mapper.OneAtATimeMappingStrategy
+import baaahs.mapper.TwoLogNMappingStrategy
 import baaahs.model.*
 import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
@@ -282,6 +285,21 @@ sealed class Plugins(
         polymorphic(Tab::class) {
             subclass(LegacyTab::class, LegacyTab.serializer())
             subclass(GridTab::class, GridTab.serializer())
+        }
+
+        polymorphic(MappingStrategy.SessionMetadata::class) {
+            subclass(OneAtATimeMappingStrategy.OneAtATimeSessionMetadata::class, OneAtATimeMappingStrategy.OneAtATimeSessionMetadata.serializer())
+            subclass(TwoLogNMappingStrategy.TwoLogNSessionMetadata::class, TwoLogNMappingStrategy.TwoLogNSessionMetadata.serializer())
+        }
+
+//        polymorphic(MappingStrategy.EntityMetadata::class) {
+//            subclass(OneAtATimeMappingStrategy.OneAtATimeEntityMetadata::class, OneAtATimeMappingStrategy.OneAtATimeEntityMetadata.serializer())
+//            subclass(TwoLogNMappingStrategy.TwoLogNEntityMetadata::class, TwoLogNMappingStrategy.TwoLogNEntityMetadata.serializer())
+//        }
+
+        polymorphic(MappingStrategy.PixelMetadata::class) {
+            subclass(OneAtATimeMappingStrategy.OneAtATimePixelMetadata::class, OneAtATimeMappingStrategy.OneAtATimePixelMetadata.serializer())
+            subclass(TwoLogNMappingStrategy.TwoLogNPixelMetadata::class, TwoLogNMappingStrategy.TwoLogNPixelMetadata.serializer())
         }
     }
 

@@ -43,6 +43,8 @@ interface Bitmap {
 
     fun subtract(other: Bitmap)
 
+    fun multiply(other: Bitmap)
+
     fun withData(
         region: MediaDevices.Region = MediaDevices.Region.containing(this),
         fn: (data: UByteClampedArray) -> Boolean

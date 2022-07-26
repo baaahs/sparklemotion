@@ -43,6 +43,8 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
             }
         }
         Select<SelectProps<Int>> {
+            attrs.autoWidth = true
+            attrs.fullWidth = true
             attrs.displayEmpty = true
             attrs.margin = InputBaseMargin.dense
             attrs.size = Size.small
