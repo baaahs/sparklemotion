@@ -132,7 +132,7 @@ data class ImageDataSource(override val title: String) : DataSource {
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Sampler2D) // TODO: Should be vec4/3 instead?
         override fun build(inputPort: InputPort): ImageDataSource =
-            ImageDataSource(inputPort.title)
+            ImageDataSource("${inputPort.title} Image")
 
         override fun funDef(varName: String): String =
             "vec4 $varName(vec2 uv);"

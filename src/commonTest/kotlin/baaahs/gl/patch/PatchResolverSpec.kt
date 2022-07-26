@@ -737,7 +737,7 @@ object PatchResolverSpec : Spek({
                     // Data source: Hue Slider
                     uniform float in_hueSlider;
 
-                    // Data source: Image
+                    // Data source: Image Image
                     uniform sampler2D ds_in_imageImage_texture;
 
                     // Data source: Model Info
