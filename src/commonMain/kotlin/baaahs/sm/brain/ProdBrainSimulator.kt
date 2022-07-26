@@ -39,7 +39,7 @@ class ProdBrainSimulator(
                     mappings.forEach { mapping ->
                         brainManager.foundBrain(
                             FakeNetwork.FakeAddress("Simulated Brain ${controllerId.id}"),
-                            BrainHelloMessage(controllerId.id, mapping.entity!!.name, null, null),
+                            BrainHelloMessage(controllerId.id, mapping.entity?.name, null, null),
                             isSimulatedBrain = true
                         )
                         simulatedBrainIds.add(BrainId(controllerId.id))
