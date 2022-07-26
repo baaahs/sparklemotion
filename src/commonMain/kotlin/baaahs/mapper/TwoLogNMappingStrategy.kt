@@ -1,7 +1,7 @@
 package baaahs.mapper
 
 import baaahs.imaging.Bitmap
-import baaahs.imaging.NativeBitmap
+import baaahs.imaging.createWritableBitmap
 import baaahs.net.Network
 import kotlinx.coroutines.delay
 import kotlin.math.ceil
@@ -99,7 +99,7 @@ class TwoLogNMappingStrategy : MappingStrategy() {
             }
             ui.showDiffImage(session.deltaBitmap)
             val thisDelta = session.deltaBitmap
-            session.deltaBitmap = NativeBitmap(session.deltaBitmap.width, session.deltaBitmap.height)
+            session.deltaBitmap = createWritableBitmap(session.deltaBitmap.width, session.deltaBitmap.height)
             return thisDelta
         }
 
