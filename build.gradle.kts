@@ -22,8 +22,10 @@ buildscript {
 }
 
 val os = OperatingSystem.current()
+val osArch = System.getProperty("os.arch")
 val lwjglNatives = when {
     os.isLinux -> "natives-linux"
+    os.isMacOsX && osArch == "aarch64"-> "natives-macos-arm64"
     os.isMacOsX -> "natives-macos"
     else -> throw IllegalArgumentException()
 }
