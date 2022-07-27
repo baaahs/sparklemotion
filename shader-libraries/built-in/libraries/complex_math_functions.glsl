@@ -6,24 +6,19 @@
 #define ii vec2(0.0, 1.0)
 
 // Complex multiplication
-#define cx_mul(a, b) vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x)
-
+vec2 cx_mul(vec2 a, vec2 b) {return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 // Complex division
-#define cx_div(a, b) vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y)))
-
+vec2 cx_div(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
 // Modulus
-#define cx_abs(z) length(z)
-
+float cx_abs(vec2 z) { return length(z); }
 // Complex conjugate
-#define cx_conj(z) vec2(z.x, -z.y)
-
+vec2 cx_conj(vec2 z) { return vec2(z.x, -z.y); }
 // Complex argument
-#define cx_arg(z) atan(z.y, z.x)
-
+float cx_arg(vec2 z) { return atan(z.y, z.x); }
 // Sin cos and exponential for complex numbers
-#define cx_sin(z) vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y))
-#define cx_cos(z) vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y))
-#define cx_exp(z) vec2(exp(z.x) * cos(z.y), exp(z.x) * sin(z.y))
+vec2 cx_sin(vec2 z) { return vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y)); }
+vec2 cx_cos(vec2 z) { return vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y)); }
+vec2 cx_exp(vec2 z) { return vec2(exp(z.x) * cos(z.y), exp(z.x) * sin(z.y)); }
 
 // Complex power
 vec2 cx_pow(vec2 z, float n) {

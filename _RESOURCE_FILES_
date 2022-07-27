@@ -40,9 +40,13 @@ shader-libraries/built-in/effects/Movers Swirl.glsl
 shader-libraries/built-in/effects/Saturation.glsl
 shader-libraries/built-in/effects/Sparklez.glsl
 shader-libraries/built-in/effects/Wobble.glsl
+shader-libraries/built-in/libraries/BAAAHSlogo.glsl
 shader-libraries/built-in/libraries/complex_math_functions.glsl
+shader-libraries/built-in/libraries/polygon_geometry.glsl
 shader-libraries/built-in/shaders/AcidAtTheDisco.glsl
 shader-libraries/built-in/shaders/AquaticFlood.glsl
+shader-libraries/built-in/shaders/BAAAHSEclipse.glsl
+shader-libraries/built-in/shaders/BAAAHSlogo.glsl
 shader-libraries/built-in/shaders/BlueDream.glsl
 shader-libraries/built-in/shaders/BlueSteel.glsl
 shader-libraries/built-in/shaders/BluesClues.glsl
