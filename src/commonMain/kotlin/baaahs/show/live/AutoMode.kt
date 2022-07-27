@@ -25,9 +25,11 @@ class AutoMode(
     private val randomizer: Random = Random
 
     fun setShow(openShow: OpenShow?) {
-        stop()
         availableControls = openShow?.allFilterButtonControls ?: emptyList()
-        start()
+        if (isRunning) {
+            stop()
+            start()
+        }
     }
 
     fun setState(newState: AutoModeState) {
