@@ -28,6 +28,8 @@ import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
+import com.soywiz.klock.TimeSpan
+import com.soywiz.klock.seconds
 import kotlinx.serialization.modules.SerializersModule
 
 class StageManager(
@@ -54,6 +56,7 @@ class StageManager(
 
         gadgetManager.addObserver {
             gadgetsChanged = true
+            handleAutoMode(false)
         }
     }
 
@@ -88,6 +91,11 @@ class StageManager(
                             "* " + missingPlugins.joinToString("\n* ") { desc -> desc.title })
             }
         }
+    }
+
+    fun timeSinceLastUserAction(): TimeSpan {
+        val now = clock.now()
+        return now.minus(gadgetManager.lastUserInteraction).seconds;
     }
 
     fun switchTo(
@@ -152,12 +160,15 @@ class StageManager(
     }
 
     fun handleAutoMode(autoModeOn: Boolean) {
-        logger.info { "Handled auto mode toggle" }
         val newState = if (autoModeOn) AutoModeState.On else AutoModeState.Off
         pubSub.publish(Topics.autoMode, newState) {
-            logger.info { "published auto mode" }
+            // logger.info { "published auto mode" }
         }
         autoModeWizard.setState(newState)
+    }
+
+    fun isAutoModeOn(): Boolean {
+        return autoModeWizard.autoModeState === AutoModeState.On;
     }
 
     companion object {

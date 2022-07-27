@@ -153,11 +153,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val show = showManager.show
 
-    val autoMode = uiSettings.autoMode
-    val handleAutoModeChange = callback(handleUiSettingsChange) {
-        handleUiSettingsChange { it.copy(autoMode = !it.autoMode) }
-    }
-
     onMount(keyboard) {
         keyboard.listen(window)
         withCleanup { keyboard.unlisten(window) }
@@ -218,8 +213,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                         attrs.darkMode = darkMode
                         attrs.onDarkModeChange = handleDarkModeChange
-                        attrs.autoMode = autoMode
-                        attrs.onAutoModeChange = handleAutoModeChange
                         attrs.onSettings = handleSettings
                     }
 

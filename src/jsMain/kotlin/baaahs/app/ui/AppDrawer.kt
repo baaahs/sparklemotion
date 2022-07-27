@@ -39,10 +39,6 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
         props.onDarkModeChange()
     }
 
-    val handleAutoModeChange by handler(props.onAutoModeChange) { _: SyntheticEvent<*, *>, _: Boolean ->
-        props.onAutoModeChange()
-    }
-
 
     Drawer {
         attrs.classes = jso {
@@ -138,17 +134,6 @@ val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props -
                     ListItemText { +"Settings" }
                 }
             }
-
-            FormControlLabel {
-                attrs.control = buildElement {
-                    Switch {
-                        attrs.checked = props.autoMode
-                        attrs.onChange = handleAutoModeChange
-                    }
-                }
-                attrs.onChange = handleAutoModeChange
-                attrs.label = "Auto Mode".asTextNode()
-            }
         }
     }
 }
@@ -167,9 +152,6 @@ external interface AppDrawerProps : Props {
 
     var darkMode: Boolean?
     var onDarkModeChange: () -> Unit
-
-    var autoMode: Boolean?
-    var onAutoModeChange: () -> Unit
 
     var onSettings: () -> Unit
 }

@@ -28,7 +28,7 @@ object Topics {
     val pinkyState =
         PubSub.Topic("pinkyState", PinkyState.serializer())
 
-    val autoMode = PubSub.Topic("autoModeSate", AutoModeState.serializer())
+    val autoMode = PubSub.Topic("autoModeState", AutoModeState.serializer())
 
     fun createControllerStates(plugins: Plugins) =
         PubSub.Topic(

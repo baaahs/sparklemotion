@@ -52,6 +52,7 @@ class WebClient(
     }
 
     private var pinkyState: PinkyState? = null
+    private var autoModeState = AutoModeState.Off;
     init {
         pubSub.subscribe(Topics.pinkyState) { newState ->
             pinkyState = newState
@@ -60,9 +61,7 @@ class WebClient(
 
         pubSub.subscribe(Topics.autoMode) { newAutoMode ->
             logger.info { "Successful subscribe then publish" }
-            val newMode = newAutoMode == AutoModeState.On
-            val newSettings = uiSettings.copy(autoMode = newMode)
-            updateUiSettings(newSettings, saveToStorage = true)
+            autoModeState = newAutoMode
             facade.notifyChanged()
         }
     }

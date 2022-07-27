@@ -1,11 +1,7 @@
 package baaahs.show.live
 
 import baaahs.PubSub
-import baaahs.sm.webapi.AutoModeCommand
-import baaahs.sm.webapi.Topics
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.modules.SerializersModule
 
 class AutoModeWizard (
     val pubSub: PubSub.Server,
@@ -18,6 +14,7 @@ class AutoModeWizard (
     }
 
     fun setState(newState: AutoModeState) {
+        if (autoModeState == newState) return
         autoModeState = newState
         autoMode.setState(newState)
     }

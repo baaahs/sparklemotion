@@ -34,9 +34,6 @@ private val MainSettingsPanelView = xComponent<MainSettingsPanelProps>("MainSett
     val handleUseSharedContextsChange by handler(uiSettings) {
         props.changeUiSettings { it.copy(useSharedContexts = !it.useSharedContexts) }
     }
-    val handleAutoModeFrequencyChange by handler(uiSettings) {
-        props.changeUiSettings { it.copy(autoModeFrequency = it.autoModeFrequency) }
-    }
 
     List {
         ListItem {

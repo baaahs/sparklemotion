@@ -15,7 +15,7 @@ class GadgetManager(
     private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
     var lastUserInteraction = clock.now()
 
-    fun <T : Gadget> registerGadget(id: String, gadget: T) {
+    fun <T : Gadget> registerGadget(id: String, gadget: T, ) {
         val topic =
             PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
         val channel = pubSub.publish(topic, gadget.state) { updated ->

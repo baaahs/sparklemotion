@@ -24,6 +24,8 @@ import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import com.soywiz.klock.Date
+import com.soywiz.klock.TimeSpan
 import kotlinx.coroutines.*
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.CoroutineContext
@@ -118,7 +120,7 @@ class Pinky(
                 facade.notifyChanged()
                 facade.framerate.elapsed(elapsedMs)
 
-                maybeChangeThingsIfUsersAreIdle()
+                maybeTurnOnAutoMode()
             }
         }
     }
@@ -143,11 +145,6 @@ class Pinky(
 
                     config?.runningShowPath?.let { path ->
                         launch { stageManager.showDocumentService.load(path) }
-                    }
-
-                    config?.autoModeOn?.let { mode ->
-                        logger.info { "Automode on/off" }
-                        stageManager.handleAutoMode(mode)
                     }
                 }
             }.join()
@@ -223,6 +220,14 @@ class Pinky(
         }
     }
 
+    private val secondsBeforeAutoMode = 300
+    private fun maybeTurnOnAutoMode() {
+        val secondsSinceLastUserAction = stageManager.timeSinceLastUserAction()
+        if (secondsSinceLastUserAction.seconds > secondsBeforeAutoMode && !stageManager.isAutoModeOn()) {
+            stageManager.handleAutoMode(true)
+        }
+    }
+
     private fun maybeChangeThingsIfUsersAreIdle() {
 //        val now = DateTime.now()
 //        val secondsSinceUserInteraction = now.minus(gadgetManager.lastUserInteraction).seconds
@@ -290,12 +295,10 @@ class Pinky(
 data class PinkyConfig(
     val runningShowPath: String? = null,
     val runningScenePath: String? = null,
-    val autoModeOn: Boolean = true
 )
 
 data class PinkySettings(
     var targetFramerate: Float = 30f, // Frames per second
-    var autoModeOn: Boolean = true
 )
 
 @Serializable

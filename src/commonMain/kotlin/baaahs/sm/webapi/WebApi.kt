@@ -14,9 +14,6 @@ data class ClientData(
 )
 
 @Serializable
-class AutoModeCommand(val autoModeState: AutoModeState)
-
-@Serializable
 class NewCommand<T>(val template: T? = null)
 
 @Serializable
