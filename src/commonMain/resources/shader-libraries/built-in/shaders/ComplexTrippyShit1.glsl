@@ -1,18 +1,23 @@
 // Complex Trippy Shit #1
 // Ben Bartlett
-// https://www.shadertoy.com/view/7t2yRh
 
 #define PI 3.1415926535897932384626433832795
 #define ii vec2(0.0, 1.0)
 
-#define cx_mul(a, b) vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x)
-#define cx_div(a, b) vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y)))
-#define cx_abs(z) length(z)
-#define cx_conj(z) vec2(z.x, -z.y)
-#define cx_arg(z) atan(z.y, z.x)
-#define cx_sin(z) vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y))
-#define cx_cos(z) vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y))
-#define cx_exp(z) vec2(exp(z.x) * cos(z.y), exp(z.x) * sin(z.y))
+// Complex multiplication
+vec2 cx_mul(vec2 a, vec2 b) {return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
+// Complex division
+vec2 cx_div(vec2 a, vec2 b) { return vec2(((a.x*b.x+a.y*b.y)/(b.x*b.x+b.y*b.y)),((a.y*b.x-a.x*b.y)/(b.x*b.x+b.y*b.y))); }
+// Modulus
+float cx_abs(vec2 z) { return length(z); }
+// Complex conjugate
+vec2 cx_conj(vec2 z) { return vec2(z.x, -z.y); }
+// Complex argument
+float cx_arg(vec2 z) { return atan(z.y, z.x); }
+// Sin cos and exponential for complex numbers
+vec2 cx_sin(vec2 z) { return vec2(sin(z.x) * cosh(z.y), cos(z.x) * sinh(z.y)); }
+vec2 cx_cos(vec2 z) { return vec2(cos(z.x) * cosh(z.y), -sin(z.x) * sinh(z.y)); }
+vec2 cx_exp(vec2 z) { return vec2(exp(z.x) * cos(z.y), exp(z.x) * sin(z.y)); }
 
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
