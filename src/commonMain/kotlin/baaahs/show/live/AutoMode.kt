@@ -48,7 +48,7 @@ class AutoMode(
         }
     }
 
-    var frequency = 5000L
+    var frequency = 30000L // 30 seconds
 
     private suspend fun playWithButtons() {
         var control: OpenButtonControl

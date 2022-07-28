@@ -59,11 +59,12 @@ class WebClient(
             facade.notifyChanged()
         }
 
-        pubSub.subscribe(Topics.autoMode) { newAutoMode ->
-            logger.info { "Successful subscribe then publish" }
-            autoModeState = newAutoMode
-            facade.notifyChanged()
-        }
+        // FIXME: Not sure why but this was throwing an error
+//        pubSub.subscribe(Topics.autoMode) { newAutoMode ->
+//            logger.info { "Successful subscribe then publish" }
+//            autoModeState = newAutoMode
+//            facade.notifyChanged()
+//        }
     }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)

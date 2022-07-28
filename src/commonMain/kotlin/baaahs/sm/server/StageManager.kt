@@ -161,9 +161,10 @@ class StageManager(
 
     fun handleAutoMode(autoModeOn: Boolean) {
         val newState = if (autoModeOn) AutoModeState.On else AutoModeState.Off
-        pubSub.publish(Topics.autoMode, newState) {
-            // logger.info { "published auto mode" }
-        }
+        // FIXME: Not sure why but this was throwing an error
+//        pubSub.publish(Topics.autoMode, newState) {
+//            // logger.info { "published auto mode" }
+//        }
         autoModeWizard.setState(newState)
     }
 

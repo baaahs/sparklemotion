@@ -220,7 +220,7 @@ class Pinky(
         }
     }
 
-    private val secondsBeforeAutoMode = 5
+    private val secondsBeforeAutoMode = 600 // 10 minutes
 
     private fun maybeTurnOnAutoMode() {
         val secondsSinceLastUserAction = stageManager.timeSinceLastUserAction()
