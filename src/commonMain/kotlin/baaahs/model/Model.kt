@@ -153,7 +153,7 @@ class Model(
         override val scale: Vector3F = Vector3F.unit3d,
         @Transient override val id: EntityId = Entity.nextId()
     ) : BaseEntity(), EntityWithGeometry {
-        override val defaultFixtureConfig: FixtureConfig?
+        override val defaultFixtureConfig: PixelArrayDevice.Config?
             get() = PixelArrayDevice.Config(pixelCount = expectedPixelCount)
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
