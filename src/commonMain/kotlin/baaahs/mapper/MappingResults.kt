@@ -26,7 +26,8 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
 
                     val fixtureConfig = PixelArrayDevice.Config(
                         pixelCount,
-                        pixelLocations = pixelLocations
+                        pixelLocations = pixelLocations,
+                        pixelFormat = mappingData.pixelFormat
                     )
 
                     val transportConfig = when (controllerId.controllerType) {
