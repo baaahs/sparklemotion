@@ -4,6 +4,7 @@ import baaahs.ui.asColor
 import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
+import kotlinx.css.properties.lh
 import kotlinx.css.properties.scaleX
 import kotlinx.css.properties.transform
 import mui.material.styles.Theme
@@ -22,6 +23,8 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         display = Display.flex
         flexDirection = FlexDirection.column
         height = 100.pct
+        margin(0.em, 1.em)
+        overflow = Overflow.scroll
 
         button {
             minWidth = 0.px
@@ -29,6 +32,15 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
             margin = "2px"
             backgroundColor = theme.palette.primary.main.asColor().withAlpha(.2)
         }
+    }
+
+    val threeDControls by css {
+        position = Position.absolute
+        left = 20.px
+        bottom = 20.px
+        padding = "5px"
+        fontSize = 8.pt
+        backgroundColor = Color(theme.palette.background.paper).withAlpha(10.0)
     }
 
     val controlsRow by css {
@@ -58,6 +70,8 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
     
     val mapping3dContainer by css(fillParent) {
+        display = Display.flex
+
         canvas {
             margin = "auto"
             put("mix-blend-mode", "lighten")
@@ -65,33 +79,34 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
 
     val savedImage by css(fillParent) {
+        position = Position.absolute
         display = Display.none
     }
 
     val snapshotDiv by css {
         position = Position.absolute
-        top = 0.pct + 10.px
+        top = 0.pct + 5.px
         right = 10.px
         border = "1px groove white"
     }
 
     val baseDiv by css {
         position = Position.absolute
-        top = 25.pct + 20.px
+        top = 25.pct + 10.px
         right = 10.px
         border = "1px groove white"
     }
 
     val diffDiv by css {
         position = Position.absolute
-        top = 50.pct + 30.px
+        top = 50.pct + 15.px
         right = 10.px
         border = "1px groove white"
     }
 
     val panelMaskDiv by css {
         position = Position.absolute
-        top = 75.pct + 40.px
+        top = 75.pct + 20.px
         right = 10.px
         border = "1px groove white"
     }
@@ -112,12 +127,12 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val stats by css(statusText) {
         position = Position.absolute
         right = 20.px
-        padding = "20px"
+        padding = "5px"
         fontSize = 8.pt
         textAlign = TextAlign.right
         width = 100.pct
     }
-    
+
     val perfStats by css(statusText) {
         position = Position.absolute
         bottom = 10.em
@@ -128,7 +143,21 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         whiteSpace = WhiteSpace.pre
         border(1.px, BorderStyle.solid, green, 2.px)
     }
-    
+
+    val twoLogNMasksPalette by css(statusText) {
+        position = Position.absolute
+        padding(5.px, 2.em)
+        backgroundColor = Color(theme.palette.background.paper).withAlpha(10.0)
+    }
+
+    val twoLogNMasks by css(statusText) {
+        fontSize = .6.rem
+
+        td {
+            whiteSpace = WhiteSpace.pre
+        }
+    }
+
     val message by css(statusText) {
         position = Position.absolute
         bottom = 20.px
@@ -158,15 +187,11 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
 
     val sessionInfo by css {
-        position = Position.absolute
-        top = 30.px
-        padding = "20px"
-        fontSize = 7.pt
-        overflow = Overflow.scroll
-        background = "rgba(0, 0, 0, .5)"
     }
 
     val pixels by css {
+        lineHeight = 0.px.lh
+
         child("div") {
             display = Display.inlineBlock
             width = 8.px

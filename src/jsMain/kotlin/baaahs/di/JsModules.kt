@@ -82,7 +82,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapper(get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
+                JsMapper(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
         }
     }

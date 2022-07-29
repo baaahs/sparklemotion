@@ -2,30 +2,47 @@ package baaahs.mapper
 
 import baaahs.imaging.Bitmap
 import baaahs.net.Network
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
 import kotlin.math.roundToInt
 
-class OneAtATimeMappingStrategy : MappingStrategy() {
-    override suspend fun capturePixelData(
+object OneAtATimeMappingStrategy : MappingStrategy() {
+    override val title: String
+        get() = "One At A Time"
+
+    override val sessionMetadataSerializer: KSerializer<out SessionMetadata>
+        get() = serializer()
+//    override val entityMetadataSerializer: KSerializer<out EntityMetadata>
+//        get() = serializer()
+    override val pixelMetadataSerializer: KSerializer<out PixelMetadata>
+        get() = OneAtATimePixelMetadata.serializer()
+
+    override fun beginSession(
+        scope: CoroutineScope,
         mapper: Mapper,
+        session: Mapper.Session,
         stats: MapperStats,
         ui: MapperUi,
-        session: Mapper.Session,
         brainsToMap: MutableMap<Network.Address, MappableBrain>,
         mapperBackend: MapperBackend
-    ) {
-        Context(mapper, stats, ui, session, brainsToMap, mapperBackend).capturePixelData()
-    }
+    ) = Session(mapper, stats, ui, session, brainsToMap, mapperBackend)
 
-    class Context(
+    class Session(
         val mapper: Mapper,
         val stats: MapperStats,
         val ui: MapperUi,
         val session: Mapper.Session,
         val brainsToMap: MutableMap<Network.Address, MappableBrain>,
         val mapperBackend: MapperBackend
-    ) {
-        suspend fun capturePixelData() {
+    ) : MappingStrategy.Session {
+        override suspend fun captureControllerData(mappableBrain: MappableBrain) {
+        }
+
+        override suspend fun capturePixelData() {
             val maxPixelForTheseBrains = brainsToMap.values.maxOf { it.expectedPixelCountOrDefault }
 
             val pixelStep = 4
@@ -131,7 +148,10 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
                 if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
                     val centerUv = pixelChangeRegion.centerUv
                     visibleSurface.setPixel(pixelIndex, centerUv)
-                    mappableBrain.pixelMapData[pixelIndex] = Mapper.PixelMapData(pixelChangeRegion, pixelOnImageName)
+                    mappableBrain.pixelMapData[pixelIndex] = Mapper.PixelMapData(
+                        pixelChangeRegion,
+                        OneAtATimePixelMetadata(pixelOnImageName)
+                    )
                     Mapper.logger.debug { "$pixelIndex/${mappableBrain.brainId}: centerUv = $centerUv" }
                 } else {
                     ui.showMessage2("looks like no pixel $pixelIndex for ${mappableBrain.brainId}…")
@@ -145,4 +165,17 @@ class OneAtATimeMappingStrategy : MappingStrategy() {
             mapper.sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
         }
     }
+
+    @Serializable @SerialName("OneAtATime")
+    class OneAtATimeSessionMetadata() : SessionMetadata
+
+//    @Serializable @SerialName("OneAtATime")
+//    data class OneAtATimeEntityMetadata(
+//        val deltaImage: String? = null
+//    ) : EntityMetadata
+
+    @Serializable @SerialName("OneAtATime")
+    data class OneAtATimePixelMetadata(
+        val deltaImage: String? = null
+    ) : PixelMetadata
 }
