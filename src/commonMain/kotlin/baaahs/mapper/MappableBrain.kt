@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.Color
 import baaahs.MediaDevices
 import baaahs.SparkleMotion
+import baaahs.device.PixelFormat
 import baaahs.imaging.Bitmap
 import baaahs.model.Model
 import baaahs.net.Network
@@ -20,9 +21,10 @@ class MappableBrain(
 
     var expectedPixelCount: Int? = null
     val expectedPixelCountOrDefault: Int
-        get() = (guessedEntity as? Model.Surface)?.expectedPixelCount
-            ?: expectedPixelCount
+        get() = expectedPixelCount
+            ?: (guessedEntity as? Model.Surface)?.expectedPixelCount
             ?: SparkleMotion.DEFAULT_PIXEL_COUNT
+    var pixelFormat: PixelFormat? = null
 
     var changeRegion: MediaDevices.Region? = null
     var guessedEntity: Model.Entity? = null

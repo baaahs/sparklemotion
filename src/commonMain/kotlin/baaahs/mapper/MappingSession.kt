@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.controller.ControllerId
+import baaahs.device.PixelFormat
 import baaahs.dmx.DmxTransportConfig
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
@@ -29,6 +30,7 @@ data class MappingSession(
         val brainId: String, // TODO: rename to controllerId.
         val panelName: String, // TODO: rename to entityName.
         val pixelCount: Int? = null,
+        val pixelFormat: PixelFormat? = PixelFormat.RBG8,
         val pixels: List<PixelData?>? = null,
         val deltaImage: String? = null,
         val screenAreaInSqPixels: Float? = null,

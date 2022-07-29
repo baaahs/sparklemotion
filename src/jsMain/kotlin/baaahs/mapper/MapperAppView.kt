@@ -2,11 +2,15 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
+import baaahs.app.ui.editor.textFieldEditor
+import baaahs.device.PixelFormat
 import baaahs.mapper.twologn.twoLogNSlices
+import baaahs.model.Model
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
 import external.react_draggable.Draggable
+import kotlinx.css.*
 import kotlinx.html.tabIndex
 import materialui.icon
 import mui.material.Button
@@ -18,6 +22,8 @@ import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.events.KeyboardEvent
 import react.*
 import react.dom.*
+import react.dom.html.InputType
+import styled.inlineStyles
 
 val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView") { props ->
     val appContext = useContext(mapperAppContext)
@@ -70,6 +76,21 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     val handleSelectEntityPixel by handler { entityName: String?, index: Int? ->
         ui.selectEntityPixel(entityName, index)
+    }
+
+    val handleChangeEntity by handler(props.mapper.mappingController) { entity: Model.Entity? ->
+        props.mapper.mappingController?.guessedEntity = entity
+        forceRender()
+    }
+
+    val handlePixelCountChange by handler(props.mapper.mappingController) { pixelCount: String ->
+        props.mapper.mappingController?.expectedPixelCount = pixelCount.toIntOrNull()
+        forceRender()
+    }
+
+    val handlePixelFormatChange by handler(props.mapper.mappingController) { pixelFormat: PixelFormat? ->
+        props.mapper.mappingController?.pixelFormat = pixelFormat
+        forceRender()
     }
 
     val handleLoadMappingSession by handler(uiActions.loadMappingSession) { name: String? ->
@@ -151,12 +172,48 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                betterSelect<String?> {
-                    attrs.label = "Load Session:"
-                    attrs.values = listOf(null) + ui.sessions.map { it }
-                    attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
-                    attrs.value = ui.selectedMappingSessionName
-                    attrs.onChange = handleLoadMappingSession
+                props.mapper.mappingController?.let { mappingController ->
+                    betterSelect<Model.Entity?> {
+                        attrs.label = "Entity:"
+                        attrs.values = props.mapper.entitiesByName.values.toList()
+                        attrs.renderValueOption = { entity -> buildElement { +(entity?.name ?: "None" ) } }
+                        attrs.value = mappingController.guessedEntity
+                        attrs.onChange = handleChangeEntity
+                    }
+
+                    div {
+                        inlineStyles {
+                            display = Display.grid
+                            gridTemplateColumns = GridTemplateColumns(50.pct, 50.pct)
+                        }
+
+                        textFieldEditor {
+                            attrs.type = InputType.number
+                            attrs.label = "Pixel Count"
+                            attrs.fullWidth = false
+                            attrs.getValue = { mappingController.expectedPixelCount?.toString() ?: "" }
+                            attrs.setValue = handlePixelCountChange
+                            attrs.onChange = {}
+                        }
+
+                        betterSelect<PixelFormat?> {
+                            attrs.label = "Pixel Format"
+                            attrs.values = listOf(null) + PixelFormat.values().toList()
+                            attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
+                            attrs.value = mappingController.pixelFormat
+                            attrs.onChange = handlePixelFormatChange
+                        }
+                    }
+                }
+
+                if (!ui.mappingEnabled) {
+                    betterSelect<String?> {
+                        attrs.label = "Load Session:"
+                        attrs.values = listOf(null) + ui.sessions.map { it }
+                        attrs.renderValueOption = { name -> buildElement { +(name ?: "None" ) } }
+                        attrs.value = ui.selectedMappingSessionName
+                        attrs.onChange = handleLoadMappingSession
+                    }
                 }
 
                 ui.selectedMappingSession?.let { session ->

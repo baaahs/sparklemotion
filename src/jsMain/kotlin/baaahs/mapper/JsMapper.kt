@@ -140,7 +140,7 @@ class JsMapper(
     var pauseButtonEnabled by notifyOnChange(true)
     var playButtonEnabled by notifyOnChange(true)
 
-    private val entitiesByName = mutableMapOf<String, Model.Entity>()
+    val entitiesByName = mutableMapOf<String, Model.Entity>()
     private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
@@ -706,6 +706,7 @@ class JsMapper(
         override fun addWireframe(model: Model) {
             entitiesByName.clear()
             entityDepictions.clear()
+            resetScene()
 
             val geometries = mutableMapOf<Model.Geometry, Array<Vector3>>()
 
@@ -855,6 +856,11 @@ class JsMapper(
         override fun pauseForUserInteraction() {
             clickedPause()
         }
+    }
+
+    private fun resetScene() {
+        uiScene.clear()
+        uiScene.add(uiCamera)
     }
 
     inner class VisibleSurface(
