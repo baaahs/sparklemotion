@@ -144,10 +144,18 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         border(1.px, BorderStyle.solid, green, 2.px)
     }
 
-    val twoLogNMasks by css(statusText) {
-        width = 330.px
-        height = 80.pct
+    val twoLogNMasksPalette by css(statusText) {
+        position = Position.absolute
+        padding(5.px, 2.em)
         backgroundColor = Color(theme.palette.background.paper).withAlpha(10.0)
+    }
+
+    val twoLogNMasks by css(statusText) {
+        fontSize = .6.rem
+
+        td {
+            whiteSpace = WhiteSpace.pre
+        }
     }
 
     val message by css(statusText) {

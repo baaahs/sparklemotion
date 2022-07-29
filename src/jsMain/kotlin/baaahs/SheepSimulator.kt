@@ -14,6 +14,7 @@ import org.koin.core.parameter.parametersOf
 class SheepSimulator(
     private val network: FakeNetwork,
     private val visualizer: Visualizer,
+    @Suppress("unused") val localFs: BrowserSandboxFs, // For JS console access.
     private val getKoin: () -> Koin
 ) {
     val facade = Facade()

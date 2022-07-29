@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
+import baaahs.mapper.twologn.twoLogNSlices
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
@@ -215,39 +216,19 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
         ui.selectedMappingSession?.let { session ->
             val metadata = session.metadata
-            val sessionId = ui.selectedMappingSessionName?.findSessionId()
             if (metadata is TwoLogNMappingStrategy.TwoLogNSessionMetadata) {
                 Draggable {
                     val styleForDragHandle = "MappingSessionDragHandleTwoN"
                     attrs.handle = ".$styleForDragHandle"
 
-                    div(+styles.threeDControls) {
+                    div(+styles.twoLogNMasksPalette) {
                         div(+baaahs.app.ui.Styles.dragHandle and styleForDragHandle) {
                             icon(mui.icons.material.DragIndicator)
                         }
 
-                        div(+styles.twoLogNMasks) {
-                            for (slice in 0 until metadata.pixelSlices) {
-                                div {
-                                    +slice.toString()
-
-                                    mapperImage {
-                                        attrs.mapper = props.mapper
-                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, false)}.webp"
-                                        attrs.width = 100
-                                    }
-                                    mapperImage {
-                                        attrs.mapper = props.mapper
-                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, true)}.webp"
-                                        attrs.width = 100
-                                    }
-                                    mapperImage {
-                                        attrs.mapper = props.mapper
-                                        attrs.imageName = "$sessionId/${TwoLogNMappingStrategy.maskedImageName(slice, "both")}.webp"
-                                        attrs.width = 100
-                                    }
-                                }
-                            }
+                        twoLogNSlices {
+                            attrs.mapper = props.mapper
+                            attrs.sessionMetadata = metadata
                         }
                     }
                 }

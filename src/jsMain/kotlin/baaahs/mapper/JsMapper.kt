@@ -472,8 +472,9 @@ class JsMapper(
         private val pixelsGeom = BufferGeometry()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
-            size = 5
-            sizeAttenuation = true
+            opacity = .5
+            size = 3
+            depthTest = false
             blending = AdditiveBlending
         }
         val points = Points(pixelsGeom, pixelsMaterial)
