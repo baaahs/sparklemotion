@@ -35,13 +35,15 @@ interface Bitmap {
         dX: Int, dY: Int, dWidth: Int, dHeight: Int
     )
 
-    fun copyFrom(other: Bitmap)
+    fun copyFrom(other: Bitmap): Bitmap
 
-    fun lighten(other: Bitmap)
+    fun lighten(other: Bitmap): Bitmap
 
-    fun darken(other: Bitmap)
+    fun darken(other: Bitmap): Bitmap
 
-    fun subtract(other: Bitmap)
+    fun subtract(other: Bitmap): Bitmap
+
+    fun multiply(other: Bitmap): Bitmap
 
     fun withData(
         region: MediaDevices.Region = MediaDevices.Region.containing(this),

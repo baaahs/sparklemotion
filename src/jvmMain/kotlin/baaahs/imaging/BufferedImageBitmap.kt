@@ -24,21 +24,15 @@ class BufferedImageBitmap(
         TODO("drawImage() not implemented")
     }
 
-    override fun copyFrom(other: Bitmap) {
-        TODO("copyFrom() not implemented")
-    }
+    override fun copyFrom(other: Bitmap) = TODO("copyFrom() not implemented")
 
-    override fun lighten(other: Bitmap) {
-        TODO("lighten() not implemented")
-    }
+    override fun lighten(other: Bitmap) = TODO("lighten() not implemented")
 
-    override fun darken(other: Bitmap) {
-        TODO("darken() not implemented")
-    }
+    override fun darken(other: Bitmap) = TODO("darken() not implemented")
 
-    override fun subtract(other: Bitmap) {
-        TODO("subtract() not implemented")
-    }
+    override fun subtract(other: Bitmap) = TODO("subtract() not implemented")
+
+    override fun multiply(other: Bitmap) = TODO("not implemented")
 
     override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
         TODO("withData() not implemented")

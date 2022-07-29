@@ -74,8 +74,29 @@ class BrowserSandboxFs(
             }
         }
 
-    private fun updateFileList(keys: List<String>) {
+    private fun updateFileList(keys: List<String> = rebuildFileList()) {
         storage.setItem(keysKey, keys.joinToString("\n"))
+    }
+
+    @JsName("rm")
+    fun rm(pattern: String, doIt: Boolean = false) {
+        val re = Regex(pattern)
+
+        val toDelete = (0 until storage.length).mapNotNull { i ->
+            storage.key(i)?.let {
+                if (it != keysKey && it.startsWith(filePrefix) &&
+                    re.matches(it.substring(filePrefix.length))
+                ) it else null
+            }
+        }
+
+        toDelete.forEach {
+            console.log("Local storage: rm ", it)
+            if (doIt) storage.removeItem(it)
+        }
+
+        if (!doIt) console.log("... to actually do it, add \"true\" as the final arg.")
+        updateFileList()
     }
 
     private companion object {

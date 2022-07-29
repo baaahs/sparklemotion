@@ -13,11 +13,12 @@ import kotlinx.serialization.json.jsonPrimitive
 class PinkyMapperHandlers(val storage: Storage) {
     fun register(builder: WebSocketRouter.HandlerBuilder) {
         builder.apply {
-            handle("listSessions") {
+            handle("listImages") { args ->
+                val sessionName = args[1].jsonPrimitive.contentOrNull
                 json.encodeToJsonElement(
                     ListSerializer(String.serializer()),
-                    storage.listSessions().map {
-                        it.relativeTo(storage.mappingSessionsDir)
+                    storage.listImages(sessionName).map {
+                        it.relativeTo(storage.imagesDir)
                     }
                 )
             }
@@ -36,12 +37,22 @@ class PinkyMapperHandlers(val storage: Storage) {
                 JsonPrimitive("data:image/webp;base64,$imageData")
             }
 
+            handle("listSessions") {
+                json.encodeToJsonElement(
+                    ListSerializer(String.serializer()),
+                    storage.listSessions().map {
+                        it.relativeTo(storage.mappingSessionsDir)
+                    }
+                )
+            }
+
             handle("saveSession") { args ->
                 val mappingSession = json.decodeFromJsonElement(
                     MappingSession.serializer(), args[1]
                 )
-                storage.saveSession(mappingSession)
-                JsonNull
+                val file = storage.saveSession(mappingSession)
+                val sessionName = file.relativeTo(storage.mappingSessionsDir)
+                JsonPrimitive(sessionName)
             }
 
             handle("loadSession") { args ->

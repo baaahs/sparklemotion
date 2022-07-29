@@ -5,17 +5,16 @@ import baaahs.decodeBase64
 import baaahs.document
 import baaahs.util.Clock
 import baaahs.util.JsClock
+import baaahs.window
 import external.gifuct.ParsedFrameDims
 import external.gifuct.decompressFrames
 import external.gifuct.parseGIF
 import external.requestVideoFrameCallback
+import kotlinx.coroutines.await
 import kotlinx.html.dom.create
 import kotlinx.html.js.canvas
 import org.khronos.webgl.*
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLVideoElement
-import org.w3c.dom.ImageBitmap
-import org.w3c.dom.ImageData
+import org.w3c.dom.*
 
 actual fun imageFromDataUrl(dataUrl: String): Image {
     return if (dataUrl.looksLikeGif()) {
@@ -135,6 +134,11 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
             sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
             dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
         )
+    }
+
+    companion object {
+        suspend fun fromImg(image: ImageBitmapSource) =
+            ImageBitmapImage(window.createImageBitmap(image).await())
     }
 }
 

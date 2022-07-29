@@ -29,6 +29,7 @@ class MappableBrain(
     var guessedVisibleSurface: Mapper.VisibleSurface? = null
     var panelDeltaBitmap: Bitmap? = null
     var deltaImageName: String? = null
+//    var entityMetadata: MappingStrategy.EntityMetadata? = null
     val pixelMapData: MutableMap<Int, Mapper.PixelMapData> = mutableMapOf()
 
     private val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)

@@ -51,6 +51,8 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
     val styleForDragHandle = memo { "DragHandle${nextId++}" }
 
     Portal {
+        attrs.disablePortal = props.disablePortal == true
+
         Draggable {
             attrs.handle = ".$styleForDragHandle"
 
@@ -103,6 +105,7 @@ private fun getUiComponentStyles(): UiComponentStyles {
 external interface PaletteProps : PropsWithChildren {
     var initialWidth: Int?
     var initialHeight: Int?
+    var disablePortal: Boolean?
     var onClose: (() -> Unit)?
 }
 

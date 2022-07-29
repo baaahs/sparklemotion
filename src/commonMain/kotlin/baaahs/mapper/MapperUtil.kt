@@ -28,4 +28,14 @@ object MapperUtil {
             }
         }
     }
+
+    fun singlePixelOnBuffer(pixelIndex: Int, color: Color = Color.WHITE): PixelBrainShader.Buffer {
+        val pixelShader = PixelBrainShader(PixelBrainShader.Encoding.INDEXED_2)
+        return pixelShader.createBuffer(Mapper.maxPixelsPerBrain).apply {
+            palette[0] = Color.BLACK
+            palette[1] = color
+            setAll(0)
+            set(pixelIndex, 1)
+        }
+    }
 }

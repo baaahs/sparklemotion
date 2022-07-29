@@ -4,6 +4,7 @@ import baaahs.imaging.Bitmap
 import baaahs.mapper.MappingSession
 import baaahs.mapper.Storage
 import baaahs.net.Network
+import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Logger
 import com.soywiz.klock.DateTime
@@ -14,7 +15,8 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 
-class WebSocketClient(link: Network.Link, address: Network.Address) : Network.WebSocketListener {
+class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Address) : Network.WebSocketListener {
+    private val json = plugins.json
     private lateinit var tcpConnection: Network.TcpConnection
     private var connected = false
     private lateinit var responses: Channel<ByteArray>
@@ -23,8 +25,9 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/api", this)
     }
 
-    suspend fun listSessions(): List<String> {
-        return WebSocketRouter.json.decodeFromJsonElement(ListSerializer(String.serializer()), sendCommand("listSessions"))
+    suspend fun listImages(sessionName: String?): List<String> {
+        return json.decodeFromJsonElement(ListSerializer(String.serializer()),
+            sendCommand("listImages", sessionName?.let { JsonPrimitive(it) } ?: JsonNull))
     }
 
     suspend fun saveImage(sessionStartTime: DateTime, name: String, bitmap: Bitmap): String {
@@ -52,18 +55,24 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
         ).jsonPrimitive.contentOrNull
     }
 
-    suspend fun saveSession(mappingSession: MappingSession) {
-        sendCommand("saveSession",
-            WebSocketRouter.json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
-        )
+    suspend fun listSessions(): List<String> {
+        return json.decodeFromJsonElement(ListSerializer(String.serializer()),
+            sendCommand("listSessions"))
+    }
+
+    suspend fun saveSession(mappingSession: MappingSession): String {
+        return sendCommand(
+            "saveSession",
+            json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
+        ).jsonPrimitive.contentOrNull ?: error("Failed to save session!")
     }
 
     suspend fun loadSession(name: String): MappingSession {
         val response = sendCommand(
             "loadSession",
-            WebSocketRouter.json.encodeToJsonElement(String.serializer(), name)
+            json.encodeToJsonElement(String.serializer(), name)
         )
-        return WebSocketRouter.json.decodeFromJsonElement(MappingSession.serializer(), response)
+        return json.decodeFromJsonElement(MappingSession.serializer(), response)
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
@@ -75,11 +84,11 @@ class WebSocketClient(link: Network.Link, address: Network.Address) : Network.We
             logger.warn { "Mapper not connected to Pinky…" }
             delay(50)
         }
-        tcpConnection.send(WebSocketRouter.json.encodeToString(JsonArray.serializer(), content).encodeToByteArray())
+        tcpConnection.send(json.encodeToString(JsonArray.serializer(), content).encodeToByteArray())
 
         val responseJsonStr = responses.receive().decodeToString()
         try {
-            val responseJson = WebSocketRouter.json.parseToJsonElement(responseJsonStr)
+            val responseJson = json.parseToJsonElement(responseJsonStr)
             val status = responseJson.jsonObject.getValue("status").jsonPrimitive
             val response = responseJson.jsonObject.getValue("response")
             when (status.contentOrNull) {
