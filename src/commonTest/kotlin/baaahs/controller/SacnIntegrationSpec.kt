@@ -172,6 +172,7 @@ object SacnIntegrationSpec : Spek({
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
                             pixelCount = 3,
+                            pixelFormat = PixelFormat.GRB8,
                             channels = DmxTransportConfig()
                         )
                     )
@@ -186,7 +187,7 @@ object SacnIntegrationSpec : Spek({
 
                 val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
                 expect(fixtureConfig.componentCount).toEqual(3)
-                expect(fixtureConfig.pixelFormat).toEqual(null)
+                expect(fixtureConfig.pixelFormat).toEqual(PixelFormat.GRB8)
 
                 expect(data.transportConfig).toEqual(DmxTransportConfig())
             }

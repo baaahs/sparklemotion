@@ -34,6 +34,7 @@ actual abstract class PixelArraySimulation actual constructor(
             "wled-X${pixelArray.name}X",
             pixelArray.name,
             pixelLocations.size,
+            PixelFormat.RBG8,
             pixelLocations.map { MappingSession.SurfaceData.PixelData(it) },
         )
 

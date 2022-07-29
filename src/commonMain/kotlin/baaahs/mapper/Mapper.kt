@@ -60,11 +60,14 @@ abstract class Mapper(
 
     abstract var devices: List<MediaDevices.Device>
 
+    var model: Model? = null
     var mappingStrategy: MappingStrategy = TwoLogNMappingStrategy
+    var mappingController: MappableBrain? = null
 
     init {
         sceneProvider.addObserver(fireImmediately = true) {
             it.openScene?.model?.let {
+                model = it
                 ui.addWireframe(it)
             }
         }
@@ -253,6 +256,7 @@ abstract class Mapper(
                 logger.info { "identify surfaces..." }
                 // light up each brain in an arbitrary sequence and capture its delta...
                 brainsToMap.values.forEachIndexed { index, brainToMap ->
+                    mappingController = brainToMap
                     identifyBrain(index, brainToMap)
 
                     // the next line causes the UI to wait after each panel has been identified...
@@ -329,16 +333,16 @@ abstract class Mapper(
 
         private fun gatherResults(): List<MappingSession.SurfaceData> {
             val surfaces = mutableListOf<MappingSession.SurfaceData>()
-            brainsToMap.forEach { (address, brainToMap) ->
-                logger.info { "Brain ID: ${brainToMap.brainId} at ${address}:" }
-                logger.info { "  Surface: ${brainToMap.guessedEntity}" }
+            brainsToMap.forEach { (address, mappableBrain) ->
+                logger.info { "Brain ID: ${mappableBrain.brainId} at ${address}:" }
+                logger.info { "  Surface: ${mappableBrain.guessedEntity}" }
                 logger.debug { "  Pixels:" }
 
-                val visibleSurface = brainToMap.guessedVisibleSurface
+                val visibleSurface = mappableBrain.guessedVisibleSurface
                 if (visibleSurface != null) {
                     visibleSurface.showPixels()
 
-//                    brainToMap.pixelMapData.forEach { (pixelIndex, mapData) ->
+//                    mappableBrain.pixelMapData.forEach { (pixelIndex, mapData) ->
 //                        val changeRegion = mapData.pixelChangeRegion
 //                        val position = visibleSurface.translatePixelToPanelSpace(
 //                            Uv.fromXY(changeRegion.centerX, changeRegion.centerY, changeRegion.sourceDimen)
@@ -347,7 +351,7 @@ abstract class Mapper(
 //                    }
 
                     val pixels = visibleSurface.pixelsInModelSpace.mapIndexed { index, modelPosition ->
-                        val pixelMapData = brainToMap.pixelMapData[index]
+                        val pixelMapData = mappableBrain.pixelMapData[index]
                         val pixelChangeRegion = pixelMapData?.pixelChangeRegion
                         val screenPosition = pixelChangeRegion?.let {
                             visibleSurface.translatePixelToPanelSpace(Uv.fromXY(it.centerX, it.centerY, it.sourceDimen))
@@ -362,11 +366,12 @@ abstract class Mapper(
 
                     val surfaceData = MappingSession.SurfaceData(
                         BrainManager.controllerTypeName,
-                        brainToMap.brainId,
+                        mappableBrain.brainId,
                         visibleSurface.entity.name,
                         pixels.size,
+                        mappableBrain.pixelFormat,
                         pixels,
-                        brainToMap.deltaImageName,
+                        mappableBrain.deltaImageName,
                         screenAreaInSqPixels = null,
                         screenAngle = null
                     )
@@ -451,15 +456,19 @@ abstract class Mapper(
             //
             //                val firstGuess = orderedPanels.first().first
             val firstGuess = surfaceBallot.winner()
-            val firstGuessSurface = firstGuess.entity
+            val firstGuessEntity = firstGuess.entity
+            val firstGuessSurface = firstGuessEntity as? Model.Surface
+            val defaultFixtureConfig = firstGuessSurface?.defaultFixtureConfig
 
-            ui.showMessage("$index / ${brainsToMap.size}: ${mappableBrain.brainId} — surface is ${firstGuessSurface.name}?")
+            ui.showMessage("$index / ${brainsToMap.size}: ${mappableBrain.brainId} — surface is ${firstGuessEntity.name}?")
             ui.showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
 
-            logger.info { "Guessed panel ${firstGuessSurface.name} for ${mappableBrain.brainId}" }
-            mappableBrain.guessedEntity = firstGuessSurface
+            logger.info { "Guessed panel ${firstGuessEntity.name} for ${mappableBrain.brainId}" }
+            mappableBrain.guessedEntity = firstGuessEntity
             mappableBrain.guessedVisibleSurface = firstGuess
-            mappableBrain.expectedPixelCount = (firstGuessSurface as? Model.Surface)?.expectedPixelCount
+            mappableBrain.expectedPixelCount = firstGuessSurface?.expectedPixelCount
+                ?: defaultFixtureConfig?.pixelCount
+            mappableBrain.pixelFormat = defaultFixtureConfig?.pixelFormat
             mappableBrain.panelDeltaBitmap = deltaBitmap.clone()
             mappableBrain.deltaImageName =
                 mapperBackend.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)
