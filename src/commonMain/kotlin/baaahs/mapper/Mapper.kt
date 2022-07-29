@@ -192,13 +192,17 @@ abstract class Mapper(
         pauseForUserInteraction("ALIGN MODEL AND PRESS PLAY WHEN READY")
         waitUntilUnpaused()
 
-        Session().start()
+        coroutineScope {
+            Session(this).start()
+        }
     }
 
-    inner class Session {
+    inner class Session(
+        scope: CoroutineScope
+    ) {
         internal val sessionStartTime = DateTime.now()
         private val mappingStrategySession = mappingStrategy.beginSession(
-            this@Mapper, this@Session, stats, ui, brainsToMap, mapperBackend
+            scope, this@Mapper, this@Session, stats, ui, brainsToMap, mapperBackend
         )
 
         private val visibleSurfaces = ui.getVisibleSurfaces()
@@ -351,6 +355,7 @@ abstract class Mapper(
                         MappingSession.SurfaceData.PixelData(
                             modelPosition,
                             screenPosition,
+                            null,
                             pixelMapData?.mappingStrategyData
                         )
                     }

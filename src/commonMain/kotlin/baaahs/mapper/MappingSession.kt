@@ -44,6 +44,7 @@ data class MappingSession(
         data class PixelData(
             val modelPosition: Vector3F?,
             val screenPosition: Vector2F? = null,
+            val deltaImage: String? = null, // TODO: Remove this.
             val metadata: MappingStrategy.PixelMetadata? = null
         )
 

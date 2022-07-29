@@ -2,6 +2,7 @@ package baaahs.mapper
 
 import baaahs.imaging.Bitmap
 import baaahs.net.Network
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -21,6 +22,7 @@ object OneAtATimeMappingStrategy : MappingStrategy() {
         get() = OneAtATimePixelMetadata.serializer()
 
     override fun beginSession(
+        scope: CoroutineScope,
         mapper: Mapper,
         session: Mapper.Session,
         stats: MapperStats,

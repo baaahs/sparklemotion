@@ -38,24 +38,29 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         ctx.resetTransform()
     }
 
-    override fun copyFrom(other: Bitmap) {
+    override fun copyFrom(other: Bitmap): Bitmap {
         apply(other, "source-over")
+        return this
     }
 
-    override fun lighten(other: Bitmap) {
+    override fun lighten(other: Bitmap): Bitmap {
         apply(other, "lighten")
+        return this
     }
 
-    override fun darken(other: Bitmap) {
+    override fun darken(other: Bitmap): Bitmap {
         apply(other, "darken")
+        return this
     }
 
-    override fun subtract(other: Bitmap) {
+    override fun subtract(other: Bitmap): Bitmap {
         apply(other, "difference")
+        return this
     }
 
-    override fun multiply(other: Bitmap) {
+    override fun multiply(other: Bitmap): Bitmap {
         apply(other, "multiply")
+        return this
     }
 
     override fun toDataUrl(): String = canvas.toDataURL("image/webp")

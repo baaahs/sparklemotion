@@ -3042,7 +3042,7 @@
     },
     "upstreamImageImage": {
       "type": "baaahs.Core:Image",
-      "imageTitle": "Upstream Image"
+      "title": "Upstream Image"
     },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
@@ -3169,7 +3169,7 @@
     },
     "imageImage": {
       "type": "baaahs.Core:Image",
-      "imageTitle": "Image"
+      "title": "Image"
     },
     "nyanSizeSlider": {
       "type": "baaahs.Core:Slider",

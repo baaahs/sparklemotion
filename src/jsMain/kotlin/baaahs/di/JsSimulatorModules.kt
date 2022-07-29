@@ -41,10 +41,12 @@ class JsSimulatorModule(
     private val pixelSpacing: Float = 10f,
     private val simMappingManager: SimMappingManager
 ) : SimulatorModule {
+    val localFs = BrowserSandboxFs("Browser Data", "data")
+
     override val Scope.fs: Fs
         get() {
             return MergedFs(
-                BrowserSandboxFs("Browser Data", "data"),
+                localFs,
                 get(named(SimulatorModule.Qualifier.MapperFs)),
                 name = "Browser Data"
             )
@@ -67,7 +69,7 @@ class JsSimulatorModule(
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
-            single { (koin: Koin) -> SheepSimulator(get(), get()) { koin } }
+            single { (koin: Koin) -> SheepSimulator(get(), get(), localFs) { koin } }
         }
     }
 }
