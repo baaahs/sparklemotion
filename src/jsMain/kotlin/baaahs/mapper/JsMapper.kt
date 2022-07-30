@@ -472,10 +472,12 @@ class JsMapper(
         private val pixelsGeom = BufferGeometry()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
-            opacity = .5
+            blending = AdditiveBlending
+            map = reticleTx
+            transparent = true
+            opacity = .75
             size = 3
             depthTest = false
-            blending = AdditiveBlending
         }
         val points = Points(pixelsGeom, pixelsMaterial)
         private var maxPixel = initialPixelCount
@@ -1177,6 +1179,13 @@ class JsMapper(
 
         val normalColor = Color(0, 0, 1)
         val selectedColor = Color(1, 1, 0)
+
+        val reticleTx = TextureLoader().load(
+            "$resourcesBase/visualizer/textures/reticle.webp",
+            { println("loaded!") },
+            { println("progress!") },
+            { println("error!") }
+        )
     }
 }
 
