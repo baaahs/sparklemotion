@@ -102,11 +102,14 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
                 val pixelCount = surface.myPixelCount
                 for (i in 0 until pixelCount) {
                     val pixel = surface.pixels?.get(i)
+                    val twoLogNMetadata = pixel?.metadata as? TwoLogNMappingStrategy.TwoLogNPixelMetadata
                     div(
                         +when {
                             pixel == null -> styles.skippedPixel
                             pixel.modelPosition == null -> styles.unmappedPixel
-                            else -> styles.mappedPixel
+                            twoLogNMetadata?.deltaImage != null -> styles.individuallyMappedPixel
+                            twoLogNMetadata != null -> styles.twoLogNMappedPixel
+                            else -> styles.individuallyMappedPixel
                         } and if (i == selectedPixelIndex) styles.selectedPixel else null
                     ) {
                         attrs["data-pixel-index"] = i.toString()

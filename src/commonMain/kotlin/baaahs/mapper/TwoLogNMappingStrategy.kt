@@ -92,6 +92,8 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             )
 
             derivePixelLocations(maxPixelForTheseBrains, slices)
+
+            findMissingPixels(maxPixelForTheseBrains)
         }
 
         private suspend fun buildSlices(sliceCount: Int): Slices {
@@ -160,7 +162,7 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                         visibleSurface?.setPixel(pixelIndex, centerUv)
                         brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
                             pixelChangeRegion,
-                            TwoLogNPixelMetadata(pixelOnImageName)
+                            TwoLogNPixelMetadata(null /*pixelOnImageName*/)
                         )
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
@@ -229,6 +231,54 @@ object TwoLogNMappingStrategy : MappingStrategy() {
             }
 
             mapper.sendToAllReliably(brainsToMap.values) { it.pixelShaderBuffer }
+        }
+
+        private suspend fun findMissingPixels(maxPixelForTheseBrains: Int) {
+            brainsToMap.values.forEach { brainToMap ->
+                val visibleSurface = brainToMap.guessedVisibleSurface
+
+                for (pixelIndex in 0 until maxPixelForTheseBrains) {
+                    session.resetToBase()
+
+                    if (brainToMap.pixelMapData[pixelIndex] == null) {
+                        ui.message2 = "Find pixel $pixelIndex for ${brainToMap.brainId}"
+
+                        delay(125)
+                        stats.turnOnPixel.stime { session.turnOnPixel(pixelIndex) }
+                        delay(125)
+
+                        val pixelOnBitmap = stats.captureImage.stime {
+                            mapper.slowCamDelay()
+                            mapper.getBrightImageBitmap(2)
+                        }
+
+
+                        ui.showBaseImage(session.baseBitmap!!)
+                        val analysis = stats.diffImage.time {
+                            ImageProcessing.diff(pixelOnBitmap, session.baseBitmap!!, session.deltaBitmap)
+                        }
+
+                        val pixelChangeRegion = stats.detectChangeRegion.time {
+                            analysis.detectChangeRegion(.9f)
+                        }
+
+                        ui.showDiffImage(session.deltaBitmap, pixelChangeRegion)
+                        val pixelOnImageName = mapperBackend.saveImage(session.sessionStartTime, "pixel-$pixelIndex", session.deltaBitmap)
+
+                        if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
+                            val centerUv = pixelChangeRegion.centerUv
+                            visibleSurface?.setPixel(pixelIndex, centerUv)
+                            brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
+                                pixelChangeRegion,
+                                TwoLogNPixelMetadata(pixelOnImageName)
+                            )
+                            Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
+                        }
+                    }
+
+                    delay(1)
+                }
+            }
         }
     }
 
