@@ -93,6 +93,7 @@ open class PixelArrayFixtureType : FixtureType {
             PixelLocationDataSource,
             PixelIndexDataSource,
             PixelCountDataSource,
+            PixelDistanceFromEdgeDataSource
         )
 
     override val resultContentType: ContentType

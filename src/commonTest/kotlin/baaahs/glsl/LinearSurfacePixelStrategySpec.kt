@@ -18,13 +18,15 @@ object LinearSurfacePixelStrategySpec : Spek({
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {
             val entity by value<Model.Entity> {
+                val vertices = listOf(
+                    Vector3F(1f, 1f, 1f),
+                    Vector3F(2f, 2f, 1f),
+                    Vector3F(1f, 2f, 2f),
+                    Vector3F(2f, 1f, 2f)
+                )
                 testModelSurface(
-                    "zyx", vertices = listOf(
-                        Vector3F(1f, 1f, 1f),
-                        Vector3F(2f, 2f, 1f),
-                        Vector3F(1f, 2f, 2f),
-                        Vector3F(2f, 1f, 2f)
-                    )
+                    "zyx", vertices = vertices,
+                    faces = listOf(Model.Face(vertices[0], vertices[1], vertices[2]))
                 )
             }
 
