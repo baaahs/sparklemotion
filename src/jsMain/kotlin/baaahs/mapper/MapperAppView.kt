@@ -74,10 +74,6 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     ui.setSizes()
 
-    val handleSelectEntityPixel by handler { entityName: String?, index: Int? ->
-        ui.selectEntityPixel(entityName, index)
-    }
-
     val handleChangeEntity by handler(props.mapper.mappingController) { entity: Model.Entity? ->
         props.mapper.mappingController?.guessedEntity = entity
         forceRender()
@@ -220,7 +216,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     mappingSession {
                         attrs.name = ui.selectedMappingSessionName ?: "unknown session!?"
                         attrs.session = session
-                        attrs.onSelectEntityPixel = handleSelectEntityPixel
+                        attrs.mapper = ui
                     }
 
                     betterSelect<String?> {

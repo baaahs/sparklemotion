@@ -12,6 +12,7 @@ import three.js.Vector3
 @JsName("default")
 external class CameraControls(camera: Camera, domElement: Element) {
     var dampingFactor: Double
+    var enabled: Boolean
 
     fun getTarget(out: Vector3? = definedExternally): Vector3
     fun getPosition(out: Vector3? = definedExternally): Vector3
