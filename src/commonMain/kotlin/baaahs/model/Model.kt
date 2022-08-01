@@ -67,7 +67,7 @@ class Model(
             get() = null
         val fixtureType: FixtureType
         /** Bounds in entity's local space. */
-        val bounds: Pair<Vector3F, Vector3F>
+        override val bounds: Pair<Vector3F, Vector3F>
         override val position: Vector3F
         override val rotation: EulerAngle
         val scale: Vector3F
@@ -133,6 +133,7 @@ class Model(
 
     interface FixtureInfo {
         val transformation: Matrix4F
+        val bounds: Pair<Vector3F, Vector3F>
 
         val position: Vector3F
             get() = transformation.position
@@ -160,7 +161,7 @@ class Model(
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
 
-        open fun allVertices(): Collection<Vector3F> = geometry.vertices
+        open fun allVertices(): Collection<Vector3F> = faces.flatMap { it.vertices.toList() }
 
         override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
             BrainSurfaceSimulation(this, adapter)
@@ -169,6 +170,7 @@ class Model(
             adapter.createSurfaceVisualizer(this)
     }
 
+    /** A non-auto-closing line; for a triangle, there should be four vertexIndices. */
     data class Line(
         private val geometry: Geometry,
         val vertexIndices: List<Int>
@@ -177,6 +179,28 @@ class Model(
                 this(geometry, vertices.toList())
 
         val vertices: List<Vector3F> get() = vertexIndices.map { geometry.vertices[it] }
+
+        fun shortestDistanceTo(point: Vector3F): Float? {
+            return List(vertexIndices.size - 1) { index ->
+                // From https://math.stackexchange.com/questions/1905533/find-perpendicular-distance-from-point-to-line-in-3d
+                //  double computeDistance(vec3 point, vec3 start, vec3 end) {
+                //      vec3 d = (end - start) / end.distance(start);
+                //      vec3 v = point - start;
+                //      double t = v.dot(d);
+                //      vec3 P = start + t * d;
+                //      return P.distance(point);
+                //  }
+
+                val start = vertices[index]
+                val end = vertices[(index + 1) % vertexIndices.size]
+                val lineVector = end - start
+                val lineDirection = lineVector / lineVector.length()
+                val vectorToLineStart = point - start
+                val t = vectorToLineStart.dot(lineDirection)
+                val p = start + lineDirection * t
+                (p - point).length()
+            }.minOrNull()
+        }
     }
 
     class Face(

@@ -29,7 +29,9 @@ val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
     GlslType.Field("position", GlslType.Vec3),
     GlslType.Field("rotation", GlslType.Vec3),
-    GlslType.Field("transformation", GlslType.Matrix4)
+    GlslType.Field("transformation", GlslType.Matrix4),
+    GlslType.Field("boundaryMin", GlslType.Vec3),
+    GlslType.Field("boundaryMax", GlslType.Vec3)
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -71,15 +73,21 @@ class FixtureInfoFeed(
             private val positionUniform = glslProgram.getUniform("$id.position")
             private val rotationUniform = glslProgram.getUniform("$id.rotation")
             private val transformationUniform = glslProgram.getUniform("$id.transformation")
+            private val boundaryMinUniform = glslProgram.getUniform("$id.boundaryMin")
+            private val boundaryMaxUniform = glslProgram.getUniform("$id.boundaryMax")
 
             override val isValid: Boolean get() =
-                positionUniform != null || rotationUniform != null || transformationUniform != null
+                positionUniform != null || rotationUniform != null || transformationUniform != null ||
+                        boundaryMinUniform != null || boundaryMaxUniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
                 positionUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
                 rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
                 transformationUniform?.set(fixtureInfo?.transformation ?: Matrix4F.identity)
+                val bounds = fixtureInfo?.bounds
+                boundaryMinUniform?.set(bounds?.first ?: Vector3F.origin)
+                boundaryMaxUniform?.set(bounds?.second ?: Vector3F.origin)
             }
         }
     }

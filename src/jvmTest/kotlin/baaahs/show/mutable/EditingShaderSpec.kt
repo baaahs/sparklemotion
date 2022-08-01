@@ -235,6 +235,7 @@ object EditingShaderSpec : Spek({
                             Data Source:
                             - BeatLink
                             - Custom slider Slider (advanced)
+                            - Pixel Distance from Edge
                             * The Scale Slider
                             - Time
                             Stream:
@@ -278,6 +279,7 @@ object EditingShaderSpec : Spek({
                         .toBe("""
                             Data Source:
                             - BeatLink
+                            - Pixel Distance from Edge
                             * The Scale Slider
                             - Time
                             Stream:
@@ -290,6 +292,7 @@ object EditingShaderSpec : Spek({
                         .toBe("""
                             Data Source:
                             - BeatLink (advanced)
+                            - Pixel Distance from Edge (advanced)
                             * Time
                             - Time Slider (advanced)
                             Stream:

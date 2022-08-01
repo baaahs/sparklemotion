@@ -80,8 +80,9 @@ class FakeClock(var time: Time = 0.0) : Clock {
 fun testModelSurface(
     name: String,
     expectedPixelCount: Int? = 1,
-    vertices: List<Vector3F> = emptyList()
-) = Model.Surface(name, name, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices))
+    vertices: List<Vector3F> = emptyList(),
+    faces: List<Model.Face> = emptyList()
+) = Model.Surface(name, name, expectedPixelCount, faces, emptyList(), Model.Geometry(vertices))
 
 fun testModelSurfaceData(
     name: String,

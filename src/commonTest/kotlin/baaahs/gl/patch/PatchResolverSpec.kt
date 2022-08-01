@@ -145,6 +145,8 @@ object PatchResolverSpec : Spek({
                             vec3 position;
                             vec3 rotation;
                             mat4 transformation;
+                            vec3 boundaryMin;
+                            vec3 boundaryMax;
                         };
 
                         struct ModelInfo {
@@ -266,6 +268,8 @@ object PatchResolverSpec : Spek({
                             vec3 position;
                             vec3 rotation;
                             mat4 transformation;
+                            vec3 boundaryMin;
+                            vec3 boundaryMax;
                         };
 
                         struct ModelInfo {
@@ -430,6 +434,8 @@ object PatchResolverSpec : Spek({
                             vec3 position;
                             vec3 rotation;
                             mat4 transformation;
+                            vec3 boundaryMin;
+                            vec3 boundaryMax;
                         };
 
                         struct ModelInfo {
@@ -721,6 +727,8 @@ object PatchResolverSpec : Spek({
                         vec3 position;
                         vec3 rotation;
                         mat4 transformation;
+                        vec3 boundaryMin;
+                        vec3 boundaryMax;
                     };
 
                     struct ModelInfo {

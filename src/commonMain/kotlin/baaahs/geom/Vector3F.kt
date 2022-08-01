@@ -51,6 +51,10 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
         return Vector3F(abs(x), abs(y), abs(z))
     }
 
+    fun dot(other: Vector3F): Float {
+        return x * other.x + y * other.y + z * other.z
+    }
+
     fun length(): Float {
         return sqrt(lengthSquared().toDouble()).toFloat()
     }
