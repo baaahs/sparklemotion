@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.app.ui.editor.betterSelect
 import baaahs.ui.and
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
@@ -8,6 +7,9 @@ import baaahs.ui.xComponent
 import kotlinx.css.pct
 import kotlinx.css.width
 import kotlinx.html.tabIndex
+import mui.material.Tab
+import mui.material.Tabs
+import mui.material.TabsVariant
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 import react.Props
@@ -20,47 +22,47 @@ import kotlin.math.max
 import kotlin.math.min
 
 private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession") { props ->
+    observe(props.mapper)
     val appContext = useContext(mapperAppContext)
     val styles = appContext.allStyles.mapper
 
-    var selectedSurface by state<MappingSession.SurfaceData?> { null }
-    var selectedPixelIndex by state<Int?> { null }
+    var selectedEntity by state { props.session.surfaces.firstOrNull() }
+    val selectedPixelIndex = props.mapper.selectedPixelIndex
     val pixelData = selectedPixelIndex?.let { i ->
-        val pixels = selectedSurface?.pixels
+        val pixels = selectedEntity?.pixels
         if (pixels != null && i >= 0 && i < pixels.size) pixels[i] else null
     }
 
-    val handleSelectSurface by handler(props.onSelectEntityPixel) { surface: MappingSession.SurfaceData? ->
-        selectedSurface = surface
-        selectedPixelIndex = null
-        props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, null)
-        Unit
+    val handleSelectEntityPixel by handler(props.mapper) { entityName: String?, index: Int? ->
+        props.mapper.selectEntityPixel(entityName, index)
     }
 
-    val handlePixelClick by mouseEventHandler(props.onSelectEntityPixel, pixelData) { e ->
+    val handleSelectEntity by syntheticEventHandler<MappingSession.SurfaceData>(handleSelectEntityPixel) { _, entity ->
+        selectedEntity = entity
+        handleSelectEntityPixel(selectedEntity?.entityName, null)
+    }
+
+    val handlePixelClick by mouseEventHandler(handleSelectEntityPixel, pixelData) { e ->
         (e.target as? HTMLElement)?.let {
             val i = it.dataset["pixelIndex"]?.toIntOrNull()
-            selectedPixelIndex = i
-            props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, i)
+            handleSelectEntityPixel(selectedEntity?.entityName, i)
         }
     }
 
-    val handleKeyDown by keyboardEventHandler(props.onSelectEntityPixel) { e ->
+    val handleKeyDown by keyboardEventHandler(selectedPixelIndex, handleSelectEntityPixel) { e ->
         when (e.key) {
             "ArrowLeft" -> {
                 selectedPixelIndex?.let { i ->
                     val newIndex = max(i - 1, 0)
-                    selectedPixelIndex = newIndex
-                    props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, newIndex)
+                    handleSelectEntityPixel(selectedEntity?.entityName, newIndex)
                 }
                 e.stopPropagation()
                 e.preventDefault()
             }
             "ArrowRight" -> {
                 selectedPixelIndex?.let { i ->
-                    val newIndex = min(i + 1, selectedSurface!!.myPixelCount - 1)
-                    selectedPixelIndex = newIndex
-                    props.onSelectEntityPixel?.invoke(selectedSurface?.entityName, newIndex)
+                    val newIndex = min(i + 1, selectedEntity!!.myPixelCount - 1)
+                    handleSelectEntityPixel(selectedEntity?.entityName, newIndex)
                 }
                 e.stopPropagation()
                 e.preventDefault()
@@ -72,15 +74,20 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
         attrs.tabIndex = "-1" // So we can receive key events.
         attrs.onKeyDown = handleKeyDown
 
-        betterSelect<MappingSession.SurfaceData?> {
-            attrs.label = "Entity:"
-            attrs.values = listOf(null) + props.session.surfaces
-            attrs.value = selectedSurface
-            attrs.renderValueOption = { (it?.entityName ?: "-").asTextNode() }
-            attrs.onChange = handleSelectSurface
+        Tabs {
+            attrs.variant = TabsVariant.scrollable
+            attrs.value = selectedEntity
+            attrs.onChange = handleSelectEntity
+
+            for (entity in props.session.surfaces) {
+                Tab {
+                    attrs.label = entity.entityName.asTextNode()
+                    attrs.value = entity
+                }
+            }
         }
 
-        selectedSurface?.let { surface ->
+        selectedEntity?.let { surface ->
             table {
                 inlineStyles { width = 100.pct }
                 thead {
@@ -139,7 +146,7 @@ private val MappingSession.SurfaceData.myPixelCount get() = pixelCount ?: pixels
 external interface MappingSessionProps : Props {
     var name: String
     var session: MappingSession
-    var onSelectEntityPixel: ((entityName: String?, pixelIndex: Int?) -> Unit)?
+    var mapper: JsMapper
 }
 
 fun RBuilder.mappingSession(handler: RHandler<MappingSessionProps>) =

@@ -23,10 +23,13 @@ import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
+import csstype.Cursor
 import kotlinx.coroutines.*
 import kotlinx.js.jso
 import org.w3c.dom.*
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.MouseEvent
 import react.RBuilder
 import react.ReactElement
 import react.createElement
@@ -153,6 +156,15 @@ class JsMapper(
     private var selectedEntityAndPixel: Pair<PanelInfo, Int?>? = null
     private val cameraPositions = mutableMapOf<String, CameraPosition>()
 
+    private var points: Points<*,*>? = null
+    private val raycaster = Raycaster().apply {
+        params.Points = jso { threshold = 1 }
+    }
+    val selectedPixelIndex: Int?
+        get() = selectedEntityAndPixel?.second
+
+    private var dragging = false
+
     fun onMount(
         ui2dCanvas: HTMLCanvasElement,
         ui3dDiv: HTMLElement,
@@ -181,6 +193,10 @@ class JsMapper(
 
         ui3dDiv.appendChild(ui3dCanvas)
 
+        ui3dCanvas.addEventListener("mousedown", ::mouseDown, false)
+        ui3dCanvas.addEventListener("mousemove", ::mouseMove, false)
+        ui3dCanvas.addEventListener("mouseup", ::mouseUp, false)
+
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
 
@@ -188,7 +204,88 @@ class JsMapper(
     }
 
     fun onUnmount() {
+        ui3dCanvas.removeEventListener("mousedown", ::mouseDown, false)
+        ui3dCanvas.removeEventListener("mousemove", ::mouseMove, false)
+        ui3dCanvas.removeEventListener("mouseup", ::mouseUp, false)
+
         onClose()
+    }
+
+    private fun Event.getMouse(): Vector2 {
+        this as MouseEvent
+        return Vector2(
+            (offsetX / ui3dCanvas.width) * 2 - 1,
+            -(offsetY / ui3dCanvas.height) * 2 + 1
+        )
+    }
+
+    private fun updateRaycaster(event: Event) {
+        val mouse = event.getMouse()
+        raycaster.setFromCamera(mouse, uiCamera)
+    }
+
+    private fun selectPixel(index: Int?) {
+        selectEntityPixel(selectedEntityAndPixel?.first, index)
+    }
+
+    private fun mouseDown(event: Event) {
+        val (selectedEntity, selectedPixel) = selectedEntityAndPixel ?: (null to null)
+        if (selectedEntity != null) {
+            updateRaycaster(event)
+            val clickedPixelIndex = getIntersectedPixelIndex()
+            if (selectedPixel == clickedPixelIndex) {
+                dragging = true
+                controlsEnabled(false)
+                ui3dCanvas.style.cursor = Cursor.grabbing.toString()
+            } else {
+                selectPixel(clickedPixelIndex)
+                ui3dCanvas.style.cursor = Cursor.grab.toString()
+            }
+        }
+    }
+
+    private fun mouseMove(event: Event) {
+        val (selectedEntity, selectedPixel) = selectedEntityAndPixel ?: (null to null)
+        if (selectedEntity != null) {
+            updateRaycaster(event)
+            val overPixelIndex = getIntersectedPixelIndex()
+            if (dragging && selectedPixel != null) {
+                val moveIntersection = raycaster.intersectObject(selectedEntity.mesh)
+                val toPoint = moveIntersection.firstOrNull()?.point
+                if (toPoint != null) {
+                    val geometry = selectedEntity.pixelsInfo.pixelsGeom
+                    geometry.attributes["position"].setXYZ(selectedPixelIndex, toPoint.x, toPoint.y, toPoint.z)
+                    geometry.attributes["position"].needsUpdate = true
+                }
+                ui3dCanvas.style.cursor = Cursor.grabbing.toString()
+            } else if (overPixelIndex == null) {
+                ui3dCanvas.style.cursor = Cursor.default.toString()
+            } else if (overPixelIndex != selectedPixel) {
+                ui3dCanvas.style.cursor = Cursor.crosshair.toString()
+            } else if (overPixelIndex == selectedPixel) {
+                ui3dCanvas.style.cursor = Cursor.grab.toString()
+            } else {
+                ui3dCanvas.style.cursor = Cursor.default.toString()
+            }
+        }
+    }
+
+    private fun mouseUp(event: Event) {
+        dragging = false
+        ui3dCanvas.style.cursor = Cursor.default.toString()
+//        selectPixel(null)
+        controlsEnabled(true)
+    }
+
+    private fun getIntersectedPixelIndex(): Int? {
+        val intersects = raycaster.intersectObject(points as Object3D)
+        return if (intersects.isEmpty()) null else {
+            intersects[0].index?.toInt()
+        }
+    }
+
+    private fun controlsEnabled(state: Boolean) {
+        uiControls.enabled = state
     }
 
     fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
@@ -469,7 +566,7 @@ class JsMapper(
     }
 
     inner class PixelsInfo(private val initialPixelCount: Int) {
-        private val pixelsGeom = BufferGeometry()
+        internal val pixelsGeom = BufferGeometry()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
             blending = AdditiveBlending
@@ -563,7 +660,7 @@ class JsMapper(
             get() = surface
 
         private var pixelsInScene = false
-        private var pixelsInfo = PixelsInfo(surface.expectedPixelCount ?: 256).also {
+        internal var pixelsInfo = PixelsInfo(surface.expectedPixelCount ?: 256).also {
             if (pixelsInScene) uiScene.add(it.points)
         }
 
@@ -666,6 +763,7 @@ class JsMapper(
         override fun showPixels() {
             if (!pixelsInScene) {
                 uiScene.add(pixelsInfo.points)
+                this@JsMapper.points = pixelsInfo.points
                 pixelsInScene = true
             }
         }
@@ -673,6 +771,7 @@ class JsMapper(
         fun hidePixels() {
             if (pixelsInScene) {
                 uiScene.remove(pixelsInfo.points)
+                this@JsMapper.points = null
                 pixelsInScene = false
             }
         }
@@ -1095,38 +1194,49 @@ class JsMapper(
     }
 
     fun selectEntityPixel(entityName: String?, index: Int?) {
+        val entityToSelect = entityName?.let { findVisualizer(it) }
+        selectEntityPixel(entityToSelect, index)
+    }
+
+    private fun deselectEntityPixel() {
         selectedEntityAndPixel?.let { (entity, pixelIndex) ->
             entity.deselect()
             if (pixelIndex != null) entity.deselectPixel(pixelIndex)
             hideImage()
         }
+    }
 
-        selectedEntityAndPixel = entityName?.let {
-            findVisualizer(it)?.let { panelInfo ->
-                panelInfo.select()
-                if (index != null) {
-                    panelInfo.selectPixel(index)
+    private fun selectEntityPixel(
+        panelInfo: PanelInfo?,
+        index: Int?
+    ) {
+        deselectEntityPixel()
 
-                    val pixelData = panelInfo.getPixelData(index)
-                    pixelData?.metadata?.let { pixelMetadata ->
-                        when (pixelMetadata) {
-                            is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
-                                pixelMetadata.deltaImage?.let { loadImage(it, true) }
-                            }
-                            is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
-                                pixelMetadata.deltaImage?.let { loadImage(it, true) }
-                            }
-                            else -> error("Unknown pixel metadata $pixelMetadata.")
-                        }
+        if (panelInfo == null) return
+        panelInfo.select()
+        if (index != null) {
+            panelInfo.selectPixel(index)
+
+            val pixelData = panelInfo.getPixelData(index)
+            pixelData?.metadata?.let { pixelMetadata ->
+                when (pixelMetadata) {
+                    is OneAtATimeMappingStrategy.OneAtATimePixelMetadata -> {
+                        pixelMetadata.deltaImage?.let { loadImage(it, true) }
                     }
-                    udpSockets.pixelOnByBroadcast(index)
-                } else {
-                    udpSockets.allDark()
+                    is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
+                        pixelMetadata.deltaImage?.let { loadImage(it, true) }
+                    }
+                    else -> error("Unknown pixel metadata $pixelMetadata.")
                 }
-
-                panelInfo to index
             }
+            udpSockets.pixelOnByBroadcast(index)
+        } else {
+            udpSockets.allDark()
         }
+
+        selectedEntityAndPixel = panelInfo to index
+
+        notifyChanged()
     }
 
     private suspend fun loadMapperImage(imageName: String): org.w3c.dom.Image {
