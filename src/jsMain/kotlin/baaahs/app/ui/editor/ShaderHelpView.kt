@@ -144,7 +144,7 @@ class ShaderHelpStyles(
 
             nthChild("even") {
                 background = theme.palette.info.main.asColor()
-                    .withAlpha(.1)
+                    .withAlpha(.8)
                     .blend(Color(theme.palette.background.paper))
                     .value
             }
