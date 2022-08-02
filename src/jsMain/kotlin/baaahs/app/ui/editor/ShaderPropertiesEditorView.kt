@@ -13,7 +13,7 @@ import materialui.icon
 import mui.material.*
 import mui.system.sx
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.*
 import react.dom.b
 import react.dom.br

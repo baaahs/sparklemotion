@@ -17,11 +17,11 @@ import external.copyFrom
 import external.draggable
 import external.droppable
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
