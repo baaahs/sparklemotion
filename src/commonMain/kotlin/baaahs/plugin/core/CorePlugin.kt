@@ -130,6 +130,7 @@ class CorePlugin(
             ResolutionDataSource,
             SliderDataSource,
             SwitchDataSource,
+            TextInputDataSource,
             TimeDataSource,
             XyPadDataSource
         )

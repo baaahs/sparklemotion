@@ -118,6 +118,7 @@ abstract class Gadget {
                 subclass(PalettePicker::class, PalettePicker.serializer())
                 subclass(Slider::class, Slider.serializer())
                 subclass(Switch::class, Switch.serializer())
+                subclass(TextInput::class, TextInput.serializer())
                 subclass(XyPad::class, XyPad.serializer())
             }
         }

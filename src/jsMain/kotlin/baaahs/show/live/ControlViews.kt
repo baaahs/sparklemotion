@@ -52,6 +52,13 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
         }
     }
 
+    override fun forTextInput(openTextInputControl: OpenTextInputControl, controlProps: ControlProps)  = renderWrapper {
+        textInputControl {
+            attrs.controlProps = controlProps
+            attrs.textInputControl = openTextInputControl
+        }
+    }
+
     override fun forTransition(openTransitionControl: OpenTransitionControl, controlProps: ControlProps) = renderWrapper {
         transitionControl {
             attrs.controlProps = controlProps
