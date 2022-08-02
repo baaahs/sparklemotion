@@ -345,6 +345,8 @@ object GlslGenerationSpec : Spek({
                             vec3 position;
                             vec3 rotation;
                             mat4 transformation;
+                            vec3 boundaryMin;
+                            vec3 boundaryMax;
                         };
 
                         struct ModelInfo {
@@ -644,6 +646,8 @@ object GlslGenerationSpec : Spek({
                         vec3 position;            
                         vec3 rotation; // in Euler angles
                         vec3 transformation;
+                        vec3 boundaryMin;
+                        vec3 boundaryMax;
                     };
                     
                     uniform FixtureInfo fixtureInfo;
@@ -695,6 +699,8 @@ object GlslGenerationSpec : Spek({
                             vec3 position;
                             vec3 rotation;
                             mat4 transformation;
+                            vec3 boundaryMin;
+                            vec3 boundaryMax;
                         };
 
                         // Data source: Fixture Info
@@ -705,7 +711,7 @@ object GlslGenerationSpec : Spek({
 
                         MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
 
-                        #line 17 0
+                        #line 19 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
                             params.pan = in_fixtureInfo.position.x;
                             params.tilt = in_fixtureInfo.position.y,

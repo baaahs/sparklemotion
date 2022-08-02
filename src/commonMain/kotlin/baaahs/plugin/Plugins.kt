@@ -483,7 +483,11 @@ sealed class Plugins(
     }
 
     inner class DataSourceBuilders {
-        val withPlugin = openPlugins.flatMap { plugin -> plugin.dataSourceBuilders.map { plugin to it } }
+        val withPlugin = openPlugins.flatMap { plugin ->
+            (plugin.dataSourceBuilders + plugin.fixtureTypes.flatMap { it.dataSourceBuilders })
+                .distinct()
+                .map { plugin to it }
+        }
 
         val all = withPlugin.map { it.second }
 
