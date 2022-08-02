@@ -10,10 +10,10 @@ import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.Card
-import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler

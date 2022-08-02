@@ -1,8 +1,8 @@
 object Versions {
-    const val kotlin = "1.6.21"
-    const val kotlinGradlePlugin = "1.6.21"
-    const val coroutines = "1.6.1"
-    const val serializationRuntime = "1.3.2"
+    const val kotlin = "1.7.10"
+    const val kotlinGradlePlugin = "1.7.10"
+    const val coroutines = "1.6.3"
+    const val serializationRuntime = "1.3.3"
     const val koin = "3.1.3"
     const val dokka = "1.6.10"
 
@@ -16,12 +16,12 @@ object Versions {
 
     // JS:
     const val kotlinxHtml = "0.7.5"
-    const val wrappersBuild = "pre.336"
-    const val kotlinReact = "18.1.0-$wrappersBuild"
+    const val wrappersBuild = "pre.361"
+    const val kotlinReact = "18.2.0-$wrappersBuild"
     const val kotlinStyled = "5.3.5-$wrappersBuild"
-    const val kotlinMui = "5.7.0-$wrappersBuild"
-    const val kotlinMuiIcons = "5.6.2-$wrappersBuild"
-    const val kotlinEmotion = "11.9.0-$wrappersBuild"
+    const val kotlinMui = "5.9.1-$wrappersBuild"
+    const val kotlinMuiIcons = "5.8.4-$wrappersBuild"
+    const val kotlinEmotion = "11.9.3-$wrappersBuild"
 
     // Test:
     const val junit = "5.8.1"

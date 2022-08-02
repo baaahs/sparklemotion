@@ -19,7 +19,7 @@ import mui.material.ListItemText
 import mui.material.Menu
 import mui.material.MenuItem
 import org.w3c.dom.Element
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler

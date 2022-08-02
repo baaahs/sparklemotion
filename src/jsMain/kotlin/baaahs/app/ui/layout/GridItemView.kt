@@ -11,7 +11,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
 import materialui.icon
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
