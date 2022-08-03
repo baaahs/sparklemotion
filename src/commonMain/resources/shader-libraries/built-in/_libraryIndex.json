@@ -130,6 +130,26 @@
       "srcFile": "shaders/AquaticFlood.glsl"
     },
     {
+      "id": "baaahs-logo",
+      "title": "BAAAHS Logo",
+      "description": "Basic GLSL construction of the BAAAHS logo",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHSLogo.glsl"
+    },
+    {
+      "id": "baaahs-eclipse",
+      "title": "BAAAHS Eclipse",
+      "description": "Sound-activated rainbow sheep eclipse thingy!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHSLogo.glsl"
+    },
+    {
       "id": "blue-dream",
       "title": "Blue Dream",
       "description": "A cool shader!",
