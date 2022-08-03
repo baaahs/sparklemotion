@@ -10,7 +10,6 @@ class ResourcesFs : BaseFakeFs() {
             by lazy {
                 getResource("_RESOURCE_FILES_").split("\n")
                     .filterNot { it.isBlank() }
-                    .also { println("resource files: $it") }
             }
 
     override suspend fun loadFile(file: Fs.File): String {
