@@ -292,7 +292,7 @@ class GlslCode(
                             resultVar
                         else
                             portMap[glslParam.name]?.s
-                                ?: "/* huh? ${glslParam.name} */"
+                                ?: "/* huh? no ${glslParam.name} in ${portMap.keys}. */"
                     }
 
                     return assignment + namespace.qualify(name) + "($args)"
