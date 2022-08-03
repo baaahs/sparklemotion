@@ -78,13 +78,7 @@ data class Patch(
     val priority: Float = 0f
 
     // TODO: Fixture matcher (previously called "Surfaces") will eventually go here.
-) {
-    init {
-        if (shaderId == "baaahsLogo") {
-            println("BAAAHS Logo incomingLinks: ${incomingLinks.keys}")
-        }
-    }
-}
+)
 
 fun <T> List<T>.assertNoDuplicates(items: String = "items") {
     val duplicates = groupBy { it }.mapValues { (_, v) -> v.size }.filterValues { it > 1 }

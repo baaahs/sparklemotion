@@ -36,7 +36,6 @@ class SurfaceVisualizer(
         }
 
     override val obj = Group().apply {
-        println("New SurfaceVisualizer for ${item.title}: vizPixels=$vizPixels")
         add(mesh)
         vizPixels?.addTo(this)
     }
