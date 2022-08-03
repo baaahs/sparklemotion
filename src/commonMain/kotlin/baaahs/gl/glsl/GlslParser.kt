@@ -427,20 +427,16 @@ class GlslParser {
                     if (trimmed.isNotEmpty()) {
                         if (trimmed == "const") {
                             // Ignore.
-                        } else if (inArraySize && trimmed == "]") {
-                            name += trimmed
-                            inArraySize = false
                         } else if (inArraySize) {
-                            name += context.macros[value]?.replacement?.trim() ?: value
+                            val macro = context.macros[trimmed]
+                            // Very confused about this, but without it we get double macro expansion in the name:
+                            if (macro == null) name += trimmed
                         } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
                             qualifier = trimmed
                         } else if (type == null) {
                             type = GlslType.from(trimmed)
                         } else if (name == null) {
                             name = trimmed
-                        } else if (trimmed == "[") {
-                            name += trimmed
-                            inArraySize = true
                         } else {
                             throw context.glslError("Unexpected token \"$trimmed\".")
                         }
@@ -453,6 +449,20 @@ class GlslParser {
                     addParam()
                     appendText(",")
                     return Params(this)
+                }
+
+                override fun visitLeftBracket(): ParseState {
+                    if (inArraySize) error("Already in param array size.")
+                    inArraySize = true
+                    name += "["
+                    return super.visitText("[")
+                }
+
+                override fun visitRightBracket(): ParseState {
+                    if (!inArraySize) error("Not in param array size.")
+                    inArraySize = false
+                    name += "]"
+                    return super.visitText("]")
                 }
 
                 override fun visitRightParen(): ParseState {
