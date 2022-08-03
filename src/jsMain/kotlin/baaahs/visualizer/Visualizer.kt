@@ -5,6 +5,7 @@ import baaahs.getBang
 import baaahs.mapper.JsMapper
 import baaahs.util.Clock
 import baaahs.util.Framerate
+import baaahs.util.Logger
 import baaahs.util.asMillis
 import baaahs.window
 import kotlinx.css.hyphenize
@@ -239,7 +240,10 @@ open class BaseVisualizer(
         raycaster.asDynamic().params.Points.threshold = 1
         originDot = Mesh(
             SphereBufferGeometry(1, 16, 16),
-            MeshBasicMaterial().apply { color.set(0xff0000) }
+            MeshBasicMaterial().apply {
+                color.set(0xff0000)
+                opacity = .25
+            }
         ).apply { name = "Origin dot" }
         realScene.add(originDot)
 
@@ -258,6 +262,10 @@ open class BaseVisualizer(
 
     fun fitCameraToObject(offset: Double = 1.25) {
         val boundingBox = Box3()
+        if (scene.children.isEmpty()) {
+            logger.warn { "No objects in scene, bailing." }
+            return
+        }
         boundingBox.setFromObject(scene)
 
         val center = boundingBox.getCenter(Vector3())
@@ -458,6 +466,7 @@ open class BaseVisualizer(
 
     companion object {
         private const val DEFAULT_REFRESH_DELAY = 50 // ms
+        private val logger = Logger<BaseVisualizer>()
     }
 }
 
