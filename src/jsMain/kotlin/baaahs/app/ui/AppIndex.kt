@@ -224,10 +224,19 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     }
 
                     div(+themeStyles.appContent) {
-                        if (!webClient.serverIsOnline) {
+                        if (!webClient.isConnected) {
                             Paper {
                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                 CircularProgress {}
+                                icon(NotificationImportant)
+                                typographyH6 { +"Connecting…" }
+                                +"Attempting to connect to Sparkle Motion."
+                            }
+                        } else if (!webClient.serverIsOnline) {
+                            Paper {
+                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                CircularProgress {}
+                                icon(NotificationImportant)
                                 typographyH6 { +"Connecting…" }
                                 +"Sparkle Motion is initializing."
                             }
@@ -240,6 +249,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         if (!webClient.showManagerIsReady) {
                                             Paper {
                                                 attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                CircularProgress {}
                                                 NotificationImportant {}
                                                 typographyH6 { +"Connecting…" }
                                                 +"Show manager is initializing."
@@ -298,18 +308,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                         }
                                     }
                                 }
-                            }
-                        }
-
-                        Backdrop {
-                            attrs.open = !webClient.isConnected
-
-                            Container {
-                                CircularProgress {}
-                                icon(NotificationImportant)
-
-                                typographyH6 { +"Connecting…" }
-                                +"Attempting to connect to Sparkle Motion."
                             }
                         }
                     }
