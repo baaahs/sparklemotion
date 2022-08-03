@@ -32,7 +32,7 @@ class GlslParser {
             freezeLineNumber: Boolean = false
         ): ParseState {
             var state = initialState
-            Regex("(.*?)(//|/\\*|\\*/|[;{}(,)#\n]|$)").findAll(text).forEach { matchResult ->
+            Regex("(.*?)(//|/\\*|\\*/|[;{}\\[\\](,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
 
                 if (before.isNotEmpty()) {
@@ -140,6 +140,8 @@ class GlslParser {
                 ";" -> visitSemicolon()
                 "{" -> visitLeftCurlyBrace()
                 "}" -> visitRightCurlyBrace()
+                "[" -> visitLeftBracket()
+                "]" -> visitRightBracket()
                 "(" -> visitLeftParen()
                 "," -> visitComma()
                 ")" -> visitRightParen()
@@ -167,6 +169,8 @@ class GlslParser {
         open fun visitSemicolon(): ParseState = visitText(";")
         open fun visitLeftCurlyBrace(): ParseState = visitText("{")
         open fun visitRightCurlyBrace(): ParseState = visitText("}")
+        open fun visitLeftBracket(): ParseState = visitText("[")
+        open fun visitRightBracket(): ParseState = visitText("]")
         open fun visitLeftParen(): ParseState = visitText("(")
         open fun visitComma(): ParseState = visitText(",")
         open fun visitRightParen(): ParseState = visitText(")")
@@ -412,6 +416,7 @@ class GlslParser {
                 var qualifier: String? = null
                 var type: GlslType? = null
                 var name: String? = null
+                private var inArraySize = false
 
                 override fun appendText(value: String) {
                     this@Function.appendText(value)
@@ -420,17 +425,22 @@ class GlslParser {
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
                     if (trimmed.isNotEmpty()) {
-
                         if (trimmed == "const") {
                             // Ignore.
+                        } else if (inArraySize && trimmed == "]") {
+                            name += trimmed
+                            inArraySize = false
+                        } else if (inArraySize) {
+                            name += context.macros[value]?.replacement?.trim() ?: value
                         } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
                             qualifier = trimmed
                         } else if (type == null) {
                             type = GlslType.from(trimmed)
                         } else if (name == null) {
                             name = trimmed
-                        } else if (trimmed.matches(arrayParam)) {
+                        } else if (trimmed == "[") {
                             name += trimmed
+                            inArraySize = true
                         } else {
                             throw context.glslError("Unexpected token \"$trimmed\".")
                         }
@@ -485,11 +495,6 @@ class GlslParser {
                         )
                     )
                 }
-            }
-
-            companion object {                        // Otherwise we get "Invalid regular expression: Lone quantifier brackets":
-                @Suppress("RegExpRedundantEscape")
-                val arrayParam = Regex("^\\[\\d+\\]$")
             }
         }
 
