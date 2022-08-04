@@ -6,7 +6,7 @@ import org.w3c.dom.Element
 import react.*
 
 @Suppress("unused")
-fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: () -> Unit) {
+fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (width: Int, height: Int) -> Unit) {
     val onResizedThrottled = useCallback(elementRef, callback = throttle(onResized, 40))
 
     val previousSize = useRef<Pair<Int, Int>>(null)
@@ -19,7 +19,7 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: ()
             val size = element.clientWidth to element.clientHeight
             if (previousSize.current != size) {
                 previousSize.current = size
-                onResizedThrottled()
+                onResizedThrottled(element.clientWidth, element.clientHeight)
             }
         }
         ro.observe(element)
@@ -30,7 +30,8 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: ()
     // Fire once when the component first mounts
     useEffect(elementRef, onResizedThrottled) {
         val intervalId = baaahs.window.setTimeout(timeout = 500, handler = {
-            onResizedThrottled()
+            val element = elementRef.current ?: return@setTimeout
+            onResizedThrottled(element.clientWidth, element.clientHeight)
         })
 
         cleanup { baaahs.window.clearTimeout(intervalId) }

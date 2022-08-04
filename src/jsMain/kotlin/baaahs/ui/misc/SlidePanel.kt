@@ -25,7 +25,7 @@ val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
     onMount(props.panels) {
         resize(props, rootEl, panelEls)
     }
-    useResizeListener(rootEl) { resize(props, rootEl, panelEls) }
+    useResizeListener(rootEl) { _, _ -> resize(props, rootEl, panelEls) }
 
     val visiblePanelIndex = min(props.index ?: 0, props.panels.size)
     val marginWidth = props.margins ?: 0.px
