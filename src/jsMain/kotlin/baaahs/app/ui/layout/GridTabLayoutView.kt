@@ -87,8 +87,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 
     val containerDiv = ref<HTMLDivElement>()
-    useResizeListener(containerDiv) {
-        layoutDimens = with(containerDiv.current!!) { clientWidth to clientHeight }
+    useResizeListener(containerDiv) { width, height ->
+        layoutDimens = width to height
     }
     val (layoutWidth, layoutHeight) = layoutDimens
     val margin = 5

@@ -39,8 +39,8 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
     var layoutDimens by state { 100 to 100 }
     val containerDiv = ref<HTMLElement>()
-    useResizeListener(containerDiv) {
-        layoutDimens = with(containerDiv.current!!) { clientWidth to clientHeight }
+    useResizeListener(containerDiv) { width, height ->
+        layoutDimens = width to height
     }
 
     val handleResize by handler { e: MouseEvent, data: ResizeCallbackData ->

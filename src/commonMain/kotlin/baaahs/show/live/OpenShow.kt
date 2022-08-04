@@ -72,6 +72,7 @@ class OpenShow(
     val allControls: List<OpenControl> get() = openContext.allControls
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
+        println("open feed = $id ${dataSource.title} ${dataSource.getVarName(id)}")
         feed.use()
         dataSource to feed
     }

@@ -20,12 +20,15 @@ import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
+import csstype.Display
+import csstype.ZIndex
 import external.ErrorBoundary
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.NotificationImportant
 import mui.material.*
 import mui.material.styles.ThemeProvider
+import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -286,6 +289,19 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                     attrs.show = show
                                                     attrs.onApply = handleLayoutEditorChange
                                                     attrs.onClose = handleLayoutEditorDialogClose
+                                                }
+                                            }
+                                        }
+
+                                        if (webClient.sceneProvider.openScene == null) {
+                                            Backdrop {
+                                                attrs.open = true
+                                                attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
+                                                Container {
+                                                    icon(NotificationImportant)
+
+                                                    typographyH6 { +"No scene loaded." }
+                                                    +"Maybe you'd like to open one?"
                                                 }
                                             }
                                         }

@@ -16,7 +16,7 @@ private val VisualizerPanelView = xComponent<VisualizerPanelProps>("VisualizerPa
     val container = ref<HTMLElement>()
     observe(props.visualizer)
 
-    useResizeListener(container) {
+    useResizeListener(container) { _, _ ->
         props.visualizer.resize()
     }
 

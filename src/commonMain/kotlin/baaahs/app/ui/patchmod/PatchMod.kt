@@ -102,7 +102,7 @@ class PositionAndScalePatchMod(
     }
 
     override fun registerGadgets(gadgetProvider: GadgetProvider) {
-        gadgetProvider.registerGadget(positionDataSource.suggestId(), this.positionXyPad)
+        gadgetProvider.registerGadget(positionDataSource.suggestId(), this.positionXyPad, positionDataSource)
     }
 
     companion object : PatchModBuilder {

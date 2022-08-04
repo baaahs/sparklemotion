@@ -15,6 +15,8 @@ class PatchModStyles(private val theme: Theme) : StyleSheet("app-ui-patchmod", i
     val xyPadContainer by css {
         top = 0.px
         left = 0.px
+        width = 100.pct
+        height = 100.pct
         position = Position.absolute
     }
 

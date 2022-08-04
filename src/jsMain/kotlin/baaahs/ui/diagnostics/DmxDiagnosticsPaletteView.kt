@@ -52,13 +52,16 @@ val DmxDiagnosticsView = xComponent<DmxDiagnosticsProps>("DmxDiagnostics") { pro
                 dmxUniverses.forEach { (id, lastFrame) ->
                     header { +id }
                     pre {
-                        lastFrame.channels.forEachIndexed { index, v ->
-                            val hex = ((v.toInt() or 0x100) and 0x1ff).toString(16).substring(1)
-                            if (index % 16 == 15) {
-                                +"$hex\n"
-                            } else if (index % 4 == 3) {
-                                +"$hex "
-                            } else +hex
+                        +buildString(lastFrame.channels.size * 3) {
+                            lastFrame.channels.forEachIndexed { index, v ->
+                                val hex = ((v.toInt() or 0x100) and 0x1ff).toString(16).substring(1)
+                                append(hex)
+                                if (index % 16 == 15) {
+                                    append('\n')
+                                } else if (index % 4 == 3) {
+                                    append(' ')
+                                }
+                            }
                         }
                     }
                 }

@@ -46,14 +46,16 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
     colorWheel?.harmonyMode = harmonyMode
     colorWheel?.colors = colors
 
-    val checkRadius = {
-        val el = containerDiv.current!!
-        val newRadius = min(el.clientWidth, el.clientHeight) / 2
+    val checkRadius = { width: Int, height: Int ->
+        val newRadius = min(width, height) / 2
         if (radius != newRadius) {
             radius = newRadius
         }
     }
-    onMount { checkRadius() }
+    onMount {
+        val el = containerDiv.current!!
+        checkRadius(el.clientWidth, el.clientHeight)
+    }
     useResizeListener(containerDiv, checkRadius)
 
     fun handleColorChange() {

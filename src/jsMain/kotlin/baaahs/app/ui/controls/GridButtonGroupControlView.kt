@@ -58,7 +58,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
     val cardRef = ref<Element>()
-    useResizeListener(cardRef) {
+    useResizeListener(cardRef) { _, _ ->
         cardRef.current?.children?.forEach {
             if (it.hasClass("react-grid-layout")) {
                 with(it) {

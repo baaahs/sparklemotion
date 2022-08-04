@@ -43,7 +43,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
 
     val buttonRef = ref<HTMLButtonElement>()
     val titleDivRef = ref<HTMLDivElement>()
-    useResizeListener(buttonRef) {
+    useResizeListener(buttonRef) { _, _ ->
         titleDivRef.current!!.fitText()
     }
 

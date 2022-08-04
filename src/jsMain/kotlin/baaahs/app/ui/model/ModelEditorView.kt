@@ -100,7 +100,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
     val editingEntity = visualizer.editingEntity
 
-    useResizeListener(visualizerParentEl) {
+    useResizeListener(visualizerParentEl) {  _, _ ->
         visualizer.resize()
     }
 

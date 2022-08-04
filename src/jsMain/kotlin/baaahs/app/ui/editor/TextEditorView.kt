@@ -39,7 +39,7 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     }
     aceEditor.current?.let { props.onAceEditor(it) }
 
-    useResizeListener(rootEl) {
+    useResizeListener(rootEl) { _, _ ->
         aceEditor.current?.editor?.resize()
     }
 
