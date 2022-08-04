@@ -52,7 +52,7 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
             }
         }
 
-        useResizeListener(rootEl) {
+        useResizeListener(rootEl) { _, _ ->
             visualizer.resize()
         }
     }
