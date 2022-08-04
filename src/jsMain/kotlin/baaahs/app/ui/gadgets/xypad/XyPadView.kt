@@ -3,7 +3,6 @@ package baaahs.app.ui.gadgets.xypad
 import baaahs.Gadget
 import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.XyPadStyles
-import baaahs.app.ui.controls.inUseStyle
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.ui.*
@@ -21,8 +20,8 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
-    val padSize = Vector2F(200f, 200f)
-    val knobSize = Vector2F(20f, 20f)
+    val padSize = props.padSize ?: Vector2F(200f, 200f)
+    val knobSize = props.knobSize ?: Vector2F(20f, 20f)
     val helper = memo(padSize, knobSize, props.xyPad) {
         props.xyPad.getHelper(padSize, knobSize)
     }
@@ -45,7 +44,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
 
     val gadgetListener by handler(updatePosition) { _: Gadget -> updatePosition() }
 
-    onMount(props.xyPad) {
+    onMount(props.xyPad, gadgetListener) {
         props.xyPad.listen(gadgetListener)
         withCleanup { props.xyPad.unlisten(gadgetListener) }
     }
@@ -142,6 +141,8 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
 external interface XyPadProps : Props {
     var xyPad: XyPad
     var backgroundClasses: String?
+    var padSize: Vector2F?
+    var knobSize: Vector2F?
 }
 
 fun RBuilder.xyPad(handler: RHandler<XyPadProps>) =
