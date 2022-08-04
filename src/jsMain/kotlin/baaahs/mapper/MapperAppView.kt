@@ -97,7 +97,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         uiActions.loadImage(name, true)
     }
 
-    useResizeListener(screenRef) {
+    useResizeListener(screenRef) { _, _ ->
         screenRef.current?.let { el ->
             ui.onResize(el.offsetWidth, el.offsetHeight)
         }
