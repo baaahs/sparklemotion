@@ -31,6 +31,12 @@ interface MediaDevices {
 
         val centerUv get() = Uv.fromXY(centerX, centerY, sourceDimen)
 
+        val changedAmount by lazy {
+            val changePixels = width * height
+            val sourcePixels = sourceDimen.width * sourceDimen.height
+            changePixels / sourcePixels.toFloat()
+        }
+
         fun distanceTo(other: Region): Float {
             if (sourceDimen != other.sourceDimen)
                 error("mismatched region dimensions ($sourceDimen != ${other.sourceDimen}")

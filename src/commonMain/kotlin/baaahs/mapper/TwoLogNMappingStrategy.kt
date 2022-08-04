@@ -157,12 +157,12 @@ object TwoLogNMappingStrategy : MappingStrategy() {
 
                     Mapper.logger.debug { "* analysis: hasBrightSpots=${analysis.hasBrightSpots()}" }
                     Mapper.logger.debug { "* pixelChangeRegion=$pixelChangeRegion" }
-                    if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty()) {
+                    if (analysis.hasBrightSpots() && !pixelChangeRegion.isEmpty() && pixelChangeRegion.changedAmount < .01) {
                         val centerUv = pixelChangeRegion.centerUv
                         visibleSurface?.setPixel(pixelIndex, centerUv)
                         brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
                             pixelChangeRegion,
-                            TwoLogNPixelMetadata(null /*pixelOnImageName*/)
+                            TwoLogNPixelMetadata(pixelOnImageName, null)
                         )
                         Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                     } else {
@@ -270,7 +270,7 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                             visibleSurface?.setPixel(pixelIndex, centerUv)
                             brainToMap.pixelMapData[pixelIndex] = Mapper.PixelMapData(
                                 pixelChangeRegion,
-                                TwoLogNPixelMetadata(pixelOnImageName)
+                                TwoLogNPixelMetadata(null, pixelOnImageName)
                             )
                             Mapper.logger.debug { "$pixelIndex/${brainToMap.brainId}: centerUv = $centerUv" }
                         }
@@ -301,6 +301,7 @@ object TwoLogNMappingStrategy : MappingStrategy() {
 
     @Serializable @SerialName("TwoLogN")
     data class TwoLogNPixelMetadata(
-        val deltaImage: String? = null
+        val calculatedImage: String? = null,
+        val singleImage: String? = null
     ) : PixelMetadata
 }
