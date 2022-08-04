@@ -1068,7 +1068,11 @@ class JsMapper(
         ctx2d.drawImage(renderBitmap, 0.0, 0.0, drawSize.width.toDouble(), drawSize.height.toDouble())
 
         changeRegion?.apply {
-            ctx2d.strokeStyle = "#ff0000"
+            if (changeRegion.changedAmount > .01) {
+                ctx2d.strokeStyle = "#ff0000"
+            } else {
+                ctx2d.strokeStyle = "#ffff00"
+            }
             ctx2d.lineWidth = 1.0
 
             val drawScaleX = drawSize.width / bitmap.width.toDouble()
@@ -1224,7 +1228,7 @@ class JsMapper(
                         pixelMetadata.deltaImage?.let { loadImage(it, true) }
                     }
                     is TwoLogNMappingStrategy.TwoLogNPixelMetadata -> {
-                        pixelMetadata.deltaImage?.let { loadImage(it, true) }
+                        (pixelMetadata.singleImage ?: pixelMetadata.calculatedImage)?.let { loadImage(it, true) }
                     }
                     else -> error("Unknown pixel metadata $pixelMetadata.")
                 }

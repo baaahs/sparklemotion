@@ -114,7 +114,7 @@ private val MappingSessionView = xComponent<MappingSessionProps>("MappingSession
                         +when {
                             pixel == null -> styles.skippedPixel
                             pixel.modelPosition == null -> styles.unmappedPixel
-                            twoLogNMetadata?.deltaImage != null -> styles.individuallyMappedPixel
+                            twoLogNMetadata?.singleImage != null -> styles.individuallyMappedPixel
                             twoLogNMetadata != null -> styles.twoLogNMappedPixel
                             else -> styles.individuallyMappedPixel
                         } and if (i == selectedPixelIndex) styles.selectedPixel else null

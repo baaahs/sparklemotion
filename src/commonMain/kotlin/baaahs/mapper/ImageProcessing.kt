@@ -159,7 +159,7 @@ class ImageProcessing {
 
         fun hasBrightSpots(): Boolean {
             this.hist.data.reduce { acc, i ->
-                if (i - acc > 3) { // one or two brigher pixels don't count
+                if (i - acc > 3) { // one or two brighter pixels don't count
                     return true
                 }
                 i
