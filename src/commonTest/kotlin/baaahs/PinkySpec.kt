@@ -11,6 +11,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
+import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
@@ -99,7 +100,8 @@ object PinkySpec : Spek({
                 ShaderLibraryManager(storage, pubSub),
                 Pinky.NetworkStats(),
                 PinkySettings(),
-                serverNotices
+                serverNotices,
+                PinkyMapperHandlers(storage)
             )
         }
         val pinkyLink by value { network.links.only() }
