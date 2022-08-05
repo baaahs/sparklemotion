@@ -49,7 +49,8 @@ class Pinky(
     private val shaderLibraryManager: ShaderLibraryManager,
     private val networkStats: NetworkStats,
     val pinkySettings: PinkySettings,
-    val serverNotices: ServerNotices
+    val serverNotices: ServerNotices,
+    val pinkyMapperHandlers: PinkyMapperHandlers
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -69,7 +70,7 @@ class Pinky(
 
     init {
         httpServer.listenWebSocket("/ws/api") {
-            WebSocketRouter(plugins, coroutineContext) { PinkyMapperHandlers(storage).register(this) }
+            WebSocketRouter(plugins, coroutineContext) { pinkyMapperHandlers.register(this) }
         }
 
         httpServer.listenWebSocket("/ws/visualizer") {

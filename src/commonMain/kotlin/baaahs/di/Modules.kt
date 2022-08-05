@@ -17,6 +17,7 @@ import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
+import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.mapping.MappingManagerImpl
@@ -84,6 +85,7 @@ interface PinkyModule : KModule {
     val Scope.dmxDriver: Dmx.Driver
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
+    val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
 
     override fun getModule(): Module {
         val pinkyContext = named("PinkyContext")
@@ -154,11 +156,13 @@ interface PinkyModule : KModule {
                 scoped { ShaderLibraryManager(get(), get()) }
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }
+                scoped { PinkyMapperHandlers(get()) }
                 scoped {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
-                        get(), get(), get(), get(), get(), get()
+                        get(), get(), get(), get(), get(), get(),
+                        pinkyMapperHandlers
                     )
                 }
             }
