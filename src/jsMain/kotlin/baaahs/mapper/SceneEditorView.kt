@@ -23,7 +23,7 @@ private enum class PageTabs {
     Model,
     Controllers,
     Fixtures,
-    Surface_Mapping
+    Mapping
 }
 
 val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { props ->
@@ -77,7 +77,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
             }
         }
 
-        tabPanel(PageTabs.Surface_Mapping, selectedTab) {
+        tabPanel(PageTabs.Mapping, selectedTab) {
             mapperAppWrapper {
                 attrs.sceneEditorClient = props.sceneEditorClient
                 attrs.mapper = props.mapper
