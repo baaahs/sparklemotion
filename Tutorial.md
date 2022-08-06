@@ -22,18 +22,32 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 ./gradlew --continuous jsRun
 ```
 
-A brand new session starts with no Show or Scene loaded, and the Show/Scene menu open. For an existing session click the "☰" icon to open the Show/Scene menu.
+A brand new session starts with no Show or Scene loaded and the Show/Scene menu open. For an existing session:
+
+- Open the Show/Scene menu with:
+  - `Esc` keyboard shortcut
+  - Click the "☰" icon
+- Turn on Design Mode with:
+  - `D` keyboard shortcut
+  - Toggle the "Design Mode" switch
+
+To reset the simulator in Chrome:
+
+- Open Developer Tools
+- Go to Application -> Local Storage -> http://localhost:8000
+- Right click and "Clear"
+- Reload the browser
 
 ## Scene Quick Start
 
 Load a scene from the BAAAHS template. Defining a scene's model, light controllers and fixtures is an exercise for another day...
 
-### Load the BAAAHS template
+### Load the Hi-Res template
 
-- "☰" to open the Show/Scene menu then Scene tab
+- Open the Show/Scene menu then Scene tab
 - "+ New Scene"
-- From template "BAAAHS" to see the sheep model 🐑
-- "Save" button, enter "my-baaahs", then "save"
+- From template "Hi-Res" to see the sheep model 🐑
+- "Save" button, enter "my-hires", then "save"
 
 ## Show Quick Start
 
@@ -41,15 +55,14 @@ Next we will create an empty show, define a default projection, then program our
 
 ### Create an empty show
 
-- "☰" to open the Show/Scene menu then Show tab
+- Open the Show/Scene menu then Show tab
 - "+ New Show"
 - "Empty Show"
 - "Save" button, enter "my-baaahs", then "save"
 
 ### Define a default projection
 
-- "☰" to open the Show/Scene menu then Show tab
-- Toggle "Design Mode"
+- Open the Show/Scene menu then Show tab and toggle "Design Mode"
 - "✎" next to the show name
 - New Projection Shader
 - Shader name: "Flat Projection"
