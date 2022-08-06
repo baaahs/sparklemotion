@@ -46,44 +46,26 @@ Load a scene from the "Hi-Res" template. Defining a scene's model, light control
 
 - Open the Show/Scene menu then Scene tab
 - "+ New Scene"
-- From template "Hi-Res" to see the sheep model 🐑
-- "Save" button, enter "my-scene", then "save"
+- From template "Hi-Res" to see a grid of lights
+- "Save" button, enter "tutorial", then "save"
 
 ## Show Quick Start
 
-Next we will create an empty show, define a default projection, then program our first shader.
+Next we will create an empty show, define a default projection, program our first shaders, then run the show.
 
 ### Create an empty show
 
 - Open the Show/Scene menu then Show tab
 - "+ New Show"
 - "Empty Show"
-- "Save" button, enter "my-show", then "save"
+- "Save" button, enter "tutorial", then "save"
 
 ### Define a default projection
 
 - Open the Show/Scene menu then Show tab and toggle "Design Mode"
 - "✎" next to the show name
-- New Projection Shader
-- Shader name: "Flat Projection"
-- Use the default code
-
-  ```c
-  struct ModelInfo {
-      vec3 center;
-      vec3 extents;
-  };
-  uniform ModelInfo modelInfo;
-
-  // @return uv-coordinate
-  // @param pixelLocation xyz-coordinate
-  vec2 main(vec3 pixelLocation) {
-      vec3 start = modelInfo.center - modelInfo.extents / 2.;
-      vec3 rel = (pixelLocation - start) / modelInfo.extents;
-      return rel.xy;
-  }
-  ```
-
+- From Shader Library...
+- Select "Flat Projection"
 - "Apply" then "Close"
 - "Save"
 
@@ -133,7 +115,7 @@ The above shader needs a `ColorPicker`. While "Design Mode" has support for plac
 
 - "Upload Show"
 - Drop "Untitled.sparkle"
-- "Save" button, enter "my-show", then "save"
+- "Save" button, enter "tutorial", then "save"
 
 ### Program our second shader
 
