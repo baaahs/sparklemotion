@@ -40,14 +40,14 @@ To reset the simulator in Chrome:
 
 ## Scene Quick Start
 
-Load a scene from the BAAAHS template. Defining a scene's model, light controllers and fixtures is an exercise for another day...
+Load a scene from the "Hi-Res" template. Defining a scene's model, light controllers and fixtures is an exercise for another day...
 
 ### Load the Hi-Res template
 
 - Open the Show/Scene menu then Scene tab
 - "+ New Scene"
 - From template "Hi-Res" to see the sheep model 🐑
-- "Save" button, enter "my-hires", then "save"
+- "Save" button, enter "my-scene", then "save"
 
 ## Show Quick Start
 
@@ -58,7 +58,7 @@ Next we will create an empty show, define a default projection, then program our
 - Open the Show/Scene menu then Show tab
 - "+ New Show"
 - "Empty Show"
-- "Save" button, enter "my-baaahs", then "save"
+- "Save" button, enter "my-show", then "save"
 
 ### Define a default projection
 
@@ -133,7 +133,7 @@ The above shader needs a `ColorPicker`. While "Design Mode" has support for plac
 
 - "Upload Show"
 - Drop "Untitled.sparkle"
-- "Save" button, enter "my-baaahs", then "save"
+- "Save" button, enter "my-show", then "save"
 
 ### Program our second shader
 
@@ -190,7 +190,7 @@ To run the show exit "Design Mode" and interact with the buttons and controls.
 
 The concepts above will help us build out a full-featured show.
 
-Similar to the lights, we can control the eyes with a shader that returns `MovingHeadParams` for pan, tilt, color and brightness.
+Similar to the "Hi-Res" scene templates there is a "BAAAHS" template. This has a model of the sheep, and additionally has eyes we can control with a shader that returns `MovingHeadParams` for pan, tilt, color and brightness. Currently its recommended to use "Hi-Res" in the simuator for best performance and to occasionally test results on "BAAAHS" before a show.
 
 Similar to the "default projection", we can add more shaders that are always running. The shader library has "Brightness" and "HSB" (hue, saturation, brightness") shaders which are useful to shift the color or brightness of everything running upstream.
 
