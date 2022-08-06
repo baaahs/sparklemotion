@@ -96,26 +96,13 @@ We should still be in design / edit mode and see a grid of button placeholders.
 
 #### Controls
 
-The above shader needs a `ColorPicker`. While "Design Mode" has support for placing newly defined controls in the button grid, at present it is easiest to do this by editing the show template directly.
+The above shader needs a `ColorPicker` control. We can add a "vacuity" -- an empty -- to the button grid where all unplaced controls for active shaders will show up. So in this case when we turn on "Solid Color" we will see its color picker.
 
-- "☰" to open the Show/Scene menu then Show tab
-- "Download Show"
-- Open "Untitled.sparkle"
-- Add to `layouts.formats.default.tabs[0].items[]`
-
-  ```json
-  {
-      "controlId": "color",
-      "column": 0,
-      "row": 1,
-      "width": 2,
-      "height": 2
-  }
-  ```
-
-- "Upload Show"
-- Drop "Untitled.sparkle"
-- "Save" button, enter "tutorial", then "save"
+- Open the Show/Scene menu then Show tab and toggle "Design Mode"
+- "+" -> New Vacuity
+- "Apply" then "Close"
+- Drag the corner to expand it to more of the grid
+- "Save"
 
 ### Program our second shader
 
@@ -174,9 +161,11 @@ The concepts above will help us build out a full-featured show.
 
 Similar to the "Hi-Res" scene templates there is a "BAAAHS" template. This has a model of the sheep, and additionally has eyes we can control with a shader that returns `MovingHeadParams` for pan, tilt, color and brightness. Currently its recommended to use "Hi-Res" in the simuator for best performance and to occasionally test results on "BAAAHS" before a show.
 
-Similar to the "default projection", we can add more shaders that are always running. The shader library has "Brightness" and "HSB" (hue, saturation, brightness") shaders which are useful to shift the color or brightness of everything running upstream.
+Similar to the "default projection", we can add more shaders that are always running. The shader library also has "Brightness" and "HSB" (hue, saturation, brightness") shaders which are useful to shift the color or brightness of everything running upstream.
 
 Similar to `ColorPicker`, we can use the `Slider`, `Switch`, and `XyPad` controls in a shader and control it through the UI.
+
+Similar to the "vacuity" you can explicitly place shader controls in the UI grid. Currently you may need to download, modify then upload the show JSON for the best control over the UI.
 
 Similar to the `time` component, we can use `beatInfo`, `beatLink` and `soundAnalysis` components with sound information to make shaders that are sound reactive.
 
