@@ -294,7 +294,7 @@ abstract class Mapper(
                 logger.info { "done identifying things... $isRunning" }
                 ui.showMessage("++LEVEL UNLOCKED++")
 
-                delay(1000L)
+                delay(10000L)
             } catch (e: TimeoutException) {
                 ui.showMessage("Timed out: ${e.message}")
                 logger.error(e) { "Timed out" }
