@@ -118,6 +118,9 @@ object TwoLogNMappingStrategy : MappingStrategy() {
                 bitmap0.subtract(bitmapBoth)
                 bitmap1.subtract(bitmapBoth)
                 val slice = Slice.build(bitmap0, deferredImage0Name.await(), bitmap1, deferredImage1Name.await())
+//                val slice = Slice.build(
+//                    bitmap0.clone().subtract(bitmapBoth), deferredImage0Name.await(),
+//                    bitmap1.clone().subtract(bitmapBoth), deferredImage1Name.await())
 
                 slices.add(slice)
 
