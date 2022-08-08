@@ -561,8 +561,8 @@ class JsMapper(
             blending = AdditiveBlending
             map = reticleTx
             transparent = true
-            opacity = .75
-            size = 3
+            opacity = .8
+            size = 5
             depthTest = false
         }
         val points = Points(pixelsGeom, pixelsMaterial)
