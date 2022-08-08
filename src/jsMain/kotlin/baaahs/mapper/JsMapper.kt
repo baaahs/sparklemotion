@@ -38,7 +38,6 @@ import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.*
-import three_ext.Matrix4
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -147,7 +146,9 @@ class JsMapper(
     private val entityDepictions = mutableMapOf<Model.Entity, PanelInfo>()
 
     private var commandProgress = ""
-    private var cameraZRotation = 0.0
+    private var cameraZRotation
+        get() = uiCamera.getZRotation()
+        set(value) { uiCamera.setZRotation(value) }
 
     val mapperStatus = MapperStatus()
 
@@ -317,8 +318,7 @@ class JsMapper(
         } else if (commandProgress.isEmpty() && event.code == "ArrowRight") {
             adjustCameraX(moveRight = true, fine = event.shiftKey)
         } else if (commandProgress.isEmpty() && event.code == "Digit0") {
-            cameraZRotation = 0.0
-            updateCameraRotation()
+            resetCameraRotation()
         } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
             loadCameraPosition(event.code.substring(5))
         } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
@@ -347,8 +347,6 @@ class JsMapper(
         val position = cameraPositions[key]
         if (position != null) {
             position.update(uiCamera, uiControls)
-            cameraZRotation = position.zRotation
-
             ui.showMessage("Loaded camera position from `$key`.")
         } else {
             ui.showMessage("No camera position for `$key`.")
@@ -369,7 +367,6 @@ class JsMapper(
 
     private fun resetCameraRotation() {
         cameraZRotation = 0.0
-        updateCameraRotation()
     }
 
     fun adjustCameraX(moveRight: Boolean, fine: Boolean = false) {
@@ -397,14 +394,6 @@ class JsMapper(
 
     private fun adjustCameraZRotation(angle: Double) {
         cameraZRotation += angle
-        updateCameraRotation()
-    }
-
-    private fun updateCameraRotation() {
-        uiCamera.up.set(0, 1, 0)
-        val cameraAngle = Matrix4()
-        val rotated = cameraAngle.makeRotationZ(cameraZRotation)
-        uiCamera.up.applyMatrix4(rotated)
     }
 
     private fun selectSurfacesMatching(pattern: String) {
