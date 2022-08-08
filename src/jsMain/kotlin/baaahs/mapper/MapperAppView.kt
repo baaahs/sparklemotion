@@ -134,37 +134,39 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     attrs.value = ui.selectedDevice
                 }
 
-                betterSelect<MappingStrategy> {
-                    attrs.label = "Mapping Strategy:"
-                    attrs.values = MappingStrategy.options
-                    attrs.renderValueOption = { mappingStrategy -> buildElement { +mappingStrategy.title } }
-                    attrs.onChange = uiActions.changedMappingStrategy
-                    attrs.value = ui.mappingStrategy
-                }
+                if (ui.mappingEnabled) {
+                    betterSelect<MappingStrategy> {
+                        attrs.label = "Mapping Strategy:"
+                        attrs.values = MappingStrategy.options
+                        attrs.renderValueOption = { mappingStrategy -> buildElement { +mappingStrategy.title } }
+                        attrs.onChange = uiActions.changedMappingStrategy
+                        attrs.value = ui.mappingStrategy
+                    }
 
-                div(+styles.controlsRow) {
-                    Button {
-                        i(classes = "fas fa-play") {}
-                        attrs.disabled = !ui.playButtonEnabled
-                        attrs.onClick = uiActions.clickedPlay.withMouseEvent()
-                    }
-                    Button {
-                        i(classes = "fas fa-pause") {}
-                        attrs.disabled = !ui.pauseButtonEnabled
-                        attrs.onClick = uiActions.clickedPause.withMouseEvent()
-                    }
-                    Button {
-                        i(classes = "fas fa-redo") {}
-                        attrs.disabled = ui.redoFn != null
-                        attrs.onClick = uiActions.clickedRedo.withMouseEvent()
-                    }
-                    Button {
-                        i(classes = "fas fa-stop") {}
-                        attrs.onClick = uiActions.clickedStop.withMouseEvent()
-                    }
-                    Button {
-                        i(classes = "fas fa-sign-in-alt") {}
-                        attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
+                    div(+styles.controlsRow) {
+                        Button {
+                            i(classes = "fas fa-play") {}
+                            attrs.disabled = !ui.playButtonEnabled
+                            attrs.onClick = uiActions.clickedPlay.withMouseEvent()
+                        }
+                        Button {
+                            i(classes = "fas fa-pause") {}
+                            attrs.disabled = !ui.pauseButtonEnabled
+                            attrs.onClick = uiActions.clickedPause.withMouseEvent()
+                        }
+                        Button {
+                            i(classes = "fas fa-redo") {}
+                            attrs.disabled = ui.redoFn != null
+                            attrs.onClick = uiActions.clickedRedo.withMouseEvent()
+                        }
+                        Button {
+                            i(classes = "fas fa-stop") {}
+                            attrs.onClick = uiActions.clickedStop.withMouseEvent()
+                        }
+                        Button {
+                            i(classes = "fas fa-sign-in-alt") {}
+                            attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
+                        }
                     }
                 }
 
