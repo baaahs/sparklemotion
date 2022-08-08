@@ -4,6 +4,17 @@
   "license": null,
   "entries": [
     {
+      "id": "flatprojection",
+      "title": "Flat Projection",
+      "description": "Project pixels onto a model",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=projection"
+      ],
+      "srcFile": "projections/Flat.glsl"
+    },
+    {
       "id": "beatshift",
       "title": "Beat Shift",
       "description": "Adjusts time by beat intensity.",
