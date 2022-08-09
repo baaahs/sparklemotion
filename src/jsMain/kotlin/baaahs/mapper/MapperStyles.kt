@@ -209,7 +209,11 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         backgroundColor = Color.red
     }
 
-    val mappedPixel by css {
+    val individuallyMappedPixel by css {
+        backgroundColor = Color.orange
+    }
+
+    val twoLogNMappedPixel by css {
         backgroundColor = Color.green
     }
 

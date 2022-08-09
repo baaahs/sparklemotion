@@ -27,7 +27,7 @@ external interface Intersection {
         set(value) = definedExternally
 }
 
-external interface `T$21` {
+external interface RaycasterThreshold {
     var threshold: Number
 }
 
@@ -35,13 +35,13 @@ external interface RaycasterParameters {
     var Mesh: Any?
         get() = definedExternally
         set(value) = definedExternally
-    var Line: `T$21`?
+    var Line: RaycasterThreshold?
         get() = definedExternally
         set(value) = definedExternally
     var LOD: Any?
         get() = definedExternally
         set(value) = definedExternally
-    var Points: `T$21`?
+    var Points: RaycasterThreshold?
         get() = definedExternally
         set(value) = definedExternally
     var Sprite: Any?

@@ -62,6 +62,8 @@ class PinkyMain(private val args: Array<String>) {
 
         val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
         val resource = Pinky::class.java.classLoader.getResource("baaahs")!!
+        val dataDir = pinkyScope.get<Fs>()
+        val dataDirFile = dataDir.resolve(".").asPath().toFile()
         if (resource.protocol == "jar") {
             val uri = resource.toURI()!!
             FileSystems.newFileSystem(uri, mapOf("create" to "true"))
@@ -76,6 +78,7 @@ class PinkyMain(private val args: Array<String>) {
                     route("monitor/") { defaultResource("htdocs/monitor/index.html") }
                     get("ui") { call.respondRedirect("ui/") }
                     route("ui/") { defaultResource("htdocs/ui/index.html") }
+                    route("data/") { files(dataDirFile) }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
@@ -109,6 +112,7 @@ class PinkyMain(private val args: Array<String>) {
                     route("monitor/") { default("monitor/index.html") }
                     get("ui") { call.respondRedirect("ui/") }
                     route("ui/") { default("ui/index.html") }
+                    route("data/") { files(dataDirFile) }
                     default("ui-index.html")
                 }
             }
