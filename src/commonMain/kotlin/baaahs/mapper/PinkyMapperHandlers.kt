@@ -2,7 +2,6 @@ package baaahs.mapper
 
 import baaahs.api.ws.WebSocketRouter
 import baaahs.decodeBase64
-import baaahs.encodeBase64
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonNull
@@ -10,7 +9,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
-class PinkyMapperHandlers(val storage: Storage) {
+open class PinkyMapperHandlers(val storage: Storage) {
     fun register(builder: WebSocketRouter.HandlerBuilder) {
         builder.apply {
             handle("listImages") { args ->
@@ -33,8 +32,7 @@ class PinkyMapperHandlers(val storage: Storage) {
 
             handle("getImageUrl") { args ->
                 val name = args[1].jsonPrimitive.contentOrNull
-                val imageData = storage.loadImage(name!!)?.let { encodeBase64(it) }
-                JsonPrimitive("data:image/webp;base64,$imageData")
+                JsonPrimitive(name?.let { getImageUrl(it) })
             }
 
             handle("listSessions") {
@@ -61,5 +59,9 @@ class PinkyMapperHandlers(val storage: Storage) {
                 json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
             }
         }
+    }
+
+    open suspend fun getImageUrl(name: String): String {
+        return "/data/mapping-sessions/images/$name"
     }
 }

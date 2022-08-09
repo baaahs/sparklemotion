@@ -6,7 +6,9 @@ import baaahs.SheepSimulator
 import baaahs.browser.RealMediaDevices
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
+import baaahs.encodeBase64
 import baaahs.io.Fs
+import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
@@ -100,6 +102,13 @@ class JsSimPinkyModule(
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor
         get() = sceneMonitor_
+    override val Scope.pinkyMapperHandlers: PinkyMapperHandlers
+        get() = object : PinkyMapperHandlers(get()) {
+            override suspend fun getImageUrl(name: String): String {
+                val imageData = storage.loadImage(name)?.let { encodeBase64(it) }
+                return "data:image/webp;base64,$imageData"
+            }
+        }
 
     override fun getModule(): Module {
         return super.getModule()

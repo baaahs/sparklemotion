@@ -103,8 +103,9 @@ class Storage(val fs: Fs, val plugins: Plugins) {
 
     suspend fun loadMappingSession(f: Fs.File): MappingSession {
         val mappingJson = fs.loadFile(f)
+            ?: error("No such file \"${f.fullPath}\".")
         val mappingSession = try {
-            val json = plugins.json.parseToJsonElement(mappingJson!!).jsonObject.let {
+            val json = plugins.json.parseToJsonElement(mappingJson).jsonObject.let {
                 // Janky data migration.
                 buildJsonObject {
                     it.entries.forEach { (k, v) ->

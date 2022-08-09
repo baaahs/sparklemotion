@@ -4,6 +4,7 @@ import three.js.PerspectiveCamera
 import three_ext.CameraControls
 import three_ext.Matrix4
 import three_ext.toVector3F
+import kotlin.math.atan2
 
 fun CameraPosition.Companion.from(
     camera: PerspectiveCamera,
@@ -14,7 +15,7 @@ fun CameraPosition.Companion.from(
         controls.getTarget().toVector3F(),
         camera.zoom.toDouble(),
         controls.getFocalOffset().toVector3F(),
-        camera.rotation.z.toDouble()
+        camera.getZRotation()
     )
 
 fun CameraPosition.update(camera: PerspectiveCamera, controls: CameraControls) {
@@ -27,6 +28,9 @@ fun CameraPosition.update(camera: PerspectiveCamera, controls: CameraControls) {
     )
     controls.setFocalOffset(focalOffset.x, focalOffset.y, focalOffset.z, true)
 }
+
+fun PerspectiveCamera.getZRotation(): Double =
+    atan2(up.y, up.x) - kotlin.math.PI / 2
 
 fun PerspectiveCamera.setZRotation(angle: Double) {
     up.set(0, 1, 0)
