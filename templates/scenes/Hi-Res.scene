@@ -7,8 +7,8 @@
         "title": "Hi-Res",
         "rows": 240,
         "columns": 320,
-        "rowGap": 3,
-        "columnGap": 3,
+        "rowGap": 1.25,
+        "columnGap": 1.25,
         "zigZag": true
       }
     ],

@@ -44,6 +44,7 @@ shader-libraries/built-in/libraries/BAAAHSlogo.glsl
 shader-libraries/built-in/libraries/color_palettes.glsl
 shader-libraries/built-in/libraries/complex_math_functions.glsl
 shader-libraries/built-in/libraries/polygon_geometry.glsl
+shader-libraries/built-in/projections/Flat.glsl
 shader-libraries/built-in/shaders/AcidAtTheDisco.glsl
 shader-libraries/built-in/shaders/AquaticFlood.glsl
 shader-libraries/built-in/shaders/BAAAHSEclipse.glsl
@@ -120,4 +121,5 @@ templates/shows/show.sparkle
 three.js
 ui-index.html
 ui/index.html
+visualizer/textures/reticle.webp
 visualizer/textures/round.png
