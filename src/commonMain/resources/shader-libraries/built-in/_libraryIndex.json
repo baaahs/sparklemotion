@@ -158,7 +158,17 @@
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/BAAAHSLogo.glsl"
+      "srcFile": "shaders/BAAAHSEclipse.glsl"
+    },
+    {
+      "id": "baaahs-geometric-sheep",
+      "title": "BAAAHS Geometric Sheep",
+      "description": "Panels display solid colors and cycle through the rainbow!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Geometric_Sheep.glsl"
     },
     {
       "id": "blue-dream",
