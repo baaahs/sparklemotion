@@ -171,6 +171,16 @@
       "srcFile": "shaders/BAAAHS_Eclipse.glsl"
     },
     {
+      "id": "baaahs-geometric-colorpulse",
+      "title": "[\uD83D\uDC11] Geometric ColorPulse",
+      "description": "Make each physical panel a different color and swipe color pulses along the panels",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_GeometricColorPulse.glsl"
+    },
+    {
       "id": "baaahs-geometric-sheep",
       "title": "[\uD83D\uDC11] Geometric Sheep",
       "description": "Panels display solid colors and cycle through the rainbow!",
