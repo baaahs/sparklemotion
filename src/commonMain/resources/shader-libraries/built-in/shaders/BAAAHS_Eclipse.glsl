@@ -5,7 +5,7 @@
 
 uniform float time; // @@Time
 
-uniform float size; // @@Slider default=1. min=0.25 max=2.
+uniform float size; // @@Slider default=1 min=0.25 max=2.
 uniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.
 uniform vec2 center; // @@XyPad
 
@@ -19,6 +19,14 @@ struct SoundAnalysis {
 	float maxMagnitude;
 };
 uniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis
+
+struct BeatInfo {
+	float beat;
+	float bpm;
+	float intensity;
+	float confidence;
+};
+uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
 
 const float FREQ_RANGE = 64.0;
@@ -42,7 +50,7 @@ float luma(vec3 color) {
 }
 
 float getfrequency(float x) {
-	return .2; //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
+	return .2 + .2 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
 }
 
 float getfrequency_smooth(float x) {
@@ -99,8 +107,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 	vec3 color = vec3(0.0134, 0.052, 0.1);
 	color += doHalo(fragPos, RADIUS);
 
-	float c = cos(iTime * SPEED);
-	float s = sin(iTime * SPEED);
+	float c = cos(time * SPEED);
+	float s = sin(time * SPEED);
 	vec2 rot = mat2(c,s,-s,c) * fragPos;
 	color += doLine(rot, RADIUS, rot.x);
 
