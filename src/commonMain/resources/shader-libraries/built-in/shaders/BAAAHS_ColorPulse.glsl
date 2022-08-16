@@ -4,6 +4,9 @@
 uniform float time; // @@Time
 uniform float hueRange; // @@Slider default=0.3 min=0.0 max=1.0
 uniform float pulseSpeed; // @@Slider default=1.0 min=1.0 max=3.0
+uniform bool fromCenter; // @@Switch
+uniform vec2 center; // @@XyPad
+
 
 struct BeatInfo {
 	float beat;
@@ -42,9 +45,15 @@ float smoothstepPulse(float t) {
 // @return color
 // @param uvIn uv-coordinate
 vec4 main(vec2 uvIn) {
-	float pulse = smoothstepPulse(mod(beatIntegral() - uvIn.x / (2.5*pulseSpeed), 1.));
 
-	float H = .2 * time + uvIn.x * hueRange;
+	float s = uvIn.x;
+	if (fromCenter) {
+		s = distance(uvIn, center);
+	}
+
+	float pulse = smoothstepPulse(mod(beatIntegral() - s / (2.5*pulseSpeed), 1.));
+
+	float H = .2 * time + s * hueRange;
 	float S = .5 + .5 * pulse;
 	float V = .2 + .6 * pulse;
 
