@@ -191,6 +191,16 @@
       "srcFile": "shaders/BAAAHS_GeometricSheep.glsl"
     },
     {
+      "id": "baaahs-squarezzz",
+      "title": "[\uD83D\uDC11] Squarezzz",
+      "description": "Pulsing rainbow squares to the beat!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Squarezzz.glsl"
+    },
+    {
       "id": "blue-dream",
       "title": "Blue Dream",
       "description": "A cool shader!",
