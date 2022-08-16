@@ -20,7 +20,7 @@ uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 float beatIntegral() {
 	float t = mod(beatInfo.beat, 1.);
 	float POWER = 4.; // Adjusts sharpnett of the curve
-	float OFFSET = 0.05; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
+	float OFFSET = 0.0; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
 	return 1. - pow(1. - mod(t + OFFSET, 1.0), POWER);
 }
 

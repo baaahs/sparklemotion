@@ -33,16 +33,16 @@ float getFakeIntensity_shadertoy() {
 /* Returns a value which cycles from 0 to 1 for each beat, with most of the increase occuring near the beat */
 float beatIntegral() {
     float t = mod(beatInfo.beat, 1.);
-    float POWER = 4.; // Adjusts sharpnett of the curve
-    float OFFSET = 0.05; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
+    float POWER = 4.; // Adjusts sharpness of the curve
+    float OFFSET = 0.0; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
     return 1. - pow(1. - mod(t + OFFSET, 1.0), POWER);
 }
 
 /* Returns a value which cycles from 0 to 1 over a beat, quickly but smoothly returning to 0 at the end */
 float beatIntegral_smooth() {
     float t = mod(beatInfo.beat, 1.);
-    float POWER = 4.; // Adjusts sharpnett of the curve
-    float OFFSET = 0.05; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
+    float POWER = 4.; // Adjusts sharpness of the curve
+    float OFFSET = 0.0; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
     float RESET_PERIOD = 0.1; // The last part of the beat where the value resets
     float adjustedTime = mod(t + OFFSET, 1.0);
     if (adjustedTime > (1. - RESET_PERIOD)) {
@@ -60,3 +60,10 @@ float beatIntegral_shadertoy() {
     float OFFSET = 0.05; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
     return 1. - pow(1. - mod(t + OFFSET, 1.0), POWER);
 }
+
+/* Returns a monotonically increasing time value which with most of the increase occuring near the beat */
+float pulsedTime() {
+    float timeAdjustment = beatIntegral() - mod(beatInfo.beat, 1.);
+    return time + timeAdjustment;
+}
+
