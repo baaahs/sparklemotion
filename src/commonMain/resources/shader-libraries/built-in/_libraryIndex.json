@@ -148,27 +148,37 @@
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/BAAAHSLogo.glsl"
+      "srcFile": "shaders/BAAAHS_Logo.glsl"
+    },
+    {
+      "id": "baaahs-colorpulse",
+      "title": "[\uD83D\uDC11] ColorPulse",
+      "description": "Color pulses sweeping from front to back of the sheep synchronized to the beat",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_ColorPulse.glsl"
     },
     {
       "id": "baaahs-eclipse",
-      "title": "BAAAHS Eclipse",
+      "title": "[\uD83D\uDC11] BAAAHS Eclipse",
       "description": "Sound-activated rainbow sheep eclipse thingy!",
       "lastModifiedMs": 0,
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/BAAAHSEclipse.glsl"
+      "srcFile": "shaders/BAAAHS_Eclipse.glsl"
     },
     {
       "id": "baaahs-geometric-sheep",
-      "title": "BAAAHS Geometric Sheep",
+      "title": "[\uD83D\uDC11] Geometric Sheep",
       "description": "Panels display solid colors and cycle through the rainbow!",
       "lastModifiedMs": 0,
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/BAAAHS_Geometric_Sheep.glsl"
+      "srcFile": "shaders/BAAAHS_GeometricSheep.glsl"
     },
     {
       "id": "blue-dream",
