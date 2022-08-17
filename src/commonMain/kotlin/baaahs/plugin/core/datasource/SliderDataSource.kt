@@ -54,6 +54,7 @@ data class SliderDataSource(
         val clock = showPlayer.toolchain.plugins.pluginContext.clock
 //        val channel = showPlayer.useChannel<Float>(id)
         val slider = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 createGadget()
