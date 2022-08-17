@@ -88,6 +88,14 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
                             }
                         } else i { +"No program!" }
 
+                    "Feeds" ->
+                        if (program != null) {
+                            glsl {
+                                attrs.fixtureType = subject.fixtureType
+                                attrs.source = programRenderPlan.source ?: program.fragShader.source
+                            }
+                        } else i { +"No program!" }
+
                     "DOT" ->
                         if (linkedProgram != null) {
                             dot {

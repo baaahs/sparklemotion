@@ -1,7 +1,6 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
-import baaahs.camelize
 import baaahs.control.MutableXyPadControl
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
@@ -49,6 +48,7 @@ data class XyPadDataSource(
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         val xyPad = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 XyPad(title, initialValue, minValue, maxValue)
@@ -58,6 +58,7 @@ data class XyPadDataSource(
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@XyPadDataSource, id) { uniform ->
+                        if (xyPad.position != Vector2F.origin && id != "center") logger.warn { "$id position is ${xyPad.position}"}
                         uniform.set(xyPad.position)
                     }
                 }

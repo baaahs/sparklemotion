@@ -59,6 +59,7 @@ data class ImageDataSource(override val title: String) : DataSource {
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         val imagePicker = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 createGadget()
