@@ -2,7 +2,6 @@ package baaahs.plugin.core.datasource
 
 import baaahs.Color
 import baaahs.ShowPlayer
-import baaahs.camelize
 import baaahs.control.MutableColorPickerControl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext
@@ -43,6 +42,7 @@ data class ColorPickerDataSource(
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
 //        val channel = showPlayer.useChannel<Float>(id)
         val colorPicker = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 createGadget()

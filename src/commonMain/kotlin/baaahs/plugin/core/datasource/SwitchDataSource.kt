@@ -1,7 +1,6 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
-import baaahs.camelize
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.gadgets.Switch
@@ -52,7 +51,8 @@ data class SwitchDataSource(
     }
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        val switch = showPlayer.useGadget<Switch>(this)
+        val switch = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 Switch(buttonTitle, initiallyEnabled)

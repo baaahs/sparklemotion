@@ -8,13 +8,13 @@ import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
 import external.dagre_d3.d3
 import external.dagre_d3.dagreD3
+import mui.material.Checkbox
+import mui.material.FormControl
+import mui.material.FormControlLabel
 import org.w3c.dom.svg.SVGGElement
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.svg
 import react.dom.svg.ReactSVG.g
-import react.useContext
 import kotlin.math.min
 
 private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
@@ -24,8 +24,13 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     val svgRef = ref<SVGGElement>()
     val gRef = ref<SVGGElement>()
 
-    val dagGraph = memo(props.fixtureType, props.linkedProgram) {
-        Dag().apply {
+    var includePatchMods by state { false }
+    val handleChangeIncludePatchMods by switchEventHandler { _, checked ->
+        includePatchMods = checked
+    }
+
+    val dagGraph = memo(props.fixtureType, props.linkedProgram, includePatchMods) {
+        Dag(includePatchMods).apply {
             visit(props.fixtureType, props.linkedProgram)
         }.graph
     }
@@ -77,6 +82,17 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
         }
     }
 
+    FormControl {
+        FormControlLabel {
+            attrs.label = buildElement { +"Include Patch Mods" }
+            attrs.control = buildElement {
+                Checkbox {
+                    attrs.checked = includePatchMods
+                    attrs.onChange = handleChangeIncludePatchMods
+                }
+            }
+        }
+    }
 
     svg(+style.dagSvg) {
         ref = svgRef

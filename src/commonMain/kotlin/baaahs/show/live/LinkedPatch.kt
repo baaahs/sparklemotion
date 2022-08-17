@@ -11,7 +11,7 @@ import baaahs.show.Stream
 
 class LinkedPatch(
     val shader: OpenShader,
-    val incomingLinks: Map<String, ProgramNode>,
+    incomingLinks: Map<String, ProgramNode>,
     val stream: Stream,
     val priority: Float,
     val injectedPorts: Set<String> = emptySet(),
@@ -20,21 +20,26 @@ class LinkedPatch(
     override val title: String get() = shader.title
     override val outputPort: OutputPort get() = shader.outputPort
 
+    val unmoddedIncomingLinks = incomingLinks
+    val incomingLinks = incomingLinks.mapValues { (inputPortId, link) ->
+        var redirectableLink = link
+        patchMods.forEach { patchMod ->
+            val oldLink = redirectableLink
+            redirectableLink = patchMod.maybeWrapLink(inputPortId, redirectableLink)
+                ?: redirectableLink
+
+            if (redirectableLink !== oldLink)
+                println("Redirected $oldLink via $redirectableLink.")
+        }
+        redirectableLink
+    }
+
     override fun getNodeId(programLinker: ProgramLinker): String = programLinker.idFor(shader.shader)
 
     override fun traverse(programLinker: ProgramLinker) {
         programLinker.visit(shader)
-        incomingLinks.forEach { (inputPortId, link) ->
-            var redirectableLink = link
-            patchMods.forEach { patchMod ->
-                val oldLink = redirectableLink
-                redirectableLink = patchMod.maybeWrapLink(inputPortId, redirectableLink)
-                    ?: redirectableLink
-
-                if (redirectableLink !== oldLink)
-                    println("Redirected $oldLink via $redirectableLink.")
-            }
-            programLinker.visit(redirectableLink)
+        incomingLinks.forEach { (_, link) ->
+            programLinker.visit(link)
         }
     }
 
