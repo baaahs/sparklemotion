@@ -431,6 +431,16 @@
       "srcFile": "shaders/PoolsideDelight.glsl"
     },
     {
+      "id": "plasma",
+      "title": "Plasma",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Plasma.glsl"
+    },
+    {
       "id": "purple-lightning",
       "title": "Purple Lightning",
       "description": "A cool shader!",
