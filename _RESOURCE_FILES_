@@ -76,6 +76,7 @@ shader-libraries/built-in/shaders/JacobianUndistortion.glsl
 shader-libraries/built-in/shaders/OrangeSnowflake.glsl
 shader-libraries/built-in/shaders/OrangeTang.glsl
 shader-libraries/built-in/shaders/PicassosNightmare.glsl
+shader-libraries/built-in/shaders/Plasma.glsl
 shader-libraries/built-in/shaders/PoolsideDelight.glsl
 shader-libraries/built-in/shaders/PurpleLightning.glsl
 shader-libraries/built-in/shaders/RainbowTrianglez.glsl
