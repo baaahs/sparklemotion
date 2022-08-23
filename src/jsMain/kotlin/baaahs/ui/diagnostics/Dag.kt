@@ -10,7 +10,9 @@ import baaahs.show.live.OpenPatch
 import external.dagre_d3.Graph
 import kotlinx.js.jso
 
-class Dag : ProgramVisitor() {
+class Dag(
+    private val includePatchMods: Boolean = false
+) : ProgramVisitor() {
     private var nextNode = 0
     private val nodes = mutableMapOf<Any, String>()
     private val buf = StringBuilder()
@@ -91,6 +93,12 @@ class Dag : ProgramVisitor() {
             }
         }
     }
+
+    override fun getIncomingLinks(node: LinkedPatch): Map<String, ProgramNode> =
+        if (includePatchMods)
+            super.getIncomingLinks(node)
+        else
+            node.unmoddedIncomingLinks
 
     override fun visitLink(fromNode: ProgramNode, inputPort: InputPort, toNode: ProgramNode) {
         declareLink(nodes[fromNode]!!, nodes[toNode]!!, inputPort.title)
