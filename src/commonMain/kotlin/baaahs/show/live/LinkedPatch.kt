@@ -25,7 +25,7 @@ class LinkedPatch(
         var redirectableLink = link
         patchMods.forEach { patchMod ->
             val oldLink = redirectableLink
-            redirectableLink = patchMod.maybeWrapLink(inputPortId, redirectableLink)
+            redirectableLink = patchMod.maybeWrapLink(inputPortId, redirectableLink, shader)
                 ?: redirectableLink
 
             if (redirectableLink !== oldLink)

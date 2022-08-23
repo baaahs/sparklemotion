@@ -29,7 +29,7 @@ interface PatchMod {
     val dataSources: List<DataSource>
 
     fun getView(openPatch: OpenPatch): View
-    fun maybeWrapLink(inputPortId: String, link: ProgramNode): ProgramNode?
+    fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode?
     fun registerGadgets(gadgetProvider: GadgetProvider)
 }
 
@@ -70,11 +70,11 @@ class PositionAndScalePatchMod(
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forPositionAndScale(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode): ProgramNode? {
+    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return if (inputPortId == uvInputPort.id) {
             val openShader = toolchain.openShader(
                 Shader(
-                    "Position and Scale Patch Mod",
+                    "Position and Scale Patch Mod for ${forShader.title}",
                     /** language=glsl */
                     """
                         // @param uvIn uv-coordinate
@@ -130,7 +130,7 @@ class RotationPatchMod : PatchMod {
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forRotation(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode): ProgramNode? {
+    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return null
     }
 
@@ -149,7 +149,7 @@ class ColorPatchMod : PatchMod {
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forColor(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode): ProgramNode? {
+    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return null
     }
 
