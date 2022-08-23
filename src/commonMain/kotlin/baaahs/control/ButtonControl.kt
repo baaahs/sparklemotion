@@ -119,6 +119,9 @@ class OpenButtonControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableButtonControl(buttonControl, mutableShow, controlledDataSource)
 
+    override fun controlledDataSources(): Set<DataSource> =
+        setOfNotNull(controlledDataSource)
+
     override fun getView(controlProps: ControlProps): View =
         controlViews.forButton(this, controlProps)
 
