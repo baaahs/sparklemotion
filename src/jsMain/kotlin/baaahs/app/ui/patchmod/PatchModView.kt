@@ -1,28 +1,16 @@
 package baaahs.app.ui.patchmod
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.controls.xyPadControl
-import baaahs.app.ui.gadgets.xypad.xyPad
 import baaahs.app.ui.shaderPreview
-import baaahs.control.OpenXyPadControl
-import baaahs.gadgets.XyPad
-import baaahs.plugin.core.datasource.XyPadDataSource
-import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import mui.material.Dialog
-import mui.material.Tab
-import mui.material.Tabs
-import mui.material.TabsScrollButtons
-import react.Props
-import react.RBuilder
-import react.RHandler
+import mui.material.*
+import react.*
 import react.dom.div
 import react.dom.events.SyntheticEvent
 import react.dom.header
-import react.useContext
 
 private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
     val appContext = useContext(appContext)
@@ -41,12 +29,25 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
         selectedPatchMod = value
     }
 
+    val handleActiveSwitchChange by switchEventHandler(props.onToggle) { _, checked ->
+        props.onToggle()
+    }
 
     Dialog {
         attrs.open = true
         attrs.onClose = { _, _ -> props.onClose() }
 
-        header { +props.title }
+        header {
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
+                        attrs.checked = props.isActive
+                        attrs.onChange = handleActiveSwitchChange
+                    }
+                }
+                attrs.label = buildElement { +props.title }
+            }
+        }
 
         if (patches.size > 1) {
             Tabs {
@@ -90,6 +91,8 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
 external interface PatchModProps : Props {
     var title: String
     var patchHolder: OpenPatchHolder
+    var isActive: Boolean
+    var onToggle: () -> Unit
     var onClose: () -> Unit
 }
 

@@ -26,18 +26,23 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
-    val handleToggleClick by eventHandler(onShowStateChange) {
+    val handleToggleClick by eventHandler(props.buttonControl, onShowStateChange) {
         buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryPress by eventHandler(onShowStateChange) {
+    val handleMomentaryPress by eventHandler(props.buttonControl, onShowStateChange) {
         if (!buttonControl.isPressed) buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryRelease by eventHandler(onShowStateChange) {
+    val handleMomentaryRelease by eventHandler(props.buttonControl, onShowStateChange) {
         if (buttonControl.isPressed) buttonControl.click()
+        onShowStateChange()
+    }
+
+    val handlePatchModSwitch by handler(props.buttonControl, onShowStateChange) {
+        buttonControl.click()
         onShowStateChange()
     }
 
@@ -110,6 +115,8 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         patchMod {
             attrs.title = buttonControl.title
             attrs.patchHolder = buttonControl
+            attrs.isActive = buttonControl.isPressed
+            attrs.onToggle = handlePatchModSwitch
             attrs.onClose = { lightboxOpen = false }
         }
     }
