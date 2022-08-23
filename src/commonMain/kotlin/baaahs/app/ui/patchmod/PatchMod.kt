@@ -53,15 +53,15 @@ class PositionAndScalePatchMod(
     val positionXyPad = XyPad(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
-        Vector2F(-1.5f, -1.5f),
-        Vector2F(1.5f, 1.5f)
+        Vector2F(-.75f, -.75f),
+        Vector2F(.75f, .75f)
     )
 
     private val positionDataSource = XyPadDataSource(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
-        Vector2F(-1.5f, -1.5f),
-        Vector2F(1.5f, 1.5f)
+        Vector2F(-.75f, -.75f),
+        Vector2F(.75f, .75f)
     )
 
     override val dataSources: List<DataSource>
