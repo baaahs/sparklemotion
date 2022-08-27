@@ -1,6 +1,5 @@
 package baaahs.app.ui.patchmod
 
-import baaahs.gadgets.Slider
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.gl.Toolchain
@@ -9,6 +8,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
+import baaahs.plugin.core.datasource.SliderDataSource
 import baaahs.plugin.core.datasource.XyPadDataSource
 import baaahs.show.DataSource
 import baaahs.show.Shader
@@ -51,28 +51,29 @@ class PositionAndScalePatchMod(
     override val title: String
         get() = "Position/Scale"
 
-    val positionXyPad = XyPad(
-        "$patchId ${uvInputPort.id} offset",
-        Vector2F.origin,
-        Vector2F(-.75f, -.75f),
-        Vector2F(.75f, .75f)
-    )
     private val positionDataSource = XyPadDataSource(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
         Vector2F(-.75f, -.75f),
         Vector2F(.75f, .75f)
     )
+    val positionXyPad = XyPad(
+        "$patchId ${uvInputPort.id} offset",
+        Vector2F.origin,
+        Vector2F(-.75f, -.75f),
+        Vector2F(.75f, .75f)
+    )
 
-    val scaleSlider = Slider(
+    private val scaleDataSource = SliderDataSource(
         "$patchId ${uvInputPort.id} scale",
         1f,
         .1f,
-        10f
+        4f
     )
+    val scaleSlider = scaleDataSource.createGadget()
 
     override val dataSources: List<DataSource>
-        get() = listOf(positionDataSource)
+        get() = listOf(positionDataSource, scaleDataSource)
 
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forPositionAndScale(this, openPatch)
@@ -89,7 +90,7 @@ class PositionAndScalePatchMod(
                         // @param scale float
                         // @return uv-coordinate
                         vec2 main(vec2 uvIn, vec2 offset, float scale) {
-                            return uvIn / scale - offset;
+                            return (uvIn - offset - .5) / scale + .5;
                         }
                     """.trimIndent(),
                 )
@@ -98,13 +99,12 @@ class PositionAndScalePatchMod(
                 openShader,
                 mapOf(
                     "uvIn" to link,
-                    "scale" to OpenPatch.DataSourceLink(
-                        positionDataSource, positionDataSource.suggestId(),
-                        emptyMap()
-                    )
-                    ,
                     "offset" to OpenPatch.DataSourceLink(
                         positionDataSource, positionDataSource.suggestId(),
+                        emptyMap()
+                    ),
+                    "scale" to OpenPatch.DataSourceLink(
+                        scaleDataSource, scaleDataSource.suggestId(),
                         emptyMap()
                     )
                 ),
@@ -115,7 +115,8 @@ class PositionAndScalePatchMod(
     }
 
     override fun registerGadgets(gadgetProvider: GadgetProvider) {
-        gadgetProvider.registerGadget(positionDataSource.suggestId(), this.positionXyPad, positionDataSource)
+        gadgetProvider.registerGadget(positionDataSource.suggestId(), positionXyPad, positionDataSource)
+        gadgetProvider.registerGadget(scaleDataSource.suggestId(), scaleSlider, scaleDataSource)
     }
 
     companion object : PatchModBuilder {

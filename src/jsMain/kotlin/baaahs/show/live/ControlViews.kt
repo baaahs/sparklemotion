@@ -47,7 +47,7 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
 
     override fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps) = renderWrapper {
         sliderControl {
-            attrs.controlProps = controlProps
+            attrs.slider = openSlider.slider
             attrs.sliderControl = openSlider
         }
     }
