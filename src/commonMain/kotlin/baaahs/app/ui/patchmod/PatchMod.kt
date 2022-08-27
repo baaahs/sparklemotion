@@ -1,5 +1,6 @@
 package baaahs.app.ui.patchmod
 
+import baaahs.gadgets.Slider
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.gl.Toolchain
@@ -56,12 +57,18 @@ class PositionAndScalePatchMod(
         Vector2F(-.75f, -.75f),
         Vector2F(.75f, .75f)
     )
-
     private val positionDataSource = XyPadDataSource(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
         Vector2F(-.75f, -.75f),
         Vector2F(.75f, .75f)
+    )
+
+    val scaleSlider = Slider(
+        "$patchId ${uvInputPort.id} scale",
+        1f,
+        .1f,
+        10f
     )
 
     override val dataSources: List<DataSource>
@@ -79,9 +86,10 @@ class PositionAndScalePatchMod(
                     """
                         // @param uvIn uv-coordinate
                         // @param offset xy-coordinate
+                        // @param scale float
                         // @return uv-coordinate
-                        vec2 main(vec2 uvIn, vec2 offset) {
-                            return uvIn - offset;
+                        vec2 main(vec2 uvIn, vec2 offset, float scale) {
+                            return uvIn / scale - offset;
                         }
                     """.trimIndent(),
                 )
@@ -90,6 +98,11 @@ class PositionAndScalePatchMod(
                 openShader,
                 mapOf(
                     "uvIn" to link,
+                    "scale" to OpenPatch.DataSourceLink(
+                        positionDataSource, positionDataSource.suggestId(),
+                        emptyMap()
+                    )
+                    ,
                     "offset" to OpenPatch.DataSourceLink(
                         positionDataSource, positionDataSource.suggestId(),
                         emptyMap()
