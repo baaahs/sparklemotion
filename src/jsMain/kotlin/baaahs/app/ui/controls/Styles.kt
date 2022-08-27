@@ -125,6 +125,12 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         bottom = 0.px
     }
 
+    val resetSwitch by css {
+        position = Position.absolute
+        right = 0.px
+        bottom = 0.px
+    }
+
     val inUse by css {
 //        position = Position.relative
     }
