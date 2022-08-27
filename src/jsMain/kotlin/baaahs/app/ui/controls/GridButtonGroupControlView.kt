@@ -193,7 +193,10 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
                     attrs.className = -layoutStyles.gridCell
                     if (editMode.isOff) {
                         attrs.asDynamic()["data-grid-index"] = index
-                        attrs.onClickCapture = handleGridItemClick
+
+                        if (!props.buttonGroupControl.allowMultiple) {
+                            attrs.onClickCapture = handleGridItemClick
+                        }
                     }
 
                     val subEditor = object : Editor<MutableIGridLayout> {

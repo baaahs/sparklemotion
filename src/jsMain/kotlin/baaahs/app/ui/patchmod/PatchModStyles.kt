@@ -23,4 +23,12 @@ class PatchModStyles(private val theme: Theme) : StyleSheet("app-ui-patchmod", i
     val xyPadBackground by css {
 
     }
+
+    val sliderContainer by css {
+        top = 0.px
+        right = 0.px
+        width = 55.px
+        height = 100.pct
+        position = Position.absolute
+    }
 }
