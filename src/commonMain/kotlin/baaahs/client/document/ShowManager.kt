@@ -62,6 +62,9 @@ class ShowManager(
             Option("Pasture Bedtime") {
                 makeNew { fromResources("PastureBedtime.sparkle") }
             },
+            Option("Ben's Show") {
+                makeNew { fromResources("Ben's Show.sparkle") }
+            },
             Option("Sample template") {
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
             },
