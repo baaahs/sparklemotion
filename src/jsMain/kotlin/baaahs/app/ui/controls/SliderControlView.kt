@@ -4,7 +4,7 @@ import baaahs.GadgetListener
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
-import baaahs.show.live.ControlProps
+import baaahs.gadgets.Slider
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
@@ -24,8 +24,8 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
-    val sliderControl = props.sliderControl
-    val title = sliderControl.slider.title
+    val slider = props.slider
+    val title = slider.title
 //    val channel = props.sliderControl.channel
 
 //    observe(channel)
@@ -34,7 +34,6 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 //    }
 
 
-    val slider = sliderControl.slider
     var position by state { slider.position }
     var floorPosition by state { slider.floor }
     var beatLinked by state { slider.beatLinked }
@@ -61,7 +60,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.floor = slider.position
     }
 
-    div(+sliderControl.inUseStyle) {
+    div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
             attrs.title = slider.title
 //        attrs.position = channel.value
@@ -100,8 +99,8 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 }
 
 external interface SliderControlProps : Props {
-    var controlProps: ControlProps
-    var sliderControl: OpenSliderControl
+    var slider: Slider
+    var sliderControl: OpenSliderControl?
 }
 
 fun RBuilder.sliderControl(handler: RHandler<SliderControlProps>) =
