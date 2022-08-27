@@ -61,6 +61,19 @@ private val ButtonGroupPropsEditorView =
                     }
                 }
             }
+
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
+                        attrs.checked = props.mutableButtonGroupControl.allowMultiple ?: false
+                        attrs.onChange = { _: ChangeEvent<HTMLInputElement>, checked: Boolean ->
+                            props.mutableButtonGroupControl.allowMultiple = checked
+                            props.editableManager.onChange()
+                        }
+                    }
+                }
+                attrs.label = buildElement { +"Allow Multiple Selected" }
+            }
         }
     }
 

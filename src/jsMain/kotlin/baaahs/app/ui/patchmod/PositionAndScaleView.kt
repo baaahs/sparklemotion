@@ -2,6 +2,7 @@ package baaahs.app.ui.patchmod
 
 import baaahs.Gadget
 import baaahs.app.ui.appContext
+import baaahs.app.ui.controls.sliderControl
 import baaahs.app.ui.gadgets.xypad.xyPad
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
@@ -42,6 +43,12 @@ private val PositionAndScaleView = xComponent<PositionAndScaleProps>("PositionAn
             attrs.xyPad = xyPad
             attrs.backgroundClasses = +styles.xyPadBackground
             attrs.padSize = padSize
+        }
+    }
+
+    div(+styles.sliderContainer) {
+        sliderControl {
+            attrs.slider = props.patchMod.scaleSlider
         }
     }
 }
