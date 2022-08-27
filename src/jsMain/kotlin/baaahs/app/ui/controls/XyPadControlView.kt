@@ -76,6 +76,12 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
         boxShadow(Color("#224422").withAlpha(.3), 0.px, 0.px, 1.px, 1.px)
         pointerEvents = PointerEvents.none
     }
+
+    val resetButton by css {
+        position = Position.absolute
+        left = 0.px
+        bottom = 0.px
+    }
 }
 
 fun RBuilder.xyPadControl(handler: RHandler<XyPadProps>) =
