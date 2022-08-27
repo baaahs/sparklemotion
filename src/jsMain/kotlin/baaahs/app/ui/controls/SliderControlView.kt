@@ -16,6 +16,7 @@ import mui.icons.material.MusicNote
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.b
 import react.dom.div
 import react.useContext
 import styled.inlineStyles
@@ -60,6 +61,11 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.floor = slider.position
     }
 
+    val handleReset by handler(slider) {
+        slider.position = slider.initialValue
+        slider.beatLinked = false
+    }
+
     div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
             attrs.title = slider.title
@@ -91,6 +97,11 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
                 }
             }
             icon(MusicNote)
+        }
+
+        div(+Styles.resetSwitch) {
+            attrs.onClickFunction = handleReset.withEvent()
+            b { +"R" }
         }
 
 
