@@ -129,6 +129,8 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         right = 0.px
         bottom = 0.px
+        padding = "5px"
+        userSelect = UserSelect.none
     }
 
     val inUse by css {
