@@ -10,6 +10,7 @@ import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.ByteBuffer
 import com.danielgergely.kgl.GL_RGBA
 import com.danielgergely.kgl.GL_UNSIGNED_BYTE
+import kotlin.experimental.and
 
 object ColorResultType : ResultType<ColorResultType.Buffer> {
     private val renderPixelFormat: Int = GlContext.GL_RGBA8
@@ -37,11 +38,13 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         operator fun get(componentIndex: Int): Color {
             val offset = componentIndex * stride
 
+            // Using Color's int constructor fixes a bug in Safari causing
+            // color values above 127 to be treated as 0. Untested. :-(
             return Color(
-                red = byteBuffer[offset],
-                green = byteBuffer[offset + 1],
-                blue = byteBuffer[offset + 2],
-                alpha = byteBuffer[offset + 3]
+                red = byteBuffer[offset].toInt() and 0xff,
+                green = byteBuffer[offset + 1].toInt() and 0xff,
+                blue = byteBuffer[offset + 2].toInt() and 0xff,
+                alpha = byteBuffer[offset + 3].toInt() and 0xff
             )
         }
 
