@@ -109,16 +109,17 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
     val handleGridItemClick by mouseEventHandler(gridLayout.items) { e ->
         if (cardRef.current?.isParentOf(e.target as Element) == true) {
-            (e.currentTarget as HTMLElement)
+            val clickedItemIndex = (e.currentTarget as HTMLElement)
                 .dataset["gridIndex"]
                 ?.toInt()
-                ?.let { clickedIndex ->
-                    gridLayout.items.forEachIndexed { index, it ->
-                        (it.control as? OpenButtonControl)?.isPressed = index == clickedIndex
-                    }
-                    onShowStateChange()
-                    e.stopPropagation()
+            val clickedItem = clickedItemIndex?.let { gridLayout.items[it] }
+            if (clickedItem?.control is OpenButtonControl) {
+                gridLayout.items.forEachIndexed { index, it ->
+                    (it.control as? OpenButtonControl)?.isPressed = index == clickedItemIndex
                 }
+                onShowStateChange()
+                e.stopPropagation()
+            }
         }
     }
 
