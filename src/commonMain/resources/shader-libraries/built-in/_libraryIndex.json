@@ -26,6 +26,17 @@
       "srcFile": "effects/BeatShift.glsl"
     },
     {
+      "id": "blackout",
+      "title": "Blackout",
+      "description": "Makes the sheep dark",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Blackout.glsl"
+    },
+    {
       "id": "brightness",
       "title": "Brightness",
       "description": "Adjusts brightness.",
@@ -35,16 +46,6 @@
         "@type=filter"
       ],
       "srcFile": "effects/Brightness.glsl"
-    },
-    {
-      "id": "fireball",
-      "title": "Fireball",
-      "description": "A burning ball of fire!",
-      "lastModifiedMs": 0,
-      "tags": [
-        "@type=paint"
-      ],
-      "srcFile": "shaders/Fireball.glsl"
     },
     {
       "id": "movers-on",
@@ -102,6 +103,28 @@
       "srcFile": "effects/Saturation.glsl"
     },
     {
+      "id": "scanners",
+      "title": "Scanners",
+      "description": "Dark bands scanning back and forth",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/Scanners.glsl"
+    },
+    {
+      "id": "sound-brightness",
+      "title": "Sound Brightness",
+      "description": "Adjusts brightness beat intensity.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/SoundBrightness.glsl"
+    },
+    {
       "id": "sparklez",
       "title": "Sparklez™",
       "description": "Adds sparkles.",
@@ -113,12 +136,34 @@
       "srcFile": "effects/Sparklez.glsl"
     },
     {
+      "id": "thats-all-folks",
+      "title": "That's all, folks!",
+      "description": "Looney Toons filter",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/ThatsAllFolks.glsl"
+    },
+    {
       "id": "wobble",
       "title": "Wobble",
       "description": "It's wobbly!",
       "lastModifiedMs": 0,
       "tags": [],
       "srcFile": "effects/Wobble.glsl"
+    },
+    {
+      "id": "zigzag",
+      "title": "Zigzag",
+      "description": "Wavey lines weeee",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
+      "srcFile": "effects/ZigZag.glsl"
     },
     {
       "id": "acid-at-the-disco",
@@ -201,6 +246,16 @@
       "srcFile": "shaders/BAAAHS_Squarezzz.glsl"
     },
     {
+      "id": "baaahs-zebra",
+      "title": "[\uD83D\uDC11] BAAAHZebra",
+      "description": "Cool zebra pattern looking thing that alternates polarity on the beat",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Zebra.glsl"
+    },
+    {
       "id": "blue-dream",
       "title": "Blue Dream",
       "description": "A cool shader!",
@@ -252,7 +307,7 @@
     },
     {
       "id": "complex-trippy-shit-1",
-      "title": "Complex Trippy Shit #1",
+      "title": "[\uD83D\uDC11] Complex Trippy Shit #1",
       "description": "It's complex-valued trippy shit!",
       "lastModifiedMs": 0,
       "tags": [
@@ -289,6 +344,16 @@
         "@type=paint"
       ],
       "srcFile": "shaders/FaeriePulse.glsl"
+    },
+    {
+      "id": "fireball",
+      "title": "Fireball",
+      "description": "A burning ball of fire!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/Fireball.glsl"
     },
     {
       "id": "fire-clouds",
@@ -489,6 +554,16 @@
         "@type=paint"
       ],
       "srcFile": "shaders/PurpleLightning.glsl"
+    },
+    {
+      "id": "prime-waves",
+      "title": "Prime Waves",
+      "description": "A cool shader!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/PrimeWaves.glsl"
     },
     {
       "id": "rainbow-trianglez",
