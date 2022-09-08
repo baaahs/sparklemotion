@@ -91,7 +91,7 @@ class BrainManager(
         // Decide whether or not to tell this brain it should use a different firmware
         if (firmwareDaddy.doesntLikeThisVersion(msg.firmwareVersion)) {
             // You need the new hotness bro
-            logger.debug {
+            logger.warn {
                 "The firmware daddy doesn't like $brainId" +
                         " having ${msg.firmwareVersion}" +
                         " so we'll send ${firmwareDaddy.urlForPreferredVersion}"
