@@ -4,6 +4,9 @@
 #define PI 3.1415926535897932384626433832795
 #define ii vec2(0.0, 1.0)
 
+uniform float time; // @@Time
+uniform vec2 resolution; // @@Resolution
+
 // Complex multiplication
 vec2 cx_mul(vec2 a, vec2 b) {return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x); }
 // Complex division
@@ -62,12 +65,12 @@ vec4 domainColoring (vec2 z, vec2 gridSpacing, float saturation, float gridStren
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 uv = 1.8 * (2. * fragCoord/iResolution.xy - 1.);
+    vec2 uv = 1.8 * (2. * fragCoord/resolution.xy - 1.);
     uv *= vec2(16./9., 1.);
     uv = vec2(-uv[1] - .2, uv[0]);
 
     // Function is log(1/4 + iz^-3) + 2 exp(it)
-    vec2 fz = cx_log(vec2(.25, 0.0) + cx_pow(uv, -3.)) + 2. * cx_exp(iTime * ii);
+    vec2 fz = cx_log(vec2(.25, 0.0) + cx_pow(uv, -3.)) + 2. * cx_exp(time * ii);
 
     float refz = fz[0];
     float imfz = fz[1];
