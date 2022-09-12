@@ -4,8 +4,8 @@ import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
+import mui.material.styles.Theme
 import mui.system.Breakpoint
-import mui.system.Theme
 import styled.StyleSheet
 
 class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isStatic = true) {

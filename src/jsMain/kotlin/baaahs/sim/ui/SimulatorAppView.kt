@@ -1,6 +1,7 @@
 package baaahs.sim.ui
 
 import baaahs.SheepSimulator
+import baaahs.app.ui.Themes
 import baaahs.document
 import baaahs.sim.HostedWebApp
 import baaahs.ui.components.UiComponentStyles
@@ -12,7 +13,6 @@ import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
 import external.mosaic.mosaic
 import kotlinx.js.jso
-import mui.material.styles.createTheme
 import mui.system.Breakpoint
 import react.*
 import react.dom.div
@@ -33,7 +33,7 @@ external interface SimulatorContext {
 }
 
 val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
-    val theme = createTheme(jso {})
+    val theme = Themes.Light
     val simulatorStyles = ThemedSimulatorStyles(theme)
     injectGlobal(simulatorStyles.global)
     val uiComponentStyles = UiComponentStyles(theme)
