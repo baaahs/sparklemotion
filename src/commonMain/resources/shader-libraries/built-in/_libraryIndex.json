@@ -283,7 +283,7 @@
       "tags": [
         "@type=paint"
       ],
-      "srcFile": "shaders/BlueSteel.glsl"
+      "srcFile": "shaders/Blue Hearts.glsl"
     },
     {
       "id": "circular-dependency",
