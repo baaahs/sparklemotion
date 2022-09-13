@@ -5,8 +5,6 @@ import baaahs.app.ui.editor.ButtonPropsEditor
 import baaahs.app.ui.editor.PropsEditor
 import baaahs.camelize
 import baaahs.gadgets.Switch
-import baaahs.gl.shader.OpenShader
-import baaahs.onlyOrNull
 import baaahs.randomId
 import baaahs.show.*
 import baaahs.show.live.*
@@ -124,10 +122,6 @@ class OpenButtonControl(
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forButton(this, controlProps)
-
-    override fun initPatchMods(showPlayer: ShowPlayer) {
-
-    }
 
     fun click() {
         isPressed = !isPressed

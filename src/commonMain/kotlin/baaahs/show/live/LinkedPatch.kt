@@ -8,6 +8,7 @@ import baaahs.gl.patch.ShaderComponent
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.show.Stream
+import baaahs.util.Logger
 
 class LinkedPatch(
     val shader: OpenShader,
@@ -29,7 +30,7 @@ class LinkedPatch(
                 ?: redirectableLink
 
             if (redirectableLink !== oldLink)
-                println("Redirected $oldLink via $redirectableLink.")
+                logger.debug { "Redirected $oldLink via $redirectableLink." }
         }
         redirectableLink
     }
@@ -48,4 +49,8 @@ class LinkedPatch(
     }
 
     override fun toString(): String = "LinkedPatch(shader=${shader.title})"
+
+    companion object {
+        private val logger = Logger<LinkedPatch>()
+    }
 }

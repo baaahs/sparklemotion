@@ -58,7 +58,6 @@ data class XyPadDataSource(
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@XyPadDataSource, id) { uniform ->
-                        if (xyPad.position != Vector2F.origin && id != "center") logger.warn { "$id position is ${xyPad.position}"}
                         uniform.set(xyPad.position)
                     }
                 }
