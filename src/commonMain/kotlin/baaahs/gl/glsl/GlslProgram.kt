@@ -55,8 +55,8 @@ class GlslProgramImpl(
             val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
             if (engineFeed != null) {
-                val spy = GlslProgramSpy(this)
-                val programFeed = engineFeed.bind(spy)
+                val spy = if (enableUniformSpying) GlslProgramSpy(this) else null
+                val programFeed = engineFeed.bind(spy ?: this)
                 if (programFeed.isValid) {
                     OpenFeed(dataSource, id, programFeed, spy)
                 } else {
@@ -197,6 +197,8 @@ class GlslProgramImpl(
                 gl_Position = vec4(Vertex / vertexShader_resolution * 2. - 1., 0.0, 1.0);
             }
         """.trimIndent()
+
+        private val enableUniformSpying = false
     }
 }
 
