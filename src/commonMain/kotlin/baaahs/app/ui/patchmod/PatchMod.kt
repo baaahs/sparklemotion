@@ -30,7 +30,7 @@ interface PatchMod {
     val dataSources: List<DataSource>
 
     fun getView(openPatch: OpenPatch): View
-    fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode?
+    fun maybeWrapLink(moddedNode: LinkedPatch, inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode?
     fun registerGadgets(gadgetProvider: GadgetProvider)
 }
 
@@ -78,7 +78,7 @@ class PositionAndScalePatchMod(
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forPositionAndScale(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
+    override fun maybeWrapLink(moddedNode: LinkedPatch, inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return if (inputPortId == uvInputPort.id) {
             val openShader = toolchain.openShader(
                 Shader(
@@ -109,7 +109,8 @@ class PositionAndScalePatchMod(
                     )
                 ),
                 Stream.Main,
-                0f
+                0f,
+                modsNode = moddedNode
             )
         } else null
     }
@@ -144,7 +145,7 @@ class RotationPatchMod : PatchMod {
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forRotation(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
+    override fun maybeWrapLink(moddedNode: LinkedPatch, inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return null
     }
 
@@ -163,7 +164,7 @@ class ColorPatchMod : PatchMod {
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forColor(this, openPatch)
 
-    override fun maybeWrapLink(inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
+    override fun maybeWrapLink(moddedNode: LinkedPatch, inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode? {
         return null
     }
 

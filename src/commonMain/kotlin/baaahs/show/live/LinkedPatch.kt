@@ -16,17 +16,19 @@ class LinkedPatch(
     val stream: Stream,
     val priority: Float,
     val injectedPorts: Set<String> = emptySet(),
-    val patchMods: List<PatchMod> = emptyList()
+    val patchMods: List<PatchMod> = emptyList(),
+    val modsNode: ProgramNode? = null
 ) : ProgramNode {
     override val title: String get() = shader.title
     override val outputPort: OutputPort get() = shader.outputPort
+    val isPatchMod get() = modsNode != null
 
     val unmoddedIncomingLinks = incomingLinks
     val incomingLinks = incomingLinks.mapValues { (inputPortId, link) ->
         var redirectableLink = link
         patchMods.forEach { patchMod ->
             val oldLink = redirectableLink
-            redirectableLink = patchMod.maybeWrapLink(inputPortId, redirectableLink, shader)
+            redirectableLink = patchMod.maybeWrapLink(this, inputPortId, redirectableLink, shader)
                 ?: redirectableLink
 
             if (redirectableLink !== oldLink)
@@ -44,8 +46,13 @@ class LinkedPatch(
         }
     }
 
-    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
-        return ShaderComponent(id, index, this, findUpstreamComponent)
+    override fun buildComponent(
+        id: String,
+        index: Int,
+        prefix: String,
+        findUpstreamComponent: (ProgramNode) -> Component
+    ): Component {
+        return ShaderComponent(id, index, prefix, this, findUpstreamComponent)
     }
 
     override fun toString(): String = "LinkedPatch(shader=${shader.title})"

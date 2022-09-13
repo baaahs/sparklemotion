@@ -10,11 +10,11 @@ import baaahs.show.live.LinkedPatch
 class ShaderComponent(
     val id: String,
     val index: Int,
+    val prefix: String,
     private val linkedPatch: LinkedPatch,
     private val findUpstreamComponent: (ProgramNode) -> Component
 ) : Component {
     override val title: String get() = linkedPatch.shader.title
-    private val prefix = "p$index"
     private val namespace = GlslCode.Namespace(prefix + "_" + id)
     private val portMap: Map<String, GlslExpr>
     private val resultInReturnValue: Boolean

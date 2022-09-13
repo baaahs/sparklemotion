@@ -25,7 +25,7 @@ class ProgramLinker(
     private val componentBuilder: CacheBuilder<ProgramNode, Component> = CacheBuilder {
         val instanceNode = linkNodes.getBang(it, "instance node")
         with(instanceNode) {
-            programNode.buildComponent(id, index, this@ProgramLinker::findUpstreamComponent)
+            programNode.buildComponent(id, index, fullIndex, this@ProgramLinker::findUpstreamComponent)
         }
     }
 
@@ -56,20 +56,40 @@ class ProgramLinker(
 
     fun buildLinkedProgram(): LinkedProgram {
         var pIndex = 0
-        linkNodes.values
+        val allNodes = linkNodes.values
             .sortedWith(
                 compareByDescending<LinkNode> { it.maxObservedDepth }
                     .thenBy { it.id }
             )
-            .forEach { instanceNode ->
-                instanceNode.index =
-                    if (instanceNode.programNode is LinkedPatch)
-                        pIndex++ else -1
+
+        // First pass: assign index numbers to first-class patches.
+        allNodes.forEach { instanceNode ->
+            val programNode = instanceNode.programNode
+            if (programNode is LinkedPatch) {
+                val modsNode = programNode.modsNode as? LinkedPatch
+                if (modsNode == null) {
+                    instanceNode.index = pIndex++
+                }
             }
+        }
+
+        // Second pass: assign mod index numbers to patchmods.
+        allNodes.forEach { instanceNode ->
+            val programNode = instanceNode.programNode
+            if (programNode is LinkedPatch) {
+                val modsNode = programNode.modsNode as? LinkedPatch
+                if (modsNode != null) {
+                    val modsLinkNode = linkNodes.getBang(modsNode, "node")
+                    instanceNode.index = modsLinkNode.index
+                    instanceNode.modIndex = modsLinkNode.nextModIndex++
+                }
+            }
+        }
 
         val components = linkNodes.values
             .sortedWith(
                 compareBy<LinkNode> { it.index }
+                    .thenBy { it.modIndex ?: Int.MAX_VALUE }
                     .thenBy { it.id }
             )
             .map { componentBuilder[it.programNode] }
@@ -92,7 +112,7 @@ interface ProgramNode {
 
     fun traverse(programLinker: ProgramLinker)
 
-    fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component
+    fun buildComponent(id: String, index: Int, prefix: String, findUpstreamComponent: (ProgramNode) -> Component): Component
 }
 
 data class DefaultValueNode(
@@ -122,7 +142,12 @@ data class DefaultValueNode(
     override fun traverse(programLinker: ProgramLinker) {
     }
 
-    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+    override fun buildComponent(
+        id: String,
+        index: Int,
+        prefix: String,
+        findUpstreamComponent: (ProgramNode) -> Component
+    ): Component {
         return this
     }
 }
@@ -135,7 +160,12 @@ abstract class ExprNode : ProgramNode, Component {
 
     override fun traverse(programLinker: ProgramLinker) {}
 
-    override fun buildComponent(id: String, index: Int, findUpstreamComponent: (ProgramNode) -> Component): Component {
+    override fun buildComponent(
+        id: String,
+        index: Int,
+        prefix: String,
+        findUpstreamComponent: (ProgramNode) -> Component
+    ): Component {
         return this
     }
 
@@ -160,6 +190,10 @@ class LinkNode(
     var maxObservedDepth: Int = 0
 ) {
     var index: Int = -1
+    var nextModIndex = 0
+    var modIndex: Int? = null
+
+    val fullIndex: String get() = if (modIndex == null) "p$index" else "p${index}m${modIndex}"
 
     fun atDepth(depth: Int) {
         if (depth > maxObservedDepth) maxObservedDepth = depth

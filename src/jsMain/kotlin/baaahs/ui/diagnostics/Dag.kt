@@ -47,7 +47,7 @@ class Dag(
             "FT${fixtureType.id}".also {
                 declareNode(
                     it, fixtureType.title, "rect",
-                    "fill: #afa; stroke: #060; stroke-width: 3px;"
+                    "fill: #aaffaa; stroke: #060; stroke-width: 3px;"
                 )
             }
         }
@@ -58,7 +58,7 @@ class Dag(
             "DS${node.varName}".also {
                 declareNode(
                     it, node.title, "rect",
-                    "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;"
+                    "fill: #ffcc66; stroke: black; stroke-width: 1px;"
                 )
             }
         }
@@ -69,7 +69,7 @@ class Dag(
             "V${nextNode++}".also {
                 declareNode(
                     it, node.getExpression("pfx").s, "ellipse",
-                    "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;"
+                    "fill: #cccccc; stroke: black; stroke-width: 1px;"
                 )
             }
         }
@@ -80,7 +80,7 @@ class Dag(
             "E${nextNode++}".also {
                 declareNode(
                     it, node.getExpression("pfx").s, "ellipse",
-                    "fill: #fff; stroke: #f66; stroke-width: 3px; stroke-dasharray: 5, 5;"
+                    "fill: #cccccc; stroke: black; stroke-width: 1px;"
                 )
             }
         }
@@ -89,7 +89,8 @@ class Dag(
     override fun visitPatch(node: LinkedPatch) {
         nodes.getOrPut(node) {
             "P${nextNode++}".also {
-                declareNode(it, node.title, "circle", "fill:pink")
+                val fill = if (node.isPatchMod) "fill:#eecbe7" else "fill:lightblue"
+                declareNode(it, node.title, "ellipse", fill)
             }
         }
     }
