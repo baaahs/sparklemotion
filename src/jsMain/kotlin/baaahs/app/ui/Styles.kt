@@ -1,56 +1,13 @@
 package baaahs.app.ui
 
-import baaahs.app.ui.document.FileUploadStyles
-import baaahs.app.ui.editor.ShaderEditorStyles
-import baaahs.app.ui.editor.ShaderHelpStyles
-import baaahs.app.ui.editor.ThemedEditableStyles
-import baaahs.app.ui.editor.layout.LayoutEditorStyles
-import baaahs.app.ui.gadgets.color.ColorWheelStyles
-import baaahs.app.ui.gadgets.slider.ThemedStyles
-import baaahs.app.ui.layout.LayoutStyles
-import baaahs.app.ui.model.ModelEditorStyles
-import baaahs.app.ui.patchmod.PatchModStyles
-import baaahs.mapper.ControllerEditorStyles
-import baaahs.mapper.MapperStyles
 import baaahs.ui.*
-import baaahs.ui.components.UiComponentStyles
-import baaahs.ui.diagnostics.DiagnosticsStyles
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import kotlinx.js.Object
 import mui.material.styles.Theme
 import mui.system.Breakpoint
 import styled.StyleSheet
-import styled.injectGlobal
 import baaahs.app.ui.controls.Styles as ControlsStyles
-
-class AllStyles(val theme: Theme) {
-    val themeStyles = ThemeStyles(theme)
-    val appUi by lazy { themeStyles }
-    val editor by lazy { baaahs.ui.editor.Styles(theme) }
-    val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
-    val gadgetsSlider by lazy { ThemedStyles(theme) }
-    val editableManager by lazy { ThemedEditableStyles(theme) }
-    val layout by lazy { LayoutStyles(theme) }
-    val layoutEditor by lazy { LayoutEditorStyles(theme) }
-    val controllerEditor by lazy { ControllerEditorStyles(theme) }
-    val modelEditor by lazy { ModelEditorStyles(theme) }
-    val mapper by lazy { MapperStyles(theme) }
-    val shaderEditor by lazy { ShaderEditorStyles(theme) }
-    val shaderHelp by lazy { ShaderHelpStyles(theme) }
-    val uiComponents by lazy { UiComponentStyles(theme) }
-    val fileUploadStyles by lazy { FileUploadStyles(theme) }
-    val diagnosticsStyles by lazy { DiagnosticsStyles(theme) }
-    val patchModStyles by lazy { PatchModStyles(theme) }
-
-    fun injectGlobals() {
-        injectGlobal(Styles.global)
-        injectGlobal(appUi.global)
-        injectGlobal(ControlsStyles.global)
-        injectGlobal(ColorWheelStyles.global)
-        injectGlobal(layout.global)
-    }
-}
 
 fun linearRepeating(
     color1: Color,
