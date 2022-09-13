@@ -171,6 +171,7 @@ class OpenPatch(
         override fun buildComponent(
             id: String,
             index: Int,
+            prefix: String,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
 //            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
