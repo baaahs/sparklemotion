@@ -39,22 +39,24 @@ class OpenPatch(
             }
         }
 
+    val dataSources get() = incomingLinks.values.mapNotNull { link ->
+        (link as? DataSourceLink)?.dataSource
+    }
+
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
-                incomingLinks
-                    .forEach { (_, link) ->
-                        val dataSourceLink = link as? DataSourceLink
-                        val unknownDataSource = dataSourceLink?.dataSource as? UnknownDataSource
-                        unknownDataSource?.let {
-                            add(
-                                Problem(
-                                    "Unresolved data source for shader \"$title\".",
-                                    it.errorMessage, severity = Severity.WARN
-                                )
+                dataSources.forEach { dataSource ->
+                    val unknownDataSource = dataSource as? UnknownDataSource
+                    unknownDataSource?.let {
+                        add(
+                            Problem(
+                                "Unresolved data source for shader \"$title\".",
+                                it.errorMessage, severity = Severity.WARN
                             )
-                        }
+                        )
                     }
+                }
 
                 if (extraLinks.isNotEmpty()) {
                     add(
