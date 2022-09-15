@@ -212,6 +212,7 @@ fun jsonFor(control: Control): JsonElement {
             put("title", control.title)
             put("direction", control.direction.name)
             put("showTitle", control.showTitle)
+            put("allowMultiple", control.allowMultiple)
             put("buttonIds", control.buttonIds.jsonMap { JsonPrimitive(it) })
         }
         is ColorPickerControl -> buildJsonObject {

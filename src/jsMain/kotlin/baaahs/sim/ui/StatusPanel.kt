@@ -27,8 +27,14 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
         }
     }
 
+    observe(simulator)
+    observe(simulator.pinky)
+
     val handleIsConsoleOpenChange by eventHandler { isConsoleOpen = !isConsoleOpen }
     val handleIsGlslPaletteOpenChange by eventHandler { isGlslPaletteOpen = !isGlslPaletteOpen }
+    val handlePauseChange by switchEventHandler { _, checked ->
+        props.simulator.pinky.isPaused = checked
+    }
 
     div {
         div(+SimulatorStyles.statusPanelToolbar) {
@@ -50,6 +56,16 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                     }
                 }
                 attrs.label = "Show GLSL".asTextNode()
+            }
+
+            FormControlLabel {
+                attrs.control =  buildElement {
+                    Switch {
+                        attrs.checked = props.simulator.pinky.isPaused
+                        attrs.onChange = handlePauseChange
+                    }
+                }
+                attrs.label = "Paused".asTextNode()
             }
         }
 

@@ -21,7 +21,7 @@ abstract class ProgramVisitor {
     private fun visitPatchInternal(node: LinkedPatch) {
         visitPatch(node)
 
-        node.incomingLinks.forEach { (linkId, toNode) ->
+        getIncomingLinks(node).forEach { (linkId, toNode) ->
             val inputPort = node.shader.inputPorts.first { it.id == linkId }
 
             visitNode(toNode)
@@ -30,6 +30,8 @@ abstract class ProgramVisitor {
     }
 
     abstract fun visitPatch(node: LinkedPatch)
+
+    open fun getIncomingLinks(node: LinkedPatch) = node.incomingLinks
 
     abstract fun visitLink(fromNode: ProgramNode, inputPort: InputPort, toNode: ProgramNode)
 

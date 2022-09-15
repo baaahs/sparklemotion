@@ -9,6 +9,7 @@ import baaahs.app.ui.gadgets.color.ColorWheelStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
 import baaahs.app.ui.layout.LayoutStyles
 import baaahs.app.ui.model.ModelEditorStyles
+import baaahs.app.ui.patchmod.PatchModStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
 import baaahs.ui.components.UiComponentStyles
@@ -32,6 +33,7 @@ class AllStyles(val theme: Theme) {
     val uiComponents by lazy { UiComponentStyles(theme) }
     val fileUploadStyles by lazy { FileUploadStyles(theme) }
     val diagnosticsStyles by lazy { DiagnosticsStyles(theme) }
+    val patchModStyles by lazy { PatchModStyles(theme) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)

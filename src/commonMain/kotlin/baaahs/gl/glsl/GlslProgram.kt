@@ -1,8 +1,10 @@
 package baaahs.gl.glsl
 
+import baaahs.geom.*
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
 import baaahs.gl.data.Feed
+import baaahs.gl.data.ProgramFeed
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
@@ -48,14 +50,15 @@ class GlslProgramImpl(
 
     val id = gl.compile(vertexShader, fragShader)
 
-    private val feeds = gl.runInContext {
+    internal val openFeeds = gl.runInContext {
         linkedProgram.dataSourceLinks.mapNotNull { (dataSource, id) ->
             val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
             if (engineFeed != null) {
-                val programFeed = engineFeed.bind(this)
+                val spy = if (enableUniformSpying) GlslProgramSpy(this) else null
+                val programFeed = engineFeed.bind(spy ?: this)
                 if (programFeed.isValid) {
-                    programFeed
+                    OpenFeed(dataSource, id, programFeed, spy)
                 } else {
                     logger.debug { "Invalid feed for $dataSource $id: $programFeed" }
                     programFeed.release()
@@ -68,34 +71,63 @@ class GlslProgramImpl(
         }
     }
 
+    class GlslProgramSpy(val delegate: GlslProgram) : GlslProgram by delegate {
+        val uniforms = mutableMapOf<String, UniformSpy?>()
+        override fun getUniform(name: String): Uniform? =
+            delegate.getUniform(name)?.let { UniformSpy(name, it) }
+                .also { uniforms.put(name, it) }
+    }
+
+    class UniformSpy(val name: String, val delegate: Uniform) : Uniform {
+        var value: Any? = null
+
+        override fun set(x: Int) { value = x; delegate.set(x) }
+        override fun set(x: Int, y: Int) { value = listOf(x, y); delegate.set(x, y) }
+        override fun set(x: Int, y: Int, z: Int) { value = listOf(x, y, z); delegate.set(x, y, z) }
+        override fun set(x: Float) { value = x; delegate.set(x) }
+        override fun set(x: Float, y: Float) { value = Vector2F(x, y); delegate.set(x, y) }
+        override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z); delegate.set(x, y, z) }
+        override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w); delegate.set(x, y, z, w) }
+        override fun set(matrix: Matrix4F) { value = matrix; delegate.set(matrix) }
+        override fun set(vector2F: Vector2F) { value = vector2F; delegate.set(vector2F) }
+        override fun set(vector3F: Vector3F) { value = vector3F; delegate.set(vector3F) }
+        override fun set(vector4F: Vector4F) { value = vector4F; delegate.set(vector4F) }
+        override fun set(eulerAngle: EulerAngle) { value; delegate.set(eulerAngle) }
+        override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit; delegate.set(textureUnit) }
+    }
+
+    class OpenFeed(
+        val dataSource: DataSource,
+        val id: String,
+        val programFeed: ProgramFeed,
+        val glslProgramSpy: GlslProgramSpy?
+    ) {
+        val updateMode get() = programFeed.updateMode
+
+        fun release() = programFeed.release()
+    }
+
     private val vertexShader_resolution by lazy { getUniform("vertexShader_resolution") }
 
     init {
         gl.runInContext {
-            feeds.forEach { programFeed ->
-                if (programFeed.updateMode == UpdateMode.ONCE)
-                    programFeed.setOnProgram()
+            openFeeds.forEach { feed ->
+                if (feed.updateMode == UpdateMode.ONCE)
+                    feed.programFeed.setOnProgram()
             }
         }
     }
 
-    private val perFrameFeeds = feeds.mapNotNull { programFeed ->
-        if (programFeed.updateMode == UpdateMode.PER_FRAME)
-            programFeed
-        else null
-    }
+    private val perFrameFeeds = openFeeds.filter { it.updateMode == UpdateMode.PER_FRAME }
 
-    private val perFixtureFeeds = feeds.mapNotNull { programFeed ->
-        if (programFeed.updateMode == UpdateMode.PER_FIXTURE)
-            programFeed
-        else null
-    }
+    private val perFixtureFeeds = openFeeds.filter { it.updateMode == UpdateMode.PER_FIXTURE }
 
     override val vertexAttribLocation: Int = gl.runInContext {
         gl.check { getAttribLocation(id, "Vertex") }
     }
 
-    private inline fun <reified T> feedsOf(): List<T> = feeds.filterIsInstance<T>()
+    private inline fun <reified T> feedsOf(): List<T> =
+        openFeeds.map { it.programFeed }.filterIsInstance<T>()
 
     override fun setResolution(x: Float, y: Float) {
         feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
@@ -106,17 +138,17 @@ class GlslProgramImpl(
     }
 
     override fun aboutToRenderFrame() {
-        perFrameFeeds.forEach { it.setOnProgram() }
+        perFrameFeeds.forEach { it.programFeed.setOnProgram() }
     }
 
     override fun aboutToRenderFixture(renderTarget: RenderTarget) {
         perFixtureFeeds.forEach {
-            it.setOnProgram(renderTarget)
+            it.programFeed.setOnProgram(renderTarget)
         }
     }
 
     override fun release() {
-        feeds.forEach { it.release() }
+        openFeeds.forEach { it.release() }
 
         gl.runInContext {
             gl.useProgram(this)
@@ -165,6 +197,8 @@ class GlslProgramImpl(
                 gl_Position = vec4(Vertex / vertexShader_resolution * 2. - 1., 0.0, 1.0);
             }
         """.trimIndent()
+
+        private val enableUniformSpying = false
     }
 }
 

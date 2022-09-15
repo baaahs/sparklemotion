@@ -1,6 +1,7 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
 import baaahs.control.ButtonControl
 import baaahs.control.OpenButtonControl
@@ -25,24 +26,29 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
-    val handleToggleClick by eventHandler(onShowStateChange) {
+    val handleToggleClick by eventHandler(props.buttonControl, onShowStateChange) {
         buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryPress by eventHandler(onShowStateChange) {
+    val handleMomentaryPress by eventHandler(props.buttonControl, onShowStateChange) {
         if (!buttonControl.isPressed) buttonControl.click()
         onShowStateChange()
     }
 
-    val handleMomentaryRelease by eventHandler(onShowStateChange) {
+    val handleMomentaryRelease by eventHandler(props.buttonControl, onShowStateChange) {
         if (buttonControl.isPressed) buttonControl.click()
+        onShowStateChange()
+    }
+
+    val handlePatchModSwitch by handler(props.buttonControl, onShowStateChange) {
+        buttonControl.click()
         onShowStateChange()
     }
 
     val buttonRef = ref<HTMLButtonElement>()
     val titleDivRef = ref<HTMLDivElement>()
-    useResizeListener(buttonRef) {
+    useResizeListener(buttonRef) { _, _ ->
         titleDivRef.current!!.fitText()
     }
 
@@ -108,7 +114,9 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     if (lightboxOpen && patchForPreview != null) {
         patchMod {
             attrs.title = buttonControl.title
-            attrs.shader = patchForPreview.shader.shader
+            attrs.patchHolder = buttonControl
+            attrs.isActive = buttonControl.isPressed
+            attrs.onToggle = handlePatchModSwitch
             attrs.onClose = { lightboxOpen = false }
         }
     }
