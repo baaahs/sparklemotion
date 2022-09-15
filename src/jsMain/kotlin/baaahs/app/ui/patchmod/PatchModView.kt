@@ -1,11 +1,15 @@
 package baaahs.app.ui.patchmod
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.shaderPreview
+import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.asTextNode
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import kotlinx.js.jso
 import mui.material.*
 import react.*
 import react.dom.div
@@ -64,13 +68,30 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
             }
         }
 
-        div(+styles.lightboxShaderPreviewContainer) {
-            shaderPreview {
-                attrs.shader = selectedPatch.shader.shader
-                attrs.noSharedGlContext = true
+        div(+styles.container) {
+            div(+styles.lightboxShaderPreviewContainer) {
+                shaderPreview {
+                    attrs.shader = selectedPatch.shader.shader
+                    attrs.noSharedGlContext = true
+                }
+
+                with(selectedPatchMod.getView(selectedPatch)) { render() }
             }
 
-            with(selectedPatchMod.getView(selectedPatch)) { render() }
+            div(+styles.controls) {
+                val incomingDataSources = selectedPatch.dataSources
+
+                appContext.showManager.openShow?.allControls?.forEach { control ->
+                    if (incomingDataSources.intersect(control.controlledDataSources()).isNotEmpty()) {
+                        Card {
+                            attrs.classes = jso { root = -Styles.controlBox }
+                            with(control.getView(ControlProps({}, null, null, null))) {
+                                render()
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         Tabs {

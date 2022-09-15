@@ -14,6 +14,14 @@ data class ActivePatchSet(
     private val allDataSources: Map<String, DataSource>,
     private val feeds: Map<DataSource, Feed>
 ) {
+    val dataSources by lazy {
+        buildSet {
+            activePatches.forEach { activePatch ->
+                activePatch.dataSources.forEach { add(it) }
+            }
+        }
+    }
+
     fun createRenderPlan(
         renderManager: RenderManager,
         renderTargets: Collection<FixtureRenderTarget>
