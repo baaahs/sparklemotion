@@ -82,7 +82,7 @@ class PositionAndScalePatchMod(
         return if (inputPortId == uvInputPort.id) {
             val openShader = toolchain.openShader(
                 Shader(
-                    "Position and Scale Patch Mod for ${forShader.title}",
+                    "Position and Scale patchmod for ${forShader.title}",
                     /** language=glsl */
                     """
                         // @param uvIn uv-coordinate

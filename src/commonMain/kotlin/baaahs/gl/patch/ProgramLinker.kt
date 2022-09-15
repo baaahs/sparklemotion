@@ -200,6 +200,12 @@ class LinkNode(
     }
 
     override fun toString(): String {
-        return "LinkNode(${programNode.title}, id='$id', maxObservedDepth=$maxObservedDepth, index=$index)"
+        return "LinkNode(" +
+                "${programNode.title}, " +
+                "id='$id', " +
+                "maxObservedDepth=$maxObservedDepth, " +
+                "index=$index" +
+                (if (modIndex != null) ", modIndex=$modIndex" else "") +
+                ")"
     }
 }

@@ -153,7 +153,7 @@ object PatchResolverSpec : Spek({
                             vec3 center;
                             vec3 extents;
                         };
-                        
+
                         // Data source: Brightness Slider
                         uniform float in_brightnessSlider;
 
@@ -162,6 +162,12 @@ object PatchResolverSpec : Spek({
 
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
+
+                        // Data source: orangeShader-patch gl_FragCoord offset
+                        uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
+
+                        // Data source: orangeShader-patch gl_FragCoord scale Slider
+                        uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
@@ -194,6 +200,16 @@ object PatchResolverSpec : Spek({
                             return vec2(u, v);
                         }
 
+                        // Shader: Position and Scale patchmod for Orange Shader; namespace: p1m0
+                        // Position and Scale patchmod for Orange Shader
+
+                        vec2 p1m0_positionAndScalePatchmodForOrangeShaderi_result = vec2(0.);
+
+                        #line 5 1
+                        vec2 p1m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
+                            return (uvIn - offset - .5) / scale + .5;
+                        }
+
                         // Shader: Orange Shader; namespace: p1
                         // Orange Shader
 
@@ -201,7 +217,7 @@ object PatchResolverSpec : Spek({
 
                         #line 2 1
                         void p1_orangeShader_main() {
-                          p1_orangeShader_gl_FragColor = vec4(1., .5, in_time, p0_cylindricalProjectioni_result.x);
+                          p1_orangeShader_gl_FragColor = vec4(1., .5, in_time, p1m0_positionAndScalePatchmodForOrangeShaderi_result.x);
                         }
 
                         // Shader: Brightness Filter; namespace: p2
@@ -222,6 +238,9 @@ object PatchResolverSpec : Spek({
 
                             // Invoke Cylindrical Projection
                             p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+
+                            // Invoke Position and Scale patchmod for Orange Shader
+                            p1m0_positionAndScalePatchmodForOrangeShaderi_result = p1m0_positionAndScalePatchmodForOrangeShader_main(p0_cylindricalProjectioni_result, in_orangeShaderPatchGlFragCoordOffset, in_orangeShaderPatchGlFragCoordScaleSlider);
 
                             // Invoke Orange Shader
                             p1_orangeShader_main();
@@ -256,117 +275,136 @@ object PatchResolverSpec : Spek({
                     kexpect(linkedPatch.toGlsl()).toBe(
                         /**language=glsl*/
                         """
-                        #ifdef GL_ES
-                        precision mediump float;
-                        #endif
+                            #ifdef GL_ES
+                            precision mediump float;
+                            #endif
 
-                        // SparkleMotion-generated GLSL
+                            // SparkleMotion-generated GLSL
 
-                        layout(location = 0) out vec4 sm_result;
+                            layout(location = 0) out vec4 sm_result;
 
-                        struct FixtureInfo {
-                            vec3 position;
-                            vec3 rotation;
-                            mat4 transformation;
-                            vec3 boundaryMin;
-                            vec3 boundaryMax;
-                        };
+                            struct FixtureInfo {
+                                vec3 position;
+                                vec3 rotation;
+                                mat4 transformation;
+                                vec3 boundaryMin;
+                                vec3 boundaryMax;
+                            };
 
-                        struct ModelInfo {
-                            vec3 center;
-                            vec3 extents;
-                        };
+                            struct ModelInfo {
+                                vec3 center;
+                                vec3 extents;
+                            };
+
+                            // Data source: Brightness Slider
+                            uniform float in_brightnessSlider;
+
+                            // Data source: Fixture Info
+                            uniform FixtureInfo in_fixtureInfo;
+
+                            // Data source: Model Info
+                            uniform ModelInfo in_modelInfo;
+
+                            // Data source: orangeShader-patch gl_FragCoord offset
+                            uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
+
+                            // Data source: orangeShader-patch gl_FragCoord scale Slider
+                            uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
+
+                            // Data source: Pixel Location
+                            uniform sampler2D ds_pixelLocation_texture;
+                            vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
+                                vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
+                                vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
+                                return xyzwInModel.xyz;
+                            }
+                            vec3 in_pixelLocation;
+
+                            // Data source: Time
+                            uniform float in_time;
+
+                            // Shader: Cylindrical Projection; namespace: p0
+                            // Cylindrical Projection
+
+                            vec2 p0_cylindricalProjectioni_result = vec2(0.);
+
+                            #line 10 0
+                            const float p0_cylindricalProjection_PI = 3.141592654;
+
+                            #line 14 0
+                            vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
+                                vec3 pixelOffset = pixelLocation - in_modelInfo.center;
+                                vec3 normalDelta = normalize(pixelOffset);
+                                float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
+                                if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
+                                float u = theta / (2.0f * p0_cylindricalProjection_PI) * 2.;                    // u in range [0,1)
+                                float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
+                                return vec2(u, v);
+                            }
+
+                            // Shader: Wobbly Time Filter; namespace: p1
+                            // Wobbly Time Filter
+
+                            float p1_wobblyTimeFilteri_result = 0.;
+
+                            #line 3 1
+                            float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
+
+                            // Shader: Position and Scale patchmod for Orange Shader; namespace: p2m0
+                            // Position and Scale patchmod for Orange Shader
+
+                            vec2 p2m0_positionAndScalePatchmodForOrangeShaderi_result = vec2(0.);
+
+                            #line 5 2
+                            vec2 p2m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
+                                return (uvIn - offset - .5) / scale + .5;
+                            }
+
+                            // Shader: Orange Shader; namespace: p2
+                            // Orange Shader
+
+                            vec4 p2_orangeShader_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                            #line 2 2
+                            void p2_orangeShader_main() {
+                              p2_orangeShader_gl_FragColor = vec4(1., .5, p1_wobblyTimeFilteri_result, p2m0_positionAndScalePatchmodForOrangeShaderi_result.x);
+                            }
+
+                            // Shader: Brightness Filter; namespace: p3
+                            // Brightness Filter
+
+                            vec4 p3_brightnessFilteri_result = vec4(0., 0., 0., 1.);
+
+                            #line 4 3
+                            vec4 p3_brightnessFilter_main(vec4 colorIn) {
+                              return colorIn * in_brightnessSlider;
+                            }
+
+
+                            #line 10001
+                            void main() {
+                                // Invoke Pixel Location
+                                in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
+
+                                // Invoke Cylindrical Projection
+                                p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
+
+                                // Invoke Wobbly Time Filter
+                                p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
+
+                                // Invoke Position and Scale patchmod for Orange Shader
+                                p2m0_positionAndScalePatchmodForOrangeShaderi_result = p2m0_positionAndScalePatchmodForOrangeShader_main(p0_cylindricalProjectioni_result, in_orangeShaderPatchGlFragCoordOffset, in_orangeShaderPatchGlFragCoordScaleSlider);
+
+                                // Invoke Orange Shader
+                                p2_orangeShader_main();
+
+                                // Invoke Brightness Filter
+                                p3_brightnessFilteri_result = p3_brightnessFilter_main(p2_orangeShader_gl_FragColor);
+
+                                sm_result = p3_brightnessFilteri_result;
+                            }
                         
-                        // Data source: Brightness Slider
-                        uniform float in_brightnessSlider;
-
-                        // Data source: Fixture Info
-                        uniform FixtureInfo in_fixtureInfo;
-
-                        // Data source: Model Info
-                        uniform ModelInfo in_modelInfo;
-
-                        // Data source: Pixel Location
-                        uniform sampler2D ds_pixelLocation_texture;
-                        vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
-                            vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
-                            vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
-                            return xyzwInModel.xyz;
-                        }
-                        vec3 in_pixelLocation;
-
-                        // Data source: Time
-                        uniform float in_time;
-
-                        // Shader: Cylindrical Projection; namespace: p0
-                        // Cylindrical Projection
-
-                        vec2 p0_cylindricalProjectioni_result = vec2(0.);
-
-                        #line 10 0
-                        const float p0_cylindricalProjection_PI = 3.141592654;
-
-                        #line 14 0
-                        vec2 p0_cylindricalProjection_main(vec3 pixelLocation) {
-                            vec3 pixelOffset = pixelLocation - in_modelInfo.center;
-                            vec3 normalDelta = normalize(pixelOffset);
-                            float theta = atan(abs(normalDelta.z), normalDelta.x); // theta in range [-π,π]
-                            if (theta < 0.0) theta += (2.0f * p0_cylindricalProjection_PI);                 // theta in range [0,2π)
-                            float u = theta / (2.0f * p0_cylindricalProjection_PI) * 2.;                    // u in range [0,1)
-                            float v = (pixelOffset.y + in_modelInfo.extents.y / 2.0f) / in_modelInfo.extents.y;
-                            return vec2(u, v);
-                        }
-
-                        // Shader: Wobbly Time Filter; namespace: p1
-                        // Wobbly Time Filter
-
-                        float p1_wobblyTimeFilteri_result = 0.;
-
-                        #line 3 1
-                        float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
-
-                        // Shader: Orange Shader; namespace: p2
-                        // Orange Shader
-
-                        vec4 p2_orangeShader_gl_FragColor = vec4(0., 0., 0., 1.);
-
-                        #line 2 2
-                        void p2_orangeShader_main() {
-                          p2_orangeShader_gl_FragColor = vec4(1., .5, p1_wobblyTimeFilteri_result, p0_cylindricalProjectioni_result.x);
-                        }
-
-                        // Shader: Brightness Filter; namespace: p3
-                        // Brightness Filter
-
-                        vec4 p3_brightnessFilteri_result = vec4(0., 0., 0., 1.);
-
-                        #line 4 3
-                        vec4 p3_brightnessFilter_main(vec4 colorIn) {
-                          return colorIn * in_brightnessSlider;
-                        }
-
-
-                        #line 10001
-                        void main() {
-                            // Invoke Pixel Location
-                            in_pixelLocation = ds_pixelLocation_getPixelCoords(gl_FragCoord.xy);
-
-                            // Invoke Cylindrical Projection
-                            p0_cylindricalProjectioni_result = p0_cylindricalProjection_main(in_pixelLocation);
-
-                            // Invoke Wobbly Time Filter
-                            p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
-
-                            // Invoke Orange Shader
-                            p2_orangeShader_main();
-
-                            // Invoke Brightness Filter
-                            p3_brightnessFilteri_result = p3_brightnessFilter_main(p2_orangeShader_gl_FragColor);
-
-                            sm_result = p3_brightnessFilteri_result;
-                        }
-                        
-                    """.trimIndent()
+                        """.trimIndent()
                     )
                 }
             }
@@ -443,6 +481,12 @@ object PatchResolverSpec : Spek({
                             vec3 extents;
                         };
 
+                        // Data source: aMainShader-patch gl_FragCoord offset
+                        uniform vec2 in_aMainShaderPatchGlFragCoordOffset;
+
+                        // Data source: aMainShader-patch gl_FragCoord scale Slider
+                        uniform float in_aMainShaderPatchGlFragCoordScaleSlider;
+
                         // Data source: Fade Slider
                         uniform float in_fadeSlider;
 
@@ -451,6 +495,12 @@ object PatchResolverSpec : Spek({
 
                         // Data source: Model Info
                         uniform ModelInfo in_modelInfo;
+
+                        // Data source: orangeShader-patch gl_FragCoord offset
+                        uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
+
+                        // Data source: orangeShader-patch gl_FragCoord scale Slider
+                        uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
 
                         // Data source: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
@@ -491,6 +541,16 @@ object PatchResolverSpec : Spek({
                         #line 3 1
                         float p1_wobblyTimeFilter_main() { return in_time + sin(in_time); }
 
+                        // Shader: Position and Scale patchmod for A Main Shader; namespace: p2m0
+                        // Position and Scale patchmod for A Main Shader
+
+                        vec2 p2m0_positionAndScalePatchmodForAMainShaderi_result = vec2(0.);
+
+                        #line 5 2
+                        vec2 p2m0_positionAndScalePatchmodForAMainShader_main(vec2 uvIn, vec2 offset, float scale) {
+                            return (uvIn - offset - .5) / scale + .5;
+                        }
+
                         // Shader: A Main Shader; namespace: p2
                         // A Main Shader
 
@@ -498,7 +558,17 @@ object PatchResolverSpec : Spek({
 
                         #line 2 2
                         void p2_aMainShader_main() {
-                          p2_aMainShader_gl_FragColor = vec4(p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p0_cylindricalProjectioni_result.x);
+                          p2_aMainShader_gl_FragColor = vec4(p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p1_wobblyTimeFilteri_result, p2m0_positionAndScalePatchmodForAMainShaderi_result.x);
+                        }
+
+                        // Shader: Position and Scale patchmod for Orange Shader; namespace: p3m0
+                        // Position and Scale patchmod for Orange Shader
+
+                        vec2 p3m0_positionAndScalePatchmodForOrangeShaderi_result = vec2(0.);
+
+                        #line 5 3
+                        vec2 p3m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
+                            return (uvIn - offset - .5) / scale + .5;
                         }
 
                         // Shader: Orange Shader; namespace: p3
@@ -508,7 +578,7 @@ object PatchResolverSpec : Spek({
 
                         #line 2 3
                         void p3_orangeShader_main() {
-                          p3_orangeShader_gl_FragColor = vec4(1., .5, p1_wobblyTimeFilteri_result, p0_cylindricalProjectioni_result.x);
+                          p3_orangeShader_gl_FragColor = vec4(1., .5, p1_wobblyTimeFilteri_result, p3m0_positionAndScalePatchmodForOrangeShaderi_result.x);
                         }
 
                         // Shader: Fade; namespace: p4
@@ -533,8 +603,14 @@ object PatchResolverSpec : Spek({
                             // Invoke Wobbly Time Filter
                             p1_wobblyTimeFilteri_result = p1_wobblyTimeFilter_main();
 
+                            // Invoke Position and Scale patchmod for A Main Shader
+                            p2m0_positionAndScalePatchmodForAMainShaderi_result = p2m0_positionAndScalePatchmodForAMainShader_main(p0_cylindricalProjectioni_result, in_aMainShaderPatchGlFragCoordOffset, in_aMainShaderPatchGlFragCoordScaleSlider);
+
                             // Invoke A Main Shader
                             p2_aMainShader_main();
+
+                            // Invoke Position and Scale patchmod for Orange Shader
+                            p3m0_positionAndScalePatchmodForOrangeShaderi_result = p3m0_positionAndScalePatchmodForOrangeShader_main(p0_cylindricalProjectioni_result, in_orangeShaderPatchGlFragCoordOffset, in_orangeShaderPatchGlFragCoordScaleSlider);
 
                             // Invoke Orange Shader
                             p3_orangeShader_main();
@@ -702,11 +778,14 @@ object PatchResolverSpec : Spek({
                 .map { it.toString() }
 
             expect(linkNodes).containsExactly(
-                "LinkNode(UV Projection, id='uvProjection', maxObservedDepth=5, index=0)",
-                "LinkNode(Wobble, id='wobble', maxObservedDepth=4, index=1)",
+                "LinkNode(UV Projection, id='uvProjection', maxObservedDepth=7, index=0)",
+                "LinkNode(Wobble, id='wobble', maxObservedDepth=5, index=1)",
+                "LinkNode(Position and Scale patchmod for Wobble, id='positionAndScalePatchmodForWobble', maxObservedDepth=6, index=1, modIndex=0)",
                 "LinkNode(Scale, id='scale', maxObservedDepth=3, index=2)",
+                "LinkNode(Position and Scale patchmod for Scale, id='positionAndScalePatchmodForScale', maxObservedDepth=4, index=2, modIndex=0)",
                 "LinkNode(Pinks, id='pinks', maxObservedDepth=2, index=3)",
                 "LinkNode(Badger Overlay, id='badgerOverlay', maxObservedDepth=1, index=4)",
+                "LinkNode(Position and Scale patchmod for Badger Overlay, id='positionAndScalePatchmodForBadgerOverlay', maxObservedDepth=2, index=4, modIndex=0)",
                 "LinkNode(HSV, id='hsv', maxObservedDepth=0, index=5)",
             )
         }
@@ -735,6 +814,12 @@ object PatchResolverSpec : Spek({
                         vec3 center;
                         vec3 extents;
                     };
+
+                    // Data source: badgerOverlay-patch gl_FragCoord offset
+                    uniform vec2 in_badgerOverlayPatchGlFragCoordOffset;
+
+                    // Data source: badgerOverlay-patch gl_FragCoord scale Slider
+                    uniform float in_badgerOverlayPatchGlFragCoordScaleSlider;
 
                     // Data source: Brightness Slider
                     uniform float in_brightnessSlider;
@@ -769,6 +854,12 @@ object PatchResolverSpec : Spek({
                     // Data source: Saturation Slider
                     uniform float in_saturationSlider;
 
+                    // Data source: scale-patch uvIn offset
+                    uniform vec2 in_scalePatchUvInOffset;
+
+                    // Data source: scale-patch uvIn scale Slider
+                    uniform float in_scalePatchUvInScaleSlider;
+
                     // Data source: Size Slider
                     uniform float in_sizeSlider;
 
@@ -777,6 +868,12 @@ object PatchResolverSpec : Spek({
 
                     // Data source: Wobble Amount Slider
                     uniform float in_wobbleAmountSlider;
+
+                    // Data source: wobble-patch uvIn offset
+                    uniform vec2 in_wobblePatchUvInOffset;
+
+                    // Data source: wobble-patch uvIn scale Slider
+                    uniform float in_wobblePatchUvInScaleSlider;
 
                     // Shader: UV Projection; namespace: p0
                     // UV Projection
@@ -789,6 +886,16 @@ object PatchResolverSpec : Spek({
                         return vec2(pixelOffset.x, pixelOffset.y);
                     }
 
+                    // Shader: Position and Scale patchmod for Wobble; namespace: p1m0
+                    // Position and Scale patchmod for Wobble
+
+                    vec2 p1m0_positionAndScalePatchmodForWobblei_result = vec2(0.);
+
+                    #line 5 1
+                    vec2 p1m0_positionAndScalePatchmodForWobble_main(vec2 uvIn, vec2 offset, float scale) {
+                        return (uvIn - offset - .5) / scale + .5;
+                    }
+
                     // Shader: Wobble; namespace: p1
                     // Wobble
 
@@ -799,6 +906,16 @@ object PatchResolverSpec : Spek({
                         vec2 p = -1.0 + 2.0 * uvIn;
                         float len = length(p);
                         return uvIn + (p/len)*sin(len*12.0-in_time*4.0)*0.1 * in_wobbleAmountSlider;
+                    }
+
+                    // Shader: Position and Scale patchmod for Scale; namespace: p2m0
+                    // Position and Scale patchmod for Scale
+
+                    vec2 p2m0_positionAndScalePatchmodForScalei_result = vec2(0.);
+
+                    #line 5 2
+                    vec2 p2m0_positionAndScalePatchmodForScale_main(vec2 uvIn, vec2 offset, float scale) {
+                        return (uvIn - offset - .5) / scale + .5;
                     }
 
                     // Shader: Scale; namespace: p2
@@ -822,6 +939,16 @@ object PatchResolverSpec : Spek({
                         p3_pinks_gl_FragColor = vec4(in_rednessSlider, p2_scalei_result.xy / in_resolution, 1.0);
                     }
 
+                    // Shader: Position and Scale patchmod for Badger Overlay; namespace: p4m0
+                    // Position and Scale patchmod for Badger Overlay
+
+                    vec2 p4m0_positionAndScalePatchmodForBadgerOverlayi_result = vec2(0.);
+
+                    #line 5 4
+                    vec2 p4m0_positionAndScalePatchmodForBadgerOverlay_main(vec2 uvIn, vec2 offset, float scale) {
+                        return (uvIn - offset - .5) / scale + .5;
+                    }
+
                     // Shader: Badger Overlay; namespace: p4
                     // Badger Overlay
 
@@ -843,8 +970,8 @@ object PatchResolverSpec : Spek({
 
                     #line 13 4
                     vec4 p4_badgerOverlay_main() {
-                        vec4 c = p4_badgerOverlay_image(p2_scalei_result);
-                        return mix(p4_badgerOverlay_upstreamImage(p2_scalei_result), c, c.a);
+                        vec4 c = p4_badgerOverlay_image(p4m0_positionAndScalePatchmodForBadgerOverlayi_result);
+                        return mix(p4_badgerOverlay_upstreamImage(p4m0_positionAndScalePatchmodForBadgerOverlayi_result), c, c.a);
                     }
 
                     // Shader: HSV; namespace: p5
@@ -879,11 +1006,20 @@ object PatchResolverSpec : Spek({
                         // Invoke UV Projection
                         p0_uvProjectioni_result = p0_uvProjection_main(in_pixelLocation);
 
+                        // Invoke Position and Scale patchmod for Wobble
+                        p1m0_positionAndScalePatchmodForWobblei_result = p1m0_positionAndScalePatchmodForWobble_main(p0_uvProjectioni_result, in_wobblePatchUvInOffset, in_wobblePatchUvInScaleSlider);
+
                         // Invoke Wobble
-                        p1_wobblei_result = p1_wobble_main(p0_uvProjectioni_result);
+                        p1_wobblei_result = p1_wobble_main(p1m0_positionAndScalePatchmodForWobblei_result);
+
+                        // Invoke Position and Scale patchmod for Scale
+                        p2m0_positionAndScalePatchmodForScalei_result = p2m0_positionAndScalePatchmodForScale_main(p1_wobblei_result, in_scalePatchUvInOffset, in_scalePatchUvInScaleSlider);
 
                         // Invoke Scale
-                        p2_scalei_result = p2_scale_main(p1_wobblei_result);
+                        p2_scalei_result = p2_scale_main(p2m0_positionAndScalePatchmodForScalei_result);
+
+                        // Invoke Position and Scale patchmod for Badger Overlay
+                        p4m0_positionAndScalePatchmodForBadgerOverlayi_result = p4m0_positionAndScalePatchmodForBadgerOverlay_main(p2_scalei_result, in_badgerOverlayPatchGlFragCoordOffset, in_badgerOverlayPatchGlFragCoordScaleSlider);
 
                         // Invoke Badger Overlay
                         p4_badgerOverlayi_result = p4_badgerOverlay_main();
