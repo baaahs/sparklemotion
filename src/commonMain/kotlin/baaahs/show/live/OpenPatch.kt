@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.app.ui.patchmod.PatchMod
 import baaahs.fixtures.Fixture
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
@@ -23,7 +24,8 @@ class OpenPatch(
     val extraLinks: Set<String> = emptySet(),
     val missingLinks: Set<String> = emptySet(),
     val injectedPorts: Set<String> = emptySet(),
-    val surfaces: Surfaces = Surfaces.AllSurfaces
+    val surfaces: Surfaces = Surfaces.AllSurfaces,
+    val patchMods: List<PatchMod> = emptyList()
 ) {
     val title get() = shader.title
     val serial = nextSerial++
@@ -37,22 +39,24 @@ class OpenPatch(
             }
         }
 
+    val dataSources get() = incomingLinks.values.mapNotNull { link ->
+        (link as? DataSourceLink)?.dataSource
+    }
+
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
-                incomingLinks
-                    .forEach { (_, link) ->
-                        val dataSourceLink = link as? DataSourceLink
-                        val unknownDataSource = dataSourceLink?.dataSource as? UnknownDataSource
-                        unknownDataSource?.let {
-                            add(
-                                Problem(
-                                    "Unresolved data source for shader \"$title\".",
-                                    it.errorMessage, severity = Severity.WARN
-                                )
+                dataSources.forEach { dataSource ->
+                    val unknownDataSource = dataSource as? UnknownDataSource
+                    unknownDataSource?.let {
+                        add(
+                            Problem(
+                                "Unresolved data source for shader \"$title\".",
+                                it.errorMessage, severity = Severity.WARN
                             )
-                        }
+                        )
                     }
+                }
 
                 if (extraLinks.isNotEmpty()) {
                     add(
@@ -127,7 +131,7 @@ class OpenPatch(
             }
         }
 
-        return LinkedPatch(shader, resolvedIncomingLinks, stream, priority, injectedPorts)
+        return LinkedPatch(shader, resolvedIncomingLinks, stream, priority, injectedPorts, patchMods)
     }
 
     override fun toString(): String {
@@ -156,7 +160,7 @@ class OpenPatch(
 
         override fun getNodeId(programLinker: ProgramLinker): String = varName
 
-        override fun traverse(programLinker: ProgramLinker, depth: Int) {
+        override fun traverse(programLinker: ProgramLinker) {
             programLinker.visit(this)
         }
 
@@ -169,6 +173,7 @@ class OpenPatch(
         override fun buildComponent(
             id: String,
             index: Int,
+            prefix: String,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
 //            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
@@ -204,15 +209,17 @@ class OpenPatch(
     class InjectedDataLink : Link {
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode {
             return resolver.resolve(PortDiagram.Track(Stream("main"), inputPort.contentType), inputPort.injectedData.values.toSet())
-                ?: object : ExprNode() {
-                    override val title: String get() = "InjectedDataLink(${inputPort.id})"
-                    override val outputPort: OutputPort get() = OutputPort(inputPort.contentType)
-                    override val resultType: GlslType get() = inputPort.contentType.glslType
+                ?: InjectedExprNode(inputPort)
+        }
 
-                    override fun getExpression(prefix: String): GlslExpr {
-                        return GlslExpr("${prefix}_global_${inputPort.id}")
-                    }
-                }
+        data class InjectedExprNode(private val inputPort: InputPort) : ExprNode() {
+            override val title: String get() = "InjectedDataLink(${inputPort.id})"
+            override val outputPort: OutputPort get() = OutputPort(inputPort.contentType)
+            override val resultType: GlslType get() = inputPort.contentType.glslType
+
+            override fun getExpression(prefix: String): GlslExpr {
+                return GlslExpr("${prefix}_global_${inputPort.id}")
+            }
         }
     }
 

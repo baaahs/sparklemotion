@@ -1,6 +1,5 @@
 package baaahs.show.live
 
-import baaahs.show.DataSource
 import baaahs.ui.Draggable
 import baaahs.ui.DropTarget
 import baaahs.ui.gridlayout.Layout
@@ -47,14 +46,7 @@ class GridLayoutControlDisplay(override val show: OpenShow) : ControlDisplay {
         this.onScreenControls = onScreenControls.toSet()
 
         val activePatchSet = show.buildActivePatchSet()
-        val activeDataSources = mutableSetOf<DataSource>()
-        activePatchSet.activePatches.forEach { activePatch ->
-            activePatch.incomingLinks.forEach { (_, link) ->
-                if (link is OpenPatch.DataSourceLink) {
-                    activeDataSources.add(link.dataSource)
-                }
-            }
-        }
+        val activeDataSources = activePatchSet.dataSources
 
         val offScreenControls = show.implicitControls.toSet() - onScreenControls
         this.relevantUnplacedControls = offScreenControls.filter { control ->

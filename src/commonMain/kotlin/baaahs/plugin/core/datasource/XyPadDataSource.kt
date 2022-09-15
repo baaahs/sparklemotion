@@ -1,7 +1,6 @@
 package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
-import baaahs.camelize
 import baaahs.control.MutableXyPadControl
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
@@ -44,13 +43,12 @@ data class XyPadDataSource(
     override val contentType: ContentType
         get() = ContentType.XyCoordinate
 
-    override fun suggestId(): String = "$title XY Pad".camelize()
-
     override fun buildControl(): MutableControl =
         MutableXyPadControl(title, initialValue, minValue, maxValue, this)
 
     override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
         val xyPad = showPlayer.useGadget(this)
+            ?: showPlayer.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
                 XyPad(title, initialValue, minValue, maxValue)

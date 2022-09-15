@@ -125,6 +125,14 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         bottom = 0.px
     }
 
+    val resetSwitch by css {
+        position = Position.absolute
+        right = 0.px
+        bottom = 0.px
+        padding = "5px"
+        userSelect = UserSelect.none
+    }
+
     val inUse by css {
 //        position = Position.relative
     }
@@ -168,12 +176,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         top = 0.px
         width = 100.pct
         height = 100.pct
-    }
-
-    val lightboxShaderPreviewContainer by css {
-        width = 300.px
-        height = 300.px
-        cursor = Cursor.grab
     }
 
     val buttonLabelWhenPreview by css {

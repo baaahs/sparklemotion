@@ -13,6 +13,7 @@ import baaahs.show.*
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableILayout
 import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.ShowBuilder
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import baaahs.ui.Observable
@@ -22,6 +23,7 @@ import baaahs.util.RefCounter
 
 interface OpenContext {
     val allControls: List<OpenControl>
+    val allPatchModDataSources: List<DataSource>
 
     fun findControl(id: String): OpenControl?
     fun getControl(id: String): OpenControl
@@ -33,6 +35,8 @@ interface OpenContext {
 
 object EmptyOpenContext : OpenContext {
     override val allControls: List<OpenControl> get() = emptyList()
+
+    override val allPatchModDataSources: List<DataSource> get() = emptyList()
 
     override fun findControl(id: String): OpenControl? = null
 
@@ -57,7 +61,14 @@ class OpenShow(
     val id = randomId("show")
     val layouts get() = show.layouts
     val openLayouts = show.layouts.open(openContext)
-    val allDataSources = show.dataSources
+    val allDataSources = run {
+        ShowBuilder().apply {
+            val map = show.dataSources.values.associateBy { idFor(it) }.toMutableMap()
+            openContext.allPatchModDataSources.forEach { dataSource ->
+                map[idFor(dataSource)] = dataSource
+            }
+        }.getDataSources()
+    }
     val allControls: List<OpenControl> get() = openContext.allControls
     val feeds = allDataSources.entries.associate { (id, dataSource) ->
         val feed = showPlayer.openFeed(id, dataSource)
@@ -107,8 +118,26 @@ class OpenShow(
     fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
         MutableShow(show).apply(block)
 
-    fun buildActivePatchSet(): ActivePatchSet =
-        ActivePatchSet.build(this, allDataSources, feeds)
+    fun buildActivePatchSet(): ActivePatchSet {
+        val items = arrayListOf<ActivePatchSet.Companion.Item>()
+        var nextSerial = 0
+
+        val builder = object : ActivePatchSet.Builder {
+            override val show: OpenShow
+                get() = this@OpenShow
+
+            override fun add(patchHolder: OpenPatchHolder, depth: Int, layoutContainerId: String) {
+                items.add(ActivePatchSet.Companion.Item(patchHolder, depth, layoutContainerId, nextSerial++))
+            }
+        }
+        addTo(builder, 0)
+
+        return ActivePatchSet(
+            ActivePatchSet.sort(items),
+            allDataSources,
+            feeds
+        )
+    }
 
     override fun onRelease() {
         openContext.release()

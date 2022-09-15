@@ -4,7 +4,7 @@ import baaahs.GadgetListener
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
-import baaahs.show.live.ControlProps
+import baaahs.gadgets.Slider
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
@@ -16,6 +16,7 @@ import mui.icons.material.MusicNote
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.b
 import react.dom.div
 import react.useContext
 import styled.inlineStyles
@@ -24,8 +25,8 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
-    val sliderControl = props.sliderControl
-    val title = sliderControl.slider.title
+    val slider = props.slider
+    val title = slider.title
 //    val channel = props.sliderControl.channel
 
 //    observe(channel)
@@ -34,7 +35,6 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 //    }
 
 
-    val slider = sliderControl.slider
     var position by state { slider.position }
     var floorPosition by state { slider.floor }
     var beatLinked by state { slider.beatLinked }
@@ -61,7 +61,12 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.floor = slider.position
     }
 
-    div(+sliderControl.inUseStyle) {
+    val handleReset by handler(slider) {
+        slider.position = slider.initialValue
+        slider.beatLinked = false
+    }
+
+    div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
             attrs.title = slider.title
 //        attrs.position = channel.value
@@ -94,14 +99,19 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
             icon(MusicNote)
         }
 
+        div(+Styles.resetSwitch) {
+            attrs.onClickFunction = handleReset.withEvent()
+            b { +"R" }
+        }
+
 
         div(+controlsStyles.dataSourceTitle) { +title }
     }
 }
 
 external interface SliderControlProps : Props {
-    var controlProps: ControlProps
-    var sliderControl: OpenSliderControl
+    var slider: Slider
+    var sliderControl: OpenSliderControl?
 }
 
 fun RBuilder.sliderControl(handler: RHandler<SliderControlProps>) =

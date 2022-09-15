@@ -61,6 +61,7 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
 
                 Tab { attrs.value = "DAG"; attrs.label = "DAG".asTextNode() }
                 Tab { attrs.value = "GLSL"; attrs.label = "GLSL".asTextNode() }
+                Tab { attrs.value = "Feeds"; attrs.label = "Feeds".asTextNode() }
                 Tab { attrs.value = "DOT"; attrs.label = "DOT".asTextNode() }
                 Tab { attrs.value = "Track Candidates"; attrs.label = "Track Candidates".asTextNode() }
                 Tab { attrs.value = "Linked Program"; attrs.label = "Linked Program".asTextNode() }
@@ -85,6 +86,14 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
                             glsl {
                                 attrs.fixtureType = subject.fixtureType
                                 attrs.source = programRenderPlan.source ?: program.fragShader.source
+                            }
+                        } else i { +"No program!" }
+
+                    "Feeds" ->
+                        if (program != null) {
+                            feeds {
+                                attrs.fixtureType = subject.fixtureType
+                                attrs.program = program
                             }
                         } else i { +"No program!" }
 

@@ -58,7 +58,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
     val cardRef = ref<Element>()
-    useResizeListener(cardRef) {
+    useResizeListener(cardRef) { _, _ ->
         cardRef.current?.children?.forEach {
             if (it.hasClass("react-grid-layout")) {
                 with(it) {
@@ -109,16 +109,17 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
     val handleGridItemClick by mouseEventHandler(gridLayout.items) { e ->
         if (cardRef.current?.isParentOf(e.target as Element) == true) {
-            (e.currentTarget as HTMLElement)
+            val clickedItemIndex = (e.currentTarget as HTMLElement)
                 .dataset["gridIndex"]
                 ?.toInt()
-                ?.let { clickedIndex ->
-                    gridLayout.items.forEachIndexed { index, it ->
-                        (it.control as? OpenButtonControl)?.isPressed = index == clickedIndex
-                    }
-                    onShowStateChange()
-                    e.stopPropagation()
+            val clickedItem = clickedItemIndex?.let { gridLayout.items[it] }
+            if (clickedItem?.control is OpenButtonControl) {
+                gridLayout.items.forEachIndexed { index, it ->
+                    (it.control as? OpenButtonControl)?.isPressed = index == clickedItemIndex
                 }
+                onShowStateChange()
+                e.stopPropagation()
+            }
         }
     }
 
@@ -193,7 +194,10 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
                     attrs.className = -layoutStyles.gridCell
                     if (editMode.isOff) {
                         attrs.asDynamic()["data-grid-index"] = index
-                        attrs.onClickCapture = handleGridItemClick
+
+                        if (!props.buttonGroupControl.allowMultiple) {
+                            attrs.onClickCapture = handleGridItemClick
+                        }
                     }
 
                     val subEditor = object : Editor<MutableIGridLayout> {

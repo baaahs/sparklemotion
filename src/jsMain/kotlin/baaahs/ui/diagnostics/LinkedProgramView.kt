@@ -2,7 +2,9 @@ package baaahs.ui.diagnostics
 
 import baaahs.app.ui.appContext
 import baaahs.device.FixtureType
+import baaahs.gl.patch.LinkNode
 import baaahs.gl.patch.LinkedProgram
+import baaahs.gl.patch.ProgramNode
 import baaahs.show.live.LinkedPatch
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -20,7 +22,10 @@ private val LinkedProgramView = xComponent<LinkedProgramProps>("LinkedProgram") 
         table(+diagnosticsStyles.table) {
             tbody {
                 props.linkedProgram.linkNodes.entries
-                    .sortedBy { (_, linkNode) -> linkNode.index }
+                    .sortedWith(
+                        compareBy<MutableMap.MutableEntry<ProgramNode, LinkNode>> { (_, linkNode) -> linkNode.index }
+                            .thenBy { (_, linkNode) -> linkNode.modIndex ?: Int.MAX_VALUE }
+                    )
                     .forEach { (programNode, linkNode) ->
                         if (programNode !is LinkedPatch) return@forEach
 
@@ -32,7 +37,7 @@ private val LinkedProgramView = xComponent<LinkedProgramProps>("LinkedProgram") 
                         }
                         tr {
                             th { +"Program Index:" }
-                            td { +"p${linkNode.index}" }
+                            td { +linkNode.fullIndex }
 
                             th { +"ID:" }
                             td { +linkNode.id }

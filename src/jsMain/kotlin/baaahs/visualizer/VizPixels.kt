@@ -86,9 +86,9 @@ class VizPixels(
     override fun set(i: Int, color: Color) {
         colorsAsInts[i] = color.argb
 
-        val redF = color.redF / 2
-        val greenF = color.greenF / 2
-        val blueF = color.blueF / 2
+        val redF = color.redF
+        val greenF = color.greenF
+        val blueF = color.blueF
 
         set(i, redF, greenF, blueF)
     }
@@ -109,9 +109,9 @@ class VizPixels(
             colorsAsInts[i] = colors[i].argb
 
             val pColor = colors[i]
-            rgbBuf[i * 3] = pColor.redF / 2
-            rgbBuf[i * 3 + 1] = pColor.greenF / 2
-            rgbBuf[i * 3 + 2] = pColor.blueF / 2
+            rgbBuf[i * 3] = pColor.redF
+            rgbBuf[i * 3 + 1] = pColor.greenF
+            rgbBuf[i * 3 + 2] = pColor.blueF
         }
         vertexColorBufferAttr.needsUpdate = true
     }

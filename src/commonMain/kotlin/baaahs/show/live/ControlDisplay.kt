@@ -3,7 +3,10 @@ package baaahs.show.live
 import baaahs.camelize
 import baaahs.control.OpenButtonGroupControl
 import baaahs.getBang
-import baaahs.show.*
+import baaahs.show.Layouts
+import baaahs.show.Panel
+import baaahs.show.Show
+import baaahs.show.ShowState
 import baaahs.show.mutable.EditHandler
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -68,14 +71,7 @@ class LegacyControlDisplay(
         }.visitShow(show)
 
         val activePatchSet = show.buildActivePatchSet()
-        val activeDataSources = mutableSetOf<DataSource>()
-        activePatchSet.activePatches.forEach { activePatch ->
-            activePatch.incomingLinks.forEach { (_, link) ->
-                if (link is OpenPatch.DataSourceLink) {
-                    activeDataSources.add(link.dataSource)
-                }
-            }
-        }
+        val activeDataSources = activePatchSet.dataSources
 
         unplacedControls.removeAll(placedControls)
         this.unplacedControls = unplacedControls.toSet()

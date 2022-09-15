@@ -67,6 +67,7 @@ class Pinky(
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
     private var mapperIsRunning = false
+    private var isPaused = false
 
     init {
         httpServer.listenWebSocket("/ws/api") {
@@ -99,7 +100,7 @@ class Pinky(
     private suspend fun run() {
         while (keepRunning) {
             throttle(pinkySettings.targetFramerate) {
-                if (mapperIsRunning) {
+                if (mapperIsRunning || isPaused) {
                     disableDmx()
                     return@throttle
                 }
@@ -277,6 +278,14 @@ class Pinky(
 
         val clock: Clock
             get() = this@Pinky.clock
+
+        var isPaused: Boolean
+            get() = this@Pinky.isPaused
+            set(value) {
+                logger.info { "Pinky: ${if (value) "paused" else "unpaused"}" }
+                this@Pinky.isPaused = value
+                notifyChanged()
+            }
 
         val framerate = Framerate()
     }

@@ -24,6 +24,7 @@ data class ButtonGroupControl(
     override val title: String,
     val direction: Direction = Direction.Horizontal,
     val showTitle: Boolean? = false,
+    val allowMultiple: Boolean? = false,
     val buttonIds: List<String>
 ) : Control {
 
@@ -34,7 +35,7 @@ data class ButtonGroupControl(
 
     override fun createMutable(mutableShow: MutableShow): MutableButtonGroupControl =
         MutableButtonGroupControl(
-            title, direction, showTitle,
+            title, direction, showTitle, allowMultiple,
             buttonIds.map {
                 mutableShow.findControl(it) as MutableButtonControl
             }.toMutableList(), mutableShow
@@ -49,6 +50,7 @@ data class MutableButtonGroupControl(
     override var title: String,
     var direction: ButtonGroupControl.Direction = ButtonGroupControl.Direction.Vertical,
     var showTitle: Boolean? = false,
+    var allowMultiple: Boolean? = false,
     val buttons: MutableList<MutableButtonControl> = arrayListOf(),
     val mutableShow: MutableShow
 ) : MutableControl {
@@ -71,7 +73,7 @@ data class MutableButtonGroupControl(
     }
 
     override fun buildControl(showBuilder: ShowBuilder): ButtonGroupControl =
-        ButtonGroupControl(title, direction, showTitle,
+        ButtonGroupControl(title, direction, showTitle, allowMultiple,
             buttons.map { mutableButtonControl ->
                 mutableButtonControl.buildAndStashId(showBuilder)
             }
@@ -112,9 +114,13 @@ class OpenButtonGroupControl(
         openContext.getControl(it) as OpenButtonControl
     }
 
+    val allowMultiple get() = buttonGroupControl.allowMultiple == true
+
     override fun containedControls(): List<OpenControl> = buttons
 
     override fun applyConstraints() {
+        if (allowMultiple) return
+
         val active = buttons.map { it.isPressed }
         val countActive = active.count { it }
         if (countActive == 0) {
