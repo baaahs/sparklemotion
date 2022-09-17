@@ -4,6 +4,10 @@
 #define N 5
 #define COORD_SCALE 0.03
 
+uniform float size; // @@Slider default=1 min=0.25 max=2.
+uniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.
+uniform vec2 center; // @@XyPad
+
 // For reference -- determines if a point is in a polygon. Since you can't pass dynamically sized arrays, we need one for each component :(
 bool pointInPoly(vec2 point, float scale, vec2 offset, vec2 vertices[N]){
 	int i, j;
@@ -102,11 +106,16 @@ vec3 drawScene(vec2 uv) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-	vec2 uv = fragCoord/iResolution.xy; // <0, 1>
-	uv -= 0.5; // <-0.5,0.5>
-	uv.x *= iResolution.x/iResolution.y; // fix aspect ratio
+//	vec2 uv = fragCoord/iResolution.xy; // <0, 1>
 
-	vec3 col = drawScene(uv);
+	vec2 fragPos = fragCoord / resolution.xy;
+	fragPos = (fragPos - 0.5 + center) / size * 2.5;
+	fragPos.x *= resolution.x / resolution.y / horizontalScale;
+
+//	uv -= 0.5; // <-0.5,0.5>
+//	uv.x *= iResolution.x/iResolution.y; // fix aspect ratio
+
+	vec3 col = drawScene(fragPos);
 
 	// Output to screen
 	fragColor = vec4(col,1.0);
