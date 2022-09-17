@@ -5,17 +5,14 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.XyPadStyles
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
-import baaahs.ui.*
+import baaahs.ui.unaryPlus
+import baaahs.ui.withEvent
+import baaahs.ui.xComponent
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.onMouseDownFunction
-import kotlinx.html.js.onMouseMoveFunction
-import kotlinx.html.js.onMouseUpFunction
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import react.*
-import react.dom.b
-import react.dom.div
+import react.dom.*
 import styled.inlineStyles
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
@@ -51,8 +48,8 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         withCleanup { props.xyPad.unlisten(gadgetListener) }
     }
 
-    val mouseDraggingState = useRef(false)
-    val handleMouseEvent by eventHandler(props.xyPad, helper) { e: Event ->
+    val pointerDraggingState = useRef(false)
+    val handlePointerEvent by pointerEventHandler(props.xyPad, helper) { e ->
         val bounds = backgroundRef.current!!.getBoundingClientRect()
         val clickPosPx = Vector2F(
             (e.clientX - bounds.left).toFloat(),
@@ -62,21 +59,21 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         props.xyPad.position = helper.positionFromPx(clickPosPx)
     }
 
-    val handleMouseDownEvent by eventHandler(handleMouseEvent) { e: Event ->
-        if (e.buttons == Events.ButtonMask.primary) mouseDraggingState.current = true
-        handleMouseEvent(e)
+    val handlePointerDownEvent by pointerEventHandler(handlePointerEvent) { e ->
+        if (e.isPrimary) pointerDraggingState.current = true
+        handlePointerEvent(e)
         e.preventDefault()
     }
 
-    val handleMouseUpEvent by eventHandler(handleMouseEvent) { e: Event ->
-        handleMouseEvent(e)
-        mouseDraggingState.current = false
+    val handlePointerUpEvent by pointerEventHandler(handlePointerEvent) { e ->
+        handlePointerEvent(e)
+        pointerDraggingState.current = false
         e.preventDefault()
     }
 
-    val handleMouseMoveEvent by eventHandler(handleMouseEvent) { e: Event ->
-        if (mouseDraggingState.current == true && e.buttons == Events.ButtonMask.primary)
-            handleMouseEvent(e)
+    val handlePointerMoveEvent by pointerEventHandler(handlePointerEvent) { e ->
+        if (pointerDraggingState.current == true && e.isPrimary)
+            handlePointerEvent(e)
         e.preventDefault()
     }
 
@@ -94,9 +91,9 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
             height = padSize.y.px
         }
 
-        attrs.onMouseDownFunction = handleMouseDownEvent
-        attrs.onMouseUpFunction = handleMouseUpEvent
-        attrs.onMouseMoveFunction = handleMouseMoveEvent
+        attrs.onPointerDown = handlePointerDownEvent
+        attrs.onPointerUp = handlePointerUpEvent
+        attrs.onPointerMove = handlePointerMoveEvent
 
         div(+XyPadStyles.centerLine) {
             inlineStyles {
