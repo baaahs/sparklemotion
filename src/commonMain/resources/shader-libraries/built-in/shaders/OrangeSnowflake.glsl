@@ -1,5 +1,5 @@
 // Orange Snowflake
-// Based on http://glslsandbox.com/e#61105.0
+// Modified from http://glslsandbox.com/e#61105.0
 
 /*
  * Original shader from: https://www.shadertoy.com/view/wl3XW8
@@ -9,13 +9,41 @@
 precision mediump float;
 #endif
 
-// glslsandbox uniforms
-uniform float time;
-uniform vec2 resolution;
+#define PI 3.141592
+#define TAU (2.*PI)
 
-// shadertoy emulation
-float iTime = 0.0;
-#define iResolution resolution
+// glslsandbox uniforms
+uniform float time; // @@Time
+uniform vec2 resolution; // @@Resolution
+uniform float speed; // @@Slider default=3.0 min=1.0 max=5.0
+uniform float pulsiness; // @@Slider default=3.0 min=1.0 max=5.0
+
+
+
+
+
+struct BeatInfo {
+    float beat;
+    float bpm;
+    float intensity;
+    float confidence;
+};
+uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
+
+float beatIntegral() {
+	float t = mod(beatInfo.beat, 1.);
+	float POWER = 4.; // Adjusts sharpnett of the curve
+	float OFFSET = 0.0; // Adjusts future-offset of curve. OFFSET=0.5 means the steepest part happens between beats.
+	return 1. - pow(1. - mod(t + OFFSET, 1.0), POWER);
+}
+
+float pulsedTime() {
+    float timeAdjustment = beatIntegral() - mod(beatInfo.beat, 1.);
+    return speed * .25 * 0.87 * (time + .1 * pulsiness * timeAdjustment); // 0.87 keeps it from pausing at the same spot each cycle
+}
+
+
+
 
 // --------[ Original ShaderToy begins here ]---------- //
 // Code by Flopine
@@ -25,10 +53,8 @@ float iTime = 0.0;
 // Thanks to the Cookie Collective, which build a cozy and safe environment for me
 // and other to sprout :)  https://twitter.com/CookieDemoparty
 
-#define hr vec2(1., sqrt(3.))
-#define PI 3.141592
-#define TAU (2.*PI)
-#define time (iTime*0.5)
+
+float t = pulsedTime();
 
 float hash21 (vec2 x)
 {return fract(sin(dot(x,vec2(12.4,18.4)))*1245.4);}
@@ -52,14 +78,14 @@ float stmin (float a, float b, float k, float n)
 float hd (vec2 uv)
 {
     uv = abs(uv);
-    return max(uv.x, dot(uv, normalize(hr)));
+    return max(uv.x, dot(uv, normalize(vec2(1., sqrt(3.)))));
 }
 
 vec4 hgrid (vec2 uv,float detail)
 {
     uv *= detail;
-    vec2 ga = mod(uv,hr)-hr*0.5;
-    vec2 gb = mod(uv-hr*0.5,hr)-hr*0.5;
+    vec2 ga = mod(uv,vec2(1., sqrt(3.)))-vec2(1., sqrt(3.))*0.5;
+    vec2 gb = mod(uv-vec2(1., sqrt(3.))*0.5,vec2(1., sqrt(3.)))-vec2(1., sqrt(3.))*0.5;
     vec2 guv = (dot(ga,ga)< dot(gb,gb))? ga: gb;
 
     vec2 gid = uv-guv;
@@ -72,15 +98,15 @@ vec4 hgrid (vec2 uv,float detail)
 float hexf (vec2 uv)
 {
     float det = 3.;
-    float speed = 0.5;
+    float s = 0.5;
     float d = 0.;
     for (float i=0.; i<3.; i++)
     {
         float ratio = i/5.;
         uv *= rot(TAU/(5.));
-        uv = (mod(i,2.) == 0.) ? vec2(uv.x+iTime*speed,uv.y) : vec2(uv.x,uv.y+iTime*speed);
+        uv = (mod(i,2.) == 0.) ? vec2(uv.x+t*s,uv.y) : vec2(uv.x,uv.y+t*s);
         d += step(hgrid(uv, det).y,0.03);
-        speed -= 0.1;
+        s -= 0.1;
         det ++;
     }
     return d;
@@ -99,10 +125,10 @@ float fractal (vec3 p)
     for (float i=0.; i<5.; i++)
     {
         float ratio = i/5.;
-        p.yz *= rot(time);
+        p.yz *= rot(t);
         mo(p.xz, vec2(2.+ratio));
         mo(p.xy, vec2(0.5+ratio));
-        p.xy *= rot(time+ratio);
+        p.xy *= rot(t+ratio);
         size -= ratio*1.5;
         d= stmin(d,box(p,vec3(size)),1., 4.);
     }
@@ -119,9 +145,9 @@ float SDF (vec3 p)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 uv = (2.*fragCoord-iResolution.xy)/iResolution.y;
+    vec2 uv = (2.*fragCoord-resolution.xy)/resolution.y;
 
-    float mask = 1.0;//step(0.3, abs(sin(length(uv)-PI*time))+0.01);
+    float mask = 1.0;//step(0.3, abs(sin(length(uv)-PI*t))+0.01);
     float fx = 0.0;//clamp(mix(1.-hexf(uv), hexf(uv), mask),0.,1.);
 
     float dither = hash21(uv);
@@ -151,12 +177,4 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // Output to screen
     fragColor = vec4(col,1.0);
 }
-    // --------[ Original ShaderToy ends here ]---------- //
 
-    #undef time
-
-void main(void)
-{
-    iTime = time * 0.5;
-    mainImage(gl_FragColor, gl_FragCoord.xy);
-}

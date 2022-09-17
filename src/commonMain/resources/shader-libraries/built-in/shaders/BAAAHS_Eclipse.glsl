@@ -3,6 +3,32 @@
 
 #define BEATMOVE 1
 
+uniform float time; // @@Time
+
+uniform float size; // @@Slider default=1 min=0.25 max=2.
+uniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.
+uniform vec2 center; // @@XyPad
+
+uniform vec2 resolution; // @@Resolution
+
+
+struct SoundAnalysis {
+	int bucketCount;
+	int sampleHistoryCount;
+	sampler2D buckets;
+	float maxMagnitude;
+};
+uniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis
+
+struct BeatInfo {
+	float beat;
+	float bpm;
+	float intensity;
+	float confidence;
+};
+uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
+
+
 const float FREQ_RANGE = 64.0;
 const float PI = 3.1415;
 const float RADIUS = 0.8;
@@ -24,7 +50,7 @@ float luma(vec3 color) {
 }
 
 float getfrequency(float x) {
-	return texture(iChannel0, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
+	return .2 + .2 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
 }
 
 float getfrequency_smooth(float x) {
@@ -53,7 +79,7 @@ vec3 doHalo(vec2 fragment, float scale) {
 	vec3 col = vec3(0.0);
 
 	float angle = atan(fragment.x, fragment.y);
-	col += hsv2rgb( vec3( ( angle + iTime * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;
+	col += hsv2rgb( vec3( ( angle + time * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;
 
 	float frequency = max(getfrequency_blend(abs(angle / PI)) - 0.02, 0.0);
 	col *= frequency;
@@ -62,7 +88,7 @@ vec3 doHalo(vec2 fragment, float scale) {
 }
 
 vec3 doLine(vec2 fragment, float radius, float x) {
-	vec3 col = hsv2rgb(vec3(x * 0.23 + iTime * 0.12, 1.0, 1.0));
+	vec3 col = hsv2rgb(vec3(x * 0.23 + time * 0.12, 1.0, 1.0));
 
 	float freq = abs(fragment.x * 0.5);
 
@@ -74,19 +100,20 @@ vec3 doLine(vec2 fragment, float radius, float x) {
 
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-	vec2 fragPos = fragCoord / iResolution.xy;
-	fragPos = (fragPos - 0.5) * 2.0;
-	fragPos.x *= iResolution.x / iResolution.y;
+	vec2 fragPos = fragCoord / resolution.xy;
+	fragPos = (fragPos - 0.5 + center) / size * 2.5;
+	fragPos.x *= resolution.x / resolution.y / horizontalScale;
 
 	vec3 color = vec3(0.0134, 0.052, 0.1);
 	color += doHalo(fragPos, RADIUS);
 
-	float c = cos(iTime * SPEED);
-	float s = sin(iTime * SPEED);
+	float c = cos(time * SPEED);
+	float s = sin(time * SPEED);
 	vec2 rot = mat2(c,s,-s,c) * fragPos;
 	color += doLine(rot, RADIUS, rot.x);
 
 	color += max(luma(color) - 1.0, 0.0);
 
 	fragColor = vec4(color, 1.0);
+
 }
