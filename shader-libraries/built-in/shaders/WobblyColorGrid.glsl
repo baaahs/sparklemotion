@@ -10,9 +10,9 @@ precision mediump float;
 //#extension GL_OES_standard_derivatives : enable
 
 //varying vec2 surfacePosition;
-uniform float time;
-uniform vec2 mouse;
-uniform vec2 resolution;
+uniform float time; // @@Time
+uniform vec2 center; // @@XyPad
+uniform vec2 resolution; // @@Resolution
 
 void main(void){
 
@@ -26,8 +26,8 @@ void main(void){
 
     for(float i = 0.0; i < 15.0; i++){
 
-        float s = sin(mouse.x +time + mouse.x * i * PI / 10.0) * .85;
-        float c = cos(mouse.y + time + mouse.y * i * PI / 10.0) * .93;
+        float s = sin(center.x +time + center.x * i * PI / 10.0) * .85;
+        float c = cos(center.y + time + center.y * i * PI / 10.0) * .93;
 
         f += 0.001 / (abs(p.x + c / (.35+length(p))) * abs(p.y + s / (.35+length(p)))) / (.5+length(p));
         color.r += s * 1.0 * PI;

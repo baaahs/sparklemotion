@@ -7,7 +7,7 @@ vec4 mix_color(vec4 color1, vec4 color2, float x) {
 }
 
 /* Gets a color from a color pallete, with x ranging from 0 to 1 */
-vec4 get_color(vec4[11] colors, float x) {
+vec4 get_color(vec4 colors[11], float x) {
     int index = int(10.*x);
     if (index >= 10) {
         return colors[10];

@@ -32,23 +32,37 @@ monitor/index.html
 react-mosaic-component.css
 shader-libraries/built-in/_libraryIndex.json
 shader-libraries/built-in/effects/BeatShift.glsl
+shader-libraries/built-in/effects/Blackout.glsl
 shader-libraries/built-in/effects/Brightness.glsl
 shader-libraries/built-in/effects/HSB.glsl
 shader-libraries/built-in/effects/Heart.glsl
 shader-libraries/built-in/effects/Movers On.glsl
 shader-libraries/built-in/effects/Movers Swirl.glsl
 shader-libraries/built-in/effects/Saturation.glsl
+shader-libraries/built-in/effects/Scanners.glsl
+shader-libraries/built-in/effects/SoundBrightness.glsl
 shader-libraries/built-in/effects/Sparklez.glsl
+shader-libraries/built-in/effects/ThatsAllFolks.glsl
 shader-libraries/built-in/effects/Wobble.glsl
+shader-libraries/built-in/effects/ZigZag.glsl
 shader-libraries/built-in/libraries/BAAAHSlogo.glsl
+shader-libraries/built-in/libraries/beat_functions.glsl
+shader-libraries/built-in/libraries/color_functions.glsl
 shader-libraries/built-in/libraries/color_palettes.glsl
 shader-libraries/built-in/libraries/complex_math_functions.glsl
 shader-libraries/built-in/libraries/polygon_geometry.glsl
+shader-libraries/built-in/libraries/shadertoy.glsl
 shader-libraries/built-in/projections/Flat.glsl
 shader-libraries/built-in/shaders/AcidAtTheDisco.glsl
 shader-libraries/built-in/shaders/AquaticFlood.glsl
-shader-libraries/built-in/shaders/BAAAHSEclipse.glsl
-shader-libraries/built-in/shaders/BAAAHSLogo.glsl
+shader-libraries/built-in/shaders/BAAAHS_ColorPulse.glsl
+shader-libraries/built-in/shaders/BAAAHS_Eclipse.glsl
+shader-libraries/built-in/shaders/BAAAHS_GeometricColorPulse.glsl
+shader-libraries/built-in/shaders/BAAAHS_GeometricSheep.glsl
+shader-libraries/built-in/shaders/BAAAHS_Lazors.glsl
+shader-libraries/built-in/shaders/BAAAHS_Logo.glsl
+shader-libraries/built-in/shaders/BAAAHS_Squarezzz.glsl
+shader-libraries/built-in/shaders/BAAAHS_Zebra.glsl
 shader-libraries/built-in/shaders/BlueDream.glsl
 shader-libraries/built-in/shaders/BlueSteel.glsl
 shader-libraries/built-in/shaders/BluesClues.glsl
@@ -78,6 +92,7 @@ shader-libraries/built-in/shaders/OrangeTang.glsl
 shader-libraries/built-in/shaders/PicassosNightmare.glsl
 shader-libraries/built-in/shaders/Plasma.glsl
 shader-libraries/built-in/shaders/PoolsideDelight.glsl
+shader-libraries/built-in/shaders/PrimeWaves.glsl
 shader-libraries/built-in/shaders/PurpleLightning.glsl
 shader-libraries/built-in/shaders/RainbowTrianglez.glsl
 shader-libraries/built-in/shaders/RedBristles.glsl
@@ -115,6 +130,7 @@ templates/scenes/playa-2021-panels.obj
 templates/scenes/sui-generis.obj
 templates/shows/BeachRave.sparkle
 templates/shows/Ben's Show.sparkle
+templates/shows/Bens_SparkleMotion_Show.sparkle
 templates/shows/Honcho.sparkle
 templates/shows/PastureBedtime.sparkle
 templates/shows/movers.sparkle
