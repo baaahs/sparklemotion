@@ -183,6 +183,9 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun keyboardEventHandler(vararg watch: Any?, block: KeyboardEventHandler<*>): ReadOnlyProperty<Any?, KeyboardEventHandler<*>> =
         handler(*watch, block = block)
 
+    fun pointerEventHandler(vararg watch: Any?, block: (PointerEvent<*>) -> Unit): ReadOnlyProperty<Any?, PointerEventHandler<*>> =
+        handler(*watch, block = { block.invoke(it) })
+
     fun mouseEventHandler(vararg watch: Any?, block: (MouseEvent<*, *>) -> Unit): ReadOnlyProperty<Any?, MouseEventHandler<*>> =
         handler(*watch, block = { block.invoke(it) })
 
