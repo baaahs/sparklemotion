@@ -48,6 +48,7 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     val background by css {
         position = Position.relative
         background = "linear-gradient(#DDFFDD, #88EE88)"
+        overscrollBehavior = OverscrollBehavior.contain
     }
 
     val centerLine by css {
