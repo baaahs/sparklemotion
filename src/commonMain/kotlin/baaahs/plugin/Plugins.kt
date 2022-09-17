@@ -398,6 +398,12 @@ sealed class Plugins(
 
     }
 
+    // TODO: We should report errors back somehow.
+    private fun safeBuild(
+        builder: DataSourceBuilder<out DataSource>,
+        inputPort: InputPort
+    ): DataSource? = builder.safeBuild(inputPort)
+
     companion object {
         private val logger = Logger<Plugins>()
 
@@ -516,7 +522,7 @@ sealed class Plugins(
             inputPort: InputPort
         ) = (
                 dataSourceBuilders.byContentType[contentType]
-                    ?.map { it.build(inputPort) }
+                    ?.mapNotNull { safeBuild(it, inputPort) }
                     ?: emptyList()
                 )
     }
@@ -538,7 +544,7 @@ sealed class Plugins(
         fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
             return all.flatMap { fixtureType ->
                 fixtureType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
-            }.map { it.build(inputPort) }
+            }.mapNotNull { safeBuild(it, inputPort) }
         }
     }
 
