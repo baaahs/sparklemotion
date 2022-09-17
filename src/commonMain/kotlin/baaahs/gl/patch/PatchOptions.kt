@@ -149,6 +149,8 @@ class PatchOptions(
                     options.add(PortLinkOption(MutableDataSourcePort(dataSource), isPluginRef = true))
                 } catch (e: LinkException) {
                     logger.warn(e) { "Incorrect plugin reference." }
+                } catch (e: Exception) {
+                    logger.warn(e) { "Error resolving data source for ${inputPort.id}." }
                 }
             }
 

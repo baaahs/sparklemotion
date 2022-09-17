@@ -7,13 +7,12 @@ import baaahs.gl.data.Feed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.plugin.OpenPlugin
-import baaahs.plugin.PluginRef
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableDataSourcePort
 import baaahs.ui.Markdown
+import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 
 
@@ -33,7 +32,7 @@ interface DataSourceBuilder<T : DataSource> {
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
         return if (looksValid(inputPort, suggestedContentTypes)) {
-            listOf(build(inputPort)).map { dataSource ->
+            listOfNotNull(safeBuild(inputPort)).map { dataSource ->
                 PortLinkOption(
                     MutableDataSourcePort(dataSource),
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
@@ -51,7 +50,18 @@ interface DataSourceBuilder<T : DataSource> {
 
     fun build(inputPort: InputPort): T
 
+    fun safeBuild(inputPort: InputPort): DataSource? = try {
+        build(inputPort)
+    } catch (e: Exception) {
+        logger.error(e) { "Error building data source for $inputPort." }
+        null
+    }
+
     fun funDef(varName: String): String? = null
+
+    companion object {
+        private val logger = Logger<DataSourceBuilder<*>>()
+    }
 }
 
 internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
