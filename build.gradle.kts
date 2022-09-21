@@ -62,7 +62,7 @@ kotlin {
             useCommonJs()
 
             webpackTask {
-                report = true
+//                report = true // Broken in Kotlin 1.7? Cannot find module 'webpack-bundle-analyzer'.
                 sourceMaps = true
             }
 
