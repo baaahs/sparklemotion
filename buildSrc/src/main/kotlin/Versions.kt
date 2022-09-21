@@ -16,12 +16,7 @@ object Versions {
 
     // JS:
     const val kotlinxHtml = "0.7.5"
-    const val wrappersBuild = "pre.361"
-    const val kotlinReact = "18.2.0-$wrappersBuild"
-    const val kotlinStyled = "5.3.5-$wrappersBuild"
-    const val kotlinMui = "5.9.1-$wrappersBuild"
-    const val kotlinMuiIcons = "5.8.4-$wrappersBuild"
-    const val kotlinEmotion = "11.9.3-$wrappersBuild"
+    const val kotlinWrappers = "1.0.0-pre.361"
 
     // Test:
     const val junit = "5.8.1"
