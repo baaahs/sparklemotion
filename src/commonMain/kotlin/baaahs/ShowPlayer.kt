@@ -33,6 +33,7 @@ interface ShowPlayer {
 
 abstract class BaseShowPlayer(
     final override val toolchain: Toolchain,
+    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     final override val sceneProvider: SceneProvider
 ) : ShowPlayer {
     private val feeds = mutableMapOf<DataSource, Feed>()

@@ -2,7 +2,7 @@ package baaahs.ui
 
 import baaahs.util.Logger
 import baaahs.window
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.ComponentType
 import react.MutableRefObject
 import react.Props

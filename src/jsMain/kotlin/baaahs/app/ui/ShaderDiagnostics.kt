@@ -24,7 +24,7 @@ val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") 
     Popover {
         attrs.classes = jso { this.paper = -ShaderPreviewStyles.errorPopup }
         attrs.open = props.anchor != null
-        props.anchor?.let { anchor -> attrs.anchorEl = { anchor } }
+        props.anchor?.let { anchor -> attrs.anchorEl = anchor }
         attrs.onClose = { event, _ ->
             props.onClose()
             event.stopPropagation()

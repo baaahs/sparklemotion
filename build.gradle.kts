@@ -55,6 +55,9 @@ repositories {
 group = "org.baaahs"
 version = "0.0.1"
 
+fun kotlinw(target: String): String =
+    "org.jetbrains.kotlin-wrappers:kotlin-$target"
+
 kotlin {
     jvm()
     js {
@@ -62,7 +65,7 @@ kotlin {
             useCommonJs()
 
             webpackTask {
-                report = true
+//                report = true // Broken in Kotlin 1.7? Cannot find module 'webpack-bundle-analyzer'.
                 sourceMaps = true
             }
 
@@ -165,13 +168,13 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
-//                implementation(enforcedPlatform("org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:${Versions.kotlinWrappers}"))
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.kotlinReact}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.kotlinReact}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled:${Versions.kotlinStyled}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui:${Versions.kotlinMui}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui-icons:${Versions.kotlinMuiIcons}")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion:${Versions.kotlinEmotion}")
+                implementation(project.dependencies.enforcedPlatform(kotlinw("wrappers-bom:${Versions.kotlinWrappers}")))
+                implementation(kotlinw("react"))
+                implementation(kotlinw("react-dom"))
+                implementation(kotlinw("styled"))
+                implementation(kotlinw("mui"))
+                implementation(kotlinw("mui-icons"))
+                implementation(kotlinw("emotion"))
 
                 implementation(npm("camera-controls", "^1.35.0"))
 

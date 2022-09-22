@@ -17,6 +17,7 @@ import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
 
 class FakeShowPlayer(
+    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     override val sceneProvider: SceneProvider = SceneMonitor(ModelInfo.EmptyScene),
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {

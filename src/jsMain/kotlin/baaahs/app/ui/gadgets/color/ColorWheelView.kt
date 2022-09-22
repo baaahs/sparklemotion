@@ -15,7 +15,7 @@ import kotlinx.js.jso
 import mui.material.Button
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler

@@ -18,7 +18,7 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.RDOMBuilder
@@ -231,7 +231,7 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
+val preventDefault: (org.w3c.dom.events.Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
     baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
 }
