@@ -19,7 +19,7 @@ import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
-import org.w3c.dom.events.Event
+import kotlinx.html.org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.events.FocusEvent

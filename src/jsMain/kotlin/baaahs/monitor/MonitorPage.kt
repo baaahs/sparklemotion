@@ -4,9 +4,10 @@ import baaahs.visualizer.Visualizer
 import org.w3c.dom.HTMLDivElement
 import react.RBuilder
 import react.RComponent
+import react.State
 import react.dom.div
 
-class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.State>(props) {
+class MonitorPage(props: MonitorPageProps) : RComponent<MonitorPageProps, State>(props) {
     private val container = react.createRef<HTMLDivElement>()
 
     override fun componentDidMount() {
@@ -21,11 +22,9 @@ class MonitorPage(props: Props) : RComponent<MonitorPage.Props, MonitorPage.Stat
     override fun RBuilder.render() {
         div { ref = container }
     }
+}
 
-    class Props(
-        var containerDiv: HTMLDivElement,
-        var visualizer: Visualizer
-    ) : react.Props
-
-    class State : react.State
+external interface MonitorPageProps : react.Props {
+    var containerDiv: HTMLDivElement
+    var visualizer: Visualizer
 }

@@ -26,7 +26,7 @@ object DialogStyles : StyleSheet("app-ui-dialog-Dialog", isStatic = true) {
     }
 
     val tabsListCol by css {
-        flex(1.0, flexBasis = FlexBasis.zero)
+        flex(1.0, 1.0, FlexBasis.zero)
     }
     val tabsList by css {
         important(::paddingLeft, 1.em)
@@ -42,7 +42,7 @@ object DialogStyles : StyleSheet("app-ui-dialog-Dialog", isStatic = true) {
     }
 
     val panelCol by css {
-        flex(4.0, flexBasis = FlexBasis.zero)
+        flex(4.0, 1.0, FlexBasis.zero)
         display = Display.flex
         flexDirection = FlexDirection.column
         marginLeft = 2.em
