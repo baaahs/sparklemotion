@@ -83,6 +83,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.clock = JsClock
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
+            this.sceneProvider = webClient.sceneProvider
             this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
             this.gridLayoutContext = gridLayoutContext
