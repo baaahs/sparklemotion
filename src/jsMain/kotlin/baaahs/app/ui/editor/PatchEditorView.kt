@@ -97,59 +97,57 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
             }
         }
 
-        div(+shaderEditorStyles.propsAndPreview) {
-            div(+shaderEditorStyles.previewContainer) {
-                shaderPreview {
-                    attrs.shader = editingShader.shaderBuilder.shader
-                    attrs.previewShaderBuilder = editingShader.shaderBuilder
-                    attrs.width = ShaderEditorStyles.previewWidth
-                    attrs.height = ShaderEditorStyles.previewHeight
-                    attrs.adjustGadgets = if (autoAdjustGadgets) {
-                        if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
-                    } else null
-                    attrs.toolchain = toolchain
-                }
+        div(+shaderEditorStyles.previewContainer) {
+            shaderPreview {
+                attrs.shader = editingShader.shaderBuilder.shader
+                attrs.previewShaderBuilder = editingShader.shaderBuilder
+                attrs.width = ShaderEditorStyles.previewWidth
+                attrs.height = ShaderEditorStyles.previewHeight
+                attrs.adjustGadgets = if (autoAdjustGadgets) {
+                    if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
+                } else null
+                attrs.toolchain = toolchain
+            }
 
-                div(+shaderEditorStyles.settingsMenuAffordance) {
-                    attrs.onClickFunction = showSettingsMenu
+            div(+shaderEditorStyles.settingsMenuAffordance) {
+                attrs.onClickFunction = showSettingsMenu
 
-                    icon(mui.icons.material.Settings)
+                icon(mui.icons.material.Settings)
+            }
+        }
+
+        div(+shaderEditorStyles.propsTabsAndPanels) {
+            Tabs {
+                attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
+                attrs.value = selectedTab
+                attrs.onChange = handleChangeTab.asDynamic()
+                attrs.orientation = Orientation.horizontal
+                attrs.variant = TabsVariant.scrollable
+                PageTabs.values().forEach { tab ->
+                    Tab {
+                        attrs.classes = jso { this.root = -shaderEditorStyles.tab }
+                        attrs.label = buildElement { +tab.name }
+                        attrs.value = tab.asDynamic()
+                        attrs.sx { minWidth = Auto.auto }
+                    }
                 }
             }
 
-            div(+shaderEditorStyles.propsTabsAndPanels) {
-                Tabs {
-                    attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
-                    attrs.value = selectedTab
-                    attrs.onChange = handleChangeTab.asDynamic()
-                    attrs.orientation = Orientation.horizontal
-                    attrs.variant = TabsVariant.scrollable
-                    PageTabs.values().forEach { tab ->
-                        Tab {
-                            attrs.classes = jso { this.root = -shaderEditorStyles.tab }
-                            attrs.label = buildElement { +tab.name }
-                            attrs.value = tab.asDynamic()
-                            attrs.sx { minWidth = Auto.auto }
-                        }
+            div(+shaderEditorStyles.propsPanel) {
+                when (selectedTab) {
+                    PageTabs.Patch -> shaderPropertiesEditor {
+                        attrs.editableManager = props.editableManager
+                        attrs.editingShader = editingShader
+                        attrs.mutablePatch = props.mutablePatch
                     }
-                }
-
-                div(+shaderEditorStyles.propsPanel) {
-                    when (selectedTab) {
-                        PageTabs.Patch -> shaderPropertiesEditor {
-                            attrs.editableManager = props.editableManager
-                            attrs.editingShader = editingShader
-                            attrs.mutablePatch = props.mutablePatch
-                        }
-                        PageTabs.Ports -> linksEditor {
-                            attrs.editableManager = props.editableManager
-                            attrs.editingShader = editingShader
-                        }
-                        PageTabs.Gadgets -> gadgetsPreview {
-                            attrs.editingShader = editingShader
-                        }
-                        PageTabs.Help -> shaderHelp {
-                        }
+                    PageTabs.Ports -> linksEditor {
+                        attrs.editableManager = props.editableManager
+                        attrs.editingShader = editingShader
+                    }
+                    PageTabs.Gadgets -> gadgetsPreview {
+                        attrs.editingShader = editingShader
+                    }
+                    PageTabs.Help -> shaderHelp {
                     }
                 }
             }

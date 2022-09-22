@@ -4,9 +4,11 @@ import baaahs.app.ui.Colors
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.*
+import csstype.px
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
+import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -26,6 +28,9 @@ private val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
         typographyH6 { +"Analyzing Shader…" }
     } else Table {
         attrs.size = Size.small
+        attrs.padding = TablePadding.none
+        attrs.stickyHeader = true
+        attrs.sx { borderSpacing = 3.px }
 
         TableHead {
             TableRow {

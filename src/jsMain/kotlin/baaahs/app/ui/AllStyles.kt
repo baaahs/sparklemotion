@@ -19,7 +19,6 @@ import styled.injectGlobal
 
 class AllStyles(val theme: Theme) {
     val appUi by lazy { ThemeStyles(theme) }
-    val editor by lazy { baaahs.ui.editor.Styles(theme) }
     val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
     val gadgetsSlider by lazy { ThemedStyles(theme) }
     val editableManager by lazy { ThemedEditableStyles(theme) }
