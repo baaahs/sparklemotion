@@ -49,9 +49,9 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         bootstrapper.createHelper(sharedGlContext)
     }
     val previewContainer = helper.container
-    val sceneManager = appContext.sceneManager
-    observe(sceneManager)
-    val model = sceneManager.openScene?.model
+    val sceneProvider = appContext.sceneProvider
+    observe(sceneProvider)
+    val model = sceneProvider.openScene?.model
 //    var model by state { sceneManager.openScene?.model }
 //    onMount {
 //        val listener = sceneManager.addSceneChangeListener { newScene ->

@@ -13,12 +13,14 @@ import baaahs.ui.addObserver
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import csstype.Auto
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
+import mui.system.sx
 import org.w3c.dom.Element
-import kotlinx.html.org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 
@@ -51,7 +53,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
                 props.mutablePatch,
                 toolchain
             ) { shader ->
-                PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
+                PreviewShaderBuilder(shader, toolchain, appContext.sceneProvider)
             }
 
         val observer = newEditingShader.addObserver {
@@ -88,64 +90,70 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
         settingsMenuAnchor = null
     }
 
-    div(+shaderEditorStyles.propsAndPreview) {
-        div(+shaderEditorStyles.propsTabsAndPanels) {
-            Tabs {
-                attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
-                attrs.value = selectedTab
-                attrs.onChange = handleChangeTab.asDynamic()
-                attrs.orientation = Orientation.vertical
-                PageTabs.values().forEach { tab ->
-                    Tab {
-                        attrs.classes = jso { this.root = -shaderEditorStyles.tab }
-                        attrs.label = buildElement { +tab.name }
-                        attrs.value = tab.asDynamic()
-                    }
+    div(+shaderEditorStyles.container) {
+        div(+shaderEditorStyles.shaderEditor) {
+            shaderEditor {
+                attrs.editingShader = editingShader
+            }
+        }
+
+        div(+shaderEditorStyles.propsAndPreview) {
+            div(+shaderEditorStyles.previewContainer) {
+                shaderPreview {
+                    attrs.shader = editingShader.shaderBuilder.shader
+                    attrs.previewShaderBuilder = editingShader.shaderBuilder
+                    attrs.width = ShaderEditorStyles.previewWidth
+                    attrs.height = ShaderEditorStyles.previewHeight
+                    attrs.adjustGadgets = if (autoAdjustGadgets) {
+                        if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
+                    } else null
+                    attrs.toolchain = toolchain
+                }
+
+                div(+shaderEditorStyles.settingsMenuAffordance) {
+                    attrs.onClickFunction = showSettingsMenu
+
+                    icon(mui.icons.material.Settings)
                 }
             }
 
-            div(+shaderEditorStyles.propsPanel) {
-                when (selectedTab) {
-                    PageTabs.Patch -> shaderPropertiesEditor {
-                        attrs.editableManager = props.editableManager
-                        attrs.editingShader = editingShader
-                        attrs.mutablePatch = props.mutablePatch
+            div(+shaderEditorStyles.propsTabsAndPanels) {
+                Tabs {
+                    attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
+                    attrs.value = selectedTab
+                    attrs.onChange = handleChangeTab.asDynamic()
+                    attrs.orientation = Orientation.horizontal
+                    attrs.variant = TabsVariant.scrollable
+                    PageTabs.values().forEach { tab ->
+                        Tab {
+                            attrs.classes = jso { this.root = -shaderEditorStyles.tab }
+                            attrs.label = buildElement { +tab.name }
+                            attrs.value = tab.asDynamic()
+                            attrs.sx { minWidth = Auto.auto }
+                        }
                     }
-                    PageTabs.Ports -> linksEditor {
-                        attrs.editableManager = props.editableManager
-                        attrs.editingShader = editingShader
-                    }
-                    PageTabs.Gadgets -> gadgetsPreview {
-                        attrs.editingShader = editingShader
-                    }
-                    PageTabs.Help -> shaderHelp {
+                }
+
+                div(+shaderEditorStyles.propsPanel) {
+                    when (selectedTab) {
+                        PageTabs.Patch -> shaderPropertiesEditor {
+                            attrs.editableManager = props.editableManager
+                            attrs.editingShader = editingShader
+                            attrs.mutablePatch = props.mutablePatch
+                        }
+                        PageTabs.Ports -> linksEditor {
+                            attrs.editableManager = props.editableManager
+                            attrs.editingShader = editingShader
+                        }
+                        PageTabs.Gadgets -> gadgetsPreview {
+                            attrs.editingShader = editingShader
+                        }
+                        PageTabs.Help -> shaderHelp {
+                        }
                     }
                 }
             }
         }
-
-        div(+shaderEditorStyles.previewContainer) {
-            shaderPreview {
-                attrs.shader = editingShader.shaderBuilder.shader
-                attrs.previewShaderBuilder = editingShader.shaderBuilder
-                attrs.width = ShaderEditorStyles.previewWidth
-                attrs.height = ShaderEditorStyles.previewHeight
-                attrs.adjustGadgets = if (autoAdjustGadgets) {
-                    if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
-                } else null
-                attrs.toolchain = toolchain
-            }
-
-            div(+shaderEditorStyles.settingsMenuAffordance) {
-                attrs.onClickFunction = showSettingsMenu
-
-                icon(mui.icons.material.Settings)
-            }
-        }
-    }
-
-    shaderEditor {
-        attrs.editingShader = editingShader
     }
 
     Menu {
