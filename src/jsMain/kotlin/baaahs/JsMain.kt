@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.app.ui.PatchEditorApp
 import baaahs.client.WebClient
 import baaahs.di.*
 import baaahs.monitor.MonitorUi
@@ -79,6 +80,11 @@ private fun launchUi(appName: String?) {
             "UI" -> {
                 koin.loadModules(listOf(JsUiWebClientModule().getModule()))
                 koin.createScope<WebClient>().get<WebClient>()
+            }
+
+            "PatchEditor" -> {
+                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
+                koin.createScope<WebClient>().get<PatchEditorApp>()
             }
 
             else -> throw UnsupportedOperationException("unknown mode $appName")

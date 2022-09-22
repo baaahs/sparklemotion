@@ -4,7 +4,6 @@ import acex.*
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
 import baaahs.show.mutable.EditingShader
-import baaahs.ui.Styles
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -12,6 +11,7 @@ import kotlinx.css.left
 import kotlinx.css.px
 import kotlinx.css.top
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.Divider
@@ -19,7 +19,6 @@ import mui.material.ListItemText
 import mui.material.Menu
 import mui.material.MenuItem
 import org.w3c.dom.Element
-import kotlinx.html.org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -30,7 +29,7 @@ import styled.inlineStyles
 private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val appContext = useContext(appContext)
     var aceEditor by state<AceEditor?> { null }
-    val styles = appContext.allStyles.editor
+    val styles = appContext.allStyles.shaderEditor
 
     val glslDoc = memo(props.editingShader) {
         Document(props.editingShader.id, props.editingShader.mutableShader.src)
@@ -106,52 +105,50 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         later { aceEditor = incoming }
     }
 
-    div(+Styles.shaderEditor) {
-        textEditor {
-            attrs.document = glslDoc
-            attrs.mode = Modes.glsl
-            attrs.onAceEditor = handleAceEditor
-            attrs.debounceSeconds = 0.25f
-            attrs.onChange = handleSrcChange
-            attrs.onCursorChange = handleCursorChange
+    textEditor {
+        attrs.document = glslDoc
+        attrs.mode = Modes.glsl
+        attrs.onAceEditor = handleAceEditor
+        attrs.debounceSeconds = 0.25f
+        attrs.onChange = handleSrcChange
+        attrs.onCursorChange = handleCursorChange
+    }
+
+    shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
+        div(+styles.editorActionMenuAffordance) {
+            inlineStyles { top = y.px; left = x.px }
+            attrs.onClickFunction = showRefactorMenu
+
+            icon(mui.icons.material.MoreHoriz)
         }
+    }
 
-        shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
-            div(+styles.editorActionMenuAffordance) {
-                inlineStyles { top = y.px; left = x.px }
-                attrs.onClickFunction = showRefactorMenu
-
-                icon(mui.icons.material.MoreHoriz)
+    if (refactorMenuAnchor != null) {
+        Menu {
+            attrs.anchorEl = refactorMenuAnchor.asDynamic()
+            attrs.anchorOrigin = jso {
+                horizontal = "left"
+                vertical = "top"
             }
-        }
+            attrs.open = true
+            attrs.onClose = hideRefactorMenu
 
-        if (refactorMenuAnchor != null) {
-            Menu {
-                attrs.anchorEl = refactorMenuAnchor.asDynamic()
-                attrs.anchorOrigin = jso {
-                    horizontal = "left"
-                    vertical = "top"
-                }
-                attrs.open = true
-                attrs.onClose = hideRefactorMenu
+            shaderRefactor?.let {
+                it.extractionCandidate?.let { extraction ->
+                    MenuItem {
+                        attrs.onClick = handleExtractUniform
 
-                shaderRefactor?.let {
-                    it.extractionCandidate?.let { extraction ->
-                        MenuItem {
-                            attrs.onClick = handleExtractUniform
-
-                            ListItemText { +"Extract ${extraction.text}…" }
-                        }
+                        ListItemText { +"Extract ${extraction.text}…" }
                     }
                 }
+            }
 
-                Divider {}
+            Divider {}
 
-                MenuItem {
-                    attrs.disabled = true
+            MenuItem {
+                attrs.disabled = true
 
-                    ListItemText { +"Rename…" }
-                }
+                ListItemText { +"Rename…" }
             }
         }
     }

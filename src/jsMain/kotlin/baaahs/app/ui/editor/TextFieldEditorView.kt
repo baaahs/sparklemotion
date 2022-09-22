@@ -4,6 +4,7 @@ import baaahs.ui.value
 import baaahs.ui.xComponent
 import mui.material.FormControl
 import mui.material.FormHelperText
+import mui.material.Size
 import mui.material.TextField
 import react.Props
 import react.RBuilder
@@ -52,6 +53,7 @@ private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor"
             attrs.type = props.type
             attrs.autoFocus = props.autoFocus == true
             attrs.fullWidth = (props.fullWidth ?: true) == true
+            attrs.size = Size.small
             attrs.disabled = props.disabled == true
             attrs.label = buildElement { +props.label }
             attrs.value = props.getValue()

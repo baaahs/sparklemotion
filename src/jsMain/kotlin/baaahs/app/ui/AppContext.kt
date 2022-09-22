@@ -12,6 +12,7 @@ import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
 import baaahs.plugin.Plugins
+import baaahs.scene.SceneProvider
 import baaahs.ui.KeyboardShortcutHandler
 import baaahs.ui.Prompt
 import baaahs.ui.ReactBeautifulDragNDrop
@@ -39,6 +40,7 @@ external interface AppContext {
     var clock: Clock
     var showManager: ShowManager.Facade
     var sceneManager: SceneManager.Facade
+    var sceneProvider: SceneProvider
     var fileDialog: FileDialog
     var notifier: Notifier.Facade
     var gridLayoutContext: GridLayoutContext

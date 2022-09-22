@@ -58,7 +58,7 @@ class ShaderRefactor(
             ) {
                 val range = Range(cursor.row, start, cursor.row, end)
                 glslNumberMarker = session.addMarker(
-                    range, +appContext.allStyles.editor.refactorMarker, "text", false)
+                    range, +appContext.allStyles.shaderEditor.refactorMarker, "text", false)
 
                 extractionCandidate = ExtractionCandidate(range, candidate)
                 selectionEndScreenPosition = editor.renderer.textToScreenCoordinates(range.end.row, range.end.column).let {
