@@ -2,6 +2,7 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PubSub
+import baaahs.app.ui.PatchEditorApp
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
 import baaahs.client.*
@@ -84,6 +85,9 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped {
                 JsMapper(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
+
+            // Dev only:
+            scoped { PatchEditorApp(get(), get(), get()) }
         }
     }
 }
