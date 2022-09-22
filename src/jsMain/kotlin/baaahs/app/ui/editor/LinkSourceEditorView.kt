@@ -51,6 +51,8 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
 
     FormControl {
         Select<SelectProps<LinkOption>> {
+            attrs.margin = InputBaseMargin.dense
+            attrs.size = Size.small
             attrs.value = selected
             if (selected == null) {
                 this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
