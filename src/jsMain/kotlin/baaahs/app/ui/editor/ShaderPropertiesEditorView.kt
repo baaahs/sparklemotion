@@ -16,7 +16,6 @@ import mui.system.sx
 import org.w3c.dom.HTMLDivElement
 import react.*
 import react.dom.b
-import react.dom.br
 import react.dom.div
 import react.dom.events.FormEvent
 import react.dom.html.InputType
@@ -121,32 +120,34 @@ private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("Sh
                         handleUpdate { priority = priorityStr.toFloat() }
                     }
                 }
-                FormHelperText { +"This shader's priority in the patch." }
+                FormHelperText { +"Higher priorities are picked first." }
             }
         }
 
-        div(+shaderEditorStyles.shaderReturnType) {
-            val openShader = editingShader.openShader
-
-            if (openShader != null) {
+        val openShader = editingShader.openShader
+        if (openShader != null) {
+            div(+shaderEditorStyles.shaderData) {
                 val outputPort = openShader.outputPort
 
-                Typography { b { +"Returns: " } }
                 Typography {
+                    b { +"Returns: " }
+
                     if (outputPort.contentType.isUnknown()) {
                         attrs.sx { color = Colors.error }
                     }
                     +outputPort.contentType.title
                 }
 
-                br {}
-
-                Typography { b { +"Shader Type: " } }
                 Typography {
-                    +"${openShader.shaderType.title} (${openShader.shaderDialect.title})"
+                    b { +"Type: " }
+                    +openShader.shaderType.title
+                }
+
+                Typography {
+                    b { +"Dialect: " }
+                    +openShader.shaderDialect.title
                 }
             }
-
         }
     }
 }
