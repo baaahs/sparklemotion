@@ -72,7 +72,8 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val gridLayoutEditor = props.controlProps.layoutEditor
         ?: error("No layout editor!")
 
-    val handleLayoutChange by handler(gridLayout, editor) { newLayout: Layout ->
+    val handleLayoutChange by handler(gridLayout, editor) { newLayout: Layout, stillDragging: Boolean ->
+        if (stillDragging) return@handler
         appContext.showManager.openShow?.edit {
             val mutableShow = this
             editor.edit(mutableShow) {

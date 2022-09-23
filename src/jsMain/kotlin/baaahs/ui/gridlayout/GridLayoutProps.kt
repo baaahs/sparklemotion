@@ -140,7 +140,7 @@ external interface GridLayoutProps : PropsWithChildren {
 
     // Callback so you can save the layout.
 // Calls back with (currentLayout) after every drag or resize stop.
-    var onLayoutChange: ((Layout) -> Unit)?
+    var onLayoutChange: ((newLayout: Layout, stillDragging: Boolean) -> Unit)?
 
 //
 // All callbacks below have signature (layout, oldItem, newItem, placeholder, e, element).
