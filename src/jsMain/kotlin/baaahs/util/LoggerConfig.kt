@@ -1,6 +1,7 @@
 package baaahs.util
 
 import baaahs.PubSub
+import baaahs.gl.CachingToolchain
 import baaahs.gl.KglTracer
 import baaahs.plugin.core.datasource.XyPadDataSource
 import baaahs.show.live.ShowOpener
@@ -20,6 +21,7 @@ object LoggerConfig {
         ShowOpener::class to LogLevel.DEBUG,
         PubSub::class to LogLevel.DEBUG,
         XyPadDataSource::class to LogLevel.DEBUG,
+        CachingToolchain::class to LogLevel.DEBUG
     )
 
     private val allLevels = (stringLevels + classLevels.mapKeys { (k, _) -> k.simpleName })
