@@ -1,26 +1,30 @@
 package baaahs.ui
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.dialog.FileDialog
 import baaahs.app.ui.jsIcon
 import baaahs.doc.FileDisplay
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
 import baaahs.window
+import csstype.em
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Folder
 import mui.icons.material.InsertDriveFile
 import mui.material.*
 import mui.system.Breakpoint
+import mui.system.sx
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.FormEvent
+import react.dom.events.KeyboardEvent
 import react.dom.onChange
 
-private val FileDialogView = xComponent<Props>("FileDialog") { props ->
+private val FileDialogView = xComponent<FileDialogProps>("FileDialog") { props ->
     val appContext = useContext(appContext)
-    val fileDialog = appContext.fileDialog
+    val fileDialog = props.fileDialog
     observe(fileDialog)
 
     val fsRoot = appContext.webClient.fsRoot
@@ -75,12 +79,17 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         selectedFile = currentDir?.resolve(str)
     }
 
-    val handleConfirm by mouseEventHandler(selectedFile, fileDialog) {
+    val handleConfirm by handler(selectedFile, fileDialog) {
         selectedFile?.let {
             globalLaunch { fileDialog.onSelect(it) }
         }; Unit
     }
 
+    val handleKeyUp by keyboardEventHandler(currentDir, handleConfirm) { event: KeyboardEvent<*> ->
+        if (event.key == "Enter" && selectedFile != null) {
+            handleConfirm()
+        }
+    }
     val handleClose = callback(fileDialog) { _: Event, _: String ->
         globalLaunch { fileDialog.onCancel() }
         Unit
@@ -148,7 +157,6 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     }
                 }
                 filesInDir.forEach { file ->
-                    println("file.fullPath = ${file.fullPath}")
                     val icon = if (file.isDirectory == true) Folder else InsertDriveFile
                     val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
                     fileDialog.adjustFileDisplay(file, fileDisplay)
@@ -172,7 +180,9 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     attrs.autoFocus = true
                     attrs.fullWidth = true
                     attrs.onChange = handleFileNameChange
+                    attrs.onKeyUp = handleKeyUp
                     attrs.value = selectedFile?.name ?: request.defaultTarget?.name ?: ""
+                    attrs.sx { marginTop = 1.em }
                 }
             }
         }
@@ -185,7 +195,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                 }
                 Button {
                         +if (isSaveAs) "Save" else "Open"
-                        attrs.onClick = handleConfirm
+                        attrs.onClick = handleConfirm.withMouseEvent()
                     attrs.disabled = selectedFile == null
                 }
             }
@@ -193,5 +203,9 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     }
 }
 
-fun RBuilder.fileDialog(handler: RHandler<Props>) =
+external interface FileDialogProps : Props {
+    var fileDialog: FileDialog
+}
+
+fun RBuilder.fileDialog(handler: RHandler<FileDialogProps>) =
     child(FileDialogView, handler = handler)

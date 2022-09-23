@@ -83,7 +83,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.showManager = props.showManager
             this.sceneManager = props.sceneManager
             this.sceneProvider = webClient.sceneProvider
-            this.fileDialog = webClient.fileDialog
             this.notifier = webClient.notifier
             this.gridLayoutContext = gridLayoutContext
 
@@ -358,7 +357,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         attrs.notifier = webClient.notifier
                     }
 
-                    fileDialog {}
+                    fileDialog {
+                        attrs.fileDialog = webClient.fileDialog
+                    }
                 }
             }
         }
