@@ -1,8 +1,11 @@
 package baaahs.app.ui.editor
 
 import acex.*
+import acex.Editor
 import baaahs.app.ui.appContext
 import baaahs.boundedBy
+import baaahs.plugin.PluginRef
+import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
@@ -35,6 +38,8 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         Document(props.editingShader.id, props.editingShader.mutableShader.src)
     }
 
+    val pluginCompleter = memo { PluginCompleter(appContext.plugins) }
+
     val lastSelection = ref<dynamic>()
 
     onChange("AceEditor", props.editingShader, aceEditor) {
@@ -60,6 +65,8 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
             editor.getSession().setAnnotations(annotations)
         }
         setAnnotations()
+
+        editor.completers.asDynamic().push(pluginCompleter)
 
         val compilationObserver = editingShader.addObserver {
             when (editingShader.state) {
@@ -150,6 +157,50 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
 
                 ListItemText { +"Rename…" }
             }
+        }
+    }
+}
+
+class PluginCompleter(private val plugins: Plugins) : Completer {
+    val pluginRefs = plugins.dataSourceBuilders.withPlugin
+        .filterNot { (_, v) -> v.internalOnly }
+//        .sortedBy { (_, v) -> v.title }
+//        .map { (plugin, dataSourceBuilder) ->
+//            val pluginRef = PluginRef(plugin.packageName, dataSourceBuilder.resourceName)
+//            pluginRef.shortRef()
+//        }
+        .toTypedArray()
+
+    override fun getCompletions(
+        editor: Editor,
+        session: EditSession,
+        position: Point,
+        prefix: String,
+        callback: CompleterCallback
+    ) {
+        if (true || prefix.startsWith("@")) {
+            callback(
+                null.unsafeCast<Any>(),
+                plugins.dataSourceBuilders.withPlugin
+                    .filterNot { (_, v) -> v.internalOnly }
+                    .map { (plugin, dataSourceBuilder) ->
+                        val pluginRef = PluginRef(plugin.packageName, dataSourceBuilder.resourceName)
+                        val fullRef = pluginRef.toRef()
+                        val shortRef = pluginRef.shortRef()
+                        val trimmedPrefix = prefix.trimStart('@')
+
+                        jso<Completion> {
+                            value = "@@$shortRef"
+                            score = if (shortRef.startsWith(trimmedPrefix) || fullRef.startsWith(trimmedPrefix)) 1
+                            else if (shortRef.contains(trimmedPrefix) || fullRef.contains(trimmedPrefix)) .5
+                            else 0
+
+                            name = dataSourceBuilder.title
+                            caption = dataSourceBuilder.description
+                        }
+                    }
+                    .toTypedArray()
+            )
         }
     }
 }
