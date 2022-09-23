@@ -88,7 +88,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
                                 val layout = Layout(items.mapIndexed { index, openControl ->
                                     LayoutItem(index % columns, index / columns, 1, 1, openControl.id)
-                                })
+                                }, columns, rows)
 
                                 gridLayout {
                                     attrs.id = "_control_palette_"

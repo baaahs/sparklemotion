@@ -23,7 +23,7 @@ class LayoutGrid(
                 )
             )
         }
-    })
+    }, columns, rows)
 
     fun forEachCell(block: (column: Int, row: Int) -> Unit) {
         for (row in 0 until rows) {

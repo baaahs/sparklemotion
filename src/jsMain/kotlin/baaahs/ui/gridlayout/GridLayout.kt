@@ -54,9 +54,10 @@ class GridLayout(
 
         draggingPlaceholder = null
         layout = synchronizeLayoutWithChildren(
-            props.layout,
+            props.layout ?: Layout(emptyList(), props.cols!!, props.maxRows),
             props.children?.asArray() ?: emptyArray(),
             props.cols!!,
+            props.maxRows,
             // Legacy support for verticalCompact: false
             compactType(props),
             props.allowOverlap
@@ -154,7 +155,7 @@ class GridLayout(
 
     fun onItemEnter(layoutItem: LayoutItem/*, i: String, x: Int, y: Int*/) {
         val enteringItem = layoutItem
-        val newLayout = Layout(state.layout.items + enteringItem)
+        val newLayout = Layout(state.layout.items + enteringItem, state.layout.cols, state.layout.rows)
         setState {
             this.oldDragItem = enteringItem
             this.draggingPlaceholder = placeholderLayoutItem(layoutItem)
@@ -192,7 +193,6 @@ class GridLayout(
         val e = gridDragEvent.e
         val node = gridDragEvent.node
         val oldDragItem = state.oldDragItem
-        val cols = props.cols!!
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision!!
         val oldLayout = state.oldLayout!!
@@ -204,7 +204,7 @@ class GridLayout(
         // Move the element to the dragged location.
         val isUserAction = true
         val newLayout = oldLayout.moveElement(
-            l, x, y, isUserAction, preventCollision, compactType(props), cols, allowOverlap
+            l, x, y, isUserAction, preventCollision, compactType(props), allowOverlap
         )
         val newItem = newLayout.find(i) ?: return
 
@@ -223,7 +223,7 @@ class GridLayout(
         props.onDrag(newLayout, oldDragItem, newItem, placeholder, e, node)
 
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType(props), cols)
+            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType(props))
             this.draggingPlaceholder = placeholder
         }
     }
@@ -247,7 +247,6 @@ class GridLayout(
         console.log("GridLayout", props.id, "onDragStop", i, state.draggingPlaceholder)
         if (state.draggingPlaceholder == null) return
         val oldDragItem = state.oldDragItem
-        val cols = props.cols!!
         val allowOverlap = props.allowOverlap == true
         val preventCollision = props.preventCollision!!
         val l = oldLayout.find(i)
@@ -258,12 +257,12 @@ class GridLayout(
         // Move the element here
         val isUserAction = true
         var newLayout = oldLayout.moveElement(
-            l, x, y, isUserAction, preventCollision, compactType(props), cols, allowOverlap
+            l, x, y, isUserAction, preventCollision, compactType(props), allowOverlap
         )
         val newItem = newLayout.find(i) ?: return
 
         props.onDragStop(newLayout, oldDragItem, newItem, null, e, node)
-        newLayout = if (allowOverlap) newLayout else newLayout.compact(compactType(props), cols)
+        newLayout = if (allowOverlap) newLayout else newLayout.compact(compactType(props))
 
         setState {
             this.draggingPlaceholder = null
@@ -308,7 +307,6 @@ class GridLayout(
         val node = gridResizeEvent.node
         val layout = state.layout
         val oldResizeItem = state.oldResizeItem
-        val cols = props.cols!!
         val allowOverlap = props.allowOverlap!!
         val preventCollision = props.preventCollision!!
 
@@ -346,7 +344,7 @@ class GridLayout(
             newItem
         }
 
-        val newLayout = Layout(newListItems)
+        val newLayout = Layout(newListItems, layout.cols, layout.rows)
 
         val l = newLayout.find(i)
             ?: return
@@ -360,7 +358,7 @@ class GridLayout(
 
         // Re-compact the newLayout and set the drag placeholder.
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType, cols)
+            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType)
             this.draggingPlaceholder = placeholder
         }
     }
@@ -373,14 +371,13 @@ class GridLayout(
         val node = gridResizeEvent.node
         val layout = state.layout
         val oldResizeItem = state.oldResizeItem
-        val cols = props.cols!!
         val allowOverlap = props.allowOverlap!!
         val l = layout.find(i)!!
 
         props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else layout.compact(compactType(props), cols)
+        val newLayout = if (allowOverlap) layout else layout.compact(compactType(props))
         val oldLayout = state.oldLayout
         setState {
             this.draggingPlaceholder = null
@@ -570,7 +567,7 @@ class GridLayout(
                     finalDroppingItem.i,
                     isDraggable = true
                 )
-                this.layout = Layout(layout.items + listOf(newItem))
+                this.layout = Layout(layout.items + listOf(newItem), layout.cols, layout.rows)
             }
         } else state.droppingPosition?.let { droppingPos ->
             val left = droppingPos.left
@@ -597,11 +594,10 @@ class GridLayout(
 
     fun removeDroppingPlaceholder() {
         val droppingItem = props.droppingItem
-        val cols = props.cols!!
         val layout = state.layout
 
-        val newLayout = Layout(layout.items.filter { l -> l.i != droppingItem?.i })
-            .compact(compactType(props), cols)
+        val newLayout = Layout(layout.items.filter { l -> l.i != droppingItem?.i }, layout.cols, layout.rows)
+            .compact(compactType(props))
 
         setState {
             this.layout = newLayout
@@ -749,16 +745,16 @@ class GridLayout(
             }
 
             getDerivedStateFromProps = { nextProps, prevState ->
-                var newLayoutBase: MutableList<LayoutItem>? = null
-
                 if (prevState.draggingPlaceholder == null) {
+                    var baseLayout: Layout? = null
+
                     // Legacy support for compactType
                     // Allow parent to set layout directly.
                     if (
                         nextProps.layout != prevState.propsLayout ||
                         nextProps.compactType != prevState.compactType
                     ) {
-                        newLayoutBase = nextProps.layout?.items?.toMutableList()
+                        baseLayout = nextProps.layout
                     } else if (!childrenEqual(
                             nextProps.children?.asArray(),
                             prevState.children?.asArray()
@@ -767,15 +763,16 @@ class GridLayout(
                         // If children change, also regenerate the layout. Use our state
                         // as the base in case because it may be more up to date than
                         // what is in props.
-                        newLayoutBase = prevState.layout.items.toMutableList()
+                        baseLayout = prevState.layout
                     }
 
                     // We need to regenerate the layout.
-                    if (newLayoutBase != null) {
+                    if (baseLayout != null) {
                         val newLayout = synchronizeLayoutWithChildren(
-                            Layout(newLayoutBase),
+                            baseLayout,
                             nextProps.children?.asArray() ?: emptyArray(),
                             nextProps.cols!!,
+                            nextProps.maxRows,
                             compactType(nextProps),
                             nextProps.allowOverlap
                         )
@@ -794,14 +791,13 @@ class GridLayout(
         }
 
         fun synchronizeLayoutWithChildren(
-            initialLayout_: Layout?,
+            initialLayout: Layout,
             children: ReactChildren,
             cols: Int,
+            rows: Int,
             compactType: CompactType,
             allowOverlap: Boolean?
         ): Layout {
-            val initialLayout = initialLayout_ ?: Layout()
-
             // Generate one layout item per child.
             val layoutItems = mutableListOf<LayoutItem>()
 
@@ -819,7 +815,7 @@ class GridLayout(
                     // FIXME clone not really necessary here
                     layoutItems.add(
                         LayoutItem(
-                            0, Layout(layoutItems).bottom(),
+                            0, rows - 1,
                             1, 1,
                             key
                         )
@@ -828,11 +824,11 @@ class GridLayout(
             }
 
             // Correct the layout.
-            val correctedLayout = Layout(layoutItems).correctBounds(cols)
+            val correctedLayout = Layout(layoutItems, cols, rows).correctBounds()
             return if (allowOverlap == true)
                 correctedLayout
             else
-                correctedLayout.compact(compactType, cols)
+                correctedLayout.compact(compactType)
         }
 
         // Legacy support for verticalCompact: false

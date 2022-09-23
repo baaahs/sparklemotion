@@ -104,7 +104,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
     val layout = Layout(gridLayout.items.map { gridItem ->
         LayoutItem(gridItem.column, gridItem.row, gridItem.width, gridItem.height, gridItem.control.id)
-    })
+    }, gridLayout.columns, gridLayout.rows)
     val controls = gridLayout.items.associate { it.control.id to it.control }
     val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
