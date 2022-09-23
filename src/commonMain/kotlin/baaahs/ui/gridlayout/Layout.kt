@@ -5,7 +5,13 @@ import baaahs.util.Logger
 import kotlin.math.max
 import kotlin.math.min
 
-data class Layout(val items: List<LayoutItem> = emptyList()) {
+data class Layout(
+    val items: List<LayoutItem>,
+    val cols: Int,
+    val rows: Int
+) {
+    constructor() : this(emptyList(), 0, 0)
+
     val size: Int get() = items.size
 
     operator fun get(index: Int): LayoutItem = items[index]
@@ -28,7 +34,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     }
 
     private fun updateLayout(updateItem: LayoutItem): Layout =
-        Layout(items.map { if (it.i == updateItem.i) updateItem else it })
+        Layout(items.map { if (it.i == updateItem.i) updateItem else it }, cols, rows)
 
     /**
      * Given a layout, compact it. This involves going down each y coordinate and removing gaps
@@ -41,7 +47,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      *   vertically.
      * @return {Array}       Compacted Layout.
      */
-    fun compact(compactType: CompactType, cols: Int): Layout {
+    fun compact(compactType: CompactType): Layout {
         // Statics go in the compareWith array right away so items flow around them.
         val compareWith = getStatics().toMutableList()
         // We go through the items by row and column.
@@ -55,7 +61,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
 
             // Don't move static elements
             if (!l.isStatic) {
-                l = compactItem(Layout(compareWith), l, compactType, cols, sorted)
+                l = compactItem(Layout(compareWith, cols, rows), l, compactType, cols, sorted)
 
                 // Add to comparison array. We only collide with items before this one.
                 // Statics are already in this array.
@@ -71,7 +77,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             }
         }
 
-        return Layout(out.filterNotNull())
+        return Layout(out.filterNotNull(), cols, rows)
     }
 
     /**
@@ -118,7 +124,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
      * @param  {Array} layout Layout array.
      * @param  {Number} cols Number of columns.
      */
-    fun correctBounds(cols: Int): Layout {
+    fun correctBounds(): Layout {
         val collidesWith = getStatics().toMutableList()
         val newLayoutItems = ArrayList(items)
         newLayoutItems.replaceAll { l ->
@@ -133,13 +139,13 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             if (!l.isStatic) collidesWith.add(l) else {
                 // If this is static and collides with other statics, we must move it down.
                 // We have to do something nicer than just letting them overlap.
-                while (Layout(collidesWith).getFirstCollision(l) != null) {
+                while (Layout(collidesWith, cols, rows).getFirstCollision(l) != null) {
                     newItem = newItem.copy(y = newItem.y + 1)
                 }
             }
             newItem
         }
-        return Layout(newLayoutItems)
+        return Layout(newLayoutItems, cols, rows)
     }
 
     /**
@@ -191,7 +197,6 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         isUserAction: Boolean,
         preventCollision: Boolean,
         compactType: CompactType,
-        cols: Int,
         allowOverlap: Boolean = false
     ): Layout {
         // If this is static and not explicitly enabled as draggable,
@@ -226,7 +231,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
                 oldX >= x
             else false
         // $FlowIgnore acceptable modification of read-only array as it was recently cloned
-        if (movingUp) sorted = Layout(sorted.items.reversed())
+        if (movingUp) sorted = Layout(sorted.items.reversed(), cols, rows)
         val collisions = sorted.getAllCollisions(newItem)
         val hasCollisions = collisions.isNotEmpty()
 
@@ -257,9 +262,13 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             // Don't move static items - we have to move *this* element away
             updatedLayout =
                 if (collision.isStatic) {
-                    updatedLayout.moveElementAwayFromCollision(collision, newItem, isUserAction, compactType, cols, movingAxis)
+                    updatedLayout.moveElementAwayFromCollision(
+                        collision, newItem, isUserAction, compactType, movingAxis
+                    )
                 } else {
-                    updatedLayout.moveElementAwayFromCollision(newItem, collision, isUserAction, compactType, cols, movingAxis)
+                    updatedLayout.moveElementAwayFromCollision(
+                        newItem, collision, isUserAction, compactType, movingAxis
+                    )
                 }
         }
 
@@ -267,7 +276,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     }
 
     fun removeItem(id: String): Layout =
-        Layout(items.filter { it.i != id })
+        Layout(items.filter { it.i != id }, cols, rows)
 
     /**
      * This is where the magic needs to happen - given a collision, move an element away from the collision.
@@ -282,7 +291,6 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
         itemToMove: LayoutItem,
         isUserAction: Boolean,
         compactType: CompactType,
-        cols: Int,
         movingAxis: Axis
     ): Layout {
         val compactH = compactType == CompactType.horizontal
@@ -312,8 +320,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
                     if (compactV) fakeItem.y else null,
                     false, // Reset isUserAction flag because we're not in the main collision anymore.
                     collidesWith.isStatic, // we're already colliding (not for static items)
-                    compactType,
-                    cols
+                    compactType
                 )
             }
         }
@@ -324,8 +331,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
             if (compactV || movingAxis == Axis.y) itemToMove.y + 1 else null,
             isUserAction,
             collidesWith.isStatic, // we're already colliding (not for static items)
-            compactType,
-            cols
+            compactType
         )
     }
 
@@ -413,7 +419,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
                 // Without this, we can get different sort results in IE vs. Chrome/FF
                 0
             } else -1
-        })
+        }, cols, rows)
 
     /**
      * Sort layout items by column ascending then row ascending.
@@ -423,7 +429,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
     private fun sortLayoutItemsByColRow(): Layout =
         Layout(items.sortedWith { a, b ->
             if (a.x > b.x || (a.x == b.x && a.y > b.y)) 1 else -1
-        })
+        }, cols, rows)
 
     fun canonicalize(): Layout =
         Layout(items.sortedWith { a, b ->
@@ -431,7 +437,7 @@ data class Layout(val items: List<LayoutItem> = emptyList()) {
                 (a.y == b.y && a.x > b.x) ||
                 (a.y == b.y && a.x == b.x && a.i > b.i)
             ) 1 else -1
-        })
+        }, cols, rows)
 
     /**
      * Given two layoutitems, check if they collide.
