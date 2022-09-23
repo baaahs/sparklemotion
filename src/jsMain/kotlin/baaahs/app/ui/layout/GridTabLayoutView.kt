@@ -58,7 +58,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     var draggingItem by state<String?> { null }
 
     val gridLayoutEditor = props.tabEditor
-    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: Layout ->
+    val handleLayoutChange by handler(gridLayout, gridLayoutEditor) { newLayout: Layout, stillDragging: Boolean ->
+        if (stillDragging) return@handler
         appContext.showManager.openShow?.edit {
             val mutableShow = this
             gridLayoutEditor.edit(mutableShow) {

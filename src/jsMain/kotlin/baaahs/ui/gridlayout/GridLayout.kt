@@ -80,7 +80,7 @@ class GridLayout(
     override fun componentDidMount() {
         state.mounted = true
 
-        onLayoutMaybeChanged(state.layout, props.layout)
+        onLayoutMaybeChanged(state.layout, props.layout, state.draggingPlaceholder != null)
 
         context.registerLayout(props.id, state)
     }
@@ -108,7 +108,7 @@ class GridLayout(
             val newLayout = state.layout
             val oldLayout = prevState.layout
 
-            onLayoutMaybeChanged(newLayout, oldLayout)
+            onLayoutMaybeChanged(newLayout, oldLayout, true)
         }
     }
 
@@ -273,16 +273,16 @@ class GridLayout(
             this.originalDragItem = null
         }
 
-        onLayoutMaybeChanged(newLayout, oldLayout)
+        onLayoutMaybeChanged(newLayout, oldLayout, false)
     }
 
-    private fun onLayoutMaybeChanged(newLayout: Layout, oldLayout_: Layout?) {
+    private fun onLayoutMaybeChanged(newLayout: Layout, oldLayout_: Layout?, stillDragging: Boolean) {
         val canonicalNewLayout = newLayout.canonicalize()
         val oldLayout = (oldLayout_ ?: state.layout).canonicalize()
 
         if (canonicalNewLayout != oldLayout) {
             // Don't use the canonicalized version, order instability breaks updating the data model.
-            props.onLayoutChange?.invoke(newLayout)
+            props.onLayoutChange?.invoke(newLayout, stillDragging)
         }
     }
 
@@ -389,7 +389,7 @@ class GridLayout(
             this.oldLayout = null
         }
 
-        onLayoutMaybeChanged(newLayout, oldLayout)
+        onLayoutMaybeChanged(newLayout, oldLayout, false)
     }
 
     val containerWidth get() = props.width!!
