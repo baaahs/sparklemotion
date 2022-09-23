@@ -87,7 +87,7 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
         }
     }
 
-    override val title: String = "Paint"
+    override val title: String = "ShaderToy"
 
     override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
         val shaderAnalysis = super.analyze(glslCode, plugins, shader)

@@ -65,7 +65,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
         newEditingShader
     }
 
-    var autoAdjustGadgets by state { true }
+    var autoAdjustGadgets by state { false }
     val handleToggleAutoAdjustGadgets by mouseEventHandler {
         autoAdjustGadgets = !autoAdjustGadgets
         settingsMenuAnchor = null
