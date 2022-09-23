@@ -103,9 +103,12 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
             attrs.defaultValue = props.document.content
             attrs.name = "ShaderEditor"
             attrs.focus = true
+            attrs.enableBasicAutocompletion = true
+            attrs.enableLiveAutocompletion = true
             attrs.setOptions = setOptions
             attrs.editorProps = editorProps
 
+            acex.Extensions.languageTools.install()
             acex.Extensions.searchBox.install()
         }
     }

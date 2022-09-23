@@ -14,6 +14,9 @@ private external object GitHubTheme
 @JsModule("ace-builds/src-min-noconflict/theme-tomorrow_night_bright")
 private external object TomorrowNightBrightTheme
 
+@JsModule("ace-builds/src-min-noconflict/ext-language_tools")
+private external object ExtLanguageTools
+
 @JsModule("ace-builds/src-min-noconflict/ext-searchbox")
 private external object ExtSearchBox
 
@@ -27,6 +30,7 @@ object Themes {
 }
 
 object Extensions {
+    val languageTools = Ext("language_tools") { ExtLanguageTools }
     val searchBox = Ext("searchbox") { ExtSearchBox }
 }
 
