@@ -18,6 +18,15 @@ data class LayoutItem(
 ) {
     fun toStatic() =
         LayoutItem(x, y, w, h, i, isStatic = true)
+
+    fun collidesWith(other: LayoutItem): Boolean {
+        if (i === other.i) return false // same element
+        if (x + w <= other.x) return false // this is left of other
+        if (x >= other.x + other.w) return false // this is right of other
+        if (y + h <= other.y) return false // this is above other
+        if (y >= other.y + other.h) return false // this is below other
+        return true // boxes overlap
+    }
 }
 
 data class LayoutItemSize(

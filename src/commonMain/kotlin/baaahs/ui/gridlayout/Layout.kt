@@ -103,7 +103,7 @@ data class Layout(
             // We can do this b/c it's a sorted layout
             if (otherItem.y > newItem.y + newItem.h) break
 
-            if (collides(newItem, otherItem)) {
+            if (newItem.collidesWith(otherItem)) {
                 newItem =
                     resolveCompactionCollision(
                         otherItem,
@@ -167,10 +167,10 @@ data class Layout(
      * @return {Object|undefined}  A colliding layout item, or undefined.
      */
     private fun getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
-        items.firstOrNull { collides(it, layoutItem) }
+        items.firstOrNull { it.collidesWith(layoutItem) }
 
     fun getAllCollisions(layoutItem: LayoutItem): List<LayoutItem> =
-        items.filter { l -> collides(l, layoutItem) }
+        items.filter { l -> l.collidesWith(layoutItem) }
 
     /**
      * Get all static elements.
@@ -438,18 +438,6 @@ data class Layout(
                 (a.y == b.y && a.x == b.x && a.i > b.i)
             ) 1 else -1
         }, cols, rows)
-
-    /**
-     * Given two layoutitems, check if they collide.
-     */
-    private fun collides(l1: LayoutItem, l2: LayoutItem): Boolean {
-        if (l1.i === l2.i) return false // same element
-        if (l1.x + l1.w <= l2.x) return false // l1 is left of l2
-        if (l1.x >= l2.x + l2.w) return false // l1 is right of l2
-        if (l1.y + l1.h <= l2.y) return false // l1 is above l2
-        if (l1.y >= l2.y + l2.h) return false // l1 is below l2
-        return true // boxes overlap
-    }
 
     companion object {
         private val logger = Logger<Layout>()
