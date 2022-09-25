@@ -5,6 +5,7 @@ import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.geom.Vector2D
 import baaahs.replace
+import baaahs.ui.gridlayout.CompactType.Companion.determineFrom
 import baaahs.window
 import baaahs.y
 import external.lodash.isEqual
@@ -59,7 +60,7 @@ class GridLayout(
             props.cols!!,
             props.maxRows,
             // Legacy support for verticalCompact: false
-            compactType(props),
+            CompactType.None,
             props.allowOverlap
         )
         mounted = false
@@ -201,10 +202,11 @@ class GridLayout(
                 console.log("GridLayout(${props.id}),onDragItem() couldn't find item $i")
             }
 
+        val compactType = l.determineFrom(x, y)
+
         // Move the element to the dragged location.
-        val isUserAction = true
         val newLayout = oldLayout.moveElement(
-            l, x, y, isUserAction, preventCollision, compactType(props), allowOverlap
+            l, x, y, preventCollision, compactType, allowOverlap
         )
         val newItem = newLayout.find(i) ?: return
 
@@ -223,7 +225,7 @@ class GridLayout(
         props.onDrag(newLayout, oldDragItem, newItem, placeholder, e, node)
 
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType(props))
+            this.layout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
             this.draggingPlaceholder = placeholder
         }
     }
@@ -254,15 +256,16 @@ class GridLayout(
                 console.log("GridLayout(${props.id}),onDragStop() couldn't find layout $i")
             }
 
+        val compactType = l.determineFrom(x, y)
+
         // Move the element here
-        val isUserAction = true
         var newLayout = oldLayout.moveElement(
-            l, x, y, isUserAction, preventCollision, compactType(props), allowOverlap
+            l, x, y, preventCollision, compactType, allowOverlap
         )
         val newItem = newLayout.find(i) ?: return
 
         props.onDragStop(newLayout, oldDragItem, newItem, null, e, node)
-        newLayout = if (allowOverlap) newLayout else newLayout.compact(compactType(props))
+        newLayout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
 
         setState {
             this.draggingPlaceholder = null
@@ -354,11 +357,11 @@ class GridLayout(
 
         props.onResize(newLayout, oldResizeItem, l, placeholder, e, node)
 
-        val compactType = compactType(props)
+        val compactType = CompactType.None
 
         // Re-compact the newLayout and set the drag placeholder.
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(compactType)
+            this.layout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
             this.draggingPlaceholder = placeholder
         }
     }
@@ -377,7 +380,7 @@ class GridLayout(
         props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else layout.compact(compactType(props))
+        val newLayout = if (allowOverlap) layout else layout.compact(CompactType.None)
         val oldLayout = state.oldLayout
         setState {
             this.draggingPlaceholder = null
@@ -597,7 +600,7 @@ class GridLayout(
         val layout = state.layout
 
         val newLayout = Layout(layout.items.filter { l -> l.i != droppingItem?.i }, layout.cols, layout.rows)
-            .compact(compactType(props))
+            .compact(CompactType.None)
 
         setState {
             this.layout = newLayout
@@ -722,7 +725,7 @@ class GridLayout(
                 useCSSTransforms = true
                 transformScale = 1.0
 //        verticalCompact = true
-                compactType = CompactType.vertical
+                compactType = CompactType.Vertical
                 preventCollision = false
                 droppingItem = DroppingItem(
                     "__dropping-elem__",
@@ -773,7 +776,7 @@ class GridLayout(
                             nextProps.children?.asArray() ?: emptyArray(),
                             nextProps.cols!!,
                             nextProps.maxRows,
-                            compactType(nextProps),
+                            CompactType.None,
                             nextProps.allowOverlap
                         )
 
@@ -828,14 +831,7 @@ class GridLayout(
             return if (allowOverlap == true)
                 correctedLayout
             else
-                correctedLayout.compact(compactType)
-        }
-
-        // Legacy support for verticalCompact: false
-        fun compactType(
-            props: GridLayoutProps // ?{ verticalCompact: boolean, compactType: CompactType }
-        ): CompactType {
-            return /*props.verticalCompact === false ? null :*/ props.compactType ?: CompactType.vertical
+                correctedLayout.compact(CompactType.None)
         }
 
         private val noop: DragEventHandler<*> = { }

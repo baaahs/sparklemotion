@@ -16,8 +16,20 @@ data class LayoutItem(
     val isResizable: Boolean = true,
     val isPlaceholder: Boolean = false
 ) {
+    val right: Int get() = x + w - 1
+    val bottom: Int get() = y + h - 1
+
     fun toStatic() =
         LayoutItem(x, y, w, h, i, isStatic = true)
+
+    fun movedTo(
+        x: Int?,
+        y: Int?
+    ) = copy(
+        x = x ?: this.x,
+        y = y ?: this.y,
+        moved = true
+    )
 
     fun collidesWith(other: LayoutItem): Boolean {
         if (i === other.i) return false // same element
@@ -42,9 +54,17 @@ data class Position(
 )
 
 enum class CompactType {
-    horizontal,
-    vertical,
-    none
+    Horizontal,
+    Vertical,
+    None;
+
+    val isHorizontal get() = this == Horizontal
+    val isVertical get() = this == Vertical
+
+    companion object {
+        fun LayoutItem.determineFrom(newX: Int, newY: Int) =
+            if (newX != x) Horizontal else Vertical
+    }
 }
 
 enum class Axis {

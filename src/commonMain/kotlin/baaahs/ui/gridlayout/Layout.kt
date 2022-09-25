@@ -11,6 +11,7 @@ data class Layout(
     val rows: Int
 ) {
     constructor() : this(emptyList(), 0, 0)
+    constructor(cols: Int, rows: Int, vararg items: LayoutItem) : this(items.toList(), cols, rows)
 
     val size: Int get() = items.size
 
@@ -60,7 +61,7 @@ data class Layout(
             var l = sorted[i].copy()
 
             // Don't move static elements
-            if (!l.isStatic) {
+            if (!l.isStatic && compactType != CompactType.None) {
                 l = compactItem(Layout(compareWith, cols, rows), l, compactType, cols, sorted)
 
                 // Add to comparison array. We only collide with items before this one.
@@ -131,15 +132,17 @@ data class Layout(
             var newItem = l
 
             // Overflows right
-            if (l.x + l.w > cols) newItem = newItem.copy(x = cols - l.w)
+            if (newItem.x + newItem.w > cols) newItem = newItem.copy(x = cols - newItem.w)
             // Overflows left
-            if (l.x < 0) {
+            if (newItem.x < 0) {
                 newItem = newItem.copy(x = 0, w = cols)
             }
-            if (!l.isStatic) collidesWith.add(l) else {
+            if (!newItem.isStatic)
+                collidesWith.add(newItem)
+            else {
                 // If this is static and collides with other statics, we must move it down.
                 // We have to do something nicer than just letting them overlap.
-                while (Layout(collidesWith, cols, rows).getFirstCollision(l) != null) {
+                while (Layout(collidesWith, cols, rows).anyCollisions(newItem)) {
                     newItem = newItem.copy(y = newItem.y + 1)
                 }
             }
@@ -169,6 +172,9 @@ data class Layout(
     private fun getFirstCollision(layoutItem: LayoutItem): LayoutItem? =
         items.firstOrNull { it.collidesWith(layoutItem) }
 
+    private fun anyCollisions(layoutItem: LayoutItem): Boolean =
+        items.any { it.collidesWith(layoutItem) }
+
     fun getAllCollisions(layoutItem: LayoutItem): List<LayoutItem> =
         items.filter { l -> l.collidesWith(layoutItem) }
 
@@ -192,9 +198,21 @@ data class Layout(
      */
     fun moveElement(
         l: LayoutItem,
+        x: Int,
+        y: Int,
+        preventCollision: Boolean,
+        compactType: CompactType,
+        allowOverlap: Boolean = false
+    ): Layout =
+        try {
+            moveElementInternal(l, x, y, true, preventCollision, compactType, allowOverlap)
+        } catch (e: OutOfBoundsException) { this }
+
+    private fun moveElementInternal(
+        l: LayoutItem,
         x: Int?,
         y: Int?,
-        isUserAction: Boolean,
+        isDirectUserAction: Boolean,
         preventCollision: Boolean,
         compactType: CompactType,
         allowOverlap: Boolean = false
@@ -212,11 +230,10 @@ data class Layout(
         val oldX = l.x
         val oldY = l.y
 
-        val newItem = l.copy(
-            x = x ?: l.x,
-            y = y ?: l.y,
-            moved = true
-        )
+        val newItem = l.movedTo(x, y)
+        if (newItem.right + 1 > cols || newItem.bottom + 1 > rows)
+            throw OutOfBoundsException()
+
         var updatedLayout = updateLayout(newItem)
 
         // If this collides with anything, move it.
@@ -225,9 +242,9 @@ data class Layout(
         // nearest collision.
         var sorted = updatedLayout.sortLayoutItems(compactType)
         val movingUp =
-            if (compactType == CompactType.vertical && y != null)
+            if (compactType.isVertical && y != null)
                 oldY >= y
-            else if (compactType == CompactType.horizontal && x != null)
+            else if (compactType.isHorizontal && x != null)
                 oldX >= x
             else false
         // $FlowIgnore acceptable modification of read-only array as it was recently cloned
@@ -258,17 +275,12 @@ data class Layout(
             // Short circuit so we can't infinitely loop
             if (collision.moved) continue
 
-            val movingAxis = if (newItem.x != x) Axis.x else Axis.y
             // Don't move static items - we have to move *this* element away
             updatedLayout =
                 if (collision.isStatic) {
-                    updatedLayout.moveElementAwayFromCollision(
-                        collision, newItem, isUserAction, compactType, movingAxis
-                    )
+                    updatedLayout.moveElementAwayFromCollision(collision, newItem, isDirectUserAction, compactType)
                 } else {
-                    updatedLayout.moveElementAwayFromCollision(
-                        newItem, collision, isUserAction, compactType, movingAxis
-                    )
+                    updatedLayout.moveElementAwayFromCollision(newItem, collision, isDirectUserAction, compactType)
                 }
         }
 
@@ -289,50 +301,56 @@ data class Layout(
     private fun moveElementAwayFromCollision(
         collidesWith: LayoutItem,
         itemToMove: LayoutItem,
-        isUserAction: Boolean,
-        compactType: CompactType,
-        movingAxis: Axis
+        isDirectUserAction: Boolean,
+        compactType: CompactType
     ): Layout {
-        val compactH = compactType == CompactType.horizontal
-        val compactV = compactType == CompactType.vertical
-
-        // If there is enough space above the collision to put this element, move it there.
-        // We only do this on the main collision as this can get funky in cascades and cause
-        // unwanted swapping behavior.
-        if (isUserAction) {
-            // Make a mock item so we don't modify the item here, only modify in moveElement.
-            val fakeItem = LayoutItem(
-                if (movingAxis == Axis.x) collidesWith.x + collidesWith.w else itemToMove.x,
-                if (movingAxis == Axis.y) collidesWith.y + collidesWith.y else itemToMove.y,
-                itemToMove.w,
-                itemToMove.h,
-                i = "-1"
+        return try {
+            moveElementInternal(
+                itemToMove,
+                if (compactType.isHorizontal) itemToMove.x + 1 else null,
+                if (compactType.isVertical) itemToMove.y + 1 else null,
+                false,
+                collidesWith.isStatic, // we're already colliding (not for static items)
+                compactType
             )
-
-            // No collision? If so, we can go up there; otherwise, we'll end up moving down as normal
-            if (getFirstCollision(fakeItem) != null) {
-                logger.debug {
-                    "Doing reverse collision on ${itemToMove.i} up to [${fakeItem.x},${fakeItem.y}]."
-                }
-                return moveElement(
-                    itemToMove,
-                    if (compactH) fakeItem.x else null,
-                    if (compactV) fakeItem.y else null,
-                    false, // Reset isUserAction flag because we're not in the main collision anymore.
-                    collidesWith.isStatic, // we're already colliding (not for static items)
-                    compactType
-                )
-            }
+        } catch (e: OutOfBoundsException) {
+            // If there is enough space above the collision to put this element, move it there.
+            // We only do this on the main collision as this can get funky in cascades and cause
+            // unwanted swapping behavior.
+            if (isDirectUserAction) {
+                tryMovingUp(collidesWith, itemToMove, compactType)
+            } else throw e
         }
+    }
 
-        return moveElement(
-            itemToMove,
-            if (compactH || movingAxis == Axis.x) itemToMove.x + 1 else null,
-            if (compactV || movingAxis == Axis.y) itemToMove.y + 1 else null,
-            isUserAction,
-            collidesWith.isStatic, // we're already colliding (not for static items)
-            compactType
+    private fun tryMovingUp(
+        collidesWith: LayoutItem,
+        itemToMove: LayoutItem,
+        compactType: CompactType
+    ): Layout {
+        // Make a mock item so we don't modify the item here, only modify in moveElement.
+        val fakeItem = LayoutItem(
+            if (compactType.isHorizontal) maxOf(collidesWith.x - itemToMove.w, 0) else itemToMove.x,
+            if (compactType.isVertical) maxOf(collidesWith.y - itemToMove.h, 0) else itemToMove.y,
+            itemToMove.w,
+            itemToMove.h,
+            i = "-1"
         )
+
+        // No collision? If so, we can go up there; otherwise, we'll end up moving down as normal
+        return if (!anyCollisions(fakeItem)) {
+            logger.debug {
+                "Doing reverse collision on ${itemToMove.i} up to [${fakeItem.x},${fakeItem.y}]."
+            }
+            moveElementInternal(
+                itemToMove,
+                if (compactType.isHorizontal) fakeItem.x else null,
+                if (compactType.isVertical) fakeItem.y else null,
+                false, // Reset isUserAction flag because we're not in the main collision anymore.
+                collidesWith.isStatic, // we're already colliding (not for static items)
+                compactType
+            )
+        } else this
     }
 
     /**
@@ -348,21 +366,19 @@ data class Layout(
         cols: Int,
         fullLayout: Layout
     ): LayoutItem {
-        val compactV = compactType == CompactType.vertical
-        val compactH = compactType == CompactType.horizontal
         var newItem = l
-        if (compactV) {
+        if (compactType.isVertical) {
             // Bottom 'y' possible is the bottom of the layout.
             // This allows you to do nice stuff like specify {y: Infinity}
             // This is here because the layout must be sorted in order to get the correct bottom `y`.
             newItem = newItem.copy(y = min(compareWith.bottom(), newItem.y))
             // Move the element up as far as it can go without colliding.
-            while (newItem.y > 0 && compareWith.getFirstCollision(newItem) == null) {
+            while (newItem.y > 0 && !compareWith.anyCollisions(newItem)) {
                 newItem = newItem.copy(y = newItem.y - 1)
             }
-        } else if (compactH) {
+        } else if (compactType.isHorizontal) {
             // Move the element left as far as it can go without colliding.
-            while (newItem.x > 0 && compareWith.getFirstCollision(newItem) == null) {
+            while (newItem.x > 0 && !compareWith.anyCollisions(newItem)) {
                 newItem = newItem.copy(x = newItem.x - 1)
             }
         }
@@ -370,13 +386,13 @@ data class Layout(
         // Move it down, and keep moving it down if it's colliding.
         var collides: LayoutItem? = compareWith.getFirstCollision(newItem)
         while (collides != null) {
-            newItem = if (compactH) {
+            newItem = if (compactType.isHorizontal) {
                 fullLayout.resolveCompactionCollision(newItem, collides.x + collides.w, Axis.x)
-            } else {
+            } else if (compactType.isVertical) {
                 fullLayout.resolveCompactionCollision(newItem, collides.y + collides.h, Axis.y)
-            }
-            // Since we can't grow without bounds horizontally, if we've overflown, var's move it down and try again.
-            if (compactH && newItem.x + newItem.w > cols) {
+            } else newItem
+            // Since we can't grow without bounds horizontally, if we've overflown, let's move it down and try again.
+            if (compactType.isHorizontal && newItem.x + newItem.w > cols) {
                 newItem = newItem.copy(
                     x = cols - newItem.w,
                     y = newItem.y + 1
@@ -401,8 +417,8 @@ data class Layout(
      */
     private fun sortLayoutItems(compactType: CompactType): Layout =
         when (compactType) {
-            CompactType.horizontal -> sortLayoutItemsByColRow()
-            CompactType.vertical -> sortLayoutItemsByRowCol()
+            CompactType.Horizontal -> sortLayoutItemsByColRow()
+            CompactType.Vertical -> sortLayoutItemsByRowCol()
             else -> this
         }
 
@@ -438,6 +454,8 @@ data class Layout(
                 (a.y == b.y && a.x == b.x && a.i > b.i)
             ) 1 else -1
         }, cols, rows)
+
+    private class OutOfBoundsException : Exception()
 
     companion object {
         private val logger = Logger<Layout>()
