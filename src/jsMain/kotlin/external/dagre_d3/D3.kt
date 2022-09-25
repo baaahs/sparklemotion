@@ -4,6 +4,7 @@ package external.dagre_d3
 external val d3: D3
 
 external class D3 {
+    val curveBasis: dynamic
     val event: dynamic
     val zoomIdentity: dynamic
 
