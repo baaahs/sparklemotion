@@ -18,5 +18,6 @@ external interface GraphOptions {
     var label: String?
     var shape: String?
     var style: String?
+    var curve: String?
     var `class`: String?
 }

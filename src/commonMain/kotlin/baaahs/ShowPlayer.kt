@@ -41,6 +41,8 @@ abstract class BaseShowPlayer(
 
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
+    private val cachingToolchain = toolchain.withCache(this::class.simpleName ?: "BaseShowPlayer")
+
     override fun openFeed(id: String, dataSource: DataSource): Feed {
         // TODO: This is another reference to feeds, so we should .use() it... but then we'll never release them!
         // TODO: Also, it could conceivably be handed out after it's had onRelease() called. How should we handle this?
@@ -59,7 +61,9 @@ abstract class BaseShowPlayer(
     }
 
     open fun openShow(show: Show, showState: ShowState? = null): OpenShow =
-        ShowOpener(toolchain.withCache(show.title), show, this).openShow(showState)
+        cachingToolchain.pruneUnused {
+            ShowOpener(cachingToolchain, show, this).openShow(showState)
+        }
 
     override fun releaseUnused() {
         ArrayList(feeds.entries).forEach { (dataSource, feed) ->

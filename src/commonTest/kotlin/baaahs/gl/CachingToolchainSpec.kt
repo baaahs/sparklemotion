@@ -40,7 +40,17 @@ object CachingToolchainSpec : Spek({
                 val analysis1 = cache1.analyze(someShader)
                 expect(analysis1).isNotSameAs(analysis2)
             }
+        }
 
+        context("pruneUnused") {
+            it("removes entries that aren't accessed within the block") {
+                val analysis1 = cache1.analyze(someShader)
+                cache1.pruneUnused {
+                    cache1.analyze(Shader("Some Other Shader", "void main() { ... }"))
+                }
+                val analysis2 = cache1.analyze(someShader)
+                expect(analysis1).isNotSameAs(analysis2)
+            }
         }
     }
 })

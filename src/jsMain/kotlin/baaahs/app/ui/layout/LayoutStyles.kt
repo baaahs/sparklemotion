@@ -50,6 +50,11 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        }
 
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
+
+        transition(::top, .125.s)
+        transition(::left, .125.s)
+        transition(::width, .125.s)
+        transition(::height, .125.s)
     }
 
     val groupGridCell by css {
@@ -287,6 +292,10 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
         ".react-draggable-dragging, .react-draggable-dragging *" {
             pointerEvents = PointerEvents.none
+            transition(::top, 0.s)
+            transition(::left, 0.s)
+            transition(::width, 0.s)
+            transition(::height, 0.s)
         }
 
         val inset = 2.px
@@ -319,26 +328,26 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             transform { rotate(270.deg) }
         }
         ".app-ui-layout-resize-handle-w" {
-            top = 50.pct
+            top = 50.pct - 10.px
             left = inset
             cursor = Cursor.ewResize
             transform { rotate(90.deg) }
         }
         ".app-ui-layout-resize-handle-e" {
-            top = 50.pct
+            top = 50.pct - 10.px
             right = inset
             cursor = Cursor.ewResize
             transform { rotate(270.deg) }
         }
         ".app-ui-layout-resize-handle-n" {
             top = inset
-            left = 50.pct
+            left = 50.pct - 10.px
             cursor = Cursor.nsResize
             transform { rotate(180.deg) }
         }
         ".app-ui-layout-resize-handle-s" {
             bottom = inset
-            left = 50.pct
+            left = 50.pct - 10.px
             cursor = Cursor.nsResize
         }
 
