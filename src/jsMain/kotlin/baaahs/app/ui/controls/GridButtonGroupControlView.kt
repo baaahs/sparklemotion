@@ -72,7 +72,8 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val gridLayoutEditor = props.controlProps.layoutEditor
         ?: error("No layout editor!")
 
-    val handleLayoutChange by handler(gridLayout, editor) { newLayout: Layout ->
+    val handleLayoutChange by handler(gridLayout, editor) { newLayout: Layout, stillDragging: Boolean ->
+        if (stillDragging) return@handler
         appContext.showManager.openShow?.edit {
             val mutableShow = this
             editor.edit(mutableShow) {
@@ -103,7 +104,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
     val layout = Layout(gridLayout.items.map { gridItem ->
         LayoutItem(gridItem.column, gridItem.row, gridItem.width, gridItem.height, gridItem.control.id)
-    })
+    }, gridLayout.columns, gridLayout.rows)
     val controls = gridLayout.items.associate { it.control.id to it.control }
     val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
@@ -181,7 +182,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
             attrs.margin = 5 to 5
             attrs.layout = layout
             attrs.onLayoutChange = handleLayoutChange
-            attrs.compactType = CompactType.none
+            attrs.compactType = CompactType.None
             attrs.resizeHandle = ::buildResizeHandle
             attrs.disableDrag = !editMode.isOn
             attrs.disableResize = !editMode.isOn

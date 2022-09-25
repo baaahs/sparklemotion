@@ -117,7 +117,6 @@ class Pinky(
                         delay(1000)
                     }
                 }
-                facade.notifyChanged()
                 facade.framerate.elapsed(elapsedMs)
 
                 maybeChangeThingsIfUsersAreIdle()

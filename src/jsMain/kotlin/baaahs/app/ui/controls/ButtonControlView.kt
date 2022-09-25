@@ -49,7 +49,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val buttonRef = ref<HTMLButtonElement>()
     val titleDivRef = ref<HTMLDivElement>()
     useResizeListener(buttonRef) { _, _ ->
-        titleDivRef.current!!.fitText()
+        titleDivRef.current?.fitText()
     }
 
     var lightboxOpen by state { false }

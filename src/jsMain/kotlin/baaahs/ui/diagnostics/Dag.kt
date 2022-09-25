@@ -8,6 +8,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
 import external.dagre_d3.Graph
+import external.dagre_d3.d3
 import kotlinx.js.jso
 
 class Dag(
@@ -38,6 +39,7 @@ class Dag(
         graph.setEdge(fromId, toId, jso {
             this.label = label
             this.style = "fill: none; stroke: #66f; stroke-width: 3px; stroke-dasharray: 5, 5;"
+            this.curve = d3.curveBasis
         })
         buf.append("    $fromId -> $toId [style=\"fill: none; stroke: #66f; stroke-width: 3px;\"];\n")
     }

@@ -124,12 +124,15 @@ class CachingToolchain(
     private val name: String = "Cache"
 ) : Toolchain by delegate {
     var hits = 0
+        private set
     var misses = 0
+        private set
 
     private val shaderAnalysisCache = mutableMapOf<Shader, ShaderAnalysis>()
+    private var pruneCandidates: MutableSet<Shader>? = null
 
     private fun cachedAnalysis(shader: Shader): ShaderAnalysis? {
-        return shaderAnalysisCache[shader]
+        return shaderAnalysisCache[shader]?.also { hit(shader) }
             ?: (delegate as? CachingToolchain)?.cachedAnalysis(shader)
     }
 
@@ -143,16 +146,31 @@ class CachingToolchain(
     }
 
     override fun analyze(shader: Shader): ShaderAnalysis {
-        return shaderAnalysisCache[shader]?.also { hit(shader) }
-            ?: cachedAnalysis(shader)
+        return cachedAnalysis(shader)
             ?: shaderAnalysisCache.getOrPut(shader) {
                 uncachedAnalysis(shader).also { miss(shader) }
             }
     }
 
+    fun <T> pruneUnused(block: () -> T): T {
+        if (pruneCandidates != null)
+            error("Already in a pruneUnused block.")
+
+        val pruneSet = HashSet(shaderAnalysisCache.keys)
+        pruneCandidates = pruneSet
+        return try {
+            block()
+        } finally {
+            pruneSet.forEach { shaderAnalysisCache.remove(it) }
+            logger.debug { "$name: pruned ${pruneSet.size} entries" }
+            pruneCandidates = null
+        }
+    }
+
     private fun hit(shader: Shader) {
         hits++
         logger.debug { "$name: hit for ${shader.title} ($hits hits and $misses misses so far)" }
+        pruneCandidates?.remove(shader)
     }
 
     private fun miss(shader: Shader) {

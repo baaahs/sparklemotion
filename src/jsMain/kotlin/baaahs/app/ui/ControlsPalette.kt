@@ -88,7 +88,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
 
                                 val layout = Layout(items.mapIndexed { index, openControl ->
                                     LayoutItem(index % columns, index / columns, 1, 1, openControl.id)
-                                })
+                                }, columns, rows)
 
                                 gridLayout {
                                     attrs.id = "_control_palette_"
@@ -101,7 +101,7 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                                     attrs.margin = 5 to 5
                                     attrs.layout = layout
 //                                attrs.onLayoutChange = handleLayoutChange
-                                    attrs.compactType = CompactType.none
+                                    attrs.compactType = CompactType.None
                                     attrs.disableDrag = !editMode.isOn
                                     attrs.disableResize = true
                                     attrs.isDroppable = editMode.isOn
