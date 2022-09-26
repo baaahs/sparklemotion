@@ -37,7 +37,7 @@ object MutableShowVisitorSpec : Spek({
                         "Control Red Yellow Green" to 1,
                         "Control Saturation" to 1,
                         "Control Scenes" to 1,
-                        "Control Wobble" to 1,
+                        "Control Ripple" to 1,
                         "Data source Brightness Slider" to 1,
                         "Data source Checkerboard Size Slider" to 1,
                         "Data source Model Info" to 1,

@@ -147,12 +147,12 @@
       "srcFile": "effects/ThatsAllFolks.glsl"
     },
     {
-      "id": "wobble",
-      "title": "Wobble",
+      "id": "Ripple",
+      "title": "Ripple",
       "description": "It's wobbly!",
       "lastModifiedMs": 0,
       "tags": [],
-      "srcFile": "effects/Wobble.glsl"
+      "srcFile": "effects/Ripple.glsl"
     },
     {
       "id": "zigzag",

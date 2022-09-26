@@ -662,19 +662,19 @@ object PatchResolverSpec : Spek({
             )
         }
 
-        val wobbleShader by value {
+        val rippleShader by value {
             testToolchain.import(
                 """
-                    // Wobble
+                    // Ripple
                     uniform float time;
-                    uniform float wobbleAmount; // @type float
+                    uniform float rippleAmount; // @type float
 
                     // @return uv-coordinate
                     // @param uvIn uv-coordinate
                     vec2 main(vec2 uvIn) {
                         vec2 p = -1.0 + 2.0 * uvIn;
                         float len = length(p);
-                        return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;
+                        return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;
                     }
                 """.trimIndent()
             )
@@ -752,7 +752,7 @@ object PatchResolverSpec : Spek({
                         pinksShader,
                         badgerShader,
                         projectionShader,
-                        wobbleShader,
+                        rippleShader,
                         scaleShader,
                         hsvShader
                     ) {
@@ -779,8 +779,8 @@ object PatchResolverSpec : Spek({
 
             expect(linkNodes).containsExactly(
                 "LinkNode(UV Projection, id='uvProjection', maxObservedDepth=7, index=0)",
-                "LinkNode(Wobble, id='wobble', maxObservedDepth=5, index=1)",
-                "LinkNode(Position and Scale patchmod for Wobble, id='positionAndScalePatchmodForWobble', maxObservedDepth=6, index=1, modIndex=0)",
+                "LinkNode(Ripple, id='ripple', maxObservedDepth=5, index=1)",
+                "LinkNode(Position and Scale patchmod for Ripple, id='positionAndScalePatchmodForRipple', maxObservedDepth=6, index=1, modIndex=0)",
                 "LinkNode(Scale, id='scale', maxObservedDepth=3, index=2)",
                 "LinkNode(Position and Scale patchmod for Scale, id='positionAndScalePatchmodForScale', maxObservedDepth=4, index=2, modIndex=0)",
                 "LinkNode(Pinks, id='pinks', maxObservedDepth=2, index=3)",
@@ -851,6 +851,15 @@ object PatchResolverSpec : Spek({
                     // Data source: Resolution
                     uniform vec2 in_resolution;
 
+                    // Data source: Ripple Amount Slider
+                    uniform float in_rippleAmountSlider;
+
+                    // Data source: ripple-patch uvIn offset
+                    uniform vec2 in_ripplePatchUvInOffset;
+
+                    // Data source: ripple-patch uvIn scale Slider
+                    uniform float in_ripplePatchUvInScaleSlider;
+
                     // Data source: Saturation Slider
                     uniform float in_saturationSlider;
 
@@ -866,15 +875,6 @@ object PatchResolverSpec : Spek({
                     // Data source: Time
                     uniform float in_time;
 
-                    // Data source: Wobble Amount Slider
-                    uniform float in_wobbleAmountSlider;
-
-                    // Data source: wobble-patch uvIn offset
-                    uniform vec2 in_wobblePatchUvInOffset;
-
-                    // Data source: wobble-patch uvIn scale Slider
-                    uniform float in_wobblePatchUvInScaleSlider;
-
                     // Shader: UV Projection; namespace: p0
                     // UV Projection
 
@@ -886,26 +886,26 @@ object PatchResolverSpec : Spek({
                         return vec2(pixelOffset.x, pixelOffset.y);
                     }
 
-                    // Shader: Position and Scale patchmod for Wobble; namespace: p1m0
-                    // Position and Scale patchmod for Wobble
+                    // Shader: Position and Scale patchmod for Ripple; namespace: p1m0
+                    // Position and Scale patchmod for Ripple
 
-                    vec2 p1m0_positionAndScalePatchmodForWobblei_result = vec2(0.);
+                    vec2 p1m0_positionAndScalePatchmodForRipplei_result = vec2(0.);
 
                     #line 5 1
-                    vec2 p1m0_positionAndScalePatchmodForWobble_main(vec2 uvIn, vec2 offset, float scale) {
+                    vec2 p1m0_positionAndScalePatchmodForRipple_main(vec2 uvIn, vec2 offset, float scale) {
                         return (uvIn - offset - .5) / scale + .5;
                     }
 
-                    // Shader: Wobble; namespace: p1
-                    // Wobble
+                    // Shader: Ripple; namespace: p1
+                    // Ripple
 
-                    vec2 p1_wobblei_result = vec2(0.);
+                    vec2 p1_ripplei_result = vec2(0.);
 
                     #line 7 1
-                    vec2 p1_wobble_main(vec2 uvIn) {
+                    vec2 p1_ripple_main(vec2 uvIn) {
                         vec2 p = -1.0 + 2.0 * uvIn;
                         float len = length(p);
-                        return uvIn + (p/len)*sin(len*12.0-in_time*4.0)*0.1 * in_wobbleAmountSlider;
+                        return uvIn + (p/len)*sin(len*12.0-in_time*4.0)*0.1 * in_rippleAmountSlider;
                     }
 
                     // Shader: Position and Scale patchmod for Scale; namespace: p2m0
@@ -1006,14 +1006,14 @@ object PatchResolverSpec : Spek({
                         // Invoke UV Projection
                         p0_uvProjectioni_result = p0_uvProjection_main(in_pixelLocation);
 
-                        // Invoke Position and Scale patchmod for Wobble
-                        p1m0_positionAndScalePatchmodForWobblei_result = p1m0_positionAndScalePatchmodForWobble_main(p0_uvProjectioni_result, in_wobblePatchUvInOffset, in_wobblePatchUvInScaleSlider);
+                        // Invoke Position and Scale patchmod for Ripple
+                        p1m0_positionAndScalePatchmodForRipplei_result = p1m0_positionAndScalePatchmodForRipple_main(p0_uvProjectioni_result, in_ripplePatchUvInOffset, in_ripplePatchUvInScaleSlider);
 
-                        // Invoke Wobble
-                        p1_wobblei_result = p1_wobble_main(p1m0_positionAndScalePatchmodForWobblei_result);
+                        // Invoke Ripple
+                        p1_ripplei_result = p1_ripple_main(p1m0_positionAndScalePatchmodForRipplei_result);
 
                         // Invoke Position and Scale patchmod for Scale
-                        p2m0_positionAndScalePatchmodForScalei_result = p2m0_positionAndScalePatchmodForScale_main(p1_wobblei_result, in_scalePatchUvInOffset, in_scalePatchUvInScaleSlider);
+                        p2m0_positionAndScalePatchmodForScalei_result = p2m0_positionAndScalePatchmodForScale_main(p1_ripplei_result, in_scalePatchUvInOffset, in_scalePatchUvInScaleSlider);
 
                         // Invoke Scale
                         p2_scalei_result = p2_scale_main(p2m0_positionAndScalePatchmodForScalei_result);

@@ -243,7 +243,7 @@ object SampleData {
                     addControl(brightness.buildControl(), 7, 6, 1, 2)
                     addControl(saturation.buildControl(), 8, 6, 1, 2)
 
-                    addButton("Wobble", 4, 0, 2, mutableShow = this@MutableShow) {
+                    addButton("Ripple", 4, 0, 2, mutableShow = this@MutableShow) {
                         addPatch(wireUp(Shaders.ripple))
                     }
 
@@ -360,7 +360,7 @@ object SampleData {
             }
         }
 
-        addButton(moreControlsPanel, "Wobble") {
+        addButton(moreControlsPanel, "Ripple") {
             addPatch(wireUp(Shaders.ripple))
         }
     }
