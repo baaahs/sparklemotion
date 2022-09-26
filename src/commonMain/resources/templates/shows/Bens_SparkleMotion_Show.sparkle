@@ -172,7 +172,7 @@
                                     "matchParent": true,
                                     "items": [
                                         {
-                                            "controlId": "wobble",
+                                            "controlId": "Ripple",
                                             "column": 0,
                                             "row": 0
                                         },
@@ -1271,9 +1271,9 @@
             "buttonIds": [
             ]
         },
-        "wobble": {
+        "Ripple": {
             "type": "baaahs.Core:Button",
-            "title": "Wobble",
+            "title": "Ripple",
             "patchIds": [
                 "ripple-patch"
             ]

@@ -174,7 +174,7 @@
                 }
               },
               {
-                "controlId": "wobble",
+                "controlId": "ripple",
                 "column": 4,
                 "row": 0
               },
@@ -197,7 +197,7 @@
                 "height": 2
               },
               {
-                "controlId": "wobbleAmount",
+                "controlId": "rippleAmount",
                 "column": 7,
                 "row": 4,
                 "height": 2
@@ -514,9 +514,9 @@
       "title": "Image",
       "src": "// Image\n\n// @param uv uv-coordinate\n// @return color\nvec4 upstreamImage(vec2 uv);\n\n// @return color\nvec4 main() {\n    vec4 c = upstreamImage(gl_FragCoord);\n    // if (c.g > c.r && c.g > c.b) c = vec4(0.);\n    return c;\n}"
     },
-    "wobble": {
-      "title": "Wobble",
-      "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
+    "ripple": {
+      "title": "Ripple",
+      "src": "uniform float time;\nuniform float rippleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;\n}"
     },
     "soundBrightness": {
       "title": "Sound Brightness",
@@ -1604,8 +1604,8 @@
         }
       }
     },
-    "wobble-patch": {
-      "shaderId": "wobble",
+    "ripple-patch": {
+      "shaderId": "ripple",
       "incomingLinks": {
         "time": {
           "type": "datasource",
@@ -1615,9 +1615,9 @@
           "type": "stream",
           "stream": "main"
         },
-        "wobbleAmount": {
+        "rippleAmount": {
           "type": "datasource",
-          "dataSourceId": "wobbleAmountSlider"
+          "dataSourceId": "rippleAmountSlider"
         }
       }
     },
@@ -2469,17 +2469,17 @@
         "image-patch"
       ]
     },
-    "wobble": {
+    "ripple": {
       "type": "baaahs.Core:Button",
-      "title": "Wobble",
+      "title": "Ripple",
       "patchIds": [
-        "wobble-patch"
+        "ripple-patch"
       ]
     },
-    "wobbleAmount": {
+    "rippleAmount": {
       "type": "baaahs.Core:Slider",
-      "title": "Wobble Amount",
-      "controlledDataSourceId": "wobbleAmountSlider"
+      "title": "Ripple Amount",
+      "controlledDataSourceId": "rippleAmountSlider"
     },
     "soundAnalysis": {
       "type": "baaahs.SoundAnalysis:SoundAnalysis"
@@ -2940,9 +2940,9 @@
       "type": "baaahs.Core:Image",
       "title": "Upstream Image"
     },
-    "wobbleAmountSlider": {
+    "rippleAmountSlider": {
       "type": "baaahs.Core:Slider",
-      "title": "Wobble Amount",
+      "title": "Ripple Amount",
       "initialValue": 1.0,
       "minValue": 0.0,
       "maxValue": 1.0
