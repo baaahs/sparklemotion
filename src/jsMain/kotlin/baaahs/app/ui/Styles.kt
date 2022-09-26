@@ -407,6 +407,10 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         height = 100.pct
 //        width = 15.em
 //        height = 33.vh
+
+        ".react-draggable-dragging" {
+            pointerEvents = PointerEvents.auto
+        }
     }
 
     val controlPanelHelpText by css {

@@ -53,7 +53,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     }
 
     var lightboxOpen by state { false }
-    onMount(buttonRef.current) {
+    onMount(buttonControl, buttonRef.current) {
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
