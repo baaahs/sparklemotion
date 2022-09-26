@@ -54,7 +54,7 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
             .also {
                 var controlId = "none"
                 show.controls.forEach { (k, v) ->
-                    if (v.title == "Wobble") controlId = k
+                    if (v.title == "Ripple") controlId = k
                 }
                 it.openEditor(show, ControlEditIntent(controlId), props.toolchain)
             }

@@ -1,9 +1,6 @@
 // Heart
 // From http://mathworld.wolfram.com/HeartSurface.html
 
-uniform float heartSize; // @@Slider default=1. min=0.25 max=2
-uniform vec2 heartCenter; // @@XyPad
-
 struct BeatInfo {
     float beat;
     float bpm;
@@ -55,7 +52,7 @@ vec3 normal(vec2 p) {
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
-    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(heartCenter.xy, 0.)) * 4. / heartSize * .5;
+    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0)) * 2.;
     float beat = beatInfo.beat;
     float s = sin(beat * 4.0);
     s *= s;

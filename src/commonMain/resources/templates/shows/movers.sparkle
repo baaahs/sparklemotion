@@ -24,7 +24,7 @@
       "saturationSliderControl"
     ],
     "Effects": [
-      "wobbleButton"
+      "RippleButton"
     ],
     "Transition": [
       "newButtonButton"
@@ -448,9 +448,9 @@
       },
       "controlledDataSourceId": "saturationSlider"
     },
-    "wobbleButton": {
+    "RippleButton": {
       "type": "baaahs.Core:Button",
-      "title": "Wobble",
+      "title": "Ripple",
       "patches": [
         {
           "shaderInstanceIds": [
