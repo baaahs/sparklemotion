@@ -200,6 +200,7 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                         attrs.color = ToggleButtonColor.error
                         attrs.selected = editMode.isOn
                         attrs.onClick = handleEditModeChange.withTMouseEvent()
+                        attrs.value = true
 
                         if (editMode.isOn) {
                             LockOpen { attrs.fontSize = SvgIconSize.small }
