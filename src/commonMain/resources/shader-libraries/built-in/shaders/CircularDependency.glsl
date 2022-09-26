@@ -11,7 +11,6 @@ precision mediump float;
 
 // glslsandbox uniforms
 uniform float time; // @@Time
-uniform vec2 center; // @@XyPad
 uniform vec2 resolution; // @@Resolution
 
 // --------[ Original ShaderToy begins here ]---------- //
@@ -20,7 +19,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = fragCoord/resolution.xy;
     uv-=.5;
     uv.x*= resolution.x/resolution.y;
-    uv -= center;
 
     vec3 col = vec3(0.5);
     float d =length(uv)*20.;
