@@ -4,13 +4,9 @@
 #define BEATMOVE 1
 
 uniform float time; // @@Time
-
-uniform float size; // @@Slider default=1 min=0.25 max=2.
-uniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.
-uniform vec2 center; // @@XyPad
-
 uniform vec2 resolution; // @@Resolution
 
+uniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.
 
 struct SoundAnalysis {
 	int bucketCount;
@@ -101,7 +97,7 @@ vec3 doLine(vec2 fragment, float radius, float x) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
 	vec2 fragPos = fragCoord / resolution.xy;
-	fragPos = (fragPos - 0.5 + center) / size * 2.5;
+	fragPos = (fragPos - 0.5) * 2.5;
 	fragPos.x *= resolution.x / resolution.y / horizontalScale;
 
 	vec3 color = vec3(0.0134, 0.052, 0.1);

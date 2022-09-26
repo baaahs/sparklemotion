@@ -1,10 +1,9 @@
 {
-    "title": "Ben's SparkleMotion Show",
+    "title": "Ben's Show",
     "patchIds": [
         "xyProjection-patch",
         "darkness-patch",
-        "brightness-patch",
-        "saturation-patch"
+        "hsb-patch"
     ],
     "layouts": {
         "panels": {
@@ -165,14 +164,14 @@
                                 "column": 6,
                                 "row": 2,
                                 "width": 2,
-                                "height": 7,
+                                "height": 6,
                                 "layout": {
                                     "columns": 1,
-                                    "rows": 7,
+                                    "rows": 6,
                                     "matchParent": true,
                                     "items": [
                                         {
-                                            "controlId": "wobble",
+                                            "controlId": "ripple",
                                             "column": 0,
                                             "row": 0
                                         },
@@ -185,11 +184,6 @@
                                             "controlId": "heart",
                                             "column": 0,
                                             "row": 2
-                                        },
-                                        {
-                                            "controlId": "blackout",
-                                            "column": 0,
-                                            "row": 6
                                         },
                                         {
                                             "controlId": "thatSAllFolks",
@@ -232,9 +226,14 @@
                                         },
                                         {
                                             "controlId": "headlightsMode",
-                                            "column": 2,
-                                            "row": 0,
+                                            "column": 0,
+                                            "row": 1,
                                             "width": 2
+                                        },
+                                        {
+                                            "controlId": "hueShift",
+                                            "column": 2,
+                                            "row": 0
                                         }
                                     ]
                                 }
@@ -252,6 +251,12 @@
                                 "row": 3,
                                 "width": 4,
                                 "height": 2
+                            },
+                            {
+                                "controlId": "blackout",
+                                "column": 6,
+                                "row": 8,
+                                "width": 2
                             }
                         ]
                     }
@@ -268,17 +273,13 @@
             "title": "Darkness",
             "src": "void main(void) {\n    gl_FragColor = vec4(0., 0., 0., 1.);\n}"
         },
-        "brightness": {
-            "title": "Brightness",
-            "src": "uniform float brightness; // @@Slider min=0 max=1.25 default=1\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * brightness, clampedColor.a);\n}"
-        },
-        "saturation": {
-            "title": "Saturation",
-            "src": "uniform float saturation; // @@Slider min=0 max=1.25 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n \n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    if (saturation == 1.) return inColor;\n\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.y *= saturation;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
+        "hsb": {
+            "title": "HSB",
+            "src": "// HSB\n\nuniform float brightness; // @@Slider min=0 max=1.25 default=1\nuniform float saturation; // @@Slider min=0 max=1.25 default=1\nuniform float hueShift; // @@Slider min=0 max=2 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n\n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.x += hueShift;\n    hsv.y *= saturation;\n    hsv.z *= brightness;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
         },
         "baaahsEclipse": {
             "title": "[🐑] BAAAHS Eclipse",
-            "src": "// Eclipse of the sheep!\n// based on https://www.shadertoy.com/view/4tGXzt\n\n#define BEATMOVE 1 \n\nuniform float time; // @@Time\n\nuniform float size; // @@Slider default=1 min=0.25 max=2.\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\nuniform vec2 center; // @@XyPad\n\nuniform vec2 resolution; // @@Resolution\n\n\nstruct SoundAnalysis {\n\tint bucketCount;\n\tint sampleHistoryCount;\n\tsampler2D buckets;\n\tfloat maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\nstruct BeatInfo {\n\tfloat beat;\n\tfloat bpm;\n\tfloat intensity;\n\tfloat confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n\nconst float FREQ_RANGE = 64.0;\nconst float PI = 3.1415;\nconst float RADIUS = 0.8;\nconst float BRIGHTNESS = 0.2;\nconst float SPEED = 0.4;\n\n/* Minified BAAAHS logo code: use pointInSheep(vec2 point, float scale, vec2 offset) to determine if a pixel is in the sheep logo. */ float COORD_SCALE = 0.03; vec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94)); vec2 HEART_MIN_XY = vec2(-70.5, -67.9); vec2 HEART_MAX_XY = vec2(70.6, 51.6); vec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48)); vec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76)); vec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38)); vec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78)); vec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06)); vec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));  bool pointInHeart(vec2 point, float scale, vec2 offset){ \tint len = 187; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; } \treturn c; } bool pointInFace(vec2 point, float scale, vec2 offset){ \tint len = 26; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; } \treturn c; } bool pointInMouth(vec2 point, float scale, vec2 offset){ \tint len = 35; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; } \treturn c; } bool pointInEyeLeft(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEyeRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; } \treturn c; } bool pointInEarLeft(vec2 point, float scale, vec2 offset){ \tint len = 9; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEarRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; } \treturn c; }  bool pointInSheep(vec2 point, float scale, vec2 offset) { \tvec2 p = (point - offset)/(scale * COORD_SCALE); \tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) { \t\treturn false; \t} \tbool inHeart = pointInHeart(point, scale, offset); \tbool inFace = pointInFace(point, scale, offset); \tbool inMouth = pointInMouth(point, scale, offset); \tbool inEyeLeft = pointInEyeLeft(point, scale, offset); \tbool inEyeRight = pointInEyeRight(point, scale, offset); \tbool inEarLeft = pointInEarLeft(point, scale, offset); \tbool inEarRight = pointInEarRight(point, scale, offset); \treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight)); }\n\n\n//convert HSV to RGB\nvec3 hsv2rgb(vec3 c){\n\tvec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\tvec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n\treturn c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nfloat luma(vec3 color) {\n\treturn dot(color, vec3(0.299, 0.587, 0.114));\n}\n\nfloat getfrequency(float x) {\n\treturn .2 + .2 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;\n}\n\nfloat getfrequency_smooth(float x) {\n\tfloat index = floor(x * FREQ_RANGE) / FREQ_RANGE;\n\tfloat next = floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE;\n\treturn mix(getfrequency(index), getfrequency(next), smoothstep(0.0, 1.0, fract(x * FREQ_RANGE)));\n}\n\nfloat getfrequency_blend(float x) {\n\treturn mix(getfrequency(x), getfrequency_smooth(x), 0.5);\n}\n\nvec3 doHalo(vec2 fragment, float scale) {\n\tfloat dist = length(fragment);\n\tfloat ring = 1.0 / abs(dist - scale);\n\n\tfloat sheepScale = 1.5;\n\tvec2 sheepXY = vec2(0.0, 0.00);\n\n\t//float b = pointInSheep(fragment, sheepScale, sheepXY) ? BRIGHTNESS : 0.1 * BRIGHTNESS; // dist < scale ? BRIGHTNESS * 0.3 : BRIGHTNESS;\n\tfloat b = dist < scale ? BRIGHTNESS * 0.2 : BRIGHTNESS;\n\n\n\tif (pointInSheep(fragment, sheepScale, sheepXY)) { b = 50. * b; }\n\n\tvec3 col = vec3(0.0);\n\n\tfloat angle = atan(fragment.x, fragment.y);\n\tcol += hsv2rgb( vec3( ( angle + time * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;\n\n\tfloat frequency = max(getfrequency_blend(abs(angle / PI)) - 0.02, 0.0);\n\tcol *= frequency;\n\n\treturn col;\n}\n\nvec3 doLine(vec2 fragment, float radius, float x) {\n\tvec3 col = hsv2rgb(vec3(x * 0.23 + time * 0.12, 1.0, 1.0));\n\n\tfloat freq = abs(fragment.x * 0.5);\n\n\tcol *= (1.0 / abs(fragment.y)) * BRIGHTNESS * getfrequency(freq);\n\tcol = col * smoothstep(radius, radius * 1.8, abs(fragment.x));\n\n\treturn col;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5 + center) / size * 2.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\n\tvec3 color = vec3(0.0134, 0.052, 0.1);\n\tcolor += doHalo(fragPos, RADIUS);\n\n\tfloat c = cos(time * SPEED);\n\tfloat s = sin(time * SPEED);\n\tvec2 rot = mat2(c,s,-s,c) * fragPos;\n\tcolor += doLine(rot, RADIUS, rot.x);\n\n\tcolor += max(luma(color) - 1.0, 0.0);\n\n\tfragColor = vec4(color, 1.0);\n\n}\n"
+            "src": "// Eclipse of the sheep!\n// based on https://www.shadertoy.com/view/4tGXzt\n\n#define BEATMOVE 1 \n\nuniform float time; // @@Time\nuniform vec2 resolution; // @@Resolution\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nstruct SoundAnalysis {\n\tint bucketCount;\n\tint sampleHistoryCount;\n\tsampler2D buckets;\n\tfloat maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\nstruct BeatInfo {\n\tfloat beat;\n\tfloat bpm;\n\tfloat intensity;\n\tfloat confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n\nconst float FREQ_RANGE = 64.0;\nconst float PI = 3.1415;\nconst float RADIUS = 0.8;\nconst float BRIGHTNESS = 0.2;\nconst float SPEED = 0.4;\n\n/* Minified BAAAHS logo code: use pointInSheep(vec2 point, float scale, vec2 offset) to determine if a pixel is in the sheep logo. */ float COORD_SCALE = 0.03; vec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94)); vec2 HEART_MIN_XY = vec2(-70.5, -67.9); vec2 HEART_MAX_XY = vec2(70.6, 51.6); vec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48)); vec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76)); vec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38)); vec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78)); vec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06)); vec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));  bool pointInHeart(vec2 point, float scale, vec2 offset){ \tint len = 187; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; } \treturn c; } bool pointInFace(vec2 point, float scale, vec2 offset){ \tint len = 26; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; } \treturn c; } bool pointInMouth(vec2 point, float scale, vec2 offset){ \tint len = 35; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; } \treturn c; } bool pointInEyeLeft(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEyeRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; } \treturn c; } bool pointInEarLeft(vec2 point, float scale, vec2 offset){ \tint len = 9; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEarRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; } \treturn c; }  bool pointInSheep(vec2 point, float scale, vec2 offset) { \tvec2 p = (point - offset)/(scale * COORD_SCALE); \tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) { \t\treturn false; \t} \tbool inHeart = pointInHeart(point, scale, offset); \tbool inFace = pointInFace(point, scale, offset); \tbool inMouth = pointInMouth(point, scale, offset); \tbool inEyeLeft = pointInEyeLeft(point, scale, offset); \tbool inEyeRight = pointInEyeRight(point, scale, offset); \tbool inEarLeft = pointInEarLeft(point, scale, offset); \tbool inEarRight = pointInEarRight(point, scale, offset); \treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight)); }\n\n\n//convert HSV to RGB\nvec3 hsv2rgb(vec3 c){\n\tvec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\tvec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n\treturn c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nfloat luma(vec3 color) {\n\treturn dot(color, vec3(0.299, 0.587, 0.114));\n}\n\nfloat getfrequency(float x) {\n\treturn .2 + .2 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;\n}\n\nfloat getfrequency_smooth(float x) {\n\tfloat index = floor(x * FREQ_RANGE) / FREQ_RANGE;\n\tfloat next = floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE;\n\treturn mix(getfrequency(index), getfrequency(next), smoothstep(0.0, 1.0, fract(x * FREQ_RANGE)));\n}\n\nfloat getfrequency_blend(float x) {\n\treturn mix(getfrequency(x), getfrequency_smooth(x), 0.5);\n}\n\nvec3 doHalo(vec2 fragment, float scale) {\n\tfloat dist = length(fragment);\n\tfloat ring = 1.0 / abs(dist - scale);\n\n\tfloat sheepScale = 1.5;\n\tvec2 sheepXY = vec2(0.0, 0.00);\n\n\t//float b = pointInSheep(fragment, sheepScale, sheepXY) ? BRIGHTNESS : 0.1 * BRIGHTNESS; // dist < scale ? BRIGHTNESS * 0.3 : BRIGHTNESS;\n\tfloat b = dist < scale ? BRIGHTNESS * 0.2 : BRIGHTNESS;\n\n\n\tif (pointInSheep(fragment, sheepScale, sheepXY)) { b = 50. * b; }\n\n\tvec3 col = vec3(0.0);\n\n\tfloat angle = atan(fragment.x, fragment.y);\n\tcol += hsv2rgb( vec3( ( angle + time * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;\n\n\tfloat frequency = max(getfrequency_blend(abs(angle / PI)) - 0.02, 0.0);\n\tcol *= frequency;\n\n\treturn col;\n}\n\nvec3 doLine(vec2 fragment, float radius, float x) {\n\tvec3 col = hsv2rgb(vec3(x * 0.23 + time * 0.12, 1.0, 1.0));\n\n\tfloat freq = abs(fragment.x * 0.5);\n\n\tcol *= (1.0 / abs(fragment.y)) * BRIGHTNESS * getfrequency(freq);\n\tcol = col * smoothstep(radius, radius * 1.8, abs(fragment.x));\n\n\treturn col;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 2.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\n\tvec3 color = vec3(0.0134, 0.052, 0.1);\n\tcolor += doHalo(fragPos, RADIUS);\n\n\tfloat c = cos(time * SPEED);\n\tfloat s = sin(time * SPEED);\n\tvec2 rot = mat2(c,s,-s,c) * fragPos;\n\tcolor += doLine(rot, RADIUS, rot.x);\n\n\tcolor += max(luma(color) - 1.0, 0.0);\n\n\tfragColor = vec4(color, 1.0);\n\n}\n"
         },
         "squarezzz": {
             "title": "[🐑] Squarezzz",
@@ -322,7 +323,7 @@
         },
         "wobblyColorGrid": {
             "title": "Wobbly Color Grid",
-            "src": "// Wobbly Color Grid\n// From http://glslsandbox.com/e#60808.1\n\n//  modded by Mik - v1.1\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n\n//varying vec2 surfacePosition;\nuniform float time; // @@Time\nuniform vec2 center; // @@XyPad\nuniform vec2 resolution; // @@Resolution\n\nvoid main(void){\n\n    float PI = 3.141592;\n    vec2 p = gl_FragCoord.xy/resolution*2.;\n\n    float time = time + length(p)*cos(time/4. - .0001*length(p)*cos(time/PI + .0001*length(p)*cos(time*time/PI)));\n    vec3 color = vec3(0., length(p), 0.);\n\n    float f = 0.0;\n\n    for(float i = 0.0; i < 15.0; i++){\n\n        float s = sin(center.x +time + center.x * i * PI / 10.0) * .85;\n        float c = cos(center.y + time + center.y * i * PI / 10.0) * .93;\n\n        f += 0.001 / (abs(p.x + c / (.35+length(p))) * abs(p.y + s / (.35+length(p)))) / (.5+length(p));\n        color.r += s * 1.0 * PI;\n        color.b += c * 1.0 * PI;\n    }\n\n\n    gl_FragColor = vec4(vec3(f * color), 1.0);\n}"
+            "src": "// Wobbly Color Grid\n// From http://glslsandbox.com/e#60808.1\n\n//  modded by Mik - v1.1\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n\n//varying vec2 surfacePosition;\nuniform float time; // @@Time\nuniform vec2 center; // @@XyPad\nuniform vec2 resolution; // @@Resolution\n\nvoid main(void){\n\n    float PI = 3.141592;\n    vec2 p = gl_FragCoord.xy/resolution*2.;\n\n    float time = time + length(p)*cos(time/4. - .0001*length(p)*cos(time/PI + .0001*length(p)*cos(time*time/PI)));\n    vec3 color = vec3(0., length(p), 0.);\n\n    float f = 0.0;\n\n    for(float i = 0.0; i < 15.0; i++){\n        float s = sin(center.x + time + center.x * i * PI / 10.0) * .85;\n        float c = cos(center.y + time + center.y * i * PI / 10.0) * .93;\n\n        f += 0.001 / (abs(p.x + c / (.35+length(p))) * abs(p.y + s / (.35+length(p)))) / (.5+length(p));\n        color.r += s * 1.0 * PI;\n        color.b += c * 1.0 * PI;\n    }\n\n\n    gl_FragColor = vec4(vec3(f * color), 1.0);\n}"
         },
         "gadzooks": {
             "title": "Gadzooks",
@@ -346,11 +347,11 @@
         },
         "aquaticFlood": {
             "title": "Aquatic Flood",
-            "src": "// Aquatic Flood\n// From http://glslsandbox.com/e#46102\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n// SPARKLEMOTION GADGET: Beat { \"name\": \"beat\" }\nuniform float sm_beat;\n\nvoid main(void)\n{\n    vec2 uv = gl_FragCoord.xy / resolution.xy;\n    //uv.x *= resolution.x/resolution.y;\n    float dist = 0.;\n    uv.x = -2.+4.*uv.x;\n    uv.y = -1.+2.*uv.y;\n    // comment the next line to see the fully zoomed out view\n    uv *=pow(.1,4.+cos(.1*time));\n    uv.x += .275015;//;\n    uv.y += .0060445;//\n    //uv /= 5.;\n    //vec4 col =vec4(1.);\n    vec2 z = vec2(0.0);\n\n    float warp_factor = 1.;\n    float time_warp = sm_beat / (1. / warp_factor) - (warp_factor / 2.) + 1.;\n    vec4 beat_flash = vec4(time_warp);\n\n    int trap=0;\n    for(int i = 0; i < 400; i++){\n        if(dot(z,z)>4.){trap = i;break;}\n        dist = min( 1e20, dot(z,z))+cos(float(i)*12.+3.*time);\n        z = mat2(z,-z.y,z.x)*z + uv;\n    }\n    dist = sqrt(dist);\n\tfloat orb = sqrt(float(trap))/64.;\n    gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.)*beat_flash;\n    //if(orb == 0.){gl_FragColor = vec4(0.);}\n    //gl_FragColor = (orb!=0. ? 1.-orb*vec4(9.,5.,3.,0.):vec4(0.));\n}\n"
+            "src": "// Aquatic Flood\n// From http://glslsandbox.com/e#46102\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\nuniform float sm_beat;\n\nvoid main(void)\n{\n    vec2 uv = gl_FragCoord.xy / resolution.xy;\n    //uv.x *= resolution.x/resolution.y;\n    float dist = 0.;\n    uv.x = -2.+4.*uv.x;\n    uv.y = -1.+2.*uv.y;\n    // comment the next line to see the fully zoomed out view\n    uv *=pow(.1,4.+cos(.1*time));\n    uv.x += .275015;//;\n    uv.y += .0060445;//\n    //uv /= 5.;\n    //vec4 col =vec4(1.);\n    vec2 z = vec2(0.0);\n\n    float warp_factor = 1.;\n    float time_warp = sm_beat / (1. / warp_factor) - (warp_factor / 2.) + 1.;\n    vec4 beat_flash = vec4(time_warp);\n\n    int trap=0;\n    for(int i = 0; i < 400; i++){\n        if(dot(z,z)>4.){trap = i;break;}\n        dist = min( 1e20, dot(z,z))+cos(float(i)*12.+3.*time);\n        z = mat2(z,-z.y,z.x)*z + uv;\n    }\n    dist = sqrt(dist);\n\tfloat orb = sqrt(float(trap))/64.;\n    gl_FragColor=vec4(0.,log(dist)*sqrt(dist)-orb-orb,log(dist)*sqrt(dist-abs(sin(time))),1.)*beat_flash;\n    //if(orb == 0.){gl_FragColor = vec4(0.);}\n    //gl_FragColor = (orb!=0. ? 1.-orb*vec4(9.,5.,3.,0.):vec4(0.));\n}\n"
         },
         "circularDependency": {
             "title": "Circular Dependency",
-            "src": "// Circular Dependency\n// From http://glslsandbox.com/e#56705\n\n/*\n * Original shader from: https://www.shadertoy.com/view/Wtf3zl\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time; // @@Time\nuniform vec2 center; // @@XyPad\nuniform vec2 resolution; // @@Resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/resolution.xy;\n    uv-=.5;\n    uv.x*= resolution.x/resolution.y;\n\n    vec3 col = vec3(0.5);\n    float d =length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+time, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+time*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(time*.5)*2.)*d-time));\n    col.rg = mix(1.-col.rg, col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n\n"
+            "src": "// Circular Dependency\n// From http://glslsandbox.com/e#56705\n\n/*\n * Original shader from: https://www.shadertoy.com/view/Wtf3zl\n */\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n// glslsandbox uniforms\nuniform float time; // @@Time\nuniform vec2 resolution; // @@Resolution\n\n// --------[ Original ShaderToy begins here ]---------- //\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/resolution.xy;\n    uv-=.5;\n    uv.x*= resolution.x/resolution.y;\n\n    vec3 col = vec3(0.5);\n    float d =length(uv)*20.;\n    float a = atan(uv.y, uv.x);\n    col.r = smoothstep(0.1, .2, abs(mod(d+time, 2.)-1.));\n\tcol.g = col.r*floor(mod(d*.5+.5+time*.5, 2.));\n    float f = smoothstep(-.1, .1,sin(a*3.+(sin(time*.5)*2.)*d-time));\n    col.rg = mix(1.-col.rg, col.rg, f);\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n\n"
         },
         "redSea": {
             "title": "Red Sea",
@@ -370,15 +371,11 @@
         },
         "heart": {
             "title": "Heart",
-            "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nuniform float heartSize; // @@Slider default=1. min=0.25 max=2\nuniform vec2 heartCenter; // @@XyPad\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0) - vec3(heartCenter.xy, 0.)) * 4. / heartSize * .5;\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = upstreamColor(fragCoord);\n}"
-        },
-        "blackout": {
-            "title": "Blackout",
-            "src": "// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(0., 0., 0., 1.);\n}"
+            "src": "// Heart\n// From http://mathworld.wolfram.com/HeartSurface.html\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\n\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\nfloat f(vec3 p) {\n    vec3 pp = p * p;\n    vec3 ppp = pp * p;\n    float a = pp.x + 2.25 * pp.y + pp.z - 1.0;\n    return a * a * a - (pp.x + 0.1125 * pp.y) * ppp.z;\n}\n\n// Bisection solver for y\nfloat h(float x, float z) {\n    float a = 0.0, b = 0.75, y = 0.5;\n    for (int i = 0; i < 10; i++) {\n        if (f(vec3(x, y, z)) <= 0.0)\n        a = y;\n        else\n        b = y;\n        y = (a + b) * 0.5;\n    }\n    return y;\n}\n\n// Analytical gradient\n// (-2 x z^3+6 x (-1.+x^2+2.25 y^2+z^2)^2)\n// (-0.225 y z^3+13.5 y (-1.+x^2+2.25 y^2+z^2)^2)\n// (z (-3 x^2 z-0.3375 y^2 z+6 (-1.+x^2+2.25 y^2+z^2)^2))\nvec3 normal(vec2 p) {\n    vec3 v = vec3(p.x, h(p.x, p.y), p.y);\n    vec3 vv = v * v;\n    vec3 vvv = vv * v;\n    float a = -1.0 + dot(vv, vec3(1, 2.25, 1));\n    a *= a;\n\n    return normalize(vec3(\n    -2.0 * v.x * vvv.z +  6.0 * v.x * a,\n    -0.225 * v.y * vvv.z + 13.5 * v.y * a,\n    v.z * (-3.0 * vv.x * v.z - 0.3375 * vv.y * v.z + 6.0 * a)));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec3 p = (vec3((2.0 * fragCoord.xy - iResolution.xy) / min(iResolution.y, iResolution.x), 0)) * 2.;\n    float beat = beatInfo.beat;\n    float s = sin(beat * 4.0);\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= s;\n    s *= 0.1;\n    vec3 tp = p * vec3(1.0 + s, 1.0 - s, 0.0) * 2.0;\n\n    if (f(tp.xzy) <= 0.0) {\n        vec3 n = normal(tp.xy);\n        float diffuse = dot(n, normalize(vec3(-1, 1, 1))) * 0.5 + 0.5;\n        float specular = pow(max(dot(n, normalize(vec3(-1, 2, 1))), 0.0), 64.0);\n        float rim = 0.; //1.0 - dot(n, vec3(0.0, 1.0, 0.0));\n        fragColor = vec4(diffuse * vec3(1.0, 0, 0) + specular * vec3(0.8) + rim * vec3(0.5), 1.);\n    }\n    else\n    fragColor = upstreamColor(fragCoord);\n}"
         },
         "thatSAllFolks": {
             "title": "That's all, folks!",
-            "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float speed; // @@Slider default=10. min=5 max=20\nuniform float ringDensity; // @@Slider default=60. min=10 max=120\nuniform vec2 thatsAllFolksCenter; // @@XyPad\nuniform float finality; // @@Slider default=.5 min=0 max=1\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 inColor = upstreamColor(uvIn);\n    vec2 p = uvIn - .5 + vec2(thatsAllFolksCenter.x, -thatsAllFolksCenter.y) * 2.;\n    float directMod = sin(time * 0.01);\n    float d = mix(1. - finality, 1., sin(-length(p) * ringDensity * (0.8+ beatInfo.intensity * 0.2) + time * speed)); // * beatInfo.intensity;\n    return vec4(inColor.rgb * d, 1.0);\n}"
+            "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float ringSpeed; // @@Slider default=10. min=5 max=20\nuniform float ringDensity; // @@Slider default=60. min=10 max=120\nuniform float ringContrast; // @@Slider default=.5 min=0 max=1\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 inColor = upstreamColor(uvIn);\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = mix(1. - ringContrast, 1., sin(-length(p) * ringDensity * (0.8+ beatInfo.intensity * 0.2) + time * ringSpeed)); // * beatInfo.intensity;\n    return vec4(inColor.rgb * d, 1.0);\n}"
         },
         "soundBrightness": {
             "title": "Sound Brightness",
@@ -391,6 +388,10 @@
         "headlightsMode": {
             "title": "Headlights Mode",
             "src": "const float PI = 3.141592654;\nconst float panScale = 540. / PI / 180.;\nconst float tiltScale = 125. / PI / 180.;\n\nstruct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform FixtureInfo fixtureInfo;\n\nuniform float targetX; // @@Slider default=240 max=500 min=-100\nuniform float targetY; // @@Slider default=0 max=400 min=0\nuniform float targetZ; // @@Slider default=0 max=200 min=-200\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    vec3 target = vec3(targetX, targetY, targetZ);\n\n    vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.transformation).xyz);\n    float theta = atan(direction.y, direction.x);\n    float phi = acos(direction.z);\n    \n    params.pan = theta * panScale;\n    params.tilt = phi * tiltScale + .5;\n    params.colorWheel = 0.;\n    params.dimmer = 1.;\n}"
+        },
+        "blackout": {
+            "title": "Blackout",
+            "src": "// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(0., 0., 0., 1.);\n}"
         }
     },
     "patches": {
@@ -412,22 +413,17 @@
             "incomingLinks": {
             }
         },
-        "brightness-patch": {
-            "shaderId": "brightness",
+        "hsb-patch": {
+            "shaderId": "hsb",
             "incomingLinks": {
+                "hueShift": {
+                    "type": "datasource",
+                    "dataSourceId": "hueShiftSlider"
+                },
                 "brightness": {
                     "type": "datasource",
                     "dataSourceId": "brightnessSlider"
                 },
-                "inColor": {
-                    "type": "stream",
-                    "stream": "main"
-                }
-            }
-        },
-        "saturation-patch": {
-            "shaderId": "saturation",
-            "incomingLinks": {
                 "inColor": {
                     "type": "stream",
                     "stream": "main"
@@ -441,10 +437,6 @@
         "baaahsEclipse-patch": {
             "shaderId": "baaahsEclipse",
             "incomingLinks": {
-                "size": {
-                    "type": "datasource",
-                    "dataSourceId": "sizeSlider"
-                },
                 "time": {
                     "type": "datasource",
                     "dataSourceId": "time"
@@ -464,10 +456,6 @@
                 "beatInfo": {
                     "type": "datasource",
                     "dataSourceId": "beatInfo"
-                },
-                "center": {
-                    "type": "datasource",
-                    "dataSourceId": "centerXyPad"
                 },
                 "resolution": {
                     "type": "datasource",
@@ -533,7 +521,7 @@
                 },
                 "center": {
                     "type": "datasource",
-                    "dataSourceId": "centerXyPad"
+                    "dataSourceId": "center"
                 }
             }
         },
@@ -738,7 +726,7 @@
                 },
                 "center": {
                     "type": "datasource",
-                    "dataSourceId": "centerXyPad"
+                    "dataSourceId": "center"
                 },
                 "resolution": {
                     "type": "datasource",
@@ -868,7 +856,7 @@
                 },
                 "sm_beat": {
                     "type": "datasource",
-                    "dataSourceId": "smBeatSlider"
+                    "dataSourceId": "beatLink"
                 }
             }
         },
@@ -882,10 +870,6 @@
                 "fragCoord": {
                     "type": "stream",
                     "stream": "main"
-                },
-                "center": {
-                    "type": "datasource",
-                    "dataSourceId": "centerXyPad"
                 },
                 "resolution": {
                     "type": "datasource",
@@ -968,10 +952,6 @@
         "heart-patch": {
             "shaderId": "heart",
             "incomingLinks": {
-                "heartSize": {
-                    "type": "datasource",
-                    "dataSourceId": "heartSizeSlider"
-                },
                 "fragCoord": {
                     "type": "stream",
                     "stream": "main"
@@ -984,20 +964,7 @@
                     "type": "datasource",
                     "dataSourceId": "beatInfo"
                 },
-                "heartCenter": {
-                    "type": "datasource",
-                    "dataSourceId": "heartCenterXyPad"
-                },
                 "upstreamColor": {
-                    "type": "stream",
-                    "stream": "main"
-                }
-            }
-        },
-        "blackout-patch": {
-            "shaderId": "blackout",
-            "incomingLinks": {
-                "uvIn": {
                     "type": "stream",
                     "stream": "main"
                 }
@@ -1006,6 +973,10 @@
         "thatSAllFolks-patch": {
             "shaderId": "thatSAllFolks",
             "incomingLinks": {
+                "ringContrast": {
+                    "type": "datasource",
+                    "dataSourceId": "ringContrastSlider"
+                },
                 "time": {
                     "type": "datasource",
                     "dataSourceId": "time"
@@ -1014,13 +985,9 @@
                     "type": "stream",
                     "stream": "main"
                 },
-                "speed": {
+                "ringSpeed": {
                     "type": "datasource",
-                    "dataSourceId": "speedSlider3"
-                },
-                "thatsAllFolksCenter": {
-                    "type": "datasource",
-                    "dataSourceId": "thatsAllFolksCenterXyPad"
+                    "dataSourceId": "ringSpeedSlider"
                 },
                 "beatInfo": {
                     "type": "datasource",
@@ -1029,10 +996,6 @@
                 "ringDensity": {
                     "type": "datasource",
                     "dataSourceId": "ringDensitySlider"
-                },
-                "finality": {
-                    "type": "datasource",
-                    "dataSourceId": "finalitySlider"
                 },
                 "upstreamColor": {
                     "type": "stream",
@@ -1094,6 +1057,16 @@
                     "dataSourceId": "targetZSlider"
                 }
             }
+        },
+        "blackout-patch": {
+            "shaderId": "blackout",
+            "incomingLinks": {
+                "uvIn": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            },
+            "priority": 10
         }
     },
     "controls": {
@@ -1268,12 +1241,13 @@
             "title": "Effects",
             "direction": "Vertical",
             "showTitle": true,
+            "allowMultiple": true,
             "buttonIds": [
             ]
         },
-        "wobble": {
+        "ripple": {
             "type": "baaahs.Core:Button",
-            "title": "Wobble",
+            "title": "Ripple",
             "patchIds": [
                 "ripple-patch"
             ]
@@ -1290,13 +1264,6 @@
             "title": "Heart",
             "patchIds": [
                 "heart-patch"
-            ]
-        },
-        "blackout": {
-            "type": "baaahs.Core:Button",
-            "title": "Blackout",
-            "patchIds": [
-                "blackout-patch"
             ]
         },
         "thatSAllFolks": {
@@ -1346,11 +1313,25 @@
                 "headlightsMode-patch"
             ]
         },
+        "hueShift": {
+            "type": "baaahs.Core:Slider",
+            "title": "Hue Shift",
+            "maxValue": 2,
+            "controlledDataSourceId": "hueShiftSlider"
+        },
         "visualizer": {
             "type": "baaahs.Core:Visualizer"
         },
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
+        },
+        "blackout": {
+            "type": "baaahs.Core:Button",
+            "title": "Blackout",
+            "activationType": "Momentary",
+            "patchIds": [
+                "blackout-patch"
+            ]
         }
     },
     "dataSources": {
@@ -1359,6 +1340,13 @@
         },
         "pixelLocation": {
             "type": "baaahs.Core:PixelLocation"
+        },
+        "hueShiftSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Hue Shift",
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 2
         },
         "brightnessSlider": {
             "type": "baaahs.Core:Slider",
@@ -1373,13 +1361,6 @@
             "initialValue": 1,
             "minValue": 0,
             "maxValue": 1.25
-        },
-        "sizeSlider": {
-            "type": "baaahs.Core:Slider",
-            "title": "Size",
-            "initialValue": 1,
-            "minValue": 0.25,
-            "maxValue": 2
         },
         "time": {
             "type": "baaahs.Core:Time"
@@ -1396,10 +1377,6 @@
         },
         "beatInfo": {
             "type": "baaahs.BeatLink:BeatInfo"
-        },
-        "centerXyPad": {
-            "type": "baaahs.Core:XyPad",
-            "title": "Center"
         },
         "resolution": {
             "type": "baaahs.Core:Resolution"
@@ -1429,6 +1406,10 @@
             "initialValue": 1,
             "minValue": 1,
             "maxValue": 3
+        },
+        "center": {
+            "type": "baaahs.Core:XyPad",
+            "title": "Center"
         },
         "fixtureInfo": {
             "type": "baaahs.Core:FixtureInfo"
@@ -1468,12 +1449,8 @@
             "minValue": 0,
             "maxValue": 10
         },
-        "smBeatSlider": {
-            "type": "baaahs.Core:Slider",
-            "title": "Sm_beat",
-            "initialValue": 1,
-            "minValue": 0,
-            "maxValue": 1
+        "beatLink": {
+            "type": "baaahs.BeatLink:BeatLink"
         },
         "rippleAmountSlider": {
             "type": "baaahs.Core:Slider",
@@ -1482,27 +1459,19 @@
             "minValue": 0,
             "maxValue": 1
         },
-        "heartSizeSlider": {
+        "ringContrastSlider": {
             "type": "baaahs.Core:Slider",
-            "title": "Heart Size",
-            "initialValue": 1,
-            "minValue": 0.25,
-            "maxValue": 2
+            "title": "Ring Contrast",
+            "initialValue": 0.5,
+            "minValue": 0,
+            "maxValue": 1
         },
-        "heartCenterXyPad": {
-            "type": "baaahs.Core:XyPad",
-            "title": "Heart Center"
-        },
-        "speedSlider3": {
+        "ringSpeedSlider": {
             "type": "baaahs.Core:Slider",
-            "title": "Speed",
+            "title": "Ring Speed",
             "initialValue": 10,
             "minValue": 5,
             "maxValue": 20
-        },
-        "thatsAllFolksCenterXyPad": {
-            "type": "baaahs.Core:XyPad",
-            "title": "Thats All Folks Center"
         },
         "ringDensitySlider": {
             "type": "baaahs.Core:Slider",
@@ -1510,13 +1479,6 @@
             "initialValue": 60,
             "minValue": 10,
             "maxValue": 120
-        },
-        "finalitySlider": {
-            "type": "baaahs.Core:Slider",
-            "title": "Finality",
-            "initialValue": 0.5,
-            "minValue": 0,
-            "maxValue": 1
         },
         "soundBrightnessSlider": {
             "type": "baaahs.Core:Slider",

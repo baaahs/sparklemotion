@@ -206,7 +206,7 @@
                 }
               },
               {
-                "controlId": "wobble",
+                "controlId": "Ripple",
                 "column": 4,
                 "row": 0
               },
@@ -229,7 +229,7 @@
                 "height": 2
               },
               {
-                "controlId": "wobbleAmount",
+                "controlId": "rippleAmount",
                 "column": 7,
                 "row": 4,
                 "height": 2
@@ -541,9 +541,9 @@
       "title": "Prime Waves",
       "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"CATEGORIES\" : [\n    \"Generator\",\n    \"waves\"\n  ],\n  \"DESCRIPTION\" : \"\",\n  \"INPUTS\" : [\n    {\n      \"NAME\" : \"center\",\n      \"TYPE\" : \"point2D\",\n       \"DEFAULT\": [\n\t\t-2,\n\t\t-1\n\t  ],\n      \"MAX\" : [\n        10,\n        10\n      ],\n      \"MIN\" : [\n        -10,\n        -10\n      ]\n    },\n    {\n\t\t\"NAME\": \"rate\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": -1,\n\t\t\"MIN\": -3,\n\t\t\"MAX\": 3\n\t},\n\t{\n\t\t\"NAME\": \"zoom\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 5,\n\t\t\"MIN\": -10,\n\t\t\"MAX\": 10\n\t},\n\t{\n\t\t\"NAME\": \"depth\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 0.6,\n\t\t\"MIN\": 0.0,\n\t\t\"MAX\": 1.0\n\t},\n\t{\n\t\t\"NAME\": \"rxy\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 11,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t},\n\t{\n\t\t\"NAME\": \"rxz\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 13,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t}\n  ]\n}\n*/\n\n// PrimeWaves by mojovideotech\n// based on:\n// glslsandbox.com/e#21344.0\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nvec2 distort(vec2 p)\n{\n    float theta  = atan(p.y, p.x);\n    float radius = length(p);\n    radius = pow(radius, 1.0+depth);\n    p.x = radius * cos(theta);\n    p.y = radius * sin(theta);\n    return 0.5 * (p + 1.0);\n}\n\t\nvec4 pattern(vec2 p)\n{\n\tvec2 m=mod(p.xy+p.x+p.y,2.)-1.;\n\treturn vec4(length(m+p*0.1));\n}\n\nfloat hash(float n)\n{\n\treturn fract(sin(n)*29712.15073);\n}\n\nfloat noise(vec3 x, float y, float z)\n{\n\tvec3 p=floor(x); vec3 f=fract(x);\n\tf=f*f*(3.0-2.0*f);\n\tfloat n=p.x+p.y*y+p.z*z;\n\tfloat r1=mix(mix(hash(n+0.0),hash(n+1.0),f.x),mix(hash(n+y),hash(n+y+1.0),f.x),f.y);\n    float r2=mix(mix(hash(n+z),hash(n+z+1.0),f.x),mix(hash(n+y+z),hash(n+y+z+1.0),f.x),f.y);\n\treturn mix(r1,r2,f.z);\n}\nvoid main( void ) {\n\t\n\tfloat RY = 0.0;\tfloat RZ = 0.0;\n\tif (rxy <= 1.)\t\t\t{\tRY += 11.;\t}\n\telse if (rxy <= 2.)\t\t{\tRY += 13.; \t}\n\telse if (rxy <= 3.)\t\t{\tRY += 17.; \t}\n\telse if (rxy <= 4.)\t\t{\tRY += 19.; \t}\n\telse if (rxy <= 5.)\t\t{\tRY += 23.; \t}\n\telse if (rxy <= 6.)\t\t{\tRY += 29.; \t}\n\telse if (rxy <= 8.)\t\t{\tRY += 31.; \t}\n\telse if (rxy <= 9.)\t\t{\tRY += 37.; \t}\n\telse if (rxy <= 10.)\t{\tRY += 41.; \t}\n\telse if (rxy <= 11.)\t{\tRY += 43.; \t}\n\telse if (rxy <= 12.)\t{\tRY += 47.; \t}\n\telse if (rxy <= 13.)\t{\tRY += 53.; \t}\n\telse if (rxy <= 14.)\t{\tRY += 59.; \t}\n\telse if (rxy <= 15.)\t{\tRY += 61.; \t}\n\telse if (rxy <= 16.)\t{\tRY += 67.; \t}\n\tif (rxz <= 1.)\t\t\t{\tRZ += 11.; \t}\n\telse if (rxz <= 2.)\t\t{\tRZ += 13.; \t}\n\telse if (rxz <= 3.)\t\t{\tRZ += 17.; \t}\n\telse if (rxz <= 4.)\t\t{\tRZ += 19.; \t}\n\telse if (rxz <= 5.)\t\t{\tRZ += 23.; \t}\n\telse if (rxz <= 6.)\t\t{\tRZ += 29.; \t}\n\telse if (rxz <= 8.)\t\t{\tRZ += 31.; \t}\n\telse if (rxz <= 9.)\t\t{\tRZ += 37.; \t}\n\telse if (rxz <= 10.)\t{\tRZ += 41.; \t}\n\telse if (rxz <= 11.)\t{\tRZ += 43.; \t}\n\telse if (rxz <= 12.)\t{\tRZ += 47.; \t}\n\telse if (rxz <= 13.)\t{\tRZ += 53.; \t}\n\telse if (rxz <= 14.)\t{\tRZ += 59.; \t}\n\telse if (rxz <= 15.)\t{\tRZ += 61.; \t}\n\telse if (rxz <= 16.)\t{\tRZ += 67.; \t}\n\t\n\tvec2 pos = ( gl_FragCoord.xy / RENDERSIZE.xy * zoom )+center;\n\tfloat col = noise(pos.xyx + (TIME*rate),RY,RZ);\n\tvec4 c = pattern(distort(pos+col));\n\t  c.xy = distort(c.xy);\n\tgl_FragColor = vec4(c.x - col, sin(c.y) - col, cos(c.z), 1.0);\n\n}"
     },
-    "wobble": {
-      "title": "Wobble",
-      "src": "uniform float time;\nuniform float wobbleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * wobbleAmount;\n}"
+    "Ripple": {
+      "title": "Ripple",
+      "src": "uniform float time;\nuniform float rippleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = length(p);\n    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;\n}"
     },
     "soundBrightness": {
       "title": "Sound Brightness",
@@ -1653,8 +1653,8 @@
         }
       }
     },
-    "wobble-patch": {
-      "shaderId": "wobble",
+    "Ripple-patch": {
+      "shaderId": "Ripple",
       "incomingLinks": {
         "time": {
           "type": "datasource",
@@ -1664,9 +1664,9 @@
           "type": "stream",
           "stream": "main"
         },
-        "wobbleAmount": {
+        "rippleAmount": {
           "type": "datasource",
-          "dataSourceId": "wobbleAmountSlider"
+          "dataSourceId": "rippleAmountSlider"
         }
       }
     },
@@ -2499,16 +2499,16 @@
         "primeWaves-patch"
       ]
     },
-    "wobble": {
+    "Ripple": {
       "type": "baaahs.Core:Button",
-      "title": "Wobble",
+      "title": "Ripple",
       "patchIds": [
-        "wobble-patch"
+        "Ripple-patch"
       ]
     },
-    "wobbleAmount": {
+    "rippleAmount": {
       "type": "baaahs.Core:Slider",
-      "title": "Wobble Amount",
+      "title": "Ripple Amount",
       "controlledDataSourceId": "wobbleAmountSlider"
     },
     "soundAnalysis": {
@@ -2952,7 +2952,7 @@
     },
     "wobbleAmountSlider": {
       "type": "baaahs.Core:Slider",
-      "title": "Wobble Amount",
+      "title": "Ripple Amount",
       "initialValue": 1,
       "minValue": 0,
       "maxValue": 1

@@ -39,12 +39,12 @@ shader-libraries/built-in/effects/HSB.glsl
 shader-libraries/built-in/effects/Heart.glsl
 shader-libraries/built-in/effects/Movers On.glsl
 shader-libraries/built-in/effects/Movers Swirl.glsl
+shader-libraries/built-in/effects/Ripple.glsl
 shader-libraries/built-in/effects/Saturation.glsl
 shader-libraries/built-in/effects/Scanners.glsl
 shader-libraries/built-in/effects/SoundBrightness.glsl
 shader-libraries/built-in/effects/Sparklez.glsl
 shader-libraries/built-in/effects/ThatsAllFolks.glsl
-shader-libraries/built-in/effects/Wobble.glsl
 shader-libraries/built-in/effects/ZigZag.glsl
 shader-libraries/built-in/libraries/BAAAHSlogo.glsl
 shader-libraries/built-in/libraries/beat_functions.glsl
@@ -131,7 +131,6 @@ templates/scenes/playa-2021-panels.obj
 templates/scenes/sui-generis.obj
 templates/shows/BeachRave.sparkle
 templates/shows/Ben's Show.sparkle
-templates/shows/Bens_SparkleMotion_Show.sparkle
 templates/shows/Honcho.sparkle
 templates/shows/PastureBedtime.sparkle
 templates/shows/movers.sparkle
