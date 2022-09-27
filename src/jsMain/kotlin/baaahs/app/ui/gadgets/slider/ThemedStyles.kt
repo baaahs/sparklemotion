@@ -53,6 +53,17 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         width = 42.px
         height = 45.px
         cursor = Cursor.pointer
+
+        img {
+            width = 20.px
+            height = 40.px
+            position = Position.relative
+            top = 2.px
+            left = 11.px
+
+            filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
+            pointerEvents = PointerEvents.none
+        }
     }
 
     val handleWrapper by css {
@@ -68,6 +79,35 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         flexDirection = FlexDirection.column
         justifyContent = JustifyContent.spaceBetween
         alignItems = Align.center
+    }
+
+    val handleNormal by css {
+        width = 20.px
+        height = 40.px
+        position = Position.relative
+        top = 2.px
+        left = 11.px
+
+        filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
+    }
+
+    val handleMin by css {
+        width = 20.px
+        height = 40.px
+        position = Position.relative
+        top = 2.px
+        left = 11.px
+
+        filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
+    }
+    val handleMax by css {
+        width = 20.px
+        height = 40.px
+        position = Position.relative
+        top = 2.px
+        left = 11.px
+
+        filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
     }
 
     val handleNotch by css {
