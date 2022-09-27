@@ -54,7 +54,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = props.reversed
-            attrs.mode = 3
+            attrs.mode = 1
             attrs.step = props.stepValue ?: ((props.maxValue - props.minValue) / 256)
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
@@ -79,23 +79,23 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                         div(+styles.handles) {
                             handlesObject.handles.forEachIndexed { index, handle ->
                                 when (index) {
-                                0 -> {
-                                    handle {
-                                        key = handle.id
-                                        attrs.domain = domain
-                                        attrs.handle = handle
-                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    0 -> {
+                                        handle {
+                                            key = handle.id
+                                            attrs.domain = domain
+                                            attrs.handle = handle
+                                            attrs.getHandleProps = handlesObject.getHandleProps
+                                        }
                                     }
-                                }
-                                1 -> {
-                                    // Floor handle.
-                                    altHandle {
-                                        key = handle.id
-                                        attrs.domain = domain
-                                        attrs.handle = handle
-                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    1 -> {
+                                        // Floor handle.
+                                        altHandle {
+                                            key = handle.id
+                                            attrs.domain = domain
+                                            attrs.handle = handle
+                                            attrs.getHandleProps = handlesObject.getHandleProps
+                                        }
                                     }
-                                }
 //                                else -> {
 //                                    // Non-draggable alt handle.
 //                                    altHandle {
@@ -105,8 +105,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 //                                        attrs.getHandleProps = handlesObject.getHandleProps
 //                                    }
 //                                }
+                                }
                             }
-                        }
 
                         }
                     }
