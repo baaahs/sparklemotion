@@ -43,6 +43,7 @@ external interface GridItemProps : Props {
     var usePercentages: Boolean?
     var transformScale: Double
     var droppingPosition: DroppingPosition?
+    var notDroppableHere: Boolean?
 
     var className: String
     var style: Any?
@@ -611,6 +612,7 @@ class GridItem(
                     this["react-draggable-dragging"] = state.dragging
                     this.dropping = droppingPosition
                     this.cssTransforms = useCSSTransforms
+                    this["react-draggable-not-droppable-here"] = props.notDroppableHere == true
                 }
             )
             // We can set the width and height on the child, but unfortunately we can't set the position.

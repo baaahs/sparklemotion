@@ -81,6 +81,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
         transition(::opacity, transitionTime)
         transition(::border, transitionTime)
+        cursor = Cursor.default
 
 //        outlineWidth = 3.px
 //        put("outlineStyle", "dashed")
@@ -158,6 +159,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         bottom = (-2).px + (2.5).em
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
+        cursor = Cursor.default
 
         child("svg") {
             width = .75.em
@@ -170,6 +172,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         bottom = (-2).px + 1.em
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         filter = "drop-shadow(1px 1px 2px rgba(0, 0, 0, .9))"
+        cursor = Cursor.default
 
         child("svg") {
             width = .75.em
@@ -290,12 +293,28 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             borderBottom = "2px solid rgba(0, 0, 0, 0.4)"
         }
 
+        ".react-draggable > .app-ui-controls-controlRoot" {
+            pointerEvents = PointerEvents.none
+        }
+
         ".react-draggable-dragging, .react-draggable-dragging *" {
             pointerEvents = PointerEvents.none
             transition(::top, 0.s)
             transition(::left, 0.s)
             transition(::width, 0.s)
             transition(::height, 0.s)
+        }
+
+        ".react-draggable" {
+            cursor = Cursor.grab
+        }
+
+        ".react-draggable-dragging" {
+            cursor = Cursor.grabbing
+        }
+
+        ".react-draggable-not-droppable-here" {
+            cursor = Cursor.noDrop
         }
 
         val inset = 2.px
