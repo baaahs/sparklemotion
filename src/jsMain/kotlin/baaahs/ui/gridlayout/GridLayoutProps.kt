@@ -50,7 +50,7 @@ external interface GridLayoutProps : PropsWithChildren {
     var draggableHandle: String? // = ''
 
     // Compaction type.
-    var compactType: CompactType? // ?('vertical' | 'horizontal') = 'vertical';
+//    var compactType: CompactType? // ?('vertical' | 'horizontal') = 'vertical';
 
     /**
      * Layout is an array of object with the format:

@@ -74,13 +74,17 @@ fun String.toLayout(): Layout {
 fun Layout.stringify(): String {
     if (items.isEmpty()) return "[Empty]"
 
-    val gridWidth = items.maxOf { it.x + it.w }
-    val gridHeight = items.maxOf { it.y + it.h }
+    val gridWidth = if (cols == Int.MAX_VALUE) items.maxOf { it.x + it.w } else cols
+    val gridHeight = if (rows == Int.MAX_VALUE) items.maxOf { it.y + it.h } else rows
     val cells = Array(gridHeight) { Array(gridWidth) { "." } }
     items.forEach {
         (0 until it.h).forEach { row ->
             (0 until it.w).forEach { col ->
-                cells[it.y + row][it.x + col] = it.i
+                if (cells[it.y + row][it.x + col] != ".") {
+                    cells[it.y + row][it.x + col] = "!"
+                } else {
+                    cells[it.y + row][it.x + col] = it.i
+                }
             }
         }
     }

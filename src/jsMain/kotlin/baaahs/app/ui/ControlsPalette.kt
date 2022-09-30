@@ -8,7 +8,6 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.ui.*
-import baaahs.ui.gridlayout.CompactType
 import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
@@ -101,7 +100,6 @@ val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { prop
                                     attrs.margin = 5 to 5
                                     attrs.layout = layout
 //                                attrs.onLayoutChange = handleLayoutChange
-                                    attrs.compactType = CompactType.None
                                     attrs.disableDrag = !editMode.isOn
                                     attrs.disableResize = true
                                     attrs.isDroppable = editMode.isOn

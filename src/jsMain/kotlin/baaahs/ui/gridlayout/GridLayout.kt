@@ -4,8 +4,6 @@ import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.geom.Vector2D
-import baaahs.replace
-import baaahs.ui.gridlayout.CompactType.Companion.determineFrom
 import baaahs.window
 import baaahs.y
 import external.lodash.isEqual
@@ -19,7 +17,6 @@ import react.dom.*
 import react.dom.events.DragEvent
 import react.dom.events.DragEventHandler
 import styled.inlineStyles
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
@@ -36,10 +33,10 @@ external interface GridLayoutState : State {
     var oldResizeItem: LayoutItem?
     var droppingDOMNode: ReactElement<*>?
     var droppingPosition: DroppingPosition?
+    var notDroppableHere: Boolean?
 
     // Mirrored props
     var children: ReactNode?
-    var compactType: CompactType?
     var propsLayout: Layout?
 }
 
@@ -58,10 +55,8 @@ class GridLayout(
             props.layout ?: Layout(emptyList(), props.cols!!, props.maxRows),
             props.children?.asArray() ?: emptyArray(),
             props.cols!!,
-            props.maxRows,
+            props.maxRows
             // Legacy support for verticalCompact: false
-            CompactType.None,
-            props.allowOverlap
         )
         mounted = false
         oldDragItem = null
@@ -100,6 +95,7 @@ class GridLayout(
                         !isEqual(props, nextProps) ||
 //                        !fastRGLPropsEqual(propsD, nextProps, ::isEqual) ||
                         state.draggingPlaceholder != nextState.draggingPlaceholder ||
+                        state.notDroppableHere != nextState.notDroppableHere ||
                         state.mounted != nextState.mounted ||
                         state.droppingPosition != nextState.droppingPosition
                 )
@@ -191,23 +187,30 @@ class GridLayout(
      * @param {Element} node The current dragging DOM element
      */
     fun onDragItem(i: String, x: Int, y: Int, gridDragEvent: GridDragEvent) {
+        state.draggingPlaceholder?.let { placeholder ->
+            if (placeholder.i == i && placeholder.x == x && placeholder.y == y) {
+                return
+            }
+        }
+
         val e = gridDragEvent.e
         val node = gridDragEvent.node
         val oldDragItem = state.oldDragItem
-        val allowOverlap = props.allowOverlap == true
-        val preventCollision = props.preventCollision!!
         val oldLayout = state.oldLayout!!
         val l = oldLayout.find(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragItem() couldn't find item $i")
             }
 
-        val compactType = l.determineFrom(x, y)
-
         // Move the element to the dragged location.
-        val newLayout = oldLayout.moveElement(
-            l, x, y, preventCollision, compactType, allowOverlap
-        )
+        val newLayout = try {
+            oldLayout.moveElement(l, x, y)
+        } catch (e: ImpossibleLayoutException) {
+            setState {
+                this.notDroppableHere = true
+            }
+            return
+        }
         val newItem = newLayout.find(i) ?: return
 
         // Create placeholder (display only)
@@ -225,8 +228,9 @@ class GridLayout(
         props.onDrag(newLayout, oldDragItem, newItem, placeholder, e, node)
 
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
+            this.layout = newLayout.resetMovedFlag()
             this.draggingPlaceholder = placeholder
+            this.notDroppableHere = null
         }
     }
 
@@ -249,26 +253,21 @@ class GridLayout(
         console.log("GridLayout", props.id, "onDragStop", i, state.draggingPlaceholder)
         if (state.draggingPlaceholder == null) return
         val oldDragItem = state.oldDragItem
-        val allowOverlap = props.allowOverlap == true
-        val preventCollision = props.preventCollision!!
         val l = oldLayout.find(i)
             ?: return run {
                 console.log("GridLayout(${props.id}),onDragStop() couldn't find layout $i")
             }
 
-        val compactType = l.determineFrom(x, y)
-
         // Move the element here
-        var newLayout = oldLayout.moveElement(
-            l, x, y, preventCollision, compactType, allowOverlap
-        )
+        var newLayout = oldLayout.moveElement(l, x, y)
         val newItem = newLayout.find(i) ?: return
 
         props.onDragStop(newLayout, oldDragItem, newItem, null, e, node)
-        newLayout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
+        newLayout = newLayout.resetMovedFlag()
 
         setState {
             this.draggingPlaceholder = null
+            this.notDroppableHere = null
             this.layout = newLayout
             this.oldDragItem = null
             this.oldLayout = null
@@ -310,44 +309,8 @@ class GridLayout(
         val node = gridResizeEvent.node
         val layout = state.layout
         val oldResizeItem = state.oldResizeItem
-        val allowOverlap = props.allowOverlap!!
-        val preventCollision = props.preventCollision!!
 
-        val newListItems = ArrayList(layout.items)
-        newListItems.replace({ it.i == i }) { l ->
-            var newItem = l
-            // Something like quad tree should be used
-            // to find collisions faster
-            val hasCollisions: Boolean
-            if (preventCollision && !allowOverlap) {
-                val collisions = layout.getAllCollisions(newItem.copy(w = w, h = h))
-                    .filter { layoutItem -> layoutItem.i != newItem.i }
-                hasCollisions = collisions.isNotEmpty()
-
-                // If we're colliding, we need adjust the placeholder.
-                if (hasCollisions) {
-                    // adjust w && h to maximum allowed space
-                    var leastX = Int.MAX_VALUE
-                    var leastY = Int.MAX_VALUE
-                    collisions.forEach { layoutItem ->
-                        if (layoutItem.x > newItem.x) leastX = min(leastX, layoutItem.x)
-                        if (layoutItem.y > newItem.y) leastY = min(leastY, layoutItem.y)
-                    }
-
-                    if (leastX != Int.MAX_VALUE) newItem = newItem.copy(w = leastX - newItem.x)
-                    if (leastY != Int.MAX_VALUE) newItem = newItem.copy(h = leastY - newItem.y)
-                }
-            } else hasCollisions = false
-
-            if (!hasCollisions) {
-                // Set new width and height.
-                newItem = newItem.copy(w = w, h = h)
-            }
-
-            newItem
-        }
-
-        val newLayout = Layout(newListItems, layout.cols, layout.rows)
+        val newLayout = layout.resizeElement(layout.find(i)!!, w, h)
 
         val l = newLayout.find(i)
             ?: return
@@ -357,11 +320,9 @@ class GridLayout(
 
         props.onResize(newLayout, oldResizeItem, l, placeholder, e, node)
 
-        val compactType = CompactType.None
-
         // Re-compact the newLayout and set the drag placeholder.
         setState {
-            this.layout = if (allowOverlap) newLayout else newLayout.compact(CompactType.None)
+            this.layout = newLayout.resetMovedFlag()
             this.draggingPlaceholder = placeholder
         }
     }
@@ -374,13 +335,12 @@ class GridLayout(
         val node = gridResizeEvent.node
         val layout = state.layout
         val oldResizeItem = state.oldResizeItem
-        val allowOverlap = props.allowOverlap!!
         val l = layout.find(i)!!
 
         props.onResizeStop(layout, oldResizeItem, l, null, e, node)
 
         // Set state
-        val newLayout = if (allowOverlap) layout else layout.compact(CompactType.None)
+        val newLayout = layout.resetMovedFlag()
         val oldLayout = state.oldLayout
         setState {
             this.draggingPlaceholder = null
@@ -487,6 +447,9 @@ class GridLayout(
                 attrs.useCSSTransforms = useCSSTransforms && mounted
                 attrs.usePercentages = !mounted
                 attrs.transformScale = transformScale
+                if (state.notDroppableHere == true && state.originalDragItem?.i == l.i) {
+                    attrs.notDroppableHere = true
+                }
                 attrs.w = l.w
                 attrs.h = l.h
                 attrs.x = l.x
@@ -600,12 +563,13 @@ class GridLayout(
         val layout = state.layout
 
         val newLayout = Layout(layout.items.filter { l -> l.i != droppingItem?.i }, layout.cols, layout.rows)
-            .compact(CompactType.None)
+            .resetMovedFlag()
 
         setState {
             this.layout = newLayout
             this.droppingDOMNode = null
             this.draggingPlaceholder = null
+            this.notDroppableHere = null
             this.droppingPosition = undefined
         }
     }
@@ -698,7 +662,7 @@ class GridLayout(
     }
 
     companion object : RStatics<GridLayoutProps, GridLayoutState, GridLayout, Context<DragNDropContext>>(GridLayout::class) {
-        const val debug = true
+        const val debug = false
 
         init {
             displayName = GridLayout::class.simpleName
@@ -725,7 +689,6 @@ class GridLayout(
                 useCSSTransforms = true
                 transformScale = 1.0
 //        verticalCompact = true
-                compactType = CompactType.Vertical
                 preventCollision = false
                 droppingItem = DroppingItem(
                     "__dropping-elem__",
@@ -754,8 +717,7 @@ class GridLayout(
                     // Legacy support for compactType
                     // Allow parent to set layout directly.
                     if (
-                        nextProps.layout != prevState.propsLayout ||
-                        nextProps.compactType != prevState.compactType
+                        nextProps.layout != prevState.propsLayout
                     ) {
                         baseLayout = nextProps.layout
                     } else if (!childrenEqual(
@@ -775,16 +737,13 @@ class GridLayout(
                             baseLayout,
                             nextProps.children?.asArray() ?: emptyArray(),
                             nextProps.cols!!,
-                            nextProps.maxRows,
-                            CompactType.None,
-                            nextProps.allowOverlap
+                            nextProps.maxRows
                         )
 
                         jso {
                             this.layout = newLayout
                             // We need to save these props to state for using
                             // getDerivedStateFromProps instead of componentDidMount (in which we would get extra rerender)
-                            this.compactType = nextProps.compactType
                             this.children = nextProps.children
                             this.propsLayout = nextProps.layout
                         }
@@ -797,9 +756,7 @@ class GridLayout(
             initialLayout: Layout,
             children: ReactChildren,
             cols: Int,
-            rows: Int,
-            compactType: CompactType,
-            allowOverlap: Boolean?
+            rows: Int
         ): Layout {
             // Generate one layout item per child.
             val layoutItems = mutableListOf<LayoutItem>()
@@ -828,10 +785,7 @@ class GridLayout(
 
             // Correct the layout.
             val correctedLayout = Layout(layoutItems, cols, rows).correctBounds()
-            return if (allowOverlap == true)
-                correctedLayout
-            else
-                correctedLayout.compact(CompactType.None)
+            return correctedLayout.resetMovedFlag()
         }
 
         private val noop: DragEventHandler<*> = { }

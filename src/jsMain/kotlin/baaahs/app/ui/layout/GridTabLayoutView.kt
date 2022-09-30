@@ -160,7 +160,6 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             attrs.margin = 5 to 5
             attrs.layout = layoutGrid.layout
             attrs.onLayoutChange = handleLayoutChange
-            attrs.compactType = CompactType.None
             attrs.resizeHandle = ::buildResizeHandle
             attrs.disableDrag = !editMode.isOn
             attrs.disableResize = !editMode.isOn
