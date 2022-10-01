@@ -9,6 +9,7 @@ import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
+import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
@@ -36,7 +37,9 @@ class MovingHeadPreview(
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = MovingHeadDevice
-    override val renderEngine = ModelRenderEngine(gl, fixtureType)
+    override val renderEngine = ModelRenderEngine(
+        gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
+    )
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()
