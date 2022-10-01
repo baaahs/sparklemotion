@@ -8,5 +8,6 @@ data class UiSettings(
     val darkMode: Boolean = true,
     val useSharedContexts: Boolean = true,
     val renderButtonPreviews: Boolean = true,
-    val appMode: AppMode = AppMode.Show
+    val appMode: AppMode = AppMode.Show,
+    val developerMode: Boolean = false
 )

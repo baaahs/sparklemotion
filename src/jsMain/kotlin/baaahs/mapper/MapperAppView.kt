@@ -21,8 +21,11 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.events.KeyboardEvent
 import react.*
-import react.dom.*
+import react.dom.canvas
+import react.dom.div
 import react.dom.html.InputType
+import react.dom.i
+import react.dom.img
 import styled.inlineStyles
 
 val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView") { props ->
@@ -110,10 +113,9 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         attrs.tabIndex = "-1" // So we can receive key events.
 
         palette {
+            attrs.title = "Mapping Tools"
             attrs.initialWidth = 240
             attrs.initialHeight = 500
-
-            header { +"Mapping Tools" }
 
             div(+styles.controls) {
                 FormControlLabel {

@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.dev.devModeToolbarMenu
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.client.document.DocumentManager
@@ -239,6 +240,10 @@ val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
                             }
                         }
                     }
+                }
+
+                if (appContext.uiSettings.developerMode) {
+                    devModeToolbarMenu {}
                 }
 
                 help {
