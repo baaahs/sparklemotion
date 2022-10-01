@@ -11,6 +11,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.ModelRenderEngine
+import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
 import baaahs.model.PixelArray
@@ -32,7 +33,9 @@ class ProjectionPreview(
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = ProjectionPreviewDevice
-    override val renderEngine = ModelRenderEngine(gl, fixtureType)
+    override val renderEngine = ModelRenderEngine(
+        gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
+    )
     private var projectionProgram: GlslProgram? = null
     private val renderTargets: Map<Model.Entity, FixtureRenderTarget>
 

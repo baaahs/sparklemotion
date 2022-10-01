@@ -33,4 +33,7 @@ class SyncResultDeliveryStrategy : ResultDeliveryStrategy {
     }
 }
 
+fun GlContext.pickResultDeliveryStrategy() =
+    pickResultDeliveryStrategy(this)
+
 expect fun pickResultDeliveryStrategy(gl: GlContext): ResultDeliveryStrategy
