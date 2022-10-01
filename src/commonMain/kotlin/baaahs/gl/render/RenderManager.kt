@@ -13,7 +13,7 @@ import baaahs.util.Logger
 class RenderManager(glContext: GlContext) {
     private val renderEngines = CacheBuilder<FixtureType, ModelRenderEngine> { fixtureType ->
         ModelRenderEngine(
-            glContext, fixtureType, resultDeliveryStrategy = pickResultDeliveryStrategy(glContext)
+            glContext, fixtureType, resultDeliveryStrategy = glContext.pickResultDeliveryStrategy()
         )
     }
 

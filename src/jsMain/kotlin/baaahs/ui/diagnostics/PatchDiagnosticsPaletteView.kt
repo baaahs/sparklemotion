@@ -7,7 +7,6 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.ui.asTextNode
 import baaahs.ui.components.palette
-import baaahs.ui.typographyH6
 import baaahs.ui.xComponent
 import baaahs.util.Monitor
 import baaahs.window
@@ -37,11 +36,10 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
     }
 
     palette {
+        attrs.title = "Patch Diagnostics"
         attrs.initialWidth = window.innerWidth / 3
         attrs.initialHeight = window.innerHeight * 2 / 3
         attrs.onClose = props.onClose
-
-        typographyH6 { +"Patch Diagnostics" }
 
         if (renderPlans == null) {
             i { +"No patch!" }

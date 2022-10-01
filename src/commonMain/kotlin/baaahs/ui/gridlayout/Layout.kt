@@ -101,8 +101,8 @@ data class Layout(
 
     /**
      * Get all static elements.
-     * @param  {Array} layout Array of layout objects.
-     * @return {Array}        Array of static layout items..
+     *
+     * @return Array of static layout items.
      */
     private fun getStatics(): List<LayoutItem> =
         items.filter { l -> l.isStatic }
@@ -110,21 +110,16 @@ data class Layout(
     /**
      * Move an element. Responsible for doing cascading movements of other elements.
      *
-     * Returns a new layout with moved layout items.
-     *
-     * @param  {Array}      layout            Full layout to modify.
-     * @param  {LayoutItem} l                 element to move.
-     * @param  {Number}     [x]               X position in grid units.
-     * @param  {Number}     [y]               Y position in grid units.
+     * @param item Element to move.
+     * @param x X position in grid units.
+     * @param y Y position in grid units.
+     * @return A new layout with moved layout items.
+     * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
      */
-    fun moveElement(
-        l: LayoutItem,
-        x: Int,
-        y: Int
-    ): Layout {
-        for (direction in Direction.rankedPushOptions(x - l.x, y - l.y)) {
+    fun moveElement(item: LayoutItem, x: Int, y: Int): Layout {
+        for (direction in Direction.rankedPushOptions(x - item.x, y - item.y)) {
             try {
-                return moveElementInternal(l, x, y, true, direction)
+                return moveElementInternal(item, x, y, direction)
             } catch (e: ImpossibleLayoutException) {
                 // Try again.
             }
@@ -132,13 +127,7 @@ data class Layout(
         throw ImpossibleLayoutException()
     }
 
-    private fun moveElementInternal(
-        l: LayoutItem,
-        x: Int,
-        y: Int,
-        isDirectUserAction: Boolean,
-        pushDirection: Direction
-    ): Layout {
+    private fun moveElementInternal(l: LayoutItem, x: Int, y: Int, pushDirection: Direction): Layout {
         // If this is static and not explicitly enabled as draggable,
         // no move is possible, so we can short-circuit this immediately.
         if (l.isStatic && !l.isDraggable) throw ImpossibleLayoutException()
@@ -151,11 +140,15 @@ data class Layout(
         }
 
         val movedItem = l.movedTo(x, y)
-        if (outOfBounds(movedItem))
+        return fitElement(movedItem, pushDirection)
+    }
+
+    private fun fitElement(changedItem: LayoutItem, pushDirection: Direction): Layout {
+        if (outOfBounds(changedItem))
             throw ImpossibleLayoutException()
 
-        var updatedLayout = updateLayout(movedItem)
-        val collisions = findCollisions(movedItem)
+        var updatedLayout = updateLayout(changedItem)
+        val collisions = findCollisions(changedItem)
 
         // If it collides with anything, move it (recursively).
         if (collisions.isNotEmpty()) {
@@ -164,30 +157,39 @@ data class Layout(
             // nearest collision.
             for (collision in pushDirection.sort(collisions)) {
                 logger.info {
-                    "Resolving collision between ${movedItem.i} at [${movedItem.x},${movedItem.y}] and ${collision.i} at [${collision.x},${collision.y}]"
+                    "Resolving collision between ${changedItem.i} at [${changedItem.x},${changedItem.y}] and ${collision.i} at [${collision.x},${collision.y}]"
                 }
 
                 // Short circuit so we can't infinitely loop
                 if (collision.moved) throw ImpossibleLayoutException()
 
                 updatedLayout =
-                    updatedLayout.pushCollidingElement(movedItem, collision, isDirectUserAction, pushDirection)
+                    updatedLayout.pushCollidingElement(changedItem, collision, pushDirection)
             }
         }
 
         return updatedLayout
     }
 
+    /**
+     * Resize an element. Responsible for doing cascading movements of other elements.
+     *
+     * @param item Element to move.
+     * @param w X position in grid units.
+     * @param y Y position in grid units.
+     * @return A new layout with resized and possibly moved layout items.
+     * @throws ImpossibleLayoutException if the move isn't possible because of collisions or constraints.
+     */
     fun resizeElement(item: LayoutItem, w: Int, h: Int): Layout {
         val resizedItem = item.copy(w = w, h = h)
-        var updatedLayout = updateLayout(resizedItem)
-        val collisions = updatedLayout.findCollisions(resizedItem)
-
-        if (collisions.isNotEmpty()) {
-            throw ImpossibleLayoutException()
+        for (direction in arrayOf(Direction.East, Direction.South)) {
+            try {
+                return fitElement(resizedItem, direction)
+            } catch (e: ImpossibleLayoutException) {
+                // Try again.
+            }
         }
-
-        return updatedLayout
+        throw ImpossibleLayoutException()
     }
 
     private fun outOfBounds(movedItem: LayoutItem) =
@@ -207,23 +209,25 @@ data class Layout(
     private fun pushCollidingElement(
         collidesWith: LayoutItem,
         itemToMove: LayoutItem,
-        isDirectUserAction: Boolean,
         direction: Direction
     ): Layout {
         // Don't move static items - we have to move the other element away.
         if (itemToMove.isStatic) {
             if (collidesWith.isStatic) throw ImpossibleLayoutException()
 
-            return pushCollidingElement(itemToMove, collidesWith, isDirectUserAction, direction)
+            return moveElementInternal(
+                collidesWith,
+                collidesWith.x + direction.xIncr,
+                collidesWith.y + direction.yIncr,
+                direction
+            )
         }
 
         return moveElementInternal(
             itemToMove,
             itemToMove.x + direction.xIncr,
             itemToMove.y + direction.yIncr,
-            false,
             direction
-            // we're already colliding (not for static items)
         )
     }
 
