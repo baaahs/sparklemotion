@@ -22,6 +22,7 @@ import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.header
 import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
@@ -86,6 +87,10 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
                         attrs.classes = jso { root = -styles.paper }
                         attrs.elevation = 3
 
+                        props.title?.let {
+                            header { +it }
+                        }
+
                         props.children()
                     }
                 }
@@ -103,6 +108,7 @@ private fun getUiComponentStyles(): UiComponentStyles {
 }
 
 external interface PaletteProps : PropsWithChildren {
+    var title: String?
     var initialWidth: Int?
     var initialHeight: Int?
     var disablePortal: Boolean?

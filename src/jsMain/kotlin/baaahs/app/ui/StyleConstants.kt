@@ -4,6 +4,7 @@ object StyleConstants {
     object Layers {
         val sharedGlCanvas = 5
         val aboveSharedGlCanvas = 10
-        val floatingWindows = 100
+        val muiDialogs = 1200
+        val floatingWindows = 1300
     }
 }

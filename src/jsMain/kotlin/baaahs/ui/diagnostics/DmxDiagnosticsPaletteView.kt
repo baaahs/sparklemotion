@@ -3,7 +3,6 @@ package baaahs.ui.diagnostics
 import baaahs.app.ui.appContext
 import baaahs.dmx.DmxUniverseListener
 import baaahs.ui.components.palette
-import baaahs.ui.typographyH6
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
@@ -32,11 +31,10 @@ val DmxDiagnosticsView = xComponent<DmxDiagnosticsProps>("DmxDiagnostics") { pro
     }
 
     palette {
+        attrs.title = "Dmx Diagnostics"
         attrs.initialWidth = window.innerWidth / 3
         attrs.initialHeight = window.innerHeight * 2 / 3
         attrs.onClose = props.onClose
-
-        typographyH6 { +"Dmx Diagnostics" }
 
         button {
             attrs.onClick = handleUpdateChannels.withMouseEvent()

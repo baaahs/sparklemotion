@@ -13,11 +13,16 @@ open class Stats {
         ReadOnlyProperty<Stats, Statistic> { _, _ -> statistic }
     }
 
-    fun summarize(): String = statistics.values.joinToString("\n") { it.summarize() }
+    val all = statistics.values
+
+    fun summarize(): String = all.joinToString("\n") { it.summarize() }
 
     class Statistic(val name: String) {
         var calls = 0
         var elapsedTime = Interval(0)
+        val elapsedTimeMs get() = (elapsedTime / 1000).roundToInt()
+        val averageTime get() = if (calls > 0) elapsedTime / calls else null
+        val averageTimeMs get() = averageTime?.div(1000)?.roundToInt()
 
         fun <T> time(block: () -> T): T {
             val startTime = internalTimerClock.now()
@@ -40,10 +45,7 @@ open class Stats {
         }
 
         fun summarize(): String {
-            val avgTimeMs = if (calls > 0) {
-                (elapsedTime / calls * 1000).roundToInt()
-            } else "—"
-            return "$name: $calls calls, avg ${avgTimeMs}ms, total ${(elapsedTime * 1000).roundToInt()}ms"
+            return "$name: $calls calls, avg ${averageTimeMs ?: "-"}ms, total ${elapsedTimeMs}ms"
         }
     }
 }
