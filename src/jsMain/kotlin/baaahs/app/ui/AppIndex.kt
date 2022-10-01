@@ -75,7 +75,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             this.dragNDrop = dragNDrop
             this.webClient = webClient
             this.plugins = webClient.plugins
-            this.toolchain = webClient.toolchain
             this.uiSettings = uiSettings
             this.allStyles = allStyles
             this.prompt = { prompt = it }
@@ -156,6 +155,9 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         if (editMode.isOn) Styles.editModeOn else Styles.editModeOff
 
     val show = showManager.show
+    val toolchain = memo(webClient.toolchain, show) {
+        webClient.toolchain.withCache("Open Show")
+    }
 
     onMount(keyboard) {
         keyboard.listen(window)
@@ -197,130 +199,134 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     appContext.Provider {
         attrs.value = myAppContext
 
-        appGlContext.Provider {
-            attrs.value = myAppGlContext
+        toolchainContext.Provider {
+            attrs.value = toolchain
 
-            ThemeProvider {
-                attrs.theme = theme
-                CssBaseline {}
+            appGlContext.Provider {
+                attrs.value = myAppGlContext
 
-                Paper {
-                    attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
+                ThemeProvider {
+                    attrs.theme = theme
+                    CssBaseline {}
 
-                    appDrawer {
-                        attrs.open = renderAppDrawerOpen
-                        attrs.forcedOpen = forceAppDrawerOpen
-                        attrs.onClose = handleAppDrawerToggle
-                        attrs.appMode = appMode
-                        attrs.onAppModeChange = handleAppModeChange
-                        attrs.documentManager = documentManager
-                        attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
-                        attrs.darkMode = darkMode
-                        attrs.onDarkModeChange = handleDarkModeChange
-                        attrs.onSettings = handleSettings
-                    }
+                    Paper {
+                        attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
 
-                    appToolbar {
-                        attrs.appMode = appMode
-                        attrs.documentManager = documentManager
-                        attrs.onMenuButtonClick = handleAppDrawerToggle
-                        attrs.onAppModeChange = handleAppModeChange
-                    }
+                        appDrawer {
+                            attrs.open = renderAppDrawerOpen
+                            attrs.forcedOpen = forceAppDrawerOpen
+                            attrs.onClose = handleAppDrawerToggle
+                            attrs.appMode = appMode
+                            attrs.onAppModeChange = handleAppModeChange
+                            attrs.documentManager = documentManager
+                            attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                            attrs.darkMode = darkMode
+                            attrs.onDarkModeChange = handleDarkModeChange
+                            attrs.onSettings = handleSettings
+                        }
 
-                    div(+themeStyles.appContent) {
-                        if (!webClient.isConnected) {
-                            Paper {
-                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                CircularProgress {}
-                                icon(NotificationImportant)
-                                typographyH6 { +"Connecting…" }
-                                +"Attempting to connect to Sparkle Motion."
-                            }
-                        } else if (!webClient.serverIsOnline) {
-                            Paper {
-                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                CircularProgress {}
-                                icon(NotificationImportant)
-                                typographyH6 { +"Connecting…" }
-                                +"Sparkle Motion is initializing."
-                            }
-                        } else {
-                            ErrorBoundary {
-                                attrs.FallbackComponent = ErrorDisplay
+                        appToolbar {
+                            attrs.appMode = appMode
+                            attrs.documentManager = documentManager
+                            attrs.onMenuButtonClick = handleAppDrawerToggle
+                            attrs.onAppModeChange = handleAppModeChange
+                        }
 
-                                when (appMode) {
-                                    AppMode.Show -> {
-                                        if (!webClient.showManagerIsReady) {
-                                            Paper {
-                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                CircularProgress {}
-                                                NotificationImportant {}
-                                                typographyH6 { +"Connecting…" }
-                                                +"Show manager is initializing."
-                                            }
-                                        } else if (show == null) {
-                                            Paper {
-                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                NotificationImportant {}
-                                                typographyH6 { +"No open show." }
-                                                p { +"Maybe you'd like to open one? " }
-                                            }
-                                        } else if (props.webClient.isMapping) {
-                                            Backdrop {
-                                                attrs.open = true
-                                                Container {
+                        div(+themeStyles.appContent) {
+                            if (!webClient.isConnected) {
+                                Paper {
+                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                    CircularProgress {}
+                                    icon(NotificationImportant)
+                                    typographyH6 { +"Connecting…" }
+                                    +"Attempting to connect to Sparkle Motion."
+                                }
+                            } else if (!webClient.serverIsOnline) {
+                                Paper {
+                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                    CircularProgress {}
+                                    icon(NotificationImportant)
+                                    typographyH6 { +"Connecting…" }
+                                    +"Sparkle Motion is initializing."
+                                }
+                            } else {
+                                ErrorBoundary {
+                                    attrs.FallbackComponent = ErrorDisplay
+
+                                    when (appMode) {
+                                        AppMode.Show -> {
+                                            if (!webClient.showManagerIsReady) {
+                                                Paper {
+                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                                     CircularProgress {}
-                                                    icon(NotificationImportant)
+                                                    NotificationImportant {}
+                                                    typographyH6 { +"Connecting…" }
+                                                    +"Show manager is initializing."
+                                                }
+                                            } else if (show == null) {
+                                                Paper {
+                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
+                                                    NotificationImportant {}
+                                                    typographyH6 { +"No open show." }
+                                                    p { +"Maybe you'd like to open one? " }
+                                                }
+                                            } else if (props.webClient.isMapping) {
+                                                Backdrop {
+                                                    attrs.open = true
+                                                    Container {
+                                                        CircularProgress {}
+                                                        icon(NotificationImportant)
 
-                                                    typographyH6 { +"Mapper Running…" }
-                                                    +"Please wait."
+                                                        typographyH6 { +"Mapper Running…" }
+                                                        +"Please wait."
+                                                    }
+                                                }
+                                            } else {
+                                                showUi {
+                                                    attrs.show = showManager.openShow!!
+                                                    attrs.onShowStateChange = handleShowStateChange
+                                                    attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                                                }
+
+                                                if (layoutEditorDialogOpen) {
+                                                    // Layout Editor dialog
+                                                    layoutEditorDialog {
+                                                        attrs.open = layoutEditorDialogOpen
+                                                        attrs.show = show
+                                                        attrs.onApply = handleLayoutEditorChange
+                                                        attrs.onClose = handleLayoutEditorDialogClose
+                                                    }
                                                 }
                                             }
-                                        } else {
-                                            showUi {
-                                                attrs.show = showManager.openShow!!
-                                                attrs.onShowStateChange = handleShowStateChange
-                                                attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
-                                            }
 
-                                            if (layoutEditorDialogOpen) {
-                                                // Layout Editor dialog
-                                                layoutEditorDialog {
-                                                    attrs.open = layoutEditorDialogOpen
-                                                    attrs.show = show
-                                                    attrs.onApply = handleLayoutEditorChange
-                                                    attrs.onClose = handleLayoutEditorDialogClose
+                                            if (webClient.sceneProvider.openScene == null) {
+                                                Backdrop {
+                                                    attrs.open = true
+                                                    attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
+                                                    Container {
+                                                        icon(NotificationImportant)
+
+                                                        typographyH6 { +"No scene loaded." }
+                                                        +"Maybe you'd like to open one?"
+                                                    }
                                                 }
                                             }
                                         }
 
-                                        if (webClient.sceneProvider.openScene == null) {
-                                            Backdrop {
-                                                attrs.open = true
-                                                attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
-                                                Container {
+                                        AppMode.Scene -> {
+                                            if (props.sceneManager.scene == null) {
+                                                Paper {
+                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
                                                     icon(NotificationImportant)
-
-                                                    typographyH6 { +"No scene loaded." }
-                                                    +"Maybe you'd like to open one?"
+                                                    typographyH6 { +"No open scene." }
+                                                    p { +"Maybe you'd like to open one? " }
                                                 }
-                                            }
-                                        }
-                                    }
-
-                                    AppMode.Scene -> {
-                                        if (props.sceneManager.scene == null) {
-                                            Paper {
-                                                attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                icon(NotificationImportant)
-                                                typographyH6 { +"No open scene." }
-                                                p { +"Maybe you'd like to open one? " }
-                                            }
-                                        } else {
-                                            sceneEditor {
-                                                attrs.sceneEditorClient = props.sceneEditorClient
-                                                attrs.mapper = props.mapper
-                                                attrs.sceneManager = sceneManager
+                                            } else {
+                                                sceneEditor {
+                                                    attrs.sceneEditorClient = props.sceneEditorClient
+                                                    attrs.mapper = props.mapper
+                                                    attrs.sceneManager = sceneManager
+                                                }
                                             }
                                         }
                                     }
@@ -328,32 +334,32 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                             }
                         }
                     }
-                }
 
-                renderDialog?.invoke(this)
+                    renderDialog?.invoke(this)
 
-                if (editMode.isAvailable) {
-                    editableManagerUi {
-                        attrs.editableManager =
-                            when (appMode) {
-                                AppMode.Show -> editableManager
-                                AppMode.Scene -> sceneEditableManager
-                            }
+                    if (editMode.isAvailable) {
+                        editableManagerUi {
+                            attrs.editableManager =
+                                when (appMode) {
+                                    AppMode.Show -> editableManager
+                                    AppMode.Scene -> sceneEditableManager
+                                }
+                        }
                     }
-                }
 
-                prompt?.let {
-                    promptDialog {
-                        attrs.prompt = it
-                        attrs.onClose = handlePromptClose
+                    prompt?.let {
+                        promptDialog {
+                            attrs.prompt = it
+                            attrs.onClose = handlePromptClose
+                        }
                     }
-                }
 
-                notifier {
-                    attrs.notifier = webClient.notifier
-                }
+                    notifier {
+                        attrs.notifier = webClient.notifier
+                    }
 
-                fileDialog {}
+                    fileDialog {}
+                }
             }
         }
     }

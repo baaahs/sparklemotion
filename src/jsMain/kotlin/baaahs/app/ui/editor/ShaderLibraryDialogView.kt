@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderCard
+import baaahs.app.ui.toolchainContext
 import baaahs.gl.withCache
 import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
@@ -15,11 +16,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.css.*
+import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
-import kotlinx.html.org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.events.FocusEvent
@@ -29,7 +30,8 @@ import styled.inlineStyles
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
     val appContext = useContext(appContext)
     val shaderLibraries = appContext.webClient.shaderLibraries
-    val toolchain = appContext.toolchain.withCache("Shader Library")
+    val baseToolchain = useContext(toolchainContext)
+    val toolchain = memo(baseToolchain) { baseToolchain.withCache("Shader Library") }
 
     val handleClose = callback(props.onSelect) { _: Event, _: String -> props.onSelect(null) }
 
@@ -81,53 +83,57 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
     }
 
 
-    Dialog {
-        attrs.open = true
-        attrs.fullWidth = true
+    toolchainContext.Provider {
+        attrs.value = toolchain
+
+        Dialog {
+            attrs.open = true
+            attrs.fullWidth = true
 //        attrs.fullScreen = true
-        attrs.maxWidth = "xl"
-        attrs.scroll = DialogScroll.body
-        attrs.onClose = handleClose
+            attrs.maxWidth = "xl"
+            attrs.scroll = DialogScroll.body
+            attrs.onClose = handleClose
 
-        DialogTitle { +"Shader Library" }
+            DialogTitle { +"Shader Library" }
 
-        DialogContent {
-            FormControl {
-                TextField<StandardTextFieldProps> {
-                    attrs.autoFocus = true
-                    attrs.fullWidth = true
+            DialogContent {
+                FormControl {
+                    TextField<StandardTextFieldProps> {
+                        attrs.autoFocus = true
+                        attrs.fullWidth = true
 //                attrs.label { +props.label }
-                    attrs.InputProps = jso {
-                        endAdornment = buildElement { icon(Search) }
-                    }
-                    attrs.defaultValue = ""
+                        attrs.InputProps = jso {
+                            endAdornment = buildElement { icon(Search) }
+                        }
+                        attrs.defaultValue = ""
 
-                    attrs.onChange = handleSearchChange
-                    attrs.onBlur = handleSearchBlur
+                        attrs.onChange = handleSearchChange
+                        attrs.onBlur = handleSearchBlur
 //                attrs.onKeyDownFunction = handleSearchKeyDown
-                    attrs.onInput = handleSearchInput
+                        attrs.onInput = handleSearchInput
+                    }
+
+                    FormHelperText { +"Enter stuff to search for!" }
                 }
 
-                FormHelperText { +"Enter stuff to search for!" }
-            }
+                Divider {}
 
-            Divider {}
+                sharedGlContext {
+                    div {
+                        inlineStyles {
+                            display = Display.grid
+                            gridTemplateColumns = GridTemplateColumns("repeat(auto-fit, minmax(180px, 1fr))")
+                            gap = 1.em
+                        }
 
-            sharedGlContext {
-                div {
-                    inlineStyles {
-                        display = Display.grid
-                        gridTemplateColumns = GridTemplateColumns("repeat(auto-fit, minmax(180px, 1fr))")
-                        gap = 1.em
-                    }
-
-                    matches.forEach { match ->
-                        shaderCard {
-                            key = match.id
-                            attrs.mutablePatch = MutablePatch(MutableShader(match.shader))
-                            attrs.onSelect = handleShaderSelect[match]
-                            attrs.onDelete = null
-                            attrs.toolchain = toolchain
+                        matches.forEach { match ->
+                            shaderCard {
+                                key = match.id
+                                attrs.mutablePatch = MutablePatch(MutableShader(match.shader))
+                                attrs.onSelect = handleShaderSelect[match]
+                                attrs.onDelete = null
+                                attrs.toolchain = toolchain
+                            }
                         }
                     }
                 }

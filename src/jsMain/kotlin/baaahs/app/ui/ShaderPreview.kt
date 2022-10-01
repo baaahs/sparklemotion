@@ -32,7 +32,8 @@ import styled.inlineStyles
 val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
-    val toolchain = props.toolchain ?: appContext.toolchain
+    val toolchain = props.toolchain
+        ?: run { useContext(toolchainContext) }
 
     val canvasParent = ref<HTMLDivElement>()
     var shaderPreview by state<ShaderPreview?> { null }
