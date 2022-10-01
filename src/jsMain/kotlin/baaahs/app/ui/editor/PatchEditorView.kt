@@ -3,6 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.app.ui.shaderDiagnostics
 import baaahs.app.ui.shaderPreview
+import baaahs.app.ui.toolchainContext
 import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.withCache
@@ -32,7 +33,8 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     val appContext = useContext(appContext)
     val shaderEditorStyles = appContext.allStyles.shaderEditor
 
-    val toolchain = memo { appContext.toolchain.withCache("Editor") }
+    val baseToolchain = useContext(toolchainContext)
+    val toolchain = memo(baseToolchain) { baseToolchain.withCache("Editor") }
 
     var settingsMenuAnchor by state<Element?> { null }
     val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target as Element? }
@@ -90,64 +92,68 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
         settingsMenuAnchor = null
     }
 
-    div(+shaderEditorStyles.container) {
-        div(+shaderEditorStyles.shaderEditor) {
-            shaderEditor {
-                attrs.editingShader = editingShader
-            }
-        }
+    toolchainContext.Provider {
+        attrs.value = toolchain
 
-        div(+shaderEditorStyles.previewContainer) {
-            shaderPreview {
-                attrs.shader = editingShader.shaderBuilder.shader
-                attrs.previewShaderBuilder = editingShader.shaderBuilder
-                attrs.width = ShaderEditorStyles.previewWidth
-                attrs.height = ShaderEditorStyles.previewHeight
-                attrs.adjustGadgets = if (autoAdjustGadgets) {
-                    if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
-                } else null
-                attrs.toolchain = toolchain
-            }
-
-            div(+shaderEditorStyles.settingsMenuAffordance) {
-                attrs.onClickFunction = showSettingsMenu
-
-                icon(mui.icons.material.Settings)
-            }
-        }
-
-        div(+shaderEditorStyles.propsTabsAndPanels) {
-            Tabs {
-                attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
-                attrs.value = selectedTab
-                attrs.onChange = handleChangeTab.asDynamic()
-                attrs.orientation = Orientation.horizontal
-                attrs.variant = TabsVariant.scrollable
-                PageTabs.values().forEach { tab ->
-                    Tab {
-                        attrs.classes = jso { this.root = -shaderEditorStyles.tab }
-                        attrs.label = buildElement { +tab.name }
-                        attrs.value = tab.asDynamic()
-                        attrs.sx { minWidth = Auto.auto }
-                    }
+        div(+shaderEditorStyles.container) {
+            div(+shaderEditorStyles.shaderEditor) {
+                shaderEditor {
+                    attrs.editingShader = editingShader
                 }
             }
 
-            div(+shaderEditorStyles.propsPanel) {
-                when (selectedTab) {
-                    PageTabs.Patch -> shaderPropertiesEditor {
-                        attrs.editableManager = props.editableManager
-                        attrs.editingShader = editingShader
-                        attrs.mutablePatch = props.mutablePatch
+            div(+shaderEditorStyles.previewContainer) {
+                shaderPreview {
+                    attrs.shader = editingShader.shaderBuilder.shader
+                    attrs.previewShaderBuilder = editingShader.shaderBuilder
+                    attrs.width = ShaderEditorStyles.previewWidth
+                    attrs.height = ShaderEditorStyles.previewHeight
+                    attrs.adjustGadgets = if (autoAdjustGadgets) {
+                        if (fullRange) GadgetAdjuster.Mode.FULL_RANGE else GadgetAdjuster.Mode.INCREMENTAL
+                    } else null
+                    attrs.toolchain = toolchain
+                }
+
+                div(+shaderEditorStyles.settingsMenuAffordance) {
+                    attrs.onClickFunction = showSettingsMenu
+
+                    icon(mui.icons.material.Settings)
+                }
+            }
+
+            div(+shaderEditorStyles.propsTabsAndPanels) {
+                Tabs {
+                    attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
+                    attrs.value = selectedTab
+                    attrs.onChange = handleChangeTab.asDynamic()
+                    attrs.orientation = Orientation.horizontal
+                    attrs.variant = TabsVariant.scrollable
+                    PageTabs.values().forEach { tab ->
+                        Tab {
+                            attrs.classes = jso { this.root = -shaderEditorStyles.tab }
+                            attrs.label = buildElement { +tab.name }
+                            attrs.value = tab.asDynamic()
+                            attrs.sx { minWidth = Auto.auto }
+                        }
                     }
-                    PageTabs.Ports -> linksEditor {
-                        attrs.editableManager = props.editableManager
-                        attrs.editingShader = editingShader
-                    }
-                    PageTabs.Gadgets -> gadgetsPreview {
-                        attrs.editingShader = editingShader
-                    }
-                    PageTabs.Help -> shaderHelp {
+                }
+
+                div(+shaderEditorStyles.propsPanel) {
+                    when (selectedTab) {
+                        PageTabs.Patch -> shaderPropertiesEditor {
+                            attrs.editableManager = props.editableManager
+                            attrs.editingShader = editingShader
+                            attrs.mutablePatch = props.mutablePatch
+                        }
+                        PageTabs.Ports -> linksEditor {
+                            attrs.editableManager = props.editableManager
+                            attrs.editingShader = editingShader
+                        }
+                        PageTabs.Gadgets -> gadgetsPreview {
+                            attrs.editingShader = editingShader
+                        }
+                        PageTabs.Help -> shaderHelp {
+                        }
                     }
                 }
             }

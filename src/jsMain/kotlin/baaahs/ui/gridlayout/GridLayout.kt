@@ -287,6 +287,11 @@ class GridLayout(
         }
     }
 
+    /**
+     * @param i Item id.
+     * @param w Item width in columns.
+     * @param h Item height in rows.
+     */
     private fun onResizeStart(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
@@ -304,6 +309,11 @@ class GridLayout(
         props.onResizeStart(layout, l, l, null, e, node)
     }
 
+    /**
+     * @param i Item id.
+     * @param w Item width in columns.
+     * @param h Item height in rows.
+     */
     private fun onResize(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
@@ -327,9 +337,11 @@ class GridLayout(
         }
     }
 
-    private fun placeholderLayoutItem(l: LayoutItem) =
-        LayoutItem(l.x, l.y, l.w, l.h, l.i, isPlaceholder = true)
-
+    /**
+     * @param i Item id.
+     * @param w Item width in columns.
+     * @param h Item height in rows.
+     */
     private fun onResizeStop(i: String, w: Int, h: Int, gridResizeEvent: GridResizeEvent) {
         val e = gridResizeEvent.e
         val node = gridResizeEvent.node
@@ -393,12 +405,15 @@ class GridLayout(
         }
     }
 
+    private fun placeholderLayoutItem(l: LayoutItem) =
+        LayoutItem(l.x, l.y, l.w, l.h, l.i, isPlaceholder = true)
+
     /**
      * Given a grid item, set its style attributes & surround in a <Draggable>.
      * @param  {Element} child React element.
      * @return {Element}       Element wrapped in draggable and properly placed.
      */
-    fun processGridItem(
+    private fun processGridItem(
         child: ReactElement<*>?,
         isDroppingItem: Boolean = false
     ): ReactElement<*>? {

@@ -244,6 +244,9 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         h4 { margin = "unset" }
     }
 
+    val appToolbarDevMenuIcon by css {
+        transform.translateY(1.em)
+    }
     val appToolbarHelpIcon by css {
         transform.translateY(1.em)
     }

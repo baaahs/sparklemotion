@@ -66,7 +66,6 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
     val myAppContext = memo(allStyles) {
         jso<AppContext> {
             this.plugins = props.plugins
-            this.toolchain = props.toolchain
             this.allStyles = allStyles
             this.clock = JsClock
             this.showManager = showManager
@@ -85,17 +84,21 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
     appContext.Provider {
         attrs.value = myAppContext
 
-        appGlContext.Provider {
-            attrs.value = myAppGlContext
+        toolchainContext.Provider {
+            attrs.value = props.toolchain
 
-            ThemeProvider {
-                attrs.theme = theme
-                CssBaseline {}
+            appGlContext.Provider {
+                attrs.value = myAppGlContext
 
-                Paper {
-                    div {
-                        editableManagerUi {
-                            attrs.editableManager = editableManager
+                ThemeProvider {
+                    attrs.theme = theme
+                    CssBaseline {}
+
+                    Paper {
+                        div {
+                            editableManagerUi {
+                                attrs.editableManager = editableManager
+                            }
                         }
                     }
                 }
