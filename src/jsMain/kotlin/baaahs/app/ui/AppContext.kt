@@ -20,6 +20,7 @@ import baaahs.util.Clock
 import react.createContext
 
 val appContext = createContext<AppContext>()
+val toolchainContext = createContext<Toolchain>()
 
 /**
  * The application context.
@@ -32,7 +33,6 @@ external interface AppContext {
     var dragNDrop: ReactBeautifulDragNDrop
     var webClient: WebClient.Facade
     var plugins: Plugins
-    var toolchain: Toolchain
     var uiSettings: UiSettings
     var allStyles: AllStyles
     var prompt: (prompt: Prompt) -> Unit
