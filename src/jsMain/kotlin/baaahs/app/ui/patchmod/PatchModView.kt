@@ -28,7 +28,7 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
     }
 
     val patchMods = selectedPatch.patchMods
-    var selectedPatchMod by state { patchMods.first() }
+    var selectedPatchMod by state { patchMods.firstOrNull() }
     val handlePatchModSelect by handler { _: SyntheticEvent<*, *>, value: dynamic ->
         selectedPatchMod = value
     }
@@ -75,7 +75,9 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                     attrs.noSharedGlContext = true
                 }
 
-                with(selectedPatchMod.getView(selectedPatch)) { render() }
+                selectedPatchMod?.let {
+                    with(it.getView(selectedPatch)) { render() }
+                }
             }
 
             div(+styles.controls) {
