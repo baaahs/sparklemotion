@@ -53,13 +53,13 @@ private val ImagePickerView = xComponent<ImagePickerProps>("ImagePicker") { prop
         props.gadget.imageRef = ImageRef.Local(dataUrl)
     }
 
-    onMount {
-        props.gadget.listen(handleChangeFromServer)
-
-        withCleanup {
-            props.gadget.unlisten(handleChangeFromServer)
-        }
-    }
+//    onMount(props.gadget, handleChangeFromServer) {
+//        props.gadget.listen(handleChangeFromServer)
+//
+//        withCleanup {
+//            props.gadget.unlisten(handleChangeFromServer)
+//        }
+//    }
 
 
     div(+styles.wrapper) {

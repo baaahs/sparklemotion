@@ -20,9 +20,9 @@ open class Stats {
     class Statistic(val name: String) {
         var calls = 0
         var elapsedTime = Interval(0)
-        val elapsedTimeMs get() = (elapsedTime / 1000).roundToInt()
+        val elapsedTimeMs get() = (elapsedTime * 1000).roundToInt()
         val averageTime get() = if (calls > 0) elapsedTime / calls else null
-        val averageTimeMs get() = averageTime?.div(1000)?.roundToInt()
+        val averageTimeMs get() = averageTime?.times(1000)?.roundToInt()
 
         fun <T> time(block: () -> T): T {
             val startTime = internalTimerClock.now()
