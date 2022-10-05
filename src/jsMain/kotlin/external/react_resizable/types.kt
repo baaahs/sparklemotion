@@ -15,7 +15,14 @@ typealias ResizeHandle =
 typealias ResizeHandleAxis = String
 
 val ResizeHandleAxes = arrayOf(
-    "s", "w", "e", "n", "sw", "nw", "se", "ne"
+    "s",
+//    "w",
+    "e",
+//    "n",
+//    "sw",
+//    "nw",
+    "se",
+//    "ne"
 )
 
 fun buildResizeHandle(axis: ResizeHandleAxis, ref: Ref<HTMLElement>) = buildElement {
