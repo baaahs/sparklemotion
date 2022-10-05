@@ -84,6 +84,28 @@ object LayoutSpec : Spek({
             }
         }
 
+        context("with a full grid (ABCD/EFGH/IJKL/MNOP)") {
+            override(layout) { """
+                ABCD
+                EFGH
+                IJKL
+                MNOP
+            """.trimIndent().toLayout() }
+
+            it("items can be moved only horizontally OR vertically, not both") {
+                expect { (move("A", 2, 2)) }.toThrow<ImpossibleLayoutException>()
+            }
+
+            xit("TODO: items can be moved both horizontally and vertically") {
+                expect(move("A", 2, 2)).toEqual("""
+                    BCGD
+                    EFKH
+                    IJAL
+                    MNOP
+                """.trimIndent())
+            }
+        }
+
         context("with .ABBC.") {
             override(layout) { ".ABBC.".toLayout() }
 
