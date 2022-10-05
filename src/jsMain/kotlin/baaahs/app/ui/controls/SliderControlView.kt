@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.gadgets.Slider
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.withEvent
 import baaahs.ui.xComponent
@@ -66,7 +67,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.beatLinked = false
     }
 
-    div(props.sliderControl?.inUseStyle?.let { +it }) {
+    div(+Styles.controlRoot and props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
             attrs.title = slider.title
 //        attrs.position = channel.value

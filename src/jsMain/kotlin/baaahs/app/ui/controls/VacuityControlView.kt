@@ -18,7 +18,7 @@ private val VacuityControlView = xComponent<VacuityProps>("VacuityControl") { pr
 
     val relevantUnplacedControls = props.controlProps.relevantUnplacedControls
 
-    div(+styles.vacuityContainer and Styles.notExplicitlySized) {
+    div(+Styles.controlRoot and styles.vacuityContainer and Styles.notExplicitlySized) {
         relevantUnplacedControls.forEachIndexed { index, unplacedControl ->
 //                val draggableId = "unplaced-${unplacedControl.id}"
 //                draggable({

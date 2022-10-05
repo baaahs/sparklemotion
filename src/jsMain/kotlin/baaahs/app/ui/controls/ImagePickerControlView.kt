@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.control.OpenImagePickerControl
 import baaahs.show.live.ControlProps
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.Props
@@ -17,7 +18,7 @@ private val ImagePickerControlView = xComponent<ImagePickerControlProps>("ImageP
 
     val imagePickerControl = props.imagePickerControl
 
-    div(+props.imagePickerControl.inUseStyle) {
+    div(+Styles.controlRoot and props.imagePickerControl.inUseStyle) {
         imagePicker {
             attrs.gadget = imagePickerControl.imagePicker
         }

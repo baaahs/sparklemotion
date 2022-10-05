@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.control.OpenColorPickerControl
 import baaahs.show.live.ControlProps
+import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.Props
@@ -17,7 +18,7 @@ private val ColorPickerControlView = xComponent<ColorPickerControlProps>("ColorP
 
     val colorPickerControl = props.colorPickerControl
 
-    div(+props.colorPickerControl.inUseStyle) {
+    div(+Styles.controlRoot and props.colorPickerControl.inUseStyle) {
         colorPicker {
             attrs.gadget = colorPickerControl.colorPicker
         }

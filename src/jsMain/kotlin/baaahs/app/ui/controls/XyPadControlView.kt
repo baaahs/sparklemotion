@@ -23,7 +23,7 @@ private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
     val xyPad = props.xyPadControl.xyPad
 
 
-    div(props.containerClasses ?: (+XyPadStyles.container and props.xyPadControl.inUseStyle)) {
+    div(props.containerClasses ?: (+Styles.controlRoot and XyPadStyles.container and props.xyPadControl.inUseStyle)) {
         xyPad {
             attrs.xyPad = xyPad
         }

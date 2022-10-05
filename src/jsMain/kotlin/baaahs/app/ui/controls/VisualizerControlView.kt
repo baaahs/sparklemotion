@@ -4,12 +4,9 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
+import baaahs.ui.*
 import baaahs.ui.diagnostics.dmxDiagnostics
 import baaahs.ui.diagnostics.patchDiagnostics
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.withMouseEvent
-import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.org.w3c.dom.events.Event
@@ -69,7 +66,7 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
 
     Card {
         ref = rootEl
-        attrs.classes = jso { this.root = -Styles.visualizerCard }
+        attrs.classes = jso { this.root = -Styles.controlRoot and Styles.visualizerCard }
 
         div(+Styles.visualizerMenuAffordance) {
             attrs.onClickFunction = showMenu
