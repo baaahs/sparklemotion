@@ -164,10 +164,10 @@
                                 "column": 6,
                                 "row": 2,
                                 "width": 2,
-                                "height": 6,
+                                "height": 7,
                                 "layout": {
                                     "columns": 1,
-                                    "rows": 6,
+                                    "rows": 7,
                                     "matchParent": true,
                                     "items": [
                                         {
