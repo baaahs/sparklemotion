@@ -17,9 +17,7 @@ object LoggerConfig {
     val classLevels = mapOf<KClass<*>, LogLevel>(
 //        PubSub::class to LogLevel.DEBUG,
         KglTracer::class to LogLevel.DEBUG,
-        ShowOpener::class to LogLevel.DEBUG,
-        PubSub::class to LogLevel.DEBUG,
-        XyPadDataSource::class to LogLevel.DEBUG
+        ShowOpener::class to LogLevel.DEBUG
     )
 
     private val allLevels = (stringLevels + classLevels.mapKeys { (k, _) -> k.simpleName })
