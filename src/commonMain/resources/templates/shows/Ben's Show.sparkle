@@ -338,7 +338,7 @@
     "shaders": {
         "xyProjection": {
             "title": "XY Projection",
-            "src": "// XY Projection\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x / .65, pixelOffset.y);\n}"
+            "src": "// XY Projection\n\nstruct ModelInfo {\n    vec3 center;\n    vec3 extents;\n};\nuniform ModelInfo modelInfo;\n\n// @return uv-coordinate\n// @param pixelLocation xyz-coordinate\nvec2 main(vec3 pixelLocation) {\n    vec3 pixelOffset = (pixelLocation - modelInfo.center) / modelInfo.extents + .5;\n    return vec2(1.-pixelOffset.x, pixelOffset.y);\n}"
         },
         "darkness": {
             "title": "Darkness",
