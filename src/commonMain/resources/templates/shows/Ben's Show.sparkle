@@ -1349,19 +1349,7 @@
                     "type": "datasource",
                     "dataSourceId": "time"
                 },
-                "iTime": {
-                    "type": "datasource",
-                    "dataSourceId": "time"
-                },
                 "gl_FragCoord": {
-                    "type": "stream",
-                    "stream": "main"
-                },
-                "iResolution": {
-                    "type": "datasource",
-                    "dataSourceId": "resolution"
-                },
-                "FragCoord": {
                     "type": "stream",
                     "stream": "main"
                 },
@@ -1378,23 +1366,11 @@
                     "type": "stream",
                     "stream": "main"
                 },
-                "time": {
-                    "type": "datasource",
-                    "dataSourceId": "time"
-                },
                 "iTime": {
                     "type": "datasource",
                     "dataSourceId": "time"
                 },
-                "gl_FragCoord": {
-                    "type": "stream",
-                    "stream": "main"
-                },
                 "iResolution": {
-                    "type": "datasource",
-                    "dataSourceId": "resolution"
-                },
-                "resolution": {
                     "type": "datasource",
                     "dataSourceId": "resolution"
                 }
