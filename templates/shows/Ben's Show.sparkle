@@ -47,15 +47,9 @@
                                 "width": 6,
                                 "height": 7,
                                 "layout": {
-                                    "columns": 3,
+                                    "columns": 5,
                                     "rows": 7,
-                                    "matchParent": true,
                                     "items": [
-                                        {
-                                            "controlId": "baaahsEclipse",
-                                            "column": 1,
-                                            "row": 0
-                                        },
                                         {
                                             "controlId": "squarezzz",
                                             "column": 2,
@@ -113,12 +107,12 @@
                                         },
                                         {
                                             "controlId": "gadzooks",
-                                            "column": 0,
+                                            "column": 1,
                                             "row": 5
                                         },
                                         {
                                             "controlId": "gaiaSOrgasm",
-                                            "column": 1,
+                                            "column": 0,
                                             "row": 5
                                         },
                                         {
@@ -152,8 +146,83 @@
                                             "row": 6
                                         },
                                         {
-                                            "controlId": "jacobianUndistortion",
+                                            "controlId": "baaahsEclipse",
+                                            "column": 1,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "firstRaymarches",
+                                            "column": 3,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "fireball",
+                                            "column": 3,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "blueHearts",
+                                            "column": 3,
+                                            "row": 3
+                                        },
+                                        {
+                                            "controlId": "blueSClues",
+                                            "column": 3,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "checkerboard",
+                                            "column": 3,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "colorDiffusionFlow",
+                                            "column": 3,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "danceyCubes",
+                                            "column": 4,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "plaid",
+                                            "column": 4,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "primeWaves",
+                                            "column": 4,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "quiver",
+                                            "column": 4,
+                                            "row": 3
+                                        },
+                                        {
+                                            "controlId": "spaceRings",
+                                            "column": 4,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "waves",
+                                            "column": 4,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "sunsetDelight",
+                                            "column": 4,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "huerthquake",
                                             "column": 2,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "jacobianUndistortion",
+                                            "column": 3,
                                             "row": 2
                                         }
                                     ]
@@ -164,11 +233,10 @@
                                 "column": 6,
                                 "row": 2,
                                 "width": 2,
-                                "height": 6,
+                                "height": 7,
                                 "layout": {
-                                    "columns": 1,
-                                    "rows": 6,
-                                    "matchParent": true,
+                                    "columns": 2,
+                                    "rows": 7,
                                     "items": [
                                         {
                                             "controlId": "ripple",
@@ -187,18 +255,33 @@
                                         },
                                         {
                                             "controlId": "thatSAllFolks",
-                                            "column": 0,
-                                            "row": 3
+                                            "column": 1,
+                                            "row": 1
                                         },
                                         {
-                                            "controlId": "soundBrightness",
+                                            "controlId": "beatShift",
+                                            "column": 0,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "imageOverlay",
                                             "column": 0,
                                             "row": 5
                                         },
                                         {
-                                            "controlId": "scanners",
-                                            "column": 0,
-                                            "row": 4
+                                            "controlId": "zigZag",
+                                            "column": 1,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "blackout",
+                                            "column": 1,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "baaahsLogo",
+                                            "column": 1,
+                                            "row": 2
                                         }
                                     ]
                                 }
@@ -225,12 +308,6 @@
                                             "row": 0
                                         },
                                         {
-                                            "controlId": "headlightsMode",
-                                            "column": 0,
-                                            "row": 1,
-                                            "width": 2
-                                        },
-                                        {
                                             "controlId": "hueShift",
                                             "column": 2,
                                             "row": 0
@@ -251,12 +328,6 @@
                                 "row": 3,
                                 "width": 4,
                                 "height": 2
-                            },
-                            {
-                                "controlId": "blackout",
-                                "column": 6,
-                                "row": 8,
-                                "width": 2
                             }
                         ]
                     }
@@ -276,10 +347,6 @@
         "hsb": {
             "title": "HSB",
             "src": "// HSB\n\nuniform float brightness; // @@Slider min=0 max=1.25 default=1\nuniform float saturation; // @@Slider min=0 max=1.25 default=1\nuniform float hueShift; // @@Slider min=0 max=2 default=1\n\n// All components are in the range [0…1], including hue.\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n\n\n// All components are in the range [0…1], including hue.\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    vec3 hsv = rgb2hsv(clampedColor.rgb);\n    hsv.x += hueShift;\n    hsv.y *= saturation;\n    hsv.z *= brightness;\n    return vec4(hsv2rgb(hsv), clampedColor.a);\n}"
-        },
-        "baaahsEclipse": {
-            "title": "[🐑] BAAAHS Eclipse",
-            "src": "// Eclipse of the sheep!\n// based on https://www.shadertoy.com/view/4tGXzt\n\n#define BEATMOVE 1 \n\nuniform float time; // @@Time\nuniform vec2 resolution; // @@Resolution\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nstruct SoundAnalysis {\n\tint bucketCount;\n\tint sampleHistoryCount;\n\tsampler2D buckets;\n\tfloat maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\nstruct BeatInfo {\n\tfloat beat;\n\tfloat bpm;\n\tfloat intensity;\n\tfloat confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n\nconst float FREQ_RANGE = 64.0;\nconst float PI = 3.1415;\nconst float RADIUS = 0.8;\nconst float BRIGHTNESS = 0.2;\nconst float SPEED = 0.4;\n\n/* Minified BAAAHS logo code: use pointInSheep(vec2 point, float scale, vec2 offset) to determine if a pixel is in the sheep logo. */ float COORD_SCALE = 0.03; vec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94)); vec2 HEART_MIN_XY = vec2(-70.5, -67.9); vec2 HEART_MAX_XY = vec2(70.6, 51.6); vec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48)); vec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76)); vec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38)); vec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78)); vec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06)); vec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));  bool pointInHeart(vec2 point, float scale, vec2 offset){ \tint len = 187; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; } \treturn c; } bool pointInFace(vec2 point, float scale, vec2 offset){ \tint len = 26; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; } \treturn c; } bool pointInMouth(vec2 point, float scale, vec2 offset){ \tint len = 35; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; } \treturn c; } bool pointInEyeLeft(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEyeRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; } \treturn c; } bool pointInEarLeft(vec2 point, float scale, vec2 offset){ \tint len = 9; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEarRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; } \treturn c; }  bool pointInSheep(vec2 point, float scale, vec2 offset) { \tvec2 p = (point - offset)/(scale * COORD_SCALE); \tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) { \t\treturn false; \t} \tbool inHeart = pointInHeart(point, scale, offset); \tbool inFace = pointInFace(point, scale, offset); \tbool inMouth = pointInMouth(point, scale, offset); \tbool inEyeLeft = pointInEyeLeft(point, scale, offset); \tbool inEyeRight = pointInEyeRight(point, scale, offset); \tbool inEarLeft = pointInEarLeft(point, scale, offset); \tbool inEarRight = pointInEarRight(point, scale, offset); \treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight)); }\n\n\n//convert HSV to RGB\nvec3 hsv2rgb(vec3 c){\n\tvec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\tvec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n\treturn c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nfloat luma(vec3 color) {\n\treturn dot(color, vec3(0.299, 0.587, 0.114));\n}\n\nfloat getfrequency(float x) {\n\treturn .2 + .2 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;\n}\n\nfloat getfrequency_smooth(float x) {\n\tfloat index = floor(x * FREQ_RANGE) / FREQ_RANGE;\n\tfloat next = floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE;\n\treturn mix(getfrequency(index), getfrequency(next), smoothstep(0.0, 1.0, fract(x * FREQ_RANGE)));\n}\n\nfloat getfrequency_blend(float x) {\n\treturn mix(getfrequency(x), getfrequency_smooth(x), 0.5);\n}\n\nvec3 doHalo(vec2 fragment, float scale) {\n\tfloat dist = length(fragment);\n\tfloat ring = 1.0 / abs(dist - scale);\n\n\tfloat sheepScale = 1.5;\n\tvec2 sheepXY = vec2(0.0, 0.00);\n\n\t//float b = pointInSheep(fragment, sheepScale, sheepXY) ? BRIGHTNESS : 0.1 * BRIGHTNESS; // dist < scale ? BRIGHTNESS * 0.3 : BRIGHTNESS;\n\tfloat b = dist < scale ? BRIGHTNESS * 0.2 : BRIGHTNESS;\n\n\n\tif (pointInSheep(fragment, sheepScale, sheepXY)) { b = 50. * b; }\n\n\tvec3 col = vec3(0.0);\n\n\tfloat angle = atan(fragment.x, fragment.y);\n\tcol += hsv2rgb( vec3( ( angle + time * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;\n\n\tfloat frequency = max(getfrequency_blend(abs(angle / PI)) - 0.02, 0.0);\n\tcol *= frequency;\n\n\treturn col;\n}\n\nvec3 doLine(vec2 fragment, float radius, float x) {\n\tvec3 col = hsv2rgb(vec3(x * 0.23 + time * 0.12, 1.0, 1.0));\n\n\tfloat freq = abs(fragment.x * 0.5);\n\n\tcol *= (1.0 / abs(fragment.y)) * BRIGHTNESS * getfrequency(freq);\n\tcol = col * smoothstep(radius, radius * 1.8, abs(fragment.x));\n\n\treturn col;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 2.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\n\tvec3 color = vec3(0.0134, 0.052, 0.1);\n\tcolor += doHalo(fragPos, RADIUS);\n\n\tfloat c = cos(time * SPEED);\n\tfloat s = sin(time * SPEED);\n\tvec2 rot = mat2(c,s,-s,c) * fragPos;\n\tcolor += doLine(rot, RADIUS, rot.x);\n\n\tcolor += max(luma(color) - 1.0, 0.0);\n\n\tfragColor = vec4(color, 1.0);\n\n}\n"
         },
         "squarezzz": {
             "title": "[🐑] Squarezzz",
@@ -357,6 +424,66 @@
             "title": "Red Sea",
             "src": "// Red Sea\n// From http://glslsandbox.com/e#60816.0\n\n/*\n * Original shader from: https://www.shadertoy.com/view/3ty3Wy\n */\n\n// --------[ Original ShaderToy begins here ]---------- //\n// GLSL textureless classic 3D noise \"cnoise\",\n// with an RSL-style periodic variant \"pnoise\".\n// Author:  Stefan Gustavson (stefan.gustavson@liu.se)\n// Version: 2011-10-11\n//\n// Many thanks to Ian McEwan of Ashima Arts for the\n// ideas for permutation and gradient selection.\n//\n// Copyright (c) 2011 Stefan Gustavson. All rights reserved.\n// Distributed under the MIT license. See LICENSE file.\n// https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x)\n{\n    return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x)\n{\n    return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x)\n{\n    return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n    return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nvec3 fade(vec3 t) {\n    return t*t*t*(t*(t*6.0-15.0)+10.0);\n}\n\n// Classic Perlin noise\nfloat cnoise(vec3 P)\n{\n    vec3 Pi0 = floor(P); // Integer part for indexing\n    vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1\n    Pi0 = mod289(Pi0);\n    Pi1 = mod289(Pi1);\n    vec3 Pf0 = fract(P); // Fractional part for interpolation\n    vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0\n    vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);\n    vec4 iy = vec4(Pi0.yy, Pi1.yy);\n    vec4 iz0 = Pi0.zzzz;\n    vec4 iz1 = Pi1.zzzz;\n\n    vec4 ixy = permute(permute(ix) + iy);\n    vec4 ixy0 = permute(ixy + iz0);\n    vec4 ixy1 = permute(ixy + iz1);\n\n    vec4 gx0 = ixy0 * (1.0 / 7.0);\n    vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;\n    gx0 = fract(gx0);\n    vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);\n    vec4 sz0 = step(gz0, vec4(0.0));\n    gx0 -= sz0 * (step(0.0, gx0) - 0.5);\n    gy0 -= sz0 * (step(0.0, gy0) - 0.5);\n\n    vec4 gx1 = ixy1 * (1.0 / 7.0);\n    vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;\n    gx1 = fract(gx1);\n    vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);\n    vec4 sz1 = step(gz1, vec4(0.0));\n    gx1 -= sz1 * (step(0.0, gx1) - 0.5);\n    gy1 -= sz1 * (step(0.0, gy1) - 0.5);\n\n    vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);\n    vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);\n    vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);\n    vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);\n    vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);\n    vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);\n    vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);\n    vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);\n\n    vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));\n    g000 *= norm0.x;\n    g010 *= norm0.y;\n    g100 *= norm0.z;\n    g110 *= norm0.w;\n    vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));\n    g001 *= norm1.x;\n    g011 *= norm1.y;\n    g101 *= norm1.z;\n    g111 *= norm1.w;\n\n    float n000 = dot(g000, Pf0);\n    float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));\n    float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));\n    float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));\n    float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));\n    float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));\n    float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));\n    float n111 = dot(g111, Pf1);\n\n    vec3 fade_xyz = fade(Pf0);\n    vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);\n    vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);\n    float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);\n    return 2.2 * n_xyz;\n}\n\n// FBM\nfloat fbm (in vec3 p) {\n    float ret = -1.;\n    float freq = 1.;\n    float amp = 1.;\n    for(int i=0; i<8; i++) {\n        float n = cnoise(p*freq+vec3(0,(iTime*.2),0)*2.);\n        ret = ret + n * amp;\n        amp *= .5;\n        freq *= 1.5 + n * .1;\n    }\n    return ret;\n}\n\nfloat f(vec3 p) {\n    float n = fbm(p);\n    return p.y - 1. - exp(n) * .5;\n}\n\n\n\nvec3 calcNormal(vec3 p, float h) // for function f(p)\n{\n    const vec2 k = vec2(1,-1);\n    return normalize( k.xyy*f( p + k.xyy*h ) +\n    k.yyx*f( p + k.yyx*h ) +\n    k.yxy*f( p + k.yxy*h ) +\n    k.xxx*f( p + k.xxx*h ) );\n}\n\nvoid pR(inout vec2 p, float a) {\n    p = cos(a)*p + sin(a)*vec2(p.y, -p.x);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // Normalized pixel coordinates (from 0 to 1)\n    vec2 uv = fragCoord/iResolution.xy * 2. - 1.;\n    uv.x *= iResolution.x / iResolution.y;\n    vec3 ro = vec3(0, 2, -4);\n    vec3 rd = normalize(vec3(uv, 1.77) + vec3(0,-1.5,0));\n    /*\n    pR(ro.xz, iTime*.1);\n    pR(rd.xz, iTime*.1);\n\t//*/\n    float t = 0., d;\n\n\n    for(int i=0; i<16; i++) {\n        d = f(ro+rd*t);\n        //if(d<0.) break;\n        t+=d;\n    }\n\n    vec3 n = calcNormal(ro+rd*t, t*t*.0004);\n    // Time varying pixel color\n    vec3 col = -n.yyy *n.y * .5 + .5;\n    col *= vec3(8,4,16);\n    col /= t;\n    col = pow(col, vec3(.4545));\n\n    // Output to screen\n    fragColor = vec4(col,1.0);\n}\n"
         },
+        "baaahsEclipse": {
+            "title": "[🐑] BAAAHS Eclipse",
+            "src": "// Eclipse of the sheep!\n// based on https://www.shadertoy.com/view/4tGXzt\n\n#define BEATMOVE 1\n\nuniform float time; // @@Time\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nuniform vec2 resolution; // @@Resolution\n\n\nstruct SoundAnalysis {\n\tint bucketCount;\n\tint sampleHistoryCount;\n\tsampler2D buckets;\n\tfloat maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\nstruct BeatInfo {\n\tfloat beat;\n\tfloat bpm;\n\tfloat intensity;\n\tfloat confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\n\nconst float FREQ_RANGE = 64.0;\nconst float PI = 3.1415;\nconst float RADIUS = 0.8;\nconst float BRIGHTNESS = 0.2;\nconst float SPEED = 0.4;\n\n/* Minified BAAAHS logo code: use pointInSheep(vec2 point, float scale, vec2 offset) to determine if a pixel is in the sheep logo. */ float COORD_SCALE = 0.03; vec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94)); vec2 HEART_MIN_XY = vec2(-70.5, -67.9); vec2 HEART_MAX_XY = vec2(70.6, 51.6); vec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48)); vec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76)); vec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38)); vec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78)); vec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06)); vec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));  bool pointInHeart(vec2 point, float scale, vec2 offset){ \tint len = 187; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; } \treturn c; } bool pointInFace(vec2 point, float scale, vec2 offset){ \tint len = 26; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; } \treturn c; } bool pointInMouth(vec2 point, float scale, vec2 offset){ \tint len = 35; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; } \treturn c; } bool pointInEyeLeft(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEyeRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; } \treturn c; } bool pointInEarLeft(vec2 point, float scale, vec2 offset){ \tint len = 9; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; } \treturn c; } bool pointInEarRight(vec2 point, float scale, vec2 offset){ \tint len = 10; \tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE); \tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; } \treturn c; }  bool pointInSheep(vec2 point, float scale, vec2 offset) { \tvec2 p = (point - offset)/(scale * COORD_SCALE); \tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) { \t\treturn false; \t} \tbool inHeart = pointInHeart(point, scale, offset); \tbool inFace = pointInFace(point, scale, offset); \tbool inMouth = pointInMouth(point, scale, offset); \tbool inEyeLeft = pointInEyeLeft(point, scale, offset); \tbool inEyeRight = pointInEyeRight(point, scale, offset); \tbool inEarLeft = pointInEarLeft(point, scale, offset); \tbool inEarRight = pointInEarRight(point, scale, offset); \treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight)); }\n\n\n//convert HSV to RGB\nvec3 hsv2rgb(vec3 c){\n\tvec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n\tvec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n\treturn c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nfloat luma(vec3 color) {\n\treturn dot(color, vec3(0.299, 0.587, 0.114));\n}\n\nfloat getfrequency(float x) {\n\treturn .2 + .3 * beatInfo.intensity;  //texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;\n} \n\nfloat getfrequency_smooth(float x) {\n\tfloat index = floor(x * FREQ_RANGE) / FREQ_RANGE;\n\tfloat next = floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE;\n\treturn mix(getfrequency(index), getfrequency(next), smoothstep(0.0, 1.0, fract(x * FREQ_RANGE)));\n}\n\nfloat getfrequency_blend(float x) {\n\treturn mix(getfrequency(x), getfrequency_smooth(x), 0.5);\n}\n\nvec3 doHalo(vec2 fragment, float scale) {\n\tfloat dist = length(fragment);\n\tfloat ring = 1.0 / abs(dist - scale);\n\n\tfloat sheepScale = 1.5;\n\tvec2 sheepXY = vec2(0.0, 0.00);\n\n\t//float b = pointInSheep(fragment, sheepScale, sheepXY) ? BRIGHTNESS : 0.1 * BRIGHTNESS; // dist < scale ? BRIGHTNESS * 0.3 : BRIGHTNESS;\n\tfloat b = dist < scale ? BRIGHTNESS * 0.2 : BRIGHTNESS;\n\n\n\tif (pointInSheep(fragment, sheepScale, sheepXY)) { b = 50. * b; }\n\n\tvec3 col = vec3(0.0);\n\n\tfloat angle = atan(fragment.x, fragment.y);\n\tcol += hsv2rgb( vec3( ( angle + time * 0.25 ) / (PI * 2.0), 1.0, 1.0 ) ) * ring * b;\n\n\tfloat frequency = max(getfrequency_blend(abs(angle / PI)) - 0.02, 0.0);\n\tcol *= frequency;\n\n\treturn col;\n}\n\nvec3 doLine(vec2 fragment, float radius, float x) {\n\tvec3 col = hsv2rgb(vec3(x * 0.23 + time * 0.12, 1.0, 1.0));\n\n\tfloat freq = abs(fragment.x * 0.5);\n\n\tcol *= (1.0 / abs(fragment.y)) * BRIGHTNESS * getfrequency(freq);\n\tcol = col * smoothstep(radius, radius * 1.8, abs(fragment.x));\n\n\treturn col;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 2.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\n\tvec3 color = vec3(0.0134, 0.052, 0.1);\n\tcolor += doHalo(fragPos, RADIUS);\n\n\tfloat c = cos(time * SPEED);\n\tfloat s = sin(time * SPEED);\n\tvec2 rot = mat2(c,s,-s,c) * fragPos;\n\tcolor += doLine(rot, RADIUS, rot.x);\n\n\tcolor += max(luma(color) - 1.0, 0.0);\n\n\tfragColor = vec4(color, 1.0);\n\n}\n"
+        },
+        "firstRaymarches": {
+            "title": "First Raymarches",
+            "src": "// First Raymarches\n// From https://www.shadertoy.com/view/XdGGzw\n\n#define ITERATIONS 128\n\nuniform float thing; // @@Slider default=0.866025 max=2\n\nfloat sdHexPrism( vec3 p, vec2 h ) {\n    vec3 q = abs(p);\n    return max(q.z-h.y,max((q.x*thing+q.y*0.5),q.y)-h.x);\n}\n\nfloat opRep( vec3 p, vec3 spacing ) {\n    vec3 q = mod(p, spacing) - 0.5 * spacing;\n    return sdHexPrism( q, vec2( 0.2 + 0.1 * cos(iTime/2.), 1.0 + 0.9 * sin(3.14 + iTime/2.) ) );\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // 1 : retrieve the fragment's coordinates\n    vec2 uv = fragCoord.xy / iResolution.xy;\n    uv -= vec2(0.5, 0.5);\n    uv.x *= iResolution.x / iResolution.y;\t\t// Correct for aspect ratio\n\n    // 2 : camera position and ray direction\n    // vec3 pos = vec3( sin(iTime), 0, sin(iTime) * 5. );\n    vec3 pos = vec3( sin(iTime), 0, iTime / 20. );\n    vec3 dir = normalize( vec3( uv, 1. ) );\n\n    // 3 : ray march loop\n    // ip will store where the ray hits the surface\n    vec3 ip;\n\n    // variable step size\n    float t = 0.0;\n    float findThresh = 0.001;\n    int found = 0;\n    int last_i = 0;\n\n    for(int i = 0; i < ITERATIONS; i++) {\n        last_i = i;\n\n        //update position along path\n        ip = pos + dir * t;\n\n        //gets the shortest distance to the scene\n        //break the loop if the distance was too small\n        //this means that we are close enough to the surface\n        float temp;\n\n        // make a repeating SDF shape\n        temp = opRep( ip, vec3(2.5 + 2.0 * sin(iTime/2.) ) );\n        if( temp < findThresh ) {\n            float r = 0.7 + 0.3 * sin(ip.z/8. + ip.x/2.);\n            float g = 0.6 + 0.3 * cos(ip.z/8. + ip.y/2.);\n            float b = 0.5 + 0.4 * sin(ip.z/8. + ip.x);\n            ip = vec3(r, g, b);\n            found = 1;\n            break;\n        }\n\n        //increment the step along the ray path\n        t += temp;\n    }\n\n    // make background black if no shape was hit\n    if(found == 0) {\n        ip = vec3(0,0,0);\n    }\n\n    // 4 : apply color to this fragment\n    // subtract from color as distance increases\n    fragColor = vec4(ip - float(last_i) / float(ITERATIONS), 1.0 );\n}"
+        },
+        "fireball": {
+            "title": "Fireball",
+            "src": "// Fire Ball\n// From http://glslsandbox.com/e#61108.0\n\n// Fire ball by David Robles\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n//#extension GL_OES_standard_derivatives : enable\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\n\nconst float PI = 3.141592;\n\nuniform float conflagration; // @@Slider min=5 max=20 default=15.\n\nvec2 hash( vec2 p ) // replace this by something better\n{\n    p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );\n    return -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p )\n{\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\n    vec2  i = floor( p + (p.x+p.y)*K1 );\n    vec2  a = p - i + (i.x+i.y)*K2;\n    float m = step(a.y,a.x);\n    vec2  o = vec2(m,1.0-m);\n    vec2  b = a - o + K2;\n    vec2  c = a - 1.0 + 2.0*K2;\n    vec3  h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n    vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot( n, vec3(70.0) );\n}\n\nfloat circleShape(vec2 coord, vec2 pos){\n    float dist = distance(coord, pos);\n    return clamp(   log(dist*(15.+conflagration+4.*noise(vec2(time*.8))))  ,0.,1.);\n}\n\nvec2 sineWave(vec2 p){\n    float Ax = .05;\n    float wx = 1.50 * PI;\n    float x = sin(wx * p.x) * Ax * sin(noise(vec2(time)));\n\n    float Ay = .05;\n    float wy = PI * 10.;\n    float y = sin(wy*p.y) * Ay * noise(vec2(time));\n\n    return vec2(p.x + x, p.y + y);\n}\n\nvoid main( void ) {\n\n    vec2 pos = gl_FragCoord.xy / resolution.xy;\n    vec2 uv = pos;\n\n    uv += vec2(-.5, -.5);\n    uv *= vec2(2.3, 1.3);\n\n    float luz = clamp(1.05 - (pow(uv.x, 2.) + pow(uv.y * 1.6, 6.))*2., 0., 1.);\n    //vec3 color = vec3(0.3059, 0.1922, 0.0431);\n    vec3 color = vec3(0.7333, 0.2902, 0.0314);\n    //vec3 color = vec3(0.3882, 0.1686, 0.251);\n    float grad = circleShape(sineWave(pos), vec2(.5, .32));\n\n    float ruido = 0.;\n\n    pos *= 5.0;\n    float xoff = 1.05;\n    float yoff = 2.1;\n    mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n    ruido = 0.7500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n\n    ruido = 0.5 + 0.5*ruido;\n    ruido = clamp(ruido, 0., 1.);\n\n    /////////////////////////////////////////////////////////////\n    pos = uv;\n    pos *= 3.0;\n    float ruido2 = 0.;\n    xoff = 1.5;\n    yoff = 1.5;\n    m = mat2( -2.1,  .5, -.5,  2.1 );\n    ruido2 = 0.2500*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.5000*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.1250*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n    ruido2 += 0.0625*noise(vec2(abs(pos.x-time*xoff), abs(pos.y-time*yoff))); pos = m*pos;\n\n    ruido2 = 0.5 + 0.5*ruido2;\n    ruido2 = clamp(ruido2, 0., 1.);\n\n    float f = 0.;\n    f += 1.0 - ( (1.0-luz) / (ruido2 + 0.001) );\n    f /= grad;\n    f /= ruido;\n\n    gl_FragColor = vec4(f*color*luz*(.5-.5*noise(vec2(time*.8))), 1.);\n    //gl_FragColor = vec4(color/grad, 1.);\n\n}"
+        },
+        "blueHearts": {
+            "title": "Blue Hearts",
+            "src": "// Blue Hearts\n// From https://www.shadertoy.com/view/wt2GWK\n\n#define t iTime\n\nvec2 hash22(vec2 p)\n{\n\treturn fract(sin(vec2(dot(p,vec2(263.135,198.742)),dot(p,vec2(624.235,321.217))))*13.635);\n}\n\nfloat vorohearts( vec2 x)\n{\n\tvec2 n = floor(-x);\n\tvec2 f = fract(-x);\n\n\tfloat md = 1.0;\n\n\tfor( int j=-1; j<=1; j++ )\n\t{\n\t\tfor( int i=-1; i<=1; i++ )\n\t\t{\n\t\t\tvec2  g = vec2(float(i), float(j));\n\t\t\tvec2  o = hash22( n + g );\n\t\t\tvec2  r = g - f + (.5+.5*sin(t+o*6.28));\n\t\t\tr.x *= .8*(1.+sin(.5+sin(6.*t))*.03);\n\t\t\tr.y *= .95+sin(1.5+sin(3.*t))*.07;\n\t\t\tr.y += .08;\n\t\t\tr.y -= sqrt(abs(r.x))*.52;\n\t\t\tfloat d = length(r);\n\t\t\tif( d < md ) {md = d;}\n\t\t}\n\t}\n\treturn md;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\tvec2 uv = (fragCoord - .5*iResolution.xy)/iResolution.y;\n\n\t//Heart uv\n\tuv = uv*3.;\n\tfloat d = vorohearts(uv);\n\td = smoothstep(.58, .25, d);\n\n\t//Heart color\n\tvec3 p = vec3(1.6*d*(.6+sin(.5+sin(6.*t))*.1), d*(1.8+sin(.5+sin(6.*t))*.3), 2.1*(1.+sin(.5+sin(6.*t))*.3));\n\tvec3 col = vec3(d) * p;\n\n\t//Background\n\tcol += vorohearts(uv) * .35 * p;\n\n\tfragColor = vec4(col,1.);\n}"
+        },
+        "blueSClues": {
+            "title": "Blue's Clues",
+            "src": "// Blue's Clues\n// From https://www.shadertoy.com/view/wljSzR\n\n// Sphere tracer by mzeo\n//\n// inspired by http://www.youtube.com/watch?v=kuesTvUYsSc#t=377\n//\n// waves by @hintz\n\n#ifdef GL_ES\nprecision mediump float;\nconst vec3 df = vec3(0.05, 0.0, 0.0);\n#else\nconst vec3 df = vec3(0.01, 0.0, 0.0);\n#endif\n\n#define AUTO_CAMERA\n\n// input\n\n// Constants\n// Camera\nconst vec3 origin = vec3(0, 0, 0);\nconst int steps = 128;\nconst vec3 sun = vec3(1.0, .5, -1.0);\n\nconst int miterations = 32;\n\n// Ball\nstruct Ball\n{\n    vec3 pos;\n    float size;\n};\n\nconst Ball ball = Ball(vec3(0, 0, 5), 0.5);\n\nstruct Balls\n{\n    vec3 dir;\n    vec3 p;\n    float dist;\n};\n\nconst Balls balls = Balls(vec3(1, 0, 0), vec3(0, 0, 0), 1.0);\n\n// Floor\n\nstruct Plane\n{\n    vec3 n;\n    float d;\n};\n\nconst Plane plane = Plane(vec3(0, 1, 0), -1.0);\n\n// Distance\nstruct Dist\n{\n    float dist;\n    int id;\n};\n\n\nDist and(Dist a, Dist b)\n{\n    if (a.dist < b.dist)\n    {\n        return a;\n    }\n\n    return b;\n}\n\nDist fBall(Ball ball, vec3 p)\n{\n    return Dist(length(ball.pos - p) - ball.size, 0);\n}\n\nBall get(Balls balls, float t)\n{\n    float a = abs(mod(t, 6.0) - 3.0);\n    vec3 p = balls.p + balls.dir * t * balls.dist + a * a * vec3(0, -0.15, 0);\n    return Ball(p, ball.size);\n}\n\nDist fBalls(Balls balls, vec3 p)\n{\n    float t = dot(p - balls.p, balls.dir) / balls.dist;\n    float t0 = t - fract(t + fract(iTime) * 2.0);\n    float t1 = t0 + 1.0;\n\n    return and(\n    fBall(get(balls, t0), p),\n    fBall(get(balls, t1), p));\n}\n\nDist fPlane(Plane plane, vec3 p)\n{\n    return Dist(dot(plane.n, p) - plane.d - 0.4*cos(length(p.xz) - iTime), 1);\n}\n\nDist f(vec3 p)\n{\n    return and(\n    fBalls(balls, p),\n    fPlane(plane, p));\n}\n\nvec3 grad(vec3 p)\n{\n    float f0 = f(p).dist;\n\n    return normalize(vec3(\n    f(p + df.xyz).dist,\n    f(p + df.yxz).dist,\n    f(p + df.yzx).dist) - f0);\n}\n\nfloat mandel(vec2 c)\n{\n    vec2 z = c;\n\n    for(int i = 0; i < miterations; ++i)\n    {\n        z = vec2(z.x*z.x - z.y*z.y, 1.5*z.x*z.y) + c;\n        if (length(z) > 40.0) return float(i) / float(miterations);\n    }\n\n    return 0.0;\n}\n\nvec3 floorTexture(vec3 p)\n{\n    mat2 rot = mat2(vec2(1, 1), vec2(1, -1));\n    vec2 c = rot * (p.xz + vec2(-0.7, -1.0)) * 0.2;\n    float i = mandel(c);\n    return clamp(vec3(i * 10.0, i * i *10.0, i*i*i*5.0).zyx, vec3(0,0,0), vec3(2,2,2));\n}\n\n\nvec4 shade(vec3 p, vec3 ray, int id)\n{\n    vec3 n = grad(p);\n    float diffuse = clamp(dot(normalize(sun), n), 0.0, 1.0);\n\n    vec3 color;\n    float ref;\n\n    if (id == 0)\n    {\n        color = vec3(0,1,0);\n        ref = 0.1;\n    }\n    else\n    {\n        color = floorTexture(p);\n        ref = 0.5;\n    }\n\n    return vec4(color * diffuse, 1) * ref;\n}\n\nvec4 combine(vec4 a, vec4 b)\n{\n    return a + b * (1.0 - a.w);\n}\n\nvec4 sky(vec3 ray)\n{\n    float sun = dot(ray, normalize(sun));\n    sun = (sun > 0.0) ? pow(sun, 150.0) * 3.0 : 0.0;\n    float horizon = 1.0 - abs(ray.y);\n    vec3 blue = vec3(0.1, 0.3, 0.6);\n    vec3 red = vec3(0.6, 0.3, 0.) * 2.0;\n    return vec4(vec3(0.9, 0.8, 0.5) * sun + blue * horizon + red * pow(horizon, 8.0), 1);\n}\n\nvec4 trace(vec3 origin, vec3 ray)\n{\n    vec3 p = origin;\n    Dist dist = Dist(10.0, 2);\n    vec4 result = vec4(0, 0, 0, 0);\n\n    for(int i = 0; i < steps; ++i)\n    {\n        dist = f(p);\n        if (dist.dist > 0.01)\n        {\n            p += ray * dist.dist;\n            float absorb = exp(-dist.dist * 0.05);\n            vec4 s = sky(ray) * (1.0 - absorb);\n\n            result = combine(result, s);\n        }\n        else if (result.w < 0.99)\n        {\n            vec3 n = grad(p);\n            vec4 s = shade(p, ray, dist.id);\n            ray = reflect(ray, n);\n            p += n * 0.01;\n\n            result = combine(result, s);\n        }\n        else\n        {\n            break;\n        }\n    }\n\n    return combine(result, sky(ray));\n}\nvoid mainImage(out vec4 fragColor,in vec2 fragCoord)\n{\n    float scale = 2.0 / max(iResolution.x, iResolution.y);\n    vec3 ray = vec3((fragCoord.xy - iResolution.xy / 2.0) * scale, 1);\n\n    //#ifdef AUTO_CAMERA\n    float yaw = cos(iTime) * -0.25 + 0.1;\n    float angle = iTime * 0.5;\n    //#else\n    //float yaw = iMouse.y - 0.15;\n    //float angle = iMouse.x * 8.0;\n    //#endif\n\n    vec3 from = (vec3(sin(angle), 0, cos(angle)) * cos(yaw) + vec3(0, sin(yaw) * 1.0, 0)) * 5.0;\n    //vec3 from = origin + vec3((iMouse.xy - vec2(0.5,0.0)) * vec2(15.0, 3.0), -5);\n    vec3 to = vec3(0, -1, 0);\n    vec3 up = vec3(0, 1, 0);\n    vec3 dir = normalize(to - from);\n    vec3 left = normalize(cross(up, dir));\n    mat3 rot = mat3(left, cross(dir, left), dir);\n\n    fragColor = trace(from, rot * normalize(ray));\n}"
+        },
+        "checkerboard": {
+            "title": "Checkerboard",
+            "src": "// Checkerboard\n\nuniform float checkerboardSize = 10.0; // @@Slider min=.001 max=1 default=.125\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord) {\n    vec2 pos = floor(fragCoord / checkerboardSize);\n    vec3 patternMask = vec3(mod(pos.x + mod(pos.y, 2.0), 2.0));\n    fragColor = vec4(patternMask.xy, 1., 1.);\n}"
+        },
+        "colorDiffusionFlow": {
+            "title": "Color Diffusion Flow",
+            "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"DESCRIPTION\": \"from http://glslsandbox.com/e#35553.0\",\n  \"CATEGORIES\": [\n    \"fluid\",\n    \"liquid\"\n  ],\n  \"INPUTS\": [\n  \t{\n\t\t\t\"NAME\" :\t\"rate1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.9,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t {\n\t\t\t\"NAME\" :\t\"rate2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.6,\n\t\t\t\"MIN\" :\t-3.0,\n\t\t\t\"MAX\" :\t3.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"loopcycle\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t85.0,\n\t\t\t\"MIN\" :\t20.0,\n\t\t\t\"MAX\" :\t100.0\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.45,\n\t\t\t\"MIN\" :\t-2.5,\n\t\t\t\"MAX\" :\t2.5\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"color2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.0,\n\t\t\t\"MIN\" :\t-1.25,\n\t\t\t\"MAX\" :\t1.125\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle1\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t1.33,\n\t\t\t\"MIN\" :\t0.01,\n\t\t\t\"MAX\" :\t3.1459\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"cycle2\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.22,\n\t\t\t\"MIN\" :\t-0.497,\n\t\t\t\"MAX\" :\t0.497\n\t},\n\t{\n\t\t\t\"NAME\" :\t\"nudge\",\n\t\t\t\"TYPE\" :\t\"float\",\n\t\t\t\"DEFAULT\" :\t0.095,\n\t\t\t\"MIN\" :\t0.001,\n\t\t\t\"MAX\" :\t0.01\n\t},\n\t{\n      \t\t\t\"NAME\" :\t\"depthX\",\n      \t\t\t\"TYPE\" : \t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.85,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t},\n    \t{\n      \t\t\t\"NAME\" :\t\"depthY\",\n      \t\t\t\"TYPE\" :\t\"float\",\n      \t\t\t\"DEFAULT\" :\t0.25,\n      \t\t\t\"MIN\" : \t0.001,\n      \t\t\t\"MAX\" :\t\t0.9\n    \t}\n  ]\n}*/\n\n///////////////////////////////////////////\n// ColorDiffusionFlow  by mojovideotech\n//\n// based on :\n// glslsandbox.com/\\e#35553.0\n//\n// Creative Commons Attribution-NonCommercial-ShareAlike 3.0\n///////////////////////////////////////////\n\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n#define \tpi   \t3.141592653589793\n\nvoid main() {\n    float T = TIME * rate1;\n    float TT = TIME * rate2;\n    vec2 p=(2.*isf_FragNormCoord);\n    for(int i=1;i<11;i++) {\n        vec2 newp = p;\n        float ii = float(i);\n        newp.x+=depthX/ii*sin(ii*pi*p.y+T*nudge+cos((TT/(5.0*ii))*ii));\n        newp.y+=depthY/ii*cos(ii*pi*p.x+TT+nudge+sin((T/(5.0*ii))*ii));\n        p = newp +log(DATE.w)/loopcycle;\n    }\n    vec3 col=vec3(cos(p.x+p.y+3.0*color1)*0.5+0.5,sin(p.x+p.y+6.0*cycle1)*0.5+0.5,(sin(p.x+p.y+9.0*color2)+cos(p.x+p.y+12.0*cycle2))*0.25+.5);\n    gl_FragColor=vec4(col*col, 1.0);\n}"
+        },
+        "danceyCubes": {
+            "title": "Dancey Cubes",
+            "src": "// Dancey Cubes\n\nuniform float mysterNumber;\n\nvec3 palette(float d){\n    return mix(vec3(0.2,0.7,0.9),vec3(1.,0.,1.),d);\n}\n\nvec2 rotate(vec2 p,float a){\n    float c = cos(a);\n    float s = sin(a);\n    return p*mat2(c,s,-s,c);\n}\n\nfloat map(vec3 p){\n    for( int i = 0; i<8; ++i){\n        float t = iTime*0.2;\n        p.xz =rotate(p.xz,t);\n        p.xy =rotate(p.xy,t*mysterNumber);\n        p.xz = abs(p.xz);\n        p.xz-=.5;\n    }\n    return dot(sign(p),p)/5.;\n}\n\nvec4 rm (vec3 ro, vec3 rd){\n    float t = 0.;\n    vec3 col = vec3(0.);\n    float d;\n    for(float i =0.; i<64.; i++){\n        vec3 p = ro + rd*t;\n        d = map(p)*.5;\n        if(d<0.02){\n            break;\n        }\n        if(d>100.){\n            break;\n        }\n        //col+=vec3(0.6,0.8,0.8)/(400.*(d));\n        col+=palette(length(p)*.1)/(400.*(d));\n        t+=d;\n    }\n    return vec4(col,1./(d*100.));\n}\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;\n    vec3 ro = vec3(0.,0.,-50.);\n    ro.xz = rotate(ro.xz,iTime);\n    vec3 cf = normalize(-ro);\n    vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));\n    vec3 cu = normalize(cross(cf,cs));\n\n    vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;\n\n    vec3 rd = normalize(uuv-ro);\n\n    vec4 col = rm(ro,rd);\n\n\n    fragColor = col;\n    fragColor.a = 1.;\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"fractal pyramid\",\n\t\"description\": \"coding my new screensaver\",\n\t\"model\": \"car\"\n}\n*/"
+        },
+        "plaid": {
+            "title": "Plaid",
+            "src": "// Plaid\n\n// #extension GL_OES_standard_derivatives : enable\n\nprecision highp float;\n\nuniform float time;\nuniform vec2 resolution;\n\nvoid main( void ) {\n\n    vec2 position = ( gl_FragCoord.xy / resolution.xy ) + 4.0;\n\n    float color = 0.0;\n    color += sin( position.x * cos( time / 15.0 ) * 80.0 ) + cos( position.y * cos( time / 15.0 ) * 10.0 );\n    color += sin( position.y * sin( time / 10.0 ) * 40.0 ) + cos( position.x * sin( time / 25.0 ) * 40.0 );\n    color += sin( position.x * sin( time / 5.0 ) * 10.0 ) + sin( position.y * sin( time / 35.0 ) * 80.0 );\n    color *= sin( time / 10.0 ) * 0.5;\n\n    gl_FragColor = vec4( vec3( color, color * 0.2, sin( color + time / 9.0 ) * 0.69 ), 9.0 );\n\n}"
+        },
+        "primeWaves": {
+            "title": "Prime Waves",
+            "src": "/*{\n  \"CREDIT\": \"by mojovideotech\",\n  \"CATEGORIES\" : [\n    \"Generator\",\n    \"waves\"\n  ],\n  \"DESCRIPTION\" : \"\",\n  \"INPUTS\" : [\n    {\n      \"NAME\" : \"center\",\n      \"TYPE\" : \"point2D\",\n       \"DEFAULT\": [\n\t\t-2,\n\t\t-1\n\t  ],\n      \"MAX\" : [\n        10,\n        10\n      ],\n      \"MIN\" : [\n        -10,\n        -10\n      ]\n    },\n    {\n\t\t\"NAME\": \"rate\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": -1,\n\t\t\"MIN\": -3,\n\t\t\"MAX\": 3\n\t},\n\t{\n\t\t\"NAME\": \"zoom\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 5,\n\t\t\"MIN\": -10,\n\t\t\"MAX\": 10\n\t},\n\t{\n\t\t\"NAME\": \"depth\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 0.6,\n\t\t\"MIN\": 0.0,\n\t\t\"MAX\": 1.0\n\t},\n\t{\n\t\t\"NAME\": \"rxy\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 11,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t},\n\t{\n\t\t\"NAME\": \"rxz\",\n\t\t\"TYPE\": \"float\",\n\t\t\"DEFAULT\": 13,\n\t\t\"MIN\": 1,\n\t\t\"MAX\": 17\n\t}\n  ]\n}\n*/\n\n// PrimeWaves by mojovideotech\n// based on:\n// glslsandbox.com/e#21344.0\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nvec2 distort(vec2 p)\n{\n    float theta  = atan(p.y, p.x);\n    float radius = length(p);\n    radius = pow(radius, 1.0+depth);\n    p.x = radius * cos(theta);\n    p.y = radius * sin(theta);\n    return 0.5 * (p + 1.0);\n}\n\nvec4 pattern(vec2 p)\n{\n    vec2 m=mod(p.xy+p.x+p.y,2.)-1.;\n    return vec4(length(m+p*0.1));\n}\n\nfloat hash(float n)\n{\n    return fract(sin(n)*29712.15073);\n}\n\nfloat noise(vec3 x, float y, float z)\n{\n    vec3 p=floor(x); vec3 f=fract(x);\n    f=f*f*(3.0-2.0*f);\n    float n=p.x+p.y*y+p.z*z;\n    float r1=mix(mix(hash(n+0.0),hash(n+1.0),f.x),mix(hash(n+y),hash(n+y+1.0),f.x),f.y);\n    float r2=mix(mix(hash(n+z),hash(n+z+1.0),f.x),mix(hash(n+y+z),hash(n+y+z+1.0),f.x),f.y);\n    return mix(r1,r2,f.z);\n}\nvoid main( void ) {\n\n    float RY = 0.0;\tfloat RZ = 0.0;\n    if (rxy <= 1.)\t\t\t{\tRY += 11.;\t}\n    else if (rxy <= 2.)\t\t{\tRY += 13.; \t}\n    else if (rxy <= 3.)\t\t{\tRY += 17.; \t}\n    else if (rxy <= 4.)\t\t{\tRY += 19.; \t}\n    else if (rxy <= 5.)\t\t{\tRY += 23.; \t}\n    else if (rxy <= 6.)\t\t{\tRY += 29.; \t}\n    else if (rxy <= 8.)\t\t{\tRY += 31.; \t}\n    else if (rxy <= 9.)\t\t{\tRY += 37.; \t}\n    else if (rxy <= 10.)\t{\tRY += 41.; \t}\n    else if (rxy <= 11.)\t{\tRY += 43.; \t}\n    else if (rxy <= 12.)\t{\tRY += 47.; \t}\n    else if (rxy <= 13.)\t{\tRY += 53.; \t}\n    else if (rxy <= 14.)\t{\tRY += 59.; \t}\n    else if (rxy <= 15.)\t{\tRY += 61.; \t}\n    else if (rxy <= 16.)\t{\tRY += 67.; \t}\n    if (rxz <= 1.)\t\t\t{\tRZ += 11.; \t}\n    else if (rxz <= 2.)\t\t{\tRZ += 13.; \t}\n    else if (rxz <= 3.)\t\t{\tRZ += 17.; \t}\n    else if (rxz <= 4.)\t\t{\tRZ += 19.; \t}\n    else if (rxz <= 5.)\t\t{\tRZ += 23.; \t}\n    else if (rxz <= 6.)\t\t{\tRZ += 29.; \t}\n    else if (rxz <= 8.)\t\t{\tRZ += 31.; \t}\n    else if (rxz <= 9.)\t\t{\tRZ += 37.; \t}\n    else if (rxz <= 10.)\t{\tRZ += 41.; \t}\n    else if (rxz <= 11.)\t{\tRZ += 43.; \t}\n    else if (rxz <= 12.)\t{\tRZ += 47.; \t}\n    else if (rxz <= 13.)\t{\tRZ += 53.; \t}\n    else if (rxz <= 14.)\t{\tRZ += 59.; \t}\n    else if (rxz <= 15.)\t{\tRZ += 61.; \t}\n    else if (rxz <= 16.)\t{\tRZ += 67.; \t}\n\n    vec2 pos = ( gl_FragCoord.xy / RENDERSIZE.xy * zoom )+center;\n    float col = noise(pos.xyx + (TIME*rate),RY,RZ);\n    vec4 c = pattern(distort(pos+col));\n    c.xy = distort(c.xy);\n    gl_FragColor = vec4(c.x - col, sin(c.y) - col, cos(c.z), 1.0);\n\n}"
+        },
+        "quiver": {
+            "title": "Quiver",
+            "src": "// Quiver\n\nuniform float twist; // @@Slider default=.2 min=-4 max=4\n\n////////////////////////////////////////////////////////////////////////////////\n//\n// Playing around with simplex noise and polar-coords with a lightning-themed\n// scene.\n//\n// Copyright 2019 Mirco Müller\n//\n// Author(s):\n//   Mirco \"MacSlow\" Müller <macslow@gmail.com>\n//\n// This program is free software: you can redistribute it and/or modify it\n// under the terms of the GNU General Public License version 3, as published\n// by the Free Software Foundation.\n//\n// This program is distributed in the hope that it will be useful, but\n// WITHOUT ANY WARRANTY; without even the implied warranties of\n// MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR\n// PURPOSE.  See the GNU General Public License for more details.\n//\n// You should have received a copy of the GNU General Public License along\n// with this program.  If not, see <http://www.gnu.org/licenses/>.\n//\n////////////////////////////////////////////////////////////////////////////////\n\nmat2 r2d (in float degree)\n{\n    float rad = radians (degree);\n    float c = cos (rad);\n    float s = sin (rad);\n    return mat2 (vec2 (c, s),vec2 (-s, c));\n}\n\n// using a slightly adapted implementation of iq's simplex noise from\n// https://www.shadertoy.com/view/Msf3WH with hash(), noise() and fbm()\nvec2 hash (in vec2 p)\n{\n    p = vec2 (dot (p, vec2 (127.1, 311.7)),\n    dot (p, vec2 (269.5, 183.3)));\n\n    return -1. + 2.*fract (sin (p)*43758.5453123);\n}\n\nfloat noise (in vec2 p)\n{\n    const float K1 = .366025404;\n    const float K2 = .211324865;\n\n    vec2 i = floor (p + (p.x + p.y)*K1);\n\n    vec2 a = p - i + (i.x + i.y)*K2;\n    vec2 o = step (a.yx, a.xy);\n    vec2 b = a - o + K2;\n    vec2 c = a - 1. + 2.*K2;\n\n    vec3 h = max (.5 - vec3 (dot (a, a), dot (b, b), dot (c, c) ), .0);\n\n    vec3 n = h*h*h*h*vec3 (dot (a, hash (i + .0)),\n    dot (b, hash (i + o)),\n    dot (c, hash (i + 1.)));\n\n    return dot (n, vec3 (70.));\n}\n\nfloat fbm (in vec2 p)\n{\n    mat2 rot = r2d (27.5);\n    float d = noise (p); p *= rot;\n    d += .5*noise (p); p *= rot;\n    d += .25*noise (p); p *= rot;\n    d += .125*noise (p); p *= rot;\n    d += .0625*noise (p);\n    d /= (1. + .5 + .25 + .125 + .0625);\n    return .5 + .5*d;\n}\n\nvec2 mapToScreen (in vec2 p, in float scale)\n{\n    vec2 res = p;\n    res = res * 2. - 1.;\n    res.x *= iResolution.x / iResolution.y;\n    res *= scale;\n\n    return res;\n}\n\nvec2 cart2polar (in vec2 cart)\n{\n    float r = length (cart);\n    float phi = atan (cart.y, cart.x);\n    return vec2 (r, phi);\n}\n\nvec2 polar2cart (in vec2 polar)\n{\n    float x = polar.x*cos (polar.y);\n    float y = polar.x*sin (polar.y);\n    return vec2 (x, y);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = mapToScreen (fragCoord.xy/iResolution.xy, 2.5);\n\n    uv *= r2d (12.*iTime);\n    float len = length (uv);\n    float thickness = .25;\n    float haze = 2.5;\n\n    // distort UVs a bit\n    uv = cart2polar (uv);\n    uv.y += twist * (.5 + .5*sin(cos (uv.x)*len));\n    uv = polar2cart (uv);\n\n    float d1 = abs ((uv.x*haze)*thickness / (uv.x + fbm (uv + 1.25*iTime)));\n    float d2 = abs ((uv.y*haze)*thickness / (uv.y + fbm (uv - 1.5*iTime)));\n    float d3 = abs ((uv.x*uv.y*haze)*thickness / (uv.x*uv.y + fbm (uv - 2.*iTime)));\n    vec3 col = vec3 (.0);\n    float size = .075;\n    col += d1*size*vec3 (.1, .8, 2.);\n    col += d2*size*vec3 (2., .1, .8);\n    col += d3*size*vec3 (.8, 2., .1);\n\n    fragColor = vec4 (col, 1.);\n}\n"
+        },
+        "spaceRings": {
+            "title": "Space Rings",
+            "src": "// Space Rings\n\n#define time iTime*1.25\n#define p0 0.5, 0.5, 0.5,  0.5, 0.5, 0.5,  1.0, 1.0, 1.0,  0.0, 0.33, 0.67\n\nconst float numParticles = 25.;\nconst float numRings = 5.;\nconst float offsetMult = 30.;\nconst float tau = 6.23813;\n\nvec3 palette( in float t, in float a0, in float a1, in float a2, in float b0, in float b1, in float b2,\nin float c0, in float c1, in float c2,in float d0, in float d1, in float d2)\n{\n    return vec3(a0,a1,a2) + vec3(b0,b1,b2)*cos( tau*(vec3(c0,c1,c2)*t+vec3(d0,d1,d2)) );\n}\n\nvec3 particleColor(vec2 uv, float radius, float offset, float periodOffset)\n{\n    vec3 color = palette(.4 + offset / 4., p0);\n    uv /= pow(periodOffset, .75) * sin(periodOffset * iTime) + sin(periodOffset + iTime);\n    vec2 pos = vec2(cos(offset * offsetMult + time + periodOffset),\n    sin(offset * offsetMult + time * 5. + periodOffset * tau));\n\n    float dist = radius / distance(uv, pos);\n    return color * pow(dist, 2.) * 1.75;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = (2. * fragCoord - iResolution.xy) / iResolution.y;\n    uv *= 3.45;\n\n    fragColor = vec4(0., 0., 0., 1.);\n\n    for (float n = 0.; n <= numRings; n++)\n    {\n        for (float i = 0.; i <= numParticles; i++) {\n            fragColor.rgb += particleColor(uv, .03, i / numParticles, n / 2.);\n        }\n    }\n}"
+        },
+        "waves": {
+            "title": "Waves",
+            "src": "// Beat Waves\n// Adapted from http://glslsandbox.com/e#61168.1\n\n//#extension GL_OES_standard_derivatives : enable\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\nuniform float time;\nuniform vec2 resolution;\nuniform float frequency = 6.28; // @@Slider min=3.14 max=25 default=15\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nvoid main( void ) {\n\n    vec2 position = ( gl_FragCoord.xy / resolution.xy );\n    position.x -= .5;\n    float num = 2.0;\n\n    vec3 color = vec3(\n    sin(frequency * position.x + 0.0 + time) * 0.5 + 0.5 - sin(beatInfo.beat * 3.14) * .5,\n    sin(frequency * position.x * (sin(beatInfo.intensity) * .2 + 1.) + 2.0 + time) * 0.5 + 0.5,\n    sin(frequency * position.x + 4.0 + time) * 0.5 + 0.5 + sin(time * 4.)\n    );\n    // color = vec3(1.0);\n\n    color += vec3(position.y * 2.0 - 1.0);\n\n    color = vec3(\n    floor(color.r * num - 0.5) / num + 0.5,\n    floor(color.g * num - 0.5) / num + 0.5,\n    floor(color.b * num - 0.5) / num + 0.5\n    );\n\n    gl_FragColor = vec4( color, 1.0 );\n\n}"
+        },
+        "sunsetDelight": {
+            "title": "Sunset Delight",
+            "src": "// Sunset Delight\n// From http://glslsandbox.com/e#56573\n\n// Fireball\n// Awd\n// @AlexWDunn\n//mod by an+\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform vec2 resolution;\nuniform float time;\n//uniform vec2 mouse;\n\n// SPARKLEMOTION GADGET: Slider {name: \"MouseX\", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseX;\n\n// SPARKLEMOTION GADGET: Slider {name: \"MouseY\", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}\nuniform float mouseY;\n\n#define saturate(oo) clamp(oo, 0.0, 1.0)\n\n// Quality Settings\n#define MarchSteps 6\n\n// Scene Settings\n#define ExpPosition vec3(0.0)\n#define Radius 2.0\n#define Background vec4(0.1, 0.0, 0.0, 1.0)\n\n// Noise Settings\n#define NoiseSteps 4\n#define NoiseAmplitude 0.1\n#define NoiseFrequency 2.2\n#define Animation vec3(0.0, .0, 0.5)\n\n// Colour Gradient\n#define Color1 vec4(0.0, 0.0, 0.0, 1.0)\n#define Color2 vec4(.0, .0, 1.0, 1.0)\n#define Color3 vec4(1.0, .0, 0., 1.0)\n#define Color4 vec4(0.4, 0.8, 0., 1.0)\n\n\n\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }\nvec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }\nvec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }\n\nfloat snoise(vec3 v)\n{\n\tconst vec2  C = vec2(1.0/6.0, 1.0/3.0);\n\tconst vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n\t// First corner\n\tvec3 i  = floor(v + dot(v, C.yyy));\n\tvec3 x0 = v - i + dot(i, C.xxx);\n\n\t// Other corners\n\tvec3 g = step(x0.yzx, x0.xyz);\n\tvec3 l = 1.0 - g;\n\tvec3 i1 = min(g.xyz, l.zxy);\n\tvec3 i2 = max(g.xyz, l.zxy);\n\tvec3 x1 = x0 - i1 + C.xxx;\n\tvec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n\tvec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n\t// Permutations\n\ti = mod289(i);\n\tvec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n\t// Gradients: 7x7 points over a square, mapped onto an octahedron.\n\t// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n\tfloat n_ = 0.142857142857; // 1.0/7.0\n\tvec3  ns = n_ * D.wyz - D.xzx;\n\tvec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n\tvec4 x_ = floor(j * ns.z);\n\tvec4 y_ = floor(j - 7.0 * x_);    // mod(j,N)\n\n\tvec4 x = x_ *ns.x + ns.yyyy;\n\tvec4 y = y_ *ns.x + ns.yyyy;\n\n\tvec4 h = 1.0 - abs(x) - abs(y);\n\tvec4 b0 = vec4(x.xy, y.xy);\n\tvec4 b1 = vec4(x.zw, y.zw);\n\n\tvec4 s0 = floor(b0) * 2.0 + 1.0;\n\tvec4 s1 = floor(b1) * 2.0 + 1.0;\n\tvec4 sh = -step(h, vec4(0.0));\n\n\tvec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;\n\tvec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;\n\n\tvec3 p0 = vec3(a0.xy, h.x);\n\tvec3 p1 = vec3(a0.zw, h.y);\n\tvec3 p2 = vec3(a1.xy, h.z);\n\tvec3 p3 = vec3(a1.zw, h.w);\n\n\t//Normalise gradients\n\tvec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n\n\tp0 *= norm.x;\n\tp1 *= norm.y;\n\tp2 *= norm.z;\n\tp3 *= norm.w;\n\n\t// Mix final noise value\n\tvec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n\tm = m * m;\n\n\treturn 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));\n}\n\nfloat Turbulence(vec3 position, float minFreq, float maxFreq, float qWidth)\n{\n\tfloat value = 0.0;\n\tfloat cutoff = clamp(0.5/qWidth, 0.0, maxFreq);\n\tfloat fade;\n\tfloat fOut = minFreq;\n\n\tfor(int i=NoiseSteps ; i>=0 ; i++)\n\t{\n\t\tif(fOut >= 0.5 * cutoff) break;\n\n\t\tfOut *= 2.0;\n\t\tvalue += abs(snoise(position * fOut))/fOut;\n\t}\n\n\tfade = clamp(2.0 * (cutoff-fOut)/cutoff, 0.0, 1.0);\n\tvalue += fade * abs(snoise(position * fOut))/fOut;\n\n\treturn 1.0-value;\n}\n\nfloat SphereDist(vec3 position)\n{\n\treturn length(position - ExpPosition) - Radius;\n}\n\nvec4 Shade(float distance)\n{\n\tfloat c1 = saturate(distance*5.0 + 0.5);\n\tfloat c2 = saturate(distance*5.0);\n\tfloat c3 = saturate(distance*3.4 - 0.5);\n\n\tvec4 a = mix(Color1,Color2, c1);\n\tvec4 b = mix(a,     Color3, c2);\n\treturn \t mix(b,     Color4, c3);\n}\n\n\n// Draws the scene\nfloat RenderScene(vec3 position, out float distance)\n{\n\tfloat noise = Turbulence(position * NoiseFrequency + Animation*time, 0.1, 1.5, 0.03) * NoiseAmplitude;\n\tnoise = saturate(abs(noise));\n\tdistance = SphereDist(position) - noise;\n\n\treturn noise;\n}\n\n// Basic ray marching method.\nvec4 March(vec3 rayOrigin, vec3 rayStep)\n{\n\tvec3 position = rayOrigin;\n\n\tfloat distance;\n\tfloat displacement;\n\n\tfor(int step = MarchSteps; step >=0  ; --step)\n\t{\n\t\tdisplacement = RenderScene(position, distance);\n\n\t\tif(distance < 0.05) break;\n\n\t\tposition += rayStep * distance;\n\t}\n\treturn mix(Shade(displacement), Background, float(distance >= 0.5));\n}\n\nbool IntersectSphere(vec3 ro, vec3 rd, vec3 pos, float radius, out vec3 intersectPoint)\n{\n\tvec3 relDistance = (ro - pos);\n\n\tfloat b = dot(relDistance, rd);\n\tfloat c = dot(relDistance, relDistance) - radius*radius;\n\tfloat d = b*b - c;\n\n\tintersectPoint = ro + rd*(-b - sqrt(d));\n\n\treturn d >= 0.0;\n}\n\nvoid main(void)\n{\n\tvec2 p = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;\n\n\tp.x *= resolution.x/resolution.y;\n\n\tfloat rotx = mouseY * 4.0;\n\tfloat roty = -mouseX * 4.0;\n\tfloat zoom = 5.0;\n\n\t// camera\n\tvec3 ro = zoom * normalize(vec3(cos(roty), cos(rotx), sin(roty)));\n\tvec3 ww = normalize(vec3(0.0, 0.0, 0.0) - ro);\n\tvec3 uu = normalize(cross( vec3(0.0, 1.0, 0.0), ww));\n\tvec3 vv = normalize(cross(ww, uu));\n\tvec3 rd = normalize(p.x*uu + p.y*vv + 4.5*ww);\n\n\tvec4 col = Background;\n\n\tvec3 origin;\n\n\tif(IntersectSphere(ro, rd, ExpPosition, Radius + NoiseAmplitude*6.0, origin))\n\t{\n\t\tcol = March(origin, rd);\n\t}\n\n\tgl_FragColor = col;\n}\n"
+        },
+        "huerthquake": {
+            "title": "Huerthquake",
+            "src": "// Huearthquake\n// From http://glslsandbox.com/e#46400\n\n#ifdef GL_ES\nprecision mediump float;\n#endif\n\n#define PI 3.14159265358\n#define TWO_PI 6.28318530718\n\nuniform vec2 resolution;\nuniform float time;\n\nvec3 colorA = vec3(0.149, 0.141, 0.912);\nvec3 colorB = vec3(1.000, 0.833, 0.224);\n\nvec3 rgb2hsb( in vec3 c ){\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz),\n                 vec4(c.gb, K.xy),\n                 step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r),\n                 vec4(c.r, p.yzx),\n                 step(p.x, c.r));\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)),\n                d / (q.x + e),\n                q.x);\n}\n\n//  Function from Iñigo Quiles\n//  https://www.shadertoy.com/view/MsS3Wc\nvec3 hsb2rgb( in vec3 c ){\n    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),\n                             6.0)-3.0)-1.0,\n                     0.0,\n                     1.0 );\n    rgb = rgb*rgb*(3.0-2.0*rgb);\n    return c.z * mix(vec3(1.0), rgb, c.y);\n}\n\n/* Coordinate and unit utils */\nvec2 coord(in vec2 p) {\n    p = p / resolution.xy;\n    // correct aspect ratio\n    if (resolution.x > resolution.y) {\n        p.x *= resolution.x / resolution.y;\n        p.x += (resolution.y - resolution.x) / resolution.y / 2.0;\n    } else {\n        p.y *= resolution.y / resolution.x;\n        p.y += (resolution.x - resolution.y) / resolution.x / 2.0;\n    }\n    // centering\n    p -= 0.5;\n    p *= vec2(-1.0, 1.0);\n    return p;\n}\n#define rx 1.0 / min(resolution.x, resolution.y)\n#define uv gl_FragCoord.xy / resolution.xy\n#define st coord(gl_FragCoord.xy)\n#define mx coord(u_mouse)\n\nmat2 rot(in float angle) {\n    return mat2(cos(angle), -sin(angle),\n                sin(angle),  cos(angle));\n}\n\nfloat wave(in vec2 pt, in float f, in float v) {\n    float r = length(pt);\n    float a = atan(pt.y, pt.x);\n    return sin(r * TWO_PI * f - v * time);\n}\n\nvoid main() {\n    vec2 pt = st;\n\n    float f = 10.0 * abs(sin(0.1 * time));\n    float v = 10.0;\n    float g = wave(pt, f, v);\n\n    for (float k = 0.0; k < 8.0; k++) {\n        float t = PI / 4.0 * k;\n        vec2 offset = 0.5 * vec2(cos(t), sin(t));\n        g += wave(pt + offset, f, v);\n    }\n\n    g *= 0.5;\n    g = step(g, 0.0);\n\n    vec3 rgb = mix(colorA, colorB, g);\n\n    gl_FragColor = vec4(rgb, 1.0);\n}\n"
+        },
         "jacobianUndistortion": {
             "title": "Jacobian Undistortion",
             "src": "// Tuto: Jacobians and undistortion\n// from https://www.shadertoy.com/view/WlByRW\n\n#define Circle(U,r) smoothstep(50./R.y,0., abs(length(U)-r)-.02 )\n\nvoid mainImage( out vec4 O, vec2 u )\n{\n    vec2 R = iResolution.xy,\n    U = ( 2.*u - R ) / R.y, I, L;                  // normalized coordinates\n\n    U += .5*U*mat2(cos(2.*U+iTime),sin(2.*U-iTime));   // distorted coordinates\n    U *= 4.;\n\n    I =floor(U); L = 2.*fract(U)-1.;                   // draw distorted checker\n    O = vec4 (.4*mod(I.x+I.y,2.) );\n\n    O.r += Circle(L,.4);                               // draw circle in distorted space\n\n    mat2 J = transpose(mat2(dFdx(U),dFdy(U))) *R.y/8.; // the Jacobian store the local distorted frame\n    L *= inverse(J);                                   // undistort by applying the inverse transform\n    // or if you prefer right-multiplying matrices :\n    // mat2 J = mat2(dFdx(U),dFdy(U)) *R.y/8.;            // the Jacobian store the local distorted frame\n    // L = inverse(J)*L;                                  // undistort by applying the inverse transform\n    O.g += Circle(L,.4);                               // draw circle in undistorted space\n\n    O.b = ( .5+.5*determinant(J) ) *.6;                // det(J) shows compression in distortion\n    //O.b = length(vec4(J))/3.;\n    O.a = 1.;\n}"
@@ -375,23 +502,27 @@
         },
         "thatSAllFolks": {
             "title": "That's all, folks!",
-            "src": "uniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float ringSpeed; // @@Slider default=10. min=5 max=20\nuniform float ringDensity; // @@Slider default=60. min=10 max=120\nuniform float ringContrast; // @@Slider default=.5 min=0 max=1\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 inColor = upstreamColor(uvIn);\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = mix(1. - ringContrast, 1., sin(-length(p) * ringDensity * (0.8+ beatInfo.intensity * 0.2) + time * ringSpeed)); // * beatInfo.intensity;\n    return vec4(inColor.rgb * d, 1.0);\n}"
+            "src": "// That's All Folks\nuniform float time;\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\n\nuniform float ringSpeed; // @@Slider default=10. min=5 max=20\nuniform float ringDensity; // @@Slider default=60. min=10 max=120\nuniform float ringFade; // @@Slider default=.5 min=0 max=1\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 inColor = upstreamColor(uvIn);\n    vec2 p = uvIn - .5;\n    float directMod = sin(time * 0.01);\n    float d = mix(\n        1. - ringFade,\n        1.,\n        sin(-length(p) * ringDensity * (0.8+ beatInfo.intensity * 0.2) + time * ringSpeed)\n    );\n    return vec4(inColor.rgb * d, 1.0);\n}"
         },
-        "soundBrightness": {
-            "title": "Sound Brightness",
-            "src": "uniform float soundBrightness; // @@Slider min=0. max=2. default=0.5\n\nstruct SoundAnalysis {\n    int bucketCount;\n    int sampleHistoryCount;\n    sampler2D buckets;\n    float maxMagnitude;\n};\nuniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 clampedColor = clamp(inColor, 0., 1.);\n    return vec4(clampedColor.rgb * mix(soundAnalysis.maxMagnitude, 1., soundBrightness) , clampedColor.a);\n}\n"
+        "beatShift": {
+            "title": "Beat Shift",
+            "src": "// Beat Shift\n// Priority > 1, shader channel \"time\"\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float beatTimeShiftAmount; // @@Slider default=.5 min=0 max=2\n\n// @return time\n// @param inTime time\nfloat main(float inTime) {\n    return inTime + beatInfo.intensity * beatTimeShiftAmount;\n}"
         },
-        "scanners": {
-            "title": "Scanners",
-            "src": "uniform float time;\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n// @return color\n// @param uvIn uv-coordinate\n// @param inColor color\nvec4 main(vec2 uvIn) {\n    vec4 c = upstreamColor(uvIn);\n    float width = .025;\n\n    float xScan = cos(time) / 2. + .5;\n    if (abs(uvIn.x - xScan) < width) {\n        c.rgb *= .5;\n        c.r = 0.; // 1. - c.r;\n    }\n\n    float yScan = sin(time) / 2. + .5;\n    if (abs(uvIn.y - yScan) < width) {\n        c.rgb *= .5;\n        c.g = 0.; //  = 1. - c.g;\n    }\n\n    return vec4(c.r, c.g, c.b, 1.);\n}"
+        "imageOverlay": {
+            "title": "Image Overlay",
+            "src": "// Image Overlay\n\nvec4 image(vec2 uv); // @@Image\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec4 i = image(gl_FragCoord);\n    return vec4(mix(inColor.rgb, i.rgb, i.a), 1.0);\n}"
         },
-        "headlightsMode": {
-            "title": "Headlights Mode",
-            "src": "const float PI = 3.141592654;\nconst float panScale = 540. / PI / 180.;\nconst float tiltScale = 125. / PI / 180.;\n\nstruct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform FixtureInfo fixtureInfo;\n\nuniform float targetX; // @@Slider default=240 max=500 min=-100\nuniform float targetY; // @@Slider default=0 max=400 min=0\nuniform float targetZ; // @@Slider default=0 max=200 min=-200\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    vec3 target = vec3(targetX, targetY, targetZ);\n\n    vec3 direction = normalize((vec4(target, 1.0) * fixtureInfo.transformation).xyz);\n    float theta = atan(direction.y, direction.x);\n    float phi = acos(direction.z);\n    \n    params.pan = theta * panScale;\n    params.tilt = phi * tiltScale + .5;\n    params.colorWheel = 0.;\n    params.dimmer = 1.;\n}"
+        "zigZag": {
+            "title": "Zig Zag",
+            "src": "// Zig Zag\n\nuniform float time;\n// uniform float zig; // @type float\nuniform float frequency;// @@Slider default=10. min=0 max=20\nuniform float depth;// @@Slider default=0.1 min=0.0 max=0.2\n\nstruct BeatInfo {\n    float beat;\n    float bpm;\n    float intensity;\n    float confidence;\n};\nuniform BeatInfo beatInfo;// @@baaahs.BeatLink:BeatInfo\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 p = -1.0 + 2.0 * uvIn;\n    float len = p.x / 16.;\n    int y = int(uvIn.y * 10.);\n\n    return vec2(uvIn.x, uvIn.y + sin(uvIn.x * frequency + time * 10.) * depth);\n}"
         },
         "blackout": {
             "title": "Blackout",
             "src": "// @return color\n// @param uvIn uv-coordinate\nvec4 main(vec2 uvIn) {\n    return vec4(0., 0., 0., 1.);\n}"
+        },
+        "baaahsLogo": {
+            "title": "[🐑] BAAAHS Logo",
+            "src": "// Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!\n// Ben Bartlett\n\n#define N 5\n#define COORD_SCALE 0.03\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nuniform vec2 resolution; // @@Resolution\nuniform float time; // @@Time\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n\n// For reference -- determines if a point is in a polygon. Since you can't pass dynamically sized arrays, we need one for each component :(\nbool pointInPoly(vec2 point, float scale, vec2 offset, vec2 vertices[N]){\n\tint i, j;\n\tbool c = false;\n\tvec2 pt = (point - offset)/scale;\n\tfor (i = 0, j = N-1; i < N; j = i++) {\n\t\tif ( ((vertices[i].y > pt.y) != (vertices[j].y > pt.y)) &&\n\t\t(pt.x < (vertices[j].x-vertices[i].x) * (pt.y-vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) )\n\t\tc = !c;\n\t}\n\treturn c;\n}\n\n// Coordiantes were obtained from image processing using Wolfram Mathematica. Contact Ben for the notebook source code.\nvec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94));\nvec2 HEART_MIN_XY = vec2(-70.5, -67.9);\nvec2 HEART_MAX_XY = vec2(70.6, 51.6);\nvec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48));\nvec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76));\nvec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38));\nvec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78));\nvec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06));\nvec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));\n\nbool pointInHeart(vec2 point, float scale, vec2 offset){\n\tint len = 187;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInFace(vec2 point, float scale, vec2 offset){\n\tint len = 26;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInMouth(vec2 point, float scale, vec2 offset){\n\tint len = 35;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeLeft(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarLeft(vec2 point, float scale, vec2 offset){\n\tint len = 9;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\n\n// Shades only the black regions of the logo\nbool pointInSheep(vec2 point, float scale, vec2 offset) {\n\t// For speed -- check if it's in a bounding box, else return false\n\tvec2 p = (point - offset)/(scale * COORD_SCALE);\n\tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) {\n\t\treturn false;\n\t}\n\t// Check if it's in each part\n\tbool inHeart = pointInHeart(point, scale, offset);\n\tbool inFace = pointInFace(point, scale, offset);\n\tbool inMouth = pointInMouth(point, scale, offset);\n\tbool inEyeLeft = pointInEyeLeft(point, scale, offset);\n\tbool inEyeRight = pointInEyeRight(point, scale, offset);\n\tbool inEarLeft = pointInEarLeft(point, scale, offset);\n\tbool inEarRight = pointInEarRight(point, scale, offset);\n\t// Shade the correct regions\n\treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight));\n}\n\nvec3 drawScene(vec2 uv) {\n\tvec3 col = upstreamColor(uv).rgb;\n\n\tfloat sheep = -1.0 * float(pointInSheep(uv, .9 + 0.1 * sin(time * 2.), vec2(.15 * sin(time * .47), .1 * sin(time * .37))));\n\n\tcol = mix(vec3(0, 0, 0), col, step(0., sheep));\n\n\treturn col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n//\tvec2 uv = fragCoord/iResolution.xy; // <0, 1>\n\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 1.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\t\n//\tuv -= 0.5; // <-0.5,0.5>\n//\tuv.x *= iResolution.x/iResolution.y; // fix aspect ratio\n\n\tvec3 col = drawScene(fragPos);\n\n\t// Output to screen\n\tfragColor = vec4(col,1.0);\n}\n\n"
         }
     },
     "patches": {
@@ -431,35 +562,6 @@
                 "saturation": {
                     "type": "datasource",
                     "dataSourceId": "saturationSlider"
-                }
-            }
-        },
-        "baaahsEclipse-patch": {
-            "shaderId": "baaahsEclipse",
-            "incomingLinks": {
-                "time": {
-                    "type": "datasource",
-                    "dataSourceId": "time"
-                },
-                "fragCoord": {
-                    "type": "stream",
-                    "stream": "main"
-                },
-                "soundAnalysis": {
-                    "type": "datasource",
-                    "dataSourceId": "soundAnalysis"
-                },
-                "horizontalScale": {
-                    "type": "datasource",
-                    "dataSourceId": "horizontalScaleSlider"
-                },
-                "beatInfo": {
-                    "type": "datasource",
-                    "dataSourceId": "beatInfo"
-                },
-                "resolution": {
-                    "type": "datasource",
-                    "dataSourceId": "resolution"
                 }
             }
         },
@@ -894,6 +996,381 @@
                 }
             }
         },
+        "baaahsEclipse-patch": {
+            "shaderId": "baaahsEclipse",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "soundAnalysis": {
+                    "type": "datasource",
+                    "dataSourceId": "soundAnalysis"
+                },
+                "horizontalScale": {
+                    "type": "datasource",
+                    "dataSourceId": "horizontalScaleSlider"
+                },
+                "beatInfo": {
+                    "type": "datasource",
+                    "dataSourceId": "beatInfo"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "firstRaymarches-patch": {
+            "shaderId": "firstRaymarches",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "thing": {
+                    "type": "datasource",
+                    "dataSourceId": "thingSlider"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "fireball-patch": {
+            "shaderId": "fireball",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "conflagration": {
+                    "type": "datasource",
+                    "dataSourceId": "conflagrationSlider"
+                }
+            }
+        },
+        "blueHearts-patch": {
+            "shaderId": "blueHearts",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "blueSClues-patch": {
+            "shaderId": "blueSClues",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "checkerboard-patch": {
+            "shaderId": "checkerboard",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "checkerboardSize": {
+                    "type": "datasource",
+                    "dataSourceId": "checkerboardSizeSlider"
+                }
+            }
+        },
+        "colorDiffusionFlow-patch": {
+            "shaderId": "colorDiffusionFlow",
+            "incomingLinks": {
+                "DATE": {
+                    "type": "datasource",
+                    "dataSourceId": "date"
+                },
+                "TIME": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "nudge": {
+                    "type": "datasource",
+                    "dataSourceId": "nudgeSlider"
+                },
+                "rate1": {
+                    "type": "datasource",
+                    "dataSourceId": "rate1Slider"
+                },
+                "rate2": {
+                    "type": "datasource",
+                    "dataSourceId": "rate2Slider"
+                },
+                "loopcycle": {
+                    "type": "datasource",
+                    "dataSourceId": "loopcycleSlider"
+                },
+                "color1": {
+                    "type": "datasource",
+                    "dataSourceId": "color1Slider"
+                },
+                "color2": {
+                    "type": "datasource",
+                    "dataSourceId": "color2Slider"
+                },
+                "cycle1": {
+                    "type": "datasource",
+                    "dataSourceId": "cycle1Slider"
+                },
+                "cycle2": {
+                    "type": "datasource",
+                    "dataSourceId": "cycle2Slider"
+                },
+                "depthX": {
+                    "type": "datasource",
+                    "dataSourceId": "depthXSlider"
+                },
+                "depthY": {
+                    "type": "datasource",
+                    "dataSourceId": "depthYSlider"
+                },
+                "isf_FragNormCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "danceyCubes-patch": {
+            "shaderId": "danceyCubes",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "mysterNumber": {
+                    "type": "datasource",
+                    "dataSourceId": "mysterNumberSlider"
+                }
+            }
+        },
+        "plaid-patch": {
+            "shaderId": "plaid",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "primeWaves-patch": {
+            "shaderId": "primeWaves",
+            "incomingLinks": {
+                "rxy": {
+                    "type": "datasource",
+                    "dataSourceId": "rxySlider"
+                },
+                "rxz": {
+                    "type": "datasource",
+                    "dataSourceId": "rxzSlider"
+                },
+                "TIME": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "rate": {
+                    "type": "datasource",
+                    "dataSourceId": "rateSlider"
+                },
+                "zoom": {
+                    "type": "datasource",
+                    "dataSourceId": "zoomSlider"
+                },
+                "depth": {
+                    "type": "datasource",
+                    "dataSourceId": "depthSlider"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "RENDERSIZE": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "center": {
+                    "type": "datasource",
+                    "dataSourceId": "center2"
+                }
+            }
+        },
+        "quiver-patch": {
+            "shaderId": "quiver",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "twist": {
+                    "type": "datasource",
+                    "dataSourceId": "twistSlider"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "spaceRings-patch": {
+            "shaderId": "spaceRings",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
+        "waves-patch": {
+            "shaderId": "waves",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "beatInfo": {
+                    "type": "datasource",
+                    "dataSourceId": "beatInfo"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "frequency": {
+                    "type": "datasource",
+                    "dataSourceId": "frequencySlider"
+                }
+            }
+        },
+        "sunsetDelight-patch": {
+            "shaderId": "sunsetDelight",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "mouseX": {
+                    "type": "datasource",
+                    "dataSourceId": "mouseXSlider"
+                },
+                "mouseY": {
+                    "type": "datasource",
+                    "dataSourceId": "mouseYSlider"
+                }
+            }
+        },
+        "huerthquake-patch": {
+            "shaderId": "huerthquake",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "iTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                }
+            }
+        },
         "jacobianUndistortion-patch": {
             "shaderId": "jacobianUndistortion",
             "incomingLinks": {
@@ -901,11 +1378,23 @@
                     "type": "stream",
                     "stream": "main"
                 },
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
                 "iTime": {
                     "type": "datasource",
                     "dataSourceId": "time"
                 },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
                 "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "resolution": {
                     "type": "datasource",
                     "dataSourceId": "resolution"
                 }
@@ -973,10 +1462,6 @@
         "thatSAllFolks-patch": {
             "shaderId": "thatSAllFolks",
             "incomingLinks": {
-                "ringContrast": {
-                    "type": "datasource",
-                    "dataSourceId": "ringContrastSlider"
-                },
                 "time": {
                     "type": "datasource",
                     "dataSourceId": "time"
@@ -1000,19 +1485,42 @@
                 "upstreamColor": {
                     "type": "stream",
                     "stream": "main"
+                },
+                "ringFade": {
+                    "type": "datasource",
+                    "dataSourceId": "ringFadeSlider"
                 }
             }
         },
-        "soundBrightness-patch": {
-            "shaderId": "soundBrightness",
+        "beatShift-patch": {
+            "shaderId": "beatShift",
             "incomingLinks": {
-                "soundAnalysis": {
+                "beatInfo": {
                     "type": "datasource",
-                    "dataSourceId": "soundAnalysis"
+                    "dataSourceId": "beatInfo"
                 },
-                "soundBrightness": {
+                "beatTimeShiftAmount": {
                     "type": "datasource",
-                    "dataSourceId": "soundBrightnessSlider"
+                    "dataSourceId": "beatTimeShiftAmountSlider"
+                },
+                "inTime": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                }
+            },
+            "stream": "time",
+            "priority": 1
+        },
+        "imageOverlay-patch": {
+            "shaderId": "imageOverlay",
+            "incomingLinks": {
+                "image": {
+                    "type": "datasource",
+                    "dataSourceId": "imageImage"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
                 },
                 "inColor": {
                     "type": "stream",
@@ -1020,8 +1528,8 @@
                 }
             }
         },
-        "scanners-patch": {
-            "shaderId": "scanners",
+        "zigZag-patch": {
+            "shaderId": "zigZag",
             "incomingLinks": {
                 "time": {
                     "type": "datasource",
@@ -1031,30 +1539,17 @@
                     "type": "stream",
                     "stream": "main"
                 },
-                "upstreamColor": {
-                    "type": "stream",
-                    "stream": "main"
-                }
-            }
-        },
-        "headlightsMode-patch": {
-            "shaderId": "headlightsMode",
-            "incomingLinks": {
-                "fixtureInfo": {
+                "depth": {
                     "type": "datasource",
-                    "dataSourceId": "fixtureInfo"
+                    "dataSourceId": "depthSlider2"
                 },
-                "targetX": {
+                "beatInfo": {
                     "type": "datasource",
-                    "dataSourceId": "targetXSlider"
+                    "dataSourceId": "beatInfo"
                 },
-                "targetY": {
+                "frequency": {
                     "type": "datasource",
-                    "dataSourceId": "targetYSlider"
-                },
-                "targetZ": {
-                    "type": "datasource",
-                    "dataSourceId": "targetZSlider"
+                    "dataSourceId": "frequencySlider2"
                 }
             }
         },
@@ -1066,7 +1561,36 @@
                     "stream": "main"
                 }
             },
-            "priority": 10
+            "priority": 100
+        },
+        "baaahsLogo-patch": {
+            "shaderId": "baaahsLogo",
+            "incomingLinks": {
+                "time": {
+                    "type": "datasource",
+                    "dataSourceId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "horizontalScale": {
+                    "type": "datasource",
+                    "dataSourceId": "horizontalScaleSlider"
+                },
+                "resolution": {
+                    "type": "datasource",
+                    "dataSourceId": "resolution"
+                },
+                "upstreamColor": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
         }
     },
     "controls": {
@@ -1087,13 +1611,6 @@
             "direction": "Vertical",
             "showTitle": true,
             "buttonIds": [
-            ]
-        },
-        "baaahsEclipse": {
-            "type": "baaahs.Core:Button",
-            "title": "[🐑] BAAAHS Eclipse",
-            "patchIds": [
-                "baaahsEclipse-patch"
             ]
         },
         "squarezzz": {
@@ -1229,6 +1746,111 @@
                 "redSea-patch"
             ]
         },
+        "baaahsEclipse": {
+            "type": "baaahs.Core:Button",
+            "title": "[🐑] BAAAHS Eclipse",
+            "patchIds": [
+                "baaahsEclipse-patch"
+            ]
+        },
+        "firstRaymarches": {
+            "type": "baaahs.Core:Button",
+            "title": "First Raymarches",
+            "patchIds": [
+                "firstRaymarches-patch"
+            ]
+        },
+        "fireball": {
+            "type": "baaahs.Core:Button",
+            "title": "Fireball",
+            "patchIds": [
+                "fireball-patch"
+            ]
+        },
+        "blueHearts": {
+            "type": "baaahs.Core:Button",
+            "title": "Blue Hearts",
+            "patchIds": [
+                "blueHearts-patch"
+            ]
+        },
+        "blueSClues": {
+            "type": "baaahs.Core:Button",
+            "title": "Blue's Clues",
+            "patchIds": [
+                "blueSClues-patch"
+            ]
+        },
+        "checkerboard": {
+            "type": "baaahs.Core:Button",
+            "title": "Checkerboard",
+            "patchIds": [
+                "checkerboard-patch"
+            ]
+        },
+        "colorDiffusionFlow": {
+            "type": "baaahs.Core:Button",
+            "title": "Color Diffusion Flow",
+            "patchIds": [
+                "colorDiffusionFlow-patch"
+            ]
+        },
+        "danceyCubes": {
+            "type": "baaahs.Core:Button",
+            "title": "Dancey Cubes",
+            "patchIds": [
+                "danceyCubes-patch"
+            ]
+        },
+        "plaid": {
+            "type": "baaahs.Core:Button",
+            "title": "Plaid",
+            "patchIds": [
+                "plaid-patch"
+            ]
+        },
+        "primeWaves": {
+            "type": "baaahs.Core:Button",
+            "title": "Prime Waves",
+            "patchIds": [
+                "primeWaves-patch"
+            ]
+        },
+        "quiver": {
+            "type": "baaahs.Core:Button",
+            "title": "Quiver",
+            "patchIds": [
+                "quiver-patch"
+            ]
+        },
+        "spaceRings": {
+            "type": "baaahs.Core:Button",
+            "title": "Space Rings",
+            "patchIds": [
+                "spaceRings-patch"
+            ]
+        },
+        "waves": {
+            "type": "baaahs.Core:Button",
+            "title": "Waves",
+            "patchIds": [
+                "waves-patch"
+            ]
+        },
+        "sunsetDelight": {
+            "type": "baaahs.Core:Button",
+            "title": "Sunset Delight",
+            "patchIds": [
+                "sunsetDelight-patch"
+            ]
+        },
+        "huerthquake": {
+            "type": "baaahs.Core:Button",
+            "title": "Huerthquake",
+            "patchIds": [
+                "huerthquake-patch"
+            ]
+        },
         "jacobianUndistortion": {
             "type": "baaahs.Core:Button",
             "title": "Jacobian Undistortion",
@@ -1273,18 +1895,40 @@
                 "thatSAllFolks-patch"
             ]
         },
-        "soundBrightness": {
+        "beatShift": {
             "type": "baaahs.Core:Button",
-            "title": "Sound Brightness",
+            "title": "Beat Shift",
             "patchIds": [
-                "soundBrightness-patch"
+                "beatShift-patch"
             ]
         },
-        "scanners": {
+        "imageOverlay": {
             "type": "baaahs.Core:Button",
-            "title": "Scanners",
+            "title": "Image Overlay",
             "patchIds": [
-                "scanners-patch"
+                "imageOverlay-patch"
+            ]
+        },
+        "zigZag": {
+            "type": "baaahs.Core:Button",
+            "title": "Zig Zag",
+            "patchIds": [
+                "zigZag-patch"
+            ]
+        },
+        "blackout": {
+            "type": "baaahs.Core:Button",
+            "title": "Blackout",
+            "activationType": "Momentary",
+            "patchIds": [
+                "blackout-patch"
+            ]
+        },
+        "baaahsLogo": {
+            "type": "baaahs.Core:Button",
+            "title": "[🐑] BAAAHS Logo",
+            "patchIds": [
+                "baaahsLogo-patch"
             ]
         },
         "globalControls": {
@@ -1306,13 +1950,6 @@
             "maxValue": 1.25,
             "controlledDataSourceId": "saturationSlider"
         },
-        "headlightsMode": {
-            "type": "baaahs.Core:Button",
-            "title": "Headlights Mode",
-            "patchIds": [
-                "headlightsMode-patch"
-            ]
-        },
         "hueShift": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Shift",
@@ -1324,14 +1961,6 @@
         },
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
-        },
-        "blackout": {
-            "type": "baaahs.Core:Button",
-            "title": "Blackout",
-            "activationType": "Momentary",
-            "patchIds": [
-                "blackout-patch"
-            ]
         }
     },
     "dataSources": {
@@ -1365,28 +1994,18 @@
         "time": {
             "type": "baaahs.Core:Time"
         },
-        "soundAnalysis": {
-            "type": "baaahs.SoundAnalysis:SoundAnalysis"
-        },
-        "horizontalScaleSlider": {
-            "type": "baaahs.Core:Slider",
-            "title": "Horizontal Scale",
-            "initialValue": 0.7,
-            "minValue": 0.25,
-            "maxValue": 1
-        },
-        "beatInfo": {
-            "type": "baaahs.BeatLink:BeatInfo"
-        },
-        "resolution": {
-            "type": "baaahs.Core:Resolution"
-        },
         "speedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Speed",
             "initialValue": 3,
             "minValue": 1,
             "maxValue": 5
+        },
+        "resolution": {
+            "type": "baaahs.Core:Resolution"
+        },
+        "beatInfo": {
+            "type": "baaahs.BeatLink:BeatInfo"
         },
         "hueRangeSlider": {
             "type": "baaahs.Core:Slider",
@@ -1452,17 +2071,200 @@
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
         },
-        "rippleAmountSlider": {
+        "soundAnalysis": {
+            "type": "baaahs.SoundAnalysis:SoundAnalysis"
+        },
+        "horizontalScaleSlider": {
             "type": "baaahs.Core:Slider",
-            "title": "Ripple Amount",
+            "title": "Horizontal Scale",
+            "initialValue": 0.7,
+            "minValue": 0.25,
+            "maxValue": 1
+        },
+        "thingSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Thing",
+            "initialValue": 0.866025,
+            "minValue": 0,
+            "maxValue": 2
+        },
+        "conflagrationSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Conflagration",
+            "initialValue": 15,
+            "minValue": 5,
+            "maxValue": 20
+        },
+        "checkerboardSizeSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Checkerboard Size",
+            "initialValue": 0.125,
+            "minValue": 0.001,
+            "maxValue": 1
+        },
+        "date": {
+            "type": "baaahs.Core:Date"
+        },
+        "nudgeSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Nudge",
+            "initialValue": 0.095,
+            "minValue": 0.001,
+            "maxValue": 0.01
+        },
+        "rate1Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Rate1",
+            "initialValue": 1.9,
+            "minValue": -3,
+            "maxValue": 3
+        },
+        "rate2Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Rate2",
+            "initialValue": 0.6,
+            "minValue": -3,
+            "maxValue": 3
+        },
+        "loopcycleSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Loopcycle",
+            "initialValue": 85,
+            "minValue": 20,
+            "maxValue": 100
+        },
+        "color1Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Color1",
+            "initialValue": 0.45,
+            "minValue": -2.5,
+            "maxValue": 2.5
+        },
+        "color2Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Color2",
+            "initialValue": 1,
+            "minValue": -1.25,
+            "maxValue": 1.125
+        },
+        "cycle1Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Cycle1",
+            "initialValue": 1.33,
+            "minValue": 0.01,
+            "maxValue": 3.1459
+        },
+        "cycle2Slider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Cycle2",
+            "initialValue": 0.22,
+            "minValue": -0.497,
+            "maxValue": 0.497
+        },
+        "depthXSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Depth X",
+            "initialValue": 0.85,
+            "minValue": 0.001,
+            "maxValue": 0.9
+        },
+        "depthYSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Depth Y",
+            "initialValue": 0.25,
+            "minValue": 0.001,
+            "maxValue": 0.9
+        },
+        "mysterNumberSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Myster Number",
             "initialValue": 1,
             "minValue": 0,
             "maxValue": 1
         },
-        "ringContrastSlider": {
+        "rxySlider": {
             "type": "baaahs.Core:Slider",
-            "title": "Ring Contrast",
-            "initialValue": 0.5,
+            "title": "Rxy",
+            "initialValue": 11,
+            "minValue": 1,
+            "maxValue": 17
+        },
+        "rxzSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Rxz",
+            "initialValue": 13,
+            "minValue": 1,
+            "maxValue": 17
+        },
+        "rateSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Rate",
+            "initialValue": -1,
+            "minValue": -3,
+            "maxValue": 3
+        },
+        "zoomSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Zoom",
+            "initialValue": 5,
+            "minValue": -10,
+            "maxValue": 10
+        },
+        "depthSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Depth",
+            "initialValue": 0.6,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "center2": {
+            "type": "baaahs.Core:XyPad",
+            "title": "Center",
+            "initialValue": {
+                "x": -2,
+                "y": -1
+            },
+            "minValue": {
+                "x": -10,
+                "y": -10
+            },
+            "maxValue": {
+                "x": 10,
+                "y": 10
+            }
+        },
+        "twistSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Twist",
+            "initialValue": 0.2,
+            "minValue": -4,
+            "maxValue": 4
+        },
+        "frequencySlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Frequency",
+            "initialValue": 15,
+            "minValue": 3.14,
+            "maxValue": 25
+        },
+        "mouseXSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Mouse X",
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "mouseYSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Mouse Y",
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "rippleAmountSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Ripple Amount",
+            "initialValue": 1,
             "minValue": 0,
             "maxValue": 1
         },
@@ -1480,33 +2282,37 @@
             "minValue": 10,
             "maxValue": 120
         },
-        "soundBrightnessSlider": {
+        "ringFadeSlider": {
             "type": "baaahs.Core:Slider",
-            "title": "Sound Brightness",
+            "title": "Ring Fade",
+            "initialValue": 0.5,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "beatTimeShiftAmountSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Beat Time Shift Amount",
             "initialValue": 0.5,
             "minValue": 0,
             "maxValue": 2
         },
-        "targetXSlider": {
-            "type": "baaahs.Core:Slider",
-            "title": "Target X",
-            "initialValue": 240,
-            "minValue": -100,
-            "maxValue": 500
+        "imageImage": {
+            "type": "baaahs.Core:Image",
+            "title": "Image Image"
         },
-        "targetYSlider": {
+        "depthSlider2": {
             "type": "baaahs.Core:Slider",
-            "title": "Target Y",
-            "initialValue": 0,
+            "title": "Depth",
+            "initialValue": 0.1,
             "minValue": 0,
-            "maxValue": 400
+            "maxValue": 0.2
         },
-        "targetZSlider": {
+        "frequencySlider2": {
             "type": "baaahs.Core:Slider",
-            "title": "Target Z",
-            "initialValue": 0,
-            "minValue": -200,
-            "maxValue": 200
+            "title": "Frequency",
+            "initialValue": 10,
+            "minValue": 0,
+            "maxValue": 20
         }
     },
     "version": 8
