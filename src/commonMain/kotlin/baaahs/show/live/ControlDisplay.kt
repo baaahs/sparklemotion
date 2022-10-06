@@ -63,9 +63,9 @@ class LegacyControlDisplay(
                 super.visitUnplacedControl(openControl)
             }
 
-            override fun visitControl(openControl: OpenControl) {
+            override fun visitControl(openControl: OpenControl, layout: OpenGridLayout?) {
                 if (openControl.isActive()) {
-                    super.visitControl(openControl)
+                    super.visitControl(openControl, layout)
                 }
             }
         }.visitShow(show)
