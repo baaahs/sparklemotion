@@ -27,6 +27,7 @@ data class Show(
     override val title: String,
     override val patchIds: List<String> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
+    @Deprecated("Only used for legacy layout.")
     override val controlLayout: Map<String, List<String>> = emptyMap(),
     val layouts: Layouts = Layouts(),
     val shaders: Map<String, Shader> = emptyMap(),

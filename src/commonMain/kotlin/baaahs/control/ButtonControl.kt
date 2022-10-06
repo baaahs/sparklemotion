@@ -21,6 +21,7 @@ data class ButtonControl(
     val activationType: ActivationType = ActivationType.Toggle,
     override val patchIds: List<String> = emptyList(),
     override val eventBindings: List<EventBinding> = emptyList(),
+    @Deprecated("Only used for legacy layout.")
     override val controlLayout: Map<String, List<String>> = emptyMap(),
     override val controlledDataSourceId: String? = null
 ) : PatchHolder, Control {
