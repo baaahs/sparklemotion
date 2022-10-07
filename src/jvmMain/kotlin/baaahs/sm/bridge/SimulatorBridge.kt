@@ -7,7 +7,7 @@ import baaahs.plugin.PluginContext
 import baaahs.plugin.SimulatorPlugin
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.SystemClock
-import io.ktor.websocket.*
+import io.ktor.server.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.newSingleThreadContext
 
