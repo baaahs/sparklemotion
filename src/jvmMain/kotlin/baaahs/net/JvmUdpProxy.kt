@@ -5,7 +5,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.net.JvmNetwork.Companion.msgId
 import baaahs.net.JvmNetwork.Companion.networkScope
 import baaahs.util.Logger
-import io.ktor.http.cio.websocket.*
+import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.launch
 import java.net.DatagramPacket
