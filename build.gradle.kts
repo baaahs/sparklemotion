@@ -108,7 +108,8 @@ kotlin {
                 implementation("io.ktor:ktor-server-core:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
-                implementation("io.ktor:ktor-websockets:${Versions.ktor}")
+                implementation("io.ktor:ktor-server-call-logging:${Versions.ktor}")
+                implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.2.7")
                 implementation("org.deepsymmetry:beat-link:0.6.3")
 
