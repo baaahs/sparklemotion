@@ -275,12 +275,33 @@ fun HTMLElement.fitText() {
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val ctx = canvas.context2d()
     ctx.font = font
-    val width = innerText.split(Regex("\\s+")).maxOf { word ->
-        ctx.measureText(word).width
+    val metrics = innerText.split(Regex("\\s+")).map { word ->
+        ctx.measureText(word)
     }
+    val spaceMetrics = ctx.measureText(" ")
+    val maxWordWidth = metrics.maxOf { it.width }
+    var lineWidth = 0.0
+    var lineCount = 0
+    metrics.forEach { metric ->
+        val newLineWidth =
+            lineWidth +
+                    (if (lineWidth == 0.0) 0.0 else spaceMetrics.width) +
+                    metric.width
+
+        lineWidth = if (newLineWidth > buttonWidth) {
+            lineCount++
+            metric.width
+        } else {
+            newLineWidth
+        }
+    }
+    if (lineWidth > 0) lineCount++
+
+    console.log("fitText(", innerText, "):", lineCount)
+
     style.transform =
-        if (width > buttonWidth) {
-            "scaleX(${buttonWidth / width})"
+        if (maxWordWidth > buttonWidth) {
+            "scaleX(${buttonWidth / maxWordWidth})"
         } else {
             ""
         }
