@@ -85,7 +85,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
