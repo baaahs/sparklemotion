@@ -13,6 +13,8 @@ import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.sim.HostedWebApp
+import baaahs.ui.Prompt
+import baaahs.ui.promptDialog
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import kotlinx.js.jso
@@ -63,10 +65,14 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
         SceneMonitor(OpenScene(Model("Empty model", emptyList())))
     }
 
+    var prompt by state<Prompt?> { null }
+    val handlePromptClose = callback { prompt = null }
+
     val myAppContext = memo(allStyles) {
         jso<AppContext> {
             this.plugins = props.plugins
             this.allStyles = allStyles
+            this.prompt = { prompt = it }
             this.clock = JsClock
             this.showManager = showManager
             this.sceneProvider = sceneMonitor
@@ -99,6 +105,13 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
                             editableManagerUi {
                                 attrs.editableManager = editableManager
                             }
+                        }
+                    }
+
+                    prompt?.let {
+                        promptDialog {
+                            attrs.prompt = it
+                            attrs.onClose = handlePromptClose
                         }
                     }
                 }

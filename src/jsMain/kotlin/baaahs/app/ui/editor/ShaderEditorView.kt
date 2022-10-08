@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import acex.*
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.actions.EditorPlugins
 import baaahs.boundedBy
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
@@ -14,7 +15,6 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
-import mui.material.Divider
 import mui.material.ListItemText
 import mui.material.Menu
 import mui.material.MenuItem
@@ -71,9 +71,9 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         withCleanup { compilationObserver.remove() }
     }
 
-    val shaderRefactor = memo(props.editingShader, aceEditor?.editor) {
+    val editorPlugins = memo(props.editingShader, aceEditor?.editor) {
         aceEditor?.editor?.let {
-            ShaderRefactor(props.editingShader, it, appContext) { forceRender() }
+            EditorPlugins(props.editingShader, it, appContext) { forceRender() }
         }
     }
 
@@ -84,22 +84,16 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         }
     }
 
-    val handleCursorChange = callback(shaderRefactor) { value: Any, _: Any ->
+    val handleCursorChange = callback(editorPlugins) { value: Any, _: Any ->
         @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
         val selection = value as Selection
-        shaderRefactor?.onCursorChange(selection)
+        editorPlugins?.onCursorChange(selection)
         lastSelection.current = selection.toJSON()
     }
 
     var refactorMenuAnchor by state<Element?> { null }
     val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target as Element? }
     val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
-
-    val handleExtractUniform by mouseEventHandler(shaderRefactor) {
-        hideRefactorMenu(null, null)
-        shaderRefactor?.onExtract()
-        Unit
-    }
 
     val handleAceEditor by handler { incoming: AceEditor ->
         later { aceEditor = incoming }
@@ -114,7 +108,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         attrs.onCursorChange = handleCursorChange
     }
 
-    shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
+    editorPlugins?.selectionEndScreenPosition?.let { (x, y) ->
         div(+styles.editorActionMenuAffordance) {
             inlineStyles { top = y.px; left = x.px }
             attrs.onClickFunction = showRefactorMenu
@@ -133,22 +127,14 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
             attrs.open = true
             attrs.onClose = hideRefactorMenu
 
-            shaderRefactor?.let {
-                it.extractionCandidate?.let { extraction ->
-                    MenuItem {
-                        attrs.onClick = handleExtractUniform
-
-                        ListItemText { +"Extract ${extraction.text}…" }
+            editorPlugins?.currentActions?.forEach { action ->
+                MenuItem {
+                    attrs.onClick = {
+                        hideRefactorMenu(null, null)
+                        action.perform()
                     }
+                    ListItemText { +action.contextMenuTitle }
                 }
-            }
-
-            Divider {}
-
-            MenuItem {
-                attrs.disabled = true
-
-                ListItemText { +"Rename…" }
             }
         }
     }
