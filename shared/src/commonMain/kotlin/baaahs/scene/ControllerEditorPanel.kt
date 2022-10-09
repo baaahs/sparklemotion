@@ -1,5 +1,6 @@
 package baaahs.scene
 
+import baaahs.controller.MutableNanoleafControllerConfig
 import baaahs.ui.Icon
 import baaahs.ui.View
 import baaahs.visualizer.entity.visualizerBuilder
@@ -28,6 +29,12 @@ object DirectDmxControllerEditorPanel : ControllerEditorPanel<MutableDirectDmxCo
     override fun getView(editingController: EditingController<*>): View =
         visualizerBuilder.getDirectDmxControllerEditorView(editingController as EditingController<MutableDirectDmxControllerConfig>)
 }
+
+object NanoleafControllerEditorPanel : ControllerEditorPanel<MutableNanoleafControllerConfig>() {
+    override fun getView(editingController: EditingController<*>): View =
+        visualizerBuilder.getNanoleafControllerEditorView(editingController as EditingController<MutableNanoleafControllerConfig>)
+}
+
 object SacnControllerEditorPanel : ControllerEditorPanel<MutableSacnControllerConfig>() {
     override fun getView(editingController: EditingController<*>): View =
         visualizerBuilder.getSacnControllerEditorView(editingController as EditingController<MutableSacnControllerConfig>)

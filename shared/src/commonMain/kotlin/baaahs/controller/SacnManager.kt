@@ -126,7 +126,13 @@ class SacnManager(
                 if (wledAddress != null) {
                     CoroutineScope(Dispatchers.Default + coroutineExceptionHandler).launch {
                         val wledJsonStr = link.httpGetRequest(wledAddress, wledPort, "json")
-                        val wledJson = json.decodeFromString(WledJson.serializer(), wledJsonStr)
+                        println("wledJsonStr = $wledJsonStr")
+                        val wledJson = try {
+                            json.decodeFromString(WledJson.serializer(), wledJsonStr)
+                        } catch (e: Exception) {
+                            logger.error(e) { "Failed to decode WLED JSON: $wledJsonStr" }
+                            throw e
+                        }
 
                         withContext(this@SacnManager.coroutineContext) {
                             val pixelCount = wledJson.info.leds.count
@@ -174,16 +180,19 @@ class SacnManager(
         ): MutableControllerConfig {
             val sacnState = state as? State
             val title = state?.title ?: controllerId?.id ?: "New sACN Controller"
-            return MutableSacnControllerConfig(SacnControllerConfig(
-                title,
-                sacnState?.address ?: "",
-                1
-            ))
+            return MutableSacnControllerConfig(
+                SacnControllerConfig(
+                    title,
+                    sacnState?.address ?: "",
+                    1
+                )
+            )
         }
     }
 }
 
-@Serializable @SerialName("SACN")
+@Serializable
+@SerialName("SACN")
 data class SacnControllerConfig(
     override val title: String,
     val address: String,
@@ -255,7 +264,7 @@ data class WledJson(
         data class Leds(
             val count: Int,
             val rgbw: Boolean,
-            val wv: Boolean,
+//            val wv: Boolean,
             val fps: Int,
             val pwr: Int,
             val maxpwr: Int

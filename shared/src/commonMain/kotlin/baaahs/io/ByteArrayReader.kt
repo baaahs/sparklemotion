@@ -2,11 +2,15 @@ package baaahs.io
 
 import kotlin.math.min
 
-class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
+class ByteArrayReader(
+    val bytes: ByteArray,
+    offset: Int = 0,
+    val size: Int = bytes.size
+) {
     var offset = offset
         set(value) {
-            if (value > bytes.size) {
-                throw IllegalStateException("array index out of bounds ($value > ${bytes.size})")
+            if (value > size) {
+                throw IllegalStateException("array index out of bounds ($value > $size)")
             }
             field = value
         }
@@ -75,7 +79,7 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return toCopy
     }
 
-    fun hasMoreBytes(): Boolean = offset < bytes.size
+    fun hasMoreBytes(): Boolean = offset < size
 
     fun skipBytes(count: Int) {
         offset += count

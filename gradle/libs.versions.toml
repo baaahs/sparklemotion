@@ -57,6 +57,7 @@ tarsosDspJvm = { group = "be.tarsos.dsp", name = "jvm", version.ref = "tarsosDsp
 webcamCapture = { group = "com.github.sarxos", name = "webcam-capture", version = "0.3.12" }
 webcamCaptureDriverNative = { group = "io.github.eduramiba", name = "webcam-capture-driver-native", version = "1.0.0" }
 kspSymbolProcessingApi = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+nanoleafApi = { group = "io.github.rowak", name = "nanoleaf-api", version = "0.1.2" }
 
 # Test:
 kotestRunnerJunit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }

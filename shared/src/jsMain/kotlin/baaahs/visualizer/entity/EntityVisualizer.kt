@@ -2,8 +2,10 @@ package baaahs.visualizer.entity
 
 import baaahs.app.ui.controllers.brainControllerEditor
 import baaahs.app.ui.controllers.directDmxControllerEditor
+import baaahs.app.ui.controllers.nanoleafControllerEditor
 import baaahs.app.ui.controllers.sacnControllerEditor
 import baaahs.app.ui.model.*
+import baaahs.controller.MutableNanoleafControllerConfig
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.pixelArrayFixtureConfigEditor
@@ -100,6 +102,12 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
 
     override fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View = renderWrapper {
         directDmxControllerEditor {
+            attrs.editingController = editingController
+        }
+    }
+
+    override fun getNanoleafControllerEditorView(editingController: EditingController<MutableNanoleafControllerConfig>): View = renderWrapper {
+        nanoleafControllerEditor {
             attrs.editingController = editingController
         }
     }

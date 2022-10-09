@@ -1,5 +1,6 @@
 package baaahs.visualizer.entity
 
+import baaahs.controller.MutableNanoleafControllerConfig
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.MutableDmxTransportConfig
@@ -68,6 +69,7 @@ interface VisualizerBuilder {
     // Controllers:
     fun getBrainControllerEditorView(editingController: EditingController<MutableBrainControllerConfig>): View
     fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View
+    fun getNanoleafControllerEditorView(editingController: EditingController<MutableNanoleafControllerConfig>): View
     fun getSacnControllerEditorView(editingController: EditingController<MutableSacnControllerConfig>): View
 
     // FixtureOptions:
