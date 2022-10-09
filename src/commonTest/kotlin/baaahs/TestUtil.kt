@@ -48,6 +48,7 @@ import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import org.spekframework.spek2.style.specification.describe
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.roundToLong
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
@@ -76,6 +77,7 @@ fun <T: Any?> toBeSpecified(): T = error("override me!")
 
 class FakeClock(var time: Time = 0.0) : Clock {
     override fun now(): Time = time
+    override fun nowMillis(): Long = (time * 1000).roundToLong()
 }
 
 fun testModelSurface(

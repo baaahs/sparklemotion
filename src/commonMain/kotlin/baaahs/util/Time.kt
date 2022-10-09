@@ -16,6 +16,7 @@ fun Time.isBefore(otherTime: Time) = this < otherTime
 
 interface Clock {
     fun now(): Time
+    fun nowMillis(): Long
 }
 
 fun Time.asMillis(): Long = (this * 1000).roundToLong()

@@ -123,6 +123,9 @@ kotlin {
                 // To support animated GIFs:
                 implementation("com.madgag:animated-gif-lib:1.4")
 
+                // Nanoleaf support:
+                implementation("io.github.rowak:nanoleaf-api:0.1.2")
+
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
                 implementation("io.github.eduramiba:webcam-capture-driver-native:1.0.0")

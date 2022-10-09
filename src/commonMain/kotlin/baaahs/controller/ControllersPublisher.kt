@@ -15,6 +15,7 @@ class ControllersPublisher(
     private val controllerStates = mutableMapOf<ControllerId, ControllerState>()
 
     override fun onAdd(controller: Controller) {
+        println("ControllersPublisher: onAdd($controller)")
         controllerStates[controller.controllerId] = controller.state
         controllerStatesChannel.onChange(controllerStates)
     }
