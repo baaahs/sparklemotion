@@ -22,7 +22,7 @@ class MovingHeadVisualizer(
     private val clock = adapter.simulationEnv[Clock::class]
     private val physicalModel = PhysicalModel(movingHead.adapter, clock)
 
-    private val sharpyVisualizer = SharpyVisualizer(movingHead.adapter)
+    private val sharpyVisualizer = SharpyVisualizer(movingHead.adapter, adapter.units)
 
     init {
         update(item)

@@ -300,6 +300,9 @@ data class Color(val argb: Int) {
         @JsName("fromInts")
         fun from(r: Int, g: Int, b: Int) = Color(r, g, b)
 
+        @JsName("fromBytes")
+        fun from(r: Byte, g: Byte, b: Byte) = Color(r, g, b)
+
         @JsName("fromString")
         fun from(hex: String): Color {
             var hexDigits = hex.trimStart('#')

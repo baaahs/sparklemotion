@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.Color
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
@@ -30,7 +31,12 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
     override val tiltMotorSpeed: Float = 1f
 
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
-        get() = MovingHeadAdapter.VisualizerInfo(2.5f, 2f, 3f, 1f)
+        get() = MovingHeadAdapter.VisualizerInfo(
+            canRadius = 2.5f.`in`,
+            lensRadius = 2f.`in`,
+            canLengthInFrontOfLight = 3f.`in`,
+            canLengthBehindLight = 1f.`in`
+        )
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
@@ -63,7 +69,7 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
         }
 
         var color: Color
-            get() = Color(dmxBuffer[Channel.RED], dmxBuffer[Channel.GREEN], dmxBuffer[Channel.BLUE])
+            get() = Color.from(dmxBuffer[Channel.RED], dmxBuffer[Channel.GREEN], dmxBuffer[Channel.BLUE])
             set(value) {
                 dmxBuffer[Channel.RED] = value.redI.toByte()
                 dmxBuffer[Channel.GREEN] = value.greenI.toByte()
@@ -73,4 +79,6 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
         override var colorWheelPosition: Float get() = error("not supported")
             set(_) {}
     }
+
+    private val Float.`in` get() = ModelUnit.Inches.toCm(this)
 }

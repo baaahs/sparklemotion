@@ -1,6 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.VizObj
 import baaahs.visualizer.toVector3
@@ -10,9 +11,10 @@ import kotlin.math.PI
 
 actual class Cone actual constructor(
     private val movingHeadAdapter: MovingHeadAdapter,
+    private val units: ModelUnit,
     private val colorMode: ColorMode
 ) {
-    private val coneLength = 1000.0
+    private val coneLength = 1000.0.cm
 
     private val clipPlane = Plane(Vector3(0, 0, Float.MAX_VALUE), 0)
 
@@ -26,12 +28,15 @@ actual class Cone actual constructor(
             clippingPlanes = arrayOf(clipPlane)
         }
     }
-    private val visualizerInfo = movingHeadAdapter.visualizerInfo
-    private val innerGeometry = CylinderGeometry(visualizerInfo.lensRadius * .4, 20, coneLength, openEnded = true)
-        .also {
-            it.translate(0.0, -coneLength / 2 - visualizerInfo.canLength / 2, 0.0)
-            it.rotateX(PI)
-        }
+    private val lensRadius = movingHeadAdapter.visualizerInfo.lensRadius.cm
+    private val canLength = movingHeadAdapter.visualizerInfo.canLength.cm
+
+    private val innerGeometry =
+        CylinderGeometry(lensRadius * .4, lensRadius * 6, coneLength, openEnded = true)
+            .also {
+                it.translate(0.0, -coneLength / 2 - canLength / 2, 0.0)
+                it.rotateX(PI)
+            }
     private val inner = Mesh(innerGeometry, innerMaterial)
 
     private val outerBaseOpacity = .4
@@ -45,11 +50,12 @@ actual class Cone actual constructor(
             clippingPlanes = arrayOf(clipPlane)
         }
     }
-    private val outerGeometry = CylinderGeometry(visualizerInfo.lensRadius, 50, coneLength, openEnded = true)
-        .also {
-            it.translate(0.0, -coneLength / 2 - visualizerInfo.canLength / 2, 0.0)
-            it.rotateX(PI)
-        }
+    private val outerGeometry =
+        CylinderGeometry(lensRadius, lensRadius * 16, coneLength, openEnded = true)
+            .also {
+                it.translate(0.0, -coneLength / 2 - canLength / 2, 0.0)
+                it.rotateX(PI)
+            }
     private val outer = Mesh(outerGeometry, outerMaterial)
 
     private val baseOpacities = listOf(innerBaseOpacity, outerBaseOpacity)
@@ -73,8 +79,8 @@ actual class Cone actual constructor(
             val colorSplit = (state.colorWheelPosition * movingHeadAdapter.colorWheelColors.size) % 1f
             val start = Vector3(
                 0,
-                visualizerInfo.canLength,
-                visualizerInfo.lensRadius * (colorSplit - .5)
+                canLength,
+                lensRadius * (colorSplit - .5)
             )
             val end = Vector3(
                 0,
@@ -98,4 +104,8 @@ actual class Cone actual constructor(
             material.visible = dimmer > .01f
         }
     }
+
+    private val Int.cm: Double get() = units.fromCm(this.toDouble())
+    private val Float.cm: Float get() = units.fromCm(this)
+    private val Double.cm: Double get() = units.fromCm(this)
 }
