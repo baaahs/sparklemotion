@@ -53,9 +53,10 @@ class ClientPreview(
             component(clock)
             component(dmxUniverse)
             component<PixelArranger>(pixelArranger)
-            component(visualizer)
         }
-        val adapter = EntityAdapter(simulationEnv)
+        val adapter = EntityAdapter(simulationEnv, model.units)
+        theVisualizer.clear()
+        theVisualizer.units = model.units
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
