@@ -44,9 +44,7 @@ class FixturesSimulator(
         component(dmxUniverse)
         component(pixelArranger)
         component(wledsSimulator)
-        component(visualizer)
     }
-    private val entityAdapter = EntityAdapter(simulationEnv)
     private var fixtureSimulations: Map<Model.Entity, FixtureSimulation> = emptyMap()
 
     init {
@@ -70,6 +68,9 @@ class FixturesSimulator(
                         }
                     }
 
+                    val entityAdapter = EntityAdapter(simulationEnv, newOpenScene.model.units)
+                    visualizer.facade.clear()
+                    visualizer.facade.units = entityAdapter.units
                     buildMap {
                         newOpenScene.model.visit { entity ->
                             entity.createFixtureSimulation(entityAdapter)

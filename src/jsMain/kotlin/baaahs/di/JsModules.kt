@@ -29,7 +29,6 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.JsClock
-import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -108,16 +107,13 @@ class JsMonitorWebClientModule : KModule {
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
             scoped { Notifier(get()) }
-            scoped { Visualizer(get()) }
             scoped {
                 val simulationEnv = SimulationEnv {
                     component(get<Clock>())
                     component(FakeDmxUniverse())
                     component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
-                    component(get<Visualizer>())
                 }
-                val entityAdapter = EntityAdapter(simulationEnv)
-                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), get(), entityAdapter, get())
+                RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), get(), simulationEnv, get())
             }
             scoped { MonitorUi(get(), get()) }
         }

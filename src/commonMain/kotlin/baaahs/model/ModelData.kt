@@ -39,6 +39,9 @@ enum class ModelUnit(val display: String, val inCentimeters: Double) {
     fun fromCm(value: Double) = value / inCentimeters
     fun fromCm(value: Float): Float = (value / inCentimeters).toFloat()
 
+    fun fromCm(range: ClosedFloatingPointRange<Float>) =
+        fromCm(range.start) .. fromCm(range.endInclusive)
+
     companion object {
         val default = Centimeters
     }

@@ -6,6 +6,7 @@ import baaahs.visualizer.movers.MovingHeadVisualizer
 
 actual class EntityAdapter actual constructor(
     val simulationEnv: SimulationEnv,
+    val units: ModelUnit,
     private val isEditing: Boolean
 ) : Adapter<Model.Entity> {
     override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
@@ -20,7 +21,7 @@ actual class EntityAdapter actual constructor(
         LightBarVisualizer(lightBar, this)
 
     actual fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing> =
-        LightRingVisualizer(lightRing, null)
+        LightRingVisualizer(lightRing, this, null)
 
     actual fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
         MovingHeadVisualizer(movingHead, this)
@@ -29,5 +30,5 @@ actual class EntityAdapter actual constructor(
         PolyLineVisualizer(polyLine, this, null)
 
     actual fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface> =
-        SurfaceVisualizer(surface, SurfaceGeometry(surface))
+        SurfaceVisualizer(surface, this, SurfaceGeometry(surface))
 }

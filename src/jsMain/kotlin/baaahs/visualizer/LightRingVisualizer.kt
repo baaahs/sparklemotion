@@ -10,6 +10,7 @@ import three_ext.clear
 
 class LightRingVisualizer(
     lightRing: LightRing,
+    private val adapter: EntityAdapter,
     vizPixels: VizPixels?
 ) : BaseEntityVisualizer<LightRing>(lightRing) {
     private val ringMesh = Mesh<RingGeometry, MeshBasicMaterial>()
@@ -80,7 +81,8 @@ class LightRingVisualizer(
             remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
             LightBarSimulation.pixelVisualizationNormal,
             item.transformation,
-            remoteConfig.pixelFormat
+            remoteConfig.pixelFormat,
+            adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
         )
     }
 
