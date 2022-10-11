@@ -1,5 +1,6 @@
 package baaahs.visualizer.movers
 
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import three.js.Group
@@ -11,19 +12,19 @@ interface Beam {
     fun update(state: State)
 
     companion object {
-        fun selectFor(movingHeadAdapter: MovingHeadAdapter): Beam {
+        fun selectFor(movingHeadAdapter: MovingHeadAdapter, units: ModelUnit): Beam {
             return when (movingHeadAdapter.colorModel) {
-                MovingHead.ColorModel.ColorWheel -> ColorWheelBeam(movingHeadAdapter)
-                MovingHead.ColorModel.RGB -> RgbBeam(movingHeadAdapter)
-                MovingHead.ColorModel.RGBW -> RgbBeam(movingHeadAdapter)
+                MovingHead.ColorModel.ColorWheel -> ColorWheelBeam(movingHeadAdapter, units)
+                MovingHead.ColorModel.RGB -> RgbBeam(movingHeadAdapter, units)
+                MovingHead.ColorModel.RGBW -> RgbBeam(movingHeadAdapter, units)
             }
         }
     }
 }
 
-class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
-    private val primaryCone = Cone(movingHeadAdapter, ColorMode.Primary)
-    private val secondaryCone = Cone(movingHeadAdapter, ColorMode.Secondary)
+class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter, units: ModelUnit) : Beam {
+    private val primaryCone = Cone(movingHeadAdapter, units, ColorMode.Primary)
+    private val secondaryCone = Cone(movingHeadAdapter, units, ColorMode.Secondary)
     private val cones = Group().also {
         primaryCone.addTo(it)
         secondaryCone.addTo(it)
@@ -38,8 +39,8 @@ class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
     }
 }
 
-class RgbBeam(movingHeadAdapter: MovingHeadAdapter) : Beam {
-    private val cone = Cone(movingHeadAdapter)
+class RgbBeam(movingHeadAdapter: MovingHeadAdapter, units: ModelUnit) : Beam {
+    private val cone = Cone(movingHeadAdapter, units)
     private val cones = Group().also {
         cone.addTo(it)
     }
