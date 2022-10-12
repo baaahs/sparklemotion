@@ -82,7 +82,7 @@ class LightRingVisualizer(
             LightBarSimulation.pixelVisualizationNormal,
             item.transformation,
             remoteConfig.pixelFormat,
-            adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
+            adapter.units.fromCm(VizPixels.undiffusedLedRangeCm)
         )
     }
 
