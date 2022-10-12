@@ -27,7 +27,8 @@ actual class BrainSurfaceSimulation actual constructor(
         pixelPositions,
         surfaceGeometry.panelNormal,
         surface.transformation,
-        PixelFormat.default
+        PixelFormat.default,
+        adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
     ) }
 
     val brain by lazy {
@@ -50,7 +51,7 @@ actual class BrainSurfaceSimulation actual constructor(
         }
 
     override val itemVisualizer: SurfaceVisualizer by lazy {
-        SurfaceVisualizer(surface, surfaceGeometry, vizPixels)
+        SurfaceVisualizer(surface, adapter, surfaceGeometry, vizPixels)
     }
 
     override val previewFixture: Fixture by lazy {

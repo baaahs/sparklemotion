@@ -18,7 +18,7 @@ import three_ext.toVector3F
 class ModelVisualEditor(
     var mutableModel: MutableModel,
     clock: Clock,
-    private val adapter: EntityAdapter,
+    adapter: EntityAdapter,
     private val onChange: () -> Unit
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
@@ -58,6 +58,11 @@ class ModelVisualEditor(
     }
 
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
+
+    init {
+        clear()
+        units = model.units
+    }
 
     private val groupVisualizer =
         GroupVisualizer("Model: ${model.name}", model.entities, adapter).also {
@@ -177,6 +182,8 @@ class ModelVisualEditor(
         if (modelData != newData) {
             modelData = newData
             model = newData.open()
+            clear()
+            units = model.units
 
             groupVisualizer.updateChildren(model.entities)
         }

@@ -14,7 +14,7 @@ actual class LightRingSimulation actual constructor(
     override val pixelLocations by lazy { lightRing.calculatePixelLocalLocations(pixelCount) }
 
     override val itemVisualizer: LightRingVisualizer
-            by lazy { LightRingVisualizer(lightRing, vizPixels) }
+            by lazy { LightRingVisualizer(lightRing, adapter, vizPixels) }
 
 
     companion object {

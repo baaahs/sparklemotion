@@ -31,20 +31,21 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
 
-    val entityAdapter = memo {
+    val mutableModel = props.mutableScene.model
+    val entityAdapter = memo(mutableModel.units) {
         EntityAdapter(
             SimulationEnv {
                 component(appContext.clock)
                 component(FakeDmxUniverse())
                 component<PixelArranger>(SwirlyPixelArranger(0.2f, 3f))
             },
+            mutableModel.units,
             true
         )
     }
 
     val lastSelectedEntity = ref<Model.Entity>(null)
 
-    val mutableModel = props.mutableScene.model
     val visualizer = memo(entityAdapter, props.onEdit) {
         ModelVisualEditor(mutableModel, appContext.clock, entityAdapter) {
             props.onEdit()

@@ -12,12 +12,12 @@ import baaahs.geom.Vector3F
 import baaahs.gl.testPlugins
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.model.FakeModelEntity
+import baaahs.model.ModelUnit
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.sim.FakeNetwork
 import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
-import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.FakeItemVisualizer
 import baaahs.visualizer.FakeVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -52,12 +52,12 @@ object RemoteVisualizerClientSpec : Spek({
                     .listenWebSocket("/ws/visualizer") { server }
             }
         }
-        val fakeVisualizer by value { FakeVisualizer() }
+        val fakeVisualizer by value { FakeVisualizer(ModelUnit.Centimeters) }
         val client by value {
             RemoteVisualizerClient(
                 clientLink, serverLink.myAddress,
                 fakeVisualizer, sceneManager, sceneMonitor,
-                EntityAdapter(SimulationEnv {  }), testPlugins()
+                SimulationEnv { }, testPlugins()
             )
         }
 

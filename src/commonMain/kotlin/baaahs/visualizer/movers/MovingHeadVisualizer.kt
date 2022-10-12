@@ -1,6 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.util.Clock
@@ -66,7 +67,11 @@ fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): C
     return colorWheelColors[colorIndex].color
 }
 
-expect class Cone(movingHeadAdapter: MovingHeadAdapter, colorMode: ColorMode = ColorMode.Rgb) {
+expect class Cone(
+    movingHeadAdapter: MovingHeadAdapter,
+    units: ModelUnit,
+    colorMode: ColorMode = ColorMode.Rgb
+) {
     fun addTo(parent: VizObj)
 
     fun update(state: State)

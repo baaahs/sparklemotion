@@ -22,7 +22,7 @@ class VizPixels(
     val normal: Vector3,
     val transformation: Matrix4F,
     val pixelFormat: PixelFormat,
-    val pixelSizeRange: ClosedFloatingPointRange<Float> = 2f..5f
+    val pixelSizeRange: ClosedFloatingPointRange<Float>
 ) : Pixels {
     override val size = positions.size
     private val pixGeometry = BufferGeometry()
@@ -80,7 +80,7 @@ class VizPixels(
     }
 
     override fun get(i: Int): Color {
-        return Color(colorsAsInts[i])
+        return Color.from(colorsAsInts[i])
     }
 
     override fun set(i: Int, color: Color) {
@@ -173,5 +173,7 @@ class VizPixels(
             { println("progress!") },
             { println("error!") }
         )
+
+        val diffusedLedRangeCm: ClosedFloatingPointRange<Float> = 2f..5f
     }
 }

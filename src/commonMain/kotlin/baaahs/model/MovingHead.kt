@@ -57,6 +57,7 @@ interface MovingHeadAdapter {
         val map = all.associateBy { it.id }
     }
 
+    /** All dimensions in centimeters. */
     data class VisualizerInfo(
         val canRadius: Float,
         val lensRadius: Float,

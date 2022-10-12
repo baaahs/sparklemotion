@@ -3,10 +3,12 @@ package baaahs.visualizer.remote
 import baaahs.client.document.SceneManager
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
+import baaahs.model.ModelUnit
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
 import baaahs.sim.FixtureSimulation
+import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.ui.addObserver
 import baaahs.util.Logger
@@ -23,7 +25,7 @@ class RemoteVisualizerClient(
     private val visualizer: IVisualizer,
     sceneManager: SceneManager,
     sceneMonitor: SceneMonitor,
-    entityAdapter: EntityAdapter,
+    simulationEnv: SimulationEnv,
     private val plugins: Plugins
 ) : Network.WebSocketListener, CoroutineScope by MainScope() {
     private lateinit var fixtureSimulations: Map<String, FixtureSimulation>
@@ -34,11 +36,14 @@ class RemoteVisualizerClient(
         sceneManager.facade
 
         sceneMonitor.addObserver(fireImmediately = true) {
-            visualizer.clear()
-
             val openScene = sceneMonitor.openScene
+            visualizer.clear()
+            visualizer.units = openScene?.model?.units ?: ModelUnit.Centimeters
+
             fixtureSimulations = buildMap {
                 openScene?.let { scene ->
+                    val entityAdapter = EntityAdapter(simulationEnv, scene.model.units)
+
                     scene.model.visit { entity ->
                         createFixtureSimulation(entity, entityAdapter)?.let { simulation ->
                             val entityVisualizer = simulation.itemVisualizer

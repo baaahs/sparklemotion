@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.Color
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.toRadians
@@ -35,7 +36,12 @@ object Shenzarpy : MovingHeadAdapter {
     override val tiltMotorSpeed: Float = 1.3f
 
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
-        get() = MovingHeadAdapter.VisualizerInfo(5f, 3f, 9f, 3f)
+        get() = MovingHeadAdapter.VisualizerInfo(
+            canRadius = 5f.`in`,
+            lensRadius = 3f.`in`,
+            canLengthInFrontOfLight = 9f.`in`,
+            canLengthBehindLight = 3f.`in`
+        )
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)
 
@@ -107,4 +113,6 @@ object Shenzarpy : MovingHeadAdapter {
 
         override val offset = ordinal
     }
+
+    private val Float.`in` get() = ModelUnit.Inches.toCm(this)
 }
