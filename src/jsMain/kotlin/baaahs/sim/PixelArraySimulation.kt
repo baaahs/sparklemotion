@@ -25,7 +25,7 @@ actual abstract class PixelArraySimulation actual constructor(
             LightBarSimulation.pixelVisualizationNormal,
             pixelArray.transformation,
             PixelFormat.default,
-            adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
+            adapter.units.fromCm(VizPixels.undiffusedLedRangeCm)
         )
     }
 
