@@ -19,7 +19,7 @@ import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.Model
 import baaahs.plugin.core.feed.RasterCoordinateFeed
-import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureOptions
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
 import baaahs.show.Shader
@@ -278,34 +278,20 @@ object ProjectionPreviewDevice: PixelArrayFixtureType() {
             ""
         )
 
-    override val emptyConfig: FixtureConfig
-        get() = Config()
-    override val defaultConfig: FixtureConfig
-        get() = Config()
+    override val emptyOptions: FixtureOptions
+        get() = Options()
+    override val defaultOptions: FixtureOptions
+        get() = Options()
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage {
         val resultBuffer = renderResults.allocate("Vertex Location", Vec2ResultType)
         return SingleResultStorage(resultBuffer)
     }
 
-    override fun createFixture(
-        modelEntity: Model.Entity?,
-        componentCount: Int,
-        fixtureConfig: FixtureConfig,
-        name: String,
-        transport: Transport,
-        model: Model
-    ): Fixture = object : Fixture(modelEntity, componentCount, name, transport) {
-        override val fixtureType: FixtureType
-            get() = ProjectionPreviewDevice
-        override val remoteConfig: RemoteConfig
-            get() = TODO("not implemented")
-    }
-
     override fun toString(): String = id
 
     @Serializable
-    class Config : FixtureConfig {
+    class Options : FixtureOptions {
         override val componentCount: Int
             get() = 1
         override val bytesPerComponent: Int
@@ -314,8 +300,19 @@ object ProjectionPreviewDevice: PixelArrayFixtureType() {
         override val fixtureType: FixtureType
             get() = ProjectionPreviewDevice
 
-        override fun edit(): MutableFixtureConfig = TODO("not implemented")
-        override fun plus(other: FixtureConfig?) = this
+        override fun edit(): MutableFixtureOptions = TODO("not implemented")
+        override fun plus(other: FixtureOptions?) = this
         override fun preview(): ConfigPreview = TODO("not implemented")
+        override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig =
+            TODO("not implemented")
+    }
+
+    object NullConfig : FixtureConfig {
+        override val componentCount: Int
+            get() = TODO("not implemented")
+        override val bytesPerComponent: Int
+            get() = TODO("not implemented")
+        override val fixtureType: FixtureType
+            get() = TODO("not implemented")
     }
 }

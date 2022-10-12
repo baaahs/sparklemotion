@@ -1,8 +1,8 @@
 package baaahs.gl.result
 
 import baaahs.Color
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.io.ByteArrayWriter
 import baaahs.sm.brain.proto.Pixels
@@ -65,7 +65,7 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         override val size: Int
             get() = componentCount
 
-        private val fixtureConfig = fixture as PixelArrayFixture
+        private val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
         private val pixelFormat = fixtureConfig.pixelFormat
         private val gammaCorrector = GammaCorrector.create(fixtureConfig.gammaCorrection.toDouble())
         private val bytesPerPixel = pixelFormat.channelsPerPixel

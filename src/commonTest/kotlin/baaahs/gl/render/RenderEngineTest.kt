@@ -214,7 +214,7 @@ class RenderEngineTest {
     }
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
-        return PixelArrayFixture(
+        return PixelArrayFixture.from(
             testModelSurface(name),
             pixelCount,
             transport = NullTransport,
@@ -232,7 +232,7 @@ class RenderEngineTest {
     }
 
     private fun createSurface(name: String, pixelCount: Int): Fixture {
-        return PixelArrayFixture(
+        return PixelArrayFixture.from(
             testModelSurface(name), pixelCount,
             transport = NullTransport,
             pixelLocations = (0 until pixelCount)

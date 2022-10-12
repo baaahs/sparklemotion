@@ -45,7 +45,7 @@ actual abstract class PixelArraySimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        PixelArrayFixture(
+        PixelArrayFixture.from(
             pixelArray,
             pixelLocations.size,
             pixelArray.name,

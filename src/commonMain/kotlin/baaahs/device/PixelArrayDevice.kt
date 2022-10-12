@@ -1,6 +1,8 @@
 package baaahs.device
 
-import baaahs.fixtures.*
+import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.geom.Vector3F
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
@@ -10,7 +12,7 @@ import baaahs.gl.result.SingleResultStorage
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.Model
 import baaahs.scene.EditingController
-import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureOptions
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
@@ -21,14 +23,15 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
 object PixelArrayDevice : PixelArrayFixtureType() {
-    @Serializable @SerialName("PixelArray")
-    data class Config(
+    @Serializable
+    @SerialName("PixelArray")
+    data class Options(
         val pixelCount: Int? = null,
         val pixelFormat: PixelFormat? = null,
         val gammaCorrection: Float? = null,
         val pixelArrangement: SurfacePixelStrategy? = null,
         val pixelLocations: List<Vector3F?>? = null
-    ) : FixtureConfig {
+    ) : FixtureOptions {
         override val componentCount: Int?
             get() = pixelCount
 
@@ -38,18 +41,18 @@ object PixelArrayDevice : PixelArrayFixtureType() {
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
-        override fun edit(): MutableFixtureConfig = MutableConfig(this)
+        override fun edit(): MutableFixtureOptions = MutableOptions(this)
 
-        override fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? =
+        private fun generatePixelLocations(pixelCount: Int, entity: Model.Entity?, model: Model): List<Vector3F>? =
             pixelArrangement?.forFixture(pixelCount, entity, model)
 
-        /** Merges two configs, preferring values from [other]. */
-        override fun plus(other: FixtureConfig?): FixtureConfig =
+        /** Merges two options, preferring values from [other]. */
+        override fun plus(other: FixtureOptions?): FixtureOptions =
             if (other == null) this
-            else plus(other as Config)
+            else plus(other as Options)
 
-        /** Merges two configs, preferring values from [other]. */
-        operator fun plus(other: Config): Config = Config(
+        /** Merges two options, preferring values from [other]. */
+        operator fun plus(other: Options): Options = Options(
             other.componentCount ?: componentCount,
             other.pixelFormat ?: pixelFormat,
             other.gammaCorrection ?: gammaCorrection,
@@ -64,9 +67,23 @@ object PixelArrayDevice : PixelArrayFixtureType() {
                 "Gamma Correction" to gammaCorrection?.toString()
             )
         }
+
+        override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig {
+            val pixelCount = componentCount ?: defaultComponentCount ?: error("Component count not specified.")
+            return Config(
+                pixelCount,
+                pixelFormat ?: error("Pixel format not specified."),
+                gammaCorrection ?: error("Gamma correction not specified."),
+                EnumeratedPixelLocations(
+                    pixelLocations
+                        ?: generatePixelLocations(pixelCount, entity, model)
+                        ?: emptyList()
+                )
+            )
+        }
     }
 
-    class MutableConfig(config: Config) : MutableFixtureConfig {
+    class MutableOptions(config: Options) : MutableFixtureOptions {
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
 
@@ -75,13 +92,45 @@ object PixelArrayDevice : PixelArrayFixtureType() {
         var gammaCorrection: Float? = config.gammaCorrection
         var pixelArrangement: SurfacePixelStrategy? = config.pixelArrangement
 
-        override fun build(): FixtureConfig =
-            Config(componentCount, pixelFormat, gammaCorrection, pixelArrangement)
+        override fun build(): FixtureOptions =
+            Options(componentCount, pixelFormat, gammaCorrection, pixelArrangement)
 
         override fun getEditorView(
             editingController: EditingController<*>
-        ): View = visualizerBuilder.getPixelArrayFixtureConfigEditorView(editingController, this)
+        ): View = visualizerBuilder.getPixelArrayFixtureOptionsEditorView(editingController, this)
     }
+
+    @Serializable
+    @SerialName("PixelArray")
+    data class Config(
+        val pixelCount: Int,
+        val pixelFormat: PixelFormat,
+        val gammaCorrection: Float,
+        val pixelLocations: PixelLocations
+    ) : FixtureConfig {
+        override val componentCount: Int
+            get() = pixelCount
+        override val bytesPerComponent: Int
+            get() = pixelFormat.channelsPerPixel
+        override val fixtureType: FixtureType
+            get() = PixelArrayDevice
+    }
+}
+
+interface PixelLocations {
+    operator fun get(index: Int): Vector3F?
+    val size: Int
+
+    fun arrayOfVector3F() = Array(size) { get(it) ?: Vector3F.unknown }}
+
+@Serializable @SerialName("enumerated")
+data class EnumeratedPixelLocations(
+    private val locations: List<Vector3F?>
+) : PixelLocations {
+    override fun get(index: Int): Vector3F? = locations[index]
+    override val size: Int get() = locations.size
+
+    constructor(vararg locations: Vector3F?) : this(locations.toList())
 }
 
 open class PixelArrayFixtureType : FixtureType {
@@ -120,12 +169,15 @@ open class PixelArrayFixtureType : FixtureType {
             """.trimIndent()
         )
 
-    override val emptyConfig: FixtureConfig
-        get() = PixelArrayDevice.Config()
-    override val defaultConfig: FixtureConfig
-        get() = PixelArrayDevice.Config(null, PixelFormat.default, 1f)
+    override val emptyOptions: FixtureOptions
+        get() = PixelArrayDevice.Options()
+    override val defaultOptions: FixtureOptions
+        get() = PixelArrayDevice.Options(null, PixelFormat.default, 1f)
     override val serialModule: SerializersModule
         get() = SerializersModule {
+            polymorphic(FixtureOptions::class) {
+                subclass(PixelArrayDevice.Options::class, PixelArrayDevice.Options.serializer())
+            }
             polymorphic(FixtureConfig::class) {
                 subclass(PixelArrayDevice.Config::class, PixelArrayDevice.Config.serializer())
             }
@@ -134,29 +186,6 @@ open class PixelArrayFixtureType : FixtureType {
     override fun createResultStorage(renderResults: RenderResults): ResultStorage {
         val resultBuffer = renderResults.allocate("Pixel Color", ColorResultType)
         return SingleResultStorage(resultBuffer)
-    }
-
-    override fun createFixture(
-        modelEntity: Model.Entity?,
-        componentCount: Int,
-        fixtureConfig: FixtureConfig,
-        name: String,
-        transport: Transport,
-        model: Model
-    ): Fixture {
-        fixtureConfig as PixelArrayDevice.Config
-
-        val pixelLocations = fixtureConfig.pixelLocations
-            ?.map { it ?: Vector3F(0f, 0f, 0f) }
-            ?: fixtureConfig.generatePixelLocations(componentCount, modelEntity, model)
-            ?: emptyList()
-
-        return PixelArrayFixture(
-            modelEntity, componentCount, name, transport,
-            fixtureConfig.pixelFormat ?: error("No pixel format specified."),
-            fixtureConfig.gammaCorrection ?: error("No gamma correction specified."),
-            pixelLocations
-        )
     }
 
     override fun toString(): String = id

@@ -2,8 +2,10 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.device.PixelFormat
+import baaahs.device.PixelLocations
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
 import baaahs.sm.brain.proto.Pixels
@@ -193,4 +195,8 @@ class VizPixels(
         val diffusedLedRangeCm: ClosedFloatingPointRange<Float> =
             (2f * 2.54f)..(5f * 2.54f)
     }
+}
+
+fun PixelLocations.arrayOfVector3() = Array(size) {
+    (get(it) ?: Vector3F.origin).toVector3()
 }

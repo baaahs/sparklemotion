@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
+import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
@@ -121,9 +122,11 @@ class TestRenderContext(
     fun addFixtures() {
         renderTargets.addAll(
             modelEntities.map { entity ->
+                val defaultConfig = fixtureType.defaultOptions.toConfig(entity, model, 1)
                 renderEngine.addFixture(
-                    entity.fixtureType.createFixture(
-                        entity, 1, fixtureType.defaultConfig, entity.name, NullTransport, model
+                    Fixture(
+                        entity, defaultConfig.componentCount, entity.name,
+                        NullTransport, defaultConfig.fixtureType, defaultConfig
                     )
                 )
             }

@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.LightRing
 import baaahs.sim.LightBarSimulation
@@ -75,13 +75,13 @@ class LightRingVisualizer(
         pixelsPreview.setLocations(pixelLocations.map { it.toVector3() }.toTypedArray())
     }
 
-    override fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
-        remoteConfig as PixelArrayRemoteConfig
+    override fun receiveFixtureConfig(fixtureConfig: FixtureConfig) {
+        fixtureConfig as PixelArrayDevice.Config
         vizPixels = VizPixels(
-            remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
+            fixtureConfig.pixelLocations.arrayOfVector3(),
             LightBarSimulation.pixelVisualizationNormal,
             item.transformation,
-            remoteConfig.pixelFormat,
+            fixtureConfig.pixelFormat,
             adapter.units.fromCm(VizPixels.undiffusedLedRangeCm)
         )
     }

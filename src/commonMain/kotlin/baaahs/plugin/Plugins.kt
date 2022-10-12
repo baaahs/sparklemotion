@@ -5,11 +5,10 @@ import baaahs.PubSub
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.controller.*
+import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.FixtureType
+import baaahs.device.PixelLocations
 import baaahs.dmx.*
-import baaahs.fixtures.MovingHeadRemoteConfig
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
 import baaahs.fixtures.TransportConfig
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
@@ -17,6 +16,7 @@ import baaahs.gl.glsl.LinkException
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.glsl.NullSurfacePixelStrategy
 import baaahs.glsl.RandomSurfacePixelStrategy
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.mapper.MappingStrategy
@@ -253,6 +253,7 @@ sealed class Plugins(
         include(controllers.serialModule)
 
         polymorphic(SurfacePixelStrategy::class) {
+            subclass(NullSurfacePixelStrategy::class, NullSurfacePixelStrategy.serializer())
             subclass(LinearSurfacePixelStrategy::class, LinearSurfacePixelStrategy.serializer())
             subclass(RandomSurfacePixelStrategy::class, RandomSurfacePixelStrategy.serializer())
         }
@@ -272,14 +273,13 @@ sealed class Plugins(
             subclass(StrandCountEntityMetadataProvider::class, StrandCountEntityMetadataProvider.serializer())
         }
 
+        polymorphic(PixelLocations::class) {
+            subclass(EnumeratedPixelLocations::class, EnumeratedPixelLocations.serializer())
+        }
+
         polymorphic(MovingHeadAdapter::class) {
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
-        }
-
-        polymorphic(RemoteConfig::class) {
-            subclass(PixelArrayRemoteConfig::class, PixelArrayRemoteConfig.serializer())
-            subclass(MovingHeadRemoteConfig::class, MovingHeadRemoteConfig.serializer())
         }
 
         polymorphic(Tab::class) {
@@ -504,16 +504,16 @@ sealed class Plugins(
         val byContentType = all.groupBy { builder -> builder.contentType }
 
         val serialModulesByPlugin = serializersMap {
-            feedSerlializerRegistrars()
+            feedSerializerRegistrars()
         }
 
         val serialModule = SerializersModule {
             registerSerializers {
-                feedSerlializerRegistrars()
+                feedSerializerRegistrars()
             }
         }
 
-        private fun OpenPlugin.feedSerlializerRegistrars() =
+        private fun OpenPlugin.feedSerializerRegistrars() =
             feedBuilders.map { it.serializerRegistrar } +
                     fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.serializerRegistrar } }
 

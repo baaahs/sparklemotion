@@ -63,7 +63,7 @@ object BrainManagerSpec : Spek({
                     brain1Id to BrainControllerConfig(
                         "Brain Controller",
                         fixtures = brain1Fixtures,
-                        defaultFixtureConfig = PixelArrayDevice.Config(123)
+                        defaultFixtureOptions = PixelArrayDevice.Options(123)
                     )
                 )
             }
@@ -88,7 +88,7 @@ object BrainManagerSpec : Spek({
 
                 it("applies that config") {
                     val fixture = listener.added.only("fixture")
-                    expect(fixture).isA<PixelArrayFixture> {
+                    expect(fixture) {
                         feature { f(it::componentCount) }.toEqual(123)
                     }
                 }
@@ -103,5 +103,5 @@ private fun fixtureMappingData(
 ) =
     FixtureMappingData(
         entityName,
-        PixelArrayDevice.Config(pixelCount, PixelFormat.RGB8)
+        PixelArrayDevice.Options(pixelCount, PixelFormat.RGB8)
     )

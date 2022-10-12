@@ -3,8 +3,8 @@ package baaahs.dmx
 import baaahs.*
 import baaahs.controller.Controller
 import baaahs.device.MovingHeadDevice
-import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
+import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.TransportConfig
 import baaahs.model.Model
 import baaahs.model.MovingHead
@@ -19,10 +19,10 @@ object DirectDmxControllerSpec : Spek({
         val testAdapter by value { TestMovingHeadAdapter(10) }
         val entity by value<Model.Entity?> { MovingHead("mover", adapter = testAdapter, baseDmxChannel = -1) }
         val model by value { modelForTest(listOfNotNull(entity)) }
-        val mappingFixtureConfig by value<FixtureConfig> { MovingHeadDevice.Config(testAdapter) }
+        val mappingFixtureOptions by value<FixtureOptions> { MovingHeadDevice.Options(testAdapter) }
         val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig() }
         val mapping by value {
-            FixtureMapping(entity, mappingFixtureConfig, mappingTransportConfig)
+            FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig)
         }
         val controller by value<Controller> {
             DirectDmxController(SimDmxDevice(FakeDmxUniverse()), FakeClock())
