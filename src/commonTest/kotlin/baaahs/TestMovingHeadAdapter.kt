@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.dmx.Dmx
 import baaahs.dmx.Shenzarpy
+import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 
@@ -25,7 +26,12 @@ class TestMovingHeadAdapter(
     override val tiltMotorSpeed: Float = 1f,
 
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo =
-        MovingHeadAdapter.VisualizerInfo(5f, 3f, 9f, 3f),
+        MovingHeadAdapter.VisualizerInfo(
+            canRadius = 5f.`in`,
+            lensRadius = 3f.`in`,
+            canLengthInFrontOfLight = 9f.`in`,
+            canLengthBehindLight = 3f.`in`
+        ),
 
     override val shutterChannel: Dmx.Channel = TestChannel(6)
 ) : MovingHeadAdapter {
@@ -47,3 +53,5 @@ class TestMovingHeadAdapter(
 
     class TestChannel(override val offset: Int) : Dmx.Channel
 }
+
+private val Float.`in` get() = ModelUnit.Inches.toCm(this)

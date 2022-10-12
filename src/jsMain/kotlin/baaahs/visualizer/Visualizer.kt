@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.document
 import baaahs.getBang
 import baaahs.mapper.JsMapper
+import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
@@ -66,8 +67,7 @@ class Visualizer(
 
     override fun clear() {
         itemVisualizers.clear()
-        scene.clear()
-        sceneNeedsUpdate = true
+        super.clear()
     }
 
     override fun add(itemVisualizer: ItemVisualizer<*>) {
@@ -114,6 +114,7 @@ class Visualizer(
                 this@Visualizer.container = value
             }
 
+        var units by this@Visualizer::units
         fun clear() = this@Visualizer.clear()
 
         fun select(itemVisualizer: ItemVisualizer<*>) {
@@ -155,6 +156,14 @@ open class BaseVisualizer(
         localClippingEnabled = true
     }
     protected val canvas = renderer.domElement
+
+    var units: ModelUnit = ModelUnit.Centimeters
+        set(value) {
+            if (field != value) {
+                field = value
+                onUnitsChange()
+            }
+        }
 
     protected val realScene = Scene().apply { autoUpdate = false }
     protected val scene = Group().also { realScene.add(it) }
@@ -213,7 +222,7 @@ open class BaseVisualizer(
 
     private val raycaster = Raycaster()
 
-    private val originDot: Mesh<*, *>
+    private var originDot: Mesh<SphereBufferGeometry, *>? = null
 
     protected var selectedObject: Object3D? = null
         set(value) {
@@ -238,14 +247,7 @@ open class BaseVisualizer(
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
         raycaster.asDynamic().params.Points.threshold = 1
-        originDot = Mesh(
-            SphereBufferGeometry(1, 16, 16),
-            MeshBasicMaterial().apply {
-                color.set(0xff0000)
-                opacity = .25
-            }
-        ).apply { name = "Origin dot" }
-        realScene.add(originDot)
+        updateOriginDot()
 
         var resizeTaskId: Int? = null
         window.addEventListener("resize", {
@@ -258,6 +260,31 @@ open class BaseVisualizer(
                 resize()
             }, resizeDelay)
         })
+    }
+
+    private fun onUnitsChange() {
+        updateOriginDot()
+    }
+
+    private fun updateOriginDot() {
+        originDot?.let {
+            realScene.remove(it)
+            it.geometry.dispose()
+        }
+
+        originDot = Mesh(
+            SphereBufferGeometry(units.fromCm(1f), 16, 16),
+            MeshBasicMaterial().apply {
+                color.set(0xff0000)
+                opacity = .25
+            }
+        ).apply { name = "Origin dot" }
+            .also { realScene.add(it) }
+    }
+
+    open fun clear() {
+        scene.clear()
+        sceneNeedsUpdate = true
     }
 
     fun fitCameraToObject(offset: Double = 1.25) {

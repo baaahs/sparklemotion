@@ -8,6 +8,7 @@ import three.js.*
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,
+    private val adapter: EntityAdapter,
     val surfaceGeometry: SurfaceGeometry,
     vizPixels: VizPixels? = null
 ) : BaseEntityVisualizer<Model.Surface>(surface) {
@@ -56,7 +57,8 @@ class SurfaceVisualizer(
             remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
             surfaceGeometry.panelNormal,
             surface.transformation,
-            remoteConfig.pixelFormat
+            remoteConfig.pixelFormat,
+            adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
         )
     }
 

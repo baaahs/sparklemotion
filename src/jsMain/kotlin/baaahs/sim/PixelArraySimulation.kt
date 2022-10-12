@@ -24,7 +24,8 @@ actual abstract class PixelArraySimulation actual constructor(
             pixelLocations.map { it.toVector3() }.toTypedArray(),
             LightBarSimulation.pixelVisualizationNormal,
             pixelArray.transformation,
-            PixelFormat.default
+            PixelFormat.default,
+            adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
         )
     }
 
