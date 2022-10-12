@@ -78,9 +78,8 @@ class VizPixels(
         parent.remove(pixelsMesh)
     }
 
-    override fun get(i: Int): Color {
-        return Color.from(colorsAsInts[i])
-    }
+    override fun get(i: Int): Color =
+        Color.from(colorsAsInts[i])
 
     override fun set(i: Int, color: Color) {
         colorsAsInts[i] = color.argb
