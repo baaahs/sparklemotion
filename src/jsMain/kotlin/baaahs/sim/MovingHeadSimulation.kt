@@ -24,13 +24,7 @@ actual class MovingHeadSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        MovingHeadFixture(
-            movingHead,
-            1,
-            movingHead.name,
-            PreviewTransport(),
-            movingHead.adapter
-        )
+        MovingHeadFixture.from(movingHead, 1, movingHead.name, PreviewTransport(), movingHead.adapter)
     }
 
     inner class PreviewTransport : Transport {

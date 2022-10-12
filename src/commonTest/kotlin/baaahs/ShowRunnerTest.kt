@@ -40,11 +40,11 @@ class ShowRunnerTest {
     private lateinit var renderTargets: Map<Fixture, RenderTarget>
     private val surface1Messages = mutableListOf<String>()
     private val surface1Fixture =
-        PixelArrayFixture(testModelSurface("surface 1"), 1,
+        PixelArrayFixture.from(testModelSurface("surface 1"), 1,
             transport = FakeTransport { surface1Messages.add("frame") })
     private val surface2Messages = mutableListOf<String>()
     private val surface2Fixture =
-        PixelArrayFixture(testModelSurface("surface 2"), 1,
+        PixelArrayFixture.from(testModelSurface("surface 2"), 1,
             transport = FakeTransport { surface2Messages.add("frame") })
     private lateinit var fakeGlslContext: FakeGlContext
     private lateinit var dmxUniverse: FakeDmxUniverse

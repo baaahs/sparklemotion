@@ -9,7 +9,7 @@ import baaahs.device.FixtureType
 import baaahs.dmx.DirectDmxController
 import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.TransportConfig
 import baaahs.fixtures.TransportType
 import baaahs.geom.EulerAngle
@@ -53,7 +53,7 @@ interface MutableControllerConfig {
     val controllerMeta: ControllerManager.Meta
     var title: String
     val fixtures: MutableList<MutableFixtureMapping>
-    var defaultFixtureConfig: MutableFixtureConfig?
+    var defaultFixtureOptions: MutableFixtureOptions?
     var defaultTransportConfig: MutableTransportConfig?
 
     fun build(): ControllerConfig
@@ -69,15 +69,15 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
     var address: String? = config.address
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureConfig: MutableFixtureConfig? =
-        config.defaultFixtureConfig?.edit()
+    override var defaultFixtureOptions: MutableFixtureOptions? =
+        config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
         BrainControllerConfig(
             title, address, fixtures.map { it.build() },
-            defaultFixtureConfig?.build(), defaultTransportConfig?.build()
+            defaultFixtureOptions?.build(), defaultTransportConfig?.build()
         )
 
     override fun suggestId(): String = title.camelize()
@@ -95,15 +95,15 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
     override var title: String = config.title
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureConfig: MutableFixtureConfig? =
-        config.defaultFixtureConfig?.edit()
+    override var defaultFixtureOptions: MutableFixtureOptions? =
+        config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
         DirectDmxControllerConfig(
             title, fixtures.map { it.build() },
-            defaultFixtureConfig?.build(),
+            defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
 
@@ -124,15 +124,15 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
     var universes: Int = config.universes
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureConfig: MutableFixtureConfig? =
-        config.defaultFixtureConfig?.edit()
+    override var defaultFixtureOptions: MutableFixtureOptions? =
+        config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
 
     override fun build(): ControllerConfig =
         SacnControllerConfig(
             title, address, universes, fixtures.map { it.build() },
-            defaultFixtureConfig?.build(),
+            defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
 
@@ -147,11 +147,11 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
 
 class MutableFixtureMapping(fixtureMappingData: FixtureMappingData) {
     var entityId: String? = fixtureMappingData.entityId
-    var fixtureConfig: MutableFixtureConfig = fixtureMappingData.fixtureConfig.edit()
+    var fixtureOptions: MutableFixtureOptions = fixtureMappingData.fixtureOptions.edit()
     var transportConfig: MutableTransportConfig? = fixtureMappingData.transportConfig?.edit()
 
     fun build(): FixtureMappingData =
-        FixtureMappingData(entityId, fixtureConfig.build(), transportConfig?.build())
+        FixtureMappingData(entityId, fixtureOptions.build(), transportConfig?.build())
 }
 
 class MutableModel(baseModel: ModelData) {
@@ -432,10 +432,10 @@ class MutableLightRingData(
         )
 }
 
-interface MutableFixtureConfig {
+interface MutableFixtureOptions {
     val fixtureType: FixtureType
 
-    fun build(): FixtureConfig
+    fun build(): FixtureOptions
     fun getEditorView(editingController: EditingController<*>): View
 }
 

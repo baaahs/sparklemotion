@@ -12,7 +12,7 @@ class SacnController(
     val id: String,
     private val sacnLink: SacnLink,
     private val address: Network.Address,
-    override val defaultFixtureConfig: FixtureConfig?,
+    override val defaultFixtureOptions: FixtureOptions?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
     private val onlineSince: Time?,
@@ -45,12 +45,11 @@ class SacnController(
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?,
-        componentCount: Int,
-        bytesPerComponent: Int
+        transportConfig: TransportConfig?
     ): Transport {
         val staticDmxMapping = dynamicDmxAllocator!!.allocate(
-            componentCount, bytesPerComponent, transportConfig as DmxTransportConfig?
+            fixtureConfig.componentCount, fixtureConfig.bytesPerComponent,
+            transportConfig as DmxTransportConfig?
         )
         return SacnTransport(transportConfig, staticDmxMapping)
             .also { dmxUniverses.validate(staticDmxMapping) }

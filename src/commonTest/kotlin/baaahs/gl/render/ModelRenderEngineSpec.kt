@@ -1,7 +1,9 @@
 package baaahs.gl.render
 
 import baaahs.*
+import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.FixtureType
+import baaahs.device.PixelLocations
 import baaahs.fixtures.*
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -13,7 +15,7 @@ import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
-import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureOptions
 import baaahs.show.*
 import baaahs.show.Shader
 import baaahs.show.live.LinkedPatch
@@ -166,9 +168,11 @@ object ModelRenderEngineSpec : Spek({
                         expect(fixture1Target.componentCount).toEqual(maxFramebufferWidth)
 
                         expect(fixture1Target.rect0Index).toEqual(0)
-                        expect(fixture1Target.rects).toEqual(listOf(
-                            Quad.Rect(0f, 0f, 1f, 64f)
-                        ))
+                        expect(fixture1Target.rects).toEqual(
+                            listOf(
+                                Quad.Rect(0f, 0f, 1f, 64f)
+                            )
+                        )
                     }
 
                     context("when the feed is per-pixel") {
@@ -218,14 +222,14 @@ object ModelRenderEngineSpec : Spek({
 
                     it("should set uniforms appropriately") {
                         expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                            .containsExactly(0,0,0,0)
+                            .containsExactly(0, 0, 0, 0)
                     }
 
                     context("when updateMode is per frame") {
                         override(updateMode) { UpdateMode.PER_FRAME }
                         it("should set uniforms appropriately") {
                             expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                                .containsExactly(0,0,1,1)
+                                .containsExactly(0, 0, 1, 1)
                         }
                     }
 
@@ -233,7 +237,7 @@ object ModelRenderEngineSpec : Spek({
                         override(updateMode) { UpdateMode.PER_FIXTURE }
                         it("should set uniforms appropriately") {
                             expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                                .containsExactly(0,1,2,3)
+                                .containsExactly(0, 1, 2, 3)
                         }
                     }
 
@@ -302,10 +306,12 @@ object ModelRenderEngineSpec : Spek({
 })
 
 private fun testFixture(fixtureType: FixtureTypeForTest, pixelCount: Int, initial: Float = 0f) =
-    fixtureType.createFixture(
+    Fixture(
         null, pixelCount,
-        fixtureType.Config(pixelLocations = someVectors(pixelCount, initial), bytesPerComponent = 3),
-        "test fixture", NullTransport, TestModel
+        "test fixture",
+        NullTransport, fixtureType,
+        fixtureType.Options(pixelCount, 3, someVectors(pixelCount, initial))
+            .toConfig(null, TestModel)
     )
 
 private fun someVectors(count: Int, initial: Float = 0f): List<Vector3F> =
@@ -336,62 +342,55 @@ class FixtureTypeForTest(
             }
         }
 
-    override var defaultConfig: FixtureConfig = Config(bytesPerComponent = 3)
-    override val emptyConfig: FixtureConfig = Config(bytesPerComponent = 3)
+    override var defaultOptions: FixtureOptions = Options(bytesPerComponent = 3)
+    override val emptyOptions: FixtureOptions = Options(bytesPerComponent = 3)
 
     override val errorIndicatorShader: Shader
         get() = Shader("Ω Guru Meditation Error Ω", "")
 
     override fun createResultStorage(renderResults: RenderResults): ResultStorage = ResultStorage.Empty
-    override fun createFixture(
-        modelEntity: Model.Entity?,
-        componentCount: Int,
-        fixtureConfig: FixtureConfig,
-        name: String,
-        transport: Transport,
-        model: Model
-    ): Fixture = DtftFixture(
-        modelEntity, componentCount, name, transport,
-        (fixtureConfig as Config).pixelLocations ?: emptyList()
-    )
 
     override fun toString(): String = id
 
-    inner class Config(
+    inner class Options(
         override val componentCount: Int? = null,
         override val bytesPerComponent: Int,
         val pixelLocations: List<Vector3F>? = null
-    ) : FixtureConfig {
+    ) : FixtureOptions {
         override val fixtureType: FixtureType
             get() = this@FixtureTypeForTest
 
-        override fun edit(): MutableFixtureConfig = TODO("not implemented")
+        override fun edit(): MutableFixtureOptions = TODO("not implemented")
 
-        override fun plus(other: FixtureConfig?): FixtureConfig =
+        override fun plus(other: FixtureOptions?): FixtureOptions =
             if (other == null) this
-            else plus(other as Config)
+            else plus(other as Options)
 
-        operator fun plus(other: Config): Config = Config(
+        operator fun plus(other: Options): Options = Options(
             other.componentCount ?: componentCount,
-            other.bytesPerComponent ?: bytesPerComponent,
-            other.pixelLocations ?: pixelLocations
+            other.bytesPerComponent,
+            other.pixelLocations ?: pixelLocations,
         )
 
         override fun preview(): ConfigPreview = TODO("not implemented")
+
+        override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig {
+            val pixelCount = componentCount ?: defaultComponentCount ?: error("Component count not specified.")
+            return Config(
+                pixelCount,
+                bytesPerComponent,
+                EnumeratedPixelLocations(pixelLocations ?: emptyList()),
+                this@FixtureTypeForTest
+            )
+        }
     }
 
-    inner class DtftFixture(
-        modelEntity: Model.Entity?,
-        pixelCount: Int,
-        name: String,
-        transport: Transport,
-        val pixelLocations: List<Vector3F>
-    ) : Fixture(modelEntity, pixelCount, name, transport) {
+    data class Config(
+        override val componentCount: Int,
+        override val bytesPerComponent: Int,
+        val pixelLocations: PixelLocations,
         override val fixtureType: FixtureType
-            get() = this@FixtureTypeForTest
-        override val remoteConfig: RemoteConfig
-            get() = TODO("not implemented")
-    }
+    ) : FixtureConfig
 }
 
 fun Boolean.truify(): Boolean {

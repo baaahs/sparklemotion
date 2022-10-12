@@ -41,7 +41,7 @@ class RemoteVisualizerServer(
                     outBuf.writeString(
                         plugins.json.encodeToString(
                             RemoteConfigWrapper.serializer(),
-                            RemoteConfigWrapper(fixture.remoteConfig)
+                            RemoteConfigWrapper(fixture.fixtureConfig)
                         )
                     )
                 }

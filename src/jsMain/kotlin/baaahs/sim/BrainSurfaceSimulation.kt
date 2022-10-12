@@ -55,7 +55,7 @@ actual class BrainSurfaceSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        PixelArrayFixture(
+        PixelArrayFixture.from(
             surface,
             pixelPositions.size,
             surface.name,

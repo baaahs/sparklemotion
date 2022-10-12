@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import three.js.*
@@ -50,14 +50,14 @@ class SurfaceVisualizer(
 
     override fun isApplicable(newItem: Any): Model.Surface? = null
 
-    override fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
-        remoteConfig as PixelArrayRemoteConfig
+    override fun receiveFixtureConfig(fixtureConfig: FixtureConfig) {
+        fixtureConfig as PixelArrayDevice.Config
 
         vizPixels = VizPixels(
-            remoteConfig.pixelLocations.map { it.toVector3() }.toTypedArray(),
+            fixtureConfig.pixelLocations.arrayOfVector3(),
             surfaceGeometry.panelNormal,
             surface.transformation,
-            remoteConfig.pixelFormat,
+            fixtureConfig.pixelFormat,
             adapter.units.fromCm(VizPixels.diffusedLedRangeCm)
         )
     }

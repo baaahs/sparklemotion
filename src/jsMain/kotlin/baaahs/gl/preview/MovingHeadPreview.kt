@@ -46,7 +46,8 @@ class MovingHeadPreview(
         .filterIsInstance<MovingHead>()
         .ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
         .associateWith { movingHead ->
-            val fixture = MovingHeadFixture(movingHead, 1, movingHead.name, transport = NullTransport, adapter = movingHead.adapter)
+            val fixture = MovingHeadFixture.from(
+                movingHead, 1, movingHead.name, NullTransport, movingHead.adapter)
             renderEngine.addFixture(fixture)
         }
     private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
