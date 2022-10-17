@@ -47,8 +47,11 @@ abstract class FloatsResultType<T : FloatsResultType.Buffer>(
         override val cpuBuffer: com.danielgergely.kgl.Buffer
             get() = floatBuffer
 
+        override var sizeInBytes: Int = 0
+
         override fun resizeBuffer(size: Int) {
             floatBuffer = FloatBuffer(size * type.stride)
+            sizeInBytes = size * type.stride
         }
     }
 }

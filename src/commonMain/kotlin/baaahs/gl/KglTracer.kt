@@ -53,9 +53,9 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         return kgl.blendFunc(sFactor, dFactor)
     }
 
-    override fun bufferData(target: Int, sourceData: Buffer, size: Int, usage: Int, offset: Int) {
-        log("bufferData", target, sourceData, size, usage, offset)
-        return kgl.bufferData(target, sourceData, size, usage, offset)
+    override fun bufferData(target: Int, sourceData: Buffer, size: Int, usage: Int) {
+        log("bufferData", target, sourceData, size, usage)
+        return kgl.bufferData(target, sourceData, size, usage)
     }
 
     override fun checkFramebufferStatus(target: Int): Int {
@@ -147,6 +147,11 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         return kgl.deleteFramebuffer(framebuffer)
     }
 
+    override fun deleteProgram(programId: Program) {
+        log("deleteProgram", programId)
+        kgl.deleteProgram(programId)
+    }
+
     override fun deleteRenderbuffer(renderbuffer: Renderbuffer) {
         log("deleteRenderbuffer", renderbuffer)
         return kgl.deleteRenderbuffer(renderbuffer)
@@ -165,6 +170,11 @@ class KglTracer(private val kgl: Kgl) : Kgl {
     override fun deleteVertexArray(vertexArrayObject: VertexArrayObject) {
         log("deleteVertexArray", vertexArrayObject)
         return kgl.deleteVertexArray(vertexArrayObject)
+    }
+
+    override fun detachShader(programId: Program, shaderId: Shader) {
+        log("detachShader", programId, shaderId)
+        kgl.detachShader(programId, shaderId)
     }
 
     override fun disable(cap: Int) {
@@ -281,11 +291,10 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         height: Int,
         format: Int,
         type: Int,
-        buffer: Buffer,
-        offset: Int
+        buffer: Buffer
     ) {
-        log("readPixels", x, y, width, height, format, type, buffer, offset)
-        return kgl.readPixels(x, y, width, height, format, type, buffer, offset)
+        log("readPixels", x, y, width, height, format, type, buffer)
+        return kgl.readPixels(x, y, width, height, format, type, buffer)
     }
 
     override fun renderbufferStorage(target: Int, internalformat: Int, width: Int, height: Int) {
@@ -312,11 +321,10 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         border: Int,
         format: Int,
         type: Int,
-        buffer: Buffer,
-        offset: Int
+        buffer: Buffer
     ) {
-        log("texImage2D", target, level, internalFormat, width, height, border, format, type, buffer, offset)
-        return kgl.texImage2D(target, level, internalFormat, width, height, border, format, type, buffer, offset)
+        log("texImage2D", target, level, internalFormat, width, height, border, format, type, buffer)
+        return kgl.texImage2D(target, level, internalFormat, width, height, border, format, type, buffer)
     }
 
     override fun texParameteri(target: Int, pname: Int, value: Int) {

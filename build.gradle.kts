@@ -47,9 +47,8 @@ repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
     maven("https://jitpack.io")
-    maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
+//    maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
-//    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
 }
 
 group = "org.baaahs"
@@ -88,7 +87,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
-                api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
+                implementation("com.github.gergelydaniel.kgl:kgl:${Versions.kgl}")
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -119,7 +118,7 @@ kotlin {
 
                 implementation("org.joml:joml:1.9.25")
 
-                implementation("com.danielgergely.kgl:kgl-jvm:${Versions.kgl}")
+                implementation("com.github.gergelydaniel.kgl:kgl-jvm:${Versions.kgl}")
 
                 // GLSL support via LWJGL:
                 implementation("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}")
@@ -127,12 +126,12 @@ kotlin {
                 runtimeOnly("org.lwjgl:lwjgl:${Versions.lwjgl}:$lwjglNatives")
                 runtimeOnly("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}:$lwjglNatives")
                 runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$lwjglNatives")
-                implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
+                implementation("com.github.gergelydaniel.kgl:kgl-lwjgl:${Versions.kgl}")
 
                 // GLSL support via JOGL:
                 implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
                 implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
-                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
+                implementation("com.github.gergelydaniel.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
                 implementation("org.jmdns:jmdns:3.5.7")
@@ -166,7 +165,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
 
-                implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
+                implementation("com.github.gergelydaniel.kgl:kgl-js:${Versions.kgl}")
 
                 // kotlin react:
                 implementation(project.dependencies.enforcedPlatform(kotlinw("wrappers-bom:${Versions.kotlinWrappers}")))

@@ -7,7 +7,7 @@ object Versions {
     const val dokka = "1.7.10"
 
     // GL:
-    const val kgl = "0.3-baaahs.1"
+    const val kgl = "0.5"
     const val jogl = "2.3.2"
     const val lwjgl = "3.3.1"
 

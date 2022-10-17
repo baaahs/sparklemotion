@@ -30,9 +30,11 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
         override val cpuBuffer: com.danielgergely.kgl.Buffer
             get() = byteBuffer
+        override var sizeInBytes: Int = 0
 
         override fun resizeBuffer(size: Int) {
             byteBuffer = ByteBuffer(size * stride)
+            sizeInBytes = size * stride
         }
 
         operator fun get(componentIndex: Int): Color {

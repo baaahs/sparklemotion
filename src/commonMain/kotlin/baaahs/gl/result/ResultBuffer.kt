@@ -20,6 +20,7 @@ abstract class ResultBuffer(
 
     val gpuBuffer = gl.createRenderBuffer()
     abstract val cpuBuffer: Buffer
+    abstract val sizeInBytes: Int
 
     // Storage smaller than 16x1 causes a GL error.
     init {
