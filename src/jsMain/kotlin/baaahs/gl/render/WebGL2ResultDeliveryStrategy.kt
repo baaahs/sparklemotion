@@ -39,7 +39,7 @@ class SwitchingResultDeliveryStrategy(private val gl: GlBase.JsGlContext): Resul
     }
 }
 
-// See https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#non-blocking_async_data_downloadreadback
+// See https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices#use_non-blocking_async_data_readback
 class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultDeliveryStrategy {
     private val webgl2 = gl.webgl
 
