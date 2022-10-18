@@ -106,8 +106,6 @@ class PinkyMain(private val args: Array<String>) {
                         repoDir.resolve("$jsPackageDir/vendors.js.map").toFile())
 
                     files(jsResDir.toFile())
-                    get("mapper") { call.respondRedirect("mapper/") }
-                    route("mapper/") { default("mapper/index.html") }
                     get("monitor") { call.respondRedirect("monitor/") }
                     route("monitor/") { default("monitor/index.html") }
                     get("ui") { call.respondRedirect("ui/") }
