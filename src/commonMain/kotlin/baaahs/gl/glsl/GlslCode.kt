@@ -14,7 +14,8 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    val statements: List<GlslStatement>
+    val statements: List<GlslStatement>,
+    val fileName: String? = null
 ) {
     val globalVarNames = hashSetOf<String>()
     val functionNames = hashSetOf<String>()

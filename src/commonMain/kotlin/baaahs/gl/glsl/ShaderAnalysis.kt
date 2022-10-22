@@ -29,7 +29,7 @@ class ErrorsShaderAnalysis(
     private val e: GlslException,
     override val shader: Shader
 ) : ShaderAnalysis {
-    override val glslCode: GlslCode get() = GlslCode(src, emptyList())
+    override val glslCode: GlslCode get() = GlslCode(src, emptyList(), null)
     override val shaderDialect: ShaderDialect get() = GenericShaderDialect
     override val entryPoint: GlslCode.GlslFunction? get() = null
     override val inputPorts: List<InputPort> get() = emptyList()

@@ -1,8 +1,8 @@
 package baaahs.gl.glsl
 
 class GlslParser {
-    fun parse(src: String): GlslCode {
-        return GlslCode(src, findStatements(src))
+    fun parse(src: String, fileName: String? = null): GlslCode {
+        return GlslCode(src, findStatements(src), fileName)
     }
 
     internal fun findStatements(glslSrc: String): List<GlslCode.GlslStatement> {

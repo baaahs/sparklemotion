@@ -16,9 +16,9 @@ import baaahs.util.Stats
 interface Toolchain {
     val plugins: Plugins
 
-    fun parse(src: String): GlslCode
+    fun parse(src: String, fileName: String? = null): GlslCode
 
-    fun import(src: String): Shader
+    fun import(src: String, fileName: String? = null): Shader
 
     fun analyze(shader: Shader): ShaderAnalysis
 
@@ -61,12 +61,12 @@ class RootToolchain(
 ) : Toolchain {
     val stats = ToolchainStats()
 
-    override fun parse(src: String): GlslCode = stats.parse.time {
-        glslParser.parse(src)
+    override fun parse(src: String, fileName: String?): GlslCode = stats.parse.time {
+        glslParser.parse(src, fileName)
     }
 
-    override fun import(src: String): Shader = stats.import.time {
-        val glslCode = parse(src)
+    override fun import(src: String, fileName: String?): Shader = stats.import.time {
+        val glslCode = parse(src, fileName)
         glslAnalyzer.analyze(glslCode).shader
     }
 
