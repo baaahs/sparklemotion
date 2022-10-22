@@ -141,9 +141,11 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
     private fun GlslCode.ifRefersTo(inputPort: InputPort) =
         if (refersToGlobal(inputPort.id)) inputPort else null
 
-    open fun findTitle(glslCode: GlslCode): String? {
-        return Regex("^// (.*)").find(glslCode.src)?.groupValues?.get(1)
-    }
+    open fun findTitle(glslCode: GlslCode): String? =
+        Regex("^// (.*)").find(glslCode.src)?.groupValues?.get(1)
+            ?: glslCode.fileName?.let {
+                Regex("\\.(fs|vs|glsl)$").replace(it, "")
+            }
 
     fun findEntryPoint(glslCode: GlslCode): GlslCode.GlslFunction {
         return glslCode.findFunction(entryPointName)

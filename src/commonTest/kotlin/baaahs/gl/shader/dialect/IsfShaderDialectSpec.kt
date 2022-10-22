@@ -22,13 +22,15 @@ import org.spekframework.spek2.Spek
 @Suppress("unused")
 object IsfShaderDialectSpec : Spek({
     describe<IsfShaderDialect> {
+        val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }
         val dialect by value { IsfShaderDialect }
-        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
+        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src, fileName), testToolchain.plugins) }
         val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
+            override(fileName) { "Float Input.fs" }
             override(src) {
                 """
                     /*{
@@ -56,8 +58,12 @@ object IsfShaderDialectSpec : Spek({
                 """.trimIndent()
             }
 
-            it("is an poor match (so this one acts as a fallback)") {
+            it("is an excellent match") {
                 expect(dialect.matches(glslCode)).toEqual(MatchLevel.Excellent)
+            }
+
+            it("gets its title from the file name") {
+                expect(openShader.title).toEqual("Float Input")
             }
 
             it("finds the input port") {
