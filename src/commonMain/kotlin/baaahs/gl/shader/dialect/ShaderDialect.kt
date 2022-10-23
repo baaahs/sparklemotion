@@ -5,14 +5,21 @@ import baaahs.gl.glsl.ShaderAnalysis
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-abstract class ShaderDialect(val id: String) {
+interface ShaderDialect {
+    val id: String
+    val title: String
 
-    abstract val title: String
-
-    abstract fun matches(glslCode: GlslCode): MatchLevel
-
-    abstract fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader? = null): ShaderAnalysis
+    fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer
+    fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader? = null): ShaderAnalysis
 }
+
+interface ShaderAnalyzer {
+    val matchLevel: MatchLevel
+}
+
+class BaseShaderAnalyzer(
+    override val matchLevel: MatchLevel
+) : ShaderAnalyzer
 
 enum class MatchLevel {
     NoMatch,

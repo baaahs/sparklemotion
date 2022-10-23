@@ -22,10 +22,12 @@ object GenericShaderDialect : HintedShaderDialect("baaahs.Core:Generic") {
         InputPort("time", ContentType.Time, GlslType.Float, "Time")
     )
 
-    override fun matches(glslCode: GlslCode): MatchLevel {
-        return glslCode.findFunctionOrNull(entryPointName)
-            ?.let { MatchLevel.Poor }
-            ?: MatchLevel.NoMatch
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer {
+        return BaseShaderAnalyzer(
+            glslCode.findFunctionOrNull(entryPointName)
+                ?.let { MatchLevel.Poor }
+                ?: MatchLevel.NoMatch
+        )
     }
 
     override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {

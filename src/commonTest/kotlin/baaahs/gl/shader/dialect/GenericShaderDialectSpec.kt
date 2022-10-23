@@ -21,8 +21,10 @@ object GenericShaderDialectSpec : Spek({
     describe<GenericShaderDialect> {
         val src by value<String> { toBeSpecified() }
         val dialect by value { GenericShaderDialect }
+        val glslCode by value { testToolchain.parse(src) }
+        val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
+        val matchLevel by value { analyzer.matchLevel }
         val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
-        val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having a main() function") {
@@ -36,7 +38,7 @@ object GenericShaderDialectSpec : Spek({
             }
 
             it("is a poor match (so this one acts as a fallback)") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Poor)
+                expect(matchLevel).toEqual(MatchLevel.Poor)
             }
 
             it("finds the input port") {
@@ -72,7 +74,7 @@ object GenericShaderDialectSpec : Spek({
                 override(src) { "void main(float intensity) { gl_FragColor = vec4(gl_FragCoord, 0., 1.); };" }
 
                 it("continues to be a match") {
-                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Poor)
+                    expect(matchLevel).toEqual(MatchLevel.Poor)
                 }
 
                 it("finds the input port") {
@@ -101,7 +103,7 @@ object GenericShaderDialectSpec : Spek({
         context("a shader without a main() function") {
             override(src) { "void mainImage(void) { ... };" }
             it("is not a match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(matchLevel).toEqual(MatchLevel.NoMatch)
             }
         }
     }
