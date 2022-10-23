@@ -23,8 +23,10 @@ object ShaderToyShaderDialectSpec : Spek({
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
         val shader by value { Shader("Title", src) }
         val dialect by value { ShaderToyShaderDialect }
-        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
-        val glslCode by value { shaderAnalysis.glslCode }
+        val glslCode by value { testToolchain.parse(src) }
+        val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
+        val matchLevel by value { analyzer.matchLevel }
+        val shaderAnalysis by value { dialect.analyze(glslCode, testToolchain.plugins) }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
             openShader.invoker(
@@ -34,7 +36,7 @@ object ShaderToyShaderDialectSpec : Spek({
 
         context("shaders having a void mainImage(out vec4, in vec2) function") {
             it("is an good match") {
-                expect(dialect.matches(shaderAnalysis.glslCode)).toEqual(MatchLevel.Good)
+                expect(matchLevel).toEqual(MatchLevel.Good)
             }
 
             it("finds the input port") {
@@ -57,7 +59,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor) { ... };" }
 
                 it("is an good match") {
-                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(matchLevel).toEqual(MatchLevel.Good)
                 }
 
                 it("generates an invocation statement") {
@@ -69,7 +71,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor, in float intensity) { ... };" }
 
                 it("is an good match") {
-                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(matchLevel).toEqual(MatchLevel.Good)
                 }
 
                 it("finds the input port") {
@@ -132,7 +134,7 @@ object ShaderToyShaderDialectSpec : Spek({
                 override(src) { "void mainImage() { ... };" }
 
                 it("is still a match") {
-                    expect(dialect.matches(glslCode)).toEqual(MatchLevel.Good)
+                    expect(matchLevel).toEqual(MatchLevel.Good)
                 }
 
                 it("fails validation") {
@@ -152,7 +154,7 @@ object ShaderToyShaderDialectSpec : Spek({
             override(src) { "void main(void) { ... };" }
 
             it("is not a match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(matchLevel).toEqual(MatchLevel.NoMatch)
             }
 
             it("fails to validate") {

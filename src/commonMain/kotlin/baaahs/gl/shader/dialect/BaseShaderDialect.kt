@@ -6,16 +6,20 @@ import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
+abstract class BaseShaderDialect(
+    override val id: String
+) : ShaderDialect {
     open val implicitInputPorts: List<InputPort> = emptyList()
     open val wellKnownInputPorts: List<InputPort> = emptyList()
     open val defaultInputPortsByType: Map<GlslType, InputPort> = emptyMap()
     abstract val entryPointName: String
 
-    override fun matches(glslCode: GlslCode): MatchLevel {
-        return glslCode.findFunctionOrNull(entryPointName)
-            ?.let { MatchLevel.Good }
-            ?: MatchLevel.NoMatch
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer {
+        return BaseShaderAnalyzer(
+            glslCode.findFunctionOrNull(entryPointName)
+                ?.let { MatchLevel.Good }
+                ?: MatchLevel.NoMatch
+        )
     }
 
     open fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> = emptyList()
@@ -57,13 +61,13 @@ abstract class BaseShaderDialect(id: String) : ShaderDialect(id) {
     }
 
     override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
-        try {
+        return try {
             val inputPorts = findInputPorts(glslCode, plugins)
             val outputPorts = findOutputPorts(glslCode, plugins)
             val entryPoint = findEntryPointOrNull(glslCode)
-            return Analysis(glslCode, entryPoint, inputPorts, outputPorts, shader)
+            Analysis(glslCode, entryPoint, inputPorts, outputPorts, shader)
         } catch (e: GlslException) {
-            return ErrorsShaderAnalysis(glslCode.src, e, shader ?: createShader(glslCode))
+            ErrorsShaderAnalysis(glslCode.src, e, shader ?: createShader(glslCode))
         }
     }
 

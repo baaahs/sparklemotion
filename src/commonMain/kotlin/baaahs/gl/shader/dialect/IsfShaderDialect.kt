@@ -45,13 +45,15 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
         InputPort("FRAMEINDEX", ContentType.FrameIndex, title = ContentType.FrameIndex.title),
     )
 
-    override fun matches(glslCode: GlslCode): MatchLevel {
-        return if (glslCode.src.startsWith("/*{") &&
-            run {
-                val entryPoint = glslCode.findFunctionOrNull("main")
-                entryPoint?.returnType == GlslType.Void && entryPoint.params.isEmpty()
-            }
-        ) MatchLevel.Excellent else MatchLevel.NoMatch
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer {
+        return BaseShaderAnalyzer(
+            if (glslCode.src.startsWith("/*{") &&
+                run {
+                    val entryPoint = glslCode.findFunctionOrNull("main")
+                    entryPoint?.returnType == GlslType.Void && entryPoint.params.isEmpty()
+                }
+            ) MatchLevel.Excellent else MatchLevel.NoMatch
+        )
     }
 
     override fun findDeclaredInputPorts(

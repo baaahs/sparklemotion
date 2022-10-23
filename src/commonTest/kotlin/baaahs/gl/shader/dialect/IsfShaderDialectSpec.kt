@@ -25,8 +25,10 @@ object IsfShaderDialectSpec : Spek({
         val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }
         val dialect by value { IsfShaderDialect }
+        val glslCode by value { testToolchain.parse(src) }
+        val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
+        val matchLevel by value { analyzer.matchLevel }
         val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src, fileName), testToolchain.plugins) }
-        val glslCode by value { shaderAnalysis.glslCode }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
@@ -59,7 +61,7 @@ object IsfShaderDialectSpec : Spek({
             }
 
             it("is an excellent match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Excellent)
+                expect(matchLevel).toEqual(MatchLevel.Excellent)
             }
 
             it("gets its title from the file name") {
@@ -193,7 +195,7 @@ object IsfShaderDialectSpec : Spek({
         context("a shader without an ISF block at the top") {
             override(src) { "void main() {\n  gl_FragColor = vec4(level,level,level,1.0);\n}" }
             it("is not a match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(matchLevel).toEqual(MatchLevel.NoMatch)
             }
         }
     }

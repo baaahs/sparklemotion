@@ -46,9 +46,9 @@ class GlslAnalyzer(private val plugins: Plugins) {
 
     fun detectDialect(glslCode: GlslCode): ShaderDialect =
         plugins.shaderDialects.all
-            .map { it to it.matches(glslCode) }
-            .filter { (_, match) -> match != MatchLevel.NoMatch }
-            .maxByOrNull { (_, match) -> match }?.first
+            .map { it to it.match(glslCode, plugins) }
+            .filter { (_, analyzer) -> analyzer.matchLevel != MatchLevel.NoMatch }
+            .maxByOrNull { (_, analyzer) -> analyzer.matchLevel }?.first
             ?: GenericShaderDialect
 
     fun detectShaderType(shaderAnalysis: ShaderAnalysis) =
