@@ -23,7 +23,7 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
     override val title: String = "ISF"
 
     // See https://docs.isf.video/ref_variables.html#automatically-declared-variables
-    val wellKnownInputPorts = listOf(
+    override val wellKnownInputPorts = listOf(
         InputPort("PASSINDEX", ContentType.PassIndex, title = ContentType.PassIndex.title),
         InputPort("RENDERSIZE", ContentType.Resolution, title = ContentType.Resolution.title),
         InputPort("isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2, title = ContentType.UvCoordinate.title, isImplicit = true),
@@ -59,9 +59,6 @@ class IsfShaderAnalyzer(
         InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates"),
 //        InputPort("isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2, "Coordinates"),
     )
-
-    // See https://docs.isf.video/ref_variables.html#automatically-declared-variables
-    override val wellKnownInputPorts = IsfShaderDialect.wellKnownInputPorts
 
     override fun findDeclaredInputPorts(): List<InputPort> {
         val isfShader = findIsfShaderDeclaration(glslCode)

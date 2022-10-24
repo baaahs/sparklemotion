@@ -123,6 +123,6 @@ class HintedShaderAnalyzerForTest(
     plugins: Plugins
 ) : HintedShaderAnalyzer(glslCode, plugins) {
     override val dialect: ShaderDialect
-        get() = TODO("not implemented")
+        get() = GenericShaderDialect
     override val entryPointName: String = "main"
 }

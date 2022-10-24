@@ -11,7 +11,8 @@ abstract class BaseShaderAnalyzer(
     protected val plugins: Plugins,
 ) : ShaderAnalyzer {
     open val implicitInputPorts: List<InputPort> = emptyList()
-    open val wellKnownInputPorts: List<InputPort> = emptyList()
+    open val wellKnownInputPorts: List<InputPort>
+        get() = dialect.wellKnownInputPorts
     open val defaultInputPortsByType: Map<GlslType, InputPort> = emptyMap()
     abstract val entryPointName: String
 
@@ -61,19 +62,21 @@ abstract class BaseShaderAnalyzer(
             val inputPorts = findInputPorts()
             val outputPorts = findOutputPorts()
             val entryPoint = findEntryPointOrNull()
-            Analysis(glslCode, entryPoint, inputPorts, outputPorts, existingShader)
+            Analysis(entryPoint, inputPorts, outputPorts, existingShader)
         } catch (e: GlslException) {
             ErrorsShaderAnalysis(glslCode.src, e, existingShader ?: createShader())
         }
     }
 
     inner class Analysis(
-        override val glslCode: GlslCode,
         override val entryPoint: GlslCode.GlslFunction?,
         override val inputPorts: List<InputPort>,
         override val outputPorts: List<OutputPort>,
         shader: Shader?
     ) : ShaderAnalysis {
+        override val glslCode: GlslCode
+            get() = this@BaseShaderAnalyzer.glslCode
+
         override val shaderDialect
             get() = this@BaseShaderAnalyzer.dialect
 
