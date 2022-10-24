@@ -24,7 +24,7 @@ object GenericShaderDialectSpec : Spek({
         val glslCode by value { testToolchain.parse(src) }
         val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
         val matchLevel by value { analyzer.matchLevel }
-        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
+        val shaderAnalysis by value { analyzer.analyze() }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having a main() function") {

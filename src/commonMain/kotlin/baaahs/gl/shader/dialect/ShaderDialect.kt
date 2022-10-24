@@ -10,16 +10,14 @@ interface ShaderDialect {
     val title: String
 
     fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer
-    fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader? = null): ShaderAnalysis
 }
 
 interface ShaderAnalyzer {
+    val dialect: ShaderDialect
     val matchLevel: MatchLevel
-}
 
-class BaseShaderAnalyzer(
-    override val matchLevel: MatchLevel
-) : ShaderAnalyzer
+    fun analyze(shader: Shader? = null): ShaderAnalysis
+}
 
 enum class MatchLevel {
     NoMatch,

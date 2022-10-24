@@ -14,11 +14,11 @@ import baaahs.show.Shader
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
+object ShaderToyShaderDialect : BaseShaderDialect("baaahs.Core:ShaderToy") {
+    override val title: String
+        get() = "ShaderToy"
 
-    override val entryPointName: String = "mainImage"
-
-    override val wellKnownInputPorts = listOf(
+    val wellKnownInputPorts = listOf(
 //              uniform vec3      iResolution;           // viewport resolution (in pixels)
 //              uniform float     iTime;                 // shader playback time (in seconds)
 //              uniform float     iTimeDelta;            // render time (in seconds)
@@ -67,6 +67,21 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
         InputPort("iChannel3", ContentType.Media, GlslType.Sampler2D, "Channel 3")
     ).map { it.copy(isImplicit = true) }
 
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
+        ShaderToyShaderAnalyzer(glslCode, plugins)
+}
+
+class ShaderToyShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : HintedShaderAnalyzer(glslCode, plugins) {
+    override val dialect: ShaderDialect
+        get() = ShaderToyShaderDialect
+
+    override val entryPointName: String = "mainImage"
+
+    override val wellKnownInputPorts = ShaderToyShaderDialect.wellKnownInputPorts
+
     override val defaultInputPortsByType: Map<GlslType, InputPort> = listOf(
         InputPort("sm_FragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates")
     ).associateBy { it.type }
@@ -87,10 +102,8 @@ object ShaderToyShaderDialect : HintedShaderDialect("baaahs.Core:ShaderToy") {
         }
     }
 
-    override val title: String = "ShaderToy"
-
-    override fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader?): ShaderAnalysis {
-        val shaderAnalysis = super.analyze(glslCode, plugins, shader)
+    override fun analyze(shader: Shader?): ShaderAnalysis {
+        val shaderAnalysis = super.analyze(shader)
         val entryPoint = shaderAnalysis.entryPoint
         return if (entryPoint == null) shaderAnalysis else {
             val haveCoordInArg = entryPoint.params.any { it.isIn && it.type == GlslType.Vec2 }

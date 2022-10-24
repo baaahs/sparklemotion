@@ -8,9 +8,29 @@ import baaahs.gl.shader.OutputPort
 import baaahs.listOf
 import baaahs.plugin.Plugins
 
-object GenericShaderDialect : HintedShaderDialect("baaahs.Core:Generic") {
-    override val title: String = "Generic"
+object GenericShaderDialect : ShaderDialect {
+    override val id: String
+        get() = "baaahs.Core:Generic"
+    override val title: String
+        get() = "Generic"
+
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
+        GenericShaderAnalyzer(glslCode, plugins)
+}
+
+class GenericShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : HintedShaderAnalyzer(glslCode, plugins) {
+    override val dialect: ShaderDialect
+        get() = GenericShaderDialect
+
     override val entryPointName: String = "main"
+
+    override val matchLevel: MatchLevel =
+        glslCode.findFunctionOrNull(entryPointName)
+            ?.let { MatchLevel.Poor }
+            ?: MatchLevel.NoMatch
 
     override val implicitInputPorts = listOf(
         InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates")
@@ -21,14 +41,6 @@ object GenericShaderDialect : HintedShaderDialect("baaahs.Core:Generic") {
         InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
         InputPort("time", ContentType.Time, GlslType.Float, "Time")
     )
-
-    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer {
-        return BaseShaderAnalyzer(
-            glslCode.findFunctionOrNull(entryPointName)
-                ?.let { MatchLevel.Poor }
-                ?: MatchLevel.NoMatch
-        )
-    }
 
     override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
         return if (glslCode.refersToGlobal("gl_FragColor")) {

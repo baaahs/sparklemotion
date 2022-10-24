@@ -1,6 +1,7 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.describe
+import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslParser
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
@@ -12,6 +13,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -22,12 +24,12 @@ import org.spekframework.spek2.Spek
 
 @Suppress("unused")
 object HintedShaderDialectSpec : Spek({
-    describe<HintedShaderDialect> {
+    describe<HintedShaderAnalyzer> {
         val shaderText by value<String> { toBeSpecified() }
-        val dialect by value { HintedShaderDialectForTest() }
         val plugins by value { testPlugins() }
         val glslCode by value { GlslParser().parse(shaderText) }
-        val shaderAnalysis by value { dialect.analyze(glslCode, plugins, null) }
+        val analyzer by value { HintedShaderAnalyzerForTest(glslCode, plugins) }
+        val shaderAnalysis by value { analyzer.analyze(null) }
 
         context("determining a method's output ports") {
             context("when there are none") {
@@ -116,8 +118,11 @@ object HintedShaderDialectSpec : Spek({
     }
 })
 
-class HintedShaderDialectForTest : HintedShaderDialect("xxx") {
-    override val entryPointName: String = "main"
-    override val title: String
+class HintedShaderAnalyzerForTest(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : HintedShaderAnalyzer(glslCode, plugins) {
+    override val dialect: ShaderDialect
         get() = TODO("not implemented")
+    override val entryPointName: String = "main"
 }
