@@ -26,7 +26,7 @@ object ShaderToyShaderDialectSpec : Spek({
         val glslCode by value { testToolchain.parse(src) }
         val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
         val matchLevel by value { analyzer.matchLevel }
-        val shaderAnalysis by value { dialect.analyze(glslCode, testToolchain.plugins) }
+        val shaderAnalysis by value { analyzer.analyze() }
         val openShader by value { OpenShader.Base(shaderAnalysis, PaintShader) }
         val invocationStatement by value {
             openShader.invoker(

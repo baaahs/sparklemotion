@@ -7,7 +7,10 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 
-abstract class HintedShaderDialect(id: String) : BaseShaderDialect(id) {
+abstract class HintedShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : BaseShaderAnalyzer(glslCode, plugins) {
     override fun findDeclaredInputPorts(
         glslCode: GlslCode,
         plugins: Plugins

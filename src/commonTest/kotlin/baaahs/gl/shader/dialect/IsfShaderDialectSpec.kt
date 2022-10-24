@@ -25,10 +25,10 @@ object IsfShaderDialectSpec : Spek({
         val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }
         val dialect by value { IsfShaderDialect }
-        val glslCode by value { testToolchain.parse(src) }
+        val glslCode by value { testToolchain.parse(src, fileName) }
         val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
         val matchLevel by value { analyzer.matchLevel }
-        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src, fileName), testToolchain.plugins) }
+        val shaderAnalysis by value { analyzer.analyze() }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
