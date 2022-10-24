@@ -102,8 +102,8 @@ class ShaderToyShaderAnalyzer(
         }
     }
 
-    override fun analyze(shader: Shader?): ShaderAnalysis {
-        val shaderAnalysis = super.analyze(shader)
+    override fun analyze(existingShader: Shader?): ShaderAnalysis {
+        val shaderAnalysis = super.analyze(existingShader)
         val entryPoint = shaderAnalysis.entryPoint
         return if (entryPoint == null) shaderAnalysis else {
             val haveCoordInArg = entryPoint.params.any { it.isIn && it.type == GlslType.Vec2 }

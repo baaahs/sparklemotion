@@ -7,8 +7,8 @@ import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
 abstract class BaseShaderAnalyzer(
-    private val glslCode: GlslCode,
-    private val plugins: Plugins,
+    protected val glslCode: GlslCode,
+    protected val plugins: Plugins,
 ) : ShaderAnalyzer {
     open val implicitInputPorts: List<InputPort> = emptyList()
     open val wellKnownInputPorts: List<InputPort> = emptyList()
@@ -21,33 +21,30 @@ abstract class BaseShaderAnalyzer(
             ?: MatchLevel.NoMatch
     }
 
-    open fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> = emptyList()
+    open fun additionalOutputPorts(): List<OutputPort> = emptyList()
 
     open fun adjustInputPorts(inputPorts: List<InputPort>): List<InputPort> = inputPorts
     open fun adjustOutputPorts(outputPorts: List<OutputPort>): List<OutputPort> = outputPorts
 
     private val wellKnownInputPortsById by lazy { wellKnownInputPorts.associateBy { it.id } }
 
-    abstract fun findDeclaredInputPorts(
-        glslCode: GlslCode,
-        plugins: Plugins
-    ): List<InputPort>
+    abstract fun findDeclaredInputPorts(): List<InputPort>
 
-    open fun findInputPorts(glslCode: GlslCode, plugins: Plugins): List<InputPort> {
+    open fun findInputPorts(): List<InputPort> {
         val proFormaInputPorts: List<InputPort> =
             implicitInputPorts.mapNotNull { glslCode.ifRefersTo(it)?.copy(isImplicit = true) }
 
-        val declaredInputPorts = findDeclaredInputPorts(glslCode, plugins)
+        val declaredInputPorts = findDeclaredInputPorts()
 
         return adjustInputPorts(
             proFormaInputPorts +
                     declaredInputPorts +
-                    findWellKnownInputPorts(glslCode, declaredInputPorts.map { it.id }.toSet())
+                    findWellKnownInputPorts(declaredInputPorts.map { it.id }.toSet())
         )
     }
 
-    open fun findOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
-        val entryPoint = findEntryPointOrNull(glslCode)
+    open fun findOutputPorts(): List<OutputPort> {
+        val entryPoint = findEntryPointOrNull()
 
         val entryPointReturn: OutputPort? =
             findEntryPointOutputPort(entryPoint, plugins)
@@ -55,18 +52,18 @@ abstract class BaseShaderAnalyzer(
         return adjustOutputPorts(
             listOfNotNull(entryPointReturn) +
                     (entryPoint?.getParamOutputPorts(plugins) ?: emptyList()) +
-                    additionalOutputPorts(glslCode, plugins)
+                    additionalOutputPorts()
         )
     }
 
-    override fun analyze(shader: Shader?): ShaderAnalysis {
+    override fun analyze(existingShader: Shader?): ShaderAnalysis {
         return try {
-            val inputPorts = findInputPorts(glslCode, plugins)
-            val outputPorts = findOutputPorts(glslCode, plugins)
-            val entryPoint = findEntryPointOrNull(glslCode)
-            Analysis(glslCode, entryPoint, inputPorts, outputPorts, shader)
+            val inputPorts = findInputPorts()
+            val outputPorts = findOutputPorts()
+            val entryPoint = findEntryPointOrNull()
+            Analysis(glslCode, entryPoint, inputPorts, outputPorts, existingShader)
         } catch (e: GlslException) {
-            ErrorsShaderAnalysis(glslCode.src, e, shader ?: createShader(glslCode))
+            ErrorsShaderAnalysis(glslCode.src, e, existingShader ?: createShader())
         }
     }
 
@@ -118,11 +115,11 @@ abstract class BaseShaderAnalyzer(
         }
 
         override val shader: Shader = shader
-            ?: createShader(glslCode)
+            ?: createShader()
     }
 
-    private fun createShader(glslCode: GlslCode) =
-        Shader(findTitle(glslCode) ?: "Untitled Shader", glslCode.src)
+    private fun createShader() =
+        Shader(findTitle() ?: "Untitled Shader", glslCode.src)
 
     abstract fun findEntryPointOutputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins): OutputPort?
 
@@ -145,17 +142,17 @@ abstract class BaseShaderAnalyzer(
     private fun GlslCode.ifRefersTo(inputPort: InputPort) =
         if (refersToGlobal(inputPort.id)) inputPort else null
 
-    open fun findTitle(glslCode: GlslCode): String? =
+    open fun findTitle(): String? =
         Regex("^// (.*)").find(glslCode.src)?.groupValues?.get(1)
             ?: glslCode.fileName?.let {
                 Regex("\\.(fs|vs|glsl)$").replace(it, "")
             }
 
-    fun findEntryPoint(glslCode: GlslCode): GlslCode.GlslFunction {
+    fun findEntryPoint(): GlslCode.GlslFunction {
         return glslCode.findFunction(entryPointName)
     }
 
-    fun findEntryPointOrNull(glslCode: GlslCode): GlslCode.GlslFunction? {
+    fun findEntryPointOrNull(): GlslCode.GlslFunction? {
         return glslCode.findFunctionOrNull(entryPointName)
     }
 
@@ -163,7 +160,7 @@ abstract class BaseShaderAnalyzer(
      * Well-known input ports are uniforms that are automatically declared if they're used by a shader;
      * see if we're using any of them.
      */
-    open fun findWellKnownInputPorts(glslCode: GlslCode, declaredInputPorts: Set<String>): List<InputPort> {
+    open fun findWellKnownInputPorts(declaredInputPorts: Set<String>): List<InputPort> {
         if (wellKnownInputPorts.isEmpty()) return emptyList()
 
         val symbolsMentionedInShader = glslCode.statements.flatMap { glslFunction ->

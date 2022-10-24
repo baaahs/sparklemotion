@@ -63,10 +63,7 @@ class IsfShaderAnalyzer(
     // See https://docs.isf.video/ref_variables.html#automatically-declared-variables
     override val wellKnownInputPorts = IsfShaderDialect.wellKnownInputPorts
 
-    override fun findDeclaredInputPorts(
-        glslCode: GlslCode,
-        plugins: Plugins
-    ): List<InputPort> {
+    override fun findDeclaredInputPorts(): List<InputPort> {
         val isfShader = findIsfShaderDeclaration(glslCode)
             ?: return emptyList()
 
@@ -150,7 +147,7 @@ class IsfShaderAnalyzer(
         }
     }
 
-    override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
+    override fun additionalOutputPorts(): List<OutputPort> {
         return if (glslCode.refersToGlobal("gl_FragColor")) {
             OutputPort(ContentType.Color, id = "gl_FragColor", dataType = GlslType.Vec4, description = "Output Color")
                 .listOf()

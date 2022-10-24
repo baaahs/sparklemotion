@@ -16,7 +16,7 @@ interface ShaderAnalyzer {
     val dialect: ShaderDialect
     val matchLevel: MatchLevel
 
-    fun analyze(shader: Shader? = null): ShaderAnalysis
+    fun analyze(existingShader: Shader? = null): ShaderAnalysis
 }
 
 enum class MatchLevel {
