@@ -13,6 +13,11 @@ object GenericShaderDialect : ShaderDialect {
         get() = "baaahs.Core:Generic"
     override val title: String
         get() = "Generic"
+    override val wellKnownInputPorts = listOf(
+        InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
+        InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
+        InputPort("time", ContentType.Time, GlslType.Float, "Time")
+    )
 
     override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
         GenericShaderAnalyzer(glslCode, plugins)
@@ -34,12 +39,6 @@ class GenericShaderAnalyzer(
 
     override val implicitInputPorts = listOf(
         InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates")
-    )
-
-    override val wellKnownInputPorts = listOf(
-        InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
-        InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
-        InputPort("time", ContentType.Time, GlslType.Float, "Time")
     )
 
     override fun additionalOutputPorts(): List<OutputPort> {

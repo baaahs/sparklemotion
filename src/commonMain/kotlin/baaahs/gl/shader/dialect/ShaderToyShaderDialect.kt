@@ -18,7 +18,7 @@ object ShaderToyShaderDialect : BaseShaderDialect("baaahs.Core:ShaderToy") {
     override val title: String
         get() = "ShaderToy"
 
-    val wellKnownInputPorts = listOf(
+    override val wellKnownInputPorts = listOf(
 //              uniform vec3      iResolution;           // viewport resolution (in pixels)
 //              uniform float     iTime;                 // shader playback time (in seconds)
 //              uniform float     iTimeDelta;            // render time (in seconds)
@@ -79,8 +79,6 @@ class ShaderToyShaderAnalyzer(
         get() = ShaderToyShaderDialect
 
     override val entryPointName: String = "mainImage"
-
-    override val wellKnownInputPorts = ShaderToyShaderDialect.wellKnownInputPorts
 
     override val defaultInputPortsByType: Map<GlslType, InputPort> = listOf(
         InputPort("sm_FragCoord", ContentType.UvCoordinate, GlslType.Vec2, "U/V Coordinates")
