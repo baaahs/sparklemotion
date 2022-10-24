@@ -11,11 +11,8 @@ abstract class HintedShaderAnalyzer(
     glslCode: GlslCode,
     plugins: Plugins
 ) : BaseShaderAnalyzer(glslCode, plugins) {
-    override fun findDeclaredInputPorts(
-        glslCode: GlslCode,
-        plugins: Plugins
-    ): List<InputPort> {
-        val entryPoint = findEntryPointOrNull(glslCode)
+    override fun findDeclaredInputPorts(): List<InputPort> {
+        val entryPoint = findEntryPointOrNull()
         val entryPointParams =
             entryPoint?.params?.filter { it.isIn } ?: emptyList()
 

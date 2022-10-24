@@ -42,7 +42,7 @@ class GenericShaderAnalyzer(
         InputPort("time", ContentType.Time, GlslType.Float, "Time")
     )
 
-    override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
+    override fun additionalOutputPorts(): List<OutputPort> {
         return if (glslCode.refersToGlobal("gl_FragColor")) {
             OutputPort(ContentType.Color, id = "gl_FragColor", dataType = GlslType.Vec4, description = "Output Color")
                 .listOf()
