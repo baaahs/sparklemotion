@@ -20,9 +20,10 @@ data class ShaderLibrary(
         val tags: List<String>
     ) {
         fun matches(term: String): Boolean {
-            return shader.title.contains(term) ||
-                    description?.contains(term) ?: false ||
-                    tags.any { it.contains(term) }
+            val lcTerm = term.lowercase()
+            return shader.title.lowercase().contains(lcTerm) ||
+                    description?.lowercase()?.contains(lcTerm) ?: false ||
+                    tags.any { it.lowercase().contains(lcTerm) }
         }
     }
 }
