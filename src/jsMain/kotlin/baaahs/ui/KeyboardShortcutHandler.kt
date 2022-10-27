@@ -28,7 +28,7 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
             } // Ignore
 
             else -> {
-                val keypress = with(e) { Keypress(key, metaKey, ctrlKey, shiftKey) }
+                val keypress = with(e) { Keypress(code, metaKey, ctrlKey, shiftKey) }
                 val handled = handlers.reversed().any { handler ->
                     handler.callback(keypress, e) == KeypressResult.Handled
                 }

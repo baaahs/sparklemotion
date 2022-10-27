@@ -173,16 +173,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             when (keypress) {
                 Keypress("Escape") -> handleAppDrawerToggle()
-                Keypress("s", metaKey = true),
-                Keypress("s", ctrlKey = true) -> {
+                Keypress("KeyS", metaKey = true),
+                Keypress("KeyS", ctrlKey = true) -> {
                     myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
                 }
-                Keypress("z", metaKey = true),
-                Keypress("z", ctrlKey = true) -> {
+                Keypress("KeyZ", metaKey = true),
+                Keypress("KeyZ", ctrlKey = true) -> {
                     documentManager.undo()
                 }
-                Keypress("z", metaKey = true, shiftKey = true),
-                Keypress("z", ctrlKey = true, shiftKey = true) -> {
+                Keypress("KeyZ", metaKey = true, shiftKey = true),
+                Keypress("KeyZ", ctrlKey = true, shiftKey = true) -> {
                     documentManager.redo()
                 }
                 else -> result = KeypressResult.NotHandled
