@@ -24,8 +24,8 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
         keyboard.handle { keypress, _ ->
             var result: KeypressResult? = null
             when (keypress) {
-                Keypress("d") -> editMode.toggle()
-                Keypress("l") -> props.onLayoutEditorDialogToggle
+                Keypress("KeyD") -> editMode.toggle()
+                Keypress("KeyL") -> props.onLayoutEditorDialogToggle()
                 else -> result = KeypressResult.NotHandled
             }
             result ?: KeypressResult.Handled
