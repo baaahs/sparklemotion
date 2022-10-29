@@ -11,26 +11,15 @@ class GlslParser {
         return context.statements
     }
 
-    private class Context {
-        val macros: MutableMap<String, Macro> = hashMapOf()
-        var macroDepth = 0
-        val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
-        var outputEnabled = true
-        val enabledStack = mutableListOf<Boolean>()
+    class Tokenizer {
         var lineNumber = 1
         var lineNumberForError = 1
 
-        val structs = mutableMapOf<String, GlslCode.GlslStruct>()
-
-        fun findType(name: String): GlslType =
-            structs[name]?.let { GlslType.Struct(it) }
-                ?: GlslType.from(name)
-
-        fun parse(
+        fun <S: State<S>> processTokens(
             text: String,
-            initialState: ParseState,
+            initialState: S,
             freezeLineNumber: Boolean = false
-        ): ParseState {
+        ): S {
             var state = initialState
             Regex("(.*?)(//|/\\*|\\*/|[;{}\\[\\](,)#\n]|$)").findAll(text).forEach { matchResult ->
                 val (before, token) = matchResult.destructured
@@ -52,6 +41,33 @@ class GlslParser {
                 if (token.isNotEmpty()) state = state.visit(token)
             }
             return state
+        }
+
+        interface State<S: State<S>> {
+            fun visit(token: String): S
+        }
+    }
+
+    private class Context {
+        val macros: MutableMap<String, Macro> = hashMapOf()
+        var macroDepth = 0
+        val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
+        var outputEnabled = true
+        val enabledStack = mutableListOf<Boolean>()
+        val tokenizer = Tokenizer()
+
+        val structs = mutableMapOf<String, GlslCode.GlslStruct>()
+
+        fun findType(name: String): GlslType =
+            structs[name]?.let { GlslType.Struct(it) }
+                ?: GlslType.from(name)
+
+        fun parse(
+            text: String,
+            initialState: ParseState,
+            freezeLineNumber: Boolean = false
+        ): ParseState {
+            return tokenizer.processTokens(text, initialState, freezeLineNumber)
         }
 
         fun doUndef(args: List<String>) {
@@ -97,7 +113,7 @@ class GlslParser {
                     if (macroDepth >= maxMacroDepth)
                         throw glslError("Max macro depth exceeded for \"$value\".")
 
-                    parse(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                    tokenizer.processTokens(macro.replacement.trim(), parseState, freezeLineNumber = true)
                         .also { macroDepth-- }
                 }
                 else -> ParseState.MacroExpansion(this, parseState, macro)
@@ -105,7 +121,7 @@ class GlslParser {
         }
 
         fun glslError(message: String) =
-            AnalysisException(message, lineNumberForError)
+            AnalysisException(message, tokenizer.lineNumberForError)
     }
 
     private class Macro(
@@ -113,7 +129,7 @@ class GlslParser {
         val replacement: String
     )
 
-    private sealed class ParseState(val context: Context) {
+    private sealed class ParseState(val context: Context) : Tokenizer.State<ParseState> {
         companion object {
             fun initial(context: Context): ParseState =
                 UnidentifiedStatement(context)
@@ -132,7 +148,7 @@ class GlslParser {
             text.append(value)
         }
 
-        open fun visit(token: String): ParseState {
+        override fun visit(token: String): ParseState {
             return when (token) {
                 "//" -> visitComment()
                 "/*" -> visitBlockCommentBegin()
@@ -185,7 +201,7 @@ class GlslParser {
             context: Context,
             var recipientOfNextComment: Statement? = null
         ) : ParseState(context) {
-            var lineNumber = context.lineNumber
+            var lineNumber = context.tokenizer.lineNumber
             var braceNestLevel: Int = 0
             val comments = mutableListOf<String>()
 
@@ -245,7 +261,7 @@ class GlslParser {
                 return if (textIsBlank()) {
                     trimWhitespace()
                     // Skip leading newlines.
-                    lineNumber = context.lineNumber
+                    lineNumber = context.tokenizer.lineNumber
                     this
                 } else {
                     super.visitNewline()
@@ -591,7 +607,7 @@ class GlslParser {
             }
 
             override fun visitNewline(): ParseState {
-                context.lineNumberForError -= 1
+                context.tokenizer.lineNumberForError -= 1
 
                 val str = textAsString.trim()
                 val args = str.split(Regex("\\s+")).toMutableList()
@@ -671,7 +687,7 @@ class GlslParser {
             }
 
             override fun visitNewline(): ParseState {
-                context.lineNumberForError -= 1
+                context.tokenizer.lineNumberForError -= 1
                 val name = name ?: throw context.glslError("#define with no macro name")
                 if (context.outputEnabled) {
                     context.macros[name] = Macro(args, textAsString)
