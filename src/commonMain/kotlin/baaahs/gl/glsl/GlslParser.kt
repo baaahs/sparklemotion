@@ -15,26 +15,26 @@ class GlslParser {
         var lineNumber = 1
         var lineNumberForError = 1
 
+        fun tokenize(text: String): Sequence<String> {
+            val tokenizationPattern = Regex(
+                "//" +               // Line comment
+                        "|/\\*" +           // Block comment start
+                        "|\\*/" +           // Block comment end
+                        "|\n" +             // Newline
+                        "|[^\\S\\r\\n]+" +  // Whitespace but *not* newline
+                        "|\\w+" +
+                        "|."
+            )
+            return tokenizationPattern.findAll(text).map { it.groupValues[0] }
+        }
+
         fun <S: State<S>> processTokens(
             text: String,
             initialState: S,
             freezeLineNumber: Boolean = false
         ): S {
             var state = initialState
-            Regex("(.*?)(//|/\\*|\\*/|[;{}\\[\\](,)#\n]|$)").findAll(text).forEach { matchResult ->
-                val (before, token) = matchResult.destructured
-
-                if (before.isNotEmpty()) {
-                    // Further tokenize text blocks to isolate symbol strings.
-                    Regex("(.*?)([A-Za-z_][A-Za-z0-9_]*|$)").findAll(before).forEach { beforeMatch ->
-                        val (nonSymbol, symbol) = beforeMatch.destructured
-                        if (nonSymbol.isNotEmpty())
-                            state = state.visit(nonSymbol)
-                        if (symbol.isNotEmpty())
-                            state = state.visit(symbol)
-                    }
-                }
-
+            tokenize(text).forEach { token ->
                 if (!freezeLineNumber && token == "\n") lineNumber++
                 lineNumberForError = lineNumber
 
@@ -169,6 +169,7 @@ class GlslParser {
         }
 
         open fun visitText(value: String): ParseState {
+            println("value = ${value}")
             return if (context.outputEnabled || value == "\n") {
                 context.checkForMacro(value, this)
                     ?: run {
