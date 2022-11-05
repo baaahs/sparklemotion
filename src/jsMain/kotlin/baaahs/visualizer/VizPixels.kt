@@ -174,6 +174,11 @@ class VizPixels(
             { println("error!") }
         )
 
-        val diffusedLedRangeCm: ClosedFloatingPointRange<Float> = 2f..5f
+        // TODO: This is dumb; instead, allow model entities to specify how their pixels appear.
+        val undiffusedLedRangeCm: ClosedFloatingPointRange<Float> =
+            2f..5f
+
+        val diffusedLedRangeCm: ClosedFloatingPointRange<Float> =
+            (2f * 2.54f)..(5f * 2.54f)
     }
 }
