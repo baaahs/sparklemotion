@@ -20,12 +20,13 @@ val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
     observe(editMode)
 
     val keyboard = appContext.keyboard
-    onMount(keyboard, editMode, props.onLayoutEditorDialogToggle) {
+    onMount(keyboard, editMode, props.onLayoutEditorDialogToggle, props.onShaderLibraryDialogToggle) {
         keyboard.handle { keypress, _ ->
             var result: KeypressResult? = null
             when (keypress) {
-                Keypress("d") -> editMode.toggle()
-                Keypress("l") -> props.onLayoutEditorDialogToggle
+                Keypress("KeyD") -> editMode.toggle()
+                Keypress("KeyL") -> props.onLayoutEditorDialogToggle()
+                Keypress("KeyL", metaKey = true) -> props.onShaderLibraryDialogToggle()
                 else -> result = KeypressResult.NotHandled
             }
             result ?: KeypressResult.Handled
@@ -67,6 +68,7 @@ external interface ShowUiProps : Props {
     var show: OpenShow
     var onShowStateChange: () -> Unit
     var onLayoutEditorDialogToggle: () -> Unit
+    var onShaderLibraryDialogToggle: () -> Unit
 }
 
 fun RBuilder.showUi(handler: RHandler<ShowUiProps>) =

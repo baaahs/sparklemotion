@@ -22,13 +22,17 @@ import org.spekframework.spek2.Spek
 @Suppress("unused")
 object IsfShaderDialectSpec : Spek({
     describe<IsfShaderDialect> {
+        val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }
         val dialect by value { IsfShaderDialect }
-        val shaderAnalysis by value { dialect.analyze(testToolchain.parse(src), testToolchain.plugins) }
-        val glslCode by value { shaderAnalysis.glslCode }
+        val glslCode by value { testToolchain.parse(src, fileName) }
+        val analyzer by value { dialect.match(glslCode, testToolchain.plugins) }
+        val matchLevel by value { analyzer.matchLevel }
+        val shaderAnalysis by value { analyzer.analyze() }
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
+            override(fileName) { "Float Input.fs" }
             override(src) {
                 """
                     /*{
@@ -56,8 +60,12 @@ object IsfShaderDialectSpec : Spek({
                 """.trimIndent()
             }
 
-            it("is an poor match (so this one acts as a fallback)") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.Excellent)
+            it("is an excellent match") {
+                expect(matchLevel).toEqual(MatchLevel.Excellent)
+            }
+
+            it("gets its title from the file name") {
+                expect(openShader.title).toEqual("Float Input")
             }
 
             it("finds the input port") {
@@ -187,7 +195,7 @@ object IsfShaderDialectSpec : Spek({
         context("a shader without an ISF block at the top") {
             override(src) { "void main() {\n  gl_FragColor = vec4(level,level,level,1.0);\n}" }
             it("is not a match") {
-                expect(dialect.matches(glslCode)).toEqual(MatchLevel.NoMatch)
+                expect(matchLevel).toEqual(MatchLevel.NoMatch)
             }
         }
     }

@@ -8,27 +8,40 @@ import baaahs.gl.shader.OutputPort
 import baaahs.listOf
 import baaahs.plugin.Plugins
 
-object GenericShaderDialect : HintedShaderDialect("baaahs.Core:Generic") {
-    override val title: String = "Generic"
-    override val entryPointName: String = "main"
-
-    override val implicitInputPorts = listOf(
-        InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates")
-    )
-
+object GenericShaderDialect : ShaderDialect {
+    override val id: String
+        get() = "baaahs.Core:Generic"
+    override val title: String
+        get() = "Generic"
     override val wellKnownInputPorts = listOf(
         InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
         InputPort("mouse", ContentType.Mouse, GlslType.Vec2, "Mouse"),
         InputPort("time", ContentType.Time, GlslType.Float, "Time")
     )
 
-    override fun matches(glslCode: GlslCode): MatchLevel {
-        return glslCode.findFunctionOrNull(entryPointName)
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
+        GenericShaderAnalyzer(glslCode, plugins)
+}
+
+class GenericShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : HintedShaderAnalyzer(glslCode, plugins) {
+    override val dialect: ShaderDialect
+        get() = GenericShaderDialect
+
+    override val entryPointName: String = "main"
+
+    override val matchLevel: MatchLevel =
+        glslCode.findFunctionOrNull(entryPointName)
             ?.let { MatchLevel.Poor }
             ?: MatchLevel.NoMatch
-    }
 
-    override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
+    override val implicitInputPorts = listOf(
+        InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates")
+    )
+
+    override fun additionalOutputPorts(): List<OutputPort> {
         return if (glslCode.refersToGlobal("gl_FragColor")) {
             OutputPort(ContentType.Color, id = "gl_FragColor", dataType = GlslType.Vec4, description = "Output Color")
                 .listOf()

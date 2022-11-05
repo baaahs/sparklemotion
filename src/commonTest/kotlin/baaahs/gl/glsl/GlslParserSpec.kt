@@ -18,6 +18,7 @@ object GlslParserSpec : Spek({
         context("given some GLSL code") {
             val glslParser by value { GlslParser() }
             val shaderText by value<String> { toBeSpecified() }
+            val fileName by value<String?> { null }
 
             context("#parse") {
                 override(shaderText) {
@@ -56,7 +57,7 @@ object GlslParserSpec : Spek({
                     }
                     """.trimIndent()
                 }
-                val glslCode by value { glslParser.parse(shaderText) }
+                val glslCode by value { glslParser.parse(shaderText, fileName) }
 
                 it("finds statements including line numbers") {
                     expectStatements(
@@ -459,7 +460,7 @@ object GlslParserSpec : Spek({
 
             context("const initializers") {
                 override(shaderText) { "const vec3 baseColor = vec3(0.0,0.09,0.18);\nvoid main() {}" }
-                val glslCode by value { glslParser.parse(shaderText) }
+                val glslCode by value { glslParser.parse(shaderText, fileName) }
 
                 it("handles const initializers") {
                     expect(glslCode.globalVars.only("global var"))

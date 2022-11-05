@@ -14,7 +14,8 @@ import kotlinx.serialization.json.put
 
 class GlslCode(
     val src: String,
-    val statements: List<GlslStatement>
+    val statements: List<GlslStatement>,
+    val fileName: String? = null
 ) {
     val globalVarNames = hashSetOf<String>()
     val functionNames = hashSetOf<String>()
@@ -63,43 +64,31 @@ class GlslCode(
     companion object {
         private val logger = Logger<GlslCode>()
 
-        fun replaceCodeWords(originalText: String, replaceFn: (String) -> String): String {
+        fun rewriteFunctionBody(originalText: String, symbolSubstitutionFn: (String) -> String): String {
             val buf = StringBuilder()
 
             var inComment = false
             var inDotTraversal = false
-            Regex(
-                "(.*?)" +
-                        "(" +
-                        "[a-zA-Z_][a-zA-Z0-9_]*" + // Any valid symbol.
-                        "|[0-9]+[.][0-9]*" +       // Floats like 1. or 1.1.
-                        "|[.][0-9]+" +             // Floats like .1.
-                        "|[.\n]" +                 // '.' or newline.
-                        "|$" +                     // EOL.
-                        ")", RegexOption.MULTILINE)
-                .findAll(originalText)
-                .forEach { matchResult ->
-                    val (before, str) = matchResult.destructured
-                    buf.append(before)
-                    when (str) {
-                        "//" -> {
-                            inComment = true; buf.append(str)
-                        }
-                        "." -> {
-                            if (!inComment) inDotTraversal = true; buf.append(str)
-                        }
-                        "\n" -> {
-                            inComment = false; buf.append(str)
-                        }
-                        else -> {
-                            buf.append(
-                                if (inComment || inDotTraversal) str
-                                else replaceFn(str)
-                            )
-                            inDotTraversal = false
-                        }
+            GlslParser.Tokenizer().tokenize(originalText).forEach { str ->
+                when (str) {
+                    "//" -> {
+                        inComment = true; buf.append(str)
+                    }
+                    "." -> {
+                        if (!inComment) inDotTraversal = true; buf.append(str)
+                    }
+                    "\n" -> {
+                        inComment = false; buf.append(str)
+                    }
+                    else -> {
+                        buf.append(
+                            if (inComment || inDotTraversal) str
+                            else symbolSubstitutionFn(str)
+                        )
+                        inDotTraversal = false
                     }
                 }
+            }
             return buf.toString()
         }
     }
@@ -120,7 +109,7 @@ class GlslCode(
 
         fun substituteGlsl(text: String, substitutions: Substitutions, fileNumber: Int?): String {
             return lineNumber?.let { "\n#line $lineNumber${fileNumber?.let { " $it" } ?: ""}\n" } +
-                    replaceCodeWords(text) { substitutions.substitute(it) }
+                    rewriteFunctionBody(text) { substitutions.substitute(it) }
         }
     }
 

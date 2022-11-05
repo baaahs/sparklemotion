@@ -32,17 +32,17 @@ object GlslAnalyzerSpec : Spek({
             context("#detectDialect") {
                 override(shaderText) { "void main() {}" }
 
-                val dialect by value { glslAnalyzer.detectDialect(glslParser.parse(shaderText)) }
+                val shaderAnalyzer by value { glslAnalyzer.detectDialect(glslParser.parse(shaderText)) }
 
                 it("is generic") {
-                    expect(dialect).toBe(GenericShaderDialect)
+                    expect(shaderAnalyzer.dialect).toBe(GenericShaderDialect)
                 }
 
                 context("for shaders having a mainImage function") {
                     override(shaderText) { "void mainImage() {}" }
 
                     it("is ShaderToy") {
-                        expect(dialect).toBe(ShaderToyShaderDialect)
+                        expect(shaderAnalyzer.dialect).toBe(ShaderToyShaderDialect)
                     }
                 }
             }

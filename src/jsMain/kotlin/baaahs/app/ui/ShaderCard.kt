@@ -7,6 +7,9 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
+import csstype.MaxWidth
+import csstype.important
+import kotlinx.css.LinearDimension
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
@@ -36,6 +39,9 @@ val ShaderCard = xComponent<ShaderCardProps>("ShaderCard") { props ->
 
     Card {
         attrs.classes = jso { this.root = -styles.shaderCard }
+        attrs.sx {
+            maxWidth = important("initial".unsafeCast<MaxWidth>())
+        }
 
         key = mutablePatch.id
         attrs.onClick = handleCardClick
@@ -50,9 +56,9 @@ val ShaderCard = xComponent<ShaderCardProps>("ShaderCard") { props ->
 
         shaderPreview {
             attrs.shader = shader
-            attrs.width = styles.cardWidth
-            attrs.height = styles.cardWidth
-            attrs.adjustGadgets = GadgetAdjuster.Mode.FULL_RANGE
+            attrs.width = props.cardSize ?: styles.cardWidth
+            attrs.height = props.cardSize ?: styles.cardWidth
+            attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
             attrs.toolchain = props.toolchain
         }
 
@@ -85,6 +91,8 @@ external interface ShaderCardProps : Props {
     var onSelect: () -> Unit
     var onDelete: (() -> Unit)?
     var toolchain: Toolchain
+    var cardSize: LinearDimension?
+    var adjustGadgets: Boolean?
 }
 
 fun RBuilder.shaderCard(handler: RHandler<ShaderCardProps>) =

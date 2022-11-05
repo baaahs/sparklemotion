@@ -22,7 +22,7 @@ class FakeOpenShader(
         get() = Shader(title, "fake src for $title")
 
     override val glslCode: GlslCode
-        get() = GlslCode(shader.src, emptyList())
+        get() = GlslCode(shader.src, emptyList(), null)
 
     override val entryPoint: GlslCode.GlslFunction
         get() = TODO("not implemented")
