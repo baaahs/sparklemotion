@@ -15,6 +15,8 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
 
     fun readByte(): Byte = bytes[offset++]
 
+    fun readUByte(): UByte = bytes[offset++].toUByte()
+
     fun readShort(): Short =
         (bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff).toShort()
@@ -26,6 +28,12 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
             .or(bytes[offset++].toInt() and 0xff shl 16)
             .or(bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff)
+
+    fun readUInt(): UInt =
+        (bytes[offset++].toUInt() and 0xffu shl 24)
+            .or(bytes[offset++].toUInt() and 0xffu shl 16)
+            .or(bytes[offset++].toUInt() and 0xffu shl 8)
+            .or(bytes[offset++].toUInt() and 0xffu)
 
     fun readLong(): Long =
         (readInt().toLong() and 0xffffffff shl 32)

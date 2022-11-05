@@ -9,7 +9,7 @@ enum class PixelFormat {
         override val channelsPerPixel: Int = 3
 
         override fun readColor(reader: ByteArrayReader): Color {
-            return Color.parseWithoutAlpha(reader)
+            return Color.readWithoutAlpha(reader)
         }
 
         override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
@@ -20,9 +20,9 @@ enum class PixelFormat {
         }
 
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
-            buf.writeByte(color.redB)
-            buf.writeByte(color.greenB)
-            buf.writeByte(color.blueB)
+            buf.writeUByte(color.redB)
+            buf.writeUByte(color.greenB)
+            buf.writeUByte(color.blueB)
         }
     },
 //    RBG8 {
@@ -52,17 +52,11 @@ enum class PixelFormat {
         override val channelsPerPixel: Int = 3
 
         override fun readColor(reader: ByteArrayReader): Color {
-            val greenB = reader.readByte()
-            val redB = reader.readByte()
-            val blueB = reader.readByte()
+            val greenB = reader.readUByte()
+            val redB = reader.readUByte()
+            val blueB = reader.readUByte()
 
-            // Using Color's int constructor fixes a bug in Safari causing
-            // color values above 127 to be treated as 0. Untested. :-(
-            return Color(
-                redB.toInt() and 0xff,
-                greenB.toInt() and 0xff,
-                blueB.toInt() and 0xff
-            )
+            return Color.from(redB, greenB, blueB)
         }
 
         override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
@@ -73,9 +67,9 @@ enum class PixelFormat {
         }
 
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
-            buf.writeByte(color.greenB)
-            buf.writeByte(color.redB)
-            buf.writeByte(color.blueB)
+            buf.writeUByte(color.greenB)
+            buf.writeUByte(color.redB)
+            buf.writeUByte(color.blueB)
         }
     };
 

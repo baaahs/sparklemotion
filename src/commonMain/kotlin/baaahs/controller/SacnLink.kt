@@ -37,9 +37,9 @@ class SacnLink(
             stats.sendDataPacket.time {
                 val buf = ByteArrayWriter(512)
                 for (color in colors) {
-                    buf.writeByte(color.redB)
-                    buf.writeByte(color.greenB)
-                    buf.writeByte(color.blueB)
+                    buf.writeUByte(color.redB)
+                    buf.writeUByte(color.greenB)
+                    buf.writeUByte(color.blueB)
                 }
 
                 this@SacnLink.sendDataPacket(address, sequenceNumber++, 0x1, buf.toBytes())

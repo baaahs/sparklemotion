@@ -140,19 +140,19 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
 
         private fun writeColor(color: Color, writer: ByteArrayWriter) {
             if (rgb24BitMode) {
-                writer.writeByte(color.redB)
-                writer.writeByte(color.greenB)
-                writer.writeByte(color.blueB)
+                writer.writeUByte(color.redB)
+                writer.writeUByte(color.greenB)
+                writer.writeUByte(color.blueB)
             } else {
-                writer.writeInt(color.argb)
+                writer.writeUInt(color.argb)
             }
         }
 
         private fun readColor(reader: ByteArrayReader): Color {
             return if (rgb24BitMode) {
-                Color(reader.readByte(), reader.readByte(), reader.readByte())
+                Color(reader.readUByte(), reader.readUByte(), reader.readUByte())
             } else {
-                Color(reader.readInt())
+                Color(reader.readUInt())
             }
         }
 
@@ -230,7 +230,7 @@ class PixelBrainShader(private val encoding: Encoding = Encoding.DIRECT_ARGB) : 
         /** [serialize] and [read] are asymmetrical because pixel count is read in [Buffer.read]. */
         override fun serialize(writer: ByteArrayWriter) {
             writer.writeShort(pixelCount)
-            palette.forEach { paletteColor -> writer.writeInt(paletteColor.argb) }
+            palette.forEach { paletteColor -> writer.writeUInt(paletteColor.argb) }
             writer.writeBytes(dataBuf)
         }
 

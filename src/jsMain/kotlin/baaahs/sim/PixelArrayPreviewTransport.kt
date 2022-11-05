@@ -22,7 +22,7 @@ class PixelArrayPreviewTransport(
         val buf = ByteArrayReader(byteArray)
         for (i in vizPixels.indices) {
             buf.offset = i * 3
-            vizPixels[i] = Color.parseWithoutAlpha(buf)
+            vizPixels[i] = Color.readWithoutAlpha(buf)
         }
     }
 
@@ -36,7 +36,7 @@ class PixelArrayPreviewTransport(
             buf.offset = 0
             fn(componentIndex, buf)
 
-            vizPixels[componentIndex] = Color.parseWithoutAlpha(ByteArrayReader(buf.toBytes()))
+            vizPixels[componentIndex] = Color.readWithoutAlpha(ByteArrayReader(buf.toBytes()))
         }
     }
 }

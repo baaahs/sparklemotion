@@ -17,6 +17,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
+@OptIn(ExperimentalUnsignedTypes::class)
 class VizPixels(
     val positions: Array<Vector3>,
     val normal: Vector3,
@@ -28,7 +29,7 @@ class VizPixels(
     private val pixGeometry = BufferGeometry()
     private val planeGeometry: BufferGeometry
     private val vertexColorBufferAttr: Float32BufferAttribute
-    private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
+    private val colorsAsInts = UIntArray(size) // store colors as an int array too for Pixels.get()
 
     init {
         val positionsArray = Float32Array(size * 3)

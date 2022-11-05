@@ -69,7 +69,11 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
         }
 
         var color: Color
-            get() = Color.from(dmxBuffer[Channel.RED], dmxBuffer[Channel.GREEN], dmxBuffer[Channel.BLUE])
+            get() = Color.from(
+                dmxBuffer[Channel.RED].toUByte(),
+                dmxBuffer[Channel.GREEN].toUByte(),
+                dmxBuffer[Channel.BLUE].toUByte()
+            )
             set(value) {
                 dmxBuffer[Channel.RED] = value.redI.toByte()
                 dmxBuffer[Channel.GREEN] = value.greenI.toByte()

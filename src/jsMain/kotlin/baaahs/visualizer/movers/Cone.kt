@@ -99,7 +99,7 @@ actual class Cone actual constructor(
 
     private fun setColor(color: Color, dimmer: Float) {
         materials.zip(baseOpacities).forEach { (material, baseOpacity) ->
-            material.color.set(color.rgb)
+            material.color.set(color.rgb.toInt())
             material.opacity = baseOpacity * dimmer
             material.visible = dimmer > .01f
         }

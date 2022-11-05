@@ -32,7 +32,7 @@ class SolidBrainShader : BrainShader<SolidBrainShader.Buffer>(BrainShaderId.SOLI
         }
 
         override fun read(reader: ByteArrayReader) {
-            color = Color.parse(reader)
+            color = Color.read(reader)
         }
     }
 

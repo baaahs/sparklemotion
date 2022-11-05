@@ -201,7 +201,11 @@ class BrainManager(
 
             for (i in 0 until pixelCount) {
                 val j = i * 3
-                pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j + 1], byteArray[j + 2])
+                pixelBuffer.colors[i] = Color(
+                    byteArray[j].toUByte(),
+                    byteArray[j + 1].toUByte(),
+                    byteArray[j + 2].toUByte()
+                )
             }
 
             deliverShaderMessage()

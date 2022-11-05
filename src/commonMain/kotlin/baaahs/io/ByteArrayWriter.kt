@@ -13,6 +13,10 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = b
     }
 
+    fun writeUByte(b: UByte) {
+        writeByte(b.toByte())
+    }
+
     fun writeShort(i: Int) {
         if (i and 0xffff != i) {
             throw IllegalArgumentException("$i doesn't fit in a short")
@@ -34,6 +38,14 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = i.shr(16).and(0xff).toByte()
         bytes[offset++] = i.shr(8).and(0xff).toByte()
         bytes[offset++] = i.and(0xff).toByte()
+    }
+
+    fun writeUInt(i: UInt) {
+        growIfNecessary(4)
+        bytes[offset++] = i.shr(24).and(0xffu).toByte()
+        bytes[offset++] = i.shr(16).and(0xffu).toByte()
+        bytes[offset++] = i.shr(8).and(0xffu).toByte()
+        bytes[offset++] = i.and(0xffu).toByte()
     }
 
     fun writeLong(l: Long) {

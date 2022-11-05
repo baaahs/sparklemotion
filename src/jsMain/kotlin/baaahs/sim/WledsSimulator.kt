@@ -78,9 +78,9 @@ class FakeWledDevice(
                     val pixelOffset = (channelOffset + i * 3) / 3
                     val colorOffset = i * 3
                     pixels[pixelOffset] = Color(
-                        channels[colorOffset],
-                        channels[colorOffset + 1],
-                        channels[colorOffset + 2]
+                        channels[colorOffset].toUByte(),
+                        channels[colorOffset + 1].toUByte(),
+                        channels[colorOffset + 2].toUByte()
                     )
                 }
             }

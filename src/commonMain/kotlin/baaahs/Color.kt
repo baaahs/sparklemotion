@@ -19,7 +19,7 @@ import kotlin.random.Random
  * Canonical representation of a color.
  */
 @Serializable
-data class Color(val argb: Int) {
+data class Color(val argb: UInt) {
     /** Values are bounded at `0f..1f`. */
     constructor(red: Float, green: Float, blue: Float, alpha: Float = 1f) : this(asArgb(red, green, blue, alpha))
 
@@ -28,28 +28,28 @@ data class Color(val argb: Int) {
 
     /** Values are bounded at `0..255` (but really `-128..127` because signed). */
     // TODO: use UByte.
-    constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()) : this(asArgb(red, green, blue, alpha))
+    constructor(red: UByte, green: UByte, blue: UByte, alpha: UByte = 255.toUByte()) : this(asArgb(red, green, blue, alpha))
 
-    fun serialize(writer: ByteArrayWriter) = writer.writeInt(argb)
+    fun serialize(writer: ByteArrayWriter) = writer.writeUInt(argb)
 
     fun serializeWithoutAlpha(writer: ByteArrayWriter) {
-        writer.writeByte(redB)
-        writer.writeByte(greenB)
-        writer.writeByte(blueB)
+        writer.writeUByte(redB)
+        writer.writeUByte(greenB)
+        writer.writeUByte(blueB)
     }
 
     @Transient
-    val alphaB: Byte
-        get() = alphaI(argb).toByte()
+    val alphaB: UByte
+        get() = alphaI(argb).toUByte()
     @Transient
-    val redB: Byte
-        get() = redI(argb).toByte()
+    val redB: UByte
+        get() = redI(argb).toUByte()
     @Transient
-    val greenB: Byte
-        get() = greenI(argb).toByte()
+    val greenB: UByte
+        get() = greenI(argb).toUByte()
     @Transient
-    val blueB: Byte
-        get() = blueI(argb).toByte()
+    val blueB: UByte
+        get() = blueI(argb).toUByte()
 
     @Transient
     val alphaI: Int
@@ -77,13 +77,13 @@ data class Color(val argb: Int) {
     val blueF: Float
         get() = blueI.toFloat() / 255
 
-    fun alphaI(value: Int) = value shr 24 and 0xff
-    fun redI(value: Int) = value shr 16 and 0xff
-    fun greenI(value: Int) = value shr 8 and 0xff
-    fun blueI(value: Int) = value and 0xff
+    fun alphaI(value: UInt): Int = (value shr 24 and BYTE_MASK).toInt()
+    fun redI(value: UInt): Int = (value shr 16 and BYTE_MASK).toInt()
+    fun greenI(value: UInt): Int = (value shr 8 and BYTE_MASK).toInt()
+    fun blueI(value: UInt): Int = (value and BYTE_MASK).toInt()
 
-    val rgb: Int get() = argb and 0xffffff
-    fun toInt(): Int = argb
+    val rgb: UInt get() = argb and 0xffffffu
+    fun toInt(): Int = argb.toInt()
 
     @JsName("toHexString")
     fun toHexString() =
@@ -103,10 +103,10 @@ data class Color(val argb: Int) {
         }
     }
 
-    fun withRed(redB: Byte): Color = Color(redB, greenB, blueB, alphaB)
-    fun withGreen(greenB: Byte): Color = Color(redB, greenB, blueB, alphaB)
-    fun withBlue(blueB: Byte): Color = Color(redB, greenB, blueB, alphaB)
-    fun withAlpha(alphaB: Byte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withRed(redB: UByte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withGreen(greenB: UByte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withBlue(blueB: UByte): Color = Color(redB, greenB, blueB, alphaB)
+    fun withAlpha(alphaB: UByte): Color = Color(redB, greenB, blueB, alphaB)
 
     fun withSaturation(saturation: Float): Color =
         toHSB().withSaturation(saturation).toRGB(alphaF)
@@ -135,7 +135,7 @@ data class Color(val argb: Int) {
         )
     }
 
-    fun opaque(): Color = Color(argb or 0xff000000.toInt())
+    fun opaque(): Color = Color(argb or 0xff000000u)
 
     override fun toString(): String {
         return "Color(${toHexString()})"
@@ -283,59 +283,64 @@ data class Color(val argb: Int) {
         val PURPLE = Color(200, 0, 212)
         val TRANSPARENT = Color(0, 0, 0, 0)
 
+        private const val BYTE_MASK = 0xffu
+
         fun random() = Color(
             Random.nextInt() and 0xff,
             Random.nextInt() and 0xff,
             Random.nextInt() and 0xff
         )
 
-        fun parse(reader: ByteArrayReader) = Color(reader.readInt())
+        fun read(reader: ByteArrayReader) = Color(reader.readUInt())
 
-        fun parseWithoutAlpha(reader: ByteArrayReader) =
-            Color(reader.readByte(), reader.readByte(), reader.readByte())
+        fun readWithoutAlpha(reader: ByteArrayReader) =
+            Color(reader.readUByte(), reader.readUByte(), reader.readUByte())
 
         @JsName("fromInt")
-        fun from(i: Int) = Color(i)
+        fun from(i: Int) = Color(i.toUInt())
+
+        @JsName("fromUInt")
+        fun from(i: UInt) = Color(i)
 
         @JsName("fromInts")
         fun from(r: Int, g: Int, b: Int) = Color(r, g, b)
 
         @JsName("fromBytes")
-        fun from(r: Byte, g: Byte, b: Byte) = Color(r, g, b)
+        fun from(r: UByte, g: UByte, b: UByte) = Color(r, g, b)
 
         @JsName("fromString")
         fun from(hex: String): Color {
             var hexDigits = hex.trimStart('#')
 
             val alpha = when (hexDigits.length) {
-                8 -> hexDigits.substring(0, 2).toInt(16).also { hexDigits = hexDigits.substring(2) }
-                4 -> (hexDigits.substring(0, 1).toInt(16) * 0x11).also { hexDigits = hexDigits.substring(1) }
-                else -> 0xff
+                8 -> hexDigits.substring(0, 2).toUInt(16).also { hexDigits = hexDigits.substring(2) }
+                4 -> (hexDigits.substring(0, 1).toUInt(16) * 0x11u).also { hexDigits = hexDigits.substring(1) }
+                else -> BYTE_MASK
             }.shl(24)
 
             return when (hexDigits.length) {
-                6 -> Color(alpha or hexDigits.toInt(16))
+                6 -> Color(alpha or hexDigits.toUInt(16))
                 3 -> Color(alpha
-                        or hexDigits[0].toString().repeat(2).toInt(16).shl(16)
-                        or hexDigits[1].toString().repeat(2).toInt(16).shl(8)
-                        or hexDigits[2].toString().repeat(2).toInt(16)
+                        or hexDigits[0].toString().repeat(2).toUInt(16).shl(16)
+                        or hexDigits[1].toString().repeat(2).toUInt(16).shl(8)
+                        or hexDigits[2].toString().repeat(2).toUInt(16)
                 )
                 else -> throw IllegalArgumentException("unknown color \"$hex\"")
             }
         }
 
-        private fun asArgb(red: Float, green: Float, blue: Float, alpha: Float = 1f): Int {
+        private fun asArgb(red: Float, green: Float, blue: Float, alpha: Float = 1f): UInt {
             return asArgb(asInt(red), asInt(green), asInt(blue), asInt(alpha))
         }
 
-        private fun asArgb(red: Int, green: Int, blue: Int, alpha: Int = 255): Int {
+        private fun asArgb(red: Int, green: Int, blue: Int, alpha: Int = 255): UInt {
             return ((bounded(alpha) shl 24)
                     or (bounded(red) shl 16)
                     or (bounded(green) shl 8)
                     or (bounded(blue)))
         }
 
-        private fun asArgb(red: Byte, green: Byte, blue: Byte, alpha: Byte = 255.toByte()): Int {
+        private fun asArgb(red: UByte, green: UByte, blue: UByte, alpha: UByte = 255.toUByte()): UInt {
             return ((bounded(alpha) shl 24)
                     or (bounded(red) shl 16)
                     or (bounded(green) shl 8)
@@ -343,12 +348,12 @@ data class Color(val argb: Int) {
         }
 
         private fun bounded(f: Float): Float = max(0f, min(1f, f))
-        private fun bounded(i: Int): Int = max(0, min(255, i))
-        private fun bounded(b: Byte): Int = b.toInt() and 0xff
+        private fun bounded(i: Int): UInt = max(0, min(255, i)).toUInt()
+        private fun bounded(b: UByte): UInt = b.toUInt() and BYTE_MASK
         private fun asInt(f: Float): Int = (bounded(f) * 255).toInt()
 
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Color", PrimitiveKind.INT)
-        override fun serialize(encoder: Encoder, value: Color) = encoder.encodeInt(value.argb)
-        override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt())
+        override fun serialize(encoder: Encoder, value: Color) = encoder.encodeInt(value.argb.toInt())
+        override fun deserialize(decoder: Decoder): Color = Color(decoder.decodeInt().toUInt())
     }
 }
