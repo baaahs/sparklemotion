@@ -20,19 +20,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
 object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
-    private val json = Json {
-        classDiscriminator = "TYPE"
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
-
     override val title: String = "ISF"
-    override val entryPointName: String = "main"
-
-    override val implicitInputPorts = listOf(
-        InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates"),
-//        InputPort("isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2, "Coordinates"),
-    )
 
     // See https://docs.isf.video/ref_variables.html#automatically-declared-variables
     override val wellKnownInputPorts = listOf(
@@ -45,8 +33,21 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
         InputPort("FRAMEINDEX", ContentType.FrameIndex, title = ContentType.FrameIndex.title),
     )
 
-    override fun matches(glslCode: GlslCode): MatchLevel {
-        return if (glslCode.src.startsWith("/*{") &&
+    override fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer =
+        IsfShaderAnalyzer(glslCode, plugins)
+}
+
+class IsfShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : BaseShaderAnalyzer(glslCode, plugins) {
+    override val dialect: ShaderDialect
+        get() = IsfShaderDialect
+
+    override val entryPointName: String = "main"
+
+    override val matchLevel: MatchLevel by lazy {
+        if (glslCode.src.startsWith("/*{") &&
             run {
                 val entryPoint = glslCode.findFunctionOrNull("main")
                 entryPoint?.returnType == GlslType.Void && entryPoint.params.isEmpty()
@@ -54,10 +55,12 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
         ) MatchLevel.Excellent else MatchLevel.NoMatch
     }
 
-    override fun findDeclaredInputPorts(
-        glslCode: GlslCode,
-        plugins: Plugins
-    ): List<InputPort> {
+    override val implicitInputPorts = listOf(
+        InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates"),
+//        InputPort("isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2, "Coordinates"),
+    )
+
+    override fun findDeclaredInputPorts(): List<InputPort> {
         val isfShader = findIsfShaderDeclaration(glslCode)
             ?: return emptyList()
 
@@ -141,7 +144,7 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
         }
     }
 
-    override fun additionalOutputPorts(glslCode: GlslCode, plugins: Plugins): List<OutputPort> {
+    override fun additionalOutputPorts(): List<OutputPort> {
         return if (glslCode.refersToGlobal("gl_FragColor")) {
             OutputPort(ContentType.Color, id = "gl_FragColor", dataType = GlslType.Vec4, description = "Output Color")
                 .listOf()
@@ -168,6 +171,14 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
 
     override fun toInputPort(it: GlslCode.GlslFunction, plugins: Plugins): InputPort {
         TODO("not implemented")
+    }
+
+    companion object {
+        private val json = Json {
+            classDiscriminator = "TYPE"
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
     }
 }
 

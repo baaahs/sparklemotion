@@ -7,12 +7,12 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.Plugins
 
-abstract class HintedShaderDialect(id: String) : BaseShaderDialect(id) {
-    override fun findDeclaredInputPorts(
-        glslCode: GlslCode,
-        plugins: Plugins
-    ): List<InputPort> {
-        val entryPoint = findEntryPointOrNull(glslCode)
+abstract class HintedShaderAnalyzer(
+    glslCode: GlslCode,
+    plugins: Plugins
+) : BaseShaderAnalyzer(glslCode, plugins) {
+    override fun findDeclaredInputPorts(): List<InputPort> {
+        val entryPoint = findEntryPointOrNull()
         val entryPointParams =
             entryPoint?.params?.filter { it.isIn } ?: emptyList()
 

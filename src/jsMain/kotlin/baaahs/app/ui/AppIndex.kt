@@ -5,6 +5,7 @@ import baaahs.app.ui.editor.SceneEditableManager
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
 import baaahs.app.ui.editor.layout.layoutEditorDialog
+import baaahs.app.ui.editor.shaderLibraryDialog
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
@@ -111,18 +112,23 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val themeStyles = allStyles.appUi
 
     var appDrawerOpen by state { false }
-    var layoutEditorDialogOpen by state { false }
     var renderDialog by state<(RBuilder.() -> Unit)?> { null }
 
     val handleAppDrawerToggle =
         callback(appDrawerOpen) { appDrawerOpen = !appDrawerOpen }
 
+    var showLayoutEditorDialog by state { false }
     val handleLayoutEditorDialogToggle =
-        callback(layoutEditorDialogOpen) { layoutEditorDialogOpen = !layoutEditorDialogOpen }
-    val handleLayoutEditorDialogClose = callback { layoutEditorDialogOpen = false }
+        callback(showLayoutEditorDialog) { showLayoutEditorDialog = !showLayoutEditorDialog }
+    val handleLayoutEditorDialogClose = callback { showLayoutEditorDialog = false }
     val handleLayoutEditorChange by handler(showManager) { show: MutableShow, pushToUndoStack: Boolean ->
         showManager.onEdit(show, pushToUndoStack)
     }
+
+    var showShaderLibraryDialog by state { false }
+    val handleShaderLibraryDialogToggle =
+        callback(showShaderLibraryDialog) { showShaderLibraryDialog = !showShaderLibraryDialog }
+//    val handleShaderLibrarySelect = callback { _: Shader? -> showShaderLibraryDialog = false }
 
     val handleShowStateChange = callback {
         // TODO: don't pass this around? ... and forceRender() is unnecessary.
@@ -143,7 +149,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val forceAppDrawerOpen = webClient.serverIsOnline &&
             documentManager.everSynced && !documentManager.isLoaded
-    val renderAppDrawerOpen = appDrawerOpen && !layoutEditorDialogOpen || forceAppDrawerOpen
+    val renderAppDrawerOpen = appDrawerOpen && !showLayoutEditorDialog || forceAppDrawerOpen
 
     val appDrawerStateStyle = if (renderAppDrawerOpen)
         themeStyles.appDrawerOpen
@@ -173,16 +179,16 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
             when (keypress) {
                 Keypress("Escape") -> handleAppDrawerToggle()
-                Keypress("s", metaKey = true),
-                Keypress("s", ctrlKey = true) -> {
+                Keypress("KeyS", metaKey = true),
+                Keypress("KeyS", ctrlKey = true) -> {
                     myAppContext.notifier.launchAndReportErrors { documentManager.onSave() }
                 }
-                Keypress("z", metaKey = true),
-                Keypress("z", ctrlKey = true) -> {
+                Keypress("KeyZ", metaKey = true),
+                Keypress("KeyZ", ctrlKey = true) -> {
                     documentManager.undo()
                 }
-                Keypress("z", metaKey = true, shiftKey = true),
-                Keypress("z", ctrlKey = true, shiftKey = true) -> {
+                Keypress("KeyZ", metaKey = true, shiftKey = true),
+                Keypress("KeyZ", ctrlKey = true, shiftKey = true) -> {
                     documentManager.redo()
                 }
                 else -> result = KeypressResult.NotHandled
@@ -286,15 +292,21 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                     attrs.show = showManager.openShow!!
                                                     attrs.onShowStateChange = handleShowStateChange
                                                     attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                                                    attrs.onShaderLibraryDialogToggle = handleShaderLibraryDialogToggle
                                                 }
 
-                                                if (layoutEditorDialogOpen) {
+                                                if (showLayoutEditorDialog) {
                                                     // Layout Editor dialog
                                                     layoutEditorDialog {
-                                                        attrs.open = layoutEditorDialogOpen
+                                                        attrs.open = showLayoutEditorDialog
                                                         attrs.show = show
                                                         attrs.onApply = handleLayoutEditorChange
                                                         attrs.onClose = handleLayoutEditorDialogClose
+                                                    }
+                                                }
+                                                if (showShaderLibraryDialog) {
+                                                    shaderLibraryDialog {
+                                                        attrs.devWarning = true
                                                     }
                                                 }
                                             }

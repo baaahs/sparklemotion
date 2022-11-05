@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.document.FileUploadStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
 import baaahs.app.ui.editor.ShaderHelpStyles
+import baaahs.app.ui.editor.ShaderLibraryStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.color.ColorWheelStyles
@@ -28,6 +29,7 @@ class AllStyles(val theme: Theme) {
     val modelEditor by lazy { ModelEditorStyles(theme) }
     val mapper by lazy { MapperStyles(theme) }
     val shaderEditor by lazy { ShaderEditorStyles(theme) }
+    val shaderLibrary by lazy { ShaderLibraryStyles(theme) }
     val shaderHelp by lazy { ShaderHelpStyles(theme) }
     val uiComponents by lazy { UiComponentStyles(theme) }
     val fileUploadStyles by lazy { FileUploadStyles(theme) }

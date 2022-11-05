@@ -2,16 +2,24 @@ package baaahs.gl.shader.dialect
 
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.ShaderAnalysis
+import baaahs.gl.shader.InputPort
+import baaahs.plugin.Pluggable
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
 
-abstract class ShaderDialect(val id: String) {
+interface ShaderDialect : Pluggable {
+    val id: String
+    val title: String
+    val wellKnownInputPorts: List<InputPort>
 
-    abstract val title: String
+    fun match(glslCode: GlslCode, plugins: Plugins): ShaderAnalyzer
+}
 
-    abstract fun matches(glslCode: GlslCode): MatchLevel
+interface ShaderAnalyzer {
+    val dialect: ShaderDialect
+    val matchLevel: MatchLevel
 
-    abstract fun analyze(glslCode: GlslCode, plugins: Plugins, shader: Shader? = null): ShaderAnalysis
+    fun analyze(existingShader: Shader? = null): ShaderAnalysis
 }
 
 enum class MatchLevel {
