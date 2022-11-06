@@ -21,7 +21,8 @@ private val LinkedProgramView = xComponent<LinkedProgramProps>("LinkedProgram") 
     div(+diagnosticsStyles.contentDiv) {
         table(+diagnosticsStyles.table) {
             tbody {
-                props.linkedProgram.linkNodes.entries
+                props.linkedProgram.linkNodes
+                    .toMutableMap().entries
                     .sortedWith(
                         compareBy<MutableMap.MutableEntry<ProgramNode, LinkNode>> { (_, linkNode) -> linkNode.index }
                             .thenBy { (_, linkNode) -> linkNode.modIndex ?: Int.MAX_VALUE }
