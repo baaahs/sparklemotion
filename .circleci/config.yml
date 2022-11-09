@@ -9,6 +9,8 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/openjdk:11-jdk-node-browsers
 
+    resource_class: medium+
+
     working_directory: ~/repo
 
     environment:
