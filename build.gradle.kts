@@ -1,5 +1,8 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.inet.gradle.appbundler.OSXCodeSign
+import com.inet.gradle.setup.SetupBuilder
+import com.inet.gradle.setup.dmg.Dmg
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
@@ -11,6 +14,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven("https://plugins.gradle.org/m2/")
+        maven("../../repo")
     }
 
     dependencies {
@@ -18,6 +22,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
         classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
+        classpath("de.inetsoftware:SetupBuilder:+")
     }
 }
 
@@ -25,7 +30,7 @@ val os = OperatingSystem.current()
 val osArch = System.getProperty("os.arch")
 val lwjglNatives = when {
     os.isLinux -> "natives-linux"
-    os.isMacOsX && osArch == "aarch64"-> "natives-macos-arm64"
+    os.isMacOsX && osArch == "aarch64" -> "natives-macos-arm64"
     os.isMacOsX -> "natives-macos"
     else -> throw IllegalArgumentException()
 }
@@ -41,7 +46,12 @@ plugins {
 
     // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
     id("io.github.turansky.kfc.legacy-union") version "5.8.0"
+
+    // See https://github.com/i-net-software/SetupBuilder:
+//    id("de.inetsoftware.setupbuilder") version "7.2.13"
+    id("de.inetsoftware.setupbuilder") version "+"
 }
+//apply(plugin = "de.inetsoftware.setupbuilder")
 
 repositories {
     mavenCentral()
@@ -91,6 +101,7 @@ kotlin {
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
         }
+
         @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
@@ -144,6 +155,7 @@ kotlin {
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
             }
         }
+
         @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
@@ -215,6 +227,7 @@ kotlin {
                 implementation(npm("lodash.isequal", "4.5.0"))
             }
         }
+
         @Suppress("UNUSED_VARIABLE")
         val jsTest by getting {
             dependencies {
@@ -386,4 +399,52 @@ tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
     }
+}
+
+setupBuilder {
+    vendor = "BAAAHS"
+    application = "Sparkle Motion"
+    appIdentifier = "Sparkle Motion"
+    version = "1.0"
+    licenseFile("LICENSE.txt")
+
+    // icons in different sizes for different usage. you can also use a single *.ico or *.icns file
+    icons = "src/jsMain/resources/favicon.ico"
+
+    // all files for all platforms
+    from("source") {
+        include("files/*.jar")
+    }
+
+    bundleJre = 1.8
+
+    desktopStarter
+}
+
+tasks.named<Dmg>("dmg") {
+    backgroundImage = File("brain/hw/BAAAHS-BRN01-E/files/BAAAHS-BRN01-E_TopImage.png")
+
+    setCodeSign(object : Action<OSXCodeSign<in Dmg, in SetupBuilder>> {
+        override fun execute(t: OSXCodeSign<in Dmg, in SetupBuilder>) {
+            println("t = ${t}")
+
+            // the "Common Name" part of the certificate
+            t.identity = "Application Developer"
+
+            //  Specific Identifier to embed in code (option -i)
+            t.identifier = ""
+
+            // The keychain used for signing. It has to be unlocked
+            t.keychain = "System"
+
+            // password to unlock the keychain
+            t.keychainPassword = "123456"
+
+            // if true, will ignore errors during code sign operations
+            t.setIgnoreError(false)
+
+            // if true, will perform a deepsign for 3rd party packages as well
+            t.setDeepsign(true)
+        }
+    })
 }
