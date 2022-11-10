@@ -7,7 +7,7 @@ jobs:
     docker:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/openjdk:11-jdk-node-browsers
+      - image: cimg/openjdk:18.0.2-node
 
     resource_class: medium+
 
