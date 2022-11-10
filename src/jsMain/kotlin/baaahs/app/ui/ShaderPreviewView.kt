@@ -126,12 +126,20 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     }
     preRenderHook.current = { gadgetAdjuster?.adjustGadgets() }
 
-    onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets) {
+    onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets, props.onShaderStateChange) {
         if (gl == null) return@onChange
         if (shaderPreview == null) return@onChange
         if (builder == null) return@onChange
 
         val observer = builder.addObserver(fireImmediately = true) {
+            props.onShaderStateChange?.let { callback ->
+                try {
+                    callback.invoke(it.state)
+                } catch (e: Exception) {
+                    logger.warn(e) { "Error in shader state change callback." }
+                }
+            }
+
             when (it.state) {
                 ShaderBuilder.State.Linked -> {
                     shaderPreview?.let { shaderPreview ->
@@ -310,6 +318,7 @@ external interface ShaderPreviewProps : Props {
     var toolchain: Toolchain?
     var dumpShader: Boolean?
     var noSharedGlContext: Boolean?
+    var onShaderStateChange: ((ShaderBuilder.State) -> Unit)?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =
