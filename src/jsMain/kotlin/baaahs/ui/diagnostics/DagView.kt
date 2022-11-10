@@ -30,7 +30,7 @@ private val DagView = xComponent<DagProps>("Dag", isPure = true) { props ->
     }
 
     val dagGraph = memo(props.fixtureType, props.linkedProgram, includePatchMods) {
-        Dag(includePatchMods).apply {
+        GraphDag(includePatchMods).apply {
             visit(props.fixtureType, props.linkedProgram)
         }.graph
     }
