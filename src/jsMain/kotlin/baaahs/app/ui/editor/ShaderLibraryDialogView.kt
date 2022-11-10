@@ -1,8 +1,10 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.library.resultsSummary
 import baaahs.app.ui.shaderCard
 import baaahs.app.ui.toolchainContext
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.withCache
 import baaahs.libraries.ShaderLibrary
 import baaahs.show.Shader
@@ -14,18 +16,19 @@ import js.core.jso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.css.GridTemplateColumns
-import kotlinx.css.gridTemplateColumns
-import kotlinx.css.px
+import kotlinx.css.*
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
+import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.events.FocusEvent
 import react.dom.events.FormEvent
 import react.dom.events.SyntheticEvent
 import styled.inlineStyles
+import web.cssom.AlignItems
+import web.cssom.Display
 import web.events.Event
 
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
@@ -53,10 +56,13 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
         adjustInputs = checked
     }
 
+    val shaderStates = memo { ShaderStates() }
     val searchJob = ref<Job>()
     val entryDisplayCache = memo(onSelect) {
         CacheBuilder<ShaderLibrary.Entry, EntryDisplay> {
-            EntryDisplay(it, onSelect)
+            EntryDisplay(it, onSelect) { entry, state ->
+                shaderStates.onShaderStateChange(entry, state)
+            }
         }
     }
     var matches by state { emptyList<EntryDisplay>() }
@@ -120,6 +126,11 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                 attrs.classes = jso { this.root = -styles.dialogContent }
 
                 Box {
+                    attrs.sx {
+                        display = Display.flex
+                        alignItems = AlignItems.center
+                    }
+
                     FormControl {
                         TextField<StandardTextFieldProps> {
                             attrs.autoFocus = true
@@ -162,6 +173,14 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                         }
                         attrs.label = "Adjust Inputs".asTextNode()
                     }
+
+                    div {
+                        inlineStyles { flex = Flex.GROW }
+                    }
+
+                    resultsSummary {
+                        attrs.shaderStates = shaderStates
+                    }
                 }
 
                 Divider {}
@@ -183,6 +202,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                                         attrs.toolchain = toolchain
                                         attrs.cardSize = previewSizePx
                                         attrs.adjustGadgets = adjustInputs
+                                        attrs.onShaderStateChange = match.onShaderStateChange
                                     }
                                 }
                             }
@@ -206,10 +226,24 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
 class EntryDisplay(
     val entry: ShaderLibrary.Entry,
-    onSelect: (Shader?) -> Unit
+    onSelect: (Shader?) -> Unit,
+    onShaderStateChange: (ShaderLibrary.Entry, ShaderBuilder.State) -> Unit
 ) {
     val mutablePatch = MutablePatch(MutableShader(entry.shader))
     val onSelect = { onSelect(entry.shader) }
+    val onShaderStateChange = { state: ShaderBuilder.State -> onShaderStateChange(entry, state) }
+}
+
+class ShaderStates : Observable() {
+    private val states: MutableMap<String, ShaderBuilder.State> = mutableMapOf()
+
+    fun onShaderStateChange(entry: ShaderLibrary.Entry, state: ShaderBuilder.State) {
+        states[entry.id] = state
+        notifyChanged()
+    }
+
+    fun stateCount(): Map<ShaderBuilder.State, Int> =
+        states.values.groupingBy { it }.eachCount()
 }
 
 external interface ShaderLibraryDialogProps : Props {

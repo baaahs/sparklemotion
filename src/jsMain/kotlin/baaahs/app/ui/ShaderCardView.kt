@@ -4,6 +4,7 @@ import baaahs.app.ui.editor.EditableStyles
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.preview.GadgetAdjuster
+import baaahs.gl.preview.ShaderBuilder
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
@@ -56,13 +57,14 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
 //                                attrs.subheader { +"${shader.type.name} Shader" }
             }
 
-            shaderPreview {
-                attrs.shader = shader
-                attrs.width = props.cardSize ?: styles.cardWidth
-                attrs.height = props.cardSize ?: styles.cardWidth
-                attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
-                attrs.toolchain = props.toolchain
-            }
+        shaderPreview {
+            attrs.shader = shader
+            attrs.width = props.cardSize ?: styles.cardWidth
+            attrs.height = props.cardSize ?: styles.cardWidth
+            attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
+            attrs.toolchain = props.toolchain
+            attrs.onShaderStateChange = props.onShaderStateChange
+        }
 
             CardActions {
                 attrs.classes = jso { this.root = -styles.shaderCardActions }
@@ -96,6 +98,7 @@ external interface ShaderCardProps : Props {
     var toolchain: Toolchain
     var cardSize: LinearDimension?
     var adjustGadgets: Boolean?
+    var onShaderStateChange: ((ShaderBuilder.State) -> Unit)?
 }
 
 fun RBuilder.shaderCard(handler: RHandler<ShaderCardProps>) =
