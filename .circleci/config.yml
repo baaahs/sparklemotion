@@ -51,7 +51,7 @@ jobs:
           when: always
 
       - store_test_results:
-          path: build/test-results
+          path: build/test-results-circleci
 
       - store_artifacts:
           path: build/processedResources/js/main
