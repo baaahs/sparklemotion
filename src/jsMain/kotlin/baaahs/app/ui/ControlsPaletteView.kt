@@ -28,7 +28,7 @@ import react.*
 import react.dom.div
 import react.dom.header
 
-val ControlsPalette = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
+private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPalette") { props ->
     val appContext = useContext(appContext)
     val editMode = observe(appContext.showManager.editMode)
     val unplacedControlPaletteDiv = ref<HTMLElement>()
@@ -183,4 +183,4 @@ external interface ControlsPaletteProps : Props {
 }
 
 fun RBuilder.controlsPalette(handler: RHandler<ControlsPaletteProps>) =
-    child(ControlsPalette, handler = handler)
+    child(ControlsPaletteView, handler = handler)
