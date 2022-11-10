@@ -29,7 +29,7 @@ import react.RBuilder
 import react.RHandler
 import react.useContext
 
-val ShowLayout = xComponent<ShowLayoutProps>("ShowLayout") { props ->
+private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.appUi
 
@@ -133,4 +133,4 @@ external interface ShowLayoutProps : Props {
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =
-    child(ShowLayout, handler = handler)
+    child(ShowLayoutView, handler = handler)

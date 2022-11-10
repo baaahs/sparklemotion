@@ -13,7 +13,7 @@ import react.*
 import react.dom.div
 import react.dom.events.SyntheticEvent
 
-val AppDrawer = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
+private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
     val themeStyles = appContext.allStyles.appUi
@@ -157,4 +157,4 @@ external interface AppDrawerProps : Props {
 }
 
 fun RBuilder.appDrawer(handler: RHandler<AppDrawerProps>) =
-    child(AppDrawer, handler = handler)
+    child(AppDrawerView, handler = handler)

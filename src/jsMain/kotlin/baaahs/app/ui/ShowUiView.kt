@@ -13,7 +13,7 @@ import react.RBuilder
 import react.RHandler
 import react.useContext
 
-val ShowUi = xComponent<ShowUiProps>("ShowUi") { props ->
+private val ShowUiView = xComponent<ShowUiProps>("ShowUi") { props ->
     val appContext = useContext(appContext)
     val show = props.show
     val editMode = appContext.showManager.editMode
@@ -72,4 +72,4 @@ external interface ShowUiProps : Props {
 }
 
 fun RBuilder.showUi(handler: RHandler<ShowUiProps>) =
-    child(ShowUi, handler = handler)
+    child(ShowUiView, handler = handler)
