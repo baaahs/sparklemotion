@@ -8,6 +8,7 @@ class ShaderLibraryStyles(private val theme: Theme) : StyleSheet("app-ui-editor-
     val dialogContent by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+        overflowY = Overflow.hidden
     }
 
     val results by css {

@@ -14,7 +14,8 @@ import react.dom.div
 
 private val ResultsSummaryView = xComponent<ResultsSummaryProps>("ResultsSummary") { props ->
     observe(props.shaderStates)
-    val stateCount = props.shaderStates.stateCount()
+    val stateCount = props.shaderStates.stateCount
+    val shaderCount = props.shaderStates.shaderCount
 
     div {
         stateCount.entries.sortedBy { it.key.ordinal }.forEach { (state, count) ->

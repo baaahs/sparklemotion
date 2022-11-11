@@ -45,7 +45,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
 
     val handleClose = callback(onSelect) { _: Any, _: String -> onSelect(null) }
 
-    val previewSizeRange = 1 .. 5
+    val previewSizeRange = 1..5
     var previewSize by state { 3 }
     val handleSmallerPreviewClick by mouseEventHandler { previewSize-- }
     val handleBiggerPreviewClick by mouseEventHandler { previewSize++ }
@@ -71,6 +71,9 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
         searchJob.current = GlobalScope.launch {
             matches = shaderLibraries.searchFor(terms)
                 .map { entryDisplayCache[it] }
+                .also {
+                    shaderStates.onNewResults(it.size)
+                }
         }
     }
 
@@ -165,7 +168,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                     }
 
                     FormControlLabel {
-                        attrs.control =  buildElement {
+                        attrs.control = buildElement {
                             Switch {
                                 attrs.checked = adjustInputs
                                 attrs.onChange = handleAdjustInputsChange.withTChangeEvent()
@@ -197,11 +200,12 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                                     shaderCard {
                                         key = match.entry.id
                                         attrs.mutablePatch = match.mutablePatch
-                                        attrs.onSelect = match.onSelect
-                                        attrs.onDelete = null
+                                        attrs.subtitle = match.entry.id.split(":").first()
                                         attrs.toolchain = toolchain
                                         attrs.cardSize = previewSizePx
                                         attrs.adjustGadgets = adjustInputs
+                                        attrs.onSelect = match.onSelect
+                                        attrs.onDelete = null
                                         attrs.onShaderStateChange = match.onShaderStateChange
                                     }
                                 }
@@ -213,8 +217,9 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                 if (devWarningIsOpen) {
                     Snackbar {
                         attrs.open = devWarningIsOpen
-                        attrs.message = "NOTE: Shader Library for dev purposes only, nothing useful happens when you select one."
-                            .asTextNode()
+                        attrs.message =
+                            "NOTE: Shader Library for dev purposes only, nothing useful happens when you select one."
+                                .asTextNode()
                         attrs.autoHideDuration = 5000
                         attrs.onClose = handleHideDevWarning
                     }
@@ -234,7 +239,12 @@ class EntryDisplay(
     val onShaderStateChange = { state: ShaderBuilder.State -> onShaderStateChange(entry, state) }
 }
 
-class ShaderStates : Observable() {
+class ShaderStates(
+    shaderCount: Int? = null
+) : Observable() {
+    var shaderCount = shaderCount
+        private set
+
     private val states: MutableMap<String, ShaderBuilder.State> = mutableMapOf()
 
     fun onShaderStateChange(entry: ShaderLibrary.Entry, state: ShaderBuilder.State) {
@@ -242,8 +252,13 @@ class ShaderStates : Observable() {
         notifyChanged()
     }
 
-    fun stateCount(): Map<ShaderBuilder.State, Int> =
-        states.values.groupingBy { it }.eachCount()
+    fun onNewResults(shaderCount: Int) {
+        this.shaderCount = shaderCount
+        notifyChanged()
+    }
+
+    val stateCount: Map<ShaderBuilder.State, Int>
+        get() = states.values.groupingBy { it }.eachCount()
 }
 
 external interface ShaderLibraryDialogProps : Props {

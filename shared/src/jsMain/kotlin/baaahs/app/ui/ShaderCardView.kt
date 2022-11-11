@@ -53,7 +53,9 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
                     Avatar { icon(openShader.shaderType.icon) }
                 }
                 attrs.title = buildElement { +shader.title }
-//                                attrs.subheader { +"${shader.type.name} Shader" }
+            props.subtitle?.let {
+                attrs.subheader = buildElement { +it }
+            }
             }
 
         shaderPreview {
@@ -92,11 +94,12 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
 
 external interface ShaderCardProps : Props {
     var mutablePatch: MutablePatch
-    var onSelect: () -> Unit
-    var onDelete: (() -> Unit)?
+    var subtitle: String?
     var toolchain: Toolchain
     var cardSize: LinearDimension?
     var adjustGadgets: Boolean?
+    var onSelect: () -> Unit
+    var onDelete: (() -> Unit)?
     var onShaderStateChange: ((ShaderBuilder.State) -> Unit)?
 }
 
