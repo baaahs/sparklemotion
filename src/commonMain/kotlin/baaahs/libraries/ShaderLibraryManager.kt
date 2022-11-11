@@ -1,6 +1,7 @@
 package baaahs.libraries
 
 import baaahs.PubSub
+import baaahs.camelize
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.mapper.Storage
@@ -28,10 +29,11 @@ class ShaderLibraryManager(
 
         }).searchShaderLibraries) { command ->
             val matches = arrayListOf<ShaderLibrary.Entry>()
-            shaderLibraries.forEach { (libRoot, shaderLibrary) ->
+            shaderLibraries.forEach { (_, shaderLibrary) ->
+                val libId = shaderLibrary.title.camelize()
                 shaderLibrary.entries.forEach { entry ->
                     if (entry.matches(command.terms)) {
-                        matches.add(entry)
+                        matches.add(entry.copy(id = "${libId}:${entry.id}"))
                     }
                 }
             }
