@@ -124,8 +124,8 @@ class ParserPinkyArgs(
 
         override fun execute() { subcommand = this }
 
-        override suspend fun Pinky.execute() {
-            indexShaderLibrary(libraryName)
+        override suspend fun Scope.execute() {
+            get<Pinky>().indexShaderLibrary(libraryName)
         }
     }
 }

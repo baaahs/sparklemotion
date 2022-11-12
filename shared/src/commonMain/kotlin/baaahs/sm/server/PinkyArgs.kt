@@ -1,6 +1,6 @@
 package baaahs.sm.server
 
-import baaahs.Pinky
+import org.koin.core.scope.Scope
 
 interface PinkyArgs {
     // TODO: Use this.
@@ -20,7 +20,9 @@ interface PinkyArgs {
     val subcommand: Subcommand?
 
     interface Subcommand {
-        suspend fun Pinky.execute()
+        val name: String
+
+        suspend fun Scope.execute()
     }
 
     companion object {

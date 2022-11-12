@@ -46,8 +46,9 @@ class PinkyMain(private val args: Array<String>) {
         logger.info { "Running JVM ${System.getProperty("java.vendor")} ${System.getProperty("java.version")} from ${System.getProperty("java.home")}." }
 
         val programName = PinkyMain::class.simpleName ?: "Pinky"
+
         val clock = SystemClock
-        val pinkyInjector = koinApplication {
+        val serverInjector = koinApplication {
             logger(KoinLogger())
 
             modules(
@@ -57,28 +58,45 @@ class PinkyMain(private val args: Array<String>) {
             )
         }
 
-        val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
+        // TODO: Too much of Pinky still starts up for subcommands.
+        // TODO: More granular Koin modules, add OpenPlugin.start() and .stop(), etc.
+        val pinkyScope = serverInjector.koin.createScope<Pinky>()
+        val pinkyArgs = pinkyScope.get<PinkyArgs>()
+        val subcommand = pinkyArgs.subcommand
+        if (subcommand == null) {
+            runServer(pinkyArgs, pinkyScope)
+        } else {
+            try {
+                runBlocking {
+                    with(subcommand) { pinkyScope.execute() }
+                }
+            } catch (e: Throwable) {
+                logger.error(e) { "Failed to run command ${subcommand.name}." }
+                exitProcess(1)
+            } finally {
+                exitProcess(0)
+            }
+        }
+    }
+
+    private fun runServer(pinkyArgs: PinkyArgs, pinkyScope: Scope) {
         val pinky = pinkyScope.get<Pinky>()
+
+        logger.info { "Are you pondering what I'm pondering?" }
+
         configureKtor(pinky, pinkyScope)
 
         logger.info { responses.random() }
 
-        val pinkyArgs = pinkyScope.get<PinkyArgs>()
-        val subcommand = pinkyArgs.subcommand
-        val pinkyDispatcher = pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))
+        val pinkyDispatcher: CoroutineDispatcher = pinkyScope.get(named("PinkyMainDispatcher"))
         try {
             runBlocking(pinkyDispatcher) {
-                if (subcommand == null) {
-                    pinky.startAndRun {
-                        if (pinkyArgs.simulateBrains) {
-                            pinkyScope.get<ProdBrainSimulator>().enableSimulation()
-                        }
+                pinky.startAndRun {
+                    if (pinkyArgs.simulateBrains) {
+                        pinkyScope.get<ProdBrainSimulator>().enableSimulation()
                     }
-                } else {
-                    with(subcommand) { pinky.execute() }
                 }
             }
-
         } catch (e: Throwable) {
             logger.error(e) { "Failed to start Pinky." }
             exitProcess(1)
