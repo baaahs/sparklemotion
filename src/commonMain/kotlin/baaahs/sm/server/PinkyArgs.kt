@@ -1,10 +1,13 @@
 package baaahs.sm.server
 
-import baaahs.Pinky
+import baaahs.libraries.ShaderLibraryManager
 import kotlinx.cli.*
+import org.koin.core.scope.Scope
 
 @OptIn(ExperimentalCli::class)
-class PinkyArgs(parser: ArgParser) {
+class PinkyArgs(
+    internal val parser: ArgParser
+) {
     // TODO: Use this.
     val sceneName by parser.option(ArgType.String, shortName = "m")
 
@@ -39,13 +42,15 @@ class PinkyArgs(parser: ArgParser) {
 
         override fun execute() { subcommand = this }
 
-        override suspend fun Pinky.execute() {
-            indexShaderLibrary(libraryName)
+        override suspend fun Scope.execute() {
+            get<ShaderLibraryManager>().buildIndex(libraryName)
         }
     }
 
     interface Subcommand {
-        suspend fun Pinky.execute()
+        val name: String
+
+        suspend fun Scope.execute()
     }
 
     companion object {
