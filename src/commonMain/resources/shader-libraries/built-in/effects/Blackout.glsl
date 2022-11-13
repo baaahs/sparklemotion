@@ -1,3 +1,6 @@
+// Blackout
+// Lights off!
+
 // @return color
 // @param uvIn uv-coordinate
 vec4 main(vec2 uvIn) {

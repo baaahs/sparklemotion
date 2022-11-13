@@ -1,5 +1,6 @@
+// [🐑] ColorPulse
 // Color pulses sweeping from front to back of the sheep synchronized to the beat
-// Ben Bartlett
+// @author Ben Bartlett
 
 uniform float time; // @@Time
 uniform float hueRange; // @@Slider default=0.3 min=0.0 max=1.0
