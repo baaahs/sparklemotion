@@ -1,9 +1,10 @@
 package baaahs.libraries
 
 import baaahs.PubSub
-import baaahs.camelize
 import baaahs.client.document.DataStore
 import baaahs.gl.Toolchain
+import baaahs.gl.openShader
+import baaahs.hyphenize
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.resourcesFs
@@ -15,6 +16,7 @@ import baaahs.sm.webapi.ShaderLibraryCommands
 import baaahs.sm.webapi.Topics
 import baaahs.util.Logger
 import baaahs.util.UniqueIds
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
 class ShaderLibraryManager(
@@ -33,14 +35,18 @@ class ShaderLibraryManager(
     ) { updated ->
         // TODO: tbd.
     }
-    private val prettyJson = Json(plugins.json) { prettyPrint = true }
+    private val prettyJson = Json(plugins.json) {
+        prettyPrint = true
+        @OptIn(ExperimentalSerializationApi::class)
+        prettyPrintIndent = "  "
+    }
 
     init {
         Topics.shaderLibrariesCommands.createReceiver(pubSub, object : ShaderLibraryCommands {
             override suspend fun search(terms: String): List<ShaderLibrary.Entry> =
                 buildList {
                     shaderLibraries.forEach { (_, shaderLibrary) ->
-                        val libId = shaderLibrary.title.camelize()
+                        val libId = shaderLibrary.title.hyphenize()
                         shaderLibrary.entries.forEach { entry ->
                             if (entry.matches(terms)) {
                                 add(entry.copy(id = "${libId}:${entry.id}"))
@@ -87,8 +93,14 @@ class ShaderLibraryManager(
         val uniqueIds = UniqueIds<Fs.File>()
 
         val shaderLibraryPath = shaderLibraryPath(libraryName)
-        val entries = shaderLibraryPath.listFiles().mapNotNull { file ->
+        logger.info { "Indexing shader library at \"${shaderLibraryPath.fullPath}\"."}
+        var countOk = 0
+        var countTotal = 0
+        val entries = shaderLibraryPath.listFilesRecursively().mapNotNull { file ->
+            countTotal++
             if (Regex("\\.(png|jpg|gif|webp|txt|md|json)\$").containsMatchIn(file.name))
+                return@mapNotNull null
+            if (file.fs.isDirectory(file))
                 return@mapNotNull null
 
             val fileRelPath = file.relativeTo(shaderLibraryPath)
@@ -96,16 +108,21 @@ class ShaderLibraryManager(
                 val contents = file.read()!!
                 val shader = toolchain.import(contents, file.name)
                 val analysis = toolchain.analyze(shader)
+                val openShader = toolchain.openShader(shader)
 //                println("${file.name}: $analysis")
+                val tags = buildList {
+                    add("@type=${openShader.shaderType.title}")
+                    if (openShader.isFilter) add("@filter")
+                }
                 ShaderLibraryIndex.Entry(
-                    uniqueIds.idFor(file) { analysis.shader.suggestId() },
-                    analysis.shader.title,
+                    uniqueIds.idFor(file) { shader.title.hyphenize() },
+                    shader.title,
+                    shader.description,
                     null,
-                    null,
-                    emptyList(),
+                    tags,
                     fileRelPath,
                     analysis.errors.map { it.toString() }
-                )
+                ).also { countOk++ }
             } catch (e: Exception) {
 //                println("Problem analyzing ${file.name}.")
 //                e.printStackTrace()
@@ -125,9 +142,20 @@ class ShaderLibraryManager(
             libraryName,
             null,
             null,
-            entries
+            entries.sortedBy { it.id.lowercase() }
         )
+        logger.info { "Indexed $countOk/$countTotal shaders." }
         saveShaderLibraryIndexFile(libraryName, index)
+    }
+
+    private suspend fun Fs.File.listFilesRecursively(): List<Fs.File> = buildList {
+        listFiles().forEach {
+            if (it.isDir()) {
+                addAll(it.listFilesRecursively())
+            } else {
+                add(it)
+            }
+        }
     }
 
     private suspend fun loadShaderLibraries(): Map<Fs.File, ShaderLibrary> {

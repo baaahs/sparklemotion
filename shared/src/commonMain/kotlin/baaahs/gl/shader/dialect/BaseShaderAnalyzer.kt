@@ -122,7 +122,13 @@ abstract class BaseShaderAnalyzer(
     }
 
     private fun createShader() =
-        Shader(findTitle() ?: "Untitled Shader", glslCode.src)
+        Shader(
+            findTitle() ?: "Untitled Shader",
+            glslCode.src,
+            findDescription(),
+            findAuthor(),
+            findTags()
+        )
 
     abstract fun findEntryPointOutputPort(entryPoint: GlslCode.GlslFunction?, plugins: Plugins): OutputPort?
 
@@ -150,6 +156,13 @@ abstract class BaseShaderAnalyzer(
             ?: glslCode.fileName?.let {
                 Regex("\\.(fs|vs|glsl)$").replace(it, "")
             }
+
+    open fun findDescription(): String? =
+        Regex("^// [^\n]*\n\\s*// (.*)\n").find(glslCode.src)?.groupValues?.get(1)
+
+    open fun findAuthor(): String? = null
+
+    open fun findTags(): List<String> = emptyList()
 
     fun findEntryPoint(): GlslCode.GlslFunction {
         return glslCode.findFunction(entryPointName)

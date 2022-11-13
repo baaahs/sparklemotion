@@ -1,4 +1,4 @@
-// Solid Color.glsl
+// Solid Color
 
 uniform float time;
 uniform vec2 resolution;
