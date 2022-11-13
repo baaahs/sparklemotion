@@ -65,7 +65,7 @@ interface FeedBuilder<T : Feed> {
 }
 
 internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
-    title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
+    title.camelize().lowercase().contains(inputPort.title.camelize().lowercase())
 
 /**
  * Descriptor of an external feed which can be used by a shader program.
