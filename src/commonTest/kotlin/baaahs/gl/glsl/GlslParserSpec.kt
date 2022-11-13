@@ -49,7 +49,7 @@ object GlslParserSpec : Spek({
                     void anotherFunc(vec3 color[3]) {}
                     
                     #define N 4
-                    void yetAnotherFunc(vec3 color[N]) {}
+                    lowp void yetAnotherFunc(mediump vec3 color[N]) {}
                     
                     void main() {
                         mainFunc(gl_FragColor, gl_FragCoord);
@@ -127,7 +127,7 @@ object GlslParserSpec : Spek({
                                 params = listOf(
                                     GlslParam("color[4]", GlslType.Vec3),
                                 ),
-                                fullText = "void yetAnotherFunc(vec3 color[4]) {}",
+                                fullText = "lowp void yetAnotherFunc(mediump vec3 color[4]) {}",
                                 lineNumber = 26
                             ),
                             GlslFunction(
