@@ -15,6 +15,7 @@ import baaahs.sim.MergedFs
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -23,7 +24,11 @@ import kotlinx.serialization.json.jsonObject
 
 class Storage(val fs: Fs, val plugins: Plugins) {
     val json = Json(plugins.json) { isLenient = true }
-    private val prettyJson = Json(plugins.json) { prettyPrint = true }
+    private val prettyJson = Json(plugins.json) {
+        prettyPrint = true
+        @OptIn(ExperimentalSerializationApi::class)
+        prettyPrintIndent = "  "
+    }
     val fsSerializer = FsServerSideSerializer()
     val mappingSessionsDir = fs.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")

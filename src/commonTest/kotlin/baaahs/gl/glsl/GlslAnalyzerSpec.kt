@@ -82,8 +82,12 @@ object GlslAnalyzerSpec : Spek({
                     """.trimIndent()
                 }
 
-                it("finds the title") {
+                it("uses the first comment line as the title") {
                     expect(importedShader.title).toBe("This Shader's Name")
+                }
+
+                it("uses subsequent comment lines as the description") {
+                    expect(importedShader.description).toBe("Other stuff.")
                 }
             }
 

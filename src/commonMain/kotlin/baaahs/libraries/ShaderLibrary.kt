@@ -32,8 +32,8 @@ data class ShaderLibrary(
 @Serializable
 data class ShaderLibraryIndexFile(
     val title: String,
-    val description: String?,
-    val license: String?,
+    val description: String? = null,
+    val license: String? = null,
     val entries: List<Entry> = emptyList()
 ) {
     @Serializable
@@ -44,6 +44,6 @@ data class ShaderLibraryIndexFile(
         val lastModifiedMs: Time? = null,
         val tags: List<String> = emptyList(),
         val srcFile: String,
-        val errors: List<String>? = null
+        val errors: List<String>? = emptyList()
     )
 }
