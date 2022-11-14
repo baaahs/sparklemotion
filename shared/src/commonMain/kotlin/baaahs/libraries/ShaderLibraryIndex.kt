@@ -15,9 +15,11 @@ data class ShaderLibraryIndex(
     data class Entry(
         val id: String,
         val title: String,
-        val description: String?,
-        val lastModifiedMs: Time,
-        val tags: List<String>,
-        val srcFile: String
+        val description: String? = null,
+        val lastModifiedMs: Time? = null,
+        val tags: List<String> = emptyList(),
+        val srcFile: String,
+        val errors: List<String>? = null
     )
 }
+

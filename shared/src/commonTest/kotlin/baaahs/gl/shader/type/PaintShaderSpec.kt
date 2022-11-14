@@ -9,6 +9,7 @@ import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.gl.shader.ShaderStatementRewriter
 import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.gl.testToolchain
 import baaahs.kotest.value
@@ -127,16 +128,17 @@ class PaintShaderSpec : DescribeSpec({
             it("generates function declarations") {
                 openShader.toGlsl(
                     null,
-                    ShaderSubstitutions(
-                        openShader, namespace,
-                        mapOf(
-                            "resolution" to GlslExpr("in_resolution"),
-                            "blueness" to GlslExpr("aquamarinity"),
-                            "identity" to GlslExpr("p0_identity"),
-                            "gl_FragColor" to GlslExpr("sm_result")
-                        ),
-                        emptyList(),
-                        emptyList()
+                    ShaderStatementRewriter(
+                        ShaderSubstitutions(openShader, namespace,
+                            mapOf(
+                                "resolution" to GlslExpr("in_resolution"),
+                                "blueness" to GlslExpr("aquamarinity"),
+                                "identity" to GlslExpr("p0_identity"),
+                                "gl_FragColor" to GlslExpr("sm_result")
+                            ),
+                            emptyList(),
+                            emptyList()
+                        )
                     ),
                 ).trim().shouldBe(
                     """
@@ -276,19 +278,21 @@ class PaintShaderSpec : DescribeSpec({
             it("generates function declarations") {
                 openShader.toGlsl(
                     null,
-                    ShaderSubstitutions(
-                        openShader,
-                        namespace,
-                        mapOf(
-                            "iResolution" to GlslExpr("in_resolution"),
-                            "iMouse" to GlslExpr("in_mouse"),
-                            "iTime" to GlslExpr("in_time"),
-                            "blueness" to GlslExpr("aquamarinity"),
-                            "identity" to GlslExpr("p0_identity"),
-                            "fragCoord" to GlslExpr("gl_FragCoord.xy")
+                    ShaderStatementRewriter(
+                        ShaderSubstitutions(
+                            openShader,
+                            namespace,
+                            mapOf(
+                                "iResolution" to GlslExpr("in_resolution"),
+                                "iMouse" to GlslExpr("in_mouse"),
+                                "iTime" to GlslExpr("in_time"),
+                                "blueness" to GlslExpr("aquamarinity"),
+                                "identity" to GlslExpr("p0_identity"),
+                                "fragCoord" to GlslExpr("gl_FragCoord.xy")
+                            ),
+                            emptyList(),
+                            emptyList()
                         ),
-                        emptyList(),
-                        emptyList()
                     )
                 ).trim().shouldBe(
                     """

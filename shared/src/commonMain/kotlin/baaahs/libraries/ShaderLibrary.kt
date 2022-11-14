@@ -7,17 +7,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ShaderLibrary(
     val title: String,
-    val description: String?,
-    val license: String?,
+    val description: String? = null,
+    val license: String? = null,
     val entries: List<Entry> = emptyList()
 ) {
     @Serializable
     data class Entry(
         val id: String,
         val shader: Shader,
-        val description: String?,
-        val lastModifiedMs: Time,
-        val tags: List<String>
+        val description: String? = null,
+        val lastModifiedMs: Time? = null,
+        val tags: List<String> = emptyList()
     ) {
         fun matches(term: String): Boolean {
             val lcTerm = term.lowercase()

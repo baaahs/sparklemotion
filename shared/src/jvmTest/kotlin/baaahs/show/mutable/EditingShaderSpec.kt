@@ -1,7 +1,6 @@
 package baaahs.show.mutable
 
 import baaahs.TestModel
-import baaahs.app.ui.editor.LinkOption
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.describe
 import baaahs.expectEmptyMap
@@ -231,7 +230,7 @@ class EditingShaderSpec : DescribeSpec({
                 }
 
                 it("should be listed in link options") {
-                    editingShader.linkOptionsFor("theScale").stringify().shouldBe(
+                    editingShader.linkOptionsFor("theScale").shouldBe(
                         """
                             Feed:
                             - BeatLink
@@ -277,7 +276,7 @@ class EditingShaderSpec : DescribeSpec({
                 }
 
                 it("suggests reasonable link options for scale") {
-                    editingShader.linkOptionsFor("theScale").stringify().shouldBe(
+                    editingShader.linkOptionsFor("theScale").shouldBe(
                         """
                             Feed:
                             - BeatLink
@@ -291,7 +290,7 @@ class EditingShaderSpec : DescribeSpec({
                 }
 
                 it("suggests reasonable link options for time") {
-                    editingShader.linkOptionsFor("time").stringify().shouldBe(
+                    editingShader.linkOptionsFor("time").shouldBe(
                         """
                             Feed:
                             - BeatLink (advanced)
@@ -306,7 +305,7 @@ class EditingShaderSpec : DescribeSpec({
 
                 it("suggests reasonable link options for input color") {
                     // Should never include ourself.
-                    editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                    editingShader.linkOptionsFor("inColor").shouldBe(
                         """
                             Feed:
                             - Date (advanced)
@@ -326,7 +325,7 @@ class EditingShaderSpec : DescribeSpec({
                     context("and its result type matches this input's type") {
                         it("should include that stream as an option") {
                             // Should never include ourself.
-                            editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                            editingShader.linkOptionsFor("inColor").shouldBe(
                                 """
                                     Feed:
                                     - Date (advanced)
@@ -344,7 +343,7 @@ class EditingShaderSpec : DescribeSpec({
                         override(shaderForButton) { Shaders.flipY } // distortion
 
                         it("shouldn't include that stream as an option") {
-                            editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                            editingShader.linkOptionsFor("inColor").shouldBe(
                                 """
                                     Feed:
                                     - Date (advanced)
@@ -459,22 +458,3 @@ class EditingShaderSpec : DescribeSpec({
         }
     }
 })
-
-fun List<LinkOption>?.stringify(): String {
-    if (this == null) return "no options!"
-
-    val lines = arrayListOf<String>()
-    var groupName: String? = null
-    sortedWith(
-        compareBy<LinkOption> { it.groupName }.thenBy { it.title }
-    ).forEach { linkOption ->
-        if (linkOption.groupName != groupName) {
-            groupName = linkOption.groupName
-            groupName?.let { lines.add(it) }
-        }
-        val selected = if (linkOption == first()) "*" else "-"
-        val advanced = if (linkOption.isAdvanced) " (advanced)" else ""
-        lines.add("$selected ${linkOption.title}$advanced")
-    }
-    return lines.joinToString("\n")
-}

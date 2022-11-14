@@ -1,8 +1,8 @@
 package baaahs.di
 
 import baaahs.MediaDevices
+import baaahs.Pinky
 import baaahs.PinkySettings
-import baaahs.app.settings.DocumentFeatureFlags
 import baaahs.app.settings.FeatureFlags
 import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
@@ -19,9 +19,11 @@ import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.PinkyArgs
+import baaahs.sm.server.PinkyArgs.Subcommand
 import baaahs.util.Clock
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
+import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -88,6 +90,7 @@ class JvmPinkyModule(
         get() = FeatureFlags.JVM
 }
 
+@OptIn(ExperimentalCli::class)
 class ParserPinkyArgs(
     parser: ArgParser
 ) : PinkyArgs {
@@ -104,4 +107,25 @@ class ParserPinkyArgs(
 
     override val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
         .default(false)
+
+    override var subcommand: Subcommand? = null
+        private set
+
+    init {
+        parser.subcommands(IndexShaderLibrary())
+    }
+
+    @OptIn(ExperimentalCli::class)
+    inner class IndexShaderLibrary : kotlinx.cli.Subcommand(
+        "index-shader-library",
+        "Generate an index for a shader library."
+    ), Subcommand {
+        val libraryName by argument(ArgType.String)
+
+        override fun execute() { subcommand = this }
+
+        override suspend fun Pinky.execute() {
+            indexShaderLibrary(libraryName)
+        }
+    }
 }

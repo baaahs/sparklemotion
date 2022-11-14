@@ -280,9 +280,9 @@ class GlslParserSpec : DescribeSpec({
                         it("handles nested macro expansions") {
                             val glslFunction = glslCode.functions.only()
 
-                            val glsl = glslFunction.toGlsl(null) { text ->
+                            val glsl = glslFunction.toGlsl(null, TokenRewriter { text ->
                                 if (text == "main") Namespace("ns").qualify(text) else text
-                            }
+                            })
 
                             glsl.trim().shouldBe(
                                 """
@@ -430,9 +430,9 @@ class GlslParserSpec : DescribeSpec({
                     it("handles nested macro expansions") {
                         val glslFunction = glslCode.functions.only()
 
-                        val glsl = glslFunction.toGlsl(null) { text ->
+                            val glsl = glslFunction.toGlsl(null, TokenRewriter { text ->
                             if (text == "main") Namespace("ns").qualify(text) else text
-                        }
+                            })
 
                         glsl.trim().shouldBe(
                             """
