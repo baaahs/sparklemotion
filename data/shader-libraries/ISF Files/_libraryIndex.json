@@ -1,2449 +1,2712 @@
 {
-    "title": "ISF Files",
-    "description": null,
-    "license": null,
-    "entries": [
-        {
-            "id": "3dRotate",
-            "title": "3d Rotate",
-            "srcFile": "3d Rotate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "3dRotate2",
-            "title": "3d Rotate",
-            "srcFile": "3d Rotate.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "asciiArt",
-            "title": "ASCII Art",
-            "srcFile": "ASCII Art.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "angular",
-            "title": "Angular",
-            "srcFile": "Angular.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "applyAlpha",
-            "title": "Apply Alpha",
-            "srcFile": "Apply Alpha.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "autoColorTone",
-            "title": "Auto Color Tone",
-            "srcFile": "Auto Color Tone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "autoColorsHistogram",
-            "title": "Auto Colors Histogram",
-            "srcFile": "Auto Colors Histogram.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "autoLevels",
-            "title": "Auto Levels",
-            "srcFile": "Auto Levels.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "autoLevels2",
-            "title": "Auto Levels",
-            "srcFile": "Auto Levels.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "badTv",
-            "title": "Bad TV",
-            "srcFile": "Bad TV.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "basicShape",
-            "title": "Basic Shape",
-            "srcFile": "Basic Shape.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bloom",
-            "title": "Bloom",
-            "srcFile": "Bloom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bloom2",
-            "title": "Bloom",
-            "srcFile": "Bloom.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "bounce",
-            "title": "Bounce",
-            "srcFile": "Bounce.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bowTieHorizontal",
-            "title": "Bow Tie Horizontal",
-            "srcFile": "Bow Tie Horizontal.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bowTieVertical",
-            "title": "Bow Tie Vertical",
-            "srcFile": "Bow Tie Vertical.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "boxinator",
-            "title": "Boxinator",
-            "srcFile": "Boxinator.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "brickPattern",
-            "title": "Brick Pattern",
-            "srcFile": "Brick Pattern.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bright",
-            "title": "Bright",
-            "srcFile": "Bright.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "brokenLcd",
-            "title": "Broken LCD",
-            "srcFile": "Broken LCD.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "bumpDistortion",
-            "title": "Bump Distortion",
-            "srcFile": "Bump Distortion.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "burn",
-            "title": "Burn",
-            "srcFile": "Burn.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "butterflyWaveScrawler",
-            "title": "Butterfly Wave Scrawler",
-            "srcFile": "Butterfly Wave Scrawler.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cmykHalftoneLookaround",
-            "title": "CMYK Halftone-Lookaround",
-            "srcFile": "CMYK Halftone-Lookaround.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cmykHalftone",
-            "title": "CMYK Halftone",
-            "srcFile": "CMYK Halftone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "channelSlide",
-            "title": "Channel Slide",
-            "srcFile": "Channel Slide.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "checkerboard",
-            "title": "Checkerboard",
-            "srcFile": "Checkerboard.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "chromaDesaturationMask",
-            "title": "Chroma Desaturation Mask",
-            "srcFile": "Chroma Desaturation Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "chromaMask",
-            "title": "Chroma Mask",
-            "srcFile": "Chroma Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "chromaZoom",
-            "title": "Chroma Zoom",
-            "srcFile": "Chroma Zoom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleCrop",
-            "title": "Circle Crop",
-            "srcFile": "Circle Crop.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleOpen",
-            "title": "Circle Open",
-            "srcFile": "Circle Open.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleSplashDistortion",
-            "title": "Circle Splash Distortion",
-            "srcFile": "Circle Splash Distortion.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleTrails",
-            "title": "Circle Trails",
-            "srcFile": "Circle Trails.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleWarp",
-            "title": "Circle Warp",
-            "srcFile": "Circle Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circleWrapDistortion",
-            "title": "Circle Wrap Distortion",
-            "srcFile": "Circle Wrap Distortion.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circle",
-            "title": "Circle",
-            "srcFile": "Circle.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circularFeedbackMask",
-            "title": "Circular Feedback Mask",
-            "srcFile": "Circular Feedback Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circularScreen",
-            "title": "Circular Screen",
-            "srcFile": "Circular Screen.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "circularScreen2",
-            "title": "Circular Screen",
-            "srcFile": "Circular Screen.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "cityLights",
-            "title": "City Lights",
-            "srcFile": "City Lights.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cityLights2",
-            "title": "City Lights",
-            "srcFile": "City Lights.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "collage",
-            "title": "Collage",
-            "srcFile": "Collage.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorBars",
-            "title": "Color Bars",
-            "srcFile": "Color Bars.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorBlowout",
-            "title": "Color Blowout",
-            "srcFile": "Color Blowout.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorBlowout2",
-            "title": "Color Blowout",
-            "srcFile": "Color Blowout.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "colorControls",
-            "title": "Color Controls",
-            "srcFile": "Color Controls.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorHistory",
-            "title": "Color History",
-            "srcFile": "Color History.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorInvert",
-            "title": "Color Invert",
-            "srcFile": "Color Invert.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorLevels",
-            "title": "Color Levels",
-            "srcFile": "Color Levels.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorMonochrome",
-            "title": "Color Monochrome",
-            "srcFile": "Color Monochrome.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorOrganPolyphonic",
-            "title": "Color Organ Polyphonic",
-            "srcFile": "Color Organ Polyphonic.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorPhase",
-            "title": "Color Phase",
-            "srcFile": "Color Phase.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorPosterize",
-            "title": "Color Posterize",
-            "srcFile": "Color Posterize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorRelookup",
-            "title": "Color Relookup",
-            "srcFile": "Color Relookup.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorReplacement",
-            "title": "Color Replacement",
-            "srcFile": "Color Replacement.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorScales",
-            "title": "Color Scales",
-            "srcFile": "Color Scales.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorSchemes",
-            "title": "Color Schemes",
-            "srcFile": "Color Schemes.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colorTestGrid",
-            "title": "Color Test Grid",
-            "srcFile": "Color Test Grid.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "colourDistance",
-            "title": "Colour Distance",
-            "srcFile": "Colour Distance.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cometTails",
-            "title": "Comet Tails",
-            "srcFile": "Comet Tails.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "convergence",
-            "title": "Convergence",
-            "srcFile": "Convergence.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cornerColorTint",
-            "title": "Corner Color Tint",
-            "srcFile": "Corner Color Tint.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cornerColors",
-            "title": "Corner Colors",
-            "srcFile": "Corner Colors.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "crazyParametricFun",
-            "title": "Crazy Parametric Fun",
-            "srcFile": "Crazy Parametric Fun.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "crossZoom",
-            "title": "CrossZoom",
-            "srcFile": "CrossZoom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "crosshatch",
-            "title": "Crosshatch",
-            "srcFile": "Crosshatch.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "crosswarp",
-            "title": "Crosswarp",
-            "srcFile": "Crosswarp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cubicWarp",
-            "title": "Cubic Warp",
-            "srcFile": "Cubic Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "deinterlace",
-            "title": "Deinterlace",
-            "srcFile": "Deinterlace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "diagonalBlur",
-            "title": "Diagonal Blur",
-            "srcFile": "Diagonal Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "diagonalize",
-            "title": "Diagonalize",
-            "srcFile": "Diagonalize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "digitalClock",
-            "title": "Digital Clock",
-            "srcFile": "Digital Clock.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dilateFast",
-            "title": "Dilate-Fast",
-            "srcFile": "Dilate-Fast.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dilate",
-            "title": "Dilate",
-            "srcFile": "Dilate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "directionalWarp",
-            "title": "Directional Warp",
-            "srcFile": "Directional Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "directionalWipe",
-            "title": "Directional Wipe",
-            "srcFile": "Directional Wipe.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "directional",
-            "title": "Directional",
-            "srcFile": "Directional.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dirtyLens",
-            "title": "Dirty Lens",
-            "srcFile": "Dirty Lens.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "displace",
-            "title": "Displace",
-            "srcFile": "Displace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "displacement",
-            "title": "Displacement",
-            "srcFile": "Displacement.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "ditherBayer",
-            "title": "Dither-Bayer",
-            "srcFile": "Dither-Bayer.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "doomScreenTransition",
-            "title": "Doom Screen Transition",
-            "srcFile": "Doom Screen Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "doorway",
-            "title": "Doorway",
-            "srcFile": "Doorway.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dotScreen",
-            "title": "Dot Screen",
-            "srcFile": "Dot Screen.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dotScreen2",
-            "title": "Dot Screen",
-            "srcFile": "Dot Screen.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "doubleVision",
-            "title": "Double Vision",
-            "srcFile": "Double Vision.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dreamyZoom",
-            "title": "Dreamy Zoom",
-            "srcFile": "Dreamy Zoom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dreamy",
-            "title": "Dreamy",
-            "srcFile": "Dreamy.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "dualSideScrollerAndFlip",
-            "title": "Dual Side Scroller And Flip",
-            "srcFile": "Dual Side Scroller And Flip.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "duotoneFromHistogram",
-            "title": "Duotone From Histogram",
-            "srcFile": "Duotone From Histogram.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "duotone",
-            "title": "Duotone",
-            "srcFile": "Duotone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "echoTrace",
-            "title": "Echo Trace",
-            "srcFile": "Echo Trace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edgeBlowout",
-            "title": "Edge Blowout",
-            "srcFile": "Edge Blowout.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edgeBlur",
-            "title": "Edge Blur",
-            "srcFile": "Edge Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edgeBlur2",
-            "title": "Edge Blur",
-            "srcFile": "Edge Blur.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "edgeDistort",
-            "title": "Edge Distort",
-            "srcFile": "Edge Distort.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edgeDistort2",
-            "title": "Edge Distort",
-            "srcFile": "Edge Distort.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "edgeTrace",
-            "title": "Edge Trace",
-            "srcFile": "Edge Trace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edgeTrace2",
-            "title": "Edge Trace",
-            "srcFile": "Edge Trace.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "edges",
-            "title": "Edges",
-            "srcFile": "Edges.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "edges2",
-            "title": "Edges",
-            "srcFile": "Edges.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "emboss",
-            "title": "Emboss",
-            "srcFile": "Emboss.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "emboss2",
-            "title": "Emboss",
-            "srcFile": "Emboss.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "erodeFast",
-            "title": "Erode-Fast",
-            "srcFile": "Erode-Fast.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "erode",
-            "title": "Erode",
-            "srcFile": "Erode.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "etchASketch",
-            "title": "Etch-a-Sketch",
-            "srcFile": "Etch-a-Sketch.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "exposureAdjust",
-            "title": "Exposure Adjust",
-            "srcFile": "Exposure Adjust.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fftColorLines",
-            "title": "FFT Color Lines",
-            "srcFile": "FFT Color Lines.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fftFilledWaveform",
-            "title": "FFT Filled Waveform",
-            "srcFile": "FFT Filled Waveform.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "fftSpectrogram",
-            "title": "FFT Spectrogram",
-            "srcFile": "FFT Spectrogram.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "fadeColor",
-            "title": "Fade Color",
-            "srcFile": "Fade Color.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fadeGrayScale",
-            "title": "Fade Gray Scale",
-            "srcFile": "Fade Gray Scale.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fade",
-            "title": "Fade",
-            "srcFile": "Fade.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "falseColor",
-            "title": "False Color",
-            "srcFile": "False Color.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fastBlur",
-            "title": "Fast Blur",
-            "srcFile": "Fast Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fastBlur2",
-            "title": "Fast Blur",
-            "srcFile": "Fast Blur.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "fastMosh",
-            "title": "FastMosh",
-            "srcFile": "FastMosh.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "fastMosh2",
-            "title": "FastMosh",
-            "srcFile": "FastMosh.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "filmBurn",
-            "title": "Film Burn",
-            "srcFile": "Film Burn.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "flipH",
-            "title": "Flip H",
-            "srcFile": "Flip H.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "flipV",
-            "title": "Flip V",
-            "srcFile": "Flip V.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "flipbook",
-            "title": "Flipbook",
-            "srcFile": "Flipbook.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "flyEye",
-            "title": "Fly Eye",
-            "srcFile": "Fly Eye.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "freezeFrame",
-            "title": "Freeze Frame",
-            "srcFile": "Freeze Frame.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "frostedGlass",
-            "title": "Frosted Glass",
-            "srcFile": "Frosted Glass.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "gammaCorrection",
-            "title": "Gamma Correction",
-            "srcFile": "Gamma Correction.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "ghosting",
-            "title": "Ghosting",
-            "srcFile": "Ghosting.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "Glitch Displace.fs",
-            "title": "Glitch Displace.fs",
-            "srcFile": "Glitch Displace.fs",
-            "errors": [
-                "Shader analysis error: unexpected tokens [highp, float, random] in function"
-            ]
-        },
-        {
-            "id": "glitchMemories",
-            "title": "Glitch Memories",
-            "srcFile": "Glitch Memories.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "glitchShifter",
-            "title": "Glitch Shifter",
-            "srcFile": "Glitch Shifter.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "gloom",
-            "title": "Gloom",
-            "srcFile": "Gloom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "gloom2",
-            "title": "Gloom",
-            "srcFile": "Gloom.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "glowFast",
-            "title": "Glow-Fast",
-            "srcFile": "Glow-Fast.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "glowFast2",
-            "title": "Glow-Fast",
-            "srcFile": "Glow-Fast.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "glow",
-            "title": "Glow",
-            "srcFile": "Glow.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "glow2",
-            "title": "Glow",
-            "srcFile": "Glow.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "godRays",
-            "title": "God Rays",
-            "srcFile": "God Rays.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "graphPaper",
-            "title": "Graph Paper",
-            "srcFile": "Graph Paper.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "gridFlip",
-            "title": "Grid Flip",
-            "srcFile": "Grid Flip.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "gridWarp",
-            "title": "Grid Warp",
-            "srcFile": "Grid Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "hsvtoRgb",
-            "title": "HSVtoRGB",
-            "srcFile": "HSVtoRGB.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "hatchBlur",
-            "title": "Hatch Blur",
-            "srcFile": "Hatch Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "heartTransition",
-            "title": "Heart Transition",
-            "srcFile": "Heart Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "heart",
-            "title": "Heart",
-            "srcFile": "Heart.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "hexagonalize",
-            "title": "Hexagonalize",
-            "srcFile": "Hexagonalize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "histogramViewer",
-            "title": "Histogram Viewer",
-            "srcFile": "Histogram Viewer.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "horizVertHold",
-            "title": "HorizVertHold",
-            "srcFile": "HorizVertHold.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "hyperspace",
-            "title": "Hyperspace",
-            "srcFile": "Hyperspace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "interlaceMirror",
-            "title": "Interlace Mirror",
-            "srcFile": "Interlace Mirror.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "interlace",
-            "title": "Interlace",
-            "srcFile": "Interlace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "invertedPageCurl",
-            "title": "Inverted Page Curl",
-            "srcFile": "Inverted Page Curl.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "kaleidoscopeTile",
-            "title": "Kaleidoscope Tile",
-            "srcFile": "Kaleidoscope Tile.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "kaleidoscopeTransition",
-            "title": "Kaleidoscope Transition",
-            "srcFile": "Kaleidoscope Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "kaleidoscope",
-            "title": "Kaleidoscope",
-            "srcFile": "Kaleidoscope.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "keyFrameArtifacts",
-            "title": "Key Frame Artifacts",
-            "srcFile": "Key Frame Artifacts.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "LICENSE",
-            "title": "LICENSE",
-            "srcFile": "LICENSE",
-            "errors": [
-                "Shader analysis error: unexpected tokens [MIT, License, Copyright] in function"
-            ]
-        },
-        {
-            "id": "layerMask",
-            "title": "Layer Mask",
-            "srcFile": "Layer Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "layerPosition",
-            "title": "Layer Position",
-            "srcFile": "Layer Position.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "lensFlare",
-            "title": "Lens Flare",
-            "srcFile": "Lens Flare.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "lensFlare2",
-            "title": "Lens Flare",
-            "srcFile": "Lens Flare.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "life",
-            "title": "Life",
-            "srcFile": "Life.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "life2",
-            "title": "Life",
-            "srcFile": "Life.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "lineScreen",
-            "title": "Line Screen",
-            "srcFile": "Line Screen.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "lineScreen2",
-            "title": "Line Screen",
-            "srcFile": "Line Screen.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "linearBlur",
-            "title": "Linear Blur",
-            "srcFile": "Linear Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "linearGradient",
-            "title": "Linear Gradient",
-            "srcFile": "Linear Gradient.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "lines",
-            "title": "Lines",
-            "srcFile": "Lines.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "longExposure",
-            "title": "Long Exposure",
-            "srcFile": "Long Exposure.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "lumaTransition",
-            "title": "Luma Transition",
-            "srcFile": "Luma Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "luminanceMelt",
-            "title": "Luminance Melt",
-            "srcFile": "Luminance Melt.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "luminancePosterize",
-            "title": "Luminance Posterize",
-            "srcFile": "Luminance Posterize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "maximumComponent",
-            "title": "Maximum Component",
-            "srcFile": "Maximum Component.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "median",
-            "title": "Median",
-            "srcFile": "Median.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "metaImage",
-            "title": "Meta Image",
-            "srcFile": "Meta Image.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "microBufferRgb",
-            "title": "Micro Buffer RGB",
-            "srcFile": "Micro Buffer RGB.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "microBuffer",
-            "title": "Micro Buffer",
-            "srcFile": "Micro Buffer.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "minimumComponent",
-            "title": "Minimum Component",
-            "srcFile": "Minimum Component.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "mirrorEdge",
-            "title": "Mirror Edge",
-            "srcFile": "Mirror Edge.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "mirrorEdge2",
-            "title": "Mirror Edge",
-            "srcFile": "Mirror Edge.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "mirror",
-            "title": "Mirror",
-            "srcFile": "Mirror.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "morph",
-            "title": "Morph",
-            "srcFile": "Morph.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "mosaic",
-            "title": "Mosaic",
-            "srcFile": "Mosaic.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "motionHeatMap",
-            "title": "Motion Heat Map",
-            "srcFile": "Motion Heat Map.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "motionMask",
-            "title": "Motion Mask",
-            "srcFile": "Motion Mask.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "multiGradient",
-            "title": "Multi Gradient",
-            "srcFile": "Multi Gradient.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiHueShift",
-            "title": "Multi Hue Shift",
-            "srcFile": "Multi Hue Shift.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiPassGaussianBlur",
-            "title": "Multi Pass Gaussian Blur",
-            "srcFile": "Multi Pass Gaussian Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiPassGaussianBlur2",
-            "title": "Multi Pass Gaussian Blur",
-            "srcFile": "Multi Pass Gaussian Blur.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "multiPixellate",
-            "title": "Multi-Pixellate",
-            "srcFile": "Multi-Pixellate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiFrame2x2",
-            "title": "MultiFrame 2x2",
-            "srcFile": "MultiFrame 2x2.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiFrame3x3",
-            "title": "MultiFrame 3x3",
-            "srcFile": "MultiFrame 3x3.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "multiplyBlend",
-            "title": "Multiply Blend",
-            "srcFile": "Multiply Blend.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "neon",
-            "title": "Neon",
-            "srcFile": "Neon.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "neon2",
-            "title": "Neon",
-            "srcFile": "Neon.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "nightVision",
-            "title": "Night Vision",
-            "srcFile": "Night Vision.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "noiseAdapt",
-            "title": "Noise Adapt",
-            "srcFile": "Noise Adapt.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "noiseDisplace",
-            "title": "Noise Displace",
-            "srcFile": "Noise Displace.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "noisePixellate",
-            "title": "Noise Pixellate",
-            "srcFile": "Noise Pixellate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "noise",
-            "title": "Noise",
-            "srcFile": "Noise.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "opticalFlowDistort",
-            "title": "Optical Flow Distort",
-            "srcFile": "Optical Flow Distort.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "opticalFlowDistort2",
-            "title": "Optical Flow Distort",
-            "srcFile": "Optical Flow Distort.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "opticalFlowGenerator",
-            "title": "Optical Flow Generator",
-            "srcFile": "Optical Flow Generator.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "perlinTransition",
-            "title": "Perlin Transition",
-            "srcFile": "Perlin Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "pinwheel",
-            "title": "Pinwheel",
-            "srcFile": "Pinwheel.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "pixelShifter",
-            "title": "Pixel Shifter",
-            "srcFile": "Pixel Shifter.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "Pixelize.fs",
-            "title": "Pixelize.fs",
-            "srcFile": "Pixelize.fs",
-            "errors": [
-                "Shader analysis error: unexpected tokens [vec2, squareSize, = 2.0 *, dist, /, vec2] in function"
-            ]
-        },
-        {
-            "id": "pixellate",
-            "title": "Pixellate",
-            "srcFile": "Pixellate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "polarFunction",
-            "title": "Polar Function",
-            "srcFile": "Polar Function.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "polkaDotsCurtain",
-            "title": "Polka Dots Curtain",
-            "srcFile": "Polka Dots Curtain.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "polyGlitch",
-            "title": "Poly Glitch",
-            "srcFile": "Poly Glitch.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "polyStar",
-            "title": "Poly Star",
-            "srcFile": "Poly Star.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "posterize",
-            "title": "Posterize",
-            "srcFile": "Posterize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "powerWarp",
-            "title": "Power Warp",
-            "srcFile": "Power Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "quadMask",
-            "title": "Quad Mask",
-            "srcFile": "Quad Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "quadTile",
-            "title": "Quad Tile",
-            "srcFile": "Quad Tile.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "reRgbGradientGenerator",
-            "title": "RE RGB Gradient Generator",
-            "srcFile": "RE RGB Gradient Generator.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbEq",
-            "title": "RGB EQ",
-            "srcFile": "RGB EQ.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbHalftoneLookaround",
-            "title": "RGB Halftone-lookaround",
-            "srcFile": "RGB Halftone-lookaround.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbHalftone",
-            "title": "RGB Halftone",
-            "srcFile": "RGB Halftone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbInvert",
-            "title": "RGB Invert",
-            "srcFile": "RGB Invert.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbStrobe",
-            "title": "RGB Strobe",
-            "srcFile": "RGB Strobe.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbTrails30",
-            "title": "RGB Trails 3.0",
-            "srcFile": "RGB Trails 3.0.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbaSwap",
-            "title": "RGBA Swap",
-            "srcFile": "RGBA Swap.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rgbtoHsv",
-            "title": "RGBtoHSV",
-            "srcFile": "RGBtoHSV.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "radialGradient",
-            "title": "Radial Gradient",
-            "srcFile": "Radial Gradient.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "radialReplicate",
-            "title": "Radial Replicate",
-            "srcFile": "Radial Replicate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "radialSpectrogram",
-            "title": "Radial Spectrogram",
-            "srcFile": "Radial Spectrogram.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "radial",
-            "title": "Radial",
-            "srcFile": "Radial.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomCheckerboard",
-            "title": "Random Checkerboard",
-            "srcFile": "Random Checkerboard.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomFreeze",
-            "title": "Random Freeze",
-            "srcFile": "Random Freeze.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomLines",
-            "title": "Random Lines",
-            "srcFile": "Random Lines.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomShapeBlast",
-            "title": "Random Shape Blast",
-            "srcFile": "Random Shape Blast.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "randomShape",
-            "title": "Random Shape",
-            "srcFile": "Random Shape.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomSquaresMask",
-            "title": "Random Squares Mask",
-            "srcFile": "Random Squares Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomSquares",
-            "title": "Random Squares",
-            "srcFile": "Random Squares.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "randomStripes",
-            "title": "Random Stripes",
-            "srcFile": "Random Stripes.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "replicateRandom",
-            "title": "Replicate Random",
-            "srcFile": "Replicate Random.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "replicate",
-            "title": "Replicate",
-            "srcFile": "Replicate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "resizeGlitch",
-            "title": "Resize Glitch",
-            "srcFile": "Resize Glitch.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "rippleTransition",
-            "title": "Ripple Transition",
-            "srcFile": "Ripple Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "ripples",
-            "title": "Ripples",
-            "srcFile": "Ripples.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rotateScaleFade",
-            "title": "Rotate Scale Fade",
-            "srcFile": "Rotate Scale Fade.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rotate",
-            "title": "Rotate",
-            "srcFile": "Rotate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "rotate2",
-            "title": "Rotate",
-            "srcFile": "Rotate.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "saturationBleed",
-            "title": "Saturation Bleed",
-            "srcFile": "Saturation Bleed.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "saturationBleed2",
-            "title": "Saturation Bleed",
-            "srcFile": "Saturation Bleed.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "sepiaTone",
-            "title": "Sepia Tone",
-            "srcFile": "Sepia Tone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "setAlpha",
-            "title": "Set Alpha",
-            "srcFile": "Set Alpha.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "shake",
-            "title": "Shake",
-            "srcFile": "Shake.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "shapeMask",
-            "title": "Shape Mask",
-            "srcFile": "Shape Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "shapeMorphFeedbackMask",
-            "title": "Shape Morph Feedback Mask",
-            "srcFile": "Shape Morph Feedback Mask.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "shapeMorphWrap",
-            "title": "Shape Morph Wrap",
-            "srcFile": "Shape Morph Wrap.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sharpenLuminance",
-            "title": "Sharpen Luminance",
-            "srcFile": "Sharpen Luminance.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sharpenLuminance2",
-            "title": "Sharpen Luminance",
-            "srcFile": "Sharpen Luminance.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "sharpenRgb",
-            "title": "Sharpen RGB",
-            "srcFile": "Sharpen RGB.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sharpenRgb2",
-            "title": "Sharpen RGB",
-            "srcFile": "Sharpen RGB.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "shockwavePulse",
-            "title": "Shockwave Pulse",
-            "srcFile": "Shockwave Pulse.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "shockwave",
-            "title": "Shockwave",
-            "srcFile": "Shockwave.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "showAlpha",
-            "title": "Show Alpha",
-            "srcFile": "Show Alpha.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sideScrollerAndFlip",
-            "title": "Side Scroller And Flip",
-            "srcFile": "Side Scroller And Flip.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "simpleZoomTransition",
-            "title": "Simple Zoom Transition",
-            "srcFile": "Simple Zoom Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sineWarpGradient",
-            "title": "Sine Warp Gradient",
-            "srcFile": "Sine Warp Gradient.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sineWarpTile",
-            "title": "Sine Warp Tile",
-            "srcFile": "Sine Warp Tile.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sketch",
-            "title": "Sketch",
-            "srcFile": "Sketch.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sketch2",
-            "title": "Sketch",
-            "srcFile": "Sketch.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "slidingStrips",
-            "title": "Sliding Strips",
-            "srcFile": "Sliding Strips.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "slitScanMask",
-            "title": "Slit Scan Mask",
-            "srcFile": "Slit Scan Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "slitScan",
-            "title": "Slit Scan",
-            "srcFile": "Slit Scan.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "smokeScreen",
-            "title": "Smoke Screen",
-            "srcFile": "Smoke Screen.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "smudgedLens",
-            "title": "Smudged Lens",
-            "srcFile": "Smudged Lens.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "smudgedLens2",
-            "title": "Smudged Lens",
-            "srcFile": "Smudged Lens.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "softBlur",
-            "title": "Soft Blur",
-            "srcFile": "Soft Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "softBlur2",
-            "title": "Soft Blur",
-            "srcFile": "Soft Blur.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "softFlip",
-            "title": "Soft Flip",
-            "srcFile": "Soft Flip.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "solarize",
-            "title": "Solarize",
-            "srcFile": "Solarize.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "solidColor",
-            "title": "Solid Color",
-            "srcFile": "Solid Color.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "sortingSmear",
-            "title": "Sorting Smear",
-            "srcFile": "Sorting Smear.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "sortingSmear2",
-            "title": "Sorting Smear",
-            "srcFile": "Sorting Smear.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "sphereMap",
-            "title": "Sphere Map",
-            "srcFile": "Sphere Map.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "spiral",
-            "title": "Spiral",
-            "srcFile": "Spiral.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "squaresWire",
-            "title": "Squares Wire",
-            "srcFile": "Squares Wire.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "squeeze",
-            "title": "Squeeze",
-            "srcFile": "Squeeze.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "star",
-            "title": "Star",
-            "srcFile": "Star.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "stereoViewer",
-            "title": "Stereo Viewer",
-            "srcFile": "Stereo Viewer.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "stripes",
-            "title": "Stripes",
-            "srcFile": "Stripes.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "strobe",
-            "title": "Strobe",
-            "srcFile": "Strobe.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "swapTransition",
-            "title": "Swap Transition",
-            "srcFile": "Swap Transition.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "swirl",
-            "title": "Swirl",
-            "srcFile": "Swirl.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "TV Static.fs",
-            "title": "TV Static.fs",
-            "srcFile": "TV Static.fs",
-            "errors": [
-                "Shader analysis error: unexpected tokens [highp, float, noise] in function"
-            ]
-        },
-        {
-            "id": "thermalCamera",
-            "title": "Thermal Camera",
-            "srcFile": "Thermal Camera.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "thermalCamera2",
-            "title": "Thermal Camera",
-            "srcFile": "Thermal Camera.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "timeGlitchRgb",
-            "title": "Time Glitch RGB",
-            "srcFile": "Time Glitch RGB.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "toon",
-            "title": "Toon",
-            "srcFile": "Toon.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "trailMask",
-            "title": "Trail Mask",
-            "srcFile": "Trail Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "trapezoidDistortion",
-            "title": "Trapezoid Distortion",
-            "srcFile": "Trapezoid Distortion.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "triangleWarp",
-            "title": "Triangle Warp",
-            "srcFile": "Triangle Warp.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "triangle",
-            "title": "Triangle",
-            "srcFile": "Triangle.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "triangles",
-            "title": "Triangles",
-            "srcFile": "Triangles.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "trioTone",
-            "title": "Trio Tone",
-            "srcFile": "Trio Tone.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "tripleRotate",
-            "title": "Triple Rotate",
-            "srcFile": "Triple Rotate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "truchetTile",
-            "title": "Truchet Tile",
-            "srcFile": "Truchet Tile.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "twirl",
-            "title": "Twirl",
-            "srcFile": "Twirl.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "undulatingBurnOut",
-            "title": "Undulating Burn Out",
-            "srcFile": "Undulating Burn Out.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "unsharpMask",
-            "title": "Unsharp Mask",
-            "srcFile": "Unsharp Mask.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "unsharpMask2",
-            "title": "Unsharp Mask",
-            "srcFile": "Unsharp Mask.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "vhsGlitch",
-            "title": "VHS Glitch",
-            "srcFile": "VHS Glitch.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "vuMeter",
-            "title": "VU Meter",
-            "srcFile": "VU Meter.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "vvmotionBlur30",
-            "title": "VVMotionBlur 3.0",
-            "srcFile": "VVMotionBlur 3.0.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "vertexManipulator",
-            "title": "Vertex Manipulator",
-            "srcFile": "Vertex Manipulator.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "vertexManipulator2",
-            "title": "Vertex Manipulator",
-            "srcFile": "Vertex Manipulator.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "verticalTearing",
-            "title": "Vertical Tearing",
-            "srcFile": "Vertical Tearing.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "vibrance",
-            "title": "Vibrance",
-            "srcFile": "Vibrance.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "waterDrop",
-            "title": "Water Drop",
-            "srcFile": "Water Drop.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "waveformDisplace",
-            "title": "Waveform Displace",
-            "srcFile": "Waveform Displace.fs",
-            "errors": [
-                "GlslError(message=unsupported ISF input type \"audio\", row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "whitePointAdjust",
-            "title": "White Point Adjust",
-            "srcFile": "White Point Adjust.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "wind",
-            "title": "Wind",
-            "srcFile": "Wind.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "windowBlinds",
-            "title": "Window Blinds",
-            "srcFile": "Window Blinds.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "windowSlice",
-            "title": "Window Slice",
-            "srcFile": "Window Slice.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "wipeDown",
-            "title": "Wipe Down",
-            "srcFile": "Wipe Down.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "wipeLeft",
-            "title": "Wipe Left",
-            "srcFile": "Wipe Left.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "wipeRight",
-            "title": "Wipe Right",
-            "srcFile": "Wipe Right.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "wipeUp",
-            "title": "Wipe Up",
-            "srcFile": "Wipe Up.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "xyzoom",
-            "title": "XYZoom",
-            "srcFile": "XYZoom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "yCTimeBlur",
-            "title": "Y-C Time Blur",
-            "srcFile": "Y-C Time Blur.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "zoomInCircles",
-            "title": "Zoom In Circles",
-            "srcFile": "Zoom In Circles.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "zoom",
-            "title": "Zoom",
-            "srcFile": "Zoom.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "zoomingFeedback",
-            "title": "Zooming Feedback",
-            "srcFile": "Zooming Feedback.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "cube",
-            "title": "cube",
-            "srcFile": "cube.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002BleachBypass",
-            "title": "v002 Bleach Bypass",
-            "srcFile": "v002 Bleach Bypass.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002Crosshatch",
-            "title": "v002 Crosshatch",
-            "srcFile": "v002 Crosshatch.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002Dilate",
-            "title": "v002 Dilate",
-            "srcFile": "v002 Dilate.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002Dilate2",
-            "title": "v002 Dilate",
-            "srcFile": "v002 Dilate.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "v002Erode",
-            "title": "v002 Erode",
-            "srcFile": "v002 Erode.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002Erode2",
-            "title": "v002 Erode",
-            "srcFile": "v002 Erode.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "v002LightLeak",
-            "title": "v002 Light Leak",
-            "srcFile": "v002 Light Leak.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002LightLeak2",
-            "title": "v002 Light Leak",
-            "srcFile": "v002 Light Leak.vs",
-            "errors": [
-                "GlslError(message=No output port found., row=-1, fileId=-1)"
-            ]
-        },
-        {
-            "id": "v002Technicolor",
-            "title": "v002 Technicolor",
-            "srcFile": "v002 Technicolor.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002Vignette",
-            "title": "v002 Vignette",
-            "srcFile": "v002 Vignette.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002CrtDisplacement",
-            "title": "v002-CRT-Displacement",
-            "srcFile": "v002-CRT-Displacement.fs",
-            "errors": [
-            ]
-        },
-        {
-            "id": "v002CrtMask",
-            "title": "v002-CRT-Mask",
-            "srcFile": "v002-CRT-Mask.fs",
-            "errors": [
-            ]
-        }
-    ]
+  "title": "ISF Files",
+  "entries": [
+    {
+      "id": "3d-rotate",
+      "title": "3d Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "3d Rotate.fs"
+    },
+    {
+      "id": "angular",
+      "title": "Angular",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Angular.fs"
+    },
+    {
+      "id": "apply-alpha",
+      "title": "Apply Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Apply Alpha.fs"
+    },
+    {
+      "id": "ascii-art",
+      "title": "ASCII Art",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "ASCII Art.fs"
+    },
+    {
+      "id": "auto-color-tone",
+      "title": "Auto Color Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Auto Color Tone.fs"
+    },
+    {
+      "id": "auto-colors-histogram",
+      "title": "Auto Colors Histogram",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Auto Colors Histogram.fs"
+    },
+    {
+      "id": "auto-levels",
+      "title": "Auto Levels",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Auto Levels.fs"
+    },
+    {
+      "id": "bad-tv",
+      "title": "Bad TV",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Bad TV.fs"
+    },
+    {
+      "id": "basic-shape",
+      "title": "Basic Shape",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Basic Shape.fs"
+    },
+    {
+      "id": "bloom",
+      "title": "Bloom",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Bloom.fs"
+    },
+    {
+      "id": "bounce",
+      "title": "Bounce",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Bounce.fs"
+    },
+    {
+      "id": "bow-tie-horizontal",
+      "title": "Bow Tie Horizontal",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Bow Tie Horizontal.fs"
+    },
+    {
+      "id": "bow-tie-vertical",
+      "title": "Bow Tie Vertical",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Bow Tie Vertical.fs"
+    },
+    {
+      "id": "boxinator",
+      "title": "Boxinator",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Boxinator.fs"
+    },
+    {
+      "id": "brick-pattern",
+      "title": "Brick Pattern",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Brick Pattern.fs"
+    },
+    {
+      "id": "bright",
+      "title": "Bright",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Bright.fs"
+    },
+    {
+      "id": "broken-lcd",
+      "title": "Broken LCD",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Broken LCD.fs"
+    },
+    {
+      "id": "bump-distortion",
+      "title": "Bump Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Bump Distortion.fs"
+    },
+    {
+      "id": "burn",
+      "title": "Burn",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Burn.fs"
+    },
+    {
+      "id": "butterfly-wave-scrawler",
+      "title": "Butterfly Wave Scrawler",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Butterfly Wave Scrawler.fs"
+    },
+    {
+      "id": "channel-slide",
+      "title": "Channel Slide",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Channel Slide.fs"
+    },
+    {
+      "id": "checkerboard",
+      "title": "Checkerboard",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Checkerboard.fs"
+    },
+    {
+      "id": "chroma-desaturation-mask",
+      "title": "Chroma Desaturation Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Chroma Desaturation Mask.fs"
+    },
+    {
+      "id": "chroma-mask",
+      "title": "Chroma Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Chroma Mask.fs"
+    },
+    {
+      "id": "chroma-zoom",
+      "title": "Chroma Zoom",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Chroma Zoom.fs"
+    },
+    {
+      "id": "circle",
+      "title": "Circle",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Circle.fs"
+    },
+    {
+      "id": "circle-crop",
+      "title": "Circle Crop",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Circle Crop.fs"
+    },
+    {
+      "id": "circle-open",
+      "title": "Circle Open",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Circle Open.fs"
+    },
+    {
+      "id": "circle-splash-distortion",
+      "title": "Circle Splash Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Circle Splash Distortion.fs"
+    },
+    {
+      "id": "circle-trails",
+      "title": "Circle Trails",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Circle Trails.fs"
+    },
+    {
+      "id": "circle-warp",
+      "title": "Circle Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Circle Warp.fs"
+    },
+    {
+      "id": "circle-wrap-distortion",
+      "title": "Circle Wrap Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Circle Wrap Distortion.fs"
+    },
+    {
+      "id": "circular-feedback-mask",
+      "title": "Circular Feedback Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Circular Feedback Mask.fs"
+    },
+    {
+      "id": "circular-screen",
+      "title": "Circular Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Circular Screen.fs"
+    },
+    {
+      "id": "city-lights",
+      "title": "City Lights",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "City Lights.fs"
+    },
+    {
+      "id": "cmyk-halftone",
+      "title": "CMYK Halftone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "CMYK Halftone.fs"
+    },
+    {
+      "id": "cmyk-halftone-lookaround",
+      "title": "CMYK Halftone-Lookaround",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "CMYK Halftone-Lookaround.fs"
+    },
+    {
+      "id": "collage",
+      "title": "Collage",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Collage.fs"
+    },
+    {
+      "id": "color-bars",
+      "title": "Color Bars",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Color Bars.fs"
+    },
+    {
+      "id": "color-blowout",
+      "title": "Color Blowout",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Blowout.fs"
+    },
+    {
+      "id": "color-controls",
+      "title": "Color Controls",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Controls.fs"
+    },
+    {
+      "id": "color-history",
+      "title": "Color History",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Color History.fs"
+    },
+    {
+      "id": "color-invert",
+      "title": "Color Invert",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Invert.fs"
+    },
+    {
+      "id": "color-levels",
+      "title": "Color Levels",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Levels.fs"
+    },
+    {
+      "id": "color-monochrome",
+      "title": "Color Monochrome",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Monochrome.fs"
+    },
+    {
+      "id": "color-organ-polyphonic",
+      "title": "Color Organ Polyphonic",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Color Organ Polyphonic.fs"
+    },
+    {
+      "id": "color-phase",
+      "title": "Color Phase",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Color Phase.fs"
+    },
+    {
+      "id": "color-posterize",
+      "title": "Color Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Posterize.fs"
+    },
+    {
+      "id": "color-relookup",
+      "title": "Color Relookup",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Relookup.fs"
+    },
+    {
+      "id": "color-replacement",
+      "title": "Color Replacement",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Color Replacement.fs"
+    },
+    {
+      "id": "color-scales",
+      "title": "Color Scales",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Color Scales.fs"
+    },
+    {
+      "id": "color-schemes",
+      "title": "Color Schemes",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Color Schemes.fs"
+    },
+    {
+      "id": "color-test-grid",
+      "title": "Color Test Grid",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Color Test Grid.fs"
+    },
+    {
+      "id": "colour-distance",
+      "title": "Colour Distance",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Colour Distance.fs"
+    },
+    {
+      "id": "comet-tails",
+      "title": "Comet Tails",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Comet Tails.fs"
+    },
+    {
+      "id": "convergence",
+      "title": "Convergence",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Convergence.fs"
+    },
+    {
+      "id": "corner-color-tint",
+      "title": "Corner Color Tint",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Corner Color Tint.fs"
+    },
+    {
+      "id": "corner-colors",
+      "title": "Corner Colors",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Corner Colors.fs"
+    },
+    {
+      "id": "crazy-parametric-fun",
+      "title": "Crazy Parametric Fun",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Crazy Parametric Fun.fs"
+    },
+    {
+      "id": "cross-zoom",
+      "title": "CrossZoom",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "CrossZoom.fs"
+    },
+    {
+      "id": "crosshatch",
+      "title": "Crosshatch",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Crosshatch.fs"
+    },
+    {
+      "id": "crosswarp",
+      "title": "Crosswarp",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Crosswarp.fs"
+    },
+    {
+      "id": "cube",
+      "title": "cube",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "cube.fs"
+    },
+    {
+      "id": "cubic-warp",
+      "title": "Cubic Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Cubic Warp.fs"
+    },
+    {
+      "id": "deinterlace",
+      "title": "Deinterlace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Deinterlace.fs"
+    },
+    {
+      "id": "diagonal-blur",
+      "title": "Diagonal Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Diagonal Blur.fs"
+    },
+    {
+      "id": "diagonalize",
+      "title": "Diagonalize",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Diagonalize.fs"
+    },
+    {
+      "id": "digital-clock",
+      "title": "Digital Clock",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Digital Clock.fs"
+    },
+    {
+      "id": "dilate",
+      "title": "Dilate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dilate.fs"
+    },
+    {
+      "id": "dilate-fast",
+      "title": "Dilate-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dilate-Fast.fs"
+    },
+    {
+      "id": "directional",
+      "title": "Directional",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Directional.fs"
+    },
+    {
+      "id": "directional-warp",
+      "title": "Directional Warp",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Directional Warp.fs"
+    },
+    {
+      "id": "directional-wipe",
+      "title": "Directional Wipe",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Directional Wipe.fs"
+    },
+    {
+      "id": "dirty-lens",
+      "title": "Dirty Lens",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dirty Lens.fs"
+    },
+    {
+      "id": "displace",
+      "title": "Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Displace.fs"
+    },
+    {
+      "id": "displacement",
+      "title": "Displacement",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Displacement.fs"
+    },
+    {
+      "id": "dither-bayer",
+      "title": "Dither-Bayer",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dither-Bayer.fs"
+    },
+    {
+      "id": "doom-screen-transition",
+      "title": "Doom Screen Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Doom Screen Transition.fs"
+    },
+    {
+      "id": "doorway",
+      "title": "Doorway",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Doorway.fs"
+    },
+    {
+      "id": "dot-screen",
+      "title": "Dot Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dot Screen.fs"
+    },
+    {
+      "id": "double-vision",
+      "title": "Double Vision",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Double Vision.fs"
+    },
+    {
+      "id": "dreamy",
+      "title": "Dreamy",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Dreamy.fs"
+    },
+    {
+      "id": "dreamy-zoom",
+      "title": "Dreamy Zoom",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Dreamy Zoom.fs"
+    },
+    {
+      "id": "dual-side-scroller-and-flip",
+      "title": "Dual Side Scroller And Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Dual Side Scroller And Flip.fs"
+    },
+    {
+      "id": "duotone",
+      "title": "Duotone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Duotone.fs"
+    },
+    {
+      "id": "duotone-from-histogram",
+      "title": "Duotone From Histogram",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Duotone From Histogram.fs"
+    },
+    {
+      "id": "echo-trace",
+      "title": "Echo Trace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Echo Trace.fs"
+    },
+    {
+      "id": "edge-blowout",
+      "title": "Edge Blowout",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Edge Blowout.fs"
+    },
+    {
+      "id": "edge-blur",
+      "title": "Edge Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Edge Blur.fs"
+    },
+    {
+      "id": "edge-distort",
+      "title": "Edge Distort",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Edge Distort.fs"
+    },
+    {
+      "id": "edge-trace",
+      "title": "Edge Trace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Edge Trace.fs"
+    },
+    {
+      "id": "edges",
+      "title": "Edges",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Edges.fs"
+    },
+    {
+      "id": "emboss",
+      "title": "Emboss",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Emboss.fs"
+    },
+    {
+      "id": "erode",
+      "title": "Erode",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Erode.fs"
+    },
+    {
+      "id": "erode-fast",
+      "title": "Erode-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Erode-Fast.fs"
+    },
+    {
+      "id": "etch-a-sketch",
+      "title": "Etch-a-Sketch",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Etch-a-Sketch.fs"
+    },
+    {
+      "id": "exposure-adjust",
+      "title": "Exposure Adjust",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Exposure Adjust.fs"
+    },
+    {
+      "id": "fade",
+      "title": "Fade",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Fade.fs"
+    },
+    {
+      "id": "fade-color",
+      "title": "Fade Color",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Fade Color.fs"
+    },
+    {
+      "id": "fade-gray-scale",
+      "title": "Fade Gray Scale",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Fade Gray Scale.fs"
+    },
+    {
+      "id": "false-color",
+      "title": "False Color",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "False Color.fs"
+    },
+    {
+      "id": "fast-blur",
+      "title": "Fast Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Fast Blur.fs"
+    },
+    {
+      "id": "fast-mosh",
+      "title": "FastMosh",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "FastMosh.fs"
+    },
+    {
+      "id": "fft-color-lines",
+      "title": "FFT Color Lines",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "FFT Color Lines.fs"
+    },
+    {
+      "id": "fft-filled-waveform",
+      "title": "FFT Filled Waveform",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "FFT Filled Waveform.fs"
+    },
+    {
+      "id": "fft-spectrogram",
+      "title": "FFT Spectrogram",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "FFT Spectrogram.fs"
+    },
+    {
+      "id": "film-burn",
+      "title": "Film Burn",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Film Burn.fs"
+    },
+    {
+      "id": "flip-h",
+      "title": "Flip H",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Flip H.fs"
+    },
+    {
+      "id": "flip-v",
+      "title": "Flip V",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Flip V.fs"
+    },
+    {
+      "id": "flipbook",
+      "title": "Flipbook",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Flipbook.fs"
+    },
+    {
+      "id": "fly-eye",
+      "title": "Fly Eye",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Fly Eye.fs"
+    },
+    {
+      "id": "freeze-frame",
+      "title": "Freeze Frame",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Freeze Frame.fs"
+    },
+    {
+      "id": "frosted-glass",
+      "title": "Frosted Glass",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Frosted Glass.fs"
+    },
+    {
+      "id": "gamma-correction",
+      "title": "Gamma Correction",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Gamma Correction.fs"
+    },
+    {
+      "id": "ghosting",
+      "title": "Ghosting",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Ghosting.fs"
+    },
+    {
+      "id": "glitch-displace",
+      "title": "Glitch Displace",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Glitch Displace.fs"
+    },
+    {
+      "id": "glitch-memories",
+      "title": "Glitch Memories",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Glitch Memories.fs"
+    },
+    {
+      "id": "glitch-shifter",
+      "title": "Glitch Shifter",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Glitch Shifter.fs"
+    },
+    {
+      "id": "gloom",
+      "title": "Gloom",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Gloom.fs"
+    },
+    {
+      "id": "glow",
+      "title": "Glow",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Glow.fs"
+    },
+    {
+      "id": "glow-fast",
+      "title": "Glow-Fast",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Glow-Fast.fs"
+    },
+    {
+      "id": "god-rays",
+      "title": "God Rays",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "God Rays.fs"
+    },
+    {
+      "id": "graph-paper",
+      "title": "Graph Paper",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Graph Paper.fs"
+    },
+    {
+      "id": "grid-flip",
+      "title": "Grid Flip",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Grid Flip.fs"
+    },
+    {
+      "id": "grid-warp",
+      "title": "Grid Warp",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Grid Warp.fs"
+    },
+    {
+      "id": "hatch-blur",
+      "title": "Hatch Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Hatch Blur.fs"
+    },
+    {
+      "id": "heart",
+      "title": "Heart",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Heart.fs"
+    },
+    {
+      "id": "heart-transition",
+      "title": "Heart Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Heart Transition.fs"
+    },
+    {
+      "id": "hexagonalize",
+      "title": "Hexagonalize",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Hexagonalize.fs"
+    },
+    {
+      "id": "histogram-viewer",
+      "title": "Histogram Viewer",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Histogram Viewer.fs"
+    },
+    {
+      "id": "horiz-vert-hold",
+      "title": "HorizVertHold",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "HorizVertHold.fs"
+    },
+    {
+      "id": "hsvto-rgb",
+      "title": "HSVtoRGB",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "HSVtoRGB.fs"
+    },
+    {
+      "id": "hyperspace",
+      "title": "Hyperspace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Hyperspace.fs"
+    },
+    {
+      "id": "interlace",
+      "title": "Interlace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Interlace.fs"
+    },
+    {
+      "id": "interlace-mirror",
+      "title": "Interlace Mirror",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Interlace Mirror.fs"
+    },
+    {
+      "id": "inverted-page-curl",
+      "title": "Inverted Page Curl",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Inverted Page Curl.fs"
+    },
+    {
+      "id": "kaleidoscope",
+      "title": "Kaleidoscope",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Kaleidoscope.fs"
+    },
+    {
+      "id": "kaleidoscope-tile",
+      "title": "Kaleidoscope Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Kaleidoscope Tile.fs"
+    },
+    {
+      "id": "kaleidoscope-transition",
+      "title": "Kaleidoscope Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Kaleidoscope Transition.fs"
+    },
+    {
+      "id": "key-frame-artifacts",
+      "title": "Key Frame Artifacts",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Key Frame Artifacts.fs"
+    },
+    {
+      "id": "layer-mask",
+      "title": "Layer Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Layer Mask.fs"
+    },
+    {
+      "id": "layer-position",
+      "title": "Layer Position",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Layer Position.fs"
+    },
+    {
+      "id": "lens-flare",
+      "title": "Lens Flare",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Lens Flare.fs"
+    },
+    {
+      "id": "life",
+      "title": "Life",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Life.fs"
+    },
+    {
+      "id": "line-screen",
+      "title": "Line Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Line Screen.fs"
+    },
+    {
+      "id": "linear-blur",
+      "title": "Linear Blur",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Linear Blur.fs"
+    },
+    {
+      "id": "linear-gradient",
+      "title": "Linear Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Linear Gradient.fs"
+    },
+    {
+      "id": "lines",
+      "title": "Lines",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Lines.fs"
+    },
+    {
+      "id": "long-exposure",
+      "title": "Long Exposure",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Long Exposure.fs"
+    },
+    {
+      "id": "luma-transition",
+      "title": "Luma Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Luma Transition.fs"
+    },
+    {
+      "id": "luminance-melt",
+      "title": "Luminance Melt",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Luminance Melt.fs"
+    },
+    {
+      "id": "luminance-posterize",
+      "title": "Luminance Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Luminance Posterize.fs"
+    },
+    {
+      "id": "maximum-component",
+      "title": "Maximum Component",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Maximum Component.fs"
+    },
+    {
+      "id": "median",
+      "title": "Median",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Median.fs"
+    },
+    {
+      "id": "meta-image",
+      "title": "Meta Image",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Meta Image.fs"
+    },
+    {
+      "id": "micro-buffer",
+      "title": "Micro Buffer",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Micro Buffer.fs"
+    },
+    {
+      "id": "micro-buffer-rgb",
+      "title": "Micro Buffer RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Micro Buffer RGB.fs"
+    },
+    {
+      "id": "minimum-component",
+      "title": "Minimum Component",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Minimum Component.fs"
+    },
+    {
+      "id": "mirror",
+      "title": "Mirror",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Mirror.fs"
+    },
+    {
+      "id": "mirror-edge",
+      "title": "Mirror Edge",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Mirror Edge.fs"
+    },
+    {
+      "id": "morph",
+      "title": "Morph",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Morph.fs"
+    },
+    {
+      "id": "mosaic",
+      "title": "Mosaic",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Mosaic.fs"
+    },
+    {
+      "id": "motion-heat-map",
+      "title": "Motion Heat Map",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Motion Heat Map.fs"
+    },
+    {
+      "id": "motion-mask",
+      "title": "Motion Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Motion Mask.fs"
+    },
+    {
+      "id": "multi-frame-2x2",
+      "title": "MultiFrame 2x2",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "MultiFrame 2x2.fs"
+    },
+    {
+      "id": "multi-frame-3x3",
+      "title": "MultiFrame 3x3",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "MultiFrame 3x3.fs"
+    },
+    {
+      "id": "multi-gradient",
+      "title": "Multi Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Multi Gradient.fs"
+    },
+    {
+      "id": "multi-hue-shift",
+      "title": "Multi Hue Shift",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Multi Hue Shift.fs"
+    },
+    {
+      "id": "multi-pass-gaussian-blur",
+      "title": "Multi Pass Gaussian Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Multi Pass Gaussian Blur.fs"
+    },
+    {
+      "id": "multi-pixellate",
+      "title": "Multi-Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Multi-Pixellate.fs"
+    },
+    {
+      "id": "multiply-blend",
+      "title": "Multiply Blend",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Multiply Blend.fs"
+    },
+    {
+      "id": "neon",
+      "title": "Neon",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Neon.fs"
+    },
+    {
+      "id": "night-vision",
+      "title": "Night Vision",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Night Vision.fs"
+    },
+    {
+      "id": "noise",
+      "title": "Noise",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Noise.fs"
+    },
+    {
+      "id": "noise-adapt",
+      "title": "Noise Adapt",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Noise Adapt.fs"
+    },
+    {
+      "id": "noise-displace",
+      "title": "Noise Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Noise Displace.fs"
+    },
+    {
+      "id": "noise-pixellate",
+      "title": "Noise Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Noise Pixellate.fs"
+    },
+    {
+      "id": "optical-flow-distort",
+      "title": "Optical Flow Distort",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Optical Flow Distort.fs"
+    },
+    {
+      "id": "optical-flow-generator",
+      "title": "Optical Flow Generator",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Optical Flow Generator.fs"
+    },
+    {
+      "id": "perlin-transition",
+      "title": "Perlin Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Perlin Transition.fs"
+    },
+    {
+      "id": "pinwheel",
+      "title": "Pinwheel",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Pinwheel.fs"
+    },
+    {
+      "id": "pixel-shifter",
+      "title": "Pixel Shifter",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Pixel Shifter.fs"
+    },
+    {
+      "id": "pixelize",
+      "title": "Pixelize",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Pixelize.fs"
+    },
+    {
+      "id": "pixellate",
+      "title": "Pixellate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Pixellate.fs"
+    },
+    {
+      "id": "polar-function",
+      "title": "Polar Function",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Polar Function.fs"
+    },
+    {
+      "id": "polka-dots-curtain",
+      "title": "Polka Dots Curtain",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Polka Dots Curtain.fs"
+    },
+    {
+      "id": "poly-glitch",
+      "title": "Poly Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Poly Glitch.fs"
+    },
+    {
+      "id": "poly-star",
+      "title": "Poly Star",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Poly Star.fs"
+    },
+    {
+      "id": "posterize",
+      "title": "Posterize",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Posterize.fs"
+    },
+    {
+      "id": "power-warp",
+      "title": "Power Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Power Warp.fs"
+    },
+    {
+      "id": "quad-mask",
+      "title": "Quad Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Quad Mask.fs"
+    },
+    {
+      "id": "quad-tile",
+      "title": "Quad Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Quad Tile.fs"
+    },
+    {
+      "id": "radial",
+      "title": "Radial",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Radial.fs"
+    },
+    {
+      "id": "radial-gradient",
+      "title": "Radial Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Radial Gradient.fs"
+    },
+    {
+      "id": "radial-replicate",
+      "title": "Radial Replicate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Radial Replicate.fs"
+    },
+    {
+      "id": "radial-spectrogram",
+      "title": "Radial Spectrogram",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Radial Spectrogram.fs"
+    },
+    {
+      "id": "random-checkerboard",
+      "title": "Random Checkerboard",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Random Checkerboard.fs"
+    },
+    {
+      "id": "random-freeze",
+      "title": "Random Freeze",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Random Freeze.fs"
+    },
+    {
+      "id": "random-lines",
+      "title": "Random Lines",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Random Lines.fs"
+    },
+    {
+      "id": "random-shape",
+      "title": "Random Shape",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Random Shape.fs"
+    },
+    {
+      "id": "random-shape-blast",
+      "title": "Random Shape Blast",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Random Shape Blast.fs"
+    },
+    {
+      "id": "random-squares",
+      "title": "Random Squares",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Random Squares.fs"
+    },
+    {
+      "id": "random-squares-mask",
+      "title": "Random Squares Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Random Squares Mask.fs"
+    },
+    {
+      "id": "random-stripes",
+      "title": "Random Stripes",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "Random Stripes.fs"
+    },
+    {
+      "id": "re-rgb-gradient-generator",
+      "title": "RE RGB Gradient Generator",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "RE RGB Gradient Generator.fs"
+    },
+    {
+      "id": "replicate",
+      "title": "Replicate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Replicate.fs"
+    },
+    {
+      "id": "replicate-random",
+      "title": "Replicate Random",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Replicate Random.fs"
+    },
+    {
+      "id": "resize-glitch",
+      "title": "Resize Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Resize Glitch.fs"
+    },
+    {
+      "id": "rgb-eq",
+      "title": "RGB EQ",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB EQ.fs"
+    },
+    {
+      "id": "rgb-halftone",
+      "title": "RGB Halftone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB Halftone.fs"
+    },
+    {
+      "id": "rgb-halftone-lookaround",
+      "title": "RGB Halftone-lookaround",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB Halftone-lookaround.fs"
+    },
+    {
+      "id": "rgb-invert",
+      "title": "RGB Invert",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB Invert.fs"
+    },
+    {
+      "id": "rgb-strobe",
+      "title": "RGB Strobe",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB Strobe.fs"
+    },
+    {
+      "id": "rgb-trails-3-0",
+      "title": "RGB Trails 3.0",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGB Trails 3.0.fs"
+    },
+    {
+      "id": "rgba-swap",
+      "title": "RGBA Swap",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGBA Swap.fs"
+    },
+    {
+      "id": "rgbto-hsv",
+      "title": "RGBtoHSV",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "RGBtoHSV.fs"
+    },
+    {
+      "id": "ripple-transition",
+      "title": "Ripple Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Ripple Transition.fs"
+    },
+    {
+      "id": "ripples",
+      "title": "Ripples",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Ripples.fs"
+    },
+    {
+      "id": "rotate",
+      "title": "Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Rotate.fs"
+    },
+    {
+      "id": "rotate-scale-fade",
+      "title": "Rotate Scale Fade",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Rotate Scale Fade.fs"
+    },
+    {
+      "id": "saturation-bleed",
+      "title": "Saturation Bleed",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Saturation Bleed.fs"
+    },
+    {
+      "id": "sepia-tone",
+      "title": "Sepia Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sepia Tone.fs"
+    },
+    {
+      "id": "set-alpha",
+      "title": "Set Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Set Alpha.fs"
+    },
+    {
+      "id": "shake",
+      "title": "Shake",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shake.fs"
+    },
+    {
+      "id": "shape-mask",
+      "title": "Shape Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shape Mask.fs"
+    },
+    {
+      "id": "shape-morph-feedback-mask",
+      "title": "Shape Morph Feedback Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shape Morph Feedback Mask.fs"
+    },
+    {
+      "id": "shape-morph-wrap",
+      "title": "Shape Morph Wrap",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shape Morph Wrap.fs"
+    },
+    {
+      "id": "sharpen-luminance",
+      "title": "Sharpen Luminance",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sharpen Luminance.fs"
+    },
+    {
+      "id": "sharpen-rgb",
+      "title": "Sharpen RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sharpen RGB.fs"
+    },
+    {
+      "id": "shockwave",
+      "title": "Shockwave",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shockwave.fs"
+    },
+    {
+      "id": "shockwave-pulse",
+      "title": "Shockwave Pulse",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Shockwave Pulse.fs"
+    },
+    {
+      "id": "show-alpha",
+      "title": "Show Alpha",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Show Alpha.fs"
+    },
+    {
+      "id": "side-scroller-and-flip",
+      "title": "Side Scroller And Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Side Scroller And Flip.fs"
+    },
+    {
+      "id": "simple-zoom-transition",
+      "title": "Simple Zoom Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Simple Zoom Transition.fs"
+    },
+    {
+      "id": "sine-warp-gradient",
+      "title": "Sine Warp Gradient",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Sine Warp Gradient.fs"
+    },
+    {
+      "id": "sine-warp-tile",
+      "title": "Sine Warp Tile",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sine Warp Tile.fs"
+    },
+    {
+      "id": "sketch",
+      "title": "Sketch",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sketch.fs"
+    },
+    {
+      "id": "sliding-strips",
+      "title": "Sliding Strips",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sliding Strips.fs"
+    },
+    {
+      "id": "slit-scan",
+      "title": "Slit Scan",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Slit Scan.fs"
+    },
+    {
+      "id": "slit-scan-mask",
+      "title": "Slit Scan Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Slit Scan Mask.fs"
+    },
+    {
+      "id": "smoke-screen",
+      "title": "Smoke Screen",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Smoke Screen.fs"
+    },
+    {
+      "id": "smudged-lens",
+      "title": "Smudged Lens",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Smudged Lens.fs"
+    },
+    {
+      "id": "soft-blur",
+      "title": "Soft Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Soft Blur.fs"
+    },
+    {
+      "id": "soft-flip",
+      "title": "Soft Flip",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Soft Flip.fs"
+    },
+    {
+      "id": "solarize",
+      "title": "Solarize",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Solarize.fs"
+    },
+    {
+      "id": "solid-color",
+      "title": "Solid Color",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Solid Color.fs"
+    },
+    {
+      "id": "sorting-smear",
+      "title": "Sorting Smear",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sorting Smear.fs"
+    },
+    {
+      "id": "sphere-map",
+      "title": "Sphere Map",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Sphere Map.fs"
+    },
+    {
+      "id": "spiral",
+      "title": "Spiral",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Spiral.fs"
+    },
+    {
+      "id": "squares-wire",
+      "title": "Squares Wire",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Squares Wire.fs"
+    },
+    {
+      "id": "squeeze",
+      "title": "Squeeze",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Squeeze.fs"
+    },
+    {
+      "id": "star",
+      "title": "Star",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Star.fs"
+    },
+    {
+      "id": "stereo-viewer",
+      "title": "Stereo Viewer",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Stereo Viewer.fs"
+    },
+    {
+      "id": "stripes",
+      "title": "Stripes",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Stripes.fs"
+    },
+    {
+      "id": "strobe",
+      "title": "Strobe",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Strobe.fs"
+    },
+    {
+      "id": "swap-transition",
+      "title": "Swap Transition",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Swap Transition.fs"
+    },
+    {
+      "id": "swirl",
+      "title": "Swirl",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Swirl.fs"
+    },
+    {
+      "id": "thermal-camera",
+      "title": "Thermal Camera",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Thermal Camera.fs"
+    },
+    {
+      "id": "time-glitch-rgb",
+      "title": "Time Glitch RGB",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Time Glitch RGB.fs"
+    },
+    {
+      "id": "toon",
+      "title": "Toon",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Toon.fs"
+    },
+    {
+      "id": "trail-mask",
+      "title": "Trail Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Trail Mask.fs"
+    },
+    {
+      "id": "trapezoid-distortion",
+      "title": "Trapezoid Distortion",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Trapezoid Distortion.fs"
+    },
+    {
+      "id": "triangle",
+      "title": "Triangle",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Triangle.fs"
+    },
+    {
+      "id": "triangle-warp",
+      "title": "Triangle Warp",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Triangle Warp.fs"
+    },
+    {
+      "id": "triangles",
+      "title": "Triangles",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Triangles.fs"
+    },
+    {
+      "id": "trio-tone",
+      "title": "Trio Tone",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Trio Tone.fs"
+    },
+    {
+      "id": "triple-rotate",
+      "title": "Triple Rotate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Triple Rotate.fs"
+    },
+    {
+      "id": "truchet-tile",
+      "title": "Truchet Tile",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Truchet Tile.fs"
+    },
+    {
+      "id": "tv-static",
+      "title": "TV Static",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "TV Static.fs"
+    },
+    {
+      "id": "twirl",
+      "title": "Twirl",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Twirl.fs"
+    },
+    {
+      "id": "undulating-burn-out",
+      "title": "Undulating Burn Out",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Undulating Burn Out.fs"
+    },
+    {
+      "id": "unsharp-mask",
+      "title": "Unsharp Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Unsharp Mask.fs"
+    },
+    {
+      "id": "v002-bleach-bypass",
+      "title": "v002 Bleach Bypass",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Bleach Bypass.fs"
+    },
+    {
+      "id": "v002-crosshatch",
+      "title": "v002 Crosshatch",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Crosshatch.fs"
+    },
+    {
+      "id": "v002-crt-displacement",
+      "title": "v002-CRT-Displacement",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002-CRT-Displacement.fs"
+    },
+    {
+      "id": "v002-crt-mask",
+      "title": "v002-CRT-Mask",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002-CRT-Mask.fs"
+    },
+    {
+      "id": "v002-dilate",
+      "title": "v002 Dilate",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Dilate.fs"
+    },
+    {
+      "id": "v002-erode",
+      "title": "v002 Erode",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Erode.fs"
+    },
+    {
+      "id": "v002-light-leak",
+      "title": "v002 Light Leak",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Light Leak.fs"
+    },
+    {
+      "id": "v002-technicolor",
+      "title": "v002 Technicolor",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Technicolor.fs"
+    },
+    {
+      "id": "v002-vignette",
+      "title": "v002 Vignette",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "v002 Vignette.fs"
+    },
+    {
+      "id": "vertex-manipulator",
+      "title": "Vertex Manipulator",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Vertex Manipulator.fs"
+    },
+    {
+      "id": "vertical-tearing",
+      "title": "Vertical Tearing",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Vertical Tearing.fs"
+    },
+    {
+      "id": "vhs-glitch",
+      "title": "VHS Glitch",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "VHS Glitch.fs"
+    },
+    {
+      "id": "vibrance",
+      "title": "Vibrance",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Vibrance.fs"
+    },
+    {
+      "id": "vu-meter",
+      "title": "VU Meter",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "VU Meter.fs"
+    },
+    {
+      "id": "vvmotion-blur-3-0",
+      "title": "VVMotionBlur 3.0",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "VVMotionBlur 3.0.fs"
+    },
+    {
+      "id": "water-drop",
+      "title": "Water Drop",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Water Drop.fs"
+    },
+    {
+      "id": "waveform-displace",
+      "title": "Waveform Displace",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Waveform Displace.fs"
+    },
+    {
+      "id": "white-point-adjust",
+      "title": "White Point Adjust",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "White Point Adjust.fs"
+    },
+    {
+      "id": "wind",
+      "title": "Wind",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Wind.fs"
+    },
+    {
+      "id": "window-blinds",
+      "title": "Window Blinds",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Window Blinds.fs"
+    },
+    {
+      "id": "window-slice",
+      "title": "Window Slice",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Window Slice.fs"
+    },
+    {
+      "id": "wipe-down",
+      "title": "Wipe Down",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Wipe Down.fs"
+    },
+    {
+      "id": "wipe-left",
+      "title": "Wipe Left",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Wipe Left.fs"
+    },
+    {
+      "id": "wipe-right",
+      "title": "Wipe Right",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Wipe Right.fs"
+    },
+    {
+      "id": "wipe-up",
+      "title": "Wipe Up",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Wipe Up.fs"
+    },
+    {
+      "id": "xyzoom",
+      "title": "XYZoom",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "XYZoom.fs"
+    },
+    {
+      "id": "y-c-time-blur",
+      "title": "Y-C Time Blur",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Y-C Time Blur.fs"
+    },
+    {
+      "id": "zoom",
+      "title": "Zoom",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Zoom.fs"
+    },
+    {
+      "id": "zoom-in-circles",
+      "title": "Zoom In Circles",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "Zoom In Circles.fs"
+    },
+    {
+      "id": "zooming-feedback",
+      "title": "Zooming Feedback",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "Zooming Feedback.fs"
+    }
+  ]
 }
