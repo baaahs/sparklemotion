@@ -185,7 +185,7 @@ object GlslParserSpec : Spek({
                         )
                 }
 
-                context("with #ifdefs") {
+                context("with #ifdef's") {
                     override(shaderText) {
                         /**language=glsl*/
                         """
@@ -240,6 +240,85 @@ object GlslParserSpec : Spek({
                     }
 
                     context("with define macros") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #define iResolution resolution // ignore this comment
+                                #define dividedBy(a,b) (a / b) /* ignore this comment too */
+                                #define circle(U, r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+
+                                uniform vec2 resolution;
+                                void main() {
+                                #ifdef xyz
+                                    foo();
+                                #endif
+                                    gl_FragColor = circle(gl_FragCoord, iResolution.x);
+                                    gl_FragColor = circle(dividedBy(gl_FragCoord, 1.0), iResolution.x);
+                                }
+                            """.trimIndent()
+                        }
+
+                        it("handles nested macro expansions") {
+                            val glslFunction = glslCode.functions.only()
+
+                            val glsl = glslFunction.toGlsl(null) { text ->
+                                if (text == "main") Namespace("ns").qualify(text) else text
+                            }
+
+                            expect(glsl.trim())
+                                .toBe(
+                                    """
+                                        #line 6
+                                        void ns_main() {
+                                        
+                                        
+                                        
+                                            gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
+                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
+                                        }
+                                    """.trimIndent()
+                                )
+                        }
+                    }
+                }
+
+                context("with #if's") {
+                    context("with a static expression which evaluates to false") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 0 > 1
+                                uniform float shouldNotBeDefined;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("skips the line") {
+                            expect(glslCode.globalVars.toList()).isEmpty()
+                        }
+                    }
+
+                    context("with a static expression which evaluates to true") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 1 > 0
+                                uniform float shouldBeDefined;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("includes the line") {
+                            expect(glslCode.globalVars.toList()).containsExactly(
+                                GlslVar(
+                                    "shouldBeDefined", GlslType.Float,
+                                    fullText = "uniform float shouldBeDefined;", isUniform = true, lineNumber = 2
+                                )
+                            )
+                        }
+                    }
+
+                    context("with defined macros") {
                         override(shaderText) {
                             /**language=glsl*/
                             """
