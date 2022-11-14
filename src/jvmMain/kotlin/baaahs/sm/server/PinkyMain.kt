@@ -62,20 +62,28 @@ class PinkyMain(private val args: Array<String>) {
 
         logger.info { responses.random() }
 
+        val pinkyArgs = pinkyScope.get<PinkyArgs>()
+        val subcommand = pinkyArgs.subcommand
+        val pinkyDispatcher = pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))
         try {
-            val pinkyArgs = pinkyScope.get<PinkyArgs>()
-            runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
-                pinky.startAndRun {
-                    if (pinkyArgs.simulateBrains) {
-                        pinkyScope.get<ProdBrainSimulator>().enableSimulation()
+            runBlocking(pinkyDispatcher) {
+                if (subcommand == null) {
+                    pinky.startAndRun {
+                        if (pinkyArgs.simulateBrains) {
+                            pinkyScope.get<ProdBrainSimulator>().enableSimulation()
+                        }
                     }
+                } else {
+                    with(subcommand) { pinky.execute() }
                 }
             }
+
         } catch (e: Throwable) {
             logger.error(e) { "Failed to start Pinky." }
+            exitProcess(1)
         } finally {
             logger.info { "Exiting." }
-            exitProcess(1)
+            exitProcess(0)
         }
     }
 

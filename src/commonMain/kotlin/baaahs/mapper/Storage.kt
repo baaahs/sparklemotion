@@ -23,11 +23,15 @@ import kotlinx.serialization.json.jsonObject
 
 class Storage(val fs: Fs, val plugins: Plugins) {
     val json = Json(plugins.json) { isLenient = true }
+    private val prettyJson = Json(plugins.json) { prettyPrint = true }
     val fsSerializer = FsServerSideSerializer()
     val mappingSessionsDir = fs.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")
 
     private val configFile = fs.resolve("config.json")
+
+    private val shaderLibrariesPath = MergedFs(fs, resourcesFs)
+        .resolve("shader-libraries")
 
     companion object {
         private val logger = Logger("Storage")
@@ -160,8 +164,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun listShaderLibraries(): List<Fs.File> {
-        return MergedFs(fs, resourcesFs)
-            .resolve("shader-libraries").listFiles()
+        return shaderLibrariesPath.listFiles()
             .also { println("shader libraries: $it") }
             .filter { it.libraryIndexFile().exists() }
             .also { println("shader libraries with index: $it") }
@@ -173,6 +176,18 @@ class Storage(val fs: Fs, val plugins: Plugins) {
             libDir.libraryIndexFile().read()!!
         )
     }
+
+    suspend fun saveShaderLibraryIndexFile(libraryName: String, index: ShaderLibraryIndexFile) {
+        val asJson = prettyJson.encodeToString(ShaderLibraryIndexFile.serializer(), index)
+        shaderLibraryPath(libraryName).libraryIndexFile()
+            .write(asJson, true)
+    }
+
+    suspend fun listShaderLibraryFiles(libraryName: String) : List<Fs.File> =
+        shaderLibraryPath(libraryName).listFiles()
+
+    fun shaderLibraryPath(libraryName: String) =
+        shaderLibrariesPath.resolve(libraryName)
 
     private fun Fs.File.libraryIndexFile() = resolve("_libraryIndex.json", isDirectory = false)
 

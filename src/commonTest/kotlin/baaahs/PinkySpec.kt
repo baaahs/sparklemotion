@@ -98,7 +98,7 @@ object PinkySpec : Spek({
                 clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
                 stageManager, controllersManager, brainManager,
-                ShaderLibraryManager(storage, pubSub),
+                ShaderLibraryManager(storage, pubSub, toolchain),
                 Pinky.NetworkStats(),
                 PinkySettings(),
                 serverNotices,

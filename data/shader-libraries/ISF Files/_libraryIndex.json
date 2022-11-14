@@ -1,0 +1,2449 @@
+{
+    "title": "ISF Files",
+    "description": null,
+    "license": null,
+    "entries": [
+        {
+            "id": "3dRotate",
+            "title": "3d Rotate",
+            "srcFile": "3d Rotate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "3dRotate2",
+            "title": "3d Rotate",
+            "srcFile": "3d Rotate.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "asciiArt",
+            "title": "ASCII Art",
+            "srcFile": "ASCII Art.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "angular",
+            "title": "Angular",
+            "srcFile": "Angular.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "applyAlpha",
+            "title": "Apply Alpha",
+            "srcFile": "Apply Alpha.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "autoColorTone",
+            "title": "Auto Color Tone",
+            "srcFile": "Auto Color Tone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "autoColorsHistogram",
+            "title": "Auto Colors Histogram",
+            "srcFile": "Auto Colors Histogram.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "autoLevels",
+            "title": "Auto Levels",
+            "srcFile": "Auto Levels.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "autoLevels2",
+            "title": "Auto Levels",
+            "srcFile": "Auto Levels.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "badTv",
+            "title": "Bad TV",
+            "srcFile": "Bad TV.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "basicShape",
+            "title": "Basic Shape",
+            "srcFile": "Basic Shape.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bloom",
+            "title": "Bloom",
+            "srcFile": "Bloom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bloom2",
+            "title": "Bloom",
+            "srcFile": "Bloom.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "bounce",
+            "title": "Bounce",
+            "srcFile": "Bounce.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bowTieHorizontal",
+            "title": "Bow Tie Horizontal",
+            "srcFile": "Bow Tie Horizontal.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bowTieVertical",
+            "title": "Bow Tie Vertical",
+            "srcFile": "Bow Tie Vertical.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "boxinator",
+            "title": "Boxinator",
+            "srcFile": "Boxinator.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "brickPattern",
+            "title": "Brick Pattern",
+            "srcFile": "Brick Pattern.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bright",
+            "title": "Bright",
+            "srcFile": "Bright.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "brokenLcd",
+            "title": "Broken LCD",
+            "srcFile": "Broken LCD.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "bumpDistortion",
+            "title": "Bump Distortion",
+            "srcFile": "Bump Distortion.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "burn",
+            "title": "Burn",
+            "srcFile": "Burn.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "butterflyWaveScrawler",
+            "title": "Butterfly Wave Scrawler",
+            "srcFile": "Butterfly Wave Scrawler.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cmykHalftoneLookaround",
+            "title": "CMYK Halftone-Lookaround",
+            "srcFile": "CMYK Halftone-Lookaround.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cmykHalftone",
+            "title": "CMYK Halftone",
+            "srcFile": "CMYK Halftone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "channelSlide",
+            "title": "Channel Slide",
+            "srcFile": "Channel Slide.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "checkerboard",
+            "title": "Checkerboard",
+            "srcFile": "Checkerboard.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "chromaDesaturationMask",
+            "title": "Chroma Desaturation Mask",
+            "srcFile": "Chroma Desaturation Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "chromaMask",
+            "title": "Chroma Mask",
+            "srcFile": "Chroma Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "chromaZoom",
+            "title": "Chroma Zoom",
+            "srcFile": "Chroma Zoom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleCrop",
+            "title": "Circle Crop",
+            "srcFile": "Circle Crop.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleOpen",
+            "title": "Circle Open",
+            "srcFile": "Circle Open.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleSplashDistortion",
+            "title": "Circle Splash Distortion",
+            "srcFile": "Circle Splash Distortion.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleTrails",
+            "title": "Circle Trails",
+            "srcFile": "Circle Trails.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleWarp",
+            "title": "Circle Warp",
+            "srcFile": "Circle Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circleWrapDistortion",
+            "title": "Circle Wrap Distortion",
+            "srcFile": "Circle Wrap Distortion.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circle",
+            "title": "Circle",
+            "srcFile": "Circle.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circularFeedbackMask",
+            "title": "Circular Feedback Mask",
+            "srcFile": "Circular Feedback Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circularScreen",
+            "title": "Circular Screen",
+            "srcFile": "Circular Screen.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "circularScreen2",
+            "title": "Circular Screen",
+            "srcFile": "Circular Screen.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "cityLights",
+            "title": "City Lights",
+            "srcFile": "City Lights.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cityLights2",
+            "title": "City Lights",
+            "srcFile": "City Lights.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "collage",
+            "title": "Collage",
+            "srcFile": "Collage.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorBars",
+            "title": "Color Bars",
+            "srcFile": "Color Bars.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorBlowout",
+            "title": "Color Blowout",
+            "srcFile": "Color Blowout.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorBlowout2",
+            "title": "Color Blowout",
+            "srcFile": "Color Blowout.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "colorControls",
+            "title": "Color Controls",
+            "srcFile": "Color Controls.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorHistory",
+            "title": "Color History",
+            "srcFile": "Color History.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorInvert",
+            "title": "Color Invert",
+            "srcFile": "Color Invert.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorLevels",
+            "title": "Color Levels",
+            "srcFile": "Color Levels.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorMonochrome",
+            "title": "Color Monochrome",
+            "srcFile": "Color Monochrome.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorOrganPolyphonic",
+            "title": "Color Organ Polyphonic",
+            "srcFile": "Color Organ Polyphonic.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorPhase",
+            "title": "Color Phase",
+            "srcFile": "Color Phase.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorPosterize",
+            "title": "Color Posterize",
+            "srcFile": "Color Posterize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorRelookup",
+            "title": "Color Relookup",
+            "srcFile": "Color Relookup.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorReplacement",
+            "title": "Color Replacement",
+            "srcFile": "Color Replacement.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorScales",
+            "title": "Color Scales",
+            "srcFile": "Color Scales.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorSchemes",
+            "title": "Color Schemes",
+            "srcFile": "Color Schemes.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colorTestGrid",
+            "title": "Color Test Grid",
+            "srcFile": "Color Test Grid.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "colourDistance",
+            "title": "Colour Distance",
+            "srcFile": "Colour Distance.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cometTails",
+            "title": "Comet Tails",
+            "srcFile": "Comet Tails.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "convergence",
+            "title": "Convergence",
+            "srcFile": "Convergence.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cornerColorTint",
+            "title": "Corner Color Tint",
+            "srcFile": "Corner Color Tint.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cornerColors",
+            "title": "Corner Colors",
+            "srcFile": "Corner Colors.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "crazyParametricFun",
+            "title": "Crazy Parametric Fun",
+            "srcFile": "Crazy Parametric Fun.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "crossZoom",
+            "title": "CrossZoom",
+            "srcFile": "CrossZoom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "crosshatch",
+            "title": "Crosshatch",
+            "srcFile": "Crosshatch.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "crosswarp",
+            "title": "Crosswarp",
+            "srcFile": "Crosswarp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cubicWarp",
+            "title": "Cubic Warp",
+            "srcFile": "Cubic Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "deinterlace",
+            "title": "Deinterlace",
+            "srcFile": "Deinterlace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "diagonalBlur",
+            "title": "Diagonal Blur",
+            "srcFile": "Diagonal Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "diagonalize",
+            "title": "Diagonalize",
+            "srcFile": "Diagonalize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "digitalClock",
+            "title": "Digital Clock",
+            "srcFile": "Digital Clock.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dilateFast",
+            "title": "Dilate-Fast",
+            "srcFile": "Dilate-Fast.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dilate",
+            "title": "Dilate",
+            "srcFile": "Dilate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "directionalWarp",
+            "title": "Directional Warp",
+            "srcFile": "Directional Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "directionalWipe",
+            "title": "Directional Wipe",
+            "srcFile": "Directional Wipe.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "directional",
+            "title": "Directional",
+            "srcFile": "Directional.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dirtyLens",
+            "title": "Dirty Lens",
+            "srcFile": "Dirty Lens.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "displace",
+            "title": "Displace",
+            "srcFile": "Displace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "displacement",
+            "title": "Displacement",
+            "srcFile": "Displacement.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "ditherBayer",
+            "title": "Dither-Bayer",
+            "srcFile": "Dither-Bayer.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "doomScreenTransition",
+            "title": "Doom Screen Transition",
+            "srcFile": "Doom Screen Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "doorway",
+            "title": "Doorway",
+            "srcFile": "Doorway.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dotScreen",
+            "title": "Dot Screen",
+            "srcFile": "Dot Screen.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dotScreen2",
+            "title": "Dot Screen",
+            "srcFile": "Dot Screen.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "doubleVision",
+            "title": "Double Vision",
+            "srcFile": "Double Vision.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dreamyZoom",
+            "title": "Dreamy Zoom",
+            "srcFile": "Dreamy Zoom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dreamy",
+            "title": "Dreamy",
+            "srcFile": "Dreamy.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "dualSideScrollerAndFlip",
+            "title": "Dual Side Scroller And Flip",
+            "srcFile": "Dual Side Scroller And Flip.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "duotoneFromHistogram",
+            "title": "Duotone From Histogram",
+            "srcFile": "Duotone From Histogram.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "duotone",
+            "title": "Duotone",
+            "srcFile": "Duotone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "echoTrace",
+            "title": "Echo Trace",
+            "srcFile": "Echo Trace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edgeBlowout",
+            "title": "Edge Blowout",
+            "srcFile": "Edge Blowout.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edgeBlur",
+            "title": "Edge Blur",
+            "srcFile": "Edge Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edgeBlur2",
+            "title": "Edge Blur",
+            "srcFile": "Edge Blur.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "edgeDistort",
+            "title": "Edge Distort",
+            "srcFile": "Edge Distort.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edgeDistort2",
+            "title": "Edge Distort",
+            "srcFile": "Edge Distort.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "edgeTrace",
+            "title": "Edge Trace",
+            "srcFile": "Edge Trace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edgeTrace2",
+            "title": "Edge Trace",
+            "srcFile": "Edge Trace.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "edges",
+            "title": "Edges",
+            "srcFile": "Edges.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "edges2",
+            "title": "Edges",
+            "srcFile": "Edges.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "emboss",
+            "title": "Emboss",
+            "srcFile": "Emboss.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "emboss2",
+            "title": "Emboss",
+            "srcFile": "Emboss.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "erodeFast",
+            "title": "Erode-Fast",
+            "srcFile": "Erode-Fast.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "erode",
+            "title": "Erode",
+            "srcFile": "Erode.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "etchASketch",
+            "title": "Etch-a-Sketch",
+            "srcFile": "Etch-a-Sketch.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "exposureAdjust",
+            "title": "Exposure Adjust",
+            "srcFile": "Exposure Adjust.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fftColorLines",
+            "title": "FFT Color Lines",
+            "srcFile": "FFT Color Lines.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fftFilledWaveform",
+            "title": "FFT Filled Waveform",
+            "srcFile": "FFT Filled Waveform.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "fftSpectrogram",
+            "title": "FFT Spectrogram",
+            "srcFile": "FFT Spectrogram.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "fadeColor",
+            "title": "Fade Color",
+            "srcFile": "Fade Color.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fadeGrayScale",
+            "title": "Fade Gray Scale",
+            "srcFile": "Fade Gray Scale.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fade",
+            "title": "Fade",
+            "srcFile": "Fade.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "falseColor",
+            "title": "False Color",
+            "srcFile": "False Color.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fastBlur",
+            "title": "Fast Blur",
+            "srcFile": "Fast Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fastBlur2",
+            "title": "Fast Blur",
+            "srcFile": "Fast Blur.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "fastMosh",
+            "title": "FastMosh",
+            "srcFile": "FastMosh.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "fastMosh2",
+            "title": "FastMosh",
+            "srcFile": "FastMosh.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "filmBurn",
+            "title": "Film Burn",
+            "srcFile": "Film Burn.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "flipH",
+            "title": "Flip H",
+            "srcFile": "Flip H.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "flipV",
+            "title": "Flip V",
+            "srcFile": "Flip V.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "flipbook",
+            "title": "Flipbook",
+            "srcFile": "Flipbook.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "flyEye",
+            "title": "Fly Eye",
+            "srcFile": "Fly Eye.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "freezeFrame",
+            "title": "Freeze Frame",
+            "srcFile": "Freeze Frame.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "frostedGlass",
+            "title": "Frosted Glass",
+            "srcFile": "Frosted Glass.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "gammaCorrection",
+            "title": "Gamma Correction",
+            "srcFile": "Gamma Correction.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "ghosting",
+            "title": "Ghosting",
+            "srcFile": "Ghosting.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "Glitch Displace.fs",
+            "title": "Glitch Displace.fs",
+            "srcFile": "Glitch Displace.fs",
+            "errors": [
+                "Shader analysis error: unexpected tokens [highp, float, random] in function"
+            ]
+        },
+        {
+            "id": "glitchMemories",
+            "title": "Glitch Memories",
+            "srcFile": "Glitch Memories.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "glitchShifter",
+            "title": "Glitch Shifter",
+            "srcFile": "Glitch Shifter.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "gloom",
+            "title": "Gloom",
+            "srcFile": "Gloom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "gloom2",
+            "title": "Gloom",
+            "srcFile": "Gloom.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "glowFast",
+            "title": "Glow-Fast",
+            "srcFile": "Glow-Fast.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "glowFast2",
+            "title": "Glow-Fast",
+            "srcFile": "Glow-Fast.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "glow",
+            "title": "Glow",
+            "srcFile": "Glow.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "glow2",
+            "title": "Glow",
+            "srcFile": "Glow.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "godRays",
+            "title": "God Rays",
+            "srcFile": "God Rays.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "graphPaper",
+            "title": "Graph Paper",
+            "srcFile": "Graph Paper.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "gridFlip",
+            "title": "Grid Flip",
+            "srcFile": "Grid Flip.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "gridWarp",
+            "title": "Grid Warp",
+            "srcFile": "Grid Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "hsvtoRgb",
+            "title": "HSVtoRGB",
+            "srcFile": "HSVtoRGB.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "hatchBlur",
+            "title": "Hatch Blur",
+            "srcFile": "Hatch Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "heartTransition",
+            "title": "Heart Transition",
+            "srcFile": "Heart Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "heart",
+            "title": "Heart",
+            "srcFile": "Heart.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "hexagonalize",
+            "title": "Hexagonalize",
+            "srcFile": "Hexagonalize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "histogramViewer",
+            "title": "Histogram Viewer",
+            "srcFile": "Histogram Viewer.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "horizVertHold",
+            "title": "HorizVertHold",
+            "srcFile": "HorizVertHold.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "hyperspace",
+            "title": "Hyperspace",
+            "srcFile": "Hyperspace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "interlaceMirror",
+            "title": "Interlace Mirror",
+            "srcFile": "Interlace Mirror.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "interlace",
+            "title": "Interlace",
+            "srcFile": "Interlace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "invertedPageCurl",
+            "title": "Inverted Page Curl",
+            "srcFile": "Inverted Page Curl.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "kaleidoscopeTile",
+            "title": "Kaleidoscope Tile",
+            "srcFile": "Kaleidoscope Tile.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "kaleidoscopeTransition",
+            "title": "Kaleidoscope Transition",
+            "srcFile": "Kaleidoscope Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "kaleidoscope",
+            "title": "Kaleidoscope",
+            "srcFile": "Kaleidoscope.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "keyFrameArtifacts",
+            "title": "Key Frame Artifacts",
+            "srcFile": "Key Frame Artifacts.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "LICENSE",
+            "title": "LICENSE",
+            "srcFile": "LICENSE",
+            "errors": [
+                "Shader analysis error: unexpected tokens [MIT, License, Copyright] in function"
+            ]
+        },
+        {
+            "id": "layerMask",
+            "title": "Layer Mask",
+            "srcFile": "Layer Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "layerPosition",
+            "title": "Layer Position",
+            "srcFile": "Layer Position.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "lensFlare",
+            "title": "Lens Flare",
+            "srcFile": "Lens Flare.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "lensFlare2",
+            "title": "Lens Flare",
+            "srcFile": "Lens Flare.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "life",
+            "title": "Life",
+            "srcFile": "Life.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "life2",
+            "title": "Life",
+            "srcFile": "Life.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "lineScreen",
+            "title": "Line Screen",
+            "srcFile": "Line Screen.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "lineScreen2",
+            "title": "Line Screen",
+            "srcFile": "Line Screen.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "linearBlur",
+            "title": "Linear Blur",
+            "srcFile": "Linear Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "linearGradient",
+            "title": "Linear Gradient",
+            "srcFile": "Linear Gradient.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "lines",
+            "title": "Lines",
+            "srcFile": "Lines.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "longExposure",
+            "title": "Long Exposure",
+            "srcFile": "Long Exposure.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "lumaTransition",
+            "title": "Luma Transition",
+            "srcFile": "Luma Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "luminanceMelt",
+            "title": "Luminance Melt",
+            "srcFile": "Luminance Melt.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "luminancePosterize",
+            "title": "Luminance Posterize",
+            "srcFile": "Luminance Posterize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "maximumComponent",
+            "title": "Maximum Component",
+            "srcFile": "Maximum Component.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "median",
+            "title": "Median",
+            "srcFile": "Median.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "metaImage",
+            "title": "Meta Image",
+            "srcFile": "Meta Image.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "microBufferRgb",
+            "title": "Micro Buffer RGB",
+            "srcFile": "Micro Buffer RGB.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "microBuffer",
+            "title": "Micro Buffer",
+            "srcFile": "Micro Buffer.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "minimumComponent",
+            "title": "Minimum Component",
+            "srcFile": "Minimum Component.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "mirrorEdge",
+            "title": "Mirror Edge",
+            "srcFile": "Mirror Edge.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "mirrorEdge2",
+            "title": "Mirror Edge",
+            "srcFile": "Mirror Edge.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "mirror",
+            "title": "Mirror",
+            "srcFile": "Mirror.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "morph",
+            "title": "Morph",
+            "srcFile": "Morph.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "mosaic",
+            "title": "Mosaic",
+            "srcFile": "Mosaic.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "motionHeatMap",
+            "title": "Motion Heat Map",
+            "srcFile": "Motion Heat Map.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "motionMask",
+            "title": "Motion Mask",
+            "srcFile": "Motion Mask.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "multiGradient",
+            "title": "Multi Gradient",
+            "srcFile": "Multi Gradient.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiHueShift",
+            "title": "Multi Hue Shift",
+            "srcFile": "Multi Hue Shift.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiPassGaussianBlur",
+            "title": "Multi Pass Gaussian Blur",
+            "srcFile": "Multi Pass Gaussian Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiPassGaussianBlur2",
+            "title": "Multi Pass Gaussian Blur",
+            "srcFile": "Multi Pass Gaussian Blur.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "multiPixellate",
+            "title": "Multi-Pixellate",
+            "srcFile": "Multi-Pixellate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiFrame2x2",
+            "title": "MultiFrame 2x2",
+            "srcFile": "MultiFrame 2x2.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiFrame3x3",
+            "title": "MultiFrame 3x3",
+            "srcFile": "MultiFrame 3x3.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "multiplyBlend",
+            "title": "Multiply Blend",
+            "srcFile": "Multiply Blend.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "neon",
+            "title": "Neon",
+            "srcFile": "Neon.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "neon2",
+            "title": "Neon",
+            "srcFile": "Neon.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "nightVision",
+            "title": "Night Vision",
+            "srcFile": "Night Vision.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "noiseAdapt",
+            "title": "Noise Adapt",
+            "srcFile": "Noise Adapt.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "noiseDisplace",
+            "title": "Noise Displace",
+            "srcFile": "Noise Displace.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "noisePixellate",
+            "title": "Noise Pixellate",
+            "srcFile": "Noise Pixellate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "noise",
+            "title": "Noise",
+            "srcFile": "Noise.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "opticalFlowDistort",
+            "title": "Optical Flow Distort",
+            "srcFile": "Optical Flow Distort.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "opticalFlowDistort2",
+            "title": "Optical Flow Distort",
+            "srcFile": "Optical Flow Distort.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "opticalFlowGenerator",
+            "title": "Optical Flow Generator",
+            "srcFile": "Optical Flow Generator.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "perlinTransition",
+            "title": "Perlin Transition",
+            "srcFile": "Perlin Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "pinwheel",
+            "title": "Pinwheel",
+            "srcFile": "Pinwheel.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "pixelShifter",
+            "title": "Pixel Shifter",
+            "srcFile": "Pixel Shifter.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "Pixelize.fs",
+            "title": "Pixelize.fs",
+            "srcFile": "Pixelize.fs",
+            "errors": [
+                "Shader analysis error: unexpected tokens [vec2, squareSize, = 2.0 *, dist, /, vec2] in function"
+            ]
+        },
+        {
+            "id": "pixellate",
+            "title": "Pixellate",
+            "srcFile": "Pixellate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "polarFunction",
+            "title": "Polar Function",
+            "srcFile": "Polar Function.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "polkaDotsCurtain",
+            "title": "Polka Dots Curtain",
+            "srcFile": "Polka Dots Curtain.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "polyGlitch",
+            "title": "Poly Glitch",
+            "srcFile": "Poly Glitch.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "polyStar",
+            "title": "Poly Star",
+            "srcFile": "Poly Star.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "posterize",
+            "title": "Posterize",
+            "srcFile": "Posterize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "powerWarp",
+            "title": "Power Warp",
+            "srcFile": "Power Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "quadMask",
+            "title": "Quad Mask",
+            "srcFile": "Quad Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "quadTile",
+            "title": "Quad Tile",
+            "srcFile": "Quad Tile.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "reRgbGradientGenerator",
+            "title": "RE RGB Gradient Generator",
+            "srcFile": "RE RGB Gradient Generator.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbEq",
+            "title": "RGB EQ",
+            "srcFile": "RGB EQ.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbHalftoneLookaround",
+            "title": "RGB Halftone-lookaround",
+            "srcFile": "RGB Halftone-lookaround.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbHalftone",
+            "title": "RGB Halftone",
+            "srcFile": "RGB Halftone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbInvert",
+            "title": "RGB Invert",
+            "srcFile": "RGB Invert.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbStrobe",
+            "title": "RGB Strobe",
+            "srcFile": "RGB Strobe.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbTrails30",
+            "title": "RGB Trails 3.0",
+            "srcFile": "RGB Trails 3.0.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbaSwap",
+            "title": "RGBA Swap",
+            "srcFile": "RGBA Swap.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rgbtoHsv",
+            "title": "RGBtoHSV",
+            "srcFile": "RGBtoHSV.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "radialGradient",
+            "title": "Radial Gradient",
+            "srcFile": "Radial Gradient.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "radialReplicate",
+            "title": "Radial Replicate",
+            "srcFile": "Radial Replicate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "radialSpectrogram",
+            "title": "Radial Spectrogram",
+            "srcFile": "Radial Spectrogram.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"audioFFT\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "radial",
+            "title": "Radial",
+            "srcFile": "Radial.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomCheckerboard",
+            "title": "Random Checkerboard",
+            "srcFile": "Random Checkerboard.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomFreeze",
+            "title": "Random Freeze",
+            "srcFile": "Random Freeze.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomLines",
+            "title": "Random Lines",
+            "srcFile": "Random Lines.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomShapeBlast",
+            "title": "Random Shape Blast",
+            "srcFile": "Random Shape Blast.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "randomShape",
+            "title": "Random Shape",
+            "srcFile": "Random Shape.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomSquaresMask",
+            "title": "Random Squares Mask",
+            "srcFile": "Random Squares Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomSquares",
+            "title": "Random Squares",
+            "srcFile": "Random Squares.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "randomStripes",
+            "title": "Random Stripes",
+            "srcFile": "Random Stripes.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "replicateRandom",
+            "title": "Replicate Random",
+            "srcFile": "Replicate Random.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "replicate",
+            "title": "Replicate",
+            "srcFile": "Replicate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "resizeGlitch",
+            "title": "Resize Glitch",
+            "srcFile": "Resize Glitch.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "rippleTransition",
+            "title": "Ripple Transition",
+            "srcFile": "Ripple Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "ripples",
+            "title": "Ripples",
+            "srcFile": "Ripples.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rotateScaleFade",
+            "title": "Rotate Scale Fade",
+            "srcFile": "Rotate Scale Fade.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rotate",
+            "title": "Rotate",
+            "srcFile": "Rotate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "rotate2",
+            "title": "Rotate",
+            "srcFile": "Rotate.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "saturationBleed",
+            "title": "Saturation Bleed",
+            "srcFile": "Saturation Bleed.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "saturationBleed2",
+            "title": "Saturation Bleed",
+            "srcFile": "Saturation Bleed.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "sepiaTone",
+            "title": "Sepia Tone",
+            "srcFile": "Sepia Tone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "setAlpha",
+            "title": "Set Alpha",
+            "srcFile": "Set Alpha.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "shake",
+            "title": "Shake",
+            "srcFile": "Shake.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "shapeMask",
+            "title": "Shape Mask",
+            "srcFile": "Shape Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "shapeMorphFeedbackMask",
+            "title": "Shape Morph Feedback Mask",
+            "srcFile": "Shape Morph Feedback Mask.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "shapeMorphWrap",
+            "title": "Shape Morph Wrap",
+            "srcFile": "Shape Morph Wrap.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sharpenLuminance",
+            "title": "Sharpen Luminance",
+            "srcFile": "Sharpen Luminance.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sharpenLuminance2",
+            "title": "Sharpen Luminance",
+            "srcFile": "Sharpen Luminance.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "sharpenRgb",
+            "title": "Sharpen RGB",
+            "srcFile": "Sharpen RGB.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sharpenRgb2",
+            "title": "Sharpen RGB",
+            "srcFile": "Sharpen RGB.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "shockwavePulse",
+            "title": "Shockwave Pulse",
+            "srcFile": "Shockwave Pulse.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "shockwave",
+            "title": "Shockwave",
+            "srcFile": "Shockwave.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "showAlpha",
+            "title": "Show Alpha",
+            "srcFile": "Show Alpha.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sideScrollerAndFlip",
+            "title": "Side Scroller And Flip",
+            "srcFile": "Side Scroller And Flip.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "simpleZoomTransition",
+            "title": "Simple Zoom Transition",
+            "srcFile": "Simple Zoom Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sineWarpGradient",
+            "title": "Sine Warp Gradient",
+            "srcFile": "Sine Warp Gradient.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sineWarpTile",
+            "title": "Sine Warp Tile",
+            "srcFile": "Sine Warp Tile.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sketch",
+            "title": "Sketch",
+            "srcFile": "Sketch.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sketch2",
+            "title": "Sketch",
+            "srcFile": "Sketch.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "slidingStrips",
+            "title": "Sliding Strips",
+            "srcFile": "Sliding Strips.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "slitScanMask",
+            "title": "Slit Scan Mask",
+            "srcFile": "Slit Scan Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "slitScan",
+            "title": "Slit Scan",
+            "srcFile": "Slit Scan.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "smokeScreen",
+            "title": "Smoke Screen",
+            "srcFile": "Smoke Screen.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "smudgedLens",
+            "title": "Smudged Lens",
+            "srcFile": "Smudged Lens.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "smudgedLens2",
+            "title": "Smudged Lens",
+            "srcFile": "Smudged Lens.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "softBlur",
+            "title": "Soft Blur",
+            "srcFile": "Soft Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "softBlur2",
+            "title": "Soft Blur",
+            "srcFile": "Soft Blur.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "softFlip",
+            "title": "Soft Flip",
+            "srcFile": "Soft Flip.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "solarize",
+            "title": "Solarize",
+            "srcFile": "Solarize.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "solidColor",
+            "title": "Solid Color",
+            "srcFile": "Solid Color.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "sortingSmear",
+            "title": "Sorting Smear",
+            "srcFile": "Sorting Smear.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"event\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "sortingSmear2",
+            "title": "Sorting Smear",
+            "srcFile": "Sorting Smear.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "sphereMap",
+            "title": "Sphere Map",
+            "srcFile": "Sphere Map.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "spiral",
+            "title": "Spiral",
+            "srcFile": "Spiral.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "squaresWire",
+            "title": "Squares Wire",
+            "srcFile": "Squares Wire.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "squeeze",
+            "title": "Squeeze",
+            "srcFile": "Squeeze.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "star",
+            "title": "Star",
+            "srcFile": "Star.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "stereoViewer",
+            "title": "Stereo Viewer",
+            "srcFile": "Stereo Viewer.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "stripes",
+            "title": "Stripes",
+            "srcFile": "Stripes.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "strobe",
+            "title": "Strobe",
+            "srcFile": "Strobe.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "swapTransition",
+            "title": "Swap Transition",
+            "srcFile": "Swap Transition.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "swirl",
+            "title": "Swirl",
+            "srcFile": "Swirl.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "TV Static.fs",
+            "title": "TV Static.fs",
+            "srcFile": "TV Static.fs",
+            "errors": [
+                "Shader analysis error: unexpected tokens [highp, float, noise] in function"
+            ]
+        },
+        {
+            "id": "thermalCamera",
+            "title": "Thermal Camera",
+            "srcFile": "Thermal Camera.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "thermalCamera2",
+            "title": "Thermal Camera",
+            "srcFile": "Thermal Camera.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "timeGlitchRgb",
+            "title": "Time Glitch RGB",
+            "srcFile": "Time Glitch RGB.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "toon",
+            "title": "Toon",
+            "srcFile": "Toon.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "trailMask",
+            "title": "Trail Mask",
+            "srcFile": "Trail Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "trapezoidDistortion",
+            "title": "Trapezoid Distortion",
+            "srcFile": "Trapezoid Distortion.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "triangleWarp",
+            "title": "Triangle Warp",
+            "srcFile": "Triangle Warp.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "triangle",
+            "title": "Triangle",
+            "srcFile": "Triangle.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "triangles",
+            "title": "Triangles",
+            "srcFile": "Triangles.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "trioTone",
+            "title": "Trio Tone",
+            "srcFile": "Trio Tone.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "tripleRotate",
+            "title": "Triple Rotate",
+            "srcFile": "Triple Rotate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "truchetTile",
+            "title": "Truchet Tile",
+            "srcFile": "Truchet Tile.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "twirl",
+            "title": "Twirl",
+            "srcFile": "Twirl.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "undulatingBurnOut",
+            "title": "Undulating Burn Out",
+            "srcFile": "Undulating Burn Out.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "unsharpMask",
+            "title": "Unsharp Mask",
+            "srcFile": "Unsharp Mask.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "unsharpMask2",
+            "title": "Unsharp Mask",
+            "srcFile": "Unsharp Mask.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "vhsGlitch",
+            "title": "VHS Glitch",
+            "srcFile": "VHS Glitch.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "vuMeter",
+            "title": "VU Meter",
+            "srcFile": "VU Meter.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "vvmotionBlur30",
+            "title": "VVMotionBlur 3.0",
+            "srcFile": "VVMotionBlur 3.0.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "vertexManipulator",
+            "title": "Vertex Manipulator",
+            "srcFile": "Vertex Manipulator.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "vertexManipulator2",
+            "title": "Vertex Manipulator",
+            "srcFile": "Vertex Manipulator.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "verticalTearing",
+            "title": "Vertical Tearing",
+            "srcFile": "Vertical Tearing.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "vibrance",
+            "title": "Vibrance",
+            "srcFile": "Vibrance.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "waterDrop",
+            "title": "Water Drop",
+            "srcFile": "Water Drop.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "waveformDisplace",
+            "title": "Waveform Displace",
+            "srcFile": "Waveform Displace.fs",
+            "errors": [
+                "GlslError(message=unsupported ISF input type \"audio\", row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "whitePointAdjust",
+            "title": "White Point Adjust",
+            "srcFile": "White Point Adjust.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "wind",
+            "title": "Wind",
+            "srcFile": "Wind.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "windowBlinds",
+            "title": "Window Blinds",
+            "srcFile": "Window Blinds.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "windowSlice",
+            "title": "Window Slice",
+            "srcFile": "Window Slice.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "wipeDown",
+            "title": "Wipe Down",
+            "srcFile": "Wipe Down.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "wipeLeft",
+            "title": "Wipe Left",
+            "srcFile": "Wipe Left.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "wipeRight",
+            "title": "Wipe Right",
+            "srcFile": "Wipe Right.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "wipeUp",
+            "title": "Wipe Up",
+            "srcFile": "Wipe Up.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "xyzoom",
+            "title": "XYZoom",
+            "srcFile": "XYZoom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "yCTimeBlur",
+            "title": "Y-C Time Blur",
+            "srcFile": "Y-C Time Blur.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "zoomInCircles",
+            "title": "Zoom In Circles",
+            "srcFile": "Zoom In Circles.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "zoom",
+            "title": "Zoom",
+            "srcFile": "Zoom.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "zoomingFeedback",
+            "title": "Zooming Feedback",
+            "srcFile": "Zooming Feedback.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "cube",
+            "title": "cube",
+            "srcFile": "cube.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002BleachBypass",
+            "title": "v002 Bleach Bypass",
+            "srcFile": "v002 Bleach Bypass.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002Crosshatch",
+            "title": "v002 Crosshatch",
+            "srcFile": "v002 Crosshatch.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002Dilate",
+            "title": "v002 Dilate",
+            "srcFile": "v002 Dilate.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002Dilate2",
+            "title": "v002 Dilate",
+            "srcFile": "v002 Dilate.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "v002Erode",
+            "title": "v002 Erode",
+            "srcFile": "v002 Erode.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002Erode2",
+            "title": "v002 Erode",
+            "srcFile": "v002 Erode.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "v002LightLeak",
+            "title": "v002 Light Leak",
+            "srcFile": "v002 Light Leak.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002LightLeak2",
+            "title": "v002 Light Leak",
+            "srcFile": "v002 Light Leak.vs",
+            "errors": [
+                "GlslError(message=No output port found., row=-1, fileId=-1)"
+            ]
+        },
+        {
+            "id": "v002Technicolor",
+            "title": "v002 Technicolor",
+            "srcFile": "v002 Technicolor.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002Vignette",
+            "title": "v002 Vignette",
+            "srcFile": "v002 Vignette.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002CrtDisplacement",
+            "title": "v002-CRT-Displacement",
+            "srcFile": "v002-CRT-Displacement.fs",
+            "errors": [
+            ]
+        },
+        {
+            "id": "v002CrtMask",
+            "title": "v002-CRT-Mask",
+            "srcFile": "v002-CRT-Mask.fs",
+            "errors": [
+            ]
+        }
+    ]
+}

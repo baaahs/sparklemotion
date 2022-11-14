@@ -6,6 +6,7 @@ import baaahs.control.OpenButtonControl
 import baaahs.device.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
+import baaahs.gl.autoWireWithDefaults
 import baaahs.gl.kexpect
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
@@ -31,16 +32,6 @@ import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 object PatchResolverSpec : Spek({
-    fun autoWire(
-        vararg shaders: Shader,
-        stream: Stream = Stream.Main,
-        block: (UnresolvedPatches.() -> Unit)? = null
-    ): MutablePatchSet {
-        return testToolchain.autoWire(*shaders, stream = stream)
-            .apply { block?.invoke(this) }
-            .acceptSuggestedLinkOptions().confirm()
-    }
-
     describe("Layering of patch links") {
         val uvShader = Shaders.cylindricalProjection
         val blackShader by value {
@@ -110,14 +101,14 @@ object PatchResolverSpec : Spek({
         context("for a show with a couple buttons") {
             beforeEachTest {
                 mutableShow.apply {
-                    addPatch(autoWire(uvShader, blackShader))
+                    addPatch(autoWireWithDefaults(uvShader, blackShader))
 
                     addButton(mainPanel, "Brightness") {
-                        addPatch(autoWire(brightnessFilter))
+                        addPatch(autoWireWithDefaults(brightnessFilter))
                     }
 
                     addButton(mainPanel, "Orange") {
-                        addPatch(autoWire(orangeShader).apply {
+                        addPatch(autoWireWithDefaults(orangeShader).apply {
                             mutablePatches.first().incomingLinks.forEach { (k, v) ->
                                 println("$k = $v")
                             }
@@ -259,7 +250,7 @@ object PatchResolverSpec : Spek({
                 beforeEachTest {
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
-                            addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
+                            addPatch(autoWireWithDefaults(wobblyTimeFilter, stream = Stream("time")).apply {
                                 mutablePatches.only("patch")
                                     .incomingLinks["time"] = MutableFeedPort(TimeFeed())
                             })
@@ -413,9 +404,9 @@ object PatchResolverSpec : Spek({
         context("with a color mixer") {
             beforeEachTest {
                 mutableShow.apply {
-                    addPatch(autoWire(uvShader, blackShader))
+                    addPatch(autoWireWithDefaults(uvShader, blackShader))
                     addPatch(
-                        autoWire(
+                        autoWireWithDefaults(
                             Shader(
                                 "A Main Shader",
                                 /**language=glsl*/
@@ -451,8 +442,8 @@ object PatchResolverSpec : Spek({
                             }
                         }.acceptSuggestedLinkOptions().confirm()
                     )
-                    addPatch(autoWire(orangeShader, stream = Stream("other")))
-                    addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")))
+                    addPatch(autoWireWithDefaults(orangeShader, stream = Stream("other")))
+                    addPatch(autoWireWithDefaults(wobblyTimeFilter, stream = Stream("time")))
                 }
             }
 
@@ -748,7 +739,7 @@ object PatchResolverSpec : Spek({
         val show by value {
             MutableShow("show") {
                 addPatch(
-                    autoWire(
+                    autoWireWithDefaults(
                         pinksShader,
                         badgerShader,
                         projectionShader,
