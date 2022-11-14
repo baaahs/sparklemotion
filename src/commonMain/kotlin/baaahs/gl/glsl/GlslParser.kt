@@ -77,6 +77,14 @@ class GlslParser {
             }
         }
 
+        fun doIf(args: List<String>) {
+            if (args.isEmpty()) throw glslError("#if ${args.joinToString(" ")}")
+            enabledStack.add(outputEnabled)
+            val value = GlslMacroExpressionEvaluator
+                .evaluate(args.joinToString(" "))
+            outputEnabled = outputEnabled && value
+        }
+
         fun doIfdef(args: List<String>) {
             if (args.size != 1) throw glslError("#ifdef ${args.joinToString(" ")}")
             enabledStack.add(outputEnabled)
@@ -614,6 +622,7 @@ class GlslParser {
                 when (args.removeFirst()) {
                     "define" -> throw IllegalStateException("This should be handled by MacroDeclaration.")
                     "undef" -> context.doUndef(args)
+                    "if" -> context.doIf(args)
                     "ifdef" -> context.doIfdef(args)
                     "ifndef" -> context.doIfndef(args)
                     "else" -> context.doElse(args)

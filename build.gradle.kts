@@ -88,6 +88,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
+                implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.14.1")
                 api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
             }
         }
