@@ -153,8 +153,17 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         }
         withCleanup { observer.remove() }
 
-        if (builder.state == ShaderBuilder.State.Unbuilt) {
-            builder.startBuilding()
+        val intersectionObserver = IntersectionObserver(callback = { entries ->
+            if (entries.any { it.isIntersecting }) {
+                if (builder.state == ShaderBuilder.State.Unbuilt) {
+                    builder.startBuilding()
+                }
+            }
+        })
+        intersectionObserver.observe(previewContainer)
+
+        withCleanup {
+            intersectionObserver.disconnect()
         }
     }
 
