@@ -169,7 +169,6 @@ class GlslParser {
         }
 
         open fun visitText(value: String): ParseState {
-            println("value = ${value}")
             return if (context.outputEnabled || value == "\n") {
                 context.checkForMacro(value, this)
                     ?: run {
@@ -618,7 +617,10 @@ class GlslParser {
                     "ifdef" -> context.doIfdef(args)
                     "ifndef" -> context.doIfndef(args)
                     "else" -> context.doElse(args)
+                    "elif" -> context.doElif(args)
                     "endif" -> context.doEndif(args)
+                    "error", "pragma", "extension", "version" ->
+                        throw context.glslError("unsupported directive #$str")
                     "line" -> context.doLine(args)
                     else -> throw context.glslError("unknown directive #$str")
                 }
