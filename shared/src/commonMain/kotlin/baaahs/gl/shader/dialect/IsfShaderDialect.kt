@@ -74,9 +74,10 @@ class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatement
     override fun visit(token: String): GlslParser.Tokenizer.State {
         return if (!inComment && !inDotTraversal) {
             when (token) {
-                "IMG_PIXEL", "IMG_NORM_PIXEL" -> {
-                    ImgNormPixelState()
-                }
+                "IMG_PIXEL" -> ImgPixelState()
+                "IMG_NORM_PIXEL" -> ImgPixelState(normalizedCoords = true)
+                "IMG_THIS_PIXEL" -> ImgPixelState(implicitCoords = true)
+                "IMG_THIS_NORM_PIXEL" -> ImgPixelState(implicitCoords = true, normalizedCoords = true)
                 else -> superVisit(token)
             }
         } else superVisit(token)
@@ -84,25 +85,38 @@ class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatement
 
     private fun superVisit(token: String) = super.visit(token)
 
-    inner class ImgNormPixelState : GlslParser.Tokenizer.State {
+    inner class ImgPixelState(
+        val implicitCoords: Boolean = false,
+        val normalizedCoords: Boolean = false // TODO: Support this. STOPSHIP
+    ) : GlslParser.Tokenizer.State {
         var expecting = "("
 
         override fun visit(token: String): GlslParser.Tokenizer.State {
             if (token.isBlank()) return this
 
-            when (expecting) {
+            return when (expecting) {
                 "(" -> {
+                    if (token != expecting) error("Unexpected token \"$token\" (expected $expecting)")
                     expecting = "varName"
-                    return this
+                    this
                 }
                 "varName" -> {
                     superVisit(token) // The image port variable name.
-                    expecting = ","
-                    return this
+                    if (implicitCoords) {
+                        superVisit("(")
+                        superVisit("gl_FragCoord")
+                        superVisit(".")
+                        superVisit("xy")
+                        this@IsfStatementRewriter
+                    } else {
+                        expecting = ","
+                        this
+                    }
                 }
                 "," -> {
+                    if (token != expecting) error("Unexpected token \"$token\" (expected $expecting)")
                     superVisit("(")
-                    return this@IsfStatementRewriter
+                    this@IsfStatementRewriter
                 }
                 else -> error("Unexpected token \"$token\" (expected $expecting)")
             }
