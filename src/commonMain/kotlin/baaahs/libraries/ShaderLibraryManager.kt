@@ -58,7 +58,9 @@ class ShaderLibraryManager(
         var countTotal = 0
         val entries = shaderLibraryPath.listFilesRecursively().mapNotNull { file ->
             countTotal++
-            if (Regex("\\.(png|jpg|gif|webp|txt|md|json)\$").containsMatchIn(file.name))
+//            if (Regex("\\.(png|jpg|gif|webp|txt|md|json)\$").containsMatchIn(file.name))
+//                return@mapNotNull null
+            if (!Regex("\\.(fs|glsl)\$").containsMatchIn(file.name))
                 return@mapNotNull null
             if (file.fs.isDirectory(file))
                 return@mapNotNull null
