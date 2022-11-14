@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
@@ -260,6 +262,8 @@ tasks.named<ProcessResources>("jsProcessResources") {
         include("css/styles.css")
     }
 
+    includeIsfFiles()
+
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/js/main"))
     }
@@ -272,6 +276,8 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     from(jsTask.map { it.destinationDir }) {
         into("htdocs")
     }
+
+    includeIsfFiles()
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
@@ -335,5 +341,23 @@ tasks.withType<DependencyUpdatesTask> {
 
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+
+fun ProcessResources.includeIsfFiles() {
+    from("submodules/ISF-Files/ISF") {
+        into("shader-libraries/ISF Files")
+        include("*")
+    }
+
+    from("submodules/ISF-Files") {
+        into("shader-libraries/ISF Files")
+        include("LICENSE")
+        include("notes_on_categories.txt")
+    }
+
+    from("data/shader-libraries/ISF Files") {
+        into("shader-libraries/ISF Files")
+        include("_libraryIndex.json")
     }
 }

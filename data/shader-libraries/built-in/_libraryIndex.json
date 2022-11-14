@@ -1,0 +1,778 @@
+{
+  "title": "built-in",
+  "entries": [
+    {
+      "id": "acid-at-the-disco",
+      "title": "Acid at the Disco",
+      "description": "Modified from: https://www.shadertoy.com/view/4sfXRB",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/AcidAtTheDisco.glsl"
+    },
+    {
+      "id": "aquatic-flood",
+      "title": "Aquatic Flood",
+      "description": "From http://glslsandbox.com/e#46102",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/AquaticFlood.glsl",
+      "errors": [
+        "GlslError(message=Input port \"sm_beat\" content type is \"unknown/float\", row=11, fileId=-1)"
+      ]
+    },
+    {
+      "id": "baaahs-logo",
+      "title": "BAAAHS Logo",
+      "description": "Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Logo.glsl"
+    },
+    {
+      "id": "basic-glsl-construction-of-the-baaahs-logo-you-can-replace-primitives-in-other-shaders-with-this",
+      "title": "Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/BAAAHSlogo.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [pointInEarLeft, pointInEarRight, pointInEyeLeft, pointInEyeRight, pointInFace, pointInHeart, pointInMouth, pointInSheep], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "beat-shift",
+      "title": "Beat Shift",
+      "description": "Use this to adjust the current time by the beat intensity.",
+      "tags": [
+        "@type=Unknown",
+        "@filter"
+      ],
+      "srcFile": "effects/BeatShift.glsl"
+    },
+    {
+      "id": "blackout",
+      "title": "Blackout",
+      "description": "Lights off!",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "effects/Blackout.glsl"
+    },
+    {
+      "id": "blue-dream",
+      "title": "Blue Dream",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BlueDream.glsl",
+      "errors": [
+        "GlslError(message=Input port \"sm_beat\" content type is \"unknown/float\", row=10, fileId=-1)"
+      ]
+    },
+    {
+      "id": "blue-steel",
+      "title": "Blue Steel",
+      "description": "From https://www.shadertoy.com/view/wt2GWK",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BlueSteel.glsl"
+    },
+    {
+      "id": "blues-clues",
+      "title": "Blue's Clues",
+      "description": "From https://www.shadertoy.com/view/wljSzR",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BluesClues.glsl"
+    },
+    {
+      "id": "brightness",
+      "title": "Brightness",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/Brightness.glsl"
+    },
+    {
+      "id": "circular-dependency",
+      "title": "Circular Dependency",
+      "description": "From http://glslsandbox.com/e#56705",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/CircularDependency.glsl"
+    },
+    {
+      "id": "color-palette-libraries-from-matplotlib",
+      "title": "Color palette libraries from matplotlib",
+      "description": "See https://matplotlib.org/stable/tutorials/colors/colormaps.html",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "libraries/color_palettes.glsl"
+    },
+    {
+      "id": "color-pulse",
+      "title": "[🐑] ColorPulse",
+      "description": "Color pulses sweeping from front to back of the sheep synchronized to the beat",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_ColorPulse.glsl"
+    },
+    {
+      "id": "colorgasm",
+      "title": "Colorgasm",
+      "description": "From: https://www.shadertoy.com/view/4dffRs",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Colorgasm.glsl"
+    },
+    {
+      "id": "compatibility-functions-for-testing-things-in-shader-toy",
+      "title": "Compatibility functions for testing things in ShaderToy",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/shadertoy.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [beatIntegral, getCurrentBeat, getFakeIntensity], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "complex-math-library",
+      "title": "Complex math library",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/complex_math_functions.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [cx_abs, cx_arg, cx_conj, cx_cos, cx_div, cx_exp, cx_log, cx_mul, cx_pow, cx_sin, domainColoring], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "complex-trippy-shit-1",
+      "title": "Complex Trippy Shit #1",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/ComplexTrippyShit1.glsl"
+    },
+    {
+      "id": "devils-playground",
+      "title": "Devil's Playground",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/DevilsPlayground.glsl"
+    },
+    {
+      "id": "eclipse-of-the-sheep",
+      "title": "Eclipse of the sheep!",
+      "description": "based on https://www.shadertoy.com/view/4tGXzt",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Eclipse.glsl"
+    },
+    {
+      "id": "evolution-of-acid",
+      "title": "Evolution of Acid",
+      "description": "From http://glslsandbox.com/e#45963",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/EvolutionOfAcid.glsl"
+    },
+    {
+      "id": "f-rie-pulse",
+      "title": "Færie Pulse",
+      "description": "From http://glslsandbox.com/e#46723",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/FaeriePulse.glsl"
+    },
+    {
+      "id": "fire-ball",
+      "title": "Fire Ball",
+      "description": "From http://glslsandbox.com/e#61108.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Fireball.glsl"
+    },
+    {
+      "id": "fire-clouds",
+      "title": "Fire Clouds",
+      "description": "From http://glslsandbox.com/e#60948.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/FireClouds.glsl"
+    },
+    {
+      "id": "fire-dancer",
+      "title": "Fire Dancer",
+      "description": "From http://glslsandbox.com/e#55301",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/FireDancer.glsl",
+      "errors": [
+        "GlslError(message=Input port \"scale\" content type is \"unknown/float\", row=10, fileId=-1)"
+      ]
+    },
+    {
+      "id": "fire-pulsation",
+      "title": "Fire Pulsation",
+      "description": "From http://glslsandbox.com/e#56418",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/FirePulsation.glsl"
+    },
+    {
+      "id": "first-raymarches",
+      "title": "First Raymarches",
+      "description": "From https://www.shadertoy.com/view/XdGGzw",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/FirstRaymarches.glsl"
+    },
+    {
+      "id": "flat-projection",
+      "title": "Flat Projection",
+      "description": "Use this to project pixels onto a model",
+      "tags": [
+        "@type=Projection"
+      ],
+      "srcFile": "projections/Flat.glsl"
+    },
+    {
+      "id": "g-spot",
+      "title": "G-spot",
+      "description": "From: https://www.shadertoy.com/view/ltBcRc",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/GSpot.glsl"
+    },
+    {
+      "id": "gadzooks",
+      "title": "Gadzooks",
+      "description": "From: http://glslsandbox.com/e#43036.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Gadzooks.glsl"
+    },
+    {
+      "id": "gaias-orgasm",
+      "title": "Gaia's Orgasm",
+      "description": "From http://glslsandbox.com/e#46597",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/GaiasOrgasm.glsl"
+    },
+    {
+      "id": "garden-party",
+      "title": "Garden Party",
+      "description": "From http://glslsandbox.com/e#56555",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/GardenParty.glsl"
+    },
+    {
+      "id": "geometric-biology",
+      "title": "Geometric Biology",
+      "description": "From http://glslsandbox.com/e#45693",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/GeometricBiology.glsl",
+      "errors": [
+        "GlslError(message=Input port \"sm_beat\" content type is \"unknown/float\", row=17, fileId=-1)"
+      ]
+    },
+    {
+      "id": "gooey-red-innards",
+      "title": "Gooey Red Innards",
+      "description": "From http://glslsandbox.com/e#61220.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/GooeyRedInnards.glsl",
+      "errors": [
+        "GlslError(message=Input port \"fontChannel\" content type is \"unknown/sampler2D\", row=116, fileId=-1)"
+      ]
+    },
+    {
+      "id": "heart",
+      "title": "Heart",
+      "description": "From http://mathworld.wolfram.com/HeartSurface.html",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/Heart.glsl"
+    },
+    {
+      "id": "hsb",
+      "title": "HSB",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/HSB.glsl"
+    },
+    {
+      "id": "huearthquake",
+      "title": "Huearthquake",
+      "description": "From http://glslsandbox.com/e#46400",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Huearthquake.glsl"
+    },
+    {
+      "id": "huenami",
+      "title": "Huenami",
+      "description": "From: http://glslsandbox.com/e#44092.1",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Huenami.glsl"
+    },
+    {
+      "id": "HypnoSwirl.glsl",
+      "title": "HypnoSwirl.glsl",
+      "srcFile": "shaders/HypnoSwirl.glsl",
+      "errors": [
+        "Shader analysis error: No name for parameter in hsv2rgb()."
+      ]
+    },
+    {
+      "id": "make-each-physical-panel-a-different-color-and-change-the-colors-on-the-beat",
+      "title": "Make each physical panel a different color and change the colors on the beat",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_GeometricSheep.glsl"
+    },
+    {
+      "id": "make-each-physical-panel-a-different-color-and-swipe-color-pulses-along-the-panels",
+      "title": "Make each physical panel a different color and swipe color pulses along the panels",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_GeometricColorPulse.glsl"
+    },
+    {
+      "id": "movers-on",
+      "title": "Movers On",
+      "tags": [
+        "@type=Mover"
+      ],
+      "srcFile": "effects/Movers On.glsl"
+    },
+    {
+      "id": "movers-swirl",
+      "title": "Movers Swirl",
+      "tags": [
+        "@type=Mover",
+        "@filter"
+      ],
+      "srcFile": "effects/Movers Swirl.glsl"
+    },
+    {
+      "id": "music-synced-lazorzz",
+      "title": "Music-synced LAZORZZ",
+      "description": "adapted from https://www.shadertoy.com/view/XtBXW3",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Lazors.glsl"
+    },
+    {
+      "id": "orange-snowflake",
+      "title": "Orange Snowflake",
+      "description": "Modified from http://glslsandbox.com/e#61105.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/OrangeSnowflake.glsl"
+    },
+    {
+      "id": "orange-tang",
+      "title": "Orange Tang",
+      "description": "From http://glslsandbox.com/e#56718",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/OrangeTang.glsl",
+      "errors": [
+        "GlslError(message=Input port \"mouseX\" content type is \"unknown/float\", row=10, fileId=-1)",
+        "GlslError(message=Input port \"mouseY\" content type is \"unknown/float\", row=13, fileId=-1)"
+      ]
+    },
+    {
+      "id": "picassos-nightmare",
+      "title": "Picasso's Nightmare",
+      "description": "From http://glslsandbox.com/e#56499",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/PicassosNightmare.glsl"
+    },
+    {
+      "id": "polygon-drawing-library",
+      "title": "Polygon drawing library",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/polygon_geometry.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [drawScene, pointInPoly, sdfCircle, sdfSquare], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "poolside-delight",
+      "title": "Poolside Delight",
+      "description": "From http://glslsandbox.com/e#56479",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/PoolsideDelight.glsl"
+    },
+    {
+      "id": "prime-waves",
+      "title": "PrimeWaves",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/PrimeWaves.glsl"
+    },
+    {
+      "id": "purple-lightning",
+      "title": "Purple Lightning",
+      "description": "Lightning",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/PurpleLightning.glsl"
+    },
+    {
+      "id": "rainbow-trianglez",
+      "title": "Rainbow Trianglez",
+      "description": "Referenced from https://www.shadertoy.com/view/Mtj3Rh",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/RainbowTrianglez.glsl"
+    },
+    {
+      "id": "red-bristles",
+      "title": "Red Bristles",
+      "description": "From http://glslsandbox.com/e#60843.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/RedBristles.glsl",
+      "errors": [
+        "GlslError(message=Input port \"time\" content type is \"unknown/float\", row=14, fileId=-1)"
+      ]
+    },
+    {
+      "id": "red-sea",
+      "title": "Red Sea",
+      "description": "From http://glslsandbox.com/e#60816.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/RedSea.glsl"
+    },
+    {
+      "id": "red-sine",
+      "title": "Red Sine",
+      "description": "From http://glslsandbox.com/e#60889.1",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/RedSine.glsl"
+    },
+    {
+      "id": "red-waves",
+      "title": "Red Waves",
+      "description": "From http://glslsandbox.com/e#61143.0",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/RedWaves.glsl"
+    },
+    {
+      "id": "ripple",
+      "title": "Ripple",
+      "tags": [
+        "@type=Distortion",
+        "@filter"
+      ],
+      "srcFile": "effects/Ripple.glsl"
+    },
+    {
+      "id": "saturation",
+      "title": "Saturation",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/Saturation.glsl"
+    },
+    {
+      "id": "scanners",
+      "title": "Scanners",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/Scanners.glsl"
+    },
+    {
+      "id": "seascape",
+      "title": "Seascape",
+      "description": "From https://www.shadertoy.com/view/Ms2SD1",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Seascape.glsl"
+    },
+    {
+      "id": "second-reality-plasma",
+      "title": "Second Reality Plasma",
+      "description": "Based on https://www.shadertoy.com/view/MdBGzK",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Plasma.glsl"
+    },
+    {
+      "id": "shattered-web",
+      "title": "Shattered Web",
+      "description": "From http://glslsandbox.com/e#46315",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/ShatteredWeb.glsl",
+      "errors": [
+        "GlslError(message=Input port \"sm_beat\" content type is \"unknown/float\", row=13, fileId=-1)"
+      ]
+    },
+    {
+      "id": "snow",
+      "title": "Snow",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Snow.glsl",
+      "errors": [
+        "GlslError(message=Input port \"flakeSize\" content type is \"unknown/float\", row=21, fileId=-1)",
+        "GlslError(message=Input port \"blueness\" content type is \"unknown/float\", row=24, fileId=-1)"
+      ]
+    },
+    {
+      "id": "solid-color",
+      "title": "Solid Color",
+      "tags": [
+        "@type=Paint",
+        "@filter"
+      ],
+      "srcFile": "shaders/SolidColor.glsl"
+    },
+    {
+      "id": "some-beat-related-functions-i-use-in-my-shaders",
+      "title": "Some beat-related functions I use in my shaders",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/beat_functions.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [beatIntegral, beatIntegral_shadertoy, beatIntegral_smooth, getCurrentBeat, getFakeIntensity, getFakeIntensity_shadertoy, pulsedTime], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "some-commonly-used-color-functions",
+      "title": "Some commonly used color functions",
+      "description": "Ben Bartlett",
+      "tags": [
+        "@type=Unknown"
+      ],
+      "srcFile": "libraries/color_functions.glsl",
+      "errors": [
+        "GlslError(message=No entry point \"main\" among [hsl2rgb, hsv2rgb], row=-1, fileId=-1)",
+        "GlslError(message=No output port found., row=-1, fileId=-1)"
+      ]
+    },
+    {
+      "id": "sound-brightness",
+      "title": "SoundBrightness",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/SoundBrightness.glsl"
+    },
+    {
+      "id": "sparklez",
+      "title": "Sparklez",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/Sparklez.glsl"
+    },
+    {
+      "id": "spastic-rainbow",
+      "title": "Spastic Rainbow",
+      "description": "From http://glslsandbox.com/e#56433",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/SpasticRainbow.glsl"
+    },
+    {
+      "id": "square-pulse-thingy-optimized-for-baaahs",
+      "title": "Square pulse thingy optimized for BAAAHS",
+      "description": "originally based on https://www.shadertoy.com/view/XsBfRW",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Squarezzz.glsl"
+    },
+    {
+      "id": "strings",
+      "title": "Strings",
+      "description": "from https://www.shadertoy.com/view/WldXRS",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Strings.glsl"
+    },
+    {
+      "id": "sunset-delight",
+      "title": "Sunset Delight",
+      "description": "From http://glslsandbox.com/e#56573",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/SunsetDelight.glsl",
+      "errors": [
+        "GlslError(message=Input port \"zoom\" content type is \"unknown/float\", row=16, fileId=-1)",
+        "GlslError(message=Input port \"mouseX\" content type is \"unknown/float\", row=19, fileId=-1)",
+        "GlslError(message=Input port \"mouseY\" content type is \"unknown/float\", row=22, fileId=-1)"
+      ]
+    },
+    {
+      "id": "thats-all-folks",
+      "title": "ThatsAllFolks",
+      "tags": [
+        "@type=Filter",
+        "@filter"
+      ],
+      "srcFile": "effects/ThatsAllFolks.glsl"
+    },
+    {
+      "id": "tuto-jacobians-and-undistortion",
+      "title": "Tuto: Jacobians and undistortion",
+      "description": "from https://www.shadertoy.com/view/WlByRW",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/JacobianUndistortion.glsl"
+    },
+    {
+      "id": "tv-test-pattern",
+      "title": "TV Test Pattern",
+      "description": "From http://glslsandbox.com/e#46744",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/TvTestPattern.glsl"
+    },
+    {
+      "id": "waves",
+      "title": "Waves",
+      "description": "Adapted from http://glslsandbox.com/e#61168.1",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/Waves.glsl"
+    },
+    {
+      "id": "wobbly-color-grid",
+      "title": "Wobbly Color Grid",
+      "description": "From http://glslsandbox.com/e#60808.1",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/WobblyColorGrid.glsl"
+    },
+    {
+      "id": "yas-queen",
+      "title": "Yas Queen",
+      "description": "From http://glslsandbox.com/e#46613",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/YasQueen.glsl"
+    },
+    {
+      "id": "zebra",
+      "title": "Zebra",
+      "description": "Cool zebra pattern looking thing that alternates polarity on the beat",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/BAAAHS_Zebra.glsl"
+    },
+    {
+      "id": "zebra-madness",
+      "title": "Zebra Madness",
+      "description": "From http://glslsandbox.com/e#56511",
+      "tags": [
+        "@type=Paint"
+      ],
+      "srcFile": "shaders/ZebraMadness.glsl"
+    },
+    {
+      "id": "zig-zag",
+      "title": "ZigZag",
+      "tags": [
+        "@type=Distortion",
+        "@filter"
+      ],
+      "srcFile": "effects/ZigZag.glsl"
+    }
+  ]
+}

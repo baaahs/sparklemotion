@@ -1,16 +1,23 @@
 package baaahs.gl.shader.dialect
 
+import baaahs.app.ui.editor.stringify
 import baaahs.describe
+import baaahs.device.PixelArrayDevice
+import baaahs.gl.*
+import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
+import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
-import baaahs.gl.testToolchain
+import baaahs.gl.shader.ShaderSubstitutions
+import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.show.live.LinkedPatch
 import baaahs.toBeSpecified
 import baaahs.toEqual
+import baaahs.ui.diagnostics.DotDag
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -161,6 +168,180 @@ object IsfShaderDialectSpec : Spek({
                 }
             }
 
+            context("using IMG_PIXEL etc.") {
+                /*language=glsl*/
+                override(src) {
+                    """
+                        /*{
+                            "INPUTS": [
+                                { "NAME": "inputImage", "TYPE": "image" }
+                            ]
+                        }*/
+        
+                        void main() {
+                            gl_FragColor = IMG_NORM_PIXEL(inputImage, gl_FragCoord.xy);
+                        }
+                    """.trimIndent()
+
+                }
+
+                it("includes it as an input port") {
+                    expect(openShader.inputPorts).containsExactly(
+                        InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates",
+                            isImplicit = true),
+                        InputPort("inputImage", ContentType.Color, GlslType.Vec4, "Upstream Image",
+                            isImplicit = true,
+                            injectedData = mapOf("uv" to ContentType.UvCoordinate),
+                            glslArgSite = GlslCode.GlslFunction(
+                                "img_inputImage", GlslType.Vec4,
+                                listOf(GlslCode.GlslParam("uv", GlslType.Vec2, true)),
+                                "vec4 img_inputImage(vec2 uv);",
+                                isAbstract = true, isGlobalInput = true
+                            )
+                        )
+                    )
+                    expect(openShader.inputPorts.last().isAbstractFunction).toBe(true)
+                }
+
+                it("causes function bodies to be rewritten") {
+                    expect(
+                        openShader.toGlsl(
+                            null,
+                            ShaderSubstitutions(
+                                openShader,
+                                GlslCode.Namespace("pfx_"),
+                                mapOf("inputImage" to GlslExpr("pfx_inputImage(gl_FragCoord.xy)"))
+                            )
+                        )
+                    ).toEqual(
+                        """
+                            #line 7 0
+                            void pfx__main() {
+                                gl_FragColor = pfx_inputImage(gl_FragCoord.xy);
+                            }
+                        """.trimIndent()
+                    )
+                }
+
+                context("linking") {
+                    val upstreamShader by value {
+                        testToolchain.import(
+                            """
+                                // Pinks
+                                uniform vec2 resolution;
+                                void main(void) {
+                                    gl_FragColor = vec4(gl_FragCoord.xy / resolution, 0.0, 1.0);
+                                }
+                            """.trimIndent()
+                        )
+                    }
+                    val suggestions by value { autoWire(upstreamShader, openShader.shader) }
+                    val patches by value { suggestions.acceptSuggestedLinkOptions().confirm() }
+                    val mutableLinks by value { patches.mutablePatches.only().incomingLinks }
+
+                    it("identifies the shader as a filter") {
+                        expect(openShader.isFilter).toBe(true)
+                    }
+
+                    it("auto links inputImage to upstream (main stream) image") {
+                        suggestions.dumpOptions()
+                    }
+
+                    it("suggests sensible options") {
+                        expect(suggestions.find { it.mutableShader.title == openShader.title }!!
+                            .linkOptionsFor("inputImage").stringify()).toBe("""
+                                Data Source:
+                                - BeatLink
+                                - Custom slider Slider (advanced)
+                                - Pixel Distance from Edge
+                                * The Scale Slider
+                                - Time
+                                Stream:
+                                - Main Stream
+                            """.trimIndent())
+                    }
+
+                    context("program generation") {
+                        val linkedProgram by value {
+                            autoWireWithDefaults(upstreamShader, openShader.shader) {
+                                editShader(openShader.title) {
+                                    // TODO: STOPSHIP: 11/1/22 it should be auto prioritized higher because it's a filter
+//                                    priority = 1f
+                                }
+                            }
+                            patches.openForPreview(testToolchain, ContentType.Color)!!
+                        }
+                        val glsl by value { linkedProgram.toGlsl().trim() }
+
+                        it("generates a valid GLSL program") {
+                            val linkNodes = linkedProgram.linkNodes
+                                .filter { (p,l) -> p is LinkedPatch }
+                                .values
+                                .sortedBy { it.index }
+                                .map { it.toString() }
+                            println("linkNodes = \n$linkNodes")
+
+                            DotDag().apply {
+                                visit(PixelArrayDevice, linkedProgram)
+                            }.text.also { println(it) }
+
+                            /*language=glsl*/
+                            val expected = """
+                                #ifdef GL_ES
+                                precision mediump float;
+                                #endif
+
+                                // SparkleMotion-generated GLSL
+
+                                layout(location = 0) out vec4 sm_result;
+
+                                // Data source: Resolution
+                                uniform vec2 in_resolution;
+
+                                // Shader: Pinks; namespace: p0
+                                // Pinks
+
+                                vec4 p0_pinks_gl_FragColor = vec4(0., 0., 0., 1.);
+                                vec2 p0_global_gl_FragCoord = vec2(0.);
+
+                                #line 3 0
+                                void p0_pinks_main(void) {
+                                    p0_pinks_gl_FragColor = vec4(p0_global_gl_FragCoord.xy / in_resolution, 0.0, 1.0);
+                                }
+
+                                // Shader: Float Input; namespace: p1
+                                // Float Input
+
+                                vec4 p1_floatInput_gl_FragColor = vec4(0., 0., 0., 1.);
+
+                                vec4 p1_floatInput_inputImage(vec2 uv) {
+                                    // Invoke Pinks
+                                    p0_global_gl_FragCoord = uv;
+                                    p0_pinks_main();
+
+                                    return p0_pinks_gl_FragColor;
+                                }
+
+                                #line 7 1
+                                void p1_floatInput_main() {
+                                    p1_floatInput_gl_FragColor = p1_floatInput_inputImage(gl_FragCoord.xy);
+                                }
+
+
+                                #line 10001
+                                void main() {
+                                    // Invoke Float Input
+                                    p1_floatInput_main();
+
+                                    sm_result = p1_floatInput_gl_FragColor;
+                                }
+                            """.trimIndent()
+                            expect(glsl).toEqual(expected)
+                        }
+                    }
+                }
+            }
+
             context("with multiple out parameters") {
                 override(src) {
                     "void main(in vec2 fragCoord, out vec4 fragColor, out float other) { gl_FragColor = vec4(gl_FragCoord, 0., 1.); };"
@@ -185,9 +366,25 @@ object IsfShaderDialectSpec : Spek({
                 it("fails to validate") {
                     expect(shaderAnalysis.isValid).toBe(false)
                     expect(shaderAnalysis.errors).containsExactly(
-                        GlslError("Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead at path: \$\n" +
-                                "JSON input: { \"DESC }", 1)
+                        GlslError(
+                            "Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead at path: \$\n" +
+                                    "JSON input: { \"DESC }", 1
+                        )
                     )
+                }
+            }
+
+            context("with leading whitespace") {
+                override(src) { " /*{}*/\nvoid main() { gl_FragColor = vec4(level,level,level,1.0); }" }
+                it("is an excellent match") {
+                    expect(matchLevel).toEqual(MatchLevel.Excellent)
+                }
+            }
+
+            context("with whitespace before the JSON begins") {
+                override(src) { "/*\n{}\n*/\nvoid main() { gl_FragColor = vec4(level,level,level,1.0); }" }
+                it("is an excellent match") {
+                    expect(matchLevel).toEqual(MatchLevel.Excellent)
                 }
             }
         }

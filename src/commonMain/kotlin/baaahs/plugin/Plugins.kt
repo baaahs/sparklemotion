@@ -421,7 +421,7 @@ sealed class Plugins(
                 it to it.getArgs(parser)
             }
 
-            parser.parse(startupArgs)
+            val result = parser.parse(startupArgs)
 
             val serverPlugins = pluginToArgs.map { (plugin, pluginArgs) ->
                 plugin.openForServer(pluginContext, pluginArgs)
