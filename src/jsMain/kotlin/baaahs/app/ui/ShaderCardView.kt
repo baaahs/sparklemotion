@@ -20,7 +20,7 @@ import react.RBuilder
 import react.RHandler
 import react.buildElement
 
-val ShaderCard = xComponent<ShaderCardProps>("ShaderCard") { props ->
+private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
 
     val mutablePatch = props.mutablePatch
@@ -96,4 +96,4 @@ external interface ShaderCardProps : Props {
 }
 
 fun RBuilder.shaderCard(handler: RHandler<ShaderCardProps>) =
-    child(ShaderCard, handler = handler)
+    child(ShaderCardView, handler = handler)

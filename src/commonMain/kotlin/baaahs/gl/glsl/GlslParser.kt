@@ -447,11 +447,14 @@ class GlslParser {
             var isAbstract = true
 
             init {
-                if (tokensSoFar.size != 2)
+                val leadingModifierCount =
+                    tokensSoFar.indexOfFirst { !precisionStrings.contains(it) }
+
+                if (tokensSoFar.size - leadingModifierCount != 2)
                     throw context.glslError("unexpected tokens $tokensSoFar in function")
 
-                returnType = context.findType(tokensSoFar[0])
-                name = tokensSoFar[1]
+                returnType = context.findType(tokensSoFar[leadingModifierCount])
+                name = tokensSoFar[leadingModifierCount + 1]
             }
 
             override fun visitLeftCurlyBrace(): ParseState {
@@ -476,22 +479,26 @@ class GlslParser {
 
                 override fun visitText(value: String): ParseState {
                     val trimmed = value.trim()
-                    if (trimmed.isNotEmpty()) {
-                        if (trimmed == "const") {
-                            // Ignore.
-                        } else if (inArraySize) {
+                    when {
+                        trimmed.isEmpty() -> {} // Ignore.
+
+                        modifierStrings.contains(trimmed) -> {} // Ignore.
+
+                        inArraySize -> {
                             val macro = context.macros[trimmed]
                             // Very confused about this, but without it we get double macro expansion in the name:
                             if (macro == null) name += trimmed
-                        } else if (qualifier == null && (trimmed == "in" || trimmed == "out" || trimmed == "inout")) {
-                            qualifier = trimmed
-                        } else if (type == null) {
-                            type = GlslType.from(trimmed)
-                        } else if (name == null) {
-                            name = trimmed
-                        } else {
-                            throw context.glslError("Unexpected token \"$trimmed\".")
                         }
+
+                        qualifier == null && (varDirections.contains(trimmed)) -> {
+                            qualifier = trimmed
+                        }
+
+                        type == null -> type = GlslType.from(trimmed)
+
+                        name == null -> name = trimmed
+
+                        else -> throw context.glslError("Unexpected token \"$trimmed\".")
                     }
 
                     return super.visitText(value)
@@ -803,6 +810,9 @@ class GlslParser {
     companion object {
         private val wordRegex = Regex("([A-Za-z][A-Za-z0-9_]*)")
         private const val maxMacroDepth = 10
+        private val precisionStrings = setOf("lowp", "mediump", "highp")
+        private val modifierStrings = setOf("const") + precisionStrings
+        private val varDirections = setOf("in", "out", "inout")
 
         /** Chomp leading whitespace. */
         private fun chomp(text: String, lineNumber: Int?): Pair<String, Int?> {

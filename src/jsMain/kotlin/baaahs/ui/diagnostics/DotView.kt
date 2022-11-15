@@ -40,7 +40,7 @@ private val DotView = xComponent<DotProps>("Dot", isPure = true) { props ->
 
     div(+Styles.contentDiv and styles.codeContainer) {
         pre(+styles.code) {
-            Dag(includePatchMods).apply { visit(props.fixtureType, linkedProgram) }.text
+            DotDag(includePatchMods).apply { visit(props.fixtureType, linkedProgram) }.text
                 .split("\n").forEach { line ->
                     code { +line; +"\n" }
                 }
