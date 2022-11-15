@@ -27,7 +27,7 @@ import react.dom.h4
 import react.dom.html.ReactHTML
 import styled.inlineStyles
 
-val AppToolbar = xComponent<AppToolbarProps>("AppToolbar") { props ->
+private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val themeStyles = appContext.allStyles.appUi
     val showManager = appContext.showManager
@@ -265,4 +265,4 @@ external interface AppToolbarProps : Props {
 }
 
 fun RBuilder.appToolbar(handler: RHandler<AppToolbarProps>) =
-    child(AppToolbar, handler = handler)
+    child(AppToolbarView, handler = handler)

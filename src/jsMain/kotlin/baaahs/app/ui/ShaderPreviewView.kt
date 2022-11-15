@@ -29,7 +29,7 @@ import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
 
-val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
+private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
     val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
     val toolchain = props.toolchain
@@ -153,8 +153,17 @@ val ShaderPreview = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
         }
         withCleanup { observer.remove() }
 
-        if (builder.state == ShaderBuilder.State.Unbuilt) {
-            builder.startBuilding()
+        val intersectionObserver = IntersectionObserver(callback = { entries ->
+            if (entries.any { it.isIntersecting }) {
+                if (builder.state == ShaderBuilder.State.Unbuilt) {
+                    builder.startBuilding()
+                }
+            }
+        })
+        intersectionObserver.observe(previewContainer)
+
+        withCleanup {
+            intersectionObserver.disconnect()
         }
     }
 
@@ -282,4 +291,4 @@ external interface ShaderPreviewProps : Props {
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =
-    child(ShaderPreview, handler = handler)
+    child(ShaderPreviewView, handler = handler)

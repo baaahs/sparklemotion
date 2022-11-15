@@ -16,7 +16,7 @@ import react.dom.div
 import react.dom.header
 import react.dom.pre
 
-val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") { props ->
+private val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") { props ->
 
     val glslErrors = props.builder.glslErrors
     val linkedPatch = props.builder.linkedProgram

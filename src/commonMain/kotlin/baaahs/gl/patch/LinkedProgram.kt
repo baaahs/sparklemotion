@@ -8,7 +8,7 @@ class LinkedProgram(
     private val components: List<Component>,
     val dataSourceLinks: Set<OpenPatch.DataSourceLink>,
     val warnings: List<String>,
-    internal val linkNodes: MutableMap<ProgramNode, LinkNode> // For diagnostics only.
+    internal val linkNodes: Map<ProgramNode, LinkNode> // For diagnostics only.
 ) {
     fun toGlsl(): String {
         val buf = StringBuilder()
