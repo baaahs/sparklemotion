@@ -53,6 +53,7 @@ class GlslParser {
         var macroDepth = 0
         val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
         var outputEnabled = true
+        var matchedBranch = false
         val enabledStack = mutableListOf<Boolean>()
         val tokenizer = Tokenizer()
 
@@ -77,32 +78,65 @@ class GlslParser {
             }
         }
 
+        fun doIf(args: List<String>) {
+            if (args.isEmpty()) throw glslError("#if ${args.joinToString(" ")}")
+            enabledStack.add(outputEnabled)
+            val matches = evaluate(args.joinToString(" "))
+            outputEnabled = outputEnabled && matches
+            matchedBranch = matches
+        }
+
         fun doIfdef(args: List<String>) {
             if (args.size != 1) throw glslError("#ifdef ${args.joinToString(" ")}")
             enabledStack.add(outputEnabled)
-            outputEnabled = outputEnabled && macros.containsKey(args.first())
+            val matches = macros.containsKey(args.first())
+            outputEnabled = outputEnabled && matches
+            matchedBranch = matches
         }
 
         fun doIfndef(args: List<String>) {
             if (args.size != 1) throw glslError("#ifndef ${args.joinToString(" ")}")
             enabledStack.add(outputEnabled)
-            outputEnabled = outputEnabled && !macros.containsKey(args.first())
+            val matches = !macros.containsKey(args.first())
+            outputEnabled = outputEnabled && matches
+            matchedBranch = matches
         }
 
         fun doElse(args: List<String>) {
+            if (enabledStack.isEmpty()) throw glslError("#else outside of #if/#endif")
             if (args.isNotEmpty()) throw glslError("#else ${args.joinToString(" ")}")
-            outputEnabled = enabledStack.last() && !outputEnabled
+            outputEnabled = !matchedBranch && enabledStack.last() && !outputEnabled
+            if (outputEnabled) matchedBranch = true
+        }
+
+        fun doElif(args: List<String>) {
+            if (enabledStack.isEmpty()) throw glslError("#elif outside of #if/#endif")
+            if (args.isEmpty()) throw glslError("#elif ${args.joinToString(" ")}")
+            if (enabledStack.last()) {
+                val matches = !matchedBranch && evaluate(args.joinToString(" "))
+                outputEnabled = matches
+                if (matches) matchedBranch = true
+            }
         }
 
         fun doEndif(args: List<String>) {
+            if (enabledStack.isEmpty()) throw glslError("#endif outside of #if")
             if (args.isNotEmpty()) throw glslError("#endif ${args.joinToString(" ")}")
             outputEnabled = enabledStack.removeLast()
+            matchedBranch = false
         }
 
         @Suppress("UNUSED_PARAMETER")
         fun doLine(args: List<String>) {
             // No-op.
         }
+
+        private fun evaluate(args: String) =
+            try {
+                GlslMacroExpressionEvaluator.evaluate(args)
+            } catch (e: Exception) {
+                throw glslError(e.message!!)
+            }
 
         fun checkForMacro(value: String, parseState: ParseState): ParseState? {
             val macro = macros[value]
@@ -168,16 +202,17 @@ class GlslParser {
             }
         }
 
-        open fun visitText(value: String): ParseState {
-            println("value = ${value}")
-            return if (context.outputEnabled || value == "\n") {
-                context.checkForMacro(value, this)
-                    ?: run {
-                        appendText(value)
-                        this
-                    }
-            } else this
-        }
+        open fun visitText(value: String): ParseState =
+            if (context.outputEnabled || value == "\n")
+                checkForMacro(value)
+            else this
+
+        fun checkForMacro(value: String): ParseState =
+            context.checkForMacro(value, this)
+                ?: run {
+                    appendText(value)
+                    this
+                }
 
         open fun visitCommentText(value: String): ParseState = visitText(value)
         open fun visitComment(): ParseState = visitText("//")
@@ -250,7 +285,7 @@ class GlslParser {
             }
 
             override fun visitDirective(): ParseState {
-                return Directive(context, this)
+                return PreDirective(context, this)
             }
 
             override fun visitNewline(): ParseState {
@@ -597,41 +632,54 @@ class GlslParser {
             }
         }
 
-        private class Directive(context: Context, val priorParseState: ParseState) : ParseState(context) {
-            override fun visitText(value: String): ParseState {
-                return if (textIsEmpty() && value == "define") {
-                    MacroDeclaration(context, priorParseState)
-                } else {
-                    appendText(value)
-                    this
+        private class PreDirective(context: Context, val priorParseState: ParseState) : ParseState(context) {
+            private inner class Directive(
+                var quoteFirstArgument: Boolean = false,
+                val callback: (List<String>) -> Unit
+            ) : ParseState(context) {
+                override fun visitText(value: String): ParseState =
+                    if (value.isNotBlank() && quoteFirstArgument) {
+                        appendText(value)
+                        quoteFirstArgument = false
+                        this
+                    } else checkForMacro(value)
+
+                override fun visitNewline(): ParseState {
+                    context.tokenizer.lineNumberForError -= 1
+
+                    val str = textAsString.trim()
+                    val args = str.split(Regex("\\s+")).let {
+                        // "".split("\\s+") returns [""].
+                        if (it == listOf("")) emptyList() else it
+                    }
+                    callback(args)
+                    priorParseState.visitText("\n")
+                    return priorParseState
                 }
+
+                override fun visitEof(): ParseState =
+                    visitNewline()
             }
 
-            override fun visitNewline(): ParseState {
-                context.tokenizer.lineNumberForError -= 1
+            override fun visitText(value: String): ParseState =
+                when (value) {
+                    "define" -> DefineDirective(context, priorParseState)
+                    "undef" -> Directive(quoteFirstArgument = true) { context.doUndef(it) }
+                    "if" -> Directive { context.doIf(it) }
+                    "ifdef" -> Directive(quoteFirstArgument = true) { context.doIfdef(it) }
+                    "ifndef" -> Directive(quoteFirstArgument = true) { context.doIfndef(it) }
+                    "else" -> Directive { context.doElse(it) }
+                    "elif" -> Directive { context.doElif(it) }
+                    "endif" -> Directive { context.doEndif(it) }
+                    "error", "pragma", "extension", "version" ->
+                        throw context.glslError("unsupported directive #$value")
 
-                val str = textAsString.trim()
-                val args = str.split(Regex("\\s+")).toMutableList()
-                when (args.removeFirst()) {
-                    "define" -> throw IllegalStateException("This should be handled by MacroDeclaration.")
-                    "undef" -> context.doUndef(args)
-                    "ifdef" -> context.doIfdef(args)
-                    "ifndef" -> context.doIfndef(args)
-                    "else" -> context.doElse(args)
-                    "endif" -> context.doEndif(args)
-                    "line" -> context.doLine(args)
-                    else -> throw context.glslError("unknown directive #$str")
+                    "line" -> Directive(quoteFirstArgument = true) { context.doLine(it) }
+                    else -> throw context.glslError("unknown directive #$value")
                 }
-                priorParseState.visitText("\n")
-                return priorParseState
-            }
-
-            override fun visitEof(): ParseState {
-                return visitNewline()
-            }
         }
 
-        class MacroDeclaration(context: Context, val priorParseState: ParseState) : ParseState(context) {
+        class DefineDirective(context: Context, val priorParseState: ParseState) : ParseState(context) {
             enum class Mode { Initial, HaveName, InArgs, InReplacement }
 
             private var mode = Mode.Initial

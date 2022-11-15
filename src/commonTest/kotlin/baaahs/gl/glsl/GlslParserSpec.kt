@@ -7,11 +7,10 @@ import baaahs.gl.override
 import baaahs.only
 import baaahs.toBeSpecified
 import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
+import org.spekframework.spek2.dsl.Skip
 
 object GlslParserSpec : Spek({
     describe<GlslParser> {
@@ -185,7 +184,7 @@ object GlslParserSpec : Spek({
                         )
                 }
 
-                context("with #ifdefs") {
+                context("with #ifdef's") {
                     override(shaderText) {
                         /**language=glsl*/
                         """
@@ -278,6 +277,189 @@ object GlslParserSpec : Spek({
                                         }
                                     """.trimIndent()
                                 )
+                        }
+                    }
+                }
+
+                context("with #if/#elif's") {
+                    context("with a static expression which evaluates to false") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 0 > 1
+                                uniform float shouldNotBeDefined;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("skips the line") {
+                            expect(glslCode.globalVars.toList()).isEmpty()
+                        }
+                    }
+
+                    context("with a static expression which evaluates to true") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 1 > 0
+                                uniform float shouldBeDefined;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("includes the line") {
+                            expect(glslCode.globalVars.map { it.name }).containsExactly("shouldBeDefined")
+                        }
+                    }
+
+                    context("with a static expression including an elif") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 0 > 1
+                                uniform float zeroIsGreaterThanOne;
+                                #elif 1 > 0
+                                uniform float oneIsGreaterThanZero;
+                                #else
+                                uniform float neitherIsTrue;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("includes the line") {
+                            expect(glslCode.globalVars.map { it.name }).containsExactly("oneIsGreaterThanZero")
+                        }
+                    }
+
+                    context("with a static expression falling through to an else") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if 0 == 1
+                                uniform float zeroIsOne;
+                                #elif 1 == 0
+                                uniform float oneIsZero;
+                                #else
+                                uniform float elseClause;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("includes the line") {
+                            expect(glslCode.globalVars.map { it.name }).containsExactly("elseClause")
+                        }
+                    }
+
+                    context("with expressions including a macro expansion") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #define VALUE 1
+                                #if VALUE == 0
+                                uniform float valueIsZero;
+                                #elif VALUE == 1
+                                uniform float valueIsOne;
+                                #elif VALUE == 2
+                                uniform float valueIsTwo;
+                                #else
+                                uniform float valueIsUnknown;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("includes the correct line") {
+                            expect(glslCode.globalVars.map { it.name }).containsExactly("valueIsOne")
+                        }
+                    }
+
+                    context("with an invalid expression") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #if FOO
+                                uniform float valueIsUnknown;
+                                #endif
+                            """.trimIndent()
+                        }
+
+                        it("generates an analysis error") {
+                            expect { glslCode }.toThrow<AnalysisException>() {
+                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO'") }
+                            }
+                        }
+                    }
+
+                    context("with defined macros") {
+                        override(shaderText) {
+                            /**language=glsl*/
+                            """
+                                #define iResolution resolution // ignore this comment
+                                #define dividedBy(a,b) (a / b) /* ignore this comment too */
+                                #define circle(U, r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+
+                                uniform vec2 resolution;
+                                void main() {
+                                #ifdef xyz
+                                    foo();
+                                #endif
+                                    gl_FragColor = circle(gl_FragCoord, iResolution.x);
+                                    gl_FragColor = circle(dividedBy(gl_FragCoord, 1.0), iResolution.x);
+                                }
+                            """.trimIndent()
+                        }
+
+                        it("handles nested macro expansions") {
+                            val glslFunction = glslCode.functions.only()
+
+                            val glsl = glslFunction.toGlsl(null) { text ->
+                                if (text == "main") Namespace("ns").qualify(text) else text
+                            }
+
+                            expect(glsl.trim())
+                                .toBe(
+                                    """
+                                        #line 6
+                                        void ns_main() {
+                                        
+                                        
+                                        
+                                            gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
+                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
+                                        }
+                                    """.trimIndent()
+                                )
+                        }
+                    }
+
+                    context("with nested ifs", skip = Skip.Yes("Test that #elif/#else inside unfollowed branches are ignored.")) {}
+
+                    context("with unbalanced #endif") {
+                        override(shaderText) { "#endif" }
+
+                        it("generates an analysis error") {
+                            expect { glslCode }.toThrow<AnalysisException>() {
+                                message { toEqual("Shader analysis error: #endif outside of #if") }
+                            }
+                        }
+                    }
+
+                    context("with unbalanced #else") {
+                        override(shaderText) { "#else" }
+
+                        it("generates an analysis error") {
+                            expect { glslCode }.toThrow<AnalysisException>() {
+                                message { toEqual("Shader analysis error: #else outside of #if/#endif") }
+                            }
+                        }
+                    }
+
+                    context("with unbalanced #elif") {
+                        override(shaderText) { "#elif FOO" }
+
+                        it("generates an analysis error") {
+                            expect { glslCode }.toThrow<AnalysisException>() {
+                                message { toEqual("Shader analysis error: #elif outside of #if/#endif") }
+                            }
                         }
                     }
                 }

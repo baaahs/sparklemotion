@@ -141,7 +141,7 @@ object PreviewShaderBuilderSpec : Spek({
                 it("should result in a build error") {
                     expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
                     expect(previewShaderBuilder.openShader!!.errors).containsExactly(
-                        GlslError("unknown directive #unknownDirective BAIL BAIL BAIL", row = 1)
+                        GlslError("unknown directive #unknownDirective", row = 1)
                     )
                 }
             }
