@@ -16,6 +16,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibraries
+import baaahs.libraries.ShaderLibrariesClient
 import baaahs.mapper.JsMapperBuilder
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -65,7 +66,7 @@ class WebClient(
         featureFlagsProvider.addObserver { facade.notifyChanged() }
     }
 
-    private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
+    private val shaderLibraries = ShaderLibrariesClient(pubSub, remoteFsSerializer)
 
     private val listDmxUniverses =
         DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule)
@@ -156,7 +157,7 @@ class WebClient(
         val notifier: Notifier.Facade
             get() = this@WebClient.notifier.facade
 
-        val shaderLibraries : ShaderLibraries.Facade
+        val shaderLibraries : ShaderLibraries
             get() = this@WebClient.shaderLibraries.facade
 
         val uiSettings: UiSettings

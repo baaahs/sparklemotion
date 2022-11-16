@@ -107,7 +107,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         gl?.let {
             props.previewShaderBuilder
                 ?: props.shader?.let { shader ->
-                    PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
+                    PreviewShaderBuilder(shader, toolchain, appContext.sceneProvider)
                 }
         }
     }

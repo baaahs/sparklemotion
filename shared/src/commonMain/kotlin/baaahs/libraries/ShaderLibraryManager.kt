@@ -23,14 +23,14 @@ class ShaderLibraryManager(
     plugins: Plugins,
     private val fs: Fs,
     fsSerializer: FsServerSideSerializer,
-    pubSub: PubSub.Server,
+    pubSub: PubSub.Endpoint,
     private val toolchain: Toolchain
 ) {
     private val shaderLibraryIndexStore =
         DataStore(plugins, ShaderLibraryIndexDataMigrator())
 
     private lateinit var shaderLibraries: Map<Fs.File, ShaderLibrary>
-    private val channel = pubSub.publish(
+    private val channel = pubSub.openChannel(
         Topics.createShaderLibraries(fsSerializer), emptyMap()
     ) { updated ->
         // TODO: tbd.
@@ -41,20 +41,28 @@ class ShaderLibraryManager(
         prettyPrintIndent = "  "
     }
 
+    inner class Facade : ShaderLibraries {
+        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
+            return this@ShaderLibraryManager.searchFor(terms)
+        }
+    }
+
     init {
         Topics.shaderLibrariesCommands.createReceiver(pubSub, object : ShaderLibraryCommands {
             override suspend fun search(terms: String): List<ShaderLibrary.Entry> =
-                buildList {
-                    shaderLibraries.forEach { (_, shaderLibrary) ->
-                        val libId = shaderLibrary.title.hyphenize()
-                        shaderLibrary.entries.forEach { entry ->
-                            if (entry.matches(terms)) {
-                                add(entry.copy(id = "${libId}:${entry.id}"))
-                            }
-                        }
-                    }
-                }
+                searchFor(terms)
         })
+    }
+
+    private fun searchFor(terms: String): List<ShaderLibrary.Entry> = buildList {
+        shaderLibraries.forEach { (_, shaderLibrary) ->
+            val libId = shaderLibrary.title.hyphenize()
+            shaderLibrary.entries.forEach { entry ->
+                if (entry.matches(terms)) {
+                    add(entry.copy(id = "${libId}:${entry.id}"))
+                }
+            }
+        }
     }
 
     private val shaderLibrariesPath = MergedFs(fs, resourcesFs)

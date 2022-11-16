@@ -5,7 +5,8 @@ import baaahs.PubSub
 import baaahs.app.settings.FeatureFlags
 import baaahs.app.settings.FeatureFlagsManager
 import baaahs.app.settings.Provider
-import baaahs.app.ui.PatchEditorApp
+import baaahs.app.ui.dev.PatchEditorDevApp
+import baaahs.app.ui.dev.ShaderLibraryDevApp
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
 import baaahs.client.*
@@ -93,7 +94,8 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { MidiManager(listOf(/*JsMidiSource(get())*/)) }
 
             // Dev only:
-            scoped { PatchEditorApp(get(), get(), get()) }
+            scoped { PatchEditorDevApp(get(), get(), get()) }
+            scoped { ShaderLibraryDevApp(get(), get(), get()) }
         }
     }
 }

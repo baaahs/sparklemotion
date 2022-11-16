@@ -1,9 +1,11 @@
-package baaahs.app.ui
+package baaahs.app.ui.dev
 
+import baaahs.app.ui.AllStyles
+import baaahs.app.ui.AppContext
+import baaahs.app.ui.Themes
 import baaahs.app.ui.editor.ControlEditIntent
 import baaahs.app.ui.editor.ShowEditableManager
 import baaahs.app.ui.editor.editableManagerUi
-import baaahs.client.WebClient
 import baaahs.client.document.ShowManager
 import baaahs.gl.Toolchain
 import baaahs.gl.withCache
@@ -16,22 +18,20 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import js.objects.jso
-import mui.material.CssBaseline
 import mui.material.Paper
-import mui.material.styles.ThemeProvider
 import react.*
 import react.dom.div
 
-class PatchEditorApp(
+class PatchEditorDevApp(
     private val plugins: Plugins,
     private val toolchain: Toolchain,
     private val showManager: ShowManager,
     ) : HostedWebApp {
     override fun render(): ReactElement<*> {
-        return createElement(PatchEditorAppIndexView, jso {
-            this.plugins = this@PatchEditorApp.plugins
-            this.toolchain = this@PatchEditorApp.toolchain
-            this.showManager = this@PatchEditorApp.showManager.facade
+        return createElement(PatchEditorDevAppIndexView, jso {
+            this.plugins = this@PatchEditorDevApp.plugins
+            this.toolchain = this@PatchEditorDevApp.toolchain
+            this.showManager = this@PatchEditorDevApp.showManager.facade
         })
     }
 
@@ -40,7 +40,7 @@ class PatchEditorApp(
 
 }
 
-val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorAppIndex") { props ->
+val PatchEditorDevAppIndexView = xComponent<PatchEditorDevAppIndexProps>("PatchEditorDevAppIndex") { props ->
     val showManager = props.showManager
     observe(showManager)
 
@@ -79,40 +79,25 @@ val PatchEditorAppIndexView = xComponent<PatchEditorAppIndexProps>("PatchEditorA
         }
     }
 
-    val myAppGlSharingContext = memo { jso<AppGlSharingContext> { this.sharedGlContext = null } }
+    devAppWrapper {
+        attrs.appContext = myAppContext
+        attrs.toolchain = props.toolchain
 
-    appContext.Provider {
-        attrs.value = myAppContext
-
-        toolchainContext.Provider {
-            attrs.value = props.toolchain
-
-            appGlSharingContext.Provider {
-                attrs.value = myAppGlSharingContext
-
-                ThemeProvider {
-                    attrs.theme = theme
-                    CssBaseline {}
-
-                    Paper {
-                        div {
-                            editableManagerUi {
-                                attrs.editableManager = editableManager
-                            }
-                        }
-                    }
+        Paper {
+            div {
+                editableManagerUi {
+                    attrs.editableManager = editableManager
                 }
             }
         }
     }
 }
 
-external interface PatchEditorAppIndexProps : Props {
-    var webClient: WebClient.Facade
+external interface PatchEditorDevAppIndexProps : Props {
     var plugins: Plugins
     var toolchain: Toolchain
     var showManager: ShowManager.Facade
 }
 
-fun RBuilder.patchEditorAppIndex(handler: RHandler<PatchEditorAppIndexProps>) =
-    child(PatchEditorAppIndexView, handler = handler)
+fun RBuilder.patchEditorDevAppIndex(handler: RHandler<PatchEditorDevAppIndexProps>) =
+    child(PatchEditorDevAppIndexView, handler = handler)
