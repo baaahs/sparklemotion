@@ -57,12 +57,16 @@ abstract class BaseShaderAnalyzer(
         )
     }
 
+    open fun findAdditionalErrors() =
+        emptyList<GlslError>()
+
     override fun analyze(existingShader: Shader?): ShaderAnalysis {
         return try {
             val inputPorts = findInputPorts()
             val outputPorts = findOutputPorts()
             val entryPoint = findEntryPointOrNull()
-            Analysis(entryPoint, inputPorts, outputPorts, existingShader)
+            val additionalErrors = findAdditionalErrors()
+            Analysis(entryPoint, inputPorts, outputPorts, additionalErrors, existingShader)
         } catch (e: GlslException) {
             ErrorsShaderAnalysis(glslCode.src, e, existingShader ?: createShader())
         }
@@ -72,6 +76,7 @@ abstract class BaseShaderAnalyzer(
         override val entryPoint: GlslCode.GlslFunction?,
         override val inputPorts: List<InputPort>,
         override val outputPorts: List<OutputPort>,
+        private val additionalErrors: List<GlslError>,
         shader: Shader?
     ) : ShaderAnalysis {
         override val glslCode: GlslCode
@@ -115,6 +120,8 @@ abstract class BaseShaderAnalyzer(
                         outputPort.lineNumber ?: entryPoint?.lineNumber
                     )
             }
+
+            addAll(additionalErrors)
         }
 
         override val shader: Shader = shader
