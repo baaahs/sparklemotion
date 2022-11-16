@@ -123,6 +123,7 @@ class ShaderLibraryManager(
                 val tags = buildList {
                     add("@type=${openShader.shaderType.title}")
                     if (openShader.isFilter) add("@filter")
+                    addAll(shader.tags)
                 }
                 ShaderLibraryIndex.Entry(
                     uniqueIds.idFor(file) { shader.title.hyphenize() },

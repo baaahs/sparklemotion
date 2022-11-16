@@ -7,6 +7,10 @@ class GlslParser {
 
     internal fun findStatements(glslSrc: String): List<GlslCode.GlslStatement> {
         val context = Context()
+
+        // TODO: Where should the version come from?
+        context.macros["__VERSION__"] = Macro(null, "330")
+
         context.parse(glslSrc, ParseState.initial(context)).visitEof()
         return context.statements
     }

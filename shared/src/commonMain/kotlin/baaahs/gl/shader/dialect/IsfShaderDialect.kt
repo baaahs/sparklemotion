@@ -1,10 +1,7 @@
 package baaahs.gl.shader.dialect
 
 import baaahs.englishize
-import baaahs.gl.glsl.AnalysisException
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslParser
-import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.*
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
@@ -131,6 +128,8 @@ class IsfShaderAnalyzer(
 
     override val entryPointName: String = "main"
 
+    private val isfShader = findIsfShaderDeclaration(glslCode)
+
     override val matchLevel: MatchLevel by lazy {
         if (startsWithJsonComment(glslCode) &&
             run {
@@ -146,8 +145,7 @@ class IsfShaderAnalyzer(
     )
 
     private val declaredInputPorts = run {
-        val isfShader = findIsfShaderDeclaration(glslCode)
-            ?: return@run emptyList()
+        isfShader ?: return@run emptyList()
 
         isfShader.INPUTS.mapNotNull { input ->
             val inputPort = createInputPortFor(input)
@@ -172,6 +170,12 @@ class IsfShaderAnalyzer(
 
     override fun findDeclaredInputPorts(): List<InputPort> =
         declaredInputPorts
+
+    override fun findAuthor(): String? =
+        isfShader?.CREDIT
+
+    override fun findTags(): List<String> =
+        isfShader?.CATEGORIES ?: emptyList()
 
     private fun createSwitch(input: IsfBoolInput): InputPort {
         return InputPort(
@@ -266,6 +270,14 @@ class IsfShaderAnalyzer(
         } else emptyList()
     }
 
+    override fun findAdditionalErrors(): List<GlslError> = buildList {
+        val passes = isfShader?.PASSES ?: emptyList()
+        val normalPasses = passes.isEmpty() || passes == listOf(IsfPass())
+        if (!normalPasses) {
+            add(GlslError("Multiple passes aren't supported."))
+        }
+    }
+
     private val defaultContentTypes = mapOf<GlslType, ContentType>(
         GlslType.Vec4 to ContentType.Color
     )
@@ -303,14 +315,19 @@ class IsfShaderAnalyzer(
     }
 }
 
+/**
+ * See [ISF JSON Attributes](https://docs.isf.video/ref_json.html).
+ */
 @Serializable
 private data class IsfShader(
-    val DESCRIPTION: String? = null,
-    val CREDIT: String? = null,
     val ISFVSN: String? = null,
     val VSN: String? = null,
+    val DESCRIPTION: String? = null,
     val CATEGORIES: List<String> = emptyList(),
-    val INPUTS: List<IsfInput> = emptyList()
+    val INPUTS: List<IsfInput> = emptyList(),
+    val PASSES: List<IsfPass> = emptyList(),
+    val IMPORTED: Map<String, IsfImported> = emptyMap(),
+    val CREDIT: String? = null
 )
 
 @Serializable
@@ -408,3 +425,17 @@ private class IsfAudioFftInput(
     override val TYPE: String,
     override val LABEL: String? = null,
 ) : IsfInput()
+
+@Serializable
+private class IsfPass(
+    val TARGET: String? = null,
+    val PERSISTENT: Boolean = false,
+    val FLOAT: Boolean = false,
+    val HEIGHT: String? = null,
+    val WIDTH: String? = null
+)
+
+@Serializable
+private class IsfImported(
+    val PATH: String
+)
