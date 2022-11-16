@@ -15,33 +15,40 @@ import kotlinx.serialization.modules.SerializersModule
 
 class ShaderLibraryManager(
     private val storage: Storage,
-    pubSub: PubSub.Server,
+    pubSub: PubSub.Endpoint,
     private val toolchain: Toolchain
 ) {
     private lateinit var shaderLibraries: Map<Fs.File, ShaderLibrary>
-    private val channel = pubSub.publish(
+    private val channel = pubSub.openChannel(
         Topics.createShaderLibraries(storage.fsSerializer), emptyMap()
     ) { updated ->
         // TODO: tbd.
     }
 
+    inner class Facade : ShaderLibraries {
+        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
+            return this@ShaderLibraryManager.searchFor(terms)
+        }
+    }
+
     init {
-        pubSub.listenOnCommandChannel(Topics.Commands(SerializersModule {
-
-
-        }).searchShaderLibraries) { command ->
-            val matches = arrayListOf<ShaderLibrary.Entry>()
-            shaderLibraries.forEach { (_, shaderLibrary) ->
-                val libId = shaderLibrary.title.hyphenize()
-                shaderLibrary.entries.forEach { entry ->
-                    if (entry.matches(command.terms)) {
-                        matches.add(entry.copy(id = "${libId}:${entry.id}"))
-                    }
-                }
-            }
+        pubSub.listenOnCommandChannel(Topics.Commands(SerializersModule {}).searchShaderLibraries) { command ->
+            val matches = searchFor(command.terms)
             SearchShaderLibraries.Response(matches)
         }
     }
+
+    fun searchFor(terms: String): List<ShaderLibrary.Entry> =
+        buildList {
+            shaderLibraries.forEach { (_, shaderLibrary) ->
+                val libId = shaderLibrary.title.hyphenize()
+                shaderLibrary.entries.forEach { entry ->
+                    if (entry.matches(terms)) {
+                        add(entry.copy(id = "${libId}:${entry.id}"))
+                    }
+                }
+            }
+        }
 
     suspend fun start() {
         shaderLibraries = loadShaderLibraries().also {

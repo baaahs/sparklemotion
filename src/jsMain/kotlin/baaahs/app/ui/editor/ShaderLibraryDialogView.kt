@@ -34,7 +34,7 @@ import web.events.Event
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderLibrary
-    val shaderLibraries = appContext.webClient.shaderLibraries
+    val shaderLibraries = appContext.shaderLibraries
     val baseToolchain = useContext(toolchainContext)
     val toolchain = memo(baseToolchain) { baseToolchain.withCache("Shader Library") }
 

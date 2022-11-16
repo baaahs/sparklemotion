@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <title>Simulator | sparklemotion</title>
+  <script src="long-press-event.min.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="react-mosaic-component.css"/>
+  <link rel="stylesheet" href="blueprintjs/icons/lib/css/blueprint-icons.css"/>
+  <link rel="stylesheet" href="blueprintjs/core/lib/css/blueprint.css"/>
+  <link rel="stylesheet" href="fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="react-grid-layout/css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+</head>
+<body class="sparklemotion-ui">
+<div id="content">
+  <div style="
+    background: white;
+    color: black;
+    font-family: 'Press Start 2P', monospace;
+    border: 2px solid black;
+    display: flex;
+    margin: auto;
+    padding: 1em;
+    height: 150px;
+    align-items: center;
+  ">
+      <img style="transform: scale(.5);" src="loading.gif" alt=""/>
+    <div id="_patience_" style="padding-right: 5em;">Patience...</div>
+  </div>
+</div>
+
+<script type="application/javascript">
+  document.resourcesBase = ".";
+  document.sparklemotionMode = document.location.hash.substring(1);
+
+  setTimeout(function () {
+    function loadJs(path) {
+      let el = document.createElement("script");
+      el.setAttribute("src", path);
+      document.head.appendChild(el);
+    }
+
+    loadJs("vendors.js");
+    loadJs("1.js"); // for http://baaahs.github.io/sparklemotion/
+    loadJs("sparklemotion.js");
+  });
+</script>
+</body>
+</html>
