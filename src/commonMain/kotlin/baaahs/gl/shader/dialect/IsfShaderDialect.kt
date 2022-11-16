@@ -13,8 +13,6 @@ import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
-import baaahs.plugin.core.CorePlugin
-import baaahs.plugin.core.feed.ImageFeed
 import baaahs.plugin.core.feed.XyPadFeed
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
@@ -236,10 +234,9 @@ class IsfShaderAnalyzer(
      * filter.
      */
     private fun createImage(input: IsfImageInput): InputPort {
-        return if (input.NAME == "inputImage") {
-            val invocationFnName = input.NAME
-            InputPort(
-                input.NAME, ContentType.Color, title = input.LABEL ?: "Upstream Image",
+        val invocationFnName = input.NAME
+        return InputPort(
+                input.NAME, ContentType.Color, title = input.LABEL ?: invocationFnName.englishize(),
                 isImplicit = true, injectedData = mapOf("uv" to ContentType.UvCoordinate),
                 glslArgSite = GlslCode.GlslFunction(
                     invocationFnName, GlslType.Vec4,
@@ -248,13 +245,6 @@ class IsfShaderAnalyzer(
                     isAbstract = true, isGlobalInput = true
                 )
             )
-        } else {
-            InputPort(
-                input.NAME, ContentType.Color, title = input.LABEL ?: input.NAME.englishize(),
-                pluginRef = PluginRef(CorePlugin.id, ImageFeed.resourceName),
-                isImplicit = true
-            )
-        }
     }
 
     private fun findIsfShaderDeclaration(glslCode: GlslCode): IsfShader? {
