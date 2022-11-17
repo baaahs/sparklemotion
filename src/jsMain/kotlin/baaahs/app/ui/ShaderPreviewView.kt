@@ -252,6 +252,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
         position = Position.relative
         width = 100.pct
         height = 100.pct
+        margin = "auto"
         userSelect = UserSelect.none
 
         child(this@ShaderPreviewStyles, ::canvas) {

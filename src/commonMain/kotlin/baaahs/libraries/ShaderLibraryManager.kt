@@ -40,19 +40,20 @@ class ShaderLibraryManager(
 
     fun searchFor(terms: String): List<ShaderLibrary.Entry> =
         buildList {
+            val termList = terms.trim().split(Regex("\\s+"))
             shaderLibraries.forEach { (_, shaderLibrary) ->
                 val libId = shaderLibrary.title.hyphenize()
                 shaderLibrary.entries.forEach { entry ->
-                    if (entry.matches(terms)) {
+                    if (termList.all { entry.matches(it) }) {
                         add(entry.copy(id = "${libId}:${entry.id}"))
                     }
                 }
             }
-        }
+        }.sortedBy { it.shader.title }
 
     suspend fun start() {
         shaderLibraries = loadShaderLibraries().also {
-            channel.onChange(it.mapKeys { it.key.fullPath })
+            channel.onChange(it.mapKeys { (k, _) -> k.fullPath })
         }
     }
 
@@ -137,6 +138,7 @@ class ShaderLibraryManager(
     private suspend fun loadShaderLibrary(libDir: Fs.File): ShaderLibrary {
         return storage.loadShaderLibraryIndexFile(libDir).let { indexFile ->
             ShaderLibrary(
+                libDir,
                 indexFile.title,
                 indexFile.description,
                 indexFile.license,
@@ -146,10 +148,13 @@ class ShaderLibraryManager(
 
                     ShaderLibrary.Entry(
                         fileEntry.id,
-                        Shader(fileEntry.title, src),
-                        fileEntry.description,
-                        fileEntry.lastModifiedMs,
-                        fileEntry.tags
+                        Shader(
+                            fileEntry.title,
+                            src,
+                            fileEntry.description,
+                            null,
+                            fileEntry.tags
+                        )
                     )
                 }
             )

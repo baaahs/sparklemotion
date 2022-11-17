@@ -11,6 +11,15 @@ class ShaderLibraryStyles(private val theme: Theme) : StyleSheet("app-ui-editor-
         bottom = 0.px
     }
 
+    val dialogTitle by css {
+        display = Display.flex
+        justifyContent = JustifyContent.spaceBetween
+    }
+
+    val dialogTitleActions by css {
+        padding = ".5em"
+    }
+
     val dialogContent by css {
         display = Display.flex
         flexDirection = FlexDirection.column
