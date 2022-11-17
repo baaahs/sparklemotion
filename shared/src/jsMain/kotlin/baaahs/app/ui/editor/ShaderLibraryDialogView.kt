@@ -122,6 +122,9 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
             attrs.maxWidth = "xl"
             attrs.scroll = DialogScroll.paper
             attrs.onClose = handleClose
+            attrs.PaperProps = jso {
+                this.classes = jso { this.root = -styles.dialogPaper }
+            }
 
             DialogTitle { +"Shader Library" }
 
