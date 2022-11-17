@@ -55,15 +55,16 @@ class ShaderLibraryManager(
     }
 
     private fun searchFor(terms: String): List<ShaderLibrary.Entry> = buildList {
-        shaderLibraries.forEach { (_, shaderLibrary) ->
-            val libId = shaderLibrary.title.hyphenize()
-            shaderLibrary.entries.forEach { entry ->
-                if (entry.matches(terms)) {
+        val termList = terms.trim().split(Regex("\\s+"))
+            shaderLibraries.forEach { (_, shaderLibrary) ->
+                val libId = shaderLibrary.title.hyphenize()
+                shaderLibrary.entries.forEach { entry ->
+                    if (termList.all { entry.matches(it) }) {
                     add(entry.copy(id = "${libId}:${entry.id}"))
                 }
             }
         }
-    }
+    }.sortedBy { it.shader.title }
 
     private val shaderLibrariesPath = MergedFs(fs, resourcesFs)
         .resolve("shader-libraries")
@@ -93,7 +94,7 @@ class ShaderLibraryManager(
 
     suspend fun start() {
         shaderLibraries = loadShaderLibraries().also {
-            channel.onChange(it.mapKeys { it.key.fullPath })
+            channel.onChange(it.mapKeys { (k, _) -> k.fullPath })
         }
     }
 
@@ -178,6 +179,7 @@ class ShaderLibraryManager(
     private suspend fun loadShaderLibrary(libDir: Fs.File): ShaderLibrary {
         return loadShaderLibraryIndexFile(libDir).let { indexFile ->
             ShaderLibrary(
+                libDir,
                 indexFile.title,
                 indexFile.description,
                 indexFile.license,
@@ -187,10 +189,13 @@ class ShaderLibraryManager(
 
                     ShaderLibrary.Entry(
                         fileEntry.id,
-                        Shader(fileEntry.title, src),
-                        fileEntry.description,
-                        fileEntry.lastModifiedMs,
-                        fileEntry.tags
+                        Shader(
+                            fileEntry.title,
+                            src,
+                            fileEntry.description,
+                            null,
+                            fileEntry.tags
+                        )
                     )
                 }
             )

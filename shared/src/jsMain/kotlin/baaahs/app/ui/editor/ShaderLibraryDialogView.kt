@@ -126,7 +126,27 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                 this.classes = jso { this.root = -styles.dialogPaper }
             }
 
-            DialogTitle { +"Shader Library" }
+            div(+styles.dialogTitle) {
+                DialogTitle {
+                    +"Shader Library"
+                }
+
+                div(+styles.dialogTitleActions) {
+                    IconButton {
+                        attrs.title = "Smaller"
+                        attrs.disabled = !previewSizeRange.contains(previewSize - 1)
+                        attrs.onClick = handleSmallerPreviewClick
+                        icon(mui.icons.material.ZoomOut)
+                    }
+
+                    IconButton {
+                        attrs.title = "Bigger"
+                        attrs.disabled = !previewSizeRange.contains(previewSize + 1)
+                        attrs.onClick = handleBiggerPreviewClick
+                        icon(mui.icons.material.ZoomIn)
+                    }
+                }
+            }
 
             DialogContent {
                 attrs.className = -styles.dialogContent
@@ -154,20 +174,6 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
                         }
 
                         FormHelperText { +"Enter stuff to search for!" }
-                    }
-
-                    IconButton {
-                        attrs.title = "Smaller"
-                        attrs.disabled = !previewSizeRange.contains(previewSize - 1)
-                        attrs.onClick = handleSmallerPreviewClick
-                        icon(mui.icons.material.ZoomOut)
-                    }
-
-                    IconButton {
-                        attrs.title = "Bigger"
-                        attrs.disabled = !previewSizeRange.contains(previewSize + 1)
-                        attrs.onClick = handleBiggerPreviewClick
-                        icon(mui.icons.material.ZoomIn)
                     }
 
                     FormControlLabel {
