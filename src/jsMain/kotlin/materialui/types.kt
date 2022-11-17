@@ -9,6 +9,9 @@ import react.create
 
 fun RBuilder.icon(icon: Icon) = child(icon.getReactIcon().create())
 
+fun RBuilder.icon(icon: Icon, block: @ReactDsl SvgIconProps.() -> Unit = {}) =
+    child(icon.getReactIcon().create(block))
+
 fun RBuilder.icon(icon: SvgIconComponent, block: @ReactDsl SvgIconProps.() -> Unit = {}) =
     child(icon.create(block))
 
