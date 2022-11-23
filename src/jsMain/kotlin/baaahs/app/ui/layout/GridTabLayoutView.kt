@@ -1,10 +1,12 @@
 package baaahs.app.ui.layout
 
+import baaahs.app.ui.AppContext
 import baaahs.app.ui.appContext
 import baaahs.app.ui.controlsPalette
 import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.control.OpenButtonGroupControl
+import baaahs.plugin.AddControlMenuItem
 import baaahs.show.live.ControlProps
 import baaahs.show.live.GridLayoutControlDisplay
 import baaahs.show.live.OpenIGridLayout
@@ -25,17 +27,11 @@ import kotlinx.html.js.onClickFunction
 import materialui.icon
 import mui.base.Portal
 import mui.icons.material.Add
-import mui.material.ListItemIcon
-import mui.material.ListItemText
-import mui.material.Menu
-import mui.material.MenuItem
+import mui.material.*
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
-import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
 
@@ -53,6 +49,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val rows = gridLayout.rows
 
     var showAddMenu by state<AddMenuContext?> { null }
+    val closeAddMenu by handler { showAddMenu = null }
 
     val editMode = observe(appContext.showManager.editMode)
     var draggingItem by state<String?> { null }
@@ -212,23 +209,11 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         Menu {
             attrs.anchorEl = { addMenuContext.anchorEl }
             attrs.open = true
-            attrs.onClose = { showAddMenu = null }
+            attrs.onClose = closeAddMenu
 
             appContext.plugins.addControlMenuItems.forEach { addControlMenuItem ->
-                MenuItem {
-                    attrs.onClick = {
-                        val editIntent = AddControlToGrid(
-                            gridLayoutEditor,
-                            addMenuContext.column, addMenuContext.row,
-                            addMenuContext.width, addMenuContext.height,
-                            addControlMenuItem.createControlFn
-                        )
-                        appContext.openEditor(editIntent)
-                        showAddMenu = null
-                    }
-
-                    ListItemIcon { icon(addControlMenuItem.icon) }
-                    ListItemText { +addControlMenuItem.label }
+                addMenuContext.apply {
+                    createMenuItem(gridLayoutEditor, addControlMenuItem, appContext, closeAddMenu)
                 }
             }
         }
@@ -249,8 +234,30 @@ class AddMenuContext(
     val row: Int,
     val width: Int = 1,
     val height: Int = 1
-)
+) {
+    fun RElementBuilder<MenuProps>.createMenuItem(
+        gridLayoutEditor: Editor<MutableIGridLayout>,
+        addControlMenuItem: AddControlMenuItem,
+        appContext: AppContext,
+        showAddMenu: () -> Unit,
+    ) {
+        MenuItem {
+            attrs.onClick = {
+                val editIntent = AddControlToGrid(
+                    gridLayoutEditor,
+                    column, row,
+                    width, height,
+                    addControlMenuItem.createControlFn
+                )
+                appContext.openEditor(editIntent)
+                showAddMenu()
+            }
 
+            ListItemIcon { icon(addControlMenuItem.icon) }
+            ListItemText { +addControlMenuItem.label }
+        }
+    }
+}
 
 object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
     val gridItem by css {
