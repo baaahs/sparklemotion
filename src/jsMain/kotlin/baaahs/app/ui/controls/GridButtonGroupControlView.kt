@@ -1,7 +1,6 @@
 package baaahs.app.ui.controls
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.editor.AddControlToGrid
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.AddMenuContext
 import baaahs.app.ui.layout.gridItem
@@ -21,7 +20,8 @@ import kotlinx.dom.hasClass
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Add
-import mui.material.*
+import mui.material.Card
+import mui.material.Menu
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
@@ -85,6 +85,8 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     }
 
     var showAddMenu by state<AddMenuContext?> { null }
+    val closeAddMenu by handler { showAddMenu = null }
+
     var draggingItem by state<String?> { null }
     val layoutGrid = memo(columns, rows, gridLayout, draggingItem) {
         LayoutGrid(columns, rows, gridLayout.items, draggingItem)
@@ -235,25 +237,13 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
         Menu {
             attrs.anchorEl = { addMenuContext.anchorEl }
             attrs.open = true
-            attrs.onClose = { showAddMenu = null }
+            attrs.onClose = closeAddMenu
 
             appContext.plugins.addControlMenuItems
                 .filter { it.validForButtonGroup }
                 .forEach { addControlMenuItem ->
-                    MenuItem {
-                        attrs.onClick = {
-                            val editIntent = AddControlToGrid(
-                                gridLayoutEditor,
-                                addMenuContext.column, addMenuContext.row,
-                                addMenuContext.width, addMenuContext.height,
-                                addControlMenuItem.createControlFn
-                            )
-                            appContext.openEditor(editIntent)
-                            showAddMenu = null
-                        }
-
-                        ListItemIcon { icon(addControlMenuItem.icon) }
-                        ListItemText { +addControlMenuItem.label }
+                    addMenuContext.apply {
+                        createMenuItem(gridLayoutEditor, addControlMenuItem, appContext, closeAddMenu)
                     }
                 }
         }
