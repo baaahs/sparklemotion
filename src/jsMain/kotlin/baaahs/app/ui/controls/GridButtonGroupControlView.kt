@@ -50,8 +50,9 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
         ?: OpenGridLayout(1, 1, true, emptyList())
     val editor = props.controlProps.layoutEditor
         ?: error("Huh? No editor provided?")
-    val columns = gridLayout.columns
-    val rows = gridLayout.rows
+    val parentDimens = props.controlProps.parentDimens
+    val gridDimens = if (gridLayout.matchParent) parentDimens ?: gridLayout.gridDimens else gridLayout.gridDimens
+    val (columns, rows) = gridDimens
     val (layoutWidth, layoutHeight) = layoutDimens
     val margin = 5
     val itemPadding = 5
@@ -225,7 +226,8 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
 
                     gridItem {
                         attrs.control = controls[layoutItem.i]!!
-                        attrs.controlProps = props.controlProps.withLayout(layouts[layoutItem.i], subEditor)
+                        attrs.controlProps = props.controlProps.withLayout(
+                            layouts[layoutItem.i], subEditor, layoutItem.gridDimens)
                         attrs.className = -layoutStyles.controlBox
                     }
                 }

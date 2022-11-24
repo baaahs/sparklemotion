@@ -247,10 +247,16 @@ interface OpenIGridLayout : OpenILayout {
     val columns: Int
     val rows: Int
     val items: List<OpenGridItem>
+    val gridDimens get() = GridDimens(columns, rows)
 
     override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
         GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
 }
+
+data class GridDimens(
+    val columns: Int,
+    val rows: Int
+)
 
 class OpenGridItem(
     val control: OpenControl,
@@ -259,4 +265,6 @@ class OpenGridItem(
     val width: Int,
     val height: Int,
     val layout: OpenGridLayout?
-)
+) {
+    val gridDimens = GridDimens(width, height)
+}
