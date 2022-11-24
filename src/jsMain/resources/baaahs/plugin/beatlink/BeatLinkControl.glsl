@@ -22,19 +22,20 @@ const vec2 beatsBottomLeft = vec2(.1, .1);
 const vec2 beatsTopRight = vec2(.9, .9);
 const vec2 beatsDimen = beatsTopRight - beatsBottomLeft;
 
-const vec3 backgroundColor = vec3(0.1, .6, 0.);
-const vec3 beatPowerColor = vec3(0., 0., .5);
-const vec3 beatIntensityColor = vec3(1., 0., .0);
+const vec3 backgroundColor = vec3(.1, .1, .4);
+const vec3 beatPowerColor = vec3(0., .0, .5);
+const vec3 beatIntensityColor = vec3(1., .5, .0);
 
-const vec4 nowBeatIntensityColor = vec4(0., 1., 0., 1.);
-const vec3 nowBeatWideBandColor = vec3(1., 1., 0.);
-const vec3 borderColor = vec3(.4, 0., 0.);
+const vec3 nowBeatIndicatorColor = vec3(1., .0, .0);
+const vec4 nowBeatIntensityColor = vec4(0., 1., .0, .6);
+const vec4 nowBeatWideBandColor = vec4(.8, .6, .0, .8);
+const vec3 borderColor = vec3(.0, .4, .0);
 
 // TODO: This function should be a switchable strategy.
 float beatIntensity_(float power) {
     return clamp(
         pow(sin((power * 1. + .55) * PI), 4.) * 1.25 + .0,
-    0., 1.
+        .0, 1.
     );
 }
 
@@ -79,11 +80,11 @@ vec4 drawBeats(vec2 pos) {
     float o = 1.;
 
     // Beat-tracking bar, wide channel.
-    float nowBeatWideBandMarker = step(abs(pX - nowPower - beatInMeasure), .1);
+    float nowBeatWideBandMarker = step(abs(pX - nowPower - beatInMeasure), .11);
 
     // Beat-tracking bar, red slider LED.
     float wideBandHotLine = nowBeatWideBandMarker * step(abs(pY - nowBeatIntensity), .025);
-    color += o * wideBandHotLine * beatIntensityColor.rgb;
+    color += o * wideBandHotLine * nowBeatIndicatorColor.rgb;
     o -= o * wideBandHotLine;
 
     // Beat-tracking bar, gooey indicator center.
@@ -92,11 +93,11 @@ vec4 drawBeats(vec2 pos) {
     color += o * nowBeatIntensityMarker * nowBeatIntensityColor.rgb * step(pY, nowBeatIntensity);
     o -= o * nowBeatIntensityMarker;
 
-    color += o * nowBeatWideBandColor * nowBeatWideBandMarker;
-    o -= o * nowBeatWideBandMarker;
+    color += o * nowBeatWideBandColor.rgb * nowBeatWideBandMarker;
+    o -= o * nowBeatWideBandMarker * nowBeatWideBandColor.a;
 
     // Sine wave-ish intensity preview.
-    float beatIntensityBand = 1. - smoothstep(1.0 - distance(1.-linearBeatIntensity + pY - .5, .5), 1.0, 0.99);
+    float beatIntensityBand = 1. - smoothstep(1.0 - distance(1.-linearBeatIntensity + pY - .5, .5), 1.0, 0.98);
     color += o * beatIntensityBand * beatIntensityColor;
     o -= o * beatIntensityBand;
 
