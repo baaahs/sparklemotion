@@ -9,8 +9,8 @@ import kotlinx.html.js.onClickFunction
 import kotlinx.html.unsafe
 import kotlinx.js.jso
 import materialui.icon
+import mui.icons.material.Article
 import mui.icons.material.Edit
-import mui.icons.material.Save
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -32,13 +32,13 @@ private val AppToolbarTabView = xComponent<AppToolbarTabProps>("AppToolbarTab") 
         if (document != null) {
             props.documentManager.file?.let {
                 div(+themeStyles.titleFooter) {
-                    icon(Save)
+                    icon(Article)
                     span { attrs.unsafe { +"&nbsp;" } }
                     +it.toString()
                 }
             }
             b { +document.title }
-            if (props.documentManager.isUnsaved) i { +" (Unsaved)" }
+            if (props.documentManager.isUnsaved) i(+themeStyles.unsaved) { +"* (unsaved)" }
             if (document is OpenPatchHolder) {
                 problemBadge(document, themeStyles.problemBadge)
             }
@@ -50,7 +50,7 @@ private val AppToolbarTabView = xComponent<AppToolbarTabProps>("AppToolbarTab") 
                 }
             }
         } else {
-            i { +"None" }
+            i(+themeStyles.noFile) { +"None" }
         }
     }
 }

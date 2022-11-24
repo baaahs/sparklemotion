@@ -3,7 +3,6 @@ package baaahs.app.ui
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
-import kotlinx.js.Object
 import mui.material.styles.Theme
 import mui.system.Breakpoint
 import styled.StyleSheet
@@ -118,7 +117,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appToolbar by css {
-        mixIn(theme.mixins.toolbar as Object)
+        mixIn(theme.mixins.toolbar as Any)
 
         descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
@@ -146,7 +145,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appToolbarTabSelected by css {
-        important(::color, theme.palette.text.primary.asColor())
+        important(::color, Color.inherit)
     }
 
     val appToolbarActions by css {
@@ -163,6 +162,14 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         userSelect = UserSelect.none
     }
 
+    val unsaved by css {
+        fontSize = .6.em
+        fontWeight = FontWeight.w300
+    }
+    val noFile by css {
+        fontWeight = FontWeight.w300
+    }
+
     val titleHeader by css {
         position = Position.absolute
         top = 0.em
@@ -171,12 +178,13 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
     val titleFooter by css {
         position = Position.absolute
-        bottom = 5.px
+        bottom = 4.px
         fontSize = .6.em
         opacity = .6
 
         child("svg") {
             fontSize = 1.em
+            verticalAlign = VerticalAlign.textTop
         }
     }
 
