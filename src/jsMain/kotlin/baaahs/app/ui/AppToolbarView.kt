@@ -74,9 +74,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
     val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
 
     val editMode = observe(props.documentManager.editMode)
-    val handleEditModeChange by handler {
-        props.documentManager.editMode.toggle()
-    }
+    val handleEditModeChange by handler(editMode) { editMode.toggle() }
 
     AppBar {
         attrs.classes = jso { this.root = -themeStyles.appToolbar }
@@ -191,25 +189,25 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             +"Save"
                         }
                     }
+                }
 
-                    ToggleButton {
-                        attrs.classes = jso {
-                            this.root = -themeStyles.editModeButton
-                            this.selected = -themeStyles.editModeButtonSelected
-                        }
-//                        attrs.variant = ButtonVariant.contained
-                        attrs.color = ToggleButtonColor.error
-                        attrs.selected = editMode.isOn
-                        attrs.onClick = handleEditModeChange.withTMouseEvent()
-                        attrs.value = true
-
-                        if (editMode.isOn) {
-                            LockOpen { attrs.fontSize = SvgIconSize.small }
-                        } else {
-                            Lock { attrs.fontSize = SvgIconSize.small }
-                        }
-                        +"Edit"
+                ToggleButton {
+                    attrs.classes = jso {
+                        this.root = -themeStyles.editModeButton
+                        this.selected = -themeStyles.editModeButtonSelected
                     }
+//                        attrs.variant = ButtonVariant.contained
+                    attrs.color = ToggleButtonColor.error
+                    attrs.selected = editMode.isOn
+                    attrs.onClick = handleEditModeChange.withTMouseEvent()
+                    attrs.value = true
+
+                    if (editMode.isOn) {
+                        LockOpen { attrs.fontSize = SvgIconSize.small }
+                    } else {
+                        Lock { attrs.fontSize = SvgIconSize.small }
+                    }
+                    +"Edit"
                 }
 
                 div(+themeStyles.appToolbarProblemsIcon) {
