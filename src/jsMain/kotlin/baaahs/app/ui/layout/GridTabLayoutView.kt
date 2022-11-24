@@ -197,7 +197,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
 
                     gridItem {
                         attrs.control = item.control
-                        attrs.controlProps = genericControlProps.withLayout(item.layout, editor)
+                        attrs.controlProps = genericControlProps.withLayout(item.layout, editor, item.gridDimens)
                         attrs.className = -layoutStyles.controlBox
                     }
                 }

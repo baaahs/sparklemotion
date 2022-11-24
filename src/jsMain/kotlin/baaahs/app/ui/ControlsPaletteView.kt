@@ -112,7 +112,7 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
 
                                             gridItem {
                                                 attrs.control = item
-                                                attrs.controlProps = props.controlProps.withLayout(null, null)
+                                                attrs.controlProps = props.controlProps.withLayout(null, null, null)
                                                 attrs.className = -styles.controlBox
                                             }
                                         }
