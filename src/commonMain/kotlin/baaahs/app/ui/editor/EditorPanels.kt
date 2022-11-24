@@ -8,7 +8,6 @@ import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
 import baaahs.scene.MutableScene
-import baaahs.show.live.OpenIGridLayout
 import baaahs.show.live.PatchResolver
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutablePatch
@@ -109,11 +108,10 @@ data class PatchEditorPanel(
 
 data class GridLayoutEditorPanel(
     private val editableManager: EditableManager<*>,
-    private val layout: OpenIGridLayout,
     private val layoutEditor: Editor<MutableIGridLayout>
 ) : DialogPanel {
     override val title: String
-        get() = "Properties"
+        get() = "Layout"
     override val icon: Icon
         get() = CommonIcons.Settings
 

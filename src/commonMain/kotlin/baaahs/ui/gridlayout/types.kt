@@ -1,5 +1,7 @@
 package baaahs.ui.gridlayout
 
+import baaahs.show.live.GridDimens
+
 data class LayoutItem(
     val x: Int,
     val y: Int,
@@ -18,6 +20,7 @@ data class LayoutItem(
 ) {
     val right: Int get() = x + w - 1
     val bottom: Int get() = y + h - 1
+    val gridDimens: GridDimens = GridDimens(w, h)
 
     fun toStatic() =
         LayoutItem(x, y, w, h, i, isStatic = true)

@@ -8,6 +8,9 @@ import baaahs.show.live.OpenControl
 interface MutableControl : MutableEditable<Show> {
     var asBuiltId: String?
 
+    val hasInternalLayout: Boolean
+        get() = false
+
     fun buildControl(showBuilder: ShowBuilder): Control
 
     fun build(showBuilder: ShowBuilder) : Control =

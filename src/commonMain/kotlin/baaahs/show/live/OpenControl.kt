@@ -59,7 +59,8 @@ class ControlProps(
     val onShowStateChange: () -> Unit,
     val controlDisplay: ControlDisplay?,
     val layout: OpenGridLayout? = null,
-    val layoutEditor: Editor<MutableIGridLayout>? = null
+    val layoutEditor: Editor<MutableIGridLayout>? = null,
+    val parentDimens: GridDimens? = null
 ) {
     val relevantUnplacedControls get() =
         controlDisplay?.relevantUnplacedControls
@@ -67,9 +68,10 @@ class ControlProps(
 
     fun withLayout(
         layout: OpenGridLayout?,
-        editor: Editor<MutableIGridLayout>?
+        editor: Editor<MutableIGridLayout>?,
+        parentDimens: GridDimens?
     ): ControlProps =
-        ControlProps(onShowStateChange, controlDisplay, layout, editor)
+        ControlProps(onShowStateChange, controlDisplay, layout, editor, parentDimens)
 }
 
 val controlViews by lazy { getControlViews() }
