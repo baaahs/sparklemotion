@@ -30,7 +30,6 @@
                                 "layout": {
                                     "columns": 1,
                                     "rows": 1,
-                                    "matchParent": true,
                                     "items": [
                                         {
                                             "controlId": "vacuity",
@@ -295,7 +294,6 @@
                                 "layout": {
                                     "columns": 4,
                                     "rows": 2,
-                                    "matchParent": true,
                                     "items": [
                                         {
                                             "controlId": "brightness",
