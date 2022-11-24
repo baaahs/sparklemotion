@@ -70,9 +70,10 @@ abstract class EditableManager<T>(
     }
 
     fun openPanel(dialogPanel: DialogPanel) {
-        val index = flatEditorPanels().indexOf(dialogPanel)
+        val editorPanels = flatEditorPanels()
+        val index = editorPanels.indexOf(dialogPanel)
         if (index == -1) {
-            logger.warn { "Unknown panel $dialogPanel" }
+            logger.warn { "Unknown panel $dialogPanel among $editorPanels" }
         }
         selectedPanelIndex = max(0, index)
         notifyChanged()
@@ -133,7 +134,7 @@ abstract class EditableManager<T>(
 
         fun getEditorPanels(): List<DialogPanel> =
             mutableEditable.getEditorPanels(this@EditableManager) +
-                    editIntent.getEditorPanels(this@EditableManager)
+                    editIntent.getEditorPanels(this@EditableManager, mutableEditable)
 
         fun isChanged(): Boolean {
             return cachedIsChanged

@@ -24,8 +24,10 @@ interface MutableEditable<T> {
 interface EditIntent {
     fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*>
 
-    fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel>
-            = emptyList()
+    fun getEditorPanels(
+        editableManager: EditableManager<*>,
+        mutableEditable: MutableEditable<*>
+    ): List<DialogPanel> = emptyList()
 
     /**
      * If a mutation might have changed how we should look up the editable, a new
@@ -62,7 +64,10 @@ data class ControlEditIntent(internal val controlId: String) : EditIntent {
         return mutableEditable
     }
 
-    override fun getEditorPanels(editableManager: EditableManager<*>): List<DialogPanel> =
+    override fun getEditorPanels(
+        editableManager: EditableManager<*>,
+        mutableEditable: MutableEditable<*>
+    ): List<DialogPanel> =
         listOfNotNull(
             if (layout != null && layoutEditor != null) {
                 layout?.getEditorPanel(editableManager, layoutEditor!! as Editor<MutableILayout>)
@@ -139,13 +144,21 @@ class AddControlToGrid<MC : MutableControl>(
     private val height: Int,
     private val createControlFn: (mutableShow: MutableShow) -> MC
 ) : AddToContainerEditIntent<MC>() {
+    override fun getEditorPanels(
+        editableManager: EditableManager<*>,
+        mutableEditable: MutableEditable<*>
+    ) =
+        if ((mutableEditable as MC).hasInternalLayout)
+            listOf(GridLayoutEditorPanel(editableManager, editor)) else emptyList()
+
     override fun createControl(mutableShow: MutableShow): MC {
         return createControlFn(mutableShow)
     }
 
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
         editor.edit(mutableShow) {
-            items.add(MutableGridItem(mutableControl, column, row, width, height, null))
+            val layout = if (mutableControl.hasInternalLayout) createSubLayout() else null
+            items.add(MutableGridItem(mutableControl, column, row, width, height, layout))
         }
     }
 }

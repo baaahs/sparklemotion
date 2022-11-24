@@ -300,11 +300,12 @@ interface MutableIGridLayout : MutableILayout {
             val oldItemIndex = originalItems.indexOfFirst { it.control.id == newLayoutItem.i }
             this.items.add(
                 if (oldItemIndex == -1) {
+                    val mutableControl = mutableShow.findControl(newLayoutItem.i)
                     MutableGridItem(
-                        mutableShow.findControl(newLayoutItem.i),
+                        mutableControl,
                         newLayoutItem.x, newLayoutItem.y,
                         newLayoutItem.w, newLayoutItem.h,
-                        null
+                        if (mutableControl.hasInternalLayout) createSubLayout() else null
                     )
                 } else {
                     oldItems[oldItemIndex].apply {
@@ -317,6 +318,9 @@ interface MutableIGridLayout : MutableILayout {
             )
         }
     }
+
+    fun createSubLayout(): MutableGridLayout =
+        MutableGridLayout(1, 1)
 }
 
 data class MutableLayoutDimen(var scalar: Number, var unit: String) {

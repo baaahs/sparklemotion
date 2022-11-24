@@ -155,7 +155,7 @@ fun buildEmptyShow(): Show {
         editLayouts {
             editLayout("default") {
                 tabs.add(MutableGridTab("Main").apply {
-                    items.add(MutableGridItem(MutableVisualizerControl(), 9, 0, 3, 2, null))
+                    items.add(MutableGridItem(MutableVisualizerControl(), 9, 0, 3, 2))
                 })
             }
         }

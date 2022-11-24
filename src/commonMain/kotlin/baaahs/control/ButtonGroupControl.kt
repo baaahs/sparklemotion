@@ -55,6 +55,8 @@ data class MutableButtonGroupControl(
     val mutableShow: MutableShow
 ) : MutableControl {
     override var asBuiltId: String? = null
+    override val hasInternalLayout: Boolean
+        get() = true
 
     fun addButton(title: String, block: MutableButtonControl.() -> Unit): MutableButtonControl {
         val control = MutableButtonControl(ButtonControl(title), mutableShow)

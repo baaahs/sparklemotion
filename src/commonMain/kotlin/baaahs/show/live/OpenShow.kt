@@ -249,7 +249,7 @@ interface OpenIGridLayout : OpenILayout {
     val items: List<OpenGridItem>
 
     override fun getEditorPanel(editableManager: EditableManager<*>, layoutEditor: Editor<MutableILayout>) =
-        GridLayoutEditorPanel(editableManager, this, layoutEditor as Editor<MutableIGridLayout>)
+        GridLayoutEditorPanel(editableManager, layoutEditor as Editor<MutableIGridLayout>)
 }
 
 class OpenGridItem(
