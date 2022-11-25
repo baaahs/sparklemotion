@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.AddMenuContext
+import baaahs.app.ui.layout.gridBackground
 import baaahs.app.ui.layout.gridItem
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
@@ -11,13 +12,13 @@ import baaahs.show.live.OpenGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import baaahs.ui.gridlayout.*
+import baaahs.ui.gridlayout.Layout
+import baaahs.ui.gridlayout.LayoutGrid
+import baaahs.ui.gridlayout.LayoutItem
+import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import kotlinx.css.*
 import kotlinx.js.jso
-import materialui.icon
-import mui.icons.material.Add
 import mui.material.Card
 import mui.material.Menu
 import org.w3c.dom.Element
@@ -26,13 +27,9 @@ import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
 import react.dom.header
 import react.dom.html.ReactHTML
-import react.dom.onClick
-import react.dom.onMouseDown
 import react.useContext
-import styled.inlineStyles
 
 private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridButtonGroupControl") { props ->
     val appContext = useContext(appContext)
@@ -133,37 +130,14 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
             val (layoutWidth, layoutHeight) = layoutDimens
             val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-            if (editMode.isAvailable) {
-                div(+layoutStyles.gridBackground) {
-                    val positionParams = PositionParams(
-                        margin to margin,
-                        itemPadding to itemPadding,
-                        layoutWidth,
-                        columns,
-                        gridRowHeight,
-                        rows
-                    )
-
-                    layoutGrid.forEachCell { column, row ->
-                        val position = positionParams.calcGridItemPosition(column, row, 1, 1)
-
-                        div(+layoutStyles.emptyGridCell) {
-                            inlineStyles {
-                                top = position.top.px
-                                left = position.left.px
-                                width = position.width.px
-                                height = position.height.px
-                            }
-                            attrs["data-cell-x"] = column
-                            attrs["data-cell-y"] = row
-//                        attrs.onClickFunction = handleEmptyGridCellClick
-                            attrs.onMouseDown = handleEmptyGridCellMouseDown.withMouseEvent()
-                            attrs.onClick = handleEmptyGridCellClick.withMouseEvent()
-
-                            icon(Add)
-                        }
-                    }
-                }
+            gridBackground {
+                attrs.layoutGrid = layoutGrid
+                attrs.margin = margin
+                attrs.itemPadding = itemPadding
+                attrs.layoutWidth = layoutWidth
+                attrs.gridRowHeight = gridRowHeight
+                attrs.onGridCellMouseDown = handleEmptyGridCellMouseDown
+                attrs.onGridCellClick = handleEmptyGridCellClick
             }
 
             gridLayout {
