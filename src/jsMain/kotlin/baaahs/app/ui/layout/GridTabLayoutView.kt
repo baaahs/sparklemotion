@@ -13,26 +13,28 @@ import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
-import baaahs.ui.gridlayout.*
+import baaahs.ui.gridlayout.ItemCallback
+import baaahs.ui.gridlayout.Layout
+import baaahs.ui.gridlayout.LayoutGrid
+import baaahs.ui.gridlayout.gridLayout
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import kotlinx.css.*
+import kotlinx.css.BorderStyle
+import kotlinx.css.Color
 import kotlinx.css.properties.border
-import kotlinx.html.js.onClickFunction
+import kotlinx.css.px
 import materialui.icon
 import mui.base.Portal
-import mui.icons.material.Add
 import mui.material.*
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
 import styled.StyleSheet
-import styled.inlineStyles
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
@@ -116,35 +118,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             val (layoutWidth, layoutHeight) = layoutDimens
             val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-            if (editMode.isAvailable) {
-                div(+layoutStyles.gridBackground) {
-                    val positionParams = PositionParams(
-                        margin to margin,
-                        itemPadding to itemPadding,
-                        layoutWidth,
-                        columns,
-                        gridRowHeight,
-                        rows
-                    )
-
-                    layoutGrid.forEachCell { column, row ->
-                        val position = positionParams.calcGridItemPosition(column, row, 1, 1)
-
-                        div(+layoutStyles.emptyGridCell) {
-                            inlineStyles {
-                                top = position.top.px
-                                left = position.left.px
-                                width = position.width.px
-                                height = position.height.px
-                            }
-                            attrs["data-cell-x"] = column
-                            attrs["data-cell-y"] = row
-                            attrs.onClickFunction = handleEmptyGridCellClick
-
-                            icon(Add)
-                        }
-                    }
-                }
+            gridBackground {
+                attrs.layoutGrid = layoutGrid
+                attrs.margin = margin
+                attrs.itemPadding = itemPadding
+                attrs.layoutWidth = layoutWidth
+                attrs.gridRowHeight = gridRowHeight
+                attrs.onGridCellClick = handleEmptyGridCellClick
             }
 
             gridLayout {
