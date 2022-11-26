@@ -17,6 +17,7 @@ import external.IntersectionObserver
 import kotlinx.css.*
 import kotlinx.html.js.onClickFunction
 import materialui.icon
+import mui.material.CircularProgress
 import mui.material.Typography
 import mui.system.sx
 import org.w3c.dom.Element
@@ -184,13 +185,17 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
             }
         }
 
-        when (builder?.state ?: ShaderBuilder.State.Unbuilt) {
+        val state = builder?.state ?: ShaderBuilder.State.Unbuilt
+        when (state) {
             ShaderBuilder.State.Unbuilt,
             ShaderBuilder.State.Analyzing,
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
             ShaderBuilder.State.Compiling -> {
-                div { +"Building…" }
+                CircularProgress {
+                    attrs.size = "1em"
+                    attrs.value = state.ordinal.toFloat() / ShaderBuilder.State.Success.ordinal
+                }
             }
 
             ShaderBuilder.State.Success -> {
