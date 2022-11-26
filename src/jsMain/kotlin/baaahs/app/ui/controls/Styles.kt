@@ -147,9 +147,11 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlButton by css {
         display = Display.grid
-        position = Position.relative
-//        width = 150.px
-//        minHeight = 75.px
+        position = Position.absolute
+        top = 0.px
+        left = 0.px
+        bottom = 0.px
+        right = 0.px
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
 
         hover {
@@ -167,6 +169,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
         button {
             minWidth = 0.px
+            minHeight = 0.px
         }
     }
 
