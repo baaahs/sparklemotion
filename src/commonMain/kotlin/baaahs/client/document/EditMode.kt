@@ -2,6 +2,7 @@ package baaahs.client.document
 
 import baaahs.ui.Observable
 import baaahs.util.globalLaunch
+import kotlinx.coroutines.delay
 
 class EditMode(initialMode: Mode) : Observable() {
     private var mode = initialMode
@@ -17,12 +18,13 @@ class EditMode(initialMode: Mode) : Observable() {
         }
     }
 
-    fun turnOn() {
+    private fun turnOn() {
         if (mode == Mode.Never) {
             mode = Mode.Off
             notifyChanged()
 
             globalLaunch {
+                delay(10)
                 mode = Mode.On
                 notifyChanged()
             }
@@ -32,7 +34,7 @@ class EditMode(initialMode: Mode) : Observable() {
         }
     }
 
-    fun turnOff() {
+    private fun turnOff() {
         mode = Mode.Off
         notifyChanged()
     }

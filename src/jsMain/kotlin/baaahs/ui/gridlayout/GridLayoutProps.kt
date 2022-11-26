@@ -84,6 +84,10 @@ external interface GridLayoutProps : PropsWithChildren {
 //
     var disableDrag: Boolean? // = true
     var disableResize: Boolean? // = true
+
+    // If false, don't even render resize handles etc.
+    var isEverEditable: Boolean? // = true
+
     var isBounded: Boolean? // = false
 
     // Uses CSS3 translate() instead of position top/left.

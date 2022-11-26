@@ -1,7 +1,6 @@
 package baaahs.app.ui.layout
 
 import baaahs.app.ui.appContext
-import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.controls.problemBadge
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
@@ -10,8 +9,8 @@ import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.html.js.onClickFunction
-import materialui.icon
 import kotlinx.html.org.w3c.dom.events.Event
+import materialui.icon
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
@@ -25,6 +24,7 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val control = props.control
     val layout = props.controlProps.layout
     val layoutEditor = props.controlProps.layoutEditor
+    val editMode = observe(appContext.showManager.editMode)
 
     // We're inside a draggable; prevent the mousedown from starting a drag.
     val handleEditMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
@@ -51,22 +51,20 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
 
     problemBadge(control)
 
-    div(+styles.deleteButton and styles.deleteModeControl) {
-        attrs.onMouseDown = handleDeleteMouseDown
-        attrs.onClickFunction = handleDeleteButtonClick
+    if (editMode.isAvailable) {
+        div(+styles.deleteButton and styles.deleteModeControl) {
+            attrs.onMouseDown = handleDeleteMouseDown
+            attrs.onClickFunction = handleDeleteButtonClick
 
-        icon(mui.icons.material.Delete)
-    }
+            icon(mui.icons.material.Delete)
+        }
 
-    div(+styles.editButton and styles.editModeControl) {
-        attrs.onMouseDown = handleEditMouseDown
-        attrs.onClickFunction = handleEditButtonClick
+        div(+styles.editButton and styles.editModeControl) {
+            attrs.onMouseDown = handleEditMouseDown
+            attrs.onClickFunction = handleEditButtonClick
 
-        icon(mui.icons.material.Edit)
-    }
-
-    div(+Styles.dragHandle) {
-        icon(mui.icons.material.DragIndicator)
+            icon(mui.icons.material.Edit)
+        }
     }
 }
 
