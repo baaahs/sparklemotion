@@ -21,34 +21,17 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class VizPixels(
-    val positions: Array<Vector3>,
+    private val positions: Array<Vector3>,
     val normal: Vector3,
     val transformation: Matrix4F,
-    val pixelFormat: PixelFormat,
-    val pixelSizeRange: ClosedFloatingPointRange<Float>
+    private val pixelFormat: PixelFormat,
+    private val pixelSizeRange: ClosedFloatingPointRange<Float>
 ) : Pixels {
     override val size = positions.size
-    private val pixGeometry = BufferGeometry()
-    private val vertexColorBufferAttr: Float32BufferAttribute
-    private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
-
-    init {
-        val positionsArray = Float32Array(size * 3)
-        positions.forEachIndexed { i, v ->
-            positionsArray[i * 3] = v.x.toFloat()
-            positionsArray[i * 3 + 1] = v.y.toFloat()
-            positionsArray[i * 3 + 2] = v.z.toFloat()
-        }
-
-        val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
-        pixGeometry.setAttribute("position", positionsBufferAttr)
-
-        vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3)
-        vertexColorBufferAttr.usage = DynamicDrawUsage
+    private val vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3).apply {
+        usage = DynamicDrawUsage
     }
-
-    fun ClosedFloatingPointRange<Float>.interpolate(fl: Float) =
-        fl * (endInclusive - start) + start
+    private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
         side = FrontSide
@@ -134,6 +117,18 @@ class VizPixels(
 
     fun getPixelLocationsInPanelSpace(surfaceVisualizer: SurfaceVisualizer): Array<Vector2> {
         val panelGeom = surfaceVisualizer.geometry.clone()
+
+        val pixGeometry = BufferGeometry()
+        val positionsArray = Float32Array(size * 3)
+        positions.forEachIndexed { i, v ->
+            positionsArray[i * 3] = v.x.toFloat()
+            positionsArray[i * 3 + 1] = v.y.toFloat()
+            positionsArray[i * 3 + 2] = v.z.toFloat()
+        }
+
+        val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
+        pixGeometry.setAttribute("position", positionsBufferAttr)
+
         val pixGeom = pixGeometry.clone()
 
         val facingForward = vector3FacingForward
@@ -160,7 +155,7 @@ class VizPixels(
         val pixelVs = mutableListOf<Vector2>()
         val pixelPositions = pixGeom.getAttribute("position")
         val array = pixelPositions.array as Float32Array
-        for (i in 0 until pixelPositions.count * 3 step 3) {
+        for (i in 0 until array.length step 3) {
             val v = Vector2(clamp(array[i]).toDouble(), clamp(array[i + 1]).toDouble())
             pixelVs.add(v)
         }
@@ -168,7 +163,10 @@ class VizPixels(
         return pixelVs.toTypedArray()
     }
 
-    fun clamp(f: Float): Float = min(1f, max(f, 0f))
+    private fun clamp(f: Float): Float = min(1f, max(f, 0f))
+
+    private fun ClosedFloatingPointRange<Float>.interpolate(fl: Float) =
+        fl * (endInclusive - start) + start
 
     fun readColors(reader: ByteArrayReader) {
         val pixelCount = reader.readInt()

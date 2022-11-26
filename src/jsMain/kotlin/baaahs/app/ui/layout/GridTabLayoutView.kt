@@ -141,6 +141,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                 attrs.resizeHandle = ::buildResizeHandle
                 attrs.disableDrag = !editMode.isOn
                 attrs.disableResize = !editMode.isOn
+                attrs.isEverEditable = editMode.isAvailable
                 attrs.isDroppable = editMode.isOn
                 attrs.onDragStart = handleDragStart
                 attrs.onDragStop = handleDragStop
@@ -201,11 +202,13 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
         }
     }
 
-    Portal {
-        controlsPalette {
-            attrs.controlDisplay = controlDisplay
-            attrs.controlProps = genericControlProps
-            attrs.show = openShow
+    if (editMode.isAvailable) {
+        Portal {
+            controlsPalette {
+                attrs.controlDisplay = controlDisplay
+                attrs.controlProps = genericControlProps
+                attrs.show = openShow
+            }
         }
     }
 }

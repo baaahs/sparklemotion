@@ -157,6 +157,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
                     attrs.resizeHandle = ::buildResizeHandle
                     attrs.disableDrag = !editMode.isOn
                     attrs.disableResize = !editMode.isOn
+                    attrs.isEverEditable = editMode.isAvailable
                     attrs.isDroppable = editMode.isOn
                     attrs.isBounded = false
 

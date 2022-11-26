@@ -397,6 +397,7 @@ class GridLayout(
 //                attrs.rowHeight = props.rowHeight!!
                 attrs.isDraggable = false
                 attrs.isResizable = false
+                attrs.isEverEditable = false
                 attrs.useCSSTransforms = props.useCSSTransforms
                 attrs.transformScale = props.transformScale!!
 
@@ -427,6 +428,7 @@ class GridLayout(
             }
         val disableDrag = props.disableDrag!!
         val disableResize = props.disableResize!!
+        val everEditable = props.isEverEditable
         val useCSSTransforms = props.useCSSTransforms!!
         val transformScale = props.transformScale!!
         val draggableCancel = props.draggableCancel
@@ -459,6 +461,7 @@ class GridLayout(
                 attrs.onResizeStop = ::onResizeStop
                 attrs.isDraggable = draggable
                 attrs.isResizable = resizable
+                attrs.isEverEditable = everEditable
                 attrs.useCSSTransforms = useCSSTransforms && mounted
                 attrs.usePercentages = !mounted
                 attrs.transformScale = transformScale

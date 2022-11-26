@@ -8,6 +8,7 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
+import kotlinx.html.org.w3c.dom.events.Event
 import mui.icons.material.SvgIconComponent
 import mui.material.SvgIconProps
 import mui.material.Typography
@@ -18,7 +19,6 @@ import org.w3c.dom.Element
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
-import kotlinx.html.org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.RDOMBuilder
@@ -266,25 +266,25 @@ val Theme.paperHighContrast get() = paperContrast(.75)
 
 fun HTMLElement.fitText() {
     val parentEl = parentElement!!
-    val margin = with(window.getComputedStyle(parentEl)) {
-        marginLeft.replace("px", "").toDouble() +
-                marginRight.replace("px", "").toDouble()
-    }
-    val font = window.getComputedStyle(this).font
-    val buttonWidth = parentEl.clientWidth - margin
+    val parentStyle = window.getComputedStyle(parentEl)
+    val marginX = with(parentStyle) { marginLeft.fromPx() + marginRight.fromPx() }
+    val marginY = with(parentStyle) { marginTop.fromPx() + marginBottom.fromPx() }
+    val buttonWidth = parentEl.clientWidth - marginX
+    val buttonHeight = parentEl.clientHeight - marginY
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val ctx = canvas.context2d()
-    ctx.font = font
+    val elementStyle = window.getComputedStyle(this)
+    ctx.font = elementStyle.font
     val width = innerText.split(Regex("\\s+")).maxOf { word ->
         ctx.measureText(word).width
     }
-    style.transform =
-        if (width > buttonWidth) {
-            "scaleX(${buttonWidth / width})"
-        } else {
-            ""
-        }
+    style.transform = if (width > buttonWidth) "scaleX(${buttonWidth / width})" else ""
+
+    // This is extra dumb; we should check how many lines are likely to be rendered, not just use 2.
+    style.lineHeight = if (buttonHeight < elementStyle.lineHeight.fromPx() * 2) "1em" else ""
 }
+
+private fun String.fromPx() = replace("px", "").toDouble()
 
 fun Element.isParentOf(other: Element): Boolean {
     var current: Element? = other
