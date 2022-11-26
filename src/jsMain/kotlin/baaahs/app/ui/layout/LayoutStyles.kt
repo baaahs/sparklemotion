@@ -225,6 +225,21 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val buttonGroupCard by css {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    val buttonGroupHeader by css {
+        padding(2.px, 1.em)
+        lineHeight = LineHeight.normal
+        userSelect = UserSelect.none
+        gridColumn = GridColumn("1")
+        gridRow = GridRow("1")
+    }
+
+    val buttonGroupGrid by css {
+        grow(Grow.GROW)
+
         display = Display.grid
         gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         overflowY = Overflow.scroll
@@ -247,14 +262,6 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             gridRow = GridRow("2")
             position = Position.relative
         }
-    }
-
-    val buttonGroupHeader by css {
-        padding(2.px, 1.em)
-        lineHeight = LineHeight.normal
-        userSelect = UserSelect.none
-        gridColumn = GridColumn("1")
-        gridRow = GridRow("1")
     }
 
     val global = CssBuilder().apply {
