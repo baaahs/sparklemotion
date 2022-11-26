@@ -27,6 +27,7 @@ import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
+import react.dom.div
 import react.dom.header
 import react.dom.html.ReactHTML
 import react.useContext
@@ -50,8 +51,8 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val margin = 5
     val itemPadding = 5
 
-    val cardRef = ref<Element>()
-    useResizeListener(cardRef) { width, height ->
+    val containerRef = ref<Element>()
+    useResizeListener(containerRef) { width, height ->
         layoutDimens = width to height
     }
 
@@ -97,7 +98,7 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val layouts = gridLayout.items.associate { it.control.id to it.layout }
 
     val handleGridItemClick by mouseEventHandler(gridLayout.items) { e ->
-        if (cardRef.current?.isParentOf(e.target as Element) == true) {
+        if (containerRef.current?.isParentOf(e.target as Element) == true) {
             val clickedItemIndex = (e.currentTarget as HTMLElement)
                 .dataset["gridIndex"]
                 ?.toInt()
@@ -113,7 +114,6 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     }
 
     Card {
-        ref = cardRef
         attrs.classes = jso {
             root = -layoutStyles.buttonGroupCard and
                     (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) // and
@@ -126,75 +126,79 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
             }
         }
 
-        layoutDimens?.let { layoutDimens ->
-            val (layoutWidth, layoutHeight) = layoutDimens
-            val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
+        div(+layoutStyles.buttonGroupGrid) {
+            ref = containerRef
 
-            gridBackground {
-                attrs.layoutGrid = layoutGrid
-                attrs.margin = margin
-                attrs.itemPadding = itemPadding
-                attrs.layoutWidth = layoutWidth
-                attrs.gridRowHeight = gridRowHeight
-                attrs.onGridCellMouseDown = handleEmptyGridCellMouseDown
-                attrs.onGridCellClick = handleEmptyGridCellClick
-            }
+            layoutDimens?.let { layoutDimens ->
+                val (layoutWidth, layoutHeight) = layoutDimens
+                val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-            gridLayout {
-                attrs.id = buttonGroupControl.id
-                attrs.className = +layoutStyles.gridContainer
-                attrs.width = layoutWidth.toDouble()
-                attrs.autoSize = false
-                attrs.cols = columns
-                attrs.rowHeight = gridRowHeight
-                attrs.maxRows = rows
-                attrs.margin = 5 to 5
-                attrs.layout = layout
-                attrs.onLayoutChange = handleLayoutChange
-                attrs.resizeHandle = ::buildResizeHandle
-                attrs.disableDrag = !editMode.isOn
-                attrs.disableResize = !editMode.isOn
-                attrs.isDroppable = editMode.isOn
-                attrs.isBounded = false
+                gridBackground {
+                    attrs.layoutGrid = layoutGrid
+                    attrs.margin = margin
+                    attrs.itemPadding = itemPadding
+                    attrs.layoutWidth = layoutWidth
+                    attrs.gridRowHeight = gridRowHeight
+                    attrs.onGridCellMouseDown = handleEmptyGridCellMouseDown
+                    attrs.onGridCellClick = handleEmptyGridCellClick
+                }
 
-                layout.items.forEachIndexed { index, layoutItem ->
-                    child(ReactHTML.div) {
-                        key = layoutItem.i
-                        attrs.className = -layoutStyles.gridCell
-                        if (editMode.isOff) {
-                            attrs.asDynamic()["data-grid-index"] = index
+                gridLayout {
+                    attrs.id = buttonGroupControl.id
+                    attrs.className = +layoutStyles.gridContainer
+                    attrs.width = layoutWidth.toDouble()
+                    attrs.autoSize = false
+                    attrs.cols = columns
+                    attrs.rowHeight = gridRowHeight
+                    attrs.maxRows = rows
+                    attrs.margin = 5 to 5
+                    attrs.layout = layout
+                    attrs.onLayoutChange = handleLayoutChange
+                    attrs.resizeHandle = ::buildResizeHandle
+                    attrs.disableDrag = !editMode.isOn
+                    attrs.disableResize = !editMode.isOn
+                    attrs.isDroppable = editMode.isOn
+                    attrs.isBounded = false
 
-                            if (!props.buttonGroupControl.allowMultiple) {
-                                attrs.onClickCapture = handleGridItemClick
+                    layout.items.forEachIndexed { index, layoutItem ->
+                        child(ReactHTML.div) {
+                            key = layoutItem.i
+                            attrs.className = -layoutStyles.gridCell
+                            if (editMode.isOff) {
+                                attrs.asDynamic()["data-grid-index"] = index
+
+                                if (!props.buttonGroupControl.allowMultiple) {
+                                    attrs.onClickCapture = handleGridItemClick
+                                }
                             }
-                        }
 
-                        val subEditor = object : Editor<MutableIGridLayout> {
-                            override val title: String = "Grid buttongroup layout editor for ${layoutItem.i}"
+                            val subEditor = object : Editor<MutableIGridLayout> {
+                                override val title: String = "Grid buttongroup layout editor for ${layoutItem.i}"
 
-                            override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
-                                mutableShow.editLayouts {
-                                    editor.edit(mutableShow) {
-                                        block(items[index].layout
-                                            ?: error("Couldn't find item for ${layoutItem.i}."))
+                                override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+                                    mutableShow.editLayouts {
+                                        editor.edit(mutableShow) {
+                                            block(items[index].layout
+                                                ?: error("Couldn't find item for ${layoutItem.i}."))
+                                        }
+                                    }
+                                }
+
+                                override fun delete(mutableShow: MutableShow) {
+                                    mutableShow.editLayouts {
+                                        editor.edit(mutableShow) {
+                                            items.removeAt(index)
+                                        }
                                     }
                                 }
                             }
 
-                            override fun delete(mutableShow: MutableShow) {
-                                mutableShow.editLayouts {
-                                    editor.edit(mutableShow) {
-                                        items.removeAt(index)
-                                    }
-                                }
+                            gridItem {
+                                attrs.control = controls[layoutItem.i]!!
+                                attrs.controlProps = props.controlProps.withLayout(
+                                    layouts[layoutItem.i], subEditor, layoutItem.gridDimens)
+                                attrs.className = -layoutStyles.controlBox
                             }
-                        }
-
-                        gridItem {
-                            attrs.control = controls[layoutItem.i]!!
-                            attrs.controlProps = props.controlProps.withLayout(
-                                layouts[layoutItem.i], subEditor, layoutItem.gridDimens)
-                            attrs.className = -layoutStyles.controlBox
                         }
                     }
                 }
