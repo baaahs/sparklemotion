@@ -13,27 +13,28 @@ import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
-import baaahs.ui.gridlayout.*
+import baaahs.ui.gridlayout.ItemCallback
+import baaahs.ui.gridlayout.Layout
+import baaahs.ui.gridlayout.LayoutGrid
+import baaahs.ui.gridlayout.gridLayout
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
-import baaahs.window
 import external.react_resizable.buildResizeHandle
-import kotlinx.css.*
+import kotlinx.css.BorderStyle
+import kotlinx.css.Color
 import kotlinx.css.properties.border
-import kotlinx.html.js.onClickFunction
+import kotlinx.css.px
 import materialui.icon
 import mui.base.Portal
-import mui.icons.material.Add
 import mui.material.*
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.div
 import styled.StyleSheet
-import styled.inlineStyles
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
@@ -43,7 +44,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val gridLayoutContext = useContext(dragNDropContext).gridLayoutContext
     observe(gridLayoutContext)
 
-    var layoutDimens by state { window.innerWidth to window.innerHeight }
+    var layoutDimens by state<Pair<Int, Int>?> { null }
     val gridLayout = props.tab
     val columns = gridLayout.columns
     val rows = gridLayout.rows
@@ -88,10 +89,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     useResizeListener(containerDiv) { width, height ->
         layoutDimens = width to height
     }
-    val (layoutWidth, layoutHeight) = layoutDimens
     val margin = 5
     val itemPadding = 5
-    val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
     val layoutGrid = memo(columns, rows, gridLayout, draggingItem) {
         LayoutGrid(columns, rows, gridLayout.items, draggingItem)
@@ -115,90 +114,73 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     ) {
         ref = containerDiv
 
-        if (editMode.isAvailable) {
-            div(+layoutStyles.gridBackground) {
-                val positionParams = PositionParams(
-                    margin to margin,
-                    itemPadding to itemPadding,
-                    layoutWidth,
-                    columns,
-                    gridRowHeight,
-                    rows
-                )
+        layoutDimens?.let { layoutDimens ->
+            val (layoutWidth, layoutHeight) = layoutDimens
+            val gridRowHeight = (layoutHeight.toDouble() - margin) / rows - itemPadding
 
-                layoutGrid.forEachCell { column, row ->
-                    val position = positionParams.calcGridItemPosition(column, row, 1, 1)
-
-                    div(+layoutStyles.emptyGridCell) {
-                        inlineStyles {
-                            top = position.top.px
-                            left = position.left.px
-                            width = position.width.px
-                            height = position.height.px
-                        }
-                        attrs["data-cell-x"] = column
-                        attrs["data-cell-y"] = row
-                        attrs.onClickFunction = handleEmptyGridCellClick
-
-                        icon(Add)
-                    }
-                }
+            gridBackground {
+                attrs.layoutGrid = layoutGrid
+                attrs.margin = margin
+                attrs.itemPadding = itemPadding
+                attrs.layoutWidth = layoutWidth
+                attrs.gridRowHeight = gridRowHeight
+                attrs.onGridCellClick = handleEmptyGridCellClick
             }
-        }
 
-        gridLayout {
-            attrs.id = "top"
-            attrs.className = +layoutStyles.gridContainer
-            attrs.width = layoutDimens.first.toDouble()
-            attrs.autoSize = false
-            attrs.cols = columns
-            attrs.rowHeight = gridRowHeight
-            attrs.maxRows = rows
-            attrs.margin = 5 to 5
-            attrs.layout = layoutGrid.layout
-            attrs.onLayoutChange = handleLayoutChange
-            attrs.resizeHandle = ::buildResizeHandle
-            attrs.disableDrag = !editMode.isOn
-            attrs.disableResize = !editMode.isOn
-            attrs.isDroppable = editMode.isOn
-            attrs.onDragStart = handleDragStart
-            attrs.onDragStop = handleDragStop
+            gridLayout {
+                attrs.id = "top"
+                attrs.className = +layoutStyles.gridContainer
+                attrs.width = layoutWidth.toDouble()
+                attrs.autoSize = false
+                attrs.cols = columns
+                attrs.rowHeight = gridRowHeight
+                attrs.maxRows = rows
+                attrs.margin = 5 to 5
+                attrs.layout = layoutGrid.layout
+                attrs.onLayoutChange = handleLayoutChange
+                attrs.resizeHandle = ::buildResizeHandle
+                attrs.disableDrag = !editMode.isOn
+                attrs.disableResize = !editMode.isOn
+                attrs.isDroppable = editMode.isOn
+                attrs.onDragStart = handleDragStart
+                attrs.onDragStop = handleDragStop
 
-            gridLayout.items.forEachIndexed { index, item ->
-                val gridCellStyles = +layoutStyles.gridCell and
-                        if (item.control is OpenButtonGroupControl) layoutStyles.groupGridCell else null
+                gridLayout.items.forEachIndexed { index, item ->
+                    val gridCellStyles = +layoutStyles.gridCell and
+                            if (item.control is OpenButtonGroupControl) layoutStyles.groupGridCell else null
 
-                div(gridCellStyles) {
-                    key = item.control.id
+                    div(gridCellStyles) {
+                        key = item.control.id
 
-                    val gridItemId = item.control.id
-                    val editor = object : Editor<MutableIGridLayout> {
-                        override val title: String = "Grid tab layout editor for $gridItemId"
+                        val gridItemId = item.control.id
+                        val editor = object : Editor<MutableIGridLayout> {
+                            override val title: String = "Grid tab layout editor for $gridItemId"
 
-                        override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
-                            mutableShow.editLayouts {
+                            override fun edit(mutableShow: MutableShow, block: MutableIGridLayout.() -> Unit) {
+                                mutableShow.editLayouts {
+                                    props.tabEditor.edit(mutableShow) {
+                                        val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
+                                            ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
+                                        block(
+                                            gridItem.layout
+                                                ?: error("No layout for $gridItemId.")
+                                        )
+                                    }
+                                }
+                            }
+
+                            override fun delete(mutableShow: MutableShow) {
                                 props.tabEditor.edit(mutableShow) {
-                                    val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
-                                        ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
-                                    block(
-                                        gridItem.layout
-                                            ?: error("No layout for $gridItemId.")
-                                    )
+                                    items.removeAt(index)
                                 }
                             }
                         }
 
-                        override fun delete(mutableShow: MutableShow) {
-                            props.tabEditor.edit(mutableShow) {
-                                items.removeAt(index)
-                            }
+                        gridItem {
+                            attrs.control = item.control
+                            attrs.controlProps = genericControlProps.withLayout(item.layout, editor, item.gridDimens)
+                            attrs.className = -layoutStyles.controlBox
                         }
-                    }
-
-                    gridItem {
-                        attrs.control = item.control
-                        attrs.controlProps = genericControlProps.withLayout(item.layout, editor, item.gridDimens)
-                        attrs.className = -layoutStyles.controlBox
                     }
                 }
             }
