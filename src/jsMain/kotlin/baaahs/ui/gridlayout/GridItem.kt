@@ -38,6 +38,10 @@ external interface GridItemProps : Props {
 //    var maxRows: Int
     var isDraggable: Boolean
     var isResizable: Boolean
+
+    // If false, don't even render resize handles etc.
+    var isEverEditable: Boolean? // = true
+
     var static: Boolean?
     var useCSSTransforms: Boolean?
     var usePercentages: Boolean?
@@ -261,7 +265,7 @@ class GridItem(
         // This is the max possible width - doesn't go to infinity because of the width of the window
         val maxWidth = positionParams.calcGridItemPosition(0, 0, cols - x, 0).width
 
-        // Calculate min/max valraints using our min & maxes
+        // Calculate min/max constraints using our min & maxes
         val mins = positionParams.calcGridItemPosition(0, 0, minW, minH)
         val maxes = positionParams.calcGridItemPosition(0, 0, maxW, maxH)
         val minConstraints = arrayOf<Number>(mins.width, mins.height)
@@ -589,6 +593,7 @@ class GridItem(
     override fun RBuilder.render() {
         val isDraggable = props.isDraggable
         val isResizable = props.isResizable
+        val isEverEditable = props.isEverEditable ?: true
         val droppingPosition = props.droppingPosition
         val useCSSTransforms = SparkleMotion.USE_CSS_TRANSFORM // props.useCSSTransforms
 
@@ -623,11 +628,13 @@ class GridItem(
             )
         })
 
-        // Resizable support. This is usually on but the user can toggle it off.
-        newChild = mixinResizable(newChild, pos, isResizable)
+        if (isEverEditable) {
+            // Resizable support. This is usually on but the user can toggle it off.
+            newChild = mixinResizable(newChild, pos, isResizable)
 
-        // Draggable support. This is always on, except for with placeholders.
-        newChild = mixinDraggable(newChild, isDraggable)
+            // Draggable support. This is always on, except for with placeholders.
+            newChild = mixinDraggable(newChild, isDraggable)
+        }
 
         child(newChild)
     }
