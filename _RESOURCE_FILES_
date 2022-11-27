@@ -1,8 +1,6 @@
 .nojekyll
 baaahs/plugin/beatlink/BeatLinkControl.glsl
 baaahs/plugin/sound_analysis/SoundAnalysisControl.glsl
-blueprintjs/core/lib/css/blueprint.css
-blueprintjs/icons/lib/css/blueprint-icons.css
 favicon.ico
 fontawesome-free/css/all.min.css
 fontawesome-free/webfonts/fa-brands-400.eot
