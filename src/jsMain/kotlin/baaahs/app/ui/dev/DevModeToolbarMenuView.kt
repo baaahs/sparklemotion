@@ -8,11 +8,10 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.window
-import kotlinx.html.org.w3c.dom.events.Event
+import dom.Element
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
-import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -20,6 +19,9 @@ import react.dom.div
 import react.dom.html.TdAlign
 import react.dom.onClick
 import react.useContext
+import web.events.Event
+import web.timers.clearInterval
+import web.timers.setInterval
 
 private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevModeToolbarMenu") { props ->
     val appContext = useContext(appContext)
@@ -36,16 +38,16 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
         if (showToolchainStats) {
             val stats = (appContext.webClient.toolchain as RootToolchain).stats
             var lastStats = emptyList<Int>()
-            val callback = window.setInterval({
+            val callback = setInterval({
                 val curStats = stats.all.map { it.calls }
                 if (curStats != lastStats) {
                     lastStats = curStats
                     forceRender()
                 }
-            }, timeout = 50)
+            }, ms = 50)
 
             withCleanup {
-                window.clearInterval(callback)
+                clearInterval(callback)
             }
         }
     }

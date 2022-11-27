@@ -4,10 +4,10 @@ import baaahs.MediaDevices
 import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
-import baaahs.window
+import dom.html.HTMLVideoElement
+import kotlinx.browser.window
 import kotlinx.coroutines.*
 import kotlinx.js.jso
-import org.w3c.dom.HTMLVideoElement
 import org.w3c.dom.ImageBitmap
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.mediacapture.*

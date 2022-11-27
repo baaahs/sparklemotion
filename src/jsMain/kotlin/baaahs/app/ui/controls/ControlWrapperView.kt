@@ -9,8 +9,6 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.Card
@@ -18,6 +16,7 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onClick
 import react.useContext
 
 private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props ->
@@ -26,7 +25,7 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
     val control = props.control
 
-    val handleEditButtonClick = callback(control) { e: Event ->
+    val handleEditButtonClick by mouseEventHandler(control) { e ->
         control.getEditIntent()?.let { appContext.openEditor(it) }
         e.preventDefault()
     }
@@ -46,7 +45,7 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
         if (editMode.isAvailable && !props.disableEdit) {
             div(+Styles.editButton) {
-                attrs.onClickFunction = handleEditButtonClick
+                attrs.onClick = handleEditButtonClick
 
                 icon(mui.icons.material.Edit)
             }

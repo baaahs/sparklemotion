@@ -15,15 +15,15 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import csstype.Auto
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.org.w3c.dom.events.Event
+import dom.Element
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
 import mui.system.sx
-import org.w3c.dom.Element
 import react.*
 import react.dom.div
+import react.dom.onClick
+import web.events.Event
 
 private enum class PageTabs {
     Patch, Ports, Gadgets, Help
@@ -37,7 +37,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
     val toolchain = memo(baseToolchain) { baseToolchain.withCache("Editor") }
 
     var settingsMenuAnchor by state<Element?> { null }
-    val showSettingsMenu = callback { event: Event -> settingsMenuAnchor = event.target as Element? }
+    val showSettingsMenu by mouseEventHandler { event -> settingsMenuAnchor = event.target as Element? }
     val hideSettingsMenu = callback { _: Event?, _: String? -> settingsMenuAnchor = null }
 
     var selectedTab by state { PageTabs.Patch }
@@ -115,7 +115,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
                 }
 
                 div(+shaderEditorStyles.settingsMenuAffordance) {
-                    attrs.onClickFunction = showSettingsMenu
+                    attrs.onClick = showSettingsMenu
 
                     icon(mui.icons.material.Settings)
                 }

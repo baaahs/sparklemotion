@@ -1,7 +1,7 @@
 package external
 
+import dom.html.HTMLVideoElement
 import kotlinx.js.HighResTimeStamp
-import org.w3c.dom.HTMLVideoElement
 
 external interface VideoFrameMetaData
 typealias VideoFrameRequestCallback = (HighResTimeStamp, VideoFrameMetaData) -> Unit

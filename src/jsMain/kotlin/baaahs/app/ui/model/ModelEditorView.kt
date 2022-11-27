@@ -10,14 +10,14 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
+import dom.Element
+import dom.html.HTMLDivElement
 import kotlinx.css.em
 import kotlinx.css.padding
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler

@@ -4,9 +4,9 @@ import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.appContext
 import baaahs.app.ui.appGlContext
+import dom.html.HTMLElement
 import kotlinx.css.*
 import kotlinx.js.jso
-import org.w3c.dom.HTMLElement
 import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler

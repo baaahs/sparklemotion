@@ -26,6 +26,8 @@ import org.w3c.dom.get
 import react.createElement
 import react.dom.client.createRoot
 import three_ext.installCameraControls
+import web.location.location
+import web.prompts.alert
 
 val _init_ =
     document.getElementById("_patience_")?.let { patience ->
@@ -38,10 +40,10 @@ val _init_ =
 fun main(args: Array<String>) {
     window.asDynamic().LoggerConfig = LoggerConfig
 
-    @Suppress("ConstantConditionIf", "SimplifyBooleanWithConstants")
     ConsoleFormatters.install()
     installCameraControls()
 
+    val document = kotlinx.browser.document
     val mode = document["sparklemotionMode"] as? String ?: "test"
     println("args = $args, mode = $mode")
 
@@ -136,7 +138,7 @@ private fun launchSimulator(
         this.simulator = simulator.facade
         this.hostedWebApp = hostedWebApp
     }
-    val simulatorEl = document.getElementById("app")!!
+    val simulatorEl = getElementById("app")!!
 
     GlobalScope.promise {
         createRoot(simulatorEl)
@@ -144,17 +146,19 @@ private fun launchSimulator(
 
         simulator.start()
     }.catch {
-        window.alert("Failed to launch simulator: $it")
+        alert("Failed to launch simulator: $it")
         Logger("JsMain").error(it) { "Failed to launch simulator." }
         throw it
     }
 }
 
+private fun getElementById(elementId: String) = browser.document.getElementById(elementId)
+
 private fun HostedWebApp.launchApp() {
     globalLaunch {
         onLaunch()
 
-        val contentDiv = document.getElementById("content")!!
+        val contentDiv = getElementById("content")!!
         createRoot(contentDiv)
             .render(createElement(WebClientWindowView, jso {
                 this.hostedWebApp = this@launchApp
@@ -166,8 +170,8 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
     try {
         block()
     } catch (e: Exception) {
-        val container = document.getElementById("content")
-            ?: document.getElementById("app")!!
+        val container = getElementById("content")
+            ?: getElementById("app")!!
         createRoot(container)
             .render(
                 createElement(ErrorDisplay, jso {
@@ -180,7 +184,7 @@ private fun tryCatchAndShowErrors(block: () -> Unit) {
                                 .replace("@", " @ ")
                         } else it
                     }
-                    this.resetErrorBoundary = { window.location.reload() }
+                    this.resetErrorBoundary = { location.reload() }
 
                 })
             )

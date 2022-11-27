@@ -8,10 +8,10 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
+import dom.html.HTMLButtonElement
+import dom.html.HTMLDivElement
 import kotlinx.js.jso
 import mui.material.ToggleButton
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler

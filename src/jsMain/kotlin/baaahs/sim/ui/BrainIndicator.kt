@@ -6,12 +6,12 @@ import baaahs.sm.brain.sim.BrainSimulator.State.*
 import baaahs.ui.BComponent
 import baaahs.ui.Observable
 import baaahs.ui.Observer
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onMouseOverFunction
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.State
+import react.dom.onClick
 import styled.css
 import styled.styledDiv
 
@@ -30,7 +30,7 @@ class BrainIndicator(props: BrainIndicatorProps) : BComponent<BrainIndicatorProp
                     Online -> +"online"
                 }
             }
-            attrs.onClickFunction = { props.brainSimulator.reset() }
+            attrs.onClick = { props.brainSimulator.reset() }
             attrs.onMouseOverFunction = {
                 props.brainSelectionListener(props.brainSimulator)
             }

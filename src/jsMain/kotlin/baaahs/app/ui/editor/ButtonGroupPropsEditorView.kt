@@ -5,8 +5,8 @@ import baaahs.control.MutableButtonGroupControl
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import dom.html.HTMLInputElement
 import mui.material.*
-import org.w3c.dom.HTMLInputElement
 import react.*
 import react.dom.div
 import react.dom.events.ChangeEvent

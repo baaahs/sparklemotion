@@ -6,6 +6,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.dom.get
+import web.buffer.atob
 import kotlin.math.min
 
 actual fun <T> doRunBlocking(block: suspend () -> T): T {
@@ -19,12 +20,12 @@ actual fun <T> doRunBlocking(block: suspend () -> T): T {
     return value!!
 }
 
-val resourcesBase: String get() = document["resourcesBase"]
+val resourcesBase: String get() = kotlinx.browser.document["resourcesBase"]
 
 actual val internalTimerClock: Clock = JsClock
 
 actual fun decodeBase64(s: String): ByteArray =
-    window.atob(s).let { binaryStr ->
+    atob(s).let { binaryStr ->
         ByteArray(binaryStr.length) { i ->
             binaryStr.asDynamic().charCodeAt(i)
         }

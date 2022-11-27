@@ -1,9 +1,9 @@
 package baaahs.ui
 
-import baaahs.window
 import react.Props
 import react.RComponent
 import react.State
+import web.timers.setTimeout
 import kotlin.js.Promise
 
 abstract class BComponent<P : Props, S : State>(props: P) : RComponent<P, S>(props), Observer {
@@ -42,7 +42,7 @@ abstract class BComponent<P : Props, S : State>(props: P) : RComponent<P, S>(pro
 
         private fun scheduleUpdate(bComponent: BComponent<*, *>) {
             if (pendingUpdates.isEmpty()) {
-                window.setTimeout({ performUpdate() }, 50)
+                setTimeout({ performUpdate() }, 50)
             }
             pendingUpdates.add(bComponent)
         }

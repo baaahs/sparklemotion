@@ -4,8 +4,8 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.visualizer.Visualizer
+import dom.html.HTMLElement
 import kotlinx.css.*
-import org.w3c.dom.HTMLElement
 import react.Props
 import react.RBuilder
 import react.RHandler

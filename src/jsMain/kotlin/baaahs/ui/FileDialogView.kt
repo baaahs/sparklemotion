@@ -6,7 +6,6 @@ import baaahs.doc.FileDisplay
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
-import baaahs.window
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Folder
@@ -60,7 +59,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                 currentDir = file
             } else {
                 if (isSaveAs && file.fs.exists(file)) {
-                    if (window.confirm("Overwrite ${file.name}?")) {
+                    if (confirm("Overwrite ${file.name}?")) {
                         fileDialog.onSelect(file)
                     }
                 } else {

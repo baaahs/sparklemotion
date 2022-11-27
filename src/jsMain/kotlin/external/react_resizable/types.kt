@@ -1,9 +1,9 @@
 package external.react_resizable
 
 import csstype.ClassName
+import dom.html.HTMLElement
 import kotlinx.js.jso
 import mui.material.SvgIcon
-import org.w3c.dom.HTMLElement
 import react.ReactElement
 import react.Ref
 import react.buildElement

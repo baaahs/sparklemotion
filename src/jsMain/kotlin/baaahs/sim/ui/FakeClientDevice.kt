@@ -3,6 +3,7 @@ package baaahs.sim.ui
 import baaahs.sim.HostedWebApp
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import dom.html.HTMLElement
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableData
 import kotlinx.css.height
@@ -12,8 +13,6 @@ import kotlinx.css.properties.transform
 import kotlinx.css.properties.translate
 import kotlinx.css.px
 import kotlinx.css.width
-import kotlinx.html.js.onClickFunction
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.MouseEvent
 import react.Props
@@ -21,6 +20,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.i
+import react.dom.onClick
 import react.useRef
 import styled.inlineStyles
 
@@ -31,10 +31,10 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
     var zoom by state { .5f }
     val clientDeviceContentRef = useRef<HTMLElement>(null)
 
-    val handleZoomOut by eventHandler { zoom *= .5f }
-    val handleZoomIn by eventHandler { zoom *= 2f }
+    val handleZoomOut by mouseEventHandler { zoom *= .5f }
+    val handleZoomIn by mouseEventHandler { zoom *= 2f }
 
-    val handleClose by eventHandler(props.hostedWebApp) {
+    val handleClose by mouseEventHandler(props.hostedWebApp) {
         isOpen = false
         props.hostedWebApp.onClose()
     }
@@ -68,15 +68,15 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
 
                 div(+SimulatorStyles.fakeClientDeviceControls) {
                     i("fas fa-search-minus ${+SimulatorStyles.fakeClientDeviceIconButton}") {
-                        attrs.onClickFunction = handleZoomOut
+                        attrs.onClick = handleZoomOut
                     }
 
                     i("fas fa-search-plus ${+SimulatorStyles.fakeClientDeviceIconButton}") {
-                        attrs.onClickFunction = handleZoomIn
+                        attrs.onClick = handleZoomIn
                     }
 
                     i("fas fa-times-circle ${+SimulatorStyles.fakeClientDeviceIconButton}") {
-                        attrs.onClickFunction = handleClose
+                        attrs.onClick = handleClose
                     }
                 }
                 div(+SimulatorStyles.fakeClientDeviceHomeButton) {}

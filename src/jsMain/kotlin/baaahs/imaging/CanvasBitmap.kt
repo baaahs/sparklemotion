@@ -2,10 +2,11 @@ package baaahs.imaging
 
 import baaahs.MediaDevices
 import baaahs.context2d
+import canvas.CanvasRenderingContext2D
+import canvas.GlobalCompositeOperation
 import com.danielgergely.kgl.ByteBuffer
+import dom.html.HTMLCanvasElement
 import org.khronos.webgl.Uint8Array
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
 
 open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     constructor(width: Int, height: Int): this(createCanvas(width, height))
@@ -28,7 +29,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         (image as JsImage).draw(ctx, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight)
     }
 
-    private fun apply(other: Bitmap, operation: String) {
+    private fun apply(other: Bitmap, operation: GlobalCompositeOperation) {
         other as CanvasBitmap
         assertSameSizeAs(other)
 
@@ -39,27 +40,27 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     }
 
     override fun copyFrom(other: Bitmap): Bitmap {
-        apply(other, "source-over")
+        apply(other, GlobalCompositeOperation.sourceOver)
         return this
     }
 
     override fun lighten(other: Bitmap): Bitmap {
-        apply(other, "lighten")
+        apply(other, GlobalCompositeOperation.lighten)
         return this
     }
 
     override fun darken(other: Bitmap): Bitmap {
-        apply(other, "darken")
+        apply(other, GlobalCompositeOperation.darken)
         return this
     }
 
     override fun subtract(other: Bitmap): Bitmap {
-        apply(other, "difference")
+        apply(other, GlobalCompositeOperation.difference)
         return this
     }
 
     override fun multiply(other: Bitmap): Bitmap {
-        apply(other, "multiply")
+        apply(other, GlobalCompositeOperation.multiply)
         return this
     }
 

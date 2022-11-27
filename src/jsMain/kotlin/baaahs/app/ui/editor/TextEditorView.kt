@@ -13,16 +13,17 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.Time
 import baaahs.util.useResizeListener
-import baaahs.window
+import dom.Element
 import kotlinx.js.jso
 import mui.material.PaletteMode
 import mui.material.styles.useTheme
-import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
+import web.timers.clearInterval
+import web.timers.setInterval
 
 private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -64,7 +65,7 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     val editorProps = memo { jso<IEditorProps> { `$blockScrolling` = true } }
 
     onChange("debouncer", props.onChange, props.debounceSeconds) {
-        val interval = window.setInterval({
+        val interval = setInterval({
             val debounceSeconds = props.debounceSeconds ?: defaultDebounceSeconds
 
             // Changed since we last passed on updates?
@@ -76,7 +77,7 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
                 }
             }
         }, 100)
-        withCleanup { window.clearInterval(interval) }
+        withCleanup { clearInterval(interval) }
     }
 
 

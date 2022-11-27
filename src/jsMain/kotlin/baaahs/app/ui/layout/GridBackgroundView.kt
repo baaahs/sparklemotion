@@ -7,7 +7,6 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import kotlinx.css.*
-import kotlinx.html.org.w3c.dom.events.Event
 import materialui.icon
 import mui.icons.material.Add
 import react.Props
@@ -18,6 +17,7 @@ import react.dom.onClick
 import react.dom.onMouseDown
 import react.useContext
 import styled.inlineStyles
+import web.events.Event
 
 private val GridBackgroundView = xComponent<GridBackgroundProps>("GridBackground") { props ->
     val appContext = useContext(appContext)

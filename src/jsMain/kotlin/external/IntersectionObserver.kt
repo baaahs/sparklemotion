@@ -1,8 +1,8 @@
 package external
 
+import dom.Element
+import dom.html.HTMLElement
 import org.w3c.dom.DOMRectReadOnly
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
 
 external class IntersectionObserver(
     callback: (Array<IntersectionObserverEntry>) -> Unit,

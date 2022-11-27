@@ -1,12 +1,13 @@
 package baaahs.gl
 
 import baaahs.document
-import baaahs.window
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
+import dom.html.HTMLCanvasElement
+import dom.html.RenderingContextId
 import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.WebGLObject
-import org.w3c.dom.HTMLCanvasElement
+import web.prompts.alert
 
 actual object GlBase {
     actual val manager: GlManager by lazy { jsManager }
@@ -15,7 +16,7 @@ actual object GlBase {
     class JsGlManager : GlManager() {
         override val available: Boolean by lazy {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
-            val gl = canvas.getContext("webgl")
+            val gl = canvas.getContext(RenderingContextId.webgl)
             gl != null
         }
 
@@ -25,9 +26,9 @@ actual object GlBase {
         }
 
         fun createContext(canvas: HTMLCanvasElement, trace: Boolean = false): JsGlContext {
-            val webgl = canvas.getContext("webgl2") as WebGL2RenderingContext?
+            val webgl = canvas.getContext(RenderingContextId.webgl2) as WebGL2RenderingContext?
             if (webgl == null) {
-                window.alert(
+                alert(
                     "Running GLSL shows on iOS requires WebGL 2.0.\n" +
                             "\n" +
                             "Go to Settings → Safari → Advanced → Experimental Features and enable WebGL 2.0."
@@ -70,13 +71,13 @@ actual object GlBase {
 
         /** Creates a related context with shared state and the given Kgl. */
         open fun requestAnimationFrame(callback: (Double) -> Unit) {
-            window.requestAnimationFrame(callback)
+            web.timers.requestAnimationFrame(callback)
         }
 
         private fun ensureExtension(name: String, required: Boolean): Boolean {
             val extension = webgl.getExtension(name)
             if (required && extension == null) {
-                window.alert("$name not supported")
+                alert("$name not supported")
                 throw Exception("$name not supported")
             }
             return extension != null
