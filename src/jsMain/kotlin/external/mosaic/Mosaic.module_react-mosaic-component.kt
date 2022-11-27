@@ -3,7 +3,7 @@
 
 package external.mosaic
 
-import org.w3c.dom.Element
+import dom.Element
 import react.Component
 import react.Props
 import react.State

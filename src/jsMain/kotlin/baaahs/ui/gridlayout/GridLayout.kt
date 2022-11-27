@@ -4,19 +4,19 @@ import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.GridLayoutContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.geom.Vector2D
-import baaahs.window
 import baaahs.y
+import dom.html.HTMLElement
 import external.lodash.isEqual
 import kotlinx.css.*
 import kotlinx.css.Position
 import kotlinx.js.jso
-import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.*
 import react.dom.events.DragEvent
 import react.dom.events.DragEventHandler
 import styled.inlineStyles
+import web.navigator.navigator
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
 
@@ -41,7 +41,7 @@ external interface GridLayoutState : State {
 }
 
 val layoutClassName = "react-grid-layout"
-val isFirefox = window.navigator.userAgent.contains("firefox", true)
+val isFirefox = navigator.userAgent.contains("firefox", true)
 
 class GridLayout(
     props: GridLayoutProps, context: DragNDropContext

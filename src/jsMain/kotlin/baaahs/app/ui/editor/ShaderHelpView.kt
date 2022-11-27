@@ -4,15 +4,14 @@ import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
 import baaahs.ui.*
-import baaahs.window
+import dom.html.HTMLElement
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
+import kotlinx.js.get
 import kotlinx.js.jso
 import mui.material.*
 import mui.material.styles.Theme
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -22,6 +21,7 @@ import react.dom.pre
 import react.dom.span
 import react.useContext
 import styled.StyleSheet
+import web.navigator.navigator
 
 private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -95,7 +95,7 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                             ?.getElementsByTagName("pre")
                                             ?.get(0) as HTMLElement?
                                         pre?.innerText?.let {
-                                            window.navigator.clipboard.writeText(it)
+                                            navigator.clipboard.writeText(it)
                                             target?.innerText = "Copied!"
                                         }
                                     }

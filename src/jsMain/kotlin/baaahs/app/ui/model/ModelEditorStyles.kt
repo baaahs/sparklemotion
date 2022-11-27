@@ -9,12 +9,12 @@ import kotlinx.css.properties.lh
 import kotlinx.js.jso
 import mui.material.*
 import mui.material.styles.Theme
-import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RElementBuilder
 import react.buildElement
 import react.dom.html.InputType
 import styled.StyleSheet
+import web.events.Event
 import baaahs.app.ui.controls.Styles as ControlStyles
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {

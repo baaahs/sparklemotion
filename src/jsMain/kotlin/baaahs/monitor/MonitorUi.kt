@@ -4,8 +4,8 @@ import baaahs.document
 import baaahs.sim.HostedWebApp
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
+import dom.html.HTMLDivElement
 import kotlinx.js.jso
-import org.w3c.dom.HTMLDivElement
 import react.ReactElement
 import react.createElement
 import react.react

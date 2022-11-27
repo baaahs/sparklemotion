@@ -7,24 +7,24 @@ import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import dom.Element
 import kotlinx.css.left
 import kotlinx.css.px
 import kotlinx.css.top
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.Divider
 import mui.material.ListItemText
 import mui.material.Menu
 import mui.material.MenuItem
-import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
+import web.events.Event
 
 private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val appContext = useContext(appContext)
@@ -92,7 +92,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
     }
 
     var refactorMenuAnchor by state<Element?> { null }
-    val showRefactorMenu = callback { event: Event -> refactorMenuAnchor = event.target as Element? }
+    val showRefactorMenu by mouseEventHandler { event -> refactorMenuAnchor = event.target as Element? }
     val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
     val handleExtractUniform by mouseEventHandler(shaderRefactor) {
@@ -117,7 +117,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
     shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
         div(+styles.editorActionMenuAffordance) {
             inlineStyles { top = y.px; left = x.px }
-            attrs.onClickFunction = showRefactorMenu
+            attrs.onClick = showRefactorMenu
 
             icon(mui.icons.material.MoreHoriz)
         }

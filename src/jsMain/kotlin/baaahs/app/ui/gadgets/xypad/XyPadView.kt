@@ -6,11 +6,9 @@ import baaahs.app.ui.controls.XyPadStyles
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.ui.unaryPlus
-import baaahs.ui.withEvent
 import baaahs.ui.xComponent
+import dom.html.HTMLElement
 import kotlinx.css.*
-import kotlinx.html.js.onClickFunction
-import org.w3c.dom.HTMLElement
 import react.*
 import react.dom.*
 import styled.inlineStyles
@@ -80,7 +78,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
 
-    val handleReset by eventHandler {
+    val handleReset by mouseEventHandler {
         props.xyPad.position = props.xyPad.initialValue
     }
 
@@ -140,7 +138,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         }
 
         div(+XyPadStyles.resetButton) {
-            attrs.onClickFunction = handleReset.withEvent()
+            attrs.onClick = handleReset
             b { +"R" }
         }
     }

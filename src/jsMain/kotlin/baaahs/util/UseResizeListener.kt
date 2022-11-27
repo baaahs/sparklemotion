@@ -1,9 +1,12 @@
 package baaahs.util
 
+import dom.Element
 import external.ResizeObserver
 import external.lodash.throttle
-import org.w3c.dom.Element
 import react.*
+import web.timers.clearTimeout
+import web.timers.setTimeout
+import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("unused")
 fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (width: Int, height: Int) -> Unit) {
@@ -29,11 +32,11 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
 
     // Fire once when the component first mounts
     useEffect(elementRef, onResizedThrottled) {
-        val intervalId = baaahs.window.setTimeout(timeout = 500, handler = {
+        val intervalId = setTimeout(500.milliseconds) {
             val element = elementRef.current ?: return@setTimeout
             onResizedThrottled(element.clientWidth, element.clientHeight)
-        })
+        }
 
-        cleanup { baaahs.window.clearTimeout(intervalId) }
+        cleanup { clearTimeout(intervalId) }
     }
 }

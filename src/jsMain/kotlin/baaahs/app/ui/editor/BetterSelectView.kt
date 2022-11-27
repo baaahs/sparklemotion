@@ -3,9 +3,9 @@ package baaahs.app.ui.editor
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
+import dom.html.HTMLInputElement
 import kotlinx.js.jso
 import mui.material.*
-import org.w3c.dom.HTMLInputElement
 import react.Props
 import react.RBuilder
 import react.RHandler

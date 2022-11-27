@@ -1,13 +1,13 @@
 package baaahs.sim
 
 import baaahs.io.Fs
-import baaahs.window
+import web.storage.localStorage
 
 class BrowserSandboxFs(
     override val name: String,
     baseDir: String? = null
 ) : BaseFakeFs() {
-    private val storage = window.localStorage
+    private val storage = localStorage
     private val basePath = if (baseDir != null) {
         baseDir.trim('/') + "/"
     } else ""

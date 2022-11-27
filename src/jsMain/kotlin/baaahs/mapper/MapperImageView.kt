@@ -5,7 +5,7 @@ import baaahs.imaging.ImageBitmapImage
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
 import csstype.px
-import org.w3c.dom.HTMLImageElement
+import dom.html.HTMLImageElement
 import react.Props
 import react.RBuilder
 import react.RHandler

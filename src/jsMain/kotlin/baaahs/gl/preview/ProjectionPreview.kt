@@ -15,13 +15,14 @@ import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
 import baaahs.model.PixelArray
-import baaahs.window
+import canvas.CanvasRenderingContext2D
+import canvas.Path2D
+import dom.html.HTMLCanvasElement
+import dom.html.RenderingContextId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.Path2D
 import three.js.Vector2
+import web.timers.requestAnimationFrame
 
 class ProjectionPreview(
     canvas2d: HTMLCanvasElement,
@@ -73,7 +74,7 @@ class ProjectionPreview(
         }
     }
 
-    private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
+    private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
 
     override fun start() {
         running = true
@@ -202,7 +203,7 @@ class ProjectionPreview(
             }
         }
 
-        window.requestAnimationFrame { render() }
+        requestAnimationFrame { render() }
     }
 
     override fun resize(width: Int, height: Int) {

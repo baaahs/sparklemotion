@@ -5,11 +5,11 @@ import baaahs.sim.ui.FakeClientDevice
 import baaahs.sim.ui.FakeClientDeviceProps
 import baaahs.ui.ErrorDisplay
 import baaahs.util.Logger
-import baaahs.window
 import kotlinx.js.jso
 import react.ReactElement
 import react.createElement
 import react.dom.client.createRoot
+import web.location.location
 
 object Launcher {
     fun launch(name: String, buildWebApp: () -> HostedWebApp) {
@@ -29,7 +29,7 @@ object Launcher {
                     createElement(ErrorDisplay, jso {
                         this.error = e.asDynamic()
                         this.componentStack = e.stackTraceToString()
-                        this.resetErrorBoundary = { window.location.reload() }
+                        this.resetErrorBoundary = { location.reload() }
                     })
 
                 override fun onClose() {}

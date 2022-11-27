@@ -8,7 +8,6 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.imaging.*
-import baaahs.imaging.Image
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.model.Model
 import baaahs.net.Network
@@ -23,13 +22,18 @@ import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
+import canvas.CanvasImageSource
+import canvas.CanvasRenderingContext2D
+import canvas.ImageBitmap
 import csstype.Cursor
+import dom.events.KeyboardEvent
+import dom.events.MouseEvent
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
+import dom.html.HTMLImageElement
+import dom.html.RenderingContextId
 import kotlinx.coroutines.*
 import kotlinx.js.jso
-import org.w3c.dom.*
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.KeyboardEvent
-import org.w3c.dom.events.MouseEvent
 import react.RBuilder
 import react.ReactElement
 import react.createElement
@@ -38,6 +42,9 @@ import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.*
+import web.events.Event
+import web.prompts.prompt
+import web.timers.requestAnimationFrame
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -194,9 +201,9 @@ class JsMapper(
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        ui3dCanvas.addEventListener("mousedown", ::mouseDown, false)
-        ui3dCanvas.addEventListener("mousemove", ::mouseMove, false)
-        ui3dCanvas.addEventListener("mouseup", ::mouseUp, false)
+        ui3dCanvas.addEventListener("mousedown", ::mouseDown)
+        ui3dCanvas.addEventListener("mousemove", ::mouseMove)
+        ui3dCanvas.addEventListener("mouseup", ::mouseUp)
 
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -205,9 +212,9 @@ class JsMapper(
     }
 
     fun onUnmount() {
-        ui3dCanvas.removeEventListener("mousedown", ::mouseDown, false)
-        ui3dCanvas.removeEventListener("mousemove", ::mouseMove, false)
-        ui3dCanvas.removeEventListener("mouseup", ::mouseUp, false)
+        ui3dCanvas.removeEventListener("mousedown", ::mouseDown)
+        ui3dCanvas.removeEventListener("mousemove", ::mouseMove)
+        ui3dCanvas.removeEventListener("mouseup", ::mouseUp)
 
         onClose()
     }
@@ -421,7 +428,7 @@ class JsMapper(
 
         updateStats()
 
-        window.requestAnimationFrame { drawAnimationFrame() }
+        requestAnimationFrame { drawAnimationFrame() }
     }
 
     private fun updateStats() {
@@ -500,8 +507,8 @@ class JsMapper(
     }
 
     private fun HTMLImageElement.resize(thumbnailDimen: Dimen) {
-        width = thumbnailDimen.width
-        height = thumbnailDimen.height
+        width = thumbnailDimen.width.toDouble()
+        height = thumbnailDimen.height.toDouble()
     }
 
     private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>): PanelInfo {
@@ -1030,7 +1037,7 @@ class JsMapper(
         paintCamImage(image)
 
         changeRegion?.apply {
-            val ui2dCtx = ui2dCanvas.getContext("2d") as CanvasRenderingContext2D
+            val ui2dCtx = ui2dCanvas.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
             ui2dCtx.lineWidth = 2.0
             ui2dCtx.strokeStyle = "#ff0000"
             ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
@@ -1047,7 +1054,7 @@ class JsMapper(
 
     private fun HTMLCanvasElement.showImage(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null) {
         console.log("Draw ", bitmap, " to ", this)
-        val ctx2d = getContext("2d") as CanvasRenderingContext2D
+        val ctx2d = getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
         ctx2d.resetTransform()
         val renderBitmap = when (bitmap) { // TODO: huh?
             is CanvasBitmap -> bitmap.canvas
@@ -1113,7 +1120,7 @@ class JsMapper(
     }
 
     fun clickedGoToSurface() {
-        val surfaceName = window.prompt("Surface:")
+        val surfaceName = prompt("Surface:")
         if (surfaceName != null && surfaceName.isNotEmpty()) {
             goToSurface(surfaceName.uppercase())
         }
@@ -1168,8 +1175,10 @@ class JsMapper(
         } else {
             globalLaunch {
                 val img = loadMapperImage(name)
-                val bitmap = ImageBitmapImage(window.createImageBitmap(img).await())
-                    .toBitmap()
+                val bitmap = ImageBitmapImage(
+                    kotlinx.browser.window.createImageBitmap(img).await()
+                        .unsafeCast<ImageBitmap>()
+                ).toBitmap()
 
                 selectedImageName = name
 

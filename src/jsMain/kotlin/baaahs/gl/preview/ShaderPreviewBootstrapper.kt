@@ -6,10 +6,10 @@ import baaahs.gl.GlContext
 import baaahs.gl.SharedGlContext
 import baaahs.model.Model
 import baaahs.ui.inPixels
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLDivElement
+import dom.html.HTMLElement
 import kotlinx.css.LinearDimension
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLElement
 import react.RefObject
 
 actual interface ShaderPreviewBootstrapper {

@@ -1,7 +1,7 @@
 package baaahs.ui
 
-import baaahs.window
 import csstype.vh
+import dom.html.HTMLElement
 import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate
@@ -11,12 +11,12 @@ import mui.material.Button
 import mui.material.ButtonVariant
 import mui.material.Container
 import mui.material.Paper
-import org.w3c.dom.HTMLElement
 import react.Props
 import react.dom.*
 import react.dom.aria.AriaRole
 import react.fc
 import styled.inlineStyles
+import web.timers.setTimeout
 
 val ErrorDisplay = fc<ErrorDisplayProps> { props ->
     val guruMediationBox = react.useRef<HTMLElement>(null)
@@ -24,7 +24,7 @@ val ErrorDisplay = fc<ErrorDisplayProps> { props ->
     react.useEffect {
         var outlined = true
         fun blink() {
-            window.setTimeout({
+            setTimeout({
                 val box = guruMediationBox.current
                 if (box != null) {
                     box.style.border = if (outlined) "6px solid red" else "6px solid black"

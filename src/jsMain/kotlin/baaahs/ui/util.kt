@@ -2,29 +2,29 @@ package baaahs.ui
 
 import baaahs.context2d
 import baaahs.document
-import baaahs.window
 import csstype.ClassName
+import dom.Element
+import dom.css.getComputedStyle
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
+import dom.html.HTMLInputElement
 import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
-import kotlinx.html.org.w3c.dom.events.Event
 import mui.icons.material.SvgIconComponent
 import mui.material.SvgIconProps
 import mui.material.Typography
 import mui.material.TypographyProps
 import mui.material.styles.Theme
 import mui.material.styles.TypographyVariant
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.events.EventTarget
 import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
 import styled.StyleSheet
+import web.events.Event
+import web.events.EventTarget
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 
@@ -231,12 +231,12 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (org.w3c.dom.events.Event) -> Unit = { event -> event.preventDefault() }
+val preventDefault: (web.events.Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
-    baaahs.document.body?.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
+    document.body.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
 }
 val enableScroll = {
-    baaahs.document.body?.removeEventListener("touchmove", preventDefault)
+    document.body.removeEventListener("touchmove", preventDefault)
 }
 
 object Events {
@@ -266,14 +266,14 @@ val Theme.paperHighContrast get() = paperContrast(.75)
 
 fun HTMLElement.fitText() {
     val parentEl = parentElement!!
-    val parentStyle = window.getComputedStyle(parentEl)
+    val parentStyle = getComputedStyle(parentEl)
     val marginX = with(parentStyle) { marginLeft.fromPx() + marginRight.fromPx() }
     val marginY = with(parentStyle) { marginTop.fromPx() + marginBottom.fromPx() }
     val buttonWidth = parentEl.clientWidth - marginX
     val buttonHeight = parentEl.clientHeight - marginY
     val canvas = document.createElement("canvas") as HTMLCanvasElement
     val ctx = canvas.context2d()
-    val elementStyle = window.getComputedStyle(this)
+    val elementStyle = getComputedStyle(this)
     ctx.font = elementStyle.font
     val width = innerText.split(Regex("\\s+")).maxOf { word ->
         ctx.measureText(word).width

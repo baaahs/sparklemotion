@@ -1,7 +1,7 @@
 package external
 
+import dom.Element
 import org.w3c.dom.DOMRectReadOnly
-import org.w3c.dom.Element
 
 external class ResizeObserver(
     callback: (Array<ResizeObserverEntry>, ResizeObserver) -> Unit

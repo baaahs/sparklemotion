@@ -8,12 +8,11 @@ import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.org.w3c.dom.events.Event
 import materialui.icon
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
+import react.dom.onClick
 import react.dom.onMouseDown
 
 private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
@@ -30,14 +29,14 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     val handleEditMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
     val handleDeleteMouseDown by mouseEventHandler { e: MouseEvent<*, *> -> e.stopPropagation() }
 
-    val handleEditButtonClick = callback(control, layout, layoutEditor) { event: Event ->
+    val handleEditButtonClick by mouseEventHandler(control, layout, layoutEditor) { event ->
         control.getEditIntent()
             ?.withLayout(layout, layoutEditor)
             ?.let { appContext.openEditor(it) }
         event.preventDefault()
     }
 
-    val handleDeleteButtonClick = callback(control, layoutEditor, showManager.show) { event: Event ->
+    val handleDeleteButtonClick by mouseEventHandler(control, layoutEditor, showManager.show) { event ->
         val mutableShow = MutableShow(showManager.show!!)
         layoutEditor!!.delete(mutableShow)
         showManager.onEdit(mutableShow, true)
@@ -54,14 +53,14 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
     if (editMode.isAvailable) {
         div(+styles.deleteButton and styles.deleteModeControl) {
             attrs.onMouseDown = handleDeleteMouseDown
-            attrs.onClickFunction = handleDeleteButtonClick
+            attrs.onClick = handleDeleteButtonClick
 
             icon(mui.icons.material.Delete)
         }
 
         div(+styles.editButton and styles.editModeControl) {
             attrs.onMouseDown = handleEditMouseDown
-            attrs.onClickFunction = handleEditButtonClick
+            attrs.onClick = handleEditButtonClick
 
             icon(mui.icons.material.Edit)
         }

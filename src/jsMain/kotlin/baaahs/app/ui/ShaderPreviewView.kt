@@ -13,19 +13,19 @@ import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
+import dom.Element
+import dom.html.HTMLDivElement
 import external.IntersectionObserver
 import kotlinx.css.*
-import kotlinx.html.js.onClickFunction
 import materialui.icon
 import mui.material.CircularProgress
 import mui.material.Typography
 import mui.system.sx
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onClick
 import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
@@ -203,8 +203,8 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
 
             ShaderBuilder.State.Errors -> {
                 div(+ShaderPreviewStyles.errorBox) {
-                    attrs.onClickFunction = { event ->
-                        errorPopupAnchor = event.currentTarget as Element?
+                    attrs.onClick = { event ->
+                        errorPopupAnchor = event.currentTarget
                         event.stopPropagation()
                     }
 

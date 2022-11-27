@@ -6,11 +6,9 @@ import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.gadgets.Slider
 import baaahs.ui.unaryPlus
-import baaahs.ui.withEvent
 import baaahs.ui.xComponent
 import kotlinx.css.Color
 import kotlinx.css.backgroundColor
-import kotlinx.html.js.onClickFunction
 import materialui.icon
 import mui.icons.material.MusicNote
 import react.Props
@@ -18,6 +16,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.b
 import react.dom.div
+import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
 
@@ -56,12 +55,12 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.floor = newPosition
     }
 
-    val handleToggleBeatLinked by handler(slider) {
+    val handleToggleBeatLinked by mouseEventHandler(slider) {
         slider.beatLinked = !slider.beatLinked
         slider.floor = slider.position
     }
 
-    val handleReset by handler(slider) {
+    val handleReset by mouseEventHandler(slider) {
         slider.position = slider.initialValue
         slider.beatLinked = false
     }
@@ -89,7 +88,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         }
 
         div(+Styles.beatLinkedSwitch) {
-            attrs.onClickFunction = handleToggleBeatLinked.withEvent()
+            attrs.onClick = handleToggleBeatLinked
 
             if (beatLinked) {
                 inlineStyles {
@@ -100,7 +99,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         }
 
         div(+Styles.resetSwitch) {
-            attrs.onClickFunction = handleReset.withEvent()
+            attrs.onClick = handleReset
             b { +"R" }
         }
 
