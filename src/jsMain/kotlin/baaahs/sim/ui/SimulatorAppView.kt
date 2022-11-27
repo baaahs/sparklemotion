@@ -7,7 +7,7 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import baaahs.window
+import cssom.matchMedia
 import external.mosaic.MosaicParent
 import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
@@ -45,7 +45,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
         }
     }
 
-    val small = window.matchMedia(
+    val small = matchMedia(
         theme.breakpoints.down(Breakpoint.md)
             .replace("@media ", "")
     ).matches

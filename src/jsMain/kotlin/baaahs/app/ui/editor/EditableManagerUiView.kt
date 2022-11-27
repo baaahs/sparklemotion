@@ -5,8 +5,6 @@ import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
 import baaahs.ui.*
 import external.ErrorBoundary
-import kotlinx.html.js.onSubmitFunction
-import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import mui.base.Portal
 import mui.icons.material.Redo
@@ -15,6 +13,8 @@ import mui.material.*
 import react.*
 import react.dom.div
 import react.dom.form
+import react.dom.onSubmit
+import web.events.Event
 
 private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableManagerUi") { props ->
     val appContext = useContext(appContext)
@@ -29,7 +29,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
 
     var showModifiedWarning by state { false }
 
-    val handleFormSubmit = callback(props.editableManager) { _: Event ->
+    val handleFormSubmit by formEventHandler(props.editableManager) { _ ->
         if (props.editableManager.isModified()) {
             props.editableManager.applyChanges()
         }
@@ -53,7 +53,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
 
     Portal {
         form {
-            attrs.onSubmitFunction = handleFormSubmit
+            attrs.onSubmit = handleFormSubmit
 
             Drawer {
                 attrs.classes = jso { this.paper = -styles.drawer }

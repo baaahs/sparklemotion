@@ -6,7 +6,6 @@ import baaahs.ui.xComponent
 import baaahs.util.percent
 import kotlinx.css.*
 import kotlinx.html.id
-import kotlinx.html.js.onClickFunction
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -15,6 +14,7 @@ import styled.css
 import styled.inlineStyles
 import styled.styledTd
 import styled.styledTh
+import web.prompts.prompt
 
 private val NetworkPanelView = xComponent<NetworkPanelProps>("NetworkPanel") { props ->
     observe(props.network)
@@ -40,8 +40,8 @@ private val NetworkPanelView = xComponent<NetworkPanelProps>("NetworkPanel") { p
                 td { +"Packet loss rate:" }
                 styledTd {
                     css { +SimulatorStyles.networkPacketLossRate }
-                    attrs.onClickFunction = {
-                        network.packetLossRate = baaahs.window.prompt(
+                    attrs.onClick = {
+                        network.packetLossRate = prompt(
                             "Packet loss rate (%):", "${(network.packetLossRate * 100).toInt()}"
                         )!!.toFloat() / 100
                     }

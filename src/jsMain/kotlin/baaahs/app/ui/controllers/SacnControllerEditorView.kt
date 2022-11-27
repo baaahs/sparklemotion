@@ -12,6 +12,7 @@ import mui.material.TextField
 import mui.system.sx
 import react.*
 import react.dom.onChange
+import web.events.EventTarget
 
 private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("SacnControllerEditor") { props ->
     val appContext = useContext(appContext)
@@ -20,7 +21,8 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
     val mutableConfig = props.editingController.config
 
     val handleTitleChange by formEventHandler(mutableConfig, props.editingController) {
-        mutableConfig.title = it.target.value
+        val target: EventTarget = it.target
+        mutableConfig.title = target.value
         props.editingController.onChange()
     }
 

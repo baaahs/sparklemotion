@@ -13,11 +13,12 @@ import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
-import baaahs.window
+import canvas.CanvasRenderingContext2D
+import dom.html.HTMLCanvasElement
+import dom.html.RenderingContextId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
+import web.timers.requestAnimationFrame
 import kotlin.math.roundToInt
 
 private val Float.short: String
@@ -48,7 +49,7 @@ class MovingHeadPreview(
             val fixture = MovingHeadFixture(movingHead, 1, movingHead.name, transport = NullTransport, adapter = movingHead.adapter)
             renderEngine.addFixture(fixture)
         }
-    private val context2d = canvas2d.getContext("2d") as CanvasRenderingContext2D
+    private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
 
     override fun start() {
         running = true
@@ -109,7 +110,7 @@ class MovingHeadPreview(
             }
         }
 
-        window.requestAnimationFrame { render() }
+        requestAnimationFrame { render() }
     }
 
     private fun tabs(col0: String, col1: String, col2: String, col3: String, col4: String, y: Double) {

@@ -5,16 +5,17 @@ import baaahs.decodeBase64
 import baaahs.document
 import baaahs.util.Clock
 import baaahs.util.JsClock
-import baaahs.window
+import canvas.CanvasRenderingContext2D
+import canvas.ImageBitmap
+import canvas.ImageBitmapSource
+import canvas.ImageData
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLVideoElement
 import external.gifuct.ParsedFrameDims
 import external.gifuct.decompressFrames
 import external.gifuct.parseGIF
-import external.requestVideoFrameCallback
 import kotlinx.coroutines.await
-import kotlinx.html.dom.create
-import kotlinx.html.js.canvas
 import org.khronos.webgl.*
-import org.w3c.dom.*
 
 actual fun imageFromDataUrl(dataUrl: String): Image {
     return if (dataUrl.looksLikeGif()) {
@@ -30,9 +31,9 @@ actual fun createWritableBitmap(width: Int, height: Int): Bitmap =
     CanvasBitmap(width, height)
 
 fun createCanvas(width: Int, height: Int) =
-    document.create.canvas {
-        this.width = "${width}px"
-        this.height = "${height}px"
+    (document.createElement("canvas") as HTMLCanvasElement).apply {
+        this.width = width
+        this.height = height
     }
 
 abstract class JsImage : Image {
@@ -138,7 +139,12 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
 
     companion object {
         suspend fun fromImg(image: ImageBitmapSource) =
-            ImageBitmapImage(window.createImageBitmap(image).await())
+            ImageBitmapImage(
+                kotlinx.browser.window.createImageBitmap(
+                    image.unsafeCast<org.w3c.dom.ImageBitmapSource>()
+                ).await()
+                    .unsafeCast<ImageBitmap>()
+            )
     }
 }
 
@@ -180,7 +186,7 @@ class VideoElementImage(private val videoEl: HTMLVideoElement) : JsImage() {
     }
 }
 
-class JsUByteClampedArray(val delegate: Uint8ClampedArray) : UByteClampedArray {
+class JsUByteClampedArray(private val delegate: Uint8ClampedArray) : UByteClampedArray {
     override val size: Int get() = delegate.length
 
     override operator fun get(index: Int): Int {

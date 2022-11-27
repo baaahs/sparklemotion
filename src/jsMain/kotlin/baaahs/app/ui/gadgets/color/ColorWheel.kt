@@ -2,9 +2,10 @@ package baaahs.app.ui.gadgets.color
 
 import baaahs.Color
 import baaahs.geom.Vector2F
+import canvas.CanvasRenderingContext2D
+import dom.html.HTMLCanvasElement
+import dom.html.RenderingContextId
 import org.khronos.webgl.set
-import org.w3c.dom.CanvasRenderingContext2D
-import org.w3c.dom.HTMLCanvasElement
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -49,7 +50,7 @@ class ColorWheel(
     var harmonyMode: HarmonyMode = HarmonyMode.triad,
     var colors: Array<Color> = Array(3) { Color.WHITE }
 ) {
-    private val ctx = canvasEl.getContext("2d") as CanvasRenderingContext2D
+    private val ctx = canvasEl.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
 
     private var priorRadius: Int? = null
 

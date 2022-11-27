@@ -9,17 +9,20 @@ import baaahs.util.Framerate
 import baaahs.util.Logger
 import baaahs.util.asMillis
 import baaahs.window
+import dom.events.MouseEvent
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
+import dom.html.HTMLSpanElement
 import kotlinx.css.hyphenize
 import kotlinx.js.jso
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLSpanElement
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.MouseEvent
 import three.js.*
 import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
+import web.events.Event
+import web.timers.Timeout
+import web.timers.clearTimeout
+import web.timers.setTimeout
 import kotlin.math.*
 import kotlin.reflect.KClass
 
@@ -249,13 +252,13 @@ open class BaseVisualizer(
         raycaster.asDynamic().params.Points.threshold = 1
         updateOriginDot()
 
-        var resizeTaskId: Int? = null
+        var resizeTaskId: Timeout? = null
         window.addEventListener("resize", {
             if (resizeTaskId !== null) {
-                window.clearTimeout(resizeTaskId!!)
+                clearTimeout(resizeTaskId!!)
             }
 
-            resizeTaskId = window.setTimeout({
+            resizeTaskId = setTimeout({
                 resizeTaskId = null
                 resize()
             }, resizeDelay)
@@ -434,7 +437,7 @@ open class BaseVisualizer(
     }
 
     private fun requestAnimationFrame() {
-        window.requestAnimationFrame { render() }
+        web.timers.requestAnimationFrame { render() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord

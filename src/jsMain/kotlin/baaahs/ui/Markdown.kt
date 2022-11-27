@@ -1,8 +1,8 @@
 package baaahs.ui
 
+import dom.html.HTMLElement
 import external.markdownit.MarkdownIt
 import kotlinx.js.jso
-import org.w3c.dom.HTMLElement
 import react.Props
 import react.RBuilder
 import react.RHandler

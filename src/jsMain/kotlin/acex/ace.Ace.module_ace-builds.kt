@@ -3,8 +3,8 @@
 
 package acex
 
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
+import dom.html.HTMLElement
+import web.events.Event
 import kotlin.js.Json
 import kotlin.js.RegExp
 

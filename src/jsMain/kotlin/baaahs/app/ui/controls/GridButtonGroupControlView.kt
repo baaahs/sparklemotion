@@ -17,13 +17,13 @@ import baaahs.ui.gridlayout.LayoutGrid
 import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
+import dom.Element
+import dom.html.HTMLElement
 import external.react_resizable.buildResizeHandle
+import kotlinx.js.get
 import kotlinx.js.jso
 import mui.material.Card
 import mui.material.Menu
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler

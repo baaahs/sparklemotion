@@ -14,6 +14,7 @@ import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import csstype.ClassName
 import csstype.Float
+import dom.html.HTMLDivElement
 import kotlinx.js.jso
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
@@ -22,7 +23,6 @@ import materialui.icon
 import mui.material.*
 import mui.system.Breakpoint
 import mui.system.sx
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
@@ -33,6 +33,8 @@ import react.dom.events.MouseEvent
 import react.dom.i
 import react.dom.onChange
 import react.useContext
+import web.timers.clearInterval
+import web.timers.setInterval
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -78,8 +80,8 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
     }
 
     onMount {
-        val interval = baaahs.window.setInterval(checkLayout, 100)
-        withCleanup { baaahs.window.clearInterval(interval) }
+        val interval = setInterval(checkLayout, 100)
+        withCleanup { clearInterval(interval) }
     }
 
     val handleApplyCode by mouseEventHandler(props.onApply) {
@@ -217,7 +219,7 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
                                         }
                                         IconButton {
                                             attrs.onClick = {
-                                                if (baaahs.window.confirm("Delete panel \"${panel.title}\"? This might be bad news if anything is still placed in it.")) {
+                                                if (confirm("Delete panel \"${panel.title}\"? This might be bad news if anything is still placed in it.")) {
                                                     mutableLayouts.panels.remove(panelId)
                                                     props.onApply(mutableShow, true)
                                                 }

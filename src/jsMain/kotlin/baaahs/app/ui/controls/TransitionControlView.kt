@@ -8,6 +8,7 @@ import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import csstype.ident
+import dom.Element
 import kotlinx.css.StyledElement
 import kotlinx.js.jso
 import mui.material.Button
@@ -15,7 +16,6 @@ import mui.material.ButtonColor
 import mui.material.Card
 import mui.material.ToggleButton
 import mui.system.sx
-import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler

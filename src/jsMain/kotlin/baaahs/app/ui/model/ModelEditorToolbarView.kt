@@ -8,11 +8,11 @@ import baaahs.ui.*
 import baaahs.util.CacheBuilder
 import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
+import dom.Element
 import external.react_draggable.Draggable
 import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
-import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.MouseEvent

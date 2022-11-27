@@ -11,19 +11,19 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import kotlinx.html.js.onClickFunction
-import kotlinx.html.org.w3c.dom.events.Event
+import dom.Element
+import dom.html.HTMLDivElement
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Settings
 import mui.material.*
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onClick
 import react.useContext
+import web.events.Event
 
 private val VisualizerControlView = xComponent<VisualizerControlProps>("VisualizerControl") { props ->
     val appContext = useContext(appContext)
@@ -58,7 +58,7 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
     }
 
     var menuAnchor by state<Element?> { null }
-    val showMenu = callback { event: Event -> menuAnchor = event.target as Element? }
+    val showMenu by mouseEventHandler() { event -> menuAnchor = event.target as Element? }
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
     var showPatchDiagnostics by state { false }
@@ -72,7 +72,7 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
         attrs.classes = jso { this.root = -Styles.visualizerCard }
 
         div(+Styles.visualizerMenuAffordance) {
-            attrs.onClickFunction = showMenu
+            attrs.onClick = showMenu
             icon(Settings)
         }
 

@@ -9,6 +9,7 @@ import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.LegacyControlDisplay
 import baaahs.ui.*
+import dom.Element
 import external.Direction
 import external.draggable
 import external.droppable
@@ -16,7 +17,6 @@ import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.AddCircleOutline
 import mui.material.*
-import org.w3c.dom.Element
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
