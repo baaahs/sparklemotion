@@ -25,6 +25,9 @@ class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isSt
         ".mosaic-window-toolbar" {
             important(::display, Display.none)
         }
+        ".mosaic-window-body" {
+            important(::background, "unset")
+        }
     }
 }
 
