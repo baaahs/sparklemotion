@@ -97,11 +97,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                             this.title = window.name
                             this.path = path
                             this.renderToolbar = { props, isDraggable ->
-                                buildElement {
-                                    div(+SimulatorStyles.panelToolbar) {
-                                        +props.title
-                                    }
-                                }
+                                buildElement { div(+SimulatorStyles.panelToolbar) { +props.title } }
                             }
                         },
 

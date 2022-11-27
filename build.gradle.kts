@@ -205,8 +205,6 @@ kotlin {
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("markdown-it", "~11.0.0"))
-                implementation(npm("@blueprintjs/core", "^3.24.0"))
-                implementation(npm("@blueprintjs/icons", "^3.14.0"))
 
                 // To support animated GIFs:
                 implementation(npm("gifuct-js", "2.1.2"))
@@ -273,11 +271,6 @@ tasks.named<ProcessResources>("jsProcessResources") {
     from("build/js/node_modules/@fortawesome") {
         include("fontawesome-free/css/all.min.css")
         include("fontawesome-free/webfonts/*")
-    }
-    from("build/js/node_modules/@blueprintjs") {
-        into("blueprintjs")
-        include("core/lib/css/blueprint.css")
-        include("icons/lib/css/blueprint-icons.css")
     }
     from("build/js/node_modules/react-grid-layout") {
         into("react-grid-layout")
