@@ -4,14 +4,14 @@ import baaahs.ui.and
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import dom.html.HTMLElement
 import kotlinx.css.pct
 import kotlinx.css.width
 import kotlinx.html.tabIndex
+import kotlinx.js.get
 import mui.material.Tab
 import mui.material.Tabs
 import mui.material.TabsVariant
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.get
 import react.Props
 import react.RBuilder
 import react.RHandler

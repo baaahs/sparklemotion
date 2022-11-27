@@ -1,10 +1,10 @@
 package baaahs.gl
 
 import com.danielgergely.kgl.Kgl
+import dom.geometry.DOMRect
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
 import org.khronos.webgl.WebGLRenderingContext
-import org.w3c.dom.DOMRect
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt

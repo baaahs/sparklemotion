@@ -4,25 +4,22 @@ import baaahs.Color
 import baaahs.geom.Vector2F
 import baaahs.ui.*
 import baaahs.util.useResizeListener
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableBounds
 import external.react_draggable.DraggableData
 import kotlinx.css.*
-import kotlinx.html.js.onMouseDownFunction
-import kotlinx.html.js.onMouseMoveFunction
-import kotlinx.html.js.onMouseUpFunction
 import kotlinx.js.jso
 import mui.material.Button
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
-import kotlinx.html.org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.canvas
-import react.dom.div
+import react.dom.*
+import react.dom.events.MouseEvent
 import react.useRef
 import styled.inlineStyles
+import web.timers.requestAnimationFrame
 import kotlin.math.min
 
 private const val pickerRadius = 12
@@ -63,7 +60,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
     }
 
 
-    baaahs.window.requestAnimationFrame {
+    requestAnimationFrame {
         colorWheel?.drawWheel()
     }
 
@@ -76,7 +73,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                 height = (radius * 2).px
             }
 
-            fun updateColors(e: Event, index: Int) {
+            fun updateColors(e: MouseEvent<*, *>, index: Int) {
                 val target = e.target as HTMLElement
                 val bounds = target.getBoundingClientRect()
                 val clickX = e.clientX - bounds.left - radius
@@ -96,7 +93,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
 
                 attrs.width = (radius * 2).toString()
                 attrs.height = (radius * 2).toString()
-                attrs.onMouseDownFunction = { e: Event ->
+                attrs.onMouseDown = { e ->
                     if (e.buttons == Events.ButtonMask.primary) {
                         mouseDraggingState.current = true
                         updateColors(e, selectedIndex ?: 0)
@@ -104,13 +101,13 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                         e.preventDefault()
                     }
                 }
-                attrs.onMouseMoveFunction = { e: Event ->
+                attrs.onMouseMove = { e ->
                     if (mouseDraggingState.current == true) {
                         updateColors(e, selectedIndex ?: 0)
                         handleColorChange()
                     }
                 }
-                attrs.onMouseUpFunction = { e: Event ->
+                attrs.onMouseUp = { e ->
                     mouseDraggingState.current = false
                     updateColors(e, selectedIndex ?: 0)
                     handleColorChange()
@@ -181,7 +178,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                                 backgroundColor = color.toCssColor()
                             }
 
-                            attrs.onMouseDownFunction = {
+                            attrs.onMouseDown = {
                                 selectedIndex = index
                                 grabbingIndex = index
                             }

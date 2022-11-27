@@ -4,8 +4,8 @@
 
 package ReactAce.Ace
 
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLElement
+import dom.Element
+import dom.html.HTMLElement
 import react.Component
 import react.ElementType
 import react.Props

@@ -4,10 +4,10 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import dom.Element
 import kotlinx.js.jso
 import mui.material.Divider
 import mui.material.Popover
-import org.w3c.dom.Element
 import react.Props
 import react.RBuilder
 import react.RHandler

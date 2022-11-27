@@ -14,7 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.css.*
-import kotlinx.html.org.w3c.dom.events.Event
 import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Search
@@ -25,6 +24,7 @@ import react.dom.events.FocusEvent
 import react.dom.events.FormEvent
 import react.dom.events.SyntheticEvent
 import styled.inlineStyles
+import web.events.Event
 
 private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("ShaderLibraryDialog") { props ->
     val appContext = useContext(appContext)

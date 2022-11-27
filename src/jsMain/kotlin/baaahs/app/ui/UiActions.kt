@@ -6,12 +6,12 @@ import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.encodeURIComponent
-import baaahs.window
+import dom.html.HTMLAnchorElement
 import kotlinx.js.jso
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import org.w3c.dom.HTMLAnchorElement
 import org.w3c.files.Blob
+import web.navigator.navigator
 
 actual object UiActions {
     actual fun downloadShow(show: Show, plugins: Plugins) {
@@ -37,18 +37,17 @@ actual object UiActions {
     ) {
         val json = Json(plugins.json) { prettyPrint = true }
         val docJson = json.encodeToString(serializer, document)
-        val navigator = window.navigator
         if (navigator.asDynamic()?.msSaveOrOpenBlob != null) {
             val blob = Blob(arrayOf(docJson), jso { this.type = contentType })
-            navigator.asDynamic().msSaveOrOpenBlob(blob, filename);
+            navigator.asDynamic().msSaveOrOpenBlob(blob, filename)
         } else {
             val a = baaahs.document.createElement("a") as HTMLAnchorElement
-            a.download = filename;
+            a.download = filename
             a.href = "data:${contentType},${encodeURIComponent(docJson)}"
             a.target = "_blank"
-            baaahs.document.body!!.appendChild(a)
+            baaahs.document.body.appendChild(a)
             a.click()
-            baaahs.document.body!!.removeChild(a)
+            baaahs.document.body.removeChild(a)
         }
     }
 }

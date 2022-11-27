@@ -1,12 +1,12 @@
 package baaahs.ui
 
 import baaahs.util.Logger
-import baaahs.window
-import kotlinx.html.org.w3c.dom.events.Event
 import react.ComponentType
 import react.MutableRefObject
 import react.Props
 import react.dom.events.*
+import web.events.Event
+import web.timers.setTimeout
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -205,7 +205,7 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
      * in a parent component from within a side effect.
      */
     fun later(block: () -> Unit) {
-        window.setTimeout(block, 0)
+        setTimeout(block, 0)
     }
 
     fun forceRender() {

@@ -9,6 +9,10 @@ import baaahs.model.Model
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
+import dom.events.KeyboardEvent
+import dom.html.HTMLCanvasElement
+import dom.html.HTMLElement
+import dom.html.HTMLImageElement
 import external.react_draggable.Draggable
 import kotlinx.css.*
 import kotlinx.html.tabIndex
@@ -16,10 +20,6 @@ import materialui.icon
 import mui.material.Button
 import mui.material.FormControlLabel
 import mui.material.Switch
-import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLImageElement
-import org.w3c.dom.events.KeyboardEvent
 import react.*
 import react.dom.canvas
 import react.dom.div

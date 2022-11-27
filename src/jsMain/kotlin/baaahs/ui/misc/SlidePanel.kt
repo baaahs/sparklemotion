@@ -3,10 +3,10 @@ package baaahs.ui.misc
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
+import dom.html.HTMLDivElement
 import kotlinx.css.*
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import org.w3c.dom.HTMLDivElement
 import react.Props
 import react.RBuilder
 import react.RHandler

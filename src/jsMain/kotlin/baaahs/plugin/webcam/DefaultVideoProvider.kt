@@ -2,10 +2,12 @@ package baaahs.plugin.webcam
 
 import baaahs.document
 import baaahs.util.Logger
-import baaahs.window
 import com.danielgergely.kgl.TextureResource
+import dom.html.HTMLVideoElement
 import kotlinx.js.jso
-import org.w3c.dom.HTMLVideoElement
+import media.streams.ConstrainULongRange
+import org.khronos.webgl.TexImageSource
+import web.navigator.navigator
 
 actual val DefaultVideoProvider: VideoProvider
     get() = BrowserWebCamVideoProvider
@@ -15,20 +17,18 @@ object BrowserWebCamVideoProvider : VideoProvider {
         setAttribute("style", "display:none")
         setAttribute("autoplay", "")
         setAttribute("playsinline", "")
-        document.body!!.appendChild(this)
+        document.body.appendChild(this)
     } as HTMLVideoElement
 
     private val logger = Logger<BrowserWebCamVideoProvider>()
 
     init {
         logger.info { "Initializing." }
-        window.navigator.mediaDevices.getUserMedia(jso {
-            video = js(
-                "({" +
-                        "    width: { min: 320, ideal: 640, max: 1920 },\n" +
-                        "    height: { min: 200, ideal: 480, max: 1080 }\n" +
-                        "})"
-            )
+        navigator.mediaDevices.getUserMedia(jso {
+            video = jso {
+                width = jso<ConstrainULongRange> { min = 320; ideal = 640; max = 1920 }
+                height = jso<ConstrainULongRange> { min = 200; ideal = 480; max = 1080 }
+            }
         }).then { stream ->
             logger.warn { "From getUserMedia" }
             console.warn("From getUserMedia: ", stream)
@@ -42,6 +42,6 @@ object BrowserWebCamVideoProvider : VideoProvider {
     }
 
     override fun getTextureResource(): TextureResource {
-        return TextureResource(videoElement)
+        return TextureResource(videoElement.unsafeCast<TexImageSource>())
     }
 }

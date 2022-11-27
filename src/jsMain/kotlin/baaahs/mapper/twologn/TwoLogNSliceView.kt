@@ -6,8 +6,8 @@ import baaahs.mapper.TwoLogNMappingStrategy
 import baaahs.mapper.mapperImage
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
+import dom.html.HTMLImageElement
 import kotlinx.coroutines.CompletableDeferred
-import org.w3c.dom.HTMLImageElement
 import react.Props
 import react.RBuilder
 import react.RHandler

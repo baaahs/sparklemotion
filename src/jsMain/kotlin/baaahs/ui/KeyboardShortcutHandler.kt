@@ -1,11 +1,11 @@
 package baaahs.ui
 
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLTextAreaElement
-import org.w3c.dom.events.EventListener
-import org.w3c.dom.events.EventTarget
-import org.w3c.dom.events.KeyboardEvent
+import dom.events.KeyboardEvent
+import dom.html.HTMLElement
+import dom.html.HTMLInputElement
+import dom.html.HTMLTextAreaElement
+import web.events.Event
+import web.events.EventTarget
 
 class KeyboardShortcutHandler(val target: EventTarget? = null) {
     private val handlers = arrayListOf<Handler>()
@@ -18,7 +18,9 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
     }
 
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-    private val handleKeyDown = { e: KeyboardEvent ->
+    private val handleKeyDown = { e: Event ->
+        e as KeyboardEvent
+
         when (e.target) {
 //            is HTMLButtonElement,
             is HTMLInputElement,
@@ -40,7 +42,7 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
                 }
             }
         }
-    } as EventListener
+    }
 
     fun listen(target: EventTarget): EventTarget {
         target.addEventListener("keydown", handleKeyDown)

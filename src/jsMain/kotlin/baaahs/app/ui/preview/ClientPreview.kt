@@ -1,7 +1,6 @@
 package baaahs.app.ui.preview
 
 import baaahs.client.ClientStageManager
-import baaahs.document
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
 import baaahs.gl.render.RenderManager
@@ -17,12 +16,12 @@ import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
-import baaahs.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.get
+import web.timers.requestAnimationFrame
 
 class ClientPreview(
     model: Model,
@@ -41,7 +40,7 @@ class ClientPreview(
 
     // TODO: This is super janky.
     private val targetFramerate
-        get() = (document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 15f
+        get() = (kotlinx.browser.document["clientPreviewTargetFramerate"] as Number?)?.toFloat() ?: 15f
 
     val visualizer: Visualizer.Facade get() = theVisualizer.facade
     val renderPlanMonitor get() = fixtureManager.facade.renderPlanMonitor
@@ -87,7 +86,7 @@ class ClientPreview(
             }
 
             if (keepRunning) {
-                window.requestAnimationFrame { animate() }
+                requestAnimationFrame { animate() }
             }
         }
     }

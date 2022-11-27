@@ -5,7 +5,6 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.OpenDocument
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.*
-import kotlinx.html.js.onClickFunction
 import kotlinx.html.unsafe
 import kotlinx.js.jso
 import materialui.icon
@@ -14,10 +13,7 @@ import mui.icons.material.Edit
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.b
-import react.dom.div
-import react.dom.i
-import react.dom.span
+import react.dom.*
 import react.useContext
 
 private val AppToolbarTabView = xComponent<AppToolbarTabProps>("AppToolbarTab") { props ->
@@ -46,7 +42,7 @@ private val AppToolbarTabView = xComponent<AppToolbarTabProps>("AppToolbarTab") 
             if (props.currentAppMode == props.value) {
                 span(+themeStyles.editButton) {
                     icon(Edit)
-                    attrs.onClickFunction = props.onEditButtonClick.withEvent()
+                    attrs.onClick = props.onEditButtonClick.withMouseEvent()
                 }
             }
         } else {

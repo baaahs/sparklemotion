@@ -10,7 +10,7 @@ import baaahs.show.live.OpenPatch
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import org.w3c.dom.HTMLElement
+import dom.html.HTMLElement
 import react.Props
 import react.RBuilder
 import react.RHandler
