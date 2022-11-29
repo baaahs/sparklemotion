@@ -6,7 +6,7 @@ import baaahs.util.useResizeListener
 import baaahs.visualizer.Visualizer
 import dom.html.HTMLElement
 import kotlinx.css.*
-import react.Props
+import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
 import react.dom.div
@@ -30,10 +30,12 @@ private val VisualizerPanelView = xComponent<VisualizerPanelProps>("VisualizerPa
 
     div(+Styles.visualizerPanel) {
         ref = container
+
+        props.children?.let { +it }
     }
 }
 
-external interface VisualizerPanelProps : Props {
+external interface VisualizerPanelProps : PropsWithChildren {
     var visualizer: Visualizer.Facade
 }
 
@@ -47,13 +49,6 @@ object Styles : StyleSheet("visualizer-ui", isStatic = true) {
 
         canvas {
             position = Position.absolute
-        }
-
-        span {
-            fontWeight = FontWeight.bold
-            position = Position.absolute
-            left = 1.em
-            bottom = 2.em
         }
     }
 }

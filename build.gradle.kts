@@ -200,7 +200,7 @@ kotlin {
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
-                implementation(npm("react-mosaic-component", "^4.0.0"))
+                implementation(npm("react-mosaic-component", "^5.3.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("react-ace", "^9.0.0"))
                 implementation(npm("ace-builds", "^1.4.11"))
@@ -254,6 +254,7 @@ tasks.withType(Kotlin2JsCompile::class) {
 }
 
 tasks.withType(KotlinWebpack::class) {
+//    report = true // Broken in Kotlin 1.7? Cannot find module 'webpack-bundle-analyzer'.
     sourceMaps = true
     inputs.dir("src/jsMain/js")
 }
