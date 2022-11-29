@@ -77,10 +77,6 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
         attrs.value = mySimulatorContext
 
         div(+SimulatorStyles.app) {
-            menuBar {
-                attrs.launchItems = props.simulator.launchItems
-            }
-
             mosaic<SimulatorWindows> {
                 attrs.value = currentNode
                 attrs.onChange = { newNode -> currentNode = newNode }
@@ -96,7 +92,8 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                             this.draggable = false
                             this.title = window.name
                             this.path = path
-                            this.renderToolbar = { props, isDraggable ->
+                            this.renderPreview = { buildElement{ div {} } }
+                            this.renderToolbar = { props, _ ->
                                 buildElement { div(+SimulatorStyles.panelToolbar) { +props.title } }
                             }
                         },

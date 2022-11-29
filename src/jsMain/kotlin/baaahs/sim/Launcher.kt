@@ -16,7 +16,7 @@ object Launcher {
         console.log("Launch $name", this)
 
         val containerDiv = document.createElement("div").also {
-            document.body?.appendChild(it)
+            document.body.appendChild(it)
         }
 
         val webApp = try {
@@ -36,15 +36,18 @@ object Launcher {
             }
         }
 
+        val root = createRoot(containerDiv)
         val props = jso<FakeClientDeviceProps> {
             this.name = name
             width = 1024
             height = 768
             hostedWebApp = webApp
-            onClose = { document.body?.removeChild(containerDiv) }
+            onClose = {
+                document.body.removeChild(containerDiv)
+                root.unmount()
+            }
         }
-        createRoot(containerDiv)
-            .render(createElement(FakeClientDevice, props))
+        root.render(createElement(FakeClientDevice, props))
     }
 
     private val logger = Logger<Launcher>()

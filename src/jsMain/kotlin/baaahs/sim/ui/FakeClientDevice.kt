@@ -37,12 +37,19 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
     val handleClose by mouseEventHandler(props.hostedWebApp) {
         isOpen = false
         props.hostedWebApp.onClose()
+        props.onClose()
     }
 
     val handleDragStart: (MouseEvent, DraggableData) -> Boolean by handler { e, draggableData ->
         val draggableNode = draggableData.node
         val contentNode = clientDeviceContentRef.current
         var eventNode = e.target
+
+        val classList = (eventNode as HTMLElement?)?.classes() ?: emptyList()
+        if (classList.contains(+SimulatorStyles.fakeClientDeviceIconButton))
+            return@handler false
+        if (classList.contains(+SimulatorStyles.fakeClientDeviceHomeButton))
+            return@handler false
 
         while (eventNode != null) {
             when {
@@ -79,7 +86,11 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
                         attrs.onClick = handleClose
                     }
                 }
-                div(+SimulatorStyles.fakeClientDeviceHomeButton) {}
+
+                div(+SimulatorStyles.fakeClientDeviceHomeButton) {
+                    attrs.onClick = handleClose
+                }
+
                 div(+SimulatorStyles.fakeClientDeviceContent) {
                     ref = clientDeviceContentRef
 
@@ -99,6 +110,9 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
         }
     }
 }
+
+private fun HTMLElement.classes() =
+    buildList<String> { classList.forEach { add(it) } }
 
 external interface FakeClientDeviceProps : Props {
     var name: String

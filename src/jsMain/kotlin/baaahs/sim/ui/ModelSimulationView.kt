@@ -6,9 +6,11 @@ import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
 import baaahs.visualizer.ui.visualizerPanel
 import mui.material.FormControlLabel
+import mui.material.Size
 import mui.material.Switch
 import react.*
 import react.dom.div
+import react.dom.header
 
 val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { props ->
     val visualizer = props.simulator.visualizer
@@ -23,19 +25,22 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
     }
 
     div(+SimulatorStyles.modelSimulation) {
-        div(+SimulatorStyles.vizToolbar) {
-            FormControlLabel {
-                attrs.control = Switch.create {
-                    checked = rotate
-                    onChange = onRotateChange.withTChangeEvent()
+        header { +"Simulation" }
+
+        visualizerPanel {
+            attrs.visualizer = visualizer
+
+            div(+SimulatorStyles.vizToolbar) {
+                FormControlLabel {
+                    attrs.control = Switch.create {
+                        size = Size.small
+                        checked = rotate
+                        onChange = onRotateChange.withTChangeEvent()
+                    }
+                    attrs.label = buildElement { +"Rotate" }
                 }
-                attrs.label = buildElement { +"Rotate" }
             }
         }
-    }
-
-    visualizerPanel {
-        attrs.visualizer = visualizer
     }
 }
 
