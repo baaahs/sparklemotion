@@ -11,9 +11,13 @@ import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
 import kotlinx.js.jso
 import mui.material.FormControlLabel
+import mui.material.Size
 import mui.material.Switch
 import react.*
+import react.dom.button
 import react.dom.div
+import react.dom.header
+import react.dom.onClick
 
 val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
     var isConsoleOpen by state { false }
@@ -36,40 +40,60 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
         props.simulator.pinky.isPaused = checked
     }
 
-    div {
-        div(+SimulatorStyles.statusPanelToolbar) {
-            FormControlLabel {
-                attrs.control = buildElement {
-                    Switch {
-                        attrs.checked = isConsoleOpen
-                        attrs.onChange = handleIsConsoleOpenChange.withTChangeEvent()
-                    }
-                }
-                attrs.label = "Open".asTextNode()
-            }
+    div(+SimulatorStyles.statusPanel) {
+        header { +"Pinky" }
 
+        div(+SimulatorStyles.statusPanelToolbar) {
             FormControlLabel {
                 attrs.control =  buildElement {
                     Switch {
+                        attrs.size = Size.small
                         attrs.checked = isGlslPaletteOpen
                         attrs.onChange = handleIsGlslPaletteOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label = "Show GLSL".asTextNode()
+                attrs.label = "Diagnostics".asTextNode()
             }
 
             FormControlLabel {
                 attrs.control =  buildElement {
                     Switch {
+                        attrs.size = Size.small
                         attrs.checked = props.simulator.pinky.isPaused
                         attrs.onChange = handlePauseChange
                     }
                 }
-                attrs.label = "Paused".asTextNode()
+                attrs.label = "Pause".asTextNode()
+            }
+
+            FormControlLabel {
+                attrs.control = buildElement {
+                    Switch {
+                        attrs.size = Size.small
+                        attrs.checked = isConsoleOpen
+                        attrs.onChange = handleIsConsoleOpenChange.withTChangeEvent()
+                    }
+                }
+                attrs.label = "Console".asTextNode()
             }
         }
 
-        if (isConsoleOpen) console { attrs.simulator = simulator }
+        div(+SimulatorStyles.consoleContainer) {
+            if (isConsoleOpen) console { attrs.simulator = simulator }
+        }
+
+        if (props.simulator.launchItems.isNotEmpty()) {
+            div(+SimulatorStyles.launchButtonsContainer) {
+                header { +"Launch:" }
+                props.simulator.launchItems.forEach { launchItem ->
+                    button {
+                        attrs.onClick = { launchItem.onLaunch() }
+                        +launchItem.title
+                    }
+                }
+            }
+        }
+
         if (isGlslPaletteOpen) {
             appContext.Provider {
                 attrs.value = stubAppContext
@@ -82,6 +106,8 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
         }
     }
 }
+
+data class LaunchItem(val title: String, val onLaunch: () -> Unit)
 
 external interface StatusPanelProps : Props {
     var simulator: SheepSimulator.Facade
