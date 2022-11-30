@@ -4,6 +4,7 @@ import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow
+import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import mui.system.Breakpoint
 import styled.StyleSheet
@@ -48,7 +49,8 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         userSelect = UserSelect.none
     }
 
-    val menu by css {
+    val launchButtonsContainer by css {
+        padding(.25.em)
     }
 
     val panelToolbar by css {
@@ -79,16 +81,37 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val modelSimulation by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+
+        header {
+            backgroundColor = Color("#f5a542")
+            lineHeight = 1.25.em.lh
+        }
     }
 
     val vizToolbar by css {
-        flex(0.0, 0.0, FlexBasis.auto)
-        padding = "0 16px"
-        justifyContent = JustifyContent.spaceBetween
-        display = Display.flex
+        zIndex = 10
+        position = Position.absolute
+        bottom = 0.em
+        right = 0.em
+        padding(0.px, 16.px)
     }
 
-    val statusPanelToolbar by css {}
+    val statusPanel by css {
+        display = Display.flex
+
+        header {
+            backgroundColor = Color("#f5a542")
+            lineHeight = 1.25.em.lh
+        }
+    }
+
+    val statusPanelToolbar by css {
+        padding(1.em)
+    }
+
+    val consoleContainer by css {
+        flex(1)
+    }
 
     val console by css {
         color = Color.black
@@ -202,6 +225,11 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         border = "1px solid black"
         borderRadius = 50.pct
         backgroundImage = Image("radial-gradient(#fff, #ddd)")
+        cursor = Cursor.pointer
+
+        hover {
+            backgroundImage = Image("radial-gradient(#ddd, #aaa)")
+        }
     }
     
     val fakeClientDeviceContent by css {
