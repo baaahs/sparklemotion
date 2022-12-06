@@ -3,7 +3,7 @@ package baaahs.device
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -31,8 +31,8 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelCountFeed(getVarName(id))
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelCountFeedContext(getVarName(id))
     }
 
     companion object : DataSourceBuilder<PixelCountDataSource> {
@@ -51,9 +51,9 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
     }
 }
 
-class PixelCountFeed(
+class PixelCountFeedContext(
     private val id: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext) = object : EngineFeed {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {

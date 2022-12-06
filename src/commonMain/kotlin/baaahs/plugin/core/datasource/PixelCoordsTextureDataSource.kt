@@ -3,7 +3,7 @@ package baaahs.plugin.core.datasource
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -43,8 +43,8 @@ data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : Da
         get() = ContentType.PixelCoordinatesTexture
     override fun suggestId(): String = "pixelCoordsTexture"
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        object : Feed, RefCounted by RefCounter() {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
                     override val isValid: Boolean get() = false

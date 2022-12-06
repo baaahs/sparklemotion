@@ -6,7 +6,7 @@ import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -45,8 +45,8 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
     override val contentType: ContentType
         get() = fixtureInfoContentType
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return FixtureInfoFeed(getVarName(id))
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return FixtureInfoFeedContext(getVarName(id))
     }
 
     companion object : DataSourceBuilder<FixtureInfoDataSource> {
@@ -63,9 +63,9 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
     }
 }
 
-class FixtureInfoFeed(
+class FixtureInfoFeedContext(
     private val id: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
     override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE

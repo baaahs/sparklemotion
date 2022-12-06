@@ -3,7 +3,7 @@ package baaahs.device
 import baaahs.ShowPlayer
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.data.PerPixelProgramFeed
 import baaahs.gl.glsl.GlslProgram
@@ -41,8 +41,8 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     override val dependencies: Map<String, DataSource>
         get() = mapOf("fixtureInfo" to FixtureInfoDataSource())
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelLocationFeed(getVarName(id), "ds_${id}_texture")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelLocationFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
@@ -81,10 +81,10 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
     }
 }
 
-class PixelLocationFeed(
+class PixelLocationFeedContext(
     private val id: String,
     private val textureUniformId: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
 
@@ -125,6 +125,6 @@ class PixelLocationFeed(
     }
 
     companion object {
-        private val logger = Logger<PixelLocationFeed>()
+        private val logger = Logger<PixelLocationFeedContext>()
     }
 }

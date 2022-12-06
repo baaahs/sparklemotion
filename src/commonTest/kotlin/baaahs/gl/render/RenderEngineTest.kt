@@ -256,7 +256,7 @@ class RenderEngineTest {
                     fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
                 }
             }
-            dataSource.createFeed(fakeShowPlayer, id)
+            dataSource.open(fakeShowPlayer, id)
         }
     }
 

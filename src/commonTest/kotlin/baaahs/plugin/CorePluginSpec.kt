@@ -22,7 +22,7 @@ object CorePluginSpec : Spek({
         val clock by value { FakeClock(0.0) }
         val dataSource by value { TimeDataSource() }
         val toolchain by value { RootToolchain(testPlugins(clock) ) }
-        val feed by value { dataSource.createFeed(FakeShowPlayer(toolchain = toolchain), "time") }
+        val feed by value { dataSource.open(FakeShowPlayer(toolchain = toolchain), "time") }
         val gl by value { FakeGlContext() }
         val glFeed by value { feed.bind(gl) }
         val program by value {

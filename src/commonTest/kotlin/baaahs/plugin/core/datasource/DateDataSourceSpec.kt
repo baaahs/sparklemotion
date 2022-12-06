@@ -36,7 +36,7 @@ object DateDataSourceSpec : Spek({
                 override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.fakeKgl)
             }
 
-            dataSource.createFeed(showPlayer, "date")
+            dataSource.open(showPlayer, "date")
                 .bind(gl)
                 .bind(fakeProgram)
         }

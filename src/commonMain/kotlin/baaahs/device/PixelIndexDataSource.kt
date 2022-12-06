@@ -2,7 +2,7 @@ package baaahs.device
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.data.PerPixelProgramFeed
 import baaahs.gl.glsl.GlslProgram
@@ -35,8 +35,8 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelIndexFeed(getVarName(id), "ds_${id}_texture")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelIndexFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
@@ -72,10 +72,10 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
     }
 }
 
-class PixelIndexFeed(
+class PixelIndexFeedContext(
     private val id: String,
     private val textureUniformId: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
 
@@ -106,6 +106,6 @@ class PixelIndexFeed(
     }
 
     companion object {
-        private val logger = Logger<PixelIndexFeed>()
+        private val logger = Logger<PixelIndexFeedContext>()
     }
 }

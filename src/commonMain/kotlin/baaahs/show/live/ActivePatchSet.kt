@@ -3,7 +3,7 @@ package baaahs.show.live
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.getBang
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.patch.ProgramResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
@@ -12,7 +12,7 @@ import baaahs.show.DataSource
 data class ActivePatchSet(
     internal val activePatches: List<OpenPatch>,
     private val allDataSources: Map<String, DataSource>,
-    private val feeds: Map<DataSource, Feed>
+    private val feeds: Map<DataSource, FeedContext>
 ) {
     val dataSources by lazy {
         buildSet {

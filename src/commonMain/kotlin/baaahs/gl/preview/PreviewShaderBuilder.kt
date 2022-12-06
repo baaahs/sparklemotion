@@ -5,7 +5,7 @@ import baaahs.device.FixtureType
 import baaahs.device.PixelArrayFixtureType
 import baaahs.fixtures.*
 import baaahs.gl.Toolchain
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.*
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
@@ -105,7 +105,7 @@ class PreviewShaderBuilder(
 
     private var compileErrors: List<GlslError> = emptyList()
 
-    val feeds = mutableListOf<Feed>()
+    val feedContexts = mutableListOf<FeedContext>()
 
     private val previewShaders = PreviewShaders(toolchain)
 
@@ -199,8 +199,8 @@ class PreviewShaderBuilder(
                     mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, dataSource))
                 }
 
-                dataSource.createFeed(showPlayer, id)
-                    .also { feeds.add(it) }
+                dataSource.open(showPlayer, id)
+                    .also { feedContexts.add(it) }
             }
 
             mutableGadgets.sortBy { it.id }
@@ -224,7 +224,7 @@ class PreviewShaderBuilder(
     }
 
     fun release() {
-        feeds.forEach { feed -> feed.disuse() }
+        feedContexts.forEach { feed -> feed.disuse() }
     }
 
     fun finalize() {

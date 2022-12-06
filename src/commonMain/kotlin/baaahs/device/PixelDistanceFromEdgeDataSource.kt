@@ -3,7 +3,7 @@ package baaahs.device
 import baaahs.ShowPlayer
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.PerPixelEngineFeed
 import baaahs.gl.data.PerPixelProgramFeed
 import baaahs.gl.glsl.GlslProgram
@@ -38,8 +38,8 @@ data class PixelDistanceFromEdgeDataSource(@Transient val `_`: Boolean = true) :
     override val contentType: ContentType
         get() = ContentType.Float
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelDistanceFromEdgeFeed(getVarName(id), "ds_${id}_texture")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelDistanceFromEdgeFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
@@ -74,10 +74,10 @@ data class PixelDistanceFromEdgeDataSource(@Transient val `_`: Boolean = true) :
     }
 }
 
-class PixelDistanceFromEdgeFeed(
+class PixelDistanceFromEdgeFeedContext(
     private val id: String,
     private val textureUniformId: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
     override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
 
@@ -121,6 +121,6 @@ class PixelDistanceFromEdgeFeed(
     }
 
     companion object {
-        private val logger = Logger<PixelDistanceFromEdgeFeed>()
+        private val logger = Logger<PixelDistanceFromEdgeFeedContext>()
     }
 }

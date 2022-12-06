@@ -4,7 +4,7 @@ import baaahs.ShowPlayer
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -43,10 +43,10 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
     override val contentType: ContentType
         get() = ContentType.ModelInfo
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val sceneProvider = showPlayer.sceneProvider
 
-        return object : Feed, RefCounted by RefCounter() {
+        return object : FeedContext, RefCounted by RefCounter() {
             var center: Vector3F? = null
             var extents: Vector3F? = null
             val listener = sceneProvider.addObserver(fireImmediately = true) {
