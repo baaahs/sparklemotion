@@ -192,6 +192,8 @@ class IsfShaderAnalyzer(
             input.NAME, ContentType.Int, title = input.LABEL ?: input.NAME.englishize(),
             pluginRef = PluginRef("baaahs.Core", "Select"),
             pluginConfig = buildJsonObject {
+                input.LABELS?.let { put("labels", JsonArray(it.map { n -> JsonPrimitive(n) })) }
+                input.VALUES?.let { put("values", JsonArray(it.map { l -> JsonPrimitive(l) })) }
                 input.DEFAULT?.let { put("default", JsonPrimitive(it.toInt())) }
             }
         )
@@ -367,8 +369,8 @@ private class IsfLongInput(
     override val TYPE: String,
     override val LABEL: String? = null,
     val DEFAULT: String? = null,
-    val MIN: String? = null,
-    val MAX: String? = null
+    val LABELS: List<String>? = null,
+    val VALUES: List<Int>? = null
 ) : IsfInput()
 
 @Serializable
