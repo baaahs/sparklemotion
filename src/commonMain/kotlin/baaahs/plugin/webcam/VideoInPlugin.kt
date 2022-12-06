@@ -3,7 +3,7 @@ package baaahs.plugin.webcam
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
@@ -66,8 +66,8 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
             buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
         }
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-            return object : Feed, RefCounted by RefCounter() {
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+            return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     private val textureUnit = gl.getTextureUnit(VideoInPlugin)
                     private val texture = gl.check { createTexture() }

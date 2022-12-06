@@ -5,7 +5,7 @@ import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
@@ -50,7 +50,7 @@ data class SliderDataSource(
     override fun buildControl(): MutableControl =
         MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val clock = showPlayer.toolchain.plugins.pluginContext.clock
 //        val channel = showPlayer.useChannel<Float>(id)
         val slider = showPlayer.useGadget(this)
@@ -60,7 +60,7 @@ data class SliderDataSource(
                 createGadget()
             }
 
-        return object : Feed, RefCounted by RefCounter() {
+        return object : FeedContext, RefCounted by RefCounter() {
             val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
             val beatSource = plugin?.beatSource
 

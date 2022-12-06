@@ -1,7 +1,7 @@
 package baaahs
 
 import baaahs.gl.Toolchain
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.withCache
 import baaahs.scene.SceneProvider
@@ -26,7 +26,7 @@ interface ShowPlayer {
     fun <T : Gadget> useGadget(id: String): T = error("override me?")
     fun <T : Gadget> useGadget(dataSource: DataSource): T?
 
-    fun openFeed(id: String, dataSource: DataSource): Feed
+    fun openFeed(id: String, dataSource: DataSource): FeedContext
 
     fun releaseUnused()
 }
@@ -36,18 +36,18 @@ abstract class BaseShowPlayer(
     @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     final override val sceneProvider: SceneProvider
 ) : ShowPlayer {
-    private val feeds = mutableMapOf<DataSource, Feed>()
+    private val feeds = mutableMapOf<DataSource, FeedContext>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
 
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
     private val cachingToolchain = toolchain.withCache(this::class.simpleName ?: "BaseShowPlayer")
 
-    override fun openFeed(id: String, dataSource: DataSource): Feed {
+    override fun openFeed(id: String, dataSource: DataSource): FeedContext {
         // TODO: This is another reference to feeds, so we should .use() it... but then we'll never release them!
         // TODO: Also, it could conceivably be handed out after it's had onRelease() called. How should we handle this?
         return feeds.getOrPut(dataSource) {
-            dataSource.createFeed(this, id)
+            dataSource.open(this, id)
         }
     }
 

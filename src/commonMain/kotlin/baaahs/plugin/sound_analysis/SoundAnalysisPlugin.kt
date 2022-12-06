@@ -6,7 +6,7 @@ import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -65,8 +65,8 @@ class SoundAnalysisPlugin internal constructor(
         override val contentType: ContentType get() = soundAnalysisContentType
         override fun getType(): GlslType = soundAnalysisStruct
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-            SoundAnalysisFeed(getVarName(id), soundAnalyzer, historySize)
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+            SoundAnalysisFeedContext(getVarName(id), soundAnalyzer, historySize)
     }
 
     inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisDataSource> {
@@ -322,11 +322,11 @@ class SoundAnalysisPlugin internal constructor(
     }
 }
 
-class SoundAnalysisFeed(
+class SoundAnalysisFeedContext(
     private val varPrefix: String,
     private val soundAnalyzer: SoundAnalyzer,
     private val historySize: Int
-) : Feed, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
+) : FeedContext, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
     private var bucketCount = 0
     private var sampleBuffer = FloatArray(0)
     private var textureBuffer = FloatBuffer(sampleBuffer)
@@ -403,7 +403,7 @@ class SoundAnalysisFeed(
     }
 
     companion object {
-        private val logger = Logger<SoundAnalysisFeed>()
+        private val logger = Logger<SoundAnalysisFeedContext>()
     }
 }
 

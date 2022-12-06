@@ -4,7 +4,7 @@ import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.Toolchain
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.testToolchain
 import baaahs.gl.withCache
 import baaahs.model.ModelInfo
@@ -21,12 +21,12 @@ class FakeShowPlayer(
     override val sceneProvider: SceneProvider = SceneMonitor(ModelInfo.EmptyScene),
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
-    val feeds = mutableMapOf<DataSource, Feed>()
+    val feeds = mutableMapOf<DataSource, FeedContext>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
     private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
 
-    override fun openFeed(id: String, dataSource: DataSource): Feed =
-        feeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
+    override fun openFeed(id: String, dataSource: DataSource): FeedContext =
+        feeds.getOrPut(dataSource) { dataSource.open(this, id) }
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
         gadgets[id] = gadget

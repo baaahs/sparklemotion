@@ -6,7 +6,7 @@ import baaahs.control.ButtonGroupControl
 import baaahs.control.ColorPickerControl
 import baaahs.control.SliderControl
 import baaahs.device.PixelLocationDataSource
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
 import baaahs.gl.override
@@ -352,7 +352,7 @@ class FakeDataSource(
     override val contentType: ContentType = ContentType.Unknown
 
     override fun getType(): GlslType = TODO("not implemented")
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed = TODO("not implemented")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext = TODO("not implemented")
 
     object Builder : DataSourceBuilder<FakeDataSource> {
         override val title: String get() = TODO("not implemented")

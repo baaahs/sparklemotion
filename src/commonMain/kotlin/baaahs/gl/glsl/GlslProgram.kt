@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.geom.*
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
@@ -203,7 +203,7 @@ class GlslProgramImpl(
 }
 
 fun interface FeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): Feed?
+    fun openFeed(id: String, dataSource: DataSource): FeedContext?
 }
 
 fun interface EngineFeedResolver {

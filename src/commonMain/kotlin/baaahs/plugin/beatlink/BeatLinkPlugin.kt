@@ -5,7 +5,7 @@ import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
@@ -126,8 +126,8 @@ class BeatLinkPlugin internal constructor(
 
         override fun getType(): GlslType = GlslType.Float
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-            return object : Feed, RefCounted by RefCounter() {
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+            return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed =
                         SingleUniformFeed(glslProgram, this@BeatLinkDataSource, id) { uniform ->
@@ -146,9 +146,9 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = beatInfoContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             val varPrefix = getVarName(id)
-            return object : Feed, RefCounted by RefCounter() {
+            return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {
@@ -186,9 +186,9 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = rawBeatInfoContentType
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             val varPrefix = getVarName(id)
-            return object : Feed, RefCounted by RefCounter() {
+            return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                     override fun bind(glslProgram: GlslProgram): ProgramFeed {
                         return object : ProgramFeed {

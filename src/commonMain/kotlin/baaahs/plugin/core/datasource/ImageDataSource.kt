@@ -6,7 +6,7 @@ import baaahs.gadgets.ImagePicker
 import baaahs.gadgets.ImageRef
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
@@ -57,7 +57,7 @@ data class ImageDataSource(override val title: String) : DataSource {
         buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
     }
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val imagePicker = showPlayer.useGadget(this)
             ?: showPlayer.useGadget(id)
             ?: run {
@@ -65,7 +65,7 @@ data class ImageDataSource(override val title: String) : DataSource {
                 createGadget()
             }
 
-        return object : Feed, RefCounted by RefCounter() {
+        return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 private val textureUnit = gl.getTextureUnit(id)
                 private val texture = gl.check { createTexture() }

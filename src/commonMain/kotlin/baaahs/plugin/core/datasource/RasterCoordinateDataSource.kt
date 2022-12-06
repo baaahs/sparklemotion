@@ -3,7 +3,7 @@ package baaahs.plugin.core.datasource
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -49,8 +49,8 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
     override val contentType: ContentType
         get() = ContentType.RasterCoordinate
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        object : Feed, RefCounted by RefCounter() {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 val offsetUniformId = "ds_${id}_offset"
                 override fun bind(glslProgram: GlslProgram): ProgramFeed =

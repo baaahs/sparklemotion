@@ -3,7 +3,7 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -84,7 +84,7 @@ interface DataSource {
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
-    fun createFeed(showPlayer: ShowPlayer, id: String): Feed
+    fun open(showPlayer: ShowPlayer, id: String): FeedContext
 
     fun link(varName: String) = OpenPatch.DataSourceLink(this, varName, emptyMap())
 

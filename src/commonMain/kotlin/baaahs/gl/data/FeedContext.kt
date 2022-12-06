@@ -8,7 +8,7 @@ import baaahs.glsl.Uniform
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 
-interface Feed : RefCounted {
+interface FeedContext : RefCounted {
     fun bind(gl: GlContext): EngineFeed
     fun release() = Unit
 }
@@ -47,7 +47,7 @@ interface ProgramFeed {
 
     /**
      * Only release any resources specifically allocated by this Binding, not by
-     * its parent [Feed].
+     * its parent [FeedContext].
      */
     fun release() {}
 }

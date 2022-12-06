@@ -3,7 +3,7 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -25,10 +25,10 @@ data class UnknownDataSource(
 
     override fun getType(): GlslType = GlslType.Void
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        UnknownFeed()
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        UnknownFeedContext()
 
-    class UnknownFeed : Feed, RefCounted by RefCounter() {
+    class UnknownFeedContext : FeedContext, RefCounted by RefCounter() {
         override fun bind(gl: GlContext): EngineFeed = UnknownEngineFeed()
     }
 

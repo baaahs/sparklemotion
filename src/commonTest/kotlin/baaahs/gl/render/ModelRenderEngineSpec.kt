@@ -77,7 +77,7 @@ object ModelRenderEngineSpec : Spek({
                 ProgramLinker(rootNode).buildLinkedProgram()
             }
             val program by value {
-                renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.createFeed(FakeShowPlayer(), id) }
+                renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.open(FakeShowPlayer(), id) }
             }
             val initialProgram by value<Array<GlslProgram?>> { arrayOf(program) } // Array is a workaround for a bug in by value.
             val fakeGlProgram by value { gl.programs.only("program") }

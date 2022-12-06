@@ -3,7 +3,7 @@ package baaahs.plugin.core.datasource
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
@@ -57,8 +57,8 @@ data class DateDataSource(
     override val contentType: ContentType
         get() = ContentType.Date
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        object : Feed, RefCounted by RefCounter() {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock

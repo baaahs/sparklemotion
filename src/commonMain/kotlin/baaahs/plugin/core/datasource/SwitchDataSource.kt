@@ -6,7 +6,7 @@ import baaahs.control.MutableButtonControl
 import baaahs.gadgets.Switch
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeed
 import baaahs.gl.data.SingleUniformFeed
 import baaahs.gl.glsl.GlslProgram
@@ -50,7 +50,7 @@ data class SwitchDataSource(
         return MutableButtonControl(createGadget(), MutableShow("Temp Show"), this)
     }
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val switch = showPlayer.useGadget(this)
             ?: showPlayer.useGadget(id)
             ?: run {
@@ -58,7 +58,7 @@ data class SwitchDataSource(
                 Switch(buttonTitle, initiallyEnabled)
             }
 
-        return object : Feed, RefCounted by RefCounter() {
+        return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeed {
                     return SingleUniformFeed(glslProgram, this@SwitchDataSource, id) { uniform ->

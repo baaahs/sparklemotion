@@ -2,7 +2,7 @@ package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
 import baaahs.gadgets.RadioButtonStrip
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -23,7 +23,7 @@ data class RadioButtonStripDataSource(
     val options: List<String>,
     val initialSelectionIndex: Int
 ) : DataSource {
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         TODO("not implemented")
     }
 
