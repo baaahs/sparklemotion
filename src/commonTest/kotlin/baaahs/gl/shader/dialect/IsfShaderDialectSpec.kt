@@ -3,17 +3,21 @@ package baaahs.gl.shader.dialect
 import baaahs.app.ui.editor.stringify
 import baaahs.describe
 import baaahs.device.PixelArrayDevice
-import baaahs.gl.*
+import baaahs.gl.autoWire
+import baaahs.gl.autoWireWithDefaults
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslError
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.shader.ShaderSubstitutions
+import baaahs.gl.testToolchain
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.plugin.core.feed.SelectFeed
 import baaahs.show.live.LinkedPatch
 import baaahs.toBeSpecified
 import baaahs.toEqual
@@ -22,6 +26,8 @@ import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import org.spekframework.spek2.Spek
@@ -43,7 +49,7 @@ object IsfShaderDialectSpec : Spek({
             override(src) {
                 """
                     /*{
-                        "DESCRIPTION": "Demonstrates a float input",
+                        "DESCRIPTION": "Demonstrates a float and long input",
                         "CREDIT": "by VIDVOX",
                         "ISFVSN": "2.0",
                         "CATEGORIES": [
@@ -53,16 +59,29 @@ object IsfShaderDialectSpec : Spek({
                             {
                                 "NAME": "level",
                                 "TYPE": "float",
-                                "LABEL": "Gray Level",
+                                "LABEL": "Color Level",
                                 "DEFAULT": 0.5,
                                 "MIN": 0.0,
                                 "MAX": 1.0
-                            }
+                            },
+                            {
+                                "DEFAULT": 1,
+                                "LABEL": "Color Channel",
+                                "LABELS": [ "Red", "Green", "Blue" ],
+                                "NAME": "channel",
+                                "TYPE": "long",
+                                "VALUES": [ 1, 2, 3 ]
+                            },
                         ]
                     }*/
     
                     void main() {
-                        gl_FragColor = vec4(level,level,level,1.0);
+                        gl_FragColor = vec4(
+                            channel == 1 ? level : 0.,
+                            channel == 2 ? level : 0.,
+                            channel == 3 ? level : 0.,
+                            1.0
+                        );
                     }
                 """.trimIndent()
             }
@@ -81,13 +100,28 @@ object IsfShaderDialectSpec : Spek({
                         "level", ContentType.Float, GlslType.Float, "Gray Level",
                         pluginRef = PluginRef("baaahs.Core", "Slider"),
                         pluginConfig = buildJsonObject {
-                            put("min", JsonPrimitive(0f))
-                            put("max", JsonPrimitive(1f))
-                            put("default", JsonPrimitive(.5f))
+                            put("min", 0f.json)
+                            put("max", 1f.json)
+                            put("default", .5f.json)
+                        },
+                        isImplicit = true
+                    ),
+                    InputPort(
+                        "channel", ContentType.Int, GlslType.Int, "Channel",
+                        pluginRef = PluginRef("baaahs.Core", "Select"),
+                        pluginConfig = buildJsonObject {
+                            put("labels", listOf("Red".json, "Green".json, "Blue".json).json)
+                            put("values", listOf(1.json, 2.json, 3.json).json)
+                            put("default", 1.json)
                         },
                         isImplicit = true
                     )
                 )
+            }
+
+            it("generates correct data sources") {
+                expect(SelectFeed.build(openShader.inputPorts[1]))
+                    .toEqual(SelectFeed("Channel", emptyList(), 0))
             }
 
             it("finds the output port") {
@@ -397,3 +431,10 @@ object IsfShaderDialectSpec : Spek({
         }
     }
 })
+
+private val Boolean.json get() = JsonPrimitive(this)
+private val Int.json get() = JsonPrimitive(this)
+private val Float.json get() = JsonPrimitive(this)
+private val String.json get() = JsonPrimitive(this)
+private val Array<JsonElement>.json get() = JsonArray(this.toList())
+private val List<JsonElement>.json get() = JsonArray(this)

@@ -8,10 +8,10 @@ import kotlin.js.JsName
 import kotlin.random.Random
 
 @Serializable
-@SerialName("baaahs.Core:RadioButtonStrip")
-data class RadioButtonStrip(
+@SerialName("baaahs.Core:Select")
+data class Select(
     override val title: String,
-    val buttonTitles: List<String>,
+    val buttonTitles: List<Pair<Int, String>>,
     val initialSelectionIndex: Int
 ) : Gadget() {
     @JsName("selectionIndex")
