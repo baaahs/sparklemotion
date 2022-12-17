@@ -37,17 +37,17 @@ data class SliderControl(
     /** The step value for the slider. */
     val stepValue: Float? = null,
 
-    override val controlledDataSourceId: String
+    override val controlledFeedId: String
 ) : Control {
     override fun createMutable(mutableShow: MutableShow): MutableSliderControl {
         return MutableSliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            mutableShow.findFeed(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledFeedId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledFeed = openContext.getFeed(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledFeedId)
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
         showPlayer.registerGadget(id, slider, controlledFeed)
         return OpenSliderControl(id, slider, controlledFeed)

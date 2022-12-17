@@ -24,17 +24,17 @@ data class ImagePickerControl(
     /** The name for this imagePicker. */
     override val title: String,
 
-    override val controlledDataSourceId: String
+    override val controlledFeedId: String
 ) : Control {
     override fun createMutable(mutableShow: MutableShow): MutableImagePickerControl {
         return MutableImagePickerControl(
             title,
-            mutableShow.findFeed(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledFeedId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledFeed = openContext.getFeed(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledFeedId)
         val imagePicker = ImagePicker(title)
         showPlayer.registerGadget(id, imagePicker, controlledFeed)
         return OpenImagePickerControl(id, imagePicker, controlledFeed)

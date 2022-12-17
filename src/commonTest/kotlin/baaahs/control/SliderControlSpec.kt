@@ -8,7 +8,7 @@ object SliderControlSpec : Spek({
     describe<SliderControl> {
         val slider by value { Slider("Brightness", 1f) }
         val feedId by value { "brightnezz" }
-        val sliderControl by value { SliderControl("Brightness", controlledDataSourceId = feedId) }
+        val sliderControl by value { SliderControl("Brightness", controlledFeedId = feedId) }
 
 //        it("allocates a Float channel") {
 //            val channel = sliderControl.allocateChannel("brightness")

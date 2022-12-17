@@ -23,7 +23,7 @@ data class ButtonControl(
     override val eventBindings: List<EventBinding> = emptyList(),
     @Deprecated("Only used for legacy layout.")
     override val controlLayout: Map<String, List<String>> = emptyMap(),
-    override val controlledDataSourceId: String? = null
+    override val controlledFeedId: String? = null
 ) : PatchHolder, Control {
 
     enum class ActivationType {
@@ -36,12 +36,12 @@ data class ButtonControl(
     override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(
             this, mutableShow,
-            controlledDataSourceId?.let { mutableShow.findFeed(it) }?.feed
+            controlledFeedId?.let { mutableShow.findFeed(it) }?.feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonControl {
-        val controlledFeed = controlledDataSourceId?.let { openContext.getFeed(it) }
+        val controlledFeed = controlledFeedId?.let { openContext.getFeed(it) }
         return OpenButtonControl(id, this, openContext, controlledFeed)
             .also { showPlayer.registerGadget(id, it.switch, controlledFeed) }
     }
@@ -51,7 +51,7 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow,
     var controlledFeed: Feed? =
-        baseButtonControl.controlledDataSourceId?.let { mutableShow.findFeed(it) }?.feed
+        baseButtonControl.controlledFeedId?.let { mutableShow.findFeed(it) }?.feed
 ) : MutablePatchHolder(baseButtonControl), MutableControl {
     var activationType: ButtonControl.ActivationType = baseButtonControl.activationType
 
@@ -68,7 +68,7 @@ class MutableButtonControl(
             patchIds = patches.map { showBuilder.idFor(it.build(showBuilder)) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
-            controlledDataSourceId = controlledFeed?.let { showBuilder.idFor(it) }
+            controlledFeedId = controlledFeed?.let { showBuilder.idFor(it) }
         )
     }
 
@@ -87,7 +87,7 @@ class OpenButtonControl(
     override val id: String,
     private val buttonControl: ButtonControl,
     openContext: OpenContext,
-    val controlledFeed: Feed? = buttonControl.controlledDataSourceId?.let { openContext.getFeed(it) }
+    val controlledFeed: Feed? = buttonControl.controlledFeedId?.let { openContext.getFeed(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     val switch: Switch = Switch(buttonControl.title)
     override val gadget: Switch

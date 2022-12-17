@@ -84,13 +84,13 @@ object ShowSerializationSpec : Spek({
                         put("type", "some.plugin:Fake")
                         put("whateverValue", "foo")
                     })
-                }) { showJson.jsonObject["dataSources"]!! }
+                }) { showJson.jsonObject["feed"]!! }
             }
 
             context("when the plugin is unknown") {
                 it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val feed = show.dataSources["somePluginFeed"]!!
+                    val feed = show.feeds["somePluginFeed"]!!
                     expect(feed).toEqual(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
@@ -117,7 +117,7 @@ object ShowSerializationSpec : Spek({
 
                 it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val feed = show.dataSources["somePluginFeed"]!!
+                    val feed = show.feeds["somePluginFeed"]!!
                     expect(feed).toEqual(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
@@ -183,7 +183,7 @@ private fun forJson(show: Show): JsonObject {
         put("shaders", show.shaders.jsonMap { jsonFor(it) })
         put("patches", show.patches.jsonMap { jsonFor(it) })
         put("controls", show.controls.jsonMap { jsonFor(it) })
-        put("dataSources", show.dataSources.jsonMap { jsonFor(it) })
+        put("feeds", show.feeds.jsonMap { jsonFor(it) })
     }
 }
 
@@ -205,7 +205,7 @@ fun jsonFor(control: Control): JsonElement {
             put("title", control.title)
             put("activationType", control.activationType.name)
             addPatchHolder(control)
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         is ButtonGroupControl -> buildJsonObject {
             put("type", "baaahs.Core:ButtonGroup")
@@ -219,7 +219,7 @@ fun jsonFor(control: Control): JsonElement {
             put("type", "baaahs.Core:ColorPicker")
             put("title", control.title)
             put("initialValue", control.initialValue.toInt())
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         is SliderControl -> buildJsonObject {
             put("type", "baaahs.Core:Slider")
@@ -228,7 +228,7 @@ fun jsonFor(control: Control): JsonElement {
             put("minValue", control.minValue)
             put("maxValue", control.maxValue)
             put("stepValue", control.stepValue)
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         else -> buildJsonObject { put("type", "unknown") }
     }
@@ -298,8 +298,8 @@ fun jsonFor(feed: Feed): JsonElement {
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
         is FeedRef -> buildJsonObject {
-            put("type", "datasource")
-            put("dataSourceId", portRef.dataSourceId)
+            put("type", "feed")
+            put("feedId", portRef.feedId)
         }
         is StreamRef -> buildJsonObject {
             put("type", "stream")

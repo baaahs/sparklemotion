@@ -33,7 +33,7 @@ data class Show(
     val shaders: Map<String, Shader> = emptyMap(),
     val patches: Map<String, Patch> = emptyMap(),
     val controls: Map<String, Control> = emptyMap(),
-    val dataSources: Map<String, Feed> = emptyMap()
+    val feeds: Map<String, Feed> = emptyMap()
 ) : PatchHolder, Editable {
     init {
         validatePatchHolder()
@@ -44,8 +44,8 @@ data class Show(
     }
 
     fun findImplicitControls(): Map<String, Control> = buildMap {
-        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, dataSources)
-        dataSources
+        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, feeds)
+        feeds
             .map { (_, dataSource) ->
                 dataSource.buildControl()?.let { mutableControl ->
                     val control = mutableControl.buildControl(implicitControlsShowBuilder)
@@ -57,7 +57,7 @@ data class Show(
 
     fun getControl(id: String): Control = controls.getBang(id, "control")
 
-    fun getDataSource(id: String): Feed = dataSources.getBang(id, "feed")
+    fun getFeed(id: String): Feed = feeds.getBang(id, "feed")
 
     fun getShader(id: String): Shader = shaders.getBang(id, "shader")
 
