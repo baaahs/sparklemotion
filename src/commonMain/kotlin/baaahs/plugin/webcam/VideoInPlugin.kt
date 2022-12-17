@@ -2,9 +2,9 @@ package baaahs.plugin.webcam
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -68,11 +68,11 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
         override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                     private val textureUnit = gl.getTextureUnit(VideoInPlugin)
                     private val texture = gl.check { createTexture() }
 
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
                         val textureId = "ds_${getVarName(id)}_texture"
                         val videoUniform = glslProgram.getUniform(textureId)
                         override val isValid: Boolean

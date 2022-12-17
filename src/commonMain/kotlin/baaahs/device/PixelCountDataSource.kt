@@ -2,9 +2,9 @@ package baaahs.device
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -55,8 +55,8 @@ class PixelCountFeedContext(
     private val id: String
 ) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext) = object : EngineFeed {
-        override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
+    override fun bind(gl: GlContext) = object : EngineFeedContext {
+        override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
             private val uniform = glslProgram.getUniform(id)
 
             override val updateMode: UpdateMode

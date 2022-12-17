@@ -1,7 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
@@ -13,12 +13,12 @@ import baaahs.timeSync
 import kotlin.math.roundToInt
 
 abstract class RenderEngine(val gl: GlContext) {
-    internal val engineFeeds = mutableMapOf<FeedContext, EngineFeed>()
+    internal val engineFeedContexts = mutableMapOf<FeedContext, EngineFeedContext>()
 
     val stats = Stats()
 
-    private fun cachedEngineFeed(feedContext: FeedContext): EngineFeed {
-        return engineFeeds.getOrPut(feedContext) { bindFeed(feedContext) }
+    private fun cachedEngineFeed(feedContext: FeedContext): EngineFeedContext {
+        return engineFeedContexts.getOrPut(feedContext) { bindFeed(feedContext) }
     }
 
     open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
@@ -28,10 +28,10 @@ abstract class RenderEngine(val gl: GlContext) {
         }
     }
 
-    private fun bindFeed(feedContext: FeedContext): EngineFeed =
+    private fun bindFeed(feedContext: FeedContext): EngineFeedContext =
         feedContext.bind(gl).also { engineFeed -> onBind(engineFeed) }
 
-    abstract fun onBind(engineFeed: EngineFeed)
+    abstract fun onBind(engineFeedContext: EngineFeedContext)
 
     fun draw() {
         gl.runInContext {
@@ -72,7 +72,7 @@ abstract class RenderEngine(val gl: GlContext) {
     fun release() {
         gl.runInContext {
             onRelease()
-            engineFeeds.forEach { (feed, engineFeed) ->
+            engineFeedContexts.forEach { (feed, engineFeed) ->
                 engineFeed.release()
                 feed.release()
             }

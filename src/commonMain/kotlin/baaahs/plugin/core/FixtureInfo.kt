@@ -5,9 +5,9 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -66,8 +66,8 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
 class FixtureInfoFeedContext(
     private val id: String
 ) : FeedContext, RefCounted by RefCounter() {
-    override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-        override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
+    override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+        override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 
             private val positionUniform = glslProgram.getUniform("$id.position")

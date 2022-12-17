@@ -3,9 +3,9 @@ package baaahs.plugin.core.datasource
 import baaahs.ShowPlayer
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -57,9 +57,9 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
 
             private val varPrefix = getVarName(id)
 
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return object : ProgramFeed {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                    return object : ProgramFeedContext {
                         override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
                         val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")

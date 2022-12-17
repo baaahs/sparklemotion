@@ -4,10 +4,10 @@ import baaahs.PubSub
 import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
-import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.data.ProgramFeedContext
+import baaahs.gl.data.SingleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -128,9 +128,9 @@ class BeatLinkPlugin internal constructor(
 
         override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                        SingleUniformFeed(glslProgram, this@BeatLinkDataSource, id) { uniform ->
+                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
+                        SingleUniformFeedContext(glslProgram, this@BeatLinkDataSource, id) { uniform ->
                             uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
                         }
                 }
@@ -149,9 +149,9 @@ class BeatLinkPlugin internal constructor(
         override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        return object : ProgramFeed {
+                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                        return object : ProgramFeedContext {
                             val beatUniform = glslProgram.getUniform("${varPrefix}.beat")
                             val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
                             val intensityUniform = glslProgram.getUniform("${varPrefix}.intensity")
@@ -189,9 +189,9 @@ class BeatLinkPlugin internal constructor(
         override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                        return object : ProgramFeed {
+                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                        return object : ProgramFeedContext {
                             val measureStartTime = glslProgram.getUniform("${varPrefix}.measureStartTime")
                             val beatIntervalMsUniform = glslProgram.getUniform("${varPrefix}.beatIntervalMs")
                             val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
