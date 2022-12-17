@@ -1,18 +1,18 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
- * This data source provides `gl_FragColor` for quad previews.
+ * This feed provides `gl_FragColor` for quad previews.
  *
  * Because `gl_FragColor` is always given as absolute pixels relative to the bottom-left
  * of the screen/canvas, _not_ relative to the the viewport, and we might be rendering
@@ -29,8 +29,8 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 @SerialName("baaahs.Core:RasterCoordinate")
-data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<RasterCoordinateDataSource> {
+data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : FeedBuilder<RasterCoordinateFeed> {
         override val title: String get() = "Raster Coordinate"
         override val description: String get() = "Internal use only."
         override val resourceName: String get() = "RasterCoordinate"
@@ -39,8 +39,8 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
         override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
-        override fun build(inputPort: InputPort): RasterCoordinateDataSource =
-            RasterCoordinateDataSource()
+        override fun build(inputPort: InputPort): RasterCoordinateFeed =
+            RasterCoordinateFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id
@@ -49,12 +49,12 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
     override val contentType: ContentType
         get() = ContentType.RasterCoordinate
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        object : Feed, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        object : FeedContext, RefCounted by RefCounter() {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 val offsetUniformId = "ds_${id}_offset"
-                override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    object : ProgramFeed {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
+                    object : ProgramFeedContext {
                         private val uniform = glslProgram.getUniform(offsetUniformId)
                         override val isValid: Boolean = uniform != null
 

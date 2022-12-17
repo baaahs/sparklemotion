@@ -12,7 +12,7 @@ import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
-import baaahs.plugin.core.datasource.ColorPickerDataSource
+import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
 import baaahs.show.*
@@ -149,8 +149,8 @@ object StageManagerSpec : Spek({
 
                     override(addControls) {
                         {
-                            val colorPickerDataSource = ColorPickerDataSource("Color", Color.WHITE)
-                            mutableShow.addControl(panel, colorPickerDataSource.buildControl())
+                            val colorPickerFeed = ColorPickerFeed("Color", Color.WHITE)
+                            mutableShow.addControl(panel, colorPickerFeed.buildControl())
                         }
                     }
 

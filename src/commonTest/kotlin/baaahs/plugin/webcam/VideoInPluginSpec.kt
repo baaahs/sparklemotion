@@ -69,7 +69,7 @@ object VideoInPluginSpec : Spek({
 
                     layout(location = 0) out vec4 sm_result;
 
-                    // Data source: Video In
+                    // Feed: Video In
                     uniform sampler2D ds_in_videoIn_texture;
 
                     // Shader: video; namespace: p0

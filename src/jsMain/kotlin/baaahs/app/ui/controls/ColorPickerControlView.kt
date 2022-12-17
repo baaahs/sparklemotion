@@ -22,7 +22,7 @@ private val ColorPickerControlView = xComponent<ColorPickerControlProps>("ColorP
             attrs.gadget = colorPickerControl.colorPicker
         }
 
-        div(+controlsStyles.dataSourceTitle) { +colorPickerControl.colorPicker.title }
+        div(+controlsStyles.feedTitle) { +colorPickerControl.colorPicker.title }
     }
 }
 

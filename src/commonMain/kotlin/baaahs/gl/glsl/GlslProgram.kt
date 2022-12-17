@@ -2,14 +2,14 @@ package baaahs.gl.glsl
 
 import baaahs.geom.*
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.glsl.UniformImpl
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
@@ -51,21 +51,21 @@ class GlslProgramImpl(
     val id = gl.compile(vertexShader, fragShader)
 
     internal val openFeeds = gl.runInContext {
-        linkedProgram.dataSourceLinks.mapNotNull { (dataSource, id) ->
-            val engineFeed = engineFeedResolver.openFeed(id, dataSource)
+        linkedProgram.feedLinks.mapNotNull { (feed, id) ->
+            val engineFeed = engineFeedResolver.openFeed(id, feed)
 
             if (engineFeed != null) {
                 val spy = if (enableUniformSpying) GlslProgramSpy(this) else null
                 val programFeed = engineFeed.bind(spy ?: this)
                 if (programFeed.isValid) {
-                    OpenFeed(dataSource, id, programFeed, spy)
+                    OpenFeed(feed, id, programFeed, spy)
                 } else {
-                    logger.debug { "Invalid feed for $dataSource $id: $programFeed" }
+                    logger.debug { "Invalid feed for $feed $id: $programFeed" }
                     programFeed.release()
                     null
                 }
             } else {
-                logger.warn { "No feed bound for $dataSource $id." }
+                logger.warn { "No feed bound for $feed $id." }
                 null
             }
         }
@@ -97,14 +97,14 @@ class GlslProgramImpl(
     }
 
     class OpenFeed(
-        val dataSource: DataSource,
+        val feed: Feed,
         val id: String,
-        val programFeed: ProgramFeed,
+        val programFeedContext: ProgramFeedContext,
         val glslProgramSpy: GlslProgramSpy?
     ) {
-        val updateMode get() = programFeed.updateMode
+        val updateMode get() = programFeedContext.updateMode
 
-        fun release() = programFeed.release()
+        fun release() = programFeedContext.release()
     }
 
     private val vertexShader_resolution by lazy { getUniform("vertexShader_resolution") }
@@ -113,7 +113,7 @@ class GlslProgramImpl(
         gl.runInContext {
             openFeeds.forEach { feed ->
                 if (feed.updateMode == UpdateMode.ONCE)
-                    feed.programFeed.setOnProgram()
+                    feed.programFeedContext.setOnProgram()
             }
         }
     }
@@ -127,7 +127,7 @@ class GlslProgramImpl(
     }
 
     private inline fun <reified T> feedsOf(): List<T> =
-        openFeeds.map { it.programFeed }.filterIsInstance<T>()
+        openFeeds.map { it.programFeedContext }.filterIsInstance<T>()
 
     override fun setResolution(x: Float, y: Float) {
         feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
@@ -138,12 +138,12 @@ class GlslProgramImpl(
     }
 
     override fun aboutToRenderFrame() {
-        perFrameFeeds.forEach { it.programFeed.setOnProgram() }
+        perFrameFeeds.forEach { it.programFeedContext.setOnProgram() }
     }
 
     override fun aboutToRenderFixture(renderTarget: RenderTarget) {
         perFixtureFeeds.forEach {
-            it.programFeed.setOnProgram(renderTarget)
+            it.programFeedContext.setOnProgram(renderTarget)
         }
     }
 
@@ -203,9 +203,9 @@ class GlslProgramImpl(
 }
 
 fun interface FeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): Feed?
+    fun openFeed(id: String, feed: Feed): FeedContext?
 }
 
 fun interface EngineFeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): EngineFeed?
+    fun openFeed(id: String, feed: Feed): EngineFeedContext?
 }

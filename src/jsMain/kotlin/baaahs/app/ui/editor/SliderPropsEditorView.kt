@@ -82,7 +82,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
                 attrs.onPositionChange = handlePositionChange
             }
 
-            div(+controlsStyles.dataSourceTitle) { +props.mutableSliderControl.title }
+            div(+controlsStyles.feedTitle) { +props.mutableSliderControl.title }
         }
     }
 }

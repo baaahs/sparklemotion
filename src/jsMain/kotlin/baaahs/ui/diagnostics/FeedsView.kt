@@ -43,7 +43,7 @@ private val FeedsView = xComponent<FeedsProps>("Feeds") { props ->
                     .forEach { feed ->
                         TableRow {
                             TableCell { +feed.id }
-                            TableCell { +feed.dataSource.title }
+                            TableCell { +feed.feed.title }
                             TableCell {
                                 feed.glslProgramSpy?.let {
                                     Table {

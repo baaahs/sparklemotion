@@ -5,7 +5,6 @@ import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
-import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.shader.OpenShader
 import baaahs.internalTimerClock
 import baaahs.show.*
@@ -38,10 +37,10 @@ open class ShowOpener(
     private val resolver = PatchResolver(
         openShaders,
         show.patches,
-        show.dataSources,
+        show.feeds,
         toolchain,
         object : GadgetProvider {
-            override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) =
+            override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
                 showPlayer.registerGadget(id, gadget)
 
             override fun <T : Gadget> useGadget(id: String): T =
@@ -50,16 +49,16 @@ open class ShowOpener(
     )
 
     private val allPatches = resolver.getResolvedPatches()
-    override val allPatchModDataSources: List<DataSource>
-        get() = allPatches.values.flatMap { it.patchMods.flatMap { it.dataSources } }
+    override val allPatchModFeeds: List<Feed>
+        get() = allPatches.values.flatMap { it.patchMods.flatMap { it.feeds } }
 
     override fun findControl(id: String): OpenControl? =
         if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
 
     override fun getControl(id: String): OpenControl = openControlCache[id]
 
-    override fun getDataSource(id: String): DataSource =
-        show.dataSources.getBang(id, "data source")
+    override fun getFeed(id: String): Feed =
+        show.feeds.getBang(id, "feed")
 
     override fun getPanel(id: String): Panel =
         show.layouts.panels.getBang(id, "panel")
@@ -93,6 +92,6 @@ open class ShowOpener(
 }
 
 interface GadgetProvider {
-    fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource? = null)
+    fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed? = null)
     fun <T : Gadget> useGadget(id: String): T = error("override me?")
 }

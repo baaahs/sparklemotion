@@ -5,8 +5,8 @@ import baaahs.control.ButtonControl
 import baaahs.control.ButtonGroupControl
 import baaahs.control.ColorPickerControl
 import baaahs.control.SliderControl
-import baaahs.device.PixelLocationDataSource
-import baaahs.gl.data.Feed
+import baaahs.device.PixelLocationFeed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
 import baaahs.gl.override
@@ -16,10 +16,10 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
-import baaahs.plugin.core.FixtureInfoDataSource
-import baaahs.plugin.core.datasource.*
+import baaahs.plugin.core.FixtureInfoFeed
+import baaahs.plugin.core.feed.*
 import baaahs.show.*
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
@@ -53,9 +53,9 @@ object ShowSerializationSpec : Spek({
             }
         }
 
-        context("referencing an unresolvable datasource") {
+        context("referencing an unresolvable feed") {
             val fakePluginBuilder by value {
-                FakePlugin.Builder("some.plugin", listOf(FakeDataSource.Builder))
+                FakePlugin.Builder("some.plugin", listOf(FakeFeed.Builder))
             }
             override(origShow) {
                 MutableShow("Untitled").apply {
@@ -71,7 +71,7 @@ object ShowSerializationSpec : Spek({
 
                     addButton(findPanel("controls"), "Button") {
                         addPatch(Shaders.red) {
-                            link("somePort", FakeDataSource("foo"))
+                            link("somePort", FakeFeed("foo"))
                         }
                     }
                 }.build()
@@ -80,19 +80,19 @@ object ShowSerializationSpec : Spek({
 
             it("serializes as expected") {
                 plugins.expectJson(buildJsonObject {
-                    put("somePluginDataSource", buildJsonObject {
+                    put("somePluginFeed", buildJsonObject {
                         put("type", "some.plugin:Fake")
                         put("whateverValue", "foo")
                     })
-                }) { showJson.jsonObject["dataSources"]!! }
+                }) { showJson.jsonObject["feeds"]!! }
             }
 
             context("when the plugin is unknown") {
-                it("deserializes to an UnknownDataSource") {
+                it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val dataSource = show.dataSources["somePluginDataSource"]!!
-                    expect(dataSource).toEqual(
-                        UnknownDataSource(
+                    val feed = show.feeds["somePluginFeed"]!!
+                    expect(feed).toEqual(
+                        UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
                             "Unknown plugin \"some.plugin\".",
                             ContentType.Unknown,
@@ -112,16 +112,16 @@ object ShowSerializationSpec : Spek({
                 }
             }
 
-            context("when the datasource is unknown") {
+            context("when the feed is unknown") {
                 override(plugins) { buildPlugins(FakePlugin.Builder("some.plugin")) }
 
-                it("deserializes to an UnknownDataSource") {
+                it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val dataSource = show.dataSources["somePluginDataSource"]!!
-                    expect(dataSource).toEqual(
-                        UnknownDataSource(
+                    val feed = show.feeds["somePluginFeed"]!!
+                    expect(feed).toEqual(
+                        UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
-                            "Unknown datasource \"some.plugin:Fake\".",
+                            "Unknown feed \"some.plugin:Fake\".",
                             ContentType.Unknown,
                             buildJsonObject {
                                 put("type", "some.plugin:Fake")
@@ -183,7 +183,7 @@ private fun forJson(show: Show): JsonObject {
         put("shaders", show.shaders.jsonMap { jsonFor(it) })
         put("patches", show.patches.jsonMap { jsonFor(it) })
         put("controls", show.controls.jsonMap { jsonFor(it) })
-        put("dataSources", show.dataSources.jsonMap { jsonFor(it) })
+        put("feeds", show.feeds.jsonMap { jsonFor(it) })
     }
 }
 
@@ -205,7 +205,7 @@ fun jsonFor(control: Control): JsonElement {
             put("title", control.title)
             put("activationType", control.activationType.name)
             addPatchHolder(control)
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         is ButtonGroupControl -> buildJsonObject {
             put("type", "baaahs.Core:ButtonGroup")
@@ -219,7 +219,7 @@ fun jsonFor(control: Control): JsonElement {
             put("type", "baaahs.Core:ColorPicker")
             put("title", control.title)
             put("initialValue", control.initialValue.toInt())
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         is SliderControl -> buildJsonObject {
             put("type", "baaahs.Core:Slider")
@@ -228,67 +228,67 @@ fun jsonFor(control: Control): JsonElement {
             put("minValue", control.minValue)
             put("maxValue", control.maxValue)
             put("stepValue", control.stepValue)
-            put("controlledDataSourceId", control.controlledDataSourceId)
+            put("controlledFeedId", control.controlledFeedId)
         }
         else -> buildJsonObject { put("type", "unknown") }
     }
 }
 
-fun jsonFor(dataSource: DataSource): JsonElement {
-    return when (dataSource) {
-        is SliderDataSource -> {
+fun jsonFor(feed: Feed): JsonElement {
+    return when (feed) {
+        is SliderFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Slider")
-                put("title", dataSource.sliderTitle)
-                put("initialValue", dataSource.initialValue)
-                put("minValue", dataSource.minValue)
-                put("maxValue", dataSource.maxValue)
-                put("stepValue", dataSource.stepValue)
+                put("title", feed.sliderTitle)
+                put("initialValue", feed.initialValue)
+                put("minValue", feed.minValue)
+                put("maxValue", feed.maxValue)
+                put("stepValue", feed.stepValue)
             }
         }
-        is ColorPickerDataSource -> {
+        is ColorPickerFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ColorPicker")
-                put("title", dataSource.colorPickerTitle)
-                put("initialValue", dataSource.initialValue.toInt())
+                put("title", feed.colorPickerTitle)
+                put("initialValue", feed.initialValue.toInt())
             }
         }
-        is ResolutionDataSource -> {
+        is ResolutionFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Resolution")
             }
         }
-        is TimeDataSource -> {
+        is TimeFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:Time")
             }
         }
-        is PixelCoordsTextureDataSource -> {
+        is PixelCoordsTextureFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:PixelCoordsTexture")
             }
         }
-        is PixelLocationDataSource -> {
+        is PixelLocationFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:PixelLocation")
             }
         }
-        is FixtureInfoDataSource -> {
+        is FixtureInfoFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:FixtureInfo")
             }
         }
-        is ModelInfoDataSource -> {
+        is ModelInfoFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:ModelInfo")
             }
         }
-        is RasterCoordinateDataSource -> {
+        is RasterCoordinateFeed -> {
             buildJsonObject {
                 put("type", "baaahs.Core:RasterCoordinate")
             }
         }
-        is BeatLinkPlugin.BeatLinkDataSource -> buildJsonObject {
+        is BeatLinkPlugin.BeatLinkFeed -> buildJsonObject {
             put("type", "baaahs.BeatLink:BeatLink")
         }
         else -> buildJsonObject { put("type", "unknown") }
@@ -297,9 +297,9 @@ fun jsonFor(dataSource: DataSource): JsonElement {
 
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
-        is DataSourceRef -> buildJsonObject {
-            put("type", "datasource")
-            put("dataSourceId", portRef.dataSourceId)
+        is FeedRef -> buildJsonObject {
+            put("type", "feed")
+            put("feedId", portRef.feedId)
         }
         is StreamRef -> buildJsonObject {
             put("type", "stream")
@@ -338,47 +338,47 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
 
 @Serializable
 @SerialName("some.plugin:Fake")
-class FakeDataSource(
+class FakeFeed(
     @Suppress("unused")
     val whateverValue: String
-) : DataSource {
+) : Feed {
     @Transient
     override val pluginPackage = "some.plugin"
 
     @Transient
-    override val title: String = "$pluginPackage DataSource"
+    override val title: String = "$pluginPackage Feed"
 
     @Transient
     override val contentType: ContentType = ContentType.Unknown
 
     override fun getType(): GlslType = TODO("not implemented")
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed = TODO("not implemented")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext = TODO("not implemented")
 
-    object Builder : DataSourceBuilder<FakeDataSource> {
+    object Builder : FeedBuilder<FakeFeed> {
         override val title: String get() = TODO("not implemented")
         override val description: String get() = TODO("not implemented")
         override val resourceName: String get() = "some.plugin:Fake"
         override val contentType: ContentType get() = ContentType.Unknown
-        override val serializerRegistrar: SerializerRegistrar<FakeDataSource>
+        override val serializerRegistrar: SerializerRegistrar<FakeFeed>
             get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): FakeDataSource = TODO("not implemented")
+        override fun build(inputPort: InputPort): FakeFeed = TODO("not implemented")
     }
 }
 
 class FakePlugin(
     override val packageName: String,
     override val title: String,
-    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+    override val feedBuilders: List<FeedBuilder<out Feed>> = emptyList()
 ) : OpenServerPlugin {
     class Builder(
         override val id: String,
-        private val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> = emptyList()
+        private val feedBuilders: List<FeedBuilder<out Feed>> = emptyList()
     ) : Plugin<Any> {
         override fun getArgs(parser: ArgParser): Any = Unit
 
         override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
-            FakePlugin(id, "$id Plugin", dataSourceBuilders)
+            FakePlugin(id, "$id Plugin", feedBuilders)
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
             TODO("not implemented")
@@ -403,7 +403,7 @@ object TestSampleData {
                 """.trimIndent()
                 )
             ) {
-                link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
+                link("beat", MutableFeedPort(beatLinkPlugin.beatLinkFeed))
             }
         }.getShow()
 }

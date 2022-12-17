@@ -23,11 +23,11 @@ import baaahs.util.RefCounter
 
 interface OpenContext {
     val allControls: List<OpenControl>
-    val allPatchModDataSources: List<DataSource>
+    val allPatchModFeeds: List<Feed>
 
     fun findControl(id: String): OpenControl?
     fun getControl(id: String): OpenControl
-    fun getDataSource(id: String): DataSource
+    fun getFeed(id: String): Feed
     fun getPanel(id: String): Panel
     fun getPatch(it: String): OpenPatch
     fun release()
@@ -36,13 +36,13 @@ interface OpenContext {
 object EmptyOpenContext : OpenContext {
     override val allControls: List<OpenControl> get() = emptyList()
 
-    override val allPatchModDataSources: List<DataSource> get() = emptyList()
+    override val allPatchModFeeds: List<Feed> get() = emptyList()
 
     override fun findControl(id: String): OpenControl? = null
 
     override fun getControl(id: String): OpenControl = error("not really an open context")
 
-    override fun getDataSource(id: String): DataSource = error("not really an open context")
+    override fun getFeed(id: String): Feed = error("not really an open context")
 
     override fun getPanel(id: String): Panel = error("not really an open context")
 
@@ -61,26 +61,26 @@ class OpenShow(
     val id = randomId("show")
     val layouts get() = show.layouts
     val openLayouts = show.layouts.open(openContext)
-    val allDataSources = run {
+    val allFeeds = run {
         ShowBuilder().apply {
-            val map = show.dataSources.values.associateBy { idFor(it) }.toMutableMap()
-            openContext.allPatchModDataSources.forEach { dataSource ->
-                map[idFor(dataSource)] = dataSource
+            val map = show.feeds.values.associateBy { idFor(it) }.toMutableMap()
+            openContext.allPatchModFeeds.forEach { feed ->
+                map[idFor(feed)] = feed
             }
-        }.getDataSources()
+        }.getFeeds()
     }
     val allControls: List<OpenControl> get() = openContext.allControls
-    val feeds = allDataSources.entries.associate { (id, dataSource) ->
-        val feed = showPlayer.openFeed(id, dataSource)
-        feed.use()
-        dataSource to feed
+    val feeds = allFeeds.entries.associate { (id, feed) ->
+        val feedContext = showPlayer.openFeed(id, feed)
+        feedContext.use()
+        feed to feedContext
     }
 
     val missingPlugins: Map<PluginDesc, List<String>>
         get() = run {
-            val unknownDataSources = allDataSources.values
-                .filterIsInstance<UnknownDataSource>()
-            unknownDataSources
+            val unknownFeeds = allFeeds.values
+                .filterIsInstance<UnknownFeed>()
+            unknownFeeds
                 .asSequence()
                 .map { ds -> ds.pluginRef }
                 .groupBy { it.pluginId }
@@ -134,7 +134,7 @@ class OpenShow(
 
         return ActivePatchSet(
             ActivePatchSet.sort(items),
-            allDataSources,
+            allFeeds,
             feeds
         )
     }

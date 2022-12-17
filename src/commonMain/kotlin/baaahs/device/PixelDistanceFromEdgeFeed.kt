@@ -3,9 +3,9 @@ package baaahs.device
 import baaahs.ShowPlayer
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
-import baaahs.gl.data.Feed
-import baaahs.gl.data.PerPixelEngineFeed
-import baaahs.gl.data.PerPixelProgramFeed
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.PerPixelEngineFeedContext
+import baaahs.gl.data.PerPixelProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
@@ -19,8 +19,8 @@ import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -31,15 +31,15 @@ import kotlin.math.min
 
 @Serializable
 @SerialName("baaahs.Core:PixelDistanceFromEdge")
-data class PixelDistanceFromEdgeDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class PixelDistanceFromEdgeFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Distance from Edge"
     override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType
         get() = ContentType.Float
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelDistanceFromEdgeFeed(getVarName(id), "ds_${id}_texture")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelDistanceFromEdgeFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
@@ -59,29 +59,29 @@ data class PixelDistanceFromEdgeDataSource(@Transient val `_`: Boolean = true) :
         return "${getVarName(varName)} = ds_${varName}_getPixelDistanceFromEdge(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelDistanceFromEdgeDataSource> {
+    companion object : FeedBuilder<PixelDistanceFromEdgeFeed> {
         override val title: String get() = "Pixel Distance from Edge"
         override val description: String get() = "The distance of this pixel to the nearest edge of its container."
         override val resourceName: String
             get() = "PixelDistanceFromEdge"
         override val contentType: ContentType
             get() = ContentType.Float
-        override val serializerRegistrar: SerializerRegistrar<PixelDistanceFromEdgeDataSource>
+        override val serializerRegistrar: SerializerRegistrar<PixelDistanceFromEdgeFeed>
             get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): PixelDistanceFromEdgeDataSource =
-            PixelDistanceFromEdgeDataSource()
+        override fun build(inputPort: InputPort): PixelDistanceFromEdgeFeed =
+            PixelDistanceFromEdgeFeed()
     }
 }
 
-class PixelDistanceFromEdgeFeed(
+class PixelDistanceFromEdgeFeedContext(
     private val id: String,
     private val textureUniformId: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
+    override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
 
-    inner class EngineFeed(gl: GlContext) : PerPixelEngineFeed {
+    inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         override val buffer = FloatsParamBuffer(id, 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
@@ -110,10 +110,10 @@ class PixelDistanceFromEdgeFeed(
             Unit
         }
 
-        override fun bind(glslProgram: GlslProgram) = ProgramFeed(glslProgram)
+        override fun bind(glslProgram: GlslProgram) = ProgramFeedContext(glslProgram)
 
-        inner class ProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
-            override val buffer: ParamBuffer get() = this@EngineFeed.buffer
+        inner class ProgramFeedContext(glslProgram: GlslProgram) : PerPixelProgramFeedContext(updateMode) {
+            override val buffer: ParamBuffer get() = this@EngineFeedContext.buffer
             override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
                 ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true
@@ -121,6 +121,6 @@ class PixelDistanceFromEdgeFeed(
     }
 
     companion object {
-        private val logger = Logger<PixelDistanceFromEdgeFeed>()
+        private val logger = Logger<PixelDistanceFromEdgeFeedContext>()
     }
 }

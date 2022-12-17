@@ -50,8 +50,8 @@ object BeatLinkDataFlowSpec : Spek({
             }
 
             it("flows from beat source to server feed") {
-                val serverDataSource = serverPlugins.resolveDataSource(inputPort)
-                val programFeed = serverDataSource.createFeed(FakeShowPlayer(), "beatInfo")
+                val serverFeed = serverPlugins.resolveFeed(inputPort)
+                val programFeed = serverFeed.open(FakeShowPlayer(), "beatInfo")
                     .bind(FakeGlContext())
                     .bind(fakeGlslProgram)
                 programFeed.setOnProgram()
@@ -66,8 +66,8 @@ object BeatLinkDataFlowSpec : Spek({
             }
 
             it("flows from beat source to client feed") {
-                val clientDataSource = clientPlugins.resolveDataSource(inputPort)
-                val programFeed = clientDataSource.createFeed(FakeShowPlayer(), "beatInfo")
+                val clientFeed = clientPlugins.resolveFeed(inputPort)
+                val programFeed = clientFeed.open(FakeShowPlayer(), "beatInfo")
                     .bind(FakeGlContext())
                     .bind(fakeGlslProgram)
                 programFeed.setOnProgram()

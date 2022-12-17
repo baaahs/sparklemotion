@@ -81,10 +81,10 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
             }
 
             div(+styles.controls) {
-                val incomingDataSources = selectedPatch.dataSources
+                val incomingFeeds = selectedPatch.feeds
 
                 appContext.showManager.openShow?.allControls?.forEach { control ->
-                    if (incomingDataSources.intersect(control.controlledDataSources()).isNotEmpty()) {
+                    if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
                             attrs.classes = jso { root = -Styles.controlBox }
                             with(control.getView(ControlProps({}, null, null, null))) {

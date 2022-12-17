@@ -8,9 +8,9 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
-import baaahs.plugin.core.datasource.SliderDataSource
-import baaahs.plugin.core.datasource.XyPadDataSource
-import baaahs.show.DataSource
+import baaahs.plugin.core.feed.SliderFeed
+import baaahs.plugin.core.feed.XyPadFeed
+import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.GadgetProvider
@@ -26,7 +26,7 @@ class PositionAndScalePatchMod(
     override val title: String
         get() = "Position/Scale"
 
-    private val positionDataSource = XyPadDataSource(
+    private val positionFeed = XyPadFeed(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
         Vector2F(-.75f, -.75f),
@@ -39,16 +39,16 @@ class PositionAndScalePatchMod(
         Vector2F(.75f, .75f)
     )
 
-    private val scaleDataSource = SliderDataSource(
+    private val scaleFeed = SliderFeed(
         "$patchId ${uvInputPort.id} scale",
         1f,
         .1f,
         4f
     )
-    val scaleSlider = scaleDataSource.createGadget()
+    val scaleSlider = scaleFeed.createGadget()
 
-    override val dataSources: List<DataSource>
-        get() = listOf(positionDataSource, scaleDataSource)
+    override val feeds: List<Feed>
+        get() = listOf(positionFeed, scaleFeed)
 
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forPositionAndScale(this, openPatch)
@@ -75,12 +75,12 @@ class PositionAndScalePatchMod(
                 openShader,
                 mapOf(
                     "uvIn" to link,
-                    "offset" to OpenPatch.DataSourceLink(
-                        positionDataSource, positionDataSource.suggestId(),
+                    "offset" to OpenPatch.FeedLink(
+                        positionFeed, positionFeed.suggestId(),
                         emptyMap()
                     ),
-                    "scale" to OpenPatch.DataSourceLink(
-                        scaleDataSource, scaleDataSource.suggestId(),
+                    "scale" to OpenPatch.FeedLink(
+                        scaleFeed, scaleFeed.suggestId(),
                         emptyMap()
                     )
                 ),
@@ -92,8 +92,8 @@ class PositionAndScalePatchMod(
     }
 
     override fun registerGadgets(gadgetProvider: GadgetProvider) {
-        gadgetProvider.registerGadget(positionDataSource.suggestId(), positionXyPad, positionDataSource)
-        gadgetProvider.registerGadget(scaleDataSource.suggestId(), scaleSlider, scaleDataSource)
+        gadgetProvider.registerGadget(positionFeed.suggestId(), positionXyPad, positionFeed)
+        gadgetProvider.registerGadget(scaleFeed.suggestId(), scaleSlider, scaleFeed)
     }
 
     companion object : PatchModBuilder {

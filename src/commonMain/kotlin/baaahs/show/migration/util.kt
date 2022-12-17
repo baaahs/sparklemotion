@@ -37,3 +37,20 @@ fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
 fun MutableMap<String, JsonElement>.replaceJsonObj(name: String, block: (JsonObject) -> JsonElement) {
     this[name] = block((this[name] ?: buildJsonObject { }) as JsonObject)
 }
+
+fun MutableMap<String, JsonElement>.replaceMapValues(
+    name: String,
+    block: (key: String, value: JsonElement) -> JsonElement
+) {
+    replaceJsonObj(name) { map ->
+        map.edit {
+            keys.forEach { key ->
+                replaceJsonObj(key) { value -> block(key, value) }
+            }
+        }
+    }
+}
+
+fun <T: Any> MutableMap<String, T>.rename(from: String, to: String) {
+    remove(from)?.let { put(to, it) }
+}

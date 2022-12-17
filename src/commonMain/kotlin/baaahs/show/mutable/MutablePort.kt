@@ -15,19 +15,19 @@ interface MutablePort {
     fun accept(visitor: MutableShowVisitor, log: VisitationLog)
 }
 
-data class MutableDataSourcePort(val dataSource: DataSource) : MutablePort {
-    override val title: String get() = dataSource.title
-    override val icon: Icon get() = CommonIcons.DataSource
-    override val groupName: String get() = "Data Source:"
+data class MutableFeedPort(val feed: Feed) : MutablePort {
+    override val title: String get() = feed.title
+    override val icon: Icon get() = CommonIcons.Feed
+    override val groupName: String get() = "Feed:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
-        DataSourceRef(showBuilder.idFor(dataSource))
+        FeedRef(showBuilder.idFor(feed))
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
-        if (log.dataSources.add(this)) visitor.visit(dataSource)
+        if (log.feeds.add(this)) visitor.visit(feed)
     }
 }
-fun DataSource.editor() = MutableDataSourcePort(this)
+fun Feed.editor() = MutableFeedPort(this)
 
 data class MutableStream(val id: String) : MutablePort {
     override val title: String get() = "${id.englishize()} Stream"

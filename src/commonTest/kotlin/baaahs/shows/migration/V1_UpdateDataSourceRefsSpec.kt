@@ -3,16 +3,13 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
-import baaahs.plugin.core.datasource.ModelInfoDataSource
-import baaahs.plugin.core.datasource.TimeDataSource
-import baaahs.show.Show
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified
+import baaahs.toEqual
 import baaahs.useBetterSpekReporter
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.*
 import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
@@ -24,8 +21,7 @@ object V1_UpdateDataSourceRefsSpec : Spek({
         val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<String> { toBeSpecified() }
         val fromJsonObj by value { json.parseToJsonElement(fromJson) as JsonObject }
-        val toJsonObj by value { migration.migrate(fromJsonObj) }
-        val show by value { json.decodeFromJsonElement(Show.serializer(), toJsonObj)}
+        val showJson by value { migration.migrate(fromJsonObj) }
 
         context("migration of dataSources") {
             override(fromJson) {
@@ -46,10 +42,14 @@ object V1_UpdateDataSourceRefsSpec : Spek({
                 """.trimIndent()
             }
 
-            it("fixes data source serial names") {
-                expect(show.dataSources["modelInfo"]).toBe(ModelInfoDataSource())
-                expect(show.dataSources["time"]).toBe(TimeDataSource())
+            it("fixes feed serial names") {
+                val dataSourcesJson = showJson["dataSources"]!!.jsonObject
+                expect(dataSourcesJson["modelInfo"].type).toEqual("baaahs.Core:ModelInfo")
+                expect(dataSourcesJson["time"].type).toBe("baaahs.Core:Time")
             }
         }
     }
 })
+
+val JsonElement?.type: String get() =
+    this!!.jsonObject["type"]!!.jsonPrimitive.contentOrNull!!

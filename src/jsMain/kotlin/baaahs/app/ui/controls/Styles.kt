@@ -2,7 +2,7 @@ package baaahs.app.ui.controls
 
 import baaahs.SparkleMotion
 import baaahs.app.ui.StyleConstants
-import baaahs.show.live.DataSourceOpenControl
+import baaahs.show.live.FeedOpenControl
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
@@ -212,7 +212,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 }
 
-val DataSourceOpenControl.inUseStyle get() = if (this.inUse) Styles.inUse else Styles.notInUse
+val FeedOpenControl.inUseStyle get() = if (this.inUse) Styles.inUse else Styles.notInUse
 
 class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStatic = true) {
     val static = Styles
@@ -238,7 +238,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 //        }
     }
 
-    val dataSourceTitle by css {
+    val feedTitle by css {
         fontWeight = FontWeight.w500
         display = Display.block
         position = Position.absolute

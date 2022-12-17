@@ -3,7 +3,7 @@ package baaahs.gl.param
 import baaahs.gl.GlContext
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.GlContext.Companion.GL_RGBA32F
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.result.BufferView
@@ -56,10 +56,10 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         uniform.set(textureUnit)
     }
 
-    override fun bind(glslProgram: GlslProgram): ProgramFeed {
+    override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
         val uniform = glslProgram.getUniform(id)
 
-        return object : ProgramFeed {
+        return object : ProgramFeedContext {
             override val isValid get() = uniform != null
 
             override fun setOnProgram() {

@@ -22,7 +22,7 @@ private val ImagePickerControlView = xComponent<ImagePickerControlProps>("ImageP
             attrs.gadget = imagePickerControl.imagePicker
         }
 
-        div(+controlsStyles.dataSourceTitle) { +imagePickerControl.imagePicker.title }
+        div(+controlsStyles.feedTitle) { +imagePickerControl.imagePicker.title }
     }
 }
 

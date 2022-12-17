@@ -5,7 +5,7 @@ import baaahs.device.FixtureType
 import baaahs.device.PixelArrayFixtureType
 import baaahs.fixtures.*
 import baaahs.gl.Toolchain
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.*
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
@@ -18,13 +18,13 @@ import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.Model
-import baaahs.plugin.core.datasource.RasterCoordinateDataSource
+import baaahs.plugin.core.feed.RasterCoordinateFeed
 import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
@@ -62,7 +62,7 @@ interface ShaderBuilder : IObservable {
     class GadgetPreview(
         val id: String,
         val openControl: OpenControl,
-        val controlledDataSource: DataSource?
+        val controlledFeed: Feed?
     )
 }
 
@@ -105,7 +105,7 @@ class PreviewShaderBuilder(
 
     private var compileErrors: List<GlslError> = emptyList()
 
-    val feeds = mutableListOf<Feed>()
+    val feedContexts = mutableListOf<FeedContext>()
 
     private val previewShaders = PreviewShaders(toolchain)
 
@@ -155,7 +155,7 @@ class PreviewShaderBuilder(
             val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
             val resultContentType = shaderType.previewResultContentType()
             val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
-                mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateDataSource()))
+                mapOf(ContentType.UvCoordinate to MutableFeedPort(RasterCoordinateFeed()))
             } else emptyMap()
 
             previewPatchSet = toolchain.autoWire(shaders, defaultPorts = defaultPorts)
@@ -186,21 +186,21 @@ class PreviewShaderBuilder(
         coroutineScope.launch(coroutineExceptionHandler) {
             val showPlayer = object : BaseShowPlayer(toolchain, sceneProvider) {}
 
-            compile(renderEngine) { id, dataSource ->
-                dataSource.buildControl()?.let {
+            compile(renderEngine) { id, feed ->
+                feed.buildControl()?.let {
                     // TODO: De-gnarl this mess.
                     val openControl = it.previewOpen()
                     val gadget = openControl.gadget
                     if (gadget == null) {
                         logger.warn { "No gadget for $openControl" }
                     } else {
-                        showPlayer.registerGadget(dataSource.suggestId(), gadget, dataSource)
+                        showPlayer.registerGadget(feed.suggestId(), gadget, feed)
                     }
-                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, dataSource))
+                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, feed))
                 }
 
-                dataSource.createFeed(showPlayer, id)
-                    .also { feeds.add(it) }
+                feed.open(showPlayer, id)
+                    .also { feedContexts.add(it) }
             }
 
             mutableGadgets.sortBy { it.id }
@@ -224,7 +224,7 @@ class PreviewShaderBuilder(
     }
 
     fun release() {
-        feeds.forEach { feed -> feed.disuse() }
+        feedContexts.forEach { feed -> feed.disuse() }
     }
 
     fun finalize() {

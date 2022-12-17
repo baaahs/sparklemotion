@@ -3,20 +3,20 @@ package baaahs.show
 import baaahs.ShowPlayer
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.ui.Markdown
 import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 
 
-interface DataSourceBuilder<T : DataSource> {
+interface FeedBuilder<T : Feed> {
     val title: String
     @Markdown
     val description: String
@@ -27,17 +27,17 @@ interface DataSourceBuilder<T : DataSource> {
     val serializerRegistrar: SerializerRegistrar<T>
     val internalOnly: Boolean get() = false
 
-    fun suggestDataSources(
+    fun suggestFeeds(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
         return if (looksValid(inputPort, suggestedContentTypes)) {
-            listOfNotNull(safeBuild(inputPort)).map { dataSource ->
+            listOfNotNull(safeBuild(inputPort)).map { feed ->
                 PortLinkOption(
-                    MutableDataSourcePort(dataSource),
-                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    MutableFeedPort(feed),
+                    wasPurposeBuilt = feed.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
-                    isExactContentType = dataSource.contentType == inputPort.contentType
+                    isExactContentType = feed.contentType == inputPort.contentType
                             || inputPort.contentType.isUnknown()
                 )
             }
@@ -50,27 +50,30 @@ interface DataSourceBuilder<T : DataSource> {
 
     fun build(inputPort: InputPort): T
 
-    fun safeBuild(inputPort: InputPort): DataSource? = try {
+    fun safeBuild(inputPort: InputPort): Feed? = try {
         build(inputPort)
     } catch (e: Exception) {
-        logger.error(e) { "Error building data source for $inputPort." }
+        logger.error(e) { "Error building feed for $inputPort." }
         null
     }
 
     fun funDef(varName: String): String? = null
 
     companion object {
-        private val logger = Logger<DataSourceBuilder<*>>()
+        private val logger = Logger<FeedBuilder<*>>()
     }
 }
 
-internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
+internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
     title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
+/**
+ * Descriptor of an external feed which can be used by a shader program.
+ */
 @Polymorphic
-interface DataSource {
+interface Feed {
     val pluginPackage: String
-    /** Short English name for this datasource. */
+    /** Short English name for this feed. */
     val title: String
     val isUnknown: Boolean get() = false
 
@@ -78,15 +81,15 @@ interface DataSource {
     fun isImplicit(): Boolean = false
     val contentType: ContentType
 
-    val dependencies: Map<String, DataSource>
+    val dependencies: Map<String, Feed>
         get() = emptyMap()
 
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
-    fun createFeed(showPlayer: ShowPlayer, id: String): Feed
+    fun open(showPlayer: ShowPlayer, id: String): FeedContext
 
-    fun link(varName: String) = OpenPatch.DataSourceLink(this, varName, emptyMap())
+    fun link(varName: String) = OpenPatch.FeedLink(this, varName, emptyMap())
 
     fun suggestId(): String = title.camelize()
 
@@ -112,12 +115,12 @@ interface DataSource {
 }
 
 enum class UpdateMode {
-    /** The data from this data source will never change. */
+    /** The data from this feed will never change. */
     ONCE,
 
-    /** The data from this data source may be different for each frame. */
+    /** The data from this feed may be different for each frame. */
     PER_FRAME,
 
-    /** The data from this data source may be different for each fixture. */
+    /** The data from this feed may be different for each fixture. */
     PER_FIXTURE
 }

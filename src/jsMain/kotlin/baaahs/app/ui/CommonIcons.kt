@@ -11,7 +11,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
 
     override val Fixture get() = jsIcon(Airplay)
     override val Patch get() = jsIcon(SettingsInputComponent)
-    override val DataSource: Icon get() = jsIcon(Input)
+    override val Feed: Icon get() = jsIcon(Input)
     override val Layout: Icon get() = jsIcon(Dashboard)
     override val Stream: Icon get() = jsIcon(PowerInput)
     override val Settings get() = jsIcon(mui.icons.material.Settings)

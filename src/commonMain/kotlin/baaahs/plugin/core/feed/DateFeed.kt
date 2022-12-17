@@ -1,19 +1,19 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
-import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
+import baaahs.gl.data.SingleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.soywiz.klock.DateTime
@@ -23,12 +23,12 @@ import kotlinx.serialization.json.JsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:Date")
-data class DateDataSource(
+data class DateFeed(
     val zeroBasedMonth: Boolean = false,
     val zeroBasedDay: Boolean = false
-) : DataSource {
+) : Feed {
 
-    companion object : DataSourceBuilder<DateDataSource> {
+    companion object : FeedBuilder<DateFeed> {
         const val SECONDS_PER_DAY = (24 * 60 * 60).toDouble()
 
         override val title: String get() = "Date"
@@ -44,8 +44,8 @@ data class DateDataSource(
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.contentType == contentType
 
-        override fun build(inputPort: InputPort): DateDataSource =
-            DateDataSource(
+        override fun build(inputPort: InputPort): DateFeed =
+            DateFeed(
                 inputPort.pluginConfig?.get("zeroBasedMonth") == JsonPrimitive(true),
                 inputPort.pluginConfig?.get("zeroBasedDay") == JsonPrimitive(true)
             )
@@ -57,12 +57,12 @@ data class DateDataSource(
     override val contentType: ContentType
         get() = ContentType.Date
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-        object : Feed, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        object : FeedContext, RefCounted by RefCounter() {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock
-                    return SingleUniformFeed(glslProgram, this@DateDataSource, id) { uniform ->
+                    return SingleUniformFeedContext(glslProgram, this@DateFeed, id) { uniform ->
                         val dateTime = DateTime(clock.now() * 1000)
                         uniform.set(
                             dateTime.yearInt.toFloat(),

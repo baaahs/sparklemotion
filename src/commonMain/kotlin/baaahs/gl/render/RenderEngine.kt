@@ -1,37 +1,37 @@
 package baaahs.gl.render
 
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.gl.patch.LinkedProgram
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.time
 import baaahs.timeSync
 import kotlin.math.roundToInt
 
 abstract class RenderEngine(val gl: GlContext) {
-    internal val engineFeeds = mutableMapOf<Feed, EngineFeed>()
+    internal val engineFeedContexts = mutableMapOf<FeedContext, EngineFeedContext>()
 
     val stats = Stats()
 
-    private fun cachedEngineFeed(feed: Feed): EngineFeed {
-        return engineFeeds.getOrPut(feed) { bindFeed(feed) }
+    private fun cachedEngineFeed(feedContext: FeedContext): EngineFeedContext {
+        return engineFeedContexts.getOrPut(feedContext) { bindFeed(feedContext) }
     }
 
     open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
-        return GlslProgramImpl(gl, linkedProgram) { id: String, dataSource: DataSource ->
-            val feed = feedResolver.openFeed(id, dataSource)
+        return GlslProgramImpl(gl, linkedProgram) { id: String, feed: Feed ->
+            val feed = feedResolver.openFeed(id, feed)
             feed?.let { cachedEngineFeed(it)}
         }
     }
 
-    private fun bindFeed(feed: Feed): EngineFeed =
-        feed.bind(gl).also { engineFeed -> onBind(engineFeed) }
+    private fun bindFeed(feedContext: FeedContext): EngineFeedContext =
+        feedContext.bind(gl).also { engineFeed -> onBind(engineFeed) }
 
-    abstract fun onBind(engineFeed: EngineFeed)
+    abstract fun onBind(engineFeedContext: EngineFeedContext)
 
     fun draw() {
         gl.runInContext {
@@ -72,7 +72,7 @@ abstract class RenderEngine(val gl: GlContext) {
     fun release() {
         gl.runInContext {
             onRelease()
-            engineFeeds.forEach { (feed, engineFeed) ->
+            engineFeedContexts.forEach { (feed, engineFeed) ->
                 engineFeed.release()
                 feed.release()
             }

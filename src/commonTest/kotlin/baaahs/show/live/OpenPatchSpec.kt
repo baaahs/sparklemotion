@@ -8,7 +8,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.plugin.PluginRef
 import baaahs.show.Stream
-import baaahs.show.UnknownDataSource
+import baaahs.show.UnknownFeed
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import ch.tutteli.atrium.api.fluent.en_GB.contains
@@ -75,11 +75,11 @@ object OpenPatchSpec : Spek({
                 }
             }
 
-            context("when a datasource is unknown") {
+            context("when a feed is unknown") {
                 override(links) {
                     mapOf(
-                        "someDatasource" to OpenPatch.DataSourceLink(UnknownDataSource(
-                            PluginRef("some.plugin", "SomeDataSource"),
+                        "someFeed" to OpenPatch.FeedLink(UnknownFeed(
+                            PluginRef("some.plugin", "SomeFeed"),
                             "Missing plugin.",
                             ContentType.Unknown,
                             buildJsonObject {
@@ -94,7 +94,7 @@ object OpenPatchSpec : Spek({
                     expect(instance.problems.map { it.copy(id = "") })
                         .contains(
                             Problem(
-                                "Unresolved data source for shader \"${instance.title}\".",
+                                "Unresolved feed for shader \"${instance.title}\".",
                                 "Missing plugin.",
                                 severity = Severity.WARN, id = ""
                             )

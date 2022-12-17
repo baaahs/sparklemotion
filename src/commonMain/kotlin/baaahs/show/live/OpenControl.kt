@@ -5,7 +5,7 @@ import baaahs.app.ui.editor.ControlEditIntent
 import baaahs.app.ui.editor.Editor
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Panel
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableIGridLayout
@@ -21,7 +21,7 @@ interface OpenControl {
     fun isActive(): Boolean = true
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
-    fun controlledDataSources(): Set<DataSource> = emptySet()
+    fun controlledFeeds(): Set<Feed> = emptySet()
     fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {}
     fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
@@ -31,12 +31,12 @@ interface OpenControl {
     fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
 }
 
-abstract class DataSourceOpenControl : OpenControl {
-    abstract val controlledDataSource: DataSource
+abstract class FeedOpenControl : OpenControl {
+    abstract val controlledFeed: Feed
 
     var inUse: Boolean = false
 
-    override fun controlledDataSources(): Set<DataSource> = setOf(controlledDataSource)
+    override fun controlledFeeds(): Set<Feed> = setOf(controlledFeed)
 }
 
 interface ControlContainer {

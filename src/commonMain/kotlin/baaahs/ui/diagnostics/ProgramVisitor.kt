@@ -12,7 +12,7 @@ import baaahs.show.live.OpenPatch
 abstract class ProgramVisitor {
     abstract fun visitFixtureType(fixtureType: FixtureType)
 
-    abstract fun visitDataSource(node: OpenPatch.DataSourceLink)
+    abstract fun visitFeed(node: OpenPatch.FeedLink)
 
     abstract fun visitDefault(node: DefaultValueNode)
 
@@ -39,7 +39,7 @@ abstract class ProgramVisitor {
 
     open fun visitNode(node: ProgramNode) =
         when (node) {
-            is OpenPatch.DataSourceLink -> visitDataSource(node)
+            is OpenPatch.FeedLink -> visitFeed(node)
             is DefaultValueNode -> visitDefault(node)
             is ExprNode -> visitExpr(node)
             is LinkedPatch -> visitPatchInternal(node)

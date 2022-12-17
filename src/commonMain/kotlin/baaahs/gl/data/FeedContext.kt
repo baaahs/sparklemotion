@@ -8,8 +8,11 @@ import baaahs.glsl.Uniform
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 
-interface Feed : RefCounted {
-    fun bind(gl: GlContext): EngineFeed
+/**
+ * Context for an open feed.
+ */
+interface FeedContext : RefCounted {
+    fun bind(gl: GlContext): EngineFeedContext
     fun release() = Unit
 }
 
@@ -19,8 +22,8 @@ interface Feed : RefCounted {
  * This is a good spot for allocating any resources that can be shared across instances
  * of [GlslProgram] within the context.
  */
-interface EngineFeed {
-    fun bind(glslProgram: GlslProgram): ProgramFeed
+interface EngineFeedContext {
+    fun bind(glslProgram: GlslProgram): ProgramFeedContext
 
     fun aboutToRenderFrame(renderTargets: List<RenderTarget>) = Unit
 
@@ -33,7 +36,7 @@ interface EngineFeed {
  * This is the spot for any resources that are specific to this program instance,
  * like uniform locations.
  */
-interface ProgramFeed {
+interface ProgramFeedContext {
     val isValid: Boolean get() = true
     val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
 
@@ -47,12 +50,12 @@ interface ProgramFeed {
 
     /**
      * Only release any resources specifically allocated by this Binding, not by
-     * its parent [Feed].
+     * its parent [FeedContext].
      */
     fun release() {}
 }
 
-interface PerPixelEngineFeed : EngineFeed {
+interface PerPixelEngineFeedContext : EngineFeedContext {
     val updateMode: UpdateMode get() = UpdateMode.ONCE
     val buffer: ParamBuffer
 
@@ -71,16 +74,16 @@ interface PerPixelEngineFeed : EngineFeed {
 
     fun setOnBuffer(renderTarget: RenderTarget)
 
-    override fun bind(glslProgram: GlslProgram): PerPixelProgramFeed
+    override fun bind(glslProgram: GlslProgram): PerPixelProgramFeedContext
 
     override fun release() {
         buffer.release()
     }
 }
 
-abstract class PerPixelProgramFeed(
+abstract class PerPixelProgramFeedContext(
     override val updateMode: UpdateMode
-) : ProgramFeed {
+) : ProgramFeedContext {
     abstract val buffer: ParamBuffer
     abstract val uniform: Uniform
 

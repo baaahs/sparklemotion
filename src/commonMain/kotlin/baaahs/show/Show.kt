@@ -1,4 +1,4 @@
-@file:UseContextualSerialization(DataSource::class)
+@file:UseContextualSerialization(Feed::class)
 
 package baaahs.show
 
@@ -33,7 +33,7 @@ data class Show(
     val shaders: Map<String, Shader> = emptyMap(),
     val patches: Map<String, Patch> = emptyMap(),
     val controls: Map<String, Control> = emptyMap(),
-    val dataSources: Map<String, DataSource> = emptyMap()
+    val feeds: Map<String, Feed> = emptyMap()
 ) : PatchHolder, Editable {
     init {
         validatePatchHolder()
@@ -44,10 +44,10 @@ data class Show(
     }
 
     fun findImplicitControls(): Map<String, Control> = buildMap {
-        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, dataSources)
-        dataSources
-            .map { (_, dataSource) ->
-                dataSource.buildControl()?.let { mutableControl ->
+        val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, feeds)
+        feeds
+            .map { (_, feed) ->
+                feed.buildControl()?.let { mutableControl ->
                     val control = mutableControl.buildControl(implicitControlsShowBuilder)
                     val id = implicitControlsShowBuilder.idFor(control)
                     put(id, control)
@@ -57,7 +57,7 @@ data class Show(
 
     fun getControl(id: String): Control = controls.getBang(id, "control")
 
-    fun getDataSource(id: String): DataSource = dataSources.getBang(id, "data source")
+    fun getFeed(id: String): Feed = feeds.getBang(id, "feed")
 
     fun getShader(id: String): Shader = shaders.getBang(id, "shader")
 
@@ -92,7 +92,7 @@ fun <T> List<T>.assertNoDuplicates(items: String = "items") {
 data class EventBinding(
     val inputType: String,
     val inputData: JsonElement,
-    val target: DataSourceRef
+    val target: FeedRef
 )
 
 @Serializable

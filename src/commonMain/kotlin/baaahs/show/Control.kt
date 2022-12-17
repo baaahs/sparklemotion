@@ -11,7 +11,7 @@ import baaahs.show.mutable.MutableShow
 interface Control : Editable {
     override val title: String
 
-    val controlledDataSourceId: String? get() = null
+    val controlledFeedId: String? get() = null
 
     fun suggestId(): String = title.camelize()
 

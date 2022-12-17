@@ -14,7 +14,7 @@ import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.scene.SceneChangeListener
 import baaahs.scene.SceneMonitor
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
@@ -61,9 +61,9 @@ class StageManager(
 
     private val frameListeners = mutableListOf<FrameListener>()
 
-    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
         gadgetManager.registerGadget(id, gadget)
-        super.registerGadget(id, gadget, controlledDataSource)
+        super.registerGadget(id, gadget, controlledFeed)
     }
 
     override fun <T : Gadget> useGadget(id: String): T {

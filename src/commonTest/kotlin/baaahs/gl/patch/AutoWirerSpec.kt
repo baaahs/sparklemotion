@@ -1,6 +1,6 @@
 package baaahs.gl.patch
 
-import baaahs.device.PixelLocationDataSource
+import baaahs.device.PixelLocationFeed
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
@@ -10,11 +10,11 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
-import baaahs.plugin.core.FixtureInfoDataSource
-import baaahs.plugin.core.datasource.ModelInfoDataSource
-import baaahs.plugin.core.datasource.ResolutionDataSource
-import baaahs.plugin.core.datasource.SliderDataSource
-import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.plugin.core.FixtureInfoFeed
+import baaahs.plugin.core.feed.ModelInfoFeed
+import baaahs.plugin.core.feed.ResolutionFeed
+import baaahs.plugin.core.feed.SliderFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.FakeOpenShader
@@ -80,28 +80,28 @@ object AutoWirerSpec : Spek({
                 }
             }
 
-            context("when there's a good datasource match") {
+            context("when there's a good feed match") {
                 context("e.g. for time") {
                     override(portId) { "time" }
                     override(portContentType) { ContentType.Time }
 
-                    it("suggests the data source's channel") {
-                        expect(portLink).toBe(TimeDataSource().editor())
+                    it("suggests the feed's channel") {
+                        expect(portLink).toBe(TimeFeed().editor())
                     }
 
                     // TODO: get these working?
                     context("when the output type matches", skip = Skip.Yes("Not working yet")) {
                         override(outContentType) { portContentType }
 
-                        it("suggests the data source's channel") {
-                            expect(portLink).toBe(TimeDataSource().editor())
+                        it("suggests the feed's channel") {
+                            expect(portLink).toBe(TimeFeed().editor())
                         }
 
-                        context("and the shader's channel matches the data source's channel") {
+                        context("and the shader's channel matches the feed's channel") {
                             override(stream) { Stream("time") }
 
-                            it("suggests the data source's channel") {
-                                expect(portLink).toBe(TimeDataSource().editor())
+                            it("suggests the feed's channel") {
+                                expect(portLink).toBe(TimeFeed().editor())
                             }
                         }
                     }
@@ -111,9 +111,9 @@ object AutoWirerSpec : Spek({
                     override(portId) { "brightness" }
                     override(portContentType) { ContentType.Float }
 
-                    it("suggests a Slider data source channel link") {
+                    it("suggests a Slider feed channel link") {
                         expect(portLink)
-                            .toBe(SliderDataSource("Brightness", 1f, 0f, 1f).editor())
+                            .toBe(SliderFeed("Brightness", 1f, 0f, 1f).editor())
                     }
                 }
 
@@ -121,9 +121,9 @@ object AutoWirerSpec : Spek({
 // TODO:                    override(portId) { "brightness" }
 // TODO:                    override(portContentType) { ContentType.unknown(Float) }
 //
-// TODO:                    it("suggests a Slider data source channel link") {
+// TODO:                    it("suggests a Slider feed channel link") {
 // TODO:                        expect(portLink)
-// TODO:                            .toBe(CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f).editor())
+// TODO:                            .toBe(CorePlugin.SliderFeed("Brightness", 1f, 0f, 1f).editor())
 // TODO:                    }
 // TODO:                }
             }
@@ -191,26 +191,26 @@ object AutoWirerSpec : Spek({
             val mutableLinks by value { patchSet.mutablePatches.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }
 
-            it("picks TimeDataSource for time") {
+            it("picks TimeFeed for time") {
                 expect(mutableLinks["time"])
-                    .toBe(TimeDataSource().editor())
+                    .toBe(TimeFeed().editor())
 
                 expect(links["time"])
-                    .toBe(TimeDataSource().link("time"))
+                    .toBe(TimeFeed().link("time"))
             }
 
-            it("picks ResolutionDataSource for resolution") {
+            it("picks feed for resolution") {
                 expect(mutableLinks["resolution"])
-                    .toBe(ResolutionDataSource().editor())
+                    .toBe(ResolutionFeed().editor())
 
                 expect(links["resolution"])
-                    .toBe(ResolutionDataSource().link("resolution"))
+                    .toBe(ResolutionFeed().link("resolution"))
             }
 
             it("picks a Slider for blueness") {
                 expect(links["blueness"])
                     .toBe(
-                        SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                        SliderFeed("Blueness", 1f, 0f, 1f, null)
                             .link("bluenessSlider")
                     )
             }
@@ -228,9 +228,9 @@ object AutoWirerSpec : Spek({
                     .toBe(
                         mapOf(
                             "gl_FragCoord" to DefaultValueNode(ContentType.UvCoordinate),
-                            "time" to TimeDataSource().link("time"),
-                            "resolution" to ResolutionDataSource().link("resolution"),
-                            "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                            "time" to TimeFeed().link("time"),
+                            "resolution" to ResolutionFeed().link("resolution"),
+                            "blueness" to SliderFeed("Blueness", 1f, 0f, 1f, null)
                                 .link("bluenessSlider")
                         )
                     )
@@ -257,7 +257,7 @@ object AutoWirerSpec : Spek({
                                 MutableShader(mainShader),
                                 hashMapOf(
                                     "fragCoord" to Stream.Main.editor(),
-                                    "resolution" to ResolutionDataSource().editor(),
+                                    "resolution" to ResolutionFeed().editor(),
                                 ),
                                 stream = Stream.Main.editor(),
                                 priority = 0f
@@ -294,9 +294,9 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "iTime" to TimeDataSource().editor(),
-                                    "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
-                                    "iResolution" to ResolutionDataSource().editor(),
+                                    "iTime" to TimeFeed().editor(),
+                                    "blueness" to SliderFeed("Blueness", 1f, 0f, 1f, null).editor(),
+                                    "iResolution" to ResolutionFeed().editor(),
                                     "fragCoord" to Stream.Main.editor()
                                 ),
                                 stream = Stream.Main.editor(),
@@ -312,10 +312,10 @@ object AutoWirerSpec : Spek({
                     }
                     expects(
                         mapOf(
-                            "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null)
+                            "blueness" to SliderFeed("Blueness", 1f, 0f, 1f, null)
                                 .link("bluenessSlider"),
-                            "iResolution" to ResolutionDataSource().link("resolution"),
-                            "iTime" to TimeDataSource().link("time"),
+                            "iResolution" to ResolutionFeed().link("resolution"),
+                            "iTime" to TimeFeed().link("time"),
                             "fragCoord" to DefaultValueNode(ContentType.UvCoordinate)
                         )
                     ) { rootProgramNode.incomingLinks }
@@ -334,9 +334,9 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "time" to TimeDataSource().editor(),
-                                    "resolution" to ResolutionDataSource().editor(),
-                                    "blueness" to SliderDataSource("Blueness", 1f, 0f, 1f, null).editor(),
+                                    "time" to TimeFeed().editor(),
+                                    "resolution" to ResolutionFeed().editor(),
+                                    "blueness" to SliderFeed("Blueness", 1f, 0f, 1f, null).editor(),
                                     "gl_FragCoord" to Stream.Main.editor()
                                 ),
                                 stream = Stream.Main.editor()
@@ -344,8 +344,8 @@ object AutoWirerSpec : Spek({
                             uvPatch.apply {
                                 incomingLinks.putAll(
                                     mapOf(
-                                        "modelInfo" to ModelInfoDataSource().editor(),
-                                        "pixelLocation" to PixelLocationDataSource().editor()
+                                        "modelInfo" to ModelInfoFeed().editor(),
+                                        "pixelLocation" to PixelLocationFeed().editor()
                                     )
                                 )
                                 stream = Stream.Main.editor()
@@ -378,7 +378,7 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(filterShader),
                                 hashMapOf(
-                                    "brightness" to SliderDataSource("Brightness", 1f, 0f, 1f, null)
+                                    "brightness" to SliderFeed("Brightness", 1f, 0f, 1f, null)
                                         .editor(),
                                     "colorIn" to Stream.Main.editor()
                                 ),
@@ -443,7 +443,7 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "fixtureInfo" to FixtureInfoDataSource().editor()
+                                    "fixtureInfo" to FixtureInfoFeed().editor()
                                 )
                             )
                         )
@@ -474,7 +474,7 @@ object AutoWirerSpec : Spek({
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
-                                    "fixtureInfo" to FixtureInfoDataSource().editor()
+                                    "fixtureInfo" to FixtureInfoFeed().editor()
                                 )
                             )
                         )

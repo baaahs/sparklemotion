@@ -32,26 +32,26 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
 
         TableHead {
             TableRow {
-                TableCell { +"Data Source" }
+                TableCell { +"Feed" }
                 TableCell { +"Description" }
                 TableCell { +"Content Type" }
             }
         }
 
         TableBody {
-            appContext.plugins.dataSourceBuilders.withPlugin
+            appContext.plugins.feedBuilders.withPlugin
                 .filterNot { (_, v) -> v.internalOnly }
                 .sortedBy { (_, v) -> v.title }
-                .forEach { (plugin, dataSourceBuilder) ->
+                .forEach { (plugin, feedBuilder) ->
                     TableRow {
-                        TableCell { +dataSourceBuilder.title }
-                        val contentType = dataSourceBuilder.contentType
+                        TableCell { +feedBuilder.title }
+                        val contentType = feedBuilder.contentType
                         TableCell {
-                            markdown { +dataSourceBuilder.description }
+                            markdown { +feedBuilder.description }
                             div(+styles.codeContainer) {
                                 pre(+styles.code) {
                                     val type = contentType.glslType
-                                    val pluginRef = PluginRef(plugin.packageName, dataSourceBuilder.resourceName)
+                                    val pluginRef = PluginRef(plugin.packageName, feedBuilder.resourceName)
 
                                     if (type is GlslType.Struct) {
                                         code { +"struct ${type.name} {\n" }
@@ -72,10 +72,10 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                         }
                                         code { +"};\n" }
                                     }
-                                    val varName = dataSourceBuilder.resourceName.replaceFirstChar { it.lowercase() }
+                                    val varName = feedBuilder.resourceName.replaceFirstChar { it.lowercase() }
 
                                     code {
-                                        val funDef = dataSourceBuilder.funDef(varName)
+                                        val funDef = feedBuilder.funDef(varName)
                                         if (funDef != null) {
                                             +funDef
                                             +" "

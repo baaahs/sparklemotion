@@ -5,9 +5,9 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -15,8 +15,8 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
 import baaahs.plugin.classSerializer
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -38,18 +38,18 @@ val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixture
 
 @Serializable
 @SerialName("baaahs.Core:FixtureInfo")
-data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Fixture Info"
     override fun getType(): GlslType = fixtureInfoStruct
     override val contentType: ContentType
         get() = fixtureInfoContentType
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return FixtureInfoFeed(getVarName(id))
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return FixtureInfoFeedContext(getVarName(id))
     }
 
-    companion object : DataSourceBuilder<FixtureInfoDataSource> {
+    companion object : FeedBuilder<FixtureInfoFeed> {
         override val title: String get() = "Fixture Info"
         override val description: String get() =
             "Information about the fixture's position and orientation in the model."
@@ -57,17 +57,17 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
         override val contentType: ContentType get() = fixtureInfoContentType
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): FixtureInfoDataSource {
-            return FixtureInfoDataSource()
+        override fun build(inputPort: InputPort): FixtureInfoFeed {
+            return FixtureInfoFeed()
         }
     }
 }
 
-class FixtureInfoFeed(
+class FixtureInfoFeedContext(
     private val id: String
-) : Feed, RefCounted by RefCounter() {
-    override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-        override fun bind(glslProgram: GlslProgram) = object : ProgramFeed {
+) : FeedContext, RefCounted by RefCounter() {
+    override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+        override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 
             private val positionUniform = glslProgram.getUniform("$id.position")
