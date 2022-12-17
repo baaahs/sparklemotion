@@ -5,10 +5,10 @@ import baaahs.ShowPlayer
 import baaahs.control.MutableColorPickerControl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
-import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.data.ProgramFeedContext
+import baaahs.gl.data.SingleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -49,9 +49,9 @@ data class ColorPickerDataSource(
             }
 
         return object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@ColorPickerDataSource, id) { uniform ->
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                    return SingleUniformFeedContext(glslProgram, this@ColorPickerDataSource, id) { uniform ->
                         val color = colorPicker.color
                         uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
                     }

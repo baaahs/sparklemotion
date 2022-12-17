@@ -2,9 +2,9 @@ package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -45,8 +45,8 @@ data class PixelCoordsTextureDataSource(@Transient val `_`: Boolean = true) : Da
 
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
                     override val isValid: Boolean get() = false
                 }
             }

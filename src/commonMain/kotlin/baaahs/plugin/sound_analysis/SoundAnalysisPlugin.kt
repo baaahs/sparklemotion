@@ -5,9 +5,9 @@ import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -357,15 +357,15 @@ class SoundAnalysisFeedContext(
         maxMagnitude = max
     }
 
-    override fun bind(gl: GlContext): EngineFeed = SoundAnalysisEngineFeed(gl)
+    override fun bind(gl: GlContext): EngineFeedContext = SoundAnalysisEngineFeedContext(gl)
 
-    inner class SoundAnalysisEngineFeed(private val gl: GlContext) : EngineFeed {
+    inner class SoundAnalysisEngineFeedContext(private val gl: GlContext) : EngineFeedContext {
         private val textureUnit = gl.getTextureUnit(SoundAnalysisPlugin)
         private val texture = gl.check { createTexture() }
 
         init { gl.checkForLinearFilteringOfFloatTextures() }
 
-        override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+        override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
             val bucketCountUniform = glslProgram.getUniform("${varPrefix}.bucketCount")
             val sampleHistoryCountUniform = glslProgram.getUniform("${varPrefix}.sampleHistoryCount")
             val bucketsUniform = glslProgram.getUniform("${varPrefix}.buckets")

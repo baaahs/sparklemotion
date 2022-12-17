@@ -5,12 +5,12 @@ import baaahs.glsl.Uniform
 import baaahs.show.DataSource
 import baaahs.util.Logger
 
-class SingleUniformFeed(
+class SingleUniformFeedContext(
     glslProgram: GlslProgram,
     dataSource: DataSource,
     val id: String,
     val setUniform: (Uniform) -> Unit
-) : ProgramFeed {
+) : ProgramFeedContext {
     private val type: Any = dataSource.getType()
     private val varName = dataSource.getVarName(id)
     private val uniformLocation = glslProgram.getUniform(varName)
@@ -26,6 +26,6 @@ class SingleUniformFeed(
     }
 
     companion object {
-        private val logger = Logger<SingleUniformFeed>()
+        private val logger = Logger<SingleUniformFeedContext>()
     }
 }

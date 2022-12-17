@@ -2,10 +2,10 @@ package baaahs.plugin.core.datasource
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
-import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.data.ProgramFeedContext
+import baaahs.gl.data.SingleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -47,9 +47,9 @@ data class ResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource
 
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    SingleUniformFeed(glslProgram, this@ResolutionDataSource, id) { uniform ->
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
+                    SingleUniformFeedContext(glslProgram, this@ResolutionDataSource, id) { uniform ->
                         uniform.set(1f, 1f)
                     }
             }

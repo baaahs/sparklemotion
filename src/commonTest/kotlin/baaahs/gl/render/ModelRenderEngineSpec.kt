@@ -53,7 +53,7 @@ object ModelRenderEngineSpec : Spek({
             context("when the engine is released") {
                 beforeEachTest { renderEngine.release() }
 
-                it("should release Feeds and EngineFeeds") {
+                it("should release FeedContexts and EngineFeedContexts") {
                     expect(fixtureDataSource.feeds.all { it.released }).toBe(true)
                     expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
                 }
@@ -84,7 +84,7 @@ object ModelRenderEngineSpec : Spek({
 
             beforeEachTest { initialProgram.run { } }
 
-            it("should bind EngineFeeds for each data source") {
+            it("should bind EngineFeedContexts for each data source") {
                 expect(fixtureDataSource.feeds.size).toBe(1)
                 expect(fixtureDataSource.engineFeeds.size).toBe(1)
                 expect(fixtureDataSource.programFeeds.size).toBe(1)
@@ -114,7 +114,7 @@ object ModelRenderEngineSpec : Spek({
             context("when the program is released") {
                 beforeEachTest { program.release() }
 
-                it("should release Feeds and EngineFeeds") {
+                it("should release FeedContexts and EngineFeedContexts") {
                     expect(fixtureDataSource.feeds.all { it.released }).toBe(false)
                     expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(false)
                     expect(fixtureDataSource.programFeeds.all { it.released }).toBe(true)
@@ -124,7 +124,7 @@ object ModelRenderEngineSpec : Spek({
             context("when the engine is released") {
                 beforeEachTest { renderEngine.release() }
 
-                it("should release EngineFeeds") {
+                it("should release EngineFeedContexts") {
                     expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
                 }
 

@@ -5,9 +5,9 @@ import baaahs.control.MutableImagePickerControl
 import baaahs.gadgets.ImagePicker
 import baaahs.gadgets.ImageRef
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -66,23 +66,23 @@ data class ImageDataSource(override val title: String) : DataSource {
             }
 
         return object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 private val textureUnit = gl.getTextureUnit(id)
                 private val texture = gl.check { createTexture() }
 
-                override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    ImageProgramFeed(glslProgram, getVarName(id), imagePicker, texture, textureUnit)
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
+                    ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, textureUnit)
             }
         }
     }
 
-    class ImageProgramFeed(
+    class ImageProgramFeedContext(
         glslProgram: GlslProgram,
         varName: String,
         private val imagePicker: ImagePicker,
         private val texture: Texture,
         private val textureUnit: GlContext.TextureUnit
-    ) : ProgramFeed {
+    ) : ProgramFeedContext {
         private val textureId = "ds_${varName}_texture"
         private val textureUniform = glslProgram.getUniform(textureId)
         override val isValid: Boolean

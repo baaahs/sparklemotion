@@ -2,9 +2,9 @@ package baaahs.gl.render
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -20,8 +20,8 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     override val contentType: ContentType get() = ContentType.Unknown
 
     val feeds = mutableListOf<TestFeedContext>()
-    val engineFeeds = mutableListOf<TestEngineFeed>()
-    val programFeeds = mutableListOf<TestProgramFeed>()
+    val engineFeeds = mutableListOf<TestEngineFeedContext>()
+    val programFeeds = mutableListOf<TestProgramFeedContext>()
 
     var counter = 0
 
@@ -30,17 +30,17 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
 
     inner class TestFeedContext(val id: String) : FeedContext, RefCounted by RefCounter() {
         var released = false
-        override fun bind(gl: GlContext): EngineFeed = TestEngineFeed().also { engineFeeds.add(it) }
+        override fun bind(gl: GlContext): EngineFeedContext = TestEngineFeedContext().also { engineFeeds.add(it) }
         override fun onRelease() { released = released.truify() }
     }
 
-    inner class TestEngineFeed : EngineFeed {
+    inner class TestEngineFeedContext : EngineFeedContext {
         var released = false
-        override fun bind(glslProgram: GlslProgram): ProgramFeed = TestProgramFeed(glslProgram).also { programFeeds.add(it) }
+        override fun bind(glslProgram: GlslProgram): ProgramFeedContext = TestProgramFeedContext(glslProgram).also { programFeeds.add(it) }
         override fun release() = run { super.release(); released = released.truify() }
     }
 
-    inner class TestProgramFeed(glslProgram: GlslProgram) : ProgramFeed {
+    inner class TestProgramFeedContext(glslProgram: GlslProgram) : ProgramFeedContext {
         override val updateMode: UpdateMode get() = this@PerFixtureDataSourceForTest.updateMode
 
         val uniform = glslProgram.getUniform("perFixtureData")

@@ -4,8 +4,8 @@ import baaahs.ShowPlayer
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.PerPixelEngineFeed
-import baaahs.gl.data.PerPixelProgramFeed
+import baaahs.gl.data.PerPixelEngineFeedContext
+import baaahs.gl.data.PerPixelProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
@@ -79,9 +79,9 @@ class PixelDistanceFromEdgeFeedContext(
     private val textureUniformId: String
 ) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
+    override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
 
-    inner class EngineFeed(gl: GlContext) : PerPixelEngineFeed {
+    inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         override val buffer = FloatsParamBuffer(id, 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
@@ -110,10 +110,10 @@ class PixelDistanceFromEdgeFeedContext(
             Unit
         }
 
-        override fun bind(glslProgram: GlslProgram) = ProgramFeed(glslProgram)
+        override fun bind(glslProgram: GlslProgram) = ProgramFeedContext(glslProgram)
 
-        inner class ProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
-            override val buffer: ParamBuffer get() = this@EngineFeed.buffer
+        inner class ProgramFeedContext(glslProgram: GlslProgram) : PerPixelProgramFeedContext(updateMode) {
+            override val buffer: ParamBuffer get() = this@EngineFeedContext.buffer
             override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
                 ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true

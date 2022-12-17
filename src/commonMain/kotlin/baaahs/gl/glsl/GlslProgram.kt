@@ -2,9 +2,9 @@ package baaahs.gl.glsl
 
 import baaahs.geom.*
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
@@ -99,12 +99,12 @@ class GlslProgramImpl(
     class OpenFeed(
         val dataSource: DataSource,
         val id: String,
-        val programFeed: ProgramFeed,
+        val programFeedContext: ProgramFeedContext,
         val glslProgramSpy: GlslProgramSpy?
     ) {
-        val updateMode get() = programFeed.updateMode
+        val updateMode get() = programFeedContext.updateMode
 
-        fun release() = programFeed.release()
+        fun release() = programFeedContext.release()
     }
 
     private val vertexShader_resolution by lazy { getUniform("vertexShader_resolution") }
@@ -113,7 +113,7 @@ class GlslProgramImpl(
         gl.runInContext {
             openFeeds.forEach { feed ->
                 if (feed.updateMode == UpdateMode.ONCE)
-                    feed.programFeed.setOnProgram()
+                    feed.programFeedContext.setOnProgram()
             }
         }
     }
@@ -127,7 +127,7 @@ class GlslProgramImpl(
     }
 
     private inline fun <reified T> feedsOf(): List<T> =
-        openFeeds.map { it.programFeed }.filterIsInstance<T>()
+        openFeeds.map { it.programFeedContext }.filterIsInstance<T>()
 
     override fun setResolution(x: Float, y: Float) {
         feedsOf<GlslProgram.ResolutionListener>().forEach { it.onResolution(x, y) }
@@ -138,12 +138,12 @@ class GlslProgramImpl(
     }
 
     override fun aboutToRenderFrame() {
-        perFrameFeeds.forEach { it.programFeed.setOnProgram() }
+        perFrameFeeds.forEach { it.programFeedContext.setOnProgram() }
     }
 
     override fun aboutToRenderFixture(renderTarget: RenderTarget) {
         perFixtureFeeds.forEach {
-            it.programFeed.setOnProgram(renderTarget)
+            it.programFeedContext.setOnProgram(renderTarget)
         }
     }
 
@@ -207,5 +207,5 @@ fun interface FeedResolver {
 }
 
 fun interface EngineFeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): EngineFeed?
+    fun openFeed(id: String, dataSource: DataSource): EngineFeedContext?
 }

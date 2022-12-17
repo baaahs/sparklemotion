@@ -1,7 +1,7 @@
 package baaahs.gl.render
 
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
+import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.glsl.GlslProgram
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
@@ -36,7 +36,7 @@ class PreviewRenderEngine(
         quad = calcQuad(height, width)
     }
 
-    override fun onBind(engineFeed: EngineFeed) {
+    override fun onBind(engineFeedContext: EngineFeedContext) {
     }
 
     override fun beforeRender() {
