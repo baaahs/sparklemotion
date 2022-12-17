@@ -66,7 +66,7 @@ object MutableShowSpec : Spek({
             }
 
             it("has the expected initial feeds") {
-                expect(show.dataSources.values.map { it.title }.toSet())
+                expect(show.feeds.values.map { it.title }.toSet())
                     .toBe(setOf("Time", "Resolution", "Blueness Slider"))
             }
         }

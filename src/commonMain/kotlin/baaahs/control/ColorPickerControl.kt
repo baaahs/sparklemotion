@@ -27,17 +27,17 @@ data class ColorPickerControl(
     /** The initial value for this color picker. */
     val initialValue: Color = Color.WHITE,
 
-    override val controlledDataSourceId: String
+    override val controlledFeedId: String
 ) : Control {
     override fun createMutable(mutableShow: MutableShow): MutableColorPickerControl {
         return MutableColorPickerControl(
             title, initialValue,
-            mutableShow.findFeed(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledFeedId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledFeed = openContext.getFeed(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledFeedId)
         val colorPicker = ColorPicker(title, initialValue)
         showPlayer.registerGadget(id, colorPicker, controlledFeed)
         return OpenColorPickerControl(id, colorPicker, controlledFeed)

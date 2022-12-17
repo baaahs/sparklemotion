@@ -47,7 +47,7 @@ class PatchResolver(
             }
             .mapValues { (_, portRef) ->
                 when (portRef) {
-                    is FeedRef -> findFeed(portRef.dataSourceId).link(portRef.dataSourceId)
+                    is FeedRef -> findFeed(portRef.feedId).link(portRef.feedId)
                     is StreamRef -> OpenPatch.StreamLink(portRef.stream)
                     is OutputPortRef -> TODO()
                     is ConstPortRef -> OpenPatch.ConstLink(portRef.glsl, GlslType.from(portRef.type))

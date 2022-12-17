@@ -37,7 +37,7 @@ open class ShowOpener(
     private val resolver = PatchResolver(
         openShaders,
         show.patches,
-        show.dataSources,
+        show.feeds,
         toolchain,
         object : GadgetProvider {
             override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
@@ -58,7 +58,7 @@ open class ShowOpener(
     override fun getControl(id: String): OpenControl = openControlCache[id]
 
     override fun getFeed(id: String): Feed =
-        show.dataSources.getBang(id, "feed")
+        show.feeds.getBang(id, "feed")
 
     override fun getPanel(id: String): Panel =
         show.layouts.panels.getBang(id, "panel")

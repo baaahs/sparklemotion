@@ -135,7 +135,7 @@ object OpenShowSpec : Spek({
                 expect(implicitSlider.slider)
                     .toEqual(Slider("Slider"))
                 expect(implicitSlider.controlledFeed)
-                    .toEqual(show.dataSources.values.only("feed"))
+                    .toEqual(show.feeds.values.only("feed"))
 
                 expect(openShow.implicitControls).containsExactly(implicitSlider)
             }

@@ -29,17 +29,17 @@ data class XyPadControl(
 
     val maxValue: Vector2F = Vector2F.unit2d,
 
-    override val controlledDataSourceId: String
+    override val controlledFeedId: String
 ) : Control {
     override fun createMutable(mutableShow: MutableShow): MutableXyPadControl {
         return MutableXyPadControl(
             title, initialValue, minValue, maxValue,
-            mutableShow.findFeed(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledFeedId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenXyPadControl {
-        val controlledFeed = openContext.getFeed(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledFeedId)
         val xyPad = XyPad(title, initialValue, minValue, maxValue)
         return OpenXyPadControl(id, xyPad, controlledFeed)
             .also { showPlayer.registerGadget(id, xyPad, controlledFeed) }

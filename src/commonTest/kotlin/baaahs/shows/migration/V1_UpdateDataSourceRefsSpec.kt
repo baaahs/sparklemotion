@@ -47,8 +47,8 @@ object V1_UpdateDataSourceRefsSpec : Spek({
             }
 
             it("fixes feed serial names") {
-                expect(show.dataSources["modelInfo"]).toBe(ModelInfoFeed())
-                expect(show.dataSources["time"]).toBe(TimeFeed())
+                expect(show.feeds["modelInfo"]).toBe(ModelInfoFeed())
+                expect(show.feeds["time"]).toBe(TimeFeed())
             }
         }
     }

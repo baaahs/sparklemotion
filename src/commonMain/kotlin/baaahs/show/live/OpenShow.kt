@@ -63,7 +63,7 @@ class OpenShow(
     val openLayouts = show.layouts.open(openContext)
     val allFeeds = run {
         ShowBuilder().apply {
-            val map = show.dataSources.values.associateBy { idFor(it) }.toMutableMap()
+            val map = show.feeds.values.associateBy { idFor(it) }.toMutableMap()
             openContext.allPatchModFeeds.forEach { feed ->
                 map[idFor(feed)] = feed
             }
