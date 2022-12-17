@@ -42,15 +42,15 @@ data class SliderControl(
     override fun createMutable(mutableShow: MutableShow): MutableSliderControl {
         return MutableSliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            mutableShow.findDataSource(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledDataSourceId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledDataSourceId)
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
-        showPlayer.registerGadget(id, slider, controlledDataSource)
-        return OpenSliderControl(id, slider, controlledDataSource)
+        showPlayer.registerGadget(id, slider, controlledFeed)
+        return OpenSliderControl(id, slider, controlledFeed)
     }
 }
 
@@ -116,7 +116,7 @@ class OpenSliderControl(
         )
     }
 
-    override fun controlledDataSources(): Set<Feed> =
+    override fun controlledFeeds(): Set<Feed> =
         setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =

@@ -32,7 +32,7 @@ class CorePlugin(
                 fixtureTypes.map { it.resultContentType } +
                 fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.contentType } }
 
-    override val feedBuilders get() = Companion.dataSourceBuilders
+    override val feedBuilders get() = Companion.feedBuilders
 
     override val addControlMenuItems: List<AddControlMenuItem> get() = listOf(
         AddControlMenuItem("New Button…", CommonIcons.Button, true) { mutableShow ->
@@ -118,7 +118,7 @@ class CorePlugin(
 
         fun openSafe(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
-        private val dataSourceBuilders = listOf(
+        private val feedBuilders = listOf(
             ColorPickerFeed,
             DateFeed,
             FixtureInfoFeed,

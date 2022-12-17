@@ -9,5 +9,5 @@ class VisitationLog {
     val shaders = mutableSetOf<MutableShader>()
     val streams = mutableSetOf<MutableStream>()
     val controls = mutableSetOf<MutableControl>()
-    val dataSources = mutableSetOf<MutableFeedPort>()
+    val feeds = mutableSetOf<MutableFeedPort>()
 }

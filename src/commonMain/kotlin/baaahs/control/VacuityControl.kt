@@ -63,7 +63,7 @@ class OpenVacuityControl(
         return MutableVacuityControl(title)
     }
 
-    override fun controlledDataSources(): Set<Feed> = emptySet()
+    override fun controlledFeeds(): Set<Feed> = emptySet()
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forVacuity(this, controlProps)

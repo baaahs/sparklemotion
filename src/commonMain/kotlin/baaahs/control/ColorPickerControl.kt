@@ -32,15 +32,15 @@ data class ColorPickerControl(
     override fun createMutable(mutableShow: MutableShow): MutableColorPickerControl {
         return MutableColorPickerControl(
             title, initialValue,
-            mutableShow.findDataSource(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledDataSourceId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledDataSourceId)
         val colorPicker = ColorPicker(title, initialValue)
-        showPlayer.registerGadget(id, colorPicker, controlledDataSource)
-        return OpenColorPickerControl(id, colorPicker, controlledDataSource)
+        showPlayer.registerGadget(id, colorPicker, controlledFeed)
+        return OpenColorPickerControl(id, colorPicker, controlledFeed)
     }
 }
 
@@ -93,7 +93,7 @@ class OpenColorPickerControl(
         )
     }
 
-    override fun controlledDataSources(): Set<Feed> =
+    override fun controlledFeeds(): Set<Feed> =
         setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =

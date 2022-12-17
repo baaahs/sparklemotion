@@ -42,7 +42,7 @@ class ProgramResolver(
         }
 
     fun createRenderPlan(
-        dataSources: Map<String, Feed>,
+        feeds: Map<String, Feed>,
         feedResolver: FeedResolver
     ): RenderPlan {
         return RenderPlan(
@@ -51,7 +51,7 @@ class ProgramResolver(
                     val linkedPatch = portDiagram.resolvePatch(
                         Stream.Main,
                         fixtureType.resultContentType,
-                        dataSources
+                        feeds
                     )
 
                     var source: String? = null

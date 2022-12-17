@@ -26,7 +26,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
-    internal val videoInDataSource = VideoInFeed()
+    internal val videoInFeed = VideoInFeed()
 
     override val feedBuilders: List<FeedBuilder<VideoInFeed>>
         get() = listOf(
@@ -36,9 +36,9 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
                 override val resourceName get() = "VideoIn"
                 override val contentType get() = ContentType.Color
                 override val serializerRegistrar
-                    get() = objectSerializer("$id:$resourceName", videoInDataSource)
+                    get() = objectSerializer("$id:$resourceName", videoInFeed)
 
-                override fun build(inputPort: InputPort) = videoInDataSource
+                override fun build(inputPort: InputPort) = videoInFeed
 
                 override fun funDef(varName: String): String =
                     "vec4 $varName(vec2 uv);"

@@ -186,20 +186,20 @@ class PreviewShaderBuilder(
         coroutineScope.launch(coroutineExceptionHandler) {
             val showPlayer = object : BaseShowPlayer(toolchain, sceneProvider) {}
 
-            compile(renderEngine) { id, dataSource ->
-                dataSource.buildControl()?.let {
+            compile(renderEngine) { id, feed ->
+                feed.buildControl()?.let {
                     // TODO: De-gnarl this mess.
                     val openControl = it.previewOpen()
                     val gadget = openControl.gadget
                     if (gadget == null) {
                         logger.warn { "No gadget for $openControl" }
                     } else {
-                        showPlayer.registerGadget(dataSource.suggestId(), gadget, dataSource)
+                        showPlayer.registerGadget(feed.suggestId(), gadget, feed)
                     }
-                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, dataSource))
+                    mutableGadgets.add(ShaderBuilder.GadgetPreview(id, openControl, feed))
                 }
 
-                dataSource.open(showPlayer, id)
+                feed.open(showPlayer, id)
                     .also { feedContexts.add(it) }
             }
 

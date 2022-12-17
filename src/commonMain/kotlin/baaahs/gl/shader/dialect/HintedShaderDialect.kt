@@ -58,7 +58,7 @@ fun GlslCode.GlslFunction.getParamOutputPorts(plugins: Plugins) =
 fun GlslCode.GlslArgSite.toInputPort(plugins: Plugins, parent: GlslCode.GlslFunction?): InputPort {
     val contentTypeFromPlugin = try {
         hint?.pluginRef
-            ?.let { plugins.findDataSourceBuilder(it).contentType }
+            ?.let { plugins.findFeedBuilder(it).contentType }
     } catch (e: Exception) {
         null
     }

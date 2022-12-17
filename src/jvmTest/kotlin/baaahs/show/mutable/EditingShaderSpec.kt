@@ -51,7 +51,7 @@ object EditingShaderSpec : Spek({
         }
         val toolchain by value { RootToolchain(plugins) }
         val beatLinkDataSource by value {
-            (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkDataSource
+            (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkFeed
         }
         val scaleUniform by value { "uniform float theScale;" }
         val paintShader by value {

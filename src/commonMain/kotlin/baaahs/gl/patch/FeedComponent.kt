@@ -47,6 +47,6 @@ class FeedComponent(
     }
 
     override fun toString(): String {
-        return "DataSourceComponent(dataSource=$feed, varName='$varName')"
+        return "FeedComponent(feed=$feed, varName='$varName')"
     }
 }

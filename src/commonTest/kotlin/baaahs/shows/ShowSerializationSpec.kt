@@ -121,7 +121,7 @@ object ShowSerializationSpec : Spek({
                     expect(dataSource).toEqual(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
-                            "Unknown datasource \"some.plugin:Fake\".",
+                            "Unknown feed \"some.plugin:Fake\".",
                             ContentType.Unknown,
                             buildJsonObject {
                                 put("type", "some.plugin:Fake")
@@ -403,7 +403,7 @@ object TestSampleData {
                 """.trimIndent()
                 )
             ) {
-                link("beat", MutableFeedPort(beatLinkPlugin.beatLinkDataSource))
+                link("beat", MutableFeedPort(beatLinkPlugin.beatLinkFeed))
             }
         }.getShow()
 }

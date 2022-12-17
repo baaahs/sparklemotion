@@ -66,8 +66,8 @@ abstract class BaseShowPlayer(
         }
 
     override fun releaseUnused() {
-        ArrayList(feeds.entries).forEach { (dataSource, feed) ->
-            if (!feed.inUse()) feeds.remove(dataSource)
+        ArrayList(feeds.entries).forEach { (feed, feedContext) ->
+            if (!feedContext.inUse()) feeds.remove(feed)
         }
 
         ArrayList(shaders.entries).forEach { (shader, openShader) ->

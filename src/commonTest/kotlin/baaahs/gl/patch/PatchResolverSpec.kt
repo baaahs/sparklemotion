@@ -100,7 +100,7 @@ object PatchResolverSpec : Spek({
             val show = mutableShow.build(ShowBuilder())
             ShowOpener(testToolchain, show, FakeShowPlayer()).openShow()
         }
-        val linkedPatch by value { generateLinkedProgram(show.allDataSources, show.buildActivePatchSet()) }
+        val linkedPatch by value { generateLinkedProgram(show.allFeeds, show.buildActivePatchSet()) }
 
         fun clickButton(id: String) {
             (show.allControls.associateBy { it.id }.getBang(id, "control") as OpenButtonControl)
@@ -767,7 +767,7 @@ object PatchResolverSpec : Spek({
         }
 
         val linkedProgram by value {
-            generateLinkedProgram(show.allDataSources, show.buildActivePatchSet())
+            generateLinkedProgram(show.allFeeds, show.buildActivePatchSet())
         }
 
         it("correctly finds the max reference depth of that node") {

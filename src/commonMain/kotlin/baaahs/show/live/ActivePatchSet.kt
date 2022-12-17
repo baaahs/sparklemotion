@@ -11,13 +11,13 @@ import baaahs.show.Feed
 
 data class ActivePatchSet(
     internal val activePatches: List<OpenPatch>,
-    private val allDataSources: Map<String, Feed>,
-    private val feeds: Map<Feed, FeedContext>
+    private val allFeedsById: Map<String, Feed>,
+    private val feedContexts: Map<Feed, FeedContext>
 ) {
-    val dataSources by lazy {
+    val allFeeds by lazy {
         buildSet {
             activePatches.forEach { activePatch ->
-                activePatch.dataSources.forEach { add(it) }
+                activePatch.feeds.forEach { add(it) }
             }
         }
     }
@@ -27,8 +27,8 @@ data class ActivePatchSet(
         renderTargets: Collection<FixtureRenderTarget>
     ): RenderPlan {
         val patchResolution = ProgramResolver(renderTargets, this, renderManager)
-        return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->
-            feeds.getBang(dataSource, "data feed")
+        return patchResolution.createRenderPlan(allFeedsById) { _, feed ->
+            feedContexts.getBang(feed, "data feed")
         }
     }
 

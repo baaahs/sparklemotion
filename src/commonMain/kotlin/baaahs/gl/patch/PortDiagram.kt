@@ -38,9 +38,9 @@ class PortDiagram(val patches: List<OpenPatch>) {
     fun resolvePatch(
         stream: Stream,
         contentType: ContentType,
-        dataSources: Map<String, Feed>
+        feeds: Map<String, Feed>
     ): LinkedProgram? {
-        val resolver = Resolver(dataSources)
+        val resolver = Resolver(feeds)
         val track = Track(stream, contentType)
         val rootProgramNode = resolver.resolve(track)
 
@@ -90,28 +90,28 @@ class PortDiagram(val patches: List<OpenPatch>) {
     }
 
     inner class Resolver(
-        dataSources: Map<String, Feed>
+        feeds: Map<String, Feed>
     ) {
-        private val dataSourcesToId by lazy { dataSources.entries.associate { (k, v) -> v to k } }
+        private val feedsToId by lazy { feeds.entries.associate { (k, v) -> v to k } }
         private val feedLinks = mutableMapOf<Pair<String, ContentType>, OpenPatch.FeedLink>()
 
-        private fun resolveDataSource(id: String, feed: Feed): OpenPatch.FeedLink {
+        private fun resolveFeed(id: String, feed: Feed): OpenPatch.FeedLink {
             return feedLinks.getOrPut(id to feed.contentType) {
-                val deps = feed.dependencies.mapValues { (_, dataSource) ->
-                    val dependencyId = dataSourcesToId.getBang(dataSource, "data source dependency")
-                    resolveDataSource(dependencyId, dataSource)
+                val deps = feed.dependencies.mapValues { (_, depFeed) ->
+                    val dependencyId = feedsToId.getBang(depFeed, "feed dependency")
+                    resolveFeed(dependencyId, depFeed)
                 }
                 OpenPatch.FeedLink(feed, id, deps)
             }
         }
 
         init {
-            dataSources.forEach { (id, dataSource) ->
-                resolveDataSource(id, dataSource)
+            feeds.forEach { (id, dataSource) ->
+                resolveFeed(id, dataSource)
             }
         }
 
-        private val dataSourceChannelLinks = feedLinks.toMap()
+        private val feedChannelLinks = feedLinks.toMap()
 
         private val trackResolvers = mutableMapOf<Track, TrackResolver>()
         private val breadcrumbs = mutableListOf<Breadcrumb>()
@@ -128,7 +128,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
             val track = Track(stream, contentType)
             return resolve(track, inputPort.injectedData.values.toSet())
-                ?: tryDataSource(stream, contentType)
+                ?: tryFeed(stream, contentType)
                 ?: run {
                     addWarning("No upstream shader found, using default for ${contentType.id}.")
                     DefaultValueNode(contentType)
@@ -147,11 +147,11 @@ class PortDiagram(val patches: List<OpenPatch>) {
             return link.finalResolve(inputPort, this@Resolver)
         }
 
-        private fun tryDataSource(
+        private fun tryFeed(
             stream: Stream,
             contentType: ContentType
         ): OpenPatch.FeedLink? {
-            return dataSourceChannelLinks[stream.id to contentType]
+            return feedChannelLinks[stream.id to contentType]
         }
 
 

@@ -38,9 +38,9 @@ class BeatLinkPlugin internal constructor(
 
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
-    internal val beatLinkDataSource = BeatLinkFeed()
-    internal val beatInfoDataSource = BeatInfoFeed()
-    internal val rawBeatInfoDataSource = RawBeatInfoFeed()
+    internal val beatLinkFeed = BeatLinkFeed()
+    internal val beatInfoFeed = BeatInfoFeed()
+    internal val rawBeatInfoFeed = RawBeatInfoFeed()
 
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
@@ -74,14 +74,14 @@ class BeatLinkPlugin internal constructor(
         override val resourceName: String get() = "BeatLink"
         override val contentType: ContentType get() = beatDataContentType
         override val serializerRegistrar
-            get() = objectSerializer("$id:BeatLink", beatLinkDataSource)
+            get() = objectSerializer("$id:BeatLink", beatLinkFeed)
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.contentType == beatDataContentType
                     || suggestedContentTypes.contains(beatDataContentType)
                     || inputPort.type == GlslType.Float
 
-        override fun build(inputPort: InputPort): BeatLinkFeed = beatLinkDataSource
+        override fun build(inputPort: InputPort): BeatLinkFeed = beatLinkFeed
     }
 
     inner class BeatInfoFeedBuilder : FeedBuilder<BeatInfoFeed> {
@@ -90,14 +90,14 @@ class BeatLinkPlugin internal constructor(
         override val resourceName: String get() = "BeatInfo"
         override val contentType: ContentType get() = beatInfoContentType
         override val serializerRegistrar
-            get() = objectSerializer("$id:BeatInfo", beatInfoDataSource)
+            get() = objectSerializer("$id:BeatInfo", beatInfoFeed)
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.contentType == beatInfoContentType
                     || suggestedContentTypes.contains(beatInfoContentType)
                     || inputPort.type == beatInfoStruct
 
-        override fun build(inputPort: InputPort): BeatInfoFeed = beatInfoDataSource
+        override fun build(inputPort: InputPort): BeatInfoFeed = beatInfoFeed
     }
 
     inner class RawBeatInfoFeedBuilder : FeedBuilder<RawBeatInfoFeed> {
@@ -106,7 +106,7 @@ class BeatLinkPlugin internal constructor(
         override val resourceName: String get() = "RawBeatInfo"
         override val contentType: ContentType get() = rawBeatInfoContentType
         override val serializerRegistrar
-            get() = objectSerializer("$id:RawBeatInfo", rawBeatInfoDataSource)
+            get() = objectSerializer("$id:RawBeatInfo", rawBeatInfoFeed)
         override val internalOnly: Boolean
             get() = true
 
@@ -115,7 +115,7 @@ class BeatLinkPlugin internal constructor(
                     || suggestedContentTypes.contains(rawBeatInfoContentType)
                     || inputPort.type == rawBeatInfoStruct
 
-        override fun build(inputPort: InputPort): RawBeatInfoFeed = rawBeatInfoDataSource
+        override fun build(inputPort: InputPort): RawBeatInfoFeed = rawBeatInfoFeed
     }
 
     @SerialName("baaahs.BeatLink:BeatLink")

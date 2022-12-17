@@ -48,7 +48,7 @@ abstract class Dag(
         }
     }
 
-    override fun visitDataSource(node: OpenPatch.FeedLink) {
+    override fun visitFeed(node: OpenPatch.FeedLink) {
         nodes.getOrPut(node) {
             "DS${node.varName}".also {
                 declareNode(
