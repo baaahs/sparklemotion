@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.ui.addObserver
 import baaahs.util.RefCounted
@@ -24,8 +24,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:ModelInfo")
-data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<ModelInfoDataSource> {
+data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : DataSourceBuilder<ModelInfoFeed> {
         override val title: String get() = "Model Info"
         override val description: String get() = "Information about the model."
         override val resourceName: String get() = "ModelInfo"
@@ -33,8 +33,8 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
         override val serializerRegistrar get() = classSerializer(serializer())
         private val modelInfoType = ContentType.ModelInfo.glslType
 
-        override fun build(inputPort: InputPort): ModelInfoDataSource =
-            ModelInfoDataSource()
+        override fun build(inputPort: InputPort): ModelInfoFeed =
+            ModelInfoFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id

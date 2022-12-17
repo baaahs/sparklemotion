@@ -8,7 +8,7 @@ import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.plugin.core.datasource.TimeFeed
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.shows.FakeShowPlayer
@@ -72,14 +72,14 @@ object OpenShowSpec : Spek({
 
             it("opens feeds") {
                 openShow.run {}
-                val timeFeed = showPlayer.feeds.getBang(TimeDataSource(), "datasource key")
+                val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "datasource key")
                 expect(timeFeed.inUse()).toBe(true)
             }
 
             context("when released") {
                 it("closes feeds") {
                     openShow.onRelease()
-                    val timeFeed = showPlayer.feeds.getBang(TimeDataSource(), "datasource key")
+                    val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "datasource key")
                     expect(timeFeed.inUse()).toBe(false)
                 }
             }
@@ -134,7 +134,7 @@ object OpenShowSpec : Spek({
                 implicitSlider as OpenSliderControl
                 expect(implicitSlider.slider)
                     .toEqual(Slider("Slider"))
-                expect(implicitSlider.controlledDataSource)
+                expect(implicitSlider.controlledFeed)
                     .toEqual(show.dataSources.values.only("datasource"))
 
                 expect(openShow.implicitControls).containsExactly(implicitSlider)

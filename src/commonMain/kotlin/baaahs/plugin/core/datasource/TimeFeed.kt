@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import baaahs.util.makeSafeForGlsl
@@ -23,15 +23,15 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:Time")
-data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<TimeDataSource> {
+data class TimeFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : DataSourceBuilder<TimeFeed> {
         override val title: String get() = "Time"
         override val description: String get() = "The current time."
         override val resourceName: String get() = "Time"
         override val contentType: ContentType get() = ContentType.Time
         override val serializerRegistrar get() = classSerializer(serializer())
-        override fun build(inputPort: InputPort): TimeDataSource =
-            TimeDataSource()
+        override fun build(inputPort: InputPort): TimeFeed =
+            TimeFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id
@@ -45,7 +45,7 @@ data class TimeDataSource(@Transient val `_`: Boolean = true) : DataSource {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                     val clock = showPlayer.toolchain.plugins.pluginContext.clock
-                    return SingleUniformFeedContext(glslProgram, this@TimeDataSource, id) { uniform ->
+                    return SingleUniformFeedContext(glslProgram, this@TimeFeed, id) { uniform ->
                         val thisTime = clock.now().makeSafeForGlsl()
                         uniform.set(thisTime)
                     }

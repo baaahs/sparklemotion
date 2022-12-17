@@ -17,8 +17,8 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -28,7 +28,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:PixelIndex")
-data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class PixelIndexFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Index"
     override fun getType(): GlslType = GlslType.Float
@@ -56,19 +56,19 @@ data class PixelIndexDataSource(@Transient val `_`: Boolean = true) : DataSource
         return "${getVarName(varName)} = ds_${varName}_getPixelIndex(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelIndexDataSource> {
+    companion object : DataSourceBuilder<PixelIndexFeed> {
         override val title: String get() = "Pixel Index"
         override val description: String get() = "The index of this pixel within its fixture."
         override val resourceName: String
             get() = "PixelIndex"
         override val contentType: ContentType
             get() = ContentType.PixelIndex
-        override val serializerRegistrar: SerializerRegistrar<PixelIndexDataSource>
+        override val serializerRegistrar: SerializerRegistrar<PixelIndexFeed>
             get() = classSerializer(serializer())
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
-        override fun build(inputPort: InputPort): PixelIndexDataSource =
-            PixelIndexDataSource()
+        override fun build(inputPort: InputPort): PixelIndexFeed =
+            PixelIndexFeed()
     }
 }
 

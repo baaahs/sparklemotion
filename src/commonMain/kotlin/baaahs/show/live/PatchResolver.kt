@@ -12,7 +12,7 @@ import baaahs.util.Logger
 class PatchResolver(
     private val openShaders: CacheBuilder<String, OpenShader>,
     private val patches: Map<String, Patch>,
-    private val dataSources: Map<String, DataSource>,
+    private val dataSources: Map<String, Feed>,
     private val toolchain: Toolchain,
     private val gadgetProvider: GadgetProvider? = null
 ) {

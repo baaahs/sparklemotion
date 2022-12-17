@@ -3,7 +3,7 @@ package baaahs.app.ui.patchmod
 import baaahs.gl.Toolchain
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.OpenShader
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.GadgetProvider
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
@@ -18,7 +18,7 @@ val patchModBuilders = listOf(
 
 interface PatchMod {
     val title: String
-    val dataSources: List<DataSource>
+    val feeds: List<Feed>
 
     fun getView(openPatch: OpenPatch): View
     fun maybeWrapLink(moddedNode: LinkedPatch, inputPortId: String, link: ProgramNode, forShader: OpenShader): ProgramNode?

@@ -18,10 +18,10 @@ import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.Model
-import baaahs.plugin.core.datasource.RasterCoordinateDataSource
+import baaahs.plugin.core.datasource.RasterCoordinateFeed
 import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableDataSourcePort
@@ -62,7 +62,7 @@ interface ShaderBuilder : IObservable {
     class GadgetPreview(
         val id: String,
         val openControl: OpenControl,
-        val controlledDataSource: DataSource?
+        val controlledFeed: Feed?
     )
 }
 
@@ -155,7 +155,7 @@ class PreviewShaderBuilder(
             val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
             val resultContentType = shaderType.previewResultContentType()
             val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
-                mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateDataSource()))
+                mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateFeed()))
             } else emptyMap()
 
             previewPatchSet = toolchain.autoWire(shaders, defaultPorts = defaultPorts)

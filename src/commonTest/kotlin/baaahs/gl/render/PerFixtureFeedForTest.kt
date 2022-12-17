@@ -8,12 +8,12 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 
-class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
+class PerFixtureFeedForTest(val updateMode: UpdateMode) : Feed {
     override val pluginPackage: String get() = error("not implemented")
     override val title: String get() = "Per Fixture Data Source For Test"
     override fun getType(): GlslType = GlslType.Float
@@ -41,7 +41,7 @@ class PerFixtureDataSourceForTest(val updateMode: UpdateMode) : DataSource {
     }
 
     inner class TestProgramFeedContext(glslProgram: GlslProgram) : ProgramFeedContext {
-        override val updateMode: UpdateMode get() = this@PerFixtureDataSourceForTest.updateMode
+        override val updateMode: UpdateMode get() = this@PerFixtureFeedForTest.updateMode
 
         val uniform = glslProgram.getUniform("perFixtureData")
         var released = false

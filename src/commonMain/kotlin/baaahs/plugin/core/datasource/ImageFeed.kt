@@ -16,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.imaging.Image
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -32,7 +32,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("baaahs.Core:Image")
-data class ImageDataSource(override val title: String) : DataSource {
+data class ImageFeed(override val title: String) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override fun getType(): GlslType = GlslType.Vec4
     override val contentType: ContentType get() = ContentType.Color
@@ -123,7 +123,7 @@ data class ImageDataSource(override val title: String) : DataSource {
         }
     }
 
-    companion object : DataSourceBuilder<ImageDataSource> {
+    companion object : DataSourceBuilder<ImageFeed> {
         override val title: String get() = "Image"
         override val description: String get() = "A user-provided image."
         override val resourceName: String get() = "Image"
@@ -132,12 +132,12 @@ data class ImageDataSource(override val title: String) : DataSource {
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Sampler2D) // TODO: Should be vec4/3 instead?
-        override fun build(inputPort: InputPort): ImageDataSource =
-            ImageDataSource("${inputPort.title} Image")
+        override fun build(inputPort: InputPort): ImageFeed =
+            ImageFeed("${inputPort.title} Image")
 
         override fun funDef(varName: String): String =
             "vec4 $varName(vec2 uv);"
 
-        private val logger = Logger<ImageDataSource>()
+        private val logger = Logger<ImageFeed>()
     }
 }

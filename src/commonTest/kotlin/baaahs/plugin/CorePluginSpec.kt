@@ -9,7 +9,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.plugin.core.datasource.TimeFeed
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
@@ -18,9 +18,9 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 object CorePluginSpec : Spek({
-    describe<TimeDataSource> {
+    describe<TimeFeed> {
         val clock by value { FakeClock(0.0) }
-        val dataSource by value { TimeDataSource() }
+        val dataSource by value { TimeFeed() }
         val toolchain by value { RootToolchain(testPlugins(clock) ) }
         val feed by value { dataSource.open(FakeShowPlayer(toolchain = toolchain), "time") }
         val gl by value { FakeGlContext() }

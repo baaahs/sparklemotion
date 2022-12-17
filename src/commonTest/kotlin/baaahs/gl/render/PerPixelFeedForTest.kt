@@ -11,12 +11,12 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 
-class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
+class PerPixelFeedForTest(val updateMode: UpdateMode) : Feed {
     override val pluginPackage: String get() = error("not implemented")
     override val title: String get() = "Per Pixel Data Source For Test"
     override fun getType(): GlslType = GlslType.Float
@@ -39,7 +39,7 @@ class PerPixelDataSourceForTest(val updateMode: UpdateMode) : DataSource {
 
     inner class TestEngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         var released = false
-        override val updateMode: UpdateMode get() = this@PerPixelDataSourceForTest.updateMode
+        override val updateMode: UpdateMode get() = this@PerPixelFeedForTest.updateMode
         override val buffer: FloatsParamBuffer = FloatsParamBuffer("---", 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {

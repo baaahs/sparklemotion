@@ -15,8 +15,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -30,14 +30,14 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:Slider")
-data class SliderDataSource(
+data class SliderFeed(
     @SerialName("title")
     val sliderTitle: String,
     val initialValue: Float,
     val minValue: Float,
     val maxValue: Float,
     val stepValue: Float? = null
-) : DataSource {
+) : Feed {
     override val title: String get() = "$sliderTitle Slider"
     override val pluginPackage: String get() = CorePlugin.id
     override fun getType(): GlslType = GlslType.Float
@@ -66,7 +66,7 @@ data class SliderDataSource(
 
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    return SingleUniformFeedContext(glslProgram, this@SliderDataSource, id) { uniform ->
+                    return SingleUniformFeedContext(glslProgram, this@SliderFeed, id) { uniform ->
                         if (beatSource != null && slider.beatLinked) {
                             val beatData = beatSource.getBeatData()
                             if (beatData.confidence > .2f) {
@@ -86,16 +86,16 @@ data class SliderDataSource(
         }
     }
 
-    companion object : DataSourceBuilder<SliderDataSource> {
+    companion object : DataSourceBuilder<SliderFeed> {
         override val title: String get() = "Slider"
         override val description: String get() = "A user-adjustable slider."
         override val resourceName: String get() = "Slider"
         override val contentType: ContentType get() = ContentType.Float
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): SliderDataSource {
+        override fun build(inputPort: InputPort): SliderFeed {
             val config = inputPort.pluginConfig
-            return SliderDataSource(
+            return SliderFeed(
                 inputPort.title,
                 initialValue = config.getFloat("default") ?: 1f,
                 minValue = config.getFloat("min") ?: 0f,
@@ -115,6 +115,6 @@ data class SliderDataSource(
             }
         }
 
-        private val logger = Logger<SliderDataSource>()
+        private val logger = Logger<SliderFeed>()
     }
 }

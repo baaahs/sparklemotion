@@ -2,17 +2,17 @@ package baaahs.gl.data
 
 import baaahs.gl.glsl.GlslProgram
 import baaahs.glsl.Uniform
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.util.Logger
 
 class SingleUniformFeedContext(
     glslProgram: GlslProgram,
-    dataSource: DataSource,
+    feed: Feed,
     val id: String,
     val setUniform: (Uniform) -> Unit
 ) : ProgramFeedContext {
-    private val type: Any = dataSource.getType()
-    private val varName = dataSource.getVarName(id)
+    private val type: Any = feed.getType()
+    private val varName = feed.getVarName(id)
     private val uniformLocation = glslProgram.getUniform(varName)
 
     override val isValid: Boolean get() = uniformLocation != null

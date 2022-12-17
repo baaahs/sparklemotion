@@ -1,4 +1,4 @@
-@file:UseContextualSerialization(DataSource::class)
+@file:UseContextualSerialization(Feed::class)
 
 package baaahs.show
 
@@ -33,7 +33,7 @@ data class Show(
     val shaders: Map<String, Shader> = emptyMap(),
     val patches: Map<String, Patch> = emptyMap(),
     val controls: Map<String, Control> = emptyMap(),
-    val dataSources: Map<String, DataSource> = emptyMap()
+    val dataSources: Map<String, Feed> = emptyMap()
 ) : PatchHolder, Editable {
     init {
         validatePatchHolder()
@@ -57,7 +57,7 @@ data class Show(
 
     fun getControl(id: String): Control = controls.getBang(id, "control")
 
-    fun getDataSource(id: String): DataSource = dataSources.getBang(id, "data source")
+    fun getDataSource(id: String): Feed = dataSources.getBang(id, "data source")
 
     fun getShader(id: String): Shader = shaders.getBang(id, "shader")
 

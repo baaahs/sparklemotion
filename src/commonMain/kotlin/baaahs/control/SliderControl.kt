@@ -9,7 +9,7 @@ import baaahs.camelize
 import baaahs.gadgets.Slider
 import baaahs.randomId
 import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -42,7 +42,7 @@ data class SliderControl(
     override fun createMutable(mutableShow: MutableShow): MutableSliderControl {
         return MutableSliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            mutableShow.findDataSource(controlledDataSourceId).dataSource
+            mutableShow.findDataSource(controlledDataSourceId).feed
         )
     }
 
@@ -70,7 +70,7 @@ data class MutableSliderControl(
     /** The step value for the slider. */
     var stepValue: Float? = null,
 
-    val controlledDataSource: DataSource
+    val controlledFeed: Feed
 ) : MutableControl {
     override var asBuiltId: String? = null
 
@@ -84,20 +84,20 @@ data class MutableSliderControl(
     override fun buildControl(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            showBuilder.idFor(controlledDataSource)
+            showBuilder.idFor(controlledFeed)
         )
     }
 
     override fun previewOpen(): OpenSliderControl {
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
-        return OpenSliderControl(randomId(title.camelize()), slider, controlledDataSource)
+        return OpenSliderControl(randomId(title.camelize()), slider, controlledFeed)
     }
 }
 
 class OpenSliderControl(
     override val id: String,
     val slider: Slider,
-    override val controlledDataSource: DataSource
+    override val controlledFeed: Feed
 ) : DataSourceOpenControl() {
     override val gadget: Slider
         get() = slider
@@ -112,12 +112,12 @@ class OpenSliderControl(
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableSliderControl(
-            slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue, controlledDataSource
+            slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue, controlledFeed
         )
     }
 
-    override fun controlledDataSources(): Set<DataSource> =
-        setOf(controlledDataSource)
+    override fun controlledDataSources(): Set<Feed> =
+        setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forSlider(this, controlProps)

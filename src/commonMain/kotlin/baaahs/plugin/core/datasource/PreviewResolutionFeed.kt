@@ -11,8 +11,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -21,8 +21,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:PreviewResolution")
-data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<PreviewResolutionDataSource> {
+data class PreviewResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : DataSourceBuilder<PreviewResolutionFeed> {
         override val title: String get() = "Preview Resolution"
         override val description: String get() = "Internal use only."
         override val resourceName: String get() = "PreviewResolution"
@@ -31,8 +31,8 @@ data class PreviewResolutionDataSource(@Transient val `_`: Boolean = true) : Dat
         override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
-        override fun build(inputPort: InputPort): PreviewResolutionDataSource =
-            PreviewResolutionDataSource()
+        override fun build(inputPort: InputPort): PreviewResolutionFeed =
+            PreviewResolutionFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id

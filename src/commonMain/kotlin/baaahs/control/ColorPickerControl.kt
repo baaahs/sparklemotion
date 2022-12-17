@@ -8,7 +8,7 @@ import baaahs.camelize
 import baaahs.gadgets.ColorPicker
 import baaahs.randomId
 import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -32,7 +32,7 @@ data class ColorPickerControl(
     override fun createMutable(mutableShow: MutableShow): MutableColorPickerControl {
         return MutableColorPickerControl(
             title, initialValue,
-            mutableShow.findDataSource(controlledDataSourceId).dataSource
+            mutableShow.findDataSource(controlledDataSourceId).feed
         )
     }
 
@@ -51,7 +51,7 @@ data class MutableColorPickerControl(
     /** The initial value for this color picker. */
     val initialValue: Color = Color.WHITE,
 
-    val controlledDataSource: DataSource
+    val controlledFeed: Feed
 ) : MutableControl {
     override var asBuiltId: String? = null
 
@@ -61,20 +61,20 @@ data class MutableColorPickerControl(
 
     override fun buildControl(showBuilder: ShowBuilder): ColorPickerControl {
         return ColorPickerControl(
-            title, initialValue, showBuilder.idFor(controlledDataSource)
+            title, initialValue, showBuilder.idFor(controlledFeed)
         )
     }
 
     override fun previewOpen(): OpenColorPickerControl {
         val colorPicker = ColorPicker(title, initialValue)
-        return OpenColorPickerControl(randomId(title.camelize()), colorPicker, controlledDataSource)
+        return OpenColorPickerControl(randomId(title.camelize()), colorPicker, controlledFeed)
     }
 }
 
 class OpenColorPickerControl(
     override val id: String,
     val colorPicker: ColorPicker,
-    override val controlledDataSource: DataSource
+    override val controlledFeed: Feed
 ) : DataSourceOpenControl() {
     override val gadget: ColorPicker
         get() = colorPicker
@@ -89,12 +89,12 @@ class OpenColorPickerControl(
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableColorPickerControl(
-            colorPicker.title, colorPicker.initialValue, controlledDataSource
+            colorPicker.title, colorPicker.initialValue, controlledFeed
         )
     }
 
-    override fun controlledDataSources(): Set<DataSource> =
-        setOf(controlledDataSource)
+    override fun controlledDataSources(): Set<Feed> =
+        setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forColorPicker(this, controlProps)

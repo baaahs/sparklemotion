@@ -90,10 +90,10 @@ open class PixelArrayFixtureType : FixtureType {
 
     override val dataSourceBuilders: List<DataSourceBuilder<*>>
         get() = listOf(
-            PixelLocationDataSource,
-            PixelIndexDataSource,
-            PixelCountDataSource,
-            PixelDistanceFromEdgeDataSource
+            PixelLocationFeed,
+            PixelIndexFeed,
+            PixelCountFeed,
+            PixelDistanceFromEdgeFeed
         )
 
     override val resultContentType: ContentType

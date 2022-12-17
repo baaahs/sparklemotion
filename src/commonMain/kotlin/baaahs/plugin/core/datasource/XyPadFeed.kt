@@ -16,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.PluginRef
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -31,13 +31,13 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:XyPad")
-data class XyPadDataSource(
+data class XyPadFeed(
     override val title: String,
     val initialValue: Vector2F = Vector2F.origin,
     val minValue: Vector2F = Vector2F.origin - Vector2F.unit2d,
     val maxValue: Vector2F = Vector2F.unit2d,
     val varPrefix: String? = null
-) : DataSource {
+) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override fun getType(): GlslType = GlslType.Vec2
     override val contentType: ContentType
@@ -57,7 +57,7 @@ data class XyPadDataSource(
         return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    return SingleUniformFeedContext(glslProgram, this@XyPadDataSource, id) { uniform ->
+                    return SingleUniformFeedContext(glslProgram, this@XyPadFeed, id) { uniform ->
                         uniform.set(xyPad.position)
                     }
                 }
@@ -65,7 +65,7 @@ data class XyPadDataSource(
         }
     }
 
-    companion object : DataSourceBuilder<XyPadDataSource> {
+    companion object : DataSourceBuilder<XyPadFeed> {
         override val title: String get() = "X/Y Pad"
         override val description: String get() = "A user-adjustable two-dimensional input pad."
         override val resourceName: String get() = "XyPad"
@@ -73,9 +73,9 @@ data class XyPadDataSource(
         override val serializerRegistrar get() = classSerializer(serializer())
         val pluginRef = PluginRef(CorePlugin.id, resourceName)
 
-        override fun build(inputPort: InputPort): XyPadDataSource {
+        override fun build(inputPort: InputPort): XyPadFeed {
             val config = inputPort.pluginConfig
-            return XyPadDataSource(
+            return XyPadFeed(
                 inputPort.title,
                 initialValue = config.getVector2F("default") ?: Vector2F.origin,
                 minValue = config.getVector2F("min") ?: -Vector2F.unit2d,
@@ -96,6 +96,6 @@ data class XyPadDataSource(
             }
         }
 
-        private val logger = Logger<XyPadDataSource>()
+        private val logger = Logger<XyPadFeed>()
     }
 }

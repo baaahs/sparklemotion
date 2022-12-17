@@ -7,12 +7,12 @@ import baaahs.gl.data.FeedContext
 import baaahs.gl.patch.ProgramResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
-import baaahs.show.DataSource
+import baaahs.show.Feed
 
 data class ActivePatchSet(
     internal val activePatches: List<OpenPatch>,
-    private val allDataSources: Map<String, DataSource>,
-    private val feeds: Map<DataSource, FeedContext>
+    private val allDataSources: Map<String, Feed>,
+    private val feeds: Map<Feed, FeedContext>
 ) {
     val dataSources by lazy {
         buildSet {
