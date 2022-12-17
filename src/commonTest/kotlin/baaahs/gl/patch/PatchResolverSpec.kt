@@ -12,7 +12,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.shaders.fakeFixture
 import baaahs.show.Feed
 import baaahs.show.Panel

@@ -8,8 +8,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
-import baaahs.plugin.core.datasource.SliderFeed
-import baaahs.plugin.core.datasource.XyPadFeed
+import baaahs.plugin.core.feed.SliderFeed
+import baaahs.plugin.core.feed.XyPadFeed
 import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.Stream

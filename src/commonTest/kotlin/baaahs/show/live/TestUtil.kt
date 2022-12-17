@@ -9,7 +9,7 @@ import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.shader.type.ProjectionShader
 import baaahs.gl.shader.type.ShaderType
 import baaahs.gl.testToolchain
-import baaahs.plugin.core.datasource.SliderFeed
+import baaahs.plugin.core.feed.SliderFeed
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.ui.DragNDrop

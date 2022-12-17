@@ -18,7 +18,7 @@ import baaahs.gl.result.Vec2ResultType
 import baaahs.gl.shader.OpenShader
 import baaahs.glsl.Shaders
 import baaahs.model.Model
-import baaahs.plugin.core.datasource.RasterCoordinateFeed
+import baaahs.plugin.core.feed.RasterCoordinateFeed
 import baaahs.scene.MutableFixtureConfig
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed

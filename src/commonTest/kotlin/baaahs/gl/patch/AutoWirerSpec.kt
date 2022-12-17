@@ -11,10 +11,10 @@ import baaahs.gl.shader.OutputPort
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.only
 import baaahs.plugin.core.FixtureInfoFeed
-import baaahs.plugin.core.datasource.ModelInfoFeed
-import baaahs.plugin.core.datasource.ResolutionFeed
-import baaahs.plugin.core.datasource.SliderFeed
-import baaahs.plugin.core.datasource.TimeFeed
+import baaahs.plugin.core.feed.ModelInfoFeed
+import baaahs.plugin.core.feed.ResolutionFeed
+import baaahs.plugin.core.feed.SliderFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.FakeOpenShader

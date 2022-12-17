@@ -9,7 +9,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer

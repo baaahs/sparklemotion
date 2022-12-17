@@ -11,8 +11,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.*
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
-import baaahs.plugin.core.datasource.ColorPickerFeed
-import baaahs.plugin.core.datasource.SliderFeed
+import baaahs.plugin.core.feed.ColorPickerFeed
+import baaahs.plugin.core.feed.SliderFeed
 import baaahs.shows.FakeShowPlayer
 import baaahs.testModelSurface
 import kotlin.math.abs

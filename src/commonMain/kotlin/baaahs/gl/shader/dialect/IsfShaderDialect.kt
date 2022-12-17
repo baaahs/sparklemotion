@@ -10,7 +10,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
-import baaahs.plugin.core.datasource.XyPadFeed
+import baaahs.plugin.core.feed.XyPadFeed
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException

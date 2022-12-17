@@ -7,8 +7,8 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
-import baaahs.plugin.core.datasource.ColorPickerFeed
-import baaahs.plugin.core.datasource.SliderFeed
+import baaahs.plugin.core.feed.ColorPickerFeed
+import baaahs.plugin.core.feed.SliderFeed
 import baaahs.show.mutable.*
 
 object SampleData {

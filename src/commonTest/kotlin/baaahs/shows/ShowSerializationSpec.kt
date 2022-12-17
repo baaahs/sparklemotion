@@ -17,7 +17,7 @@ import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.core.FixtureInfoFeed
-import baaahs.plugin.core.datasource.*
+import baaahs.plugin.core.feed.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutableLayoutDimen

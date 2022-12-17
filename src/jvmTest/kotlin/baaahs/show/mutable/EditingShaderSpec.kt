@@ -16,7 +16,7 @@ import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.FakeBeatSource
-import baaahs.plugin.core.datasource.SliderFeed
+import baaahs.plugin.core.feed.SliderFeed
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.show.Panel
