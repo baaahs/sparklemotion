@@ -13,8 +13,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -24,7 +24,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:PixelCount")
-data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class PixelCountFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Count"
     override fun getType(): GlslType = GlslType.Int
@@ -35,19 +35,19 @@ data class PixelCountDataSource(@Transient val `_`: Boolean = true) : DataSource
         return PixelCountFeedContext(getVarName(id))
     }
 
-    companion object : DataSourceBuilder<PixelCountDataSource> {
+    companion object : DataSourceBuilder<PixelCountFeed> {
         override val title: String get() = "Pixel Count"
         override val description: String get() = "The number of pixels in this fixture."
         override val resourceName: String
             get() = "PixelCount"
         override val contentType: ContentType
             get() = ContentType.PixelCount
-        override val serializerRegistrar: SerializerRegistrar<PixelCountDataSource>
+        override val serializerRegistrar: SerializerRegistrar<PixelCountFeed>
             get() = classSerializer(serializer())
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
-        override fun build(inputPort: InputPort): PixelCountDataSource =
-            PixelCountDataSource()
+        override fun build(inputPort: InputPort): PixelCountFeed =
+            PixelCountFeed()
     }
 }
 

@@ -2,7 +2,7 @@ package baaahs.show.mutable
 
 import baaahs.describe
 import baaahs.gl.expects
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.SampleData
 import baaahs.show.Surfaces
 import org.spekframework.spek2.Spek
@@ -92,7 +92,7 @@ class CollectingVisitor : MutableShowVisitor {
         items.add("Stream ${mutableStream.id}")
     }
 
-    override fun visit(dataSource: DataSource) {
-        items.add("Data source ${dataSource.title}")
+    override fun visit(feed: Feed) {
+        items.add("Data source ${feed.title}")
     }
 }

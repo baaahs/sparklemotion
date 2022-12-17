@@ -8,7 +8,7 @@ import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.randomId
 import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
@@ -34,7 +34,7 @@ data class XyPadControl(
     override fun createMutable(mutableShow: MutableShow): MutableXyPadControl {
         return MutableXyPadControl(
             title, initialValue, minValue, maxValue,
-            mutableShow.findDataSource(controlledDataSourceId).dataSource
+            mutableShow.findDataSource(controlledDataSourceId).feed
         )
     }
 
@@ -51,7 +51,7 @@ class MutableXyPadControl(
     var initialValue: Vector2F = Vector2F.origin,
     var minValue: Vector2F = Vector2F.origin - Vector2F.unit2d,
     var maxValue: Vector2F = Vector2F.unit2d,
-    var controlledDataSource: DataSource
+    var controlledFeed: Feed
 ) : MutableControl {
     override var asBuiltId: String? = null
 
@@ -60,20 +60,20 @@ class MutableXyPadControl(
     override fun buildControl(showBuilder: ShowBuilder): XyPadControl {
         return XyPadControl(
             title, initialValue, minValue, maxValue,
-            showBuilder.idFor(controlledDataSource)
+            showBuilder.idFor(controlledFeed)
         )
     }
 
     override fun previewOpen(): OpenControl {
         val xyPad = XyPad(title, initialValue, minValue, maxValue)
-        return OpenXyPadControl(randomId(title.camelize()), xyPad, controlledDataSource)
+        return OpenXyPadControl(randomId(title.camelize()), xyPad, controlledFeed)
     }
 }
 
 class OpenXyPadControl(
     override val id: String,
     val xyPad: XyPad,
-    override val controlledDataSource: DataSource
+    override val controlledFeed: Feed
 ) : DataSourceOpenControl() {
     override val gadget: XyPad
         get() = xyPad
@@ -83,10 +83,10 @@ class OpenXyPadControl(
     override fun applyState(state: Map<String, JsonElement>) = xyPad.applyState(state)
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
-        MutableXyPadControl(xyPad.title, xyPad.initialValue, xyPad.minValue, xyPad.maxValue, controlledDataSource)
+        MutableXyPadControl(xyPad.title, xyPad.initialValue, xyPad.minValue, xyPad.maxValue, controlledFeed)
 
-    override fun controlledDataSources(): Set<DataSource> =
-        setOf(controlledDataSource)
+    override fun controlledDataSources(): Set<Feed> =
+        setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forXyPad(this, controlProps)

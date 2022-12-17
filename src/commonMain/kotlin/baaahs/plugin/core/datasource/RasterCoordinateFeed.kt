@@ -11,8 +11,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -29,8 +29,8 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 @SerialName("baaahs.Core:RasterCoordinate")
-data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<RasterCoordinateDataSource> {
+data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : DataSourceBuilder<RasterCoordinateFeed> {
         override val title: String get() = "Raster Coordinate"
         override val description: String get() = "Internal use only."
         override val resourceName: String get() = "RasterCoordinate"
@@ -39,8 +39,8 @@ data class RasterCoordinateDataSource(@Transient val `_`: Boolean = true) : Data
         override val internalOnly: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean = false
-        override fun build(inputPort: InputPort): RasterCoordinateDataSource =
-            RasterCoordinateDataSource()
+        override fun build(inputPort: InputPort): RasterCoordinateFeed =
+            RasterCoordinateFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id

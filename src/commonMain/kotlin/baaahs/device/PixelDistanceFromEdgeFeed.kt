@@ -15,12 +15,12 @@ import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
+import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.plugin.core.FixtureInfoDataSource
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -30,58 +30,51 @@ import kotlinx.serialization.Transient
 import kotlin.math.min
 
 @Serializable
-@SerialName("baaahs.Core:PixelLocation")
-data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSource {
+@SerialName("baaahs.Core:PixelDistanceFromEdge")
+data class PixelDistanceFromEdgeFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
-    override val title: String get() = "Pixel Location"
-    override fun getType(): GlslType = GlslType.Vec3
+    override val title: String get() = "Pixel Distance from Edge"
+    override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType
-        get() = ContentType.XyzCoordinate
-
-    override val dependencies: Map<String, DataSource>
-        get() = mapOf("fixtureInfo" to FixtureInfoDataSource())
+        get() = ContentType.Float
 
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        return PixelLocationFeedContext(getVarName(id), "ds_${id}_texture")
+        return PixelDistanceFromEdgeFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
         val textureUniformId = "ds_${id}_texture"
         val varName = getVarName(id)
-
-        /**language=glsl*/
         buf.append("""
             uniform sampler2D $textureUniformId;
-            vec3 ds_${id}_getPixelCoords(vec2 rasterCoord) {
-                vec3 xyzInEntity = texelFetch($textureUniformId, ivec2(rasterCoord.xy), 0).xyz;
-                vec4 xyzwInModel = in_fixtureInfo.transformation * vec4(xyzInEntity, 1.);
-                return xyzwInModel.xyz;
+            float ds_${id}_getPixelDistanceFromEdge(vec2 rasterCoord) {
+                return texelFetch($textureUniformId, ivec2(rasterCoord.xy), 0).x;
             }
-            vec3 $varName;
+            float $varName;
             
         """.trimIndent())
     }
 
     override fun invocationGlsl(varName: String): String {
-        return "${getVarName(varName)} = ds_${varName}_getPixelCoords(gl_FragCoord.xy)"
+        return "${getVarName(varName)} = ds_${varName}_getPixelDistanceFromEdge(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelLocationDataSource> {
-        override val title: String get() = "Pixel Location"
-        override val description: String get() = "The location of this pixel within the model entity."
+    companion object : DataSourceBuilder<PixelDistanceFromEdgeFeed> {
+        override val title: String get() = "Pixel Distance from Edge"
+        override val description: String get() = "The distance of this pixel to the nearest edge of its container."
         override val resourceName: String
-            get() = "PixelLocation"
+            get() = "PixelDistanceFromEdge"
         override val contentType: ContentType
-            get() = ContentType.XyzCoordinate
-        override val serializerRegistrar: SerializerRegistrar<PixelLocationDataSource>
+            get() = ContentType.Float
+        override val serializerRegistrar: SerializerRegistrar<PixelDistanceFromEdgeFeed>
             get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): PixelLocationDataSource =
-            PixelLocationDataSource()
+        override fun build(inputPort: InputPort): PixelDistanceFromEdgeFeed =
+            PixelDistanceFromEdgeFeed()
     }
 }
 
-class PixelLocationFeedContext(
+class PixelDistanceFromEdgeFeedContext(
     private val id: String,
     private val textureUniformId: String
 ) : FeedContext, RefCounted by RefCounter() {
@@ -89,24 +82,27 @@ class PixelLocationFeedContext(
     override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
 
     inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
-        override val buffer = FloatsParamBuffer(id, 3, gl)
+        override val buffer = FloatsParamBuffer(id, 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
-            if (renderTarget is FixtureRenderTarget) {
-                val fixture = renderTarget.fixture
-                if (fixture is PixelArrayFixture) {
-                    val pixelLocations = fixture.pixelLocations
+            val fixture = renderTarget.fixture
+            if (renderTarget is FixtureRenderTarget && fixture is PixelArrayFixture) {
+                val pixelLocations = fixture.pixelLocations
+                val surface = fixture.modelEntity as? Model.Surface
+                val lines = surface?.lines
 
-                    buffer.scoped(renderTarget).also { view ->
-                        for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.componentCount)) {
-                            val location = pixelLocations[pixelIndex]
-                            view[pixelIndex, 0] = location.x
-                            view[pixelIndex, 1] = location.y
-                            view[pixelIndex, 2] = location.z
-                        }
+                buffer.scoped(renderTarget).also { view ->
+                    for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.componentCount)) {
+                        val distanceFromEdge = lines?.let { lines ->
+                            val pixelLocation = pixelLocations[pixelIndex]
+
+                            lines.mapNotNull { line ->
+                                line.shortestDistanceTo(pixelLocation)
+                            }.minOrNull()
+                        } ?: 0f
+
+                        view[pixelIndex, 0] = distanceFromEdge
                     }
-                } else {
-                    logger.warn { "Attempted to set per-pixel data for a non-PixelArrayFixture, but that's impossible!" }
                 }
             } else {
                 logger.warn { "Attempted to set per-pixel data for a non-FixtureRenderTarget, but that's impossible!" }
@@ -125,6 +121,6 @@ class PixelLocationFeedContext(
     }
 
     companion object {
-        private val logger = Logger<PixelLocationFeedContext>()
+        private val logger = Logger<PixelDistanceFromEdgeFeedContext>()
     }
 }

@@ -10,7 +10,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
-import baaahs.plugin.core.datasource.XyPadDataSource
+import baaahs.plugin.core.datasource.XyPadFeed
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -105,7 +105,7 @@ class IsfShaderAnalyzer(
     private fun createXyPad(input: IsfPoint2DInput): InputPort {
         return InputPort(
             input.NAME, ContentType.XyCoordinate, title = input.LABEL ?: input.NAME.englishize(),
-            pluginRef = XyPadDataSource.pluginRef,
+            pluginRef = XyPadFeed.pluginRef,
             pluginConfig = buildJsonObject {
                 input.MIN?.let { put("min", JsonArray(it.map { n -> JsonPrimitive(n) })) }
                 input.MAX?.let { put("max", JsonArray(it.map { n -> JsonPrimitive(n) })) }

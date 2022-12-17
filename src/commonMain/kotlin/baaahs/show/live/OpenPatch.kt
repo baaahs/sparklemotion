@@ -9,10 +9,10 @@ import baaahs.gl.patch.*
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Stream
 import baaahs.show.Surfaces
-import baaahs.show.UnknownDataSource
+import baaahs.show.UnknownFeed
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 
@@ -40,14 +40,14 @@ class OpenPatch(
         }
 
     val dataSources get() = incomingLinks.values.mapNotNull { link ->
-        (link as? DataSourceLink)?.dataSource
+        (link as? DataSourceLink)?.feed
     }
 
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
                 dataSources.forEach { dataSource ->
-                    val unknownDataSource = dataSource as? UnknownDataSource
+                    val unknownDataSource = dataSource as? UnknownFeed
                     unknownDataSource?.let {
                         add(
                             Problem(
@@ -151,12 +151,12 @@ class OpenPatch(
     }
 
     data class DataSourceLink(
-        val dataSource: DataSource,
+        val feed: Feed,
         val varName: String,
         val deps: Map<String, DataSourceLink>
     ) : Link, ProgramNode {
-        override val title: String get() = dataSource.title
-        override val outputPort: OutputPort get() = OutputPort(dataSource.contentType)
+        override val title: String get() = feed.title
+        override val outputPort: OutputPort get() = OutputPort(feed.contentType)
 
         override fun getNodeId(programLinker: ProgramLinker): String = varName
 
@@ -166,7 +166,7 @@ class OpenPatch(
 
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
             resolver.resolveChannel(
-                inputPort.copy(contentType = dataSource.contentType),
+                inputPort.copy(contentType = feed.contentType),
                 Stream(varName)
             )
 
@@ -187,7 +187,7 @@ class OpenPatch(
 //                }
 //                tmpPortMap[toPortId] = expression
 //            }
-            return DataSourceComponent(dataSource, varName,
+            return FeedComponent(feed, varName,
                 deps.mapValues { (_, dataSourceLink) ->
                     findUpstreamComponent(dataSourceLink)
                 }

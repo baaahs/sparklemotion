@@ -2,7 +2,7 @@ package baaahs.app.ui.patchmod
 
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.OpenShader
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.GadgetProvider
 import baaahs.show.live.LinkedPatch
 import baaahs.show.live.OpenPatch
@@ -12,7 +12,7 @@ class ColorPatchMod : PatchMod {
     override val title: String
         get() = "Color"
 
-    override val dataSources: List<DataSource>
+    override val feeds: List<Feed>
         get() = emptyList()
 
     override fun getView(openPatch: OpenPatch): View =

@@ -1,13 +1,13 @@
 package baaahs.gl.patch
 
-import baaahs.device.PixelLocationDataSource
+import baaahs.device.PixelLocationFeed
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
-import baaahs.plugin.core.FixtureInfoDataSource
+import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.plugin.core.datasource.*
 import baaahs.show.Stream
@@ -54,12 +54,12 @@ object GlslGenerationSpec : Spek({
         context("with screen coordinates for preview") {
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fragCoord", RasterCoordinateDataSource())
-                    link("resolution", ResolutionDataSource())
-                    link("time", TimeDataSource())
+                    link("fragCoord", RasterCoordinateFeed())
+                    link("resolution", ResolutionFeed())
+                    link("time", TimeFeed())
                     link(
                         "blueness",
-                        SliderDataSource("Blueness", 0f, 0f, 1f, null)
+                        SliderFeed("Blueness", 0f, 0f, 1f, null)
                     )
                     stream = Stream.Main.editor()
                 }
@@ -151,8 +151,8 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
-                    link("resolution", ResolutionDataSource())
-                    link("fragCoord", RasterCoordinateDataSource())
+                    link("resolution", ResolutionFeed())
+                    link("fragCoord", RasterCoordinateFeed())
                     stream = Stream.Main.editor()
                 }
             }
@@ -231,11 +231,11 @@ object GlslGenerationSpec : Spek({
                 mutablePatchSet.addPatch(mainShader) {
                     link(
                         "blueness",
-                        SliderDataSource("Blueness", 0f, 0f, 1f, null)
+                        SliderFeed("Blueness", 0f, 0f, 1f, null)
                     )
-                    link("iResolution", ResolutionDataSource())
-                    link("iTime", TimeDataSource())
-                    link("fragCoord", RasterCoordinateDataSource())
+                    link("iResolution", ResolutionFeed())
+                    link("iTime", TimeFeed())
+                    link("fragCoord", RasterCoordinateFeed())
                     stream = Stream.Main.editor()
                 }
             }
@@ -314,16 +314,16 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatchSet.apply {
                     addPatch(cylindricalProjection) {
-                        link("pixelLocation", PixelLocationDataSource())
-                        link("modelInfo", ModelInfoDataSource())
+                        link("pixelLocation", PixelLocationFeed())
+                        link("modelInfo", ModelInfoFeed())
                         stream = Stream.Main.editor()
                     }
 
                     addPatch(mainShader) {
                         link("gl_FragCoord", Stream.Main.toMutable())
-                        link("resolution", ResolutionDataSource())
-                        link("time", TimeDataSource())
-                        link("blueness", SliderDataSource("Blueness", 0f, 0f, 1f, null))
+                        link("resolution", ResolutionFeed())
+                        link("time", TimeFeed())
+                        link("blueness", SliderFeed("Blueness", 0f, 0f, 1f, null))
                         stream = Stream.Main.editor()
                     }
                 }
@@ -493,12 +493,12 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatchSet.addPatch(mainPaintShader)
                 mutablePatchSet.addPatch(otherPaintShader) {
-                    link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
+                    link("fragCoord", MutableDataSourcePort(RasterCoordinateFeed()))
                     stream = MutableStream.from(otherShaderActualChannel)
                 }
 
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
+                    link("fade", SliderFeed("Fade", 0f, 0f, 1f, null))
                     link("inColor", MutableStream("main"))
                     link("inColor2", MutableStream("other"))
                 }
@@ -672,7 +672,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fixtureInfo", FixtureInfoDataSource())
+                    link("fixtureInfo", FixtureInfoFeed())
                 }
             }
 
@@ -765,7 +765,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fixtureInfo", FixtureInfoDataSource())
+                    link("fixtureInfo", FixtureInfoFeed())
                 }
             }
 
@@ -845,7 +845,7 @@ object GlslGenerationSpec : Spek({
 
             beforeEachTest {
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fixtureInfo", FixtureInfoDataSource())
+                    link("fixtureInfo", FixtureInfoFeed())
                 }
             }
 
@@ -955,25 +955,25 @@ object GlslGenerationSpec : Spek({
                         }
                     """.trimIndent()
                 )) {
-                    link("pixelLocation", MutableDataSourcePort(RasterCoordinateDataSource()))
+                    link("pixelLocation", MutableDataSourcePort(RasterCoordinateFeed()))
                 }
 
                 mutablePatchSet.addPatch(mainShader) {
-                    link("fade", SliderDataSource("Fade", 0f, 0f, 1f, null))
+                    link("fade", SliderFeed("Fade", 0f, 0f, 1f, null))
                     link("channelA", MutableStream("channelA"))
                     link("channelB", MutableStream("channelB"))
-                    link("time", MutableDataSourcePort(TimeDataSource()))
+                    link("time", MutableDataSourcePort(TimeFeed()))
                     link("uvIn", MutableStream("main"))
                 }
 
                 mutablePatchSet.addPatch(channelAShader) {
                     link("gl_FragCoord", MutableConstPort("var from downstream", GlslType.Vec4))
-                    link("time", MutableDataSourcePort(TimeDataSource()))
+                    link("time", MutableDataSourcePort(TimeFeed()))
                     stream = MutableStream.from("channelA")
                 }
 
                 mutablePatchSet.addPatch(channelBShader) {
-                    link("fragCoord", MutableDataSourcePort(RasterCoordinateDataSource()))
+                    link("fragCoord", MutableDataSourcePort(RasterCoordinateFeed()))
                     link("time", MutableConstPort("var from downstream", GlslType.Vec4))
                     stream = MutableStream.from("channelB")
                 }

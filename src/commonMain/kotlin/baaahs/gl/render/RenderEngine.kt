@@ -7,7 +7,7 @@ import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.gl.patch.LinkedProgram
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.time
 import baaahs.timeSync
 import kotlin.math.roundToInt
@@ -22,8 +22,8 @@ abstract class RenderEngine(val gl: GlContext) {
     }
 
     open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
-        return GlslProgramImpl(gl, linkedProgram) { id: String, dataSource: DataSource ->
-            val feed = feedResolver.openFeed(id, dataSource)
+        return GlslProgramImpl(gl, linkedProgram) { id: String, feed: Feed ->
+            val feed = feedResolver.openFeed(id, feed)
             feed?.let { cachedEngineFeed(it)}
         }
     }

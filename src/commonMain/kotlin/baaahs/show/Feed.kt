@@ -16,7 +16,7 @@ import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 
 
-interface DataSourceBuilder<T : DataSource> {
+interface DataSourceBuilder<T : Feed> {
     val title: String
     @Markdown
     val description: String
@@ -50,7 +50,7 @@ interface DataSourceBuilder<T : DataSource> {
 
     fun build(inputPort: InputPort): T
 
-    fun safeBuild(inputPort: InputPort): DataSource? = try {
+    fun safeBuild(inputPort: InputPort): Feed? = try {
         build(inputPort)
     } catch (e: Exception) {
         logger.error(e) { "Error building data source for $inputPort." }
@@ -64,11 +64,11 @@ interface DataSourceBuilder<T : DataSource> {
     }
 }
 
-internal fun DataSource.appearsToBePurposeBuiltFor(inputPort: InputPort) =
+internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
     title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
 @Polymorphic
-interface DataSource {
+interface Feed {
     val pluginPackage: String
     /** Short English name for this datasource. */
     val title: String
@@ -78,7 +78,7 @@ interface DataSource {
     fun isImplicit(): Boolean = false
     val contentType: ContentType
 
-    val dependencies: Map<String, DataSource>
+    val dependencies: Map<String, Feed>
         get() = emptyMap()
 
     fun getType(): GlslType

@@ -7,8 +7,8 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
-import baaahs.plugin.core.datasource.ColorPickerDataSource
-import baaahs.plugin.core.datasource.SliderDataSource
+import baaahs.plugin.core.datasource.ColorPickerFeed
+import baaahs.plugin.core.datasource.SliderFeed
 import baaahs.show.mutable.*
 
 object SampleData {
@@ -190,14 +190,14 @@ object SampleData {
         addPatch(brightnessFilter)
         addPatch(saturationFilter)
 
-        val color = ColorPickerDataSource("Color", Color.WHITE)
-        val brightness = SliderDataSource(
+        val color = ColorPickerFeed("Color", Color.WHITE)
+        val brightness = SliderFeed(
             "Brightness", 1f, 0f, 1.25f, null
         )
-        val saturation = SliderDataSource(
+        val saturation = SliderFeed(
             "Saturation", 1f, 0f, 1.25f, null
         )
-        val checkerboardSize = SliderDataSource(
+        val checkerboardSize = SliderFeed(
             "Checkerboard Size", .1f, .001f, 1f, null
         )
 
@@ -293,17 +293,17 @@ object SampleData {
             }
         }
 
-        val color = ColorPickerDataSource("Color", Color.WHITE)
-        val brightness = SliderDataSource(
+        val color = ColorPickerFeed("Color", Color.WHITE)
+        val brightness = SliderFeed(
             "Brightness", 1f, 0f, 1.25f, null
         )
-        val saturation = SliderDataSource(
+        val saturation = SliderFeed(
             "Saturation", 1f, 0f, 1.25f, null
         )
-        val intensity = SliderDataSource(
+        val intensity = SliderFeed(
             "Intensity", 1f, 0f, 1f, null
         )
-        val checkerboardSize = SliderDataSource(
+        val checkerboardSize = SliderFeed(
             "Checkerboard Size", .1f, .001f, 1f, null
         )
 

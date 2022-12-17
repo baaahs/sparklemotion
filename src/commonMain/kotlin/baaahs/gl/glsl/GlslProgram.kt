@@ -9,7 +9,7 @@ import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.Uniform
 import baaahs.glsl.UniformImpl
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
@@ -97,7 +97,7 @@ class GlslProgramImpl(
     }
 
     class OpenFeed(
-        val dataSource: DataSource,
+        val feed: Feed,
         val id: String,
         val programFeedContext: ProgramFeedContext,
         val glslProgramSpy: GlslProgramSpy?
@@ -203,9 +203,9 @@ class GlslProgramImpl(
 }
 
 fun interface FeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): FeedContext?
+    fun openFeed(id: String, feed: Feed): FeedContext?
 }
 
 fun interface EngineFeedResolver {
-    fun openFeed(id: String, dataSource: DataSource): EngineFeedContext?
+    fun openFeed(id: String, feed: Feed): EngineFeedContext?
 }

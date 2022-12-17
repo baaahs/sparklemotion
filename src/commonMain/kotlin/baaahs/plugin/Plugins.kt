@@ -200,22 +200,22 @@ sealed class Plugins(
 
     class PluginDataSourceSerializer(
         private val byPlugin: Map<String, SerializersModule>
-    ) : KSerializer<DataSource> {
+    ) : KSerializer<Feed> {
         override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.DataSource") {
             element("type", String.serializer().descriptor)
         }
 
-        override fun deserialize(decoder: Decoder): DataSource {
+        override fun deserialize(decoder: Decoder): Feed {
             val obj = JsonObject(MapSerializer(String.serializer(), JsonElement.serializer()).deserialize(decoder))
             val type = obj["type"]?.jsonPrimitive?.contentOrNull ?: error("Huh? No type?")
             val pluginRef = PluginRef.from(type)
             val plugin = byPlugin[pluginRef.pluginId]
-                ?: return UnknownDataSource(
+                ?: return UnknownFeed(
                     pluginRef, "Unknown plugin \"${pluginRef.pluginId}\".", ContentType.Unknown, obj
                 )
 
-            val serializer = plugin.getPolymorphic(DataSource::class, type)
-                ?: return UnknownDataSource(
+            val serializer = plugin.getPolymorphic(Feed::class, type)
+                ?: return UnknownFeed(
                     pluginRef, "Unknown datasource \"${pluginRef.toRef()}\".", ContentType.Unknown, obj
                 )
 
@@ -225,20 +225,20 @@ sealed class Plugins(
                 })
             } catch (e: Exception) {
                 logger.error(e) { "Failed to deserialize datasource $type." }
-                UnknownDataSource(
+                UnknownFeed(
                     pluginRef, e.message ?: "wha? unknown datasource?", ContentType.Unknown, obj
                 )
             }
         }
 
-        override fun serialize(encoder: Encoder, value: DataSource) {
-            if (value is UnknownDataSource) {
+        override fun serialize(encoder: Encoder, value: Feed) {
+            if (value is UnknownFeed) {
                 encoder.encodeSerializableValue(JsonObject.serializer(), value.data)
                 return
             }
 
             val serializersModule = byPlugin.getBang(value.pluginPackage, "plugin id")
-            val serializer = serializersModule.serializer<DataSource>()
+            val serializer = serializersModule.serializer<Feed>()
             encoder.encodeSerializableValue(serializer, value)
         }
     }
@@ -247,7 +247,7 @@ sealed class Plugins(
         include(Gadget.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
-        contextual(DataSource::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
+        contextual(Feed::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
         include(dataSourceBuilders.serialModule)
         include(fixtureTypes.serialModule)
         include(controllers.serialModule)
@@ -332,12 +332,12 @@ sealed class Plugins(
         return contentTypes.matchingType(glslType)
     }
 
-    fun findDataSourceBuilder(pluginRef: PluginRef): DataSourceBuilder<out DataSource> {
+    fun findDataSourceBuilder(pluginRef: PluginRef): DataSourceBuilder<out Feed> {
         return dataSourceBuilders.byPluginRef[pluginRef]
             ?: throw LinkException("unknown plugin resource $pluginRef")
     }
 
-    fun resolveDataSource(inputPort: InputPort): DataSource {
+    fun resolveDataSource(inputPort: InputPort): Feed {
         val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
         val builder = findDataSourceBuilder(pluginRef)
         return builder.build(inputPort)
@@ -378,7 +378,7 @@ sealed class Plugins(
             ?: error("no such plugin \"$packageName\"")
     }
 
-    fun decodeDataSource(pluginId: String, pluginData: JsonObject): DataSource {
+    fun decodeDataSource(pluginId: String, pluginData: JsonObject): Feed {
         TODO("not implemented")
     }
 
@@ -400,9 +400,9 @@ sealed class Plugins(
 
     // TODO: We should report errors back somehow.
     private fun safeBuild(
-        builder: DataSourceBuilder<out DataSource>,
+        builder: DataSourceBuilder<out Feed>,
         inputPort: InputPort
-    ): DataSource? = builder.safeBuild(inputPort)
+    ): Feed? = builder.safeBuild(inputPort)
 
     companion object {
         private val logger = Logger<Plugins>()
@@ -490,7 +490,7 @@ sealed class Plugins(
 
     inner class DataSourceBuilders {
         val withPlugin = openPlugins.flatMap { plugin ->
-            (plugin.dataSourceBuilders + plugin.fixtureTypes.flatMap { it.dataSourceBuilders })
+            (plugin.feedBuilders + plugin.fixtureTypes.flatMap { it.dataSourceBuilders })
                 .distinct()
                 .map { plugin to it }
         }
@@ -514,7 +514,7 @@ sealed class Plugins(
         }
 
         private fun OpenPlugin.dataSourceSerlializerRegistrars() =
-            dataSourceBuilders.map { it.serializerRegistrar } +
+            feedBuilders.map { it.serializerRegistrar } +
                     fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
 
         fun buildForContentType(
@@ -541,7 +541,7 @@ sealed class Plugins(
             }
         }
 
-        fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<DataSource> {
+        fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<Feed> {
             return all.flatMap { fixtureType ->
                 fixtureType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
             }.mapNotNull { safeBuild(it, inputPort) }

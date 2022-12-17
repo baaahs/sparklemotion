@@ -3,7 +3,7 @@ package baaahs.client
 import baaahs.*
 import baaahs.gl.Toolchain
 import baaahs.scene.SceneProvider
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
@@ -33,9 +33,9 @@ class ClientStageManager(
             }
     }
 
-    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
         gadgets[id] = ClientGadget(id, pubSub, gadget)
-        super.registerGadget(id, gadget, controlledDataSource)
+        super.registerGadget(id, gadget, controlledFeed)
     }
 
     override fun <T : Gadget> useGadget(id: String): T {

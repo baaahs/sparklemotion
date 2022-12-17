@@ -12,9 +12,9 @@ import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.plugin.core.datasource.TimeFeed
 import baaahs.shaders.fakeFixture
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Panel
 import baaahs.show.Shader
 import baaahs.show.Stream
@@ -261,7 +261,7 @@ object PatchResolverSpec : Spek({
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
                                 mutablePatches.only("patch")
-                                    .incomingLinks["time"] = MutableDataSourcePort(TimeDataSource())
+                                    .incomingLinks["time"] = MutableDataSourcePort(TimeFeed())
                             })
                         }
                     }
@@ -1036,7 +1036,7 @@ object PatchResolverSpec : Spek({
     }
 })
 
-private fun generateLinkedProgram(dataSources: Map<String, DataSource>, activePatchSet: ActivePatchSet): LinkedProgram {
+private fun generateLinkedProgram(dataSources: Map<String, Feed>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
     val renderManager = RenderManager(FakeGlContext())
     val fixture = model.allEntities.first()

@@ -15,8 +15,8 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
 import baaahs.plugin.classSerializer
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -38,7 +38,7 @@ val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixture
 
 @Serializable
 @SerialName("baaahs.Core:FixtureInfo")
-data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Fixture Info"
     override fun getType(): GlslType = fixtureInfoStruct
@@ -49,7 +49,7 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
         return FixtureInfoFeedContext(getVarName(id))
     }
 
-    companion object : DataSourceBuilder<FixtureInfoDataSource> {
+    companion object : DataSourceBuilder<FixtureInfoFeed> {
         override val title: String get() = "Fixture Info"
         override val description: String get() =
             "Information about the fixture's position and orientation in the model."
@@ -57,8 +57,8 @@ data class FixtureInfoDataSource(@Transient val `_`: Boolean = true) : DataSourc
         override val contentType: ContentType get() = fixtureInfoContentType
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): FixtureInfoDataSource {
-            return FixtureInfoDataSource()
+        override fun build(inputPort: InputPort): FixtureInfoFeed {
+            return FixtureInfoFeed()
         }
     }
 }

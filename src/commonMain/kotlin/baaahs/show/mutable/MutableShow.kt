@@ -167,9 +167,9 @@ data class MutablePatch(
         get() = mutableShader.title
     var surfaces: Surfaces = Surfaces.AllSurfaces
 
-    fun findDataSources(): List<DataSource> {
+    fun findDataSources(): List<Feed> {
         return incomingLinks.mapNotNull { (_, from) ->
-            (from as? MutableDataSourcePort)?.dataSource
+            (from as? MutableDataSourcePort)?.feed
         }
     }
 
@@ -179,7 +179,7 @@ data class MutablePatch(
         } + stream).filterNotNull()
     }
 
-    fun link(portId: String, toPort: DataSource) {
+    fun link(portId: String, toPort: Feed) {
         incomingLinks[portId] = toPort.editor()
     }
 

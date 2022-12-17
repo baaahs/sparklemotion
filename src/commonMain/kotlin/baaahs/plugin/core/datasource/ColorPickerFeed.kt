@@ -15,8 +15,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -28,11 +28,11 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:ColorPicker")
-data class ColorPickerDataSource(
+data class ColorPickerFeed(
     @SerialName("title")
     val colorPickerTitle: String,
     val initialValue: Color
-) : DataSource {
+) : Feed {
     override val title: String get() = "$colorPickerTitle Color Picker"
 
     override fun buildControl(): MutableControl {
@@ -51,7 +51,7 @@ data class ColorPickerDataSource(
         return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    return SingleUniformFeedContext(glslProgram, this@ColorPickerDataSource, id) { uniform ->
+                    return SingleUniformFeedContext(glslProgram, this@ColorPickerFeed, id) { uniform ->
                         val color = colorPicker.color
                         uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
                     }
@@ -60,23 +60,23 @@ data class ColorPickerDataSource(
         }
     }
 
-    companion object : DataSourceBuilder<ColorPickerDataSource> {
+    companion object : DataSourceBuilder<ColorPickerFeed> {
         override val title: String get() = "Color Picker"
         override val description: String get() = "A user-adjustable color picker."
         override val resourceName: String get() = "ColorPicker"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): ColorPickerDataSource {
+        override fun build(inputPort: InputPort): ColorPickerFeed {
             val default = inputPort.pluginConfig?.get("default")?.jsonPrimitive?.contentOrNull
 
-            return ColorPickerDataSource(
+            return ColorPickerFeed(
                 inputPort.title,
                 initialValue = default?.let { Color.Companion.from(it) } ?: Color.WHITE
             )
         }
 
-        private val logger = Logger<ColorPickerDataSource>()
+        private val logger = Logger<ColorPickerFeed>()
     }
 
     override val pluginPackage: String get() = CorePlugin.id

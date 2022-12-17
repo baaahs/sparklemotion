@@ -13,12 +13,12 @@ import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.json.JsonObject
 
-data class UnknownDataSource(
+data class UnknownFeed(
     val pluginRef: PluginRef,
     val errorMessage: String,
     override val contentType: ContentType,
     val data: JsonObject
-) : DataSource {
+) : Feed {
     override val pluginPackage: String get() = pluginRef.pluginId
     override val title: String get() = "Unknown DataSource ${pluginRef.toRef()}"
     override val isUnknown: Boolean = true

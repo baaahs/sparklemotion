@@ -11,8 +11,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
@@ -26,11 +26,11 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
-    internal val videoInDataSource = VideoInDataSource()
+    internal val videoInDataSource = VideoInFeed()
 
-    override val dataSourceBuilders: List<DataSourceBuilder<VideoInDataSource>>
+    override val feedBuilders: List<DataSourceBuilder<VideoInFeed>>
         get() = listOf(
-            object : DataSourceBuilder<VideoInDataSource> {
+            object : DataSourceBuilder<VideoInFeed> {
                 override val title get() = "Video Input"
                 override val description get() = "Video input."
                 override val resourceName get() = "VideoIn"
@@ -46,7 +46,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
         )
 
     @SerialName("baaahs.VideoIn:VideoIn")
-    inner class VideoInDataSource internal constructor() : DataSource {
+    inner class VideoInFeed internal constructor() : Feed {
         override val pluginPackage: String get() = id
         override val title: String get() = "Video In"
         override fun getType(): GlslType = GlslType.Sampler2D

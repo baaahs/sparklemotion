@@ -2,7 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.getBang
 import baaahs.gl.shader.InputPort
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
@@ -38,7 +38,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
     fun resolvePatch(
         stream: Stream,
         contentType: ContentType,
-        dataSources: Map<String, DataSource>
+        dataSources: Map<String, Feed>
     ): LinkedProgram? {
         val resolver = Resolver(dataSources)
         val track = Track(stream, contentType)
@@ -90,18 +90,18 @@ class PortDiagram(val patches: List<OpenPatch>) {
     }
 
     inner class Resolver(
-        dataSources: Map<String, DataSource>
+        dataSources: Map<String, Feed>
     ) {
         private val dataSourcesToId by lazy { dataSources.entries.associate { (k, v) -> v to k } }
         private val dataSourceLinks = mutableMapOf<Pair<String, ContentType>, OpenPatch.DataSourceLink>()
 
-        private fun resolveDataSource(id: String, dataSource: DataSource): OpenPatch.DataSourceLink {
-            return dataSourceLinks.getOrPut(id to dataSource.contentType) {
-                val deps = dataSource.dependencies.mapValues { (_, dataSource) ->
+        private fun resolveDataSource(id: String, feed: Feed): OpenPatch.DataSourceLink {
+            return dataSourceLinks.getOrPut(id to feed.contentType) {
+                val deps = feed.dependencies.mapValues { (_, dataSource) ->
                     val dependencyId = dataSourcesToId.getBang(dataSource, "data source dependency")
                     resolveDataSource(dependencyId, dataSource)
                 }
-                OpenPatch.DataSourceLink(dataSource, id, deps)
+                OpenPatch.DataSourceLink(feed, id, deps)
             }
         }
 

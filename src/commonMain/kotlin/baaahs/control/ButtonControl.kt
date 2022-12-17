@@ -36,7 +36,7 @@ data class ButtonControl(
     override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(
             this, mutableShow,
-            controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.dataSource
+            controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.feed
         )
     }
 
@@ -50,8 +50,8 @@ data class ButtonControl(
 class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow,
-    var controlledDataSource: DataSource? =
-        baseButtonControl.controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.dataSource
+    var controlledFeed: Feed? =
+        baseButtonControl.controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.feed
 ) : MutablePatchHolder(baseButtonControl), MutableControl {
     var activationType: ButtonControl.ActivationType = baseButtonControl.activationType
 
@@ -68,13 +68,13 @@ class MutableButtonControl(
             patchIds = patches.map { showBuilder.idFor(it.build(showBuilder)) },
             eventBindings = eventBindings,
             controlLayout = buildControlLayout(showBuilder),
-            controlledDataSourceId = controlledDataSource?.let { showBuilder.idFor(it) }
+            controlledDataSourceId = controlledFeed?.let { showBuilder.idFor(it) }
         )
     }
 
     override fun previewOpen(): OpenControl {
         val buttonControl = buildControl(ShowBuilder())
-        return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledDataSource)
+        return OpenButtonControl(randomId(title.camelize()), buttonControl, EmptyOpenContext, controlledFeed)
     }
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
@@ -87,7 +87,7 @@ class OpenButtonControl(
     override val id: String,
     private val buttonControl: ButtonControl,
     openContext: OpenContext,
-    val controlledDataSource: DataSource? = buttonControl.controlledDataSourceId?.let { openContext.getDataSource(it) }
+    val controlledFeed: Feed? = buttonControl.controlledDataSourceId?.let { openContext.getDataSource(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     val switch: Switch = Switch(buttonControl.title)
     override val gadget: Switch
@@ -116,10 +116,10 @@ class OpenButtonControl(
     }
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
-        MutableButtonControl(buttonControl, mutableShow, controlledDataSource)
+        MutableButtonControl(buttonControl, mutableShow, controlledFeed)
 
-    override fun controlledDataSources(): Set<DataSource> =
-        setOfNotNull(controlledDataSource)
+    override fun controlledDataSources(): Set<Feed> =
+        setOfNotNull(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forButton(this, controlProps)

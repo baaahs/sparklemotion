@@ -28,11 +28,11 @@ class CorePlugin(
     override val contentTypes: List<ContentType> get() =
         ContentType.coreTypes +
                 MovingHeadParams.contentType +
-                dataSourceBuilders.map { it.contentType } +
+                feedBuilders.map { it.contentType } +
                 fixtureTypes.map { it.resultContentType } +
                 fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
 
-    override val dataSourceBuilders get() = Companion.dataSourceBuilders
+    override val feedBuilders get() = Companion.dataSourceBuilders
 
     override val addControlMenuItems: List<AddControlMenuItem> get() = listOf(
         AddControlMenuItem("New Button…", CommonIcons.Button, true) { mutableShow ->
@@ -119,19 +119,19 @@ class CorePlugin(
         fun openSafe(pluginContext: PluginContext) = CorePlugin(pluginContext)
 
         private val dataSourceBuilders = listOf(
-            ColorPickerDataSource,
-            DateDataSource,
-            FixtureInfoDataSource,
-            ImageDataSource,
-            ModelInfoDataSource,
-            PixelCoordsTextureDataSource,
-            PreviewResolutionDataSource,
-            RasterCoordinateDataSource,
-            ResolutionDataSource,
-            SliderDataSource,
-            SwitchDataSource,
-            TimeDataSource,
-            XyPadDataSource
+            ColorPickerFeed,
+            DateFeed,
+            FixtureInfoFeed,
+            ImageFeed,
+            ModelInfoFeed,
+            PixelCoordsTextureFeed,
+            PreviewResolutionFeed,
+            RasterCoordinateFeed,
+            ResolutionFeed,
+            SliderFeed,
+            SwitchFeed,
+            TimeFeed,
+            XyPadFeed
         )
 
         private val logger = Logger("CorePlugin")

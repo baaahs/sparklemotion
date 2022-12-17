@@ -3,8 +3,8 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
-import baaahs.plugin.core.datasource.ModelInfoDataSource
-import baaahs.plugin.core.datasource.TimeDataSource
+import baaahs.plugin.core.datasource.ModelInfoFeed
+import baaahs.plugin.core.datasource.TimeFeed
 import baaahs.show.Show
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified
@@ -47,8 +47,8 @@ object V1_UpdateDataSourceRefsSpec : Spek({
             }
 
             it("fixes data source serial names") {
-                expect(show.dataSources["modelInfo"]).toBe(ModelInfoDataSource())
-                expect(show.dataSources["time"]).toBe(TimeDataSource())
+                expect(show.dataSources["modelInfo"]).toBe(ModelInfoFeed())
+                expect(show.dataSources["time"]).toBe(TimeFeed())
             }
         }
     }

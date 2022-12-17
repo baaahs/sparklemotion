@@ -14,8 +14,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Control
-import baaahs.show.DataSource
 import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
 import baaahs.sim.BridgeClient
 import baaahs.util.*
 import com.danielgergely.kgl.*
@@ -44,22 +44,22 @@ class SoundAnalysisPlugin internal constructor(
         )
 
     override val contentTypes: List<ContentType>
-        get() = dataSourceBuilders.map { it.contentType }
+        get() = feedBuilders.map { it.contentType }
 
     override val controlSerializers: List<SerializerRegistrar<out Control>>
         get() = listOf(
             classSerializer(SoundAnalysisControl.serializer())
         )
 
-    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> =
+    override val feedBuilders: List<DataSourceBuilder<out Feed>> =
         listOf(SoundAnalysisDataSourceBuilder())
 
-    internal val dataSource = SoundAnalysisDataSource()
+    internal val dataSource = SoundAnalysisFeed()
 
     override fun getSettingsPanel(): DialogPanel = SoundAnalysisSettingsPanel()
 
     @SerialName("baaahs.SoundAnalysis:SoundAnalysis")
-    inner class SoundAnalysisDataSource internal constructor() : DataSource {
+    inner class SoundAnalysisFeed internal constructor() : Feed {
         override val pluginPackage: String get() = id
         override val title: String get() = "SoundAnalysis"
         override val contentType: ContentType get() = soundAnalysisContentType
@@ -69,14 +69,14 @@ class SoundAnalysisPlugin internal constructor(
             SoundAnalysisFeedContext(getVarName(id), soundAnalyzer, historySize)
     }
 
-    inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisDataSource> {
+    inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisFeed> {
         override val title: String get() = "Sound Analysis"
         override val description: String get() = "Spectral analysis of sound input."
         override val resourceName: String get() = "SoundAnalysis"
         override val contentType: ContentType get() = soundAnalysisContentType
         override val serializerRegistrar get() = objectSerializer("$id:$resourceName", dataSource)
 
-        override fun build(inputPort: InputPort): SoundAnalysisDataSource = dataSource
+        override fun build(inputPort: InputPort): SoundAnalysisFeed = dataSource
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {

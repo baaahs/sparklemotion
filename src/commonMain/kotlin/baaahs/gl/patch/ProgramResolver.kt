@@ -9,7 +9,7 @@ import baaahs.gl.glsl.GlslException
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Stream
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenPatch
@@ -42,7 +42,7 @@ class ProgramResolver(
         }
 
     fun createRenderPlan(
-        dataSources: Map<String, DataSource>,
+        dataSources: Map<String, Feed>,
         feedResolver: FeedResolver
     ): RenderPlan {
         return RenderPlan(

@@ -14,7 +14,7 @@ import org.spekframework.spek2.Spek
 
 @Suppress("unused")
 object FixtureInfoDataSourceSpec : Spek({
-    describe<FixtureInfoDataSource> {
+    describe<FixtureInfoFeed> {
         val movingHead by value {
             MovingHead(
                 "test", "Test", baseDmxChannel = 1, adapter = TestMovingHeadAdapter()
@@ -38,7 +38,7 @@ object FixtureInfoDataSourceSpec : Spek({
 
         val testRenderContext by value { TestRenderContext(movingHead) }
         val program by value { testRenderContext.createProgram(shaderText, mapOf(
-            "fixtureInfo" to FixtureInfoDataSource().link("fixtureInfo")
+            "fixtureInfo" to FixtureInfoFeed().link("fixtureInfo")
         )) as GlslProgramImpl }
 
         beforeEachTest {

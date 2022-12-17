@@ -8,9 +8,9 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramNode
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
-import baaahs.plugin.core.datasource.SliderDataSource
-import baaahs.plugin.core.datasource.XyPadDataSource
-import baaahs.show.DataSource
+import baaahs.plugin.core.datasource.SliderFeed
+import baaahs.plugin.core.datasource.XyPadFeed
+import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.GadgetProvider
@@ -26,7 +26,7 @@ class PositionAndScalePatchMod(
     override val title: String
         get() = "Position/Scale"
 
-    private val positionDataSource = XyPadDataSource(
+    private val positionDataSource = XyPadFeed(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
         Vector2F(-.75f, -.75f),
@@ -39,7 +39,7 @@ class PositionAndScalePatchMod(
         Vector2F(.75f, .75f)
     )
 
-    private val scaleDataSource = SliderDataSource(
+    private val scaleDataSource = SliderFeed(
         "$patchId ${uvInputPort.id} scale",
         1f,
         .1f,
@@ -47,7 +47,7 @@ class PositionAndScalePatchMod(
     )
     val scaleSlider = scaleDataSource.createGadget()
 
-    override val dataSources: List<DataSource>
+    override val feeds: List<Feed>
         get() = listOf(positionDataSource, scaleDataSource)
 
     override fun getView(openPatch: OpenPatch): View =

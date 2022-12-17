@@ -1,6 +1,6 @@
 package baaahs.show.mutable
 
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Surfaces
 
 interface MutableShowVisitor {
@@ -10,5 +10,5 @@ interface MutableShowVisitor {
     fun visit(mutableControl: MutableControl) {}
     fun visit(mutableShader: MutableShader) {}
     fun visit(mutableStream: MutableStream) {}
-    fun visit(dataSource: DataSource) {}
+    fun visit(feed: Feed) {}
 }
