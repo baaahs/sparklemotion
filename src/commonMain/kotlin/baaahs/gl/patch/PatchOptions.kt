@@ -145,8 +145,8 @@ class PatchOptions(
 
             if (inputPort.hasPluginRef()) {
                 try {
-                    val dataSource = plugins.resolveDataSource(inputPort)
-                    options.add(PortLinkOption(MutableFeedPort(dataSource), isPluginRef = true))
+                    val feed = plugins.resolveFeed(inputPort)
+                    options.add(PortLinkOption(MutableFeedPort(feed), isPluginRef = true))
                 } catch (e: LinkException) {
                     logger.warn(e) { "Incorrect plugin reference." }
                 } catch (e: Exception) {
@@ -154,7 +154,7 @@ class PatchOptions(
                 }
             }
 
-            plugins.suggestDataSources(inputPort, contentTypes.toSet()).forEach { portLinkOption ->
+            plugins.suggestFeeds(inputPort, contentTypes.toSet()).forEach { portLinkOption ->
                 options.add(portLinkOption)
             }
             return options

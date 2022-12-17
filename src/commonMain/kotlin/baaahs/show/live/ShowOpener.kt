@@ -57,8 +57,8 @@ open class ShowOpener(
 
     override fun getControl(id: String): OpenControl = openControlCache[id]
 
-    override fun getDataSource(id: String): Feed =
-        show.dataSources.getBang(id, "data source")
+    override fun getFeed(id: String): Feed =
+        show.dataSources.getBang(id, "feed")
 
     override fun getPanel(id: String): Panel =
         show.layouts.panels.getBang(id, "panel")

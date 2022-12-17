@@ -54,7 +54,7 @@ class SoundAnalysisPlugin internal constructor(
     override val feedBuilders: List<FeedBuilder<out Feed>> =
         listOf(SoundAnalysisFeedBuilder())
 
-    internal val dataSource = SoundAnalysisFeed()
+    internal val feed = SoundAnalysisFeed()
 
     override fun getSettingsPanel(): DialogPanel = SoundAnalysisSettingsPanel()
 
@@ -74,9 +74,9 @@ class SoundAnalysisPlugin internal constructor(
         override val description: String get() = "Spectral analysis of sound input."
         override val resourceName: String get() = "SoundAnalysis"
         override val contentType: ContentType get() = soundAnalysisContentType
-        override val serializerRegistrar get() = objectSerializer("$id:$resourceName", dataSource)
+        override val serializerRegistrar get() = objectSerializer("$id:$resourceName", feed)
 
-        override fun build(inputPort: InputPort): SoundAnalysisFeed = dataSource
+        override fun build(inputPort: InputPort): SoundAnalysisFeed = feed
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {

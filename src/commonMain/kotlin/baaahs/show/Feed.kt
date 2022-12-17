@@ -27,17 +27,17 @@ interface FeedBuilder<T : Feed> {
     val serializerRegistrar: SerializerRegistrar<T>
     val internalOnly: Boolean get() = false
 
-    fun suggestDataSources(
+    fun suggestFeeds(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
         return if (looksValid(inputPort, suggestedContentTypes)) {
-            listOfNotNull(safeBuild(inputPort)).map { dataSource ->
+            listOfNotNull(safeBuild(inputPort)).map { feed ->
                 PortLinkOption(
-                    MutableFeedPort(dataSource),
-                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    MutableFeedPort(feed),
+                    wasPurposeBuilt = feed.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
-                    isExactContentType = dataSource.contentType == inputPort.contentType
+                    isExactContentType = feed.contentType == inputPort.contentType
                             || inputPort.contentType.isUnknown()
                 )
             }
@@ -67,10 +67,13 @@ interface FeedBuilder<T : Feed> {
 internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
     title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
+/**
+ * Descriptor of an external data source which can be used by a shader program.
+ */
 @Polymorphic
 interface Feed {
     val pluginPackage: String
-    /** Short English name for this datasource. */
+    /** Short English name for this feed. */
     val title: String
     val isUnknown: Boolean get() = false
 

@@ -12,7 +12,7 @@ import baaahs.util.Logger
 class PatchResolver(
     private val openShaders: CacheBuilder<String, OpenShader>,
     private val patches: Map<String, Patch>,
-    private val dataSources: Map<String, Feed>,
+    private val feeds: Map<String, Feed>,
     private val toolchain: Toolchain,
     private val gadgetProvider: GadgetProvider? = null
 ) {
@@ -24,7 +24,7 @@ class PatchResolver(
         }
     }
 
-    private fun findDataSource(id: String) = dataSources.getBang(id, "data source")
+    private fun findFeed(id: String) = feeds.getBang(id, "feed")
     private fun findShader(id: String): OpenShader = openShaders.getBang(id, "open shader")
     private fun findPatch(id: String): Patch = patches.getBang(id, "patch")
 
@@ -47,7 +47,7 @@ class PatchResolver(
             }
             .mapValues { (_, portRef) ->
                 when (portRef) {
-                    is FeedRef -> findDataSource(portRef.dataSourceId).link(portRef.dataSourceId)
+                    is FeedRef -> findFeed(portRef.dataSourceId).link(portRef.dataSourceId)
                     is StreamRef -> OpenPatch.StreamLink(portRef.stream)
                     is OutputPortRef -> TODO()
                     is ConstPortRef -> OpenPatch.ConstLink(portRef.glsl, GlslType.from(portRef.type))

@@ -29,15 +29,15 @@ data class ImagePickerControl(
     override fun createMutable(mutableShow: MutableShow): MutableImagePickerControl {
         return MutableImagePickerControl(
             title,
-            mutableShow.findDataSource(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledDataSourceId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledDataSourceId)
         val imagePicker = ImagePicker(title)
-        showPlayer.registerGadget(id, imagePicker, controlledDataSource)
-        return OpenImagePickerControl(id, imagePicker, controlledDataSource)
+        showPlayer.registerGadget(id, imagePicker, controlledFeed)
+        return OpenImagePickerControl(id, imagePicker, controlledFeed)
     }
 }
 
@@ -91,7 +91,7 @@ class OpenImagePickerControl(
         )
     }
 
-    override fun controlledDataSources(): Set<Feed> =
+    override fun controlledFeeds(): Set<Feed> =
         setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =

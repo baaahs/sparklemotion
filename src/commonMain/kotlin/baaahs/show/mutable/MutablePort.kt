@@ -17,14 +17,14 @@ interface MutablePort {
 
 data class MutableFeedPort(val feed: Feed) : MutablePort {
     override val title: String get() = feed.title
-    override val icon: Icon get() = CommonIcons.DataSource
+    override val icon: Icon get() = CommonIcons.Feed
     override val groupName: String get() = "Data Source:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         FeedRef(showBuilder.idFor(feed))
 
     override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
-        if (log.dataSources.add(this)) visitor.visit(feed)
+        if (log.feeds.add(this)) visitor.visit(feed)
     }
 }
 fun Feed.editor() = MutableFeedPort(this)

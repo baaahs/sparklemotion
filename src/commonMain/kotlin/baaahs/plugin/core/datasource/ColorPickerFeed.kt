@@ -44,7 +44,7 @@ data class ColorPickerFeed(
         val colorPicker = showPlayer.useGadget(this)
             ?: showPlayer.useGadget(id)
             ?: run {
-                logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()
             }
 

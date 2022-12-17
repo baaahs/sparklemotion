@@ -31,15 +31,15 @@ class ShowBuilder {
     }
 
     fun getControls(): Map<String, Control> = controlIds.all()
-    fun getDataSources(): Map<String, Feed> = feedIds.all()
+    fun getFeeds(): Map<String, Feed> = feedIds.all()
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getPatches(): Map<String, Patch> = patchIds.all()
 
     // Make sure we include data source dependencies, otherwise their feeds aren't opened.
     // This is pretty janky, find a better way.
-    fun includeDependencyDataSources() {
-        getDataSources().forEach { (_, dataSource) ->
-            dataSource.dependencies.forEach { (_, dependency) ->
+    fun includeDependencyFeeds() {
+        getFeeds().forEach { (_, feed) ->
+            feed.dependencies.forEach { (_, dependency) ->
                 idFor(dependency)
             }
         }
@@ -48,10 +48,10 @@ class ShowBuilder {
     companion object {
         fun forImplicitControls(
             existingControls: Map<String, Control>,
-            existingDataSources: Map<String, Feed>
+            existingFeeds: Map<String, Feed>
         ): ShowBuilder = ShowBuilder().apply {
             controlIds.putAll(existingControls)
-            feedIds.putAll(existingDataSources)
+            feedIds.putAll(existingFeeds)
         }
     }
 }

@@ -12,7 +12,7 @@ interface PlatformIcons {
 
     val Fixture: Icon
     val Patch: Icon
-    val DataSource: Icon
+    val Feed: Icon
     val Layout: Icon
     val Stream: Icon
     val Settings: Icon

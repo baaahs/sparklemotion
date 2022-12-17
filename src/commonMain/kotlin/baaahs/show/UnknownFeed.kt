@@ -20,7 +20,7 @@ data class UnknownFeed(
     val data: JsonObject
 ) : Feed {
     override val pluginPackage: String get() = pluginRef.pluginId
-    override val title: String get() = "Unknown DataSource ${pluginRef.toRef()}"
+    override val title: String get() = "Unknown Feed ${pluginRef.toRef()}"
     override val isUnknown: Boolean = true
 
     override fun getType(): GlslType = GlslType.Void

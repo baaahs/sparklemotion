@@ -21,7 +21,7 @@ interface OpenControl {
     fun isActive(): Boolean = true
     fun getState(): Map<String, JsonElement>?
     fun applyState(state: Map<String, JsonElement>)
-    fun controlledDataSources(): Set<Feed> = emptySet()
+    fun controlledFeeds(): Set<Feed> = emptySet()
     fun addTo(builder: ActivePatchSet.Builder, depth: Int, layout: OpenGridLayout?) {}
     fun legacyAddTo(builder: ActivePatchSet.Builder, panel: Panel, depth: Int) {}
     fun applyConstraints() {}
@@ -36,7 +36,7 @@ abstract class FeedOpenControl : OpenControl {
 
     var inUse: Boolean = false
 
-    override fun controlledDataSources(): Set<Feed> = setOf(controlledFeed)
+    override fun controlledFeeds(): Set<Feed> = setOf(controlledFeed)
 }
 
 interface ControlContainer {

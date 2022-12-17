@@ -91,8 +91,8 @@ class MutableShow(
             controls = showBuilder.getControls(),
             patches = showBuilder.getPatches(),
             dataSources = run {
-                showBuilder.includeDependencyDataSources()
-                showBuilder.getDataSources()
+                showBuilder.includeDependencyFeeds()
+                showBuilder.getFeeds()
             }
         )
     }
@@ -108,7 +108,7 @@ class MutableShow(
         (findControl(buttonGroupControl.id) as MutableButtonGroupControl).block()
     }
 
-    fun findDataSource(dataSourceId: String): MutableFeedPort =
+    fun findFeed(dataSourceId: String): MutableFeedPort =
         dataSources.getBang(dataSourceId, "data source")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
@@ -167,7 +167,7 @@ data class MutablePatch(
         get() = mutableShader.title
     var surfaces: Surfaces = Surfaces.AllSurfaces
 
-    fun findDataSources(): List<Feed> {
+    fun findFeeds(): List<Feed> {
         return incomingLinks.mapNotNull { (_, from) ->
             (from as? MutableFeedPort)?.feed
         }
@@ -239,18 +239,18 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
         mutablePatches.forEach {
             showBuilder.idFor(it.build(showBuilder))
         }
-        showBuilder.includeDependencyDataSources()
+        showBuilder.includeDependencyFeeds()
 
         val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
             toolchain.openShader(showBuilder.getShaders().getBang(shaderId, "shader"))
         }
 
         val resolvedPatches =
-            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources(), toolchain)
+            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getFeeds(), toolchain)
                 .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
         val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)
-        return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getDataSources())
+        return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getFeeds())
     }
 
 }

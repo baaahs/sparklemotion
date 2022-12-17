@@ -34,15 +34,15 @@ data class XyPadControl(
     override fun createMutable(mutableShow: MutableShow): MutableXyPadControl {
         return MutableXyPadControl(
             title, initialValue, minValue, maxValue,
-            mutableShow.findDataSource(controlledDataSourceId).feed
+            mutableShow.findFeed(controlledDataSourceId).feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenXyPadControl {
-        val controlledDataSource = openContext.getDataSource(controlledDataSourceId)
+        val controlledFeed = openContext.getFeed(controlledDataSourceId)
         val xyPad = XyPad(title, initialValue, minValue, maxValue)
-        return OpenXyPadControl(id, xyPad, controlledDataSource)
-            .also { showPlayer.registerGadget(id, xyPad, controlledDataSource) }
+        return OpenXyPadControl(id, xyPad, controlledFeed)
+            .also { showPlayer.registerGadget(id, xyPad, controlledFeed) }
     }
 }
 
@@ -85,7 +85,7 @@ class OpenXyPadControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableXyPadControl(xyPad.title, xyPad.initialValue, xyPad.minValue, xyPad.maxValue, controlledFeed)
 
-    override fun controlledDataSources(): Set<Feed> =
+    override fun controlledFeeds(): Set<Feed> =
         setOf(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =

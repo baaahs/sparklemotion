@@ -26,7 +26,7 @@ class PositionAndScalePatchMod(
     override val title: String
         get() = "Position/Scale"
 
-    private val positionDataSource = XyPadFeed(
+    private val positionFeed = XyPadFeed(
         "$patchId ${uvInputPort.id} offset",
         Vector2F.origin,
         Vector2F(-.75f, -.75f),
@@ -39,16 +39,16 @@ class PositionAndScalePatchMod(
         Vector2F(.75f, .75f)
     )
 
-    private val scaleDataSource = SliderFeed(
+    private val scaleFeed = SliderFeed(
         "$patchId ${uvInputPort.id} scale",
         1f,
         .1f,
         4f
     )
-    val scaleSlider = scaleDataSource.createGadget()
+    val scaleSlider = scaleFeed.createGadget()
 
     override val feeds: List<Feed>
-        get() = listOf(positionDataSource, scaleDataSource)
+        get() = listOf(positionFeed, scaleFeed)
 
     override fun getView(openPatch: OpenPatch): View =
         patchModViews.forPositionAndScale(this, openPatch)
@@ -76,11 +76,11 @@ class PositionAndScalePatchMod(
                 mapOf(
                     "uvIn" to link,
                     "offset" to OpenPatch.FeedLink(
-                        positionDataSource, positionDataSource.suggestId(),
+                        positionFeed, positionFeed.suggestId(),
                         emptyMap()
                     ),
                     "scale" to OpenPatch.FeedLink(
-                        scaleDataSource, scaleDataSource.suggestId(),
+                        scaleFeed, scaleFeed.suggestId(),
                         emptyMap()
                     )
                 ),
@@ -92,8 +92,8 @@ class PositionAndScalePatchMod(
     }
 
     override fun registerGadgets(gadgetProvider: GadgetProvider) {
-        gadgetProvider.registerGadget(positionDataSource.suggestId(), positionXyPad, positionDataSource)
-        gadgetProvider.registerGadget(scaleDataSource.suggestId(), scaleSlider, scaleDataSource)
+        gadgetProvider.registerGadget(positionFeed.suggestId(), positionXyPad, positionFeed)
+        gadgetProvider.registerGadget(scaleFeed.suggestId(), scaleSlider, scaleFeed)
     }
 
     companion object : PatchModBuilder {

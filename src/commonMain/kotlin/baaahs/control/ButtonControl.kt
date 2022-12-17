@@ -36,14 +36,14 @@ data class ButtonControl(
     override fun createMutable(mutableShow: MutableShow): MutableButtonControl {
         return MutableButtonControl(
             this, mutableShow,
-            controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.feed
+            controlledDataSourceId?.let { mutableShow.findFeed(it) }?.feed
         )
     }
 
     override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonControl {
-        val controlledDataSource = controlledDataSourceId?.let { openContext.getDataSource(it) }
-        return OpenButtonControl(id, this, openContext, controlledDataSource)
-            .also { showPlayer.registerGadget(id, it.switch, controlledDataSource) }
+        val controlledFeed = controlledDataSourceId?.let { openContext.getFeed(it) }
+        return OpenButtonControl(id, this, openContext, controlledFeed)
+            .also { showPlayer.registerGadget(id, it.switch, controlledFeed) }
     }
 }
 
@@ -51,7 +51,7 @@ class MutableButtonControl(
     baseButtonControl: ButtonControl,
     override val mutableShow: MutableShow,
     var controlledFeed: Feed? =
-        baseButtonControl.controlledDataSourceId?.let { mutableShow.findDataSource(it) }?.feed
+        baseButtonControl.controlledDataSourceId?.let { mutableShow.findFeed(it) }?.feed
 ) : MutablePatchHolder(baseButtonControl), MutableControl {
     var activationType: ButtonControl.ActivationType = baseButtonControl.activationType
 
@@ -87,7 +87,7 @@ class OpenButtonControl(
     override val id: String,
     private val buttonControl: ButtonControl,
     openContext: OpenContext,
-    val controlledFeed: Feed? = buttonControl.controlledDataSourceId?.let { openContext.getDataSource(it) }
+    val controlledFeed: Feed? = buttonControl.controlledDataSourceId?.let { openContext.getFeed(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
     val switch: Switch = Switch(buttonControl.title)
     override val gadget: Switch
@@ -118,7 +118,7 @@ class OpenButtonControl(
     override fun toNewMutable(mutableShow: MutableShow): MutableControl =
         MutableButtonControl(buttonControl, mutableShow, controlledFeed)
 
-    override fun controlledDataSources(): Set<Feed> =
+    override fun controlledFeeds(): Set<Feed> =
         setOfNotNull(controlledFeed)
 
     override fun getView(controlProps: ControlProps): View =

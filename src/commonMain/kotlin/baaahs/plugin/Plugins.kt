@@ -201,7 +201,7 @@ sealed class Plugins(
     class PluginFeedSerializer(
         private val byPlugin: Map<String, SerializersModule>
     ) : KSerializer<Feed> {
-        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.DataSource") {
+        override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.Feed") {
             element("type", String.serializer().descriptor)
         }
 
@@ -216,7 +216,7 @@ sealed class Plugins(
 
             val serializer = plugin.getPolymorphic(Feed::class, type)
                 ?: return UnknownFeed(
-                    pluginRef, "Unknown datasource \"${pluginRef.toRef()}\".", ContentType.Unknown, obj
+                    pluginRef, "Unknown feed \"${pluginRef.toRef()}\".", ContentType.Unknown, obj
                 )
 
             return try {
@@ -224,9 +224,9 @@ sealed class Plugins(
                     (obj.keys - "type").forEach { put(it, obj[it]!!) }
                 })
             } catch (e: Exception) {
-                logger.error(e) { "Failed to deserialize datasource $type." }
+                logger.error(e) { "Failed to deserialize feed $type." }
                 UnknownFeed(
-                    pluginRef, e.message ?: "wha? unknown datasource?", ContentType.Unknown, obj
+                    pluginRef, e.message ?: "wha? unknown feed?", ContentType.Unknown, obj
                 )
             }
         }
@@ -332,32 +332,32 @@ sealed class Plugins(
         return contentTypes.matchingType(glslType)
     }
 
-    fun findDataSourceBuilder(pluginRef: PluginRef): FeedBuilder<out Feed> {
+    fun findFeedBuilder(pluginRef: PluginRef): FeedBuilder<out Feed> {
         return feedBuilders.byPluginRef[pluginRef]
             ?: throw LinkException("unknown plugin resource $pluginRef")
     }
 
-    fun resolveDataSource(inputPort: InputPort): Feed {
+    fun resolveFeed(inputPort: InputPort): Feed {
         val pluginRef = inputPort.pluginRef ?: error("no plugin specified")
-        val builder = findDataSourceBuilder(pluginRef)
+        val builder = findFeedBuilder(pluginRef)
         return builder.build(inputPort)
     }
 
-    fun suggestDataSources(
+    fun suggestFeeds(
         inputPort: InputPort,
         suggestedContentTypes: Set<ContentType> = emptySet()
     ): List<PortLinkOption> {
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
-            val dataSourceCandidates =
+            val feedCandidates =
                 feedBuilders.buildForContentType(contentType, inputPort) +
                         fixtureTypes.buildForContentType(contentType, inputPort)
 
-            dataSourceCandidates.map { dataSource ->
+            feedCandidates.map { feed ->
                 PortLinkOption(
-                    MutableFeedPort(dataSource),
-                    wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
+                    MutableFeedPort(feed),
+                    wasPurposeBuilt = feed.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
-                    isExactContentType = dataSource.contentType == inputPort.contentType
+                    isExactContentType = feed.contentType == inputPort.contentType
                             // TODO: This is dodgy. Trying to get Slider to win over channel ref.
                             || inputPort.contentType.isUnknown()
                 )
@@ -368,7 +368,7 @@ sealed class Plugins(
             suggestions
         } else {
             feedBuilders.all.map {
-                it.suggestDataSources(inputPort, suggestedContentTypes)
+                it.suggestFeeds(inputPort, suggestedContentTypes)
             }.flatten()
         }
     }
@@ -378,7 +378,7 @@ sealed class Plugins(
             ?: error("no such plugin \"$packageName\"")
     }
 
-    fun decodeDataSource(pluginId: String, pluginData: JsonObject): Feed {
+    fun decodeFeed(pluginId: String, pluginData: JsonObject): Feed {
         TODO("not implemented")
     }
 
@@ -504,16 +504,16 @@ sealed class Plugins(
         val byContentType = all.groupBy { builder -> builder.contentType }
 
         val serialModulesByPlugin = serializersMap {
-            dataSourceSerlializerRegistrars()
+            feedSerlializerRegistrars()
         }
 
         val serialModule = SerializersModule {
             registerSerializers {
-                dataSourceSerlializerRegistrars()
+                feedSerlializerRegistrars()
             }
         }
 
-        private fun OpenPlugin.dataSourceSerlializerRegistrars() =
+        private fun OpenPlugin.feedSerlializerRegistrars() =
             feedBuilders.map { it.serializerRegistrar } +
                     fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.serializerRegistrar } }
 
@@ -543,7 +543,7 @@ sealed class Plugins(
 
         fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<Feed> {
             return all.flatMap { fixtureType ->
-                fixtureType.feedBuilders.filter { dataSource -> dataSource.contentType == contentType }
+                fixtureType.feedBuilders.filter { feed -> feed.contentType == contentType }
             }.mapNotNull { safeBuild(it, inputPort) }
         }
     }

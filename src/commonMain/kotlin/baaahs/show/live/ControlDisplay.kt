@@ -71,21 +71,21 @@ class LegacyControlDisplay(
         }.visitShow(show)
 
         val activePatchSet = show.buildActivePatchSet()
-        val activeDataSources = activePatchSet.dataSources
+        val activeFeeds = activePatchSet.allFeeds
 
         unplacedControls.removeAll(placedControls)
         this.unplacedControls = unplacedControls.toSet()
         this.relevantUnplacedControls = unplacedControls.filter { control ->
-            activeDataSources.containsAll(control.controlledDataSources())
+            activeFeeds.containsAll(control.controlledFeeds())
         }.sortedBy { control ->
             (control as? FeedOpenControl)?.inUse = true
-            control.controlledDataSources().firstOrNull()?.title
+            control.controlledFeeds().firstOrNull()?.title
                 ?: "zzzzz"
         }
 
         placedControls.forEach { control ->
             (control as? FeedOpenControl)?.inUse =
-                activeDataSources.containsAll(control.controlledDataSources())
+                activeFeeds.containsAll(control.controlledFeeds())
         }
     }
 

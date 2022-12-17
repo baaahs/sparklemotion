@@ -39,16 +39,16 @@ class OpenPatch(
             }
         }
 
-    val dataSources get() = incomingLinks.values.mapNotNull { link ->
+    val feeds get() = incomingLinks.values.mapNotNull { link ->
         (link as? FeedLink)?.feed
     }
 
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
-                dataSources.forEach { dataSource ->
-                    val unknownDataSource = dataSource as? UnknownFeed
-                    unknownDataSource?.let {
+                feeds.forEach { dataSource ->
+                    val unknownFeed = dataSource as? UnknownFeed
+                    unknownFeed?.let {
                         add(
                             Problem(
                                 "Unresolved data source for shader \"$title\".",
@@ -176,7 +176,7 @@ class OpenPatch(
             prefix: String,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
-//            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
+//            feed.incomingLinks.forEach { (toPortId, fromLink) ->
 //                val inputPort = shader.findInputPort(toPortId)
 //
 //                val upstreamComponent = findUpstreamComponent(fromLink)
@@ -188,8 +188,8 @@ class OpenPatch(
 //                tmpPortMap[toPortId] = expression
 //            }
             return FeedComponent(feed, varName,
-                deps.mapValues { (_, dataSourceLink) ->
-                    findUpstreamComponent(dataSourceLink)
+                deps.mapValues { (_, feedLink) ->
+                    findUpstreamComponent(feedLink)
                 }
             )
         }

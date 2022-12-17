@@ -31,9 +31,9 @@ object ModelRenderEngineSpec : Spek({
     describe<ModelRenderEngine> {
         val gl by value { FakeGlContext() }
         val updateMode by value { UpdateMode.ONCE }
-        val fixtureDataSource by value { PerFixtureFeedForTest(updateMode) }
+        val fixtureFeed by value { PerFixtureFeedForTest(updateMode) }
         val pixelDataSource by value { PerPixelFeedForTest(updateMode) }
-        val feed by value<Feed> { fixtureDataSource }
+        val feed by value<Feed> { fixtureFeed }
         val fixtureType by value { FixtureTypeForTest(feed) }
         val maxFramebufferWidth by value { 64 }
         val renderEngine by value {
@@ -45,17 +45,17 @@ object ModelRenderEngineSpec : Spek({
             beforeEachTest { renderEngine.run { /* No-op. */ } }
 
             it("should have no feeds open yet") {
-                expect(fixtureDataSource.feeds.size).toBe(0)
-                expect(fixtureDataSource.engineFeeds.size).toBe(0)
-                expect(fixtureDataSource.programFeeds.size).toBe(0)
+                expect(fixtureFeed.feeds.size).toBe(0)
+                expect(fixtureFeed.engineFeeds.size).toBe(0)
+                expect(fixtureFeed.programFeeds.size).toBe(0)
             }
 
             context("when the engine is released") {
                 beforeEachTest { renderEngine.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
-                    expect(fixtureDataSource.feeds.all { it.released }).toBe(true)
-                    expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
+                    expect(fixtureFeed.feeds.all { it.released }).toBe(true)
+                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
                 }
             }
         }
@@ -85,9 +85,9 @@ object ModelRenderEngineSpec : Spek({
             beforeEachTest { initialProgram.run { } }
 
             it("should bind EngineFeedContexts for each data source") {
-                expect(fixtureDataSource.feeds.size).toBe(1)
-                expect(fixtureDataSource.engineFeeds.size).toBe(1)
-                expect(fixtureDataSource.programFeeds.size).toBe(1)
+                expect(fixtureFeed.feeds.size).toBe(1)
+                expect(fixtureFeed.engineFeeds.size).toBe(1)
+                expect(fixtureFeed.programFeeds.size).toBe(1)
             }
 
             it("should bind program uniforms") {
@@ -115,9 +115,9 @@ object ModelRenderEngineSpec : Spek({
                 beforeEachTest { program.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
-                    expect(fixtureDataSource.feeds.all { it.released }).toBe(false)
-                    expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(false)
-                    expect(fixtureDataSource.programFeeds.all { it.released }).toBe(true)
+                    expect(fixtureFeed.feeds.all { it.released }).toBe(false)
+                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(false)
+                    expect(fixtureFeed.programFeeds.all { it.released }).toBe(true)
                 }
             }
 
@@ -125,7 +125,7 @@ object ModelRenderEngineSpec : Spek({
                 beforeEachTest { renderEngine.release() }
 
                 it("should release EngineFeedContexts") {
-                    expect(fixtureDataSource.engineFeeds.all { it.released }).toBe(true)
+                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
                 }
 
                 context("when the data source is per-pixel") {

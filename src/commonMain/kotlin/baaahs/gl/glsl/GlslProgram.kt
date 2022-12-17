@@ -51,21 +51,21 @@ class GlslProgramImpl(
     val id = gl.compile(vertexShader, fragShader)
 
     internal val openFeeds = gl.runInContext {
-        linkedProgram.feedLinks.mapNotNull { (dataSource, id) ->
-            val engineFeed = engineFeedResolver.openFeed(id, dataSource)
+        linkedProgram.feedLinks.mapNotNull { (feed, id) ->
+            val engineFeed = engineFeedResolver.openFeed(id, feed)
 
             if (engineFeed != null) {
                 val spy = if (enableUniformSpying) GlslProgramSpy(this) else null
                 val programFeed = engineFeed.bind(spy ?: this)
                 if (programFeed.isValid) {
-                    OpenFeed(dataSource, id, programFeed, spy)
+                    OpenFeed(feed, id, programFeed, spy)
                 } else {
-                    logger.debug { "Invalid feed for $dataSource $id: $programFeed" }
+                    logger.debug { "Invalid feed for $feed $id: $programFeed" }
                     programFeed.release()
                     null
                 }
             } else {
-                logger.warn { "No feed bound for $dataSource $id." }
+                logger.warn { "No feed bound for $feed $id." }
                 null
             }
         }
