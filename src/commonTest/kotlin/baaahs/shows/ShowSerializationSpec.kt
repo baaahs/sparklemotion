@@ -84,7 +84,7 @@ object ShowSerializationSpec : Spek({
                         put("type", "some.plugin:Fake")
                         put("whateverValue", "foo")
                     })
-                }) { showJson.jsonObject["feed"]!! }
+                }) { showJson.jsonObject["feeds"]!! }
             }
 
             context("when the plugin is unknown") {

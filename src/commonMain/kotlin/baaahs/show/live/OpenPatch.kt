@@ -46,8 +46,8 @@ class OpenPatch(
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
-                feeds.forEach { dataSource ->
-                    val unknownFeed = dataSource as? UnknownFeed
+                feeds.forEach { feed ->
+                    val unknownFeed = feed as? UnknownFeed
                     unknownFeed?.let {
                         add(
                             Problem(

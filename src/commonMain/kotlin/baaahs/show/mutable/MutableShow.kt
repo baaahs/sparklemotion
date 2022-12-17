@@ -34,7 +34,7 @@ class MutableShow(
         ).createMutable(this).also { it.asBuiltId = id }
     }
 
-    internal val dataSources = baseShow.feeds
+    internal val feeds = baseShow.feeds
         .mapValues { (_, shader) -> MutableFeedPort(shader) }
         .toMutableMap()
 
@@ -109,7 +109,7 @@ class MutableShow(
     }
 
     fun findFeed(feedId: String): MutableFeedPort =
-        dataSources.getBang(feedId, "feed")
+        feeds.getBang(feedId, "feed")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
         return when (openPatchHolder) {

@@ -28,7 +28,7 @@ private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
             attrs.xyPad = xyPad
         }
 
-        div(+controlsStyles.dataSourceTitle) { +xyPad.title }
+        div(+controlsStyles.feedTitle) { +xyPad.title }
     }
 }
 

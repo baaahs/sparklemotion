@@ -50,7 +50,7 @@ object EditingShaderSpec : Spek({
             Plugins.buildForClient(Plugins.Companion.dummyContext, listOf(BeatLinkPlugin.forTest(FakeBeatSource())))
         }
         val toolchain by value { RootToolchain(plugins) }
-        val beatLinkDataSource by value {
+        val beatLinkFeed by value {
             (plugins.find(BeatLinkPlugin.id) as BeatLinkPlugin).beatLinkFeed
         }
         val scaleUniform by value { "uniform float theScale;" }
@@ -203,7 +203,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate feed") {
                         expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableFeedPort(beatLinkDataSource))
+                            .toBe(MutableFeedPort(beatLinkFeed))
                     }
                 }
 
@@ -212,7 +212,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate feed") {
                         expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableFeedPort(beatLinkDataSource))
+                            .toBe(MutableFeedPort(beatLinkFeed))
                     }
                 }
             }
