@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
- * This data source provides `gl_FragColor` for quad previews.
+ * This feed provides `gl_FragColor` for quad previews.
  *
  * Because `gl_FragColor` is always given as absolute pixels relative to the bottom-left
  * of the screen/canvas, _not_ relative to the the viewport, and we might be rendering

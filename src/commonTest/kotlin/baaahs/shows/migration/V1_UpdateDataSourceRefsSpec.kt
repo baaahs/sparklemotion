@@ -46,7 +46,7 @@ object V1_UpdateDataSourceRefsSpec : Spek({
                 """.trimIndent()
             }
 
-            it("fixes data source serial names") {
+            it("fixes feed serial names") {
                 expect(show.dataSources["modelInfo"]).toBe(ModelInfoFeed())
                 expect(show.dataSources["time"]).toBe(TimeFeed())
             }

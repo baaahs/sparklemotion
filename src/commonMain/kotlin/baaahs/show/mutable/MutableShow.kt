@@ -109,7 +109,7 @@ class MutableShow(
     }
 
     fun findFeed(dataSourceId: String): MutableFeedPort =
-        dataSources.getBang(dataSourceId, "data source")
+        dataSources.getBang(dataSourceId, "feed")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
         return when (openPatchHolder) {

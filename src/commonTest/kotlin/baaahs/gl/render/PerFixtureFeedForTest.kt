@@ -15,7 +15,7 @@ import baaahs.util.RefCounter
 
 class PerFixtureFeedForTest(val updateMode: UpdateMode) : Feed {
     override val pluginPackage: String get() = error("not implemented")
-    override val title: String get() = "Per Fixture Data Source For Test"
+    override val title: String get() = "Per Fixture Feed For Test"
     override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType get() = ContentType.Unknown
 

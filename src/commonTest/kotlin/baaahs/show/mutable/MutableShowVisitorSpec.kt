@@ -38,15 +38,15 @@ object MutableShowVisitorSpec : Spek({
                         "Control Saturation" to 1,
                         "Control Scenes" to 1,
                         "Control Ripple" to 1,
-                        "Data source Brightness Slider" to 1,
-                        "Data source Checkerboard Size Slider" to 1,
-                        "Data source Model Info" to 1,
-                        "Data source Pixel Location" to 1,
-                        "Data source Redness Slider" to 1,
-                        "Data source Resolution" to 1,
-                        "Data source Saturation Slider" to 1,
-                        "Data source Time" to 1,
-                        "Data source Ripple Amount Slider" to 1,
+                        "Feed Brightness Slider" to 1,
+                        "Feed Checkerboard Size Slider" to 1,
+                        "Feed Model Info" to 1,
+                        "Feed Pixel Location" to 1,
+                        "Feed Redness Slider" to 1,
+                        "Feed Resolution" to 1,
+                        "Feed Saturation Slider" to 1,
+                        "Feed Time" to 1,
+                        "Feed Ripple Amount Slider" to 1,
                         "Shader Another GLSL Hue Test Pattern" to 1,
                         "Shader Brightness" to 1,
                         "Shader Checkerboard" to 1,
@@ -93,6 +93,6 @@ class CollectingVisitor : MutableShowVisitor {
     }
 
     override fun visit(feed: Feed) {
-        items.add("Data source ${feed.title}")
+        items.add("Feed ${feed.title}")
     }
 }

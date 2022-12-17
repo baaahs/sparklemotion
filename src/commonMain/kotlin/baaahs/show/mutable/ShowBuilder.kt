@@ -35,7 +35,7 @@ class ShowBuilder {
     fun getShaders(): Map<String, Shader> = shaderIds.all()
     fun getPatches(): Map<String, Patch> = patchIds.all()
 
-    // Make sure we include data source dependencies, otherwise their feeds aren't opened.
+    // Make sure we include feed dependencies, otherwise their feeds aren't opened.
     // This is pretty janky, find a better way.
     fun includeDependencyFeeds() {
         getFeeds().forEach { (_, feed) ->

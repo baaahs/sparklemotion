@@ -94,7 +94,7 @@ object OpenPatchSpec : Spek({
                     expect(instance.problems.map { it.copy(id = "") })
                         .contains(
                             Problem(
-                                "Unresolved data source for shader \"${instance.title}\".",
+                                "Unresolved feed for shader \"${instance.title}\".",
                                 "Missing plugin.",
                                 severity = Severity.WARN, id = ""
                             )

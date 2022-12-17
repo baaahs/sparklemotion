@@ -18,7 +18,7 @@ interface MutablePort {
 data class MutableFeedPort(val feed: Feed) : MutablePort {
     override val title: String get() = feed.title
     override val icon: Icon get() = CommonIcons.Feed
-    override val groupName: String get() = "Data Source:"
+    override val groupName: String get() = "Feed:"
 
     override fun toRef(showBuilder: ShowBuilder): PortRef =
         FeedRef(showBuilder.idFor(feed))
