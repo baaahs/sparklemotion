@@ -3,8 +3,8 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
-import baaahs.plugin.core.datasource.ModelInfoFeed
-import baaahs.plugin.core.datasource.TimeFeed
+import baaahs.plugin.core.feed.ModelInfoFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.Show
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified

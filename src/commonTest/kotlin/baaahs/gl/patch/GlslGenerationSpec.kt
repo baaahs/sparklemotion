@@ -9,7 +9,7 @@ import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.MovingHeadParams
-import baaahs.plugin.core.datasource.*
+import baaahs.plugin.core.feed.*
 import baaahs.show.Stream
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly

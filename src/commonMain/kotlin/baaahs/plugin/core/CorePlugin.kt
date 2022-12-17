@@ -14,7 +14,7 @@ import baaahs.gl.shader.dialect.IsfShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.shader.type.*
 import baaahs.plugin.*
-import baaahs.plugin.core.datasource.*
+import baaahs.plugin.core.feed.*
 import baaahs.sm.brain.BrainManager
 import baaahs.util.Logger
 import kotlinx.cli.ArgParser

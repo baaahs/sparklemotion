@@ -12,7 +12,7 @@ import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
-import baaahs.plugin.core.datasource.ColorPickerFeed
+import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
 import baaahs.show.*

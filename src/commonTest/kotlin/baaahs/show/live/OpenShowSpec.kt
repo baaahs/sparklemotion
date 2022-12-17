@@ -8,7 +8,7 @@ import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
 import baaahs.only
-import baaahs.plugin.core.datasource.TimeFeed
+import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.shows.FakeShowPlayer

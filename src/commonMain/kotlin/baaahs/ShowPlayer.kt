@@ -16,7 +16,7 @@ interface ShowPlayer {
     val toolchain: Toolchain
 
     /**
-     * This is for [baaahs.plugin.core.datasource.ModelInfoFeed], but we should probably find
+     * This is for [baaahs.plugin.core.feed.ModelInfoFeed], but we should probably find
      * a better way to get it. Don't add more uses.
      */
     @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)

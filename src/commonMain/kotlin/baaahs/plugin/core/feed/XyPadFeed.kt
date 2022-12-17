@@ -1,4 +1,4 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.control.MutableXyPadControl
