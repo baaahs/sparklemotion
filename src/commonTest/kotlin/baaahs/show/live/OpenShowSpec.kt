@@ -119,7 +119,7 @@ object OpenShowSpec : Spek({
             }
         }
 
-        context("when a data source has no corresponding placed control") {
+        context("when a feed has no corresponding placed control") {
             beforeEachTest {
                 mutableShow.addPatch(
                     testToolchain.wireUp(

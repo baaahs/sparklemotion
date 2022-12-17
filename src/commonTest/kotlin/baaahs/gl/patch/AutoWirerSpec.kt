@@ -85,7 +85,7 @@ object AutoWirerSpec : Spek({
                     override(portId) { "time" }
                     override(portContentType) { ContentType.Time }
 
-                    it("suggests the data source's channel") {
+                    it("suggests the feed's channel") {
                         expect(portLink).toBe(TimeFeed().editor())
                     }
 
@@ -93,14 +93,14 @@ object AutoWirerSpec : Spek({
                     context("when the output type matches", skip = Skip.Yes("Not working yet")) {
                         override(outContentType) { portContentType }
 
-                        it("suggests the data source's channel") {
+                        it("suggests the feed's channel") {
                             expect(portLink).toBe(TimeFeed().editor())
                         }
 
-                        context("and the shader's channel matches the data source's channel") {
+                        context("and the shader's channel matches the feed's channel") {
                             override(stream) { Stream("time") }
 
-                            it("suggests the data source's channel") {
+                            it("suggests the feed's channel") {
                                 expect(portLink).toBe(TimeFeed().editor())
                             }
                         }
@@ -111,7 +111,7 @@ object AutoWirerSpec : Spek({
                     override(portId) { "brightness" }
                     override(portContentType) { ContentType.Float }
 
-                    it("suggests a Slider data source channel link") {
+                    it("suggests a Slider feed channel link") {
                         expect(portLink)
                             .toBe(SliderFeed("Brightness", 1f, 0f, 1f).editor())
                     }
@@ -121,7 +121,7 @@ object AutoWirerSpec : Spek({
 // TODO:                    override(portId) { "brightness" }
 // TODO:                    override(portContentType) { ContentType.unknown(Float) }
 //
-// TODO:                    it("suggests a Slider data source channel link") {
+// TODO:                    it("suggests a Slider feed channel link") {
 // TODO:                        expect(portLink)
 // TODO:                            .toBe(CorePlugin.SliderFeed("Brightness", 1f, 0f, 1f).editor())
 // TODO:                    }

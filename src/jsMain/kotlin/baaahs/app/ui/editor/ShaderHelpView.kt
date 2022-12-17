@@ -32,7 +32,7 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
 
         TableHead {
             TableRow {
-                TableCell { +"Data Source" }
+                TableCell { +"Feed" }
                 TableCell { +"Description" }
                 TableCell { +"Content Type" }
             }

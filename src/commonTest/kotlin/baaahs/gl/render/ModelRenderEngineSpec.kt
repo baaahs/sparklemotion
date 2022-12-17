@@ -84,7 +84,7 @@ object ModelRenderEngineSpec : Spek({
 
             beforeEachTest { initialProgram.run { } }
 
-            it("should bind EngineFeedContexts for each data source") {
+            it("should bind EngineFeedContexts for each feed") {
                 expect(fixtureFeed.feeds.size).toBe(1)
                 expect(fixtureFeed.engineFeeds.size).toBe(1)
                 expect(fixtureFeed.programFeeds.size).toBe(1)
@@ -94,7 +94,7 @@ object ModelRenderEngineSpec : Spek({
                 expect(fakeGlProgram.uniformNames()).toBe(setOf("perFixtureData"))
             }
 
-            context("when the data source is per-pixel") {
+            context("when the feed is per-pixel") {
                 override(feed) { pixelFeed }
 
                 it("should allocate a texture to hold per-pixel data") {
@@ -128,7 +128,7 @@ object ModelRenderEngineSpec : Spek({
                     expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
                 }
 
-                context("when the data source is per-pixel") {
+                context("when the feed is per-pixel") {
                     override(feed) { pixelFeed }
 
                     it("should release the texture") {
@@ -171,7 +171,7 @@ object ModelRenderEngineSpec : Spek({
                         ))
                     }
 
-                    context("when the data source is per-pixel") {
+                    context("when the feed is per-pixel") {
                         override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
@@ -237,7 +237,7 @@ object ModelRenderEngineSpec : Spek({
                         }
                     }
 
-                    context("when the data source is per-pixel") {
+                    context("when the feed is per-pixel") {
                         override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
@@ -270,7 +270,7 @@ object ModelRenderEngineSpec : Spek({
                             }
                         }
 
-                        context("when per-pixel data source isn't provided by the fixture, and the fixtures were previously rendered to without the data source") {
+                        context("when per-pixel feed isn't provided by the fixture, and the fixtures were previously rendered to without the feed") {
                             override(fixtureType) { FixtureTypeForTest() }
                             override(initialProgram) { arrayOf<GlslProgram?>(null) }
                             override(drawTwoFrames) { {} }

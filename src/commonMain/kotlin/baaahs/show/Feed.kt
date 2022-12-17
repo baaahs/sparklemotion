@@ -53,7 +53,7 @@ interface FeedBuilder<T : Feed> {
     fun safeBuild(inputPort: InputPort): Feed? = try {
         build(inputPort)
     } catch (e: Exception) {
-        logger.error(e) { "Error building data source for $inputPort." }
+        logger.error(e) { "Error building feed for $inputPort." }
         null
     }
 
@@ -68,7 +68,7 @@ internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
     title.camelize().toLowerCase().contains(inputPort.title.camelize().toLowerCase())
 
 /**
- * Descriptor of an external data source which can be used by a shader program.
+ * Descriptor of an external feed which can be used by a shader program.
  */
 @Polymorphic
 interface Feed {
@@ -115,12 +115,12 @@ interface Feed {
 }
 
 enum class UpdateMode {
-    /** The data from this data source will never change. */
+    /** The data from this feed will never change. */
     ONCE,
 
-    /** The data from this data source may be different for each frame. */
+    /** The data from this feed may be different for each frame. */
     PER_FRAME,
 
-    /** The data from this data source may be different for each fixture. */
+    /** The data from this feed may be different for each fixture. */
     PER_FIXTURE
 }

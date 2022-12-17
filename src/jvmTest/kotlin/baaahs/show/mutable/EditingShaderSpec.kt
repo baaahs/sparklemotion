@@ -184,7 +184,7 @@ object EditingShaderSpec : Spek({
                         ))
                 }
 
-                it("should create an appropriate data source") {
+                it("should create an appropriate feed") {
                     expect(mutablePatch.incomingLinks["theScale"])
                         .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, 0f, 1f)))
                 }
@@ -192,7 +192,7 @@ object EditingShaderSpec : Spek({
                 context("when hints are provided") {
                     override(scaleUniform) { "uniform float theScale; // @@Slider min=.25 max=4 default=1" }
 
-                    it("should create an appropriate data source") {
+                    it("should create an appropriate feed") {
                         expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, .25f, 4f)))
                     }
@@ -201,7 +201,7 @@ object EditingShaderSpec : Spek({
                 context("when a plugin reference is provided") {
                     override(scaleUniform) { "uniform float theScale; // @@baaahs.BeatLink:BeatLink" }
 
-                    it("should create an appropriate data source") {
+                    it("should create an appropriate feed") {
                         expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableFeedPort(beatLinkDataSource))
                     }
@@ -210,7 +210,7 @@ object EditingShaderSpec : Spek({
                 context("when a content type is provided") {
                     override(scaleUniform) { "uniform float theScale; // @type beat-link" }
 
-                    it("should create an appropriate data source") {
+                    it("should create an appropriate feed") {
                         expect(mutablePatch.incomingLinks["theScale"])
                             .toBe(MutableFeedPort(beatLinkDataSource))
                     }
@@ -232,7 +232,7 @@ object EditingShaderSpec : Spek({
 
                 it("should be listed in link options") {
                     expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
-                            Data Source:
+                            Feed:
                             - BeatLink
                             - Custom slider Slider (advanced)
                             - Pixel Distance from Edge
@@ -277,7 +277,7 @@ object EditingShaderSpec : Spek({
                 it("suggests reasonable link options for scale") {
                     expect(editingShader.linkOptionsFor("theScale").stringify())
                         .toBe("""
-                            Data Source:
+                            Feed:
                             - BeatLink
                             - Pixel Distance from Edge
                             * The Scale Slider
@@ -290,7 +290,7 @@ object EditingShaderSpec : Spek({
                 it("suggests reasonable link options for time") {
                     expect(editingShader.linkOptionsFor("time").stringify())
                         .toBe("""
-                            Data Source:
+                            Feed:
                             - BeatLink (advanced)
                             - Pixel Distance from Edge (advanced)
                             * Time
@@ -304,7 +304,7 @@ object EditingShaderSpec : Spek({
                     // Should never include ourself.
                     expect(editingShader.linkOptionsFor("inColor").stringify())
                         .toBe("""
-                            Data Source:
+                            Feed:
                             - Date (advanced)
                             - In Color Color Picker
                             - In Color Image
@@ -323,7 +323,7 @@ object EditingShaderSpec : Spek({
                             // Should never include ourself.
                             expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
-                                    Data Source:
+                                    Feed:
                                     - Date (advanced)
                                     - In Color Color Picker
                                     - In Color Image
@@ -340,7 +340,7 @@ object EditingShaderSpec : Spek({
                         it("shouldn't include that stream as an option") {
                             expect(editingShader.linkOptionsFor("inColor").stringify())
                                 .toBe("""
-                                    Data Source:
+                                    Feed:
                                     - Date (advanced)
                                     - In Color Color Picker
                                     - In Color Image

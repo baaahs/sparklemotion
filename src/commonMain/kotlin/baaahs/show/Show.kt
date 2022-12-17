@@ -57,7 +57,7 @@ data class Show(
 
     fun getControl(id: String): Control = controls.getBang(id, "control")
 
-    fun getDataSource(id: String): Feed = dataSources.getBang(id, "data source")
+    fun getDataSource(id: String): Feed = dataSources.getBang(id, "feed")
 
     fun getShader(id: String): Shader = shaders.getBang(id, "shader")
 

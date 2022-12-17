@@ -51,7 +51,7 @@ class OpenPatch(
                     unknownFeed?.let {
                         add(
                             Problem(
-                                "Unresolved data source for shader \"$title\".",
+                                "Unresolved feed for shader \"$title\".",
                                 it.errorMessage, severity = Severity.WARN
                             )
                         )

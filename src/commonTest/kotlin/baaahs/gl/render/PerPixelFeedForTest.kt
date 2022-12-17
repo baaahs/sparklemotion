@@ -18,7 +18,7 @@ import baaahs.util.RefCounter
 
 class PerPixelFeedForTest(val updateMode: UpdateMode) : Feed {
     override val pluginPackage: String get() = error("not implemented")
-    override val title: String get() = "Per Pixel Data Source For Test"
+    override val title: String get() = "Per Pixel Feed For Test"
     override fun getType(): GlslType = GlslType.Float
     override val contentType: ContentType get() = ContentType.Unknown
 

@@ -255,7 +255,7 @@ object PatchResolverSpec : Spek({
                 )
             }
 
-            context("with a data source filter") {
+            context("with a feed filter") {
                 beforeEachTest {
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
