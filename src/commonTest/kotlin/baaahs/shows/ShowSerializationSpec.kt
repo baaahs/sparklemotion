@@ -19,7 +19,7 @@ import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.datasource.*
 import baaahs.show.*
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
@@ -297,7 +297,7 @@ fun jsonFor(feed: Feed): JsonElement {
 
 private fun jsonFor(portRef: PortRef): JsonObject {
     return when (portRef) {
-        is DataSourceRef -> buildJsonObject {
+        is FeedRef -> buildJsonObject {
             put("type", "datasource")
             put("dataSourceId", portRef.dataSourceId)
         }
@@ -354,7 +354,7 @@ class FakeFeed(
     override fun getType(): GlslType = TODO("not implemented")
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext = TODO("not implemented")
 
-    object Builder : DataSourceBuilder<FakeFeed> {
+    object Builder : FeedBuilder<FakeFeed> {
         override val title: String get() = TODO("not implemented")
         override val description: String get() = TODO("not implemented")
         override val resourceName: String get() = "some.plugin:Fake"
@@ -369,11 +369,11 @@ class FakeFeed(
 class FakePlugin(
     override val packageName: String,
     override val title: String,
-    override val feedBuilders: List<DataSourceBuilder<out Feed>> = emptyList()
+    override val feedBuilders: List<FeedBuilder<out Feed>> = emptyList()
 ) : OpenServerPlugin {
     class Builder(
         override val id: String,
-        private val feedBuilders: List<DataSourceBuilder<out Feed>> = emptyList()
+        private val feedBuilders: List<FeedBuilder<out Feed>> = emptyList()
     ) : Plugin<Any> {
         override fun getArgs(parser: ArgParser): Any = Unit
 
@@ -403,7 +403,7 @@ object TestSampleData {
                 """.trimIndent()
                 )
             ) {
-                link("beat", MutableDataSourcePort(beatLinkPlugin.beatLinkDataSource))
+                link("beat", MutableFeedPort(beatLinkPlugin.beatLinkDataSource))
             }
         }.getShow()
 }

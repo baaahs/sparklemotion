@@ -31,7 +31,7 @@ interface OpenControl {
     fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
 }
 
-abstract class DataSourceOpenControl : OpenControl {
+abstract class FeedOpenControl : OpenControl {
     abstract val controlledFeed: Feed
 
     var inUse: Boolean = false

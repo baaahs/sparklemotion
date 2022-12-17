@@ -186,7 +186,7 @@ object EditingShaderSpec : Spek({
 
                 it("should create an appropriate data source") {
                     expect(mutablePatch.incomingLinks["theScale"])
-                        .toBe(MutableDataSourcePort(SliderFeed("The Scale", 1f, 0f, 1f)))
+                        .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, 0f, 1f)))
                 }
 
                 context("when hints are provided") {
@@ -194,7 +194,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableDataSourcePort(SliderFeed("The Scale", 1f, .25f, 4f)))
+                            .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, .25f, 4f)))
                     }
                 }
 
@@ -203,7 +203,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableDataSourcePort(beatLinkDataSource))
+                            .toBe(MutableFeedPort(beatLinkDataSource))
                     }
                 }
 
@@ -212,7 +212,7 @@ object EditingShaderSpec : Spek({
 
                     it("should create an appropriate data source") {
                         expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableDataSourcePort(beatLinkDataSource))
+                            .toBe(MutableFeedPort(beatLinkDataSource))
                     }
                 }
             }
@@ -221,7 +221,7 @@ object EditingShaderSpec : Spek({
                 override(beforeBuildingShader) {
                     {
                         mutablePatch.incomingLinks["theScale"] =
-                            MutableDataSourcePort(SliderFeed("Custom slider", 1f, 0f, 1f))
+                            MutableFeedPort(SliderFeed("Custom slider", 1f, 0f, 1f))
                     }
                 }
 
@@ -247,12 +247,12 @@ object EditingShaderSpec : Spek({
             context("when a link has been selected by a human") {
                 beforeEachTest {
                     mutablePatch.incomingLinks["theScale"] =
-                        MutableDataSourcePort(SliderFeed("custom slider", 1f, 0f, 1f))
+                        MutableFeedPort(SliderFeed("custom slider", 1f, 0f, 1f))
 
                     editingShader.changeInputPortLink(
                         "theScale",
                         PortLinkOption(
-                            MutableDataSourcePort(SliderFeed("custom slider", 1f, 0f, 1f))
+                            MutableFeedPort(SliderFeed("custom slider", 1f, 0f, 1f))
                         )
                     )
 
@@ -394,14 +394,14 @@ object EditingShaderSpec : Spek({
 
                     layout(location = 0) out vec4 sm_result;
 
-                    // Data source: PreviewResolution
+                    // Feed: PreviewResolution
                     uniform vec2 in_previewResolution;
 
-                    // Data source: Raster Coordinate
+                    // Feed: Raster Coordinate
                     uniform vec2 ds_rasterCoordinate_offset;
                     vec4 in_rasterCoordinate;
 
-                    // Data source: Time
+                    // Feed: Time
                     uniform float in_time;
 
                     // Shader: Screen Coords; namespace: p0

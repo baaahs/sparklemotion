@@ -78,7 +78,7 @@ object OpenPatchSpec : Spek({
             context("when a datasource is unknown") {
                 override(links) {
                     mapOf(
-                        "someDatasource" to OpenPatch.DataSourceLink(UnknownFeed(
+                        "someDatasource" to OpenPatch.FeedLink(UnknownFeed(
                             PluginRef("some.plugin", "SomeDataSource"),
                             "Missing plugin.",
                             ContentType.Unknown,

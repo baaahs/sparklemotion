@@ -75,11 +75,11 @@ class PositionAndScalePatchMod(
                 openShader,
                 mapOf(
                     "uvIn" to link,
-                    "offset" to OpenPatch.DataSourceLink(
+                    "offset" to OpenPatch.FeedLink(
                         positionDataSource, positionDataSource.suggestId(),
                         emptyMap()
                     ),
-                    "scale" to OpenPatch.DataSourceLink(
+                    "scale" to OpenPatch.FeedLink(
                         scaleDataSource, scaleDataSource.suggestId(),
                         emptyMap()
                     )

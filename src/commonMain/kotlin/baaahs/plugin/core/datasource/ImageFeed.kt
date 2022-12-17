@@ -16,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.imaging.Image
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -123,7 +123,7 @@ data class ImageFeed(override val title: String) : Feed {
         }
     }
 
-    companion object : DataSourceBuilder<ImageFeed> {
+    companion object : FeedBuilder<ImageFeed> {
         override val title: String get() = "Image"
         override val description: String get() = "A user-provided image."
         override val resourceName: String get() = "Image"

@@ -19,8 +19,8 @@ import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -59,7 +59,7 @@ data class PixelDistanceFromEdgeFeed(@Transient val `_`: Boolean = true) : Feed 
         return "${getVarName(varName)} = ds_${varName}_getPixelDistanceFromEdge(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelDistanceFromEdgeFeed> {
+    companion object : FeedBuilder<PixelDistanceFromEdgeFeed> {
         override val title: String get() = "Pixel Distance from Edge"
         override val description: String get() = "The distance of this pixel to the nearest edge of its container."
         override val resourceName: String

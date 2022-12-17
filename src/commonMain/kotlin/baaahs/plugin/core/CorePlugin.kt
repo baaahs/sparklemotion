@@ -30,7 +30,7 @@ class CorePlugin(
                 MovingHeadParams.contentType +
                 feedBuilders.map { it.contentType } +
                 fixtureTypes.map { it.resultContentType } +
-                fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.contentType } }
+                fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.contentType } }
 
     override val feedBuilders get() = Companion.dataSourceBuilders
 

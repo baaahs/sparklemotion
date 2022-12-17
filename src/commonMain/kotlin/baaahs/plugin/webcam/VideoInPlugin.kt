@@ -11,8 +11,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
@@ -28,9 +28,9 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
     // is using object identity), and there's no overhead.
     internal val videoInDataSource = VideoInFeed()
 
-    override val feedBuilders: List<DataSourceBuilder<VideoInFeed>>
+    override val feedBuilders: List<FeedBuilder<VideoInFeed>>
         get() = listOf(
-            object : DataSourceBuilder<VideoInFeed> {
+            object : FeedBuilder<VideoInFeed> {
                 override val title get() = "Video Input"
                 override val description get() = "Video input."
                 override val resourceName get() = "VideoIn"

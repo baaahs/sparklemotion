@@ -27,7 +27,7 @@ class FeedComponent(
     }
 
     override fun appendDeclarations(buf: StringBuilder) {
-        buf.append("// Data source: ", feed.title, "\n")
+        buf.append("// Feed: ", feed.title, "\n")
         feed.appendDeclaration(buf, varName)
         buf.append("\n")
     }

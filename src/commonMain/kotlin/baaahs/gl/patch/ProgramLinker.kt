@@ -17,7 +17,7 @@ class ProgramLinker(
     private val warnings: List<String> = emptyList()
 ) {
     private val linkNodes: MutableMap<ProgramNode, LinkNode> = mutableMapOf()
-    private val dataSourceLinks = hashSetOf<OpenPatch.DataSourceLink>()
+    private val feedLinks = hashSetOf<OpenPatch.FeedLink>()
     private val showBuilder: ShowBuilder = ShowBuilder()
     private var curDepth = 0
     private val structs = hashSetOf<GlslCode.GlslStruct>()
@@ -47,9 +47,9 @@ class ProgramLinker(
         }
     }
 
-    fun visit(dataSourceLink: OpenPatch.DataSourceLink) {
-        dataSourceLinks.add(dataSourceLink)
-        dataSourceLink.deps.forEach { (_, dependency) -> visit(dependency as ProgramNode) }
+    fun visit(feedLink: OpenPatch.FeedLink) {
+        feedLinks.add(feedLink)
+        feedLink.deps.forEach { (_, dependency) -> visit(dependency as ProgramNode) }
     }
 
     init { visit(rootNode) }
@@ -94,7 +94,7 @@ class ProgramLinker(
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedProgram(rootNode, components, dataSourceLinks, warnings, linkNodes)
+        return LinkedProgram(rootNode, components, feedLinks, warnings, linkNodes)
     }
 
     fun visit(openShader: OpenShader) {

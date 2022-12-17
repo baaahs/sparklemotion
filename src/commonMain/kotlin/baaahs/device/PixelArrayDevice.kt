@@ -11,7 +11,7 @@ import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.Model
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureConfig
-import baaahs.show.DataSourceBuilder
+import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
 import baaahs.visualizer.visualizerBuilder
@@ -88,7 +88,7 @@ open class PixelArrayFixtureType : FixtureType {
     override val id: String get() = "PixelArray"
     override val title: String get() = "Pixel Array"
 
-    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+    override val feedBuilders: List<FeedBuilder<*>>
         get() = listOf(
             PixelLocationFeed,
             PixelIndexFeed,

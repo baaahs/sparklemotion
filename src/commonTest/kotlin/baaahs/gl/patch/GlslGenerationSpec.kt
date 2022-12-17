@@ -77,13 +77,13 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        // Data source: Blueness Slider
+                        // Feed: Blueness Slider
                         uniform float in_bluenessSlider;
 
-                        // Data source: Resolution
+                        // Feed: Resolution
                         uniform vec2 in_resolution;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: This Shader's Name; namespace: p0
@@ -169,11 +169,11 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        // Data source: Raster Coordinate
+                        // Feed: Raster Coordinate
                         uniform vec2 ds_rasterCoordinate_offset;
                         vec4 in_rasterCoordinate;
 
-                        // Data source: Resolution
+                        // Feed: Resolution
                         uniform vec2 in_resolution;
 
                         // Shader: Untitled Shader; namespace: p0
@@ -252,17 +252,17 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        // Data source: Blueness Slider
+                        // Feed: Blueness Slider
                         uniform float in_bluenessSlider;
 
-                        // Data source: Raster Coordinate
+                        // Feed: Raster Coordinate
                         uniform vec2 ds_rasterCoordinate_offset;
                         vec4 in_rasterCoordinate;
 
-                        // Data source: Resolution
+                        // Feed: Resolution
                         uniform vec2 in_resolution;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: This Shader's Name; namespace: p0
@@ -354,16 +354,16 @@ object GlslGenerationSpec : Spek({
                             vec3 extents;
                         };
                         
-                        // Data source: Blueness Slider
+                        // Feed: Blueness Slider
                         uniform float in_bluenessSlider;
 
-                        // Data source: Fixture Info
+                        // Feed: Fixture Info
                         uniform FixtureInfo in_fixtureInfo;
 
-                        // Data source: Model Info
+                        // Feed: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: Pixel Location
+                        // Feed: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
                             vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
@@ -372,10 +372,10 @@ object GlslGenerationSpec : Spek({
                         }
                         vec3 in_pixelLocation;
 
-                        // Data source: Resolution
+                        // Feed: Resolution
                         uniform vec2 in_resolution;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: Cylindrical Projection; namespace: p0
@@ -493,7 +493,7 @@ object GlslGenerationSpec : Spek({
             beforeEachTest {
                 mutablePatchSet.addPatch(mainPaintShader)
                 mutablePatchSet.addPatch(otherPaintShader) {
-                    link("fragCoord", MutableDataSourcePort(RasterCoordinateFeed()))
+                    link("fragCoord", MutableFeedPort(RasterCoordinateFeed()))
                     stream = MutableStream.from(otherShaderActualChannel)
                 }
 
@@ -516,10 +516,10 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        // Data source: Fade Slider
+                        // Feed: Fade Slider
                         uniform float in_fadeSlider;
 
-                        // Data source: Raster Coordinate
+                        // Feed: Raster Coordinate
                         uniform vec2 ds_rasterCoordinate_offset;
                         vec4 in_rasterCoordinate;
 
@@ -598,7 +598,7 @@ object GlslGenerationSpec : Spek({
 
                             layout(location = 0) out vec4 sm_result;
 
-                            // Data source: Fade Slider
+                            // Feed: Fade Slider
                             uniform float in_fadeSlider;
 
                             // Shader: Main Paint Shader; namespace: p0
@@ -703,7 +703,7 @@ object GlslGenerationSpec : Spek({
                             vec3 boundaryMax;
                         };
 
-                        // Data source: Fixture Info
+                        // Feed: Fixture Info
                         uniform FixtureInfo in_fixtureInfo;
 
                         // Shader: Untitled Shader; namespace: p0
@@ -955,25 +955,25 @@ object GlslGenerationSpec : Spek({
                         }
                     """.trimIndent()
                 )) {
-                    link("pixelLocation", MutableDataSourcePort(RasterCoordinateFeed()))
+                    link("pixelLocation", MutableFeedPort(RasterCoordinateFeed()))
                 }
 
                 mutablePatchSet.addPatch(mainShader) {
                     link("fade", SliderFeed("Fade", 0f, 0f, 1f, null))
                     link("channelA", MutableStream("channelA"))
                     link("channelB", MutableStream("channelB"))
-                    link("time", MutableDataSourcePort(TimeFeed()))
+                    link("time", MutableFeedPort(TimeFeed()))
                     link("uvIn", MutableStream("main"))
                 }
 
                 mutablePatchSet.addPatch(channelAShader) {
                     link("gl_FragCoord", MutableConstPort("var from downstream", GlslType.Vec4))
-                    link("time", MutableDataSourcePort(TimeFeed()))
+                    link("time", MutableFeedPort(TimeFeed()))
                     stream = MutableStream.from("channelA")
                 }
 
                 mutablePatchSet.addPatch(channelBShader) {
-                    link("fragCoord", MutableDataSourcePort(RasterCoordinateFeed()))
+                    link("fragCoord", MutableFeedPort(RasterCoordinateFeed()))
                     link("time", MutableConstPort("var from downstream", GlslType.Vec4))
                     stream = MutableStream.from("channelB")
                 }
@@ -991,14 +991,14 @@ object GlslGenerationSpec : Spek({
 
                         layout(location = 0) out vec4 sm_result;
 
-                        // Data source: Fade Slider
+                        // Feed: Fade Slider
                         uniform float in_fadeSlider;
 
-                        // Data source: Raster Coordinate
+                        // Feed: Raster Coordinate
                         uniform vec2 ds_rasterCoordinate_offset;
                         vec4 in_rasterCoordinate;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: Projection; namespace: p0

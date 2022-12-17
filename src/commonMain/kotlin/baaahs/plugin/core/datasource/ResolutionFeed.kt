@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -27,7 +27,7 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("baaahs.Core:Resolution")
 data class ResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
-    companion object : DataSourceBuilder<ResolutionFeed> {
+    companion object : FeedBuilder<ResolutionFeed> {
         override val title: String get() = "Resolution"
         override val description: String get() = "The resolution of the render viewport, in pixels."
         override val resourceName: String get() = "Resolution"

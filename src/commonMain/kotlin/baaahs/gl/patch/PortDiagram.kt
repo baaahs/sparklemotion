@@ -93,15 +93,15 @@ class PortDiagram(val patches: List<OpenPatch>) {
         dataSources: Map<String, Feed>
     ) {
         private val dataSourcesToId by lazy { dataSources.entries.associate { (k, v) -> v to k } }
-        private val dataSourceLinks = mutableMapOf<Pair<String, ContentType>, OpenPatch.DataSourceLink>()
+        private val feedLinks = mutableMapOf<Pair<String, ContentType>, OpenPatch.FeedLink>()
 
-        private fun resolveDataSource(id: String, feed: Feed): OpenPatch.DataSourceLink {
-            return dataSourceLinks.getOrPut(id to feed.contentType) {
+        private fun resolveDataSource(id: String, feed: Feed): OpenPatch.FeedLink {
+            return feedLinks.getOrPut(id to feed.contentType) {
                 val deps = feed.dependencies.mapValues { (_, dataSource) ->
                     val dependencyId = dataSourcesToId.getBang(dataSource, "data source dependency")
                     resolveDataSource(dependencyId, dataSource)
                 }
-                OpenPatch.DataSourceLink(feed, id, deps)
+                OpenPatch.FeedLink(feed, id, deps)
             }
         }
 
@@ -111,7 +111,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
             }
         }
 
-        private val dataSourceChannelLinks = dataSourceLinks.toMap()
+        private val dataSourceChannelLinks = feedLinks.toMap()
 
         private val trackResolvers = mutableMapOf<Track, TrackResolver>()
         private val breadcrumbs = mutableListOf<Breadcrumb>()
@@ -150,7 +150,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
         private fun tryDataSource(
             stream: Stream,
             contentType: ContentType
-        ): OpenPatch.DataSourceLink? {
+        ): OpenPatch.FeedLink? {
             return dataSourceChannelLinks[stream.id to contentType]
         }
 

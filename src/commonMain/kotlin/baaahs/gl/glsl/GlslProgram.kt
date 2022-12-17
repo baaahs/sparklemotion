@@ -51,7 +51,7 @@ class GlslProgramImpl(
     val id = gl.compile(vertexShader, fragShader)
 
     internal val openFeeds = gl.runInContext {
-        linkedProgram.dataSourceLinks.mapNotNull { (dataSource, id) ->
+        linkedProgram.feedLinks.mapNotNull { (dataSource, id) ->
             val engineFeed = engineFeedResolver.openFeed(id, dataSource)
 
             if (engineFeed != null) {

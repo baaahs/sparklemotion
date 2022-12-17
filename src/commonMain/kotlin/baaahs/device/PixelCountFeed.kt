@@ -13,8 +13,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -35,7 +35,7 @@ data class PixelCountFeed(@Transient val `_`: Boolean = true) : Feed {
         return PixelCountFeedContext(getVarName(id))
     }
 
-    companion object : DataSourceBuilder<PixelCountFeed> {
+    companion object : FeedBuilder<PixelCountFeed> {
         override val title: String get() = "Pixel Count"
         override val description: String get() = "The number of pixels in this fixture."
         override val resourceName: String

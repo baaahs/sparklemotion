@@ -13,7 +13,7 @@ import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object FixtureInfoDataSourceSpec : Spek({
+object FixtureInfoFeedSpec : Spek({
     describe<FixtureInfoFeed> {
         val movingHead by value {
             MovingHead(

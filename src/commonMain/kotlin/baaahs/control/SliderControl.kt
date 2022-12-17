@@ -98,7 +98,7 @@ class OpenSliderControl(
     override val id: String,
     val slider: Slider,
     override val controlledFeed: Feed
-) : DataSourceOpenControl() {
+) : FeedOpenControl() {
     override val gadget: Slider
         get() = slider
 

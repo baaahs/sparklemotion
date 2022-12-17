@@ -14,8 +14,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Control
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.sim.BridgeClient
 import baaahs.util.*
 import com.danielgergely.kgl.*
@@ -51,8 +51,8 @@ class SoundAnalysisPlugin internal constructor(
             classSerializer(SoundAnalysisControl.serializer())
         )
 
-    override val feedBuilders: List<DataSourceBuilder<out Feed>> =
-        listOf(SoundAnalysisDataSourceBuilder())
+    override val feedBuilders: List<FeedBuilder<out Feed>> =
+        listOf(SoundAnalysisFeedBuilder())
 
     internal val dataSource = SoundAnalysisFeed()
 
@@ -69,7 +69,7 @@ class SoundAnalysisPlugin internal constructor(
             SoundAnalysisFeedContext(getVarName(id), soundAnalyzer, historySize)
     }
 
-    inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisFeed> {
+    inner class SoundAnalysisFeedBuilder : FeedBuilder<SoundAnalysisFeed> {
         override val title: String get() = "Sound Analysis"
         override val description: String get() = "Spectral analysis of sound input."
         override val resourceName: String get() = "SoundAnalysis"

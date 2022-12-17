@@ -24,7 +24,7 @@ import baaahs.scene.SceneProvider
 import baaahs.show.Feed
 import baaahs.show.Shader
 import baaahs.show.live.OpenControl
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
@@ -155,7 +155,7 @@ class PreviewShaderBuilder(
             val shaders = shaderType.pickPreviewShaders(openShader, previewShaders)
             val resultContentType = shaderType.previewResultContentType()
             val defaultPorts = if (shaderType.injectUvCoordinateForPreview) {
-                mapOf(ContentType.UvCoordinate to MutableDataSourcePort(RasterCoordinateFeed()))
+                mapOf(ContentType.UvCoordinate to MutableFeedPort(RasterCoordinateFeed()))
             } else emptyMap()
 
             previewPatchSet = toolchain.autoWire(shaders, defaultPorts = defaultPorts)

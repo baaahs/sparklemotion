@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import baaahs.util.makeSafeForGlsl
@@ -24,7 +24,7 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("baaahs.Core:Time")
 data class TimeFeed(@Transient val `_`: Boolean = true) : Feed {
-    companion object : DataSourceBuilder<TimeFeed> {
+    companion object : FeedBuilder<TimeFeed> {
         override val title: String get() = "Time"
         override val description: String get() = "The current time."
         override val resourceName: String get() = "Time"

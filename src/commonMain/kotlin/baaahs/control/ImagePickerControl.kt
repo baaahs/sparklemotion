@@ -73,7 +73,7 @@ class OpenImagePickerControl(
     override val id: String,
     val imagePicker: ImagePicker,
     override val controlledFeed: Feed
-) : DataSourceOpenControl() {
+) : FeedOpenControl() {
     override val gadget: ImagePicker
         get() = imagePicker
 

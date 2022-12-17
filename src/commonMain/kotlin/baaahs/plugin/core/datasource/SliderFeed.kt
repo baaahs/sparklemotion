@@ -15,8 +15,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -86,7 +86,7 @@ data class SliderFeed(
         }
     }
 
-    companion object : DataSourceBuilder<SliderFeed> {
+    companion object : FeedBuilder<SliderFeed> {
         override val title: String get() = "Slider"
         override val description: String get() = "A user-adjustable slider."
         override val resourceName: String get() = "Slider"

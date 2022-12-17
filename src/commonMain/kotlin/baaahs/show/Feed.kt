@@ -10,13 +10,13 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.ui.Markdown
 import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 
 
-interface DataSourceBuilder<T : Feed> {
+interface FeedBuilder<T : Feed> {
     val title: String
     @Markdown
     val description: String
@@ -34,7 +34,7 @@ interface DataSourceBuilder<T : Feed> {
         return if (looksValid(inputPort, suggestedContentTypes)) {
             listOfNotNull(safeBuild(inputPort)).map { dataSource ->
                 PortLinkOption(
-                    MutableDataSourcePort(dataSource),
+                    MutableFeedPort(dataSource),
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
                     isExactContentType = dataSource.contentType == inputPort.contentType
@@ -60,7 +60,7 @@ interface DataSourceBuilder<T : Feed> {
     fun funDef(varName: String): String? = null
 
     companion object {
-        private val logger = Logger<DataSourceBuilder<*>>()
+        private val logger = Logger<FeedBuilder<*>>()
     }
 }
 
@@ -86,7 +86,7 @@ interface Feed {
 
     fun open(showPlayer: ShowPlayer, id: String): FeedContext
 
-    fun link(varName: String) = OpenPatch.DataSourceLink(this, varName, emptyMap())
+    fun link(varName: String) = OpenPatch.FeedLink(this, varName, emptyMap())
 
     fun suggestId(): String = title.camelize()
 
