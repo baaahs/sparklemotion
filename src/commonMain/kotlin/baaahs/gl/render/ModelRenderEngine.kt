@@ -4,8 +4,8 @@ import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.PerPixelEngineFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.PerPixelEngineFeedContext
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedProgram
@@ -83,12 +83,12 @@ class ModelRenderEngine(
         return super.compile(linkedProgram, feedResolver)
     }
 
-    override fun onBind(engineFeed: EngineFeed) {
-        engineFeed.maybeResizeAndPopulate(arrangement, renderTargets)
+    override fun onBind(engineFeedContext: EngineFeedContext) {
+        engineFeedContext.maybeResizeAndPopulate(arrangement, renderTargets)
     }
 
-    private fun EngineFeed.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<FixtureRenderTarget>) {
-        if (this is PerPixelEngineFeed) {
+    private fun EngineFeedContext.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<FixtureRenderTarget>) {
+        if (this is PerPixelEngineFeedContext) {
             resize(arrangement?.safeWidth ?: 1, arrangement?.safeHeight ?: 1) {
                 renderTargets.forEach { renderTarget ->
                     setOnBuffer(renderTarget)
@@ -171,7 +171,7 @@ class ModelRenderEngine(
         val safeHeight = max(pixHeight, 1.bufHeight)
 
         init {
-            engineFeeds.values.forEach { engineFeed ->
+            engineFeedContexts.values.forEach { engineFeed ->
                 engineFeed.maybeResizeAndPopulate(this, addedRenderTargets)
             }
 
@@ -198,7 +198,7 @@ class ModelRenderEngine(
         }
 
         fun render() {
-            engineFeeds.values.forEach { it.aboutToRenderFrame(renderTargets) }
+            engineFeedContexts.values.forEach { it.aboutToRenderFrame(renderTargets) }
 
             renderPlan?.forEach { programRenderPlan ->
                 val program = programRenderPlan.program

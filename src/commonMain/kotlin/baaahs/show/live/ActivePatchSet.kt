@@ -3,21 +3,21 @@ package baaahs.show.live
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.getBang
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.patch.ProgramResolver
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
-import baaahs.show.DataSource
+import baaahs.show.Feed
 
 data class ActivePatchSet(
     internal val activePatches: List<OpenPatch>,
-    private val allDataSources: Map<String, DataSource>,
-    private val feeds: Map<DataSource, Feed>
+    private val allFeedsById: Map<String, Feed>,
+    private val feedContexts: Map<Feed, FeedContext>
 ) {
-    val dataSources by lazy {
+    val allFeeds by lazy {
         buildSet {
             activePatches.forEach { activePatch ->
-                activePatch.dataSources.forEach { add(it) }
+                activePatch.feeds.forEach { add(it) }
             }
         }
     }
@@ -27,8 +27,8 @@ data class ActivePatchSet(
         renderTargets: Collection<FixtureRenderTarget>
     ): RenderPlan {
         val patchResolution = ProgramResolver(renderTargets, this, renderManager)
-        return patchResolution.createRenderPlan(allDataSources) { _, dataSource ->
-            feeds.getBang(dataSource, "data feed")
+        return patchResolution.createRenderPlan(allFeedsById) { _, feed ->
+            feedContexts.getBang(feed, "data feed")
         }
     }
 

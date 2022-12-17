@@ -12,7 +12,7 @@ import baaahs.model.ModelInfo
 import baaahs.only
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Stream
 import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.MutableShow
@@ -37,12 +37,12 @@ class GuruMeditationError(fixtureType: FixtureType) {
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
         linkedProgram = ProgramResolver.buildPortDiagram(openPatch)
-            .resolvePatch(Stream.Main, fixtureType.resultContentType, openShow.allDataSources)
+            .resolvePatch(Stream.Main, fixtureType.resultContentType, openShow.allFeeds)
             ?: error("Couldn't build guru meditation error patch.")
     }
 }
 
 private class FakeShowPlayer(toolchain: Toolchain) : BaseShowPlayer(toolchain, SceneMonitor(ModelInfo.EmptyScene)) {
-    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?): Unit = error("not implemented")
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?): Unit = error("not implemented")
     override fun <T : Gadget> useGadget(id: String): T = error("not implemented")
 }

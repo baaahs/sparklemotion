@@ -2,17 +2,17 @@ package baaahs.plugin.webcam
 
 import baaahs.ShowPlayer
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
@@ -26,19 +26,19 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
-    internal val videoInDataSource = VideoInDataSource()
+    internal val videoInFeed = VideoInFeed()
 
-    override val dataSourceBuilders: List<DataSourceBuilder<VideoInDataSource>>
+    override val feedBuilders: List<FeedBuilder<VideoInFeed>>
         get() = listOf(
-            object : DataSourceBuilder<VideoInDataSource> {
+            object : FeedBuilder<VideoInFeed> {
                 override val title get() = "Video Input"
                 override val description get() = "Video input."
                 override val resourceName get() = "VideoIn"
                 override val contentType get() = ContentType.Color
                 override val serializerRegistrar
-                    get() = objectSerializer("$id:$resourceName", videoInDataSource)
+                    get() = objectSerializer("$id:$resourceName", videoInFeed)
 
-                override fun build(inputPort: InputPort) = videoInDataSource
+                override fun build(inputPort: InputPort) = videoInFeed
 
                 override fun funDef(varName: String): String =
                     "vec4 $varName(vec2 uv);"
@@ -46,7 +46,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
         )
 
     @SerialName("baaahs.VideoIn:VideoIn")
-    inner class VideoInDataSource internal constructor() : DataSource {
+    inner class VideoInFeed internal constructor() : Feed {
         override val pluginPackage: String get() = id
         override val title: String get() = "Video In"
         override fun getType(): GlslType = GlslType.Sampler2D
@@ -66,13 +66,13 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
             buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
         }
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-            return object : Feed, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+            return object : FeedContext, RefCounted by RefCounter() {
+                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                     private val textureUnit = gl.getTextureUnit(VideoInPlugin)
                     private val texture = gl.check { createTexture() }
 
-                    override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
                         val textureId = "ds_${getVarName(id)}_texture"
                         val videoUniform = glslProgram.getUniform(textureId)
                         override val isValid: Boolean

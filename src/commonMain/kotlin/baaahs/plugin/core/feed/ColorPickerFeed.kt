@@ -1,22 +1,22 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.Color
 import baaahs.ShowPlayer
 import baaahs.control.MutableColorPickerControl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
-import baaahs.gl.data.SingleUniformFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
+import baaahs.gl.data.SingleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -28,30 +28,30 @@ import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 @SerialName("baaahs.Core:ColorPicker")
-data class ColorPickerDataSource(
+data class ColorPickerFeed(
     @SerialName("title")
     val colorPickerTitle: String,
     val initialValue: Color
-) : DataSource {
+) : Feed {
     override val title: String get() = "$colorPickerTitle Color Picker"
 
     override fun buildControl(): MutableControl {
         return MutableColorPickerControl(colorPickerTitle, initialValue, this)
     }
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
 //        val channel = showPlayer.useChannel<Float>(id)
         val colorPicker = showPlayer.useGadget(this)
             ?: showPlayer.useGadget(id)
             ?: run {
-                logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()
             }
 
-        return object : Feed, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return SingleUniformFeed(glslProgram, this@ColorPickerDataSource, id) { uniform ->
+        return object : FeedContext, RefCounted by RefCounter() {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                    return SingleUniformFeedContext(glslProgram, this@ColorPickerFeed, id) { uniform ->
                         val color = colorPicker.color
                         uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
                     }
@@ -60,23 +60,23 @@ data class ColorPickerDataSource(
         }
     }
 
-    companion object : DataSourceBuilder<ColorPickerDataSource> {
+    companion object : FeedBuilder<ColorPickerFeed> {
         override val title: String get() = "Color Picker"
         override val description: String get() = "A user-adjustable color picker."
         override val resourceName: String get() = "ColorPicker"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): ColorPickerDataSource {
+        override fun build(inputPort: InputPort): ColorPickerFeed {
             val default = inputPort.pluginConfig?.get("default")?.jsonPrimitive?.contentOrNull
 
-            return ColorPickerDataSource(
+            return ColorPickerFeed(
                 inputPort.title,
                 initialValue = default?.let { Color.Companion.from(it) } ?: Color.WHITE
             )
         }
 
-        private val logger = Logger<ColorPickerDataSource>()
+        private val logger = Logger<ColorPickerFeed>()
     }
 
     override val pluginPackage: String get() = CorePlugin.id

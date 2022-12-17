@@ -1,13 +1,13 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.control.MutableImagePickerControl
 import baaahs.gadgets.ImagePicker
 import baaahs.gadgets.ImageRef
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
@@ -16,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.imaging.Image
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -32,7 +32,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @SerialName("baaahs.Core:Image")
-data class ImageDataSource(override val title: String) : DataSource {
+data class ImageFeed(override val title: String) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override fun getType(): GlslType = GlslType.Vec4
     override val contentType: ContentType get() = ContentType.Color
@@ -57,32 +57,32 @@ data class ImageDataSource(override val title: String) : DataSource {
         buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
     }
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val imagePicker = showPlayer.useGadget(this)
             ?: showPlayer.useGadget(id)
             ?: run {
-                logger.debug { "No control gadget registered for datasource $id, creating one. This is probably busted." }
+                logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()
             }
 
-        return object : Feed, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
+        return object : FeedContext, RefCounted by RefCounter() {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 private val textureUnit = gl.getTextureUnit(id)
                 private val texture = gl.check { createTexture() }
 
-                override fun bind(glslProgram: GlslProgram): ProgramFeed =
-                    ImageProgramFeed(glslProgram, getVarName(id), imagePicker, texture, textureUnit)
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
+                    ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, textureUnit)
             }
         }
     }
 
-    class ImageProgramFeed(
+    class ImageProgramFeedContext(
         glslProgram: GlslProgram,
         varName: String,
         private val imagePicker: ImagePicker,
         private val texture: Texture,
         private val textureUnit: GlContext.TextureUnit
-    ) : ProgramFeed {
+    ) : ProgramFeedContext {
         private val textureId = "ds_${varName}_texture"
         private val textureUniform = glslProgram.getUniform(textureId)
         override val isValid: Boolean
@@ -123,7 +123,7 @@ data class ImageDataSource(override val title: String) : DataSource {
         }
     }
 
-    companion object : DataSourceBuilder<ImageDataSource> {
+    companion object : FeedBuilder<ImageFeed> {
         override val title: String get() = "Image"
         override val description: String get() = "A user-provided image."
         override val resourceName: String get() = "Image"
@@ -132,12 +132,12 @@ data class ImageDataSource(override val title: String) : DataSource {
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Sampler2D) // TODO: Should be vec4/3 instead?
-        override fun build(inputPort: InputPort): ImageDataSource =
-            ImageDataSource("${inputPort.title} Image")
+        override fun build(inputPort: InputPort): ImageFeed =
+            ImageFeed("${inputPort.title} Image")
 
         override fun funDef(varName: String): String =
             "vec4 $varName(vec2 uv);"
 
-        private val logger = Logger<ImageDataSource>()
+        private val logger = Logger<ImageFeed>()
     }
 }

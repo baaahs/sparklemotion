@@ -9,8 +9,8 @@ import baaahs.gl.shader.dialect.ShaderDialect
 import baaahs.gl.shader.type.ShaderType
 import baaahs.net.Network
 import baaahs.show.Control
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.BridgeClient
@@ -47,7 +47,7 @@ interface OpenPlugin {
     val controllerManagers: List<ControllerManager.Meta>
         get() = emptyList()
 
-    val dataSourceBuilders: List<DataSourceBuilder<out DataSource>>
+    val feedBuilders: List<FeedBuilder<out Feed>>
         get() = emptyList()
 
     val fixtureTypes: List<FixtureType>

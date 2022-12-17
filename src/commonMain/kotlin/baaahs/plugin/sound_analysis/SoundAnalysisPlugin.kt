@@ -5,17 +5,17 @@ import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Control
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.sim.BridgeClient
 import baaahs.util.*
 import com.danielgergely.kgl.*
@@ -44,39 +44,39 @@ class SoundAnalysisPlugin internal constructor(
         )
 
     override val contentTypes: List<ContentType>
-        get() = dataSourceBuilders.map { it.contentType }
+        get() = feedBuilders.map { it.contentType }
 
     override val controlSerializers: List<SerializerRegistrar<out Control>>
         get() = listOf(
             classSerializer(SoundAnalysisControl.serializer())
         )
 
-    override val dataSourceBuilders: List<DataSourceBuilder<out DataSource>> =
-        listOf(SoundAnalysisDataSourceBuilder())
+    override val feedBuilders: List<FeedBuilder<out Feed>> =
+        listOf(SoundAnalysisFeedBuilder())
 
-    internal val dataSource = SoundAnalysisDataSource()
+    internal val feed = SoundAnalysisFeed()
 
     override fun getSettingsPanel(): DialogPanel = SoundAnalysisSettingsPanel()
 
     @SerialName("baaahs.SoundAnalysis:SoundAnalysis")
-    inner class SoundAnalysisDataSource internal constructor() : DataSource {
+    inner class SoundAnalysisFeed internal constructor() : Feed {
         override val pluginPackage: String get() = id
         override val title: String get() = "SoundAnalysis"
         override val contentType: ContentType get() = soundAnalysisContentType
         override fun getType(): GlslType = soundAnalysisStruct
 
-        override fun createFeed(showPlayer: ShowPlayer, id: String): Feed =
-            SoundAnalysisFeed(getVarName(id), soundAnalyzer, historySize)
+        override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+            SoundAnalysisFeedContext(getVarName(id), soundAnalyzer, historySize)
     }
 
-    inner class SoundAnalysisDataSourceBuilder : DataSourceBuilder<SoundAnalysisDataSource> {
+    inner class SoundAnalysisFeedBuilder : FeedBuilder<SoundAnalysisFeed> {
         override val title: String get() = "Sound Analysis"
         override val description: String get() = "Spectral analysis of sound input."
         override val resourceName: String get() = "SoundAnalysis"
         override val contentType: ContentType get() = soundAnalysisContentType
-        override val serializerRegistrar get() = objectSerializer("$id:$resourceName", dataSource)
+        override val serializerRegistrar get() = objectSerializer("$id:$resourceName", feed)
 
-        override fun build(inputPort: InputPort): SoundAnalysisDataSource = dataSource
+        override fun build(inputPort: InputPort): SoundAnalysisFeed = feed
     }
 
     companion object : Plugin<Args>, SimulatorPlugin {
@@ -322,11 +322,11 @@ class SoundAnalysisPlugin internal constructor(
     }
 }
 
-class SoundAnalysisFeed(
+class SoundAnalysisFeedContext(
     private val varPrefix: String,
     private val soundAnalyzer: SoundAnalyzer,
     private val historySize: Int
-) : Feed, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
+) : FeedContext, RefCounted by RefCounter(), SoundAnalyzer.AnalysisListener {
     private var bucketCount = 0
     private var sampleBuffer = FloatArray(0)
     private var textureBuffer = FloatBuffer(sampleBuffer)
@@ -357,15 +357,15 @@ class SoundAnalysisFeed(
         maxMagnitude = max
     }
 
-    override fun bind(gl: GlContext): EngineFeed = SoundAnalysisEngineFeed(gl)
+    override fun bind(gl: GlContext): EngineFeedContext = SoundAnalysisEngineFeedContext(gl)
 
-    inner class SoundAnalysisEngineFeed(private val gl: GlContext) : EngineFeed {
+    inner class SoundAnalysisEngineFeedContext(private val gl: GlContext) : EngineFeedContext {
         private val textureUnit = gl.getTextureUnit(SoundAnalysisPlugin)
         private val texture = gl.check { createTexture() }
 
         init { gl.checkForLinearFilteringOfFloatTextures() }
 
-        override fun bind(glslProgram: GlslProgram): ProgramFeed = object : ProgramFeed {
+        override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
             val bucketCountUniform = glslProgram.getUniform("${varPrefix}.bucketCount")
             val sampleHistoryCountUniform = glslProgram.getUniform("${varPrefix}.sampleHistoryCount")
             val bucketsUniform = glslProgram.getUniform("${varPrefix}.buckets")
@@ -403,7 +403,7 @@ class SoundAnalysisFeed(
     }
 
     companion object {
-        private val logger = Logger<SoundAnalysisFeed>()
+        private val logger = Logger<SoundAnalysisFeedContext>()
     }
 }
 

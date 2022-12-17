@@ -99,11 +99,11 @@ object HintedShaderDialectSpec : Spek({
         }
 
         context("determining a method's input ports") {
-            context("when an in param specifies a plugin datasource") {
+            context("when an in param specifies a plugin feed") {
                 override(shaderText) { "void main(\n  float arg // @@Slider\n) {}" }
                 val inputPort by value { shaderAnalysis.inputPorts.only("input port") }
 
-                it("should use the data source's content type") {
+                it("should use the feed's content type") {
                     expect(inputPort.copy(glslArgSite = null))
                         .toEqual(
                             InputPort(

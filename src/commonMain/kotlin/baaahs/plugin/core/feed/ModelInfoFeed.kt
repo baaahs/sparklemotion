@@ -1,19 +1,19 @@
-package baaahs.plugin.core.datasource
+package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeed
-import baaahs.gl.data.Feed
-import baaahs.gl.data.ProgramFeed
+import baaahs.gl.data.EngineFeedContext
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.UpdateMode
 import baaahs.ui.addObserver
 import baaahs.util.RefCounted
@@ -24,8 +24,8 @@ import kotlinx.serialization.Transient
 
 @Serializable
 @SerialName("baaahs.Core:ModelInfo")
-data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource {
-    companion object : DataSourceBuilder<ModelInfoDataSource> {
+data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
+    companion object : FeedBuilder<ModelInfoFeed> {
         override val title: String get() = "Model Info"
         override val description: String get() = "Information about the model."
         override val resourceName: String get() = "ModelInfo"
@@ -33,8 +33,8 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
         override val serializerRegistrar get() = classSerializer(serializer())
         private val modelInfoType = ContentType.ModelInfo.glslType
 
-        override fun build(inputPort: InputPort): ModelInfoDataSource =
-            ModelInfoDataSource()
+        override fun build(inputPort: InputPort): ModelInfoFeed =
+            ModelInfoFeed()
     }
 
     override val pluginPackage: String get() = CorePlugin.id
@@ -43,10 +43,10 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
     override val contentType: ContentType
         get() = ContentType.ModelInfo
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val sceneProvider = showPlayer.sceneProvider
 
-        return object : Feed, RefCounted by RefCounter() {
+        return object : FeedContext, RefCounted by RefCounter() {
             var center: Vector3F? = null
             var extents: Vector3F? = null
             val listener = sceneProvider.addObserver(fireImmediately = true) {
@@ -57,9 +57,9 @@ data class ModelInfoDataSource(@Transient val `_`: Boolean = true) : DataSource 
 
             private val varPrefix = getVarName(id)
 
-            override fun bind(gl: GlContext): EngineFeed = object : EngineFeed {
-                override fun bind(glslProgram: GlslProgram): ProgramFeed {
-                    return object : ProgramFeed {
+            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+                    return object : ProgramFeedContext {
                         override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
                         val centerUniform = glslProgram.getUniform("${varPrefix}.center")
                         val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")

@@ -8,7 +8,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
 import baaahs.model.Model
-import baaahs.show.DataSourceBuilder
+import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -20,7 +20,7 @@ import kotlinx.serialization.modules.SerializersModule
 interface FixtureType {
     val id: String
     val title: String
-    val dataSourceBuilders: List<DataSourceBuilder<*>>
+    val feedBuilders: List<FeedBuilder<*>>
     val resultContentType: ContentType
     val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader

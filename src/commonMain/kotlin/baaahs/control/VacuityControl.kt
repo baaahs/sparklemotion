@@ -6,7 +6,7 @@ import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
 import baaahs.randomId
 import baaahs.show.Control
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenContext
 import baaahs.show.live.OpenControl
@@ -63,7 +63,7 @@ class OpenVacuityControl(
         return MutableVacuityControl(title)
     }
 
-    override fun controlledDataSources(): Set<DataSource> = emptySet()
+    override fun controlledFeeds(): Set<Feed> = emptySet()
 
     override fun getView(controlProps: ControlProps): View =
         controlViews.forVacuity(this, controlProps)

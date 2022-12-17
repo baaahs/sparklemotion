@@ -3,9 +3,9 @@ package baaahs.device
 import baaahs.ShowPlayer
 import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
-import baaahs.gl.data.Feed
-import baaahs.gl.data.PerPixelEngineFeed
-import baaahs.gl.data.PerPixelProgramFeed
+import baaahs.gl.data.FeedContext
+import baaahs.gl.data.PerPixelEngineFeedContext
+import baaahs.gl.data.PerPixelProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
@@ -18,9 +18,9 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.plugin.core.FixtureInfoDataSource
-import baaahs.show.DataSource
-import baaahs.show.DataSourceBuilder
+import baaahs.plugin.core.FixtureInfoFeed
+import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -31,18 +31,18 @@ import kotlin.math.min
 
 @Serializable
 @SerialName("baaahs.Core:PixelLocation")
-data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSource {
+data class PixelLocationFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Location"
     override fun getType(): GlslType = GlslType.Vec3
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
-    override val dependencies: Map<String, DataSource>
-        get() = mapOf("fixtureInfo" to FixtureInfoDataSource())
+    override val dependencies: Map<String, Feed>
+        get() = mapOf("fixtureInfo" to FixtureInfoFeed())
 
-    override fun createFeed(showPlayer: ShowPlayer, id: String): Feed {
-        return PixelLocationFeed(getVarName(id), "ds_${id}_texture")
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        return PixelLocationFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
     override fun appendDeclaration(buf: StringBuilder, id: String) {
@@ -66,29 +66,29 @@ data class PixelLocationDataSource(@Transient val `_`: Boolean = true) : DataSou
         return "${getVarName(varName)} = ds_${varName}_getPixelCoords(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelLocationDataSource> {
+    companion object : FeedBuilder<PixelLocationFeed> {
         override val title: String get() = "Pixel Location"
         override val description: String get() = "The location of this pixel within the model entity."
         override val resourceName: String
             get() = "PixelLocation"
         override val contentType: ContentType
             get() = ContentType.XyzCoordinate
-        override val serializerRegistrar: SerializerRegistrar<PixelLocationDataSource>
+        override val serializerRegistrar: SerializerRegistrar<PixelLocationFeed>
             get() = classSerializer(serializer())
 
-        override fun build(inputPort: InputPort): PixelLocationDataSource =
-            PixelLocationDataSource()
+        override fun build(inputPort: InputPort): PixelLocationFeed =
+            PixelLocationFeed()
     }
 }
 
-class PixelLocationFeed(
+class PixelLocationFeedContext(
     private val id: String,
     private val textureUniformId: String
-) : Feed, RefCounted by RefCounter() {
+) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext): EngineFeed = EngineFeed(gl)
+    override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
 
-    inner class EngineFeed(gl: GlContext) : PerPixelEngineFeed {
+    inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         override val buffer = FloatsParamBuffer(id, 3, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
@@ -114,10 +114,10 @@ class PixelLocationFeed(
             Unit
         }
 
-        override fun bind(glslProgram: GlslProgram) = ProgramFeed(glslProgram)
+        override fun bind(glslProgram: GlslProgram) = ProgramFeedContext(glslProgram)
 
-        inner class ProgramFeed(glslProgram: GlslProgram) : PerPixelProgramFeed(updateMode) {
-            override val buffer: ParamBuffer get() = this@EngineFeed.buffer
+        inner class ProgramFeedContext(glslProgram: GlslProgram) : PerPixelProgramFeedContext(updateMode) {
+            override val buffer: ParamBuffer get() = this@EngineFeedContext.buffer
             override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
                 ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true
@@ -125,6 +125,6 @@ class PixelLocationFeed(
     }
 
     companion object {
-        private val logger = Logger<PixelLocationFeed>()
+        private val logger = Logger<PixelLocationFeedContext>()
     }
 }

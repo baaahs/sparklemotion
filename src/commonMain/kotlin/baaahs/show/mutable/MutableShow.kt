@@ -34,8 +34,8 @@ class MutableShow(
         ).createMutable(this).also { it.asBuiltId = id }
     }
 
-    internal val dataSources = baseShow.dataSources
-        .mapValues { (_, shader) -> MutableDataSourcePort(shader) }
+    internal val feeds = baseShow.feeds
+        .mapValues { (_, shader) -> MutableFeedPort(shader) }
         .toMutableMap()
 
     internal val shaders = baseShow.shaders
@@ -90,9 +90,9 @@ class MutableShow(
             shaders = showBuilder.getShaders(),
             controls = showBuilder.getControls(),
             patches = showBuilder.getPatches(),
-            dataSources = run {
-                showBuilder.includeDependencyDataSources()
-                showBuilder.getDataSources()
+            feeds = run {
+                showBuilder.includeDependencyFeeds()
+                showBuilder.getFeeds()
             }
         )
     }
@@ -108,8 +108,8 @@ class MutableShow(
         (findControl(buttonGroupControl.id) as MutableButtonGroupControl).block()
     }
 
-    fun findDataSource(dataSourceId: String): MutableDataSourcePort =
-        dataSources.getBang(dataSourceId, "data source")
+    fun findFeed(feedId: String): MutableFeedPort =
+        feeds.getBang(feedId, "feed")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
         return when (openPatchHolder) {
@@ -167,9 +167,9 @@ data class MutablePatch(
         get() = mutableShader.title
     var surfaces: Surfaces = Surfaces.AllSurfaces
 
-    fun findDataSources(): List<DataSource> {
+    fun findFeeds(): List<Feed> {
         return incomingLinks.mapNotNull { (_, from) ->
-            (from as? MutableDataSourcePort)?.dataSource
+            (from as? MutableFeedPort)?.feed
         }
     }
 
@@ -179,7 +179,7 @@ data class MutablePatch(
         } + stream).filterNotNull()
     }
 
-    fun link(portId: String, toPort: DataSource) {
+    fun link(portId: String, toPort: Feed) {
         incomingLinks[portId] = toPort.editor()
     }
 
@@ -239,18 +239,18 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
         mutablePatches.forEach {
             showBuilder.idFor(it.build(showBuilder))
         }
-        showBuilder.includeDependencyDataSources()
+        showBuilder.includeDependencyFeeds()
 
         val openShaders = CacheBuilder<String, OpenShader> { shaderId ->
             toolchain.openShader(showBuilder.getShaders().getBang(shaderId, "shader"))
         }
 
         val resolvedPatches =
-            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getDataSources(), toolchain)
+            PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getFeeds(), toolchain)
                 .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
         val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)
-        return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getDataSources())
+        return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getFeeds())
     }
 
 }

@@ -4,13 +4,13 @@ import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.getBang
 import baaahs.gl.Toolchain
-import baaahs.gl.data.Feed
+import baaahs.gl.data.FeedContext
 import baaahs.gl.testToolchain
 import baaahs.gl.withCache
 import baaahs.model.ModelInfo
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
@@ -21,16 +21,16 @@ class FakeShowPlayer(
     override val sceneProvider: SceneProvider = SceneMonitor(ModelInfo.EmptyScene),
     override val toolchain: Toolchain = testToolchain
 ) : ShowPlayer {
-    val feeds = mutableMapOf<DataSource, Feed>()
+    val feeds = mutableMapOf<Feed, FeedContext>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
-    private val dataSourceGadgets: MutableMap<DataSource, Gadget> = mutableMapOf()
+    private val feedGadgets: MutableMap<Feed, Gadget> = mutableMapOf()
 
-    override fun openFeed(id: String, dataSource: DataSource): Feed =
-        feeds.getOrPut(dataSource) { dataSource.createFeed(this, id) }
+    override fun openFeed(id: String, feed: Feed): FeedContext =
+        feeds.getOrPut(feed) { feed.open(this, id) }
 
-    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledDataSource: DataSource?) {
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
         gadgets[id] = gadget
-        controlledDataSource?.let { dataSourceGadgets[controlledDataSource] = gadget }
+        controlledFeed?.let { feedGadgets[controlledFeed] = gadget }
     }
 
     override fun releaseUnused() {
@@ -41,9 +41,9 @@ class FakeShowPlayer(
         return gadgets.getBang(id, "gadget") as T
     }
 
-    override fun <T : Gadget> useGadget(dataSource: DataSource): T? {
+    override fun <T : Gadget> useGadget(feed: Feed): T? {
         @Suppress("UNCHECKED_CAST")
-        return dataSourceGadgets[dataSource] as T?
+        return feedGadgets[feed] as T?
     }
 
     fun <T : Gadget> getGadget(name: String): T {

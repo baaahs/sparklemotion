@@ -9,10 +9,10 @@ import baaahs.gl.patch.*
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
-import baaahs.show.DataSource
+import baaahs.show.Feed
 import baaahs.show.Stream
 import baaahs.show.Surfaces
-import baaahs.show.UnknownDataSource
+import baaahs.show.UnknownFeed
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 
@@ -39,19 +39,19 @@ class OpenPatch(
             }
         }
 
-    val dataSources get() = incomingLinks.values.mapNotNull { link ->
-        (link as? DataSourceLink)?.dataSource
+    val feeds get() = incomingLinks.values.mapNotNull { link ->
+        (link as? FeedLink)?.feed
     }
 
     val problems: List<Problem>
         get() =
             arrayListOf<Problem>().apply {
-                dataSources.forEach { dataSource ->
-                    val unknownDataSource = dataSource as? UnknownDataSource
-                    unknownDataSource?.let {
+                feeds.forEach { feed ->
+                    val unknownFeed = feed as? UnknownFeed
+                    unknownFeed?.let {
                         add(
                             Problem(
-                                "Unresolved data source for shader \"$title\".",
+                                "Unresolved feed for shader \"$title\".",
                                 it.errorMessage, severity = Severity.WARN
                             )
                         )
@@ -150,13 +150,13 @@ class OpenPatch(
         }
     }
 
-    data class DataSourceLink(
-        val dataSource: DataSource,
+    data class FeedLink(
+        val feed: Feed,
         val varName: String,
-        val deps: Map<String, DataSourceLink>
+        val deps: Map<String, FeedLink>
     ) : Link, ProgramNode {
-        override val title: String get() = dataSource.title
-        override val outputPort: OutputPort get() = OutputPort(dataSource.contentType)
+        override val title: String get() = feed.title
+        override val outputPort: OutputPort get() = OutputPort(feed.contentType)
 
         override fun getNodeId(programLinker: ProgramLinker): String = varName
 
@@ -166,7 +166,7 @@ class OpenPatch(
 
         override fun finalResolve(inputPort: InputPort, resolver: PortDiagram.Resolver): ProgramNode =
             resolver.resolveChannel(
-                inputPort.copy(contentType = dataSource.contentType),
+                inputPort.copy(contentType = feed.contentType),
                 Stream(varName)
             )
 
@@ -176,7 +176,7 @@ class OpenPatch(
             prefix: String,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
-//            dataSource.incomingLinks.forEach { (toPortId, fromLink) ->
+//            feed.incomingLinks.forEach { (toPortId, fromLink) ->
 //                val inputPort = shader.findInputPort(toPortId)
 //
 //                val upstreamComponent = findUpstreamComponent(fromLink)
@@ -187,9 +187,9 @@ class OpenPatch(
 //                }
 //                tmpPortMap[toPortId] = expression
 //            }
-            return DataSourceComponent(dataSource, varName,
-                deps.mapValues { (_, dataSourceLink) ->
-                    findUpstreamComponent(dataSourceLink)
+            return FeedComponent(feed, varName,
+                deps.mapValues { (_, feedLink) ->
+                    findUpstreamComponent(feedLink)
                 }
             )
         }

@@ -6,7 +6,7 @@ import baaahs.show.live.OpenPatch
 class LinkedProgram(
     val rootNode: ProgramNode,
     private val components: List<Component>,
-    val dataSourceLinks: Set<OpenPatch.DataSourceLink>,
+    val feedLinks: Set<OpenPatch.FeedLink>,
     val warnings: List<String>,
     internal val linkNodes: Map<ProgramNode, LinkNode> // For diagnostics only.
 ) {
