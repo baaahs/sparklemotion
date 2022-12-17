@@ -17,8 +17,8 @@ import baaahs.glsl.Uniform
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -56,7 +56,7 @@ data class PixelIndexFeed(@Transient val `_`: Boolean = true) : Feed {
         return "${getVarName(varName)} = ds_${varName}_getPixelIndex(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelIndexFeed> {
+    companion object : FeedBuilder<PixelIndexFeed> {
         override val title: String get() = "Pixel Index"
         override val description: String get() = "The index of this pixel within its fixture."
         override val resourceName: String

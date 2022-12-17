@@ -40,7 +40,7 @@ class OpenPatch(
         }
 
     val dataSources get() = incomingLinks.values.mapNotNull { link ->
-        (link as? DataSourceLink)?.feed
+        (link as? FeedLink)?.feed
     }
 
     val problems: List<Problem>
@@ -150,10 +150,10 @@ class OpenPatch(
         }
     }
 
-    data class DataSourceLink(
+    data class FeedLink(
         val feed: Feed,
         val varName: String,
-        val deps: Map<String, DataSourceLink>
+        val deps: Map<String, FeedLink>
     ) : Link, ProgramNode {
         override val title: String get() = feed.title
         override val outputPort: OutputPort get() = OutputPort(feed.contentType)

@@ -154,22 +154,22 @@ object PatchResolverSpec : Spek({
                             vec3 extents;
                         };
 
-                        // Data source: Brightness Slider
+                        // Feed: Brightness Slider
                         uniform float in_brightnessSlider;
 
-                        // Data source: Fixture Info
+                        // Feed: Fixture Info
                         uniform FixtureInfo in_fixtureInfo;
 
-                        // Data source: Model Info
+                        // Feed: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: orangeShader-patch gl_FragCoord offset
+                        // Feed: orangeShader-patch gl_FragCoord offset
                         uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
 
-                        // Data source: orangeShader-patch gl_FragCoord scale Slider
+                        // Feed: orangeShader-patch gl_FragCoord scale Slider
                         uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
 
-                        // Data source: Pixel Location
+                        // Feed: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
                             vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
@@ -178,7 +178,7 @@ object PatchResolverSpec : Spek({
                         }
                         vec3 in_pixelLocation;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: Cylindrical Projection; namespace: p0
@@ -261,7 +261,7 @@ object PatchResolverSpec : Spek({
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
                                 mutablePatches.only("patch")
-                                    .incomingLinks["time"] = MutableDataSourcePort(TimeFeed())
+                                    .incomingLinks["time"] = MutableFeedPort(TimeFeed())
                             })
                         }
                     }
@@ -296,22 +296,22 @@ object PatchResolverSpec : Spek({
                                 vec3 extents;
                             };
 
-                            // Data source: Brightness Slider
+                            // Feed: Brightness Slider
                             uniform float in_brightnessSlider;
 
-                            // Data source: Fixture Info
+                            // Feed: Fixture Info
                             uniform FixtureInfo in_fixtureInfo;
 
-                            // Data source: Model Info
+                            // Feed: Model Info
                             uniform ModelInfo in_modelInfo;
 
-                            // Data source: orangeShader-patch gl_FragCoord offset
+                            // Feed: orangeShader-patch gl_FragCoord offset
                             uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
 
-                            // Data source: orangeShader-patch gl_FragCoord scale Slider
+                            // Feed: orangeShader-patch gl_FragCoord scale Slider
                             uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
 
-                            // Data source: Pixel Location
+                            // Feed: Pixel Location
                             uniform sampler2D ds_pixelLocation_texture;
                             vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
                                 vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
@@ -320,7 +320,7 @@ object PatchResolverSpec : Spek({
                             }
                             vec3 in_pixelLocation;
 
-                            // Data source: Time
+                            // Feed: Time
                             uniform float in_time;
 
                             // Shader: Cylindrical Projection; namespace: p0
@@ -481,28 +481,28 @@ object PatchResolverSpec : Spek({
                             vec3 extents;
                         };
 
-                        // Data source: aMainShader-patch gl_FragCoord offset
+                        // Feed: aMainShader-patch gl_FragCoord offset
                         uniform vec2 in_aMainShaderPatchGlFragCoordOffset;
 
-                        // Data source: aMainShader-patch gl_FragCoord scale Slider
+                        // Feed: aMainShader-patch gl_FragCoord scale Slider
                         uniform float in_aMainShaderPatchGlFragCoordScaleSlider;
 
-                        // Data source: Fade Slider
+                        // Feed: Fade Slider
                         uniform float in_fadeSlider;
 
-                        // Data source: Fixture Info
+                        // Feed: Fixture Info
                         uniform FixtureInfo in_fixtureInfo;
 
-                        // Data source: Model Info
+                        // Feed: Model Info
                         uniform ModelInfo in_modelInfo;
 
-                        // Data source: orangeShader-patch gl_FragCoord offset
+                        // Feed: orangeShader-patch gl_FragCoord offset
                         uniform vec2 in_orangeShaderPatchGlFragCoordOffset;
 
-                        // Data source: orangeShader-patch gl_FragCoord scale Slider
+                        // Feed: orangeShader-patch gl_FragCoord scale Slider
                         uniform float in_orangeShaderPatchGlFragCoordScaleSlider;
 
-                        // Data source: Pixel Location
+                        // Feed: Pixel Location
                         uniform sampler2D ds_pixelLocation_texture;
                         vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
                             vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
@@ -511,7 +511,7 @@ object PatchResolverSpec : Spek({
                         }
                         vec3 in_pixelLocation;
 
-                        // Data source: Time
+                        // Feed: Time
                         uniform float in_time;
 
                         // Shader: Cylindrical Projection; namespace: p0
@@ -815,28 +815,28 @@ object PatchResolverSpec : Spek({
                         vec3 extents;
                     };
 
-                    // Data source: badgerOverlay-patch gl_FragCoord offset
+                    // Feed: badgerOverlay-patch gl_FragCoord offset
                     uniform vec2 in_badgerOverlayPatchGlFragCoordOffset;
 
-                    // Data source: badgerOverlay-patch gl_FragCoord scale Slider
+                    // Feed: badgerOverlay-patch gl_FragCoord scale Slider
                     uniform float in_badgerOverlayPatchGlFragCoordScaleSlider;
 
-                    // Data source: Brightness Slider
+                    // Feed: Brightness Slider
                     uniform float in_brightnessSlider;
 
-                    // Data source: Fixture Info
+                    // Feed: Fixture Info
                     uniform FixtureInfo in_fixtureInfo;
 
-                    // Data source: Hue Slider
+                    // Feed: Hue Slider
                     uniform float in_hueSlider;
 
-                    // Data source: Image Image
+                    // Feed: Image Image
                     uniform sampler2D ds_in_imageImage_texture;
 
-                    // Data source: Model Info
+                    // Feed: Model Info
                     uniform ModelInfo in_modelInfo;
 
-                    // Data source: Pixel Location
+                    // Feed: Pixel Location
                     uniform sampler2D ds_pixelLocation_texture;
                     vec3 ds_pixelLocation_getPixelCoords(vec2 rasterCoord) {
                         vec3 xyzInEntity = texelFetch(ds_pixelLocation_texture, ivec2(rasterCoord.xy), 0).xyz;
@@ -845,34 +845,34 @@ object PatchResolverSpec : Spek({
                     }
                     vec3 in_pixelLocation;
 
-                    // Data source: Redness Slider
+                    // Feed: Redness Slider
                     uniform float in_rednessSlider;
 
-                    // Data source: Resolution
+                    // Feed: Resolution
                     uniform vec2 in_resolution;
 
-                    // Data source: Ripple Amount Slider
+                    // Feed: Ripple Amount Slider
                     uniform float in_rippleAmountSlider;
 
-                    // Data source: ripple-patch uvIn offset
+                    // Feed: ripple-patch uvIn offset
                     uniform vec2 in_ripplePatchUvInOffset;
 
-                    // Data source: ripple-patch uvIn scale Slider
+                    // Feed: ripple-patch uvIn scale Slider
                     uniform float in_ripplePatchUvInScaleSlider;
 
-                    // Data source: Saturation Slider
+                    // Feed: Saturation Slider
                     uniform float in_saturationSlider;
 
-                    // Data source: scale-patch uvIn offset
+                    // Feed: scale-patch uvIn offset
                     uniform vec2 in_scalePatchUvInOffset;
 
-                    // Data source: scale-patch uvIn scale Slider
+                    // Feed: scale-patch uvIn scale Slider
                     uniform float in_scalePatchUvInScaleSlider;
 
-                    // Data source: Size Slider
+                    // Feed: Size Slider
                     uniform float in_sizeSlider;
 
-                    // Data source: Time
+                    // Feed: Time
                     uniform float in_time;
 
                     // Shader: UV Projection; namespace: p0

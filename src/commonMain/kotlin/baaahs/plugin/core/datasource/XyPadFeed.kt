@@ -16,8 +16,8 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.PluginRef
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -65,7 +65,7 @@ data class XyPadFeed(
         }
     }
 
-    companion object : DataSourceBuilder<XyPadFeed> {
+    companion object : FeedBuilder<XyPadFeed> {
         override val title: String get() = "X/Y Pad"
         override val description: String get() = "A user-adjustable two-dimensional input pad."
         override val resourceName: String get() = "XyPad"

@@ -324,9 +324,9 @@ class FixtureTypeForTest(
             )
         }
 ) : FixtureType {
-    val feedBuilders: List<DataSourceBuilder<*>>
+    override val feedBuilders: List<FeedBuilder<*>>
         get() = fixtureFeeds.map { dataSource ->
-            object : DataSourceBuilder<Feed> {
+            object : FeedBuilder<Feed> {
                 override val title: String get() = dataSource.title
                 override val description: String get() = "Description"
                 override val resourceName: String get() = "resName$dataSource"

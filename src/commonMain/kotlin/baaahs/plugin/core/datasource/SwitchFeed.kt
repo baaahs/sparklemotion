@@ -15,8 +15,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
@@ -69,7 +69,7 @@ data class SwitchFeed(
         }
     }
 
-    companion object : DataSourceBuilder<SwitchFeed> {
+    companion object : FeedBuilder<SwitchFeed> {
         override val title: String get() = "Switch"
         override val description: String get() = "A user-adjustable on/off switch."
         override val resourceName: String get() = "Switch"

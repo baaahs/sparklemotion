@@ -75,7 +75,7 @@ class OpenColorPickerControl(
     override val id: String,
     val colorPicker: ColorPicker,
     override val controlledFeed: Feed
-) : DataSourceOpenControl() {
+) : FeedOpenControl() {
     override val gadget: ColorPicker
         get() = colorPicker
 

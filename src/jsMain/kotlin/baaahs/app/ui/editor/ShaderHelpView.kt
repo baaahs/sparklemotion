@@ -39,7 +39,7 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
         }
 
         TableBody {
-            appContext.plugins.dataSourceBuilders.withPlugin
+            appContext.plugins.feedBuilders.withPlugin
                 .filterNot { (_, v) -> v.internalOnly }
                 .sortedBy { (_, v) -> v.title }
                 .forEach { (plugin, dataSourceBuilder) ->

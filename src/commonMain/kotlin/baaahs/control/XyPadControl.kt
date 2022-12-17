@@ -74,7 +74,7 @@ class OpenXyPadControl(
     override val id: String,
     val xyPad: XyPad,
     override val controlledFeed: Feed
-) : DataSourceOpenControl() {
+) : FeedOpenControl() {
     override val gadget: XyPad
         get() = xyPad
 

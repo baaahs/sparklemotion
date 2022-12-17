@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.UpdateMode
 import baaahs.ui.addObserver
 import baaahs.util.RefCounted
@@ -25,7 +25,7 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("baaahs.Core:ModelInfo")
 data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
-    companion object : DataSourceBuilder<ModelInfoFeed> {
+    companion object : FeedBuilder<ModelInfoFeed> {
         override val title: String get() = "Model Info"
         override val description: String get() = "Information about the model."
         override val resourceName: String get() = "ModelInfo"

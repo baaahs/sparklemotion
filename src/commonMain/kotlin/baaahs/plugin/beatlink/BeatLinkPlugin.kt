@@ -13,8 +13,8 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.sim.BridgeClient
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
@@ -62,12 +62,12 @@ class BeatLinkPlugin internal constructor(
 
     override val feedBuilders
         get() = listOf(
-            BeatLinkDataSourceBuilder(),
-            BeatInfoDataSourceBuilder(),
-            RawBeatInfoDataSourceBuilder()
+            BeatLinkFeedBuilder(),
+            BeatInfoFeedBuilder(),
+            RawBeatInfoFeedBuilder()
         )
 
-    inner class BeatLinkDataSourceBuilder : DataSourceBuilder<BeatLinkFeed> {
+    inner class BeatLinkFeedBuilder : FeedBuilder<BeatLinkFeed> {
         override val title: String get() = "Beat Link"
         override val description: String
             get() = "A float representing the current beat intensity, between 0 and 1."
@@ -84,7 +84,7 @@ class BeatLinkPlugin internal constructor(
         override fun build(inputPort: InputPort): BeatLinkFeed = beatLinkDataSource
     }
 
-    inner class BeatInfoDataSourceBuilder : DataSourceBuilder<BeatInfoFeed> {
+    inner class BeatInfoFeedBuilder : FeedBuilder<BeatInfoFeed> {
         override val title: String get() = "Beat Info"
         override val description: String get() = "A struct containing information about the beat."
         override val resourceName: String get() = "BeatInfo"
@@ -100,7 +100,7 @@ class BeatLinkPlugin internal constructor(
         override fun build(inputPort: InputPort): BeatInfoFeed = beatInfoDataSource
     }
 
-    inner class RawBeatInfoDataSourceBuilder : DataSourceBuilder<RawBeatInfoFeed> {
+    inner class RawBeatInfoFeedBuilder : FeedBuilder<RawBeatInfoFeed> {
         override val title: String get() = "Raw Beat Data"
         override val description: String get() = "A struct containing low-level information about the beat."
         override val resourceName: String get() = "RawBeatInfo"

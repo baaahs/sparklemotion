@@ -8,8 +8,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.int
@@ -27,7 +27,7 @@ data class RadioButtonStripFeed(
         TODO("not implemented")
     }
 
-    companion object : DataSourceBuilder<RadioButtonStripFeed> {
+    companion object : FeedBuilder<RadioButtonStripFeed> {
         override val title: String get() = "Radio Button Strip"
         override val description: String get() = "A user-adjustable button strip."
         override val resourceName: String get() = "RadioButtonStrip"

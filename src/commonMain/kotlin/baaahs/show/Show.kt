@@ -92,7 +92,7 @@ fun <T> List<T>.assertNoDuplicates(items: String = "items") {
 data class EventBinding(
     val inputType: String,
     val inputData: JsonElement,
-    val target: DataSourceRef
+    val target: FeedRef
 )
 
 @Serializable

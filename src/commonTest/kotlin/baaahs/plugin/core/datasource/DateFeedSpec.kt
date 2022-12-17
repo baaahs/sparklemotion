@@ -18,7 +18,7 @@ import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.Kgl
 import org.spekframework.spek2.Spek
 
-object DateDataSourceSpec : Spek({
+object DateFeedSpec : Spek({
     describe<DateFeed> {
 
         val builder by value { DateFeed }

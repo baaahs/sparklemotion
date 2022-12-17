@@ -35,7 +35,7 @@ class MutableShow(
     }
 
     internal val dataSources = baseShow.dataSources
-        .mapValues { (_, shader) -> MutableDataSourcePort(shader) }
+        .mapValues { (_, shader) -> MutableFeedPort(shader) }
         .toMutableMap()
 
     internal val shaders = baseShow.shaders
@@ -108,7 +108,7 @@ class MutableShow(
         (findControl(buttonGroupControl.id) as MutableButtonGroupControl).block()
     }
 
-    fun findDataSource(dataSourceId: String): MutableDataSourcePort =
+    fun findDataSource(dataSourceId: String): MutableFeedPort =
         dataSources.getBang(dataSourceId, "data source")
 
     fun findPatchHolder(openPatchHolder: OpenPatchHolder): MutablePatchHolder {
@@ -169,7 +169,7 @@ data class MutablePatch(
 
     fun findDataSources(): List<Feed> {
         return incomingLinks.mapNotNull { (_, from) ->
-            (from as? MutableDataSourcePort)?.feed
+            (from as? MutableFeedPort)?.feed
         }
     }
 

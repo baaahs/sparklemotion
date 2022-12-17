@@ -12,8 +12,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.soywiz.klock.DateTime
@@ -28,7 +28,7 @@ data class DateFeed(
     val zeroBasedDay: Boolean = false
 ) : Feed {
 
-    companion object : DataSourceBuilder<DateFeed> {
+    companion object : FeedBuilder<DateFeed> {
         const val SECONDS_PER_DAY = (24 * 60 * 60).toDouble()
 
         override val title: String get() = "Date"

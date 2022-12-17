@@ -15,8 +15,8 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
 import baaahs.plugin.classSerializer
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -49,7 +49,7 @@ data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
         return FixtureInfoFeedContext(getVarName(id))
     }
 
-    companion object : DataSourceBuilder<FixtureInfoFeed> {
+    companion object : FeedBuilder<FixtureInfoFeed> {
         override val title: String get() = "Fixture Info"
         override val description: String get() =
             "Information about the fixture's position and orientation in the model."

@@ -52,14 +52,14 @@ class GridLayoutControlDisplay(override val show: OpenShow) : ControlDisplay {
         this.relevantUnplacedControls = offScreenControls.filter { control ->
             activeDataSources.containsAll(control.controlledDataSources())
         }.sortedBy { control ->
-            (control as? DataSourceOpenControl)?.inUse = true
+            (control as? FeedOpenControl)?.inUse = true
             control.controlledDataSources().firstOrNull()?.title
                 ?: "zzzzz"
         }
         println("relevantUnplacedControls = ${relevantUnplacedControls}")
 
         placedControls.forEach { control ->
-            (control as? DataSourceOpenControl)?.inUse =
+            (control as? FeedOpenControl)?.inUse =
                 activeDataSources.containsAll(control.controlledDataSources())
         }
 

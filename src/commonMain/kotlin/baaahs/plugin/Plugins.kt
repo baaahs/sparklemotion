@@ -27,7 +27,7 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.show.*
-import baaahs.show.mutable.MutableDataSourcePort
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.sim.BridgeClient
 import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
@@ -165,7 +165,7 @@ sealed class Plugins(
         registerSerializers { controlSerializers }
     }
 
-    val dataSourceBuilders = DataSourceBuilders()
+    val feedBuilders = FeedBuilders()
 
     val fixtureTypes = FixtureTypes()
 
@@ -198,7 +198,7 @@ sealed class Plugins(
         }
     }
 
-    class PluginDataSourceSerializer(
+    class PluginFeedSerializer(
         private val byPlugin: Map<String, SerializersModule>
     ) : KSerializer<Feed> {
         override val descriptor: SerialDescriptor = buildClassSerialDescriptor("baaahs.show.DataSource") {
@@ -247,8 +247,8 @@ sealed class Plugins(
         include(Gadget.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
-        contextual(Feed::class, PluginDataSourceSerializer(dataSourceBuilders.serialModulesByPlugin))
-        include(dataSourceBuilders.serialModule)
+        contextual(Feed::class, PluginFeedSerializer(feedBuilders.serialModulesByPlugin))
+        include(feedBuilders.serialModule)
         include(fixtureTypes.serialModule)
         include(controllers.serialModule)
 
@@ -332,8 +332,8 @@ sealed class Plugins(
         return contentTypes.matchingType(glslType)
     }
 
-    fun findDataSourceBuilder(pluginRef: PluginRef): DataSourceBuilder<out Feed> {
-        return dataSourceBuilders.byPluginRef[pluginRef]
+    fun findDataSourceBuilder(pluginRef: PluginRef): FeedBuilder<out Feed> {
+        return feedBuilders.byPluginRef[pluginRef]
             ?: throw LinkException("unknown plugin resource $pluginRef")
     }
 
@@ -349,12 +349,12 @@ sealed class Plugins(
     ): List<PortLinkOption> {
         val suggestions = (setOfNotNull(inputPort.contentType) + suggestedContentTypes).flatMap { contentType ->
             val dataSourceCandidates =
-                dataSourceBuilders.buildForContentType(contentType, inputPort) +
+                feedBuilders.buildForContentType(contentType, inputPort) +
                         fixtureTypes.buildForContentType(contentType, inputPort)
 
             dataSourceCandidates.map { dataSource ->
                 PortLinkOption(
-                    MutableDataSourcePort(dataSource),
+                    MutableFeedPort(dataSource),
                     wasPurposeBuilt = dataSource.appearsToBePurposeBuiltFor(inputPort),
                     isPluginSuggestion = true,
                     isExactContentType = dataSource.contentType == inputPort.contentType
@@ -367,7 +367,7 @@ sealed class Plugins(
         return if (suggestions.isNotEmpty()) {
             suggestions
         } else {
-            dataSourceBuilders.all.map {
+            feedBuilders.all.map {
                 it.suggestDataSources(inputPort, suggestedContentTypes)
             }.flatten()
         }
@@ -400,7 +400,7 @@ sealed class Plugins(
 
     // TODO: We should report errors back somehow.
     private fun safeBuild(
-        builder: DataSourceBuilder<out Feed>,
+        builder: FeedBuilder<out Feed>,
         inputPort: InputPort
     ): Feed? = builder.safeBuild(inputPort)
 
@@ -488,9 +488,9 @@ sealed class Plugins(
         }
     }
 
-    inner class DataSourceBuilders {
+    inner class FeedBuilders {
         val withPlugin = openPlugins.flatMap { plugin ->
-            (plugin.feedBuilders + plugin.fixtureTypes.flatMap { it.dataSourceBuilders })
+            (plugin.feedBuilders + plugin.fixtureTypes.flatMap { it.feedBuilders })
                 .distinct()
                 .map { plugin to it }
         }
@@ -515,13 +515,13 @@ sealed class Plugins(
 
         private fun OpenPlugin.dataSourceSerlializerRegistrars() =
             feedBuilders.map { it.serializerRegistrar } +
-                    fixtureTypes.flatMap { it.dataSourceBuilders.map { builder -> builder.serializerRegistrar } }
+                    fixtureTypes.flatMap { it.feedBuilders.map { builder -> builder.serializerRegistrar } }
 
         fun buildForContentType(
             contentType: ContentType?,
             inputPort: InputPort
         ) = (
-                dataSourceBuilders.byContentType[contentType]
+                feedBuilders.byContentType[contentType]
                     ?.mapNotNull { safeBuild(it, inputPort) }
                     ?: emptyList()
                 )
@@ -543,7 +543,7 @@ sealed class Plugins(
 
         fun buildForContentType(contentType: ContentType, inputPort: InputPort): List<Feed> {
             return all.flatMap { fixtureType ->
-                fixtureType.dataSourceBuilders.filter { dataSource -> dataSource.contentType == contentType }
+                fixtureType.feedBuilders.filter { dataSource -> dataSource.contentType == contentType }
             }.mapNotNull { safeBuild(it, inputPort) }
         }
     }

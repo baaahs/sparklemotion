@@ -146,7 +146,7 @@ class PatchOptions(
             if (inputPort.hasPluginRef()) {
                 try {
                     val dataSource = plugins.resolveDataSource(inputPort)
-                    options.add(PortLinkOption(MutableDataSourcePort(dataSource), isPluginRef = true))
+                    options.add(PortLinkOption(MutableFeedPort(dataSource), isPluginRef = true))
                 } catch (e: LinkException) {
                     logger.warn(e) { "Incorrect plugin reference." }
                 } catch (e: Exception) {

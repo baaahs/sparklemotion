@@ -15,8 +15,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -60,7 +60,7 @@ data class ColorPickerFeed(
         }
     }
 
-    companion object : DataSourceBuilder<ColorPickerFeed> {
+    companion object : FeedBuilder<ColorPickerFeed> {
         override val title: String get() = "Color Picker"
         override val description: String get() = "A user-adjustable color picker."
         override val resourceName: String get() = "ColorPicker"

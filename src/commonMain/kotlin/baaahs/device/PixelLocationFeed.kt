@@ -19,8 +19,8 @@ import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.FixtureInfoFeed
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -66,7 +66,7 @@ data class PixelLocationFeed(@Transient val `_`: Boolean = true) : Feed {
         return "${getVarName(varName)} = ds_${varName}_getPixelCoords(gl_FragCoord.xy)"
     }
 
-    companion object : DataSourceBuilder<PixelLocationFeed> {
+    companion object : FeedBuilder<PixelLocationFeed> {
         override val title: String get() = "Pixel Location"
         override val description: String get() = "The location of this pixel within the model entity."
         override val resourceName: String

@@ -12,9 +12,9 @@ sealed class PortRef {
 }
 
 @Serializable @SerialName("datasource")
-data class DataSourceRef(val dataSourceId: String) : PortRef() {
+data class FeedRef(val dataSourceId: String) : PortRef() {
     override fun dereference(mutableShow: MutableShow): MutablePort =
-        mutableShow.dataSources.getBang(dataSourceId, "datasource")
+        mutableShow.dataSources.getBang(dataSourceId, "feed")
 }
 
 @Serializable @SerialName("stream")

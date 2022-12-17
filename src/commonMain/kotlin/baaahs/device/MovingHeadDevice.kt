@@ -12,7 +12,7 @@ import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureConfig
-import baaahs.show.DataSourceBuilder
+import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
 import baaahs.visualizer.visualizerBuilder
@@ -25,7 +25,7 @@ object MovingHeadDevice : FixtureType {
     override val id: String get() = "MovingHead"
     override val title: String get() = "Moving Head"
 
-    override val dataSourceBuilders: List<DataSourceBuilder<*>>
+    override val feedBuilders: List<FeedBuilder<*>>
         get() = listOf(FixtureInfoFeed)
 
     override val resultContentType: ContentType

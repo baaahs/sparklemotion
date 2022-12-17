@@ -81,7 +81,7 @@ private val TrackCandidatesView = xComponent<TrackCandidatesProps>("TrackCandida
                                             is OpenPatch.ConstLink -> {
                                                 +"const: ${link.glsl} (${link.type} = ${link.type.glslLiteral})"
                                             }
-                                            is OpenPatch.DataSourceLink -> {
+                                            is OpenPatch.FeedLink -> {
                                                 +"datasource: ${link.feed} (${link.deps})"
                                             }
                                             is OpenPatch.InjectedDataLink -> {

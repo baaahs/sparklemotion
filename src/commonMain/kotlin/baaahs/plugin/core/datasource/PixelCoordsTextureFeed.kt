@@ -11,8 +11,8 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
-import baaahs.show.DataSourceBuilder
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -23,7 +23,7 @@ import kotlinx.serialization.Transient
 @Serializable
 @SerialName("baaahs.Core:PixelCoordsTexture")
 data class PixelCoordsTextureFeed(@Transient val `_`: Boolean = true) : Feed {
-    companion object : DataSourceBuilder<PixelCoordsTextureFeed> {
+    companion object : FeedBuilder<PixelCoordsTextureFeed> {
         override val title: String get() = "Pixel Coordinates"
         override val description: String get() = "Internal use only."
         override val resourceName: String get() = "PixelCoords"

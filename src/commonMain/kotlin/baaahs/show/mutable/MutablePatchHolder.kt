@@ -126,7 +126,7 @@ abstract class MutablePatchHolder(
 
     fun findControlDataSources(): Set<Feed> {
         return controlLayout.values.flatMap {
-            it.filterIsInstance<MutableDataSourcePort>().map { it.feed }
+            it.filterIsInstance<MutableFeedPort>().map { it.feed }
         }.toSet()
     }
 
