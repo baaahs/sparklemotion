@@ -65,7 +65,7 @@ object MutableShowSpec : Spek({
                     .toBe(setOf("shader 0", "shader 1a", "shader 2a", "shader 2b", "shader 2c"))
             }
 
-            it("has the expected initial datasources") {
+            it("has the expected initial feeds") {
                 expect(show.dataSources.values.map { it.title }.toSet())
                     .toBe(setOf("Time", "Resolution", "Blueness Slider"))
             }

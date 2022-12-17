@@ -53,7 +53,7 @@ object ShowSerializationSpec : Spek({
             }
         }
 
-        context("referencing an unresolvable datasource") {
+        context("referencing an unresolvable feed") {
             val fakePluginBuilder by value {
                 FakePlugin.Builder("some.plugin", listOf(FakeFeed.Builder))
             }
@@ -80,7 +80,7 @@ object ShowSerializationSpec : Spek({
 
             it("serializes as expected") {
                 plugins.expectJson(buildJsonObject {
-                    put("somePluginDataSource", buildJsonObject {
+                    put("somePluginFeed", buildJsonObject {
                         put("type", "some.plugin:Fake")
                         put("whateverValue", "foo")
                     })
@@ -88,10 +88,10 @@ object ShowSerializationSpec : Spek({
             }
 
             context("when the plugin is unknown") {
-                it("deserializes to an UnknownDataSource") {
+                it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val dataSource = show.dataSources["somePluginDataSource"]!!
-                    expect(dataSource).toEqual(
+                    val feed = show.dataSources["somePluginFeed"]!!
+                    expect(feed).toEqual(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
                             "Unknown plugin \"some.plugin\".",
@@ -112,13 +112,13 @@ object ShowSerializationSpec : Spek({
                 }
             }
 
-            context("when the datasource is unknown") {
+            context("when the feed is unknown") {
                 override(plugins) { buildPlugins(FakePlugin.Builder("some.plugin")) }
 
-                it("deserializes to an UnknownDataSource") {
+                it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
-                    val dataSource = show.dataSources["somePluginDataSource"]!!
-                    expect(dataSource).toEqual(
+                    val feed = show.dataSources["somePluginFeed"]!!
+                    expect(feed).toEqual(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
                             "Unknown feed \"some.plugin:Fake\".",
@@ -346,7 +346,7 @@ class FakeFeed(
     override val pluginPackage = "some.plugin"
 
     @Transient
-    override val title: String = "$pluginPackage DataSource"
+    override val title: String = "$pluginPackage Feed"
 
     @Transient
     override val contentType: ContentType = ContentType.Unknown

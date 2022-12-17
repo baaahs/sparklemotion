@@ -247,16 +247,16 @@ class RenderEngineTest {
             .acceptSuggestedLinkOptions()
             .confirm()
             .openForPreview(testToolchain, ContentType.Color)!!
-        return renderEngine.compile(linkedPatch) { id, dataSource ->
-            when (dataSource) {
+        return renderEngine.compile(linkedPatch) { id, feed ->
+            when (feed) {
                 is ColorPickerFeed -> {
-                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+                    fakeShowPlayer.registerGadget(id, feed.createGadget(), feed)
                 }
                 is SliderFeed -> {
-                    fakeShowPlayer.registerGadget(id, dataSource.createGadget(), dataSource)
+                    fakeShowPlayer.registerGadget(id, feed.createGadget(), feed)
                 }
             }
-            dataSource.open(fakeShowPlayer, id)
+            feed.open(fakeShowPlayer, id)
         }
     }
 

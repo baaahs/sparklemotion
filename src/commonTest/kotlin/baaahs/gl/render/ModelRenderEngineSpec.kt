@@ -32,7 +32,7 @@ object ModelRenderEngineSpec : Spek({
         val gl by value { FakeGlContext() }
         val updateMode by value { UpdateMode.ONCE }
         val fixtureFeed by value { PerFixtureFeedForTest(updateMode) }
-        val pixelDataSource by value { PerPixelFeedForTest(updateMode) }
+        val pixelFeed by value { PerPixelFeedForTest(updateMode) }
         val feed by value<Feed> { fixtureFeed }
         val fixtureType by value { FixtureTypeForTest(feed) }
         val maxFramebufferWidth by value { 64 }
@@ -77,7 +77,7 @@ object ModelRenderEngineSpec : Spek({
                 ProgramLinker(rootNode).buildLinkedProgram()
             }
             val program by value {
-                renderEngine.compile(linkedPatch) { id, dataSource -> dataSource.open(FakeShowPlayer(), id) }
+                renderEngine.compile(linkedPatch) { id, feed -> feed.open(FakeShowPlayer(), id) }
             }
             val initialProgram by value<Array<GlslProgram?>> { arrayOf(program) } // Array is a workaround for a bug in by value.
             val fakeGlProgram by value { gl.programs.only("program") }
@@ -95,7 +95,7 @@ object ModelRenderEngineSpec : Spek({
             }
 
             context("when the data source is per-pixel") {
-                override(feed) { pixelDataSource }
+                override(feed) { pixelFeed }
 
                 it("should allocate a texture to hold per-pixel data") {
                     expect(texture.width to texture.height).toBe(1 to 1)
@@ -129,7 +129,7 @@ object ModelRenderEngineSpec : Spek({
                 }
 
                 context("when the data source is per-pixel") {
-                    override(feed) { pixelDataSource }
+                    override(feed) { pixelFeed }
 
                     it("should release the texture") {
                         expect(texture.isDeleted).toBe(true)
@@ -172,7 +172,7 @@ object ModelRenderEngineSpec : Spek({
                     }
 
                     context("when the data source is per-pixel") {
-                        override(feed) { pixelDataSource }
+                        override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
                             expect(texture.width to texture.height)
@@ -238,7 +238,7 @@ object ModelRenderEngineSpec : Spek({
                     }
 
                     context("when the data source is per-pixel") {
-                        override(feed) { pixelDataSource }
+                        override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
                             expect(texture.width to texture.height)
@@ -325,14 +325,14 @@ class FixtureTypeForTest(
         }
 ) : FixtureType {
     override val feedBuilders: List<FeedBuilder<*>>
-        get() = fixtureFeeds.map { dataSource ->
+        get() = fixtureFeeds.map { feed ->
             object : FeedBuilder<Feed> {
-                override val title: String get() = dataSource.title
+                override val title: String get() = feed.title
                 override val description: String get() = "Description"
-                override val resourceName: String get() = "resName$dataSource"
-                override val contentType: ContentType get() = dataSource.contentType
+                override val resourceName: String get() = "resName$feed"
+                override val contentType: ContentType get() = feed.contentType
                 override val serializerRegistrar: SerializerRegistrar<Feed> get() = TODO("not implemented")
-                override fun build(inputPort: InputPort): Feed = dataSource
+                override fun build(inputPort: InputPort): Feed = feed
             }
         }
 
