@@ -80,7 +80,7 @@ object AutoWirerSpec : Spek({
                 }
             }
 
-            context("when there's a good datasource match") {
+            context("when there's a good feed match") {
                 context("e.g. for time") {
                     override(portId) { "time" }
                     override(portContentType) { ContentType.Time }
@@ -123,7 +123,7 @@ object AutoWirerSpec : Spek({
 //
 // TODO:                    it("suggests a Slider data source channel link") {
 // TODO:                        expect(portLink)
-// TODO:                            .toBe(CorePlugin.SliderDataSource("Brightness", 1f, 0f, 1f).editor())
+// TODO:                            .toBe(CorePlugin.SliderFeed("Brightness", 1f, 0f, 1f).editor())
 // TODO:                    }
 // TODO:                }
             }
@@ -191,7 +191,7 @@ object AutoWirerSpec : Spek({
             val mutableLinks by value { patchSet.mutablePatches.only().incomingLinks }
             val links by value { rootProgramNode.incomingLinks }
 
-            it("picks TimeDataSource for time") {
+            it("picks TimeFeed for time") {
                 expect(mutableLinks["time"])
                     .toBe(TimeFeed().editor())
 
@@ -199,7 +199,7 @@ object AutoWirerSpec : Spek({
                     .toBe(TimeFeed().link("time"))
             }
 
-            it("picks ResolutionDataSource for resolution") {
+            it("picks feed for resolution") {
                 expect(mutableLinks["resolution"])
                     .toBe(ResolutionFeed().editor())
 

@@ -23,10 +23,10 @@ object DateFeedSpec : Spek({
 
         val builder by value { DateFeed }
         val inputPort by value { toBeSpecified<InputPort>() }
-        val dataSource by value { builder.build(inputPort) }
+        val feed by value { builder.build(inputPort) }
         val time by value { 1619099367.792 } // 2021-04-22 00:13:49.793 UTC
         val uniform by value { FakeUniform() }
-        val feed by value {
+        val feedContext by value {
             val showPlayer = FakeShowPlayer().also {
                 (it.toolchain.plugins.pluginContext.clock as FakeClock).time = time
             }
@@ -36,7 +36,7 @@ object DateFeedSpec : Spek({
                 override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.fakeKgl)
             }
 
-            dataSource.open(showPlayer, "date")
+            feed.open(showPlayer, "date")
                 .bind(gl)
                 .bind(fakeProgram)
         }
@@ -44,12 +44,12 @@ object DateFeedSpec : Spek({
         context("for ShaderToy shaders") {
             override(inputPort) { ShaderToyShaderDialect.wellKnownInputPorts.find { it.id == "iDate" } }
 
-            it("builds a datasource with zero-based months and one-based days") {
-                expect(dataSource).toEqual(DateFeed(zeroBasedMonth = true, zeroBasedDay = false))
+            it("builds a feed with zero-based months and one-based days") {
+                expect(feed).toEqual(DateFeed(zeroBasedMonth = true, zeroBasedDay = false))
             }
 
             it("sets correct uniform values") {
-                feed.setOnProgram()
+                feedContext.setOnProgram()
                 expect(uniform.value.toString())
                     .toEqual(Vector4F(2021f, 3f, 22f, 49767.793f).toString())
             }
@@ -58,13 +58,13 @@ object DateFeedSpec : Spek({
         context("for ISF shaders") {
             override(inputPort) { IsfShaderDialect.wellKnownInputPorts.find { it.id == "DATE" } }
 
-            it("builds a datasource with zero-based months and zero-based days") {
-                expect(dataSource).toEqual(DateFeed(zeroBasedMonth = false, zeroBasedDay = false))
+            it("builds a feed with zero-based months and zero-based days") {
+                expect(feed).toEqual(DateFeed(zeroBasedMonth = false, zeroBasedDay = false))
             }
 
 
             it("sets correct uniform values") {
-                feed.setOnProgram()
+                feedContext.setOnProgram()
                 expect(uniform.value.toString())
                     .toEqual(Vector4F(2021f, 4f, 22f, 49767.793f).toString())
             }

@@ -20,11 +20,11 @@ import org.spekframework.spek2.Spek
 object CorePluginSpec : Spek({
     describe<TimeFeed> {
         val clock by value { FakeClock(0.0) }
-        val dataSource by value { TimeFeed() }
+        val feed by value { TimeFeed() }
         val toolchain by value { RootToolchain(testPlugins(clock) ) }
-        val feed by value { dataSource.open(FakeShowPlayer(toolchain = toolchain), "time") }
+        val feedContext by value { feed.open(FakeShowPlayer(toolchain = toolchain), "time") }
         val gl by value { FakeGlContext() }
-        val glFeed by value { feed.bind(gl) }
+        val glFeed by value { feedContext.bind(gl) }
         val program by value {
             val mutablePatch = toolchain.autoWire(Shaders.red)
                 .acceptSuggestedLinkOptions()

@@ -72,14 +72,14 @@ object OpenShowSpec : Spek({
 
             it("opens feeds") {
                 openShow.run {}
-                val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "datasource key")
+                val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "feed key")
                 expect(timeFeed.inUse()).toBe(true)
             }
 
             context("when released") {
                 it("closes feeds") {
                     openShow.onRelease()
-                    val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "datasource key")
+                    val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "feed key")
                     expect(timeFeed.inUse()).toBe(false)
                 }
             }
@@ -135,7 +135,7 @@ object OpenShowSpec : Spek({
                 expect(implicitSlider.slider)
                     .toEqual(Slider("Slider"))
                 expect(implicitSlider.controlledFeed)
-                    .toEqual(show.dataSources.values.only("datasource"))
+                    .toEqual(show.dataSources.values.only("feed"))
 
                 expect(openShow.implicitControls).containsExactly(implicitSlider)
             }

@@ -1036,7 +1036,7 @@ object PatchResolverSpec : Spek({
     }
 })
 
-private fun generateLinkedProgram(dataSources: Map<String, Feed>, activePatchSet: ActivePatchSet): LinkedProgram {
+private fun generateLinkedProgram(feeds: Map<String, Feed>, activePatchSet: ActivePatchSet): LinkedProgram {
     val model = TestModel
     val renderManager = RenderManager(FakeGlContext())
     val fixture = model.allEntities.first()
@@ -1046,5 +1046,5 @@ private fun generateLinkedProgram(dataSources: Map<String, Feed>, activePatchSet
         .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")
         .first
-    return portDiagram.resolvePatch(Stream.Main, Color, dataSources)!!
+    return portDiagram.resolvePatch(Stream.Main, Color, feeds)!!
 }

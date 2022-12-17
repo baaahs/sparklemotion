@@ -149,8 +149,8 @@ object StageManagerSpec : Spek({
 
                     override(addControls) {
                         {
-                            val colorPickerDataSource = ColorPickerFeed("Color", Color.WHITE)
-                            mutableShow.addControl(panel, colorPickerDataSource.buildControl())
+                            val colorPickerFeed = ColorPickerFeed("Color", Color.WHITE)
+                            mutableShow.addControl(panel, colorPickerFeed.buildControl())
                         }
                     }
 
