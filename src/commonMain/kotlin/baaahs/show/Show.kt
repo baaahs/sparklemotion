@@ -46,8 +46,8 @@ data class Show(
     fun findImplicitControls(): Map<String, Control> = buildMap {
         val implicitControlsShowBuilder = ShowBuilder.forImplicitControls(controls, feeds)
         feeds
-            .map { (_, dataSource) ->
-                dataSource.buildControl()?.let { mutableControl ->
+            .map { (_, feed) ->
+                feed.buildControl()?.let { mutableControl ->
                     val control = mutableControl.buildControl(implicitControlsShowBuilder)
                     val id = implicitControlsShowBuilder.idFor(control)
                     put(id, control)

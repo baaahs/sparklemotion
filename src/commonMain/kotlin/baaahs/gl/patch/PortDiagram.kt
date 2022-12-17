@@ -106,8 +106,8 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
 
         init {
-            feeds.forEach { (id, dataSource) ->
-                resolveFeed(id, dataSource)
+            feeds.forEach { (id, feed) ->
+                resolveFeed(id, feed)
             }
         }
 

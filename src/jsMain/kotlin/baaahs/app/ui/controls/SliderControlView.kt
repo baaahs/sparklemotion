@@ -104,7 +104,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         }
 
 
-        div(+controlsStyles.dataSourceTitle) { +title }
+        div(+controlsStyles.feedTitle) { +title }
     }
 }
 

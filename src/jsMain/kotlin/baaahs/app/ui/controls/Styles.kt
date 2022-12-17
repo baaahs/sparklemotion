@@ -238,7 +238,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 //        }
     }
 
-    val dataSourceTitle by css {
+    val feedTitle by css {
         fontWeight = FontWeight.w500
         display = Display.block
         position = Position.absolute
