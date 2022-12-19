@@ -25,7 +25,7 @@ class LwjglGlManager : GlManager() {
         checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
-        return LwjglGlContext(maybeTrace(KglLwjgl(), trace))
+        return LwjglGlContext(maybeTrace(KglLwjgl, trace))
     }
 
     inner class LwjglGlContext(kgl: Kgl) : GlContext(kgl, "330 core") {
