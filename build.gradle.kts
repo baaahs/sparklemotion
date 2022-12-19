@@ -46,10 +46,9 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://jitpack.io")
-    maven("https://raw.githubusercontent.com/baaahs/kgl/mvnrepo")
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
-//    maven("https://maven.danielgergely.com/repository/releases") TODO when next kgl is released
+    maven("https://maven.danielgergely.com/releases")
+    maven("https://jitpack.io")
 }
 
 group = "org.baaahs"
@@ -89,7 +88,7 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.14.1")
-                api("com.danielgergely.kgl:kgl-metadata:${Versions.kgl}")
+                api("com.danielgergely.kgl:kgl:${Versions.kgl}")
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -120,8 +119,6 @@ kotlin {
 
                 implementation("org.joml:joml:1.9.25")
 
-                implementation("com.danielgergely.kgl:kgl-jvm:${Versions.kgl}")
-
                 // GLSL support via LWJGL:
                 implementation("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}")
                 implementation("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}")
@@ -133,7 +130,7 @@ kotlin {
                 // GLSL support via JOGL:
                 implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
                 implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
-                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
+//                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
                 implementation("org.jmdns:jmdns:3.5.7")
