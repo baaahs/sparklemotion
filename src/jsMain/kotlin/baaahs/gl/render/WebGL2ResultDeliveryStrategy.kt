@@ -54,7 +54,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
             frameBuffer.withRenderBufferAsAttachment0(gpuBuffer) {
                 val glBuf = gl.check { createBuffer() }
                 gl.check { bindBuffer(PIXEL_PACK_BUFFER, glBuf) }
-                gl.check { webgl2.bufferData(PIXEL_PACK_BUFFER, cpuBuffer.sizeInBytes, STREAM_READ) }
+                gl.check { webgl2.bufferData(PIXEL_PACK_BUFFER, it.cpuBufferSizeInBytes, STREAM_READ) }
 
                 gl.check {
                     webgl2.readPixels(
@@ -76,7 +76,7 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
             gl.check { bindBuffer(PIXEL_PACK_BUFFER, glBuf) }
             gl.check {
                 webgl2.getBufferSubData(
-                    PIXEL_PACK_BUFFER, 0, cpuBuffer.buffer, 0, 0
+                    PIXEL_PACK_BUFFER, 0, cpuBuffer.getJsBufferWithOffset(), 0, 0
                 )
             }
             gl.check { bindBuffer(PIXEL_PACK_BUFFER, null) }

@@ -66,7 +66,7 @@ data class MovingHeadParams(
         inner class FixtureResults(
             private val fixture: Fixture,
             componentOffset: Int
-        ) : baaahs.gl.result.FixtureResults(componentOffset, componentCount) {
+        ) : baaahs.gl.result.FixtureResults(componentOffset, unitCount) {
             val movingHeadParams get() = this@ResultBuffer[componentOffset]
 
             private val movingHead = fixture.modelEntity as MovingHead

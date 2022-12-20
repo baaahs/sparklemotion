@@ -11,7 +11,7 @@ abstract class ResultBuffer(
     val type: ResultType<*>,
     private val storageFormat: Int
 ) {
-    var componentCount: Int = 0
+    var unitCount: Int = 0
         private set
 
     private var curWidth = 0
@@ -20,6 +20,8 @@ abstract class ResultBuffer(
 
     val gpuBuffer = gl.createRenderBuffer()
     abstract val cpuBuffer: Buffer
+    var cpuBufferSizeInBytes: Int = -1
+        private set
 
     // Storage smaller than 16x1 causes a GL error.
     init {
@@ -32,14 +34,17 @@ abstract class ResultBuffer(
         curHeight = height
 
         val bufferSize = width * height
-        componentCount = bufferSize
+        unitCount = bufferSize
         if (cpuBufferSize != bufferSize) {
-            resizeBuffer(bufferSize)
+            cpuBufferSizeInBytes = resizeBuffer(bufferSize)
             cpuBufferSize = bufferSize
         }
     }
 
-    abstract fun resizeBuffer(size: Int)
+    /**
+     * @return the buffer size in bytes.
+     */
+    abstract fun resizeBuffer(size: Int): Int
 
     fun attachTo(fb: GlContext.FrameBuffer) {
         fb.attach(gpuBuffer, GL_COLOR_ATTACHMENT0 + resultIndex)
