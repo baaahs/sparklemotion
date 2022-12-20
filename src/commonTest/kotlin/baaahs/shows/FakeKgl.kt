@@ -29,7 +29,7 @@ class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeK
             ?: error("no texture bound on unit $textureUnit")
     }
 
-    fun findProgram(id: Program) = fakeKgl.programs[id as Int]
+    fun findProgram(id: Program) = fakeKgl.programs[defake(id)]
 }
 
 // Until mockk works on JS:
@@ -59,6 +59,7 @@ class FakeKgl : Kgl {
         val shaders = mutableMapOf<Int, FakeShader>()
         private val uniformIdsByName = mutableMapOf<String, Int>()
         val renders = mutableListOf<RenderState>()
+        var deleted: Boolean = false
 
         fun getUniformLocation(name: String): UniformLocation? {
             return fake(uniformIdsByName.getOrPut(name) {
@@ -114,8 +115,8 @@ class FakeKgl : Kgl {
     override fun attachShader(programId: Program, shaderId: Shader) {
         checkContext()
 
-        val fakeProgram = programs[programId as Int]
-        val fakeShader = shaders[shaderId as Int]
+        val fakeProgram = programs[defake(programId)]
+        val fakeShader = shaders[defake(shaderId)]
         fakeProgram.shaders[fakeShader.type] = fakeShader
     }
 
@@ -134,7 +135,7 @@ class FakeKgl : Kgl {
             textureUnits.remove(activeTextureUnit)
         } else {
             @Suppress("CAST_NEVER_SUCCEEDS")
-            val boundTextureConfig = textures[texture as Int]
+            val boundTextureConfig = textures[defake(texture)]
             targets[target] = boundTextureConfig
             textureUnits[activeTextureUnit!!] = boundTextureConfig
         }
@@ -144,7 +145,7 @@ class FakeKgl : Kgl {
 
     override fun blendFunc(sFactor: Int, dFactor: Int) { checkContext() }
 
-    override fun bufferData(target: Int, sourceData: Buffer, size: Int, usage: Int, offset: Int) { checkContext() }
+    override fun bufferData(target: Int, sourceData: Buffer, size: Int, usage: Int) { checkContext() }
 
     override fun checkFramebufferStatus(target: Int): Int = 1
 
@@ -269,7 +270,7 @@ class FakeKgl : Kgl {
     override fun getUniformLocation(programId: Program, name: String): UniformLocation? {
         checkContext()
         @Suppress("CAST_NEVER_SUCCEEDS")
-        return programs[programId as Int].getUniformLocation(name)
+        return programs[defake(programId)].getUniformLocation(name)
     }
 
     override fun isFramebuffer(framebuffer: Framebuffer): Boolean {
@@ -291,8 +292,7 @@ class FakeKgl : Kgl {
         height: Int,
         format: Int,
         type: Int,
-        buffer: Buffer,
-        offset: Int
+        buffer: Buffer
     ) {
         checkContext()
     }
@@ -301,7 +301,7 @@ class FakeKgl : Kgl {
 
     override fun shaderSource(shaderId: Shader, source: String) {
         checkContext()
-        val fakeShader = shaders[shaderId as Int]
+        val fakeShader = shaders[defake(shaderId)]
         fakeShader.src = source
     }
 
@@ -316,8 +316,7 @@ class FakeKgl : Kgl {
         border: Int,
         format: Int,
         type: Int,
-        buffer: Buffer,
-        offset: Int
+        buffer: Buffer
     ) {
         checkContext()
         targets[target]!!.apply {
@@ -340,7 +339,7 @@ class FakeKgl : Kgl {
 
     fun UniformLocation.set(value: Any) {
         @Suppress("CAST_NEVER_SUCCEEDS")
-        uniforms[this as Int] = value
+        uniforms[defake(this)] = value
     }
 
     override fun uniform1f(location: UniformLocation, f: Float) {
@@ -401,7 +400,17 @@ class FakeKgl : Kgl {
     override fun useProgram(programId: Program) {
         checkContext()
         @Suppress("CAST_NEVER_SUCCEEDS")
-        activeProgram = programs[programId as Int]
+        activeProgram = programs[defake(programId)]
+    }
+
+    override fun deleteProgram(programId: Program) {
+        checkContext()
+        programs[defake(programId)].deleted = true
+    }
+
+    override fun detachShader(programId: Program, shaderId: Shader) {
+        checkContext()
+        programs[defake(programId)].shaders.remove(defake(shaderId))
     }
 
     override fun vertexAttribPointer(
@@ -416,16 +425,6 @@ class FakeKgl : Kgl {
     }
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) { checkContext() }
-
-    private fun <T> fake(i: Int): T {
-        @Suppress("UNCHECKED_CAST")
-        return i as T
-    }
-
-    private fun <T> defake(i: T): Int {
-        @Suppress("UNCHECKED_CAST")
-        return i as Int
-    }
 
     fun getTextureConfig(textureUnit: Int): TextureConfig? {
         return textureUnits[textureUnit]
@@ -492,4 +491,14 @@ class FakeGlslProgram(
     override fun getUniform(name: String): Uniform? {
         return uniforms.getOrPut(name) { FakeUniform() }
     }
+}
+
+private fun <T : Any> fake(i: Int): T {
+    @Suppress("UNCHECKED_CAST")
+    return i as T
+}
+
+private fun <T : Any> defake(i: T): Int {
+    @Suppress("UNCHECKED_CAST")
+    return i as Int
 }
