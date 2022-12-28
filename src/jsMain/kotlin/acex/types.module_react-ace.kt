@@ -289,7 +289,4 @@ external interface IRenderer : acex.VirtualRenderer {
     var placeholderNode: HTMLDivElement?
         get() = definedExternally
         set(value) = definedExternally
-    var scroller: HTMLDivElement?
-        get() = definedExternally
-        set(value) = definedExternally
 }
