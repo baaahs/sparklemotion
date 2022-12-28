@@ -7,6 +7,7 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.preview.ShaderPreview
+import baaahs.gl.shader.type.PaintShader
 import baaahs.show.Shader
 import baaahs.ui.addObserver
 import baaahs.ui.inPixels
@@ -43,8 +44,8 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
 
     val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
         // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
-        toolchain.openShader(props.shader!!).shaderType
-    }
+        props.shader?.let { toolchain.openShader(it).shaderType }
+    } ?: PaintShader
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) {
 //        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
@@ -114,7 +115,9 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val builder = memo(gl, props.shader, props.previewShaderBuilder) {
         gl?.let {
             props.previewShaderBuilder
-                ?: PreviewShaderBuilder(props.shader!!, toolchain, appContext.webClient.sceneProvider)
+                ?: props.shader?.let { shader ->
+                    PreviewShaderBuilder(shader, toolchain, appContext.webClient.sceneProvider)
+                }
         }
     }
 
@@ -217,10 +220,12 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
                     }
                 }
 
-                shaderDiagnostics {
-                    attrs.anchor = errorPopupAnchor
-                    attrs.builder = builder!!
-                    attrs.onClose = { errorPopupAnchor = null }
+                if (builder != null) {
+                    shaderDiagnostics {
+                        attrs.anchor = errorPopupAnchor
+                        attrs.builder = builder
+                        attrs.onClose = { errorPopupAnchor = null }
+                    }
                 }
             }
         }
