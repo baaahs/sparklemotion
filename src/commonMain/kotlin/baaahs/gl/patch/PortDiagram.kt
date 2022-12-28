@@ -207,7 +207,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
                     breadcrumbs.removeLast()
 
                     if (breadcrumbs.isEmpty() && warnings.isNotEmpty()) {
-                        logger.error { warnings.joinToString("\n\n") }
+                        logger.warn { warnings.joinToString("\n\n") }
                     }
                 }
             }

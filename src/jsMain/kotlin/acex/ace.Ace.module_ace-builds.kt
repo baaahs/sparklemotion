@@ -1,4 +1,4 @@
-@file:JsQualifier("ace")
+@file:JsModule("ace-builds")
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 
 package acex
@@ -17,7 +17,11 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external val fooz: Int
+external fun <T: Any> require(name: String): T?
+
+external interface AceExt
+external interface AceMode
+external interface AceTheme
 
 external interface Anchor : EventEmitter {
     fun getPosition(): Position
@@ -41,7 +45,6 @@ external interface Document : EventEmitter {
     fun getLength(): Number
     fun getTextRange(range: Range): String
     fun getLinesForRange(range: Range): Array<String>
-    fun insert(position: Position, text: String): Position
     fun insert(position: Position, text: String): Position
     fun insertInLine(position: Position, text: String): Position
     fun insertNewLine(position: Point): Point
