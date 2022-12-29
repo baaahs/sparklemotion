@@ -301,7 +301,7 @@ external interface `T$0` {
 external val reactAce : ElementType<IAceEditorProps>
 
 //@JsName("default")
-external open class ReactAce(props: IAceEditorProps) : Component<IAceEditorProps, State> {
+open external class ReactAce(props: IAceEditorProps) : Component<IAceEditorProps, State> {
     open var editor: Any
     open var refEditor: HTMLElement
     open var debounce: (fn: Any, delay: Number) -> (args: Any) -> Unit

@@ -1,7 +1,7 @@
 package baaahs.app.ui.editor
 
 import acex.Editor
-import acex.Point
+import acex.Position
 import acex.Range
 import acex.Selection
 import baaahs.app.ui.AppContext
@@ -100,13 +100,13 @@ class ShaderRefactor(
                 needle = "uniform"
                 backwards = true
                 caseSensitive = true
-                wholeWord = "true"
+                wholeWord = true
             })
 
             session.replace(extr.range, uniformName)
             val insertionRow = lastUniform?.let { it.start.row.toInt() + 1 } ?: 0
             session.insert(
-                point(insertionRow, 0),
+                position(insertionRow, 0),
                 "uniform ${extr.type.glslLiteral} $uniformName;" +
                         " // @@Slider default=${extr.text} min=${extr.min} max=${extr.max}\n"
             )
@@ -114,7 +114,7 @@ class ShaderRefactor(
         }
     }
 
-    private fun point(row: Number, column: Number): Point =
+    private fun position(row: Number, column: Number): Position =
         jso { this.row = row; this.column = column }
 
     companion object {

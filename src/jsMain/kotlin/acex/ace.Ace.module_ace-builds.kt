@@ -1,15 +1,30 @@
 @file:JsModule("ace-builds")
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 
 package acex
 
-import dom.html.HTMLElement
-import web.events.Event
-import kotlin.js.Json
-import kotlin.js.RegExp
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
+
+external fun <T: Any> require(name: String): T?
+
+external interface AceExt
+external interface AceMode
+external interface AceTheme
 
 external interface Anchor : EventEmitter {
-    fun getPosition(): Point
+    fun getPosition(): Position
     fun getDocument(): Document
     fun setPosition(row: Number, column: Number, noClip: Boolean = definedExternally)
     fun detach()
@@ -21,35 +36,37 @@ external interface Document : EventEmitter {
     fun getValue(): String
     fun createAnchor(row: Number, column: Number): Anchor
     fun getNewLineCharacter(): String
-    fun setNewLineMode(newLineMode: String)
-    fun getNewLineMode(): String /* 'auto' | 'unix' | 'windows' */
+    fun setNewLineMode(newLineMode: String /* "auto" | "unix" | "windows" */)
+    fun getNewLineMode(): String /* "auto" | "unix" | "windows" */
     fun isNewLine(text: String): Boolean
     fun getLine(row: Number): String
     fun getLines(firstRow: Number, lastRow: Number): Array<String>
     fun getAllLines(): Array<String>
+    fun getLength(): Number
     fun getTextRange(range: Range): String
     fun getLinesForRange(range: Range): Array<String>
-    fun insert(position: Point, text: String): Point
-    fun insertInLine(position: Point, text: String): Point
+    fun insert(position: Position, text: String): Position
+    fun insertInLine(position: Position, text: String): Position
+    fun insertNewLine(position: Point): Point
     fun clippedPos(row: Number, column: Number): Point
     fun clonePos(pos: Point): Point
     fun pos(row: Number, column: Number): Point
     fun insertFullLines(row: Number, lines: Array<String>)
-    fun insertMergedLines(position: Point, lines: Array<String>): Point
-    fun remove(range: Range): Point
-    fun removeInLine(row: Number, startColumn: Number, endColumn: Number): Point
+    fun insertMergedLines(position: Position, lines: Array<String>): Point
+    fun remove(range: Range): Position
+    fun removeInLine(row: Number, startColumn: Number, endColumn: Number): Position
     fun removeFullLines(firstRow: Number, lastRow: Number): Array<String>
     fun removeNewLine(row: Number)
-    fun replace(range: Range, text: String): Point
+    fun replace(range: Range, text: String): Position
     fun applyDeltas(deltas: Array<Delta>)
     fun revertDeltas(deltas: Array<Delta>)
     fun applyDelta(delta: Delta, doNotValidate: Boolean = definedExternally)
     fun revertDelta(delta: Delta)
-    fun indexToPosition(index: Number, startRow: Number): Point
-    fun positionToIndex(pos: Point, startRow: Number = definedExternally): Number
+    fun indexToPosition(index: Number, startRow: Number): Position
+    fun positionToIndex(pos: Position, startRow: Number = definedExternally): Number
 }
 
-external interface `T$0` {
+external interface `T$1` {
     var fold: Fold
     var kind: String
 }
@@ -63,7 +80,7 @@ external interface FoldLine {
     fun addFold(fold: Fold)
     fun containsRow(row: Number): Boolean
     fun walk(callback: Function<*>, endRow: Number = definedExternally, endColumn: Number = definedExternally)
-    fun getNextFoldTo(row: Number, column: Number): dynamic /* Nothing? | `T$0` */
+    fun getNextFoldTo(row: Number, column: Number): `T$1`?
     fun addRemoveChars(row: Number, column: Number, len: Number)
     fun split(row: Number, column: Number): FoldLine
     fun merge(foldLineNext: FoldLine)
@@ -85,7 +102,7 @@ external interface Fold {
     fun restoreRange(range: Range)
 }
 
-external interface `T$1` {
+external interface `T$2` {
     var range: Range?
         get() = definedExternally
         set(value) = definedExternally
@@ -102,16 +119,20 @@ external interface Folding {
     fun getNextFoldLine(docRow: Number, startFoldLine: FoldLine = definedExternally): FoldLine?
     fun getFoldedRowCount(first: Number, last: Number): Number
     fun addFold(placeholder: String, range: Range = definedExternally): Fold
+    fun addFold(placeholder: String): Fold
     fun addFold(placeholder: Fold, range: Range = definedExternally): Fold
+    fun addFold(placeholder: Fold): Fold
     fun addFolds(folds: Array<Fold>)
     fun removeFold(fold: Fold)
     fun removeFolds(folds: Array<Fold>)
     fun expandFold(fold: Fold)
     fun expandFolds(folds: Array<Fold>)
-    fun unfold(location: Nothing?, expandInner: Boolean = definedExternally): Array<Fold>?
-    fun unfold(location: Number, expandInner: Boolean = definedExternally): Array<Fold>?
-    fun unfold(location: Point, expandInner: Boolean = definedExternally): Array<Fold>?
-    fun unfold(location: Range, expandInner: Boolean = definedExternally): Array<Fold>?
+    fun unfold(location: Number?, expandInner: Boolean = definedExternally): Array<Fold>?
+    fun unfold(location: Number?): Array<Fold>?
+    fun unfold(location: Point?, expandInner: Boolean = definedExternally): Array<Fold>?
+    fun unfold(location: Point?): Array<Fold>?
+    fun unfold(location: Range?, expandInner: Boolean = definedExternally): Array<Fold>?
+    fun unfold(location: Range?): Array<Fold>?
     fun isRowFolded(docRow: Number, startFoldRow: FoldLine = definedExternally): Boolean
     fun getFoldRowEnd(docRow: Number, startFoldRow: FoldLine = definedExternally): Number
     fun getFoldRowStart(docRow: Number, startFoldRow: FoldLine = definedExternally): Number
@@ -121,12 +142,11 @@ external interface Folding {
     fun getCommentFoldRange(row: Number, column: Number, dir: Number): Range?
     fun foldAll(startRow: Number = definedExternally, endRow: Number = definedExternally, depth: Number = definedExternally)
     fun setFoldStyle(style: String)
-    fun getParentFoldRangeData(row: Number, ignoreCurrent: Boolean = definedExternally): `T$1`
+    fun getParentFoldRangeData(row: Number, ignoreCurrent: Boolean = definedExternally): `T$2`
     fun toggleFoldWidget(toggleParent: Boolean = definedExternally)
     fun updateFoldWidgets(delta: Delta)
 }
 
-@JsName("Range")
 external class Range constructor(startRow: Number, startColumn: Number, endRow: Number, endColumn: Number) {
     var start: Point
     var end: Point
@@ -159,27 +179,29 @@ external class Range constructor(startRow: Number, startColumn: Number, endRow: 
 }
 
 external interface EditSessionOptions {
-    var wrap: dynamic /* String | Number */
+    var wrap: dynamic /* "off" | "free" | "printmargin" | Boolean | Number */
         get() = definedExternally
         set(value) = definedExternally
-    var wrapMethod: String /* 'code' | 'text' | 'auto' */
+    var wrapMethod: String /* "code" | "text" | "auto" */
     var indentedSoftWrap: Boolean
     var firstLineNumber: Number
     var useWorker: Boolean
     var useSoftTabs: Boolean
     var tabSize: Number
     var navigateWithinSoftTabs: Boolean
-    var foldStyle: String /* 'markbegin' | 'markbeginend' | 'manual' */
+    var foldStyle: String /* "markbegin" | "markbeginend" | "manual" */
     var overwrite: Boolean
-    var newLineMode: String /* 'auto' | 'unix' | 'windows' */
+    var newLineMode: String /* "auto" | "unix" | "windows" */
     var mode: String
 }
 
 external interface EditSessionOptionsPartial {
-    var wrap: dynamic /* String | Number */
+    var wrap: dynamic /* "off" | "free" | "printmargin" | Boolean? | Number? */
         get() = definedExternally
         set(value) = definedExternally
-    var wrapMethod: String /* 'code' | 'text' | 'auto' */
+    var wrapMethod: String? /* "code" | "text" | "auto" */
+        get() = definedExternally
+        set(value) = definedExternally
     var indentedSoftWrap: Boolean?
         get() = definedExternally
         set(value) = definedExternally
@@ -198,11 +220,15 @@ external interface EditSessionOptionsPartial {
     var navigateWithinSoftTabs: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var foldStyle: String /* 'markbegin' | 'markbeginend' | 'manual' */
+    var foldStyle: String? /* "markbegin" | "markbeginend" | "manual" */
+        get() = definedExternally
+        set(value) = definedExternally
     var overwrite: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var newLineMode: String /* 'auto' | 'unix' | 'windows' */
+    var newLineMode: String? /* "auto" | "unix" | "windows" */
+        get() = definedExternally
+        set(value) = definedExternally
     var mode: String?
         get() = definedExternally
         set(value) = definedExternally
@@ -221,6 +247,7 @@ external interface VirtualRendererOptions {
     var showFoldWidgets: Boolean
     var showLineNumbers: Boolean
     var displayIndentGuides: Boolean
+    var highlightIndentGuides: Boolean
     var highlightGutterLine: Boolean
     var hScrollBarAlwaysVisible: Boolean
     var vScrollBarAlwaysVisible: Boolean
@@ -230,6 +257,7 @@ external interface VirtualRendererOptions {
     var minLines: Number
     var scrollPastEnd: Boolean
     var fixedWidthGutter: Boolean
+    var customScrollbar: Boolean
     var theme: String
     var hasCssTransforms: Boolean
     var maxPixelHeight: Number
@@ -248,7 +276,7 @@ external interface VirtualRendererOptionsPartial {
     var printMarginColumn: Number?
         get() = definedExternally
         set(value) = definedExternally
-    var printMargin: dynamic /* Boolean | Number */
+    var printMargin: dynamic /* Boolean? | Number? */
         get() = definedExternally
         set(value) = definedExternally
     var showGutter: Boolean?
@@ -264,6 +292,9 @@ external interface VirtualRendererOptionsPartial {
         get() = definedExternally
         set(value) = definedExternally
     var displayIndentGuides: Boolean?
+        get() = definedExternally
+        set(value) = definedExternally
+    var highlightIndentGuides: Boolean?
         get() = definedExternally
         set(value) = definedExternally
     var highlightGutterLine: Boolean?
@@ -291,6 +322,9 @@ external interface VirtualRendererOptionsPartial {
         get() = definedExternally
         set(value) = definedExternally
     var fixedWidthGutter: Boolean?
+        get() = definedExternally
+        set(value) = definedExternally
+    var customScrollbar: Boolean?
         get() = definedExternally
         set(value) = definedExternally
     var theme: String?
@@ -336,18 +370,26 @@ external interface EditorOptions : EditSessionOptions, MouseHandlerOptions, Virt
     var highlightSelectedWord: Boolean
     var readOnly: Boolean
     var copyWithEmptySelection: Boolean
-    var cursorStyle: String /* 'ace' | 'slim' | 'smooth' | 'wide' */
-    var mergeUndoDeltas: dynamic /* Boolean | 'always' */
+    var cursorStyle: String /* "ace" | "slim" | "smooth" | "wide" */
+    var mergeUndoDeltas: dynamic /* Boolean | "always" */
         get() = definedExternally
         set(value) = definedExternally
     var behavioursEnabled: Boolean
     var wrapBehavioursEnabled: Boolean
     var enableAutoIndent: Boolean
+    var enableBasicAutocompletion: dynamic /* Boolean | Array<Completer> */
+        get() = definedExternally
+        set(value) = definedExternally
+    var enableLiveAutocompletion: dynamic /* Boolean | Array<Completer> */
+        get() = definedExternally
+        set(value) = definedExternally
+    var enableSnippets: Boolean
     var autoScrollEditorIntoView: Boolean
-    var keyboardHandler: String
+    var keyboardHandler: String?
     var placeholder: String
     var value: String
     var session: EditSession
+    var relativeLineNumbers: Boolean
 }
 
 external interface EditorOptionsPartial : EditSessionOptionsPartial, MouseHandlerOptionsPartial, VirtualRendererOptionsPartial {
@@ -366,8 +408,10 @@ external interface EditorOptionsPartial : EditSessionOptionsPartial, MouseHandle
     var copyWithEmptySelection: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var cursorStyle: String /* 'ace' | 'slim' | 'smooth' | 'wide' */
-    var mergeUndoDeltas: dynamic /* Boolean | 'always' */
+    var cursorStyle: String? /* "ace" | "slim" | "smooth" | "wide" */
+        get() = definedExternally
+        set(value) = definedExternally
+    var mergeUndoDeltas: dynamic /* Boolean? | "always" */
         get() = definedExternally
         set(value) = definedExternally
     var behavioursEnabled: Boolean?
@@ -377,6 +421,15 @@ external interface EditorOptionsPartial : EditSessionOptionsPartial, MouseHandle
         get() = definedExternally
         set(value) = definedExternally
     var enableAutoIndent: Boolean?
+        get() = definedExternally
+        set(value) = definedExternally
+    var enableBasicAutocompletion: dynamic /* Boolean? | Array<Completer>? */
+        get() = definedExternally
+        set(value) = definedExternally
+    var enableLiveAutocompletion: dynamic /* Boolean? | Array<Completer>? */
+        get() = definedExternally
+        set(value) = definedExternally
+    var enableSnippets: Boolean?
         get() = definedExternally
         set(value) = definedExternally
     var autoScrollEditorIntoView: Boolean?
@@ -394,6 +447,9 @@ external interface EditorOptionsPartial : EditSessionOptionsPartial, MouseHandle
     var session: EditSession?
         get() = definedExternally
         set(value) = definedExternally
+    var relativeLineNumbers: Boolean?
+        get() = definedExternally
+        set(value) = definedExternally
 }
 
 external interface SearchOptions {
@@ -406,14 +462,14 @@ external interface SearchOptions {
     var skipCurrent: Boolean
     var range: Range
     var preserveCase: Boolean
-    var regExp: RegExp
-    var wholeWord: String
+    var regExp: Boolean
+    var wholeWord: Boolean
     var caseSensitive: Boolean
     var wrap: Boolean
 }
 
 external interface SearchOptionsPartial {
-    var needle: dynamic /* String | RegExp */
+    var needle: dynamic /* String? | RegExp? */
         get() = definedExternally
         set(value) = definedExternally
     var preventScroll: Boolean?
@@ -434,10 +490,10 @@ external interface SearchOptionsPartial {
     var preserveCase: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var regExp: RegExp?
+    var regExp: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var wholeWord: String?
+    var wholeWord: Boolean?
         get() = definedExternally
         set(value) = definedExternally
     var caseSensitive: Boolean?
@@ -457,6 +513,7 @@ external interface EventEmitter {
     fun off(name: String, callback: Function<*>)
     fun removeListener(name: String, callback: Function<*>)
     fun removeEventListener(name: String, callback: Function<*>)
+    fun removeAllListeners(name: String = definedExternally)
 }
 
 external interface Point {
@@ -465,7 +522,7 @@ external interface Point {
 }
 
 external interface Delta {
-    var action: String /* 'insert' | 'remove' */
+    var action: String /* "insert" | "remove" */
     var start: Point
     var end: Point
     var lines: Array<String>
@@ -482,7 +539,7 @@ external interface Annotation {
     var type: String
 }
 
-external interface `T$2` {
+external interface `T$3` {
     var mac: String?
         get() = definedExternally
         set(value) = definedExternally
@@ -495,7 +552,7 @@ external interface Command {
     var name: String?
         get() = definedExternally
         set(value) = definedExternally
-    var bindKey: dynamic /* String | `T$2` */
+    var bindKey: dynamic /* String? | `T$3`? */
         get() = definedExternally
         set(value) = definedExternally
     var readOnly: Boolean?
@@ -509,7 +566,9 @@ external interface KeyboardHandler {
 }
 
 external interface MarkerLike {
-    var range: Range
+    var range: Range?
+        get() = definedExternally
+        set(value) = definedExternally
     var type: String
     var renderer: MarkerRenderer?
         get() = definedExternally
@@ -564,7 +623,7 @@ external interface TokenIterator {
     fun stepForward(): Token
 }
 
-external interface `T$3` {
+external interface `T$4` {
     @nativeGetter
     operator fun get(key: String): String?
     @nativeSetter
@@ -579,7 +638,7 @@ external interface SyntaxMode {
     fun checkOutdent(state: Any, line: String, input: String): Boolean
     fun autoOutdent(state: Any, doc: Document, row: Number)
     fun createWorker(session: EditSession): Any
-    fun createModeDelegates(mapping: `T$3`)
+    fun createModeDelegates(mapping: `T$4`)
     fun transformAction(state: String, action: String, editor: Editor, session: EditSession, text: String): Any
     fun getKeywords(append: Boolean = definedExternally): Array<dynamic /* String | RegExp */>
     fun getCompletions(state: String, session: EditSession, pos: Point, prefix: String): Array<Completion>
@@ -591,8 +650,10 @@ external interface Config {
     fun all(): Json
     fun moduleUrl(name: String, component: String = definedExternally): String
     fun setModuleUrl(name: String, subst: String): String
-    fun loadModule(moduleName: String, onLoad: (module: Any) -> Unit)
-    fun loadModule(moduleName: dynamic /* JsTuple<String, String> */, onLoad: (module: Any) -> Unit)
+    fun loadModule(moduleName: String, onLoad: (module: Any) -> Unit = definedExternally)
+    fun loadModule(moduleName: String)
+    fun loadModule(moduleName: Any /* JsTuple<String, String> */, onLoad: (module: Any) -> Unit = definedExternally)
+    fun loadModule(moduleName: Any /* JsTuple<String, String> */)
     fun init(packaged: Any): Any
     fun defineOptions(obj: Any, path: String, options: Json): Config
     fun resetOptions(obj: Any)
@@ -603,13 +664,13 @@ external interface Config {
 external interface OptionsProvider {
     fun setOptions(optList: Json)
     fun getOptions(optionNames: Array<String> = definedExternally): Json
+    fun getOptions(): Json
     fun getOptions(optionNames: Json = definedExternally): Json
     fun setOption(name: String, value: Any)
     fun getOption(name: String): Any
-    fun getOptions(): Json
 }
 
-external interface `T$4` {
+external interface `T$5` {
     var value: String
     var rev: Number
 }
@@ -620,7 +681,7 @@ external interface UndoManager {
     fun addSelection(selection: String, rev: Number = definedExternally)
     fun startNewGroup()
     fun markIgnored(from: Number, to: Number = definedExternally)
-    fun getSelection(rev: Number, after: Boolean = definedExternally): `T$4`
+    fun getSelection(rev: Number, after: Boolean = definedExternally): `T$5`
     fun getRevision(): Number
     fun getDeltas(from: Number, to: Number = definedExternally): Array<Delta>
     fun undo(session: EditSession, dontSelect: Boolean = definedExternally)
@@ -630,35 +691,52 @@ external interface UndoManager {
     fun canRedo(): Boolean
     fun bookmark(rev: Number = definedExternally)
     fun isAtBookmark(): Boolean
+    fun hasUndo(): Boolean
+    fun hasRedo(): Boolean
+    fun isClean(): Boolean
+    fun markClean(rev: Number = definedExternally)
 }
 
-external interface `T$5` {
+external interface Position {
+    var row: Number
+    var column: Number
+}
+
+external interface `T$6` {
     var data: Fold
     var action: String
 }
 
-external interface `T$6` {
+external interface `T$7` {
     var first: Number
     var last: Number
 }
 
-external interface `T$7` {
-    var data: `T$6`
+external interface `T$8` {
+    var data: `T$7`
 }
 
-external interface `T$8` {
+external interface `T$9` {
+    @nativeGetter
+    operator fun get(id: Number): MarkerLike?
+    @nativeSetter
+    operator fun set(id: Number, value: MarkerLike)
+}
+
+external interface `T$10` {
     var min: Number
     var max: Number
 }
 
-external interface EditSession : EventEmitter, OptionsProvider, Folding {
+external interface EditSession : EventEmitter, OptionsProvider {
     var selection: Selection
-    fun on(name: String /* 'changeFold' */, callback: (obj: `T$5`) -> Unit): Function<*>
-    fun on(name: String /* 'changeScrollLeft' */, callback: (scrollLeft: Number) -> Unit): Function<*>
-    fun on(name: String /* 'changeScrollTop' */, callback: (scrollTop: Number) -> Unit): Function<*>
-    fun on(name: String /* 'tokenizerUpdate' */, callback: (obj: `T$7`) -> Unit): Function<*>
-    fun <T : Any> setOption(name: T, value: Any)
-    fun <T : Any> getOption(name: T): Any
+    fun on(name: String /* "changeFold" */, callback: (obj: `T$6`) -> Unit): Function<*>
+    fun on(name: String /* "changeScrollLeft" | "changeScrollTop" */, callback: (scrollLeft: Number) -> Unit): Function<*>
+    fun on(name: String /* "tokenizerUpdate" */, callback: (obj: `T$8`) -> Unit): Function<*>
+    fun on(name: String /* "change" */, callback: () -> Unit): Function<*>
+    fun <T : String> setOption(name: T, value: Any)
+    fun <T : String> getOption(name: T): Any
+    var doc: Document
     fun setDocument(doc: Document)
     fun getDocument(): Document
     fun resetCaches()
@@ -676,7 +754,7 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
     fun getUseSoftTabs(): Boolean
     fun setTabSize(tabSize: Number)
     fun getTabSize(): Number
-    fun isTabStop(position: Point): Boolean
+    fun isTabStop(position: Position): Boolean
     fun setNavigateWithinSoftTabs(navigateWithinSoftTabs: Boolean)
     fun getNavigateWithinSoftTabs(): Boolean
     fun setOverwrite(overwrite: Boolean)
@@ -689,11 +767,13 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
     fun clearBreakpoints()
     fun setBreakpoint(row: Number, className: String)
     fun clearBreakpoint(row: Number)
-    fun addMarker(range: Range, className: String, type: String, inFront: Boolean = definedExternally): Number
+    fun addMarker(range: Range, className: String, type: String /* "fullLine" | "screenLine" | "text" */, inFront: Boolean = definedExternally): Number
+    fun addMarker(range: Range, className: String, type: String /* "fullLine" | "screenLine" | "text" */): Number
     fun addMarker(range: Range, className: String, type: MarkerRenderer, inFront: Boolean = definedExternally): Number
+    fun addMarker(range: Range, className: String, type: MarkerRenderer): Number
     fun addDynamicMarker(marker: MarkerLike, inFront: Boolean): MarkerLike
     fun removeMarker(markerId: Number)
-    fun getMarkers(inFront: Boolean = definedExternally): Array<MarkerLike>
+    fun getMarkers(inFront: Boolean = definedExternally): `T$9`
     fun highlight(re: RegExp)
     fun highlightLines(startRow: Number, endRow: Number, className: String, inFront: Boolean = definedExternally): Range
     fun setAnnotations(annotations: Array<Annotation>)
@@ -701,12 +781,14 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
     fun clearAnnotations()
     fun getWordRange(row: Number, column: Number): Range
     fun getAWordRange(row: Number, column: Number): Range
-    fun setNewLineMode(newLineMode: String)
-    fun getNewLineMode(): String /* 'auto' | 'unix' | 'windows' */
+    fun setNewLineMode(newLineMode: String /* "auto" | "unix" | "windows" */)
+    fun getNewLineMode(): String /* "auto" | "unix" | "windows" */
     fun setUseWorker(useWorker: Boolean)
     fun getUseWorker(): Boolean
     fun setMode(mode: String, callback: () -> Unit = definedExternally)
+    fun setMode(mode: String)
     fun setMode(mode: SyntaxMode, callback: () -> Unit = definedExternally)
+    fun setMode(mode: SyntaxMode)
     fun getMode(): SyntaxMode
     fun setScrollTop(scrollTop: Number)
     fun getScrollTop(): Number
@@ -718,14 +800,14 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
     fun getLines(firstRow: Number, lastRow: Number): Array<String>
     fun getLength(): Number
     fun getTextRange(range: Range): String
-    fun insert(position: Point, text: String)
+    fun insert(position: Position, text: String)
     fun remove(range: Range)
     fun removeFullLines(firstRow: Number, lastRow: Number)
     fun undoChanges(deltas: Array<Delta>, dontSelect: Boolean = definedExternally)
     fun redoChanges(deltas: Array<Delta>, dontSelect: Boolean = definedExternally)
     fun setUndoSelect(enable: Boolean)
     fun replace(range: Range, text: String)
-    fun moveText(fromRange: Range, toPosition: Point, copy: Boolean = definedExternally)
+    fun moveText(fromRange: Range, toPosition: Position, copy: Boolean = definedExternally)
     fun indentRows(startRow: Number, endRow: Number, indentString: String)
     fun outdentRows(range: Range)
     fun moveLinesUp(firstRow: Number, lastRow: Number)
@@ -737,19 +819,19 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
     fun adjustWrapLimit(desiredLimit: Number): Boolean
     fun getWrapLimit(): Number
     fun setWrapLimit(limit: Number)
-    fun getWrapLimitRange(): `T$8`
+    fun getWrapLimitRange(): `T$10`
     fun getRowLineCount(row: Number): Number
     fun getRowWrapIndent(screenRow: Number): Number
     fun getScreenLastRowColumn(screenRow: Number): Number
     fun getDocumentLastRowColumn(docRow: Number, docColumn: Number): Number
-    fun getdocumentLastRowColumnPosition(docRow: Number, docColumn: Number): Point
+    fun getdocumentLastRowColumnPosition(docRow: Number, docColumn: Number): Position
     fun getRowSplitData(row: Number): String?
     fun getScreenTabSize(screenColumn: Number): Number
     fun screenToDocumentRow(screenRow: Number, screenColumn: Number): Number
     fun screenToDocumentColumn(screenRow: Number, screenColumn: Number): Number
-    fun screenToDocumentPosition(screenRow: Number, screenColumn: Number, offsetX: Number = definedExternally): Point
-    fun documentToScreenPosition(docRow: Number, docColumn: Number): Point
-    fun documentToScreenPosition(position: Point): Point
+    fun screenToDocumentPosition(screenRow: Number, screenColumn: Number, offsetX: Number = definedExternally): Position
+    fun documentToScreenPosition(docRow: Number, docColumn: Number): Position
+    fun documentToScreenPosition(position: Position): Position
     fun documentToScreenColumn(row: Number, docColumn: Number): Number
     fun documentToScreenRow(docRow: Number, docColumn: Number): Number
     fun getScreenLength(): Number
@@ -759,10 +841,12 @@ external interface EditSession : EventEmitter, OptionsProvider, Folding {
 external interface KeyBinding {
     fun setDefaultHandler(handler: KeyboardHandler)
     fun setKeyboardHandler(handler: KeyboardHandler)
-    fun addKeyboardHandler(handler: KeyboardHandler, pos: Number)
+    fun addKeyboardHandler(handler: KeyboardHandler, pos: Number = definedExternally)
     fun removeKeyboardHandler(handler: KeyboardHandler): Boolean
     fun getKeyboardHandler(): KeyboardHandler
     fun getStatusText(): String
+    fun onCommandKey(e: Any, hashId: Number, keyCode: Number): Boolean
+    fun onTextInput(text: String): Boolean
 }
 
 external interface CommandMap {
@@ -772,20 +856,37 @@ external interface CommandMap {
     operator fun set(name: String, value: Command)
 }
 
-external interface `T$13` {
+external interface `T$11` {
     var editor: Editor
     var command: Command
     var args: Array<Any>
 }
 
+external interface `T$12` {
+    @nativeGetter
+    operator fun get(s: String): Function<*>?
+    @nativeSetter
+    operator fun set(s: String, value: Function<*>)
+}
+
+external interface `T$13` {
+    var key: String
+    var hashId: Number
+}
+
+external interface `T$14` {
+    var command: String
+}
+
 external interface CommandManager : EventEmitter {
     var byName: CommandMap
     var commands: CommandMap
-    fun on(name: String, callback: execEventHandler): Function<*>
+    fun on(name: String /* "exec" | "afterExec" */, callback: execEventHandler): Function<*>
     override fun once(name: String, callback: Function<*>)
     override fun setDefaultHandler(name: String, callback: Function<*>)
     override fun removeDefaultHandler(name: String, callback: Function<*>)
-    override fun on(name: String, callback: Function<*>, capturing: Boolean): Function<*>
+    override fun on(name: String, callback: Function<*>, capturing: Boolean)
+    fun on(name: String, callback: Function<*>)
     override fun addEventListener(name: String, callback: Function<*>, capturing: Boolean)
     override fun off(name: String, callback: Function<*>)
     override fun removeListener(name: String, callback: Function<*>)
@@ -794,22 +895,53 @@ external interface CommandManager : EventEmitter {
     fun toggleRecording(editor: Editor)
     fun replay(editor: Editor)
     fun addCommand(command: Command)
+    fun addCommands(command: Array<Command>)
     fun removeCommand(command: Command, keepCommand: Boolean = definedExternally)
+    fun removeCommand(command: Command)
+    fun removeCommand(command: String, keepCommand: Boolean = definedExternally)
+    fun removeCommand(command: String)
+    fun removeCommands(command: Array<Command>)
     fun bindKey(key: String, command: Command, position: Number = definedExternally)
+    fun bindKey(key: String, command: Command)
     fun bindKey(key: String, command: (editor: Editor) -> Unit, position: Number = definedExternally)
-    fun bindKey(key: `T$2`, command: Command, position: Number = definedExternally)
-    fun bindKey(key: `T$2`, command: (editor: Editor) -> Unit, position: Number = definedExternally)
+    fun bindKey(key: String, command: (editor: Editor) -> Unit)
+    fun bindKey(key: `T$3`, command: Command, position: Number = definedExternally)
+    fun bindKey(key: `T$3`, command: Command)
+    fun bindKey(key: `T$3`, command: (editor: Editor) -> Unit, position: Number = definedExternally)
+    fun bindKey(key: `T$3`, command: (editor: Editor) -> Unit)
+    fun bindKeys(keys: `T$12`)
+    fun parseKeys(keyPart: String): `T$13`
+    fun findKeyCommand(hashId: Number, keyString: String): String?
+    fun handleKeyboard(data: Any, hashId: Number, keyString: String, keyCode: String): dynamic /* Unit | `T$14` */
+    fun handleKeyboard(data: Any, hashId: Number, keyString: String, keyCode: Number): dynamic /* Unit | `T$14` */
+    fun getStatusText(editor: Editor, data: Any): String
 }
 
-external interface `T$9` {
+external interface `T$15` {
     var pageX: Number
     var pageY: Number
 }
 
+external interface `T$16` {
+    var row: Number
+    var column: Number
+    var side: dynamic /* 1 | "-1" */
+        get() = definedExternally
+        set(value) = definedExternally
+    var offsetX: Number
+}
+
 external interface VirtualRenderer : OptionsProvider, EventEmitter {
     var container: HTMLElement
-    fun <T : Any> setOption(name: T, value: Any)
-    fun <T : Any> getOption(name: T): Any
+    var scroller: HTMLElement
+    var content: HTMLElement
+    var characterWidth: Number
+    var lineHeight: Number
+    var scrollLeft: Number
+    var scrollTop: Number
+    var `$padding`: Number
+    fun <T : String> setOption(name: T, value: Any)
+    fun <T : String> getOption(name: T): Any
     fun setSession(session: EditSession)
     fun updateLines(firstRow: Number, lastRow: Number, force: Boolean = definedExternally)
     fun updateText()
@@ -854,14 +986,14 @@ external interface VirtualRenderer : OptionsProvider, EventEmitter {
     fun updateCursor()
     fun hideCursor()
     fun showCursor()
-    fun scrollSelectionIntoView(anchor: Point, lead: Point, offset: Number = definedExternally)
-    fun scrollCursorIntoView(cursor: Point, offset: Number = definedExternally)
+    fun scrollSelectionIntoView(anchor: Position, lead: Position, offset: Number = definedExternally)
+    fun scrollCursorIntoView(cursor: Position, offset: Number = definedExternally)
     fun getScrollTop(): Number
     fun getScrollLeft(): Number
     fun getScrollTopRow(): Number
     fun getScrollBottomRow(): Number
     fun scrollToRow(row: Number)
-    fun alignCursor(cursor: Point, alignment: Number): Number
+    fun alignCursor(cursor: Position, alignment: Number): Number
     fun alignCursor(cursor: Number, alignment: Number): Number
     fun scrollToLine(line: Number, center: Boolean, animate: Boolean, callback: () -> Unit)
     fun animateScrolling(fromValue: Number, callback: () -> Unit)
@@ -870,7 +1002,8 @@ external interface VirtualRenderer : OptionsProvider, EventEmitter {
     fun scrollTo(x: Number, y: Number)
     fun scrollBy(deltaX: Number, deltaY: Number)
     fun isScrollableBy(deltaX: Number, deltaY: Number): Boolean
-    fun textToScreenCoordinates(row: Number, column: Number): `T$9`
+    fun textToScreenCoordinates(row: Number, column: Number): `T$15`
+    fun pixelToScreenCoordinates(x: Number, y: Number): `T$16`
     fun visualizeFocus()
     fun visualizeBlur()
     fun showComposition(position: Number)
@@ -897,8 +1030,8 @@ external interface Selection : EventEmitter {
     fun isMultiLine(): Boolean
     fun setCursor(row: Number, column: Number)
     fun setAnchor(row: Number, column: Number)
-    fun getAnchor(): Point
-    fun getCursor(): Point
+    fun getAnchor(): Position
+    fun getCursor(): Position
     fun isBackwards(): Boolean
     fun getRange(): Range
     fun clearSelection()
@@ -950,16 +1083,20 @@ external interface SavedSelection {
     var isBackwards: Boolean
 }
 
-external interface `T$10` {
+external interface TextInput {
+    fun resetSelection()
+}
+
+external interface `T$17` {
     var data: String
 }
 
-external interface `T$11` {
+external interface `T$18` {
     var session: EditSession
     var oldSession: EditSession
 }
 
-external interface `T$12` {
+external interface `T$19` {
     var text: String
 }
 
@@ -971,15 +1108,20 @@ external interface Editor : OptionsProvider, EventEmitter {
     var keyBinding: KeyBinding
     var session: EditSession
     var selection: Selection
-    fun on(name: String, callback: (e: Event) -> Unit): Function<*>
-    fun on(name: String /* 'input' */, callback: () -> Unit): Function<*>
-    fun on(name: String /* 'change' */, callback: (delta: Delta) -> Unit): Function<*>
-    fun on(name: String /* 'changeSelectionStyle' */, callback: (obj: `T$10`) -> Unit): Function<*>
-    fun on(name: String /* 'changeSession' */, callback: (obj: `T$11`) -> Unit): Function<*>
-    fun on(name: String, callback: (obj: `T$12`) -> Unit): Function<*>
-    fun <T : Any> setOption(name: T, value: Any)
-    fun <T : Any> getOption(name: T): Any
+    var textInput: TextInput
+    fun on(name: String /* "blur" | "focus" */, callback: (e: Event) -> Unit)
+    fun on(name: String /* "input" */, callback: () -> Unit)
+    fun on(name: String /* "change" */, callback: (delta: Delta) -> Unit)
+    fun on(name: String /* "changeSelectionStyle" */, callback: (obj: `T$17`) -> Unit)
+    fun on(name: String /* "changeSession" */, callback: (obj: `T$18`) -> Unit)
+    fun on(name: String /* "copy" | "paste" */, callback: (obj: `T$19`) -> Unit)
+    fun on(name: String /* "mousemove" | "mouseup" | "mousewheel" | "click" */, callback: (e: Any) -> Unit)
+    fun onPaste(text: String, event: Any)
+    fun <T : String> setOption(name: T, value: Any)
+    fun <T : String> getOption(name: T): Any
     fun setKeyboardHandler(keyboardHandler: String, callback: () -> Unit = definedExternally)
+    fun setKeyboardHandler(keyboardHandler: String)
+    fun setKeyboardHandler(keyboardHandler: KeyboardHandler?)
     fun getKeyboardHandler(): String
     fun setSession(session: EditSession)
     fun getSession(): EditSession
@@ -992,14 +1134,16 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun setStyle(style: String)
     fun unsetStyle(style: String)
     fun getFontSize(): String
-    fun setFontSize(size: String)
+    fun setFontSize(size: Number)
     fun focus()
     fun isFocused(): Boolean
-    fun flur()
+    fun blur()
     fun getSelectedText(): String
     fun getCopyText(): String
     fun execCommand(command: String, args: Any = definedExternally): Boolean
+    fun execCommand(command: String): Boolean
     fun execCommand(command: Array<String>, args: Any = definedExternally): Boolean
+    fun execCommand(command: Array<String>): Boolean
     fun insert(text: String, pasted: Boolean = definedExternally)
     fun setOverwrite(overwrite: Boolean)
     fun getOverwrite(): Boolean
@@ -1036,7 +1180,7 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun getShowFoldWidgets(): Boolean
     fun setFadeFoldWidgets(fade: Boolean)
     fun getFadeFoldWidgets(): Boolean
-    fun remove(dir: String = definedExternally)
+    fun remove(dir: String /* "left" | "right" */ = definedExternally)
     fun removeWordRight()
     fun removeWordLeft()
     fun removeLineToEnd()
@@ -1081,10 +1225,10 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun jumpToMatching(select: Boolean, expand: Boolean)
     fun gotoLine(lineNumber: Number, column: Number, animate: Boolean)
     fun navigateTo(row: Number, column: Number)
-    fun navigateUp()
-    fun navigateDown()
-    fun navigateLeft()
-    fun navigateRight()
+    fun navigateUp(times: Number = definedExternally)
+    fun navigateDown(times: Number = definedExternally)
+    fun navigateLeft(times: Number = definedExternally)
+    fun navigateRight(times: Number = definedExternally)
     fun navigateLineStart()
     fun navigateLineEnd()
     fun navigateFileEnd()
@@ -1095,16 +1239,29 @@ external interface Editor : OptionsProvider, EventEmitter {
     fun replaceAll(replacement: String, options: SearchOptionsPartial = definedExternally): Number
     fun getLastSearchOptions(): SearchOptionsPartial
     fun find(needle: String, options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally): Range?
+    fun find(needle: String): Range?
+    fun find(needle: String, options: SearchOptionsPartial = definedExternally): Range?
+    fun find(needle: RegExp, options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally): Range?
+    fun find(needle: RegExp): Range?
+    fun find(needle: RegExp, options: SearchOptionsPartial = definedExternally): Range?
     fun findNext(options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally)
     fun findPrevious(options: SearchOptionsPartial = definedExternally, animate: Boolean = definedExternally)
+    fun findAll(needle: String, options: SearchOptionsPartial = definedExternally, additive: Boolean = definedExternally): Number
+    fun findAll(needle: String): Number
+    fun findAll(needle: String, options: SearchOptionsPartial = definedExternally): Number
+    fun findAll(needle: RegExp, options: SearchOptionsPartial = definedExternally, additive: Boolean = definedExternally): Number
+    fun findAll(needle: RegExp): Number
+    fun findAll(needle: RegExp, options: SearchOptionsPartial = definedExternally): Number
     fun undo()
     fun redo()
     fun destroy()
     fun setAutoScrollEditorIntoView(enable: Boolean)
     var completers: Array<Completer>
-    fun remove()
 }
 
 external interface Completer {
+    var identifierRegexps: Array<RegExp>?
+        get() = definedExternally
+        set(value) = definedExternally
     fun getCompletions(editor: Editor, session: EditSession, position: Point, prefix: String, callback: CompleterCallback)
 }
