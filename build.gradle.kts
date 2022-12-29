@@ -38,9 +38,6 @@ plugins {
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
-
-    // Workaround for https://youtrack.jetbrains.com/issue/KT-51921. TODO: remove when fixed!
-    id("io.github.turansky.kfc.legacy-union") version "5.8.0"
 }
 
 repositories {
@@ -59,7 +56,7 @@ fun kotlinw(target: String): String =
 
 kotlin {
     jvm()
-    js {
+    js(IR) {
         browser {
             useCommonJs()
 
@@ -87,7 +84,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
-                implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.14.1")
+                implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
             }
         }
@@ -199,8 +196,8 @@ kotlin {
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
                 implementation(npm("react-mosaic-component", "^5.3.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
+                implementation(npm("ace-builds", "1.14.0"))
                 implementation(npm("react-ace", "^9.0.0"))
-                implementation(npm("ace-builds", "^1.4.11"))
                 implementation(npm("markdown-it", "~11.0.0"))
 
                 // To support animated GIFs:
