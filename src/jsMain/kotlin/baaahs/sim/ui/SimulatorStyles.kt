@@ -1,5 +1,6 @@
 package baaahs.sim.ui
 
+import baaahs.app.ui.linearRepeating
 import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.border
@@ -33,6 +34,8 @@ class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isSt
 }
 
 object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
+    private val headerColor = Color("#f5a542")
+
     val app by css {
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -83,7 +86,8 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         flexDirection = FlexDirection.column
 
         header {
-            backgroundColor = Color("#f5a542")
+            background = linearRepeating(headerColor, headerColor.darken(15), 7.5.px)
+            padding(1.5.px, .5.em)
             lineHeight = 1.25.em.lh
         }
     }
@@ -100,7 +104,8 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         display = Display.flex
 
         header {
-            backgroundColor = Color("#f5a542")
+            background = linearRepeating(headerColor, headerColor.darken(15), 7.5.px)
+            padding(1.5.px, .5.em)
             lineHeight = 1.25.em.lh
         }
     }
