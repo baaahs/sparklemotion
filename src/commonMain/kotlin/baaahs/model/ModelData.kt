@@ -1,9 +1,7 @@
 package baaahs.model
 
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.EulerAngle
-import baaahs.geom.Matrix4F
-import baaahs.geom.Vector3F
+import baaahs.geom.*
 import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
