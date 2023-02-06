@@ -32,7 +32,7 @@ object V4_FlattenGadgetControls : DataMigrator.Migration(4) {
     override fun migrate(from: JsonObject): JsonObject {
         return from.toMutableMap().apply {
             mapObjsInDict("controls") { _, control ->
-                val type = control["type"]?.jsonPrimitive?.contentOrNull
+                val type = control.type
                 if (type == "baaahs.Core:Gadget") {
                     val gadgetData = control["gadget"]?.jsonObject
                     control.remove("gadget")!!

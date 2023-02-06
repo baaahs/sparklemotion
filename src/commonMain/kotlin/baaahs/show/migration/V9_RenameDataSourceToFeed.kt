@@ -22,7 +22,7 @@ object V9_RenameDataSourceToFeed : DataMigrator.Migration(9) {
                 patch.jsonObject.edit {
                     replaceMapValues("incomingLinks") { _, incomingLink ->
                         incomingLink.jsonObject.edit {
-                            if (this["type"]?.jsonPrimitive?.contentOrNull == "datasource") {
+                            if (this.type == "datasource") {
                                 put("type", JsonPrimitive("feed"))
                                 rename("dataSourceId", "feedId")
                             }

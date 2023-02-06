@@ -17,7 +17,7 @@ object V8_RenameShaderChannelToStream : DataMigrator.Migration(8) {
                             patch.toMutableMap().apply {
                                 replaceJsonObj("incomingLinks") { incomingLinks ->
                                     JsonObject(incomingLinks.mapValues { (_, format) ->
-                                        if (format.jsonObject["type"]?.jsonPrimitive?.contentOrNull == "shader-channel") {
+                                        if (format.type == "shader-channel") {
                                             format.jsonObject.edit {
                                                 put("type", JsonPrimitive("stream"))
                                                 put("stream", remove("shaderChannel")!!)
