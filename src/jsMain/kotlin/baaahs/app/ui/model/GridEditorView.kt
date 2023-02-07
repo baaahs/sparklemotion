@@ -93,6 +93,15 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
                     mutableEntity.rowGap = v
                     props.editingEntity.onChange()
                 })
+
+            br {}
+
+            numberTextField(
+                "Stagger", mutableEntity.stagger,
+                onChange = this@xComponent.namedHandler("stagger", mutableEntity) { v: Int ->
+                    mutableEntity.stagger = v
+                    props.editingEntity.onChange()
+                })
         }
     }
 }

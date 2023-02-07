@@ -40,7 +40,7 @@ fun calcSegments(
     zigZag: Boolean
 ): List<PolyLine.Segment> {
     return when (direction) {
-        GridData.Direction.ColumnsThenRows ->
+        GridData.Direction.RowsThenColumns ->
             (0 until rows).map { yI ->
                 val y = yI * rowGap
                 PolyLine.Segment(
@@ -51,7 +51,7 @@ fun calcSegments(
                     if (zigZag && yI % 2 == 1) it.reverse() else it
                 }
             }
-        GridData.Direction.RowsThenColumns ->
+        GridData.Direction.ColumnsThenRows ->
             (0 until columns).map { xI ->
                 val x = xI * columnGap
                 PolyLine.Segment(
