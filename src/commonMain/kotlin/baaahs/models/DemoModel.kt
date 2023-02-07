@@ -25,7 +25,8 @@ val demoModelData = ModelData(
             EulerAngle(1.0, .5, .25),
             Vector3F.unit3d,
             Model.Entity.nextId(),
-            20, 25, 1f, 1f
+            20, 25, 1f, 1f,
+            GridData.Direction.RowsThenColumns
         ),
         LightRingData(
             "Light Ring", null,

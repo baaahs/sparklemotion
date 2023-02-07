@@ -171,7 +171,7 @@ data class GridData(
     val columns: Int,
     val rowGap: Float,
     val columnGap: Float,
-    val direction: Direction = Direction.ColumnsThenRows,
+    val direction: Direction = Direction.RowsThenColumns,
     val zigZag: Boolean = false
 ) : EntityData {
     override fun edit(): MutableEntity = MutableGridData(this)

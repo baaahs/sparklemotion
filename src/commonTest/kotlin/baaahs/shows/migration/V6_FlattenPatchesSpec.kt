@@ -14,7 +14,7 @@ import kotlinx.serialization.json.jsonObject
 import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
-object V2_RemoveShaderTypeSpec : Spek({
+object V6_FlattenPatchesSpec : Spek({
     useBetterSpekReporter()
 
     describe<V6_FlattenPatches> {
