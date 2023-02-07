@@ -99,6 +99,8 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
             numberTextField(
                 "Stagger", mutableEntity.stagger,
                 onChange = this@xComponent.namedHandler("stagger", mutableEntity) { v: Int ->
+                    if (v != v.toInt()) error("Must be an integer.")
+                    if (v < 1) error("Must be a positive integer.")
                     mutableEntity.stagger = v
                     props.editingEntity.onChange()
                 })

@@ -135,7 +135,12 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
                 val numericValue = event.currentTarget.value
                     .ifBlank { null }
                     ?.toDouble() as T
-                onChange(numericValue)
+                try {
+                    onChange(numericValue)
+                } catch (e: Exception) {
+                    Alert
+                    TODO("Not yet implemented")
+                }
             }
                 .also { onChange.asDynamic().cachedOnClick = it }
         }
