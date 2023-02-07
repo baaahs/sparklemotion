@@ -24,10 +24,11 @@ class Grid(
     columnGap: Float,
     direction: GridData.Direction,
     zigZag: Boolean,
+    stagger: Int = 1,
     id: EntityId = Model.Entity.nextId()
 ): PolyLine(
     name, description,
-    calcSegments(rows, columns, rowGap, columnGap, direction, zigZag),
+    calcSegments(rows, columns, rowGap, columnGap, direction, zigZag, stagger),
     position, rotation, scale, columnGap, rowGap, id) {
 }
 
@@ -37,15 +38,17 @@ fun calcSegments(
     rowGap: Float,
     columnGap: Float,
     direction: GridData.Direction,
-    zigZag: Boolean
+    zigZag: Boolean,
+    stagger: Int = 1
 ): List<PolyLine.Segment> {
     return when (direction) {
         GridData.Direction.RowsThenColumns ->
             (0 until rows).map { yI ->
+                val staggerAmount = columnGap / stagger * (yI % stagger)
                 val y = yI * rowGap
                 PolyLine.Segment(
-                    Vector3F(0f, y, 0f),
-                    Vector3F((columns - 1) * columnGap, y, 0f),
+                    Vector3F(0f + staggerAmount, y, 0f),
+                    Vector3F((columns - 1) * columnGap + staggerAmount, y, 0f),
                     columns
                 ).let {
                     if (zigZag && yI % 2 == 1) it.reverse() else it
@@ -53,10 +56,11 @@ fun calcSegments(
             }
         GridData.Direction.ColumnsThenRows ->
             (0 until columns).map { xI ->
+                val staggerAmount = rowGap / stagger * (xI % stagger)
                 val x = xI * columnGap
                 PolyLine.Segment(
-                    Vector3F(x, 0f, 0f),
-                    Vector3F(x, (rows - 1) * rowGap, 0f),
+                    Vector3F(x, 0f + staggerAmount, 0f),
+                    Vector3F(x, (rows - 1) * rowGap + staggerAmount, 0f),
                     rows
                 ).let {
                     if (zigZag && xI % 2 == 1) it.reverse() else it
