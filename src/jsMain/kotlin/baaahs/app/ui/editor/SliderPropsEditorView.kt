@@ -2,6 +2,7 @@ package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
+import baaahs.app.ui.model.numberTextField
 import baaahs.control.MutableSliderControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
@@ -19,11 +20,10 @@ import kotlin.Float
 
 private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPropsEditor") { props ->
     val appContext = useContext(appContext)
-    val styles = appContext.allStyles.modelEditor
     val controlsStyles = appContext.allStyles.controls
     val mutableSliderControl = props.mutableSliderControl
 
-    val handlePositionChange by handler { value: Float -> }
+    val handlePositionChange by handler { _: Float -> }
 
     div(+EditableStyles.propertiesSection) {
         inlineStyles {
@@ -38,24 +38,38 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
                     +"Slider Properties"
                 }
 
-                with(styles) {
-                    numberTextField("Initial Value", mutableSliderControl.initialValue) {
-                        mutableSliderControl.initialValue = it
+                numberTextField<Float> {
+                    attrs.label = "Initial Value"
+                    attrs.value = mutableSliderControl.initialValue
+                    attrs.onChange = { v: Float ->
+                        mutableSliderControl.initialValue = v
                         props.editableManager.onChange()
                     }
+                }
 
-                    numberTextField("Min Value", mutableSliderControl.minValue) {
-                        mutableSliderControl.minValue = it
+                numberTextField<Float> {
+                    attrs.label = "Min Value"
+                    attrs.value = mutableSliderControl.minValue
+                    attrs.onChange = { v: Float ->
+                        mutableSliderControl.minValue = v
                         props.editableManager.onChange()
                     }
+                }
 
-                    numberTextField("Max Value", mutableSliderControl.maxValue) {
-                        mutableSliderControl.maxValue = it
+                numberTextField<Float> {
+                    attrs.label = "Max Value"
+                    attrs.value = mutableSliderControl.maxValue
+                    attrs.onChange = { v: Float ->
+                        mutableSliderControl.maxValue = v
                         props.editableManager.onChange()
                     }
+                }
 
-                    numberTextField("Step Value", mutableSliderControl.stepValue) {
-                        mutableSliderControl.stepValue = it
+                numberTextField<Float?> {
+                    attrs.label = "Step Value"
+                    attrs.value = mutableSliderControl.stepValue
+                    attrs.onChange = { v: Float? ->
+                        mutableSliderControl.stepValue = v
                         props.editableManager.onChange()
                     }
                 }

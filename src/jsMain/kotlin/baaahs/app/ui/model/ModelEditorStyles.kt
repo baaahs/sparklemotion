@@ -1,21 +1,10 @@
 package baaahs.app.ui.model
 
-import baaahs.ui.asTextNode
-import baaahs.ui.unaryMinus
-import baaahs.ui.value
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.lh
-import kotlinx.js.jso
-import mui.material.*
 import mui.material.styles.Theme
-import react.RBuilder
-import react.RElementBuilder
-import react.buildElement
-import react.dom.html.InputType
 import styled.StyleSheet
-import web.events.Event
-import baaahs.app.ui.controls.Styles as ControlStyles
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
     val editorPanes by css {
@@ -120,57 +109,6 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
             fontFamily = "monospace"
             lineHeight = LineHeight("1.1")
             whiteSpace = WhiteSpace.nowrap
-        }
-    }
-
-    fun <T : Number?> RBuilder.numberTextField(
-        label: String,
-        value: T,
-        adornment: (RElementBuilder<InputAdornmentProps>.() -> Unit)? = null,
-        placeholder: String? = null,
-        onChange: (T) -> Unit
-    ) {
-        val cachedOnChange = onChange.asDynamic().cachedOnClick ?: run {
-            { event: Event ->
-                val numericValue = event.currentTarget.value
-                    .ifBlank { null }
-                    ?.toDouble() as T
-                try {
-                    onChange(numericValue)
-                } catch (e: Exception) {
-                    Alert
-                    TODO("Not yet implemented")
-                }
-            }
-                .also { onChange.asDynamic().cachedOnClick = it }
-        }
-
-        TextField<StandardTextFieldProps> {
-            attrs.type = InputType.number
-            attrs.margin = FormControlMargin.dense
-            attrs.size = Size.small
-            attrs.variant = "standard"
-            attrs.placeholder = placeholder
-            attrs.InputProps = jso {
-                classes = jso { this.underline = -partialUnderline }
-                size = Size.small
-                margin = InputBaseMargin.dense
-                if (adornment != null) {
-                    endAdornment = buildElement {
-                        InputAdornment {
-                            attrs.position = InputAdornmentPosition.end
-                            adornment()
-                        }
-                    }
-                }
-            }
-            attrs.InputLabelProps = jso {
-                this.classes = jso { this.root = -ControlStyles.inputLabel }
-                this.shrink = true
-            }
-            attrs.onChange = cachedOnChange
-            if (value != null) attrs.value = value
-            attrs.label = label.asTextNode()
         }
     }
 }
