@@ -2,6 +2,7 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.geom.EulerAngle
+import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
 import react.Props
 import react.RBuilder
@@ -28,9 +29,24 @@ private val RotationEditorView = xComponent<RotationEditorProps>("RotationEditor
 
     val rotation = props.eulerAngle
     with(styles) {
-        numberTextField("Pitch", rotation.pitchRad.asDegrees, { +"°" }, onChange = updatePitch)
-        numberTextField("Yaw", rotation.yawRad.asDegrees, { +"°" }, onChange = updateYaw)
-        numberTextField("Roll", rotation.rollRad.asDegrees, { +"°" }, onChange = updateRoll)
+        numberTextField<Double> {
+            this.attrs.label = "Pitch"
+            this.attrs.value = rotation.pitchRad.asDegrees
+            this.attrs.adornment = "°".asTextNode()
+            this.attrs.onChange = updatePitch
+        }
+        numberTextField<Double> {
+            this.attrs.label = "Yaw"
+            this.attrs.value = rotation.yawRad.asDegrees
+            this.attrs.adornment = "°".asTextNode()
+            this.attrs.onChange = updateYaw
+        }
+        numberTextField<Double> {
+            this.attrs.label = "Roll"
+            this.attrs.value = rotation.rollRad.asDegrees
+            this.attrs.adornment = "°".asTextNode()
+            this.attrs.onChange = updateRoll
+        }
     }
 }
 

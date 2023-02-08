@@ -1,6 +1,7 @@
 package baaahs.app.ui.controllers
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.model.numberTextField
 import baaahs.scene.EditingController
 import baaahs.scene.MutableSacnControllerConfig
 import baaahs.ui.unaryMinus
@@ -57,8 +58,10 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
             attrs.onChange = handleAddressChange
         }
 
-        with (appContext.allStyles.modelEditor) {
-            numberTextField("Universes", mutableConfig.universes, onChange = handleUniversesChange)
+        numberTextField<Int> {
+            attrs.label = "Universes"
+            attrs.value = mutableConfig.universes
+            attrs.onChange = handleUniversesChange
         }
     }
 }

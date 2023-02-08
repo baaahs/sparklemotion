@@ -159,10 +159,11 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
         when (metadata) {
             is ConstEntityMetadataProvider -> {
                 with(styles) {
-                    numberTextField(
-                        "Expected Pixels:", metadata.pixelCount,
-                        onChange = handleConstMetadataChange
-                    )
+                    numberTextField<Int?> {
+                        this.attrs.label = "Expected Pixels:"
+                        this.attrs.value = metadata.pixelCount
+                        this.attrs.onChange = handleConstMetadataChange
+                    }
                 }
             }
             is StrandCountEntityMetadataProvider -> {

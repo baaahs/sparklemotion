@@ -2,6 +2,7 @@ package baaahs.device
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
+import baaahs.app.ui.model.numberTextField
 import baaahs.scene.EditingController
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
@@ -27,27 +28,34 @@ private val PixelArrayFixtureConfigEditorView =
         }
 
         div(+styles.pixelArrayConfigEditorRow) {
-            with (appContext.allStyles.modelEditor) {
-                numberTextField("Pixel Count", mutableConfig.componentCount, onChange = {
-                    mutableConfig.componentCount = if (it == 0) null else it
+            numberTextField<Int?> {
+                attrs.label = "Pixel Count"
+                attrs.value = mutableConfig.componentCount
+                attrs.onChange = { v: Int? ->
+                    mutableConfig.componentCount = if (v == 0) null else v
                     props.editingController.onChange()
-                }, placeholder = "default")
-
-                betterSelect<PixelFormat?> {
-                    attrs.label = "Pixel Format"
-                    attrs.values = listOf(null) + PixelFormat.values().toList()
-                    attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
-                    attrs.value = mutableConfig.pixelFormat
-                    attrs.onChange = handlePixelFormatChange
                 }
+                attrs.placeholder = "default"
+            }
 
-                numberTextField("Gamma Correction", mutableConfig.gammaCorrection, onChange = {
-                    mutableConfig.gammaCorrection = it
+            betterSelect<PixelFormat?> {
+                attrs.label = "Pixel Format"
+                attrs.values = listOf(null) + PixelFormat.values().toList()
+                attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
+                attrs.value = mutableConfig.pixelFormat
+                attrs.onChange = handlePixelFormatChange
+            }
+
+            numberTextField<Float?> {
+                attrs.label = "Gamma Correction"
+                attrs.value = mutableConfig.gammaCorrection
+                attrs.onChange = { v: Float? ->
+                    mutableConfig.gammaCorrection = v
                     props.editingController.onChange()
-                }, placeholder = "default")
+                }
+                attrs.placeholder = "default"
             }
         }
-//        }
     }
 
 external interface PixelArrayFixtureConfigEditorProps : Props {
