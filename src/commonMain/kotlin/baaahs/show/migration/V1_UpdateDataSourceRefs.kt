@@ -3,8 +3,6 @@ package baaahs.show.migration
 import baaahs.show.DataMigrator
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
 
 @Suppress("ClassName")
 object V1_UpdateDataSourceRefs : DataMigrator.Migration(1) {
@@ -25,7 +23,7 @@ object V1_UpdateDataSourceRefs : DataMigrator.Migration(1) {
     override fun migrate(from: JsonObject): JsonObject {
         return from.toMutableMap().apply {
             mapObjsInDict("dataSources") { _, dataSource ->
-                val type = dataSource["type"]?.jsonPrimitive?.contentOrNull
+                val type = dataSource.type
                 if (type == "baaahs.plugin.CorePlugin.ModelInfoDataSource") {
                     dataSource.remove("structType")
                 }

@@ -4,10 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.model.LightRing
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
-import baaahs.ui.unaryMinus
-import baaahs.ui.value
-import baaahs.ui.withSelectEvent
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import kotlinx.js.jso
 import mui.material.*
 import react.*
@@ -43,7 +40,12 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         header { +"Radius:" }
 
         with(styles) {
-            numberTextField("", mutableEntity.radius, { +props.editingEntity.modelUnit.display }, onChange = handleRadiusChange)
+            numberTextField<Float> {
+                this.attrs.label = ""
+                this.attrs.value = mutableEntity.radius
+                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                this.attrs.onChange = handleRadiusChange
+            }
         }
     }
 
@@ -52,7 +54,12 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
         header { +"First Pixel:" }
 
         with(styles) {
-            numberTextField("Position", mutableEntity.firstPixelRadians.asDegrees, {  +"°" }, onChange = handleFirstPixelRadiansChange)
+            numberTextField<Double> {
+                this.attrs.label = "Position"
+                this.attrs.value = mutableEntity.firstPixelRadians.asDegrees
+                this.attrs.adornment = "°".asTextNode()
+                this.attrs.onChange = handleFirstPixelRadiansChange
+            }
         }
     }
 

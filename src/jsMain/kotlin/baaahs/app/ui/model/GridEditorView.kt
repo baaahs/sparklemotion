@@ -62,37 +62,58 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
             br {}
 
-            numberTextField(
-                "Columns", mutableEntity.columns,
-                onChange = this@xComponent.namedHandler("columns", mutableEntity) { v: Int ->
+            numberTextField {
+                this.attrs.label = "Columns"
+                this.attrs.value = mutableEntity.columns
+                this.attrs.onChange = this@xComponent.namedHandler("columns", mutableEntity) { v: Int ->
                     mutableEntity.columns = v
                     props.editingEntity.onChange()
-                })
+                }
+            }
 
-            numberTextField(
-                "Rows", mutableEntity.rows,
-                onChange = this@xComponent.namedHandler("rows", mutableEntity) { v: Int ->
+            numberTextField {
+                this.attrs.label = "Rows"
+                this.attrs.value = mutableEntity.rows
+                this.attrs.onChange = this@xComponent.namedHandler("rows", mutableEntity) { v: Int ->
                     mutableEntity.rows = v
                     props.editingEntity.onChange()
-                })
+                }
+            }
 
             br {}
 
-            numberTextField(
-                "Column Gap", mutableEntity.columnGap,
-                adornment = { +props.editingEntity.modelUnit.display },
-                onChange = this@xComponent.namedHandler("columnGap", mutableEntity) { v: Float ->
+            numberTextField {
+                this.attrs.label = "Column Gap"
+                this.attrs.value = mutableEntity.columnGap
+                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                this.attrs.onChange = this@xComponent.namedHandler("columnGap", mutableEntity) { v: Float ->
                     mutableEntity.columnGap = v
                     props.editingEntity.onChange()
-                })
+                }
+            }
 
-            numberTextField(
-                "Row Gap", mutableEntity.rowGap,
-                adornment = { +props.editingEntity.modelUnit.display },
-                onChange = this@xComponent.namedHandler("rowGap", mutableEntity) { v: Float ->
+            numberTextField {
+                this.attrs.label = "Row Gap"
+                this.attrs.value = mutableEntity.rowGap
+                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                this.attrs.onChange = this@xComponent.namedHandler("rowGap", mutableEntity) { v: Float ->
                     mutableEntity.rowGap = v
                     props.editingEntity.onChange()
-                })
+                }
+            }
+
+            br {}
+
+            numberTextField {
+                this.attrs.label = "Stagger"
+                this.attrs.value = mutableEntity.stagger
+                this.attrs.onChange = this@xComponent.namedHandler("stagger", mutableEntity) { v: Int ->
+                    if (v != v.toInt()) error("Must be an integer.")
+                    if (v < 1) error("Must be a positive integer.")
+                    mutableEntity.stagger = v
+                    props.editingEntity.onChange()
+                }
+            }
         }
     }
 }

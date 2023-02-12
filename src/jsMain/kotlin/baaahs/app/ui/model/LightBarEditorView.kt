@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.geom.Vector3F
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightBarData
+import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import kotlinx.js.jso
@@ -66,7 +67,12 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
 
         with(styles) {
             val length = with (mutableEntity) { (endVertex - startVertex).length() }
-            numberTextField("", length, { +props.editingEntity.modelUnit.display }, onChange = handleLengthChange)
+            numberTextField<Float> {
+                this.attrs.label = ""
+                this.attrs.value = length
+                this.attrs.adornment = props.editingEntity.modelUnit.display.asTextNode()
+                this.attrs.onChange = handleLengthChange
+            }
         }
     }
 }

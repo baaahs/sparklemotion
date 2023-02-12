@@ -19,7 +19,8 @@ object GridEntityType : EntityType {
 
     override fun createNew(): EntityData = GridData(
         "New Grid",
-        rows = 2, columns = 2, rowGap = 1f, columnGap = 1f
+        rows = 2, columns = 2, rowGap = 1f, columnGap = 1f,
+        direction = GridData.Direction.RowsThenColumns
     )
 }
 

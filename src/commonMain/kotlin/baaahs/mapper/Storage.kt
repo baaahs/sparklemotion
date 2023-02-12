@@ -8,6 +8,7 @@ import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
+import baaahs.show.SceneMigrator
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.sim.MergedFs
@@ -144,11 +145,11 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadScene(file: Fs.File): Scene? {
-        return loadJson(file, Scene.serializer())
+        return loadJson(file, SceneMigrator)
     }
 
     suspend fun saveScene(file: Fs.File, scene: Scene) {
-        file.write(plugins.json.encodeToString(Scene.serializer(), scene), true)
+        file.write(plugins.json.encodeToString(SceneMigrator, scene), true)
     }
 
     suspend fun loadShow(file: Fs.File): Show? {

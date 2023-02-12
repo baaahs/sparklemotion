@@ -1,6 +1,7 @@
 package baaahs.dmx
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.model.numberTextField
 import baaahs.scene.EditingController
 import baaahs.scene.MutableTransportConfig
 import baaahs.ui.unaryPlus
@@ -20,46 +21,48 @@ private val DmxTransportConfigEditorView =
         val mutableConfig = props.mutableTransportConfig as MutableDmxTransportConfig?
         mutableConfig!!
 
-        with (appContext.allStyles.modelEditor) {
-            div(+styles.dmxTransportConfigEditorRow) {
-                numberTextField("Start Channel", mutableConfig.startChannel, onChange = {
-                    mutableConfig.startChannel = it
+        div(+styles.dmxTransportConfigEditorRow) {
+            numberTextField<Int?> {
+                attrs.label = "Start Channel"
+                attrs.value = mutableConfig.startChannel
+                attrs.onChange = { v: Int? ->
+                    mutableConfig.startChannel = v
                     props.editingController.onChange()
-                })
+                }
             }
+        }
 
-            div(+styles.dmxTransportConfigEditorRow) {
-                FormControl {
-                    FormControlLabel {
-                        attrs.label = buildElement { +"Start in a fresh universe" }
-                        attrs.control = buildElement {
-                            Checkbox {
-                                attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
-                                attrs.onChange = { _, _ ->
+        div(+styles.dmxTransportConfigEditorRow) {
+            FormControl {
+                FormControlLabel {
+                    attrs.label = buildElement { +"Start in a fresh universe" }
+                    attrs.control = buildElement {
+                        Checkbox {
+                            attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
+                            attrs.onChange = { _, _ ->
 //                                val value = it.target.checked
 //                                mutableConfig.componentsStartAtUniverseBoundaries = value
 //                                props.editingController.onChange()
-                                }
                             }
                         }
                     }
+                }
 
-                    FormHelperText {
-                        +"texty text text"
-                    }
+                FormHelperText {
+                    +"texty text text"
                 }
             }
+        }
 
-            div(+styles.dmxTransportConfigEditorRow) {
-                FormControlLabel {
-                    attrs.label = buildElement { +"Components may span universes" }
-                    attrs.control = buildElement {
-                        Checkbox {
-                            attrs.checked = mutableConfig.componentMaySpanUniverses
-                            attrs.onChange = { _, checked ->
-                                mutableConfig.componentMaySpanUniverses = checked
-                                props.editingController.onChange()
-                            }
+        div(+styles.dmxTransportConfigEditorRow) {
+            FormControlLabel {
+                attrs.label = buildElement { +"Components may span universes" }
+                attrs.control = buildElement {
+                    Checkbox {
+                        attrs.checked = mutableConfig.componentMaySpanUniverses
+                        attrs.onChange = { _, checked ->
+                            mutableConfig.componentMaySpanUniverses = checked
+                            props.editingController.onChange()
                         }
                     }
                 }

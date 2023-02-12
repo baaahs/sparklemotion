@@ -1,9 +1,6 @@
 package baaahs.show.migration
 
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.*
 
 fun MutableMap<String, JsonElement>.mapObjsInDict(
     key: String,
@@ -35,8 +32,19 @@ fun Map<String, JsonElement>.toJsonObj(): JsonObject = buildJsonObject {
 }
 
 fun MutableMap<String, JsonElement>.replaceJsonObj(name: String, block: (JsonObject) -> JsonElement) {
-    this[name] = block((this[name] ?: buildJsonObject { }) as JsonObject)
+    val origEl = this[name] ?: buildJsonObject { }
+    if (origEl !is JsonObject) error("\"$name\" entry is a ${origEl::class.simpleName}, not an object.")
+    this[name] = block(origEl)
 }
+
+val JsonElement.type get(): String? =
+    this.jsonObject["type"]?.jsonPrimitive?.contentOrNull
+
+val JsonObject.type get(): String? =
+    this["type"]?.jsonPrimitive?.contentOrNull
+
+val MutableMap<String, JsonElement>.type get(): String? =
+    this["type"]?.jsonPrimitive?.contentOrNull
 
 fun MutableMap<String, JsonElement>.replaceMapValues(
     name: String,
