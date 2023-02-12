@@ -186,23 +186,44 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         vizPixels?.addTo(obj)
 
         strandGroup.clear()
+        var lastEndVertex: Vector3F? = null
         getSegments().forEach { segment ->
             val vector = segment.endVertex - segment.startVertex
-            val normal = vector.normalize()
             val length = vector.length()
+            val arrowSize = length / segment.pixelCount * .8f
+
+            lastEndVertex?.let { lastEndVertex ->
+                val connectorVector = segment.startVertex - lastEndVertex
+                val connectorLength = connectorVector.length()
+                strandGroup.add(
+                    ArrowHelper(
+                        connectorVector.normalize().toVector3(),
+                        lastEndVertex.toVector3(),
+                        connectorLength,
+                        0x228822,
+                        arrowSize,
+                        arrowSize
+                    ).apply {
+                        line.material = strandMaterial
+                        cone.material = strandHintMaterial
+                    }
+                )
+            }
+
             strandGroup.add(
                 ArrowHelper(
-                    normal.toVector3(),
+                    vector.normalize().toVector3(),
                     segment.startVertex.toVector3(),
                     length,
                     0x228822,
-                    length / segment.pixelCount,
-                    length / segment.pixelCount
+                    arrowSize,
+                    arrowSize
                 ).apply {
                     line.material = strandMaterial
                     cone.material = strandHintMaterial
                 }
             )
+            lastEndVertex = segment.endVertex
         }
 
         pixelsPreview.setLocations(pixelLocations)

@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.doc.FileType
 import baaahs.plugin.Plugins
 import baaahs.scene.Scene
+import baaahs.show.SceneMigrator
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.encodeURIComponent
@@ -25,7 +26,7 @@ actual object UiActions {
         val type = FileType.Scene
         val filename = "${scene.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"
-        doDownload(filename, scene, Scene.serializer(), contentType, plugins)
+        doDownload(filename, scene, SceneMigrator, contentType, plugins)
     }
 
     private fun <T: Any> doDownload(

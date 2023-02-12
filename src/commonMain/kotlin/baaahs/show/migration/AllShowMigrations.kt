@@ -13,6 +13,3 @@ val AllShowMigrations: List<DataMigrator.Migration> = listOf(
     V8_RenameShaderChannelToStream,
     V9_RenameDataSourceToFeed
 )
-
-val AllSceneMigrations: List<DataMigrator.Migration> = listOf(
-)

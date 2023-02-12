@@ -23,9 +23,24 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
 
     val vector = props.vector3F
     with(styles) {
-        numberTextField("X", vector.x, { props.adornment?.let { child(it) } }, onChange = updateX)
-        numberTextField("Y", vector.y, { props.adornment?.let { child(it) } }, onChange = updateY)
-        numberTextField("Z", vector.z, { props.adornment?.let { child(it) } }, onChange = updateZ)
+        numberTextField<Float> {
+            this.attrs.label = "X"
+            this.attrs.value = vector.x
+            this.attrs.adornment = props.adornment
+            this.attrs.onChange = updateX
+        }
+        numberTextField<Float> {
+            this.attrs.label = "Y"
+            this.attrs.value = vector.y
+            this.attrs.adornment = props.adornment
+            this.attrs.onChange = updateY
+        }
+        numberTextField<Float> {
+            this.attrs.label = "Z"
+            this.attrs.value = vector.z
+            this.attrs.adornment = props.adornment
+            this.attrs.onChange = updateZ
+        }
     }
 }
 

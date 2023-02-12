@@ -18,7 +18,9 @@ val playa2021ModelData = ModelData(
             EulerAngle.identity,
             Vector3F.unit3d,
             Model.Entity.nextId(),
-            7, 11, 1f, 1f, zigZag = true
+            7, 11, 1f, 1f,
+            direction = GridData.Direction.RowsThenColumns,
+            zigZag = true
         )
     ),
     ModelUnit.Inches

@@ -398,9 +398,10 @@ class MutableGridData(
     var columnGap = baseGridData.columnGap
     var direction = baseGridData.direction
     var zigZag = baseGridData.zigZag
+    var stagger = baseGridData.stagger
 
     override fun build(): EntityData =
-        GridData(title, description, position, rotation, scale, id, rows, columns, rowGap, columnGap, direction, zigZag)
+        GridData(title, description, position, rotation, scale, id, rows, columns, rowGap, columnGap, direction, zigZag, stagger)
 
     override fun getEditorPanels() =
         listOf(

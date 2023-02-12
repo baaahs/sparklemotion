@@ -1,8 +1,8 @@
 package baaahs.show
 
 import baaahs.scene.Scene
-import baaahs.show.migration.AllSceneMigrations
 import baaahs.show.migration.AllShowMigrations
+import baaahs.show.migration.scene.AllSceneMigrations
 import baaahs.show.migration.toJsonObj
 import baaahs.util.Logger
 import kotlinx.serialization.KSerializer

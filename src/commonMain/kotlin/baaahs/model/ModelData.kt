@@ -171,8 +171,9 @@ data class GridData(
     val columns: Int,
     val rowGap: Float,
     val columnGap: Float,
-    val direction: Direction = Direction.ColumnsThenRows,
-    val zigZag: Boolean = false
+    val direction: Direction = Direction.RowsThenColumns,
+    val zigZag: Boolean = false,
+    val stagger: Int = 1
 ) : EntityData {
     override fun edit(): MutableEntity = MutableGridData(this)
 
@@ -184,7 +185,7 @@ data class GridData(
     override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
         Grid(
             title, description, position, rotation, scale,
-            rows, columns, rowGap, columnGap, direction, zigZag, id
+            rows, columns, rowGap, columnGap, direction, zigZag, stagger, id
         )
 }
 
