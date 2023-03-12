@@ -278,7 +278,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn(webpackTask)
+    dependsOn("packageClientResources")
 
     from("build/distributions") { include("sparklemotion.js") }
 
@@ -293,7 +293,7 @@ tasks.named<DokkaTask>("dokkaHtml") {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn(webpackTask)
+    dependsOn("packageClientResources")
     mainClass.set("baaahs.sm.server.PinkyMainKt")
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
@@ -336,6 +336,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 }
 
 tasks.create<Copy>("packageClientResources") {
+    dependsOn("jsBrowserDistribution")
     dependsOn("jsProcessResources", webpackTask)
     duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))
