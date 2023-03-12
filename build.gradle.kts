@@ -278,7 +278,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn(webpackTask)
+    dependsOn("packageClientResources")
 
     from("build/distributions") { include("sparklemotion.js") }
 
@@ -293,8 +293,8 @@ tasks.named<DokkaTask>("dokkaHtml") {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn(webpackTask)
-    main = "baaahs.sm.server.PinkyMainKt"
+    dependsOn("packageClientResources")
+    mainClass.set("baaahs.sm.server.PinkyMainKt")
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
 
@@ -310,7 +310,7 @@ tasks.create<JavaExec>("runPinkyJvm") {
 
 tasks.create<JavaExec>("runBrainJvm") {
     dependsOn("compileKotlinJvm")
-    main = "baaahs.sm.brain.sim.BrainMainKt"
+    mainClass.set("baaahs.sm.brain.sim.BrainMainKt")
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -318,7 +318,7 @@ tasks.create<JavaExec>("runBrainJvm") {
 
 tasks.create<JavaExec>("runBridgeJvm") {
     dependsOn("compileKotlinJvm")
-    main = "baaahs.sm.bridge.SimulatorBridgeKt"
+    mainClass.set("baaahs.sm.bridge.SimulatorBridgeKt")
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -326,7 +326,7 @@ tasks.create<JavaExec>("runBridgeJvm") {
 
 tasks.create<JavaExec>("runGlslJvmTests") {
     dependsOn("compileTestKotlinJvm")
-    main = "baaahs.RunOpenGLTestsKt"
+    mainClass.set("baaahs.RunOpenGLTestsKt")
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
@@ -336,6 +336,7 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 }
 
 tasks.create<Copy>("packageClientResources") {
+    dependsOn("jsBrowserDistribution")
     dependsOn("jsProcessResources", webpackTask)
     duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))
