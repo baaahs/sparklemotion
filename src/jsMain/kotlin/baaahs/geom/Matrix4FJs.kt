@@ -81,21 +81,16 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
     override fun hashCode(): Int {
         return nativeMatrix.elements.contentHashCode()
     }
-
-    actual companion object {
-        actual val identity: Matrix4F
-            get() = Matrix4F()
-
-        actual fun compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
-            Matrix4F(
-                NativeMatrix4D().compose(
-                    position.toVector3(),
-                    Quaternion().apply { setFromEuler(rotation.toThreeEuler()) },
-                    scale.toVector3()
-                )
-            )
-    }
 }
+
+actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
+    Matrix4F(
+        NativeMatrix4D().compose(
+            position.toVector3(),
+            Quaternion().apply { setFromEuler(rotation.toThreeEuler()) },
+            scale.toVector3()
+        )
+    )
 
 fun EulerAngle.toThreeEuler(): Euler =
     Euler(xRad, yRad, zRad)
