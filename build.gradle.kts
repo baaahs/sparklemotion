@@ -278,9 +278,9 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn(webpackTask)
+    dependsOn("packageClientResources")
 
-    from("build/distributions") { include("sparklemotion.js") }
+    from("build/developmentExecutable") { include("sparklemotion.js") }
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
@@ -293,7 +293,7 @@ tasks.named<DokkaTask>("dokkaHtml") {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn(webpackTask)
+    dependsOn("packageClientResources")
     main = "baaahs.sm.server.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
