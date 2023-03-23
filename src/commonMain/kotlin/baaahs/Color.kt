@@ -141,14 +141,13 @@ data class Color(val argb: Int) {
         return "Color(${toHexString()})"
     }
 
-    fun gammaCorrected(invGamma: Float): Color {
-        return Color(
+    fun gammaCorrected(invGamma: Float): Color =
+        if (invGamma == 1f) this else Color(
             redF.pow(invGamma),
             greenF.pow(invGamma),
             blueF.pow(invGamma),
             alphaF
         )
-    }
 
     /**
      * Converts the components of a color, as specified by the default RGB
@@ -296,6 +295,8 @@ data class Color(val argb: Int) {
 
         @JsName("fromInt")
         fun from(i: Int) = Color(i)
+
+        fun fromHex(i: Int) = Color(i or 0xff000000.toInt())
 
         @JsName("fromInts")
         fun from(r: Int, g: Int, b: Int) = Color(r, g, b)
