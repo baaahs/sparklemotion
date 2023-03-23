@@ -27,22 +27,26 @@
     <img style="transform: scale(.5);" src="../loading.gif" alt=""/>
     <div id="_patience_" style="padding-right: 5em;">Patience...</div>
   </div>
+  <div id="_errors_"></div>
 </div>
 
 <script type="application/javascript">
   document.resourcesBase = "..";
   document.sparklemotionMode = "UI";
 
+  function reportError(path) {
+    document.getElementById("_errors_").innerHTML += "<p>Error loading " + path + ".</p>\n"
+  }
+
   (function () {
     function loadJs(path) {
       let el = document.createElement("script");
       el.setAttribute("src", path);
+      el.setAttribute("onerror", "reportError(\"" + path + "\");");
       document.head.appendChild(el);
     }
 
     setTimeout(function () {
-      loadJs("../vendors.js");
-      loadJs("../1.js"); // for http://baaahs.github.io/sparklemotion/
       loadJs("../sparklemotion.js");
     });
   })();
