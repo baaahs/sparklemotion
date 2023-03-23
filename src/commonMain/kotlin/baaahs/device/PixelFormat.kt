@@ -77,7 +77,42 @@ enum class PixelFormat {
             buf.writeByte(color.redB)
             buf.writeByte(color.blueB)
         }
-    };
+    },
+
+    // See https://www.rockvilleaudio.com/content/Manuals/ROCKPAR%20TRI_Manual_v2_OL.pdf:
+    ROCKPAR_RGB8 {
+        override val channelsPerPixel: Int = 7
+
+        override fun readColor(reader: ByteArrayReader): Color {
+            reader.readByte() // Mode (garbage!)
+            reader.readByte() // Palette (garbage!)
+            reader.readByte() // Speed (garbage!)
+            reader.readByte() // Dimmer (garbage!)
+            return Color.parseWithoutAlpha(reader)
+        }
+
+        override fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit) {
+            reader.readByte() // Mode (garbage!)
+            reader.readByte() // Palette (garbage!)
+            reader.readByte() // Speed (garbage!)
+            reader.readByte() // Dimmer (garbage!)
+            val redF = reader.readByte().asUnsignedToInt() / 255f
+            val greenF = reader.readByte().asUnsignedToInt() / 255f
+            val blueF = reader.readByte().asUnsignedToInt() / 255f
+            setter(redF, greenF, blueF)
+        }
+
+        override fun writeColor(color: Color, buf: ByteArrayWriter) {
+            buf.writeByte(1) // Mode: manual dimming
+            buf.writeByte(0) // Palette (garbage!)
+            buf.writeByte(0) // Speed (garbage!)
+            buf.writeByte(0xFF.toByte()) // Dimmer: full brightness
+            buf.writeByte(color.redB)
+            buf.writeByte(color.greenB)
+            buf.writeByte(color.blueB)
+        }
+    },
+;
 
     abstract val channelsPerPixel: Int
     abstract fun readColor(reader: ByteArrayReader): Color
