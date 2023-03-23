@@ -103,7 +103,7 @@ class PinkyMain(private val args: Array<String>) {
             val classPathBaseDir = Paths.get(resource.file).parent
             val repoDir = classPathBaseDir.parent.parent.parent.parent.parent
             val jsResDir = repoDir.resolve("build/processedResources/js/main")
-            val jsPackageDir = "build/distributions"
+            val jsPackageDir = "build/developmentExecutable"
             testForIndexDotHtml(jsResDir)
             logger.info { "Serving resources from files at $jsResDir." }
             logger.info { "Serving sparklemotion from files at $jsPackageDir." }
@@ -115,9 +115,6 @@ class PinkyMain(private val args: Array<String>) {
 
                     file(jsPackagePath, "sparklemotion.js")
                     file(jsPackagePath, "sparklemotion.js.map")
-
-                    file(jsPackagePath, "vendors.js")
-                    file(jsPackagePath, "vendors.js.map")
 
                     files(jsResDir.toFile())
                     route("monitor/") { default("monitor/index.html") }
