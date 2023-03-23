@@ -11,6 +11,7 @@ import three_ext.clear
 import three_ext.plus
 import three_ext.set
 import three_ext.toVector3F
+import kotlin.math.abs
 
 class Container(
     val box: Box3,
@@ -123,10 +124,10 @@ class PolyLineVisualizer(
         item.segments
 
     override fun addPadding(box: Box3) {
-        box.min.x -= item.xPadding
-        box.max.x += item.xPadding
-        box.min.y -= item.yPadding
-        box.max.y += item.yPadding
+        box.min.x -= abs(item.xPadding)
+        box.max.x += abs(item.xPadding)
+        box.min.y -= abs(item.yPadding)
+        box.max.y += abs(item.yPadding)
     }
 
     override fun calculateContainer(pixelLocations: Array<Vector3>): Container {
