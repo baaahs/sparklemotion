@@ -65,20 +65,24 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
     override fun hashCode(): Int {
         return nativeMatrix.hashCode()
     }
-}
 
-actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
-    Matrix4F(
-        NativeMatrix4F().apply {
-            translationRotateScale(
-                position.toNativeVector3F(),
-                NativeQuaternionF().rotateXYZ(
-                    rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
-                ),
-                scale.toNativeVector3F()
+    actual companion object {
+        actual val identity: Matrix4F = Matrix4F()
+
+        actual fun compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
+            Matrix4F(
+                NativeMatrix4F().apply {
+                    translationRotateScale(
+                        position.toNativeVector3F(),
+                        NativeQuaternionF().rotateXYZ(
+                            rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+                        ),
+                        scale.toNativeVector3F()
+                    )
+                }
             )
-        }
-    )
+    }
+}
 
 private fun Vector3F.toNativeVector3F() =
     NativeVector3F(x, y, z)

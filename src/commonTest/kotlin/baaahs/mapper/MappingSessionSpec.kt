@@ -4,7 +4,6 @@ import baaahs.describe
 import baaahs.doRunBlocking
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
-import baaahs.geom.identity
 import baaahs.only
 import baaahs.show.SampleData
 import baaahs.sim.FakeFs
