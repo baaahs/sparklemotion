@@ -97,7 +97,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
-        flex(0.0, 0.0)
+        flex(0.0, 0.0, FlexBasis.auto)
         position = Position.relative
         marginRight = 0.em
         minWidth = 5.em

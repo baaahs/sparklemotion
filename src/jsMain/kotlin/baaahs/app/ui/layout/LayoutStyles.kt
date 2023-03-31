@@ -110,6 +110,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        width = 100.pct
 //        height = 100.pct
         marginRight = 0.em
+        flex(0, 0, FlexBasis.auto)
 
         hover {
             child(deleteButton.selector) {
