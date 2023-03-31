@@ -5,7 +5,6 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.geom.Matrix4F
-import baaahs.geom.identity
 import baaahs.gl.RootToolchain
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager

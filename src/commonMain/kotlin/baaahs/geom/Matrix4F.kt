@@ -2,6 +2,7 @@ package baaahs.geom
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import kotlinx.serialization.builtins.FloatArraySerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -21,25 +22,20 @@ expect class Matrix4F(elements: FloatArray? = null) {
     fun withTranslation(translation: Vector3F): Matrix4F
     fun withRotation(rotation: EulerAngle): Matrix4F
     fun withScale(scale: Vector3F): Matrix4F
+
+    companion object {
+        val identity: Matrix4F
+
+        fun compose(
+            position: Vector3F = Vector3F.origin,
+            rotation: EulerAngle = EulerAngle.identity,
+            scale: Vector3F = Vector3F.unit3d
+        ): Matrix4F
+    }
 }
 
-val Matrix4F.Companion.identity: Matrix4F
-    get() = Matrix4F()
-
-internal expect fun matrix4F_compose(
-    position: Vector3F,
-    rotation: EulerAngle,
-    scale: Vector3F
-): Matrix4F
-
-fun Matrix4F.Companion.compose(
-    position: Vector3F = Vector3F.origin,
-    rotation: EulerAngle = EulerAngle.identity,
-    scale: Vector3F = Vector3F.unit3d
-): Matrix4F = matrix4F_compose(position, rotation, scale)
-
-//@Serializer(forClass = Matrix4F::class)
-object Matrix4FSerializer : KSerializer<Matrix4F> {
+@Serializer(forClass = Matrix4F::class)
+class Matrix4FSerializer : KSerializer<Matrix4F> {
     override val descriptor: SerialDescriptor
         get() = FloatArraySerializer().descriptor
 
