@@ -280,7 +280,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
 tasks.named<ProcessResources>("jvmProcessResources") {
     dependsOn("packageClientResources")
 
-    from("build/distributions") { include("sparklemotion.js") }
+    from("build/developmentExecutable") { include("sparklemotion.js") }
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
@@ -294,7 +294,7 @@ tasks.named<DokkaTask>("dokkaHtml") {
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
     dependsOn("packageClientResources")
-    mainClass.set("baaahs.sm.server.PinkyMainKt")
+    main = "baaahs.sm.server.PinkyMainKt"
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
 
@@ -310,7 +310,7 @@ tasks.create<JavaExec>("runPinkyJvm") {
 
 tasks.create<JavaExec>("runBrainJvm") {
     dependsOn("compileKotlinJvm")
-    mainClass.set("baaahs.sm.brain.sim.BrainMainKt")
+    main = "baaahs.sm.brain.sim.BrainMainKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -318,7 +318,7 @@ tasks.create<JavaExec>("runBrainJvm") {
 
 tasks.create<JavaExec>("runBridgeJvm") {
     dependsOn("compileKotlinJvm")
-    mainClass.set("baaahs.sm.bridge.SimulatorBridgeKt")
+    main = "baaahs.sm.bridge.SimulatorBridgeKt"
 
     val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
@@ -326,7 +326,7 @@ tasks.create<JavaExec>("runBridgeJvm") {
 
 tasks.create<JavaExec>("runGlslJvmTests") {
     dependsOn("compileTestKotlinJvm")
-    mainClass.set("baaahs.RunOpenGLTestsKt")
+    main = "baaahs.RunOpenGLTestsKt"
 
     val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
     classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
@@ -336,7 +336,6 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 }
 
 tasks.create<Copy>("packageClientResources") {
-    dependsOn("jsBrowserDistribution")
     dependsOn("jsProcessResources", webpackTask)
     duplicatesStrategy = DuplicatesStrategy.WARN
     from(project.file("build/processedResources/js/main"))

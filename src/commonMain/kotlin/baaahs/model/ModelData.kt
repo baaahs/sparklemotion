@@ -1,7 +1,9 @@
 package baaahs.model
 
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.*
+import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
+import baaahs.geom.Vector3F
 import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
@@ -170,7 +172,7 @@ data class GridData(
     val rowGap: Float,
     val columnGap: Float,
     val direction: Direction = Direction.RowsThenColumns,
-    val zigZag: Boolean = false,
+    val zigZag: Boolean = true,
     val stagger: Int = 1
 ) : EntityData {
     override fun edit(): MutableEntity = MutableGridData(this)

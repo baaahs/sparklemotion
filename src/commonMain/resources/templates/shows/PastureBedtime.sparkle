@@ -2509,7 +2509,7 @@
     "rippleAmount": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple Amount",
-      "controlledDataSourceId": "wobbleAmountSlider"
+      "controlledDataSourceId": "rippleAmountSlider"
     },
     "soundAnalysis": {
       "type": "baaahs.SoundAnalysis:SoundAnalysis"
@@ -2950,7 +2950,7 @@
         "y": 10
       }
     },
-    "wobbleAmountSlider": {
+    "rippleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple Amount",
       "initialValue": 1,
