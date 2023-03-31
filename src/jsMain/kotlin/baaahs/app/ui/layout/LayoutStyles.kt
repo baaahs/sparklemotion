@@ -50,6 +50,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        }
 
         zIndex = StyleConstants.Layers.aboveSharedGlCanvas
+        userSelect = UserSelect.none
 
         transition(::top, .125.s)
         transition(::left, .125.s)
