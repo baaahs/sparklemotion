@@ -23,6 +23,14 @@ fonts/press-start-2p-v8-latin-regular.svg
 fonts/press-start-2p-v8-latin-regular.ttf
 fonts/press-start-2p-v8-latin-regular.woff
 fonts/press-start-2p-v8-latin-regular.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmEU9fChc4AMP6lbBP.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4AMP6lQ.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmSU5fChc4AMP6lbBP.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4AMP6lQ.woff2
+fonts/roboto/v30/KFOlCnqEu92Fr1MmWUlfChc4AMP6lbBP.woff2
+fonts/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2
+fonts/roboto/v30/KFOmCnqEu92Fr1Mu7GxKKTU1Kvnz.woff2
 index.html
 loading.gif
 long-press-event.min.js
@@ -129,6 +137,7 @@ templates/scenes/playa-2021-panels.obj
 templates/scenes/sui-generis.obj
 templates/shows/BeachRave.sparkle
 templates/shows/Ben's Show.sparkle
+templates/shows/Eve Rafters.sparkle
 templates/shows/Honcho.sparkle
 templates/shows/PastureBedtime.sparkle
 templates/shows/movers.sparkle
