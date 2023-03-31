@@ -59,6 +59,9 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
+            Option("Eve Rafters") {
+                makeNew { fromResources("Eve Rafters.sparkle") }
+            },
             Option("Pasture Bedtime") {
                 makeNew { fromResources("PastureBedtime.sparkle") }
             },
