@@ -163,10 +163,12 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
                                     props.tabEditor.edit(mutableShow) {
                                         val gridItem = items.firstOrNull { it.control.asBuiltId == gridItemId }
                                             ?: error(unknown("item", gridItemId, items.map { it.control.asBuiltId }))
-                                        block(
-                                            gridItem.layout
-                                                ?: error("No layout for $gridItemId.")
-                                        )
+                                        val layout = gridItem.layout
+                                        if (layout != null) {
+                                            block(layout)
+                                        } else {
+                                            this@xComponent.logger.error { "No layout for $gridItemId." }
+                                        }
                                     }
                                 }
                             }

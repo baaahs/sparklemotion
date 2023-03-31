@@ -10,7 +10,8 @@ import baaahs.visualizer.remote.RemoteVisualizers
 import com.danielgergely.kgl.ByteBuffer
 import com.danielgergely.kgl.GL_RGBA
 import com.danielgergely.kgl.GL_UNSIGNED_BYTE
-import kotlin.experimental.and
+import kotlin.math.pow
+import kotlin.random.Random
 
 object ColorResultType : ResultType<ColorResultType.Buffer> {
     private val renderPixelFormat: Int = GlContext.GL_RGBA8
@@ -66,6 +67,7 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
         private val fixtureConfig = fixture as PixelArrayFixture
         private val pixelFormat = fixtureConfig.pixelFormat
+        private val gammaCorrector = GammaCorrector.create(fixtureConfig.gammaCorrection.toDouble())
         private val bytesPerPixel = pixelFormat.channelsPerPixel
 
         override operator fun get(i: Int): Color = buffer[componentOffset + i]
@@ -82,13 +84,15 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
         override fun send(remoteVisualizers: RemoteVisualizers) {
             transport.deliverComponents(componentCount, bytesPerPixel) { i, buf ->
-                pixelFormat.writeColor(this[i], buf)
+                val color = gammaCorrector.correct(this[i])
+                pixelFormat.writeColor(color, buf)
             }
 
             val remoteVisualizersBytes by lazy {
                 val buf = ByteArrayWriter()
                 for (i in 0 until componentCount) {
-                    pixelFormat.writeColor(this[i], buf)
+                    val color = gammaCorrector.correct(this[i])
+                    pixelFormat.writeColor(color, buf)
                 }
                 buf.toBytes()
             }
@@ -97,5 +101,43 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
                 out.writeBytes(remoteVisualizersBytes)
             }
         }
+    }
+
+    interface GammaCorrector {
+        fun correct(color: Color): Color
+
+        companion object {
+            fun create(gamma: Double): GammaCorrector =
+                when (gamma) {
+                    1.0 -> LinearGammaCorrector()
+                    else -> RealGammaCorrector(gamma)
+                }
+        }
+    }
+
+    class RealGammaCorrector(val gamma: Double = 2.2) : GammaCorrector {
+        private val random = Random(0)
+        private val fractRes = 1024
+        private val lookupInt = (0..255)
+            .map { (it / 255.0).pow(gamma).times(255).toInt() }.toIntArray()
+        private val lookupFraction = (0..255)
+            .map { ((it / 255.0).pow(gamma).times(255).mod(1.0) * fractRes).toInt() }.toIntArray()
+
+        override fun correct(color: Color): Color {
+            val random = random.nextInt(fractRes)
+            val redI = color.redI
+            val greenI = color.greenI
+            val blueI = color.blueI
+
+            return Color(
+                lookupInt[redI] + if (random < lookupFraction[redI]) 1 else 0,
+                lookupInt[greenI] + if (random < lookupFraction[greenI]) 1 else 0,
+                lookupInt[blueI] + if (random < lookupFraction[blueI]) 1 else 0,
+            )
+        }
+    }
+
+    class LinearGammaCorrector : GammaCorrector {
+        override fun correct(color: Color) = color
     }
 }

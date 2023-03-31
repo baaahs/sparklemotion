@@ -2,6 +2,7 @@ package baaahs.app.ui.layout
 
 import baaahs.ui.Observable
 import baaahs.ui.gridlayout.GridLayoutState
+import baaahs.util.Logger
 import react.createContext
 
 val dragNDropContext = createContext<DragNDropContext>()
@@ -32,18 +33,19 @@ class GridLayoutContext : Observable() {
     fun registerLayout(id: String, state: GridLayoutState) {
         console.log("GridLayoutContext ${this.id}: Register $id")
         if (layouts.put(id, state) != null) {
-            error("Layout \"$id\" already registered.")
+            logger.error { "Layout \"$id\" already registered." }
         }
     }
 
     fun unregisterLayout(id: String) {
         console.log("GridLayoutContext ${this.id}: Unregister $id")
         if (layouts.remove(id) == null) {
-            error("Layout \"$id\" not registered.")
+            logger.error { "Layout \"$id\" not registered." }
         }
     }
 
     companion object {
         private var nextId: Int = 0
+        private val logger = Logger<GridLayoutContext>()
     }
 }

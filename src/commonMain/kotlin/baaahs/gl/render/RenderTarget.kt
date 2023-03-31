@@ -19,7 +19,7 @@ class FixtureRenderTarget(
     val rects: List<Quad.Rect>, // these are in pixels, (0,0) at top left
     override val componentCount: Int,
     val component0Index: Int,
-    private val resultStorage: ResultStorage
+    resultStorage: ResultStorage
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set
