@@ -63,7 +63,7 @@ extern "C" void app_main()
 //     esp_log_level_set("HTTP_CLIENT", ESP_LOG_DEBUG);
 
     // Configure the default event loop before anything else happens
-    ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetTaskName(nullptr));
+    ESP_LOGD(TAG_MAIN, "Main task name = %s", pcTaskGetName(nullptr));
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     // SPIFFS is also a very basic thing

@@ -25,4 +25,5 @@ protected:
 private:
     esp_eth_config_t m_config;
     esp_eth_handle_t m_hDriver;
+    esp_netif_t *m_netIf;
 };

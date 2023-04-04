@@ -32,4 +32,6 @@ protected:
 
 private:
     wifi_config_t m_wifiConfig;
+
+    esp_netif_t* m_netIf;
 };

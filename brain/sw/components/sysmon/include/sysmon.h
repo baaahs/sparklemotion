@@ -124,6 +124,8 @@ private:
     void addTestVal(int64_t v);
     void outputTestVals();
 
+    void outputTaskInfo();
+
     // A place to build up our log messages
     char m_szTmp[2000];
     char* m_tmpHead;

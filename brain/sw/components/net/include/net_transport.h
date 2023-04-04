@@ -94,7 +94,7 @@ public:
 
     void netIntStop(NetInterface *interface) override;
 
-    void netIntGotAddr(NetInterface *interface, const tcpip_adapter_ip_info_t *info) override;
+    void netIntGotAddr(NetInterface *interface, esp_netif_ip_info_t *info) override;
 
 private:
     TaskHandle_t m_hInterfaceTask = nullptr;

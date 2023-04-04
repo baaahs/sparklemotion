@@ -5,5 +5,6 @@
 #pragma once
 
 #include <brain_common.h>
+#include <esp_timer.h>
 
 #define TAG TAG_UI

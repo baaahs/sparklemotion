@@ -13,6 +13,6 @@ set(COMPONENT_SRCS
         )
 
 
-set(COMPONENT_REQUIRES net led-renderer brain-ui)
+set(COMPONENT_REQUIRES led-renderer brain-ui net)
 
 register_component()

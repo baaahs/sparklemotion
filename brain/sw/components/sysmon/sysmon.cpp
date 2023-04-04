@@ -12,6 +12,7 @@
 #include "esp_ota_ops.h"
 #include <string.h>
 #include <inttypes.h>
+#include <esp_timer.h>
 
 #define TAG TAG_SYSMON
 
@@ -51,8 +52,17 @@ SysMon::_task() {
 
 //    outputTestVals();
 
+    uint32_t count = 0;
+
     while(1) {
         outputToLog();
+
+        if (count % 2 == 0) {
+            outputTaskInfo();
+        }
+
+        count++;
+
         vTaskDelayUntil( &xLastWakeTime, xFrequency );
     }
 
@@ -286,14 +296,14 @@ void SysMon::addMetrics() {
 void SysMon::addMemInfo() {
     m_tmpHead = m_tmpEnd - m_tmpRemaining;
     m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
-            "   Memory = free( %6d )    largest( %6d )\n",
+            "   Memory = bytes free( %6ld )    largest( %6d )\n",
             xPortGetFreeHeapSize(),
             heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
 
 }
 
 void SysMon::addAppDesc() {
-    auto desc = esp_ota_get_app_description();
+    auto desc = esp_app_get_description();
     if (!desc) {
         m_tmpHead = m_tmpEnd - m_tmpRemaining;
         m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, "Unable to get ota app description\n");
@@ -311,7 +321,7 @@ void SysMon::addAppDesc() {
                 desc->time, desc->date);
 
         m_tmpHead = m_tmpEnd - m_tmpRemaining;
-        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, " ver hash = 0x%08x\n",
+        m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining, " ver hash = 0x%08lx\n",
                                    GlobalConfig.versionHash());
 
         //        m_tmpHead = m_tmpEnd - m_tmpRemaining;
@@ -403,4 +413,29 @@ void SysMon::outputTestVals() {
                                "=================================================\n");
 
     ESP_LOGE(TAG, "%s", m_szTmp);
+}
+
+void SysMon::outputTaskInfo() {
+    auto count = uxTaskGetNumberOfTasks();
+
+    if (count * 50 > sizeof(m_szTmp) - 1) {
+        ESP_LOGE(TAG, "m_szTemp is too small to output task info, count = %d", count);
+        return;
+    }
+
+    vTaskList(m_szTmp);
+    //             IDLE           	R	0	1000	5	0
+    ESP_LOGW(TAG, "Task Status:\n"
+                  "Name             State Pri StackLeft Num Core\n"
+                  "------------------------------------------\n"
+                  "%s", m_szTmp);
+
+    vTaskGetRunTimeStats(m_szTmp);
+    ESP_LOGW(TAG, "Task total runtime stats:\n"
+                  "Name             Ticks       Percent\n"
+                  "------------------------------------\n"
+                 //show           	194259		<1%
+//                  "show           \t194259\t\t<1%\n"
+                  "%s", m_szTmp);
+
 }

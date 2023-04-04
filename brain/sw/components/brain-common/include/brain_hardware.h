@@ -36,8 +36,109 @@
 //#define BRAIN_VARIANT_GLAMSIGN
 //#define BRAIN_VARIANT_GLAMSIGN_MINI
 
-//#define BRAIN_DEFAULT_BRIGHTNESS   16
+//#define BRAIN_VARIANT_GENERIC_TESTER
 
+
+////////////////////////////////////////////////////////////////////// BEGIN DEBUG SECTION
+
+/********************************************************************
+ * Temporary debugging overrides
+ *
+ * If you're planning on doing a specific project it's often better
+ * to include these in a new variant definition below. Having these
+ * things defined here should make it easier to spot accidental
+ * inclusions.
+ ********************************************************************/
+
+//#define BRAIN_ETHERNET_ENABLED false
+//#define BRAIN_WIFI_ENABLED true
+
+/**
+ * Here's some pixel math for you. With ws2815's (and similar ws2812's),
+ * the RMT based esp32 module uses 1.2us per bit plus 50us total of
+ * reset time at the beginning of a new frame. (see led_strip_rmt_encoder.c)
+ * This could be tweaked by changing the config->resolution value for that
+ * encoder, but let's stick with defaults for now.
+ *
+ * At 24 bits per pixel you get 28.8us per pixel plus the 50us per frame, which
+ * is only 2 pixels of time so it's generally not worth considering.
+ *
+ * This means that for 500 pixels you're looking at 14.4ms per frame which
+ * is a fps of 69.4 fps - the theoretical max if driving the protocol all the time.
+ *
+ * With 1000 pixels you drop that in half so a max fps of 34.7 fps, which is still
+ * pretty good.
+ *
+ * Observed timing via sysmon is roughly half these ShowOut speeds, so for 500px
+ * you're looking at around 30-40 fps when the default value is set to anything
+ * higher than that. For 1000px about 20 fps has been observed. All of thse
+ * numbers include no real network activity (i.e. local renders not connected
+ * to sparklemotion) running at >1200/s which _probably_ doesn't have much
+ * affect on the ShowOut task because hopefully they run on different cores???
+ * That's probably a lie and the render task should be limited to like 2x the
+ * ShowOut fps limit, but hey, future work.
+ *
+ * If the FPS limit (which is what BRAIN_DEFAULT_FPS actually is) gets too incredibly
+ * high then you'll end up with watchdog timeouts from the ShowOut task and the
+ * board will effectively end up in a reboot loop.
+ *
+ * A reasonable version of the ws2815 datasheet with timing info:
+ * https://www.superlightingled.com/PDF/WS2815-12v-addressable-led-chip-specification-.pdf
+ */
+//#define BRAIN_DEFAULT_PIXEL_COUNT 24
+//#define BRAIN_DEFAULT_PIXEL_COUNT 500
+//#define BRAIN_DEFAULT_BRIGHTNESS   32
+////#define BRAIN_DEFAULT_BRIGHTNESS   16
+//#define BRAIN_DEFAULT_FPS 60
+//
+//// Common for the Wemos LoLin32 boards
+//#define BRAIN_GPIO_PIXEL_CH1       GPIO_NUM_27
+
+
+////////////////////////////////////////////////////////////////////// END DEBUG SECTION
+
+/********************************************************************
+ * A wearable sign
+ ********************************************************************/
+#ifdef BRAIN_VARIANT_GENERIC_TESTER
+
+#define BRAIN_ETHERNET_ENABLED false
+#define BRAIN_WIFI_ENABLED true
+#define BRAIN_DEFAULT_PIXEL_COUNT 24
+
+#define BRAIN_DEFAULT_BRIGHTNESS   32
+// #define BRAIN_POWER_ON_COLOR       RgbColor(255, 0, 0)
+
+// So that we get some visible gamma correction love
+#define BRAIN_DEFAULT_FPS 30
+
+// Get the pins for Rev E
+//#define BRAIN_VARIANT_REV_E
+#define BRAIN_GPIO_PIXEL_CH1       GPIO_NUM_27
+//#define BRAIN_GPIO_LED_RED         GPIO_NUM_10 // So it doesn't conflict
+
+#endif
+
+/********************************************************************
+ * A wearable sign
+ ********************************************************************/
+#ifdef BRAIN_VARIANT_2811_WEARABLE
+
+#define BRAIN_ETHERNET_ENABLED false
+#define BRAIN_WIFI_ENABLED true
+#define BRAIN_DEFAULT_PIXEL_COUNT 216
+
+// Max for 2 amp draw on launch sign is 60
+#define BRAIN_DEFAULT_BRIGHTNESS   60
+#define BRAIN_POWER_ON_COLOR       RgbColor(255, 0, 0)
+
+// So that we get some visible gamma correction love
+#define BRAIN_DEFAULT_FPS 60
+
+// Get the pins for Rev E
+#define BRAIN_VARIANT_REV_E
+
+#endif
 
 /********************************************************************
  * The Panel Testers are two boxes built by Tom S. that have
@@ -245,10 +346,32 @@
  * let you disable ethernet for situations where it either
  * makes no sense or flat out doesn't exist, such as when
  * using an ESP pico board.
+ *
+ * One significant issue though is with the code which will
+ * reboot the system if it doesn't see an ethernet link
+ * within 30 seconds. So in reality if you aren't using
+ * ethernet you probably DO want to disable this.
  */
 #ifndef BRAIN_ETHERNET_ENABLED
 #define BRAIN_ETHERNET_ENABLED     true
 #endif
+
+/**
+ * Similar to the ethernet enablement this controls whether
+ * ANY wifi should be enabled or not. Turning this on will
+ * get you both an AP and a STA interface. For wifi applications
+ * it's most common that you want both of these because AP
+ * gets used for configuration and STA is useful if you are
+ * developing and don't want to keep swapping to the board's
+ * AP or if you want several boards to gang together on a
+ * common fixed AP (which is typically a good idea because
+ * the built in AP is really only good for single user sort
+ * of things.)
+ */
+#ifndef BRAIN_WIFI_ENABLED
+#define BRAIN_WIFI_ENABLED false
+#endif
+
 
 /**
  * The NeoBuffer library we use for rendering pixel data is
@@ -280,7 +403,7 @@
  * but we arem't there yet.
  */
 #ifndef BRAIN_NEO_COLORFEATURE
-#define BRAIN_NEO_COLORFEATURE     NeoGrbFeature
+//#define BRAIN_NEO_COLORFEATURE     NeoGrbFeature
 #endif
 
 /**
@@ -328,6 +451,11 @@
 #define BRAIN_POWER_ON_COLOR       RgbColor(255, 255, 255)
 #endif
 
+/**
+ * Use 4 byte color or not. Four byte color is for RGBW pixels
+ * so the default is just plain old RGB.
+ */
+// BRAIN_USE_RGBW
 
 /**
  * SysMon is a component which periodically logs interesting

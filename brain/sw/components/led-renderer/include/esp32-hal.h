@@ -30,7 +30,8 @@ void yield();
 #define ESP_REG(addr) *((volatile uint32_t *)(addr))
 #define NOP() asm volatile ("nop")
 
-#define GPIO_PIN_COUNT                  40
+// #define GPIO_PIN_COUNT                  40
+#include <driver/gpio.h>
 #include "esp32-hal-gpio.h"
 
 uint32_t millis();

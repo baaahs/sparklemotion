@@ -9,6 +9,9 @@
 #include "spiffs_handler.h"
 #include "firmware_handler.h"
 #include "config_handler.h"
+#include "time_handler.h"
+#include "words_handler.h"
+#include "color_handler.h"
 
 class HttpServer {
 public:
@@ -16,8 +19,14 @@ public:
 
     void start();
 
+    void setWordsHandlerListener(WordsHandlerListener* listener);
+    void setColorHandlerDelegate(ColorHandlerDelegate* delegate);
+
 private:
     SpiffsHandler m_spiffs;
     FirmwareHandler m_firmware;
     ConfigHandler m_config;
+    TimeHandler m_time;
+    WordsHandler m_words;
+    ColorHandler m_color;
 };

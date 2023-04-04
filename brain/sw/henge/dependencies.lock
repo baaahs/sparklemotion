@@ -1,0 +1,57 @@
+dependencies:
+  brain-common:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-common
+      type: local
+    version: '*'
+  brain-ui:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-ui
+      type: local
+    version: '*'
+  espressif/jsmn:
+    component_hash: d80350c41bbaa827c98a25b6072df00884e72f54885996fab4a4f0aebce6b6c3
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/led_strip:
+    component_hash: f0ae6ac96108743deeea95a3ff61e3759de986b6a63aa0f3a471415e4085da9e
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 2.3.0
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.0.1
+  iso:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/iso
+      type: local
+    version: '*'
+  led-renderer:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/led-renderer
+      type: local
+    version: '*'
+  net:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/net
+      type: local
+    version: '*'
+  sysmon:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/sysmon
+      type: local
+    version: '*'
+manifest_hash: 0e811568f764f279404bf4df809945b84c299ae34cf094536376d9965071a1fc
+target: esp32
+version: 1.0.0

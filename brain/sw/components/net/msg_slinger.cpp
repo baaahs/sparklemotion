@@ -79,10 +79,10 @@ MsgSlinger::start(uint16_t port, TaskDef input, TaskDef output) {
 void
 MsgSlinger::_gotIp(int32_t id, void* data) {
 
-    ESP_LOGI(TAG, "gotIP(%d, %p)", id, data);
+    ESP_LOGI(TAG, "gotIP(%ld, %p)", id, data);
 
-    tcpip_adapter_ip_info_t ethInfo = {};
-    tcpip_adapter_ip_info_t staInfo = {};
+    esp_netif_ip_info_t ethInfo = {};
+    esp_netif_ip_info_t  staInfo = {};
 
     if (data) {
         // It's a valid system event
@@ -96,13 +96,14 @@ MsgSlinger::_gotIp(int32_t id, void* data) {
         }
     } else {
         ESP_LOGI(TAG, "Startup - getting info for any interfaces already up");
-        if (tcpip_adapter_is_netif_up(TCPIP_ADAPTER_IF_ETH)) {
-            tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_ETH, &ethInfo);
-        }
-
-        if (tcpip_adapter_is_netif_up(TCPIP_ADAPTER_IF_STA)) {
-            tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &staInfo);
-        }
+        // TODO: Refactor this to new APIs - maybe moves to interface objects
+//        if (tcpip_adapter_is_netif_up(TCPIP_ADAPTER_IF_ETH)) {
+//            tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_ETH, &ethInfo);
+//        }
+//
+//        if (tcpip_adapter_is_netif_up(TCPIP_ADAPTER_IF_STA)) {
+//            tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &staInfo);
+//        }
     }
 
     ESP_LOGW(TAG, "Ethernet " IPSTR "  " IPSTR "  " IPSTR,
@@ -215,7 +216,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
     auto header = pMsg->readHeader();
     ESP_LOGD(TAG, "Read a msg header msgId=%d", header.id);
 
-    ESP_LOGD(TAG, "id=( %d ).size=%d  frameOffset=%d frameSize=%d",
+    ESP_LOGD(TAG, "id=( %d ).size%ldd  frameOffset=%ld frameSize=%d",
             header.id, header.msgSize, header.frameOffset, header.frameSize);
 
     if (header.frameOffset == 0) {
@@ -232,7 +233,7 @@ MsgSlinger::handleNetIn(Msg *pMsg) {
 
             // Allocate space for the whole message
             if (!pMsg->prepCapacity(header.msgSize + Msg::HEADER_SIZE)) {
-                ESP_LOGE(TAG, "Unable to prep a fragged message of size %d, dropping it", header.msgSize);
+                ESP_LOGE(TAG, "Unable to prep a fragged message of size %ld, dropping it", header.msgSize);
                 gSysMon.increment(COUNTER_MSG_LOST);
                 return;
             }

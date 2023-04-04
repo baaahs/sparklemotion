@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <tcpip_adapter.h>
+#include <esp_netif.h>
 #include <esp_log.h>
 
 class NetInterface;
@@ -18,7 +18,7 @@ public:
     virtual void netIntStart(NetInterface* interface) = 0;
     virtual void netIntStop(NetInterface* interface) = 0;
 
-    virtual void netIntGotAddr(NetInterface* interface, const tcpip_adapter_ip_info_t* info) = 0;
+    virtual void netIntGotAddr(NetInterface* interface, esp_netif_ip_info_t* info) = 0;
 };
 
 class NetInterface {
@@ -46,17 +46,17 @@ public:
     };
     virtual bool isDHCPEnabled() { return m_dhcpEnabled; }
 
-    virtual void staticIP(tcpip_adapter_ip_info_t* info) {
+    virtual void setIpInfo(esp_netif_ip_info_t *info) {
         if (!ensureInited()) return;
         if (!m_dhcpEnabled &&
-            info->ip.addr == m_staticIp.ip.addr &&
-            info->netmask.addr == m_staticIp.netmask.addr &&
-            info->gw.addr == m_staticIp.gw.addr) {
+            info->ip.addr == m_staticIpInfo.ip.addr &&
+            info->netmask.addr == m_staticIpInfo.netmask.addr &&
+            info->gw.addr == m_staticIpInfo.gw.addr) {
             return;
         }
 
         m_dhcpEnabled = false;
-        m_staticIp = *info;
+        m_staticIpInfo = *info;
 
         addressingChanged();
     }
@@ -67,7 +67,7 @@ protected:
 
     bool m_dhcpEnabled = true;
 
-    tcpip_adapter_ip_info_t m_staticIp;
+    esp_netif_ip_info_t m_staticIpInfo;
 
     NetInterfaceListener* m_listener = nullptr;
 
@@ -120,7 +120,7 @@ protected:
         m_listener->netIntStop(this);
     }
 
-    void tellListenerGotAddr(const tcpip_adapter_ip_info_t* info) {
+    void tellListenerGotAddr(esp_netif_ip_info_t* info) {
         if (!m_listener) return;
         m_listener->netIntGotAddr(this, info);
     };

@@ -48,6 +48,7 @@ bool WifiStaInterface::init() {
     ESP_LOGD(TAG, "WifiStaInterface init start");
 
     //Initialize NVS
+    // TODo: move nvs init to net transport
 
     // Because of a bug in the IDF as of July 3, we ALWAYS erase the flash right now. This seems to be
     // related to refactorings where they moved the wap supplicant code around and probably didn't
@@ -65,6 +66,12 @@ bool WifiStaInterface::init() {
 
     //////////////////////
 
+    // Change at 4.1 - we must create the default STA interface dynamically.
+    // Previously it was static.
+    m_netIf = esp_netif_create_default_wifi_sta();
+
+
+    // TODO: protect init as per AP
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     // This will call the tcpip_adapter init as well as the supplicant init
     if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_init(&cfg)) != ESP_OK) return false;
@@ -103,7 +110,7 @@ void WifiStaInterface::enableChanged() {
         }
 
         // Presume that the credentials have been set
-        result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(ESP_IF_WIFI_STA, &m_wifiConfig));
+        result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(static_cast<wifi_interface_t>(ESP_IF_WIFI_STA), &m_wifiConfig));
         if (result != ESP_OK) {
             m_isEnabled = false;
             return;
@@ -125,15 +132,15 @@ void WifiStaInterface::enableChanged() {
 
 void WifiStaInterface::addressingChanged() {
     if (m_dhcpEnabled) {
-        if (ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcpc_start(TCPIP_ADAPTER_IF_STA)) != ESP_OK) {
+        if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_dhcpc_start(m_netIf)) != ESP_OK) {
             m_dhcpEnabled = false;
         }
     } else {
         // Stop DHCP first or else you can't set the static ip
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcpc_stop(TCPIP_ADAPTER_IF_STA));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_dhcpc_stop(m_netIf));
 
         // Now set the info. Hopefully it's already been configured properly eh?
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &m_staticIp));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_set_ip_info(m_netIf, &m_staticIpInfo));
     }
 }
 
@@ -189,7 +196,7 @@ WifiStaInterface::_evtHandler(esp_event_base_t evBase, int32_t evId, void *evDat
         }
     } else if (evBase == IP_EVENT) {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *) evData;
-        const tcpip_adapter_ip_info_t *ip_info = &event->ip_info;
+        esp_netif_ip_info_t *ip_info = &event->ip_info;
 
         tellListenerGotAddr(ip_info);
     }

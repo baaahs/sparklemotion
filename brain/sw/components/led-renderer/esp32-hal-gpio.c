@@ -27,6 +27,10 @@
 #include "soc/gpio_struct.h"
 #include "soc/rtc_io_reg.h"
 
+#ifndef GPIO_PIN_COUNT
+#define GPIO_PIN_COUNT (40)
+#endif
+
 const int8_t esp32_adc2gpio[20] = {36, 37, 38, 39, 32, 33, 34, 35, -1, -1, 4, 0, 2, 15, 13, 12, 14, 27, 25, 26};
 
 const DRAM_ATTR esp32_gpioMux_t esp32_gpioMux[GPIO_PIN_COUNT]={
@@ -77,6 +81,7 @@ typedef void (*voidFuncPtrArg)(void*);
 typedef struct {
     voidFuncPtr fn;
     void* arg;
+    bool functional;
 } InterruptHandle_t;
 static InterruptHandle_t __pinInterruptHandlers[GPIO_PIN_COUNT] = {0,};
 
@@ -89,23 +94,23 @@ extern void IRAM_ATTR __pinMode(uint8_t pin, uint8_t mode)
         return;
     }
 
-    uint32_t rtc_reg = rtc_gpio_desc[pin].reg;
+    uint32_t rtc_reg = rtc_io_desc[pin].reg;
     if(mode == ANALOG) {
         if(!rtc_reg) {
             return;//not rtc pin
         }
         //lock rtc
         uint32_t reg_val = ESP_REG(rtc_reg);
-        if(reg_val & rtc_gpio_desc[pin].mux){
+        if(reg_val & rtc_io_desc[pin].mux){
             return;//already in adc mode
         }
         reg_val &= ~(
-                (RTC_IO_TOUCH_PAD1_FUN_SEL_V << rtc_gpio_desc[pin].func)
-                |rtc_gpio_desc[pin].ie
-                |rtc_gpio_desc[pin].pullup
-                |rtc_gpio_desc[pin].pulldown);
-        ESP_REG(RTC_GPIO_ENABLE_W1TC_REG) = (1 << (rtc_gpio_desc[pin].rtc_num + RTC_GPIO_ENABLE_W1TC_S));
-        ESP_REG(rtc_reg) = reg_val | rtc_gpio_desc[pin].mux;
+                (RTC_IO_TOUCH_PAD1_FUN_SEL_V << rtc_io_desc[pin].func)
+                |rtc_io_desc[pin].ie
+                |rtc_io_desc[pin].pullup
+                |rtc_io_desc[pin].pulldown);
+        ESP_REG(RTC_GPIO_ENABLE_W1TC_REG) = (1 << (rtc_io_desc[pin].rtc_num + RTC_GPIO_ENABLE_W1TC_S));
+        ESP_REG(rtc_reg) = reg_val | rtc_io_desc[pin].mux;
         //unlock rtc
         ESP_REG(DR_REG_IO_MUX_BASE + esp32_gpioMux[pin].reg) = ((uint32_t)2 << MCU_SEL_S) | ((uint32_t)2 << FUN_DRV_S) | FUN_IE;
         return;
@@ -114,13 +119,13 @@ extern void IRAM_ATTR __pinMode(uint8_t pin, uint8_t mode)
     //RTC pins PULL settings
     if(rtc_reg) {
         //lock rtc
-        ESP_REG(rtc_reg) = ESP_REG(rtc_reg) & ~(rtc_gpio_desc[pin].mux);
+        ESP_REG(rtc_reg) = ESP_REG(rtc_reg) & ~(rtc_io_desc[pin].mux);
         if(mode & PULLUP) {
-            ESP_REG(rtc_reg) = (ESP_REG(rtc_reg) | rtc_gpio_desc[pin].pullup) & ~(rtc_gpio_desc[pin].pulldown);
+            ESP_REG(rtc_reg) = (ESP_REG(rtc_reg) | rtc_io_desc[pin].pullup) & ~(rtc_io_desc[pin].pulldown);
         } else if(mode & PULLDOWN) {
-            ESP_REG(rtc_reg) = (ESP_REG(rtc_reg) | rtc_gpio_desc[pin].pulldown) & ~(rtc_gpio_desc[pin].pullup);
+            ESP_REG(rtc_reg) = (ESP_REG(rtc_reg) | rtc_io_desc[pin].pulldown) & ~(rtc_io_desc[pin].pullup);
         } else {
-            ESP_REG(rtc_reg) = ESP_REG(rtc_reg) & ~(rtc_gpio_desc[pin].pullup | rtc_gpio_desc[pin].pulldown);
+            ESP_REG(rtc_reg) = ESP_REG(rtc_reg) & ~(rtc_io_desc[pin].pullup | rtc_io_desc[pin].pulldown);
         }
         //unlock rtc
     }
@@ -241,16 +246,26 @@ static void IRAM_ATTR __onPinInterrupt()
     }
 }
 
-extern void __attachInterruptArg(uint8_t pin, voidFuncPtrArg userFunc, void * arg, int intr_type)
+extern void cleanupFunctional(void* arg);
+
+extern void __attachInterruptFunctionalArg(uint8_t pin, voidFuncPtrArg userFunc, void * arg, int intr_type, bool functional)
 {
     static bool interrupt_initialized = false;
-    
+
     if(!interrupt_initialized) {
         interrupt_initialized = true;
         esp_intr_alloc(ETS_GPIO_INTR_SOURCE, (int)ESP_INTR_FLAG_IRAM, __onPinInterrupt, NULL, &gpio_intr_handle);
     }
+
+    // if new attach without detach remove old info
+    if (__pinInterruptHandlers[pin].functional && __pinInterruptHandlers[pin].arg)
+    {
+    	cleanupFunctional(__pinInterruptHandlers[pin].arg);
+    }
     __pinInterruptHandlers[pin].fn = (voidFuncPtr)userFunc;
     __pinInterruptHandlers[pin].arg = arg;
+    __pinInterruptHandlers[pin].functional = functional;
+
     esp_intr_disable(gpio_intr_handle);
     if(esp_intr_get_cpu(gpio_intr_handle)) { //APP_CPU
         GPIO.pin[pin].int_ena = 1;
@@ -261,15 +276,26 @@ extern void __attachInterruptArg(uint8_t pin, voidFuncPtrArg userFunc, void * ar
     esp_intr_enable(gpio_intr_handle);
 }
 
+extern void __attachInterruptArg(uint8_t pin, voidFuncPtrArg userFunc, void * arg, int intr_type)
+{
+	__attachInterruptFunctionalArg(pin, userFunc, arg, intr_type, false);
+}
+
 extern void __attachInterrupt(uint8_t pin, voidFuncPtr userFunc, int intr_type) {
-    __attachInterruptArg(pin, (voidFuncPtrArg)userFunc, NULL, intr_type);
+    __attachInterruptFunctionalArg(pin, (voidFuncPtrArg)userFunc, NULL, intr_type, false);
 }
 
 extern void __detachInterrupt(uint8_t pin)
 {
     esp_intr_disable(gpio_intr_handle);
+    if (__pinInterruptHandlers[pin].functional && __pinInterruptHandlers[pin].arg)
+    {
+    	cleanupFunctional(__pinInterruptHandlers[pin].arg);
+    }
     __pinInterruptHandlers[pin].fn = NULL;
     __pinInterruptHandlers[pin].arg = NULL;
+    __pinInterruptHandlers[pin].functional = false;
+
     GPIO.pin[pin].int_ena = 0;
     GPIO.pin[pin].int_type = 0;
     esp_intr_enable(gpio_intr_handle);
@@ -280,6 +306,6 @@ extern void pinMode(uint8_t pin, uint8_t mode) __attribute__ ((weak, alias("__pi
 extern void digitalWrite(uint8_t pin, uint8_t val) __attribute__ ((weak, alias("__digitalWrite")));
 extern int digitalRead(uint8_t pin) __attribute__ ((weak, alias("__digitalRead")));
 extern void attachInterrupt(uint8_t pin, voidFuncPtr handler, int mode) __attribute__ ((weak, alias("__attachInterrupt")));
-extern void attachInterruptArg(uint8_t pin, voidFuncPtr handler, void * arg, int mode) __attribute__ ((weak, alias("__attachInterruptArg")));
+extern void attachInterruptArg(uint8_t pin, voidFuncPtrArg handler, void * arg, int mode) __attribute__ ((weak, alias("__attachInterruptArg")));
 extern void detachInterrupt(uint8_t pin) __attribute__ ((weak, alias("__detachInterrupt")));
 

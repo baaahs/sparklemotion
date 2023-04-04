@@ -1,0 +1,5 @@
+dependencies:
+  # espressif/jsmn: "*"
+  espressif/led_strip: "*"
+  idf: ">=5.0"
+
