@@ -5,6 +5,9 @@
 #include "wifi_ap_interface.h"
 #include <string.h>
 
+// For MACSTR
+#include "rom/ets_sys.h"
+
 #define TAG TAG_NET
 
 ////////////////////////////////////////////////////////////
@@ -22,6 +25,9 @@ bool WifiApInterface::init() {
 
     ESP_LOGD(TAG, "WifiApInterface init start");
 
+    // This is probably not cool to call multiple times, but there shouldn't be
+    // multiple instances of this class now should there!
+    m_netIf = esp_netif_create_default_wifi_ap();
 
     // Since it's not cool to call esp_wifi_init() more than once we use get_mode
     // as a check to see if we need to init or not.
@@ -30,6 +36,7 @@ bool WifiApInterface::init() {
     if (modeGetResult == ESP_ERR_WIFI_NOT_INIT) {
         // We can fix this!
         wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+        cfg.nvs_enable = false;
         // This will call the tcpip_adapter init as well as the supplicant init
         if (ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_init(&cfg)) != ESP_OK) return false;
     }
@@ -38,11 +45,11 @@ bool WifiApInterface::init() {
     // There is also a LOST_IP event
 
     // Set our static IP address
-    m_staticIp.ip.addr = 0x0A0A0A0A; // 10.10.10.10
-    m_staticIp.netmask.addr = 0x0AFFFFFF; // 255.255.255.10 - because various bits of the esp code assume this. Also, LSB not FTW :(
-    m_staticIp.gw.addr = 0x0A0A0A0A;
+    m_staticIpInfo.ip.addr = 0x0A0A0A0A; // 10.10.10.10
+    m_staticIpInfo.netmask.addr = 0x0AFFFFFF; // 255.255.255.10 - because various bits of the esp code assume this. Also, LSB not FTW :(
+    m_staticIpInfo.gw.addr = 0x0A0A0A0A;
     m_dhcpEnabled = false;
-//    addressingChanged();
+
 
     ESP_LOGD(TAG, "WifiApInterface init done");
 
@@ -76,14 +83,20 @@ void WifiApInterface::enableChanged() {
         // Always setup our config here because it's pretty darn static. We might want
         // to make something like the IP range a configurable value in the future. For now
         // don't worry about it.
+        // Since set_config takes a type of config to set I don't think we are in any danger
+        // over overwriting the STA config. So in other words we can just set our values
+        // without first fetching existing ones.
         m_wifiConfig = {};
         uint8_t* mac = GlobalConfig.mac();
         snprintf((char*)m_wifiConfig.ap.ssid, sizeof(m_wifiConfig.ap.ssid)-1, "brain_%2x%2x%2x", mac[3], mac[4], mac[5]);
         m_wifiConfig.ap.ssid_len = strlen((char*)m_wifiConfig.ap.ssid);
         m_wifiConfig.ap.authmode = WIFI_AUTH_OPEN;
+
+        // See how this is really small? That's because each connection uses a good amount of resources.
+        // In other words, can't use an ESP32 as a general gateway ;)
         m_wifiConfig.ap.max_connection = 4;
 
-        result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(ESP_IF_WIFI_AP, &m_wifiConfig));
+        result = ESP_ERROR_CHECK_WITHOUT_ABORT(esp_wifi_set_config(static_cast<wifi_interface_t>(ESP_IF_WIFI_AP), &m_wifiConfig));
         if (result != ESP_OK) {
             m_isEnabled = false;
             return;
@@ -116,18 +129,18 @@ void WifiApInterface::addressingChanged() {
         ESP_LOGE(TAG, "Can not enable DHCP on the AP interface. Ignoring");
         m_dhcpEnabled = false;
     } else {
-        tcpip_adapter_dhcp_status_t status;
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcps_get_status(TCPIP_ADAPTER_IF_AP, &status));
+        esp_netif_dhcp_status_t status;
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_dhcps_get_status(m_netIf, &status));
         ESP_LOGI(TAG, "AP dhcps status = %d", status);
 
         // Stop DHCP server first or else you can't set the static ip
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_dhcps_stop(m_netIf));
 
         // Now set the info. Hopefully it's already been configured properly eh?
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_AP, &m_staticIp));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_set_ip_info(m_netIf, &m_staticIpInfo));
 
         // Now off course you need to restart that server
-        ESP_ERROR_CHECK_WITHOUT_ABORT(tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_netif_dhcps_start(m_netIf));
     }
 }
 

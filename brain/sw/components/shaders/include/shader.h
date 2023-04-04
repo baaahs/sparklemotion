@@ -8,8 +8,9 @@
 #include "led-shader.h"
 #include "shader-desc.h"
 
-#define ARDUINO_ARCH_ESP32
-#include "NeoPixelBus.h"
+//#define ARDUINO_ARCH_ESP32
+//#include "NeoPixelBus.h"
+#include "RgbColor.h"
 
 typedef union Color {
     uint32_t argb;

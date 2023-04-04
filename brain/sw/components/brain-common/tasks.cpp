@@ -7,7 +7,7 @@
 const BrainTasks DefaultBrainTasks;
 
 BaseType_t
-TaskDef::createTask(TaskFunction_t fn, void * const parameters, TaskHandle_t * const taskHandle) {
+TaskDef::createTask(TaskFunction_t fn, void * const parameters, TaskHandle_t * const taskHandle) const {
     return xTaskCreate(fn, name, stack, parameters, priority, taskHandle);
 }
 

@@ -12,7 +12,7 @@
 #include "msg.h"
 #include "msg_handler.h"
 
-#include "tcpip_adapter.h"
+#include "esp_netif.h"
 
 class IpPort;
 

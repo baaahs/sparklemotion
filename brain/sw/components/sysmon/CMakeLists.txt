@@ -5,6 +5,6 @@ set(COMPONENT_SRCS
         )
 
 
-set(COMPONENT_REQUIRES brain-common app_update)
+set(COMPONENT_REQUIRES brain-common app_update esp_timer)
 
 register_component()

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#define JSMN_HEADER
 #include <jsmn.h>
 
 #define STA_SSID_MAX_LEN 32

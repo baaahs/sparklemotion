@@ -38,6 +38,9 @@ protected:
 
 private:
     wifi_config_t m_wifiConfig;
+
+    esp_netif_t* m_netIf;
+
     bool m_started = false;
     bool m_connected = false;
     int m_numFailedConnects;

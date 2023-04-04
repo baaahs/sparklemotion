@@ -21,7 +21,21 @@ void HttpServer::start() {
     ESP_ERROR_CHECK_WITHOUT_ABORT(m_firmware.registerHandlers(*this));
     ESP_ERROR_CHECK_WITHOUT_ABORT(m_config.registerHandlers(*this));
 
+    ESP_ERROR_CHECK_WITHOUT_ABORT(m_time.registerHandlers(*this));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(m_words.registerHandlers(*this));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(m_color.registerHandlers(*this));
+
     // Because SPIFFS registers /* it has to be last or the other
     // registrations will fail.
     ESP_ERROR_CHECK_WITHOUT_ABORT(m_spiffs.registerHandlers(*this));
+}
+
+void
+HttpServer::setWordsHandlerListener(WordsHandlerListener* listener) {
+    m_words.setWordsHandlerListener(listener);
+}
+
+void
+HttpServer::setColorHandlerDelegate(ColorHandlerDelegate* delegate) {
+    m_color.setColorHandlerDelegate(delegate);
 }

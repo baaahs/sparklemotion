@@ -7,8 +7,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "esp_ota_ops.h"
-
+#include <esp_ota_ops.h>
+#include <esp_mac.h>
 
 #define TAG TAG_COMMON
 
@@ -272,7 +272,7 @@ uint32_t hashStr(const char* s) {
 }
 
 uint32_t BrainConfig::versionHash() {
-    auto desc = esp_ota_get_app_description();
+    auto desc = esp_app_get_description();
     if (!desc) {
         ESP_LOGE(TAG, "Couldn't get a real version hash. Odd");
         return 0xFEEDFACE;

@@ -1,25 +1,39 @@
 
+#pragma once
+
 // We need this not really ported to plain IDF library
 // so we pretend that we are in the arduino world
-#define ARDUINO_ARCH_ESP32
-#include "NeoPixelBus.h"
+//#define ARDUINO_ARCH_ESP32
+//#include "NeoPixelBus.h"
 
 #include "brain_common.h"
 #include "freertos/semphr.h"
+#include <string.h>
 
 #include "time-base.h"
 #include "esp_log.h"
 
 #include "led-shader.h"
 
+#include <led_strip.h>
+#include "RgbColor.h"
+
 
 class LEDShaderFiller : public LEDShader {
 public:
     LEDShaderFiller() :
-        m_pos(0),
-        m_colorPrimary(255, 255, 0),
-        m_colorSecondary(0, 255, 255)
-        { }
+        m_pos(0)
+//        m_colorPrimary(255, 255, 0),
+//        m_colorSecondary(0, 255, 255)
+        {
+            m_colorPrimary[0] = 255;
+            m_colorPrimary[1] = 255;
+            m_colorPrimary[2] = 0;
+
+            m_colorSecondary[0] = 0;
+            m_colorSecondary[1] = 255;
+            m_colorSecondary[2] = 255;
+        }
 
     void beginShade(LEDShaderContext* pCtx) override {
         m_pCtx = pCtx;
@@ -50,12 +64,20 @@ private:
     LEDShaderContext* m_pCtx;
     uint16_t m_pos;
 
-    RgbColor m_colorPrimary;
-    RgbColor m_colorSecondary;
+    uint8_t m_colorPrimary[3];
+    uint8_t m_colorSecondary[3];
 };
+
+
 
 class LEDRenderer {
 public:
+#ifdef BRAIN_USE_RGBW
+    const uint8_t gPixelWidth = 4;
+#else
+    const uint8_t gPixelWidth = 3;
+#endif
+
     LEDRenderer(TimeBase& timeBase, uint16_t pixelCount);
 
     void start(TaskDef show, TaskDef render);
@@ -66,13 +88,14 @@ public:
 //     */
 //    void startLocalRenderTask();
 
+    // TODO: Protect setting the shader against the render semaphore
     void setShader(LEDShader* shader) { m_shader = shader; }
     void render();
 
     void enableLocalRenderLoop(bool enable) { m_localRenderEnabled = enable; }
 
     void setBrightness(uint8_t brightness) { m_nBrightness = brightness; }
-    uint16_t getNumPixels() { return m_pixels.PixelCount(); }
+    uint16_t getNumPixels() { return m_pixelCount; }
 
     /**
      * Private function to be called only be a the local glue function
@@ -92,8 +115,12 @@ private:
     uint8_t m_nBrightness;
     bool m_localRenderEnabled = true;
 
-    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
-    NeoBuffer<NeoBufferMethod<BRAIN_NEO_COLORFEATURE>> m_buffer;
+//    NeoPixelBus<BRAIN_NEO_COLORFEATURE, NeoEsp32I2s0Ws2812xMethod> m_pixels;
+//    NeoBuffer<NeoBufferMethod<BRAIN_NEO_COLORFEATURE>> m_buffer;
+    led_strip_handle_t m_ledStrip;
+    uint16_t m_pixelCount;
+
+    uint8_t* m_pixels;
 
     SemaphoreHandle_t m_hPixelsAccess;
     LEDShader* m_shader;

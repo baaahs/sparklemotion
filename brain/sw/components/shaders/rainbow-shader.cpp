@@ -1,6 +1,8 @@
 #include "rainbow-shader.h"
 
 #include "esp_log.h"
+#include "math.h"
+
 #define TAG "#shader"
 
 const RgbColor Palette_RYB[] = {
@@ -75,7 +77,7 @@ RainbowShader::begin(Msg *pMsg, LEDShaderContext* pCtx) {
 void
 RainbowShader::apply(uint16_t pixelIndex, uint8_t *colorOut, uint8_t *colorIn) {
 //    memcpy((void*)colorOut, (void*)&m_color, 3);
-    float paletteProgress = m_pCtx->progress + (pixelIndex / 32.0f);
+    float paletteProgress = m_pCtx->progress + (pixelIndex / (float)m_pCtx->numPixels);
     if (paletteProgress > 1.0f) {
         paletteProgress -= 1.0f;
     }

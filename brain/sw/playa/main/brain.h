@@ -27,6 +27,12 @@ public:
 
     void maybeSendHello();
 
+    /**
+     * Private function to be called only by the local glue function
+     */
+    void _helloTask();
+
+
 private:
     char m_brainId[8];
 

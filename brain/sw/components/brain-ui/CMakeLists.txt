@@ -8,6 +8,6 @@ set(COMPONENT_SRCS
         )
 
 
-set(COMPONENT_REQUIRES brain-common)
+set(COMPONENT_REQUIRES brain-common esp_event esp_timer)
 
 register_component()

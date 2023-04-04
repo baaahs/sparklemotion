@@ -11,6 +11,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
 #include "esp_https_ota.h"
+#include "esp_mac.h"
 
 #define MAX_URL_SIZE 512
 #define MAX_OTA_SECONDS 300
@@ -18,6 +19,10 @@
 static const uint16_t BRAIN_PORT = 8003;
 
 static const char* TAG = TAG_BRAIN;
+
+void static glue_helloTask(void* pvParameters) {
+    ((Brain*)pvParameters)->_helloTask();
+}
 
 Brain::Brain() :
     m_ledRenderer(m_timeBase, m_pixelCount)
@@ -155,6 +160,9 @@ esp_err_t ota_event(esp_http_client_event_t *evt)
         case HTTP_EVENT_DISCONNECTED:
             ESP_LOGD(TAG, "HTTP_EVENT_DISCONNECTED");
             break;
+        case HTTP_EVENT_REDIRECT:
+            ESP_LOGD(TAG, "HTTP_EVENT_REDIRECT");
+            break;
     }
     return ESP_OK;
 }
@@ -171,7 +179,7 @@ Brain::msgUseFirmware(Msg *pMsg){
 
     if (m_otaStartedAt.tv_sec > 0) {
         auto diff = now.tv_sec - m_otaStartedAt.tv_sec;
-        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %ld secs", diff);
+        ESP_LOGW(TAG, "Got additional OTA request but already in progress for %lld secs", diff);
 
         if (diff < MAX_OTA_SECONDS) {
             ESP_LOGW(TAG, "Max allowable OTA seconds is %d so we will ignore this new request", MAX_OTA_SECONDS);
@@ -290,7 +298,7 @@ Brain::maybeSendHello()
 void
 Brain::sendHello(const IpPort &port) {
     ESP_LOGW(TAG, "Send hello from %s", m_brainId);
-    auto desc = esp_ota_get_app_description();
+    auto desc = esp_app_get_description();
 
     Msg *pHello = new BrainHelloMsg(m_brainId, nullptr, desc->version, desc->idf_ver);
     pHello->dest = port;
@@ -320,16 +328,29 @@ void Brain::startSecondStageBoot() {
     m_msgSlinger.registerHandler(this);
     m_msgSlinger.start(BRAIN_PORT, DefaultBrainTasks.netInput, DefaultBrainTasks.netOutput);
 
-    TimerHandle_t hTimer = xTimerCreate("say hello", pdMS_TO_TICKS(5000), pdTRUE, this, maybe_send_hello);
-    if (!hTimer) {
-        ESP_LOGE(TAG, "Failed to create hello timer");
-        return;
+    // Disable saying hello
+//    TimerHandle_t hTimer = xTimerCreate("say hello", pdMS_TO_TICKS(5000), pdTRUE, this, maybe_send_hello);
+//    if (!hTimer) {
+//        ESP_LOGE(TAG, "Failed to create hello timer");
+//        return;
+//    }
+//
+//    if (xTimerStart(hTimer, 0) != pdPASS) {
+//        ESP_LOGE(TAG, "failed to start timer");
+//        return;
+//    }
+    //////////////////////////////////////////
+    // The hello task
+    TaskHandle_t tHandle = nullptr;
+    BaseType_t tcResult = DefaultBrainTasks.hello.createTask(glue_helloTask, this, &tHandle);
+
+    if (tcResult != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create hello task = %d", tcResult);
+    } else {
+        ESP_LOGI(TAG, "Hello task started");
     }
 
-    if (xTimerStart(hTimer, 0) != pdPASS) {
-        ESP_LOGE(TAG, "failed to start timer");
-        return;
-    }
+    /////
 
     m_shadeTree.start();
     ESP_LOGE(TAG, "m_shadeTree started");
@@ -344,10 +365,10 @@ void Brain::startSecondStageBoot() {
     // Some initial debugging stuff
     ESP_LOGE(TAG, "------- Brain Start ---------");
     ESP_LOGE(TAG, "id = %s", m_brainId);
-    ESP_LOGE(TAG, "xPortGetTickRateHz = %d", xPortGetTickRateHz());
-    ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %d", pdMS_TO_TICKS(1000));
+    ESP_LOGE(TAG, "xPortGetTickRateHz = %lu", xPortGetTickRateHz());
+    ESP_LOGE(TAG, "pdMS_TO_TICKS(1000) = %lu", pdMS_TO_TICKS(1000));
     ESP_LOGE(TAG, "getFPS() = %d", m_timeBase.getFPS());
-    ESP_LOGE(TAG, "getFrameDuration() = %d", m_timeBase.getFrameDuration());
+    ESP_LOGE(TAG, "getFrameDuration() = %ld", m_timeBase.getFrameDuration());
 
     // Do this last!
     m_httpServer.start();
@@ -363,6 +384,23 @@ void Brain::stopEverythingForOTA() {
     m_ledRenderer.stop();
     // m_httpServer.stop();
 
+}
+
+void
+Brain::_helloTask() {
+    // Initialization
+    // Task actions
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = 5 * xPortGetTickRateHz();
+
+    while(!otaStarted()) {
+        sendHello(IpPort::BroadcastPinky);
+        vTaskDelayUntil( &xLastWakeTime, xFrequency );
+    }
+    ESP_LOGW(TAG, "Hello task stopped because otaStarted");
+
+    // And then clean ourselves up
+    vTaskDelete(nullptr);
 }
 
 

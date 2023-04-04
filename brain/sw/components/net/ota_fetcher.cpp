@@ -99,8 +99,8 @@ void OtaFetcher::_fetchTask() {
 
         ESP_LOGI(TAG, "      type = %d", m_updatePartition->type);
         ESP_LOGI(TAG, "   subtype = %d", m_updatePartition->subtype);
-        ESP_LOGI(TAG, "   address = 0x%x", m_updatePartition->address);
-        ESP_LOGI(TAG, "      size = %d", m_updatePartition->size);
+        ESP_LOGI(TAG, "   address = 0x%lx", m_updatePartition->address);
+        ESP_LOGI(TAG, "      size = %ld", m_updatePartition->size);
         ESP_LOGI(TAG, "     label = %s", m_updatePartition->label);
     }
 
@@ -169,7 +169,7 @@ void OtaFetcher::_fetchTask() {
     gettimeofday(&m_endTime, nullptr);
 
     time_t elapsed = m_endTime.tv_sec - m_startTime.tv_sec;
-    ESP_LOGE(TAG, "Read complete. %d bytes in %ld seconds = %ld bytes/sec",
+    ESP_LOGE(TAG, "Read complete. %d bytes in %lld seconds = %lld bytes/sec",
             total, elapsed, total / elapsed);
 
     esp_http_client_close(m_httpHandle);

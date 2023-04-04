@@ -6,10 +6,10 @@
 #include "net_priv.h"
 
 #include <esp_err.h>
-#include <tcpip_adapter.h>
+#include <esp_netif.h>
 #include <driver/gpio.h>
-#include <driver/periph_ctrl.h>
-#include <hal/emac.h>
+//#include <driver/periph_ctrl.h>
+//#include <hal/emac.h>
 
 
 ////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ NetTransport::NetTransport() {
 void
 NetTransport::start(TaskDef taskDef) {
     // Initialize the tcpip adapter before anyone else does.
-    tcpip_adapter_init();
+    esp_netif_init();
 
     // Create our task which will register various event listeners
     auto result = taskDef.createTask(glue_interfaceTask, this, &m_hInterfaceTask);
@@ -92,6 +92,7 @@ NetTransport::_interfaceTask() {
     ESP_LOGE(TAG, "Starting network drivers");
     reconfigure();
 
+#if BRAIN_ETHERNET_ENABLED
     vTaskDelay(pdMS_TO_TICKS(20000));
 
     ESP_LOGE(TAG, "Checking for ethernet link up");
@@ -103,6 +104,7 @@ NetTransport::_interfaceTask() {
     } else {
         ESP_LOGE(TAG, "Ethernet up - cool");
     }
+#endif // BRAIN_ETHERNET_ENABLED
 
 //    vTaskDelay(pdMS_TO_TICKS(1000));
 //
@@ -128,7 +130,7 @@ NetTransport::_interfaceTask() {
 
 void
 NetTransport::netIntLinkUp(NetInterface *interface) {
-    ESP_LOGI(TAG, "(task=%s) (%s) Link up", pcTaskGetTaskName(nullptr), interface->name());
+    ESP_LOGI(TAG, "(task=%s) (%s) Link up", pcTaskGetName(nullptr), interface->name());
 
     if (interface == m_pEth) {
         m_ethUp = true;
@@ -137,7 +139,7 @@ NetTransport::netIntLinkUp(NetInterface *interface) {
 
 void
 NetTransport::netIntLinkDown(NetInterface *interface) {
-    ESP_LOGI(TAG, "(task=%s) (%s) Link down", pcTaskGetTaskName(nullptr), interface->name());
+    ESP_LOGI(TAG, "(task=%s) (%s) Link down", pcTaskGetName(nullptr), interface->name());
 
     if (interface == m_pEth) {
         m_ethUp = false;
@@ -146,18 +148,18 @@ NetTransport::netIntLinkDown(NetInterface *interface) {
 
 void
 NetTransport::netIntStart(NetInterface *interface) {
-    ESP_LOGI(TAG, "(task=%s) (%s) Start", pcTaskGetTaskName(nullptr), interface->name());
+    ESP_LOGI(TAG, "(task=%s) (%s) Start", pcTaskGetName(nullptr), interface->name());
 }
 
 void
 NetTransport::netIntStop(NetInterface *interface) {
-    ESP_LOGI(TAG, "(task=%s) (%s) Stop", pcTaskGetTaskName(nullptr), interface->name());
+    ESP_LOGI(TAG, "(task=%s) (%s) Stop", pcTaskGetName(nullptr), interface->name());
 }
 
 void
-NetTransport::netIntGotAddr(NetInterface *interface, const tcpip_adapter_ip_info_t *info) {
+NetTransport::netIntGotAddr(NetInterface *interface, esp_netif_ip_info_t *info) {
     ESP_LOGI(TAG, "(task=%s) (%s) Got address, ip " IPSTR ", mask " IPSTR ", gw " IPSTR,
-            pcTaskGetTaskName(nullptr), interface->name(),
+             pcTaskGetName(nullptr), interface->name(),
             IP2STR(&info->ip), IP2STR(&info->ip), IP2STR(&info->ip));
 }
 
@@ -182,12 +184,19 @@ NetTransport::reconfigure() {
 #if BRAIN_ETHERNET_ENABLED
     eth();
     m_pEth->setEnabled(true);
+
+
 #endif
 
-//    wifiSta();
-//    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
-//    m_pWifiSta->setEnabled(true);
-//
-//    wifiAp();
-//    m_pWifiAp->setEnabled(true);
+#if BRAIN_WIFI_ENABLED
+    // Ensure that the STA interface exists and then
+    // configure it
+    wifiSta();
+    m_pWifiSta->setCredentials(GlobalConfig.staSsid(), GlobalConfig.staPass());
+    m_pWifiSta->setEnabled(true);
+
+    // Ensure the AP interface exists and then enable it
+    wifiAp();
+    m_pWifiAp->setEnabled(true);
+#endif // BRAIN_WIFI_ENABLED
 }

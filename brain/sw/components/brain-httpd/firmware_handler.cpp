@@ -118,8 +118,8 @@ esp_err_t FirmwareHandler::_putHandler(httpd_req_t *req) {
 
     ESP_LOGI(TAG, "      type = %d",   updatePartition->type);
     ESP_LOGI(TAG, "   subtype = %d",   updatePartition->subtype);
-    ESP_LOGI(TAG, "   address = 0x%x", updatePartition->address);
-    ESP_LOGI(TAG, "      size = %d",   updatePartition->size);
+    ESP_LOGI(TAG, "   address = 0x%lx", updatePartition->address);
+    ESP_LOGI(TAG, "      size = %ld",   updatePartition->size);
     ESP_LOGI(TAG, "     label = %s",   updatePartition->label);
 
     if (!req->sess_ctx) {

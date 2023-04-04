@@ -5,6 +5,9 @@
 #include "esp_log.h"
 #define TAG "#shader"
 
+#define PI 3.1415926535897932384626433832795
+
+
 SineWaveShader::SineWaveShader(Surface *surface, Msg *msg) : Shader(surface, msg) {
     // No additional bytes of configuration
 }

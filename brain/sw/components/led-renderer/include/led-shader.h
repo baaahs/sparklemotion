@@ -17,7 +17,13 @@
 struct LEDShaderContext {
     uint16_t numPixels;
     float progress;
+
+    // This braintime thing is broken. Use the tvNow field if you
+    // want anything to run very long
     braintime_t now;
+
+    timeval tvNow;
+    uint32_t msNow;
 };
 
 /**
@@ -37,4 +43,6 @@ public:
     virtual void beginShade(LEDShaderContext* pCtx) = 0;
     virtual void Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) = 0;
     virtual void endShade() = 0;
+
+    bool m_enabled = true;
 };

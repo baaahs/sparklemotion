@@ -3,7 +3,7 @@
 //
 
 #include <stdint.h>
-#include <esp_event.h>
+#include <esp_event_base.h>
 
 ESP_EVENT_DECLARE_BASE(BRAIN_UI_BASE);
 
@@ -34,4 +34,8 @@ struct BrainUiEvent{
     }
 
     void post();
+
+    bool isLong() {
+        return modifiers & BrainUiEvent::Long;
+    }
 };

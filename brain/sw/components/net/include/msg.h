@@ -13,7 +13,8 @@
 #include <stdint.h>
 #include <esp_types.h>
 #include <sys/param.h>
-#include <internal/RgbColor.h>
+//#include <internal/RgbColor.h>
+#include "RgbColor.h"
 
 #include "ip_port.h"
 #include <brain_common.h>

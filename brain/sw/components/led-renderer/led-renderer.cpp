@@ -7,16 +7,17 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/timers.h>
 
+
 LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
-    m_pixels(pixelCount, BRAIN_GPIO_PIXEL_CH1),
-    m_buffer(pixelCount, 1, nullptr),
+//    m_pixels(pixelCount, BRAIN_GPIO_PIXEL_CH1),
+//    m_buffer(pixelCount, 1, nullptr),
+    m_pixelCount(pixelCount),
     m_timeBase(timeBase)
 {
-    // Start with an empty buffer
-    m_buffer.ClearTo(BRAIN_POWER_ON_COLOR);
-
-    m_pixels.Begin();
-
+//    // Start with an empty buffer
+//    m_buffer.ClearTo(BRAIN_POWER_ON_COLOR);
+//
+//    m_pixels.Begin();
     m_nBrightness = BRAIN_DEFAULT_BRIGHTNESS;
 }
 
@@ -35,6 +36,36 @@ LEDRenderer::start(TaskDef show, TaskDef render) {
     BaseType_t tcResult;
 
     ESP_LOGI(TAG, "Starting ledren task...");
+
+    // Moved this initialization into the task start because doing a small malloc during
+    // the constructor is failing
+
+    /* LED strip initialization with the GPIO and pixels number*/
+    led_strip_config_t strip_config = {
+            .strip_gpio_num = BRAIN_GPIO_PIXEL_CH1, // The GPIO that connected to the LED strip's data line
+            .max_leds = m_pixelCount, // The number of LEDs in the strip,
+            .led_pixel_format = LED_PIXEL_FORMAT_GRB, // Pixel format of your LED strip
+            .led_model = LED_MODEL_WS2812, // LED strip model
+            .flags = {.invert_out = false}, // whether to invert the output signal (useful when your hardware has a level inverter)
+    };
+
+    led_strip_rmt_config_t rmt_config = {
+            .clk_src = RMT_CLK_SRC_DEFAULT, // different clock source can lead to different power consumption
+            .resolution_hz = 10 * 1000 * 1000, // 10MHz
+            .mem_block_symbols = 0, // Use default value
+            .flags = {.with_dma = false}, // whether to enable the DMA feature
+    };
+    ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &m_ledStrip));
+
+    //m_pixels = (uint8_t *)malloc(m_pixelCount & gPixelWidth);
+    m_pixels = new uint8_t[m_pixelCount * gPixelWidth];
+    if (!m_pixels) {
+        ESP_LOGE(TAG, "Failed to allocate %d bytes for pixel buffer!", m_pixelCount * gPixelWidth);
+    }
+
+
+
+
 
     // Create our frame blt lock
     m_hPixelsAccess = xSemaphoreCreateBinary();
@@ -121,8 +152,7 @@ LEDRenderer::_showTask() {
         // ESP_LOGI(TAG, "Show!");
         gSysMon.endTiming(TIMING_SHOW_OUTPUTS);
         gSysMon.startTiming(TIMING_SHOW_OUTPUTS);
-        m_pixels.Show();
-
+        ESP_ERROR_CHECK_WITHOUT_ABORT(led_strip_refresh(m_ledStrip));
         xSemaphoreGive(m_hPixelsAccess);
     }
 
@@ -137,10 +167,17 @@ LEDRenderer::render() {
     gSysMon.startTiming(TIMING_RENDER);
 
     // Not that this should change, but maybe???
-    m_context.numPixels = m_buffer.PixelCount();
+    m_context.numPixels = m_pixelCount;
 
     // The current time, which probably shouldn't be used in favor of .progress but still, be nice
     m_context.now = m_timeBase.currentTime();
+
+    // The m_context time stuff will wrap and do bad things. People will
+    // want to use this tvNow value instead. This stuff needs to be carefully
+    // examined and fixed!
+    // TODO: Rework all the time stuff
+    gettimeofday(&m_context.tvNow, nullptr);
+    m_context.msNow = (m_context.tvNow.tv_sec * 1000) + (m_context.tvNow.tv_usec / 1000);
 
     // Render into all the pixels
     if (m_shader) {
@@ -152,44 +189,51 @@ LEDRenderer::render() {
         // by using our own functional approach to shaders where we loop
         // through a tree structure to calculate each output value
 
-        // Rather than forcing the shader to detect the beginning by indexPixel == 0
-        const uint16_t INTERVAL_BASE = 1000;
-        uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/1000, 1 * USEC_IN_SEC/1000, INTERVAL_BASE);
-        m_context.progress = ((float)intPos) / (float)INTERVAL_BASE;
+//        const uint16_t INTERVAL_BASE = 1000;
+//        uint16_t intPos = m_timeBase.posInInterval(m_timeBase.currentTime()/1000, 1 * USEC_IN_SEC/1000, INTERVAL_BASE);
+//        m_context.progress = ((float)intPos) / (float)INTERVAL_BASE;
+        // TODO: Remove this from the render context
+        m_context.progress = 0.5f;
 
+        // Rather than forcing the shader to detect the beginning by indexPixel == 0
         m_shader->beginShade(&m_context);
         // ESP_LOGI(TAG, "time=%d, intPos = %d  progress=%f", m_timeBase.currentTime(), intPos, progress);
 
-        m_buffer.Render(m_buffer, *m_shader);
+        //m_buffer.Render(m_buffer, *m_shader);
+        uint8_t* cursor = m_pixels;
+        for (uint16_t ix = 0; ix < m_pixelCount; ix++) {
+            m_shader->Apply(ix, cursor, cursor);
+            cursor += 3;
+        }
 
         // We used to implement brightness by calling Render a second time on the same buffer.
         // However, that is inefficient because if you are using a non-RGB color feature you would
         // have to un-apply the feature since Rendering automatically applies it back. That's a waste
         // so we do this more efficient thing instead.
-        if (m_nBrightness != 255) {
-            NeoBufferContext<BRAIN_NEO_COLORFEATURE> context = m_buffer;
-            uint8_t* pCursor = context.Pixels;
-            uint8_t* pEnd = pCursor + context.SizePixels;
-            while(pCursor != pEnd) {
-                uint16_t value = *pCursor;
-                *(pCursor++) = (value * m_nBrightness) >> 8;
-            }
-        }
+//        if (m_nBrightness != 255) {
+//            NeoBufferContext<BRAIN_NEO_COLORFEATURE> context = m_buffer;
+//            uint8_t* pCursor = context.Pixels;
+//            uint8_t* pEnd = pCursor + context.SizePixels;
+//            while(pCursor != pEnd) {
+//                uint16_t value = *pCursor;
+//                *(pCursor++) = (value * m_nBrightness) >> 8;
+//            }
+//        }
 
         // Apply gamma correction.
-        {
-            NeoBufferContext<BRAIN_NEO_COLORFEATURE> buf = m_buffer;
-            uint8_t *pCursor = buf.Pixels;
-            uint8_t *pEnd = pCursor + buf.SizePixels;
-            uint32_t pixelIndex = 0;
-            while (pCursor != pEnd) {
-                for (int i = 0; i < BRAIN_NEO_COLORFEATURE::PixelSize; i++) {
-                    uint8_t corrected = Gamma::Correct(*pCursor, m_frameNumber, pixelIndex);
-                    *(pCursor++) = corrected;
-                }
-                pixelIndex++;
-            }
-        }
+//        {
+//            NeoBufferContext<BRAIN_NEO_COLORFEATURE> buf = m_buffer;
+//            uint8_t *pCursor = buf.Pixels;
+//            uint8_t *pEnd = pCursor + buf.SizePixels;
+//            uint32_t pixelIndex = 0;
+//            while (pCursor != pEnd) {
+//                for (int i = 0; i < BRAIN_NEO_COLORFEATURE::PixelSize; i++) {
+//                    uint8_t corrected = Gamma::Correct(*pCursor, m_frameNumber, pixelIndex);
+//                    *(pCursor++) = corrected;
+//                }
+//                pixelIndex++;
+//            }
+//        }
 
         m_shader->endShade();
 
@@ -200,6 +244,9 @@ LEDRenderer::render() {
 
     gSysMon.endTiming(TIMING_RENDER);
 
+    // Safety valve in case we never allocated the pixel buffer
+    if (!m_pixels) return;
+
     // Don't want to block a rendering task in case the blitter task has gone upside down
     // ESP_LOGI(TAG, "Getting pixel access to blt");
     if (xSemaphoreTake(m_hPixelsAccess, pdMS_TO_TICKS(500)) != pdTRUE) {
@@ -208,8 +255,34 @@ LEDRenderer::render() {
     }
 
     // ESP_LOGI(TAG, "Doing Blt");
-    m_buffer.Blt(m_pixels, 0);
-    // logPixels();
+//    m_buffer.Blt(m_pixels, 0);
+
+    uint8_t* cursor = m_pixels;
+    for (uint32_t pix = 0; pix < m_pixelCount; pix++ ) {
+        uint16_t r = *(cursor++);
+        uint16_t g = *(cursor++);
+        uint16_t b = *(cursor++);
+#ifdef BRAIN_USE_RGBW
+        uint16_t w = *(cursor++);
+#endif
+        if (m_nBrightness != 255) {
+            r = (r * m_nBrightness) >> 8;
+            g = (g * m_nBrightness) >> 8;
+            b = (b * m_nBrightness) >> 8;
+#ifdef BRAIN_USE_RGBW
+            w = (w * m_nBrightness) >> 8;
+#endif
+        }
+
+#ifdef BRAIN_USE_RGBW
+        led_strip_set_pixel_rgbw(m_ledStrip, pix, r, g, b, w);
+#else
+        led_strip_set_pixel(m_ledStrip, pix, r, g, b);
+#endif
+    }
+
+
+     logPixels();
     xSemaphoreGive(m_hPixelsAccess);
 }
 
@@ -232,6 +305,11 @@ LEDRenderer::_renderTask() {
         // Could we stop this task? Yes. However, it's easier to leave it running and only consuming
         // a tiny amount of resources.
 
+        // TODO: Confirm that this timing code is working as expected.
+        // The idea that is trying to happen is that this runs no faster than 4x the
+        // speed of the show output, but in reality it seems to run unbounded which
+        // is likely wasting resources.
+
         // Delay until 1/4 frame duration into the next frame
         TickType_t toDelay = m_timeBase.ticksToNextFrame() +
             m_timeBase.toTicks(m_timeBase.getFrameDuration() / 4);
@@ -246,6 +324,6 @@ LEDRenderer::_renderTask() {
 
 void
 LEDRenderer::logPixels() {
-    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), 6, ESP_LOG_INFO);
+    ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels, 12, ESP_LOG_INFO);
     // ESP_LOG_BUFFER_HEXDUMP(TAG, m_pixels.Pixels(), m_pixels.PixelsSize(), ESP_LOG_INFO);
 }

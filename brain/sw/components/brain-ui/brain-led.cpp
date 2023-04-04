@@ -42,6 +42,7 @@ BrainLed::checkInit() {
      * that will be used by LED Controller
      */
     ledc_timer_config_t ledc_timer;
+    ledc_timer.clk_cfg = LEDC_USE_APB_CLK; // Supports both high speed and low speed
     ledc_timer.duty_resolution = LEDC_TIMER_8_BIT;  // resolution of PWM duty
     ledc_timer.freq_hz = 5000;                      // frequency of PWM signal
     ledc_timer.speed_mode = LEDC_HIGH_SPEED_MODE;   // timer mode

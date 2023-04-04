@@ -27,7 +27,7 @@ struct TaskDef {
     UBaseType_t priority;
     BaseType_t  coreId; // Generally should be tskNO_AFFINITY;
 
-    BaseType_t createTask(TaskFunction_t fn, void * const parameters, TaskHandle_t * const taskHandle);
+    BaseType_t createTask(TaskFunction_t fn, void * const parameters, TaskHandle_t * const taskHandle) const;
 };
 
 /**
@@ -110,6 +110,49 @@ struct BrainTasks {
     };
 
     /**
+     * Probe periodically polls the temperature and then broadcasts
+     * an event about it
+     */
+    TaskDef probe = {
+            .name = "probe",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
+    };
+
+    /**
+     * The screen task handles communication via I2C to oled panels and eventually
+     * maybe to other things like LCD panels.
+     */
+    TaskDef screen = {
+            .name = "screen",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = APP_CPU_NUM,
+    };
+
+    /**
+     * A test animation loop for screens
+    */
+    TaskDef screenTest = {
+            .name = "screen test",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = APP_CPU_NUM,
+    };
+
+    /**
+     * Probe periodically polls the temperature and then broadcasts
+     * an event about it
+     */
+    TaskDef widgetWrangler = {
+            .name = "widgetWrangler",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
+    };
+
+    /**
      * The UI task processes button presses and turns them into key events.
      * It also drives the on-board leds like the eyes and the tri-color
      * led.
@@ -172,6 +215,20 @@ struct BrainTasks {
             .stack = 10240,
             .priority = 10,
             .coreId = APP_CPU_NUM,
+    };
+
+
+    /**
+     * This task sends the brain hello messages. These were originally sent
+     * on the timer task but that would periodically hit a stack overflow, so
+     * kind of like sysmon - yet another task.
+     *
+     */
+    TaskDef hello = {
+            .name = "hello",
+            .stack = 3024,
+            .priority = 0,
+            .coreId = tskNO_AFFINITY,
     };
 };
 
