@@ -28,3 +28,6 @@ dependencies:
 
 #  clock-sign:
 #    path: ../../components/clock-sign
+
+  screen:
+    path: ../../components/screen

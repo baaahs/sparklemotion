@@ -85,9 +85,9 @@
  * A reasonable version of the ws2815 datasheet with timing info:
  * https://www.superlightingled.com/PDF/WS2815-12v-addressable-led-chip-specification-.pdf
  */
-//#define BRAIN_DEFAULT_PIXEL_COUNT 24
+#define BRAIN_DEFAULT_PIXEL_COUNT 340
 //#define BRAIN_DEFAULT_PIXEL_COUNT 500
-//#define BRAIN_DEFAULT_BRIGHTNESS   32
+#define BRAIN_DEFAULT_BRIGHTNESS   128
 ////#define BRAIN_DEFAULT_BRIGHTNESS   16
 //#define BRAIN_DEFAULT_FPS 60
 //

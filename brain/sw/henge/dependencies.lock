@@ -2,13 +2,13 @@ dependencies:
   brain-common:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-common
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-common
       type: local
     version: '*'
   brain-ui:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-ui
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-ui
       type: local
     version: '*'
   espressif/jsmn:
@@ -31,27 +31,33 @@ dependencies:
   iso:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/iso
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/iso
       type: local
     version: '*'
   led-renderer:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/led-renderer
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/led-renderer
       type: local
     version: '*'
   net:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/net
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/net
+      type: local
+    version: '*'
+  screen:
+    component_hash: null
+    source:
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/screen
       type: local
     version: '*'
   sysmon:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/sysmon
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/sysmon
       type: local
     version: '*'
-manifest_hash: 0e811568f764f279404bf4df809945b84c299ae34cf094536376d9965071a1fc
+manifest_hash: a6b086ad7a9797fcf98c1e1ac10f05af9426e07c5e16c06d47fcc704d07a4195
 target: esp32
 version: 1.0.0
