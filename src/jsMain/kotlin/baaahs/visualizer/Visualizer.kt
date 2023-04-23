@@ -171,6 +171,7 @@ open class BaseVisualizer(
     protected val realScene = Scene().apply { autoUpdate = false }
     protected val scene = Group().also { realScene.add(it) }
     protected var sceneNeedsUpdate = true
+    protected var fitCamera = true
 
     /**
      * The order that these event listeners are registered matters; can't think of a
@@ -425,8 +426,11 @@ open class BaseVisualizer(
         val startTime = clock.now()
         if (sceneNeedsUpdate) {
             realScene.updateMatrixWorld()
-            fitCameraToObject()
             sceneNeedsUpdate = false
+        }
+        if (fitCamera) {
+            fitCameraToObject()
+            fitCamera = false
         }
         renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
