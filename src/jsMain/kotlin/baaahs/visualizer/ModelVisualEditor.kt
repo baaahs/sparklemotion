@@ -185,6 +185,7 @@ class ModelVisualEditor(
             clear()
             units = model.units
 
+            scene.add(groupVisualizer.groupObj)
             groupVisualizer.updateChildren(model.entities)
         }
     }
