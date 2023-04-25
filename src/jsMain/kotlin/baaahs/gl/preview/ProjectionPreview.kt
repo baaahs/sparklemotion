@@ -11,8 +11,8 @@ import baaahs.geom.Vector2D
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.FixtureRenderTarget
-import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
@@ -36,7 +36,7 @@ class ProjectionPreview(
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = ProjectionPreviewDevice
-    override val renderEngine = ModelRenderEngine(
+    override val renderEngine = ComponentRenderEngine(
         gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
     )
     private var projectionProgram: GlslProgram? = null

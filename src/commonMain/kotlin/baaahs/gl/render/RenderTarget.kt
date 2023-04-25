@@ -22,7 +22,7 @@ class FixtureRenderTarget(
     override val componentCount: Int,
     val component0Index: Int,
     resultStorage: ResultStorage,
-    override val renderEngine: ModelRenderEngine
+    override val renderEngine: ComponentRenderEngine
 ) : RenderTarget {
     var program: GlslProgram? = null
         private set

@@ -8,8 +8,8 @@ import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
 class RenderManager(glContext: GlContext) {
-    private val renderEngines = CacheBuilder<FixtureType, ModelRenderEngine> { fixtureType ->
-        ModelRenderEngine(
+    private val renderEngines = CacheBuilder<FixtureType, ComponentRenderEngine> { fixtureType ->
+        ComponentRenderEngine(
             glContext, fixtureType, resultDeliveryStrategy = glContext.pickResultDeliveryStrategy()
         )
     }
