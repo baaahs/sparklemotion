@@ -82,8 +82,8 @@ class FixtureManagerImpl(
         return anyChanges
     }
 
-    private fun clearRenderTargets() {
-        renderTargets.values.forEach { it.release() }
+    private fun clearRenderPlan() {
+        renderTargets.values.forEach { it.clearRenderPlan() }
     }
 
     private fun getFixtureCount(): Int = renderTargets.size
@@ -109,8 +109,7 @@ class FixtureManagerImpl(
 
     private fun removeFixture(fixture: Fixture) {
         renderTargets.remove(fixture)?.let { renderTarget ->
-            logger.debug { "Removing fixture ${fixture.title}" }
-            renderManager.removeRenderTarget(renderTarget)
+            logger.debug { "Releasing fixture ${fixture.title}" }
             renderTarget.release()
             // TODO: remove from RemoteVisualizers
         } ?: throw IllegalStateException("huh? can't remove unknown fixture $fixture")
@@ -145,7 +144,7 @@ class FixtureManagerImpl(
         }
 
         if (remapFixtures) {
-            clearRenderTargets()
+            clearRenderPlan()
 
             currentRenderPlan?.let { renderPlan ->
                 renderManager.setRenderPlan(renderPlan)
