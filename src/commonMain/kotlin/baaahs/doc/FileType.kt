@@ -22,7 +22,7 @@ abstract class FileType {
     open val matchingExtensions: List<String> get() = listOfNotNull(extension)
 
     open fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-        if (file.isDirectory == false && matchingExtensions.isNotEmpty()) {
+        if (file.isDirectory != true && matchingExtensions.isNotEmpty()) {
             fileDisplay.isSelectable = matchingExtensions.any { file.name.endsWith(it) }
         }
     }
