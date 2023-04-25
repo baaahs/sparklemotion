@@ -28,8 +28,8 @@ import com.danielgergely.kgl.*
 import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object ModelRenderEngineSpec : Spek({
-    describe<ModelRenderEngine> {
+object ComponentRenderEngineSpec : Spek({
+    describe<ComponentRenderEngine> {
         val gl by value { FakeGlContext() }
         val updateMode by value { UpdateMode.ONCE }
         val fixtureFeed by value { PerFixtureFeedForTest(updateMode) }
@@ -38,7 +38,7 @@ object ModelRenderEngineSpec : Spek({
         val fixtureType by value { FixtureTypeForTest(feed) }
         val maxFramebufferWidth by value { 64 }
         val renderEngine by value {
-            ModelRenderEngine(gl, fixtureType, minTextureWidth = 1, maxFramebufferWidth)
+            ComponentRenderEngine(gl, fixtureType, minTextureWidth = 1, maxFramebufferWidth)
         }
         val texture by value { gl.textures.only("texture") }
 

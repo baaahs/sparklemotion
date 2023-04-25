@@ -17,7 +17,7 @@ import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.max
 import kotlin.math.min
 
-class ModelRenderEngine(
+class ComponentRenderEngine(
     gl: GlContext,
     private val fixtureType: FixtureType,
     private val minTextureWidth: Int = 16,
@@ -66,7 +66,7 @@ class ModelRenderEngine(
         )
         val renderTarget = FixtureRenderTarget(
             fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage,
-            this@ModelRenderEngine
+            this@ComponentRenderEngine
         )
         nextComponentOffset += fixture.componentCount
         nextRectOffset += rects.size
@@ -227,7 +227,7 @@ class ModelRenderEngine(
     }
 
     companion object {
-        private val logger = Logger<ModelRenderEngine>()
+        private val logger = Logger<ComponentRenderEngine>()
         private const val fbMaxPixWidth = 1024
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */

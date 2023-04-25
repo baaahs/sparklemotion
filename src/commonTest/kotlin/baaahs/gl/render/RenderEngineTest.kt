@@ -26,14 +26,14 @@ class RenderEngineTest {
 //    fun verifyGlslAvailable() = assumeTrue(GlslBase.manager.available)
 
     private lateinit var glContext: GlContext
-    private lateinit var renderEngine: ModelRenderEngine
+    private lateinit var renderEngine: ComponentRenderEngine
     private lateinit var fakeShowPlayer: FakeShowPlayer
 
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
             glContext = GlBase.manager.createContext()
-            renderEngine = ModelRenderEngine(glContext, PixelArrayDevice,)
+            renderEngine = ComponentRenderEngine(glContext, PixelArrayDevice,)
             fakeShowPlayer = FakeShowPlayer()
         }
     }
@@ -201,7 +201,7 @@ class RenderEngineTest {
         // xxx.
         expect(listOf(
             Quad.Rect(1f, 0f, 2f, 3f)
-        )) { ModelRenderEngine.mapFixtureComponentsToRects(4, 4, createSurface("A", 3)) }
+        )) { ComponentRenderEngine.mapFixtureComponentsToRects(4, 4, createSurface("A", 3)) }
 
         // ...x
         // xxxx
@@ -210,7 +210,7 @@ class RenderEngineTest {
             Quad.Rect(0f, 3f, 1f, 4f),
             Quad.Rect(1f, 0f, 2f, 4f),
             Quad.Rect(2f, 0f, 3f, 2f)
-        )) { ModelRenderEngine.mapFixtureComponentsToRects(3, 4, createSurface("A", 7)) }
+        )) { ComponentRenderEngine.mapFixtureComponentsToRects(3, 4, createSurface("A", 7)) }
     }
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {

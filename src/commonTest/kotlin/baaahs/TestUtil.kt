@@ -11,7 +11,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.openShader
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.patch.ProgramNode
-import baaahs.gl.render.ModelRenderEngine
+import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
 import baaahs.model.FakeModelEntity
@@ -108,7 +108,7 @@ class TestRenderContext(
     val model = fakeModel(modelEntities.toList())
     val fixtureType = modelEntities.map { it.fixtureType }.distinct().only("fixture type")
     val gl = FakeGlContext()
-    val renderEngine = ModelRenderEngine(gl, fixtureType, minTextureWidth = 1,)
+    val renderEngine = ComponentRenderEngine(gl, fixtureType, minTextureWidth = 1,)
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
