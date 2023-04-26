@@ -3,6 +3,7 @@ package baaahs.app.ui.preview
 import baaahs.client.ClientStageManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.gl.GlBase
+import baaahs.gl.Monitors
 import baaahs.gl.render.RenderManager
 import baaahs.model.Model
 import baaahs.plugin.Plugins
@@ -31,7 +32,7 @@ class ClientPreview(
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : ClientStageManager.Listener {
     private val glContext = GlBase.jsManager.createContext()
-    private val renderManager = RenderManager(glContext)
+    private val renderManager = RenderManager(glContext, Monitors())
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
     private val theVisualizer = Visualizer(clock)

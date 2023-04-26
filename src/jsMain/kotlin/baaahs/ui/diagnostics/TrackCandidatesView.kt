@@ -91,7 +91,7 @@ private val TrackCandidatesView = xComponent<TrackCandidatesProps>("TrackCandida
                                                 +"shader out: ${link}"
                                             }
                                             is OpenPatch.StreamLink -> {
-                                                +"stream: ${link.stream.id}"
+                                                +"stream: ${link.stream.id}:${patch.shader.findInputPort(id).contentType.id}"
                                             }
                                             else -> {
                                                 +"unknown link: $link"

@@ -7,6 +7,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -45,7 +46,7 @@ data class PixelCoordsTextureFeed(@Transient val `_`: Boolean = true) : Feed {
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+            override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
                     override val isValid: Boolean get() = false
                 }

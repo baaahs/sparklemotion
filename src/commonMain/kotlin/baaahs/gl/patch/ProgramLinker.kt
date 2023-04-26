@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.device.FixtureType
 import baaahs.getBang
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
@@ -14,7 +15,8 @@ import baaahs.util.CacheBuilder
 
 class ProgramLinker(
     private val rootNode: ProgramNode,
-    private val warnings: List<String> = emptyList()
+    private val warnings: List<String> = emptyList(),
+    private val fixtureType: FixtureType
 ) {
     private val linkNodes: MutableMap<ProgramNode, LinkNode> = mutableMapOf()
     private val feedLinks = hashSetOf<OpenPatch.FeedLink>()
@@ -94,7 +96,7 @@ class ProgramLinker(
             )
             .map { componentBuilder[it.programNode] }
 
-        return LinkedProgram(rootNode, components, feedLinks, warnings, linkNodes)
+        return LinkedProgram(rootNode, components, feedLinks, warnings, linkNodes, fixtureType.renderRegime)
     }
 
     fun visit(openShader: OpenShader) {

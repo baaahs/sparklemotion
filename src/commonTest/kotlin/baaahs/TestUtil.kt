@@ -115,7 +115,7 @@ class TestRenderContext(
     fun createProgram(shaderSrc: String, incomingLinks: Map<String, ProgramNode>): GlslProgram {
         val openShader = testToolchain.openShader(Shader("Title", shaderSrc))
         val linkedPatch = LinkedPatch(openShader, incomingLinks, Stream.Main, 0f)
-        val linkedProgram = ProgramLinker(linkedPatch).buildLinkedProgram()
+        val linkedProgram = ProgramLinker(linkedPatch, fixtureType = fixtureType).buildLinkedProgram()
         return renderEngine.compile(linkedProgram) { id, feed -> feed.open(showPlayer, id) }.bind()
     }
 

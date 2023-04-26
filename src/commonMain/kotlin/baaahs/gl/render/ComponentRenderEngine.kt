@@ -3,6 +3,8 @@ package baaahs.gl.render
 import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureTypeRenderPlan
+import baaahs.geom.Matrix4F
+import baaahs.geom.identity
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.PerPixelEngineFeedContext
@@ -19,18 +21,18 @@ import kotlin.math.min
 
 class ComponentRenderEngine(
     gl: GlContext,
-    private val fixtureType: FixtureType,
+    override val fixtureType: FixtureType,
     private val minTextureWidth: Int = 16,
     private val maxFramebufferWidth: Int = fbMaxPixWidth,
     private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
-) : FixtureRenderEngine(gl) {
-    private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
-    private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
+) : RenderEngine(gl, LocationStrategy.Discrete), FixtureRenderEngine {
+    private val renderTargetsToAdd: MutableList<ComponentRenderTarget> = mutableListOf()
+    private val renderTargetsToRemove: MutableList<ComponentRenderTarget> = mutableListOf()
     var componentCount: Int = 0
     private var nextComponentOffset: Int = 0
     private var nextRectOffset: Int = 0
 
-    private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
+    private val renderTargets: MutableList<ComponentRenderTarget> = mutableListOf()
     private var renderPlan: FixtureTypeRenderPlan? = null
 
     private val resultStorage = gl.runInContext {
@@ -52,7 +54,7 @@ class ComponentRenderEngine(
     // Workaround for compile error on case-insensitive FS:
     init { arrangement = gl.runInContext { Arrangement(0, emptyList()) } }
 
-    override fun addFixture(fixture: Fixture): FixtureRenderTarget {
+    override fun addFixture(fixture: Fixture): ComponentRenderTarget {
         if (fixture.fixtureType != fixtureType) {
             throw IllegalArgumentException(
                 "This RenderEngine can't accept ${fixture.fixtureType} devices, only $fixtureType."
@@ -64,7 +66,7 @@ class ComponentRenderEngine(
             maxFramebufferWidth,
             fixture
         )
-        val renderTarget = FixtureRenderTarget(
+        val renderTarget = ComponentRenderTarget(
             fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage,
             this@ComponentRenderEngine
         )
@@ -75,7 +77,7 @@ class ComponentRenderEngine(
         return renderTarget
     }
 
-    fun removeRenderTarget(renderTarget: FixtureRenderTarget) {
+    fun removeRenderTarget(renderTarget: ComponentRenderTarget) {
         renderTargetsToRemove.add(renderTarget)
     }
 
@@ -88,7 +90,7 @@ class ComponentRenderEngine(
         engineFeedContext.maybeResizeAndPopulate(arrangement, renderTargets)
     }
 
-    private fun EngineFeedContext.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<FixtureRenderTarget>) {
+    private fun EngineFeedContext.maybeResizeAndPopulate(arrangement: Arrangement?, renderTargets: List<ComponentRenderTarget>) {
         if (this is PerPixelEngineFeedContext) {
             resize(arrangement?.safeWidth ?: 1, arrangement?.safeHeight ?: 1) {
                 renderTargets.forEach { renderTarget ->
@@ -143,7 +145,7 @@ class ComponentRenderEngine(
         }
     }
 
-    fun setRenderPlan(renderPlan: FixtureTypeRenderPlan?) {
+    override fun setRenderPlan(renderPlan: FixtureTypeRenderPlan?) {
         this.renderPlan = renderPlan
     }
 
@@ -153,7 +155,7 @@ class ComponentRenderEngine(
         frameBuffer.release()
     }
 
-    fun logStatus() {
+    override fun logStatus() {
         logger.info { "Rendering $componentCount components for ${renderTargets.size} ${fixtureType.title} fixtures."}
     }
 
@@ -161,7 +163,7 @@ class ComponentRenderEngine(
     val Int.bufHeight: Int get() = this / maxFramebufferWidth + 1
     val Int.bufSize: Int get() = bufWidth * bufHeight
 
-    inner class Arrangement(val componentCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
+    inner class Arrangement(val componentCount: Int, addedRenderTargets: List<ComponentRenderTarget>) {
         init {
             logger.info { "Creating ${fixtureType::class.simpleName} arrangement with $componentCount components" }
         }
@@ -208,9 +210,10 @@ class ComponentRenderEngine(
                     program.setPixDimens(arrangement.pixWidth, arrangement.pixHeight)
                     program.aboutToRenderFrame()
 
-                    quad.prepareToRender(program.vertexAttribLocation) {
+                    program.transformUniform?.set(Matrix4F.identity)
+                    quad.prepareToRender(program.vertexPositionAttrib) {
                         programRenderPlan.renderTargets.forEach { renderTarget ->
-                            renderTarget as FixtureRenderTarget
+                            renderTarget as ComponentRenderTarget
                             renderTarget.usingProgram(program)
                             program.aboutToRenderFixture(renderTarget)
                             quad.renderRects(renderTarget)
@@ -218,7 +221,7 @@ class ComponentRenderEngine(
                     }
                 } else {
                     programRenderPlan.renderTargets.forEach { renderTarget ->
-                        renderTarget as FixtureRenderTarget
+                        renderTarget as ComponentRenderTarget
                         renderTarget.usingProgram(null)
                     }
                 }
@@ -260,7 +263,7 @@ class ComponentRenderEngine(
             return rects
         }
 
-        fun Quad.renderRects(renderTarget: FixtureRenderTarget) {
+        fun Quad.renderRects(renderTarget: ComponentRenderTarget) {
             renderTarget.rects.indices.forEach { i ->
                 this.renderRect(renderTarget.rect0Index + i)
             }

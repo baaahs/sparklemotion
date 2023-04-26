@@ -11,6 +11,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.internalTimerClock
 import baaahs.plugin.*
@@ -382,7 +383,7 @@ class SoundAnalysisFeedContext(
         maxMagnitude = max
     }
 
-    override fun bind(gl: GlContext): EngineFeedContext = SoundAnalysisEngineFeedContext(gl)
+    override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = SoundAnalysisEngineFeedContext(gl)
 
     inner class SoundAnalysisEngineFeedContext(private val gl: GlContext) : EngineFeedContext {
         private val texture = gl.check { createTexture() }

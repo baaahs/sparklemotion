@@ -33,7 +33,7 @@ class PerPixelFeedForTest(val updateMode: UpdateMode) : Feed {
 
     inner class TestFeedContext(val id: String) : FeedContext, RefCounted by RefCounter() {
         var released = false
-        override fun bind(gl: GlContext): EngineFeedContext = TestEngineFeedContext(gl).also { engineFeeds.add(it) }
+        override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = TestEngineFeedContext(gl).also { engineFeeds.add(it) }
         override fun onRelease() { released = released.truify() }
     }
 
@@ -43,7 +43,7 @@ class PerPixelFeedForTest(val updateMode: UpdateMode) : Feed {
         override val buffer: FloatsParamBuffer = FloatsParamBuffer("---", 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
-            renderTarget as FixtureRenderTarget
+            renderTarget as ComponentRenderTarget
             counter++
             buffer.scoped(renderTarget) { pixelIndex ->
                 counter * 10 + pixelIndex

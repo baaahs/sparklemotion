@@ -2,7 +2,7 @@ package baaahs.gl.patch
 
 import baaahs.describe
 import baaahs.gl.openShader
-import baaahs.gl.patch.PortDiagram.TrackEntry
+import baaahs.gl.patch.PortDiagram.PatchCandidate
 import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testToolchain
 import baaahs.show.Shader
@@ -28,45 +28,45 @@ object PortDiagramSpec : Spek({
             }
 
             it("shaders with higher priority always come first") {
-                TrackEntry(shaderA, priority = 1f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderB, priority = 0f, level = 0))
+                PatchCandidate(shaderA, priority = 1f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderB, priority = 0f, level = 0))
 
-                TrackEntry(shaderB, priority = 1f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderA, priority = 0f, level = 0))
+                PatchCandidate(shaderB, priority = 1f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderA, priority = 0f, level = 0))
 
-                TrackEntry(shaderA, priority = 1f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderB, priority = 0f, level = 10))
+                PatchCandidate(shaderA, priority = 1f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderB, priority = 0f, level = 10))
 
-                TrackEntry(shaderA, priority = 1f, level = 0)
-                    .shouldComeBefore(TrackEntry(filterShaderA, priority = 0f, level = 0))
+                PatchCandidate(shaderA, priority = 1f, level = 0)
+                    .shouldComeBefore(PatchCandidate(filterShaderA, priority = 0f, level = 0))
 
             }
 
             it("shaders with the same priority at a lower level in the tree come first") {
-                TrackEntry(shaderA, priority = 0f, level = 1)
-                    .shouldComeBefore(TrackEntry(shaderB, priority = 0f, level = 0))
+                PatchCandidate(shaderA, priority = 0f, level = 1)
+                    .shouldComeBefore(PatchCandidate(shaderB, priority = 0f, level = 0))
 
-                TrackEntry(shaderB, priority = 0f, level = 1)
-                    .shouldComeBefore(TrackEntry(shaderA, priority = 0f, level = 0))
+                PatchCandidate(shaderB, priority = 0f, level = 1)
+                    .shouldComeBefore(PatchCandidate(shaderA, priority = 0f, level = 0))
             }
 
             it("filter shaders with the same priority should come before non-filter shaders") {
-                TrackEntry(filterShaderA, priority = 0f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderA, priority = 0f, level = 0))
+                PatchCandidate(filterShaderA, priority = 0f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderA, priority = 0f, level = 0))
 
-                TrackEntry(filterShaderA, priority = 0f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderA, priority = 0f, level = 1))
+                PatchCandidate(filterShaderA, priority = 0f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderA, priority = 0f, level = 1))
             }
 
             it("when all other aspects are equal, sort by lexical order of shader name") {
-                TrackEntry(shaderA, priority = 0f, level = 0)
-                    .shouldComeBefore(TrackEntry(shaderB, priority = 0f, level = 0))
+                PatchCandidate(shaderA, priority = 0f, level = 0)
+                    .shouldComeBefore(PatchCandidate(shaderB, priority = 0f, level = 0))
             }
         }
     }
 })
 
-fun TrackEntry.shouldComeBefore(other: TrackEntry) {
+fun PatchCandidate.shouldComeBefore(other: PatchCandidate) {
     val comparison = PortDiagram.Candidates.comparator.compare(this, other)
     assertTrue("${this.openPatch.title} should come before ${other.openPatch.title}, " +
             "but ${if (comparison == 0) "they are equivalent" else "it comes after"}") { comparison == -1 }

@@ -1,8 +1,18 @@
 package baaahs.gl.render
 
+import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.gl.GlContext
 
-abstract class FixtureRenderEngine(gl: GlContext) : RenderEngine(gl) {
-    abstract fun addFixture(fixture: Fixture): FixtureRenderTarget
+interface FixtureRenderEngine {
+    val fixtureType: FixtureType
+
+    fun addFixture(fixture: Fixture): FixtureRenderTarget
+    fun setRenderPlan(fixtureTypeRenderPlan: FixtureTypeRenderPlan?)
+    fun draw()
+    suspend fun finish()
+    fun release()
+
+    fun logStatus()
 }

@@ -8,11 +8,7 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GLCapabilities
 
 class LwjglGlManager : GlManager() {
-    private val window: Long
-
-    init {
-        window = glWindow
-    }
+    private val window: Long = glWindow
 
     override val available: Boolean
         get() = window != 0L
@@ -25,10 +21,65 @@ class LwjglGlManager : GlManager() {
         checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
-        return LwjglGlContext(maybeTrace(KglLwjgl, trace))
+        return LwjglGlContext(maybeTrace(KglLwjgl, trace), window)
     }
 
-    inner class LwjglGlContext(kgl: Kgl) : GlContext(kgl, "330 core") {
+    override fun createContext(monitor: Monitor, mode: Mode, trace: Boolean): GlContext {
+        if (!available) throw RuntimeException("GLSL not available")
+
+        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_TRUE)
+        val glwfWindow = GLFW.glfwCreateWindow(mode.width, mode.height, "Window on ${monitor.name}", monitor.id, 0)
+        if (glwfWindow == 0L)
+            throw RuntimeException("Failed to create the GLFW window")
+//        GLFW.glfwSetWindowMonitor(glwfWindow, monitor.id, 0, 0, mode.width, mode.height, mode.refreshRate)
+//        GLFW.glfwMakeContextCurrent(glwfWindow)
+//        val capabilities = org.lwjgl.opengl.GL.createCapabilities()
+//        GLFW.glfwMakeContextCurrent(0)
+
+        return LwjglGlContext(maybeTrace(KglLwjgl, trace), window)
+    }
+
+    override fun observeMonitors(monitors: Monitors) {
+        fun addMonitor(monitor: Long, isPrimary: Boolean) {
+            val name = GLFW.glfwGetMonitorName(monitor)
+                ?: error("Error getting name for monitor $monitor.")
+
+            val currentMode = GLFW.glfwGetVideoMode(monitor)
+                ?.let { Mode(it.width(), it.height()) }
+                ?: error("Error getting mode for monitor \"$name\".")
+
+            val videoModes = GLFW.glfwGetVideoModes(monitor)
+                ?.map { Mode(it.width(), it.height()) }?.distinct()
+                ?: error("Error getting modes for monitor \"$name\".")
+
+            monitors.add(Monitor(monitor, name, videoModes, currentMode, isPrimary))
+        }
+
+        fun removeMonitor(monitor: Long) {
+            monitors.remove(monitor)
+        }
+
+        val primaryMonitor = GLFW.glfwGetPrimaryMonitor()
+        GLFW.glfwSetMonitorCallback { monitor, event ->
+            when (event) {
+                GLFW.GLFW_CONNECTED -> {
+                    logger.info { "Monitor connected: $monitor" }
+                    addMonitor(monitor, monitor == primaryMonitor)
+                }
+                GLFW.GLFW_DISCONNECTED -> {
+                    logger.info { "Monitor disconnected: $monitor" }
+                    removeMonitor(monitor)
+                }
+                else -> logger.debug { "Monitor event: $monitor $event" }
+            }
+        }
+        val monitorPointers = GLFW.glfwGetMonitors() ?: error("Error in glfwGetMonitors")
+        for (i in 0 until monitorPointers.limit()) {
+            addMonitor(monitorPointers[i], monitorPointers[i] == primaryMonitor)
+        }
+    }
+
+    inner class LwjglGlContext(kgl: Kgl, private val window: Long) : GlContext(kgl, "330 core") {
         var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
             if (++nestLevel == 1) {
@@ -66,7 +117,7 @@ class LwjglGlManager : GlManager() {
 
         // This is initialization stuff that has to run on the main thread.
         private val glWindow: Long by lazy {
-            logger.debug { "Initializing LwjglGlslManager." }
+            logger.info { "Initializing LwjglGlslManager." }
 
             if (Thread.currentThread().name != "main") {
                 logger.warn { "GLSL not available. On a Mac, start java with `-XstartOnFirstThread`" }

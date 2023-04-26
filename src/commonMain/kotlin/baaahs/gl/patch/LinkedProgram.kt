@@ -1,6 +1,7 @@
 package baaahs.gl.patch
 
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.render.RenderRegime
 import baaahs.show.live.OpenPatch
 
 class LinkedProgram(
@@ -8,10 +9,11 @@ class LinkedProgram(
     private val components: List<Component>,
     val feedLinks: Set<OpenPatch.FeedLink>,
     val warnings: List<String>,
-    internal val linkNodes: Map<ProgramNode, LinkNode> // For diagnostics only.
+    internal val linkNodes: Map<ProgramNode, LinkNode>, // For diagnostics only.
+    private val renderRegime: RenderRegime
 ) {
     fun toGlsl(): String {
-        val buf = ProgramBuilder()
+        val buf = ProgramBuilder(renderRegime)
         buf.append("#ifdef GL_ES\n")
         buf.append("precision mediump float;\n")
         buf.append("#endif\n")
@@ -67,6 +69,7 @@ class LinkedProgram(
 }
 
 class ProgramBuilder(
+    val renderRegime: RenderRegime,
     private val buf: StringBuilder = StringBuilder()
 ) : Appendable by buf {
     override fun toString(): String = buf.toString()

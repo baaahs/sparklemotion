@@ -1,5 +1,7 @@
 package baaahs.app.ui.model
 
+import baaahs.device.MovingHeadDevice
+import baaahs.device.ProjectorDevice
 import baaahs.geom.Vector3F
 import baaahs.model.*
 
@@ -11,7 +13,12 @@ interface EntityType {
 }
 
 val EntityTypes = listOf(
-    GridEntityType, LightBarEntityType, LightRingEntityType, MovingHeadEntityType, ImportEntityType
+    GridEntityType,
+    LightBarEntityType,
+    LightRingEntityType,
+    MovingHeadEntityType,
+    ProjectorEntityType,
+    ImportEntityType
 )
 
 object GridEntityType : EntityType {
@@ -41,9 +48,15 @@ object LightRingEntityType : EntityType {
 }
 
 object MovingHeadEntityType : EntityType {
-    override val title: String = "Moving Head"
+    override val title: String = MovingHeadDevice.title
 
     override fun createNew(): EntityData = MovingHeadData("New Moving Head", baseDmxChannel = 1)
+}
+
+object ProjectorEntityType : EntityType {
+    override val title: String = ProjectorDevice.title
+
+    override fun createNew(): EntityData = ProjectorData("New Projector")
 }
 
 //object SurfaceEntityType : EntityType {

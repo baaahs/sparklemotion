@@ -30,7 +30,7 @@ class PerFixtureFeedForTest(val updateMode: UpdateMode) : Feed {
 
     inner class TestFeedContext(val id: String) : FeedContext, RefCounted by RefCounter() {
         var released = false
-        override fun bind(gl: GlContext): EngineFeedContext = TestEngineFeedContext().also { engineFeeds.add(it) }
+        override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = TestEngineFeedContext().also { engineFeeds.add(it) }
         override fun onRelease() { released = released.truify() }
     }
 

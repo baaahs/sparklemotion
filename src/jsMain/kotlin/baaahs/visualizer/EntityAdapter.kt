@@ -26,6 +26,9 @@ actual class EntityAdapter actual constructor(
     actual fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
         MovingHeadVisualizer(movingHead, this)
 
+    actual fun createProjectorVisualizer(projector: Projector): ItemVisualizer<Projector> =
+        ProjectorVisualizer(projector, this)
+
     actual fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine> =
         PolyLineVisualizer(polyLine, this, null)
 

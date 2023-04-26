@@ -7,6 +7,7 @@ import baaahs.controller.SacnManager
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
+import baaahs.device.ProjectorDevice
 import baaahs.dmx.DmxManager
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.GenericShaderDialect
@@ -86,7 +87,8 @@ class CorePlugin(
     override val fixtureTypes: List<FixtureType>
         get() = listOf(
             PixelArrayDevice,
-            MovingHeadDevice
+            MovingHeadDevice,
+            ProjectorDevice
         )
 
     override val shaderDialects

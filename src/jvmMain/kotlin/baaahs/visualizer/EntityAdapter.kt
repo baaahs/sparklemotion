@@ -21,6 +21,9 @@ actual class EntityAdapter actual constructor(
     actual fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead> =
         TODO("not implemented")
 
+    actual fun createProjectorVisualizer(projector: Projector): ItemVisualizer<Projector> =
+        TODO("not implemented")
+
     actual fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine> =
         TODO("not implemented")
 

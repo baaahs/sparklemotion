@@ -26,8 +26,8 @@ val directXyProjection = Shader(
     """.trimIndent()
 )
 
-val FixtureRenderTarget.colors: ColorResultType.ColorFixtureResults get() =
+val ComponentRenderTarget.colors: ColorResultType.ColorFixtureResults get() =
     this.fixtureResults as ColorResultType.ColorFixtureResults
 
-val FixtureRenderTarget.movingHeadParams: MovingHeadParams.ResultBuffer.FixtureResults get() =
+val ComponentRenderTarget.movingHeadParams: MovingHeadParams.ResultBuffer.FixtureResults get() =
     this.fixtureResults as MovingHeadParams.ResultBuffer.FixtureResults

@@ -10,7 +10,8 @@ import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
-import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ComponentRenderTarget
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.SerializerRegistrar
@@ -52,7 +53,7 @@ data class PixelIndexFeed(@Transient val `_`: Boolean = true) : Feed {
         """.trimIndent())
     }
 
-    override fun invocationGlsl(varName: String): String {
+    override fun invocationGlsl(varName: String, locationStrategy: LocationStrategy): String {
         return "${getVarName(varName)} = ds_${varName}_getPixelIndex(gl_FragCoord.xy)"
     }
 
@@ -77,13 +78,13 @@ class PixelIndexFeedContext(
     private val textureUniformId: String
 ) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
+    override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = EngineFeedContext(gl)
 
     inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         override val buffer = FloatsParamBuffer(id, 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
-            if (renderTarget is FixtureRenderTarget) {
+            if (renderTarget is ComponentRenderTarget) {
                 buffer.scoped(renderTarget).also { view ->
                     for (pixelIndex in 0 until renderTarget.componentCount) {
                         view[pixelIndex] = pixelIndex.toFloat()

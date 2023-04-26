@@ -12,6 +12,7 @@ expect class EntityAdapter(
     fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar>
     fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing>
     fun createMovingHeadVisualizer(movingHead: MovingHead): ItemVisualizer<MovingHead>
+    fun createProjectorVisualizer(projector: Projector): ItemVisualizer<Projector>
     fun createPolyLineVisualizer(polyLine: PolyLine): ItemVisualizer<PolyLine>
     fun createSurfaceVisualizer(surface: Model.Surface): ItemVisualizer<Model.Surface>
 }

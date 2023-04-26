@@ -357,6 +357,24 @@ class MutableMovingHeadData(
         )
 }
 
+class MutableProjectorData(
+    baseProjectorData: ProjectorData
+) : MutableEntity(baseProjectorData) {
+    var monitorName: String? = baseProjectorData.monitorName
+    var width: Int? = baseProjectorData.width
+    var height: Int? = baseProjectorData.height
+
+    override fun build(): EntityData =
+        ProjectorData(title, description, position, rotation, scale, id, monitorName, width, height)
+
+    override fun getEditorPanels() =
+        listOf(
+            TitleAndDescEntityEditorPanel,
+            TransformEntityEditorPanel,
+            ProjectorEditorPanel
+        )
+}
+
 class MutableLightBarData(
     baseLightBar: LightBarData
 ) : MutableEntity(baseLightBar) {

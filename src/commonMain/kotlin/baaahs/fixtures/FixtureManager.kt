@@ -4,6 +4,7 @@ import baaahs.device.FixtureType
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.patch.PortDiagram
+import baaahs.gl.render.ComponentRenderTarget
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
@@ -38,7 +39,7 @@ class FixtureManagerImpl(
     private val renderManager: RenderManager,
     private val plugins: Plugins,
     private val renderPlanMonitor: Monitor<RenderPlan?> = Monitor(null),
-    initialRenderTargets: Map<Fixture, FixtureRenderTarget> = emptyMap()
+    initialRenderTargets: Map<Fixture, ComponentRenderTarget> = emptyMap()
 ) : FixtureManager {
     override val facade = Facade()
 
@@ -177,7 +178,7 @@ class FixtureManagerImpl(
         val fixtureCount: Int
             get() = this@FixtureManagerImpl.getFixtureCount()
         val componentCount: Int
-            get() = this@FixtureManagerImpl.renderTargets.values.sumOf { it.componentCount }
+            get() = this@FixtureManagerImpl.renderTargets.values.sumOf { (it as? ComponentRenderTarget)?.componentCount  ?: 1}
         val renderPlanMonitor: Monitor<RenderPlan?>
             get() = this@FixtureManagerImpl.renderPlanMonitor
         val currentRenderPlan: RenderPlan?
@@ -193,8 +194,8 @@ class RenderPlan(
     val fixtureTypes: Map<FixtureType, FixtureTypeRenderPlan>
 ) : Map<FixtureType, FixtureTypeRenderPlan> by fixtureTypes {
     fun describe() = "${fixtureTypes.size} devices, " +
-            "${fixtureTypes.values.map { it.programs.count() }.sum()} programs, " +
-            "${fixtureTypes.values.map { it.programs.map { it.renderTargets.count() }.sum() }.sum()} fixtures"
+            "${fixtureTypes.values.sumOf { it.programs.count() }} programs, " +
+            "${fixtureTypes.values.sumOf { it.programs.sumOf { it.renderTargets.count() } }} fixtures"
 }
 
 class FixtureTypeRenderPlan(

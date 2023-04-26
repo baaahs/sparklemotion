@@ -1,12 +1,12 @@
 package baaahs.gl.patch
 
+import baaahs.device.FixtureType
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
-import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
 import baaahs.show.Feed
@@ -17,12 +17,11 @@ import baaahs.util.Logger
 
 class ProgramResolver(
     renderTargets: Collection<RenderTarget>,
-    private val activePatchSet: ActivePatchSet,
-    private val renderManager: RenderManager
+    private val activePatchSet: ActivePatchSet
 ) {
     val portDiagrams = renderTargets
         .groupBy { it.fixture.fixtureType }
-        .mapValues { (_, renderTargets) ->
+        .mapValues { (fixtureType, renderTargets) ->
             val patchSetsByKey = mutableMapOf<String, PatchSet>()
             val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
@@ -36,7 +35,7 @@ class ProgramResolver(
             }
 
             patchSetsByKey.map { (key, patchSet) ->
-                PortDiagram(patchSet) to
+                PortDiagram(patchSet, fixtureType) to
                         renderTargetsByPatchSetKey[key]!! as List<RenderTarget>
             }
         }
@@ -86,7 +85,10 @@ class ProgramResolver(
     companion object {
         private val logger = Logger<ProgramResolver>()
 
-        fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
+        fun buildPortDiagram(
+            fixtureType: FixtureType,
+            vararg patches: OpenPatch
+        ) = PortDiagram(patches.toList(), fixtureType)
     }
 }
 

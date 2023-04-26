@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.api.ws.WebSocketRouter
 import baaahs.controller.ControllersManager
+import baaahs.controller.DisplayManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
 import baaahs.gl.Toolchain
@@ -50,7 +51,8 @@ class Pinky(
     private val networkStats: NetworkStats,
     val pinkySettings: PinkySettings,
     val serverNotices: ServerNotices,
-    val pinkyMapperHandlers: PinkyMapperHandlers
+    val pinkyMapperHandlers: PinkyMapperHandlers,
+    val displayManager: DisplayManager
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -163,6 +165,7 @@ class Pinky(
 
             // This needs to go last-ish, otherwise we start getting network traffic too early.
             controllersManager.start()
+            displayManager.start()
 
             updatePinkyState(PinkyState.Running)
         }

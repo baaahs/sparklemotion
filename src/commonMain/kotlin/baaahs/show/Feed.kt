@@ -3,10 +3,12 @@ package baaahs.show
 import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
+import baaahs.device.FixtureType
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.Plugins
 import baaahs.plugin.SerializerRegistrar
@@ -104,10 +106,10 @@ interface Feed {
             buf.append("uniform ${getType().glslLiteral} ${getVarName(id)};\n")
     }
 
-    fun invocationGlsl(varName: String): String? = null
+    fun invocationGlsl(varName: String, locationStrategy: LocationStrategy): String? = null
 
     fun appendInvokeAndSet(buf: ProgramBuilder, varName: String) {
-        val invocationGlsl = invocationGlsl(varName)
+        val invocationGlsl = invocationGlsl(varName, buf.renderRegime.locationStrategy)
         if (invocationGlsl != null) {
             buf.append("    // Invoke ", title, "\n")
             buf.append("    ", invocationGlsl, ";\n")
@@ -116,6 +118,23 @@ interface Feed {
     }
 
     fun appendInvoke(buf: ProgramBuilder, varName: String, inputPort: InputPort) = Unit
+
+    fun forFixtureType(fixtureType: FixtureType): Feed = this
+}
+
+interface FeedOpenContext {
+    val clock: Clock
+    val plugins: Plugins
+
+    /**
+     * This is for [baaahs.plugin.core.feed.ModelInfoFeed], but we should probably find
+     * a better way to get it. Don't add more uses.
+     */
+    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
+    val sceneProvider: SceneProvider
+
+    fun <T : Gadget> useGadget(id: String): T = error("override me?")
+    fun <T : Gadget> useGadget(feed: Feed): T?
 }
 
 interface FeedOpenContext {

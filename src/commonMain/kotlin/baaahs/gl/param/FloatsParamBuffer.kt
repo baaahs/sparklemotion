@@ -3,7 +3,7 @@ package baaahs.gl.param
 import baaahs.gl.GlContext
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.GlContext.Companion.GL_RGBA32F
-import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ComponentRenderTarget
 import baaahs.gl.result.BufferView
 import baaahs.glsl.TextureUniform
 import com.danielgergely.kgl.*
@@ -51,7 +51,7 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
     }
 
     fun scoped(
-        renderTarget: FixtureRenderTarget,
+        renderTarget: ComponentRenderTarget,
         callback: ((Int) -> Float)? = null
     ) = object : BufferView<Float> {
         val offset = renderTarget.component0Index

@@ -7,6 +7,7 @@ import baaahs.browser.RealMediaDevices
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.encodeBase64
+import baaahs.gl.Monitors
 import baaahs.io.Fs
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
@@ -58,6 +59,7 @@ class JsSimulatorModule(
 
     override fun getModule(): Module {
         return super.getModule().apply {
+            single { localFs }
             single { Visualizer(get()) }
             single<SceneProvider> { sceneMonitor_ }
             single { simMappingManager }
@@ -70,8 +72,10 @@ class JsSimulatorModule(
                     get(), get(), get(), controllersManager
                 )
             }
+            single { SimulatorStorage(get()) }
+            single { (monitors: Monitors) -> MonitorSimulator(get(), monitors) }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
-            single { (koin: Koin) -> SheepSimulator(get(), get(), localFs) { koin } }
+            single { (koin: Koin) -> SheepSimulator(get(), get(), get()) { koin } }
         }
     }
 }

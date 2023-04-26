@@ -9,6 +9,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
@@ -69,7 +70,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
         override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeedContext {
+                override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext {
                     return object : EngineFeedContext {
                         private val texture = gl.check { createTexture() }
 

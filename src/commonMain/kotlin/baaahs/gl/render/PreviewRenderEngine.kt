@@ -1,5 +1,7 @@
 package baaahs.gl.render
 
+import baaahs.geom.Matrix4F
+import baaahs.geom.identity
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.glsl.GlslProgram
@@ -10,7 +12,7 @@ class PreviewRenderEngine(
     gl: GlContext,
     private var width: Int,
     private var height: Int
-) : RenderEngine(gl) {
+) : RenderEngine(gl, LocationStrategy.Continuous) {
     private var quad = calcQuad(width, height)
     private var program: GlslProgram? = null
 
@@ -54,7 +56,8 @@ class PreviewRenderEngine(
 
         gl.useProgram(program)
         program.aboutToRenderFrame()
-        quad.prepareToRender(program.vertexAttribLocation) {
+        program.transformUniform?.set(Matrix4F.identity)
+        quad.prepareToRender(program.vertexPositionAttrib) {
             quad.renderRect(0)
         }
     }

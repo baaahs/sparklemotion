@@ -121,6 +121,26 @@ data class MovingHeadData(
         MovingHead(title, description, position, rotation, scale, baseDmxChannel, adapter, id)
 }
 
+@Serializable @SerialName("Projector")
+data class ProjectorData(
+    override val title: String,
+    override val description: String? = null,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
+    val monitorName: String? = null,
+    val width: Int? = null,
+    val height: Int? = null
+
+) : EntityData {
+    override fun edit(): MutableEntity =
+        MutableProjectorData(this)
+
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
+        Projector(title, description, position, rotation, scale, monitorName, width, height, id)
+}
+
 @Serializable @SerialName("LightBar")
 data class LightBarData(
     override val title: String,

@@ -11,6 +11,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
@@ -67,7 +68,7 @@ data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
 class FixtureInfoFeedContext(
     private val id: String
 ) : FeedContext, RefCounted by RefCounter() {
-    override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+    override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 

@@ -39,7 +39,7 @@ object DateFeedSpec : Spek({
             }
 
             feed.open(showPlayer, "date")
-                .bind(gl)
+                .bind(gl, locationStrategy)
                 .bind(fakeProgram)
         }
 

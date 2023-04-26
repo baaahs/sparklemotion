@@ -7,6 +7,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.plugin.PluginRef
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -28,7 +29,7 @@ data class UnknownFeed(
         UnknownFeedContext()
 
     class UnknownFeedContext : FeedContext, RefCounted by RefCounter() {
-        override fun bind(gl: GlContext): EngineFeedContext = UnknownEngineFeedContext()
+        override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = UnknownEngineFeedContext()
     }
 
     class UnknownEngineFeedContext : EngineFeedContext {

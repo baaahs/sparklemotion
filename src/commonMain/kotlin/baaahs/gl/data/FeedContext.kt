@@ -3,6 +3,7 @@ package baaahs.gl.data
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.param.ParamBuffer
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.TextureUniform
 import baaahs.show.UpdateMode
@@ -12,7 +13,7 @@ import baaahs.util.RefCounted
  * Context for an open feed.
  */
 interface FeedContext : RefCounted {
-    fun bind(gl: GlContext): EngineFeedContext
+    fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext
     fun release() = Unit
 }
 
