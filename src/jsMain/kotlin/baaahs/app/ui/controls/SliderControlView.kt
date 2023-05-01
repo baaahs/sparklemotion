@@ -4,7 +4,9 @@ import baaahs.GadgetListener
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
+import baaahs.gadgets.NetworkTime
 import baaahs.gadgets.Slider
+import baaahs.gadgets.Sliding
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.Color
@@ -48,6 +50,8 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     }
 
     val handlePositionChange by handler(slider) { newPosition: Float ->
+        val now = appContext.clock.now()
+        slider.sliding = Sliding(slider.position, newPosition, NetworkTime(now), NetworkTime(now + 2.0))
         slider.position = newPosition
     }
 

@@ -67,20 +67,31 @@ data class SliderFeed(
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                     return SingleUniformFeedContext(glslProgram, this@SliderFeed, id) { uniform ->
-                        if (beatSource != null && slider.beatLinked) {
-                            val beatData = beatSource.getBeatData()
-                            if (beatData.confidence > .2f) {
-                                uniform.set(
-                                    (slider.position - slider.floor) *
-                                            beatData.fractionTillNextBeat(clock) +
-                                            slider.floor
-                                )
-                                return@SingleUniformFeedContext
-                            }
-                        }
-
-                        uniform.set(slider.position)
+                        val position = tryFromBeatSource()
+                            ?: tryFromSliding()
+                            ?: slider.position
+                        uniform.set(position)
                     }
+                }
+
+                private fun tryFromBeatSource(): Float? {
+                    if (beatSource != null && slider.beatLinked) {
+                        val beatData = beatSource.getBeatData()
+                        if (beatData.confidence > .2f) {
+                            return (slider.position - slider.floor) *
+                                    beatData.fractionTillNextBeat(clock) +
+                                    slider.floor
+                        }
+                    }
+                    return null
+                }
+
+                private fun tryFromSliding(): Float? {
+                    slider.sliding?.let {
+                        val now = showPlayer.toolchain.plugins.pluginContext.clock.now()
+                        return it.getCurrentPosition(now)
+                    }
+                    return null
                 }
             }
         }
