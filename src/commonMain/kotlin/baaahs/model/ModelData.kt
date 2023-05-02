@@ -140,6 +140,25 @@ data class LightBarData(
         LightBar(title, description, position, rotation, scale, startVertex, endVertex, id)
 }
 
+@Serializable @SerialName("Henge")
+data class HengeData(
+    override val title: String,
+    override val description: String? = null,
+    override val position: Vector3F = Vector3F.origin,
+    override val rotation: EulerAngle = EulerAngle.identity,
+    override val scale: Vector3F = Vector3F.unit3d,
+    @Transient override val id: EntityId = Model.Entity.nextId(),
+//    val startVertex: Vector3F,
+//    val endVertex: Vector3F
+) : EntityData {
+    override fun edit(): MutableEntity =
+        MutableHengeData(this)
+
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
+        Henge(title, description, position, rotation, scale, id)
+}
+
+
 @Serializable @SerialName("PolyLine")
 data class PolyLineData(
     override val title: String,

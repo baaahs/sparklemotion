@@ -69,6 +69,81 @@ fun calcSegments(
     }
 }
 
+
+
+class Henge(
+    name: String,
+    description: String? = null,
+    position: Vector3F = Vector3F.origin,
+    rotation: EulerAngle = EulerAngle.identity,
+    scale: Vector3F = Vector3F.unit3d,
+
+/*
+    rows: Int,
+    columns: Int,
+    rowGap: Float,
+    columnGap: Float,
+    direction: GridData.Direction,
+    zigZag: Boolean,
+    stagger: Int = 1,
+*/
+
+    id: EntityId = Model.Entity.nextId()
+): PolyLine(
+    name, description,
+    calcHengeSegments(),
+
+    // Hardcoding padding
+    position, rotation, scale, 0.1f, 0.1f, id) {
+}
+
+fun calcHengeSegments(
+    /*
+    rows: Int,
+    columns: Int,
+    rowGap: Float,
+    columnGap: Float,
+    direction: GridData.Direction,
+    zigZag: Boolean,
+    stagger: Int = 1
+     */
+): List<PolyLine.Segment> {
+
+    return listOf(
+        PolyLine.Segment(Vector3F.origin, Vector3F(0.0f, 2.24f, 0.0f), 68),
+        PolyLine.Segment(Vector3F(0.0f, 2.24f, 0.0f), Vector3F(2.24f,2.24f, 0.0f), 68),
+    )
+//    return when (direction) {
+//
+//        GridData.Direction.RowsThenColumns ->
+//            (0 until rows).map { yI ->
+//                val staggerAmount = columnGap / stagger * (yI % stagger)
+//                val y = yI * rowGap
+//                PolyLine.Segment(
+//                    Vector3F(0f + staggerAmount, y, 0f),
+//                    Vector3F((columns - 1) * columnGap + staggerAmount, y, 0f),
+//                    columns
+//                ).let {
+//                    if (zigZag && yI % 2 == 1) it.reverse() else it
+//                }
+//            }
+//        GridData.Direction.ColumnsThenRows ->
+//            (0 until columns).map { xI ->
+//                val staggerAmount = rowGap / stagger * (xI % stagger)
+//                val x = xI * columnGap
+//                PolyLine.Segment(
+//                    Vector3F(x, 0f + staggerAmount, 0f),
+//                    Vector3F(x, (rows - 1) * rowGap + staggerAmount, 0f),
+//                    rows
+//                ).let {
+//                    if (zigZag && xI % 2 == 1) it.reverse() else it
+//                }
+//            }
+//    }
+}
+
+
+
 open class PolyLine(
     override val name: String,
     override val description: String? = null,

@@ -31,6 +31,11 @@ object LightBarEditorPanel : EntityEditorPanel<MutableLightBarData>("Light Bar")
         visualizerBuilder.getLightBarEditorView(editingEntity)
 }
 
+object HengeEditorPanel : EntityEditorPanel<MutableHengeData>("Henge") {
+    override fun getView(editingEntity: EditingEntity<out MutableHengeData>): View =
+        visualizerBuilder.getHengeEditorView(editingEntity)
+}
+
 object LightRingEditorPanel : EntityEditorPanel<MutableLightRingData>("Light Ring") {
     override fun getView(editingEntity: EditingEntity<out MutableLightRingData>): View =
         visualizerBuilder.getLightRingEditorView(editingEntity)

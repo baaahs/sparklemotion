@@ -373,6 +373,24 @@ class MutableLightBarData(
         )
 }
 
+class MutableHengeData(
+    baseHenge: HengeData
+) : MutableEntity(baseHenge) {
+//    var startVertex = baseLightBar.startVertex
+//    var endVertex = baseLightBar.endVertex
+
+    override fun build(): EntityData =
+        HengeData(title, description, position, rotation, scale, id)
+
+    override fun getEditorPanels() =
+        listOf(
+            TitleAndDescEntityEditorPanel,
+            TransformEntityEditorPanel,
+            HengeEditorPanel
+        )
+}
+
+
 class MutablePolyLineData(
     basePolyLine: PolyLineData
 ) : MutableEntity(basePolyLine) {

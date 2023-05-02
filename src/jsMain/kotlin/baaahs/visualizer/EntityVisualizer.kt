@@ -69,6 +69,12 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
         }
     }
 
+    override fun getHengeEditorView(editingEntity: EditingEntity<out MutableHengeData>): View = renderWrapper {
+        hengeEditor {
+            attrs.editingEntity = editingEntity
+        }
+    }
+
     override fun getLightRingEditorView(editingEntity: EditingEntity<out MutableLightRingData>): View = renderWrapper {
         lightRingEditor {
             attrs.editingEntity = editingEntity

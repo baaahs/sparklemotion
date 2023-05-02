@@ -263,6 +263,7 @@ sealed class Plugins(
             subclass(LightBarData::class, LightBarData.serializer())
             subclass(PolyLineData::class, PolyLineData.serializer())
             subclass(GridData::class, GridData.serializer())
+            subclass(HengeData::class, HengeData.serializer())
             subclass(LightRingData::class, LightRingData.serializer())
             subclass(SurfaceDataForTest::class, SurfaceDataForTest.serializer())
         }

@@ -11,7 +11,7 @@ interface EntityType {
 }
 
 val EntityTypes = listOf(
-    GridEntityType, LightBarEntityType, LightRingEntityType, MovingHeadEntityType, ImportEntityType
+    GridEntityType, LightBarEntityType, LightRingEntityType, MovingHeadEntityType, ImportEntityType, HengeEntityType
 )
 
 object GridEntityType : EntityType {
@@ -57,4 +57,10 @@ object ImportEntityType : EntityType {
     override val addNewTitle: String get() = "Import..."
 
     override fun createNew(): EntityData = ImportedEntityData("New OBJ", objData = "", objDataIsFileRef = false)
+}
+
+object HengeEntityType : EntityType {
+    override val title: String = "Henge"
+
+    override fun createNew(): EntityData = HengeData("New Henge")
 }
