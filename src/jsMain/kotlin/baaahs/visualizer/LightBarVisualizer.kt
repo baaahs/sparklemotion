@@ -196,6 +196,10 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
             lastEndVertex?.let { lastEndVertex ->
                 val connectorVector = segment.startVertex - lastEndVertex
                 val connectorLength = connectorVector.length()
+
+                // Zero-length ArrowHelpers have NaN dimensions and screw up rendering, so don't add them.
+                if (connectorLength > 0) return@let
+
                 strandGroup.add(
                     ArrowHelper(
                         connectorVector.normalize().toVector3(),
