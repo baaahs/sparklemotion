@@ -155,6 +155,14 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
     override val obj = Group()
 
     abstract fun getPixelLocations(): List<Vector3F>
+
+    /**
+     * Returns the segments that make up the pixel array.
+     *
+     * Note that neighboring segment vertices shouldn't coincide; that would specify
+     * that two pixels (the last and the first of their respective segments) would exist
+     * at the same point in space.
+     */
     abstract fun getSegments(): List<PolyLine.Segment>
 
     override fun applyStyle(entityStyle: EntityStyle) {
@@ -196,6 +204,10 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
             lastEndVertex?.let { lastEndVertex ->
                 val connectorVector = segment.startVertex - lastEndVertex
                 val connectorLength = connectorVector.length()
+
+                // Zero-length ArrowHelpers have NaN dimensions and screw up rendering, so don't add them.
+                if (connectorLength > 0) return@let
+
                 strandGroup.add(
                     ArrowHelper(
                         connectorVector.normalize().toVector3(),
