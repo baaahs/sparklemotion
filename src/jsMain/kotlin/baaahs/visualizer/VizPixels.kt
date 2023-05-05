@@ -34,7 +34,8 @@ class VizPixels(
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
-        side = FrontSide
+//        side = FrontSide
+        side = DoubleSide
         transparent = true
         blending = AdditiveBlending
 //            depthFunc = AlwaysDepth
@@ -188,7 +189,8 @@ class VizPixels(
 
         // TODO: This is dumb; instead, allow model entities to specify how their pixels appear.
         val undiffusedLedRangeCm: ClosedFloatingPointRange<Float> =
-            2f..5f
+            2f..10f
+//        2f..5f
 
         val diffusedLedRangeCm: ClosedFloatingPointRange<Float> =
             (2f * 2.54f)..(5f * 2.54f)
