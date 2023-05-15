@@ -1,11 +1,9 @@
 package baaahs.midi
 
 import baaahs.util.Logger
-import baaahs.window
-import external.midi.requestMIDIAccess
 
 class BrowserMidiDevices : MidiDevices {
-    private val midiAccess = window.navigator.requestMIDIAccess()
+//    private val midiAccess = window.navigator.requestMIDIAccess()
     private val transmitters = mutableMapOf<String, MidiTransmitter>()
 
     override suspend fun listTransmitters(): List<MidiTransmitter> {
