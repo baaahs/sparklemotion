@@ -12,6 +12,7 @@ import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.mapper.Storage
+import baaahs.midi.NullMidiDevices
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
@@ -60,7 +61,8 @@ object StageManagerSpec : Spek({
                 FakeClock(),
                 gadgetManager,
                 ServerNotices(pubSub.server, dispatcher),
-                SceneMonitor()
+                SceneMonitor(),
+                EventManager(NullMidiDevices(), pubSub.server, plugins),
             )
         }
 
