@@ -11,6 +11,8 @@ import baaahs.gl.render.RenderManager
 import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
+import baaahs.mapper.Storage
+import baaahs.midi.NullMidiDevices
 import baaahs.io.FsServerSideSerializer
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.scene.SceneMonitor
@@ -61,6 +63,7 @@ object StageManagerSpec : Spek({
                 gadgetManager,
                 ServerNotices(pubSub.server, dispatcher),
                 SceneMonitor(),
+                EventManager(NullMidiDevices(), pubSub.server, plugins),
                 FsServerSideSerializer(),
                 PinkyConfigStore(plugins, fakeFs.rootFile)
             )
