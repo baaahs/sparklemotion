@@ -1017,6 +1017,10 @@
                     "type": "feed",
                     "feedId": "beatInfo"
                 },
+                "midi": {
+                    "type": "feed",
+                    "feedId": "midi"
+                },
                 "resolution": {
                     "type": "feed",
                     "feedId": "resolution"
@@ -1987,6 +1991,9 @@
         "beatInfo": {
             "type": "baaahs.BeatLink:BeatInfo"
         },
+        "midi": {
+            "type": "baaahs.Midi:Midi"
+        },
         "hueRangeSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Range",
@@ -2050,6 +2057,9 @@
         },
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
+        },
+        "midi": {
+            "type": "baaahs.Midi:Midi"
         },
         "soundAnalysis": {
             "type": "baaahs.SoundAnalysis:SoundAnalysis"

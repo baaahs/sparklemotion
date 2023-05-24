@@ -16,6 +16,11 @@ struct SoundAnalysis {
 };
 uniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis
 
+struct Midi {
+	int sustainPedalCount;
+};
+uniform Midi midi; // @@baaahs.Midi:Midi
+
 struct BeatInfo {
 	float beat;
 	float bpm;
