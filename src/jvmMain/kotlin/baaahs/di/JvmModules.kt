@@ -46,37 +46,6 @@ class JvmPinkyModule(
 ) : PinkyModule {
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
 
-    init {
-        val name = "iCON iControls V2.04 Port 1"
-        val transmitters = MidiSystem.getMidiDeviceInfo().mapNotNull { info ->
-            println("${info.name}: ${info.javaClass.simpleName}\n  DESC=${info.description}\n  VENDOR=${info.vendor}\n  VERSION=${info.version}")
-            val device = MidiSystem.getMidiDevice(info)
-            val maxTransmitters = device.maxTransmitters
-            if (maxTransmitters == -1 || maxTransmitters > 0) {
-                device
-            } else null
-        }
-        val transmitterDevice = transmitters.firstOrNull { it.deviceInfo.description == name }
-        transmitterDevice?.let {
-            it.open()
-            val transmitter = it.transmitter
-            transmitter.receiver = object : Receiver {
-                override fun close() {
-                    println("close!")
-                }
-
-                override fun send(message: MidiMessage?, timeStamp: Long) {
-                    when (message) {
-                        is ShortMessage -> println("MIDI: " +
-                                "channel=${message.channel} command=${message.command} " +
-                                "data1=${message.data1} data2=${message.data2}")
-                        else -> println("send! $message $timeStamp")
-                    }
-                }
-            }
-        }
-    }
-
     override val Scope.serverPlugins: ServerPlugins
         get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
     override val Scope.fs: Fs

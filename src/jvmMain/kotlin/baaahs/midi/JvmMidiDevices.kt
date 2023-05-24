@@ -7,11 +7,13 @@ class JvmMidiDevices : MidiDevices {
     private val transmitters = mutableMapOf<String, MidiTransmitter>()
 
     override suspend fun listTransmitters(): List<MidiTransmitter> {
+        println("listing transmitters")
         val ids = mutableMapOf<String, Counter>()
 
         return buildList {
             MidiSystem.getMidiDeviceInfo().mapNotNull { info ->
                 println("${info.name}: ${info.javaClass.simpleName}\n  DESC=${info.description}\n  VENDOR=${info.vendor}\n  VERSION=${info.version}")
+                println("hello???")
                 val device = MidiSystem.getMidiDevice(info)
                 val id = info.name.let {
                     val idNum = ids.getOrPut(it) { Counter() }.count()
