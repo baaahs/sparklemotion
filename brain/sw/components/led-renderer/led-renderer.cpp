@@ -203,6 +203,13 @@ LEDRenderer::render() {
         uint8_t* cursor = m_pixels;
         for (uint16_t ix = 0; ix < m_pixelCount; ix++) {
             m_shader->Apply(ix, cursor, cursor);
+
+            // Apply gamma correction.
+            // TODO: This should be exposed and configurable via the protocol.
+            cursor[0] = Gamma::Correct(cursor[0], m_frameNumber, ix);
+            cursor[1] = Gamma::Correct(cursor[1], m_frameNumber, ix);
+            cursor[2] = Gamma::Correct(cursor[2], m_frameNumber, ix);
+
             cursor += 3;
         }
 
