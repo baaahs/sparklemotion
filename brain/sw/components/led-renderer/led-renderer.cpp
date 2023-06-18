@@ -206,9 +206,9 @@ LEDRenderer::render() {
 
             // Apply gamma correction.
             // TODO: This should be exposed and configurable via the protocol.
-            cursor[0] = Gamma::Correct(cursor[0], m_frameNumber, ix);
-            cursor[1] = Gamma::Correct(cursor[1], m_frameNumber, ix);
-            cursor[2] = Gamma::Correct(cursor[2], m_frameNumber, ix);
+            cursor[0] = Gamma::Correct22(cursor[0], m_frameNumber, ix);
+            cursor[1] = Gamma::Correct22(cursor[1], m_frameNumber, ix);
+            cursor[2] = Gamma::Correct22(cursor[2], m_frameNumber, ix);
 
             cursor += 3;
         }
