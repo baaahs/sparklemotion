@@ -2,7 +2,7 @@
 
 typedef struct GammaData {
     uint8_t value;  // The gamma-corrected value, rounded down.
-    uint8_t dither; // Bit-packed dithering data; for a 1-bit we add 1 to value on that frame.
+    uint8_t dither; // Bit-packed temporal dithering data; for a 1-bit we add 1 to value on that frame.
 } GammaData;
 
 class Gamma {
@@ -25,6 +25,8 @@ private:
     static const GammaData _table2_2[256];
 };
 
+// Gamma lookup table for a 2.2 gamma curve.
+// Generated using src/jvmMain/kotlin/baaahs/util/GammaGenerator.kt.
 const GammaData Gamma::_table2_2[] = {
         {0,0b0},{0,0b0},{0,0b0},{0,0b0},{0,0b0},{0,0b0},{0,0b10000000},{0,0b10000000},
         {0,0b10000000},{0,0b10000000},{0,0b10001000},{0,0b10001000},{0,0b10001000},{0,0b10101000},{0,0b10101000},{0,0b10101010},
