@@ -1,5 +1,7 @@
 #pragma once
 
+#include <inttypes.h>
+
 typedef struct GammaData {
     uint8_t value;  // The gamma-corrected value, rounded down.
     uint8_t dither; // Bit-packed temporal dithering data; for a 1-bit we add 1 to value on that frame.
