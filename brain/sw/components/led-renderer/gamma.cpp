@@ -1,19 +1,5 @@
 #include "gamma.h"
 
-static uint8_t Gamma::CorrectNoDither(uint8_t value) {
-    return _table2_2[value].value;
-}
-
-static uint8_t Gamma::Correct(uint8_t value, uint32_t frameNumber, uint32_t pixelIndex) {
-    uint8_t baseValue = _table2_2[value].value;
-    uint8_t dither = _table2_2[value].dither;
-    uint8_t ditherOffset = (frameNumber + pixelIndex) % 8;
-    if (dither & (1u << ditherOffset))
-        return baseValue + 1;
-    else
-        return baseValue;
-}
-
 // Gamma lookup table for a 2.2 gamma curve.
 // Generated using src/jvmMain/kotlin/baaahs/util/GammaGenerator.kt.
 static const GammaData _table2_2[] = {
@@ -50,3 +36,18 @@ static const GammaData _table2_2[] = {
     {223,0b10000000},{225,0b10001000},{227,0b10001000},{229,0b10101000},{231,0b10101000},{233,0b10101010},{235,0b11101010},{237,0b11101110},
     {239,0b11111110},{241,0b11111111},{244,0b10000000},{246,0b10001000},{248,0b10101010},{250,0b11101010},{252,0b11101110},{255,0b0}
 };
+
+
+uint8_t Gamma::Correct22NoDither(uint8_t value) {
+    return _table2_2[value].value;
+}
+
+uint8_t Gamma::Correct22(uint8_t value, uint32_t frameNumber, uint32_t pixelIndex) {
+    uint8_t baseValue = _table2_2[value].value;
+    uint8_t dither = _table2_2[value].dither;
+    uint8_t ditherOffset = (frameNumber + pixelIndex) % 8;
+    if (dither & (1u << ditherOffset))
+        return baseValue + 1;
+    else
+        return baseValue;
+}
