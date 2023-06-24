@@ -1,12 +1,14 @@
 package baaahs.gl.preview
 
-import baaahs.device.FixtureType
+import baaahs.device.EnumeratedPixelLocations
+import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
+import baaahs.fixtures.Fixture
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector2D
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
@@ -42,32 +44,31 @@ class ProjectionPreview(
 
     init {
         renderTargets = buildMap {
+            fun addFixture(entity: Model.Entity, pixelLocations: List<Vector3F>) {
+                val pixelCount = pixelLocations.size
+                val fixture = Fixture(
+                    entity, pixelCount, entity.name, NullTransport,
+                    this@ProjectionPreview.fixtureType,
+                    PixelArrayDevice.Config(
+                        pixelCount, PixelFormat.RGB8, 1f,
+                        EnumeratedPixelLocations(pixelLocations)
+                    )
+                )
+                put(entity, renderEngine.addFixture(fixture))
+            }
+
             model.visit { entity ->
                 when (entity) {
                     is Model.Surface -> {
                         val lineVertices = entity.lines.flatMap { it.vertices }
 
-                        // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
-                        val fixture = object : PixelArrayFixture(
-                            entity, lineVertices.size, entity.name, NullTransport,
-                            PixelFormat.RGB8, 1f, lineVertices
-                        ) {
-                            override val fixtureType: FixtureType
-                                get() = this@ProjectionPreview.fixtureType
-                        }
-                        put(entity, renderEngine.addFixture(fixture))
+                        // It's not really a PixelArray, we're just hijacking it to pass in surface perimeter vectors.
+                        addFixture(entity, lineVertices)
                     }
                     is PixelArray -> {
-                        val pixelCount = entity.defaultFixtureConfig?.componentCount ?: 100
-                        // It's not really a PixelArrayFixture, we're just hijacking it to pass in surface perimeter vectors.
-                        val fixture = object : PixelArrayFixture(
-                            entity, pixelCount, entity.name, NullTransport,
-                            PixelFormat.RGB8, 1f, entity.calculatePixelLocalLocations(pixelCount)
-                        ) {
-                            override val fixtureType: FixtureType
-                                get() = this@ProjectionPreview.fixtureType
-                        }
-                        put(entity, renderEngine.addFixture(fixture))
+                        val pixelCount = entity.defaultFixtureOptions?.componentCount ?: 100
+                        val pixelLocations = entity.calculatePixelLocalLocations(pixelCount)
+                        addFixture(entity, pixelLocations)
                     }
                 }
             }
@@ -179,7 +180,7 @@ class ProjectionPreview(
                         }
                     }
                     is PixelArray -> {
-                        val fixture = renderTarget.fixture as PixelArrayFixture
+                        val fixture = renderTarget.fixture
                         (0 until fixture.componentCount).forEach { pIndex ->
                             val point = getPoint(vertexIndex, errorMargin)
                             context2d.fillStyle = "#ffffff"

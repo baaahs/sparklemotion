@@ -181,13 +181,13 @@ object SacnIntegrationSpec : Spek({
             }
             val mappingData by value { SessionMappingResults(scene, listOf(mappingSession)) }
 
-            it("transforms it into FixtureConfigs") {
+            it("transforms it into FixtureOptions") {
                 val data = mappingData.dataForController(sacn1Id)
                     .only("fixture config")
 
-                val fixtureConfig = data.fixtureConfig as PixelArrayDevice.Config
-                expect(fixtureConfig.componentCount).toEqual(3)
-                expect(fixtureConfig.pixelFormat).toEqual(PixelFormat.GRB8)
+                val fixtureOptions = data.fixtureOptions as PixelArrayDevice.Options
+                expect(fixtureOptions.componentCount).toEqual(3)
+                expect(fixtureOptions.pixelFormat).toEqual(PixelFormat.GRB8)
 
                 expect(data.transportConfig).toEqual(DmxTransportConfig())
             }
@@ -202,7 +202,7 @@ private fun fixtureMappingData(
     componentsStartAtUniverseBoundaries: Boolean
 ) = FixtureMappingData(
     entityName,
-    PixelArrayDevice.Config(pixelCount, PixelFormat.RGB8),
+    PixelArrayDevice.Options(pixelCount, PixelFormat.RGB8),
     DmxTransportConfig(baseChannel, false, !componentsStartAtUniverseBoundaries)
 )
 

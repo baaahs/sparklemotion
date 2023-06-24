@@ -70,7 +70,7 @@ fun generateFixtureMappingData(): List<FixtureMappingData> {
         FixtureMappingData(
             // TODO: shortName? or ID?
             config.name, // TODO: name? or ID?
-            PixelArrayDevice.Config(
+            PixelArrayDevice.Options(
                 config.pixelCount,
                 pixelFormat,
                 pixelArrangement = LinearSurfacePixelStrategy()
@@ -89,7 +89,7 @@ fun generateFixtureMappings(): Map<ControllerId, List<FixtureMapping>> {
 
                     FixtureMapping(
                         config.createEntity(),
-                        PixelArrayDevice.Config(
+                        PixelArrayDevice.Options(
                             config.pixelCount,
                             pixelFormat,
                             pixelArrangement = LinearSurfacePixelStrategy()

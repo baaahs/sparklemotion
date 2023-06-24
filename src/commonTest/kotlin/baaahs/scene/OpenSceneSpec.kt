@@ -58,23 +58,23 @@ object OpenSceneSpec : Spek({
 //            }
 
             context("with fixture mappings configured for the controller") {
-                override(controllerFixtureMappingData) { FixtureMappingData(fixtureConfig = PixelArrayDevice.Config(111)) }
+                override(controllerFixtureMappingData) { FixtureMappingData(fixtureOptions = PixelArrayDevice.Options(111)) }
 
                 it("returns the correct mappings") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice.Config(111))
+                        FixtureMapping(null, PixelArrayDevice.Options(111))
                     )
                 }
             }
 
             context("with legacy mapping data") {
                 override(legacyMappingData) {
-                    FixtureMapping(null, PixelArrayDevice.Config(222), transportConfig)
+                    FixtureMapping(null, PixelArrayDevice.Options(222), transportConfig)
                 }
 
                 it("returns the correct mapping") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice.Config(222), transportConfig)
+                        FixtureMapping(null, PixelArrayDevice.Options(222), transportConfig)
                     )
                 }
             }
@@ -83,13 +83,13 @@ object OpenSceneSpec : Spek({
                 override(controller) {
                     FakeController(
                         "fake", null,
-                        anonymousFixtureMapping = FixtureMapping(null, PixelArrayDevice.Config(333))
+                        anonymousFixtureMapping = FixtureMapping(null, PixelArrayDevice.Options(333))
                     )
                 }
 
                 it("returns it") {
                     expect(relevantMappings).containsExactly(
-                        FixtureMapping(null, PixelArrayDevice.Config(333))
+                        FixtureMapping(null, PixelArrayDevice.Options(333))
                     )
                 }
             }

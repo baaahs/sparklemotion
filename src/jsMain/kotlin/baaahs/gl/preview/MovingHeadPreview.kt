@@ -3,9 +3,9 @@ package baaahs.gl.preview
 import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.FixtureTypeRenderPlan
-import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
+import baaahs.fixtures.movingHeadFixture
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ModelRenderEngine
@@ -46,7 +46,7 @@ class MovingHeadPreview(
         .filterIsInstance<MovingHead>()
         .ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
         .associateWith { movingHead ->
-            val fixture = MovingHeadFixture(movingHead, 1, movingHead.name, transport = NullTransport, adapter = movingHead.adapter)
+            val fixture = movingHeadFixture(movingHead, 1, movingHead.name, NullTransport, movingHead.adapter)
             renderEngine.addFixture(fixture)
         }
     private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D

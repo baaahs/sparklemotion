@@ -8,7 +8,6 @@ import baaahs.controller.entity
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.override
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
@@ -18,7 +17,6 @@ import baaahs.scene.SceneMonitor
 import baaahs.sm.brain.proto.BrainHelloMessage
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.feature
-import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -63,7 +61,7 @@ object BrainManagerSpec : Spek({
                     brain1Id to BrainControllerConfig(
                         "Brain Controller",
                         fixtures = brain1Fixtures,
-                        defaultFixtureConfig = PixelArrayDevice.Config(123)
+                        defaultFixtureOptions = PixelArrayDevice.Options(123)
                     )
                 )
             }
@@ -88,7 +86,7 @@ object BrainManagerSpec : Spek({
 
                 it("applies that config") {
                     val fixture = listener.added.only("fixture")
-                    expect(fixture).isA<PixelArrayFixture> {
+                    expect(fixture) {
                         feature { f(it::componentCount) }.toEqual(123)
                     }
                 }
@@ -103,5 +101,5 @@ private fun fixtureMappingData(
 ) =
     FixtureMappingData(
         entityName,
-        PixelArrayDevice.Config(pixelCount, PixelFormat.RGB8)
+        PixelArrayDevice.Options(pixelCount, PixelFormat.RGB8)
     )

@@ -41,7 +41,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
-        val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureConfig = PixelArrayDevice.Config()))
+        val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureOptions = PixelArrayDevice.Options()))
         mutableControllerConfig.fixtures.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
@@ -68,9 +68,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
         fixtureConfigPicker {
             attrs.editingController = editingController
-            attrs.mutableFixtureConfig = mutableControllerConfig.defaultFixtureConfig
-            attrs.setMutableFixtureConfig = { mutableControllerConfig.defaultFixtureConfig = it }
-            attrs.allowNullFixtureConfig = true
+            attrs.mutableFixtureOptions = mutableControllerConfig.defaultFixtureOptions
+            attrs.setMutableFixtureOptions = { mutableControllerConfig.defaultFixtureOptions = it }
+            attrs.allowNullFixtureOptions = true
         }
 
         transportConfigPicker {

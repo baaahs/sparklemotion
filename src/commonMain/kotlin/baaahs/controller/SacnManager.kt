@@ -7,7 +7,7 @@ import baaahs.dmx.DmxTransportConfig
 import baaahs.dmx.DmxUniverses
 import baaahs.dmx.DynamicDmxAllocator
 import baaahs.fixtures.ConfigPreview
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.FixturePreview
 import baaahs.fixtures.TransportConfig
 import baaahs.model.Model
@@ -72,7 +72,7 @@ class SacnManager(
                 override fun onAdd(key: ControllerId, value: SacnControllerConfig) {
                     val controller = SacnController(
                         key.id, sacnLink, link.createAddress(value.address),
-                        value.defaultFixtureConfig, value.defaultTransportConfig,
+                        value.defaultFixtureOptions, value.defaultTransportConfig,
                         value.universes, clock.now(),
                         universeListener
                     )
@@ -133,7 +133,7 @@ class SacnManager(
                                 .calculateEndUniverse(channelsPerUniverse)
                             val sacnController = SacnController(
                                 id, sacnLink, wledAddress,
-                                PixelArrayDevice.Config(pixelCount),
+                                PixelArrayDevice.Options(pixelCount),
                                 null, universeCount, onlineSince,
                                 universeListener
                             )
@@ -185,7 +185,8 @@ data class SacnControllerConfig(
     val address: String,
     val universes: Int,
     override val fixtures: List<FixtureMappingData> = emptyList(),
-    override val defaultFixtureConfig: FixtureConfig? = null,
+    @SerialName("defaultFixtureConfig")
+    override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig {
     override val controllerType: String get() = SacnManager.controllerTypeName
@@ -208,18 +209,18 @@ data class SacnControllerConfig(
         }
     }
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+    override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
-            fixtureConfig.componentCount!!,
-            fixtureConfig.bytesPerComponent,
+            fixtureOptions.componentCount!!,
+            fixtureOptions.bytesPerComponent,
             transportConfig as DmxTransportConfig
         )
         val dmxUniverses = DmxUniverses(universes)
         val dmxPreview = staticDmxMapping.preview(dmxUniverses)
 
         return object : FixturePreview {
-            override val fixtureConfig: ConfigPreview
-                get() = fixtureConfig.preview()
+            override val fixtureOptions: ConfigPreview
+                get() = fixtureOptions.preview()
             override val transportConfig: ConfigPreview
                 get() = dmxPreview
         }

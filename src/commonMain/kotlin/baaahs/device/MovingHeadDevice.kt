@@ -11,7 +11,7 @@ import baaahs.model.MovingHeadAdapter
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.scene.EditingController
-import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureOptions
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
@@ -49,12 +49,15 @@ object MovingHeadDevice : FixtureType {
                 }
             """.trimIndent()
         )
-    override val emptyConfig: FixtureConfig
-        get() = Config(null)
-    override val defaultConfig: FixtureConfig
-        get() = Config(Shenzarpy)
+    override val emptyOptions: FixtureOptions
+        get() = Options(null)
+    override val defaultOptions: FixtureOptions
+        get() = Options(Shenzarpy)
     override val serialModule: SerializersModule
         get() = SerializersModule {
+            polymorphic(FixtureOptions::class) {
+                subclass(Options::class, Options.serializer())
+            }
             polymorphic(FixtureConfig::class) {
                 subclass(Config::class, Config.serializer())
             }
@@ -65,24 +68,10 @@ object MovingHeadDevice : FixtureType {
         return SingleResultStorage(resultBuffer)
     }
 
-    override fun createFixture(
-        modelEntity: Model.Entity?,
-        componentCount: Int,
-        fixtureConfig: FixtureConfig,
-        name: String,
-        transport: Transport,
-        model: Model
-    ): Fixture {
-        fixtureConfig as Config
-        return MovingHeadFixture(
-            modelEntity, componentCount, name, transport,
-            fixtureConfig.adapter ?: error("No adapter specified."))
-    }
-
     override fun toString(): String = id
 
     @Serializable @SerialName("MovingHead")
-    data class Config(val adapter: MovingHeadAdapter?) : FixtureConfig {
+    data class Options(val adapter: MovingHeadAdapter?) : FixtureOptions {
         override val componentCount: Int
             get() = 1
         override val bytesPerComponent: Int
@@ -91,13 +80,13 @@ object MovingHeadDevice : FixtureType {
         override val fixtureType: FixtureType
             get() = MovingHeadDevice
 
-        override fun edit(): MutableFixtureConfig = MutableConfig(this)
+        override fun edit(): MutableFixtureOptions = MutableOptions(this)
 
-        override fun plus(other: FixtureConfig?): FixtureConfig =
+        override fun plus(other: FixtureOptions?): FixtureOptions =
             if (other == null) this
-            else plus(other as Config)
+            else plus(other as Options)
 
-        operator fun plus(other: Config): Config = Config(
+        operator fun plus(other: Options): Options = Options(
             other.adapter ?: adapter,
         )
 
@@ -105,17 +94,34 @@ object MovingHeadDevice : FixtureType {
             override fun summary(): List<Pair<String, String?>> =
                 listOf("Adapter" to adapter?.id)
         }
+
+        override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig =
+            Config(
+                adapter ?: error("Adapter not specified.")
+            )
     }
 
-    class MutableConfig(config: Config) : MutableFixtureConfig {
+    class MutableOptions(config: Options) : MutableFixtureOptions {
         override val fixtureType: FixtureType
             get() = MovingHeadDevice
 
         var adapter: MovingHeadAdapter? = config.adapter
 
-        override fun build(): FixtureConfig = Config(adapter)
+        override fun build(): FixtureOptions = Options(adapter)
         override fun getEditorView(
             editingController: EditingController<*>
-        ): View = visualizerBuilder.getMovingHeadFixtureConfigEditorView(editingController, this)
+        ): View = visualizerBuilder.getMovingHeadFixtureOptionsEditorView(editingController, this)
+    }
+
+    @Serializable @SerialName("MovingHead")
+    data class Config(
+        val adapter: MovingHeadAdapter
+    ) : FixtureConfig {
+        override val componentCount: Int
+            get() = 1
+        override val bytesPerComponent: Int
+            get() = adapter.dmxChannelCount
+        override val fixtureType: FixtureType
+            get() = MovingHeadDevice
     }
 }

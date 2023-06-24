@@ -1,7 +1,7 @@
 package baaahs.visualizer.remote
 
-import baaahs.fixtures.RemoteConfig
+import baaahs.fixtures.FixtureConfig
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RemoteConfigWrapper(val remoteConfig: RemoteConfig)
+data class RemoteConfigWrapper(val fixtureConfig: FixtureConfig)
