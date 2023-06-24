@@ -8,7 +8,6 @@ import baaahs.controller.entity
 import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.override
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
@@ -18,7 +17,6 @@ import baaahs.scene.SceneMonitor
 import baaahs.sm.brain.proto.BrainHelloMessage
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.feature
-import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek

@@ -1,14 +1,10 @@
 package baaahs.device
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureOptions
-import baaahs.fixtures.Transport
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
-import baaahs.model.Model
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import kotlinx.serialization.KSerializer
