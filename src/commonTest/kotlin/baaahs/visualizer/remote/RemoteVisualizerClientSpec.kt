@@ -7,7 +7,7 @@ import baaahs.client.document.SceneManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.FakeFixtureManager
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.pixelArrayFixture
 import baaahs.geom.Vector3F
 import baaahs.gl.testPlugins
 import baaahs.io.PubSubRemoteFsClientBackend
@@ -67,7 +67,7 @@ object RemoteVisualizerClientSpec : Spek({
             dispatcher.advanceUntilIdle()
 
             fakeFixtureManager.sendFixtureInfo(
-                PixelArrayFixture.from(entity, 2, transport = NullTransport,
+                pixelArrayFixture(entity, 2, transport = NullTransport,
                     pixelLocations = listOf(Vector3F.origin, Vector3F.unit3d)
                 )
             )

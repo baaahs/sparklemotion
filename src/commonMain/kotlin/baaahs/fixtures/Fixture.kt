@@ -22,11 +22,12 @@ class Fixture(
     val title: String
         get() = "$name: ${fixtureType.title} with $componentCount components at ${transport.name}"
 
-    override fun toString() = "Fixture[${hashCode()} $title]"
-}
+    init {
+        if (fixtureConfig.fixtureType !== fixtureType)
+            error("FixtureConfig's fixtureType (${fixtureConfig.fixtureType}) must match Fixture's fixtureType ($fixtureType).")
+    }
 
-interface RemoteConfig {
-//    val fixtureType: FixtureType
+    override fun toString() = "Fixture[${hashCode()} $title]"
 }
 
 interface FixturePreview {
@@ -46,39 +47,25 @@ interface ConfigPreview {
     fun summary(): List<Pair<String, String?>>
 }
 
-class PixelArrayFixture {
-    companion object {
-        fun from(
-            modelEntity: Model.Entity?,
-            pixelCount: Int,
-            name: String = modelEntity?.name ?: "Anonymous fixture",
-            transport: Transport,
-            pixelFormat: PixelFormat = PixelFormat.default,
-            gammaCorrection: Float = 1f,
-            /** Each pixel's location relative to the fixture. */
-            pixelLocations: List<Vector3F> = emptyList()
-        ): Fixture =
-            Fixture(
-                modelEntity, pixelCount, name, transport,
-                PixelArrayDevice,
-                PixelArrayDevice.Config(
-                    pixelCount, pixelFormat, gammaCorrection, EnumeratedPixelLocations(pixelLocations)
-                )
-            )
-    }
-}
+fun pixelArrayFixture(
+    modelEntity: Model.Entity?,
+    pixelCount: Int,
+    name: String = modelEntity?.name ?: "Anonymous fixture",
+    transport: Transport,
+    pixelFormat: PixelFormat = PixelFormat.default,
+    gammaCorrection: Float = 1f,
+    /** Each pixel's location relative to the fixture. */
+    pixelLocations: List<Vector3F> = emptyList()
+) = Fixture(
+        modelEntity, pixelCount, name, transport,
+        PixelArrayDevice,
+        PixelArrayDevice.Config(pixelCount, pixelFormat, gammaCorrection, EnumeratedPixelLocations(pixelLocations))
+    )
 
-class MovingHeadFixture {
-    companion object {
-        fun from(
-            modelEntity: Model.Entity?,
-            componentCount: Int,
-            name: String = modelEntity?.name ?: "Anonymous fixture",
-            transport: Transport,
-            adapter: MovingHeadAdapter
-        ) =
-            Fixture(modelEntity, componentCount, name, transport, MovingHeadDevice,
-                MovingHeadDevice.Config(adapter)
-            )
-    }
-}
+fun movingHeadFixture(
+    modelEntity: Model.Entity?,
+    componentCount: Int,
+    name: String = modelEntity?.name ?: "Anonymous fixture",
+    transport: Transport,
+    adapter: MovingHeadAdapter
+) = Fixture(modelEntity, componentCount, name, transport, MovingHeadDevice, MovingHeadDevice.Config(adapter))

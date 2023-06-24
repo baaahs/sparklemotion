@@ -68,14 +68,12 @@ class RenderManagerTest {
                 }
             """.trimIndent()
 
-        val renderTarget1 = renderManager.addFixture(
-            PixelArrayFixture.from(null, 2, transport = NullTransport))
+        val renderTarget1 = renderManager.addFixture(pixelArrayFixture(null, 2, transport = NullTransport))
         val linkedProgram1 = resolve(program1, ContentType.Color)
         val glslProgram1 = renderManager.compile(PixelArrayDevice, linkedProgram1) { _, _ -> error("none") }
 
         val movingHead = MovingHead("mover", adapter = Shenzarpy, baseDmxChannel = 1)
-        val renderTarget2 = renderManager.addFixture(
-            MovingHeadFixture.from(movingHead, 2, transport = NullTransport, adapter = Shenzarpy))
+        val renderTarget2 = renderManager.addFixture(movingHeadFixture(movingHead, 2, transport = NullTransport, adapter = Shenzarpy))
         val linkedProgram2 = resolve(program2, MovingHeadDevice.resultContentType)
         val glslProgram2 = renderManager.compile(MovingHeadDevice, linkedProgram2) { _, _ -> error("none") }
 

@@ -3,7 +3,10 @@ package baaahs.gl.preview
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureTypeRenderPlan
+import baaahs.fixtures.NullTransport
+import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector2D
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
@@ -12,7 +15,6 @@ import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.ModelRenderEngine
 import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
-import baaahs.glsl.NullSurfacePixelStrategy
 import baaahs.model.Model
 import baaahs.model.PixelArray
 import canvas.CanvasRenderingContext2D
