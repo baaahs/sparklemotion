@@ -1,8 +1,8 @@
 package baaahs.gl.result
 
 import baaahs.Color
+import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.gl.GlContext
 import baaahs.io.ByteArrayWriter
 import baaahs.sm.brain.proto.Pixels
@@ -42,11 +42,11 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
 
             // Using Color's int constructor fixes a bug in Safari causing
             // color values above 127 to be treated as 0. Untested. :-(
-            return Color(
-                red = byteBuffer[offset].toInt() and 0xff,
-                green = byteBuffer[offset + 1].toInt() and 0xff,
-                blue = byteBuffer[offset + 2].toInt() and 0xff,
-                alpha = byteBuffer[offset + 3].toInt() and 0xff
+            return Color.from(
+                r = byteBuffer[offset].toInt() and 0xff,
+                g = byteBuffer[offset + 1].toInt() and 0xff,
+                b = byteBuffer[offset + 2].toInt() and 0xff,
+                a = byteBuffer[offset + 3].toInt() and 0xff
             )
         }
 
@@ -65,7 +65,7 @@ object ColorResultType : ResultType<ColorResultType.Buffer> {
         override val size: Int
             get() = componentCount
 
-        private val fixtureConfig = fixture as PixelArrayFixture
+        private val fixtureConfig = fixture.fixtureConfig as PixelArrayDevice.Config
         private val pixelFormat = fixtureConfig.pixelFormat
         private val gammaCorrector = GammaCorrector.create(fixtureConfig.gammaCorrection.toDouble())
         private val bytesPerPixel = pixelFormat.channelsPerPixel

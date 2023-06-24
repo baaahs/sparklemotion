@@ -24,7 +24,7 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                         ?.ifEmpty { null }
                     val pixelCount = mappingData.pixelCount ?: pixelLocations?.size
 
-                    val fixtureConfig = PixelArrayDevice.Config(
+                    val fixtureOptions = PixelArrayDevice.Options(
                         pixelCount,
                         pixelLocations = pixelLocations,
                         pixelFormat = mappingData.pixelFormat
@@ -35,7 +35,7 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                         else -> null
                     }
 
-                    val fixtureMapping = FixtureMapping(modelEntity, fixtureConfig, transportConfig)
+                    val fixtureMapping = FixtureMapping(modelEntity, fixtureOptions, transportConfig)
                     add(controllerId, fixtureMapping)
                 } catch (e: Exception) {
                     logger.warn(e) { "Skipping $entityName." }

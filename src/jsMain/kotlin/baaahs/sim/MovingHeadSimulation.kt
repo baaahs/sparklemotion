@@ -2,8 +2,8 @@ package baaahs.sim
 
 import baaahs.controller.Controller
 import baaahs.controller.NullController
+import baaahs.device.MovingHeadDevice
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.MovingHeadFixture
 import baaahs.fixtures.Transport
 import baaahs.fixtures.TransportConfig
 import baaahs.io.ByteArrayWriter
@@ -24,12 +24,9 @@ actual class MovingHeadSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        MovingHeadFixture(
-            movingHead,
-            1,
-            movingHead.name,
-            PreviewTransport(),
-            movingHead.adapter
+        Fixture(
+            movingHead, 1, movingHead.name, PreviewTransport(), MovingHeadDevice,
+            MovingHeadDevice.Config(movingHead.adapter)
         )
     }
 

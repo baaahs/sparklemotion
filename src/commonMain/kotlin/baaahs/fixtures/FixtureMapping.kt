@@ -2,22 +2,26 @@ package baaahs.fixtures
 
 import baaahs.controller.Controller
 import baaahs.model.Model
+import kotlinx.serialization.SerialName
 
 data class FixtureMapping(
     val entity: Model.Entity?,
-    val fixtureConfig: FixtureConfig,
+    @SerialName("fixtureConfig")
+    val fixtureOptions: FixtureOptions,
     val transportConfig: TransportConfig? = null
 ) {
-    private val fixtureType = fixtureConfig.fixtureType
+    private val fixtureType = fixtureOptions.fixtureType
 
-    fun resolveFixtureConfig(controllerDefault: FixtureConfig?): FixtureConfig {
-        return fixtureType.defaultConfig + listOfNotNull(
+    fun resolveFixtureOptions(controllerDefault: FixtureOptions?): FixtureOptions {
+        val opts = listOfNotNull(
+            fixtureType.defaultOptions,
             controllerDefault,
-            entity?.defaultFixtureConfig,
-            fixtureConfig
+            entity?.defaultFixtureOptions,
+            fixtureOptions
         )
+        return opts
             .filter { it.fixtureType == fixtureType }
-            .reduceOrNull { acc, config -> acc.plus(config) }
+            .reduce { acc, config -> acc.plus(config) }
     }
 
     fun resolveTransportConfig(default: TransportConfig, controllerDefault: TransportConfig?): TransportConfig =
@@ -27,20 +31,15 @@ data class FixtureMapping(
         ).reduceOrNull { acc, config -> acc.plus(config) }
 
     fun buildFixture(controller: Controller, model: Model): Fixture {
-        val fixtureConfig = resolveFixtureConfig(controller.defaultFixtureConfig)
-
-        val transportConfig = resolveTransportConfig(
-            controller.transportType.emptyConfig, controller.defaultTransportConfig)
-
-        val componentCount = fixtureConfig.componentCount ?: 1
-        val bytesPerComponent = fixtureConfig.bytesPerComponent ?: error("Bytes per component unknown.")
+        val fixtureOptions = resolveFixtureOptions(controller.defaultFixtureOptions)
+        val fixtureConfig = fixtureOptions.toConfig(entity, model, defaultComponentCount = 1)
 
         val name = "${entity?.name ?: "???"}@${controller.controllerId.name()}"
 
-        val transport = controller.createTransport(
-            entity, fixtureConfig, transportConfig, componentCount, bytesPerComponent
-        )
+        val transportConfig = resolveTransportConfig(
+            controller.transportType.emptyConfig, controller.defaultTransportConfig)
+        val transport = controller.createTransport(entity, fixtureConfig, transportConfig)
 
-        return fixtureType.createFixture(entity, componentCount, fixtureConfig, name, transport, model)
+        return Fixture(entity, fixtureConfig.componentCount, name, transport, fixtureConfig.fixtureType, fixtureConfig)
     }
 }

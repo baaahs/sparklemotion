@@ -19,6 +19,15 @@ interface SurfacePixelStrategy {
     fun forUnknownEntity(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F>
 }
 
+@Serializable @SerialName("None")
+object NullSurfacePixelStrategy : SurfacePixelStrategy {
+    override fun forKnownEntity(pixelCount: Int, entity: Model.Entity, model: ModelInfo): List<Vector3F> =
+        emptyList()
+
+    override fun forUnknownEntity(pixelCount: Int, modelInfo: ModelInfo): List<Vector3F> =
+        emptyList()
+}
+
 @Serializable @SerialName("Random")
 class RandomSurfacePixelStrategy(
     @Transient private val random: Random = Random

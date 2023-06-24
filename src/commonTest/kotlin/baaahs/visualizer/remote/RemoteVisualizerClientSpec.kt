@@ -7,7 +7,7 @@ import baaahs.client.document.SceneManager
 import baaahs.device.PixelFormat
 import baaahs.fixtures.FakeFixtureManager
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.pixelArrayFixture
 import baaahs.geom.Vector3F
 import baaahs.gl.testPlugins
 import baaahs.io.PubSubRemoteFsClientBackend
@@ -67,7 +67,7 @@ object RemoteVisualizerClientSpec : Spek({
             dispatcher.advanceUntilIdle()
 
             fakeFixtureManager.sendFixtureInfo(
-                PixelArrayFixture(entity, 2, transport = NullTransport,
+                pixelArrayFixture(entity, 2, transport = NullTransport,
                     pixelLocations = listOf(Vector3F.origin, Vector3F.unit3d)
                 )
             )
@@ -85,8 +85,9 @@ object RemoteVisualizerClientSpec : Spek({
         context("receiving pixel array fixture data") {
             it("updates the visualizer with remote config data") {
                 val visualizer = fakeVisualizer.itemVisualizers.only() as FakeItemVisualizer
-                expect(visualizer.remoteConfig.pixelCount).toEqual(2)
-                expect(visualizer.remoteConfig.pixelLocations).containsExactly(Vector3F.origin, Vector3F.unit3d)
+                expect(visualizer.fixtureConfig.pixelCount).toEqual(2)
+                expect(visualizer.fixtureConfig.pixelLocations.arrayOfVector3F().toList())
+                    .containsExactly(Vector3F.origin, Vector3F.unit3d)
             }
         }
 

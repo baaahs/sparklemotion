@@ -2,6 +2,7 @@ package baaahs.controllers
 
 import baaahs.controller.*
 import baaahs.describe
+import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
@@ -18,7 +19,6 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapping.MappingManager
 import baaahs.model.FakeModelEntity
 import baaahs.model.Model
-import baaahs.model.ModelManager
 import baaahs.model.MovingHead
 import baaahs.only
 import baaahs.scene.*
@@ -27,12 +27,10 @@ import baaahs.ui.Observable
 import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
-@OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+@Suppress("unused")
 object ControllersManagerSpec : Spek({
     describe<ControllersManager> {
         val modelFixtureType by value { FixtureTypeForTest() }
@@ -42,7 +40,7 @@ object ControllersManagerSpec : Spek({
         val legacyMappings by value {
             mapOf(
                 fakeController.controllerId to
-                        listOf(FixtureMapping(modelEntity, modelEntity.fixtureType.emptyConfig))
+                        listOf(FixtureMapping(modelEntity, modelEntity.fixtureType.emptyOptions))
             )
         }
         val fakeControllerConfig by value {
@@ -135,13 +133,18 @@ object ControllersManagerSpec : Spek({
                         FakeController(
                             "c1",
                             anonymousFixtureMapping = FixtureMapping(
-                                null, PixelArrayDevice.Config(
+                                null, PixelArrayDevice.Options(
                                     pixelCount = 3,
                                     pixelFormat = PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
                             )
                         )
+                    }
+
+                    val expectedPixelLocations by value {
+                        val locations = LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!)
+                        EnumeratedPixelLocations(locations)
                     }
 
                     it("adds the anonymous fixture") {
@@ -151,15 +154,14 @@ object ControllersManagerSpec : Spek({
                     }
 
                     it("generates pixel positions within the model bounds") {
-                        expect(addedFixture).isA<PixelArrayFixture> {
-                            feature(PixelArrayFixture::componentCount)
-                                .toBe(3)
-                            feature(PixelArrayFixture::pixelLocations)
-                                .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
+                        expect(addedFixture) {
+                            feature(Fixture::componentCount).toBe(3)
+                            feature(Fixture::fixtureConfig)
+                                .isA<PixelArrayDevice.Config> {
+                                    feature(PixelArrayDevice.Config::pixelLocations)
+                                        .toBe(expectedPixelLocations)
+                                }
                         }
-                        val fixture = addedFixture as PixelArrayFixture
-                        expect(fixture.pixelLocations)
-                            .toBe(LinearSurfacePixelStrategy(Random(1)).forUnknownEntity(3, model!!))
                     }
                 }
             }
@@ -169,7 +171,7 @@ object ControllersManagerSpec : Spek({
                     mapOf(
                         fakeController.controllerId to listOf(
                             FixtureMapping(
-                                modelEntity, PixelArrayDevice.Config(
+                                modelEntity, PixelArrayDevice.Options(
                                     3, PixelFormat.RGB8,
                                     pixelArrangement = LinearSurfacePixelStrategy(Random(1))
                                 )
@@ -185,11 +187,13 @@ object ControllersManagerSpec : Spek({
                 }
 
                 it("generates pixel positions within the entity bounds") {
-                    expect(addedFixture).isA<PixelArrayFixture> {
-                        feature(PixelArrayFixture::componentCount)
-                            .toBe(3)
-                        feature(PixelArrayFixture::pixelLocations)
-                            .toBe(LinearSurfacePixelStrategy(Random(1)).forKnownEntity(3, modelEntity, model!!))
+                    expect(addedFixture) {
+                        feature(Fixture::componentCount).toBe(3)
+                        feature(Fixture::fixtureConfig)
+                            .isA<PixelArrayDevice.Config> {
+                                feature(PixelArrayDevice.Config::pixelLocations)
+                                    .toBe(EnumeratedPixelLocations(Vector3F.origin, Vector3F.origin, Vector3F.origin))
+                            }
                     }
                 }
 
@@ -198,7 +202,7 @@ object ControllersManagerSpec : Spek({
                         mapOf(
                             fakeController.controllerId to listOf(
                                 FixtureMapping(
-                                    modelEntity, PixelArrayDevice.Config(
+                                    modelEntity, PixelArrayDevice.Options(
                                         3,
                                         pixelLocations = listOf(
                                             Vector3F(1f, 1f, 1f),
@@ -212,17 +216,19 @@ object ControllersManagerSpec : Spek({
                     }
 
                     it("uses the pixel data") {
-                        expect(addedFixture).isA<PixelArrayFixture> {
-                            feature(PixelArrayFixture::componentCount)
-                                .toBe(3)
-                            feature(PixelArrayFixture::pixelLocations)
-                                .toBe(
-                                    listOf(
-                                        Vector3F(1f, 1f, 1f),
-                                        Vector3F(2f, 2f, 3f),
-                                        Vector3F(3f, 2f, 3f),
-                                    )
-                                )
+                        expect(addedFixture) {
+                            feature(Fixture::componentCount).toBe(3)
+                            feature(Fixture::fixtureConfig)
+                                .isA<PixelArrayDevice.Config> {
+                                    feature(PixelArrayDevice.Config::pixelLocations)
+                                        .toBe(
+                                            EnumeratedPixelLocations(
+                                                Vector3F(1f, 1f, 1f),
+                                                Vector3F(2f, 2f, 3f),
+                                                Vector3F(3f, 2f, 3f),
+                                            )
+                                        )
+                                }
                         }
                     }
                 }
@@ -230,51 +236,60 @@ object ControllersManagerSpec : Spek({
 
             context("when controller provides a default fixture config") {
                 value(fakeController) {
-                    FakeController("c1", modelFixtureType.Config(59, 3))
+                    FakeController("c1", modelFixtureType.Options(59, 3))
                 }
 
-                it("finds model entity mapping for the controller and creates a fixture with the model's ") {
-                    expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.componentCount).toBe(59)
-                    expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
-                        feature(FixtureTypeForTest.DtftFixture::pixelLocations)
-                            .toBe(emptyList())
+                it("finds model entity mapping for the controller and creates a fixture with options from the model") {
+                    expect(addedFixture) {
+                        feature(Fixture::modelEntity).toBe(modelEntity)
+                        feature(Fixture::componentCount).toBe(59)
+                        feature(Fixture::fixtureConfig)
+                            .isA<FixtureTypeForTest.Config> {
+                                feature(FixtureTypeForTest.Config::pixelLocations)
+                                    .toBe(EnumeratedPixelLocations())
+                            }
+                        feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
+                        feature(Fixture::transport).isSameAs(fakeController.transport)
                     }
-                    expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
-                    expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
 
                 context("and the fixture type also provides a default fixture config") {
                     override(modelFixtureType) {
                         FixtureTypeForTest().apply {
-                            defaultConfig = Config(4321, bytesPerComponent = 3)
+                            defaultOptions = Options(4321, bytesPerComponent = 3)
                         }
                     }
 
                     it("finds model entity mapping for the controller and creates a fixture with the model's ") {
-                        expect(addedFixture.modelEntity).toBe(modelEntity)
-                        expect(addedFixture.componentCount).toBe(59)
-                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
-                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
-                                .toBe(emptyList())
+                        expect(addedFixture) {
+                            feature(Fixture::modelEntity).toBe(modelEntity)
+                            feature(Fixture::componentCount).toBe(59)
+                            feature(Fixture::fixtureConfig)
+                                .isA<FixtureTypeForTest.Config> {
+                                    feature(FixtureTypeForTest.Config::pixelLocations)
+                                        .toBe(EnumeratedPixelLocations())
+                                }
+                            feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
+                            feature(Fixture::transport).isSameAs(fakeController.transport)
                         }
-                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
-                        expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
                 }
 
                 context("when controller provides a default fixture config for a different fixture type") {
-                    value(fakeController) { FakeController("c1", PixelArrayDevice.Config(4321)) }
+                    value(fakeController) { FakeController("c1", PixelArrayDevice.Options(4321)) }
 
                     it("ignores it, because we use the most specific fixture type to filter out others") {
-                        expect(addedFixture.modelEntity).toBe(modelEntity)
-                        expect(addedFixture.componentCount).toBe(1)
-                        expect(addedFixture).isA<FixtureTypeForTest.DtftFixture> {
-                            feature(FixtureTypeForTest.DtftFixture::pixelLocations)
-                                .toBe(emptyList())
+                        expect(addedFixture) {
+                            feature(Fixture::modelEntity).toBe(modelEntity)
+                            feature(Fixture::componentCount).toBe(1)
+                            feature(Fixture::fixtureConfig)
+                                .isA<FixtureTypeForTest.Config> {
+                                    feature(FixtureTypeForTest.Config::pixelLocations)
+                                        .toBe(EnumeratedPixelLocations())
+                                }
+                            feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
+                            feature(Fixture::transport).isSameAs(fakeController.transport)
                         }
-                        expect(addedFixture.fixtureType).toBe(modelEntity.fixtureType)
-                        expect(addedFixture.transport).isSameAs(fakeController.transport)
                     }
                 }
             }
@@ -286,7 +301,7 @@ object ControllersManagerSpec : Spek({
                     expect(addedFixture.modelEntity).toBe(modelEntity)
                     expect(addedFixture.componentCount).toBe(1)
                     expect(addedFixture.fixtureType).toBe(MovingHeadDevice)
-                    expect(addedFixture).isA<MovingHeadFixture>()
+                    expect(addedFixture.fixtureConfig).isA<MovingHeadDevice.Config>()
                     expect(addedFixture.transport).isSameAs(fakeController.transport)
                 }
             }
@@ -366,7 +381,7 @@ class FakeControllerManager(
         override val title: String = "fake controller",
         val controllers: List<FakeController> = emptyList(),
         override val fixtures: List<FixtureMappingData> = emptyList(),
-        override val defaultFixtureConfig: FixtureConfig? = null,
+        override val defaultFixtureOptions: FixtureOptions? = null,
         override val defaultTransportConfig: TransportConfig? = null
     ) : ControllerConfig {
         override val emptyTransportConfig: TransportConfig
@@ -374,7 +389,7 @@ class FakeControllerManager(
 
         override fun edit(): MutableControllerConfig = TODO("not implemented")
         override fun createFixturePreview(
-            fixtureConfig: FixtureConfig,
+            fixtureOptions: FixtureOptions,
             transportConfig: TransportConfig
         ): FixturePreview = TODO("not implemented")
     }
@@ -382,7 +397,7 @@ class FakeControllerManager(
 
 class FakeController(
     val name: String,
-    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null,
     private val anonymousFixtureMapping: FixtureMapping? = null
 ) : Controller {
@@ -402,15 +417,12 @@ class FakeController(
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?,
-        componentCount: Int,
-        bytesPerComponent: Int
-    ): Transport = FakeTransport(fixtureConfig, transportConfig).also { transport = it }
+        transportConfig: TransportConfig?
+    ): Transport = FakeTransport(transportConfig).also { transport = it }
 
     override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
 
     inner class FakeTransport(
-        val fixtureConfig: FixtureConfig,
         override val config: TransportConfig?
     ) : Transport {
         override val name: String get() = this@FakeController.name
@@ -428,13 +440,7 @@ class FakeController(
     }
 
     companion object {
-        val type = "FAKE"
-    }
-}
-
-class FakeModelManager(val model: Model) : Observable(), ModelManager {
-    override fun findEntity(name: String): Model.Entity? {
-        TODO("not implemented")
+        const val type = "FAKE"
     }
 }
 

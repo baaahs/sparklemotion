@@ -1,9 +1,10 @@
 package baaahs.sim
 
 import baaahs.controller.SacnManager
+import baaahs.device.EnumeratedPixelLocations
+import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.geom.Vector3F
 import baaahs.mapper.MappingSession
 import baaahs.model.PixelArray
@@ -45,14 +46,17 @@ actual abstract class PixelArraySimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        PixelArrayFixture(
+        Fixture(
             pixelArray,
             pixelLocations.size,
             pixelArray.name,
             PixelArrayPreviewTransport(pixelArray.name, vizPixels),
-            PixelFormat.default,
-            1f,
-            pixelLocations
+            PixelArrayDevice,
+            PixelArrayDevice.Config(
+                pixelLocations.size, PixelFormat.default,
+                1f,
+                EnumeratedPixelLocations(pixelLocations)
+            )
         )
     }
     override fun start() {
