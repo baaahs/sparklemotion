@@ -16,16 +16,12 @@ class Fixture(
     val componentCount: Int,
     val name: String = modelEntity?.name ?: "Anonymous fixture",
     val transport: Transport,
+    // TODO: The fixtureType should always match fixtureConfig.fixtureType.
     val fixtureType: FixtureType,
     val fixtureConfig: FixtureConfig
 ) {
     val title: String
         get() = "$name: ${fixtureType.title} with $componentCount components at ${transport.name}"
-
-    init {
-        if (fixtureConfig.fixtureType !== fixtureType)
-            error("FixtureConfig's fixtureType (${fixtureConfig.fixtureType}) must match Fixture's fixtureType ($fixtureType).")
-    }
 
     override fun toString() = "Fixture[${hashCode()} $title]"
 }
