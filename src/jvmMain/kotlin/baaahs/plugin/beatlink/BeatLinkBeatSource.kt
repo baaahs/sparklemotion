@@ -5,6 +5,9 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import org.deepsymmetry.beatlink.*
+import org.deepsymmetry.beatlink.data.ArtFinder
+import org.deepsymmetry.beatlink.data.MetadataFinder
+import java.awt.image.BufferedImage
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -22,8 +25,18 @@ class BeatLinkBeatSource(
     @Volatile
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
 
+    @Volatile
+    var currentTrack: TrackData = TrackData(
+        -1,
+        "",
+        "",
+        "",
+        listOf()
+    )
+
     private val logger = Logger("BeatLinkBeatSource")
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
+
     @Volatile
     private var lastBeatAt: Time? = null
 
@@ -106,13 +119,48 @@ class BeatLinkBeatSource(
     }
 
     override fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
+        if (audibleChannels == null) return
+        if (audibleChannels == currentlyAudibleChannels) return
+
         currentlyAudibleChannels.clear()
-        audibleChannels?.let { currentlyAudibleChannels.addAll(it) }
+        currentlyAudibleChannels.addAll(audibleChannels)
+
+        val onlyChannelOnAir = currentlyAudibleChannels.singleOrNull()
+        onlyChannelOnAir?.let {
+            val metadata = MetadataFinder.getInstance().getLatestMetadataFor(it) ?: return@let null
+
+            val title = metadata.title
+
+            val art: BufferedImage? = ArtFinder.getInstance().getLatestArtFor(it)?.image
+
+            val newCurrentTrack =
+                TrackData(
+                    id = metadata.trackReference.rekordboxId,
+                    title = title,
+                    artist = metadata.artist.label,
+//                    art = art,
+                    key = metadata.key.label,
+                    cueList = metadata.cueList.entries.map { it.cueTime },
+                )
+
+            //TODO this isn't comparing same tracks correctly? Test this id check
+            if (newCurrentTrack == currentTrack) {
+                return
+            }
+
+            println(currentTrack)
+            currentTrack = newCurrentTrack
+
+        } ?: run {
+            // If we're in here, then more than one track is playing (or no tracks are playing)
+
+        }
     }
+
 
     override fun newBeat(beat: Beat) {
         if (
-            // if more than one channel is on air, pick the tempo master
+        // if more than one channel is on air, pick the tempo master
             currentlyAudibleChannels.size > 1 && beat.isTempoMaster
 
             // if no channels are on air, pick the master
@@ -121,6 +169,7 @@ class BeatLinkBeatSource(
             // one channel is on air; pick the cdj that's on it
             || currentlyAudibleChannels.size == 1 && beat.deviceNumber == currentlyAudibleChannels.single()
         ) {
+
             val beatIntervalSec = 60.0 / beat.effectiveTempo
             val beatIntervalMs = (beatIntervalSec * 1000).toInt()
             val now = clock.now()
@@ -140,5 +189,9 @@ class BeatLinkBeatSource(
 
     override fun getBeatData(): BeatData {
         return currentBeat
+    }
+
+    override fun getCurrentTrack(): TrackData {
+        return currentTrack
     }
 }

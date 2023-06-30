@@ -320,6 +320,7 @@ class BeatLinkPlugin internal constructor(
         pluginContext: PluginContext
     ) : Observable(), BeatSource {
         private var beatData: BeatData = beatSource.getBeatData()
+        private var trackData: TrackData = beatSource.getCurrentTrack()
 
         val channel = pluginContext.pubSub.openChannel(beatDataTopic, beatData) {
             logger.warn { "BeatData update from client? Huh?" }
@@ -337,6 +338,7 @@ class BeatLinkPlugin internal constructor(
         }
 
         override fun getBeatData(): BeatData = beatData
+        override fun getCurrentTrack(): TrackData = trackData
 
     }
 
@@ -354,6 +356,9 @@ class BeatLinkPlugin internal constructor(
         }
 
         override fun getBeatData(): BeatData = beatData
+        override fun getCurrentTrack(): TrackData {
+            TODO("Not yet implemented")
+        }
 
     }
 }
