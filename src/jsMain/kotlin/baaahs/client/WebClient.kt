@@ -9,7 +9,7 @@ import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.dmx.DmxManagerImpl
 import baaahs.dmx.ListDmxUniverses
-import baaahs.gl.Monitors
+import baaahs.gl.Displays
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
@@ -58,7 +58,7 @@ class WebClient(
         }
     }
 
-    private val monitors = Monitors().also { it.Channel(pubSub) }
+    private val displays = Displays().also { it.Channel(pubSub) }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
@@ -142,8 +142,8 @@ class WebClient(
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings
 
-        val monitors: Monitors
-            get() = this@WebClient.monitors
+        val displays: Displays
+            get() = this@WebClient.displays
 
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)

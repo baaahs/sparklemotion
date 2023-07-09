@@ -2,12 +2,9 @@ package baaahs.gl.render
 
 import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.ProjectorFixture
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
-import baaahs.gl.Monitors
-import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
 interface RenderEngineBuilder {

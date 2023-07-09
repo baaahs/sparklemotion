@@ -25,7 +25,7 @@ actual object GlBase {
             return createContext(canvas, trace).also { it.canvas.id = "jsGlContext" }
         }
 
-        override fun createContext(monitor: Monitor, mode: Mode, trace: Boolean): GlContext {
+        override fun createContext(display: Display, mode: Mode, trace: Boolean): GlContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
             canvas.width = mode.width
             canvas.height = mode.height
@@ -53,7 +53,7 @@ actual object GlBase {
             )
         }
 
-        override fun observeMonitors(monitors: Monitors) {
+        override fun observeDisplays(displays: Displays) {
             // No-op in JS.
         }
     }

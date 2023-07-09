@@ -70,7 +70,7 @@ object ProjectorDevice : FixtureType {
     override fun toString(): String = id
 
     @Serializable @SerialName("Projector")
-    data class Options(val monitorName: String?, val width: Int?, val height: Int?) : FixtureOptions {
+    data class Options(val displayName: String?, val width: Int?, val height: Int?) : FixtureOptions {
         override val componentCount: Int
             get() = 1
         override val bytesPerComponent: Int
@@ -86,7 +86,7 @@ object ProjectorDevice : FixtureType {
             else plus(other as Options)
 
         operator fun plus(other: Options): Options = Options(
-            other.monitorName ?: monitorName,
+            other.displayName ?: displayName,
             other.width ?: width,
             other.height ?: height
         )
@@ -94,7 +94,7 @@ object ProjectorDevice : FixtureType {
         override fun preview(): ConfigPreview = object : ConfigPreview {
             override fun summary(): List<Pair<String, String?>> =
                 listOf(
-                    "Monitor" to monitorName,
+                    "Display" to displayName,
                     "Width" to width?.toString(),
                     "Height" to height?.toString()
                 )
@@ -106,7 +106,7 @@ object ProjectorDevice : FixtureType {
     }
 
     data class Config (
-        val monitorName: String,
+        val displayName: String,
         val width: Int,
         val height: Int
     ) : FixtureConfig {

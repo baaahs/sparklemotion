@@ -2,8 +2,8 @@ package baaahs.app.ui.model
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
+import baaahs.gl.Display
 import baaahs.gl.Mode
-import baaahs.gl.Monitor
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableProjectorData
 import baaahs.ui.unaryMinus
@@ -19,15 +19,15 @@ private val ProjectorEditorView = xComponent<ProjectorEditorProps>("ProjectorEdi
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
-    val monitors = appContext.webClient.monitors
-    observe(monitors)
+    val displays = appContext.webClient.displays
+    observe(displays)
 
     val mutableEntity = props.editingEntity.mutableEntity
 
-    var selectedMonitor by state<Monitor?> { null }
-    val handleMonitorChange by handler(mutableEntity) { monitor: Monitor? ->
-        mutableEntity.monitorName = monitor?.name ?: ""
-        selectedMonitor = monitor
+    var selectedDisplay by state<Display?> { null }
+    val handleDisplayChange by handler(mutableEntity) { display: Display? ->
+        mutableEntity.displayName = display?.name ?: ""
+        selectedDisplay = display
         props.editingEntity.onChange()
     }
 
@@ -45,24 +45,24 @@ private val ProjectorEditorView = xComponent<ProjectorEditorProps>("ProjectorEdi
         attrs.classes = jso { this.root = -styles.transformEditSection }
 
         Box {
-            betterSelect<Monitor?> {
-                attrs.label = "Monitor"
-                attrs.values = listOf(null) + monitors.all
-                attrs.renderValueOption = { monitor -> buildElement { +(monitor?.name ?: "Any") } }
-                attrs.value = selectedMonitor
-                attrs.onChange = handleMonitorChange
+            betterSelect<Display?> {
+                attrs.label = "Display"
+                attrs.values = listOf(null) + displays.all
+                attrs.renderValueOption = { display -> buildElement { +(display?.name ?: "Any") } }
+                attrs.value = selectedDisplay
+                attrs.onChange = handleDisplayChange
             }
         }
 
         Box {
             betterSelect<Mode?> {
                 attrs.label = "Mode"
-                attrs.values = listOf(null) + (selectedMonitor?.modes ?: emptyList())
+                attrs.values = listOf(null) + (selectedDisplay?.modes ?: emptyList())
                 attrs.renderValueOption = { mode ->
                     buildElement {
                         +(
                                 mode?.toString()
-                                    ?: selectedMonitor?.let { "Default (${it.defaultMode})" }
+                                    ?: selectedDisplay?.let { "Default (${it.defaultMode})" }
                                     ?: "Default"
                                 )
                     }

@@ -5,8 +5,8 @@ import baaahs.Pluggables
 import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
 import baaahs.di.PluginsModule
+import baaahs.gl.Displays
 import baaahs.gl.GlBase
-import baaahs.gl.Monitors
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
@@ -64,8 +64,8 @@ class PinkyMain(private val args: Array<String>) {
 
         logger.info { responses.random() }
 
-        val monitors = pinkyScope.get<Monitors>()
-        glManager.observeMonitors(monitors)
+        val displays = pinkyScope.get<Displays>()
+        glManager.observeDisplays(displays)
 
         try {
             val pinkyArgs = pinkyScope.get<PinkyArgs>()

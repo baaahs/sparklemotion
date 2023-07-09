@@ -1,8 +1,8 @@
 package baaahs.sim
 
+import baaahs.gl.Display
+import baaahs.gl.Displays
 import baaahs.gl.Mode
-import baaahs.gl.Monitor
-import baaahs.gl.Monitors
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import react.buildElement
@@ -10,24 +10,24 @@ import react.createRef
 import react.dom.html.ReactHTML.div
 import web.html.HTMLElement
 
-class MonitorSimulator(
+class DisplaySimulator(
     private val simulatorStorage: SimulatorStorage,
-    private val monitors: Monitors
+    private val displays: Displays
 ) {
     val facade = Facade()
-    private val windows = mutableMapOf<Monitor, Launcher.Window>()
+    private val windows = mutableMapOf<Display, Launcher.Window>()
 
     suspend fun loadSettings() {
-        simulatorStorage.loadSettings()?.monitors?.forEach {
-            attachMonitor(it)
+        simulatorStorage.loadSettings()?.displays?.forEach {
+            attachDisplay(it)
         }
     }
 
-    fun attachMonitor(monitor: Monitor) {
-        monitors.add(monitor)
+    fun attachDisplay(display: Display) {
+        displays.add(display)
         val divRef = createRef<HTMLElement>()
 
-        val window = Launcher.launch(monitor.name) {
+        val window = Launcher.launch(display.name) {
             object : HostedWebApp {
                 override fun render() = buildElement {
                     div {
@@ -36,33 +36,33 @@ class MonitorSimulator(
                 }
 
                 override fun onClose() {
-                    detachMonitor(monitor)
+                    detachDisplay(display)
                 }
             }
         }
-        windows[monitor] = window
+        windows[display] = window
     }
 
-    fun detachMonitor(monitor: Monitor) {
-        monitors.remove(monitor.id)
-        windows.remove(monitor)
+    fun detachDisplay(display: Display) {
+        displays.remove(display.id)
+        windows.remove(display)
     }
 
     inner class Facade : baaahs.ui.Facade() {
         fun createNew() {
-            val ids = monitors.all.map { it.id }
+            val ids = displays.all.map { it.id }
             var nextId = 0L
             while (ids.contains(nextId)) nextId++
             val defaultMode = Mode(320, 200)
-            val monitor = Monitor(nextId, "Screen $nextId", listOf(defaultMode), defaultMode, false)
-            attachMonitor(monitor)
+            val display = Display(nextId, "Screen $nextId", listOf(defaultMode), defaultMode, false)
+            attachDisplay(display)
         }
     }
 }
 
 @Serializable
 data class SimulatorSettings(
-    val monitors: List<Monitor> = emptyList()
+    val displays: List<Display> = emptyList()
 )
 
 class SimulatorStorage(private val browserSandboxFs: BrowserSandboxFs) {

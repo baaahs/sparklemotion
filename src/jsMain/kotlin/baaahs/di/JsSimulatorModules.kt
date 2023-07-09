@@ -7,7 +7,7 @@ import baaahs.browser.RealMediaDevices
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.encodeBase64
-import baaahs.gl.Monitors
+import baaahs.gl.Displays
 import baaahs.io.Fs
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
@@ -73,7 +73,7 @@ class JsSimulatorModule(
                 )
             }
             single { SimulatorStorage(get()) }
-            single { (monitors: Monitors) -> MonitorSimulator(get(), monitors) }
+            single { (displays: Displays) -> DisplaySimulator(get(), displays) }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
             single { (koin: Koin) -> SheepSimulator(get(), get(), get()) { koin } }
         }

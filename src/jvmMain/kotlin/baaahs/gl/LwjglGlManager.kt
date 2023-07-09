@@ -24,11 +24,11 @@ class LwjglGlManager : GlManager() {
         return LwjglGlContext(maybeTrace(KglLwjgl, trace), window)
     }
 
-    override fun createContext(monitor: Monitor, mode: Mode, trace: Boolean): GlContext {
+    override fun createContext(display: Display, mode: Mode, trace: Boolean): GlContext {
         if (!available) throw RuntimeException("GLSL not available")
 
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_TRUE)
-        val glwfWindow = GLFW.glfwCreateWindow(mode.width, mode.height, "Window on ${monitor.name}", monitor.id, 0)
+        val glwfWindow = GLFW.glfwCreateWindow(mode.width, mode.height, "Window on ${display.name}", display.id, 0)
         if (glwfWindow == 0L)
             throw RuntimeException("Failed to create the GLFW window")
 //        GLFW.glfwSetWindowMonitor(glwfWindow, monitor.id, 0, 0, mode.width, mode.height, mode.refreshRate)
@@ -39,7 +39,7 @@ class LwjglGlManager : GlManager() {
         return LwjglGlContext(maybeTrace(KglLwjgl, trace), window)
     }
 
-    override fun observeMonitors(monitors: Monitors) {
+    override fun observeDisplays(displays: Displays) {
         fun addMonitor(monitor: Long, isPrimary: Boolean) {
             val name = GLFW.glfwGetMonitorName(monitor)
                 ?: error("Error getting name for monitor $monitor.")
@@ -52,11 +52,11 @@ class LwjglGlManager : GlManager() {
                 ?.map { Mode(it.width(), it.height()) }?.distinct()
                 ?: error("Error getting modes for monitor \"$name\".")
 
-            monitors.add(Monitor(monitor, name, videoModes, currentMode, isPrimary))
+            displays.add(Display(monitor, name, videoModes, currentMode, isPrimary))
         }
 
         fun removeMonitor(monitor: Long) {
-            monitors.remove(monitor)
+            displays.remove(monitor)
         }
 
         val primaryMonitor = GLFW.glfwGetPrimaryMonitor()

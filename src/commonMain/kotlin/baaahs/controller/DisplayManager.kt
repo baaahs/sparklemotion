@@ -3,9 +3,9 @@ package baaahs.controller
 import baaahs.PubSub
 import baaahs.device.ProjectorDevice
 import baaahs.fixtures.*
+import baaahs.gl.Display
+import baaahs.gl.Displays
 import baaahs.gl.Mode
-import baaahs.gl.Monitor
-import baaahs.gl.Monitors
 import baaahs.model.Model
 import baaahs.model.Projector
 import baaahs.scene.ControllerConfig
@@ -20,13 +20,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 class DisplayManager(
-    private val monitors: Monitors,
+    private val displays: Displays,
     private val sceneProvider: SceneProvider, // TODO: remove
     private val fixtureListeners: List<FixtureListener>, // TODO: remove
     private val clock: Clock,
     private val pubSub: PubSub.Endpoint
 ) : BaseControllerManager(controllerTypeName) {
-    private var currentMonitors = listOf<Monitor>()
+    private var currentDisplays = listOf<Display>()
     private var currentProjectors = listOf<Projector>()
     private var currentFixtures = mapOf<Projector, Fixture>()
 
@@ -35,15 +35,15 @@ class DisplayManager(
     private var discoveredControllers: MutableMap<ControllerId, DisplayController> = hashMapOf()
 
     override fun start() {
-        // Create monitors channel.
-        monitors.Channel(pubSub)
+        // Create displays channel.
+        displays.Channel(pubSub)
 
         sceneProvider.addObserver(fireImmediately = true) {
             onSceneChange()
         }
 
-        monitors.addObserver(fireImmediately = true) {
-            onMonitorsChange()
+        displays.addObserver(fireImmediately = true) {
+            onDisplaysChange()
         }
     }
 
@@ -74,50 +74,54 @@ class DisplayManager(
             }
         }
 
-        onChange(updatedProjectors, currentMonitors)
+        onChange(updatedProjectors, currentDisplays)
     }
 
-    private fun onMonitorsChange() {
-        val updatedMonitors = buildList { addAll(monitors.all) }
-        onChange(currentProjectors, updatedMonitors)
+    private fun onDisplaysChange() {
+        val updatedDisplays = buildList { addAll(displays.all) }
+        onChange(currentProjectors, updatedDisplays)
     }
 
     private fun onChange(
         updatedProjectors: List<Projector>,
-        updatedMonitors: List<Monitor>
+        updatedDisplays: List<Display>
     ) {
-        val availableMonitors = updatedMonitors.toMutableList()
+        val availableDisplays = updatedDisplays.toMutableList()
         val fixturesToAdd = mutableListOf<Fixture>()
         val fixturesToRemove = mutableListOf<Fixture>()
         val newFixtures = mutableMapOf<Projector, Fixture>()
 
         updatedProjectors.forEach { projector ->
-            val monitorName = projector.monitorName
+            val displayName = projector.displayName
             val mode = projector.mode
 
-            val candidates = buildList { addAll(availableMonitors) }.toMutableList()
-            if (monitorName != null) {
-                candidates.removeAll { it.name != monitorName }
+            val candidates = buildList { addAll(availableDisplays) }.toMutableList()
+            if (displayName != null) {
+                candidates.removeAll { it.name != displayName }
             }
             if (mode != null) {
                 candidates.removeAll { !it.modes.contains(mode) }
             }
-            val monitor = candidates.firstOrNull()
-            availableMonitors.remove(monitor)
+            val display = candidates.firstOrNull()
+            availableDisplays.remove(display)
 
             val existingFixture = currentFixtures[projector]
             if (existingFixture != null) {
                 val config = existingFixture.fixtureConfig as ProjectorDevice.Config
-                if (config.monitorName == monitor?.name && config.mode == mode) {
+                if (
+                    config.displayName == display?.name
+                    && config.width == mode?.width
+                    && config.height == mode.height
+                ) {
                     newFixtures[projector] = existingFixture
                 } else {
                     fixturesToRemove.add(existingFixture)
-                    val newFixture = createProjectorFixture(projector, monitor, mode)
+                    val newFixture = createProjectorFixture(projector, display, mode)
                     newFixtures[projector] = newFixture
                     fixturesToAdd.add(newFixture)
                 }
             } else {
-                val newFixture = createProjectorFixture(projector, monitor, mode)
+                val newFixture = createProjectorFixture(projector, display, mode)
                 newFixtures[projector] = newFixture
                 fixturesToAdd.add(newFixture)
             }
@@ -142,16 +146,16 @@ class DisplayManager(
         controllers = buildMap {
             Delta.diff(lastConfig, configs, object : Delta.MapChangeListener<ControllerId, DisplayControllerConfig> {
                 override fun onAdd(key: ControllerId, value: DisplayControllerConfig) {
-                    val monitor = monitors.all.find { it.name == value.monitorName }
-                        ?: error("Unknown monitor \"${value.monitorName}\".")
+                    val display = displays.all.find { it.name == value.displayName }
+                        ?: error("Unknown display \"${value.displayName}\".")
 
                     val mode = value.resolution?.let { Mode(it.first, it.second) }
-                        ?: monitor.modes.firstOrNull()
-                        ?: error("No mode specified and no modes available for monitor \"${value.monitorName}\".")
+                        ?: display.modes.firstOrNull()
+                        ?: error("No mode specified and no modes available for display \"${value.displayName}\".")
 
                     val controller = DisplayController(
-                        key, monitor, mode,
-                        ProjectorDevice.Config(monitor.name, mode.width, mode.height),
+                        key, display, mode,
+                        ProjectorDevice.Config(display.name, mode.width, mode.height),
                         NullTransportConfig,
                         clock.now()
                     )
@@ -173,8 +177,9 @@ class DisplayManager(
         lastConfig = configs
     }
 
-    private fun createProjectorFixture(projector: Projector, monitor: Monitor?, mode: Mode?) =
-        Fixture(projector, 1, projector.name, NullTransport, ProjectorDevice, monitor, mode)
+    private fun createProjectorFixture(projector: Projector, display: Display?, mode: Mode?) =
+        Fixture(projector, 1, projector.name, NullTransport, ProjectorDevice,
+            ProjectorDevice.Config(display.name, mode))
 
     @Serializable
     data class State(
@@ -202,25 +207,23 @@ class DisplayManager(
 
 class DisplayController(
     override val controllerId: ControllerId,
-    private val monitor: Monitor,
+    private val display: Display,
     private val mode: Mode,
-    override val defaultFixtureConfig: FixtureConfig,
+    override val defaultFixtureOptions: FixtureOptions?,
     override val defaultTransportConfig: TransportConfig,
     private val onlineSince: Time?
 ) : Controller {
     override val state: ControllerState
         get() = DisplayManager.State(
-            "${monitor.name} (${mode.width}x${mode.height})",
-            monitor.id.toString(), onlineSince)
+            "${display.name} (${mode.width}x${mode.height})",
+            display.id.toString(), onlineSince)
     override val transportType: TransportType
         get() = NullTransportType
 
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?,
-        componentCount: Int,
-        bytesPerComponent: Int
+        transportConfig: TransportConfig?
     ): Transport {
         TODO("not implemented")
     }
@@ -235,6 +238,6 @@ class DisplayController(
 
 @Serializable @SerialName("Display")
 data class DisplayControllerConfig(
-    val monitorName: String?,
+    val displayName: String?,
     val resolution: Pair<Int, Int>?
 )

@@ -129,7 +129,7 @@ data class ProjectorData(
     override val rotation: EulerAngle = EulerAngle.identity,
     override val scale: Vector3F = Vector3F.unit3d,
     @Transient override val id: EntityId = Model.Entity.nextId(),
-    val monitorName: String? = null,
+    val displayName: String? = null,
     val width: Int? = null,
     val height: Int? = null
 
@@ -138,7 +138,7 @@ data class ProjectorData(
         MutableProjectorData(this)
 
     override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F) =
-        Projector(title, description, position, rotation, scale, monitorName, width, height, id)
+        Projector(title, description, position, rotation, scale, displayName, width, height, id)
 }
 
 @Serializable @SerialName("LightBar")

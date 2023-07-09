@@ -95,7 +95,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                     }
 
                     button {
-                        attrs.onClick = { props.simulator.monitorSimulator.createNew() }
+                        attrs.onClick = { props.simulator.displaySimulator.createNew() }
                         +"New Screen"
                     }
                 }

@@ -12,8 +12,8 @@ import baaahs.dmx.DmxUniverseListener
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.FixturePublisher
+import baaahs.gl.Displays
 import baaahs.gl.GlBase
-import baaahs.gl.Monitors
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
@@ -168,7 +168,7 @@ interface PinkyModule : KModule {
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }
                 scoped { PinkyMapperHandlers(get()) }
-                scoped { Monitors() }
+                scoped { Displays() }
                 scoped { DisplayManager(get(), get(), get(fixtureListeners), get(), get()) }
                 scoped {
                     Pinky(

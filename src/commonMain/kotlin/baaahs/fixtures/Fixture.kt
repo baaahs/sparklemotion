@@ -2,8 +2,6 @@ package baaahs.fixtures
 
 import baaahs.device.*
 import baaahs.geom.Vector3F
-import baaahs.gl.Mode
-import baaahs.gl.Monitor
 import baaahs.model.Model
 import baaahs.model.MovingHeadAdapter
 

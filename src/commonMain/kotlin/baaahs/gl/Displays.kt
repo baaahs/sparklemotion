@@ -6,35 +6,35 @@ import baaahs.ui.Observable
 import baaahs.ui.addObserver
 import kotlinx.serialization.Serializable
 
-class Monitors : Observable() {
-    private val knownMonitors = arrayListOf<Monitor>()
+class Displays : Observable() {
+    private val knownDisplays = arrayListOf<Display>()
 
-    val all get() = knownMonitors.toList()
+    val all get() = knownDisplays.toList()
 
-    fun add(monitor: Monitor) {
-        knownMonitors.add(monitor)
+    fun add(display: Display) {
+        knownDisplays.add(display)
         notifyChanged()
     }
 
     fun remove(id: Long) {
-        knownMonitors.removeAll { it.id == id }
+        knownDisplays.removeAll { it.id == id }
     }
 
     inner class Channel(pubSub: PubSub.Endpoint) {
-        private var monitorsChannel = pubSub.openChannel(Topics.monitors, all) {
-            knownMonitors.clear()
-            knownMonitors.addAll(it)
+        private var displaysChannel = pubSub.openChannel(Topics.displays, all) {
+            knownDisplays.clear()
+            knownDisplays.addAll(it)
             notifyChanged()
         }
 
         init {
-            this@Monitors.addObserver { monitorsChannel.onChange(all) }
+            this@Displays.addObserver { displaysChannel.onChange(all) }
         }
     }
 }
 
 @Serializable
-data class Monitor(
+data class Display(
     val id: Long,
     val name: String,
     val modes: List<Mode>,
