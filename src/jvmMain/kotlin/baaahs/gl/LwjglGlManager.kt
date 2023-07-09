@@ -1,5 +1,8 @@
 package baaahs.gl
 
+import baaahs.controller.DisplayProvider
+import baaahs.ui.IObservable
+import baaahs.ui.Observable
 import baaahs.util.Logger
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
@@ -12,6 +15,54 @@ class LwjglGlManager : GlManager() {
 
     override val available: Boolean
         get() = window != 0L
+
+    val displayProvider: DisplayProvider = object : DisplayProvider, IObservable by Observable() {
+        override val id: String
+            get() = "GL"
+
+        private val mutableDisplays = mutableListOf<Display>()
+        override val displays: List<Display> = mutableDisplays
+
+        override fun start() {
+            fun addMonitor(monitor: Long, isPrimary: Boolean) {
+                val name = GLFW.glfwGetMonitorName(monitor)
+                    ?: error("Error getting name for monitor $monitor.")
+
+                val currentMode = GLFW.glfwGetVideoMode(monitor)
+                    ?.let { Mode(it.width(), it.height()) }
+                    ?: error("Error getting mode for monitor \"$name\".")
+
+                val videoModes = GLFW.glfwGetVideoModes(monitor)
+                    ?.map { Mode(it.width(), it.height()) }?.distinct()
+                    ?: error("Error getting modes for monitor \"$name\".")
+
+                mutableDisplays.add(Display(DisplayInfo(id, name, videoModes, currentMode, isPrimary)))
+            }
+
+            fun removeMonitor(monitor: Long) {
+                mutableDisplays.removeAll { it.displayInfo.name == GLFW.glfwGetMonitorName(monitor) }
+            }
+
+            val primaryMonitor = GLFW.glfwGetPrimaryMonitor()
+            GLFW.glfwSetMonitorCallback { monitor, event ->
+                when (event) {
+                    GLFW.GLFW_CONNECTED -> {
+                        logger.info { "Monitor connected: $monitor" }
+                        addMonitor(monitor, monitor == primaryMonitor)
+                    }
+                    GLFW.GLFW_DISCONNECTED -> {
+                        logger.info { "Monitor disconnected: $monitor" }
+                        removeMonitor(monitor)
+                    }
+                    else -> logger.debug { "Monitor event: $monitor $event" }
+                }
+            }
+            val monitorPointers = GLFW.glfwGetMonitors() ?: error("Error in glfwGetMonitors")
+            for (i in 0 until monitorPointers.limit()) {
+                addMonitor(monitorPointers[i], monitorPointers[i] == primaryMonitor)
+            }
+        }
+    }
 
     override fun createContext(trace: Boolean): GlContext {
         logger.warn { "DANGER!!! LwjglGlManager.createContext() doesn't actually create a new context!" }
@@ -37,46 +88,6 @@ class LwjglGlManager : GlManager() {
 //        GLFW.glfwMakeContextCurrent(0)
 
         return LwjglGlContext(maybeTrace(KglLwjgl, trace), window)
-    }
-
-    override fun observeDisplays(displays: Displays) {
-        fun addMonitor(monitor: Long, isPrimary: Boolean) {
-            val name = GLFW.glfwGetMonitorName(monitor)
-                ?: error("Error getting name for monitor $monitor.")
-
-            val currentMode = GLFW.glfwGetVideoMode(monitor)
-                ?.let { Mode(it.width(), it.height()) }
-                ?: error("Error getting mode for monitor \"$name\".")
-
-            val videoModes = GLFW.glfwGetVideoModes(monitor)
-                ?.map { Mode(it.width(), it.height()) }?.distinct()
-                ?: error("Error getting modes for monitor \"$name\".")
-
-            displays.add(Display(monitor, name, videoModes, currentMode, isPrimary))
-        }
-
-        fun removeMonitor(monitor: Long) {
-            displays.remove(monitor)
-        }
-
-        val primaryMonitor = GLFW.glfwGetPrimaryMonitor()
-        GLFW.glfwSetMonitorCallback { monitor, event ->
-            when (event) {
-                GLFW.GLFW_CONNECTED -> {
-                    logger.info { "Monitor connected: $monitor" }
-                    addMonitor(monitor, monitor == primaryMonitor)
-                }
-                GLFW.GLFW_DISCONNECTED -> {
-                    logger.info { "Monitor disconnected: $monitor" }
-                    removeMonitor(monitor)
-                }
-                else -> logger.debug { "Monitor event: $monitor $event" }
-            }
-        }
-        val monitorPointers = GLFW.glfwGetMonitors() ?: error("Error in glfwGetMonitors")
-        for (i in 0 until monitorPointers.limit()) {
-            addMonitor(monitorPointers[i], monitorPointers[i] == primaryMonitor)
-        }
     }
 
     inner class LwjglGlContext(kgl: Kgl, private val window: Long) : GlContext(kgl, "330 core") {

@@ -55,10 +55,7 @@ class TestRig {
     }
 }
 
-@InternalCoroutinesApi
-class SpyPubSub(
-    dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
-) : PubSub.Endpoint() {
+class SpyPubSub : PubSub.Endpoint() {
     override val commandChannels: PubSub.CommandChannels = PubSub.CommandChannels()
 
     private val onUpdates = mutableMapOf<String, (Any?) -> Unit>()

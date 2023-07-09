@@ -44,7 +44,7 @@ class DisplaySimulator(
     }
 
     fun detachDisplay(display: Display) {
-        displays.remove(display.id)
+        displays.remove(display)
         windows.remove(display)
     }
 

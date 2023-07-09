@@ -16,8 +16,8 @@ class Displays : Observable() {
         notifyChanged()
     }
 
-    fun remove(id: Long) {
-        knownDisplays.removeAll { it.id == id }
+    fun remove(display: Display) {
+        knownDisplays.remove(display)
     }
 
     inner class Channel(pubSub: PubSub.Endpoint) {
@@ -34,13 +34,21 @@ class Displays : Observable() {
 }
 
 @Serializable
-data class Display(
-    val id: Long,
+data class DisplayInfo(
+    val displayProviderId: String,
     val name: String,
     val modes: List<Mode>,
     val defaultMode: Mode,
     val isPrimary: Boolean
 )
+
+class Display(
+    val id: Long,
+    val displayInfo: DisplayInfo
+) {
+    val name get() = displayInfo.name
+    val modes get() = displayInfo.modes
+}
 
 @Serializable
 data class Mode(val width: Int, val height: Int) {

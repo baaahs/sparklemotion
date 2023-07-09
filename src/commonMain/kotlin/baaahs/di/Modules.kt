@@ -96,6 +96,7 @@ interface PinkyModule : KModule {
         val controllerListeners = named("ControllerListeners")
         val fixtureListeners = named("FixtureListeners")
         val controllerManagers = named("ControllerManagers")
+        val displayProviders = named("DisplayProviders")
 
         return module {
             scope<Pinky> {
@@ -169,7 +170,7 @@ interface PinkyModule : KModule {
                 scoped { ServerNotices(get(), get(pinkyContext)) }
                 scoped { PinkyMapperHandlers(get()) }
                 scoped { Displays() }
-                scoped { DisplayManager(get(), get(), get(fixtureListeners), get(), get()) }
+                scoped { DisplayManager(get(displayProviders), get(), get(), get(fixtureListeners), get(), get()) }
                 scoped {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),

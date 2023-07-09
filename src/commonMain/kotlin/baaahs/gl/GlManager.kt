@@ -12,6 +12,4 @@ abstract class GlManager {
     protected fun maybeTrace(kgl: Kgl, trace: Boolean): Kgl {
         return if (trace) KglTracer(kgl) else kgl
     }
-
-    abstract fun observeDisplays(displays: Displays)
 }
