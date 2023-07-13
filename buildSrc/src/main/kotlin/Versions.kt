@@ -1,5 +1,5 @@
 object Versions {
-    const val kotlin = "1.8.22"
+    const val kotlin = "1.9.0"
     const val kotlinGradlePlugin = kotlin
     const val coroutines = "1.6.4"
     const val serializationRuntime = "1.4.1"
