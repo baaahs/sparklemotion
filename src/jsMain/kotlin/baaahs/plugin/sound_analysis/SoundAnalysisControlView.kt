@@ -14,9 +14,8 @@ import baaahs.ui.important
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLElement
+import js.core.jso
 import kotlinx.css.*
-import kotlinx.js.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -24,6 +23,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.StyleSheet
+import web.html.HTMLElement
 
 private val soundAnalysisVisualizerShader =
     futureAsync {

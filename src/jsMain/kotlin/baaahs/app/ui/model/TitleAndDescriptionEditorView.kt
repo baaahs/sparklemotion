@@ -5,13 +5,13 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import csstype.FlexDirection
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Container
 import mui.material.TextField
 import mui.system.sx
 import react.*
 import react.dom.onChange
+import web.cssom.FlexDirection
 
 private val TitleAndDescriptionEditorView =
     xComponent<TitleAndDescriptionEditorProps>("TitleAndDescriptionEditor") { props ->
@@ -34,7 +34,7 @@ private val TitleAndDescriptionEditorView =
         Container {
             attrs.classes = jso { this.root = -styles.propertiesEditSection }
             attrs.sx {
-                display = csstype.Display.flex
+                display = web.cssom.Display.flex
                 flexDirection = FlexDirection.column
             }
 

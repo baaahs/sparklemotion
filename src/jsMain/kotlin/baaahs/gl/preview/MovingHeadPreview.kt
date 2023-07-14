@@ -13,11 +13,11 @@ import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
-import canvas.CanvasRenderingContext2D
-import dom.html.HTMLCanvasElement
-import dom.html.RenderingContextId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.RenderingContextId
+import web.html.HTMLCanvasElement
 import web.timers.requestAnimationFrame
 import kotlin.math.*
 

@@ -1,6 +1,6 @@
 package external
 
-import kotlinx.js.jso
+import js.core.jso
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.RDOMBuilder

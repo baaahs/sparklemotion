@@ -8,8 +8,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.window
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import react.Props
@@ -19,6 +18,7 @@ import react.dom.div
 import react.dom.html.TdAlign
 import react.dom.onClick
 import react.useContext
+import web.dom.Element
 import web.events.Event
 import web.timers.clearInterval
 import web.timers.setInterval

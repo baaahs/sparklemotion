@@ -5,12 +5,12 @@ import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
 import baaahs.ui.DialogMenuItem.*
-import csstype.*
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.files.FileReader
 import react.*
+import web.cssom.*
 
 private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { props ->
     val appContext = useContext(appContext)

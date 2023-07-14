@@ -12,7 +12,7 @@ import baaahs.ui.gridlayout.Layout
 import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
-import dom.html.HTMLElement
+import web.html.HTMLElement
 import external.Direction
 import external.draggable
 import external.droppable
@@ -20,7 +20,7 @@ import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
 import external.react_resizable.buildResizeHandle
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.Paper
 import org.w3c.dom.events.MouseEvent

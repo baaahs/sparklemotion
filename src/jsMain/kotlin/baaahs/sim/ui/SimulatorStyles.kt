@@ -2,6 +2,7 @@ package baaahs.sim.ui
 
 import baaahs.app.ui.linearRepeating
 import baaahs.ui.important
+import baaahs.ui.rgba
 import kotlinx.css.*
 import kotlinx.css.properties.border
 import kotlinx.css.properties.boxShadow

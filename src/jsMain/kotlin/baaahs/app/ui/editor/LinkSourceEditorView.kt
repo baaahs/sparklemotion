@@ -6,11 +6,11 @@ import baaahs.show.mutable.EditingShader
 import baaahs.ui.unaryMinus
 import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
-import dom.html.HTMLElement
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import react.*
+import web.html.HTMLElement
 
 private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEditor") { props ->
     val appContext = useContext(appContext)

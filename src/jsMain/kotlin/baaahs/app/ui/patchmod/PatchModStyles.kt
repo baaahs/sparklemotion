@@ -21,7 +21,7 @@ class PatchModStyles(private val theme: Theme) : StyleSheet("app-ui-patchmod", i
     val controls by css {
         display = Display.flex
         flexDirection = FlexDirection.row
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         maxWidth = 300.px
         overflowX = Overflow.scroll
         padding = "1em"

@@ -22,18 +22,8 @@ import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
-import canvas.CanvasImageSource
-import canvas.CanvasRenderingContext2D
-import canvas.ImageBitmap
-import csstype.Cursor
-import dom.events.KeyboardEvent
-import dom.events.MouseEvent
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLElement
-import dom.html.HTMLImageElement
-import dom.html.RenderingContextId
+import js.core.jso
 import kotlinx.coroutines.*
-import kotlinx.js.jso
 import react.RBuilder
 import react.ReactElement
 import react.createElement
@@ -42,9 +32,18 @@ import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.*
+import web.canvas.CanvasImageSource
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.ImageBitmap
+import web.canvas.RenderingContextId
+import web.cssom.Cursor
 import web.events.Event
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
+import web.html.HTMLImageElement
 import web.prompts.prompt
 import web.timers.requestAnimationFrame
+import web.uievents.*
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -200,9 +199,9 @@ class JsMapper(
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        ui3dCanvas.addEventListener("mousedown", ::mouseDown)
-        ui3dCanvas.addEventListener("mousemove", ::mouseMove)
-        ui3dCanvas.addEventListener("mouseup", ::mouseUp)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
 
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -212,9 +211,9 @@ class JsMapper(
     }
 
     fun onUnmount() {
-        ui3dCanvas.removeEventListener("mousedown", ::mouseDown)
-        ui3dCanvas.removeEventListener("mousemove", ::mouseMove)
-        ui3dCanvas.removeEventListener("mouseup", ::mouseUp)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
 
         onClose()
     }
@@ -299,37 +298,38 @@ class JsMapper(
     fun gotUiKeypress(keypress: Keypress, event: KeyboardEvent): KeypressResult {
         var result = KeypressResult.Handled
 
-        val isDigit = event.code.startsWith("Digit")
-        if (event.code == "Enter") {
+        val code = event.code as String
+        val isDigit = code.startsWith("Digit")
+        if (code == "Enter") {
             processCommand(commandProgress.trim())
             commandProgress = ""
-        } else if (event.code == "Backspace") {
+        } else if (code == "Backspace") {
             if (commandProgress.isNotEmpty()) {
                 commandProgress = commandProgress.substring(0..(commandProgress.length - 2))
             }
             checkProgress()
-        } else if (commandProgress.isEmpty() && event.code == "KeyQ") {
+        } else if (commandProgress.isEmpty() && code == "KeyQ") {
             adjustCameraRotation(clockwise = false, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "KeyW") {
+        } else if (commandProgress.isEmpty() && code == "KeyW") {
             adjustCameraRotation(clockwise = true, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "Minus") {
+        } else if (commandProgress.isEmpty() && code == "Minus") {
             adjustCameraZoom(zoomIn = false, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "Equal") {
+        } else if (commandProgress.isEmpty() && code == "Equal") {
             adjustCameraZoom(zoomIn = true, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "ArrowUp") {
+        } else if (commandProgress.isEmpty() && code == "ArrowUp") {
             adjustCameraY(moveUp = true, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "ArrowDown") {
+        } else if (commandProgress.isEmpty() && code == "ArrowDown") {
             adjustCameraY(moveUp = false, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "ArrowLeft") {
+        } else if (commandProgress.isEmpty() && code == "ArrowLeft") {
             adjustCameraX(moveRight = false, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "ArrowRight") {
+        } else if (commandProgress.isEmpty() && code == "ArrowRight") {
             adjustCameraX(moveRight = true, fine = event.shiftKey)
-        } else if (commandProgress.isEmpty() && event.code == "Digit0") {
+        } else if (commandProgress.isEmpty() && code == "Digit0") {
             resetCameraRotation()
         } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl") {
-            loadCameraPosition(event.code.substring(5))
+            loadCameraPosition(code.substring(5))
         } else if (commandProgress.isEmpty() && isDigit && keypress.modifiers == "ctrl-shift") {
-            saveCameraPosition(event.code.substring(5))
+            saveCameraPosition(code.substring(5))
         } else if (event.key.length == 1) {
             commandProgress += event.key
             checkProgress()

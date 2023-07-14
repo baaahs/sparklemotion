@@ -7,10 +7,8 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import csstype.MaxWidth
-import csstype.important
+import js.core.jso
 import kotlinx.css.LinearDimension
-import kotlinx.js.jso
 import materialui.icon
 import mui.material.*
 import mui.material.styles.TypographyVariant
@@ -19,6 +17,9 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.buildElement
+import web.cssom.Display
+import web.cssom.MaxWidth
+import web.cssom.important
 
 private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props ->
     val styles = EditableStyles
@@ -68,7 +69,7 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
                 attrs.classes = jso { this.root = -styles.shaderCardContent }
                 attrs.variant = TypographyVariant.body2
                 attrs.sx {
-                    display = csstype.Display.block
+                    display = Display.block
                     color = Colors.secondary
                 }
 

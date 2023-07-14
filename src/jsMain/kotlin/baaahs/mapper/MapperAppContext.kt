@@ -5,9 +5,10 @@ import baaahs.client.SceneEditorClient
 import baaahs.plugin.Plugins
 import baaahs.ui.KeyboardShortcutHandler
 import baaahs.util.Clock
+import js.core.jso
 import react.createContext
 
-val mapperAppContext = createContext<MapperAppContext>()
+val mapperAppContext = createContext<MapperAppContext>(jso {})
 
 external interface MapperAppContext {
     var sceneEditorClient: SceneEditorClient.Facade

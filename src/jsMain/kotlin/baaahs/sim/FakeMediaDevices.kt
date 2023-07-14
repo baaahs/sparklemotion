@@ -6,7 +6,7 @@ import baaahs.imaging.Image
 import baaahs.imaging.WebGlImage
 import baaahs.visualizer.BaseVisualizer
 import baaahs.visualizer.Visualizer
-import kotlinx.js.jso
+import js.core.jso
 import three.js.Camera
 import three.js.PerspectiveCamera
 import three.js.Scene

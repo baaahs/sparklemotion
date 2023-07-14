@@ -1,13 +1,13 @@
 package baaahs
 
-import canvas.CanvasRenderingContext2D
-import dom.DOMTokenList
-import dom.Element
-import dom.html.*
-import kotlinx.js.get
+import web.canvas.RenderingContextId
+import web.dom.DOMTokenList
+import web.dom.Element
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
 
-val document get() = browser.document
-val window get() = browser.window
+val document get() = web.dom.document
+val window get() = web.window.window
 
 var Element.disabled: Boolean
     get() = getAttribute("disabled") == "disabled"
@@ -29,4 +29,4 @@ fun DOMTokenList.clear() {
 fun <T : HTMLElement> HTMLElement.first(className: String) : T =
     (getElementsByClassName(className)[0] as T?)!!
 
-fun HTMLCanvasElement.context2d() = this.getContext(RenderingContextId.canvas)!! as CanvasRenderingContext2D
+fun HTMLCanvasElement.context2d() = this.getContext(RenderingContextId.canvas)!!

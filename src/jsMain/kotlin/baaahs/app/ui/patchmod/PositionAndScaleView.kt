@@ -10,12 +10,12 @@ import baaahs.show.live.OpenPatch
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import dom.html.HTMLElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
+import web.html.HTMLElement
 
 private val PositionAndScaleView = xComponent<PositionAndScaleProps>("PositionAndScale") { props ->
     val appContext = useContext(appContext)

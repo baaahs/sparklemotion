@@ -9,7 +9,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.DraggableProvided
 import external.copyFrom
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.Card
 import react.Props

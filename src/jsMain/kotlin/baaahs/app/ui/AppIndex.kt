@@ -21,10 +21,8 @@ import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
-import csstype.Display
-import csstype.ZIndex
 import external.ErrorBoundary
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.NotificationImportant
 import mui.material.*
@@ -35,6 +33,8 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.p
+import web.cssom.Display
+import web.cssom.ZIndex
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient

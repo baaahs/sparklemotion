@@ -16,10 +16,10 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
 import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
+import js.core.jso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
-import kotlinx.js.jso
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.koinApplication
 import org.w3c.dom.get
@@ -152,7 +152,7 @@ private fun launchSimulator(
     }
 }
 
-private fun getElementById(elementId: String) = browser.document.getElementById(elementId)
+private fun getElementById(elementId: String) = document.getElementById(elementId)
 
 private fun HostedWebApp.launchApp() {
     globalLaunch {

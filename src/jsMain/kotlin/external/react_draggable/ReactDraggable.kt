@@ -2,12 +2,12 @@
 
 package external.react_draggable
 
-import dom.html.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.ElementType
 import react.Props
 import react.ReactElement
 import react.Ref
+import web.html.HTMLElement
 
 @JsName("default")
 external val Draggable : ElementType<DraggableProps>

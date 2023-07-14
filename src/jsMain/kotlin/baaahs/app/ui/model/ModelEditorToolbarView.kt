@@ -8,17 +8,17 @@ import baaahs.ui.*
 import baaahs.util.CacheBuilder
 import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
-import dom.Element
 import external.react_draggable.Draggable
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.MouseEvent
 import react.dom.header
-import react.dom.html.InputType
 import react.dom.onChange
+import web.dom.Element
+import web.html.InputType
 import kotlin.collections.set
 
 private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelEditorToolbar", true) { props ->

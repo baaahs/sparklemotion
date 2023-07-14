@@ -5,8 +5,8 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.OpenDocument
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.*
+import js.core.jso
 import kotlinx.html.unsafe
-import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Article
 import mui.icons.material.Edit

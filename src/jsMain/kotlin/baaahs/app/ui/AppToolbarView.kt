@@ -6,14 +6,14 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
-import csstype.ClassName
+import web.cssom.ClassName
 import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
 import kotlinx.css.pointerEvents
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.*
 import mui.icons.material.Menu

@@ -14,8 +14,6 @@ import baaahs.ui.inPixels
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import dom.Element
-import dom.html.HTMLDivElement
 import external.IntersectionObserver
 import kotlinx.css.*
 import materialui.icon
@@ -30,6 +28,8 @@ import react.dom.onClick
 import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
+import web.dom.Element
+import web.html.HTMLDivElement
 
 private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
@@ -214,7 +214,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
                     icon(mui.icons.material.Warning)
                     Typography {
                         attrs.sx {
-                            display = csstype.Display.block
+                            display = web.cssom.Display.block
                         }
                         +"Preview failed."
                     }

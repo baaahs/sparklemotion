@@ -3,10 +3,10 @@
 @file:Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED", "VAR_TYPE_MISMATCH_ON_OVERRIDE", "INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION", "PackageDirectoryMismatch")
 package three_ext
 
-import dom.html.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import three.js.Camera
 import three.js.Object3D
+import web.html.HTMLElement
 
 open external class TransformControls(camera: Camera, domElement: HTMLElement) : Object3D {
     var `object`: Object3D?

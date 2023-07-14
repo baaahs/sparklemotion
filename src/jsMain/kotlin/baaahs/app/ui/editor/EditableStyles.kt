@@ -25,18 +25,18 @@ class ThemedEditableStyles(val theme: Theme) : StyleSheet("app-ui-editor-Editabl
     }
 
     val expandSwitchLabel by css {
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         paddingLeft = 1.em
     }
 
     val singlePanel by css {
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         display = Display.flex
         flexDirection = FlexDirection.column
         padding = "24px 16px"
 
         ".ui-shaderEditor" {
-            grow(Grow.GROW)
+            flex(Flex.GROW)
 
             ".ui-textEditor" {
                 height = LinearDimension.initial
