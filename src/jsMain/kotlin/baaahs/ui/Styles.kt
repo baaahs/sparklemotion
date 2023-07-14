@@ -13,17 +13,17 @@ object Styles : StyleSheet("ui", isStatic = true) {
     }
     
     val showName by css {
-        flex(1.0, 1.0)
-        padding(0.px, 8.px)
+        flex = Flex(1.0, 1.0)
+        padding = Padding(0.px, 8.px)
         display = Display.flex
     }
     val showNameInput by css {
         display = Display.flex
         background = "none"
-        border = "none"
-        padding(0.px, 8.px)
+        border = Border.none
+        padding = Padding(0.px, 8.px)
         color = Color.white
-        flex(1.0, 1.0)
+        flex = Flex(1.0, 1.0)
 
         focus {
             outline = Outline.none
@@ -57,7 +57,7 @@ object Styles : StyleSheet("ui", isStatic = true) {
 
     val iconButton by css {
         color = Color.white
-        padding(8.px)
+        padding = Padding(8.px)
 
         hover {
             cursor = Cursor.pointer
@@ -73,24 +73,24 @@ object Styles : StyleSheet("ui", isStatic = true) {
     val fileDialogFileList by css {
         height = 50.vh
         overflowY = Overflow.scroll
-        border = "1px groove"
+        border = Border(1.px, groove)
     }
 
     val helpInline by css {
         display = Display.inline
-        padding(0.em, .5.em)
+        padding = Padding(0.em, .5.em)
     }
 
     val guruMeditationErrorContainer by css {
         backgroundColor = Color.black
         color = Color.red
-        margin = "0"
-        padding = ".5em"
+        margin = Margin(0.px)
+        padding = Padding(.5.em)
     }
 
     val guruMeditationErrorBox by css {
-        margin = 1.em.toString()
-        padding = 1.em.toString()
+        margin = Margin(1.em)
+        padding = Padding(1.em)
         display = Display.flex
         flexDirection = FlexDirection.row
         alignItems = Align.center
@@ -101,7 +101,7 @@ object Styles : StyleSheet("ui", isStatic = true) {
         }
 
         button {
-            border = "1px solid red"
+            border = Border(1.px, BorderStyle.solid, Color.red)
             color = Color.red
         }
     }

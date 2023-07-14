@@ -4,8 +4,6 @@ import baaahs.ui.asColor
 import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
-import kotlinx.css.properties.borderBottom
-import kotlinx.css.properties.borderRight
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -29,7 +27,7 @@ class LayoutEditorStyles(theme: Theme) : StyleSheet("app-ui-editor-LayoutEditorS
         color = Color("#aa0000")
         position = Position.absolute
         right = 0.px
-        padding(3.px)
+        padding = Padding(3.px)
 
         hover {
             color = Color("#dd0000")
@@ -40,9 +38,9 @@ class LayoutEditorStyles(theme: Theme) : StyleSheet("app-ui-editor-LayoutEditorS
         marginTop = 1.em
 
         children {
-            borderRight(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
-            borderBottom(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
-            padding(2.px)
+            borderRight = Border(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
+            borderBottom = Border(1.px, BorderStyle.solid, theme.palette.primary.dark.asColor())
+            padding = Padding(2.px)
         }
     }
 
@@ -65,12 +63,12 @@ class LayoutEditorStyles(theme: Theme) : StyleSheet("app-ui-editor-LayoutEditorS
     }
 
     val gridAreaEdge by css {
-        border = "none"
+        border = Border.none
     }
 
     val gridSizeEditorMenuAffordance by css {
         display = Display.inlineBlock
-        padding(2.px, 2.px, 5.px, 2.px)
+        padding = Padding(2.px, 2.px, 5.px, 2.px)
         height = 100.pct
         verticalAlign = VerticalAlign.middle
 

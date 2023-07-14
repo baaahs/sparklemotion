@@ -6,13 +6,16 @@ import baaahs.ui.asColor
 import baaahs.ui.child
 import baaahs.ui.important
 import kotlinx.css.*
-import kotlinx.css.properties.*
+import kotlinx.css.properties.deg
+import kotlinx.css.properties.rotate
+import kotlinx.css.properties.scale
+import kotlinx.css.properties.transform
 import mui.material.styles.Theme
 import styled.StyleSheet
 
 class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-ShaderEditor", isStatic = true) {
     val container by css {
-        flex(Flex.GROW)
+        flex = Flex.GROW
         display = Display.grid
         gridTemplateAreas = GridTemplateAreas("\"editor preview\" \"editor properties\"")
         gridTemplateColumns = GridTemplateColumns(1.fr, LinearDimension.minContent)
@@ -29,13 +32,13 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
         gap = 1.em
 
         child(ShaderPreviewStyles, ShaderPreviewStyles::container) {
-            flex(Flex.NONE)
+            flex = Flex.NONE
         }
     }
 
     val propsTabsAndPanels by css {
         gridArea = "properties"
-        flex(Flex.GROW)
+        flex = Flex.GROW
         display = Display.flex
         flexDirection = FlexDirection.column
         position = Position.relative
@@ -48,7 +51,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
     val propsPanel by css {
         display = Display.flex
         flexDirection = FlexDirection.row
-        padding = "1em"
+        padding = Padding(1.em)
         maxWidth = 300.px
         height = 100.pct
         position = Position.relative
@@ -111,7 +114,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
 
     val settingsMenuAffordance by css {
         position = Position.absolute
-        padding(2.px)
+        padding = Padding(2.px)
         backgroundColor = Color.white.withAlpha(.5)
         width = 2.em
         height = 2.em
@@ -136,12 +139,12 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
 
     val editorActionMenuAffordance by css {
         minWidth = 10.em
-        border(2.px, BorderStyle.solid, theme.palette.primary.light.asColor())
+        border = Border(2.px, BorderStyle.solid, theme.palette.primary.light.asColor())
         borderRadius = 5.px
         position = Position.fixed
         marginTop = 5.px
         transform { scale(.5) }
-        padding(2.px)
+        padding = Padding(2.px)
         display = Display.flex
         minWidth = 0.px
         backgroundColor = Color(theme.palette.background.paper)
@@ -151,7 +154,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
     val refactorMarker by css {
         display = Display.block
         position = Position.absolute
-        border(2.px, BorderStyle.solid, theme.palette.primary.main.asColor())
+        border = Border(2.px, BorderStyle.solid, theme.palette.primary.main.asColor())
         marginLeft = (-1).px
         marginRight = (-1).px
         zIndex = 10

@@ -1,9 +1,9 @@
 package external
 
-import js.core.HighResTimeStamp
 import web.html.HTMLVideoElement
 
 external interface VideoFrameMetaData
+typealias HighResTimeStamp = Double
 typealias VideoFrameRequestCallback = (HighResTimeStamp, VideoFrameMetaData) -> Unit
 
 inline fun HTMLVideoElement.requestVideoFrameCallback(noinline callback: VideoFrameRequestCallback): Long =

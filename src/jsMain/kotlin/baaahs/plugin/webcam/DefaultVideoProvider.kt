@@ -4,6 +4,7 @@ import baaahs.document
 import baaahs.util.Logger
 import com.danielgergely.kgl.TextureResource
 import js.core.jso
+import js.promise.catch
 import org.khronos.webgl.TexImageSource
 import web.html.HTMLVideoElement
 import web.media.streams.ConstrainULongRange

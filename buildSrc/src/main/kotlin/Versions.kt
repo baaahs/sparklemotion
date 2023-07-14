@@ -1,8 +1,8 @@
 object Versions {
     const val kotlin = "1.9.0"
     const val kotlinGradlePlugin = kotlin
-    const val coroutines = "1.6.4"
-    const val serializationRuntime = "1.4.1"
+    const val coroutines = "1.7.2"
+    const val serializationRuntime = "1.5.1"
     const val koin = "3.1.3"
     const val dokka = "1.7.10"
 
@@ -12,11 +12,11 @@ object Versions {
     const val lwjgl = "3.3.1"
 
     // JVM:
-    const val ktor = "2.1.2"
+    const val ktor = "2.3.2"
 
     // JS:
-    const val kotlinxHtml = "0.7.5"
-    const val kotlinWrappers = "1.0.0-pre.565"
+    const val kotlinxHtml = "0.9.1"
+    const val kotlinWrappers = "1.0.0-pre.596"
 
     // Test:
     const val junit = "5.8.1"

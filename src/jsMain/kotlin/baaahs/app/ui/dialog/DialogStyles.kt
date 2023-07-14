@@ -21,12 +21,12 @@ object DialogStyles : StyleSheet("app-ui-dialog-Dialog", isStatic = true) {
         display = Display.flex
         alignItems = Align.stretch
         child("*") {
-            flex(1.0)
+            flex = Flex(1.0)
         }
     }
 
     val tabsListCol by css {
-        flex(1.0, 1.0, FlexBasis.zero)
+        flex = Flex(1.0, 1.0, FlexBasis.zero)
     }
     val tabsList by css {
         important(::paddingLeft, 1.em)
@@ -42,14 +42,14 @@ object DialogStyles : StyleSheet("app-ui-dialog-Dialog", isStatic = true) {
     }
 
     val panelCol by css {
-        flex(4.0, 1.0, FlexBasis.zero)
+        flex = Flex(4.0, 1.0, FlexBasis.zero)
         display = Display.flex
         flexDirection = FlexDirection.column
         marginLeft = 2.em
     }
     val panel by css {
         display = Display.flex
-        flex(Flex.GROW)
+        flex = Flex.GROW
         flexDirection = FlexDirection.column
         alignContent = Align.stretch
         alignItems = Align.stretch
