@@ -75,7 +75,7 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
 
     sharedGlContext {
         attrs.inlineStyles = StyleElement {
-            flex(1.0, 0.0, FlexBasis.zero)
+            flex = kotlinx.css.Flex(1.0, 0.0, FlexBasis.zero)
             position = Position.relative
         }
 

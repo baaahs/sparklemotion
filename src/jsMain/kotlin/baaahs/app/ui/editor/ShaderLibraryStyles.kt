@@ -12,7 +12,7 @@ class ShaderLibraryStyles(private val theme: Theme) : StyleSheet("app-ui-editor-
 
     val results by css {
         position = Position.relative
-        flex(1, 0, FlexBasis.auto)
+        flex = Flex(1, 0, FlexBasis.auto)
         height = 100.vh
     }
 

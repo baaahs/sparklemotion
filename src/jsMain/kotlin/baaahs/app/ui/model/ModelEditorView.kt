@@ -11,6 +11,7 @@ import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import js.core.jso
+import kotlinx.css.Padding
 import kotlinx.css.em
 import kotlinx.css.padding
 import materialui.icon
@@ -142,7 +143,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             div(+styles.propertiesPaneContent) {
                 if (editingEntity == null) {
                     div {
-                        inlineStyles { padding(1.em) }
+                        inlineStyles { padding = Padding(1.em) }
                         i { +"Maybe click on something, why don't ya?" }
                     }
                 } else {

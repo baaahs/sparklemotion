@@ -79,7 +79,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         alignItems = Align.center
         color = emptyCellDimColor
         backgroundColor = theme.palette.background.default.asDynamic()
-        border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
+        border = Border(3.px, BorderStyle.solid, theme.palette.text.primary.asColor().withAlpha(.25))
         transition(::opacity, transitionTime)
         transition(::border, transitionTime)
         cursor = Cursor.default
@@ -101,7 +101,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val addControl by css {
-        border = "2px solid pink"
+        border = Border(2.px, BorderStyle.solid, Color.pink)
         backgroundColor = Color.yellow
     }
 
@@ -111,7 +111,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 //        width = 100.pct
 //        height = 100.pct
         marginRight = 0.em
-        flex(0, 0, FlexBasis.auto)
+        flex = Flex(0, 0, FlexBasis.auto)
 
         hover {
             child(deleteButton.selector) {
@@ -194,7 +194,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
         descendants(selector(::emptyGridCell)) {
             opacity = 0
-            border = "0px inset $emptyCellDimColor"
+            border = Border(0.px, baaahs.ui.inset, emptyCellDimColor)
 
             hover {
                 color = emptyCellDimColor
@@ -208,12 +208,12 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
 
         descendants(selector(::emptyGridCell)) {
             color = emptyCellColor
-            border = "3px inset ${emptyCellColor.withAlpha(.5)}"
+            border = Border(3.px, baaahs.ui.inset, emptyCellColor.withAlpha(.5))
             transition(::border, transitionTime)
 
             hover {
                 backgroundColor = theme.palette.primary.main.asColor()
-                border = "3px inset $emptyCellColor"
+                border = Border(3.px, baaahs.ui.inset, emptyCellColor)
             }
         }
     }
@@ -232,7 +232,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val buttonGroupHeader by css {
-        padding(2.px, 1.em)
+        padding = Padding(2.px, 1.em)
         lineHeight = LineHeight.normal
         userSelect = UserSelect.none
         gridColumn = GridColumn("1")
@@ -240,7 +240,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val buttonGroupGrid by css {
-        flex(Flex.GROW)
+        flex = Flex.GROW
 
         display = Display.grid
         gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
@@ -298,8 +298,8 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             bottom = 3.px
             width = 5.px
             height = 5.px
-            borderRight = "2px solid rgba(0, 0, 0, 0.4)"
-            borderBottom = "2px solid rgba(0, 0, 0, 0.4)"
+            borderRight = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
+            borderBottom = Border(2.px, BorderStyle.solid, rgba(0, 0, 0, 0.4))
         }
 
         ".react-draggable > .app-ui-controls-controlRoot" {

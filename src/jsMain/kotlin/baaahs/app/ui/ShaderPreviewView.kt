@@ -255,12 +255,12 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
         alignItems = Align.center
         justifyContent = JustifyContent.center
         flexDirection = FlexDirection.column
-        padding(1.em)
+        padding = Padding(1.em)
     }
 
     val errorPopup by css {
         child("div") {
-            padding(0.em, 1.em)
+            padding = Padding(0.em, 1.em)
         }
     }
 
@@ -279,7 +279,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
                 declarations["content"] = "counter(line)"
                 declarations["-webkit-user-select"] = "none"
                 marginRight = 1.em
-                borderRight = "1px solid black"
+                borderRight = Border(1.px, BorderStyle.solid, Color.black)
                 paddingRight = 1.em
                 width = 4.em
                 display = Display.inlineBlock

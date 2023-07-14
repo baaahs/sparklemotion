@@ -44,7 +44,7 @@ fun RBuilder.visualizerPanel(handler: RHandler<VisualizerPanelProps>) =
 
 object Styles : StyleSheet("visualizer-ui", isStatic = true) {
     val visualizerPanel by css {
-        flex(Flex.GROW)
+        flex = Flex.GROW
         position = Position.relative
 
         canvas {

@@ -6,6 +6,10 @@ import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
+import kotlinx.css.properties.Time
+import kotlinx.css.properties.Timing
+import kotlinx.css.properties.Transition
+import kotlinx.css.properties.s
 import mui.icons.material.SvgIconComponent
 import mui.material.SvgIconProps
 import mui.material.Typography

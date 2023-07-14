@@ -23,10 +23,7 @@ import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import kotlinx.css.BorderStyle
-import kotlinx.css.Color
-import kotlinx.css.properties.border
-import kotlinx.css.px
+import kotlinx.css.*
 import materialui.icon
 import mui.base.Portal
 import mui.material.*
@@ -249,7 +246,7 @@ class AddMenuContext(
 
 object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
     val gridItem by css {
-        border(1.px, BorderStyle.solid, Color.orange)
+        border = Border(1.px, BorderStyle.solid, Color.orange)
     }
 }
 

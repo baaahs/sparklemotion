@@ -1,13 +1,10 @@
 package baaahs.ui.components
 
 import baaahs.app.ui.StyleConstants
-import baaahs.ui.paperContrast
-import baaahs.ui.paperHighContrast
-import baaahs.ui.selector
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -17,7 +14,7 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
         flexDirection = FlexDirection.column
         position = Position.fixed
         zIndex = StyleConstants.Layers.floatingWindows
-        border = "1px outset ${theme.paperHighContrast}"
+        border = Border(1.px, outset, theme.paperHighContrast)
         transition(::opacity, duration = 1.s)
 
         hover {
@@ -65,14 +62,14 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
         position = Position.relative
 //        color = Color(theme.palette.context.primary.toString()).withAlpha(.9)
         backgroundColor = Color(theme.paperContrast(.15).toString())
-        padding = 0.5.em.value
-        border = "2px inset ${theme.palette.info.main}"
+        padding = Padding(0.5.em)
+        border = Border(2.px, baaahs.ui.inset, theme.palette.info.main.asColor())
     }
 
     val code by css {
         whiteSpace = WhiteSpace.preWrap
         userSelect = UserSelect.all
-        margin = "0"
+        margin = Margin(0.px)
 
         // Line numbers:
         before {

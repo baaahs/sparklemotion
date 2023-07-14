@@ -80,7 +80,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
             fontSize = LinearDimension.inherit
             fontWeight = FontWeight.inherit
             lineHeight = 1.5.em.lh
-            padding = ".5em 0 0 0"
+            padding = Padding(.5.em, 0.px, 0.px, 0.px)
         }
     }
 

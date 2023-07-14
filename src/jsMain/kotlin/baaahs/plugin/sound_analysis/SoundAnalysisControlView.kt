@@ -64,7 +64,7 @@ private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundA
 object Styles : StyleSheet("plugin-SoundAnalysis", isStatic = true) {
     val card by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex = Flex(1.0, 0.0)
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)

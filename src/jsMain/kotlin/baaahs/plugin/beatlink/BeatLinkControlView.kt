@@ -68,7 +68,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
     val card by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex = Flex(1.0, 0.0)
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)

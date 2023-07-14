@@ -4,12 +4,9 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.xypad.xyPad
 import baaahs.control.OpenXyPadControl
 import baaahs.show.live.ControlProps
-import baaahs.ui.and
-import baaahs.ui.rgba
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import kotlinx.css.*
-import kotlinx.css.properties.boxShadow
+import kotlinx.css.properties.BoxShadow
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -43,7 +40,7 @@ external interface XyPadProps : Props {
 object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     val container by css {
         display = Display.flex
-        border = "3px inset"
+        border = Border(3.px, baaahs.ui.inset)
     }
 
     val background by css {
@@ -55,17 +52,17 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     val centerLine by css {
         position = Position.absolute
         backgroundColor = Color("#222222").withAlpha(.5)
-        boxShadow(rgba(0, 0, 0, .2), 0.px, 0.px, 1.px, 1.px)
+        boxShadow += BoxShadow(rgba(0, 0, 0, .2), 0.px, 0.px, 1.px, 1.px)
         pointerEvents = PointerEvents.none
     }
 
     val knob by css {
         width = 20.px
         height = 20.px
-        border = "2px outset"
+        border = Border(2.px, outset)
 
         borderRadius = 3.px
-        boxShadow(Color("#222222").withAlpha(.3), 1.px, 1.px, 1.px, 1.px)
+        boxShadow += BoxShadow(Color("#222222").withAlpha(.3), 1.px, 1.px, 1.px, 1.px)
         background = "linear-gradient(#6ABBC0, #00A4D1)"
 
         position = Position.absolute
@@ -75,7 +72,7 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     val crosshairs by css {
         position = Position.absolute
         backgroundColor = Color("#44FF44")
-        boxShadow(Color("#224422").withAlpha(.3), 0.px, 0.px, 1.px, 1.px)
+        boxShadow += BoxShadow(Color("#224422").withAlpha(.3), 0.px, 0.px, 1.px, 1.px)
         pointerEvents = PointerEvents.none
     }
 

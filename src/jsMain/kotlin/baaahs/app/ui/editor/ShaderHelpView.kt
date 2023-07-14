@@ -116,8 +116,8 @@ class ShaderHelpStyles(
         position = Position.relative
         color = Color(theme.palette.info.contrastText.asDynamic())
         backgroundColor = Color(theme.palette.info.main.asDynamic())
-        padding = 0.5.em.value
-        border = "2px inset ${theme.palette.info.main}"
+        padding = Padding(0.5.em)
+        border = Border(2.px, baaahs.ui.inset, theme.palette.info.main.asColor())
     }
 
     val code by css {
