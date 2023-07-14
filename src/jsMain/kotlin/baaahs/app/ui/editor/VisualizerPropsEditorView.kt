@@ -5,19 +5,20 @@ import baaahs.control.VisualizerControl
 import baaahs.ui.typographyH6
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLInputElement
 import mui.material.*
+import mui.types.PropsWithComponent
 import react.*
 import react.dom.div
 import react.dom.events.ChangeEvent
 import react.dom.html.ReactHTML
+import web.html.HTMLInputElement
 
 private val VisualizerPropsEditorView = xComponent<VisualizerPropsEditorProps>("VisualizerPropsEditor") { props ->
 
     div(+EditableStyles.propertiesSection) {
         FormControl {
             FormLabel {
-                attrs.component = ReactHTML.legend
+                (attrs as PropsWithComponent).component = ReactHTML.legend
                 +"Surface Display Mode"
             }
 

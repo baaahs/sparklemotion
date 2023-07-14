@@ -1,10 +1,10 @@
 package baaahs.ui.gridlayout
 
 import baaahs.geom.Vector2D
-import dom.html.HTMLElement
 import external.react_resizable.Size
 import org.w3c.dom.events.MouseEvent
 import react.ReactElement
+import web.html.HTMLElement
 import kotlin.math.max
 
 class DroppingPosition(

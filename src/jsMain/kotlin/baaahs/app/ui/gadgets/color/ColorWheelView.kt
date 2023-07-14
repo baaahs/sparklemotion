@@ -4,13 +4,11 @@ import baaahs.Color
 import baaahs.geom.Vector2F
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLElement
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableBounds
 import external.react_draggable.DraggableData
+import js.core.jso
 import kotlinx.css.*
-import kotlinx.js.jso
 import mui.material.Button
 import react.Props
 import react.RBuilder
@@ -19,6 +17,8 @@ import react.dom.*
 import react.dom.events.MouseEvent
 import react.useRef
 import styled.inlineStyles
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
 import web.timers.requestAnimationFrame
 import kotlin.math.min
 

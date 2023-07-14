@@ -240,7 +240,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
     }
 
     val buttonGroupGrid by css {
-        grow(Grow.GROW)
+        flex(Flex.GROW)
 
         display = Display.grid
         gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)

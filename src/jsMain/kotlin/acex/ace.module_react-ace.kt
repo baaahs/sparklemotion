@@ -4,12 +4,12 @@
 
 package ReactAce.Ace
 
-import dom.Element
-import dom.html.HTMLElement
 import react.Component
 import react.ElementType
 import react.Props
 import react.State
+import web.dom.Element
+import web.html.HTMLElement
 
 external interface IAceEditorProps : Props {
     var name: String?

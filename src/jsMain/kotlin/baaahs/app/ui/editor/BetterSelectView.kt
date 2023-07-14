@@ -3,8 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import dom.html.HTMLInputElement
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.*
 import react.Props
 import react.RBuilder
@@ -12,6 +11,7 @@ import react.RHandler
 import react.ReactNode
 import react.dom.events.ChangeEvent
 import react.dom.html.ReactHTML
+import web.html.HTMLInputElement
 import baaahs.app.ui.controls.Styles as ControlsStyles
 
 private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect") { props ->

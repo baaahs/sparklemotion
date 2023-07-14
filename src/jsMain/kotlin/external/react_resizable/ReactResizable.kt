@@ -2,11 +2,11 @@
 
 package external.react_resizable
 
-import dom.html.HTMLElement
 import org.w3c.dom.events.MouseEvent
 import react.ElementType
 import react.PropsWithClassName
 import react.ReactElement
+import web.html.HTMLElement
 
 external val Resizable : ElementType<ResizableProps>
 

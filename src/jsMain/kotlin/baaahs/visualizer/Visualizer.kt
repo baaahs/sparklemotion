@@ -9,20 +9,23 @@ import baaahs.util.Framerate
 import baaahs.util.Logger
 import baaahs.util.asMillis
 import baaahs.window
-import dom.events.MouseEvent
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLElement
-import dom.html.HTMLSpanElement
+import js.core.jso
 import kotlinx.css.hyphenize
-import kotlinx.js.jso
 import three.js.*
 import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
 import web.events.Event
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
+import web.html.HTMLSpanElement
 import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
+import web.uievents.MouseEvent
+import web.uievents.POINTER_DOWN
+import web.uievents.PointerEvent
+import web.window.RESIZE
 import kotlin.math.*
 import kotlin.reflect.KClass
 
@@ -199,11 +202,11 @@ open class BaseVisualizer(
 
     inner class SelectExtension : Extension(SelectExtension::class) {
         override fun attach() {
-            canvas.addEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+            canvas.addEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
 
         override fun release() {
-            canvas.removeEventListener("pointerdown", this@BaseVisualizer::onMouseDown)
+            canvas.removeEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
     }
 
@@ -260,7 +263,7 @@ open class BaseVisualizer(
         updateOriginDot()
 
         var resizeTaskId: Timeout? = null
-        window.addEventListener("resize", {
+        window.addEventListener(Event.RESIZE, {
             if (resizeTaskId !== null) {
                 clearTimeout(resizeTaskId!!)
             }

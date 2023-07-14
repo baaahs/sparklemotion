@@ -14,13 +14,11 @@ import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import csstype.Flex
-import csstype.number
+import js.core.jso
 import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex
 import kotlinx.css.position
-import kotlinx.js.jso
 import mui.material.Tab
 import mui.material.Tabs
 import mui.system.sx
@@ -28,6 +26,8 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.useContext
+import web.cssom.Flex
+import web.cssom.number
 
 private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props ->
     val appContext = useContext(appContext)

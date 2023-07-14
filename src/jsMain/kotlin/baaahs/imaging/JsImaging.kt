@@ -5,17 +5,20 @@ import baaahs.decodeBase64
 import baaahs.document
 import baaahs.util.Clock
 import baaahs.util.JsClock
-import canvas.CanvasRenderingContext2D
-import canvas.ImageBitmap
-import canvas.ImageBitmapSource
-import canvas.ImageData
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLVideoElement
 import external.gifuct.ParsedFrameDims
 import external.gifuct.decompressFrames
 import external.gifuct.parseGIF
+import js.typedarrays.Uint8Array
+import js.typedarrays.Uint8ClampedArray
 import kotlinx.coroutines.await
-import org.khronos.webgl.*
+import org.khronos.webgl.WebGLRenderingContext
+import org.khronos.webgl.get
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.ImageBitmap
+import web.canvas.ImageBitmapSource
+import web.canvas.ImageData
+import web.html.HTMLCanvasElement
+import web.html.HTMLVideoElement
 
 actual fun imageFromDataUrl(dataUrl: String): Image {
     return if (dataUrl.looksLikeGif()) {
@@ -229,10 +232,11 @@ class GifImage(data: ByteArray, clock: Clock = JsClock) : Image {
                             val srcOffset = offset(x, y, frame.dims.width)
                             val destOffset = offset(left + x, top + y, fullWidth)
 
-                            bytes[destOffset + 0] = frame.patch[srcOffset + 0]
-                            bytes[destOffset + 1] = frame.patch[srcOffset + 1]
-                            bytes[destOffset + 2] = frame.patch[srcOffset + 2]
-                            bytes[destOffset + 3] = frame.patch[srcOffset + 3]
+                            val bytesBuf = bytes.asDynamic()
+                            bytesBuf[destOffset + 0] = frame.patch[srcOffset + 0]
+                            bytesBuf[destOffset + 1] = frame.patch[srcOffset + 1]
+                            bytesBuf[destOffset + 2] = frame.patch[srcOffset + 2]
+                            bytesBuf[destOffset + 3] = frame.patch[srcOffset + 3]
                         }
                     }
                 }

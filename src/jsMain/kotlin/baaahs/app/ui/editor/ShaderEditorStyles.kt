@@ -12,7 +12,7 @@ import styled.StyleSheet
 
 class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-ShaderEditor", isStatic = true) {
     val container by css {
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         display = Display.grid
         gridTemplateAreas = GridTemplateAreas("\"editor preview\" \"editor properties\"")
         gridTemplateColumns = GridTemplateColumns(1.fr, LinearDimension.minContent)
@@ -29,13 +29,13 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
         gap = 1.em
 
         child(ShaderPreviewStyles, ShaderPreviewStyles::container) {
-            grow(Grow.NONE)
+            flex(Flex.NONE)
         }
     }
 
     val propsTabsAndPanels by css {
         gridArea = "properties"
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         display = Display.flex
         flexDirection = FlexDirection.column
         position = Position.relative
@@ -106,7 +106,7 @@ class ShaderEditorStyles(private val theme: Theme) : StyleSheet("app-ui-editor-S
         position = Position.relative
         width = previewWidth
         height = previewHeight
-        margin = "auto"
+        margin = Margin(LinearDimension.auto)
     }
 
     val settingsMenuAffordance by css {

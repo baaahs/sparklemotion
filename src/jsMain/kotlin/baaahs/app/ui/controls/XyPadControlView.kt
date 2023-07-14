@@ -5,6 +5,7 @@ import baaahs.app.ui.gadgets.xypad.xyPad
 import baaahs.control.OpenXyPadControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.and
+import baaahs.ui.rgba
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*

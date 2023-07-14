@@ -136,7 +136,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appToolbarTabs by css {
-        grow(Grow.GROW)
+        flex(Flex.GROW)
     }
 
     val appToolbarTab by css {
@@ -275,7 +275,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val appDrawerHeader by css {
         display = Display.flex
         alignItems = Align.center
-        padding = theme.spacing.asDynamic()(0, 1).toString()
+        padding = Padding(theme.spacing(0, 1).toLinearDimension())
         mixIn(theme.mixins.toolbar)
         justifyContent = JustifyContent.flexEnd
     }
@@ -317,7 +317,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val adminTabPanel by css {
         overflow = Overflow.hidden
-        grow(Grow.GROW_SHRINK)
+        flex(Flex.GROW_SHRINK)
     }
 
     val showLayout by css {
@@ -345,7 +345,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val layoutControls by css {
         display = Display.inlineFlex
-        grow(Grow.NONE)
+        flex(Flex.NONE)
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
@@ -406,7 +406,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val unplacedControlsPaper by css {
         display = Display.flex
         flexDirection = FlexDirection.column
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         padding(1.em)
     }
 
@@ -518,8 +518,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
 
         descendants(this@Styles, ::unplacedControlsPalette) {
-            opacity = 0;
-            display = Display.none;
+            opacity = 0
+            display = Display.none
         }
     }
 

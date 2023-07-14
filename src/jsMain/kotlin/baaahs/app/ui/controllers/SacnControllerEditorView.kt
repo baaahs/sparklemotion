@@ -7,7 +7,7 @@ import baaahs.scene.MutableSacnControllerConfig
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Container
 import mui.material.TextField
 import mui.system.sx
@@ -40,8 +40,8 @@ private val SacnControllerEditorView = xComponent<SacnControllerEditorProps>("Sa
     Container {
         attrs.classes = jso { root = -styles.propertiesEditSection }
         attrs.sx {
-            display = csstype.Display.flex
-            flexDirection = csstype.FlexDirection.column
+            display = web.cssom.Display.flex
+            flexDirection = web.cssom.FlexDirection.column
         }
 
         TextField {

@@ -3,7 +3,6 @@ package baaahs.ui.misc
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import dom.html.HTMLDivElement
 import kotlinx.css.*
 import kotlinx.css.properties.s
 import kotlinx.css.properties.transition
@@ -15,6 +14,7 @@ import react.dom.div
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
+import web.html.HTMLDivElement
 import kotlin.math.min
 
 val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->

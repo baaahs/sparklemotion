@@ -5,6 +5,7 @@ import baaahs.control.MutableButtonControl
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import mui.material.*
+import mui.types.PropsWithComponent
 import react.*
 import react.dom.div
 import react.dom.events.ChangeEvent
@@ -15,7 +16,7 @@ private val ButtonPropsEditorView =
         div(+EditableStyles.propertiesSection) {
             FormControl {
                 FormLabel {
-                    attrs.component = ReactHTML.legend
+                    (attrs as PropsWithComponent).component = ReactHTML.legend
                     +"Button Type"
                 }
 

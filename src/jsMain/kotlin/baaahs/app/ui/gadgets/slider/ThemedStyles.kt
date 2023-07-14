@@ -3,6 +3,7 @@ package baaahs.app.ui.gadgets.slider
 import baaahs.ui.paperHighContrast
 import baaahs.ui.paperLowContrast
 import baaahs.ui.paperMediumContrast
+import baaahs.ui.rgba
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme

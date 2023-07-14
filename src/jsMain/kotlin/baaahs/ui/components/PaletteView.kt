@@ -5,15 +5,14 @@ import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
 import baaahs.sim.ui.simulatorContext
 import baaahs.ui.*
-import dom.html.HTMLElement
 import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
 import external.react_resizable.buildResizeHandle
+import js.core.jso
 import kotlinx.css.height
 import kotlinx.css.px
 import kotlinx.css.width
-import kotlinx.js.jso
 import materialui.icon
 import mui.base.Portal
 import mui.material.Paper
@@ -26,6 +25,7 @@ import react.dom.header
 import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
+import web.html.HTMLElement
 
 private var nextId = 0
 

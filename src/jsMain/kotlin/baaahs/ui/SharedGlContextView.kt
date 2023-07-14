@@ -4,9 +4,8 @@ import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.appContext
 import baaahs.app.ui.appGlContext
-import dom.html.HTMLElement
+import js.core.jso
 import kotlinx.css.*
-import kotlinx.js.jso
 import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
@@ -14,6 +13,7 @@ import react.dom.div
 import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
+import web.html.HTMLElement
 
 private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext") { props ->
     val appContext = useContext(appContext)

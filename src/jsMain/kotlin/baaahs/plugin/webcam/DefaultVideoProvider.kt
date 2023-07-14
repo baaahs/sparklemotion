@@ -3,10 +3,10 @@ package baaahs.plugin.webcam
 import baaahs.document
 import baaahs.util.Logger
 import com.danielgergely.kgl.TextureResource
-import dom.html.HTMLVideoElement
-import kotlinx.js.jso
-import media.streams.ConstrainULongRange
+import js.core.jso
 import org.khronos.webgl.TexImageSource
+import web.html.HTMLVideoElement
+import web.media.streams.ConstrainULongRange
 import web.navigator.navigator
 
 actual val DefaultVideoProvider: VideoProvider

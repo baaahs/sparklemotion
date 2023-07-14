@@ -5,7 +5,7 @@ import baaahs.model.LightRing
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
 import baaahs.ui.*
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.*
 import react.*
 import react.dom.header

@@ -49,7 +49,7 @@ object DialogStyles : StyleSheet("app-ui-dialog-Dialog", isStatic = true) {
     }
     val panel by css {
         display = Display.flex
-        grow(Grow.GROW)
+        flex(Flex.GROW)
         flexDirection = FlexDirection.column
         alignContent = Align.stretch
         alignItems = Align.stretch

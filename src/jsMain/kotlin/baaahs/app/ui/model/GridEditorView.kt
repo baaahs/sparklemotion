@@ -6,7 +6,7 @@ import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
 import baaahs.ui.*
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.*
 import react.*
 import react.dom.br

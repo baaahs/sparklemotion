@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.PaletteMode
 import mui.material.styles.Theme
 import mui.material.styles.ThemeOptions

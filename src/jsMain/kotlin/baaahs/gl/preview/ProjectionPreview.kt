@@ -17,13 +17,13 @@ import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
 import baaahs.model.PixelArray
-import canvas.CanvasRenderingContext2D
-import canvas.Path2D
-import dom.html.HTMLCanvasElement
-import dom.html.RenderingContextId
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import three.js.Vector2
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.Path2D
+import web.canvas.RenderingContextId
+import web.html.HTMLCanvasElement
 import web.timers.requestAnimationFrame
 
 class ProjectionPreview(

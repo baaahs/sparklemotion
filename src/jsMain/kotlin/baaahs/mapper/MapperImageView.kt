@@ -4,13 +4,13 @@ import baaahs.imaging.Bitmap
 import baaahs.imaging.ImageBitmapImage
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import csstype.px
-import dom.html.HTMLImageElement
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.img
 import react.dom.onLoad
+import web.cssom.px
+import web.html.HTMLImageElement
 
 private val MapperImageView = xComponent<MapperImageProps>("MapperImage") { props ->
     var imageSrc by state<String?> { null }

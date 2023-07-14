@@ -10,11 +10,9 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
-import dom.Element
-import dom.html.HTMLDivElement
+import js.core.jso
 import kotlinx.css.em
 import kotlinx.css.padding
-import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
@@ -26,6 +24,8 @@ import react.dom.header
 import react.dom.i
 import react.useContext
 import styled.inlineStyles
+import web.dom.Element
+import web.html.HTMLDivElement
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)

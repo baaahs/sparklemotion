@@ -22,9 +22,6 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
-import dom.Element
-import dom.html.HTMLDivElement
-import dom.html.HTMLElement
 import external.react_resizable.buildResizeHandle
 import kotlinx.css.BorderStyle
 import kotlinx.css.Color
@@ -36,6 +33,9 @@ import mui.material.*
 import react.*
 import react.dom.div
 import styled.StyleSheet
+import web.dom.Element
+import web.html.HTMLDivElement
+import web.html.HTMLElement
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)

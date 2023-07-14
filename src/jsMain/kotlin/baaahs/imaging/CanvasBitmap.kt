@@ -2,11 +2,12 @@ package baaahs.imaging
 
 import baaahs.MediaDevices
 import baaahs.context2d
-import canvas.CanvasRenderingContext2D
-import canvas.GlobalCompositeOperation
 import com.danielgergely.kgl.ByteBuffer
-import dom.html.HTMLCanvasElement
+import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.GlobalCompositeOperation
+import web.html.HTMLCanvasElement
 
 open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     constructor(width: Int, height: Int): this(createCanvas(width, height))
@@ -83,7 +84,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
         val width = region.width.toDouble()
         val height = region.height.toDouble()
         val imageData = ctx.getImageData(x, y, width, height)
-        fn(ByteBuffer(Uint8Array(imageData.data.buffer)))
+        fn(ByteBuffer(Uint8Array(imageData.data.buffer as ArrayBuffer)))
     }
 
     override fun asImage(): Image {

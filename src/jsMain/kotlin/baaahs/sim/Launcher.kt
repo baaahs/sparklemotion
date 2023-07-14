@@ -5,7 +5,7 @@ import baaahs.sim.ui.FakeClientDevice
 import baaahs.sim.ui.FakeClientDeviceProps
 import baaahs.ui.ErrorDisplay
 import baaahs.util.Logger
-import kotlinx.js.jso
+import js.core.jso
 import react.ReactElement
 import react.createElement
 import react.dom.client.createRoot

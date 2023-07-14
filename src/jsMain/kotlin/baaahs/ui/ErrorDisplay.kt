@@ -1,11 +1,9 @@
 package baaahs.ui
 
-import csstype.vh
-import dom.html.HTMLElement
+import js.core.jso
 import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate
-import kotlinx.js.jso
 import materialui.icon
 import mui.material.Button
 import mui.material.ButtonVariant
@@ -16,6 +14,8 @@ import react.dom.*
 import react.dom.aria.AriaRole
 import react.fc
 import styled.inlineStyles
+import web.cssom.vh
+import web.html.HTMLElement
 import web.timers.setTimeout
 
 val ErrorDisplay = fc<ErrorDisplayProps> { props ->

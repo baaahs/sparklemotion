@@ -11,11 +11,7 @@ import baaahs.ui.value
 import baaahs.ui.xComponent
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
-import csstype.Padding
-import csstype.em
-import dom.html.HTMLElement
-import kotlinx.js.get
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
@@ -23,6 +19,9 @@ import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import web.cssom.Padding
+import web.cssom.em
+import web.html.HTMLElement
 
 private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)

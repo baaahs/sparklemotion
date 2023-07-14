@@ -2,12 +2,6 @@ package baaahs.ui
 
 import baaahs.context2d
 import baaahs.document
-import csstype.ClassName
-import dom.Element
-import dom.css.getComputedStyle
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLElement
-import dom.html.HTMLInputElement
 import external.DroppableProvided
 import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
@@ -23,8 +17,17 @@ import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
 import styled.StyleSheet
+import web.cssom.ClassName
+import web.cssom.Length
+import web.dom.Element
+import web.dom.getComputedStyle
 import web.events.Event
 import web.events.EventTarget
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
+import web.html.HTMLInputElement
+import web.uievents.TOUCH_MOVE
+import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 
@@ -233,10 +236,10 @@ fun buildElements(handler: Render): ReactNode =
 
 val preventDefault: (web.events.Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
-    document.body.addEventListener("touchmove", preventDefault, js("{ passive: false }"))
+    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, js("{ passive: false }"))
 }
 val enableScroll = {
-    document.body.removeEventListener("touchmove", preventDefault)
+    document.body.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault)
 }
 
 object Events {
@@ -253,7 +256,10 @@ val Event.buttons: Int get() = asDynamic().buttons as Int
 val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
-fun csstype.Color.asColor(): Color = Color(this.unsafeCast<String>())
+fun web.cssom.Color.asColor(): Color = Color(this.unsafeCast<String>())
+
+fun rgba(r: Int, g: Int, b: Int, a: Double): Color =
+    Color("rgba($r, $g, $b, $a)")
 
 fun Theme.paperContrast(amount: Double) =
     palette.text.primary.asColor()
@@ -295,3 +301,28 @@ fun Element.isParentOf(other: Element): Boolean {
     }
     return false
 }
+
+val groove = "groove".unsafeCast<BorderStyle>()
+val inset = "inset".unsafeCast<BorderStyle>()
+val outset = "outset".unsafeCast<BorderStyle>()
+
+fun StyledElement.transition(
+    property: String = "all",
+    duration: Time = 0.s,
+    timing: Timing = Timing.ease,
+    delay: Time = 0.s
+) {
+    transition += Transition(property, duration, timing, delay)
+}
+
+fun StyledElement.transition(
+    property: KProperty<*>,
+    duration: Time = 0.s,
+    timing: Timing = Timing.ease,
+    delay: Time = 0.s
+) {
+    transition += Transition(property.name, duration, timing, delay)
+}
+
+fun Length.toLinearDimension(): LinearDimension =
+    LinearDimension(toString())

@@ -10,11 +10,13 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
+import js.core.jso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.css.*
-import kotlinx.js.jso
+import kotlinx.css.GridTemplateColumns
+import kotlinx.css.gridTemplateColumns
+import kotlinx.css.px
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
