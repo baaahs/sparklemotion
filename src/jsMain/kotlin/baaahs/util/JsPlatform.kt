@@ -8,7 +8,12 @@ external fun encodeURIComponent(uri: String): String
 external fun decodeURIComponent(encodedURI: String): String
 
 object JsPlatform {
-    val myAddress by lazy { with(location) { BrowserNetwork.BrowserAddress(protocol, hostname, port) } }
+    val myAddress by lazy {
+        if (location.protocol == "file:")
+            throw IllegalStateException("SparkleMotion cannot be run from a file:// URL. Please run it from a web server.")
+
+        with(location) { BrowserNetwork.BrowserAddress(protocol, hostname, port) }
+    }
 
     fun decodeQueryParams(location: Location): Map<String, String> {
         val query = location.search
