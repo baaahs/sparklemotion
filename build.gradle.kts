@@ -1,5 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
@@ -17,7 +16,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinGradlePlugin}")
         classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
-        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
+        classpath("com.github.johnrengelman:shadow:8.1.1")
     }
 }
 
@@ -30,10 +29,11 @@ val lwjglAllNatives = listOf(
 )
 
 plugins {
+    application
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
@@ -58,28 +58,18 @@ fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
 kotlin {
-    jvm()
+    jvm {
+        withJava()
+    }
+
     js(IR) {
         browser {
             useCommonJs()
-
-            webpackTask {
-//                report = true // Broken in Kotlin 1.7? Cannot find module 'webpack-bundle-analyzer'.
-                sourceMaps = true
-            }
-
-            testTask {
-                useKarma {
-                    useChromeHeadless()
-                }
-            }
+            binaries.executable()
         }
-
-        binaries.executable()
     }
 
     sourceSets {
-        @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
@@ -91,7 +81,6 @@ kotlin {
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
             }
         }
-        @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
@@ -101,7 +90,6 @@ kotlin {
             }
         }
 
-        @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${Versions.coroutines}")
@@ -146,7 +134,6 @@ kotlin {
                 implementation("com.github.eduramiba:webcam-capture-driver-native:1.0.0-SNAPSHOT")
             }
         }
-        @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
                 runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
@@ -161,7 +148,6 @@ kotlin {
             }
         }
 
-        @Suppress("UNUSED_VARIABLE")
         val jsMain by getting {
             kotlin.srcDir("src/jsMain/js")
 
@@ -215,7 +201,6 @@ kotlin {
                 implementation(npm("lodash.isequal", "4.5.0"))
             }
         }
-        @Suppress("UNUSED_VARIABLE")
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
@@ -232,36 +217,52 @@ kotlin {
     }
 }
 
-val webpackTask =
-    if (project.hasProperty("isProduction")) {
+val isProductionBuild = project.hasProperty("isProduction")
+
+application {
+    mainClass.set("baaahs.sm.server.PinkyMainKt")
+
+    applicationDefaultJvmArgs += "-Djava.library.path=${file("src/jvmMain/jni")}"
+
+    if (!isProductionBuild) {
+        applicationDefaultJvmArgs += "-Dio.ktor.development=true"
+    }
+
+    if (isMac()) {
+        applicationDefaultJvmArgs += listOf(
+            "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
+            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
+        )
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType(KotlinCompile::class) {
+    kotlinOptions.jvmTarget = "11"
+}
+
+// include JS artifacts in any JAR we generate
+tasks.named<Jar>("jvmJar").configure {
+    val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
         "jsBrowserProductionWebpack"
     } else {
         "jsBrowserDevelopmentWebpack"
     }
 
-// workaround for https://youtrack.jetbrains.com/issue/KT-24463:
-tasks.named<KotlinCompile>("compileKotlinJvm") {
-    dependsOn(":copySheepModel")
-}
-
-tasks.create<Copy>("copySheepModel") {
-    from("src/commonMain/resources")
-    into("build/classes/kotlin/jvm/main")
+    // bring output file along into the JAR
+    val webpackTask = tasks.named<KotlinWebpack>(taskName)
+    from(webpackTask.map { File(it.destinationDirectory, it.outputFileName) }) {
+        into("htdocs")
+    }
 }
 
 tasks.withType(Kotlin2JsCompile::class) {
     kotlinOptions.sourceMap = true
     kotlinOptions.sourceMapEmbedSources = "always"
-}
-
-tasks.withType(KotlinWebpack::class) {
-//    report = true // Broken in Kotlin 1.7? Cannot find module 'webpack-bundle-analyzer'.
-    sourceMaps = true
-    inputs.dir("src/jsMain/js")
-}
-
-tasks.withType(KotlinCompile::class) {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
@@ -285,9 +286,12 @@ tasks.named<ProcessResources>("jsProcessResources") {
 }
 
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn("packageClientResources")
+    val jsTask = tasks.named<ProcessResources>("jsProcessResources")
+    dependsOn(jsTask)
 
-    from("build/developmentExecutable") { include("sparklemotion.js") }
+    from(jsTask.map { it.destinationDir }) {
+        into("htdocs")
+    }
 
     doLast {
         createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
@@ -300,7 +304,6 @@ tasks.named<DokkaTask>("dokkaHtml") {
 
 tasks.create<JavaExec>("runPinkyJvm") {
     dependsOn("compileKotlinJvm")
-    dependsOn("packageClientResources")
     mainClass.set("baaahs.sm.server.PinkyMainKt")
 
     systemProperties["java.library.path"] = file("src/jvmMain/jni")
@@ -342,27 +345,8 @@ tasks.create<JavaExec>("runGlslJvmTests") {
     }
 }
 
-tasks.create<Copy>("packageClientResources") {
-    dependsOn("jsBrowserDistribution")
-    dependsOn("jsProcessResources", webpackTask)
-    duplicatesStrategy = DuplicatesStrategy.WARN
-    from(project.file("build/processedResources/js/main"))
-    from(project.file("build/distributions"))
-    into("build/classes/kotlin/jvm/main/htdocs")
-}
-
-tasks.named<Jar>("jvmJar") {
-    dependsOn("packageClientResources")
-    duplicatesStrategy = DuplicatesStrategy.WARN
-}
-
-tasks.create<ShadowJar>("shadowJar") {
-    dependsOn("jvmJar")
-    from(tasks.named<Jar>("jvmJar").get().archiveFile)
-    configurations = listOf(project.configurations["jvmRuntimeClasspath"])
-    manifest {
-        attributes["Main-Class"] = "baaahs.sm.server.PinkyMainKt"
-    }
+tasks.named<JavaExec>("run").configure {
+    classpath(tasks.named<Jar>("jvmJar")) // so that the JS artifacts generated by `jvmJar` can be found and served
 }
 
 tasks.withType(Test::class) {
