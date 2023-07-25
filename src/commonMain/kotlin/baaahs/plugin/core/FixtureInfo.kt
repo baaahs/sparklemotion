@@ -32,7 +32,17 @@ val fixtureInfoStruct = GlslType.Struct(
     GlslType.Field("rotation", GlslType.Vec3),
     GlslType.Field("transformation", GlslType.Matrix4),
     GlslType.Field("boundaryMin", GlslType.Vec3),
-    GlslType.Field("boundaryMax", GlslType.Vec3)
+    GlslType.Field("boundaryMax", GlslType.Vec3),
+//    GlslType.Field("name", GlslType.IntArray)
+    GlslType.Field("name0", GlslType.Int),
+    GlslType.Field("name1", GlslType.Int),
+    GlslType.Field("name2", GlslType.Int),
+    GlslType.Field("name3", GlslType.Int),
+    GlslType.Field("name4", GlslType.Int),
+    GlslType.Field("name5", GlslType.Int),
+    GlslType.Field("name6", GlslType.Int),
+    GlslType.Field("name7", GlslType.Int),
+    GlslType.Field("nameLength", GlslType.Int)
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -76,6 +86,9 @@ class FixtureInfoFeedContext(
             private val transformationUniform = glslProgram.getUniform("$id.transformation")
             private val boundaryMinUniform = glslProgram.getUniform("$id.boundaryMin")
             private val boundaryMaxUniform = glslProgram.getUniform("$id.boundaryMax")
+            private val nameUniforms = (0 until 16).map { glslProgram.getUniform("$id.name$it") }
+            private val nameLengthUniform = glslProgram.getUniform("$id.nameLength")
+            private val anyNameUniforms = nameUniforms.any { it != null } || nameLengthUniform != null
 
             override val isValid: Boolean get() =
                 positionUniform != null || rotationUniform != null || transformationUniform != null ||
@@ -89,6 +102,15 @@ class FixtureInfoFeedContext(
                 val bounds = fixtureInfo?.bounds
                 boundaryMinUniform?.set(bounds?.first ?: Vector3F.origin)
                 boundaryMaxUniform?.set(bounds?.second ?: Vector3F.origin)
+
+                if (fixtureInfo?.name != null && anyNameUniforms) {
+                    val chars = fixtureInfo.name.toCharArray()
+                    nameUniforms.forEachIndexed { i, uniform ->
+                        val char = if (chars.size >= i) chars[i] else Char(0)
+                        uniform?.set(char.uppercaseChar().code)
+                    }
+                    nameLengthUniform?.set(chars.size)
+                }
             }
         }
     }
