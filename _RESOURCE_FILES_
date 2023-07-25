@@ -1,7 +1,9 @@
 .nojekyll
 baaahs/plugin/beatlink/BeatLinkControl.glsl
 baaahs/plugin/sound_analysis/SoundAnalysisControl.glsl
+favicon-sim.png
 favicon.ico
+favicon.png
 fontawesome-free/css/all.min.css
 fontawesome-free/webfonts/fa-brands-400.eot
 fontawesome-free/webfonts/fa-brands-400.svg
