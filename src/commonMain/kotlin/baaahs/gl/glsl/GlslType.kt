@@ -121,8 +121,10 @@ sealed class GlslType constructor(
             val typeStr = if (type is Struct) {
                 if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
             } else type.glslLiteral
-            val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
-            buf.append("    $typeStr $name;$comment\n")
+            buf.append("    $typeStr $name;")
+            if (deprecated) buf.append(" // Deprecated.")
+            if (!description.isNullOrBlank()) "// $description"
+            buf.append("\n")
         }
 
         override fun equals(other: Any?): Boolean {

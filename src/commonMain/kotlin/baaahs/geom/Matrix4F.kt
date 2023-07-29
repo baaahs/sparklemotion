@@ -21,8 +21,9 @@ expect class Matrix4F(elements: FloatArray? = null) {
     fun withTranslation(translation: Vector3F): Matrix4F
     fun withRotation(rotation: EulerAngle): Matrix4F
     fun withScale(scale: Vector3F): Matrix4F
-}
 
+    fun inverse(): Matrix4F
+}
 val Matrix4F.Companion.identity: Matrix4F
     get() = Matrix4F()
 

@@ -28,13 +28,36 @@ import kotlinx.serialization.Transient
 
 val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
-    GlslType.Field("position", GlslType.Vec3),
-    GlslType.Field("rotation", GlslType.Vec3),
-    GlslType.Field("transformation", GlslType.Matrix4),
-    GlslType.Field("boundaryMin", GlslType.Vec3),
-    GlslType.Field("boundaryMax", GlslType.Vec3),
+    GlslType.Field(
+        "position", GlslType.Vec3,
+        "The fixture entity's position in the scene."
+    ),
+    GlslType.Field(
+        "rotation", GlslType.Vec3,
+        "The fixture entity's rotation in the scene."
+    ),
+    GlslType.Field(
+        "transformation", GlslType.Matrix4,
+        "The fixture entity's transformation in the scene."
+    ),
+    GlslType.Field(
+        "boundaryMin", GlslType.Vec3,
+        "The near-lower-leftmost coordinate of the fixture entity, after translation, in scene coordinates."
+    ),
+    GlslType.Field(
+        "boundaryMax", GlslType.Vec3,
+        "The far-upper-rightmost coordinate of the fixture entity, after translation, in scene coordinates."
+    ),
+    GlslType.Field(
+        "normalizer", GlslType.Matrix4,
+        "A transformation which normalizes the fixture entity's pixels to roughly face the camera " +
+                "and fit in [(0,0,0)..(1,1,1)]."
+    ),
+
+    // TODO: Switch to `int[] name` when Kgl supports `uniform1iv`.
+    // See: https://github.com/gergelydaniel/kgl/pull/15
 //    GlslType.Field("name", GlslType.IntArray)
-    GlslType.Field("name0", GlslType.Int),
+    GlslType.Field("name0", GlslType.Int, "The first ASCII value in the fixture entity's name, or 0."),
     GlslType.Field("name1", GlslType.Int),
     GlslType.Field("name2", GlslType.Int),
     GlslType.Field("name3", GlslType.Int),
@@ -42,7 +65,10 @@ val fixtureInfoStruct = GlslType.Struct(
     GlslType.Field("name5", GlslType.Int),
     GlslType.Field("name6", GlslType.Int),
     GlslType.Field("name7", GlslType.Int),
-    GlslType.Field("nameLength", GlslType.Int)
+    GlslType.Field(
+        "nameLength", GlslType.Int,
+        "The length of the fixture entity's name."
+    )
 )
 
 val fixtureInfoContentType = ContentType("fixture-info", "Fixture Info", fixtureInfoStruct)
@@ -62,8 +88,9 @@ data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
 
     companion object : FeedBuilder<FixtureInfoFeed> {
         override val title: String get() = "Fixture Info"
-        override val description: String get() =
-            "Information about the fixture's position and orientation in the model."
+        override val description: String
+            get() =
+                "Information about the fixture's position and orientation in the model."
         override val resourceName: String get() = "FixtureInfo"
         override val contentType: ContentType get() = fixtureInfoContentType
         override val serializerRegistrar get() = classSerializer(serializer())
@@ -86,13 +113,15 @@ class FixtureInfoFeedContext(
             private val transformationUniform = glslProgram.getUniform("$id.transformation")
             private val boundaryMinUniform = glslProgram.getUniform("$id.boundaryMin")
             private val boundaryMaxUniform = glslProgram.getUniform("$id.boundaryMax")
+            private val normalizerUniform = glslProgram.getUniform("$id.normalizer")
             private val nameUniforms = (0 until 16).map { glslProgram.getUniform("$id.name$it") }
             private val nameLengthUniform = glslProgram.getUniform("$id.nameLength")
             private val anyNameUniforms = nameUniforms.any { it != null } || nameLengthUniform != null
 
-            override val isValid: Boolean get() =
-                positionUniform != null || rotationUniform != null || transformationUniform != null ||
-                        boundaryMinUniform != null || boundaryMaxUniform != null
+            override val isValid: Boolean
+                get() =
+                    positionUniform != null || rotationUniform != null || transformationUniform != null ||
+                            boundaryMinUniform != null || boundaryMaxUniform != null
 
             override fun setOnProgram(renderTarget: RenderTarget) {
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
@@ -102,6 +131,7 @@ class FixtureInfoFeedContext(
                 val bounds = fixtureInfo?.bounds
                 boundaryMinUniform?.set(bounds?.first ?: Vector3F.origin)
                 boundaryMaxUniform?.set(bounds?.second ?: Vector3F.origin)
+                normalizerUniform?.set(fixtureInfo?.transformation?.inverse() ?: Matrix4F.identity)
 
                 if (fixtureInfo?.name != null && anyNameUniforms) {
                     val chars = fixtureInfo.name.toCharArray()
