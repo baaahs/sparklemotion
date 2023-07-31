@@ -326,6 +326,34 @@
                                 "row": 3,
                                 "width": 4,
                                 "height": 2
+                            },
+                            {
+                                "controlId": "eyes",
+                                "column": 5,
+                                "row": 2,
+                                "height": 7,
+                                "layout": {
+                                    "columns": 1,
+                                    "rows": 1,
+                                    "matchParent": true,
+                                    "items": [
+                                        {
+                                            "controlId": "floorManual",
+                                            "column": 0,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "spin",
+                                            "column": 0,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "beatJump",
+                                            "column": 0,
+                                            "row": 1
+                                        }
+                                    ]
+                                }
                             }
                         ]
                     }
@@ -521,6 +549,18 @@
         "baaahsLogo": {
             "title": "[🐑] BAAAHS Logo",
             "src": "// Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!\n// Ben Bartlett\n\n#define N 5\n#define COORD_SCALE 0.03\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nuniform vec2 resolution; // @@Resolution\nuniform float time; // @@Time\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n\n// For reference -- determines if a point is in a polygon. Since you can't pass dynamically sized arrays, we need one for each component :(\nbool pointInPoly(vec2 point, float scale, vec2 offset, vec2 vertices[N]){\n\tint i, j;\n\tbool c = false;\n\tvec2 pt = (point - offset)/scale;\n\tfor (i = 0, j = N-1; i < N; j = i++) {\n\t\tif ( ((vertices[i].y > pt.y) != (vertices[j].y > pt.y)) &&\n\t\t(pt.x < (vertices[j].x-vertices[i].x) * (pt.y-vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) )\n\t\tc = !c;\n\t}\n\treturn c;\n}\n\n// Coordiantes were obtained from image processing using Wolfram Mathematica. Contact Ben for the notebook source code.\nvec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94));\nvec2 HEART_MIN_XY = vec2(-70.5, -67.9);\nvec2 HEART_MAX_XY = vec2(70.6, 51.6);\nvec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48));\nvec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76));\nvec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38));\nvec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78));\nvec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06));\nvec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));\n\nbool pointInHeart(vec2 point, float scale, vec2 offset){\n\tint len = 187;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInFace(vec2 point, float scale, vec2 offset){\n\tint len = 26;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInMouth(vec2 point, float scale, vec2 offset){\n\tint len = 35;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeLeft(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarLeft(vec2 point, float scale, vec2 offset){\n\tint len = 9;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\n\n// Shades only the black regions of the logo\nbool pointInSheep(vec2 point, float scale, vec2 offset) {\n\t// For speed -- check if it's in a bounding box, else return false\n\tvec2 p = (point - offset)/(scale * COORD_SCALE);\n\tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) {\n\t\treturn false;\n\t}\n\t// Check if it's in each part\n\tbool inHeart = pointInHeart(point, scale, offset);\n\tbool inFace = pointInFace(point, scale, offset);\n\tbool inMouth = pointInMouth(point, scale, offset);\n\tbool inEyeLeft = pointInEyeLeft(point, scale, offset);\n\tbool inEyeRight = pointInEyeRight(point, scale, offset);\n\tbool inEarLeft = pointInEarLeft(point, scale, offset);\n\tbool inEarRight = pointInEarRight(point, scale, offset);\n\t// Shade the correct regions\n\treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight));\n}\n\nvec3 drawScene(vec2 uv) {\n\tvec3 col = upstreamColor(uv).rgb;\n\n\tfloat sheep = -1.0 * float(pointInSheep(uv, .9 + 0.1 * sin(time * 2.), vec2(.15 * sin(time * .47), .1 * sin(time * .37))));\n\n\tcol = mix(vec3(0, 0, 0), col, step(0., sheep));\n\n\treturn col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n//\tvec2 uv = fragCoord/iResolution.xy; // <0, 1>\n\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 1.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\t\n//\tuv -= 0.5; // <-0.5,0.5>\n//\tuv.x *= iResolution.x/iResolution.y; // fix aspect ratio\n\n\tvec3 col = drawScene(fragPos);\n\n\t// Output to screen\n\tfragColor = vec4(col,1.0);\n}\n\n"
+        },
+        "floorManual": {
+            "title": "Floor Manual",
+            "src": "struct FixtureInfo {\n    vec3 position; // z=left/right y=height x=front-back\n    vec3 rotation; // y=left/right yaw, z=pitch (0 is up), x=roll,\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\n#define PI 3.14159265358979323846\n#define DISTANCE_FORWARD 500.0 // Inches\n#define DISTANCE_SIDEWAYS 300.0 // Inches to each side\n\nuniform FixtureInfo fixtureInfo;\nuniform vec2 floorPosition; // @@XyPad\nuniform float time; // @@Time\n\n/** Rotate a point around the y-axis (yaw)\n * @param point the point to rotate\n * @param angle the angle to rotate by\n * @return the rotated point\n */\nvec3 rotateAroundYAxis(vec3 point, float angle) {\n    return vec3(\n    cos(angle) * point.x - sin(angle) * point.z,\n    point.y,\n    sin(angle) * point.x + cos(angle) * point.z\n    );\n}\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    // +x is forward (from sheeps perspective)\n    // +y is up (height)\n    // +z is right (from sheeps perspective)\n\n\n    vec3 target = vec3((floorPosition.y + 1.0) * DISTANCE_FORWARD / 2.0,\n        0.0,\n        floorPosition.x * DISTANCE_SIDEWAYS);\n\n    // correct for the yaw-rotation of the fixture\n    vec3 rotatedTarget = rotateAroundYAxis(target, fixtureInfo.rotation.y);\n\n    //We then calculate the dx, dy, and dz differences using this rotated target position instead of the original target position. This should cause the moving head light to correctly point towards the original target position even if it starts with a nonzero yaw.\n    float dx = rotatedTarget.x  - fixtureInfo.position.x;\n    float dy = rotatedTarget.y  - fixtureInfo.position.y;\n    float dz = rotatedTarget.z  - fixtureInfo.position.z;\n\n    params.tilt = .0*PI - acos(dx / sqrt(dx*dx+dy*dy+dz*dz));\n    params.pan = 1.5*PI+ acos(dz / sqrt(dz*dz+dy*dy));\n\n\n    params.colorWheel = fixtureInfo.position.z / 10.;\n    params.dimmer = 1.;\n\n}\n"
+        },
+        "spin": {
+            "title": "Spin",
+            "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform FixtureInfo fixtureInfo;\nuniform float time; // @@Time\nuniform float speed; // @@Slider min=.5 max=5 default=2.\nuniform float offset; // @@Slider min=0 max=3.14 default=0\nuniform bool mirrored; // @@Switch\n\n/* pseudo random number [0...1] */\nfloat rand(float seed){\n    vec2 co = vec2(1, seed);\n    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\n#define PI 3.14159265358979323846\n\n\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    bool isLeft = fixtureInfo.position.z < 0.;\n    float rotation = 0.5 + (cos(speed*time/3.)+sin(speed*time/2.)) / 2.0 / 2.0; // [0...1]\n    //rotation = pos;\n    params.pan = mix(0.0 , (2.) * PI, mirrored && isLeft ? rotation : 1. - rotation) + (isLeft ? offset : 0.);\n    \n    params.tilt = .3+(1. + cos(1. + time))/2.0;\n    //params.tilt = .5;\n    params.colorWheel = rotation;\n\n    params.dimmer = 1.;\n}"
+        },
+        "beatJump": {
+            "title": "Beat Jump",
+            "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n};\n\nuniform FixtureInfo fixtureInfo;\n\n\nstruct BeatInfo {\n\tfloat beat;\n\tfloat bpm;\n\tfloat intensity;\n\tfloat confidence;\n};\nuniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo\nuniform float beatInterval; // @@Slider min=1 max=4 step=1 default=4\n\nuniform float time; // @@Time\nuniform bool floorOnly; // @@Switch\n\n\n#define PI 3.14159265358979323846\n#define DISTANCE_FORWARD 500.0 // Inches\n#define DISTANCE_SIDEWAYS 300.0 // Inches to each side\n\n\n/** Rotate a point around the y-axis (yaw)\n * @param point the point to rotate\n * @param angle the angle to rotate by\n * @return the rotated point\n */\nvec3 rotateAroundYAxis(vec3 point, float angle) {\n    return vec3(\n    cos(angle) * point.x - sin(angle) * point.z,\n    point.y,\n    sin(angle) * point.x + cos(angle) * point.z\n    );\n}\n\n/** returns a timestamp of the last set of beats. e.g. if beatInterval is 4, at 120 rpm, it yields a new value\n * every 2 seconds */\nfloat getTimeOfLastBeatSet() {\n    return time - mod(beatInfo.beat, round(beatInterval)) / beatInfo.bpm * 60.0;\n}\n\nfloat getTimeOfLastBeat() {\n    return time - mod(beatInfo.beat, 1.) / beatInfo.bpm * 60.0;\n}\n\n/* pseudo random number [0...1] */\nfloat rand(vec2 co){\n    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\n\n\n// @param params moving-head-params\nvoid main(out MovingHeadParams params) {\n    if(floorOnly) {\n        float randomForward = rand(vec2(1, float(getTimeOfLastBeatSet())));\n        float randomSideways = rand(vec2(2, float(getTimeOfLastBeatSet())));\n        \n        vec3 target = vec3(randomForward  * DISTANCE_FORWARD,\n            0.0,\n            mix(-DISTANCE_SIDEWAYS, DISTANCE_SIDEWAYS, randomSideways) \n        );\n        \n        // correct for the yaw-rotation of the fixture\n        vec3 rotatedTarget = rotateAroundYAxis(target, fixtureInfo.rotation.y);\n    \n        //We then calculate the dx, dy, and dz differences using this rotated target position instead of the original target position. This should cause the moving head light to correctly point towards the original target position even if it starts with a nonzero yaw.\n        float dx = rotatedTarget.x  - fixtureInfo.position.x;\n        float dy = rotatedTarget.y  - fixtureInfo.position.y;\n        float dz = rotatedTarget.z  - fixtureInfo.position.z;\n    \n        params.tilt = .0*PI - acos(dx / sqrt(dx*dx+dy*dy+dz*dz));\n        params.pan = 1.5*PI+ acos(dz / sqrt(dz*dz+dy*dy));\n        \n    } else {\n        params.pan = 3.14 + rand(vec2(2, float(getTimeOfLastBeatSet()))) * 2. * 1.5 - 1.5;\n        \n        // tilt: range [-1.2 ... +1.2]\n        params.tilt = rand(vec2(1, getTimeOfLastBeatSet())) * 2. * 1.2 - 1.2;\n    }\n    \n    params.colorWheel = rand(vec2(3, int(getTimeOfLastBeat())));\n    params.dimmer = 1.;\n}"
         }
     },
     "patches": {
@@ -1574,6 +1614,109 @@
                     "stream": "main"
                 }
             }
+        },
+        "floorManual-patch": {
+            "shaderId": "floorManual",
+            "incomingLinks": {
+                "pad": {
+                    "type": "feed",
+                    "feedId": "pad"
+                },
+                "time": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fixtureInfo": {
+                    "type": "feed",
+                    "feedId": "fixtureInfo"
+                },
+                "floorArea": {
+                    "type": "feed",
+                    "feedId": "floorArea"
+                },
+                "floorPosition": {
+                    "type": "feed",
+                    "feedId": "floorPosition"
+                }
+            }
+        },
+        "spin-patch": {
+            "shaderId": "spin",
+            "incomingLinks": {
+                "pos": {
+                    "type": "feed",
+                    "feedId": "posSlider"
+                },
+                "mirr": {
+                    "type": "feed",
+                    "feedId": "mirrSwitch"
+                },
+                "time": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "speed": {
+                    "type": "feed",
+                    "feedId": "speedSlider3"
+                },
+                "fixtureInfo": {
+                    "type": "feed",
+                    "feedId": "fixtureInfo"
+                },
+                "fromCenter": {
+                    "type": "feed",
+                    "feedId": "fromCenterSwitch"
+                },
+                "offset": {
+                    "type": "feed",
+                    "feedId": "offsetSlider"
+                },
+                "mirrored": {
+                    "type": "feed",
+                    "feedId": "mirroredSwitch"
+                }
+            }
+        },
+        "beatJump-patch": {
+            "shaderId": "beatJump",
+            "incomingLinks": {
+                "pos": {
+                    "type": "feed",
+                    "feedId": "posSlider"
+                },
+                "beat": {
+                    "type": "feed",
+                    "feedId": "beatSlider"
+                },
+                "time": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "floor": {
+                    "type": "feed",
+                    "feedId": "floorSwitch"
+                },
+                "fixtureInfo": {
+                    "type": "feed",
+                    "feedId": "fixtureInfo"
+                },
+                "beatInfo": {
+                    "type": "feed",
+                    "feedId": "beatInfo"
+                },
+                "fromCenter": {
+                    "type": "feed",
+                    "feedId": "fromCenterSwitch"
+                },
+                "floorOnly": {
+                    "type": "feed",
+                    "feedId": "floorOnlySwitch"
+                },
+                "beatInterval": {
+                    "type": "feed",
+                    "feedId": "beatIntervalSlider"
+                }
+            }
         }
     },
     "controls": {
@@ -1941,6 +2084,34 @@
         },
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
+        },
+        "eyes": {
+            "type": "baaahs.Core:ButtonGroup",
+            "title": "Eyes",
+            "showTitle": true,
+            "buttonIds": [
+            ]
+        },
+        "floorManual": {
+            "type": "baaahs.Core:Button",
+            "title": "Floor Manual",
+            "patchIds": [
+                "floorManual-patch"
+            ]
+        },
+        "spin": {
+            "type": "baaahs.Core:Button",
+            "title": "Spin",
+            "patchIds": [
+                "spin-patch"
+            ]
+        },
+        "beatJump": {
+            "type": "baaahs.Core:Button",
+            "title": "Beat Jump",
+            "patchIds": [
+                "beatJump-patch"
+            ]
         }
     },
     "feeds": {
