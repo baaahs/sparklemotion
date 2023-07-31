@@ -1618,10 +1618,6 @@
         "floorManual-patch": {
             "shaderId": "floorManual",
             "incomingLinks": {
-                "pad": {
-                    "type": "feed",
-                    "feedId": "pad"
-                },
                 "time": {
                     "type": "feed",
                     "feedId": "time"
@@ -1629,10 +1625,6 @@
                 "fixtureInfo": {
                     "type": "feed",
                     "feedId": "fixtureInfo"
-                },
-                "floorArea": {
-                    "type": "feed",
-                    "feedId": "floorArea"
                 },
                 "floorPosition": {
                     "type": "feed",
@@ -1643,14 +1635,6 @@
         "spin-patch": {
             "shaderId": "spin",
             "incomingLinks": {
-                "pos": {
-                    "type": "feed",
-                    "feedId": "posSlider"
-                },
-                "mirr": {
-                    "type": "feed",
-                    "feedId": "mirrSwitch"
-                },
                 "time": {
                     "type": "feed",
                     "feedId": "time"
@@ -1662,10 +1646,6 @@
                 "fixtureInfo": {
                     "type": "feed",
                     "feedId": "fixtureInfo"
-                },
-                "fromCenter": {
-                    "type": "feed",
-                    "feedId": "fromCenterSwitch"
                 },
                 "offset": {
                     "type": "feed",
@@ -1680,21 +1660,9 @@
         "beatJump-patch": {
             "shaderId": "beatJump",
             "incomingLinks": {
-                "pos": {
-                    "type": "feed",
-                    "feedId": "posSlider"
-                },
-                "beat": {
-                    "type": "feed",
-                    "feedId": "beatSlider"
-                },
                 "time": {
                     "type": "feed",
                     "feedId": "time"
-                },
-                "floor": {
-                    "type": "feed",
-                    "feedId": "floorSwitch"
                 },
                 "fixtureInfo": {
                     "type": "feed",
@@ -1703,10 +1671,6 @@
                 "beatInfo": {
                     "type": "feed",
                     "feedId": "beatInfo"
-                },
-                "fromCenter": {
-                    "type": "feed",
-                    "feedId": "fromCenterSwitch"
                 },
                 "floorOnly": {
                     "type": "feed",
@@ -2478,6 +2442,46 @@
             "initialValue": 10.0,
             "minValue": 0.0,
             "maxValue": 20.0
+        },
+        "floorPosition": {
+            "type": "baaahs.Core:XyPad",
+            "title": "Floor Position"
+        },
+        "mirrSwitch": {
+            "type": "baaahs.Core:Switch",
+            "title": "Mirr",
+            "initiallyEnabled": true
+        },
+        "speedSlider3": {
+            "type": "baaahs.Core:Slider",
+            "title": "Speed",
+            "initialValue": 2,
+            "minValue": 0.5,
+            "maxValue": 5
+        },
+        "offsetSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Offset",
+            "initialValue": 0,
+            "minValue": 0,
+            "maxValue": 3.14
+        },
+        "mirroredSwitch": {
+            "type": "baaahs.Core:Switch",
+            "title": "Mirrored",
+            "initiallyEnabled": true
+        },
+        "floorOnlySwitch": {
+            "type": "baaahs.Core:Switch",
+            "title": "Floor Only",
+            "initiallyEnabled": true
+        },
+        "beatIntervalSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Beat Interval",
+            "initialValue": 2,
+            "minValue": 1,
+            "maxValue": 4
         }
     },
     "version": 9
