@@ -43,7 +43,7 @@
                                 "controlId": "shaders",
                                 "column": 0,
                                 "row": 2,
-                                "width": 6,
+                                "width": 5,
                                 "height": 7,
                                 "layout": {
                                     "columns": 6,
