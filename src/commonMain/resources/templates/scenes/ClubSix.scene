@@ -1,0 +1,158 @@
+{
+    "model": {
+        "title": "Club Six",
+        "entities": [
+            {"type": "LightBar", "title": "Bar U1A", "startVertex": {"x": 0, "y": 0, "z": 0}, "endVertex": {"x": 3, "y": 0, "z": 0}},
+            {"type": "LightBar", "title": "Bar U1B", "startVertex": {"x": 4, "y": 0, "z": 0}, "endVertex": {"x": 7, "y": 0, "z": 0}},
+            {"type": "LightBar", "title": "Bar U1C", "startVertex": {"x": 8, "y": 0, "z": 0}, "endVertex": {"x": 11, "y": 0, "z": 0}},
+            {"type": "LightBar", "title": "Bar U1D", "startVertex": {"x": 12, "y": 0, "z": 0}, "endVertex": {"x": 15, "y": 0, "z": 0}},
+            {"type": "LightBar", "title": "Bar U1E", "startVertex": {"x": 16, "y": 0, "z": 0}, "endVertex": {"x": 19, "y": 0, "z": 0}},
+            {"type": "LightBar", "title": "Bar U1F", "startVertex": {"x": 20, "y": 0, "z": 0}, "endVertex": {"x": 23, "y": 0, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U3A", "startVertex": {"x": 0, "y": -2, "z": 0}, "endVertex": {"x": 3, "y": -2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U3B", "startVertex": {"x": 4, "y": -2, "z": 0}, "endVertex": {"x": 7, "y": -2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U3C", "startVertex": {"x": 8, "y": -2, "z": 0}, "endVertex": {"x": 11, "y": -2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U3D", "startVertex": {"x": 12, "y": -2, "z": 0}, "endVertex": {"x": 15, "y": -2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U3E", "startVertex": {"x": 16, "y": -2, "z": 0}, "endVertex": {"x": 19, "y": -2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U3F", "startVertex": {"x": 20, "y": -2, "z": 0}, "endVertex": {"x": 23, "y": -2, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U5A", "startVertex": {"x": 0, "y": -4, "z": 0}, "endVertex": {"x": 3, "y": -4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U5B", "startVertex": {"x": 4, "y": -4, "z": 0}, "endVertex": {"x": 7, "y": -4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U5C", "startVertex": {"x": 8, "y": -4, "z": 0}, "endVertex": {"x": 11, "y": -4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U5D", "startVertex": {"x": 12, "y": -4, "z": 0}, "endVertex": {"x": 15, "y": -4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U5E", "startVertex": {"x": 16, "y": -4, "z": 0}, "endVertex": {"x": 19, "y": -4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U5F", "startVertex": {"x": 20, "y": -4, "z": 0}, "endVertex": {"x": 23, "y": -4, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U7A", "startVertex": {"x": 0, "y": -6, "z": 0}, "endVertex": {"x": 3, "y": -6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U7B", "startVertex": {"x": 4, "y": -6, "z": 0}, "endVertex": {"x": 7, "y": -6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U7C", "startVertex": {"x": 8, "y": -6, "z": 0}, "endVertex": {"x": 11, "y": -6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U7D", "startVertex": {"x": 12, "y": -6, "z": 0}, "endVertex": {"x": 15, "y": -6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U7E", "startVertex": {"x": 16, "y": -6, "z": 0}, "endVertex": {"x": 19, "y": -6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U7F", "startVertex": {"x": 20, "y": -6, "z": 0}, "endVertex": {"x": 23, "y": -6, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U9A", "startVertex": {"x": 0, "y": -8, "z": 0}, "endVertex": {"x": 3, "y": -8, "z": 0}},
+            {"type": "LightBar", "title": "Bar U9B", "startVertex": {"x": 4, "y": -8, "z": 0}, "endVertex": {"x": 7, "y": -8, "z": 0}},
+            {"type": "LightBar", "title": "Bar U9C", "startVertex": {"x": 8, "y": -8, "z": 0}, "endVertex": {"x": 11, "y": -8, "z": 0}},
+            {"type": "LightBar", "title": "Bar U9D", "startVertex": {"x": 12, "y": -8, "z": 0}, "endVertex": {"x": 15, "y": -8, "z": 0}},
+            {"type": "LightBar", "title": "Bar U9E", "startVertex": {"x": 16, "y": -8, "z": 0}, "endVertex": {"x": 19, "y": -8, "z": 0}},
+            {"type": "LightBar", "title": "Bar U9F", "startVertex": {"x": 20, "y": -8, "z": 0}, "endVertex": {"x": 23, "y": -8, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U11A", "startVertex": {"x": 0, "y": -10, "z": 0}, "endVertex": {"x": 3, "y": -10, "z": 0}},
+            {"type": "LightBar", "title": "Bar U11B", "startVertex": {"x": 4, "y": -10, "z": 0}, "endVertex": {"x": 7, "y": -10, "z": 0}},
+            {"type": "LightBar", "title": "Bar U11C", "startVertex": {"x": 8, "y": -10, "z": 0}, "endVertex": {"x": 11, "y": -10, "z": 0}},
+            {"type": "LightBar", "title": "Bar U11D", "startVertex": {"x": 12, "y": -10, "z": 0}, "endVertex": {"x": 15, "y": -10, "z": 0}},
+            {"type": "LightBar", "title": "Bar U11E", "startVertex": {"x": 16, "y": -10, "z": 0}, "endVertex": {"x": 19, "y": -10, "z": 0}},
+            {"type": "LightBar", "title": "Bar U11F", "startVertex": {"x": 20, "y": -10, "z": 0}, "endVertex": {"x": 23, "y": -10, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U13A", "startVertex": {"x": 0, "y": -12, "z": 0}, "endVertex": {"x": 3, "y": -12, "z": 0}},
+            {"type": "LightBar", "title": "Bar U13B", "startVertex": {"x": 4, "y": -12, "z": 0}, "endVertex": {"x": 7, "y": -12, "z": 0}},
+            {"type": "LightBar", "title": "Bar U13C", "startVertex": {"x": 8, "y": -12, "z": 0}, "endVertex": {"x": 11, "y": -12, "z": 0}},
+            {"type": "LightBar", "title": "Bar U13D", "startVertex": {"x": 12, "y": -12, "z": 0}, "endVertex": {"x": 15, "y": -12, "z": 0}},
+            {"type": "LightBar", "title": "Bar U13E", "startVertex": {"x": 16, "y": -12, "z": 0}, "endVertex": {"x": 19, "y": -12, "z": 0}},
+            {"type": "LightBar", "title": "Bar U13F", "startVertex": {"x": 20, "y": -12, "z": 0}, "endVertex": {"x": 23, "y": -12, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U15A", "startVertex": {"x": 0, "y": -14, "z": 0}, "endVertex": {"x": 3, "y": -14, "z": 0}},
+            {"type": "LightBar", "title": "Bar U15B", "startVertex": {"x": 4, "y": -14, "z": 0}, "endVertex": {"x": 7, "y": -14, "z": 0}},
+            {"type": "LightBar", "title": "Bar U15C", "startVertex": {"x": 8, "y": -14, "z": 0}, "endVertex": {"x": 11, "y": -14, "z": 0}},
+            {"type": "LightBar", "title": "Bar U15D", "startVertex": {"x": 12, "y": -14, "z": 0}, "endVertex": {"x": 15, "y": -14, "z": 0}},
+            {"type": "LightBar", "title": "Bar U15E", "startVertex": {"x": 16, "y": -14, "z": 0}, "endVertex": {"x": 19, "y": -14, "z": 0}},
+            {"type": "LightBar", "title": "Bar U15F", "startVertex": {"x": 20, "y": -14, "z": 0}, "endVertex": {"x": 23, "y": -14, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U17A", "startVertex": {"x":  8, "y": 2, "z": 0}, "endVertex": {"x": 11, "y": 2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U17B", "startVertex": {"x": 12, "y": 2, "z": 0}, "endVertex": {"x": 15, "y": 2, "z": 0}},
+            {"type": "LightBar", "title": "Bar U17C", "startVertex": {"x": 15, "y": 3, "z": 0}, "endVertex": {"x": 12, "y": 3, "z": 0}},
+            {"type": "LightBar", "title": "Bar U17D", "startVertex": {"x": 11, "y": 3, "z": 0}, "endVertex": {"x":  8, "y": 3, "z": 0}},
+            {"type": "LightBar", "title": "Bar U17E", "startVertex": {"x":  8, "y": 4, "z": 0}, "endVertex": {"x": 11, "y": 4, "z": 0}},
+            {"type": "LightBar", "title": "Bar U17F", "startVertex": {"x": 12, "y": 4, "z": 0}, "endVertex": {"x": 15, "y": 4, "z": 0}},
+
+            {"type": "LightBar", "title": "Bar U19A", "startVertex": {"x": 2, "y": 6, "z": 0}, "endVertex": {"x": 5, "y": 6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U19B", "startVertex": {"x": 10, "y": 6, "z": 0}, "endVertex": {"x": 13, "y": 6, "z": 0}},
+            {"type": "LightBar", "title": "Bar U19C", "startVertex": {"x": 18, "y": 6, "z": 0}, "endVertex": {"x": 21, "y": 6, "z": 0}}
+
+        ],
+        "units": "Feet"
+    },
+    "controllers": {
+        "SACN:new": {
+            "type": "SACN",
+            "title": "DMX King",
+            "address": "",
+            "universes": 20,
+            "fixtures": [
+                {"entityId": "Bar U1A", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U1B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U1C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U1D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U1E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U1F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U3A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U3B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U3C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U3D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U3E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U3F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U5A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U5B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U5C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U5D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U5E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U5F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U7A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U7B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U7C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U7D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U7E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U7F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U9A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U9B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U9C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U9D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U9E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U9F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U11A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U11B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U11C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U11D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U11E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U11F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U13A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U13B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U13C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U13D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U13E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U13F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U15A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U15B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U15C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U15D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U15E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U15F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U17A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U17B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U17C", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U17D", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U17E", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U17F", "fixtureConfig": {"type": "PixelArray"}},
+
+                {"entityId": "Bar U19A", "fixtureConfig": {"type": "PixelArray"}, "transportConfig": {"type": "DMX", "fixtureStartsInFreshUniverse": true}},
+                {"entityId": "Bar U19B", "fixtureConfig": {"type": "PixelArray"}},
+                {"entityId": "Bar U19C", "fixtureConfig": {"type": "PixelArray"}}
+
+            ],
+            "defaultFixtureConfig": {
+                "type": "PixelArray",
+                "pixelCount": 56,
+                "pixelFormat": "GRB8"
+            }
+        }
+    },
+    "version": 1
+}
