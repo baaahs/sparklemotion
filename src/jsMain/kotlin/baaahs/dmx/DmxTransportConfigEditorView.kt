@@ -39,10 +39,10 @@ private val DmxTransportConfigEditorView =
                     attrs.control = buildElement {
                         Checkbox {
                             attrs.checked = mutableConfig.fixtureStartsInFreshUniverse
-                            attrs.onChange = { _, _ ->
-//                                val value = it.target.checked
-//                                mutableConfig.componentsStartAtUniverseBoundaries = value
-//                                props.editingController.onChange()
+                            attrs.onChange = { e, _ ->
+                                val value = e.target.checked
+                                mutableConfig.fixtureStartsInFreshUniverse = value
+                                props.editingController.onChange()
                             }
                         }
                     }
