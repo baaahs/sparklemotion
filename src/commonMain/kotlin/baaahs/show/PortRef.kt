@@ -3,10 +3,12 @@ package baaahs.show
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.show.mutable.*
+import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Polymorphic
 sealed class PortRef {
     abstract fun dereference(mutableShow: MutableShow): MutablePort
 }

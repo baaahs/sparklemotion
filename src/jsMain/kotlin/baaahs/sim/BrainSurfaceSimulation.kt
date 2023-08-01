@@ -1,8 +1,9 @@
 package baaahs.sim
 
+import baaahs.device.EnumeratedPixelLocations
+import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.fixtures.Fixture
-import baaahs.fixtures.PixelArrayFixture
 import baaahs.mapper.MappingSession
 import baaahs.model.Model
 import baaahs.randomDelay
@@ -55,14 +56,17 @@ actual class BrainSurfaceSimulation actual constructor(
     }
 
     override val previewFixture: Fixture by lazy {
-        PixelArrayFixture(
+        Fixture(
             surface,
             pixelPositions.size,
             surface.name,
             PixelArrayPreviewTransport(surface.name, vizPixels),
-            PixelFormat.default,
-            1f,
-            pixelPositions.map { it.toVector3F() }
+            PixelArrayDevice,
+            PixelArrayDevice.Config(
+                pixelPositions.size, PixelFormat.default,
+                1f,
+                EnumeratedPixelLocations(pixelPositions.map { it.toVector3F() })
+            )
         )
     }
 

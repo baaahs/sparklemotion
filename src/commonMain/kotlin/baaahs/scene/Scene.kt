@@ -8,6 +8,7 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.model.Model
 import baaahs.model.ModelData
 import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
@@ -47,7 +48,7 @@ interface ControllerConfig {
     val controllerType: String
     val title: String
     val fixtures: List<FixtureMappingData>
-    val defaultFixtureConfig: FixtureConfig?
+    val defaultFixtureOptions: FixtureOptions?
     val emptyTransportConfig: TransportConfig
     val defaultTransportConfig: TransportConfig?
 
@@ -57,22 +58,23 @@ interface ControllerConfig {
         return fixtures.map { fixtureMappingData ->
             try {
                 val fixtureMapping = fixtureMappingData.open(tempModel)
-                val fixtureConfig = fixtureMapping.resolveFixtureConfig(defaultFixtureConfig)
+                val fixtureOptions = fixtureMapping.resolveFixtureOptions(defaultFixtureOptions)
                 val transportConfig = fixtureMapping.resolveTransportConfig(emptyTransportConfig, defaultTransportConfig)
-                createFixturePreview(fixtureConfig, transportConfig)
+                createFixturePreview(fixtureOptions, transportConfig)
             } catch (e: Exception) {
                 FixturePreviewError(e)
             }
         }
     }
 
-    fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview
+    fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview
 }
 
 @Serializable
 data class FixtureMappingData(
     val entityId: String? = null,
-    val fixtureConfig: FixtureConfig,
+    @SerialName("fixtureConfig")
+    val fixtureOptions: FixtureOptions,
     val transportConfig: TransportConfig? = null
 ) {
     fun edit() = MutableFixtureMapping(this)
@@ -80,7 +82,7 @@ data class FixtureMappingData(
     fun open(model: Model) =
         FixtureMapping(
             entityId?.let { model.findEntityByName(it) },
-            fixtureConfig,
+            fixtureOptions,
             transportConfig
         )
 }

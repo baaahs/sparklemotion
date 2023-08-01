@@ -3,7 +3,7 @@ package baaahs.visualizer
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.MutableDmxTransportConfig
-import baaahs.fixtures.RemoteConfig
+import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.scene.*
@@ -45,7 +45,7 @@ interface ItemVisualizer<T: Any> : IObservable {
 
     fun applyStyles()
 
-    fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
+    fun receiveFixtureConfig(fixtureConfig: FixtureConfig) {
         // No-op by default.
     }
 
@@ -68,14 +68,14 @@ interface VisualizerBuilder {
     fun getDirectDmxControllerEditorView(editingController: EditingController<MutableDirectDmxControllerConfig>): View
     fun getSacnControllerEditorView(editingController: EditingController<MutableSacnControllerConfig>): View
 
-    // FixtureConfigs:
-    fun getMovingHeadFixtureConfigEditorView(
+    // FixtureOptions:
+    fun getMovingHeadFixtureOptionsEditorView(
         editingController: EditingController<*>,
-        mutableFixtureConfig: MovingHeadDevice.MutableConfig
+        mutableFixtureOptions: MovingHeadDevice.MutableOptions
     ): View
-    fun getPixelArrayFixtureConfigEditorView(
+    fun getPixelArrayFixtureOptionsEditorView(
         editingController: EditingController<*>,
-        mutableFixtureConfig: PixelArrayDevice.MutableConfig
+        mutableFixtureOptions: PixelArrayDevice.MutableOptions
     ): View
 
     // TransportConfigs:

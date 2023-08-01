@@ -4,7 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
 import baaahs.device.FixtureType
 import baaahs.scene.EditingController
-import baaahs.scene.MutableFixtureConfig
+import baaahs.scene.MutableFixtureOptions
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
@@ -20,13 +20,13 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
     val styles = appContext.allStyles.controllerEditor
 
     val handleFixtureTypeChange by handler(
-        props.mutableFixtureConfig, props.editingController.onChange
+        props.mutableFixtureOptions, props.editingController.onChange
     ) { fixtureType: FixtureType? ->
-        props.setMutableFixtureConfig(fixtureType?.emptyConfig?.edit())
+        props.setMutableFixtureOptions(fixtureType?.emptyOptions?.edit())
         props.editingController.onChange()
     }
 
-    val fixtureConfig = props.mutableFixtureConfig
+    val fixtureConfig = props.mutableFixtureOptions
 
     Card {
         attrs.classes = jso { this.root = -styles.configCardOuter }
@@ -51,9 +51,9 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
 external interface FixtureConfigPickerProps : Props {
     var editingController: EditingController<*>
-    var mutableFixtureConfig: MutableFixtureConfig?
-    var setMutableFixtureConfig: (mutableFixtureConfig: MutableFixtureConfig?) -> Unit
-    var allowNullFixtureConfig: Boolean?
+    var mutableFixtureOptions: MutableFixtureOptions?
+    var setMutableFixtureOptions: (mutableFixtureOptions: MutableFixtureOptions?) -> Unit
+    var allowNullFixtureOptions: Boolean?
 }
 
 fun RBuilder.fixtureConfigPicker(handler: RHandler<FixtureConfigPickerProps>) =

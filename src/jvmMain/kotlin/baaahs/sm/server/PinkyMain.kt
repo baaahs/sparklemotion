@@ -93,6 +93,7 @@ class PinkyMain(private val args: Array<String>) {
 
             ktor.application.routing {
                 static {
+                    resource("sparklemotion.js")
                     resources("htdocs")
                     route("monitor/") { defaultResource("htdocs/monitor/index.html") }
                     route("ui/") { defaultResource("htdocs/ui/index.html") }

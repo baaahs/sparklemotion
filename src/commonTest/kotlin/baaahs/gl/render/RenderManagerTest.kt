@@ -6,14 +6,19 @@ import baaahs.device.PixelArrayDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.doRunBlocking
 import baaahs.fixtures.*
-import baaahs.gl.*
+import baaahs.gl.GlBase
+import baaahs.gl.autoWire
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedProgram
+import baaahs.gl.testToolchain
 import baaahs.model.MovingHead
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeShowPlayer
 import kotlin.math.abs
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.expect
 
 class RenderManagerTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
@@ -68,14 +73,12 @@ class RenderManagerTest {
                 }
             """.trimIndent()
 
-        val renderTarget1 = renderManager.addFixture(
-            PixelArrayFixture(null, 2, transport = NullTransport))
+        val renderTarget1 = renderManager.addFixture(pixelArrayFixture(null, 2, transport = NullTransport))
         val linkedProgram1 = resolve(program1, ContentType.Color)
         val glslProgram1 = renderManager.compile(PixelArrayDevice, linkedProgram1) { _, _ -> error("none") }
 
         val movingHead = MovingHead("mover", adapter = Shenzarpy, baseDmxChannel = 1)
-        val renderTarget2 = renderManager.addFixture(
-            MovingHeadFixture(movingHead, 2, transport = NullTransport, adapter = Shenzarpy))
+        val renderTarget2 = renderManager.addFixture(movingHeadFixture(movingHead, 2, transport = NullTransport, adapter = Shenzarpy))
         val linkedProgram2 = resolve(program2, MovingHeadDevice.resultContentType)
         val glslProgram2 = renderManager.compile(MovingHeadDevice, linkedProgram2) { _, _ -> error("none") }
 
@@ -91,8 +94,8 @@ class RenderManagerTest {
         drawAndFinish()
 
         expectColor(
-            Color(0.5f, 0.25f, 0.75f),
-            Color(0.5f, 0.25f, 0.75f),
+            Color.from(0.5f, 0.25f, 0.75f),
+            Color.from(0.5f, 0.25f, 0.75f),
         ) { renderTarget1.colors.toList() }
 
         with (renderTarget2.movingHeadParams.movingHeadParams) {

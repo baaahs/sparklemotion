@@ -3,8 +3,8 @@ package baaahs.model
 import baaahs.controller.ControllerId
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayDevice
-import baaahs.fixtures.FixtureConfig
 import baaahs.fixtures.FixtureMapping
+import baaahs.fixtures.FixtureOptions
 import baaahs.geom.*
 import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
@@ -63,7 +63,7 @@ class Model(
         val name: String
         val title: String get() = name
         val description: String?
-        val defaultFixtureConfig: FixtureConfig?
+        val defaultFixtureOptions: FixtureOptions?
             get() = null
         val fixtureType: FixtureType
         /** Bounds in entity's local space. */
@@ -154,8 +154,8 @@ class Model(
         override val scale: Vector3F = Vector3F.unit3d,
         @Transient override val id: EntityId = Entity.nextId()
     ) : BaseEntity(), EntityWithGeometry {
-        override val defaultFixtureConfig: PixelArrayDevice.Config?
-            get() = PixelArrayDevice.Config(pixelCount = expectedPixelCount)
+        override val defaultFixtureOptions: PixelArrayDevice.Options?
+            get() = PixelArrayDevice.Options(pixelCount = expectedPixelCount)
         override val fixtureType: FixtureType
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>

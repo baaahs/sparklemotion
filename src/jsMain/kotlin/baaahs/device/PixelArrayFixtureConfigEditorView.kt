@@ -18,7 +18,7 @@ private val PixelArrayFixtureConfigEditorView =
         val appContext = useContext(appContext)
         val styles = appContext.allStyles.controllerEditor
 
-        val mutableConfig = props.mutableFixtureConfig
+        val mutableConfig = props.mutableFixtureOptions
 
         val handlePixelFormatChange by handler(
             props.editingController, mutableConfig
@@ -60,7 +60,7 @@ private val PixelArrayFixtureConfigEditorView =
 
 external interface PixelArrayFixtureConfigEditorProps : Props {
     var editingController: EditingController<*>
-    var mutableFixtureConfig: PixelArrayDevice.MutableConfig
+    var mutableFixtureOptions: PixelArrayDevice.MutableOptions
 }
 
 fun RBuilder.pixelArrayFixtureConfigEditor(handler: RHandler<PixelArrayFixtureConfigEditorProps>) =

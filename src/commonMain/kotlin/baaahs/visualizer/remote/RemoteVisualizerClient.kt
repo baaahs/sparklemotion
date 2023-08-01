@@ -77,9 +77,9 @@ class RemoteVisualizerClient(
                 val remoteConfig = plugins.json.decodeFromString(
                     RemoteConfigWrapper.serializer(),
                     reader.readString()
-                ).remoteConfig
+                ).fixtureConfig
                 val fixtureSimulation = fixtureSimulations[entityName]
-                fixtureSimulation?.itemVisualizer?.receiveRemoteConfig(remoteConfig)
+                fixtureSimulation?.itemVisualizer?.receiveFixtureConfig(remoteConfig)
             }
 
             FrameData -> {

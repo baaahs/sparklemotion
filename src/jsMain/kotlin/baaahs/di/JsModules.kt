@@ -110,6 +110,7 @@ class JsMonitorWebClientModule : KModule {
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
             scoped { Notifier(get()) }
+            scoped { Visualizer(get()) }
             scoped {
                 val simulationEnv = SimulationEnv {
                     component(get<Clock>())

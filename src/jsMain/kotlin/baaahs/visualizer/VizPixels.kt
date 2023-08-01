@@ -2,8 +2,10 @@ package baaahs.visualizer
 
 import baaahs.Color
 import baaahs.device.PixelFormat
+import baaahs.device.PixelLocations
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
 import baaahs.sm.brain.proto.Pixels
@@ -25,7 +27,8 @@ class VizPixels(
     val normal: Vector3,
     val transformation: Matrix4F,
     private val pixelFormat: PixelFormat,
-    private val pixelSizeRange: ClosedFloatingPointRange<Float>
+    private val pixelSizeRange: ClosedFloatingPointRange<Float>,
+    private val bothSides: Boolean = false
 ) : Pixels {
     override val size = positions.size
     private val vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3).apply {
@@ -34,7 +37,7 @@ class VizPixels(
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
-        side = FrontSide
+        side = if (bothSides) DoubleSide else FrontSide
         transparent = true
         blending = AdditiveBlending
 //            depthFunc = AlwaysDepth
@@ -76,9 +79,8 @@ class VizPixels(
         parent.remove(pixelsMesh)
     }
 
-    override fun get(i: Int): Color {
-        return Color.from(colorsAsInts[i])
-    }
+    override fun get(i: Int): Color =
+        Color.from(colorsAsInts[i])
 
     override fun set(i: Int, color: Color) {
         colorsAsInts[i] = color.argb
@@ -188,9 +190,13 @@ class VizPixels(
 
         // TODO: This is dumb; instead, allow model entities to specify how their pixels appear.
         val undiffusedLedRangeCm: ClosedFloatingPointRange<Float> =
-            2f..5f
+            4f..10f
 
         val diffusedLedRangeCm: ClosedFloatingPointRange<Float> =
             (2f * 2.54f)..(5f * 2.54f)
     }
+}
+
+fun PixelLocations.arrayOfVector3() = Array(size) {
+    (get(it) ?: Vector3F.origin).toVector3()
 }

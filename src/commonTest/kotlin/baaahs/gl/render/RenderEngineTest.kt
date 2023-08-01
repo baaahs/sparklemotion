@@ -5,7 +5,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.doRunBlocking
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.NullTransport
-import baaahs.fixtures.PixelArrayFixture
+import baaahs.fixtures.pixelArrayFixture
 import baaahs.gadgets.Slider
 import baaahs.geom.Vector3F
 import baaahs.gl.*
@@ -214,7 +214,7 @@ class RenderEngineTest {
     }
 
     private fun fakeSurface(name: String = "xyz", pixelCount: Int = 3): Fixture {
-        return PixelArrayFixture(
+        return pixelArrayFixture(
             testModelSurface(name),
             pixelCount,
             transport = NullTransport,
@@ -232,7 +232,7 @@ class RenderEngineTest {
     }
 
     private fun createSurface(name: String, pixelCount: Int): Fixture {
-        return PixelArrayFixture(
+        return pixelArrayFixture(
             testModelSurface(name), pixelCount,
             transport = NullTransport,
             pixelLocations = (0 until pixelCount)

@@ -1,7 +1,7 @@
 package baaahs.device
 
 import baaahs.ShowPlayer
-import baaahs.fixtures.PixelArrayFixture
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.PerPixelEngineFeedContext
@@ -94,12 +94,12 @@ class PixelLocationFeedContext(
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
             if (renderTarget is FixtureRenderTarget) {
                 val fixture = renderTarget.fixture
-                if (fixture is PixelArrayFixture) {
-                    val pixelLocations = fixture.pixelLocations
+                if (fixture.fixtureConfig is PixelArrayDevice.Config) {
+                    val pixelLocations = fixture.fixtureConfig.pixelLocations
 
                     buffer.scoped(renderTarget).also { view ->
                         for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.componentCount)) {
-                            val location = pixelLocations[pixelIndex]
+                            val location = pixelLocations[pixelIndex] ?: Vector3F.unknown
                             view[pixelIndex, 0] = location.x
                             view[pixelIndex, 1] = location.y
                             view[pixelIndex, 2] = location.z

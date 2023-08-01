@@ -458,7 +458,7 @@ abstract class Mapper(
             val firstGuess = surfaceBallot.winner()
             val firstGuessEntity = firstGuess.entity
             val firstGuessSurface = firstGuessEntity as? Model.Surface
-            val defaultFixtureConfig = firstGuessSurface?.defaultFixtureConfig
+            val defaultFixtureOptions = firstGuessSurface?.defaultFixtureOptions
 
             ui.showMessage("$index / ${brainsToMap.size}: ${mappableBrain.brainId} — surface is ${firstGuessEntity.name}?")
             ui.showMessage2("Candidate panels: ${surfaceBallot.summarize()}")
@@ -467,8 +467,8 @@ abstract class Mapper(
             mappableBrain.guessedEntity = firstGuessEntity
             mappableBrain.guessedVisibleSurface = firstGuess
             mappableBrain.expectedPixelCount = firstGuessSurface?.expectedPixelCount
-                ?: defaultFixtureConfig?.pixelCount
-            mappableBrain.pixelFormat = defaultFixtureConfig?.pixelFormat
+                ?: defaultFixtureOptions?.pixelCount
+            mappableBrain.pixelFormat = defaultFixtureOptions?.pixelFormat
             mappableBrain.panelDeltaBitmap = deltaBitmap.clone()
             mappableBrain.deltaImageName =
                 mapperBackend.saveImage(sessionStartTime, "brain-${mappableBrain.brainId}-$retryCount", deltaBitmap)

@@ -58,9 +58,9 @@ fun fakeFixture(
     fixtureType: FixtureType = modelEntity?.fixtureType ?: PixelArrayDevice,
     model: Model = TestModel
 ) =
-    fixtureType.createFixture(
-        modelEntity, pixelCount, fixtureType.defaultConfig,
-        "Fake ${fixtureType.title}", transport = NullTransport, model
+    Fixture(
+        modelEntity, pixelCount, "Fake ${fixtureType.title}",
+        NullTransport, fixtureType, fixtureType.defaultOptions.toConfig(modelEntity, model, pixelCount)
     )
 
 class FakePixels(override val size: Int) : Pixels {

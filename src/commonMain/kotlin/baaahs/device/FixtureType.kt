@@ -1,13 +1,10 @@
 package baaahs.device
 
-import baaahs.fixtures.Fixture
-import baaahs.fixtures.FixtureConfig
-import baaahs.fixtures.Transport
+import baaahs.fixtures.FixtureOptions
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
 import baaahs.gl.render.RenderResults
 import baaahs.gl.result.ResultStorage
-import baaahs.model.Model
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import kotlinx.serialization.KSerializer
@@ -24,19 +21,11 @@ interface FixtureType {
     val resultContentType: ContentType
     val likelyPipelines: List<Pair<ContentType, ContentType>>
     val errorIndicatorShader: Shader
-    val emptyConfig: FixtureConfig
-    val defaultConfig: FixtureConfig
+    val emptyOptions: FixtureOptions
+    val defaultOptions: FixtureOptions
     val serialModule: SerializersModule get() = SerializersModule {}
 
     fun createResultStorage(renderResults: RenderResults): ResultStorage
-    fun createFixture(
-        modelEntity: Model.Entity?,
-        componentCount: Int,
-        fixtureConfig: FixtureConfig,
-        name: String,
-        transport: Transport,
-        model: Model
-    ): Fixture
 
     class Serializer(private val knownFixtureTypes: Map<String, FixtureType>) : KSerializer<FixtureType> {
         override val descriptor: SerialDescriptor

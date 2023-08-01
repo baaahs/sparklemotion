@@ -301,6 +301,12 @@ data class Color(val argb: Int) {
         @JsName("fromInts")
         fun from(r: Int, g: Int, b: Int) = Color(r, g, b)
 
+        @JsName("fromIntsWithAlpha")
+        fun from(r: Int, g: Int, b: Int, a: Int) = Color(r, g, b, a)
+
+        @JsName("fromFloats")
+        fun from(r: Float, g: Float, b: Float) = Color(r, g, b)
+
         @JsName("fromBytes")
         fun from(r: Byte, g: Byte, b: Byte) = Color(r, g, b)
 

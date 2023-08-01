@@ -1,6 +1,6 @@
 package baaahs.controller
 
-import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 
@@ -22,7 +22,7 @@ interface ControllerManager {
          * A class of controllers may imply a certain fixture configuration, e.g. colors
          * are automatically gamma corrected.
          */
-        val defaultFixtureConfig: FixtureConfig?
+        val defaultFixtureOptions: FixtureOptions?
             get() = null
 
         fun createMutableControllerConfigFor(

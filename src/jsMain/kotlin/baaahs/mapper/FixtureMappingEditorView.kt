@@ -74,7 +74,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     attrs.label = buildElement { +"Error: ${fixturePreview.e.message}" }
                 }
             } else {
-                fixturePreview.fixtureConfig.summary().forEach { (title, value) ->
+                fixturePreview.fixtureOptions.summary().forEach { (title, value) ->
                     Chip {
                         attrs.variant = ChipVariant.outlined
                         attrs.title = title
@@ -96,9 +96,9 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
             attrs.classes = jso { this.root = -styles.expansionPanelDetails }
             fixtureConfigPicker {
                 attrs.editingController = props.editingController
-                attrs.mutableFixtureConfig = props.mutableFixtureMapping.fixtureConfig
-                attrs.setMutableFixtureConfig = { props.mutableFixtureMapping.fixtureConfig = it!! }
-                attrs.allowNullFixtureConfig = false
+                attrs.mutableFixtureOptions = props.mutableFixtureMapping.fixtureOptions
+                attrs.setMutableFixtureOptions = { props.mutableFixtureMapping.fixtureOptions = it!! }
+                attrs.allowNullFixtureOptions = false
             }
 
             transportConfigPicker {

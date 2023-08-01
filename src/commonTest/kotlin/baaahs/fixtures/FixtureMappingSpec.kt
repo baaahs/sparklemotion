@@ -3,43 +3,47 @@ package baaahs.fixtures
 import baaahs.controller.Controller
 import baaahs.controllers.FakeController
 import baaahs.describe
+import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
+import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.feature
 import ch.tutteli.atrium.api.fluent.en_GB.isA
+import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
+@Suppress("unused")
 object FixtureMappingSpec : Spek({
     describe<FixtureMapping> {
         context("buildFixture") {
             val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }
             val model by value { modelForTest(listOfNotNull(entity)) }
-            val mappingFixtureConfig by value<FixtureConfig> { PixelArrayDevice.Config() }
+            val mappingFixtureOptions by value<FixtureOptions> { PixelArrayDevice.Options() }
             val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig(777) }
-            val mapping by value {
-                FixtureMapping(entity, mappingFixtureConfig, mappingTransportConfig)
-            }
-            val controllerDefaultFixtureConfig by value<FixtureConfig?> { null }
+            val mapping by value { FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig) }
+            val controllerDefaultFixtureOptions by value<FixtureOptions?> { null }
             val controllerDefaultTransportConfig by value<TransportConfig?> { null }
             val controller by value<Controller> {
-                FakeController("fake", controllerDefaultFixtureConfig, controllerDefaultTransportConfig)
+                FakeController("fake", controllerDefaultFixtureOptions, controllerDefaultTransportConfig)
             }
             val fixture by value { mapping.buildFixture(controller, model) }
 
             context("with a mapped entity") {
                 it("creates a fixture for that entity") {
-                    expect(fixture).isA<PixelArrayFixture>() {
+                    expect(fixture) {
                         feature { f(it::modelEntity) }.toEqual(entity)
                         feature { f(it::componentCount) }.toEqual(1)
-                        feature { f(it::componentCount) }.toEqual(1)
-                        feature { f(it::gammaCorrection) }.toEqual(1f)
-                        feature { f(it::pixelLocations) }.toEqual(emptyList())
+                        feature { f(it::fixtureConfig) }.isA<PixelArrayDevice.Config> {
+                            feature { f(it::gammaCorrection) }.toEqual(1f)
+                            feature { f(it::pixelLocations) }.toEqual(EnumeratedPixelLocations())
+                        }
                     }
 
                     expect(fixture.transport.config).isA<DmxTransportConfig> {
@@ -47,7 +51,7 @@ object FixtureMappingSpec : Spek({
                     }
                 }
 
-                context("whose model entity specifies a fixture config") {
+                context("whose model entity specifies a surface fixture config") {
                     override(entity) { testModelSurface("surface", expectedPixelCount = 123) }
 
                     it("creates a fixture with that config") {
@@ -55,7 +59,7 @@ object FixtureMappingSpec : Spek({
                     }
 
                     context("but explicit fixture mapping overrides it") {
-                        override(mappingFixtureConfig) { PixelArrayDevice.Config(pixelCount = 321) }
+                        override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                         it("the mapping's config takes precedence") {
                             expect(fixture.componentCount) { toEqual(321) }
@@ -63,14 +67,14 @@ object FixtureMappingSpec : Spek({
                     }
 
                     context("whose controller's default fixture config specifies a fixture config") {
-                        override(controllerDefaultFixtureConfig) { PixelArrayDevice.Config(456) }
+                        override(controllerDefaultFixtureOptions) { PixelArrayDevice.Options(456) }
 
                         it("the model entity's config takes precedence") {
                             expect(fixture.componentCount) { toEqual(123) }
                         }
 
                         context("but explicit fixture mapping overrides it") {
-                            override(mappingFixtureConfig) { PixelArrayDevice.Config(pixelCount = 321) }
+                            override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                             it("the mapping's config takes precedence") {
                                 expect(fixture.componentCount) { toEqual(321) }
@@ -79,15 +83,37 @@ object FixtureMappingSpec : Spek({
                     }
                 }
 
+                context("whose model entity is a pixel array") {
+                    override(entity) {
+                        LightBar("light bar", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
+                    }
+                    override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 3) }
+
+                    it("creates a fixture with that config") {
+                        expect(fixture.componentCount) { toEqual(3) }
+                        expect(fixture.fixtureConfig)
+                            .isA<PixelArrayDevice.Config>()
+                            .its({ pixelLocations }) {
+                                toEqual(
+                                    EnumeratedPixelLocations(
+                                        Vector3F.origin,
+                                        Vector3F(.5f, .5f, .5f),
+                                        Vector3F.unit3d
+                                    )
+                                )
+                            }
+                    }
+                }
+
                 context("whose controller's default fixture config specifies a pixel count") {
-                    override(controllerDefaultFixtureConfig) { PixelArrayDevice.Config(456) }
+                    override(controllerDefaultFixtureOptions) { PixelArrayDevice.Options(456) }
 
                     it("creates a fixture with that config") {
                         expect(fixture.componentCount) { toEqual(456) }
                     }
 
                     context("but explicit fixture mapping overrides it") {
-                        override(mappingFixtureConfig) { PixelArrayDevice.Config(pixelCount = 321) }
+                        override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                         it("the mapping's config takes precedence") {
                             expect(fixture.componentCount) { toEqual(321) }

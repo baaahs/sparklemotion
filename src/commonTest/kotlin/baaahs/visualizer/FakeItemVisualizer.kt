@@ -1,8 +1,8 @@
 package baaahs.visualizer
 
 import baaahs.Color
-import baaahs.fixtures.PixelArrayRemoteConfig
-import baaahs.fixtures.RemoteConfig
+import baaahs.device.PixelArrayDevice
+import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.FakeModelEntity
 import baaahs.ui.Observable
@@ -18,7 +18,7 @@ data class FakeItemVisualizer(
     override val obj: VizObj
         get() = TODO()
 
-    lateinit var remoteConfig: PixelArrayRemoteConfig
+    lateinit var fixtureConfig: PixelArrayDevice.Config
     lateinit var pixelColors: List<Color>
 
     override fun isApplicable(newItem: Any): FakeModelEntity? {
@@ -32,8 +32,8 @@ data class FakeItemVisualizer(
         item = newItem
     }
 
-    override fun receiveRemoteConfig(remoteConfig: RemoteConfig) {
-        this.remoteConfig = remoteConfig as PixelArrayRemoteConfig
+    override fun receiveFixtureConfig(fixtureConfig: FixtureConfig) {
+        this.fixtureConfig = fixtureConfig as PixelArrayDevice.Config
     }
 
     override fun receiveRemoteFrameData(reader: ByteArrayReader) {
@@ -42,10 +42,10 @@ data class FakeItemVisualizer(
 
     fun readColors(reader: ByteArrayReader): List<Color> {
         val pixelCount = reader.readInt()
-        val minPixCount = min(remoteConfig.pixelCount, pixelCount)
+        val minPixCount = min(fixtureConfig.pixelCount, pixelCount)
         return buildList {
             repeat(minPixCount) {
-                remoteConfig.pixelFormat.readColor(reader) { r, g, b ->
+                fixtureConfig.pixelFormat.readColor(reader) { r, g, b ->
                     add(Color(r, g, b))
                 }
             }

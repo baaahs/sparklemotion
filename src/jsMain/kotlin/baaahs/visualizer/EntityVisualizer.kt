@@ -111,23 +111,23 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
 
     // FixtureConfigs:
 
-    override fun getMovingHeadFixtureConfigEditorView(
+    override fun getMovingHeadFixtureOptionsEditorView(
         editingController: EditingController<*>,
-        mutableFixtureConfig: MovingHeadDevice.MutableConfig
+        mutableFixtureOptions: MovingHeadDevice.MutableOptions
     ): View = renderWrapper {
         movingHeadFixtureConfigEditor {
             attrs.editingController = editingController
-            attrs.mutableFixtureConfig = mutableFixtureConfig
+            attrs.mutableFixtureConfig = mutableFixtureOptions
         }
     }
 
-    override fun getPixelArrayFixtureConfigEditorView(
+    override fun getPixelArrayFixtureOptionsEditorView(
         editingController: EditingController<*>,
-        mutableFixtureConfig: PixelArrayDevice.MutableConfig
+        mutableFixtureOptions: PixelArrayDevice.MutableOptions
     ): View = renderWrapper {
         pixelArrayFixtureConfigEditor {
             attrs.editingController = editingController
-            attrs.mutableFixtureConfig = mutableFixtureConfig
+            attrs.mutableFixtureOptions = mutableFixtureOptions
         }
     }
 

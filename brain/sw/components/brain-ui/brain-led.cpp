@@ -4,6 +4,7 @@
 
 #include "brain-ui-priv.h"
 #include "brain-led.h"
+#include "../led-renderer/include/gamma.h"
 
 #define TAG TAG_UI
 
@@ -29,7 +30,8 @@ BrainLed::start() {
 void
 BrainLed::setValue(uint8_t val) {
     m_val = val;
-    ledc_set_duty(m_config.speed_mode, m_config.channel, 256 - val);
+    uint8_t corrected = Gamma::Correct22NoDither(val);
+    ledc_set_duty(m_config.speed_mode, m_config.channel, 256 - corrected);
     ledc_update_duty(m_config.speed_mode, m_config.channel);
 }
 

@@ -32,7 +32,7 @@ private val MovingHeadFixtureConfigEditorView =
 
 external interface MovingHeadFixtureConfigEditorProps : Props {
     var editingController: EditingController<*>
-    var mutableFixtureConfig: MovingHeadDevice.MutableConfig
+    var mutableFixtureConfig: MovingHeadDevice.MutableOptions
 }
 
 fun RBuilder.movingHeadFixtureConfigEditor(handler: RHandler<MovingHeadFixtureConfigEditorProps>) =

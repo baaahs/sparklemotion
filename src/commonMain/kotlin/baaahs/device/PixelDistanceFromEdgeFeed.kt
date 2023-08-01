@@ -1,7 +1,7 @@
 package baaahs.device
 
 import baaahs.ShowPlayer
-import baaahs.fixtures.PixelArrayFixture
+import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.PerPixelEngineFeedContext
@@ -86,15 +86,15 @@ class PixelDistanceFromEdgeFeedContext(
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
             val fixture = renderTarget.fixture
-            if (renderTarget is FixtureRenderTarget && fixture is PixelArrayFixture) {
-                val pixelLocations = fixture.pixelLocations
+            if (renderTarget is FixtureRenderTarget && fixture.fixtureConfig is PixelArrayDevice.Config) {
+                val pixelLocations = fixture.fixtureConfig.pixelLocations
                 val surface = fixture.modelEntity as? Model.Surface
                 val lines = surface?.lines
 
                 buffer.scoped(renderTarget).also { view ->
                     for (pixelIndex in 0 until min(pixelLocations.size, renderTarget.componentCount)) {
                         val distanceFromEdge = lines?.let { lines ->
-                            val pixelLocation = pixelLocations[pixelIndex]
+                            val pixelLocation = pixelLocations[pixelIndex] ?: Vector3F.unknown
 
                             lines.mapNotNull { line ->
                                 line.shortestDistanceTo(pixelLocation)
