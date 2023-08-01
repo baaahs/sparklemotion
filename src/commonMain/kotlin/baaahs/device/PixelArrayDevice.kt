@@ -11,6 +11,7 @@ import baaahs.gl.result.ResultStorage
 import baaahs.gl.result.SingleResultStorage
 import baaahs.glsl.SurfacePixelStrategy
 import baaahs.model.Model
+import baaahs.model.PixelArray
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureOptions
 import baaahs.show.FeedBuilder
@@ -70,12 +71,14 @@ object PixelArrayDevice : PixelArrayFixtureType() {
 
         override fun toConfig(entity: Model.Entity?, model: Model, defaultComponentCount: Int?): FixtureConfig {
             val pixelCount = componentCount ?: defaultComponentCount ?: error("Component count not specified.")
+            val pixelArray = entity as? PixelArray
             return Config(
                 pixelCount,
                 pixelFormat ?: error("Pixel format not specified."),
                 gammaCorrection ?: error("Gamma correction not specified."),
                 EnumeratedPixelLocations(
                     pixelLocations
+                        ?: pixelArray?.calculatePixelLocalLocations(pixelCount)
                         ?: generatePixelLocations(pixelCount, entity, model)
                         ?: emptyList()
                 )
