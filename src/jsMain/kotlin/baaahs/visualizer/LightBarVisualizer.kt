@@ -3,6 +3,7 @@ package baaahs.visualizer
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.LightBar
+import baaahs.model.ModelUnit
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
@@ -15,10 +16,10 @@ import kotlin.math.abs
 
 class Container(
     val box: Box3,
+    val units: ModelUnit,
     val position: Vector3? = null,
     val rotation: Quaternion? = null,
-    val scale: Vector3? = null,
-    val bar: Boolean = false
+    val scale: Vector3? = null
 ) {
     val min = box.min.toVector3F()
     val max = box.max.toVector3F()
@@ -37,12 +38,6 @@ class Container(
 
         return Mesh(geom, material).apply {
             applyTransforms(this)
-
-            if (bar) {
-                position.add(Vector3(0, 0, -.5))
-            } else {
-                position.add(offset)
-            }
         }
     }
 
@@ -58,6 +53,9 @@ class LightBarVisualizer(
     adapter: EntityAdapter,
     vizPixels: VizPixels? = null
 ) : PixelArrayVisualizer<LightBar>(lightBar, vizPixels) {
+    private val units = adapter.units
+    private val borderWidth = units.fromCm(1.25)
+
     init {
         update(item)
     }
@@ -84,19 +82,19 @@ class LightBarVisualizer(
 
         box.setFromPoints(
             arrayOf(
-                Vector3(-.5, -.5, -length / 2f + .5),
-                Vector3(.5, .5, length / 2f + .5)
+                Vector3(-borderWidth, -borderWidth, -length / 2f + borderWidth),
+                Vector3(borderWidth, borderWidth, length / 2f + borderWidth)
             )
         )
         box.translate(center.toVector3())
-        box.translate(Vector3(0, 0, -1))
+        box.translate(Vector3(0, 0, -borderWidth))
 
         val quaternion = Quaternion().setFromUnitVectors(
             Vector3F.facingForward.toVector3(),
             normal.toVector3()
         )
 
-        return Container(box, center.toVector3(), quaternion, bar = true)
+        return Container(box, units, center.toVector3(), quaternion)
     }
 
     companion object {
@@ -108,6 +106,8 @@ class LightBarVisualizer(
 class PolyLineVisualizer(
     polyLine: PolyLine, adapter: EntityAdapter, vizPixels: VizPixels?
 ) : PixelArrayVisualizer<PolyLine>(polyLine, vizPixels) {
+    private val units = adapter.units
+
     init {
         update(item)
     }
@@ -134,7 +134,7 @@ class PolyLineVisualizer(
         val box = Box3()
         box.setFromPoints(pixelLocations)
         addPadding(box)
-        return Container(box)
+        return Container(box, units)
     }
 }
 
