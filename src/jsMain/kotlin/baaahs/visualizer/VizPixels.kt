@@ -27,7 +27,8 @@ class VizPixels(
     val normal: Vector3,
     val transformation: Matrix4F,
     private val pixelFormat: PixelFormat,
-    private val pixelSizeRange: ClosedFloatingPointRange<Float>
+    private val pixelSizeRange: ClosedFloatingPointRange<Float>,
+    private val bothSides: Boolean = false
 ) : Pixels {
     override val size = positions.size
     private val vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3).apply {
@@ -36,7 +37,7 @@ class VizPixels(
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
-        side = FrontSide
+        side = if (bothSides) DoubleSide else FrontSide
         transparent = true
         blending = AdditiveBlending
 //            depthFunc = AlwaysDepth
