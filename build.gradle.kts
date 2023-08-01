@@ -21,14 +21,13 @@ buildscript {
     }
 }
 
-val os = OperatingSystem.current()
-val osArch = System.getProperty("os.arch")
-val lwjglNatives = when {
-    os.isLinux -> "natives-linux"
-    os.isMacOsX && osArch == "aarch64"-> "natives-macos-arm64"
-    os.isMacOsX -> "natives-macos"
-    else -> throw IllegalArgumentException()
-}
+val lwjglAllNatives = listOf(
+    "natives-linux",
+    "natives-macos-arm64",
+    "natives-macos",
+    "natives-windows",
+    "natives-windows-x86"
+)
 
 plugins {
     kotlin("multiplatform") version Versions.kotlin
@@ -119,9 +118,11 @@ kotlin {
                 // GLSL support via LWJGL:
                 implementation("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}")
                 implementation("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}")
-                runtimeOnly("org.lwjgl:lwjgl:${Versions.lwjgl}:$lwjglNatives")
-                runtimeOnly("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}:$lwjglNatives")
-                runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$lwjglNatives")
+                lwjglAllNatives.forEach { platform ->
+                    runtimeOnly("org.lwjgl:lwjgl:${Versions.lwjgl}:$platform")
+                    runtimeOnly("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}:$platform")
+                    runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$platform")
+                }
                 implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
 
                 // GLSL support via JOGL:

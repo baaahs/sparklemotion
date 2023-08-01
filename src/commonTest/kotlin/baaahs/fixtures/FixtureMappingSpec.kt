@@ -6,16 +6,20 @@ import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
+import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.feature
 import ch.tutteli.atrium.api.fluent.en_GB.isA
+import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 
+@Suppress("unused")
 object FixtureMappingSpec : Spek({
     describe<FixtureMapping> {
         context("buildFixture") {
@@ -23,9 +27,7 @@ object FixtureMappingSpec : Spek({
             val model by value { modelForTest(listOfNotNull(entity)) }
             val mappingFixtureOptions by value<FixtureOptions> { PixelArrayDevice.Options() }
             val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig(777) }
-            val mapping by value {
-                FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig)
-            }
+            val mapping by value { FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig) }
             val controllerDefaultFixtureOptions by value<FixtureOptions?> { null }
             val controllerDefaultTransportConfig by value<TransportConfig?> { null }
             val controller by value<Controller> {
@@ -49,7 +51,7 @@ object FixtureMappingSpec : Spek({
                     }
                 }
 
-                context("whose model entity specifies a fixture config") {
+                context("whose model entity specifies a surface fixture config") {
                     override(entity) { testModelSurface("surface", expectedPixelCount = 123) }
 
                     it("creates a fixture with that config") {
@@ -78,6 +80,28 @@ object FixtureMappingSpec : Spek({
                                 expect(fixture.componentCount) { toEqual(321) }
                             }
                         }
+                    }
+                }
+
+                context("whose model entity is a pixel array") {
+                    override(entity) {
+                        LightBar("light bar", startVertex = Vector3F.origin, endVertex = Vector3F.unit3d)
+                    }
+                    override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 3) }
+
+                    it("creates a fixture with that config") {
+                        expect(fixture.componentCount) { toEqual(3) }
+                        expect(fixture.fixtureConfig)
+                            .isA<PixelArrayDevice.Config>()
+                            .its({ pixelLocations }) {
+                                toEqual(
+                                    EnumeratedPixelLocations(
+                                        Vector3F.origin,
+                                        Vector3F(.5f, .5f, .5f),
+                                        Vector3F.unit3d
+                                    )
+                                )
+                            }
                     }
                 }
 
