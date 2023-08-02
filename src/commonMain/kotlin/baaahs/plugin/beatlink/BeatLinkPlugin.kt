@@ -4,9 +4,8 @@ import baaahs.PubSub
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.*
-import baaahs.show.Feed
-import baaahs.show.FeedBuilder
 import baaahs.sim.BridgeClient
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.ui.Facade
 import baaahs.ui.Observable
 import baaahs.util.Logger
@@ -85,7 +84,7 @@ class BeatLinkPlugin internal constructor(
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =
             BeatLinkPlugin(PubSubSubscriber(pluginContext.pubSub), pluginContext)
 
-        override fun openForSimulator(): OpenSimulatorPlugin =
+        override fun openForSimulator(simulatorSettingsManager: SimulatorSettingsManager): OpenSimulatorPlugin =
             object : OpenSimulatorPlugin {
                 override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
                     BeatLinkBridgePlugin(createServerBeatSource(pluginContext), pluginContext)

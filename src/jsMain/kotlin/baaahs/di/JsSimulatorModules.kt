@@ -12,8 +12,10 @@ import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.midi.MidiDevices
 import baaahs.midi.BrowserMidiDevices
+import baaahs.midi.SimMidiDevices
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
+import baaahs.plugin.HardwareSimulator
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
@@ -65,7 +67,7 @@ class JsSimulatorModule(
             single { simMappingManager }
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
-            single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            single { Plugins.buildForSimulator(get(), get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
             single { (controllersManager: ControllersManager) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
@@ -101,7 +103,7 @@ class JsSimPinkyModule(
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.midiDevices: MidiDevices
-        get() = BrowserMidiDevices()
+        get() = SimMidiDevices()
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor
@@ -115,6 +117,8 @@ class JsSimPinkyModule(
         }
 
     override fun getModule(): Module {
-        return super.getModule()
+        return super.getModule().apply {
+            single { get<List<HardwareSimulator>>() }
+        }
     }
 }

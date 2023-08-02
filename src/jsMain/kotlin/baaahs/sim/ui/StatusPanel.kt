@@ -82,6 +82,16 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
             if (isConsoleOpen) console { attrs.simulator = simulator }
         }
 
+        div(+SimulatorStyles.simHardwareButtonsContainer) {
+            header { +"Simulated Hardware:" }
+            props.simulator.hardwareSimulators.forEach { launchItem ->
+                button {
+//                        attrs.onClick = { launchItem.onLaunch() }
+                    +launchItem.title
+                }
+            }
+        }
+
         if (props.simulator.launchItems.isNotEmpty()) {
             div(+SimulatorStyles.launchButtonsContainer) {
                 header { +"Launch:" }

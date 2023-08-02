@@ -5,6 +5,10 @@ import external.midi.MIDIAccess
 import external.midi.MIDIInput
 import web.navigator.navigator
 
+class SimMidiDevices : MidiDevices {
+    override suspend fun listTransmitters(): List<MidiTransmitter> = emptyList()
+}
+
 class BrowserMidiDevices : MidiDevices {
     private lateinit var midiAccess: MIDIAccess;
 
