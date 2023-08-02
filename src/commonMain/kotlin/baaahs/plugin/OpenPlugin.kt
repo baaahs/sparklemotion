@@ -14,6 +14,7 @@ import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.sim.BridgeClient
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.ui.Icon
 import baaahs.util.Clock
 import kotlinx.cli.ArgParser
@@ -99,6 +100,14 @@ interface OpenSimulatorPlugin {
 
     /** This plugin is used on the client when running in the Simulator. */
     fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin
+
+    fun getHardwareSimulators(): List<HardwareSimulator> = emptyList()
+}
+
+interface HardwareSimulator {
+    val title: String
+
+    suspend fun start() {}
 }
 
 class SerializerRegistrar<T : Any>(val klass: KClass<T>, val serializer: KSerializer<T>) {
@@ -149,7 +158,7 @@ interface Plugin<T> {
  * client plugins via [#openForSimulator].
  */
 interface SimulatorPlugin {
-    fun openForSimulator(): OpenSimulatorPlugin
+    fun openForSimulator(simulatorSettingsManager: SimulatorSettingsManager): OpenSimulatorPlugin
 }
 
 class PluginContext(

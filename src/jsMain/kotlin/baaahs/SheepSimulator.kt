@@ -3,8 +3,11 @@ package baaahs
 import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
+import baaahs.plugin.HardwareSimulator
+import baaahs.plugin.SimulatorPlugins
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
+import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -21,6 +24,7 @@ class SheepSimulator(
 
     private lateinit var pinky: Pinky
     private lateinit var fixturesSimulator: FixturesSimulator
+    private lateinit var hardwareSimulators: List<HardwareSimulator>
 
     init {
         window.asDynamic().simulator = this
@@ -28,13 +32,21 @@ class SheepSimulator(
 
     suspend fun start() = coroutineScope {
         val pinkyScope = getKoin().createScope<Pinky>()
-        launch { cleanUpBrowserStorage() }
+        launch(coroutineExceptionHandler) { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
+        val simulatorSettingsManager = pinkyScope.get<SimulatorSettingsManager>()
         val controllersManager = pinkyScope.get<ControllersManager>()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
+        hardwareSimulators = pinkyScope.get<SimulatorPlugins>().getHardwareSimulators()
 
-        launch { pinky.startAndRun() }
+        launch(coroutineExceptionHandler) { pinky.startAndRun() }
+
+        // Start up simulator components.
+        launch(coroutineExceptionHandler) {
+            launch { simulatorSettingsManager.start() }
+            hardwareSimulators.map { launch { it.start() } }
+        }.join()
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         facade.notifyChanged()
@@ -80,5 +92,7 @@ class SheepSimulator(
                 launchItem("Web UI") { createWebClientApp() },
                 launchItem("Monitor") { createMonitorApp() }
             )
+        val hardwareSimulators: List<HardwareSimulator>
+            get() = this@SheepSimulator.hardwareSimulators
     }
 }

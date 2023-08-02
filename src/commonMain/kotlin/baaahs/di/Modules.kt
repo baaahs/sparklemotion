@@ -34,6 +34,7 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.ProdBrainSimulator
@@ -195,6 +196,7 @@ interface SimulatorModule : KModule {
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }
         single(named(WebClientModule.Qualifier.PinkyAddress)) { get<Network.Link>(named(Qualifier.PinkyLink)).myAddress }
+        single { SimulatorSettingsManager(get(named(Qualifier.PinkyFs))) }
     }
 
     enum class Qualifier {

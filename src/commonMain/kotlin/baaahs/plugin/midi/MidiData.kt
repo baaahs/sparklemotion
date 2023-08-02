@@ -16,12 +16,26 @@ data class MidiData(
 
 
 interface MidiSource : IObservable {
+    val name: String
+
     fun getMidiData(): MidiData
 
     object None : Observable(), MidiSource {
-        val none = MidiData(0, 0)
+        override val name = "None"
+
+        private val none = MidiData(0, 0)
 
         override fun getMidiData(): MidiData = none
     }
 }
 
+interface MidiSystem : IObservable {
+    val midiSources: List<MidiSource>
+
+    suspend fun start() {}
+
+    object None : Observable(), MidiSystem {
+        override val midiSources: List<MidiSource>
+            get() = emptyList()
+    }
+}

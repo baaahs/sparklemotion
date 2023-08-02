@@ -2,6 +2,10 @@ package baaahs.midi
 
 import baaahs.util.Logger
 
+class SimMidiDevices : MidiDevices {
+    override suspend fun listTransmitters(): List<MidiTransmitter> = emptyList()
+}
+
 class BrowserMidiDevices : MidiDevices {
 //    private val midiAccess = window.navigator.requestMIDIAccess()
     private val transmitters = mutableMapOf<String, MidiTransmitter>()
