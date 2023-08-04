@@ -60,6 +60,6 @@ abstract class FileType {
         override val contentTypeMasks: List<String>
             get() = listOf("image/*")
         override val matchingExtensions: List<String>
-            get() = listOf(".jpg", ".gif", ".png")
+            get() = listOf(".jpg", ".jpeg", ".gif", ".png")
     }
 }
