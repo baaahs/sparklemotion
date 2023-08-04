@@ -104,9 +104,17 @@ so you can see how it will behave in the real world.
 
 ## Prerequisites
 
-1. Install [Java](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+1. Install [Java](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) and `maven`
     - If using an arm64 mac, DMX device support for the native build of sparklemotion requires an x86 jdk which can be
       downloaded [here](https://jdk.java.net/archive/).
+1. Checkout submodules
+   ```bash
+   git submodule update --init
+   ```
+1. Manually install `webcam-native-capture driver`
+   ```bash
+   cd webcam-capture-driver-native && mvn install
+   ```
 1. Open as a gradle project with [IntelliJ](https://www.jetbrains.com/idea/download/)
 
 ## Running from source

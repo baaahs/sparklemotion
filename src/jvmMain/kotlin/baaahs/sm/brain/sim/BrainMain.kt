@@ -25,11 +25,11 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
     val argParser = ArgParser(BrainMain::class.simpleName ?: "Brain")
     val brainArgs = BrainMain.Args(argParser)
     argParser.parse(args)
-    BrainMain(brainArgs).run()
+    BrainMain(brainArgs).run().join()
 }
 
 class BrainMain(private val args: Args) {

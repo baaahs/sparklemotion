@@ -138,7 +138,13 @@ class GlslProgramImpl(
     }
 
     override fun aboutToRenderFrame() {
-        perFrameFeeds.forEach { it.programFeedContext.setOnProgram() }
+        perFrameFeeds.forEach {
+            try {
+                it.programFeedContext.setOnProgram()
+            } catch (e: Exception) {
+                logger.warn(e) { "Error in ${it.feed.title}'s setOnProgram." }
+            }
+        }
     }
 
     override fun aboutToRenderFixture(renderTarget: RenderTarget) {

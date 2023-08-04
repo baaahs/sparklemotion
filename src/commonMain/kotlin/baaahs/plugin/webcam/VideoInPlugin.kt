@@ -68,35 +68,39 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
         override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                    private val textureUnit = gl.getTextureUnit(VideoInPlugin)
-                    private val texture = gl.check { createTexture() }
+                override fun bind(gl: GlContext): EngineFeedContext {
+                    return object : EngineFeedContext {
+                        private val textureUnit = gl.getTextureUnit(VideoInPlugin)
+                        private val texture = gl.check { createTexture() }
 
-                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
-                        val textureId = "ds_${getVarName(id)}_texture"
-                        val videoUniform = glslProgram.getUniform(textureId)
-                        override val isValid: Boolean
-                            get() = videoUniform != null
-
-                        override fun setOnProgram() {
-                            videoUniform?.let { uniform ->
-                                with(textureUnit) {
-                                    bindTexture(texture)
-                                    configure(GL_LINEAR, GL_LINEAR)
-                                    uploadTexture(
-                                        0, GL_RGBA, 0,
-                                        videoProvider.getTextureResource()
-                                    )
+                        override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
+                            val textureId = "ds_${getVarName(id)}_texture"
+                            val videoUniform = glslProgram.getUniform(textureId)
+                            override val isValid: Boolean
+                                get() {
+                                    return videoUniform != null
                                 }
 
-                                uniform.set(textureUnit)
+                            override fun setOnProgram() {
+                                videoUniform?.let { uniform ->
+                                    with(textureUnit) {
+                                        bindTexture(texture)
+                                        configure(GL_LINEAR, GL_LINEAR)
+                                        uploadTexture(
+                                            0, GL_RGBA, 0,
+                                            videoProvider.getTextureResource()
+                                        )
+                                    }
+
+                                    uniform.set(textureUnit)
+                                }
                             }
                         }
-                    }
 
-                    override fun release() {
-                        gl.check { deleteTexture(texture) }
-                        textureUnit.release()
+                        override fun release() {
+                            gl.check { deleteTexture(texture) }
+                            textureUnit.release()
+                        }
                     }
                 }
             }
