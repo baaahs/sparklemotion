@@ -3,7 +3,6 @@ package baaahs.model
 import baaahs.Color
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
-import baaahs.dmx.Boryli
 import baaahs.dmx.Dmx
 import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
@@ -54,7 +53,7 @@ interface MovingHeadAdapter {
 
     companion object {
         // TODO: Move this to plugins.
-        val all: List<MovingHeadAdapter> = listOf(Shenzarpy, Boryli, LixadaMiniMovingHead)
+        val all: List<MovingHeadAdapter> = listOf(Shenzarpy, LixadaMiniMovingHead)
         val map = all.associateBy { it.id }
     }
 
