@@ -280,6 +280,7 @@ sealed class Plugins(
         polymorphic(MovingHeadAdapter::class) {
             subclass(LixadaMiniMovingHead::class, LixadaMiniMovingHead.serializer())
             subclass(Shenzarpy::class, Shenzarpy.serializer())
+            subclass(Boryli::class, Boryli.serializer())
         }
 
         polymorphic(Tab::class) {
