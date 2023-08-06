@@ -23,7 +23,7 @@ struct BeatInfo {
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
 uniform float time; // @@Time
-uniform bool alternateEye; // @@Switch
+uniform bool alternateEye; // @@Switch enabled=true
 
 
 #define PI 3.14159265358979323846
@@ -46,18 +46,19 @@ float getBPM() {
 }
 
 float getTimeOfLastBeat() {
-    float beatShift = isLeft() ? 1.0 : 0.;
+    float beatShift = alternateEye && isLeft() ? 1.0 : 0.;
+    float eyesInSequence = alternateEye ? 2. : 1.;
 
     // SIM:
     if(SIMULATE_BPM){
         float bpm =  getBPM();
         float beatDuration = 60. / bpm;
-        float timeSince2Beats = mod(time + beatShift * beatDuration, beatDuration  * 2.);
+        float timeSince2Beats = mod(time + beatShift * beatDuration, beatDuration  * eyesInSequence);
         return time - timeSince2Beats;
     } else {
         // real:
         float beatDuration = 60. / getBPM();
-        float timeSince2Beats = mod(beatInfo.beat + beatShift, 2.) * beatDuration;
+        float timeSince2Beats = mod(beatInfo.beat + beatShift, eyesInSequence) * beatDuration;
         return time - timeSince2Beats;
     }
 }
@@ -70,7 +71,8 @@ float rand(float seed){
 
 float getSeed(){
     float counter = getTimeOfLastBeat() * getBPM() / 60.;
-    return counter /2.;
+    float eyesInSequence = alternateEye ? 2. : 1.;
+    return counter / eyesInSequence;
 }
 
 
@@ -87,6 +89,7 @@ float tilt(float value /* [-1...1]*/) {
 
 
 float panValue(){
+    // start each eye at a different position so it does not seem like they follow each other.
     float offset = isLeft() ? 4. : 0.;
     int t = int(mod(getSeed() + offset, 13.));
 
