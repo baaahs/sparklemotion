@@ -60,12 +60,12 @@ float beatIntensity() {
 
 
 // @param inHead moving-head-params
-// @param outHead moving-head-params
-void main(in MovingHeadParams inHead, out MovingHeadParams outHead) {
-    outHead = inHead;
+// @param params moving-head-params
+void main(in MovingHeadParams inHead, out MovingHeadParams params) {
+    params = inHead;
 
     if(lightBeat){
-        outHead.dimmer = beatIntensity();
+        params.dimmer = beatIntensity();
     }
 
 
