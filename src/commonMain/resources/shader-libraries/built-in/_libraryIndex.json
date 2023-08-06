@@ -734,6 +734,16 @@
         "@type=paint"
       ],
       "srcFile": "shaders/ZebraMadness.glsl"
+    },
+    {
+      "id": "movers-beats",
+      "title": "Movers Beats",
+      "description": "On each beat jumps an eye to a random position. Can be constrained to a horizon, sky or ground.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Beats.glsl"
     }
   ]
 }

@@ -109,7 +109,7 @@ float panValue(){
 }
 
 float tiltValue(){
-    if(true || horizon && !sky && !ground) {
+    if(horizon && !sky && !ground) {
         int t = int(mod(getSeed(), 11.));
         float tiltStops[11] = float[](
         -1.,    -0.4,     -0.6,      -0.2,
@@ -127,8 +127,11 @@ float tiltValue(){
     return tiltStops[t];
 }
 
+// @param inHead moving-head-params
 // @param params moving-head-params
-void main(out MovingHeadParams params) {
+void main(in MovingHeadParams inHead, out MovingHeadParams params) {
+    params = inHead;
+
     params.pan = pan(panValue());
     params.tilt = tilt(tiltValue());
 }
