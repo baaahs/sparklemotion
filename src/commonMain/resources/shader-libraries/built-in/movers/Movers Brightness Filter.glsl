@@ -1,3 +1,6 @@
+// Filter for Moving Heads to adjust the dimmer to the beat.
+// by Aravindo Wingeier
+
 struct FixtureInfo {
     vec3 position;
     vec3 rotation;
@@ -17,7 +20,7 @@ uniform FixtureInfo fixtureInfo;
 uniform float time; // @@Time
 #define PI 3.14159265358979323846
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
-#define SIMULATE_BPM true
+#define SIMULATE_BPM false
 uniform bool dimmBeat; // @@Switch enabled=true
 
 float getBPM() {
@@ -61,15 +64,8 @@ float beatIntensity() {
 void main(in MovingHeadParams inHead, out MovingHeadParams outHead) {
     outHead = inHead;
 
-    if(rotateColor){
-        outHead.colorWheel = sin(time/5.);
-    }
-
-
     if(dimmBeat){
         outHead.dimmer = beatIntensity();
-    } else {
-        outHead.dimmer = 1.;
     }
 
 }
