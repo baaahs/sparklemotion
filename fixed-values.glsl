@@ -21,35 +21,33 @@ struct BeatInfo {
     float confidence;
 };
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
-uniform float beatInterval; // @@Slider min=1 max=4 step=1 default=4
 
 uniform float time; // @@Time
-uniform bool floorOnly; // @@Switch
+uniform bool alternateEye; // @@Switch
 
 
 #define PI 3.14159265358979323846
-#define DISTANCE_FORWARD 500.0 // Inches
-#define DISTANCE_SIDEWAYS 300.0 // Inches to each side
 
 
-
-float startOfBeatSet(float timeIn) {
-    // SIM beat:
-    // float bpm =  125.;
-    // return time - mod(time, 60. / bpm  * round(beatInterval));
-
-    return timeIn - mod(beatInfo.beat, round(beatInterval)) / beatInfo.bpm * 60.0;
+bool isLeft(){
+    return fixtureInfo.position.z < 0.;
 }
-
-/** returns a timestamp of the last set of beats. e.g. if beatInterval is 4, at 120 rpm, it yields a new value
- * every 2 seconds */
-float getTimeOfLastBeatSet() {
-    return startOfBeatSet(time);
-}
-
 
 float getTimeOfLastBeat() {
-    return time - mod(beatInfo.beat, 1.) / beatInfo.bpm * 60.0;
+    float beatShift = isLeft() ? 1.0 : 0.;
+
+    // SIM:
+    if(false){
+        float bpm =  120.;
+        float beatDuration = 60. / bpm;
+        float timeSince2Beats = mod(time + beatShift * beatDuration, beatDuration  * 2.);
+        return time - timeSince2Beats;
+    } else {
+        // real:
+        float beatDuration = 60. / beatInfo.bpm;
+        float timeSince2Beats = mod(beatInfo.beat + beatShift, 2.) * beatDuration;
+        return time - timeSince2Beats;
+    }
 }
 
 float rand(float seed){
@@ -57,9 +55,10 @@ float rand(float seed){
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
+
 float getSeed(){
-    float counter = getTimeOfLastBeatSet() * beatInfo.bpm / 60.;
-    return counter / round(beatInterval);
+    float counter = getTimeOfLastBeat() * beatInfo.bpm / 60.;
+    return counter /2.;
 }
 
 
@@ -72,8 +71,8 @@ float tilt(float value /* [-1...1]*/) {
 }
 
 float panValue(){
-
-    int t = int(mod(getSeed(), 8.));
+    float offset = isLeft() ? 4. : 0.;
+    int t = int(mod(getSeed() + offset, 8.));
     if(t == 0) return -1.;
     else if(t == 1) return -0.4;
     else if(t == 2) return 0.3;
@@ -103,7 +102,7 @@ void main(out MovingHeadParams params) {
     params.pan = pan(panValue());
     params.tilt = tilt(tiltValue());
 
-    params.colorWheel =  round(mod(getTimeOfLastBeatSet()/13., 13.)/13.*7.);
-    params.colorWheel =  panValue();
+    //params.colorWheel =  round(mod(getTimeOfLastBeatSet()/13., 13.)/13.*7.);
+    params.colorWheel =  getSeed();
     params.dimmer = 1.;
 }
