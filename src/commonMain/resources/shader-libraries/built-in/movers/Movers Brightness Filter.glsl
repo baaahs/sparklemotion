@@ -68,4 +68,5 @@ void main(in MovingHeadParams inHead, out MovingHeadParams outHead) {
         outHead.dimmer = beatIntensity();
     }
 
+
 }

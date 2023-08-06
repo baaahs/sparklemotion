@@ -49,6 +49,4 @@ void main(out MovingHeadParams params) {
 
     params.tilt = .3+(1. + cos(1. + time))/2.0;
     params.colorWheel = rand(getTimeOfLastBeat());
-
-    params.dimmer = 1.;
 }

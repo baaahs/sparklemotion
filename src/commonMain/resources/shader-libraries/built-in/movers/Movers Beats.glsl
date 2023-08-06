@@ -1,3 +1,6 @@
+// On each beat jumps an eye to a random position. Can be constrained to a horizon, sky or ground.
+// by Aravindo Wingeier
+
 struct FixtureInfo {
     vec3 position;
     vec3 rotation;
@@ -13,7 +16,6 @@ struct MovingHeadParams {
 
 uniform FixtureInfo fixtureInfo;
 
-
 struct BeatInfo {
     float beat;
     float bpm;
@@ -28,14 +30,11 @@ uniform bool sky; // @@Switch enabled=true
 uniform bool horizon; // @@Switch enabled=true
 uniform bool ground; // @@Switch enabled=true
 
-
 #define PI 3.14159265358979323846
-
 
 bool isLeft(){
     return fixtureInfo.position.z < 0.;
 }
-
 
 #define SIMULATE_BPM false
 
@@ -64,12 +63,6 @@ float getTimeOfLastBeat() {
         return time - timeSince2Beats;
     }
 }
-
-float rand(float seed){
-    vec2 co = vec2(1, seed);
-    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
 
 float getSeed(){
     float counter = getTimeOfLastBeat() * getBPM() / 60.;
@@ -100,9 +93,6 @@ float tilt(float value /* [-1...1]*/) {
     }
     return value * 1.2;
 }
-
-
-
 
 float panValue(){
     // start each eye at a different position so it does not seem like they follow each other.
@@ -137,14 +127,8 @@ float tiltValue(){
     return tiltStops[t];
 }
 
-
 // @param params moving-head-params
 void main(out MovingHeadParams params) {
     params.pan = pan(panValue());
     params.tilt = tilt(tiltValue());
-
-    //params.colorWheel =  round(mod(getTimeOfLastBeatSet()/13., 13.)/13.*7.);
-    params.colorWheel =  0.2;
-    // mod(time, 0.1); //mod(getSeed() / 10., 1.);
-    params.dimmer = round(time - getTimeOfLastBeat());
 }
