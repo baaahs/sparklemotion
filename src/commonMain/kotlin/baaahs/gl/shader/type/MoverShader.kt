@@ -30,6 +30,8 @@ object MoverShader : ShaderType {
             float tilt;
             float colorWheel;
             float dimmer;
+            bool prism;
+            float prismRotation;
         };
         
         uniform FixtureInfo fixtureInfo;
@@ -40,6 +42,8 @@ object MoverShader : ShaderType {
             params.tilt = .5;
             params.colorWheel = 0.;
             params.dimmer = 1.;
+            params.prism = false;
+            params.prismRotation = 0.;
         }
     """.trimIndent()
 
