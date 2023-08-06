@@ -24,6 +24,9 @@ uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
 uniform float time; // @@Time
 uniform bool alternateEye; // @@Switch enabled=true
+uniform bool sky; // @@Switch enabled=true
+uniform bool horizon; // @@Switch enabled=true
+uniform bool ground; // @@Switch enabled=true
 
 
 #define PI 3.14159265358979323846
@@ -77,11 +80,25 @@ float getSeed(){
 
 
 float pan(float value /* [-1...1]*/ ) {
+    if(horizon && !sky && !ground) {
+        return 2. * PI /2. + 0.5 * PI;
+    }
+
     float rangeOfMotion = 0.5 * PI; // to each side
     return 2. * PI /2. + value * rangeOfMotion;
 }
 
 float tilt(float value /* [-1...1]*/) {
+    // if(!sky) value = min(0.5, value);
+    // if(!ground) value = max(0.5, value);
+    // if(!horizon) {
+    //     // avoid values near 0.5;
+    //     if(value > 0.5 && value < 0.55) {
+    //         value = 0.55;
+    //     } else if (value < 0.5 && value > 0.45) {
+    //         value = 0.45;
+    //     }
+    // }
     return value * 1.2;
 }
 
@@ -103,8 +120,16 @@ float panValue(){
 }
 
 float tiltValue(){
+    if(horizon && !sky && !ground) {
+        int t = int(mod(getSeed(), 11.));
+        float tiltStops[11] = float[](
+        -1.,    -0.4,     -0.6,      -0.2,
+        0.2,     0.0,       0.5,      1.0,
+        0.2,    -0.4,     -0.7
+        );
+        return tiltStops[t];
+    }
     int t = int(mod(getSeed(), 5.));
-
     float tiltStops[5] = float[](
     -1.,      -0.4,      -0.6,      -0.3,
     -0.7
