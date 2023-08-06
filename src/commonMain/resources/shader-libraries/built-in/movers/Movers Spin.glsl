@@ -41,12 +41,14 @@ float getTimeOfLastBeat() {
 
 #define PI 3.14159265358979323846
 
+// @param inHead moving-head-params
 // @param params moving-head-params
-void main(out MovingHeadParams params) {
+void main(in MovingHeadParams inHead, out MovingHeadParams params) {
+    params = inHead;
+
     bool isLeft = fixtureInfo.position.z < 0.;
     float rotation = 0.5 + (cos(speed*time/3.)+sin(speed*time/2.)) / 2.0 / 2.0;// [0...1]
     params.pan = mix(0.0, (2.) * PI, mirrored && isLeft ? rotation : 1. - rotation) + (isLeft ? offset : 0.);
 
     params.tilt = .3+(1. + cos(1. + time))/2.0;
-    params.colorWheel = rand(getTimeOfLastBeat());
 }
