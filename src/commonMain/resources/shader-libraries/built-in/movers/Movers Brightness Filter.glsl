@@ -21,7 +21,7 @@ uniform float time; // @@Time
 #define PI 3.14159265358979323846
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 #define SIMULATE_BPM false
-uniform bool dimmBeat; // @@Switch enabled=true
+uniform bool lightBeat; // @@Switch enabled=true
 
 float getBPM() {
     if (SIMULATE_BPM)  {
@@ -64,7 +64,7 @@ float beatIntensity() {
 void main(in MovingHeadParams inHead, out MovingHeadParams outHead) {
     outHead = inHead;
 
-    if(dimmBeat){
+    if(lightBeat){
         outHead.dimmer = beatIntensity();
     }
 

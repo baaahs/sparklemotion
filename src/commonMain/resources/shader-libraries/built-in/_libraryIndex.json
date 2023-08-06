@@ -744,6 +744,17 @@
         "@type=mover"
       ],
       "srcFile": "movers/Movers Beats.glsl"
+    },
+    {
+      "id": "movers-brightness",
+      "title": "Movers Brightness Filter",
+      "description": "Filter for Moving Heads to adjust the dimmer to the beat",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Brightness Filter.glsl"
     }
   ]
 }

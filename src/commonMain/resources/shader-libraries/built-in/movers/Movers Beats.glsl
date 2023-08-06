@@ -25,7 +25,6 @@ struct BeatInfo {
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
 uniform float time; // @@Time
-uniform bool alternateEye; // @@Switch enabled=true
 uniform bool sky; // @@Switch enabled=true
 uniform bool horizon; // @@Switch enabled=true
 uniform bool ground; // @@Switch enabled=true
@@ -37,6 +36,7 @@ bool isLeft(){
 }
 
 #define SIMULATE_BPM false
+#define alternateEye true
 
 float getBPM() {
     if (SIMULATE_BPM)  {
@@ -81,6 +81,11 @@ float pan(float value /* [-1...1]*/ ) {
 }
 
 float tilt(float value /* [-1...1]*/) {
+    // if nothing is ticked, use default
+    if(!ground && !sky && !horizon) {
+        return value * 1.2;
+    }
+
     if(!ground) value = min(0.1, value);
     if(!sky) value = max(0.9, value);
     if(!horizon) {
@@ -134,4 +139,6 @@ void main(in MovingHeadParams inHead, out MovingHeadParams params) {
 
     params.pan = pan(panValue());
     params.tilt = tilt(tiltValue());
+
+    params.dimmer = round(time - getTimeOfLastBeat());
 }
