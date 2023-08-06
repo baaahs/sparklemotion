@@ -1,4 +1,4 @@
-// Override colors of Moving Head fixtures. We should add a color selector here.
+// Change colors of Moving Head fixtures. We should add a color selector here.
 // by Aravindo Wingeier
 
 struct FixtureInfo {

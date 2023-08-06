@@ -1,4 +1,4 @@
-// Spin the Moving Heads together, crossed or indepedant.
+// Spin the Moving Heads together, crossed or independent.
 // by Aravindo Wingeier
 
 struct FixtureInfo {

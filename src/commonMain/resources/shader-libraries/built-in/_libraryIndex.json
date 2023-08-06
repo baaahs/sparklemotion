@@ -755,6 +755,39 @@
         "@type=mover"
       ],
       "srcFile": "movers/Movers Brightness Filter.glsl"
+    },
+    {
+      "id": "movers-color",
+      "title": "Movers Color Filter",
+      "description": "Change colors of Moving Head fixtures",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Color Filter.glsl"
+    },
+    {
+      "id": "movers-floor-position",
+      "title": "Movers Floor Position",
+      "description": "Point to a position on the floor (based on a rectangle)",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Floor Position.glsl"
+    },
+    {
+      "id": "movers-spin",
+      "title": "Movers Spin",
+      "description": "Spin the Moving Heads together, crossed or independent)",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Spin.glsl"
     }
   ]
 }
