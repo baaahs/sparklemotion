@@ -75,7 +75,8 @@ float getSeed(){
 
 
 float pan(float value /* [-1...1]*/ ) {
-    return 2. * PI /2. + value * 0.7*  PI;
+    float rangeOfMotion = 0.5 * PI; // to each side
+    return 2. * PI /2. + value * rangeOfMotion;
 }
 
 float tilt(float value /* [-1...1]*/) {
@@ -120,6 +121,7 @@ void main(out MovingHeadParams params) {
     params.tilt = tilt(tiltValue());
 
     //params.colorWheel =  round(mod(getTimeOfLastBeatSet()/13., 13.)/13.*7.);
-    params.colorWheel =  getSeed();
-    params.dimmer = 1.;
+    params.colorWheel =  0.2;
+    // mod(time, 0.1); //mod(getSeed() / 10., 1.);
+    params.dimmer = time - getTimeOfLastBeat();
 }
