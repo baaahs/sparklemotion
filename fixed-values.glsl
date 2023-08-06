@@ -83,35 +83,31 @@ float tilt(float value /* [-1...1]*/) {
     return value * 1.2;
 }
 
+
+
+
 float panValue(){
     float offset = isLeft() ? 4. : 0.;
     int t = int(mod(getSeed() + offset, 13.));
-    if(t == 0)      return -0.4;
-    else if(t == 1) return -0.3;
-    else if(t == 2) return -0.4;
-    else if(t == 3) return -0.2;
-    else if(t == 4) return 0.;
-    else if(t == 5) return 0.3;
-    else if(t == 6) return 0.2;
-    else if(t == 7) return 0.4;
-    else if(t == 8) return 0.25;
-    else if(t == 9) return 0.3;
-    else if(t == 10) return 0.;
-    else if(t == 11) return -0.1;
-    else if(t == 12) return -0.25;
 
-    return 0. ;
+    float panStops[13] = float[](
+    -0.4, -0.3, -0.4, -0.2,
+    0.,    0.3,  0.2,  0.4,
+    0.25,  0.3,   0., -0.1,
+    -0.25
+    );
+    return panStops[t];
 }
 
 float tiltValue(){
     int t = int(mod(getSeed(), 5.));
-    if(t == 0) return -1.;
-    else if(t == 1) return -0.4;
-    else if(t == 2) return -0.6;
-    else if(t == 3) return -0.3;
-    else if(t == 4) return -0.7;
 
-    return 0. ;
+    float tiltStops[5] = float[](
+    -1.,      -0.4,      -0.6,      -0.3,
+    -0.7
+    );
+
+    return tiltStops[t];
 }
 
 
@@ -123,5 +119,5 @@ void main(out MovingHeadParams params) {
     //params.colorWheel =  round(mod(getTimeOfLastBeatSet()/13., 13.)/13.*7.);
     params.colorWheel =  0.2;
     // mod(time, 0.1); //mod(getSeed() / 10., 1.);
-    params.dimmer = time - getTimeOfLastBeat();
+    params.dimmer = round(time - getTimeOfLastBeat());
 }
