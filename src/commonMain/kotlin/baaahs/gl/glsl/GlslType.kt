@@ -18,8 +18,8 @@ sealed class GlslType constructor(
     class Struct(
         val name: String,
         val fields: List<Field>,
-        //TODO(kcking): add fieldPacking param / output packing impl here
-        defaultInitializer: GlslExpr = initializerFor(fields)
+        defaultInitializer: GlslExpr = initializerFor(fields),
+        val outputRepresentationOverride: ((varName: String) -> String)? = null,
     ) : GlslType(name, defaultInitializer) {
         constructor(glslStruct: GlslCode.GlslStruct)
                 : this(glslStruct.name, glslStruct.fields.entries.toFields())
@@ -37,8 +37,9 @@ sealed class GlslType constructor(
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>,
-            defaultInitializer: GlslExpr
-        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer)
+            defaultInitializer: GlslExpr,
+            outputOverride: ((varName: String) -> String)?
+        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputOverride)
 
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
@@ -92,14 +93,17 @@ sealed class GlslType constructor(
         }
 
         override fun outputRepresentationGlsl(varName: String): String{
-            val buf = StringBuilder()
-            buf.append(glslLiteral, "(")
-            fields.forEachIndexed { index, field ->
-                if (index > 0) buf.append(",")
-                buf.append("\n        $varName.${field.name}")
+            if (outputRepresentationOverride != null) {
+                return outputRepresentationOverride!!(varName);
             }
-            buf.append("\n    )")
-            return buf.toString()
+            return buildString {
+                append(glslLiteral, "(")
+                fields.forEachIndexed { index, field ->
+                    if (index > 0) append(",")
+                    append("\n        $varName.${field.name}")
+                }
+                append("\n    )")
+            }
         }
     }
 
