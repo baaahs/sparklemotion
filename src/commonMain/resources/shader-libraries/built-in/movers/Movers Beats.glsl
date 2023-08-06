@@ -37,7 +37,7 @@ bool isLeft(){
 }
 
 
-#define SIMULATE_BPM true
+#define SIMULATE_BPM false
 
 float getBPM() {
     if (SIMULATE_BPM)  {
