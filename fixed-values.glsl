@@ -37,7 +37,6 @@ bool isLeft(){
 }
 
 
-
 #define SIMULATE_BPM true
 
 float getBPM() {
@@ -89,16 +88,16 @@ float pan(float value /* [-1...1]*/ ) {
 }
 
 float tilt(float value /* [-1...1]*/) {
-    // if(!sky) value = min(0.5, value);
-    // if(!ground) value = max(0.5, value);
-    // if(!horizon) {
-    //     // avoid values near 0.5;
-    //     if(value > 0.5 && value < 0.55) {
-    //         value = 0.55;
-    //     } else if (value < 0.5 && value > 0.45) {
-    //         value = 0.45;
-    //     }
-    // }
+    if(!ground) value = min(0.1, value);
+    if(!sky) value = max(0.9, value);
+    if(!horizon) {
+        // avoid values near 0.0;
+        if(value > 0.0 && value < 0.1) {
+            value = 0.1;
+        } else if (value < 0.0 && value > 0.9) {
+            value = 0.9;
+        }
+    }
     return value * 1.2;
 }
 
@@ -120,7 +119,7 @@ float panValue(){
 }
 
 float tiltValue(){
-    if(horizon && !sky && !ground) {
+    if(true || horizon && !sky && !ground) {
         int t = int(mod(getSeed(), 11.));
         float tiltStops[11] = float[](
         -1.,    -0.4,     -0.6,      -0.2,
