@@ -18,6 +18,7 @@ sealed class GlslType constructor(
     class Struct(
         val name: String,
         val fields: List<Field>,
+        //TODO(kcking): add fieldPacking param / output packing impl here
         defaultInitializer: GlslExpr = initializerFor(fields)
     ) : GlslType(name, defaultInitializer) {
         constructor(glslStruct: GlslCode.GlslStruct)
@@ -88,6 +89,17 @@ sealed class GlslType constructor(
                     }
                     append(" }")
                 }.toString().let { GlslExpr(it) }
+        }
+
+        override fun outputRepresentationGlsl(varName: String): String{
+            val buf = StringBuilder()
+            buf.append(glslLiteral, "(")
+            fields.forEachIndexed { index, field ->
+                if (index > 0) buf.append(",")
+                buf.append("\n        $varName.${field.name}")
+            }
+            buf.append("\n    )")
+            return buf.toString()
         }
     }
 
@@ -168,5 +180,9 @@ sealed class GlslType constructor(
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
+    }
+
+     open fun outputRepresentationGlsl(varName: String): String {
+        return varName;
     }
 }
