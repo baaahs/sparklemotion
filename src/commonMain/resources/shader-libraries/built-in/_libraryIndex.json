@@ -734,6 +734,60 @@
         "@type=paint"
       ],
       "srcFile": "shaders/ZebraMadness.glsl"
+    },
+    {
+      "id": "movers-beats",
+      "title": "Movers Beats",
+      "description": "On each beat jumps an eye to a random position. Can be constrained to a horizon, sky or ground.",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Beats.glsl"
+    },
+    {
+      "id": "movers-brightness",
+      "title": "Movers Brightness Filter",
+      "description": "Filter for Moving Heads to adjust the dimmer to the beat",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Brightness Filter.glsl"
+    },
+    {
+      "id": "movers-color",
+      "title": "Movers Color Filter",
+      "description": "Change colors of Moving Head fixtures",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Color Filter.glsl"
+    },
+    {
+      "id": "movers-floor-position",
+      "title": "Movers Floor Position",
+      "description": "Point to a position on the floor (based on a rectangle)",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Floor Position.glsl"
+    },
+    {
+      "id": "movers-spin",
+      "title": "Movers Spin",
+      "description": "Spin the Moving Heads together, crossed or independent",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "movers/Movers Spin.glsl"
     }
   ]
 }
