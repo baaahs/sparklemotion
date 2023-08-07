@@ -61,6 +61,11 @@ shader-libraries/built-in/libraries/color_palettes.glsl
 shader-libraries/built-in/libraries/complex_math_functions.glsl
 shader-libraries/built-in/libraries/polygon_geometry.glsl
 shader-libraries/built-in/libraries/shadertoy.glsl
+shader-libraries/built-in/movers/Movers Beats.glsl
+shader-libraries/built-in/movers/Movers Brightness Filter.glsl
+shader-libraries/built-in/movers/Movers Color Filter.glsl
+shader-libraries/built-in/movers/Movers Floor Position.glsl
+shader-libraries/built-in/movers/Movers Spin.glsl
 shader-libraries/built-in/projections/Flat.glsl
 shader-libraries/built-in/shaders/AcidAtTheDisco.glsl
 shader-libraries/built-in/shaders/AquaticFlood.glsl
