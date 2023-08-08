@@ -21,8 +21,8 @@ import styled.injectGlobal
 
 enum class SimulatorWindows {
     Visualizer,
-    Console,
-    UI
+    UI,
+    MIDI,
 }
 
 val simulatorContext = createContext<SimulatorContext>()
@@ -66,7 +66,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                     direction = "column"
                     splitPercentage = 50
                     first = SimulatorWindows.Visualizer
-                    second = SimulatorWindows.Console
+                    second = SimulatorWindows.MIDI
                 }
                 second = SimulatorWindows.UI
             }
@@ -104,7 +104,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                                 SimulatorWindows.Visualizer -> createElement(ModelSimulationView, jso {
                                     this.simulator = props.simulator
                                 })
-                                SimulatorWindows.Console -> createElement(StatusPanelView, jso {
+                                SimulatorWindows.MIDI -> createElement(MIDIView, jso {
                                     this.simulator = props.simulator
                                 })
                                 SimulatorWindows.UI -> createElement(WebClientWindowView, jso {

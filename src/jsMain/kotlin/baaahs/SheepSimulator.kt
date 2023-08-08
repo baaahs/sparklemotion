@@ -5,6 +5,7 @@ import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
+import baaahs.midi.MIDIUi
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -42,6 +43,7 @@ class SheepSimulator(
 
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
+    fun createMIDIApp(): MIDIUi = getKoin().createScope<MIDIUi>().get()
 
     private suspend fun cleanUpBrowserStorage() {
         val fs = BrowserSandboxFs("BrowserSandboxFs")
@@ -78,7 +80,8 @@ class SheepSimulator(
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
-                launchItem("Monitor") { createMonitorApp() }
+                launchItem("Monitor") { createMonitorApp() },
+                launchItem("MIDIUi") { createMIDIApp() }
             )
     }
 }

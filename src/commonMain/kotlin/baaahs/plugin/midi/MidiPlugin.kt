@@ -137,12 +137,7 @@ class MidiPlugin internal constructor(
                     MidiBridgePlugin(createServerMidiSource(pluginContext), pluginContext)
 
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
-                    MidiPlugin(
-                        PubSubPublisher(
-                            PubSubSubscriber(bridgeClient.pubSub, simulatorDefaultMidi),
-                            pluginContext
-                        )
-                    )
+                    openForServer(pluginContext, object : Args { override val enableMidi: Boolean get() = true })
 
                 override fun getClientPlugin(pluginContext: PluginContext): OpenClientPlugin =
                     openForClient(pluginContext)
@@ -151,7 +146,7 @@ class MidiPlugin internal constructor(
         private val midiDataTopic = PubSub.Topic("plugins/$id/midiData", MidiData.serializer())
     }
 
-    /** Copy beat data from [midiSource] to a bridge PubSub channel. */
+    /** Copy midi data from [midiSource] to a bridge PubSub channel. */
     class MidiBridgePlugin(
         private val midiSource: MidiSource,
         pluginContext: PluginContext

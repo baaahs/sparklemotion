@@ -97,6 +97,7 @@ class PinkyMain(private val args: Array<String>) {
                     resources("htdocs")
                     route("monitor/") { defaultResource("htdocs/monitor/index.html") }
                     route("ui/") { defaultResource("htdocs/ui/index.html") }
+                    route("midi/") { defaultResource("htdocs/midi/index.html") }
                     defaultResource("htdocs/ui-index.html")
                 }
             }
@@ -120,6 +121,7 @@ class PinkyMain(private val args: Array<String>) {
                     files(jsResDir.toFile())
                     route("monitor/") { default("monitor/index.html") }
                     route("ui/") { default("ui/index.html") }
+                    route("midi/") { default("midi/index.html") }
                     default("ui-index.html")
                 }
             }
@@ -134,6 +136,7 @@ class PinkyMain(private val args: Array<String>) {
             static {
                 get("monitor") { call.respondRedirect("monitor/") }
                 get("ui") { call.respondRedirect("ui/") }
+                get("midi") { call.respondRedirect("midi/") }
                 route("data/") { files(dataDirFile) }
             }
 

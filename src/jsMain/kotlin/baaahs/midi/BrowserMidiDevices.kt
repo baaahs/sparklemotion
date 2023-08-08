@@ -1,53 +1,60 @@
 package baaahs.midi
 
 import baaahs.util.Logger
+import external.midi.MIDIAccess
+import external.midi.MIDIInput
+import web.navigator.navigator
 
 class BrowserMidiDevices : MidiDevices {
-//    private val midiAccess = window.navigator.requestMIDIAccess()
-    private val transmitters = mutableMapOf<String, MidiTransmitter>()
+    private lateinit var midiAccess: MIDIAccess;
+
+    init {
+        navigator.asDynamic().requestMIDIAccess().then {midiAccessResult: MIDIAccess ->
+            midiAccess = midiAccessResult
+            midiAccessResult
+        }
+    }
 
     override suspend fun listTransmitters(): List<MidiTransmitter> {
         val ids = mutableMapOf<String, Counter>()
 
+
         return buildList {
-//            MidiSystem.getMidiDeviceInfo().mapNotNull { info ->
-//                println("${info.name}: ${info.javaClass.simpleName}\n  DESC=${info.description}\n  VENDOR=${info.vendor}\n  VERSION=${info.version}")
-//                val device = MidiSystem.getMidiDevice(info)
-//                val id = info.name.let {
+//            midiAccess.inputs.forEach { inputEntry ->
+//                val input = inputEntry.value
+//                println("${input.name}: DESC=${input.description}\n  VENDOR=${input.manufacturer}\n  VERSION=${input.version}")
+//                val id = input.name.let {
 //                    val idNum = ids.getOrPut(it) { Counter() }.count()
 //                    if (idNum == 0) it else "it #$idNum"
 //                }
 //
-//                val maxTransmitters = device.maxTransmitters
-//                if (maxTransmitters == -1 || maxTransmitters > 0) {
-//                    add(JvmMidiTransmitterTransmitter(id, device))
-//                }
+//                add(JsMidiTransmitterTransmitter(id, input))
 //            }
         }
     }
 
-//    class JvmMidiTransmitterTransmitter(
-//        override val id: String,
-//        private val device: MidiDevice
-//    ) : MidiTransmitter {
-//        override val name: String
-//            get() = device.deviceInfo.name
-//        override val vendor: String
-//            get() = device.deviceInfo.vendor
-//        override val description: String
-//            get() = device.deviceInfo.description
-//        override val version: String
-//            get() = device.deviceInfo.version
-//
+    class JsMidiTransmitterTransmitter(
+        override val id: String,
+        private val input: MIDIInput
+    ) : MidiTransmitter {
+        override val name: String
+            get() = input.name
+        override val vendor: String
+            get() = input.manufacturer
+        override val description: String
+            get() = ""
+        override val version: String
+            get() = input.version
+
 //        private var transmitter: Transmitter? = null
-//
-//        override fun listen(callback: (MidiMessage) -> Unit) {
+
+        override fun listen(callback: (MidiMessage) -> Unit) {
 //            if (transmitter == null) {
 //                transmitter = run {
-//                    device.transmitter.also { device.open() }
+//                    input.open()
 //                }
 //            }
-//
+
 //            transmitter!!.receiver = object : Receiver {
 //                override fun close() {
 //                    logger.debug { "$name closed." }
@@ -67,16 +74,16 @@ class BrowserMidiDevices : MidiDevices {
 //                    }
 //                }
 //            }
-//        }
-//
-//        override fun close() {
+        }
+
+        override fun close() {
 //            if (transmitter != null) {
-//                device.close()
+//                input.close()
 //            }
-//            logger.debug { "$name closed." }
-//        }
-//
-//    }
+            logger.debug { "$name closed." }
+        }
+
+    }
 
     private class Counter(var value: Int = 0) {
         fun count(): Int = value++
