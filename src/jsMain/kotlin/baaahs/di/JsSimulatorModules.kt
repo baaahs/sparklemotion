@@ -11,7 +11,7 @@ import baaahs.io.Fs
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.midi.MidiDevices
-import baaahs.midi.NullMidiDevices
+import baaahs.midi.BrowserMidiDevices
 import baaahs.net.BrowserNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -101,7 +101,7 @@ class JsSimPinkyModule(
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
     override val Scope.midiDevices: MidiDevices
-        get() = NullMidiDevices()
+        get() = BrowserMidiDevices()
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor

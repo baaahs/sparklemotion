@@ -3,25 +3,36 @@ package external.midi
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 import react.dom.events.EventHandler
+import org.khronos.webgl.Uint8Array
 
-//external fun Navigator.requestMIDIAccess(options: MIDIOptions? = definedExternally): Promise<MIDIAccess>
-
-external interface MIDIOptions {
+external class MIDIOptions {
     var sysex: Boolean
 }
 
-abstract external class MIDIAccess: EventTarget {
+external class MIDIAccess: EventTarget {
     val inputs: MIDIInputMap
     val outputs: MIDIOutputMap
-    val onstatechange: EventHandler<MIDIConnectionEvent>
+    var onstatechange: EventHandler<MIDIConnectionEvent>
     val sysexEnabled: Boolean
 }
 
-abstract external class MIDIConnectionEvent : Event {
+external class MIDIConnectionEvent : Event {
     val port: MIDIPort
 }
 
-abstract external class MIDIInputMap
-abstract external class MIDIOutputMap
+external class MIDIInput: MIDIPort
+external class MIDIOutputMap
+external class MIDIInputMap
 
-abstract external class MIDIPort
+open external class MIDIPort {
+    val name: String
+    val manufacturer: String
+    val version: String
+    var onmidimessage: ((e: MIDIMessageEvent) -> Any)? = definedExternally
+    fun open()
+    fun close()
+}
+
+external class MIDIMessageEvent {
+    val data: Uint8Array
+}

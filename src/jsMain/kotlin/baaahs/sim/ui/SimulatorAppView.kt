@@ -22,8 +22,8 @@ import web.cssom.matchMedia
 
 enum class SimulatorWindows {
     Visualizer,
-    Console,
-    UI
+    UI,
+    MIDI,
 }
 
 val simulatorContext = createContext<SimulatorContext>(jso {})
@@ -69,7 +69,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                     direction = "column"
                     splitPercentage = 50
                     first = SimulatorWindows.Visualizer
-                    second = SimulatorWindows.Console
+                    second = SimulatorWindows.MIDI
                 }
                 second = SimulatorWindows.UI
             }
@@ -108,7 +108,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                                     this.simulator = props.simulator
                                     this.hostedWebApp = props.hostedWebApp
                                 })
-                                SimulatorWindows.Console -> createElement(StatusPanelView, jso {
+                                SimulatorWindows.MIDI -> createElement(MIDIView, jso {
                                     this.simulator = props.simulator
                                 })
                                 SimulatorWindows.UI -> createElement(WebClientWindowView, jso {

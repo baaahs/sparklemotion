@@ -2879,9 +2879,6 @@
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
         },
-        "midi": {
-            "type": "baaahs.Midi:Midi"
-        },
         "soundAnalysis": {
             "type": "baaahs.SoundAnalysis:SoundAnalysis"
         },

@@ -14,6 +14,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.JsMapper
+import baaahs.midi.MIDIUi
 import baaahs.midi.MidiDevices
 import baaahs.midi.RemoteMidiDevices
 import baaahs.monitor.MonitorUi
@@ -93,8 +94,8 @@ open class JsUiWebClientModule : WebClientModule() {
         }
     }
 }
-
 class JsMonitorWebClientModule : KModule {
+
     override fun getModule(): Module = module {
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }
@@ -120,6 +121,31 @@ class JsMonitorWebClientModule : KModule {
                 RemoteVisualizerClient(get(), pinkyAddress(), get<Visualizer>(), get(), get(), simulationEnv, get())
             }
             scoped { MonitorUi(get(), get()) }
+        }
+    }
+
+    private fun Scope.pinkyAddress(): Network.Address =
+        get(named(WebClientModule.Qualifier.PinkyAddress))
+}
+
+class JsMidiWebClientModule : KModule {
+
+    override fun getModule(): Module = module {
+        scope<MIDIUi> {
+            scoped { get<Network>().link("midi") }
+            scoped { PluginContext(get(), get()) }
+            scoped { PubSub.Client(get(), pinkyAddress(), Ports.PINKY_UI_TCP) }
+            scoped<PubSub.Endpoint> { get<PubSub.Client>() }
+            scoped { Plugins.buildForClient(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            scoped<Plugins> { get<ClientPlugins>() }
+            scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
+            scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
+            scoped { SceneMonitor() }
+            scoped<SceneProvider> { get<SceneMonitor>() }
+            scoped { FileDialog() }
+            scoped<IFileDialog> { get<FileDialog>() }
+            scoped { Notifier(get()) }
+            scoped { MIDIUi() }
         }
     }
 
