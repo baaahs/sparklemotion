@@ -59,14 +59,11 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
-            Option("Eve Rafters") {
-                makeNew { fromResources("Eve Rafters.sparkle") }
+            Option("BRC 2023") {
+                makeNew { fromResources("BRC 2023.sparkle") }
             },
             Option("Pasture Bedtime") {
                 makeNew { fromResources("PastureBedtime.sparkle") }
-            },
-            Option("Ben's Show") {
-                makeNew { fromResources("Ben's Show.sparkle") }
             },
             Option("Sample template") {
                 makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
