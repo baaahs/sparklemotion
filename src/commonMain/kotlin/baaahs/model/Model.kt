@@ -16,7 +16,8 @@ import kotlinx.serialization.Transient
 class Model(
     val name: String,
     val entities: List<Entity>,
-    val units: ModelUnit = ModelUnit.default
+    val units: ModelUnit = ModelUnit.default,
+    val initialViewingAngle: Float = 0f
 ) : ModelInfo {
     @Deprecated("Find all model entities some other way, like with visit().")
     val allEntities: List<Entity> =
