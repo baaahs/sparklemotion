@@ -657,6 +657,8 @@ object GlslGenerationSpec : Spek({
                         float tilt;
                         float colorWheel;
                         float dimmer;
+                        bool prism;
+                        float prismRotation;
                     };
  
                     // @param params moving-head-params
@@ -693,6 +695,8 @@ object GlslGenerationSpec : Spek({
                             float tilt;
                             float colorWheel;
                             float dimmer;
+                            bool prism;
+                            float prismRotation;
                         };
 
                         struct FixtureInfo {
@@ -709,9 +713,9 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1.);
+                        MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1., false, 0.);
 
-                        #line 19 0
+                        #line 21 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
                             params.pan = in_fixtureInfo.position.x;
                             params.tilt = in_fixtureInfo.position.y,
@@ -729,7 +733,11 @@ object GlslGenerationSpec : Spek({
                                 p0_untitledShader_params.pan,
                                 p0_untitledShader_params.tilt,
                                 p0_untitledShader_params.colorWheel,
-                                p0_untitledShader_params.dimmer
+                                //  prism bit | 1 bit sign(prismRotation) | 14 bit magnitude(prismRotation) | 16 bit unsigned fixed-point dimmer
+                                uintBitsToFloat((uint (p0_untitledShader_params.dimmer * 65535.)) & 0xFFFFu
+                                    | (p0_untitledShader_params.prismRotation < 0. ? 1u : 0u) << 30
+                                    | ((uint (abs(p0_untitledShader_params.prismRotation) * 16384.)) & 0x3FFFu) << 16
+                                    | ((p0_untitledShader_params.prism ? 1u : 0u) << 31))
                             );
                         }
                     """.trimIndent()
@@ -769,6 +777,10 @@ object GlslGenerationSpec : Spek({
                 }
             }
 
+            // TODO: should be something like:
+            // MovingHeadParams p0_untitledShader_main() {
+            //     return p0_untitledShader_MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+            // }
             it("generates GLSL") {
                 kexpect(glsl).toBe(
                     /**language=glsl*/
@@ -786,6 +798,8 @@ object GlslGenerationSpec : Spek({
                             float tilt;
                             float colorWheel;
                             float dimmer;
+                            bool prism;
+                            float prismRotation;
                         };
                         
                         struct p0_untitledShader_AnotherStruct {
@@ -793,10 +807,17 @@ object GlslGenerationSpec : Spek({
                             float second;
                         };
 
+                        struct p0_untitledShader_MovingHeadParams {
+                            float pan;
+                            float tilt;
+                            float colorWheel;
+                            float dimmer;
+                        };
+
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1.);
+                        MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1., false, 0.);
 
                         #line 5 0
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
@@ -817,7 +838,11 @@ object GlslGenerationSpec : Spek({
                                 p0_untitledShaderi_result.pan,
                                 p0_untitledShaderi_result.tilt,
                                 p0_untitledShaderi_result.colorWheel,
-                                p0_untitledShaderi_result.dimmer
+                                //  prism bit | 1 bit sign(prismRotation) | 14 bit magnitude(prismRotation) | 16 bit unsigned fixed-point dimmer
+                                uintBitsToFloat((uint (p0_untitledShaderi_result.dimmer * 65535.)) & 0xFFFFu
+                                    | (p0_untitledShaderi_result.prismRotation < 0. ? 1u : 0u) << 30
+                                    | ((uint (abs(p0_untitledShaderi_result.prismRotation) * 16384.)) & 0x3FFFu) << 16
+                                    | ((p0_untitledShaderi_result.prism ? 1u : 0u) << 31))
                             );
                         }
                     """.trimIndent()

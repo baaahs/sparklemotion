@@ -25,6 +25,9 @@ class TestMovingHeadAdapter(
     override val tiltRange: ClosedRange<Float> = toRadians(-135f)..toRadians(135f),
     override val tiltMotorSpeed: Float = 1f,
 
+    override val prismChannel: Dmx.Channel = TestChannel(5),
+    override val prismRotationChannel: Dmx.Channel = TestChannel(6),
+
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo =
         MovingHeadAdapter.VisualizerInfo(
             canRadius = 5f.`in`,
@@ -33,7 +36,7 @@ class TestMovingHeadAdapter(
             canLengthBehindLight = 3f.`in`
         ),
 
-    override val shutterChannel: Dmx.Channel = TestChannel(6)
+    override val shutterChannel: Dmx.Channel = TestChannel(7)
 ) : MovingHeadAdapter {
     override val id: String get() = "TestMovingHeadAdapter"
 
