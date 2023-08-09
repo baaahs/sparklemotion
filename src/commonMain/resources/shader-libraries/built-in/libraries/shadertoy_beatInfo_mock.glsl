@@ -7,3 +7,7 @@
 #define beatInfo_bpm BPM
 #define beatInfo_intensity .5*smoothstep(1., 0., mod(beatInfo_beat, 1.) / 0.4) + .5*smoothstep(1., 0., (1. - mod(beatInfo_beat, 1.)) / 0.2)
 #define beatInfo_confidence 1.0
+
+
+// OPTIONAL: frequency setup - set microphone to iChannel0 and these will need to be Find-Replaced from soundAnalysis_buckets -> soundAnalysis.buckets
+#define soundAnalysis_buckets iChannel0
