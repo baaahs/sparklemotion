@@ -4,6 +4,7 @@ import baaahs.model.ModelUnit
 
 class FakeVisualizer(
     override var units: ModelUnit,
+    override var initialViewingAngle: Float = 0f,
     val itemVisualizers: MutableList<ItemVisualizer<*>> = mutableListOf()
 ) : IVisualizer {
     override fun add(itemVisualizer: ItemVisualizer<*>) {
@@ -13,4 +14,6 @@ class FakeVisualizer(
     override fun clear() {
         itemVisualizers.clear()
     }
+
+    override fun fitToScene() {}
 }

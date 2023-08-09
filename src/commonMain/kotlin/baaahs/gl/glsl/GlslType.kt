@@ -18,7 +18,8 @@ sealed class GlslType constructor(
     class Struct(
         val name: String,
         val fields: List<Field>,
-        defaultInitializer: GlslExpr = initializerFor(fields)
+        defaultInitializer: GlslExpr = initializerFor(fields),
+        val outputRepresentationOverride: ((varName: String) -> String)? = null,
     ) : GlslType(name, defaultInitializer) {
         constructor(glslStruct: GlslCode.GlslStruct)
                 : this(glslStruct.name, glslStruct.fields.entries.toFields())
@@ -36,8 +37,9 @@ sealed class GlslType constructor(
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>,
-            defaultInitializer: GlslExpr
-        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer)
+            defaultInitializer: GlslExpr,
+            outputOverride: ((varName: String) -> String)?
+        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputOverride)
 
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
@@ -88,6 +90,20 @@ sealed class GlslType constructor(
                     }
                     append(" }")
                 }.toString().let { GlslExpr(it) }
+        }
+
+        override fun outputRepresentationGlsl(varName: String): String{
+            if (outputRepresentationOverride != null) {
+                return outputRepresentationOverride!!(varName);
+            }
+            return buildString {
+                append(glslLiteral, "(")
+                fields.forEachIndexed { index, field ->
+                    if (index > 0) append(",")
+                    append("\n        $varName.${field.name}")
+                }
+                append("\n    )")
+            }
         }
     }
 
@@ -168,5 +184,9 @@ sealed class GlslType constructor(
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
+    }
+
+     open fun outputRepresentationGlsl(varName: String): String {
+        return varName;
     }
 }

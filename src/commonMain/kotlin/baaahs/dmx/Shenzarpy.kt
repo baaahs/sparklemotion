@@ -35,6 +35,9 @@ object Shenzarpy : MovingHeadAdapter {
     /** Time required to move from tiltRange.start to tiltRange.end, in seconds. */
     override val tiltMotorSpeed: Float = 1.3f
 
+    override val prismChannel get() = Channel.PRISM
+    override val prismRotationChannel get() = Channel.PRISM_ROTATION
+
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
         get() = MovingHeadAdapter.VisualizerInfo(
             canRadius = 5f.`in`,

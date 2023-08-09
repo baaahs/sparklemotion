@@ -18,13 +18,14 @@ import kotlinx.serialization.Transient
 data class ModelData(
     val title: String,
     val entities: List<EntityData>,
-    val units: ModelUnit = ModelUnit.Meters
+    val units: ModelUnit = ModelUnit.Meters,
+    val initialViewingAngle: Float = 0f
 ) {
     fun edit(): MutableModel =
         MutableModel(this)
 
     fun open(): Model =
-        Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units)
+        Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units, initialViewingAngle)
 }
 
 enum class ModelUnit(val display: String, val inCentimeters: Double) {
