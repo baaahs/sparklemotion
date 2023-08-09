@@ -19,7 +19,7 @@
 // These will need to be Find-Replaced from beatInfo_beat -> beatInfo.beat
 #define beatInfo_beat mod(time * (BPM*2. /60.), 4.)
 #define beatInfo_bpm BPM*4.
-#define beatInfo_intensity .5*smoothstep(1., 0., mod(beatInfo_beat, 1.) / 0.4) + .5*smoothstep(1., 0., (1. - mod(beatInfo_beat, 1.)) / 0.2)
+#define beatInfo_intensity .5*(smoothstep(1., 0., mod(beatInfo_beat, 1.) / 0.4) + .5*smoothstep(1., 0., (1. - mod(beatInfo_beat, 1.)) / 0.2))
 #define beatInfo_confidence 1.0
 
 
@@ -53,7 +53,7 @@ float luma(vec3 color) {
 }
 
 float getfrequency(float x) {
-    return .2 + .2 * beatInfo_intensity;//texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
+    return .2 + .3 * beatInfo_intensity;//texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
 }
 
 float getfrequency_smooth(float x) {
@@ -198,7 +198,7 @@ vec3 drawSheep(vec2 fragment, float scale) {
     float dist = length(fragment);
     float ring = 1.0 / abs(dist - scale);
 
-    float sheepScale = 1.9 * RADIUS;
+    float sheepScale = 1.9 * scale;
     vec2 sheepXY = vec2(0.0, 0.00);
 
     //float b = pointInSheep(fragment, sheepScale, sheepXY) ? BRIGHTNESS : 0.1 * BRIGHTNESS; // dist < scale ? BRIGHTNESS * 0.3 : BRIGHTNESS;
@@ -299,13 +299,19 @@ vec3 color(vec3 ww, vec3 uu, vec3 vv, vec3 ro, vec2 p) {
 
     float sheep_scale=0.6;
     vec2 sheep_xy = p_sheep / sheep_scale;
-    if (length(sheep_xy) < 1.2 * RADIUS) {
+
+    float logoRadius = RADIUS + 0.05 * min((beatInfo_intensity), 1.);
+    float radiusFalloff = 4.;
+    float dR = max(length(p_sheep) - logoRadius - 0.1, 0.);
+    //uv0 /= (1. + exp(-radiusFalloff*dR) * logoRadius / LOGO_RADIUS);
+
+    if (length(sheep_xy) < 1.2 * logoRadius) {
         col *= (1. + 2.*beatInfo_intensity);
     }
-    if (length(sheep_xy) < RADIUS) {
+    if (length(sheep_xy) < logoRadius) {
         col *= .05;
     }
-    col += drawSheep(sheep_xy, RADIUS);
+    col += drawSheep(sheep_xy, logoRadius);
 
     col *= (.95 + .1*beatInfo_intensity);
 
@@ -341,5 +347,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     p.x *= resolution.x/resolution.y;
 
     vec3 col = effect(p, q);
+    // vec3 sheepCol = drawSheep(p, RADIUS);
     fragColor = vec4(col, 1.0);
 }
