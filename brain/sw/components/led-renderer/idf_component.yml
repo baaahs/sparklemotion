@@ -2,4 +2,5 @@ dependencies:
   # espressif/jsmn: "*"
   espressif/led_strip: "*"
   idf: ">=5.0"
+version: 1.0.0
 
