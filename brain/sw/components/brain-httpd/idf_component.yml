@@ -1,0 +1,5 @@
+dependencies:
+  idf:
+    version: '>=5.0'
+description: 'HTTP Daemon for remote management of a single board'
+version: 1.0.0

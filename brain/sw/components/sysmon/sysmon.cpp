@@ -296,7 +296,7 @@ void SysMon::addMetrics() {
 void SysMon::addMemInfo() {
     m_tmpHead = m_tmpEnd - m_tmpRemaining;
     m_tmpRemaining -= snprintf(m_tmpHead, m_tmpRemaining,
-            "   Memory = bytes free( %6ld )    largest( %6d )\n",
+            "   Memory = bytes free( %6d )    largest( %6d )\n",
             xPortGetFreeHeapSize(),
             heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT));
 
