@@ -61,7 +61,7 @@ vec3 drawBaaahsLogo(vec2 fragCoord, float scale) {
 
     float brightness = length(fragPos) < scale ? LOGO_BRIGHTNESS * 0.2 : LOGO_BRIGHTNESS;
 
-    float sheepScaleRelativeToRing = 1.9 * LOGO_RADIUS;
+    float sheepScaleRelativeToRing = 1.9 * scale;
     vec2 sheepXY = vec2(0., 0.);
 
     if (pointInSheep(fragPos, sheepScaleRelativeToRing, sheepXY)) { brightness *= 50.; }
