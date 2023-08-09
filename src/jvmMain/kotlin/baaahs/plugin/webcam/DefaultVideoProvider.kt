@@ -23,11 +23,16 @@ object WebcamCaptureVideoProvider : VideoProvider {
     override fun getTextureResource(): TextureResource {
         val image = webcam.image
         val vals = IntBuffer(image.width * image.height)
+        var maxPix = 0;
         for (x in 0..image.width) {
             for (y in 0..image.height) {
-                vals[x*image.width + y] = image.getRGB(x, y)
+                val pixel = image.getRGB(x, y)
+                maxPix = Integer.max(maxPix, pixel)
+                vals[x*image.width + y] = pixel
             }
         }
+
+        println("maxPix $maxPix")
 
         return TextureResource(
             width = image.width,

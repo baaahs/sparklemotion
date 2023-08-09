@@ -46,6 +46,7 @@ abstract class BaseShowPlayer(
     override fun openFeed(id: String, feed: Feed): FeedContext {
         // TODO: This is another reference to feeds, so we should .use() it... but then we'll never release them!
         // TODO: Also, it could conceivably be handed out after it's had onRelease() called. How should we handle this?
+//        println("kcking feed $id $feed")
         return feeds.getOrPut(feed) {
             feed.open(this, id)
         }
