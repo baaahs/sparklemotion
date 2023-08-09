@@ -17,7 +17,9 @@ data class MovingHeadParams(
     /** In radians. */
     val tilt: Float,
     val colorWheel: Float,
-    val dimmer: Float
+    val dimmer: Float,
+    val prism: Boolean,
+    val prismRotation: Float,
 ) {
     fun send(buffer: MovingHead.Buffer) {
         buffer.pan = pan
@@ -25,6 +27,8 @@ data class MovingHeadParams(
         // TODO: Not all moving heads have a color wheel, some use RGB.
         buffer.colorWheelPosition = colorWheel
         buffer.dimmer = dimmer
+        buffer.prism = prism
+        buffer.prismRotation = prismRotation
     }
 
     companion object {
@@ -34,12 +38,30 @@ data class MovingHeadParams(
             "tilt" to GlslType.Float,
             "colorWheel" to GlslType.Float,
             "dimmer" to GlslType.Float,
-            defaultInitializer = GlslExpr("MovingHeadParams(0., 0., 0., 1.)")
+            "prism" to GlslType.Bool,
+            "prismRotation" to GlslType.Float,
+            defaultInitializer = GlslExpr("MovingHeadParams(0., 0., 0., 1., false, 0.)"),
+            outputOverride = { varName: String ->
+                """
+                    vec4(
+                        ${varName}.pan,
+                        ${varName}.tilt,
+                        ${varName}.colorWheel,
+                        //  prism bit | 1 bit sign(prismRotation) | 14 bit magnitude(prismRotation) | 16 bit unsigned fixed-point dimmer
+                        uintBitsToFloat((uint (${varName}.dimmer * 65535.)) & 0xFFFFu
+                            | ($varName.prismRotation < 0. ? 1u : 0u) << 30
+                            | ((uint (abs($varName.prismRotation) * 16384.)) & 0x3FFFu) << 16
+                            | ((${varName}.prism ? 1u : 0u) << 31))
+                    )
+                """.trimIndent()
+            }
         )
 
         val contentType = ContentType(
             "moving-head-params", "Moving Head Params",
-            struct, outputRepresentation = GlslType.Vec4
+            struct, outputRepresentation = GlslType.Vec4, defaultInitializer = { _ ->
+                struct.defaultInitializer
+            }
         )
 
         val resultType = object : FloatsResultType<ResultBuffer>(4, GL_RGBA) {
@@ -52,11 +74,25 @@ data class MovingHeadParams(
         operator fun get(pixelIndex: Int): MovingHeadParams {
             val offset = pixelIndex * type.stride
 
+            val packedDimmerAndPrism = floatBuffer[offset+3].toRawBits();
+            val prism : Boolean = (packedDimmerAndPrism.and(1 shl 31) == 1 shl 31)
+            val dimmer = (packedDimmerAndPrism.and(0xFFFF)).toFloat() / 65535f;
+
+            val prismRotationSign = packedDimmerAndPrism.shr(30).and(0x1) != 0
+            val prismRotationMagnitude = packedDimmerAndPrism.shr(16).and(0x3FFF).toFloat().div(16384)
+            val prismRotation = prismRotationMagnitude * (if (prismRotationSign) {
+                -1f
+            } else {
+                1f
+            })
+
             return MovingHeadParams(
                 pan = floatBuffer[offset],
                 tilt = floatBuffer[offset + 1],
                 colorWheel = floatBuffer[offset + 2],
-                dimmer = floatBuffer[offset + 3]
+                dimmer = dimmer,
+                prism = prism,
+                prismRotation = prismRotation,
             )
         }
 

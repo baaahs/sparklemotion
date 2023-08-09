@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.model.numberTextField
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableSliderControl
@@ -149,6 +150,17 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 attrs.value = mutableScene.model.units
                 attrs.onChange = { value ->
                     mutableScene.model.units = value
+                    editableManager.onChange()
+                }
+            }
+        }
+
+        div(+EditableStyles.propertiesSection) {
+            numberTextField<Float> {
+                attrs.label = "Initial Viewing Angle (in radians)"
+                attrs.value = mutableScene.model.initialViewingAngle
+                attrs.onChange = { value ->
+                    mutableScene.model.initialViewingAngle = value
                     editableManager.onChange()
                 }
             }

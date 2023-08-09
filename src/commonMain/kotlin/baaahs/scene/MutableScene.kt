@@ -158,9 +158,10 @@ class MutableModel(baseModel: ModelData) {
     var title = baseModel.title
     val entities = baseModel.entities.map { it.edit() }.toMutableList()
     var units = baseModel.units
+    var initialViewingAngle = baseModel.initialViewingAngle
 
     fun build(): ModelData {
-        return ModelData(title, entities.map { it.build() }, units)
+        return ModelData(title, entities.map { it.build() }, units, initialViewingAngle)
     }
 
     fun findById(id: EntityId): MutableEntity? =
