@@ -85,7 +85,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
                                 }
 
                             override fun setOnProgram() {
-                                println("kcking setOnProgram")
+//                                println("kcking setOnProgram")
                                 videoUniform?.let { uniform ->
                                     with(textureUnit) {
                                         bindTexture(texture)
