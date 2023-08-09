@@ -22,6 +22,9 @@ enum class EntityStyle {
             material.visible = true
             material.opacity = .5
 
+            if (use == Use.GroupOutline) {
+                material.visible = false
+            }
             if (use == Use.LightStrand) {
                 material.color.set(0x001100)
             }
@@ -52,6 +55,7 @@ enum class EntityStyle {
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
             material.color.set(0xaaaaaa)
             material.linewidth = 3
+            material.visible = true
 
             if (use == Use.LightStrand) {
                 material.color.set(0x226622)
@@ -82,6 +86,7 @@ enum class EntityStyle {
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
             (material.color as Color).multiplyScalar(1.2)
             material.linewidth = 5
+            material.visible = true
         }
 
         override fun applyToMesh(material: Material, use: Use?) {
@@ -104,6 +109,7 @@ enum class EntityStyle {
             material.color.set(0xffccaa)
             material.dashSize = 1
             material.gapSize = 1
+            material.visible = true
         }
 
         override fun applyToMesh(material: Material, use: Use?) {
@@ -112,6 +118,10 @@ enum class EntityStyle {
     MapperRunning {
         override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
             itemVisualizer.mapperIsRunning
+
+        override fun applyToLine(material: LineDashedMaterial, use: Use?) {
+            material.visible = true
+        }
 
         override fun applyToMesh(material: Material, use: Use?) {
             material.transparent = true

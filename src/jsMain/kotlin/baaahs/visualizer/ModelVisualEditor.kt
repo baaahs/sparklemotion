@@ -62,6 +62,7 @@ class ModelVisualEditor(
     init {
         clear()
         units = model.units
+        initialViewingAngle = model.initialViewingAngle
     }
 
     private val groupVisualizer =
@@ -184,6 +185,7 @@ class ModelVisualEditor(
             model = newData.open()
             clear()
             units = model.units
+            initialViewingAngle = model.initialViewingAngle
 
             scene.add(groupVisualizer.groupObj)
             groupVisualizer.updateChildren(model.entities)

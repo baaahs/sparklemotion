@@ -30,6 +30,9 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
     override val tiltRange: ClosedRange<Float> = toRadians(-110f)..toRadians(110f)
     override val tiltMotorSpeed: Float = 1f
 
+    override val prismChannel get() = Channel.EMPTY
+    override val prismRotationChannel get() = Channel.EMPTY
+
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
         get() = MovingHeadAdapter.VisualizerInfo(
             canRadius = 2.5f.`in`,
@@ -54,7 +57,8 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
 //        COLOR_11,
 //        COLOR_12,
 //        COLOR_CONTROL,
-        COLOR_RESET;
+        COLOR_RESET,
+        EMPTY;
 
         override val offset = ordinal
     }

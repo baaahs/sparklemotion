@@ -52,6 +52,7 @@ class SceneManager(
             Divider,
             DialogMenuItem.Header("From Template:"),
             Option("BAAAHS") { makeNew { sceneFromResources("BAAAHS.scene") } },
+            Option("BAAAHS 2023") { makeNew { sceneFromResources("BAAAHS 2023.scene") } },
 //            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
             Option("Club Six") { makeNew { sceneFromResources("ClubSix.scene") } },
             Option("Hi-Res") { makeNew { sceneFromResources("Hi-Res.scene") } },

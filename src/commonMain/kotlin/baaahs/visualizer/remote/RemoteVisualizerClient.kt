@@ -39,6 +39,7 @@ class RemoteVisualizerClient(
             val openScene = sceneMonitor.openScene
             visualizer.clear()
             visualizer.units = openScene?.model?.units ?: ModelUnit.Centimeters
+            visualizer.initialViewingAngle = openScene?.model?.initialViewingAngle ?: 0f
 
             fixtureSimulations = buildMap {
                 openScene?.let { scene ->
@@ -53,6 +54,7 @@ class RemoteVisualizerClient(
                     }
                 }
             }
+            visualizer.fitToScene()
         }
 
         link.connectWebSocket(address, Ports.PINKY_UI_TCP, "/ws/visualizer", this)

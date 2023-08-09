@@ -150,9 +150,7 @@ open class BaseVisualizer(
     private val frameListeners = mutableListOf<FrameListener>()
 
     protected val camera: PerspectiveCamera =
-        PerspectiveCamera(45, 1.0, 0.1, 10000).apply {
-            position.z = 1000.0
-        }
+        PerspectiveCamera(45, 1.0, 0.1, 10000)
     private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
     private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
     private val renderer = WebGLRenderer().apply {
@@ -165,6 +163,14 @@ open class BaseVisualizer(
             if (field != value) {
                 field = value
                 onUnitsChange()
+            }
+        }
+
+    var initialViewingAngle: Float = 0f
+        set(value) {
+            if (field != value) {
+                field = value
+                fitCameraToObject()
             }
         }
 
@@ -291,6 +297,10 @@ open class BaseVisualizer(
         sceneNeedsUpdate = true
     }
 
+    fun fitToScene() {
+        fitCameraToObject(1.25)
+    }
+
     fun fitCameraToObject(offset: Double = 1.25) {
         val boundingBox = Box3()
         if (scene.children.isEmpty()) {
@@ -311,9 +321,14 @@ open class BaseVisualizer(
 
         cameraZ *= offset // zoom out a little so that objects don't fill the screen
 
-        camera.position.x = center.x
-        camera.position.y = center.y
-        camera.position.z = cameraZ
+        val camPosition = Vector3(center.x, center.y, cameraZ)
+        if (initialViewingAngle != 0f) {
+            with(camPosition) {
+                x = x * cos(initialViewingAngle) - z * sin(initialViewingAngle)
+                z = x * sin(initialViewingAngle) + z * cos(initialViewingAngle)
+            }
+        }
+        camera.position.copy(camPosition)
 
         val minZ = boundingBox.min.z
         val cameraToFarEdge = if (minZ < 0) -minZ + cameraZ else cameraZ - minZ
