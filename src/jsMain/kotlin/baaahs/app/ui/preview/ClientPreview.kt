@@ -56,6 +56,7 @@ class ClientPreview(
         val adapter = EntityAdapter(simulationEnv, model.units)
         theVisualizer.clear()
         theVisualizer.units = model.units
+        theVisualizer.initialViewingAngle = model.initialViewingAngle
 
         val allFixtures = model
             .allEntities.mapNotNull { entity ->
