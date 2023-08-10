@@ -4,6 +4,7 @@ import baaahs.PubSub
 import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
+import baaahs.clamp
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -12,6 +13,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.internalTimerClock
 import baaahs.plugin.*
 import baaahs.show.Control
 import baaahs.show.Feed
@@ -27,10 +29,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
+import kotlin.math.PI
+import kotlin.math.tan
 
 class SoundAnalysisPlugin internal constructor(
     val soundAnalyzer: SoundAnalyzer,
-    val historySize: Int = 100
+    val historySize: Int = 128
 ) : OpenServerPlugin, OpenClientPlugin {
 
     override val packageName: String = id
@@ -112,7 +116,7 @@ class SoundAnalysisPlugin internal constructor(
                     PubSubPublisher(createServerSoundAnalyzer(pluginContext), pluginContext)
 
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient): SoundAnalysisPlugin {
-                    val soundAnalyzer = PubSubSubscriber(bridgeClient.pubSub)
+                    val soundAnalyzer = PubSubSubscriber(bridgeClient.pubSub, true)
                     PubSubPublisher(soundAnalyzer, pluginContext)
                     return SoundAnalysisPlugin(soundAnalyzer)
                 }
@@ -232,7 +236,7 @@ class SoundAnalysisPlugin internal constructor(
         }
     }
 
-    class PubSubSubscriber(private val pubSub: PubSub.Endpoint) : SoundAnalyzer {
+    class PubSubSubscriber(private val pubSub: PubSub.Endpoint, val generateData: Boolean? = null) : SoundAnalyzer {
         override var currentAudioInput: AudioInput? = null
             private set
         private var audioInputs: List<AudioInput> = emptyList()
@@ -265,7 +269,13 @@ class SoundAnalysisPlugin internal constructor(
         }
 
         private suspend fun requestUpdate() {
-            while (!(pubSub as PubSub.Client).isConnected) delay(100)
+            while (!(pubSub as PubSub.Client).isConnected) {
+                if (generateData == true) {
+                    generateRandomData()
+                    continue
+                }
+                delay(100)
+            }
 
             val response = update.invoke(UpdateCommand(frequenciesVersion, magnitudesVersion))
             if (response.frequenciesVersion != null &&
@@ -319,6 +329,20 @@ class SoundAnalysisPlugin internal constructor(
         override fun unlisten(inputsListener: SoundAnalyzer.InputsListener) {
             inputsListeners.remove(inputsListener)
         }
+
+        private suspend fun generateRandomData() {
+            val buckets = 4
+            frequencies = (0 until buckets).map {
+                it.toFloat() * 20f
+            }.toFloatArray()
+            val t = internalTimerClock.now().toFloat();
+            magnitudes = arrayOf(t * 2, t*3, t*4, t*8).map{
+                tan(it * PI).clamp(0.0, 1.0).toFloat()
+            }.map{it / buckets} // pre-compensate for normalization
+                .toFloatArray()
+            sendSample()
+            delay(20)
+        }
     }
 }
 
@@ -337,10 +361,11 @@ class SoundAnalysisFeedContext(
     override fun onSample(analysis: SoundAnalyzer.Analysis) {
         if (analysis.frequencies.size != bucketCount) {
             bucketCount = analysis.frequencies.size
-
             val bufferSize = bucketCount * historySize
             sampleBuffer = FloatArray(bufferSize)
-            textureBuffer = FloatBuffer(sampleBuffer)
+        }
+        if (bucketCount == 0) {
+            return
         }
 
         // Shift historical data down one row.
@@ -353,7 +378,7 @@ class SoundAnalysisFeedContext(
             sampleBuffer[index] = normalizedMagnitude
             if (normalizedMagnitude > max) max = normalizedMagnitude
         }
-        textureBuffer.put(sampleBuffer)
+        textureBuffer = FloatBuffer(sampleBuffer)
         maxMagnitude = max
     }
 
@@ -384,7 +409,7 @@ class SoundAnalysisFeedContext(
                 sampleHistoryCountUniform?.set(historySize)
                 with(textureUnit) {
                     bindTexture(texture)
-                    configure(GL_LINEAR, GL_LINEAR)
+                    configure(GL_NEAREST, GL_NEAREST)
                     uploadTexture(0, GL_R32F, bucketCount, historySize, 0, GL_RED, GL_FLOAT, textureBuffer)
                 }
                 bucketsUniform?.set(textureUnit)
