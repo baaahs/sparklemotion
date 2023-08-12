@@ -2,15 +2,15 @@ dependencies:
   brain-common:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-common
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-common
       type: local
-    version: '*'
+    version: 1.0.0
   brain-ui:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/brain-ui
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-ui
       type: local
-    version: '*'
+    version: 1.0.0
   espressif/jsmn:
     component_hash: d80350c41bbaa827c98a25b6072df00884e72f54885996fab4a4f0aebce6b6c3
     source:
@@ -18,40 +18,40 @@ dependencies:
       type: service
     version: 1.1.0
   espressif/led_strip:
-    component_hash: f0ae6ac96108743deeea95a3ff61e3759de986b6a63aa0f3a471415e4085da9e
+    component_hash: 1f8cc130ebd557fde64c02fe5fad0cb36d69947498c540ace6f425e1083d7773
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 2.3.0
+    version: 2.4.1
   idf:
     component_hash: null
     source:
       type: idf
-    version: 5.0.1
+    version: 5.1.0
   iso:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/iso
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/iso
       type: local
-    version: '*'
+    version: 1.0.0
   led-renderer:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/led-renderer
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/led-renderer
       type: local
-    version: '*'
+    version: 1.0.0
   net:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/net
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/net
       type: local
-    version: '*'
+    version: 1.0.0
   sysmon:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/tomseago/sparklemotion/brain/sw/components/sysmon
+      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/sysmon
       type: local
-    version: '*'
-manifest_hash: a7eda037fb938a2416163175a48ccbe0b25c1c67eaa9b12584eb7707793c2fbb
+    version: 1.0.0
+manifest_hash: b785be90b00aebfbe77181aed119ae84dab657def9ce3bcfb35fd6b8fe76fb15
 target: esp32
 version: 1.0.0

@@ -1,0 +1,5 @@
+dependencies:
+  idf:
+    version: '>=5.0'
+description: 'UI for on-device buttons and hardware'
+version: 1.0.0
