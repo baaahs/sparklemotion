@@ -88,7 +88,7 @@ private:
     uint8_t m_buffer[8][128];
 
 
-    static const i2c_port_t PORT = 1;
+    static const i2c_port_t PORT = (i2c_port_t)1;
 
     /**
      * It's unclear from the datasheet if communication via the I2C interface can

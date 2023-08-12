@@ -1,0 +1,5 @@
+dependencies:
+  idf:
+    version: '>=5.0'
+description: 'Routines for New Years clock/wearable'
+version: 1.0.0
