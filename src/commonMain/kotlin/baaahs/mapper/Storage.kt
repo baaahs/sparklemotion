@@ -71,7 +71,7 @@ class Storage(val fs: Fs, val plugins: Plugins) {
 
     suspend fun saveImage(name: String, imageData: ByteArray) {
         val file = imagesDir.resolve(name)
-        fs.saveFile(file, imageData)
+        fs.saveFile(file, imageData, allowOverwrite = true)
     }
 
     suspend fun loadImage(name: String): ByteArray? {
@@ -86,14 +86,13 @@ class Storage(val fs: Fs, val plugins: Plugins) {
     suspend fun loadMappingData(scene: OpenScene): SessionMappingResults {
         val sessions = arrayListOf<MappingSession>()
         val path = fs.resolve("mapping", scene.model.name)
-        fs.listFiles(path).forEach { dir ->
-            fs.listFiles(dir)
-                .sortedBy { it.name }
-                .filter { it.name.endsWith(".json") }
-                .forEach { f ->
-                    sessions.add(loadMappingSession(f))
-                }
-        }
+        fs.listFiles(path)
+            .flatMap { fs.listFiles(it) }
+            .sortedBy { it.name }
+            .filter { it.name.endsWith(".json") }
+            .forEach { f ->
+                sessions.add(loadMappingSession(f))
+            }
         return SessionMappingResults(scene, sessions)
     }
 

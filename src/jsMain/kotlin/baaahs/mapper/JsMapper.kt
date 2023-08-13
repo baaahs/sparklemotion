@@ -185,7 +185,6 @@ class JsMapper(
         height: Int,
         savedImage: HTMLImageElement
     ) {
-        onLaunch()
 
         this.ui2dCanvas = ui2dCanvas
         this.savedImage = savedImage
@@ -208,6 +207,7 @@ class JsMapper(
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
 
+        onLaunch()
         drawAnimationFrame()
     }
 
@@ -1045,6 +1045,9 @@ class JsMapper(
     }
 
     private fun paintCamImage(image: Image) {
+        if (!::ui2dCanvas.isInitialized) {
+            return
+        }
         CanvasBitmap(ui2dCanvas).drawImage(
             image,
             0, 0, image.width, image.height,
@@ -1189,7 +1192,7 @@ class JsMapper(
                     pixelChangeRegion = analysis.detectChangeRegion(.9f)
                 }
 
-                delay(100)
+//                delay(100)
                 ui.showDiffImage(bitmap, changeRegion = pixelChangeRegion)
             }
         }
