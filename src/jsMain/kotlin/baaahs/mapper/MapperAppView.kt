@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
 import baaahs.app.ui.editor.textFieldEditor
+import baaahs.context2d
 import baaahs.device.PixelFormat
 import baaahs.mapper.twologn.twoLogNSlices
 import baaahs.model.Model
@@ -175,7 +176,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                 props.mapper.mappingController?.let { mappingController ->
                     betterSelect<Model.Entity?> {
                         attrs.label = "Entity:"
-                        attrs.values = props.mapper.entitiesByName.values.toList()
+                        attrs.values = props.mapper.entitiesByName.values.toList().map<_, Model.Entity?>{ it }.plus(null)
                         attrs.renderValueOption = { entity -> buildElement { +(entity?.name ?: "None" ) } }
                         attrs.value = mappingController.guessedEntity
                         attrs.onChange = handleChangeEntity

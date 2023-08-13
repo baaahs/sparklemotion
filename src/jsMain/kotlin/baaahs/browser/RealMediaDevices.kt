@@ -4,6 +4,7 @@ import baaahs.MediaDevices
 import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
+import baaahs.util.globalLaunch
 import dom.html.HTMLVideoElement
 import kotlinx.browser.window
 import kotlinx.coroutines.*
@@ -55,7 +56,7 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
 
                     videoEl.oncanplay = {
                         println("oncanplay")
-                        launch { capture() }
+                        globalLaunch { capture() }
                     }
 
                     videoEl.onended = {
@@ -83,12 +84,16 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
                 if (!closed) {
                     // Some browsers might not support requestVideoFrameCallback() yet.
                     try {
-                        videoEl.asDynamic().requestVideoFrameCallback(this::capture)
+                        videoEl.asDynamic().requestVideoFrameCallback(this::globalLaunchCapture)
                     } catch (e: Exception) {
                         delay(50)
                         capture()
                     }
                 }
+            }
+
+            suspend fun globalLaunchCapture() {
+                globalLaunch { capture() }
             }
         }
     }
