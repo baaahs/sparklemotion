@@ -53,7 +53,7 @@ data class MovingHeadParams(
                             | ((uint (abs($varName.prismRotation) * 16384.)) & 0x3FFFu) << 16
                             | ((${varName}.prism ? 1u : 0u) << 31))
                     )
-                """.trimIndent()
+                """.replaceIndent("    ").trimStart()
             }
         )
 

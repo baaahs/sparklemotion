@@ -44,10 +44,10 @@ interface MovingHeadAdapter {
     /** Seconds required to rotate through full tilt range. */
     val tiltMotorSpeed: Float
 
-    val visualizerInfo: VisualizerInfo
-
     val prismChannel: Dmx.Channel
     val prismRotationChannel: Dmx.Channel
+
+    val visualizerInfo: VisualizerInfo
 
     fun newBuffer(dmxBuffer: Dmx.Buffer): MovingHead.Buffer
 
