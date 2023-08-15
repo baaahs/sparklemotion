@@ -127,6 +127,7 @@ shader-libraries/built-in/shaders/YasQueen.glsl
 shader-libraries/built-in/shaders/ZebraMadness.glsl
 styles.css
 templates/scenes/Another.scene
+templates/scenes/BAAAHS 2023.scene
 templates/scenes/BAAAHS-Eyes.scene
 templates/scenes/BAAAHS.scene
 templates/scenes/ClubSix.scene
@@ -143,6 +144,7 @@ templates/scenes/baaahs-panel-info.txt
 templates/scenes/decom-2019-panels.obj
 templates/scenes/playa-2021-panels.obj
 templates/scenes/sui-generis.obj
+templates/shows/BRC 2023.sparkle
 templates/shows/BeachRave.sparkle
 templates/shows/Ben's Show.sparkle
 templates/shows/Eve Rafters.sparkle
