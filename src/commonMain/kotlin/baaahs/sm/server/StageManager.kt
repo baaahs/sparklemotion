@@ -34,7 +34,8 @@ class StageManager(
     private val clock: Clock,
     private val gadgetManager: GadgetManager,
     private val serverNotices: ServerNotices,
-    private val sceneMonitor: SceneMonitor
+    private val sceneMonitor: SceneMonitor,
+    private val eventManager: EventManager
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null

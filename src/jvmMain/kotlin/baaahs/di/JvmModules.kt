@@ -6,6 +6,8 @@ import baaahs.dmx.Dmx
 import baaahs.dmx.JvmFtdiDmxDriver
 import baaahs.io.Fs
 import baaahs.io.RealFs
+import baaahs.midi.JvmMidiDevices
+import baaahs.midi.MidiDevices
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -19,6 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
+import javax.sound.midi.MidiMessage
+import javax.sound.midi.MidiSystem
+import javax.sound.midi.Receiver
+import javax.sound.midi.ShortMessage
 
 class JvmPlatformModule(
     private val clock_: Clock
@@ -63,6 +69,8 @@ class JvmPinkyModule(
         get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
+    override val Scope.midiDevices: MidiDevices
+        get() = JvmMidiDevices()
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }
