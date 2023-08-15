@@ -96,5 +96,28 @@ object MovingHeadSpec : Spek({
             expect(channels[testMovingHead.tiltFineChannel])
                 .toEqual(255.toByte())
         }
+
+        it("includes prism control") {
+            buffer.prism = false
+            buffer.prismRotation = 0f
+            expect(channels[testMovingHead.prismChannel])
+                .toEqual(0)
+            expect(channels[testMovingHead.prismRotationChannel])
+                .toEqual(-65)
+
+            buffer.prism = true
+            buffer.prismRotation = .7f
+            expect(channels[testMovingHead.prismChannel])
+                .toEqual(255.toByte())
+            expect(channels[testMovingHead.prismRotationChannel])
+                .toEqual(-22)
+
+            buffer.prism = true
+            buffer.prismRotation = .3f
+            expect(channels[testMovingHead.prismChannel])
+                .toEqual(255.toByte())
+            expect(channels[testMovingHead.prismRotationChannel])
+                .toEqual(-47)
+        }
     }
 })
