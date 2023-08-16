@@ -19,7 +19,8 @@ class Container(
     val units: ModelUnit,
     val position: Vector3? = null,
     val rotation: Quaternion? = null,
-    val scale: Vector3? = null
+    val scale: Vector3? = null,
+    val isCentered: Boolean = false
 ) {
     val min = box.min.toVector3F()
     val max = box.max.toVector3F()
@@ -38,6 +39,8 @@ class Container(
 
         return Mesh(geom, material).apply {
             applyTransforms(this)
+            if (isCentered)
+                position.add(offset)
         }
     }
 
@@ -134,7 +137,7 @@ class PolyLineVisualizer(
         val box = Box3()
         box.setFromPoints(pixelLocations)
         addPadding(box)
-        return Container(box, units)
+        return Container(box, units, isCentered = true)
     }
 }
 
