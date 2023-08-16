@@ -23,10 +23,6 @@ private val FileUploadView = xComponent<FileUploadProps>("FileUpload") { props -
     val styles = appContext.allStyles.fileUploadStyles
     val fileType = props.fileType
 
-//    val handleUploadDrop by handler { files: Array<File> ->
-//
-//    }
-
     dropzone {
         if (fileType.contentTypeMasks.isNotEmpty() || fileType.matchingExtensions.isNotEmpty()) {
             val accept = jso<Any>().asDynamic()
