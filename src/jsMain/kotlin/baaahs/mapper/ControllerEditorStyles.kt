@@ -93,7 +93,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val configCardOuter by css {
         backgroundColor = theme.palette.primary.main.asColor()
             .withAlpha(.75).blend(Color(theme.palette.background.paper))
-        padding(.5.em)
+        padding = Padding(.5.em)
 
         adjacentSibling(".$name-configCardOuter") {
             marginTop = 1.em
@@ -116,7 +116,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
 
     val divider by css {
         height = 2.px
-        margin(.5.em, 0.em)
+        margin = Margin(.5.em, 0.em)
     }
 
     val configEditorRow by css {

@@ -12,8 +12,7 @@ import baaahs.gadgets.ImageRef
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import csstype.*
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.Box
 import mui.material.Modal
@@ -28,6 +27,7 @@ import react.dom.button
 import react.dom.div
 import react.dom.onClick
 import react.useContext
+import web.cssom.*
 
 private val ImagePickerView = xComponent<ImagePickerProps>("ImagePicker") { props ->
     val appContext = useContext(appContext)

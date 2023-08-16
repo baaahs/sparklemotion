@@ -133,7 +133,7 @@ In production mode, Sparkle Motion runs in a JVM process and talks to real hardw
 
 To start it, run:
 
-    ./gradlew runPinkyJvm
+    ./gradlew run
 
 If you don't have a Brain running locally, do this too:
 

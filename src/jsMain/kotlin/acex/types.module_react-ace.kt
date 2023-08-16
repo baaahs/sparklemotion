@@ -2,7 +2,7 @@
 
 package ReactAce.Ace
 
-import dom.html.HTMLDivElement
+import web.html.HTMLDivElement
 
 external interface ICommandManager {
     var byName: Any

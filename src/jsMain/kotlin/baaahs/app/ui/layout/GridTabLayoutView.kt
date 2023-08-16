@@ -22,20 +22,17 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
-import dom.Element
-import dom.html.HTMLDivElement
-import dom.html.HTMLElement
 import external.react_resizable.buildResizeHandle
-import kotlinx.css.BorderStyle
-import kotlinx.css.Color
-import kotlinx.css.properties.border
-import kotlinx.css.px
+import kotlinx.css.*
 import materialui.icon
 import mui.base.Portal
 import mui.material.*
 import react.*
 import react.dom.div
 import styled.StyleSheet
+import web.dom.Element
+import web.html.HTMLDivElement
+import web.html.HTMLElement
 
 private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") { props ->
     val appContext = useContext(appContext)
@@ -249,7 +246,7 @@ class AddMenuContext(
 
 object Styles : StyleSheet("ui-layout-grid", isStatic = true) {
     val gridItem by css {
-        border(1.px, BorderStyle.solid, Color.orange)
+        border = Border(1.px, BorderStyle.solid, Color.orange)
     }
 }
 

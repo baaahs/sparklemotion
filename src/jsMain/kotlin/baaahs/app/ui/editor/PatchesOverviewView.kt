@@ -12,8 +12,7 @@ import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.AddCircleOutline
 import mui.icons.material.CloudDownload
@@ -24,6 +23,7 @@ import react.RHandler
 import react.dom.div
 import react.dom.html.ReactHTML
 import react.useContext
+import web.dom.Element
 import web.events.Event
 
 private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview") { props ->

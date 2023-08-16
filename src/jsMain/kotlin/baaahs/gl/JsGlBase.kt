@@ -3,10 +3,10 @@ package baaahs.gl
 import baaahs.document
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
-import dom.html.HTMLCanvasElement
-import dom.html.RenderingContextId
 import org.khronos.webgl.ArrayBufferView
 import org.khronos.webgl.WebGLObject
+import web.canvas.RenderingContextId
+import web.html.HTMLCanvasElement
 import web.prompts.alert
 
 actual object GlBase {

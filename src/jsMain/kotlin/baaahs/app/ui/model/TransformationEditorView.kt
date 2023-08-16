@@ -8,8 +8,8 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
+import js.core.jso
 import kotlinx.html.unsafe
-import kotlinx.js.jso
 import mui.material.Container
 import react.*
 import react.dom.header

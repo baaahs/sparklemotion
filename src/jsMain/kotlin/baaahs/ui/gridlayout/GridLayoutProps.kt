@@ -4,13 +4,13 @@ import baaahs.clamp
 import baaahs.geom.Vector2I
 import baaahs.x
 import baaahs.y
-import dom.html.HTMLElement
 import external.react_resizable.ResizeHandleAxis
-import kotlinx.js.Object
-import kotlinx.js.jso
+import js.core.Object
+import js.core.jso
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import react.*
+import web.html.HTMLElement
 import kotlin.math.roundToInt
 
 external interface GridLayoutProps : PropsWithChildren {

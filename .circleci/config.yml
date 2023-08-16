@@ -77,7 +77,7 @@ jobs:
               mkdir -p build/gh-pages/.circleci
               cp .circleci/gh-pages-config.yml build/gh-pages/.circleci/config.yml
 
-              cp -r build/distributions/* build/gh-pages
+              cp -r build/dist/js/productionExecutable/* build/gh-pages
 
               # don't ignore files starting with _
               touch build/gh-pages/.nojekyll

@@ -12,7 +12,7 @@ import baaahs.scene.MutableScene
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.icons.material.ExpandMore
 import mui.material.*
 import react.*

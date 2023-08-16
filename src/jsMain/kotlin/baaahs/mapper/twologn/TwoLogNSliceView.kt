@@ -6,7 +6,6 @@ import baaahs.mapper.TwoLogNMappingStrategy
 import baaahs.mapper.mapperImage
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import dom.html.HTMLImageElement
 import kotlinx.coroutines.CompletableDeferred
 import react.Props
 import react.RBuilder
@@ -14,6 +13,7 @@ import react.RHandler
 import react.dom.img
 import react.dom.td
 import react.dom.tr
+import web.html.HTMLImageElement
 
 private val TwoLogNSliceView = xComponent<TwoLogNSliceProps>("TwoLogNSlice") { props ->
     val overlapImg = ref<HTMLImageElement>()

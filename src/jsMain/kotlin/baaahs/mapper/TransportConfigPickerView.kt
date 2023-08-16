@@ -9,7 +9,7 @@ import baaahs.scene.MutableTransportConfig
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder

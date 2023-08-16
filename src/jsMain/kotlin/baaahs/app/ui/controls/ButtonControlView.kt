@@ -8,15 +8,16 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import dom.html.HTMLButtonElement
-import dom.html.HTMLDivElement
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.ToggleButton
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
+import web.events.EventType
+import web.html.HTMLButtonElement
+import web.html.HTMLDivElement
 
 private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
@@ -57,7 +58,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
-            buttonEl.addEventListener("long-press", callback = { e ->
+            buttonEl.addEventListener(EventType("long-press"), callback = { e ->
                 val isPrimaryButton = true // (e as MouseEvent).button.toInt() == Events.Button.primary
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
                     lightboxOpen = true

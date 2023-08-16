@@ -9,11 +9,11 @@ import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
 import baaahs.show.live.LegacyControlDisplay
 import baaahs.ui.*
-import dom.Element
+import web.dom.Element
 import external.Direction
 import external.draggable
 import external.droppable
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.AddCircleOutline
 import mui.material.*

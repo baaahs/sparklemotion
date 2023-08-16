@@ -1,12 +1,12 @@
 package baaahs.ui
 
-import dom.html.HTMLElement
 import external.markdownit.MarkdownIt
-import kotlinx.js.jso
+import js.core.jso
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.span
+import web.html.HTMLElement
 
 private val MarkdownView = xComponent<MarkdownProps>("Markdown", isPure = true) { props ->
     val mdRef = ref<HTMLElement>()

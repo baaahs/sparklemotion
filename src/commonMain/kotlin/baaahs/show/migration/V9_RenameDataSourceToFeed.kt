@@ -1,7 +1,9 @@
 package baaahs.show.migration
 
 import baaahs.show.DataMigrator
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 /**
  * Old "data sources" are now "feeds".
@@ -30,8 +32,6 @@ object V9_RenameDataSourceToFeed : DataMigrator.Migration(9) {
                     }
                 }
             }
-        }.also {
-            println("migrated to 9: $it")
         }
     }
 }

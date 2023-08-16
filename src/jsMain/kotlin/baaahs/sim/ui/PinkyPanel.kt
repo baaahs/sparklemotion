@@ -100,7 +100,7 @@ object Styles : StyleSheet("sim-pinky", isStatic = true) {
     }
 
     val glslCodePaper by css {
-        padding(1.em)
+        padding = Padding(1.em)
         display = Display.flex
         flexDirection = FlexDirection.column
     }

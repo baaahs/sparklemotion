@@ -13,8 +13,8 @@ import react.buildElement
 import react.dom.events.FocusEvent
 import react.dom.events.FormEvent
 import react.dom.events.KeyboardEvent
-import react.dom.html.InputType
 import react.dom.onChange
+import web.html.InputType
 
 private val TextFieldEditor = xComponent<TextFieldEditorProps>("TextFieldEditor") { props ->
     val valueOnUndoStack = ref(props.getValue())

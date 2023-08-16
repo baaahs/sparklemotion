@@ -15,16 +15,16 @@ class PatchModStyles(private val theme: Theme) : StyleSheet("app-ui-patchmod", i
         width = 300.px
         height = 300.px
         cursor = Cursor.grab
-        flex(0.0, 0.0, FlexBasis.auto)
+        flex = Flex(0.0, 0.0, FlexBasis.auto)
     }
 
     val controls by css {
         display = Display.flex
         flexDirection = FlexDirection.row
-        grow(Grow.GROW)
+        flex = Flex.GROW
         maxWidth = 300.px
         overflowX = Overflow.scroll
-        padding = "1em"
+        padding = Padding(1.em)
     }
 
     val xyPadContainer by css {

@@ -1,11 +1,11 @@
 package baaahs.monitor
 
 import baaahs.visualizer.Visualizer
-import dom.html.HTMLDivElement
 import react.RBuilder
 import react.RComponent
 import react.State
 import react.dom.div
+import web.html.HTMLDivElement
 
 class MonitorPage(props: MonitorPageProps) : RComponent<MonitorPageProps, State>(props) {
     private val container = react.createRef<HTMLDivElement>()
