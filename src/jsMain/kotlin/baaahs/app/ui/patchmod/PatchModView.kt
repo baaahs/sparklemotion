@@ -9,7 +9,7 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.*
 import react.*
 import react.dom.div

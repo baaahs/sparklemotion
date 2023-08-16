@@ -12,11 +12,11 @@ import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import csstype.FlexDirection
-import csstype.ident
+import web.cssom.FlexDirection
+import web.cssom.ident
 import external.dragDropContext
 import kotlinx.css.*
-import kotlinx.js.jso
+import js.core.jso
 import mui.base.Portal
 import mui.material.Paper
 import react.Props

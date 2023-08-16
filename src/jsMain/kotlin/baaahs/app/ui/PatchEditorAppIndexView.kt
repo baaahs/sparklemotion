@@ -15,7 +15,7 @@ import baaahs.show.SampleData
 import baaahs.sim.HostedWebApp
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.CssBaseline
 import mui.material.Paper
 import mui.material.styles.ThemeProvider

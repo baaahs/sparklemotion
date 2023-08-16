@@ -1,8 +1,8 @@
-import dom.html.HTMLElement
-import dom.html.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.files.File
 import react.*
+import web.html.HTMLElement
+import web.html.HTMLInputElement
 import kotlin.js.Promise
 
 @JsModule("react-dropzone")

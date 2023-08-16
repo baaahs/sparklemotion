@@ -4,12 +4,10 @@ import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
 import baaahs.ui.*
-import dom.html.HTMLElement
+import js.core.jso
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
-import kotlinx.js.get
-import kotlinx.js.jso
 import mui.material.*
 import mui.material.styles.Theme
 import react.Props
@@ -21,6 +19,7 @@ import react.dom.pre
 import react.dom.span
 import react.useContext
 import styled.StyleSheet
+import web.html.HTMLElement
 import web.navigator.navigator
 
 private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = true) { props ->
@@ -117,8 +116,8 @@ class ShaderHelpStyles(
         position = Position.relative
         color = Color(theme.palette.info.contrastText.asDynamic())
         backgroundColor = Color(theme.palette.info.main.asDynamic())
-        padding = 0.5.em.value
-        border = "2px inset ${theme.palette.info.main}"
+        padding = Padding(0.5.em)
+        border = Border(2.px, baaahs.ui.inset, theme.palette.info.main.asColor())
     }
 
     val code by css {

@@ -1,9 +1,9 @@
 package baaahs.mapper
 
 import baaahs.ui.asColor
+import baaahs.ui.groove
 import baaahs.ui.important
 import kotlinx.css.*
-import kotlinx.css.properties.border
 import kotlinx.css.properties.lh
 import kotlinx.css.properties.scaleX
 import kotlinx.css.properties.transform
@@ -23,13 +23,13 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         display = Display.flex
         flexDirection = FlexDirection.column
         height = 100.pct
-        margin(0.em, 1.em)
+        margin = Margin(0.em, 1.em)
         overflow = Overflow.scroll
 
         button {
             minWidth = 0.px
-            padding = "5px"
-            margin = "2px"
+            padding = Padding(5.px)
+            margin = Margin(2.px)
             backgroundColor = theme.palette.primary.main.asColor().withAlpha(.2)
         }
     }
@@ -38,7 +38,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         position = Position.absolute
         left = 20.px
         bottom = 20.px
-        padding = "5px"
+        padding = Padding(5.px)
         fontSize = 8.pt
         backgroundColor = Color(theme.palette.background.paper).withAlpha(10.0)
     }
@@ -49,7 +49,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         width = 100.pct
         justifyContent = JustifyContent.spaceBetween
         alignItems = Align.center
-        margin(1.em, 0.em)
+        margin = Margin(1.em, 0.em)
 
         div {
             display = Display.flex
@@ -66,14 +66,14 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     }
 
     val mapping2dCanvas by css(fillParent) {
-        margin = "auto"
+        margin = Margin(LinearDimension.auto)
     }
     
     val mapping3dContainer by css(fillParent) {
         display = Display.flex
 
         canvas {
-            margin = "auto"
+            margin = Margin(LinearDimension.auto)
             put("mix-blend-mode", "lighten")
         }
     }
@@ -87,28 +87,28 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         position = Position.absolute
         top = 0.pct + 5.px
         right = 10.px
-        border = "1px groove white"
+        border = Border(1.px, groove, Color.white)
     }
 
     val baseDiv by css {
         position = Position.absolute
         top = 25.pct + 10.px
         right = 10.px
-        border = "1px groove white"
+        border = Border(1.px, groove, Color.white)
     }
 
     val diffDiv by css {
         position = Position.absolute
         top = 50.pct + 15.px
         right = 10.px
-        border = "1px groove white"
+        border = Border(1.px, groove, Color.white)
     }
 
     val panelMaskDiv by css {
         position = Position.absolute
         top = 75.pct + 20.px
         right = 10.px
-        border = "1px groove white"
+        border = Border(1.px, groove, Color.white)
     }
 
     private val statusText by css {
@@ -127,7 +127,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val stats by css(statusText) {
         position = Position.absolute
         right = 20.px
-        padding = "5px"
+        padding = Padding(5.px)
         fontSize = 8.pt
         textAlign = TextAlign.right
         width = 100.pct
@@ -137,16 +137,17 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
         position = Position.absolute
         bottom = 10.em
         left = 1.em
-        padding = "1.em"
+        padding = Padding(1.em)
         fontSize = 8.pt
         transform { scaleX(.75) }
         whiteSpace = WhiteSpace.pre
-        border(1.px, BorderStyle.solid, green, 2.px)
+        border = Border(1.px, BorderStyle.solid, green)
+        borderRadius = 2.px
     }
 
     val twoLogNMasksPalette by css(statusText) {
         position = Position.absolute
-        padding(5.px, 2.em)
+        padding = Padding(5.px, 2.em)
         backgroundColor = Color(theme.palette.background.paper).withAlpha(10.0)
     }
 
@@ -161,7 +162,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val message by css(statusText) {
         position = Position.absolute
         bottom = 20.px
-        padding = "20px"
+        padding = Padding(20.px)
         fontSize = 16.pt
         textAlign = TextAlign.center
         width = 100.pct
@@ -170,7 +171,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val message2 by css(statusText) {
         position = Position.absolute
         bottom = 0.px
-        padding = "20px"
+        padding = Padding(20.px)
         fontSize = 7.pt
         textAlign = TextAlign.center
         width = 100.pct
@@ -179,7 +180,7 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
     val table by css {
         position = Position.absolute
         top = 30.px
-        padding = "20px"
+        padding = Padding(20.px)
         fontSize = 7.pt
         width = 400.px
         background = "rgba(0, 0, 0, .5)"
@@ -196,8 +197,8 @@ class MapperStyles(val theme: Theme) : StyleSheet("mapper", isStatic = true) {
             display = Display.inlineBlock
             width = 8.px
             height = 8.px
-            margin(1.px)
-            border = "1px solid transparent"
+            margin = Margin(1.px)
+            border = Border(1.px, BorderStyle.solid, Color.transparent)
         }
     }
 

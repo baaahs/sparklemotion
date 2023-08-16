@@ -4,11 +4,11 @@ import baaahs.document
 import baaahs.sim.HostedWebApp
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
-import dom.html.HTMLDivElement
-import kotlinx.js.jso
+import js.core.jso
 import react.ReactElement
 import react.createElement
 import react.react
+import web.html.HTMLDivElement
 
 class MonitorUi(
     private val visualizer: Visualizer,

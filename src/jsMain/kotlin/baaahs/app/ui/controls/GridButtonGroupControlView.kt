@@ -17,11 +17,8 @@ import baaahs.ui.gridlayout.LayoutGrid
 import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
-import dom.Element
-import dom.html.HTMLElement
 import external.react_resizable.buildResizeHandle
-import kotlinx.js.get
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Card
 import mui.material.Menu
 import react.Props
@@ -31,6 +28,8 @@ import react.dom.div
 import react.dom.header
 import react.dom.html.ReactHTML
 import react.useContext
+import web.dom.Element
+import web.html.HTMLElement
 
 private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridButtonGroupControl") { props ->
     val appContext = useContext(appContext)

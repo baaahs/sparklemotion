@@ -4,13 +4,13 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import baaahs.visualizer.Visualizer
-import dom.html.HTMLElement
 import kotlinx.css.*
 import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
 import react.dom.div
 import styled.StyleSheet
+import web.html.HTMLElement
 
 private val VisualizerPanelView = xComponent<VisualizerPanelProps>("VisualizerPanel") { props ->
     val container = ref<HTMLElement>()
@@ -44,7 +44,7 @@ fun RBuilder.visualizerPanel(handler: RHandler<VisualizerPanelProps>) =
 
 object Styles : StyleSheet("visualizer-ui", isStatic = true) {
     val visualizerPanel by css {
-        grow(Grow.GROW)
+        flex = Flex.GROW
         position = Position.relative
 
         canvas {

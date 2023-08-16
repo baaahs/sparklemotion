@@ -5,6 +5,7 @@ import baaahs.fakeModel
 import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
+import baaahs.geom.compose
 import baaahs.gl.override
 import baaahs.nuffin
 import baaahs.toEqual

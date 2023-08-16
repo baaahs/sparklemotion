@@ -10,7 +10,7 @@ import baaahs.scene.MutableScene
 import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.Button
 import mui.material.ButtonColor

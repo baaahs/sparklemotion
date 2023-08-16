@@ -9,7 +9,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.h2
-import react.dom.html.InputType
+import web.html.InputType
 
 private val GridLayoutEditorView = xComponent<GridLayoutEditorProps>("GridLayoutEditor") { props ->
 

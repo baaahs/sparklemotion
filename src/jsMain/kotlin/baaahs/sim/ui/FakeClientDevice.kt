@@ -3,7 +3,6 @@ package baaahs.sim.ui
 import baaahs.sim.HostedWebApp
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLElement
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableData
 import kotlinx.css.height
@@ -23,6 +22,7 @@ import react.dom.i
 import react.dom.onClick
 import react.useRef
 import styled.inlineStyles
+import web.html.HTMLElement
 
 const val BORDER_WIDTH = 28
 

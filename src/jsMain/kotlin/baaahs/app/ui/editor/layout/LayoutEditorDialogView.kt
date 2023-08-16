@@ -12,10 +12,7 @@ import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import csstype.ClassName
-import csstype.Float
-import dom.html.HTMLDivElement
-import kotlinx.js.jso
+import js.core.jso
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -33,6 +30,9 @@ import react.dom.events.MouseEvent
 import react.dom.i
 import react.dom.onChange
 import react.useContext
+import web.cssom.ClassName
+import web.cssom.Float
+import web.html.HTMLDivElement
 import web.timers.clearInterval
 import web.timers.setInterval
 import kotlin.collections.component1

@@ -3,6 +3,7 @@ package baaahs.app.ui.gadgets.slider
 import baaahs.ui.paperHighContrast
 import baaahs.ui.paperLowContrast
 import baaahs.ui.paperMediumContrast
+import baaahs.ui.rgba
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
@@ -30,13 +31,13 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         fontSize = 14.px
         marginBottom = 8.px
         put("textShadow", "0px 1px 1px ${theme.paperHighContrast}")
-        border = "2px groove ${theme.paperLowContrast}"
+        border = Border(2.px, baaahs.ui.groove, theme.paperLowContrast)
     }
 
     val label by css {
         position = Position.absolute
         width = 100.pct
-        flex(0.0, 0.0, FlexBasis.auto)
+        flex = Flex(0.0, 0.0, FlexBasis.auto)
         textAlign = TextAlign.center
         marginBottom = 20.px
     }
@@ -64,7 +65,7 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         width = 20.px
         height = 40.px
         borderRadius = 2.px
-        boxShadow(rgba(0, 0, 0, 0.3), 1.px, 1.px, 1.px, 1.px)
+        boxShadow += BoxShadow(rgba(0, 0, 0, 0.3), 1.px, 1.px, 1.px, 1.px)
         background = "linear-gradient(#6ABBC0, #00A4D1)"
         display = Display.flex
         flexDirection = FlexDirection.column
@@ -75,21 +76,21 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
     val handleNotch by css {
         height = 1.px
         backgroundColor = Color.black
-        borderBottom = "1px solid #B8D5CF"
+        borderBottom = Border(1.px, BorderStyle.solid, Color("#B8D5CF"))
         width = 100.pct
     }
 
     val handleNotchMiddle by css {
         height = 2.px
-        padding = "2px"
-        border = "1px inset #00A4D1"
+        padding = Padding(2.px)
+        border = Border(1.px, baaahs.ui.inset, Color("#00A4D1"))
         backgroundColor = indicatorColor
         width = 50.pct
     }
 
     val handleNotchLower by css {
-        borderBottom = "none"
-        borderTop = "1px solid #B8D5CF"
+        borderBottom = Border.none
+        borderTop = Border(1.px, BorderStyle.solid, Color("#B8D5CF"))
     }
 
     val altHandleWrapper by css {
@@ -128,8 +129,8 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
         backgroundColor = theme.paperLowContrast
-        boxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
-        boxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
+        boxShadow += BoxShadowInset(rgba(0, 0, 0, .85), 1.px, 1.px, 1.px, 0.px)
+        boxShadow += BoxShadowInset(rgba(255, 255, 255, 0.2), (-1).px, (-1).px, 1.px, 0.px)
     }
 
     val tickMark by css {

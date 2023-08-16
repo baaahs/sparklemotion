@@ -18,7 +18,7 @@ import mui.material.Switch
 import react.buildElement
 import react.dom.div
 import react.dom.h2
-import react.dom.html.InputType
+import web.html.InputType
 
 actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     override fun forSingleShaderSimplifiedEditorPanel(

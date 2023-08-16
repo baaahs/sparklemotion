@@ -5,12 +5,12 @@ import baaahs.control.MutableButtonGroupControl
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLInputElement
 import mui.material.*
 import react.*
 import react.dom.div
 import react.dom.events.ChangeEvent
 import react.dom.html.ReactHTML
+import web.html.HTMLInputElement
 
 private val ButtonGroupPropsEditorView =
     xComponent<ButtonGroupPropsEditorProps>("ButtonGroupPropsEditor") { props ->

@@ -3,17 +3,17 @@ package baaahs.app.ui.document
 import baaahs.ui.asColor
 import baaahs.ui.paperHighContrast
 import baaahs.ui.paperLowContrast
+import baaahs.ui.transition
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine
 import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import mui.material.styles.Theme
 import styled.StyleSheet
 
 class FileUploadStyles(private val theme: Theme) : StyleSheet("app-ui-document-fileupload", isStatic = true) {
     val container by css {
-        padding = "1em"
+        padding = Padding(1.em)
         minWidth = 35.pct
         minHeight = 35.pct
     }
@@ -22,7 +22,7 @@ class FileUploadStyles(private val theme: Theme) : StyleSheet("app-ui-document-f
         display = Display.flex
         flexDirection = FlexDirection.column
         alignItems = Align.center
-        padding = "1em"
+        padding = Padding(1.em)
 
         color = theme.palette.text.disabled.asColor()
         transition(::color, duration = .5.s)

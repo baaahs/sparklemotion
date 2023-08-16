@@ -3,10 +3,10 @@
 
 package external.mosaic
 
-import dom.Element
 import react.Component
 import react.Props
 import react.State
+import web.dom.Element
 
 
 external interface MosaicBaseProps<T>: Props {

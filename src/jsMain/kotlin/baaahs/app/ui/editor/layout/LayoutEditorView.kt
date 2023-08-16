@@ -6,7 +6,7 @@ import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.Tab

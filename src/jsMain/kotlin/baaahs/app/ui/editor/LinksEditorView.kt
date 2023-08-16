@@ -4,8 +4,7 @@ import baaahs.app.ui.Colors
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.*
-import csstype.px
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import mui.system.sx
@@ -14,6 +13,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.b
 import react.dom.code
+import web.cssom.px
 
 private val LinksEditor = xComponent<LinksEditorProps>("LinksEditor") { props ->
     observe(props.editingShader)

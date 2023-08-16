@@ -6,9 +6,7 @@ import baaahs.show.live.FeedOpenControl
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
-import kotlinx.css.properties.border
 import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -16,7 +14,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val editTransitionDuration = 0.25.s
 
     val horizontalButtonList by css {
-        padding(2.px)
+        padding = Padding(2.px)
         position = Position.relative
         whiteSpace = WhiteSpace.nowrap
 
@@ -26,7 +24,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val verticalButtonList by css {
-        padding(2.px)
+        padding = Padding(2.px)
 
         descendants("button.MuiButtonBase-root") {
         }
@@ -71,12 +69,12 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val visualizerCard by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex = Flex(1.0, 0.0)
     }
 
     val visualizerMenuAffordance by css {
         position = Position.absolute
-        padding(2.px)
+        padding = Padding(2.px)
         backgroundColor = Color.white.withAlpha(.5)
         width = 2.em
         height = 2.em
@@ -97,7 +95,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
 
     val controlBox by css {
         display = Display.flex
-        flex(0.0, 0.0, FlexBasis.auto)
+        flex = Flex(0.0, 0.0, FlexBasis.auto)
         position = Position.relative
         marginRight = 0.em
         minWidth = 5.em
@@ -129,7 +127,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         position = Position.absolute
         right = 0.px
         bottom = 0.px
-        padding = "5px"
+        padding = Padding(5.px)
         userSelect = UserSelect.none
     }
 
@@ -184,14 +182,14 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val buttonLabelWhenPreview by css {
         important(::color, Color.white)
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
-        border(5.px, BorderStyle.dotted, Color.transparent)
+        border = Border(5.px, BorderStyle.dotted, Color.transparent)
         important(::backgroundColor, Color.transparent)
     }
 
     val buttonSelectedWhenPreview by css {
         important(::color, Color.white)
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
-        border(5.px, BorderStyle.dotted, Color.orange)
+        border = Border(5.px, BorderStyle.dotted, Color.orange)
         important(::backgroundColor, Color.transparent)
     }
 
@@ -282,7 +280,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
         borderStyle = "inset".asDynamic()
         borderColor = theme.paperMediumContrast
         borderRadius = 10.px
-        padding = ".25em"
+        padding = Padding(.25.em)
         background = "linear-gradient(" +
                 "-185deg, " +
                 "${theme.paperLowContrast}, " +

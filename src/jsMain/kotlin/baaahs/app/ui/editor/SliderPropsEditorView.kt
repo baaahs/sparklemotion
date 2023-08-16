@@ -9,6 +9,7 @@ import baaahs.ui.xComponent
 import kotlinx.css.*
 import mui.material.FormControl
 import mui.material.FormLabel
+import mui.types.PropsWithComponent
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -34,7 +35,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
         div {
             FormControl {
                 FormLabel {
-                    attrs.component = ReactHTML.legend
+                    (attrs as PropsWithComponent).component = ReactHTML.legend
                     +"Slider Properties"
                 }
 

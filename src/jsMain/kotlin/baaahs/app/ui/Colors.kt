@@ -1,6 +1,6 @@
 package baaahs.app.ui
 
-import csstype.Color
+import web.cssom.Color
 
 object Colors {
     val primary = Color("text.primary")
