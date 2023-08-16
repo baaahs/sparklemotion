@@ -1,5 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
@@ -98,7 +97,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-call-logging:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
-                implementation("ch.qos.logback:logback-classic:1.2.7")
+                implementation("ch.qos.logback:logback-classic:1.3.11")
                 implementation("org.deepsymmetry:beat-link:0.6.3")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
