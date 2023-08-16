@@ -7,7 +7,10 @@ import kotlin.js.Promise
 
 @JsModule("react-dropzone")
 @JsName("Dropzone")
-external val dropzone: ElementType<DropzoneProps>
+@JsNonModule
+external val dropzoneModule: dynamic
+
+val dropzone: ElementType<DropzoneProps> = dropzoneModule.default
 
 external interface FileError {
     var message: String
