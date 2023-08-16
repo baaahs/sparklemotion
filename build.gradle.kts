@@ -254,7 +254,7 @@ tasks.named<Jar>("jvmJar").configure {
 
     // bring output file along into the JAR
     val webpackTask = tasks.named<KotlinWebpack>(taskName)
-    from(webpackTask.map { File(it.destinationDirectory, it.outputFileName) }) {
+    from(webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }) {
         into("htdocs")
     }
 }
@@ -301,20 +301,9 @@ tasks.named<DokkaTask>("dokkaHtml") {
     outputDirectory.set(buildDir.resolve("javadoc"))
 }
 
-tasks.create<JavaExec>("runPinkyJvm") {
-    dependsOn("compileKotlinJvm")
-    mainClass.set("baaahs.sm.server.PinkyMainKt")
-
-    systemProperties["java.library.path"] = file("src/jvmMain/jni")
-
-    val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
-    classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
-    if (isMac()) {
-        jvmArgs = listOf(
-            "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
-            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
-        )
-    }
+// This task is deprecated, use `run` instead.
+tasks.create("runPinkyJvm") {
+    dependsOn("run")
 }
 
 tasks.create<JavaExec>("runBrainJvm") {
