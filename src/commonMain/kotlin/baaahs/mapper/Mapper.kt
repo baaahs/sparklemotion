@@ -542,7 +542,6 @@ abstract class Mapper(
 
 
     private fun haveImage(image: Image) {
-//        println("image: $image")
         stats.processImage.time {
             showCamImage(image)
         }
