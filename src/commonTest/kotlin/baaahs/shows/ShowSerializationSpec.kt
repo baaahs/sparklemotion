@@ -1,10 +1,7 @@
 package baaahs.shows
 
 import baaahs.ShowPlayer
-import baaahs.control.ButtonControl
-import baaahs.control.ButtonGroupControl
-import baaahs.control.ColorPickerControl
-import baaahs.control.SliderControl
+import baaahs.control.*
 import baaahs.device.PixelLocationFeed
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
@@ -20,8 +17,7 @@ import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.feed.*
 import baaahs.show.*
 import baaahs.show.mutable.MutableFeedPort
-import baaahs.show.mutable.MutableLayoutDimen
-import baaahs.show.mutable.MutableLegacyTab
+import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableShow
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
@@ -59,19 +55,16 @@ object ShowSerializationSpec : Spek({
             }
             override(origShow) {
                 MutableShow("Untitled").apply {
+                    val show = this
                     editLayouts {
                         editLayout("default") {
-                            tabs.add(MutableLegacyTab("Main").apply {
-                                columns.add(MutableLayoutDimen.decode("1fr"))
-                                rows.add(MutableLayoutDimen.decode("1fr"))
-                                areas.add(findOrCreatePanel("Controls"))
+                            tabs.add(MutableGridTab("Main").apply {
+                                addButton("Button", 0, 0, mutableShow = show) {
+                                    addPatch(Shaders.red) {
+                                        link("somePort", FakeFeed("foo"))
+                                    }
+                                }
                             })
-                        }
-                    }
-
-                    addButton(findPanel("controls"), "Button") {
-                        addPatch(Shaders.red) {
-                            link("somePort", FakeFeed("foo"))
                         }
                     }
                 }.build()
@@ -167,16 +160,7 @@ private fun forJson(show: Show): JsonObject {
             put("formats", show.layouts.formats.jsonMap {
                 buildJsonObject {
                     put("mediaQuery", it.mediaQuery)
-                    put("tabs", it.tabs.jsonMap {
-                        buildJsonObject {
-                            it as LegacyTab
-                            put("type", "Legacy")
-                            put("title", it.title)
-                            put("columns", it.columns.jsonMap { JsonPrimitive(it) })
-                            put("rows", it.rows.jsonMap { JsonPrimitive(it) })
-                            put("areas", it.areas.jsonMap { JsonPrimitive(it) })
-                        }
-                    })
+                    put("tabs", it.tabs.jsonMap { jsonFor(it as GridTab) })
                 }
             })
         })
@@ -193,6 +177,30 @@ fun jsonFor(panel: Panel): JsonElement {
     return buildJsonObject {
         put("title", panel.title)
     }
+}
+
+fun jsonFor(gridTab: GridTab): JsonElement = buildJsonObject {
+    put("type", "Grid")
+    put("title", gridTab.title)
+    put("columns", gridTab.columns)
+    put("rows", gridTab.rows)
+    put("items", gridTab.items.jsonMap { jsonFor(it) })
+}
+
+fun jsonFor(gridLayout: GridLayout?): JsonElement = if (gridLayout == null) JsonNull else buildJsonObject {
+    put("columns", gridLayout.columns)
+    put("rows", gridLayout.rows)
+    put("matchParent", gridLayout.matchParent)
+    put("items", gridLayout.items.jsonMap { jsonFor(it) })
+}
+
+fun jsonFor(gridItem: GridItem?): JsonElement = if (gridItem == null) JsonNull else buildJsonObject {
+    put("controlId", gridItem.controlId)
+    put("column", gridItem.column)
+    put("row", gridItem.row)
+    put("width", gridItem.width)
+    put("height", gridItem.height)
+    put("layout", jsonFor(gridItem.layout))
 }
 
 fun jsonFor(control: Control): JsonElement {
@@ -229,6 +237,16 @@ fun jsonFor(control: Control): JsonElement {
             put("maxValue", control.maxValue)
             put("stepValue", control.stepValue)
             put("controlledFeedId", control.controlledFeedId)
+        }
+        is VisualizerControl -> buildJsonObject {
+            put("type", "baaahs.Core:Visualizer")
+            put("surfaceDisplayMode", "Continuous")
+            put("rotate", false)
+        }
+        is VacuityControl -> buildJsonObject {
+            put("type", "baaahs.Core:Vacuity")
+            put("title", "Vacuity")
+
         }
         else -> buildJsonObject { put("type", "unknown") }
     }
@@ -390,7 +408,7 @@ object TestSampleData {
     private val beatLinkPlugin = plugins.getPlugin<BeatLinkPlugin>()
 
     val sampleShowWithBeatLink: Show
-        get() = MutableShow(SampleData.sampleLegacyShow).apply {
+        get() = MutableShow(SampleData.sampleShow).apply {
             addPatch(
                 Shader(
                     "BeatLink",

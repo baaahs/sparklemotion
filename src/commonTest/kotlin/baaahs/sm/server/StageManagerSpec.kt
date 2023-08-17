@@ -271,7 +271,7 @@ object StageManagerSpec : Spek({
                 }
             }
 
-            val baseShow by value { SampleData.sampleLegacyShow }
+            val baseShow by value { SampleData.sampleShow }
 
             beforeEachTest {
                 editingClientDocumentState = null
