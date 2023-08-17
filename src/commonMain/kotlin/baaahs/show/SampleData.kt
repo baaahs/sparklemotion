@@ -2,14 +2,16 @@ package baaahs.show
 
 import baaahs.Color
 import baaahs.app.ui.editor.PortLinkOption
-import baaahs.control.ButtonGroupControl
 import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.glsl.Shaders
 import baaahs.plugin.Plugins
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.core.feed.SliderFeed
-import baaahs.show.mutable.*
+import baaahs.show.mutable.MutablePatch
+import baaahs.show.mutable.MutablePort
+import baaahs.show.mutable.MutableShow
+import baaahs.show.mutable.editor
 
 object SampleData {
     val plugins = Plugins.safe(Plugins.dummyContext)
@@ -243,111 +245,6 @@ object SampleData {
                     addVacuity(4, 4, 14, 2)
                 }
             }
-        }
-    }
-
-    val sampleLegacyShow: Show get() = createSampleLegacyShow().getShow()
-
-    fun createSampleLegacyShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
-        val scenesPanel = MutablePanel("Scenes")
-        val backdropsPanel = MutablePanel("Backdrops")
-        val moreControlsPanel = MutablePanel("More Controls")
-        val previewPanel = MutablePanel("Preview")
-        val controlsPanel = MutablePanel("Controls")
-        val transitionPanel = MutablePanel("Transition")
-
-        editLayouts {
-            addPanel(scenesPanel)
-            addPanel(backdropsPanel)
-            addPanel(moreControlsPanel)
-            addPanel(previewPanel)
-            addPanel(controlsPanel)
-            addPanel(transitionPanel)
-
-            editLayout("default") {
-                tabs = mutableListOf(
-                    MutableLegacyTab("Main").apply {
-                        columns.addAll(listOf("3fr", "2fr").map { MutableLayoutDimen.decode(it) })
-                        rows.addAll(listOf("2fr", "5fr", "3fr").map { MutableLayoutDimen.decode(it) })
-                        areas.addAll(listOf(
-                            scenesPanel, previewPanel,
-                            backdropsPanel, controlsPanel,
-                            moreControlsPanel, transitionPanel
-                        ))
-                    }
-                )
-            }
-        }
-
-        val color = ColorPickerFeed("Color", Color.WHITE)
-        val brightness = SliderFeed(
-            "Brightness", 1f, 0f, 1.25f, null
-        )
-        val saturation = SliderFeed(
-            "Saturation", 1f, 0f, 1.25f, null
-        )
-        val intensity = SliderFeed(
-            "Intensity", 1f, 0f, 1f, null
-        )
-        val checkerboardSize = SliderFeed(
-            "Checkerboard Size", .1f, .001f, 1f, null
-        )
-
-        addPatch(uvShader)
-        addPatch(showDefaultPaint)
-        addPatch(brightnessFilter)
-        addPatch(saturationFilter)
-
-        addButtonGroup(
-            scenesPanel, "Scenes", ButtonGroupControl.Direction.Horizontal
-        ) {
-            addButton("Pleistocene") {
-                addButtonGroup(backdropsPanel, "Backdrops", ButtonGroupControl.Direction.Vertical) {
-                    addButton("Red Yellow Green") {
-                        addPatch(redYellowGreenPatch)
-                    }
-
-                    addButton("Fire") {
-                        addPatch(fireBallPatch)
-                        addControl(backdropsPanel, intensity.buildControl())
-                    }
-
-                    addButton("Checkerboard") {
-                        addPatch(
-                            wireUp(
-                                Shaders.checkerboard,
-                                mapOf("checkerboardSize" to checkerboardSize.editor())
-                            )
-                        )
-                        addControl(backdropsPanel, checkerboardSize.buildControl())
-                    }
-                }
-            }
-
-            addButton("Holocene") {
-                addButtonGroup(backdropsPanel, "Backdrops", ButtonGroupControl.Direction.Vertical) {
-                    addButton("Blue Aqua Green") {
-                        addPatch(blueAquaGreenPatch)
-                    }
-                }
-            }
-        }
-        if (withHeadlightsMode) {
-            addVacuity(backdropsPanel)
-        }
-
-        addControl(moreControlsPanel, color.buildControl())
-        addControl(moreControlsPanel, brightness.buildControl())
-        addControl(moreControlsPanel, saturation.buildControl())
-
-        if (withHeadlightsMode) {
-            addButton(moreControlsPanel, "Headlights Mode") {
-                addPatch(headlightsMode)
-            }
-        }
-
-        addButton(moreControlsPanel, "Ripple") {
-            addPatch(wireUp(Shaders.ripple))
         }
     }
 

@@ -134,8 +134,33 @@ class MutableShow(
     fun findPatch(id: String): MutablePatch =
         allPatches.getBang(id, "patch")
 
+    fun findGridItem(
+        layoutId: String,
+        tabTitle: String,
+        vararg controlTitles: String
+    ): MutableGridItem {
+        var layout = layouts
+            .findLayout(layoutId)
+            .findTab(tabTitle) as MutableIGridLayout?
+        var item: MutableGridItem? = null
+        for (title in controlTitles) {
+            if (layout == null) error("layout not found")
+            item = layout.find(title)
+            layout = item.layout
+        }
+        return item!!
+    }
+
     fun commit(editHandler: EditHandler<Show, ShowState>) {
         editHandler.onEdit(this)
+    }
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        super.accept(visitor, log)
+
+        layouts.formats.values.forEach { layout ->
+            layout.accept(visitor, log)
+        }
     }
 
     companion object {
