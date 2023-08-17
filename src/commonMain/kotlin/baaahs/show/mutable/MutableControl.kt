@@ -2,10 +2,9 @@ package baaahs.show.mutable
 
 import baaahs.app.ui.editor.MutableEditable
 import baaahs.show.Control
-import baaahs.show.Show
 import baaahs.show.live.OpenControl
 
-interface MutableControl : MutableEditable<Show> {
+interface MutableControl : MutableEditable {
     var asBuiltId: String?
 
     val hasInternalLayout: Boolean
