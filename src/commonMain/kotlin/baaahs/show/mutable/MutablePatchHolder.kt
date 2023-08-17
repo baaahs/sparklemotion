@@ -3,11 +3,14 @@ package baaahs.show.mutable
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.*
 import baaahs.control.*
-import baaahs.show.*
+import baaahs.show.Feed
+import baaahs.show.Panel
+import baaahs.show.PatchHolder
+import baaahs.show.Shader
 
 abstract class MutablePatchHolder(
     private val basePatchHolder: PatchHolder
-) : MutableEditable<Show> {
+) : MutableEditable {
     protected abstract val mutableShow: MutableShow
 
     override var title = basePatchHolder.title

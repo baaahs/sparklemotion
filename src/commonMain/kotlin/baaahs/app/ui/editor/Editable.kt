@@ -12,7 +12,7 @@ interface Editable {
     val title: String
 }
 
-interface MutableEditable<T> {
+interface MutableEditable {
     val title: String
     var isForceExpanded: Boolean
         get() = false
@@ -22,11 +22,11 @@ interface MutableEditable<T> {
 }
 
 interface EditIntent {
-    fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*>
+    fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable
 
     fun getEditorPanels(
         editableManager: EditableManager<*>,
-        mutableEditable: MutableEditable<*>
+        mutableEditable: MutableEditable
     ): List<DialogPanel> = emptyList()
 
     /**
@@ -45,12 +45,12 @@ interface EditIntent {
 }
 
 class ShowEditIntent : EditIntent {
-    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> =
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable =
         mutableDocument
 }
 
 class SceneEditIntent : EditIntent {
-    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> =
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable =
         mutableDocument
 }
 
@@ -59,14 +59,14 @@ data class ControlEditIntent(internal val controlId: String) : EditIntent {
     private var layout: OpenIGridLayout? = null
     private var layoutEditor: Editor<MutableIGridLayout>? = null
 
-    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> {
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable {
         mutableEditable = (mutableDocument as MutableShow).findControl(controlId)
         return mutableEditable
     }
 
     override fun getEditorPanels(
         editableManager: EditableManager<*>,
-        mutableEditable: MutableEditable<*>
+        mutableEditable: MutableEditable
     ): List<DialogPanel> =
         listOfNotNull(
             if (layout != null && layoutEditor != null) {
@@ -96,7 +96,7 @@ abstract class AddToContainerEditIntent<T: MutableControl> : EditIntent {
 
     abstract fun addToContainer(mutableShow: MutableShow, mutableControl: T)
 
-    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable<*> {
+    override fun findMutableEditable(mutableDocument: MutableDocument<*>): MutableEditable {
         mutableDocument as MutableShow
         mutableEditable = createControl(mutableDocument)
         addToContainer(mutableDocument, mutableEditable)
@@ -146,7 +146,7 @@ class AddControlToGrid<MC : MutableControl>(
 ) : AddToContainerEditIntent<MC>() {
     override fun getEditorPanels(
         editableManager: EditableManager<*>,
-        mutableEditable: MutableEditable<*>
+        mutableEditable: MutableEditable
     ) =
         if ((mutableEditable as MC).hasInternalLayout)
             listOf(GridLayoutEditorPanel(editableManager, editor)) else emptyList()
