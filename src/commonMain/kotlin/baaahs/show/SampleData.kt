@@ -178,13 +178,6 @@ object SampleData {
     val sampleShow: Show get() = createSampleShow().getShow()
 
     fun createSampleShow(withHeadlightsMode: Boolean = false) = MutableShow("Sample Show") {
-        val scenesPanel = MutablePanel("Scenes")
-        val backdropsPanel = MutablePanel("Backdrops")
-        val moreControlsPanel = MutablePanel("More Controls")
-        val previewPanel = MutablePanel("Preview")
-        val controlsPanel = MutablePanel("Controls")
-        val transitionPanel = MutablePanel("Transition")
-
         addPatch(uvShader)
         addPatch(showDefaultPaint)
         addPatch(brightnessFilter)
@@ -202,13 +195,6 @@ object SampleData {
         )
 
         editLayouts {
-            addPanel(scenesPanel)
-            addPanel(backdropsPanel)
-            addPanel(moreControlsPanel)
-            addPanel(previewPanel)
-            addPanel(controlsPanel)
-            addPanel(transitionPanel)
-
             editLayout("default") {
                 addTab("Main") {
                     columns = 18
