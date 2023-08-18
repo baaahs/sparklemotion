@@ -54,13 +54,15 @@ shader-libraries/built-in/effects/SoundBrightness.glsl
 shader-libraries/built-in/effects/Sparklez.glsl
 shader-libraries/built-in/effects/ThatsAllFolks.glsl
 shader-libraries/built-in/effects/ZigZag.glsl
-shader-libraries/built-in/libraries/BAAAHSlogo.glsl
+shader-libraries/built-in/libraries/BAAAHS_logo.glsl
+shader-libraries/built-in/libraries/BAAAHS_logo_draw.glsl
 shader-libraries/built-in/libraries/beat_functions.glsl
 shader-libraries/built-in/libraries/color_functions.glsl
 shader-libraries/built-in/libraries/color_palettes.glsl
 shader-libraries/built-in/libraries/complex_math_functions.glsl
 shader-libraries/built-in/libraries/polygon_geometry.glsl
 shader-libraries/built-in/libraries/shadertoy.glsl
+shader-libraries/built-in/libraries/shadertoy_beatInfo_mock.glsl
 shader-libraries/built-in/movers/Movers Beats.glsl
 shader-libraries/built-in/movers/Movers Brightness Filter.glsl
 shader-libraries/built-in/movers/Movers Color Filter.glsl
@@ -75,6 +77,7 @@ shader-libraries/built-in/shaders/BAAAHS_GeometricColorPulse.glsl
 shader-libraries/built-in/shaders/BAAAHS_GeometricSheep.glsl
 shader-libraries/built-in/shaders/BAAAHS_Lazors.glsl
 shader-libraries/built-in/shaders/BAAAHS_Logo.glsl
+shader-libraries/built-in/shaders/BAAAHS_SheepShrooms.glsl
 shader-libraries/built-in/shaders/BAAAHS_Squarezzz.glsl
 shader-libraries/built-in/shaders/BAAAHS_Zebra.glsl
 shader-libraries/built-in/shaders/BlueDream.glsl
