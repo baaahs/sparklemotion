@@ -5,8 +5,8 @@
 // Combined with own code from https://www.shadertoy.com/view/7dVBWV
 // Made on too little sleep lol
 
-#define resolution  iResolution
-#define time        iTime
+//#define resolution  iResolution
+//#define time        iTime
 #define PI          3.141592654
 #define PI_2        (0.5*PI)
 #define TAU         (2.0*PI)
@@ -22,11 +22,25 @@
 #define beatInfo_intensity .5*(smoothstep(1., 0., mod(beatInfo_beat, 1.) / 0.4) + .5*smoothstep(1., 0., (1. - mod(beatInfo_beat, 1.)) / 0.2))
 #define beatInfo_confidence 1.0
 
+uniform float time; // @@Time
+uniform vec2 resolution; // @@Resolution
+
+struct BeatInfo {
+    float beat;
+    float bpm;
+    float intensity;
+    float confidence;
+};
+uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
 const float FREQ_RANGE = 64.0;
 const float RADIUS = 0.4;
 const float BRIGHTNESS = 0.2;
 const float SPEED = 0.4;
+
+
+//uniform float planeDist; // @@Slider default=0.8 min=0.5 max=0.9
+//uniform int furthest; // @@Slider default=6 min=4 max=20
 
 const float planeDist = 1.0-0.8;
 const int   furthest  = 6;
@@ -53,7 +67,7 @@ float luma(vec3 color) {
 }
 
 float getfrequency(float x) {
-    return .2 + .3 * beatInfo_intensity;//texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
+    return .2 + .3 * beatInfo.intensity;//texture(soundAnalysis.buckets, vec2(floor(x * FREQ_RANGE + 1.0) / FREQ_RANGE, 0.25)).x + 0.06;
 }
 
 float getfrequency_smooth(float x) {
@@ -300,20 +314,20 @@ vec3 color(vec3 ww, vec3 uu, vec3 vv, vec3 ro, vec2 p) {
     float sheep_scale=0.6;
     vec2 sheep_xy = p_sheep / sheep_scale;
 
-    float logoRadius = RADIUS + 0.05 * min((beatInfo_intensity), 1.);
+    float logoRadius = RADIUS + 0.05 * min((beatInfo.intensity), 1.);
     float radiusFalloff = 4.;
     float dR = max(length(p_sheep) - logoRadius - 0.1, 0.);
     //uv0 /= (1. + exp(-radiusFalloff*dR) * logoRadius / LOGO_RADIUS);
 
     if (length(sheep_xy) < 1.2 * logoRadius) {
-        col *= (1. + 2.*beatInfo_intensity);
+        col *= (1. + 2.*beatInfo.intensity);
     }
     if (length(sheep_xy) < logoRadius) {
         col *= .05;
     }
     col += drawSheep(sheep_xy, logoRadius);
 
-    col *= (.95 + .1*beatInfo_intensity);
+    col *= (.95 + .1*beatInfo.intensity);
 
     // To debug cutouts due to transparency
     //  col += cutOut ? vec3(1.0, -1.0, 0.0) : vec3(0.0);
