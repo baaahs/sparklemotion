@@ -79,6 +79,7 @@ shader-libraries/built-in/shaders/BAAAHS_Lazors.glsl
 shader-libraries/built-in/shaders/BAAAHS_Logo.glsl
 shader-libraries/built-in/shaders/BAAAHS_SheepShrooms.glsl
 shader-libraries/built-in/shaders/BAAAHS_Squarezzz.glsl
+shader-libraries/built-in/shaders/BAAAHS_WobblyLines.glsl
 shader-libraries/built-in/shaders/BAAAHS_Zebra.glsl
 shader-libraries/built-in/shaders/BlueDream.glsl
 shader-libraries/built-in/shaders/BlueSteel.glsl
