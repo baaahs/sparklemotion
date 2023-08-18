@@ -5,7 +5,7 @@ uniform float depth; // @@Slider default=0.5 min=0.1 max=0.9
 uniform float iterations; // @@Slider default=20. min=5. max=50.
 uniform float exponent; // @@Slider default=1.5 min=-3. max=3.
 uniform float beatResponsiveness; // @@Slider default=0.0 min=0.0 max=0.5
-uniform float start_radius; //@@Slider  default=2.75 min=1. max = 5.
+uniform float start_radius; //@@Slider default=2.75 min=1. max = 5.
 uniform float squareness; //@@Slider default=30. min=1. max=100.
 
 struct BeatInfo {
@@ -29,7 +29,7 @@ vec3 ddoffset(float z) { float eps = 0.05; return 0.5*(doffset(z + eps) - doffse
 // @return uv-coordinate
 // @param uvIn uv-coordinate
 vec2 main(vec2 uvIn) {
-    float tm  = depth*time*BPM/60.0;
+    float tm  = depth*time*beatInfo.bpm/60.0;
     vec3 ro   = offset(tm);
     vec3 dro  = doffset(tm);
     vec3 ddro = ddoffset(tm);
@@ -58,10 +58,4 @@ vec2 main(vec2 uvIn) {
     vec2 sheep_xy = p_sheep / sheep_scale;
 
     return sheep_xy;
-}
-
-vec2 main(vec2 uvIn) {
-    vec2 p = -1.0 + 2.0 * uvIn;
-    float len = length(p);
-    return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;
 }
