@@ -45,6 +45,7 @@ shader-libraries/built-in/effects/Blackout.glsl
 shader-libraries/built-in/effects/Brightness.glsl
 shader-libraries/built-in/effects/HSB.glsl
 shader-libraries/built-in/effects/Heart.glsl
+shader-libraries/built-in/effects/Moires_bad_trip.glsl
 shader-libraries/built-in/effects/Movers On.glsl
 shader-libraries/built-in/effects/Movers Swirl.glsl
 shader-libraries/built-in/effects/Ripple.glsl

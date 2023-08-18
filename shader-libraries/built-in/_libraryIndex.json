@@ -81,6 +81,17 @@
       "srcFile": "effects/Heart.glsl"
     },
     {
+      "id": "moires-bad-trip",
+      "title": "Moiré's Bad Trip",
+      "description": "More distortion... I said MORE DISTORTION!",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@filter",
+        "@type=mover"
+      ],
+      "srcFile": "effects/Moires_bad_trip.glsl"
+    },
+    {
       "id": "movers-swirl",
       "title": "Movers Swirl Filter",
       "description": "Swirl sharpys around whatever they're aimed at!",
@@ -151,7 +162,10 @@
       "title": "Ripple",
       "description": "It's wobbly!",
       "lastModifiedMs": 0,
-      "tags": [],
+      "tags": [
+        "@filter",
+        "@type=filter"
+      ],
       "srcFile": "effects/Ripple.glsl"
     },
     {
@@ -214,6 +228,26 @@
         "@type=paint"
       ],
       "srcFile": "shaders/BAAAHS_Eclipse.glsl"
+    },
+    {
+      "id": "baaahs-sheep-shrooms",
+      "title": "[\uD83D\uDC11] Sheep Shrooms",
+      "description": "Pearl took a little bit too much this time",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_SheepShrooms.glsl"
+    },
+    {
+      "id": "baaahs-solar-flare",
+      "title": "[\uD83D\uDC11] Solar Flare",
+      "description": "The power of the sun... on the ass of my sheep",
+      "lastModifiedMs": 0,
+      "tags": [
+        "@type=paint"
+      ],
+      "srcFile": "shaders/BAAAHS_WobblyLines.glsl"
     },
     {
       "id": "baaahs-geometric-colorpulse",
