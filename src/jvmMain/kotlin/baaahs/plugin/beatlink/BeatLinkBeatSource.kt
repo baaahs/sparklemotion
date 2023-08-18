@@ -5,6 +5,7 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import org.deepsymmetry.beatlink.*
+import org.deepsymmetry.beatlink.data.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -24,6 +25,14 @@ class BeatLinkBeatSource(
 
     private val logger = Logger("BeatLinkBeatSource")
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
+
+    private val virtualCdj = VirtualCdj.getInstance()
+    private val beatListener = BeatFinder.getInstance()
+    private val metadataFinder = MetadataFinder.getInstance()
+    private val analysisTagFinder = AnalysisTagFinder.getInstance()
+    private val waveformFinder = WaveformFinder.getInstance()
+    private val timeFinder = TimeFinder.getInstance()
+
     @Volatile
     private var lastBeatAt: Time? = null
 
@@ -32,10 +41,12 @@ class BeatLinkBeatSource(
         val deviceFinder = DeviceFinder.getInstance()
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
+                println("DeviceFinder lost: $announcement")
                 logger.info { "Lost device: ${announcement.deviceName}" }
             }
 
             override fun deviceFound(announcement: DeviceAnnouncement) {
+                println("DeviceFinder found: $announcement")
                 logger.info { "New device: ${announcement.deviceName}" }
             }
         })
@@ -45,7 +56,6 @@ class BeatLinkBeatSource(
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-        val virtualCdj = VirtualCdj.getInstance()
         virtualCdj.useStandardPlayerNumber = false
         virtualCdj.addLifecycleListener(object : LifecycleListener {
             override fun stopped(sender: LifecycleParticipant?) {
@@ -57,9 +67,28 @@ class BeatLinkBeatSource(
             }
         })
 
-        val beatListener = BeatFinder.getInstance()
         beatListener.addBeatListener(this)
         beatListener.addOnAirListener(this)
+
+        metadataFinder.addTrackMetadataListener { update ->
+            println("metadataChanged = $update")
+        }
+
+        analysisTagFinder.addAnalysisTagListener({ update ->
+            println("analysisChanged = ${update}")
+        }, ".EXT", "PSSI")
+
+        waveformFinder.addWaveformListener(object : WaveformListener {
+            override fun previewChanged(update: WaveformPreviewUpdate?) {
+                println("previewChanged = $update")
+            }
+
+            override fun detailChanged(update: WaveformDetailUpdate?) {
+                println("detailChanged = $update")
+            }
+        })
+
+//        timeFinder.addTrackPositionListener(this)
 
         thread(isDaemon = true, name = "BeatLinkPlugin Watchdog") {
             while (true) {
@@ -78,6 +107,25 @@ class BeatLinkBeatSource(
                     beatListener.start()
                 }
 
+                if (!metadataFinder.isRunning) {
+                    logger.info { "Attempting to start MetadataFinder..." }
+                    metadataFinder.start()
+                }
+
+                if (!analysisTagFinder.isRunning) {
+                    logger.info { "Attempting to start AnalysisTagFinder..." }
+                    analysisTagFinder.start()
+                }
+
+                if (!waveformFinder.isRunning) {
+                    logger.info { "Attempting to start WaveformFinder..." }
+                    waveformFinder.start()
+                }
+
+                if (!timeFinder.isRunning) {
+                    logger.info { "Attempting to start TimeFinder..." }
+                    timeFinder.start()
+                }
                 Thread.sleep(5000)
             }
         }
@@ -111,8 +159,10 @@ class BeatLinkBeatSource(
     }
 
     override fun newBeat(beat: Beat) {
+        val latestPosition = timeFinder.getLatestPositionFor(beat.deviceNumber)
+        println("latestPosition = $latestPosition")
         if (
-            // if more than one channel is on air, pick the tempo master
+        // if more than one channel is on air, pick the tempo master
             currentlyAudibleChannels.size > 1 && beat.isTempoMaster
 
             // if no channels are on air, pick the master
