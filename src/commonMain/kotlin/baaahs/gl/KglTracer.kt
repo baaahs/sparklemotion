@@ -327,9 +327,19 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         return kgl.uniform1f(location, f)
     }
 
+    override fun uniform1fv(location: UniformLocation, value: FloatArray) {
+        log("uniform1fv", location, value)
+        return kgl.uniform1fv(location, value)
+    }
+
     override fun uniform1i(location: UniformLocation, i: Int) {
         log("uniform1i", location, i)
         return kgl.uniform1i(location, i)
+    }
+
+    override fun uniform1iv(location: UniformLocation, value: IntArray) {
+        log("uniform1iv", location, value)
+        return kgl.uniform1iv(location, value)
     }
 
     override fun uniform2f(location: UniformLocation, x: Float, y: Float) {
@@ -337,9 +347,19 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         return kgl.uniform2f(location, x, y)
     }
 
+    override fun uniform2fv(location: UniformLocation, value: FloatArray) {
+        log("uniform2fv", location, value)
+        return kgl.uniform2fv(location, value)
+    }
+
     override fun uniform2i(location: UniformLocation, x: Int, y: Int) {
         log("uniform2i", location, x, y)
         return kgl.uniform2i(location, x, y)
+    }
+
+    override fun uniform2iv(location: UniformLocation, value: IntArray) {
+        log("uniform2iv", location, value)
+        return kgl.uniform2iv(location, value)
     }
 
     override fun uniform3f(location: UniformLocation, x: Float, y: Float, z: Float) {
@@ -357,14 +377,29 @@ class KglTracer(private val kgl: Kgl) : Kgl {
         return kgl.uniform3i(location, x, y, z)
     }
 
+    override fun uniform3iv(location: UniformLocation, value: IntArray) {
+        log("uniform3iv", location, value)
+        return kgl.uniform3iv(location, value)
+    }
+
     override fun uniform4f(location: UniformLocation, x: Float, y: Float, z: Float, w: Float) {
         log("uniform4f", location, x, y, z, w)
         return kgl.uniform4f(location, x, y, z, w)
     }
 
+    override fun uniform4fv(location: UniformLocation, value: FloatArray) {
+        log("uniform4fv", location, value)
+        return kgl.uniform4fv(location, value)
+    }
+
     override fun uniform4i(location: UniformLocation, x: Int, y: Int, z: Int, w: Int) {
         log("uniform4i", location, x, y, z, w)
         return kgl.uniform4i(location, x, y, z, w)
+    }
+
+    override fun uniform4iv(location: UniformLocation, value: IntArray) {
+        log("uniform4iv", location, value)
+        return kgl.uniform4iv(location, value)
     }
 
     override fun uniformMatrix3fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {
