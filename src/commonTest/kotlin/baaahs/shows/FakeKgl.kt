@@ -347,9 +347,19 @@ class FakeKgl : Kgl {
         location.set(f)
     }
 
+    override fun uniform1fv(location: UniformLocation, value: FloatArray) {
+        checkContext()
+        location.set(value)
+    }
+
     override fun uniform1i(location: UniformLocation, i: Int) {
         checkContext()
         location.set(i)
+    }
+
+    override fun uniform1iv(location: UniformLocation, value: IntArray) {
+        checkContext()
+        location.set(value)
     }
 
     override fun uniform2f(location: UniformLocation, x: Float, y: Float) {
@@ -357,9 +367,19 @@ class FakeKgl : Kgl {
         location.set(listOf(x, y))
     }
 
+    override fun uniform2fv(location: UniformLocation, value: FloatArray) {
+        checkContext()
+        location.set(value)
+    }
+
     override fun uniform2i(location: UniformLocation, x: Int, y: Int) {
         checkContext()
         location.set(listOf(x, y))
+    }
+
+    override fun uniform2iv(location: UniformLocation, value: IntArray) {
+        checkContext()
+        location.set(value)
     }
 
     override fun uniform3f(location: UniformLocation, x: Float, y: Float, z: Float) {
@@ -377,14 +397,29 @@ class FakeKgl : Kgl {
         location.set(listOf(x, y, z))
     }
 
+    override fun uniform3iv(location: UniformLocation, value: IntArray) {
+        checkContext()
+        location.set(value)
+    }
+
     override fun uniform4f(location: UniformLocation, x: Float, y: Float, z: Float, w: Float) {
         checkContext()
         location.set(listOf(x, y, z, w))
     }
 
+    override fun uniform4fv(location: UniformLocation, value: FloatArray) {
+        checkContext()
+        location.set(value)
+    }
+
     override fun uniform4i(location: UniformLocation, x: Int, y: Int, z: Int, w: Int) {
         checkContext()
         location.set(listOf(x, y, z, w))
+    }
+
+    override fun uniform4iv(location: UniformLocation, value: IntArray) {
+        checkContext()
+        location.set(value)
     }
 
     override fun uniformMatrix3fv(location: UniformLocation, transpose: Boolean, value: FloatArray) {
