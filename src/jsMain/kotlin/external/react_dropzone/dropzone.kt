@@ -1,13 +1,16 @@
-import dom.html.HTMLElement
-import dom.html.HTMLInputElement
 import org.w3c.dom.events.Event
 import org.w3c.files.File
 import react.*
+import web.html.HTMLElement
+import web.html.HTMLInputElement
 import kotlin.js.Promise
 
 @JsModule("react-dropzone")
 @JsName("Dropzone")
-external val dropzone: ElementType<DropzoneProps>
+@JsNonModule
+external val dropzoneModule: dynamic
+
+val dropzone: ElementType<DropzoneProps> = dropzoneModule.default
 
 external interface FileError {
     var message: String

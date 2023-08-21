@@ -1,11 +1,12 @@
 package baaahs.ui
 
-import dom.events.KeyboardEvent
-import dom.html.HTMLElement
-import dom.html.HTMLInputElement
-import dom.html.HTMLTextAreaElement
 import web.events.Event
 import web.events.EventTarget
+import web.html.HTMLElement
+import web.html.HTMLInputElement
+import web.html.HTMLTextAreaElement
+import web.uievents.KEY_DOWN
+import web.uievents.KeyboardEvent
 
 class KeyboardShortcutHandler(val target: EventTarget? = null) {
     private val handlers = arrayListOf<Handler>()
@@ -30,7 +31,7 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
             } // Ignore
 
             else -> {
-                val keypress = with(e) { Keypress(code, metaKey, ctrlKey, shiftKey) }
+                val keypress = with(e) { Keypress(code as String, metaKey, ctrlKey, shiftKey) }
                 val handled = handlers.reversed().any { handler ->
                     handler.callback(keypress, e) == KeypressResult.Handled
                 }
@@ -45,12 +46,12 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
     }
 
     fun listen(target: EventTarget): EventTarget {
-        target.addEventListener("keydown", handleKeyDown)
+        target.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         return target
     }
 
     fun unlisten(target: EventTarget) {
-        target.removeEventListener("keydown", handleKeyDown)
+        target.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
     }
 
     fun release() {

@@ -107,6 +107,9 @@ so you can see how it will behave in the real world.
 1. Install [Java](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) and `maven`
     - If using an arm64 mac, DMX device support for the native build of sparklemotion requires an x86 jdk which can be
       downloaded [here](https://jdk.java.net/archive/).
+    - Make sure to pick a JDK < version 20 as [gradle does not currently
+      support
+it](https://youtrack.jetbrains.com/issue/KT-57669/Add-Java-20-to-JvmTarget).
 1. Checkout submodules
    ```bash
    git submodule update --init
@@ -133,7 +136,7 @@ In production mode, Sparkle Motion runs in a JVM process and talks to real hardw
 
 To start it, run:
 
-    ./gradlew runPinkyJvm
+    ./gradlew run
 
 If you don't have a Brain running locally, do this too:
 

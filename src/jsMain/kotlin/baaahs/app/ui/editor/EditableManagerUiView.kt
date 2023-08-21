@@ -5,7 +5,7 @@ import baaahs.app.ui.dialog.DialogStyles
 import baaahs.app.ui.dialog.dialogPanels
 import baaahs.ui.*
 import external.ErrorBoundary
-import kotlinx.js.jso
+import js.core.jso
 import mui.base.Portal
 import mui.icons.material.Redo
 import mui.icons.material.Undo

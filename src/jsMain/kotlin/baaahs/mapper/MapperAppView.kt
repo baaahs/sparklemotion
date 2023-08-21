@@ -10,10 +10,6 @@ import baaahs.model.Model
 import baaahs.ui.*
 import baaahs.ui.components.palette
 import baaahs.util.useResizeListener
-import dom.events.KeyboardEvent
-import dom.html.HTMLCanvasElement
-import dom.html.HTMLElement
-import dom.html.HTMLImageElement
 import external.react_draggable.Draggable
 import kotlinx.css.*
 import kotlinx.html.tabIndex
@@ -24,10 +20,14 @@ import mui.material.Switch
 import react.*
 import react.dom.canvas
 import react.dom.div
-import react.dom.html.InputType
 import react.dom.i
 import react.dom.img
 import styled.inlineStyles
+import web.html.HTMLCanvasElement
+import web.html.HTMLElement
+import web.html.HTMLImageElement
+import web.html.InputType
+import web.uievents.KeyboardEvent
 
 val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView") { props ->
     val appContext = useContext(mapperAppContext)
@@ -199,7 +199,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
                         betterSelect<PixelFormat?> {
                             attrs.label = "Pixel Format"
-                            attrs.values = listOf(null) + PixelFormat.values().toList()
+                            attrs.values = listOf(null) + PixelFormat.entries
                             attrs.renderValueOption = { (it?.name ?: "Default").asTextNode() }
                             attrs.value = mappingController.pixelFormat
                             attrs.onChange = handlePixelFormatChange

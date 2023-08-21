@@ -14,15 +14,15 @@ import baaahs.ui.addObserver
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import csstype.Auto
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.onClick
+import web.cssom.Auto
+import web.dom.Element
 import web.events.Event
 
 private enum class PageTabs {

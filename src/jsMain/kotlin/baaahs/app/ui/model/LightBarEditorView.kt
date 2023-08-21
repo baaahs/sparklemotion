@@ -7,7 +7,7 @@ import baaahs.scene.MutableLightBarData
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Container
 import react.*
 import react.dom.header

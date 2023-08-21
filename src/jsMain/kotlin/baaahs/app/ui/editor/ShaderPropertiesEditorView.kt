@@ -9,7 +9,6 @@ import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableStream
 import baaahs.ui.*
-import dom.html.HTMLDivElement
 import materialui.icon
 import mui.material.*
 import mui.system.sx
@@ -17,9 +16,10 @@ import react.*
 import react.dom.b
 import react.dom.div
 import react.dom.events.FormEvent
-import react.dom.html.InputType
 import react.dom.onChange
 import web.events.Event
+import web.html.HTMLDivElement
+import web.html.InputType
 
 private val ShaderPropertiesEditor = xComponent<ShaderPropertiesEditorProps>("ShaderPropertiesEditor") { props ->
     val appContext = useContext(appContext)

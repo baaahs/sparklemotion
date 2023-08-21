@@ -4,8 +4,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.Divider
 import mui.material.Popover
 import react.Props
@@ -15,6 +14,7 @@ import react.dom.code
 import react.dom.div
 import react.dom.header
 import react.dom.pre
+import web.dom.Element
 
 private val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") { props ->
 

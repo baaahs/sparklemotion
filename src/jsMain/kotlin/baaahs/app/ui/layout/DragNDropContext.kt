@@ -3,9 +3,10 @@ package baaahs.app.ui.layout
 import baaahs.ui.Observable
 import baaahs.ui.gridlayout.GridLayoutState
 import baaahs.util.Logger
+import js.core.jso
 import react.createContext
 
-val dragNDropContext = createContext<DragNDropContext>()
+val dragNDropContext = createContext<DragNDropContext>(jso { })
 
 external interface DragNDropContext {
     var isLegacy: Boolean

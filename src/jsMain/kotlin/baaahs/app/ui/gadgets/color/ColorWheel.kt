@@ -2,10 +2,9 @@ package baaahs.app.ui.gadgets.color
 
 import baaahs.Color
 import baaahs.geom.Vector2F
-import canvas.CanvasRenderingContext2D
-import dom.html.HTMLCanvasElement
-import dom.html.RenderingContextId
-import org.khronos.webgl.set
+import web.canvas.CanvasRenderingContext2D
+import web.canvas.RenderingContextId
+import web.html.HTMLCanvasElement
 import kotlin.math.floor
 import kotlin.math.max
 
@@ -29,10 +28,11 @@ private class Bitmap(
     fun setPixel(x: Int, y: Int, color: Color) {
         val index = (x + y * width) * pixelWidth
 
-        data[index] = color.redI.asDynamic() as Byte
-        data[index + 1] = color.greenI.asDynamic() as Byte
-        data[index + 2] = color.blueI.asDynamic() as Byte
-        data[index + 3] = color.alphaI.asDynamic() as Byte
+        val dataBuf = data.asDynamic()
+        dataBuf[index] = color.redI
+        dataBuf[index + 1] = color.greenI
+        dataBuf[index + 2] = color.blueI
+        dataBuf[index + 3] = color.alphaI
     }
 
     fun draw() {

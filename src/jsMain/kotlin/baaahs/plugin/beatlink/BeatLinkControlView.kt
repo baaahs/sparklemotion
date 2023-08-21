@@ -9,9 +9,8 @@ import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.percent
-import dom.html.HTMLElement
+import js.core.jso
 import kotlinx.css.*
-import kotlinx.js.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -19,6 +18,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.StyleSheet
+import web.html.HTMLElement
 import kotlin.math.roundToInt
 
 private val beatLinkVisualizerShader =
@@ -68,7 +68,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
     val card by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex = Flex(1.0, 0.0)
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)

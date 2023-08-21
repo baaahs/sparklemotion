@@ -5,9 +5,7 @@ import baaahs.show.mutable.MutableLayoutDimen
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import csstype.px
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.events.Event
@@ -16,11 +14,13 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.events.FormEvent
-import react.dom.html.InputType
 import react.dom.onChange
 import react.dom.onClick
 import react.dom.span
 import react.useContext
+import web.cssom.px
+import web.dom.Element
+import web.html.InputType
 
 private val LayoutSizeCellView = xComponent<LayoutSizeCellProps>("LayoutSizeCell") { props ->
     val appContext = useContext(appContext)

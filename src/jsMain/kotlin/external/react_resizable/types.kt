@@ -1,13 +1,13 @@
 package external.react_resizable
 
-import csstype.ClassName
-import dom.html.HTMLElement
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.SvgIcon
 import react.ReactElement
 import react.Ref
 import react.buildElement
 import react.dom.svg.ReactSVG
+import web.cssom.ClassName
+import web.html.HTMLElement
 
 typealias ResizeHandle =
             (resizeHandleAxis: ResizeHandleAxis, ref: Ref<HTMLElement>) -> ReactElement<*>

@@ -3,57 +3,116 @@ package baaahs.app.ui.document
 import FileRejection
 import baaahs.app.ui.appContext
 import baaahs.doc.FileType
-import baaahs.ui.withMouseEvent
-import baaahs.ui.xComponent
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
-import org.w3c.dom.HTMLInputElement
+import baaahs.ui.*
+import dropzone
+import js.core.jso
+import materialui.icon
+import mui.icons.material.FileUpload
+import mui.material.SvgIconSize
 import org.w3c.files.File
-import org.w3c.files.get
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.button
-import react.dom.div
-import react.dom.input
-import react.dom.onClick
+import react.dom.*
 import react.useContext
+import renderDropzone
+import web.cssom.em
 
 private val FileUploadView = xComponent<FileUploadProps>("FileUpload") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.fileUploadStyles
     val fileType = props.fileType
 
-    div {
+    dropzone {
+        if (fileType.contentTypeMasks.isNotEmpty() || fileType.matchingExtensions.isNotEmpty()) {
+            val accept = jso<Any>().asDynamic()
+            fileType.contentTypeMasks.ifEmpty { listOf("*/*") }
+                .forEach { contentType ->
+                    accept[contentType] = fileType.matchingExtensions.toTypedArray()
+                }
+            attrs.accept = accept
+            console.log("accept:", accept)
+        }
+        if (props.maxFiles != null) {
+            attrs.maxFiles = props.maxFiles
+        }
+        attrs.onDrop = props.onUpload
+        attrs.onFileDialogCancel
 
-        input {
-            attrs.type = InputType.file
-            attrs.onChangeFunction = onchangeLambda@{ e ->
-                val files = e.target.unsafeCast<HTMLInputElement>().files ?: return@onchangeLambda
-                val filesArr = arrayOf<File>().toMutableList()
-                for (i in 0..files.length) {
-                    val file = files[i]
-                    if (file != null) {
-                        filesArr.add(file)
+        renderDropzone { dropzoneState ->
+            div(+styles.container) {
+                mixin(dropzoneState.getRootProps())
+
+                div(+styles.upload
+                        and dropzoneState.isDragAccept.then(styles.dragAccept)
+                        and dropzoneState.isDragActive.then(styles.dragActive)
+                        and dropzoneState.isDragReject.then(styles.dragReject)
+                        and dropzoneState.isFileDialogActive.then(styles.fileDialogActive)
+                        and dropzoneState.isFocused.then(styles.focused)
+                ) {
+                    input {
+                        mixin(dropzoneState.getInputProps())
+                    }
+
+                    icon(FileUpload) {
+                        fontSize = SvgIconSize.large
+                        sx = jso { margin = .25.em }
+                    }
+
+                    p {
+                        if (dropzoneState.isDragAccept) { +"dragAccept" }
+                        if (dropzoneState.isDragActive) { +"dragActive" }
+                        if (dropzoneState.isDragReject) { +"dragReject" }
+                        if (dropzoneState.isFileDialogActive) { +"fileDialogActive" }
+                        if (dropzoneState.isFocused) { +"focused" }
+
+                        if (dropzoneState.isDragReject) {
+                            +"That's not ${fileType.indefiniteTitleLower}."
+                        } else if (dropzoneState.isDragActive) {
+                            +"yom yom it's ${fileType.indefiniteTitleLower}!"
+                        } else {
+                            +"Drop ${fileType.indefiniteTitleLower} here, or "
+                            span(+styles.linkink) { +"browse" }
+                            +"…"
+                        }
+                    }
+
+                    if (dropzoneState.acceptedFiles.isNotEmpty()) {
+                        div {
+                            header { +"Accepted: " }
+
+                            ul {
+                                dropzoneState.acceptedFiles.forEach { file ->
+                                    li { +file.name }
+                                }
+                            }
+                        }
+                    }
+
+                    if (dropzoneState.fileRejections.isNotEmpty()) {
+                        div {
+                            header { +"Rejected: " }
+
+                            ul {
+                                dropzoneState.fileRejections.forEach { rejection ->
+                                    li {
+                                        +rejection.file.name
+                                        p { +": " }
+                                        +rejection.errors.joinToString()
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-
-                props.onUpload(filesArr.toTypedArray(), arrayOf())
-                console.log(e)
-            }
-            if (fileType.contentTypeMasks.isNotEmpty() || fileType.matchingExtensions.isNotEmpty()) {
-                attrs.accept = fileType.matchingExtensions.plus(fileType.contentTypeMasks).joinToString(separator = ", ")
-                console.log("accept:", attrs.accept)
             }
 
+            button {
+                attrs.onClick = props.onCancel.withMouseEvent()
+                +"Cancel"
+            }
         }
-        button {
-            attrs.onClick = props.onCancel.withMouseEvent()
-            +"Cancel"
-        }
-
     }
-
 }
 
 external interface FileUploadProps : Props {

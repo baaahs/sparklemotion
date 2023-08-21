@@ -7,10 +7,8 @@ import baaahs.show.live.ControlProps
 import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import csstype.ident
-import dom.Element
+import js.core.jso
 import kotlinx.css.StyledElement
-import kotlinx.js.jso
 import mui.material.Button
 import mui.material.ButtonColor
 import mui.material.Card
@@ -22,6 +20,8 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.inlineStyles
+import web.cssom.ident
+import web.dom.Element
 
 object GridAreas {
     val hold = ident("hold")

@@ -7,11 +7,11 @@ import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLElement
 import kotlinx.css.*
 import react.*
 import react.dom.*
 import styled.inlineStyles
+import web.html.HTMLElement
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val appContext = useContext(appContext)

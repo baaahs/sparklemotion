@@ -13,8 +13,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.Time
 import baaahs.util.useResizeListener
-import dom.Element
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.PaletteMode
 import mui.material.styles.useTheme
 import react.Props
@@ -22,6 +21,7 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.useContext
+import web.dom.Element
 import web.timers.clearInterval
 import web.timers.setInterval
 

@@ -2,9 +2,9 @@ package baaahs.sim.ui
 
 import baaahs.app.ui.linearRepeating
 import baaahs.ui.important
+import baaahs.ui.rgba
 import kotlinx.css.*
-import kotlinx.css.properties.border
-import kotlinx.css.properties.boxShadow
+import kotlinx.css.properties.BoxShadow
 import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import mui.system.Breakpoint
@@ -14,12 +14,12 @@ class ThemedSimulatorStyles(val theme: Theme) : StyleSheet("sim-ui-themed", isSt
     val menuBar by css {
         display = Display.flex
         justifyContent = JustifyContent.spaceBetween
-        padding = "8px 16px"
+        padding = Padding(8.px, 16.px)
         background = "#182128"
         declarations["box-shadow"] = "0px 1px 5px rgba(0, 0, 0, 0.4)"
 
         theme.breakpoints.down(Breakpoint.lg)() {
-            padding = "2px"
+            padding = Padding(2.px)
         }
     }
 
@@ -53,11 +53,11 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     }
 
     val launchButtonsContainer by css {
-        padding(.25.em)
+        padding = Padding(.25.em)
     }
 
     val panelToolbar by css {
-        padding = "0 8px"
+        padding = Padding(0.px, 8.px)
     }
 
     val windowContainer by css {
@@ -87,7 +87,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
         header {
             background = linearRepeating(headerColor, headerColor.darken(15), 7.5.px)
-            padding(1.5.px, .5.em)
+            padding = Padding(1.5.px, .5.em)
             lineHeight = 1.25.em.lh
         }
     }
@@ -97,7 +97,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         position = Position.absolute
         bottom = 0.em
         right = 0.em
-        padding(0.px, 16.px)
+        padding = Padding(0.px, 16.px)
     }
 
     val statusPanel by css {
@@ -105,17 +105,17 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
         header {
             background = linearRepeating(headerColor, headerColor.darken(15), 7.5.px)
-            padding(1.5.px, .5.em)
+            padding = Padding(1.5.px, .5.em)
             lineHeight = 1.25.em.lh
         }
     }
 
     val statusPanelToolbar by css {
-        padding(1.em)
+        padding = Padding(1.em)
     }
 
     val consoleContainer by css {
-        flex(1)
+        flex = Flex(1)
     }
 
     val console by css {
@@ -123,7 +123,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         backgroundColor = Color.white
         bottom = 5.px
         right = 5.px
-        padding(.25.em)
+        padding = Padding(.25.em)
         fontSize = 10.pt
         fontFamily = "Helvetica"
 
@@ -144,16 +144,17 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         display = Display.inlineBlock
         borderWidth = 2.px
         borderStyle = BorderStyle.dotted
-        padding(2.px)
+        padding = Padding(2.px)
     }
 
     private val subsection by css {
-        border(2.px, BorderStyle.solid, Color.gray, 0.5.em)
+        border = Border(2.px, BorderStyle.solid, Color.gray)
+        borderRadius = 0.5.em
     }
 
     val bpmDisplay by css {
         bottom = 20.px
-        padding(20.px)
+        padding = Padding(20.px)
         color = Color("#ffaaff")
         fontFamily = "'Press Start 2P', sans-serif"
         fontSize = 10.pt
@@ -167,11 +168,11 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     }
 
     val brainIndicator by css {
-        margin(1.px)
+        margin = Margin(1.px)
         display = Display.inlineBlock
         width = 8.px
         height = 8.px
-        border(1.px, BorderStyle.solid, Color.black)
+        border = Border(1.px, BorderStyle.solid, Color.black)
 
         hover {
             cursor = Cursor.pointer
@@ -190,29 +191,29 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val fakeClientDevicePad by css {
         zIndex = 1000
         position = Position.absolute
-        border = "1px solid #404040"
+        border = Border(1.px, BorderStyle.solid, Color("#404040"))
         borderRadius = 8.px
         backgroundImage = Image("linear-gradient(to bottom right, #eee, #fff)")
         cursor = Cursor.grab
-        padding = "28px 40px 28px 28px"
+        padding = Padding(28.px, 40.px, 28.px, 28.px)
         color = Color.white
         right = 5.px
         bottom = 5.px
-        boxShadow(rgba(0, 0, 0, 0.25), 4.px, 5.px, 2.px, 2.px)
+        boxShadow += BoxShadow(rgba(0, 0, 0, 0.25), 4.px, 5.px, 2.px, 2.px)
     }
     
     val fakeClientDeviceControls by css {
         position = Position.absolute
         fontSize = 14.px
         top = 0.px
-        padding = "4px"
+        padding = Padding(4.px)
         right = 0.px
         color = Color("#222")
         zIndex = 1
     }
     val fakeClientDeviceIconButton by css {
         color = Color("#222222")
-        padding = "4px"
+        padding = Padding(4.px)
         marginLeft = 8.px
         cursor = Cursor.pointer
 
@@ -227,7 +228,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         height = 18.px
         right = 6.px
         top = 50.pct
-        border = "1px solid black"
+        border = Border(1.px, BorderStyle.solid, Color.black)
         borderRadius = 50.pct
         backgroundImage = Image("radial-gradient(#fff, #ddd)")
         cursor = Cursor.pointer
@@ -243,8 +244,8 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         position = Position.relative
         width = LinearDimension.auto
         height = LinearDimension.auto
-        padding = "2px"
-        border = "2px solid #373737"
+        padding = Padding(2.px)
+        border = Border(2.px, BorderStyle.solid, Color("#373737"))
         backgroundColor = Color("#4F4F4F")
 
         nav {

@@ -6,14 +6,12 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
-import csstype.ClassName
+import js.core.jso
 import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
 import kotlinx.css.pointerEvents
 import kotlinx.css.properties.Timing
 import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
-import kotlinx.js.jso
 import materialui.icon
 import mui.icons.material.*
 import mui.icons.material.Menu
@@ -26,6 +24,7 @@ import react.dom.div
 import react.dom.h4
 import react.dom.html.ReactHTML
 import styled.inlineStyles
+import web.cssom.ClassName
 
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
@@ -136,7 +135,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                             opacity = 0
                             pointerEvents = PointerEvents.none
                         }
-                        transition("opacity", duration = .5.s, timing = Timing.linear)
+                        transition(::opacity, duration = .5.s, timing = Timing.linear)
                     }
 
                     Button {

@@ -7,17 +7,18 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import cssom.matchMedia
 import external.mosaic.MosaicParent
 import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
 import external.mosaic.mosaic
-import kotlinx.js.jso
+import js.core.jso
 import mui.system.Breakpoint
 import react.*
 import react.dom.div
 import react.dom.html.ReactHTML
 import styled.injectGlobal
+import web.cssom.MediaQuery
+import web.cssom.matchMedia
 
 enum class SimulatorWindows {
     Visualizer,
@@ -25,7 +26,7 @@ enum class SimulatorWindows {
     MIDI,
 }
 
-val simulatorContext = createContext<SimulatorContext>()
+val simulatorContext = createContext<SimulatorContext>(jso {})
 
 external interface SimulatorContext {
     var styles: ThemedSimulatorStyles
@@ -46,8 +47,10 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
     }
 
     val small = matchMedia(
-        theme.breakpoints.down(Breakpoint.md)
-            .replace("@media ", "")
+        MediaQuery(
+            theme.breakpoints.down(Breakpoint.md)
+                .replace("@media ", "")
+        )
     ).matches
 
     var currentNode by state<MosaicParent<SimulatorWindows>> {

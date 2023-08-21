@@ -9,7 +9,7 @@ import baaahs.ui.diagnostics.patchDiagnostics
 import baaahs.ui.unaryPlus
 import baaahs.ui.withTChangeEvent
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.FormControlLabel
 import mui.material.Size
 import mui.material.Switch

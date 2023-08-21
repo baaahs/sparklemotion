@@ -17,10 +17,11 @@ import baaahs.ui.KeyboardShortcutHandler
 import baaahs.ui.Prompt
 import baaahs.ui.ReactBeautifulDragNDrop
 import baaahs.util.Clock
+import js.core.jso
 import react.createContext
 
-val appContext = createContext<AppContext>()
-val toolchainContext = createContext<Toolchain>()
+val appContext = createContext<AppContext>(jso {})
+val toolchainContext = createContext<Toolchain>(jso {})
 
 /**
  * The application context.

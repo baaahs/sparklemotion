@@ -6,11 +6,11 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.*
 import react.*
-import react.dom.html.InputType
 import web.events.Event
+import web.html.InputType
 
 private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("NumberTextField") { props ->
     val appContext = useContext(appContext)

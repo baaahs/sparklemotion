@@ -136,11 +136,11 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val appToolbarTabs by css {
-        grow(Grow.GROW)
+        flex = Flex.GROW
     }
 
     val appToolbarTab by css {
-        flex(1.0, 0.0, FlexBasis.zero)
+        flex = Flex(1.0, 0.0, FlexBasis.zero)
         flexDirection = FlexDirection.row
     }
 
@@ -196,7 +196,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val editModeButton by css {
-        padding = "5px 1em"
+        padding = Padding(5.px, 1.em)
         marginLeft = 1.em
         marginRight = 1.em
         color = theme.palette.primary.contrastText.asColor()
@@ -237,7 +237,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     }
 
     val showProblem by css {
-        margin = "auto"
+        margin = Margin(LinearDimension.auto)
 
         +"infoSeverity" { color = Color.darkGray }
         +"warnSeverity" { color = Color.orange }
@@ -249,7 +249,9 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         gap = 1.em
         gridTemplateColumns = GridTemplateColumns(GridAutoRows.auto, GridAutoRows.auto)
 
-        h4 { margin = "unset" }
+        h4 {
+//            TODO: margin = "unset"
+        }
     }
 
     val appToolbarDevMenuIcon by css {
@@ -275,7 +277,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val appDrawerHeader by css {
         display = Display.flex
         alignItems = Align.center
-        padding = theme.spacing.asDynamic()(0, 1).toString()
+        padding = Padding(theme.spacing(0, 1).toLinearDimension())
         mixIn(theme.mixins.toolbar)
         justifyContent = JustifyContent.flexEnd
     }
@@ -317,14 +319,14 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
 
     val adminTabPanel by css {
         overflow = Overflow.hidden
-        grow(Grow.GROW_SHRINK)
+        flex = Flex.GROW_SHRINK
     }
 
     val showLayout by css {
         display = Display.grid
         height = 100.pct
         gap = 2.px
-        padding(2.px)
+        padding = Padding(2.px)
     }
 
     val layoutPanelPaper by css {
@@ -340,12 +342,12 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val layoutPanel by css {
         display = Display.flex
         overflow = Overflow.scroll
-        flex(1.0)
+        flex = Flex(1.0)
     }
 
     val layoutControls by css {
         display = Display.inlineFlex
-        grow(Grow.NONE)
+        flex = Flex.NONE
         position = Position.relative
         height = 100.pct
         verticalAlign = VerticalAlign.top
@@ -406,8 +408,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
     val unplacedControlsPaper by css {
         display = Display.flex
         flexDirection = FlexDirection.column
-        grow(Grow.GROW)
-        padding(1.em)
+        flex = Flex.GROW
+        padding = Padding(1.em)
     }
 
     val unplacedControlsDroppable by css {
@@ -442,7 +444,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
             paddingLeft = 1.25.em
             minWidth = 3.em
             minHeight = 3.em
-            border = "1px solid black"
+            border = Border(1.px, BorderStyle.solid, Color.black)
             borderRadius = 3.px
 
             transition(duration = 0.5.s)
@@ -477,14 +479,14 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
 
         descendants(ControlsStyles, ControlsStyles::controlBox) {
-            padding(3.px)
-            border(
+            padding = Padding(3.px)
+            border = Border(
                 width = 1.px,
                 style = BorderStyle.solid,
                 color = Color.black.withAlpha(.5),
-                borderRadius = 3.px
             )
-            margin = ".5em"
+            borderRadius = 3.px
+            margin = Margin(.5.em)
         }
 
         descendants(ControlsStyles, ControlsStyles::editButton) {
@@ -518,8 +520,8 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         }
 
         descendants(this@Styles, ::unplacedControlsPalette) {
-            opacity = 0;
-            display = Display.none;
+            opacity = 0
+            display = Display.none
         }
     }
 

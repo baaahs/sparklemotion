@@ -1,6 +1,6 @@
 package three_ext
 
-import kotlinx.js.jso
+import js.core.jso
 
 @JsModule("three")
 external val three: dynamic

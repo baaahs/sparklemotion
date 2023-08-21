@@ -7,11 +7,10 @@ import baaahs.show.mutable.EditingShader
 import baaahs.ui.addObserver
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.Element
+import js.core.jso
 import kotlinx.css.left
 import kotlinx.css.px
 import kotlinx.css.top
-import kotlinx.js.jso
 import materialui.icon
 import mui.material.Divider
 import mui.material.ListItemText
@@ -24,6 +23,7 @@ import react.dom.div
 import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
+import web.dom.Element
 import web.events.Event
 
 private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { props ->

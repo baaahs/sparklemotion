@@ -1,7 +1,9 @@
 package baaahs.show.migration
 
 import baaahs.show.DataMigrator
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 /**
  * Old "shader channels" are now "streams".
@@ -35,8 +37,6 @@ object V8_RenameShaderChannelToStream : DataMigrator.Migration(8) {
                     }
                 })
             }
-        }.toJsonObj().also {
-            println("migrated to 8: $it")
-        }
+        }.toJsonObj()
     }
 }

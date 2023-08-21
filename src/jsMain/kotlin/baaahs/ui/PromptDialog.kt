@@ -9,8 +9,8 @@ import react.buildElement
 import react.dom.events.ChangeEvent
 import react.dom.events.KeyboardEvent
 import react.dom.events.MouseEvent
-import react.dom.html.InputType
 import react.dom.onChange
+import web.html.InputType
 
 val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val prompt = props.prompt

@@ -1,12 +1,11 @@
 package baaahs.ui.misc
 
+import baaahs.ui.transition
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import dom.html.HTMLDivElement
 import kotlinx.css.*
 import kotlinx.css.properties.s
-import kotlinx.css.properties.transition
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -15,6 +14,7 @@ import react.dom.div
 import styled.StyleSheet
 import styled.css
 import styled.styledDiv
+import web.html.HTMLDivElement
 import kotlin.math.min
 
 val SlidePanel = xComponent<SlidePanelProps>("SlidePanel") { props ->
@@ -76,7 +76,7 @@ object SlidePanelStyles : StyleSheet("ui-misc-SlidePanel", isStatic = true) {
         top = 0.px
         transition(::left, duration = .75.s)
         width = 100.pct
-        flex(1.0)
+        flex = Flex(1.0)
     }
 
     val slidePanel by css {

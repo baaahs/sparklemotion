@@ -12,18 +12,18 @@ import baaahs.ui.install
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import dom.html.HTMLElement
 import external.Direction
 import external.copyFrom
 import external.draggable
 import external.droppable
-import kotlinx.js.jso
+import js.core.jso
 import materialui.icon
 import mui.material.*
 import react.*
 import react.dom.div
 import react.dom.events.MouseEvent
 import react.dom.onClick
+import web.html.HTMLElement
 
 private val LegacyButtonGroupControlView = xComponent<LegacyButtonGroupProps>("LegacyButtonControlGroup") { props ->
     val appContext = useContext(appContext)

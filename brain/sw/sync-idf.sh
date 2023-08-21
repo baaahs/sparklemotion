@@ -2,7 +2,7 @@
 
 set -e
 
-IDF_REV=v4.0-beta2
+IDF_REV=v5.1
 
 if [ "x${IDF_PATH}x" == "xx" ]; then
   echo 'IDF_PATH isn'\''t set. Fix it!'
