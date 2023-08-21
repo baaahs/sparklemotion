@@ -18,14 +18,9 @@ import kotlin.math.abs
  */
 class BeatLinkBeatSource(
     private val clock: Clock
-) : Observable(), BeatSource, BeatListener, OnAirListener {
+) : Observable(), BeatSource {
 
-    @Volatile
-    var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
-
-    private val logger = Logger("BeatLinkBeatSource")
-    private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
-
+    private val deviceFinder = DeviceFinder.getInstance()
     private val virtualCdj = VirtualCdj.getInstance()
     private val beatListener = BeatFinder.getInstance()
     private val metadataFinder = MetadataFinder.getInstance()
@@ -34,20 +29,23 @@ class BeatLinkBeatSource(
     private val timeFinder = TimeFinder.getInstance()
 
     @Volatile
+    var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
+
+    @Volatile
     private var lastBeatAt: Time? = null
+
+    private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
 
     fun start() {
         logger.info { "Starting Beat Sync" }
-        val deviceFinder = DeviceFinder.getInstance()
+
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
-                println("DeviceFinder lost: $announcement")
-                logger.info { "Lost device: ${announcement.deviceName}" }
+                logger.info { "Lost device ${announcement.deviceNumber}: ${announcement.deviceName}" }
             }
 
             override fun deviceFound(announcement: DeviceAnnouncement) {
-                println("DeviceFinder found: $announcement")
-                logger.info { "New device: ${announcement.deviceName}" }
+                logger.info { "Found device ${announcement.deviceNumber}: ${announcement.deviceName}" }
             }
         })
 
@@ -57,6 +55,7 @@ class BeatLinkBeatSource(
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
         virtualCdj.useStandardPlayerNumber = false
+
         virtualCdj.addLifecycleListener(object : LifecycleListener {
             override fun stopped(sender: LifecycleParticipant?) {
                 logger.info { "VirtualCdj stopped!" }
@@ -66,9 +65,10 @@ class BeatLinkBeatSource(
                 logger.info { "VirtualCdj started as device ${virtualCdj.deviceNumber}" }
             }
         })
+        
+        beatListener.addBeatListener { beat -> newBeat(beat) }
 
-        beatListener.addBeatListener(this)
-        beatListener.addOnAirListener(this)
+        beatListener.addOnAirListener { audibleChannels -> channelsOnAir(audibleChannels) }
 
         metadataFinder.addTrackMetadataListener { update ->
             println("metadataChanged = $update")
@@ -87,8 +87,6 @@ class BeatLinkBeatSource(
                 println("detailChanged = $update")
             }
         })
-
-//        timeFinder.addTrackPositionListener(this)
 
         thread(isDaemon = true, name = "BeatLinkPlugin Watchdog") {
             while (true) {
@@ -126,6 +124,7 @@ class BeatLinkBeatSource(
                     logger.info { "Attempting to start TimeFinder..." }
                     timeFinder.start()
                 }
+
                 Thread.sleep(5000)
             }
         }
@@ -153,16 +152,19 @@ class BeatLinkBeatSource(
         }
     }
 
-    override fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
+    @Synchronized
+    private fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
         currentlyAudibleChannels.clear()
         audibleChannels?.let { currentlyAudibleChannels.addAll(it) }
     }
 
-    override fun newBeat(beat: Beat) {
+    @Synchronized
+    private fun newBeat(beat: Beat) {
         val latestPosition = timeFinder.getLatestPositionFor(beat.deviceNumber)
         println("latestPosition = $latestPosition")
+
         if (
-        // if more than one channel is on air, pick the tempo master
+            // if more than one channel is on air, pick the tempo master
             currentlyAudibleChannels.size > 1 && beat.isTempoMaster
 
             // if no channels are on air, pick the master
@@ -188,7 +190,12 @@ class BeatLinkBeatSource(
         }
     }
 
+    @Synchronized
     override fun getBeatData(): BeatData {
         return currentBeat
+    }
+
+    companion object {
+        private val logger = Logger("BeatLinkBeatSource")
     }
 }
