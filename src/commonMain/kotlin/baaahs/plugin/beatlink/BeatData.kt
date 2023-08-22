@@ -66,24 +66,6 @@ data class BeatData(
     private fun clamp(f: Float): Float = min(1f, max(f, 0f))
 
     companion object {
-        val UNKNOWN = BeatData(0.0, 0, 4, 0f)
+        val unknown = BeatData(0.0, 0, 4, 0f)
     }
 }
-
-
-interface BeatLinkListener {
-    fun onBeatData(beatData: BeatData)
-}
-
-interface BeatSource {
-    fun addListener(listener: BeatLinkListener)
-    fun removeListener(listener: BeatLinkListener)
-
-    object None : BeatSource {
-        val none = BeatData(0.0, 0, 4, 0f)
-
-        override fun addListener(listener: BeatLinkListener) {}
-        override fun removeListener(listener: BeatLinkListener) {}
-    }
-}
-
