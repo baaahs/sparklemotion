@@ -6,6 +6,7 @@ import baaahs.util.Logger
 import baaahs.util.Time
 import org.deepsymmetry.beatlink.*
 import org.deepsymmetry.beatlink.data.*
+import org.jetbrains.annotations.VisibleForTesting
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -19,7 +20,6 @@ import kotlin.math.abs
 class BeatLinkBeatSource(
     private val clock: Clock
 ) : Observable(), BeatSource {
-
     private val deviceFinder = DeviceFinder.getInstance()
     private val virtualCdj = VirtualCdj.getInstance()
     private val beatListener = BeatFinder.getInstance()
@@ -27,6 +27,8 @@ class BeatLinkBeatSource(
     private val analysisTagFinder = AnalysisTagFinder.getInstance()
     private val waveformFinder = WaveformFinder.getInstance()
     private val timeFinder = TimeFinder.getInstance()
+
+    private val listeners = BeatLinkPlugin.BeatLinkListeners()
 
     @Volatile
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)
@@ -152,16 +154,22 @@ class BeatLinkBeatSource(
         }
     }
 
+    override fun addListener(listener: BeatLinkListener) = listeners.addListener(listener)
+    override fun removeListener(listener: BeatLinkListener) = listeners.removeListener(listener)
+    private fun notifyListeners(block: (BeatLinkListener) -> Unit) = listeners.notifyListeners(block)
+
     @Synchronized
-    private fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
+    @VisibleForTesting
+    fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
         currentlyAudibleChannels.clear()
         audibleChannels?.let { currentlyAudibleChannels.addAll(it) }
     }
 
     @Synchronized
-    private fun newBeat(beat: Beat) {
-        val latestPosition = timeFinder.getLatestPositionFor(beat.deviceNumber)
-        println("latestPosition = $latestPosition")
+    @VisibleForTesting
+    fun newBeat(beat: Beat) {
+//        val latestPosition = timeFinder.getLatestPositionFor(beat.deviceNumber)
+//        println("latestPosition = $latestPosition")
 
         if (
             // if more than one channel is on air, pick the tempo master
@@ -183,16 +191,13 @@ class BeatLinkBeatSource(
                 currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
                 logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
                 notifyChanged()
+
+                notifyListeners { it.onBeatData(currentBeat) }
             }
             lastBeatAt = now
         } else {
             logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Ignoring beat ${beat.beatWithinBar}" }
         }
-    }
-
-    @Synchronized
-    override fun getBeatData(): BeatData {
-        return currentBeat
     }
 
     companion object {

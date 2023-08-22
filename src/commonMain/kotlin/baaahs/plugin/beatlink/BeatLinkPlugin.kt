@@ -16,25 +16,25 @@ import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
+import baaahs.ui.Facade
 import baaahs.ui.Observable
-import baaahs.ui.addObserver
-import baaahs.util.Logger
-import baaahs.util.RefCounted
-import baaahs.util.RefCounter
-import baaahs.util.makeSafeForGlsl
+import baaahs.util.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 
 class BeatLinkPlugin internal constructor(
-    internal val beatSource: BeatSource,
+    beatSource: BeatSource,
     pluginContext: PluginContext
 ) : OpenServerPlugin, OpenClientPlugin {
     override val packageName: String = id
     override val title: String = "Beat Link"
 
     private val clock = pluginContext.clock
+
+    internal val facade = BeatLinkFacade(beatSource)
 
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
@@ -128,7 +128,7 @@ class BeatLinkPlugin internal constructor(
 
         override fun open(feedOpenContext: FeedOpenContext, id: String) =
             singleUniformFeedContext<Float>(id) {
-                beatSource.getBeatData().fractionTillNextBeat(clock)
+                facade.beatData.fractionTillNextBeat(clock)
             }
     }
 
@@ -158,7 +158,7 @@ class BeatLinkPlugin internal constructor(
                                         confidenceUniform != null
 
                             override fun setOnProgram() {
-                                val beatData = beatSource.getBeatData()
+                                val beatData = facade.beatData
 
                                 beatUniform?.set(beatData.beatWithinMeasure(clock))
                                 bpmUniform?.set(beatData.bpm)
@@ -200,7 +200,7 @@ class BeatLinkPlugin internal constructor(
                                         confidenceUniform != null
 
                             override fun setOnProgram() {
-                                val beatData = beatSource.getBeatData()
+                                val beatData = facade.beatData
 
                                 measureStartTime?.set(beatData.measureStartTime.makeSafeForGlsl())
                                 beatIntervalMsUniform?.set(beatData.beatIntervalMs.toFloat())
@@ -276,10 +276,7 @@ class BeatLinkPlugin internal constructor(
 
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
                     BeatLinkPlugin(
-                        PubSubPublisher(
-                            PubSubSubscriber(bridgeClient.pubSub, simulatorDefaultBpm),
-                            pluginContext
-                        ),
+                        PubSubPublisher(SimBeatSource(bridgeClient), pluginContext),
                         pluginContext
                     )
 
@@ -297,58 +294,100 @@ class BeatLinkPlugin internal constructor(
         private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
     }
 
+    class BeatLinkListeners {
+        private val listeners = arrayListOf<BeatLinkListener>()
+
+        fun addListener(listener: BeatLinkListener) { listeners.add(listener) }
+        fun removeListener(listener: BeatLinkListener) { listeners.remove(listener) }
+
+        fun notifyListeners(block: (BeatLinkListener) -> Unit) {
+            listeners.forEach(block)
+        }
+    }
+
+    /** Stateful, [Observable] holder of BeatLink data. */
+    class BeatLinkFacade(
+        private val beatSource: BeatSource
+    ) : Facade() {
+        var beatData: BeatData = unknownBpm
+            private set
+
+        private val listener = object : BeatLinkListener {
+            override fun onBeatData(beatData: BeatData) {
+                this@BeatLinkFacade.beatData = beatData
+                notifyChanged()
+            }
+        }
+
+        init { beatSource.addListener(listener) }
+        fun release() = beatSource.removeListener(listener)
+    }
+
     /** Copy beat data from [beatSource] to a bridge PubSub channel. */
     class BeatLinkBridgePlugin(
         private val beatSource: BeatSource,
         pluginContext: PluginContext
     ) : OpenBridgePlugin {
-        private val channel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
+        private val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
 
         init {
-            beatSource.addObserver { channel.onChange(it.getBeatData()) }
+            beatSource.addListener(object : BeatLinkListener {
+                override fun onBeatData(beatData: BeatData) {
+                    beatDataChannel.onChange(beatData)
+                }
+            })
         }
     }
 
     class PubSubPublisher(
         beatSource: BeatSource,
         pluginContext: PluginContext
-    ) : Observable(), BeatSource {
-        private var beatData: BeatData = beatSource.getBeatData()
+    ) : BeatSource {
+        private var beatLinkListeners = BeatLinkListeners()
 
-        val channel = pluginContext.pubSub.openChannel(beatDataTopic, beatData) {
-            logger.warn { "BeatData update from client? Huh?" }
-            beatData = it
-            notifyChanged()
+        val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, BeatSource.None.none) {
+            error("BeatData update from client? Huh?")
         }
 
         init {
-            beatSource.addObserver {
-                val newBeatData = it.getBeatData()
-                beatData = newBeatData
-                notifyChanged()
-                channel.onChange(newBeatData)
-            }
+            beatSource.addListener(object : BeatLinkListener {
+                override fun onBeatData(beatData: BeatData) {
+                    beatLinkListeners.notifyListeners { it.onBeatData(beatData) }
+                    beatDataChannel.onChange(beatData)
+                }
+            })
         }
 
-        override fun getBeatData(): BeatData = beatData
-
+        override fun addListener(listener: BeatLinkListener) { beatLinkListeners.addListener(listener) }
+        override fun removeListener(listener: BeatLinkListener) { beatLinkListeners.removeListener(listener) }
     }
 
-    class PubSubSubscriber(
+    open class PubSubSubscriber(
         pubSub: PubSub.Endpoint,
         defaultBeatData: BeatData = unknownBpm
-    ) : Observable(), BeatSource {
-        private var beatData: BeatData = defaultBeatData
+    ) : BeatSource {
+        protected val listeners = BeatLinkListeners()
 
         init {
-            pubSub.openChannel(beatDataTopic, beatData) {
-                beatData = it
-                notifyChanged()
+            pubSub.openChannel(beatDataTopic, defaultBeatData) { beatData ->
+                listeners.notifyListeners { it.onBeatData(beatData) }
             }
         }
 
-        override fun getBeatData(): BeatData = beatData
+        override fun addListener(listener: BeatLinkListener) { listeners.addListener(listener) }
+        override fun removeListener(listener: BeatLinkListener) { listeners.removeListener(listener) }
+    }
 
+    class SimBeatSource(bridgeClient: BridgeClient) : PubSubSubscriber(
+        bridgeClient.pubSub,
+        simulatorDefaultBpm
+    ) {
+        init {
+            globalLaunch {
+                delay(1000)
+                listeners.notifyListeners { it.onBeatData(simulatorDefaultBpm) }
+            }
+        }
     }
 }
 
