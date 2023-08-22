@@ -1,7 +1,5 @@
 package baaahs.plugin.beatlink
 
-import baaahs.ui.IObservable
-import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Time
 import kotlinx.serialization.Serializable
@@ -73,13 +71,19 @@ data class BeatData(
 }
 
 
-interface BeatSource : IObservable {
-    fun getBeatData(): BeatData
+interface BeatLinkListener {
+    fun onBeatData(beatData: BeatData)
+}
 
-    object None : Observable(), BeatSource {
+interface BeatSource {
+    fun addListener(listener: BeatLinkListener)
+    fun removeListener(listener: BeatLinkListener)
+
+    object None : BeatSource {
         val none = BeatData(0.0, 0, 4, 0f)
 
-        override fun getBeatData(): BeatData = none
+        override fun addListener(listener: BeatLinkListener) {}
+        override fun removeListener(listener: BeatLinkListener) {}
     }
 }
 

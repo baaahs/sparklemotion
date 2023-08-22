@@ -24,7 +24,7 @@ object BeatLinkDataFlowSpec : Spek({
         context("data flow") {
             val testRig by value { TestRig() }
             val clock by value { FakeClock(2.0) }
-            val fakeBeatSource by value { FakeBeatSource(BeatData(1.0, 500)) }
+            val fakeBeatSource by value { FakeBeatSource() }
             val serverContext by value { PluginContext(clock, testRig.server) }
             val serverPlugin by value {
                 BeatLinkPlugin.openForServer(serverContext, TestArgs(beatSource = fakeBeatSource))
@@ -45,7 +45,7 @@ object BeatLinkDataFlowSpec : Spek({
                 testRig.client1.run {}
                 serverPlugin.run {}
                 clientPlugin.run {}
-                fakeBeatSource.notifyChanged()
+                fakeBeatSource.setBeatData(BeatData(1.0, 500))
                 testRig.dispatcher.advanceUntilIdle()
             }
 
