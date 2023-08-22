@@ -28,7 +28,7 @@ class BeatLinkBeatSource(
     private val waveformFinder = WaveformFinder.getInstance()
     private val timeFinder = TimeFinder.getInstance()
 
-    private val listeners = BeatLinkPlugin.BeatLinkListeners()
+    private val listeners = BeatLinkListeners()
 
     @Volatile
     var currentBeat: BeatData = BeatData(0.0, 0, confidence = 0f)

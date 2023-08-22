@@ -294,17 +294,6 @@ class BeatLinkPlugin internal constructor(
         private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
     }
 
-    class BeatLinkListeners {
-        private val listeners = arrayListOf<BeatLinkListener>()
-
-        fun addListener(listener: BeatLinkListener) { listeners.add(listener) }
-        fun removeListener(listener: BeatLinkListener) { listeners.remove(listener) }
-
-        fun notifyListeners(block: (BeatLinkListener) -> Unit) {
-            listeners.forEach(block)
-        }
-    }
-
     /** Stateful, [Observable] holder of BeatLink data. */
     class BeatLinkFacade(
         private val beatSource: BeatSource
