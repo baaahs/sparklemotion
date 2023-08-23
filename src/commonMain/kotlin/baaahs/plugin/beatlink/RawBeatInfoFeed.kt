@@ -23,9 +23,9 @@ class RawBeatInfoFeed internal constructor(
 ) : Feed {
     override val pluginPackage: String get() = BeatLinkPlugin.id
     override val title: String get() = "RawBeatInfo"
-    override fun getType(): GlslType = BeatLinkPlugin.rawBeatInfoStruct
+    override fun getType(): GlslType = struct
     override val contentType: ContentType
-        get() = BeatLinkPlugin.rawBeatInfoContentType
+        get() = RawBeatInfoFeed.contentType
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val varPrefix = getVarName(id)
@@ -61,20 +61,33 @@ class RawBeatInfoFeed internal constructor(
         }
     }
 
+    companion object {
+        val struct = GlslType.Struct(
+            "RawBeatInfo",
+            "measureStartTime" to GlslType.Float,
+            "beatIntervalMs" to GlslType.Float,
+            "bpm" to GlslType.Float,
+            "beatsPerMeasure" to GlslType.Float,
+            "confidence" to GlslType.Float
+        )
+
+        val contentType = ContentType("raw-beat-info", "Raw Beat Info", struct)
+    }
+
     inner class Builder : FeedBuilder<RawBeatInfoFeed> {
         override val title: String get() = "Raw Beat Data"
         override val description: String get() = "A struct containing low-level information about the beat."
         override val resourceName: String get() = "RawBeatInfo"
-        override val contentType: ContentType get() = BeatLinkPlugin.rawBeatInfoContentType
+        override val contentType: ContentType get() = RawBeatInfoFeed.contentType
         override val serializerRegistrar
             get() = objectSerializer("${BeatLinkPlugin.id}:RawBeatInfo", this@RawBeatInfoFeed)
         override val internalOnly: Boolean
             get() = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-            inputPort.contentType == BeatLinkPlugin.rawBeatInfoContentType
-                    || suggestedContentTypes.contains(BeatLinkPlugin.rawBeatInfoContentType)
-                    || inputPort.type == BeatLinkPlugin.rawBeatInfoStruct
+            inputPort.contentType == contentType
+                    || suggestedContentTypes.contains(contentType)
+                    || inputPort.type == struct
 
         override fun build(inputPort: InputPort): RawBeatInfoFeed = this@RawBeatInfoFeed
     }

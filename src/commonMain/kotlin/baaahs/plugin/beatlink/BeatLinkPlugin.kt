@@ -3,7 +3,6 @@ package baaahs.plugin.beatlink
 import baaahs.Color
 import baaahs.PubSub
 import baaahs.app.ui.CommonIcons
-import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.*
 import baaahs.show.Feed
@@ -44,9 +43,9 @@ class BeatLinkPlugin internal constructor(
         )
     override val contentTypes: List<ContentType>
         get() = listOf(
-            beatDataContentType,
-            beatInfoContentType,
-            rawBeatInfoContentType
+            BeatLinkFeed.contentType,
+            BeatInfoFeed.contentType,
+            RawBeatInfoFeed.contentType
         )
 
     override val controlSerializers
@@ -75,27 +74,6 @@ class BeatLinkPlugin internal constructor(
         private val logger = Logger<BeatLinkPlugin>()
 
         override val id = "baaahs.BeatLink"
-        val beatDataContentType = ContentType("beat-link", "Beat Link", GlslType.Float)
-
-        val beatInfoStruct = GlslType.Struct(
-            "BeatInfo",
-            "beat" to GlslType.Float,
-            "bpm" to GlslType.Float,
-            "intensity" to GlslType.Float,
-            "confidence" to GlslType.Float
-        )
-
-        val beatInfoContentType = ContentType("beat-info", "Beat Info", beatInfoStruct)
-
-        val rawBeatInfoStruct = GlslType.Struct(
-            "RawBeatInfo",
-            "measureStartTime" to GlslType.Float,
-            "beatIntervalMs" to GlslType.Float,
-            "bpm" to GlslType.Float,
-            "beatsPerMeasure" to GlslType.Float,
-            "confidence" to GlslType.Float
-        )
-        val rawBeatInfoContentType = ContentType("raw-beat-info", "Raw Beat Info", rawBeatInfoStruct)
 
         private val simulatorDefaultBpm = BeatData(0.0, 500, confidence = 1f)
         private val unknownBpm = BeatData(0.0, 500, confidence = 0f)

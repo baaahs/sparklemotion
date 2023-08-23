@@ -35,7 +35,7 @@ object BeatLinkDataFlowSpec : Spek({
             val clientPlugins by value { ClientPlugins(listOf(clientPlugin), clientContext) }
             val inputPort by value {
                 val pluginRef = PluginRef.from("baaahs.BeatLink:BeatInfo",)
-                InputPort("beatLink", BeatLinkPlugin.beatInfoContentType, pluginRef = pluginRef)
+                InputPort("beatLink", BeatInfoFeed.contentType, pluginRef = pluginRef)
             }
             val fakeGlslProgram by value { FakeGlslProgram() }
 
