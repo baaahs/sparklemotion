@@ -14,7 +14,15 @@ struct RawBeatInfo {
     float beatsPerMeasure;
     float confidence;
 };
-uniform RawBeatInfo rawBeatInfo;// @@baaahs.BeatLink:RawBeatInfo
+uniform RawBeatInfo rawBeatInfo; // @@baaahs.BeatLink:RawBeatInfo
+
+struct Waveforms {
+    sampler2D player1Waveform;
+    sampler2D player2Waveform;
+    sampler2D player3Waveform;
+    sampler2D player4Waveform;
+};
+uniform Waveforms waveforms; // @@baaahs.BeatLink:Waveforms
 
 float secPerBeat = rawBeatInfo.beatIntervalMs / 1000.;
 
@@ -69,6 +77,13 @@ float timeInBeat;
 float nowPower;
 float nowBeatIntensity;
 
+vec4 waveform(sampler2D waveform, vec2 pos, float offset, float scale) {
+    pos = vec2(pos.x, (pos.y - offset) * scale);
+    vec4 sampleData = texture(waveform, pos);
+    if (pos.y < .1) return vec4(0., 1., 0., 1.);
+    return vec4(sampleData.rgb, 1.);
+}
+
 vec4 drawBeats(vec2 pos) {
     float pX = pos.x * rawBeatInfo.beatsPerMeasure;
     float pY = pos.y;
@@ -110,6 +125,17 @@ vec4 drawBeats(vec2 pos) {
     // Background.
     color += o * background(pos);
 
+    vec4 waveformValue;
+    if (pos.y < .25) {
+        waveformValue = waveform(waveforms.player1Waveform, pos, 0., 4.);
+    } else if (pY < .5) {
+        waveformValue = waveform(waveforms.player2Waveform, pos, .25, 4.);
+    } else if (pY < .75) {
+        waveformValue = waveform(waveforms.player3Waveform, pos, .5, 4.);
+    } else {
+        waveformValue = waveform(waveforms.player4Waveform, pos, .75, 4.);
+    }
+    color = mix(color, waveformValue.rgb, .5);
     return vec4(color, 1.);
 }
 

@@ -32,8 +32,9 @@ class BeatLinkPlugin internal constructor(
     // We'll just make one up-front. We only ever want one (because equality
     // is using object identity), and there's no overhead.
     internal val beatLinkFeed = BeatLinkFeed(facade, clock)
-    internal val beatInfoFeed = BeatInfoFeed(facade, clock)
-    internal val rawBeatInfoFeed = RawBeatInfoFeed(facade)
+    private val beatInfoFeed = BeatInfoFeed(facade, clock)
+    private val rawBeatInfoFeed = RawBeatInfoFeed(facade)
+    private val waveformsFeed = WaveformsFeed(facade, clock)
 
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
@@ -42,11 +43,7 @@ class BeatLinkPlugin internal constructor(
             }
         )
     override val contentTypes: List<ContentType>
-        get() = listOf(
-            BeatLinkFeed.contentType,
-            BeatInfoFeed.contentType,
-            RawBeatInfoFeed.contentType
-        )
+        get() = feedBuilders.map { it.contentType }
 
     override val controlSerializers
         get() = listOf(
@@ -57,7 +54,8 @@ class BeatLinkPlugin internal constructor(
         get() = listOf(
             beatLinkFeed.Builder(),
             beatInfoFeed.Builder(),
-            rawBeatInfoFeed.Builder()
+            rawBeatInfoFeed.Builder(),
+            waveformsFeed.Builder()
         )
 
     class ParserArgs(parser: ArgParser) : Args {
