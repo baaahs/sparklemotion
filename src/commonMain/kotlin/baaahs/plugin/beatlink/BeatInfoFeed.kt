@@ -24,9 +24,9 @@ class BeatInfoFeed internal constructor(
 ) : Feed {
     override val pluginPackage: String get() = BeatLinkPlugin.id
     override val title: String get() = "BeatInfo"
-    override fun getType(): GlslType = BeatLinkPlugin.beatInfoStruct
+    override fun getType(): GlslType = struct
     override val contentType: ContentType
-        get() = BeatLinkPlugin.beatInfoContentType
+        get() = BeatInfoFeed.contentType
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val varPrefix = getVarName(id)
@@ -59,18 +59,30 @@ class BeatInfoFeed internal constructor(
         }
     }
 
+    companion object {
+        val struct = GlslType.Struct(
+            "BeatInfo",
+            "beat" to GlslType.Float,
+            "bpm" to GlslType.Float,
+            "intensity" to GlslType.Float,
+            "confidence" to GlslType.Float
+        )
+
+        val contentType = ContentType("beat-info", "Beat Info", struct)
+    }
+
     inner class Builder : FeedBuilder<BeatInfoFeed> {
         override val title: String get() = "Beat Info"
         override val description: String get() = "A struct containing information about the beat."
         override val resourceName: String get() = "BeatInfo"
-        override val contentType: ContentType get() = BeatLinkPlugin.beatInfoContentType
+        override val contentType: ContentType get() = BeatInfoFeed.contentType
         override val serializerRegistrar
             get() = objectSerializer("${BeatLinkPlugin.id}:BeatInfo", this@BeatInfoFeed)
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-            inputPort.contentType == BeatLinkPlugin.beatInfoContentType
-                    || suggestedContentTypes.contains(BeatLinkPlugin.beatInfoContentType)
-                    || inputPort.type == BeatLinkPlugin.beatInfoStruct
+            inputPort.contentType == BeatInfoFeed.contentType
+                    || suggestedContentTypes.contains(BeatInfoFeed.contentType)
+                    || inputPort.type == struct
 
         override fun build(inputPort: InputPort): BeatInfoFeed = this@BeatInfoFeed
     }

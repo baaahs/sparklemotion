@@ -19,7 +19,7 @@ class BeatLinkFeed internal constructor(
 ) : Feed {
     override val pluginPackage: String get() = BeatLinkPlugin.id
     override val title: String get() = "BeatLink"
-    override val contentType: ContentType get() = BeatLinkPlugin.beatDataContentType
+    override val contentType: ContentType get() = BeatLinkFeed.contentType
 
     override fun getType(): GlslType = GlslType.Float
 
@@ -28,18 +28,22 @@ class BeatLinkFeed internal constructor(
             facade.beatData.fractionTillNextBeat(clock)
         }
 
+    companion object {
+        val contentType = ContentType("beat-link", "Beat Link", GlslType.Float)
+    }
+
     inner class Builder : FeedBuilder<BeatLinkFeed> {
         override val title: String get() = "Beat Link"
         override val description: String
             get() = "A float representing the current beat intensity, between 0 and 1."
         override val resourceName: String get() = "BeatLink"
-        override val contentType: ContentType get() = BeatLinkPlugin.beatDataContentType
+        override val contentType: ContentType get() = BeatLinkFeed.contentType
         override val serializerRegistrar
             get() = objectSerializer("${BeatLinkPlugin.id}:BeatLink", this@BeatLinkFeed)
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
-            inputPort.contentType == BeatLinkPlugin.beatDataContentType
-                    || suggestedContentTypes.contains(BeatLinkPlugin.beatDataContentType)
+            inputPort.contentType == BeatLinkFeed.contentType
+                    || suggestedContentTypes.contains(BeatLinkFeed.contentType)
                     || inputPort.type == GlslType.Float
 
         override fun build(inputPort: InputPort): BeatLinkFeed = this@BeatLinkFeed
