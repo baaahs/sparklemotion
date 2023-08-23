@@ -1,5 +1,6 @@
 package baaahs.plugin.beatlink
 
+import baaahs.Color
 import baaahs.PubSub
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
@@ -24,6 +25,7 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
+import kotlin.random.Random
 
 class BeatLinkPlugin internal constructor(
     beatSource: BeatSource,
@@ -292,6 +294,7 @@ class BeatLinkPlugin internal constructor(
         }
 
         private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
+        private val playerWaveformsTopic = PubSub.Topic("plugins/$id/playerWaveforms", PlayerWaveforms.serializer())
     }
 
     /** Stateful, [Observable] holder of BeatLink data. */
@@ -301,9 +304,17 @@ class BeatLinkPlugin internal constructor(
         var beatData: BeatData = unknownBpm
             private set
 
+        var playerWaveforms = PlayerWaveforms()
+            private set
+
         private val listener = object : BeatLinkListener {
             override fun onBeatData(beatData: BeatData) {
                 this@BeatLinkFacade.beatData = beatData
+                notifyChanged()
+            }
+
+            override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
+                playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
                 notifyChanged()
             }
         }
@@ -317,12 +328,20 @@ class BeatLinkPlugin internal constructor(
         private val beatSource: BeatSource,
         pluginContext: PluginContext
     ) : OpenBridgePlugin {
+        private var playerWaveforms = PlayerWaveforms()
+
         private val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
+        private val playerWaveformsChannel = pluginContext.pubSub.openChannel(playerWaveformsTopic, playerWaveforms) { }
 
         init {
             beatSource.addListener(object : BeatLinkListener {
                 override fun onBeatData(beatData: BeatData) {
                     beatDataChannel.onChange(beatData)
+                }
+
+                override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
+                    playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
+                    playerWaveformsChannel.onChange(playerWaveforms)
                 }
             })
         }
@@ -332,10 +351,15 @@ class BeatLinkPlugin internal constructor(
         beatSource: BeatSource,
         pluginContext: PluginContext
     ) : BeatSource {
+        private var playerWaveforms = PlayerWaveforms()
+
         private var beatLinkListeners = BeatLinkListeners()
 
         val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, BeatSource.None.none) {
             error("BeatData update from client? Huh?")
+        }
+        val playerWaveformsChannel = pluginContext.pubSub.openChannel(playerWaveformsTopic, playerWaveforms) {
+            error("PlayerWaveforms update from client? Huh?")
         }
 
         init {
@@ -343,6 +367,11 @@ class BeatLinkPlugin internal constructor(
                 override fun onBeatData(beatData: BeatData) {
                     beatLinkListeners.notifyListeners { it.onBeatData(beatData) }
                     beatDataChannel.onChange(beatData)
+                }
+
+                override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
+                    playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
+                    playerWaveformsChannel.onChange(playerWaveforms)
                 }
             })
         }
@@ -361,6 +390,13 @@ class BeatLinkPlugin internal constructor(
             pubSub.openChannel(beatDataTopic, defaultBeatData) { beatData ->
                 listeners.notifyListeners { it.onBeatData(beatData) }
             }
+            pubSub.openChannel(playerWaveformsTopic, PlayerWaveforms()) { playerWaveforms ->
+                listeners.notifyListeners {
+                    playerWaveforms.byDeviceNumber.forEach { (deviceNumber, waveform) ->
+                        it.onWaveformUpdate(deviceNumber, waveform)
+                    }
+                }
+            }
         }
 
         override fun addListener(listener: BeatLinkListener) { listeners.addListener(listener) }
@@ -375,6 +411,20 @@ class BeatLinkPlugin internal constructor(
             globalLaunch {
                 delay(1000)
                 listeners.notifyListeners { it.onBeatData(simulatorDefaultBpm) }
+
+                while (true) {
+                    delay(10000)
+
+                    val deviceNumber = Random.nextInt(4) + 1
+                    val waveform = Waveform.Builder().apply {
+                        for (i in 0 until 100) {
+                            add(Random.nextInt(32), Color(Random.nextInt(0xffffff)))
+                        }
+                    }.build()
+                    listeners.notifyListeners {
+                        it.onWaveformUpdate(deviceNumber, waveform)
+                    }
+                }
             }
         }
     }

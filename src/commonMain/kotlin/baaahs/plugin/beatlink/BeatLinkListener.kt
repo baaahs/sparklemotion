@@ -2,6 +2,7 @@ package baaahs.plugin.beatlink
 
 interface BeatLinkListener {
     fun onBeatData(beatData: BeatData)
+    fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform)
 }
 
 class BeatLinkListeners {

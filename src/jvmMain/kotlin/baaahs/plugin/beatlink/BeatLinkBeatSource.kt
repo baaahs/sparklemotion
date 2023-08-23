@@ -67,7 +67,7 @@ class BeatLinkBeatSource(
                 logger.info { "VirtualCdj started as device ${virtualCdj.deviceNumber}" }
             }
         })
-        
+
         beatListener.addBeatListener { beat -> newBeat(beat) }
 
         beatListener.addOnAirListener { audibleChannels -> channelsOnAir(audibleChannels) }
@@ -82,11 +82,11 @@ class BeatLinkBeatSource(
 
         waveformFinder.addWaveformListener(object : WaveformListener {
             override fun previewChanged(update: WaveformPreviewUpdate?) {
-                println("previewChanged = $update")
+                logger.debug { "previewChanged = $update" }
             }
 
-            override fun detailChanged(update: WaveformDetailUpdate?) {
-                println("detailChanged = $update")
+            override fun detailChanged(update: WaveformDetailUpdate) {
+                this@BeatLinkBeatSource.onWaveformDetailChanged(update.player, update.detail)
             }
         })
 
@@ -172,7 +172,7 @@ class BeatLinkBeatSource(
 //        println("latestPosition = $latestPosition")
 
         if (
-            // if more than one channel is on air, pick the tempo master
+        // if more than one channel is on air, pick the tempo master
             currentlyAudibleChannels.size > 1 && beat.isTempoMaster
 
             // if no channels are on air, pick the master
@@ -198,6 +198,18 @@ class BeatLinkBeatSource(
         } else {
             logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Ignoring beat ${beat.beatWithinBar}" }
         }
+    }
+
+    fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail) {
+        val frameCount = detail.frameCount
+        val waveform = Waveform.Builder().apply {
+            for (i in 0 until frameCount) {
+                val height = detail.segmentHeight(i, 1)
+                val color = detail.segmentColor(i, 1)
+                add(height, baaahs.Color(color.rgb))
+            }
+        }.build()
+        listeners.notifyListeners { it.onWaveformUpdate(deviceNumber, waveform) }
     }
 
     companion object {

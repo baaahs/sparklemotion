@@ -1,7 +1,9 @@
 package baaahs.plugin.beatlink
 
+import baaahs.Color
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
 import ch.tutteli.atrium.api.verbs.expect
@@ -93,6 +95,39 @@ object BeatLinkBeatSourceSpec : Spek({
                 it("reduces the confidence") {
                     expect(beatSource.currentBeat.confidence).toBe(.99f)
                 }
+            }
+        }
+
+        context("waveforms") {
+            val waveform by value { Waveform("074080bf1a111111") }
+
+            it("#sampleCount") {
+                expect(waveform.sampleCount).toBe(2)
+            }
+
+            it("#totalTimeMs") {
+                expect(waveform.totalTimeMs).toBe(13)
+            }
+
+            it("encodes compactly") {
+                expect(
+                    Waveform.Builder().apply {
+                        add(7, Color(0x40, 0x80, 0xbf))
+                        add(26, Color(0x11, 0x11, 0x11))
+                    }.build()
+                ).toEqual(waveform)
+            }
+
+            it("decodes correctly") {
+                expect(waveform.heightAt(0))
+                    .toEqual(7)
+                expect(waveform.colorAt(0))
+                    .toEqual(baaahs.Color(0x40, 0x80, 0xbf))
+
+                expect(waveform.heightAt(1))
+                    .toEqual(26)
+                expect(waveform.colorAt(1))
+                    .toEqual(baaahs.Color(0x11, 0x11, 0x11))
             }
         }
     }
