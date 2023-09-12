@@ -14,7 +14,9 @@ data class BeatData(
 
     val beatsPerMeasure: Int = 4,
 
-    val confidence: Float = 1f
+    val confidence: Float = 1f,
+
+    val trackStartTime: Time? = null
 ) {
     private val beatIntervalSec: Double get() = beatIntervalMs / 1000.0
 

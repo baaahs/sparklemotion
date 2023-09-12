@@ -28,6 +28,7 @@ class BeatLinkBeatSource(
     private val waveformFinder = WaveformFinder.getInstance()
     private val timeFinder = TimeFinder.getInstance()
 
+    private val playerWaveforms = PlayerWaveforms()
     private val listeners = BeatLinkListeners()
 
     @Volatile
@@ -77,7 +78,7 @@ class BeatLinkBeatSource(
         }
 
         analysisTagFinder.addAnalysisTagListener({ update ->
-            println("analysisChanged = ${update}")
+            println("analysisChanged = $update")
         }, ".EXT", "PSSI")
 
         waveformFinder.addWaveformListener(object : WaveformListener {
@@ -168,8 +169,7 @@ class BeatLinkBeatSource(
     @Synchronized
     @VisibleForTesting
     fun newBeat(beat: Beat) {
-//        val latestPosition = timeFinder.getLatestPositionFor(beat.deviceNumber)
-//        println("latestPosition = $latestPosition")
+        val deviceNumber = beat.deviceNumber
 
         if (
         // if more than one channel is on air, pick the tempo master
@@ -179,7 +179,7 @@ class BeatLinkBeatSource(
             || currentlyAudibleChannels.isEmpty() && beat.isTempoMaster
 
             // one channel is on air; pick the cdj that's on it
-            || currentlyAudibleChannels.size == 1 && beat.deviceNumber == currentlyAudibleChannels.single()
+            || currentlyAudibleChannels.size == 1 && deviceNumber == currentlyAudibleChannels.single()
         ) {
             val beatIntervalSec = 60.0 / beat.effectiveTempo
             val beatIntervalMs = (beatIntervalSec * 1000).toInt()
@@ -188,21 +188,31 @@ class BeatLinkBeatSource(
             if (currentBeat.beatIntervalMs != beatIntervalMs ||
                 abs(currentBeat.measureStartTime - measureStartTime) > 0.003
             ) {
-                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
-                logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Setting bpm from beat ${beat.beatWithinBar}" }
+                val trackStartTime = getTrackStartTime(deviceNumber, now)
+
+                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f, trackStartTime = trackStartTime)
+                logger.debug { "${beat.deviceName} on channel $deviceNumber: Setting bpm from beat ${beat.beatWithinBar}" }
                 notifyChanged()
 
-                notifyListeners { it.onBeatData(currentBeat) }
+                playerWaveforms.byDeviceNumber[deviceNumber]?.also { existingWaveform ->
+                    val newWaveform = existingWaveform.copy(trackStartTime = trackStartTime)
+
+                    notifyListeners {
+                        it.onBeatData(currentBeat)
+                        it.onWaveformUpdate(deviceNumber, newWaveform)
+                    }
+                }
             }
             lastBeatAt = now
         } else {
-            logger.debug { "${beat.deviceName} on channel ${beat.deviceNumber}: Ignoring beat ${beat.beatWithinBar}" }
+            logger.debug { "${beat.deviceName} on channel $deviceNumber: Ignoring beat ${beat.beatWithinBar}" }
         }
     }
 
     fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail) {
         val frameCount = detail.frameCount
-        val waveform = Waveform.Builder().apply {
+        val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
+        val waveform = Waveform.Builder(trackStartTime).apply {
             for (i in 0 until frameCount) {
                 val height = detail.segmentHeight(i, 1)
                 val color = detail.segmentColor(i, 1)
@@ -210,6 +220,14 @@ class BeatLinkBeatSource(
             }
         }.build()
         listeners.notifyListeners { it.onWaveformUpdate(deviceNumber, waveform) }
+    }
+
+    private fun getTrackStartTime(deviceNumber: Int, now: Time) = if (timeFinder.isRunning) {
+        val position = timeFinder.getLatestPositionFor(deviceNumber)
+        now - (position.milliseconds / 1000)
+    } else {
+        // TODO: null; value for debugging
+        now - (200f / 1000)
     }
 
     companion object {

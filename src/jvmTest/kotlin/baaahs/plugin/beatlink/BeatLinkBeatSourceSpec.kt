@@ -111,7 +111,7 @@ object BeatLinkBeatSourceSpec : Spek({
 
             it("encodes compactly") {
                 expect(
-                    Waveform.Builder().apply {
+                    Waveform.Builder(FakeClock().now()).apply {
                         add(7, Color(0x40, 0x80, 0xbf))
                         add(26, Color(0x11, 0x11, 0x11))
                     }.build()
