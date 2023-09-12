@@ -236,7 +236,7 @@ class BeatLinkPlugin internal constructor(
                     delay(10000)
 
                     val deviceNumber = Random.nextInt(4) + 1
-                    val waveform = Waveform.Builder().apply {
+                    val waveform = Waveform.Builder(0.0).apply {
                         for (i in 0 until 100) {
                             add(Random.nextInt(32), Color(Random.nextInt(0xffffff)))
                         }

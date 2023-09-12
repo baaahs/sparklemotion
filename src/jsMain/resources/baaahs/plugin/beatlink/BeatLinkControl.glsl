@@ -13,14 +13,22 @@ struct RawBeatInfo {
     float bpm;
     float beatsPerMeasure;
     float confidence;
+    float trackStartTime;
 };
 uniform RawBeatInfo rawBeatInfo; // @@baaahs.BeatLink:RawBeatInfo
 
 struct Waveforms {
     sampler2D player1Waveform;
+    float player1TrackLength;
+
     sampler2D player2Waveform;
+    float player2TrackLength;
+
     sampler2D player3Waveform;
+    float player3TrackLength;
+
     sampler2D player4Waveform;
+    float player4TrackLength;
 };
 uniform Waveforms waveforms; // @@baaahs.BeatLink:Waveforms
 
@@ -42,8 +50,8 @@ const vec3 borderColor = vec3(.0, .4, .0);
 // TODO: This function should be a switchable strategy.
 float beatIntensity_(float power) {
     return clamp(
-        pow(sin((power * 1. + .55) * PI), 4.) * 1.25 + .0,
-        .0, 1.
+    pow(sin((power * 1. + .55) * PI), 4.) * 1.25 + .0,
+    .0, 1.
     );
 }
 
@@ -120,7 +128,7 @@ vec4 drawBeats(vec2 pos) {
     return vec4(color, 1.);
 }
 
-vec4 drawOneWaveform(sampler2D waveform, vec2 pos, float offset, float scale) {
+vec4 drawOneWaveform(sampler2D waveform, float trackLength, vec2 pos, float offset, float scale) {
     pos = vec2(pos.x, (pos.y - offset) * scale);
     float y = pos.y * 2. - 1.;
 
@@ -129,11 +137,13 @@ vec4 drawOneWaveform(sampler2D waveform, vec2 pos, float offset, float scale) {
 
     // center dashed line
     if (ampY < .05 && mod(pos.x * 20., 1.) < .75)
-        return vec4(0., 1., 0., .8);
+    return vec4(0., 1., 0., .8);
 
     // black hairline border
     if (ampY > .97)
-        return vec4(0., 0., 0., .75);
+    return vec4(0., 0., 0., .75);
+
+    float positionInTrack = time - trackLength;
 
     // waveform
     if (ampY <= sampleData.a) {
@@ -150,13 +160,13 @@ vec4 drawOneWaveform(sampler2D waveform, vec2 pos, float offset, float scale) {
 vec4 drawWaveform(vec2 pos) {
     vec4 waveformValue;
     if (pos.y < .25) {
-        waveformValue = drawOneWaveform(waveforms.player1Waveform, pos, 0., 4.);
+        waveformValue = drawOneWaveform(waveforms.player1Waveform, waveforms.player1TrackLength, pos, 0., 4.);
     } else if (pos.y < .5) {
-        waveformValue = drawOneWaveform(waveforms.player2Waveform, pos, .25, 4.);
+        waveformValue = drawOneWaveform(waveforms.player2Waveform, waveforms.player2TrackLength, pos, .25, 4.);
     } else if (pos.y < .75) {
-        waveformValue = drawOneWaveform(waveforms.player3Waveform, pos, .5, 4.);
+        waveformValue = drawOneWaveform(waveforms.player3Waveform, waveforms.player3TrackLength, pos, .5, 4.);
     } else {
-        waveformValue = drawOneWaveform(waveforms.player4Waveform, pos, .75, 4.);
+        waveformValue = drawOneWaveform(waveforms.player4Waveform, waveforms.player4TrackLength, pos, .75, 4.);
     }
     return waveformValue;
 }

@@ -38,13 +38,15 @@ class RawBeatInfoFeed internal constructor(
                         val bpmUniform = glslProgram.getFloatUniform("${varPrefix}.bpm")
                         val beatsPerMeasureUniform = glslProgram.getFloatUniform("${varPrefix}.beatsPerMeasure")
                         val confidenceUniform = glslProgram.getFloatUniform("${varPrefix}.confidence")
+                        val trackStartTimeUniform = glslProgram.getFloatUniform("${varPrefix}.trackStartTime")
 
                         override val isValid: Boolean
                             get() = measureStartTime != null ||
                                     beatIntervalMsUniform != null ||
                                     bpmUniform != null ||
                                     beatsPerMeasureUniform != null ||
-                                    confidenceUniform != null
+                                    confidenceUniform != null ||
+                                    trackStartTimeUniform != null
 
                         override fun setOnProgram() {
                             val beatData = facade.beatData
@@ -54,6 +56,7 @@ class RawBeatInfoFeed internal constructor(
                             bpmUniform?.set(beatData.bpm)
                             beatsPerMeasureUniform?.set(beatData.beatsPerMeasure.toFloat())
                             confidenceUniform?.set(beatData.confidence)
+                            trackStartTimeUniform?.set(beatData.trackStartTime?.toFloat() ?: -1.0f)
                         }
                     }
                 }
@@ -68,7 +71,8 @@ class RawBeatInfoFeed internal constructor(
             "beatIntervalMs" to GlslType.Float,
             "bpm" to GlslType.Float,
             "beatsPerMeasure" to GlslType.Float,
-            "confidence" to GlslType.Float
+            "confidence" to GlslType.Float,
+            "trackStartTime" to GlslType.Int
         )
 
         val contentType = ContentType("raw-beat-info", "Raw Beat Info", struct)

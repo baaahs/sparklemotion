@@ -10,6 +10,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Uniform
+import baaahs.plugin.beatlink.Waveform.Companion.asTotalTimeMs
 import baaahs.plugin.objectSerializer
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
@@ -36,11 +37,16 @@ class WaveformsFeed internal constructor(
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val varPrefix = getVarName(id)
 
-        class PlayerThing(gl: GlContext) {
+        class PlayerThing(gl: GlContext, val playerNumber: Int) {
             val textureUnit = gl.getTextureUnit(id)
             val texture = gl.check { createTexture() }
             var currentWaveform: Waveform? = null
-            var uniform: Uniform? = null
+            var textureUniform: Uniform? = null
+            var trackStartTimeUniform: Uniform? = null
+            var trackLengthUniform: Uniform? = null
+
+            val isBound: Boolean get() =
+                textureUniform != null || trackStartTimeUniform != null || trackLengthUniform != null
 
             fun setFrom(waveform: Waveform?) {
                 if (currentWaveform != waveform) {
@@ -69,31 +75,38 @@ class WaveformsFeed internal constructor(
                                 GL_RGBA, GL_UNSIGNED_BYTE, bytes
                             )
                         }
-                        uniform?.set(textureUnit)
+                        textureUniform?.set(textureUnit)
+                        trackStartTimeUniform?.set(waveform.trackStartTime.toFloat())
+                        trackLengthUniform?.set(sampleCount.asTotalTimeMs())
                     }
                 }
+            }
+
+            fun bind(glslProgram: GlslProgram) {
+                textureUniform = glslProgram.getUniform("${varPrefix}.player${playerNumber}Waveform")
+                trackLengthUniform = glslProgram.getUniform("${varPrefix}.player${playerNumber}TrackLength")
             }
         }
 
         return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                private val playerThing1 = PlayerThing(gl)
-                private val playerThing2 = PlayerThing(gl)
-                private val playerThing3 = PlayerThing(gl)
-                private val playerThing4 = PlayerThing(gl)
+                private val playerThing1 = PlayerThing(gl, 1)
+                private val playerThing2 = PlayerThing(gl, 2)
+                private val playerThing3 = PlayerThing(gl, 3)
+                private val playerThing4 = PlayerThing(gl, 4)
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    playerThing1.uniform = glslProgram.getUniform("${varPrefix}.player1Waveform")
-                    playerThing2.uniform = glslProgram.getUniform("${varPrefix}.player2Waveform")
-                    playerThing3.uniform = glslProgram.getUniform("${varPrefix}.player3Waveform")
-                    playerThing4.uniform = glslProgram.getUniform("${varPrefix}.player4Waveform")
+                    playerThing1.bind(glslProgram)
+                    playerThing2.bind(glslProgram)
+                    playerThing3.bind(glslProgram)
+                    playerThing4.bind(glslProgram)
 
                     return object : ProgramFeedContext {
                         override val isValid: Boolean
-                            get() = playerThing1.uniform != null ||
-                                    playerThing2.uniform != null ||
-                                    playerThing3.uniform != null ||
-                                    playerThing4.uniform != null
+                            get() = playerThing1.isBound ||
+                                    playerThing2.isBound ||
+                                    playerThing3.isBound ||
+                                    playerThing4.isBound
 
                         override fun setOnProgram() {
                             playerThing1.setFrom(facade.playerWaveforms.byDeviceNumber[1])
@@ -111,9 +124,17 @@ class WaveformsFeed internal constructor(
         val struct = GlslType.Struct(
             "Waveforms",
             "player1Waveform" to GlslType.Sampler2D,
+            "player1TrackStartTime" to GlslType.Float,
+            "player1TrackLength" to GlslType.Float,
             "player2Waveform" to GlslType.Sampler2D,
+            "player2TrackStartTime" to GlslType.Float,
+            "player2TrackLength" to GlslType.Float,
             "player3Waveform" to GlslType.Sampler2D,
-            "player4Waveform" to GlslType.Sampler2D
+            "player3TrackStartTime" to GlslType.Float,
+            "player3TrackLength" to GlslType.Float,
+            "player4Waveform" to GlslType.Sampler2D,
+            "player4TrackStartTime" to GlslType.Float,
+            "player4TrackLength" to GlslType.Float,
         )
 
         val contentType = ContentType("beatlink-waveforms", "Waveforms", struct)
