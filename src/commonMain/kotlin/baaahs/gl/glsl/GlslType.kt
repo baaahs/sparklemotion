@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePort
 
-sealed class GlslType constructor(
+sealed class GlslType(
     val glslLiteral: String,
     val defaultInitializer: GlslExpr = GlslExpr("$glslLiteral(0.)")
 ) {
@@ -15,6 +15,7 @@ sealed class GlslType constructor(
     val mutableDefaultInitializer: MutablePort get() = MutableConstPort(defaultInitializer.s, this)
 
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+
     class Struct(
         val name: String,
         val fields: List<Field>,
@@ -152,6 +153,10 @@ sealed class GlslType constructor(
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
 
+    class Array(val type: GlslType, length: kotlin.Int) : GlslType("${type.glslLiteral}[$length]")
+
+    fun arrayOf(count: kotlin.Int): Array = Array(this, count)
+
     open fun matches(otherType: GlslType): Boolean =
         this == otherType
 
@@ -179,7 +184,7 @@ sealed class GlslType constructor(
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
         }
 
-        fun Array<Pair<String, GlslType>>.toFields() =
+        fun kotlin.Array<Pair<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =
