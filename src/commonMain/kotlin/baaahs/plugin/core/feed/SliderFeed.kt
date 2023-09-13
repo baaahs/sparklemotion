@@ -3,12 +3,8 @@ package baaahs.plugin.core.feed
 import baaahs.ShowPlayer
 import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
-import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.data.SingleUniformFeedContext
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -19,8 +15,6 @@ import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
-import baaahs.util.RefCounted
-import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -60,29 +54,23 @@ data class SliderFeed(
                 createGadget()
             }
 
-        return object : FeedContext, RefCounted by RefCounter() {
-            val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
-            val beatSource = plugin?.beatSource
+        val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
+        val beatSource = plugin?.beatSource
 
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    return SingleUniformFeedContext(glslProgram, this@SliderFeed, id) { uniform ->
-                        if (beatSource != null && slider.beatLinked) {
-                            val beatData = beatSource.getBeatData()
-                            if (beatData.confidence > .2f) {
-                                uniform.set(
-                                    (slider.position - slider.floor) *
-                                            beatData.fractionTillNextBeat(clock) +
-                                            slider.floor
-                                )
-                                return@SingleUniformFeedContext
-                            }
-                        }
-
-                        uniform.set(slider.position)
-                    }
+        return SingleUniformFeedContext(this@SliderFeed, id) { uniform ->
+            if (beatSource != null && slider.beatLinked) {
+                val beatData = beatSource.getBeatData()
+                if (beatData.confidence > .2f) {
+                    uniform.set(
+                        (slider.position - slider.floor) *
+                                beatData.fractionTillNextBeat(clock) +
+                                slider.floor
+                    )
+                    return@SingleUniformFeedContext
                 }
             }
+
+            uniform.set(slider.position)
         }
     }
 

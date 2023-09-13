@@ -4,12 +4,8 @@ import baaahs.ShowPlayer
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.gadgets.Switch
-import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.data.SingleUniformFeedContext
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -20,8 +16,6 @@ import baaahs.show.FeedBuilder
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
-import baaahs.util.RefCounted
-import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -58,14 +52,8 @@ data class SwitchFeed(
                 Switch(buttonTitle, initiallyEnabled)
             }
 
-        return object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    return SingleUniformFeedContext(glslProgram, this@SwitchFeed, id) { uniform ->
-                        uniform.set(if (switch.enabled) 1 else 0)
-                    }
-                }
-            }
+        return SingleUniformFeedContext(this@SwitchFeed, id) { uniform ->
+            uniform.set(if (switch.enabled) 1 else 0)
         }
     }
 

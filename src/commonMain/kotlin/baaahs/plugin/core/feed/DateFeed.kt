@@ -1,12 +1,8 @@
 package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
-import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.data.SingleUniformFeedContext
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -14,8 +10,6 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
-import baaahs.util.RefCounted
-import baaahs.util.RefCounter
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -57,21 +51,16 @@ data class DateFeed(
     override val contentType: ContentType
         get() = ContentType.Date
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
-        object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    val clock = showPlayer.toolchain.plugins.pluginContext.clock
-                    return SingleUniformFeedContext(glslProgram, this@DateFeed, id) { uniform ->
-                        val dateTime = DateTime(clock.now() * 1000)
-                        uniform.set(
-                            dateTime.yearInt.toFloat(),
-                            dateTime.month1.toFloat() - if (zeroBasedMonth) 1 else 0,
-                            dateTime.dayOfMonth.toFloat() - if (zeroBasedDay) 1 else 0,
-                            (dateTime.yearOneMillis / 1000.0 % SECONDS_PER_DAY).toFloat()
-                        )
-                    }
-                }
-            }
+    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        val clock = showPlayer.toolchain.plugins.pluginContext.clock
+        return SingleUniformFeedContext(this@DateFeed, id) { uniform ->
+            val dateTime = DateTime(clock.now() * 1000)
+            uniform.set(
+                dateTime.yearInt.toFloat(),
+                dateTime.month1.toFloat() - if (zeroBasedMonth) 1 else 0,
+                dateTime.dayOfMonth.toFloat() - if (zeroBasedDay) 1 else 0,
+                (dateTime.yearOneMillis / 1000.0 % SECONDS_PER_DAY).toFloat()
+            )
         }
+    }
 }

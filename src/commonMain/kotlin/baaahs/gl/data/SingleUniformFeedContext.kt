@@ -1,27 +1,36 @@
 package baaahs.gl.data
 
+import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.glsl.GlslUniform
 import baaahs.show.Feed
 import baaahs.util.Logger
+import baaahs.util.RefCounted
+import baaahs.util.RefCounter
 
 class SingleUniformFeedContext(
-    glslProgram: GlslProgram,
     feed: Feed,
     val id: String,
     val setUniform: (GlslUniform) -> Unit
-) : ProgramFeedContext {
+) : FeedContext, RefCounted by RefCounter() {
     private val type: Any = feed.getType()
     private val varName = feed.getVarName(id)
-    private val uniformLocation = glslProgram.getUniform(varName)
 
-    override val isValid: Boolean get() = uniformLocation != null
+    override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+        override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
+            val uniform = glslProgram.getUniform(varName)
 
-    override fun setOnProgram() {
-        try {
-            uniformLocation?.let { setUniform(it) }
-        } catch (e: Exception) {
-            logger.error(e) { "failed to set uniform $type $varName for $id" }
+            return object : ProgramFeedContext {
+                override val isValid: Boolean get() = uniform != null
+
+                override fun setOnProgram() {
+                    try {
+                        uniform?.let { setUniform(it) }
+                    } catch (e: Exception) {
+                        logger.error(e) { "failed to set uniform $type $varName for $id" }
+                    }
+                }
+            }
         }
     }
 
