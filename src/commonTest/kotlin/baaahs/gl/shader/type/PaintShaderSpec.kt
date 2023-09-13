@@ -130,13 +130,15 @@ object PaintShaderSpec : Spek({
                 expect(
                     openShader.toGlsl(
                         null,
-                        ShaderSubstitutions(openShader, namespace,
+                        ShaderSubstitutions(
+                            openShader, namespace,
                             mapOf(
                                 "resolution" to GlslExpr("in_resolution"),
                                 "blueness" to GlslExpr("aquamarinity"),
                                 "identity" to GlslExpr("p0_identity"),
                                 "gl_FragColor" to GlslExpr("sm_result")
-                            )
+                            ),
+                            emptyList()
                         ),
                     ).trim()
                 )
@@ -294,7 +296,8 @@ object PaintShaderSpec : Spek({
                                 "identity" to GlslExpr("p0_identity"),
                                 "fragCoord" to GlslExpr("gl_FragCoord.xy")
                             ),
-                        ),
+                            emptyList()
+                        )
                     ).trim()
                 )
                     .toBe(

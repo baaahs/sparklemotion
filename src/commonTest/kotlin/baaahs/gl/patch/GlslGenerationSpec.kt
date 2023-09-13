@@ -645,7 +645,7 @@ object GlslGenerationSpec : Spek({
                     struct FixtureInfo {
                         vec3 position;            
                         vec3 rotation; // in Euler angles
-                        vec3 transformation;
+                        mat4 transformation;
                         vec3 boundaryMin;
                         vec3 boundaryMax;
                     };
@@ -1150,6 +1150,10 @@ object GlslGenerationSpec : Spek({
                         // SparkleMotion-generated GLSL
 
                         layout(location = 0) out vec4 sm_result;
+
+                        struct p0_untitledShader_BeatInfo {
+                            float beat;
+                        };
 
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader

@@ -35,6 +35,7 @@ class BeatLinkPlugin internal constructor(
     private val beatInfoFeed = BeatInfoFeed(facade, clock)
     private val rawBeatInfoFeed = RawBeatInfoFeed(facade)
     private val waveformsFeed = WaveformsFeed(facade, clock)
+    private val playerDataFeed = PlayerDataFeed(facade, clock)
 
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
@@ -55,7 +56,8 @@ class BeatLinkPlugin internal constructor(
             beatLinkFeed.Builder(),
             beatInfoFeed.Builder(),
             rawBeatInfoFeed.Builder(),
-            waveformsFeed.Builder()
+            waveformsFeed.Builder(),
+            playerDataFeed.Builder()
         )
 
     class ParserArgs(parser: ArgParser) : Args {
@@ -72,6 +74,7 @@ class BeatLinkPlugin internal constructor(
         private val logger = Logger<BeatLinkPlugin>()
 
         override val id = "baaahs.BeatLink"
+        const val PLAYER_COUNT = 4
 
         private val simulatorDefaultBpm = BeatData(0.0, 500, confidence = 1f)
         private val unknownBpm = BeatData(0.0, 500, confidence = 0f)

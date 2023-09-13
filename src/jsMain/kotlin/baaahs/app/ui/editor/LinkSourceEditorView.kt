@@ -36,10 +36,17 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
     }
 
     val currentLink = props.editingShader.getInputPortLink(props.inputPort)
-    val selected: LinkOption? = linkOptions.find { it.getMutablePort() == currentLink }
+    val selectedLinkOption = linkOptions.find { it.getMutablePort() == currentLink }
+
+    val explicitWeirdLink = if (currentLink != null && selectedLinkOption == null) {
+        listOf(PortLinkOption(currentLink))
+    } else emptyList()
+
+    val selected: LinkOption = selectedLinkOption
+        ?: NoSourcePortOption
     val displayLinkOptions = linkOptions.sortedWith(
         compareBy<LinkOption> { it.groupName }.thenBy { it.title }
-    ) + NewSourcePortOption
+    ) + NoSourcePortOption + NewSourcePortOption + explicitWeirdLink
 
     var showAdvanced by state { false }
     val showAdvancedCheckbox = ref<HTMLElement>()
@@ -54,9 +61,6 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
             attrs.margin = InputBaseMargin.dense
             attrs.size = Size.small
             attrs.value = selected
-            if (selected == null) {
-                this@xComponent.logger.warn { "Huh? None of the LinkOptions are active for ${props.inputPort.id}?" }
-            }
             attrs.renderValue = {
                 buildElement { Typography { +it.title } }
             }

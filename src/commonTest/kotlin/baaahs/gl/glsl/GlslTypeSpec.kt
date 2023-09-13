@@ -44,6 +44,22 @@ object GlslTypeSpec : Spek({
                     )
             }
 
+            context("collectTransitiveStructs") {
+                override(type) {
+                    GlslType.Struct(
+                        "TopLevel",
+                        "thingOne" to GlslType.Struct("ThingOne", "floot" to GlslType.Float),
+                        "irrelevantValue" to GlslType.Int,
+                        "thingTwo" to GlslType.Struct("ThingTwo", "blool" to GlslType.Bool).arrayOf(2)
+                    )
+                }
+
+                it("returns a list of distinct structs in the order they should be declared") {
+                    expect(type.collectTransitiveStructs().map { it.name })
+                        .toEqual(listOf("ThingOne", "ThingTwo", "TopLevel"))
+                }
+            }
+
             context("with arrays") {
                 override(type) {
                     GlslType.Struct(

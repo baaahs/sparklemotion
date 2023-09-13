@@ -77,7 +77,7 @@ class BeatInfoFeed internal constructor(
         override val resourceName: String get() = "BeatInfo"
         override val contentType: ContentType get() = BeatInfoFeed.contentType
         override val serializerRegistrar
-            get() = objectSerializer("${BeatLinkPlugin.id}:BeatInfo", this@BeatInfoFeed)
+            get() = objectSerializer("${BeatLinkPlugin.id}:$resourceName", this@BeatInfoFeed)
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.contentType == BeatInfoFeed.contentType

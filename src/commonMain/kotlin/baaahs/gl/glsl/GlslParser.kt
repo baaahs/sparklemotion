@@ -499,7 +499,7 @@ class GlslParser {
                             qualifier = trimmed
                         }
 
-                        type == null -> type = GlslType.from(trimmed)
+                        type == null -> type = context.findType(trimmed)
 
                         name == null -> name = trimmed
 

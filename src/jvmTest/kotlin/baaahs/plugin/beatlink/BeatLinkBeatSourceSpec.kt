@@ -99,14 +99,14 @@ object BeatLinkBeatSourceSpec : Spek({
         }
 
         context("waveforms") {
-            val waveform by value { Waveform("074080bf1a111111") }
+            val waveform by value { Waveform("074080bf1a111111", 0.0) }
 
             it("#sampleCount") {
                 expect(waveform.sampleCount).toBe(2)
             }
 
             it("#totalTimeMs") {
-                expect(waveform.totalTimeMs).toBe(13)
+                expect(waveform.totalTimeMs).toBe(13f)
             }
 
             it("encodes compactly") {

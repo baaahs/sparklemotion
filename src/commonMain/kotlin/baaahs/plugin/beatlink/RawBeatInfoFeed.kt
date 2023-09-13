@@ -72,7 +72,7 @@ class RawBeatInfoFeed internal constructor(
             "bpm" to GlslType.Float,
             "beatsPerMeasure" to GlslType.Float,
             "confidence" to GlslType.Float,
-            "trackStartTime" to GlslType.Int
+            "trackStartTime" to GlslType.Float
         )
 
         val contentType = ContentType("raw-beat-info", "Raw Beat Info", struct)
@@ -84,7 +84,7 @@ class RawBeatInfoFeed internal constructor(
         override val resourceName: String get() = "RawBeatInfo"
         override val contentType: ContentType get() = RawBeatInfoFeed.contentType
         override val serializerRegistrar
-            get() = objectSerializer("${BeatLinkPlugin.id}:RawBeatInfo", this@RawBeatInfoFeed)
+            get() = objectSerializer("${BeatLinkPlugin.id}:$resourceName", this@RawBeatInfoFeed)
         override val internalOnly: Boolean
             get() = true
 
