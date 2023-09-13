@@ -7,6 +7,9 @@ precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
+uniform vec4 pixCoords; // @@baaahs.Core:RasterCoordinate @type raster-coordinate
+uniform vec2 pixDimens; // @@baaahs.Core:PreviewResolution @type preview-resolution
+
 struct RawBeatInfo {
     float measureStartTime;
     float beatIntervalMs;
@@ -17,26 +20,21 @@ struct RawBeatInfo {
 };
 uniform RawBeatInfo rawBeatInfo; // @@baaahs.BeatLink:RawBeatInfo
 
-struct Waveforms {
-    sampler2D player1Waveform;
-    float player1TrackLength;
-
-    sampler2D player2Waveform;
-    float player2TrackLength;
-
-    sampler2D player3Waveform;
-    float player3TrackLength;
-
-    sampler2D player4Waveform;
-    float player4TrackLength;
+struct PlayerState {
+    float trackStartTime;
+    float trackLength;
 };
-uniform Waveforms waveforms; // @@baaahs.BeatLink:Waveforms
+
+struct PlayerData {
+    PlayerState players[4];
+};
+uniform PlayerData playerData; // @@baaahs.BeatLink:PlayerData
+
+uniform sampler2D waveforms[4]; // @@baaahs.BeatLink:Waveforms
 
 float secPerBeat = rawBeatInfo.beatIntervalMs / 1000.;
 
-const vec2 beatsBottomLeft = vec2(.1, .1);
-const vec2 beatsTopRight = vec2(.9, .9);
-const vec2 beatsDimen = beatsTopRight - beatsBottomLeft;
+const vec2 beatsBorderPx = vec2(5.);
 
 const vec3 backgroundColor = vec3(.1, .1, .4);
 const vec3 beatPowerColor = vec3(0., .0, .5);
@@ -68,7 +66,7 @@ float not(float v) {
 }
 
 float rect(vec2 bottomLeft, vec2 topRight, vec2 pos) {
-    if (step(pos, beatsBottomLeft) == vec2(0.) && step(beatsTopRight, pos) == vec2(0.)) {
+    if (step(pos, bottomLeft) == vec2(0.) && step(topRight, pos) == vec2(0.)) {
         return 1.;
     } else {
         return 0.;
@@ -128,7 +126,14 @@ vec4 drawBeats(vec2 pos) {
     return vec4(color, 1.);
 }
 
-vec4 drawOneWaveform(sampler2D waveform, float trackLength, vec2 pos, float offset, float scale) {
+vec4 drawOneWaveformz(sampler2D waveform, int playerNumber, vec2 pos, float offset, float scale) {
+    float trackStartTime = playerData.players[playerNumber].trackStartTime;
+    float trackLength = playerData.players[playerNumber].trackLength;
+
+    return vec4(0.);
+}
+vec4 drawOneWaveform(sampler2D waveform, PlayerState playerState, vec2 pos, float offset, float scale) {
+    float trackStartTime = playerState.trackStartTime;
     pos = vec2(pos.x, (pos.y - offset) * scale);
     float y = pos.y * 2. - 1.;
 
@@ -142,8 +147,6 @@ vec4 drawOneWaveform(sampler2D waveform, float trackLength, vec2 pos, float offs
     // black hairline border
     if (ampY > .97)
     return vec4(0., 0., 0., .75);
-
-    float positionInTrack = time - trackLength;
 
     // waveform
     if (ampY <= sampleData.a) {
@@ -160,19 +163,21 @@ vec4 drawOneWaveform(sampler2D waveform, float trackLength, vec2 pos, float offs
 vec4 drawWaveform(vec2 pos) {
     vec4 waveformValue;
     if (pos.y < .25) {
-        waveformValue = drawOneWaveform(waveforms.player1Waveform, waveforms.player1TrackLength, pos, 0., 4.);
+        waveformValue = drawOneWaveform(waveforms[0], playerData.players[0], pos, 0., 4.);
     } else if (pos.y < .5) {
-        waveformValue = drawOneWaveform(waveforms.player2Waveform, waveforms.player2TrackLength, pos, .25, 4.);
+        waveformValue = drawOneWaveform(waveforms[1], playerData.players[1], pos, .25, 4.);
     } else if (pos.y < .75) {
-        waveformValue = drawOneWaveform(waveforms.player3Waveform, waveforms.player3TrackLength, pos, .5, 4.);
+        waveformValue = drawOneWaveform(waveforms[2], playerData.players[2], pos, .5, 4.);
     } else {
-        waveformValue = drawOneWaveform(waveforms.player4Waveform, waveforms.player4TrackLength, pos, .75, 4.);
+        waveformValue = drawOneWaveform(waveforms[3], playerData.players[3], pos, .75, 4.);
     }
     return waveformValue;
 }
 
 void main(void) {
     vec2 pos = gl_FragCoord.xy / resolution.xy;
+    vec2 pixPos = pixCoords.xy;
+
     timeInMeasure = mod((time - rawBeatInfo.measureStartTime) / secPerBeat, rawBeatInfo.beatsPerMeasure);
     beatInMeasure = floor(timeInMeasure);
     timeInBeat = mod(timeInMeasure, 1.);
@@ -183,10 +188,10 @@ void main(void) {
     float o = 1.;
 
     // Draw border.
-    float border = 1. - rect(beatsBottomLeft, beatsTopRight, pos);
+    float border = 1. - rect(beatsBorderPx, pixDimens - beatsBorderPx, pixPos);
     color += border * borderColor * nowBeatIntensity;
     o -= o * border;
-    vec2 paddedPos = (pos - beatsBottomLeft) / beatsDimen;
+    vec2 paddedPos = (pos * pixDimens - beatsBorderPx) / (pixDimens - beatsBorderPx * 2.);
 
     // Draw waveform.
     vec4 waveformColor = drawWaveform(paddedPos);

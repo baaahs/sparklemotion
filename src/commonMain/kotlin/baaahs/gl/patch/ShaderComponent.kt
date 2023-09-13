@@ -59,19 +59,17 @@ class ShaderComponent(
     private val resolvedPortMap get() =
         portMap + mapOf(linkedPatch.shader.outputPort.id to GlslExpr(outputVar))
 
-    private val substitutions = ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap)
-
-    override fun appendStructs(buf: ProgramBuilder) {
+    override fun appendStructs(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {
         val openShader = linkedPatch.shader
-        val portStructs = openShader.portStructs
+        val publicStructNames = globalStructs.map { it.name }.toSet()
         openShader.glslCode.structs.forEach { struct ->
-            if (!portStructs.contains(struct.glslType)) {
-                buf.append(struct.glslType.toGlsl(namespace, portStructs.map { it.name }.toSet()))
+            if (!globalStructs.contains(struct.glslType)) {
+                buf.append(struct.glslType.toGlsl(namespace, publicStructNames))
             }
         }
     }
 
-    override fun appendDeclarations(buf: ProgramBuilder) {
+    override fun appendDeclarations(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {
         val openShader = linkedPatch.shader
 
         buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
@@ -84,6 +82,7 @@ class ShaderComponent(
 
         appendInjectionCode(buf)
 
+        val substitutions = ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap, globalStructs)
         buf.append(openShader.toGlsl(index, substitutions), "\n")
     }
 

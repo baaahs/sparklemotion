@@ -42,6 +42,11 @@ sealed class GlslType(
             outputOverride: ((varName: String) -> String)?
         ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputOverride)
 
+        override fun collectTransitiveStructs(): List<Struct> = buildList {
+            fields.forEach { field -> addAll(field.type.collectTransitiveStructs()) }
+            add(this@Struct)
+        }.distinct()
+
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
             buf.append("struct ${namespace?.qualify(name) ?: name} {\n")
@@ -51,6 +56,12 @@ sealed class GlslType(
             buf.append("};\n\n")
 
             return buf.toString()
+        }
+
+        override fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
+            return if (publicStructNames.contains(name)) name
+            else namespace?.qualify(name)
+                ?: name
         }
 
         override fun matches(otherType: GlslType): Boolean {
@@ -121,34 +132,9 @@ sealed class GlslType(
         ) {
             buf.append("    ")
 
-            fun String.maybeQualify() =
-                if (publicStructNames.contains(this)) this
-                else namespace?.qualify(this)
-                    ?: this
-
-            when (type) {
-                is Struct -> {
-                    buf.append(type.name.maybeQualify())
-                    buf.append(" ")
-                    buf.append(name)
-                }
-
-                is Array -> {
-                    buf.append(type.memberType.glslLiteral.maybeQualify())
-                    buf.append(" ")
-                    buf.append(name)
-                    buf.append("[")
-                    buf.append(type.length.toString())
-                    buf.append("]")
-                }
-
-                else -> {
-                    buf.append(type.glslLiteral)
-                    buf.append(" ")
-                    buf.append(name)
-                }
-            }
-
+            buf.append(type.qualifiedName(namespace, publicStructNames))
+            buf.append(" ")
+            buf.append(name)
             buf.append(";")
 
             val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
@@ -171,6 +157,10 @@ sealed class GlslType(
             result = 31 * result + type.hashCode()
             return result
         }
+
+        override fun toString(): String {
+            return "Field(name='$name', type=$type, description=$description, deprecated=$deprecated)"
+        }
     }
 
     object Bool : GlslType("bool", GlslExpr("false"))
@@ -183,7 +173,20 @@ sealed class GlslType(
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
 
-    class Array(val memberType: GlslType, val length: kotlin.Int) : GlslType("${memberType.glslLiteral}[$length]")
+    class Array(val memberType: GlslType, val length: kotlin.Int) : GlslType("${memberType.glslLiteral}[$length]") {
+        override fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String =
+            "${memberType.qualifiedName(namespace, publicStructNames)}[$length]"
+
+        override fun collectTransitiveStructs(): List<Struct> = memberType.collectTransitiveStructs()
+    }
+
+    open fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>) =
+        glslLiteral
+
+    /**
+     * Returns a list of distinct structs (including transitive) for this type.
+     */
+    open fun collectTransitiveStructs(): List<Struct> = emptyList()
 
     fun arrayOf(count: kotlin.Int): Array = Array(this, count)
 

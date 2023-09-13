@@ -9,11 +9,12 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
-import baaahs.glsl.Uniform
-import baaahs.plugin.beatlink.Waveform.Companion.asTotalTimeMs
+import baaahs.glsl.TextureUniform
+import baaahs.plugin.beatlink.BeatLinkPlugin.Companion.PLAYER_COUNT
 import baaahs.plugin.objectSerializer
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.Clock
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -29,24 +30,25 @@ class WaveformsFeed internal constructor(
     private val clock: Clock
 ) : Feed {
     override val pluginPackage: String get() = BeatLinkPlugin.id
-    override val title: String get() = "Waveforms"
-    override fun getType(): GlslType = struct
+    override val title: String get() = "Player Waveforms"
+    override fun getType(): GlslType = contentType.glslType
     override val contentType: ContentType
         get() = WaveformsFeed.contentType
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val varPrefix = getVarName(id)
 
-        class PlayerThing(gl: GlContext, val playerNumber: Int) {
-            val textureUnit = gl.getTextureUnit(id)
+        class PlayerWaveform(gl: GlContext, val playerNumber: Int) {
+            val textureUnit = gl.getTexture("${id}_player$playerNumber")
             val texture = gl.check { createTexture() }
             var currentWaveform: Waveform? = null
-            var textureUniform: Uniform? = null
-            var trackStartTimeUniform: Uniform? = null
-            var trackLengthUniform: Uniform? = null
+            var textureUniform: TextureUniform? = null
 
-            val isBound: Boolean get() =
-                textureUniform != null || trackStartTimeUniform != null || trackLengthUniform != null
+            val isBound: Boolean get() = textureUniform != null
+
+            fun bind(glslProgram: GlslProgram) {
+                textureUniform = glslProgram.getTextureUniform("${varPrefix}[${playerNumber - 1}]")
+            }
 
             fun setFrom(waveform: Waveform?) {
                 if (currentWaveform != waveform) {
@@ -76,43 +78,28 @@ class WaveformsFeed internal constructor(
                             )
                         }
                         textureUniform?.set(textureUnit)
-                        trackStartTimeUniform?.set(waveform.trackStartTime.toFloat())
-                        trackLengthUniform?.set(sampleCount.asTotalTimeMs())
                     }
                 }
-            }
-
-            fun bind(glslProgram: GlslProgram) {
-                textureUniform = glslProgram.getUniform("${varPrefix}.player${playerNumber}Waveform")
-                trackLengthUniform = glslProgram.getUniform("${varPrefix}.player${playerNumber}TrackLength")
             }
         }
 
         return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                private val playerThing1 = PlayerThing(gl, 1)
-                private val playerThing2 = PlayerThing(gl, 2)
-                private val playerThing3 = PlayerThing(gl, 3)
-                private val playerThing4 = PlayerThing(gl, 4)
+                private val playerWaveforms = (0 until PLAYER_COUNT).map {
+                    PlayerWaveform(gl, it + 1)
+                }
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-                    playerThing1.bind(glslProgram)
-                    playerThing2.bind(glslProgram)
-                    playerThing3.bind(glslProgram)
-                    playerThing4.bind(glslProgram)
+                    playerWaveforms.forEach { it.bind(glslProgram) }
 
                     return object : ProgramFeedContext {
                         override val isValid: Boolean
-                            get() = playerThing1.isBound ||
-                                    playerThing2.isBound ||
-                                    playerThing3.isBound ||
-                                    playerThing4.isBound
+                            get() = playerWaveforms.any { it.isBound }
 
                         override fun setOnProgram() {
-                            playerThing1.setFrom(facade.playerWaveforms.byDeviceNumber[1])
-                            playerThing2.setFrom(facade.playerWaveforms.byDeviceNumber[2])
-                            playerThing3.setFrom(facade.playerWaveforms.byDeviceNumber[3])
-                            playerThing4.setFrom(facade.playerWaveforms.byDeviceNumber[4])
+                            playerWaveforms.forEach {
+                                it.setFrom(facade.playerWaveforms.byDeviceNumber[it.playerNumber])
+                            }
                         }
                     }
                 }
@@ -121,39 +108,27 @@ class WaveformsFeed internal constructor(
     }
 
     companion object {
-        val struct = GlslType.Struct(
-            "Waveforms",
-            "player1Waveform" to GlslType.Sampler2D,
-            "player1TrackStartTime" to GlslType.Float,
-            "player1TrackLength" to GlslType.Float,
-            "player2Waveform" to GlslType.Sampler2D,
-            "player2TrackStartTime" to GlslType.Float,
-            "player2TrackLength" to GlslType.Float,
-            "player3Waveform" to GlslType.Sampler2D,
-            "player3TrackStartTime" to GlslType.Float,
-            "player3TrackLength" to GlslType.Float,
-            "player4Waveform" to GlslType.Sampler2D,
-            "player4TrackStartTime" to GlslType.Float,
-            "player4TrackLength" to GlslType.Float,
+        val contentType = ContentType(
+            "beatlink-waveforms",
+            "Player Waveforms",
+            GlslType.Sampler2D.arrayOf(PLAYER_COUNT)
         )
-
-        val contentType = ContentType("beatlink-waveforms", "Waveforms", struct)
     }
 
     inner class Builder : FeedBuilder<WaveformsFeed> {
-        override val title: String get() = "Waveforms"
-        override val description: String get() = "A struct containing low-level information about the beat."
+        override val title: String get() = "Player Waveforms"
+        override val description: String get() = "An array of waveform textures for CDJ players."
         override val resourceName: String get() = "Waveforms"
         override val contentType: ContentType get() = WaveformsFeed.contentType
         override val serializerRegistrar
-            get() = objectSerializer("${BeatLinkPlugin.id}:Waveforms", this@WaveformsFeed)
+            get() = objectSerializer("${BeatLinkPlugin.id}:$resourceName", this@WaveformsFeed)
         override val internalOnly: Boolean
             get() = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.contentType == contentType
                     || suggestedContentTypes.contains(contentType)
-                    || inputPort.type == struct
+                    || inputPort.type == contentType.glslType
 
         override fun build(inputPort: InputPort): WaveformsFeed = this@WaveformsFeed
     }

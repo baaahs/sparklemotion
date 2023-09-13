@@ -32,6 +32,10 @@ class SharedGlContext(
         error("Don't call requestAnimationFrame() on a SharedGlContext!")
     }
 
+    override fun getTextureUnit(key: Any): TextureUnit {
+        return glContext.getTextureUnit(key)
+    }
+
     private fun maybeUpdateSharedCanvasRect(frameTimestamp: Double) {
         if (frameTimestamp != sharedLastFrameTimestamp) {
             sharedCanvasRect = sharedCanvas.getBoundingClientRect().asRect()
