@@ -46,7 +46,7 @@ data class PreviewResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
                     object : ProgramFeedContext, GlslProgram.ResolutionListener {
-                        private val uniform = glslProgram.getUniform(getVarName(id))
+                        private val uniform = glslProgram.getFloat2Uniform(getVarName(id))
                         override val isValid: Boolean = uniform != null
 
                         private var x = 1f

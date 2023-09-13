@@ -55,7 +55,7 @@ data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
                 val offsetUniformId = "ds_${id}_offset"
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
                     object : ProgramFeedContext {
-                        private val uniform = glslProgram.getUniform(offsetUniformId)
+                        private val uniform = glslProgram.getFloat2Uniform(offsetUniformId)
                         override val isValid: Boolean = uniform != null
 
                         override fun setOnProgram() {

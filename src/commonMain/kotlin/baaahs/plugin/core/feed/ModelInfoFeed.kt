@@ -61,8 +61,8 @@ data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                     return object : ProgramFeedContext {
                         override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME
-                        val centerUniform = glslProgram.getUniform("${varPrefix}.center")
-                        val extentsUniform = glslProgram.getUniform("${varPrefix}.extents")
+                        val centerUniform = glslProgram.getFloat3Uniform("${varPrefix}.center")
+                        val extentsUniform = glslProgram.getFloat3Uniform("${varPrefix}.extents")
 
                         override val isValid: Boolean
                             get() = centerUniform != null && extentsUniform != null

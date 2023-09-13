@@ -14,7 +14,6 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
-import baaahs.glsl.Uniform
 import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.plugin.classSerializer
@@ -114,7 +113,7 @@ class PixelDistanceFromEdgeFeedContext(
 
         inner class ProgramFeedContext(glslProgram: GlslProgram) : PerPixelProgramFeedContext(updateMode) {
             override val buffer: ParamBuffer get() = this@EngineFeedContext.buffer
-            override val uniform: Uniform = glslProgram.getUniform(textureUniformId)
+            override val textureUniform = glslProgram.getTextureUniform(textureUniformId)
                 ?: error("no uniform $textureUniformId")
             override val isValid: Boolean get() = true
         }

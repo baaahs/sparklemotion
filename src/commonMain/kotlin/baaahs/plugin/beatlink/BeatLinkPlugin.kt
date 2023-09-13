@@ -152,10 +152,10 @@ class BeatLinkPlugin internal constructor(
                 override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                     override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                         return object : ProgramFeedContext {
-                            val beatUniform = glslProgram.getUniform("${varPrefix}.beat")
-                            val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
-                            val intensityUniform = glslProgram.getUniform("${varPrefix}.intensity")
-                            val confidenceUniform = glslProgram.getUniform("${varPrefix}.confidence")
+                            val beatUniform = glslProgram.getFloatUniform("${varPrefix}.beat")
+                            val bpmUniform = glslProgram.getFloatUniform("${varPrefix}.bpm")
+                            val intensityUniform = glslProgram.getFloatUniform("${varPrefix}.intensity")
+                            val confidenceUniform = glslProgram.getFloatUniform("${varPrefix}.confidence")
 
                             override val isValid: Boolean
                                 get() = beatUniform != null ||
@@ -192,11 +192,11 @@ class BeatLinkPlugin internal constructor(
                 override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                     override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                         return object : ProgramFeedContext {
-                            val measureStartTime = glslProgram.getUniform("${varPrefix}.measureStartTime")
-                            val beatIntervalMsUniform = glslProgram.getUniform("${varPrefix}.beatIntervalMs")
-                            val bpmUniform = glslProgram.getUniform("${varPrefix}.bpm")
-                            val beatsPerMeasureUniform = glslProgram.getUniform("${varPrefix}.beatsPerMeasure")
-                            val confidenceUniform = glslProgram.getUniform("${varPrefix}.confidence")
+                            val measureStartTime = glslProgram.getFloatUniform("${varPrefix}.measureStartTime")
+                            val beatIntervalMsUniform = glslProgram.getFloatUniform("${varPrefix}.beatIntervalMs")
+                            val bpmUniform = glslProgram.getFloatUniform("${varPrefix}.bpm")
+                            val beatsPerMeasureUniform = glslProgram.getFloatUniform("${varPrefix}.beatsPerMeasure")
+                            val confidenceUniform = glslProgram.getFloatUniform("${varPrefix}.confidence")
 
                             override val isValid: Boolean
                                 get() = measureStartTime != null ||

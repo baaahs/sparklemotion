@@ -75,7 +75,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
                         override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
                             val textureId = "ds_${getVarName(id)}_texture"
-                            val videoUniform = glslProgram.getUniform(textureId)
+                            val videoUniform = glslProgram.getTextureUniform(textureId)
                             override val isValid: Boolean
                                 get() {
                                     return videoUniform != null
