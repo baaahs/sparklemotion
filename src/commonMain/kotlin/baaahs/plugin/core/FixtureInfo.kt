@@ -24,7 +24,60 @@ import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
+open class GlStruct(private val title: String) {
+    private val fields = mutableListOf<Field<*>>()
+
+    protected fun <T : GlslType> field(type: T): FieldFactory<T> = FieldFactory(type)
+
+    fun toGlslType(): GlslType.Struct {
+        return GlslType.Struct(title, *fields.map { field ->
+            GlslType.Field(field.name, field.type)
+        }.toTypedArray())
+    }
+
+    inner class FieldFactory<T : GlslType>(private val type: T) {
+        operator fun provideDelegate(
+            thisRef: GlStruct,
+            prop: KProperty<*>
+        ): ReadWriteProperty<GlStruct, T> {
+//            error("woot ${prop.name}!")
+            val field = Field(prop.name, type)
+            fields.add(field)
+
+            return object : ReadWriteProperty<GlStruct, T> {
+                override fun getValue(thisRef: GlStruct, property: KProperty<*>): T {
+//                    return value
+                    TODO("getValue ${prop.name} not implemented")
+                }
+
+                override fun setValue(thisRef: GlStruct, property: KProperty<*>, value: T) {
+                    field.value = value
+                    TODO("setValue ${prop.name} not implemented")
+                }
+            }
+        }
+    }
+}
+
+class Field<T : GlslType>(
+    val name: String,
+    val type: T
+) {
+    var value: Any? = null
+
+}
+
+
+class FixtureInfoStruct : GlStruct("FixtureInfo") {
+    var position by FieldFactory(GlslType.Vec3)
+    var rotation by field(GlslType.Vec3) // TODO: could be EulerAngle instead?
+    var transformation by field(GlslType.Matrix4)
+    var boundaryMin by field(GlslType.Vec3)
+    var boundaryMax by field(GlslType.Vec3)
+}
 
 val fixtureInfoStruct = GlslType.Struct(
     "FixtureInfo",
