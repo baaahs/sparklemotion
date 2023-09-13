@@ -391,10 +391,10 @@ class SoundAnalysisFeedContext(
         init { gl.checkForLinearFilteringOfFloatTextures() }
 
         override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
-            val bucketCountUniform = glslProgram.getUniform("${varPrefix}.bucketCount")
-            val sampleHistoryCountUniform = glslProgram.getUniform("${varPrefix}.sampleHistoryCount")
-            val bucketsUniform = glslProgram.getUniform("${varPrefix}.buckets")
-            val maxMagnitudeUniform = glslProgram.getUniform("${varPrefix}.maxMagnitude")
+            val bucketCountUniform = glslProgram.getIntUniform("${varPrefix}.bucketCount")
+            val sampleHistoryCountUniform = glslProgram.getIntUniform("${varPrefix}.sampleHistoryCount")
+            val bucketsUniform = glslProgram.getTextureUniform("${varPrefix}.buckets")
+            val maxMagnitudeUniform = glslProgram.getFloatUniform("${varPrefix}.maxMagnitude")
 
             override val isValid: Boolean
                 get() = bucketCountUniform != null ||

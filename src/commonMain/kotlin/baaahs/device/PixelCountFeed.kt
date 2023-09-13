@@ -57,7 +57,7 @@ class PixelCountFeedContext(
 
     override fun bind(gl: GlContext) = object : EngineFeedContext {
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
-            private val uniform = glslProgram.getUniform(id)
+            private val uniform = glslProgram.getIntUniform(id)
 
             override val updateMode: UpdateMode
                 get() = UpdateMode.PER_FIXTURE
