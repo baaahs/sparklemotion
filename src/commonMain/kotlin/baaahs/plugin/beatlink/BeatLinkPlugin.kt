@@ -126,16 +126,10 @@ class BeatLinkPlugin internal constructor(
 
         override fun getType(): GlslType = GlslType.Float
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-            return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                    override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
-                        SingleUniformFeedContext(glslProgram, this@BeatLinkFeed, id) { uniform ->
-                            uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
-                        }
-                }
+        override fun open(showPlayer: ShowPlayer, id: String) =
+            SingleUniformFeedContext(this, id) { uniform ->
+                uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
             }
-        }
     }
 
     @SerialName("baaahs.BeatLink:BeatInfo")
