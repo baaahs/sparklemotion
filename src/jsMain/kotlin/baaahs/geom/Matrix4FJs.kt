@@ -8,14 +8,14 @@ import three.js.Object3D
 import three.js.Quaternion
 import three_ext.set
 import three_ext.toVector3F
-import three.js.Matrix4 as NativeMatrix4D
+import three.js.Matrix4 as NativeMatrix4F
 import three.js.Vector3 as NativeVector3F
 
 @Serializable(Matrix4FSerializer::class)
 actual class Matrix4F actual constructor(elements: FloatArray?) {
     constructor(nativeMatrix: three.js.Matrix4) : this(nativeMatrix.elements.map { it.toFloat() }.toFloatArray())
 
-    val nativeMatrix = NativeMatrix4D()
+    val nativeMatrix = NativeMatrix4F()
         .also { if (elements != null) it.fromArray(elements.toDoubleArray()) }
 
     actual val elements: FloatArray
@@ -55,6 +55,10 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         }
     }
 
+    actual fun inverse(): Matrix4F {
+        return Matrix4F(NativeMatrix4F().let { nativeMatrix.getInverse(it) })
+    }
+
     private fun alter(
         block: (translation: three.js.Vector3, rotation: Quaternion, scale: three.js.Vector3) -> Unit
     ): Matrix4F {
@@ -85,7 +89,7 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
 
 actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
     Matrix4F(
-        NativeMatrix4D().compose(
+        NativeMatrix4F().compose(
             position.toVector3(),
             Quaternion().apply { setFromEuler(rotation.toThreeEuler()) },
             scale.toVector3()

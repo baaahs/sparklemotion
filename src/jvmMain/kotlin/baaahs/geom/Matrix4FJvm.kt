@@ -56,6 +56,10 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
         )
     }
 
+    actual fun inverse(): Matrix4F {
+        return Matrix4F(NativeMatrix4F().let { nativeMatrix.invert(it) })
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Matrix4F) return false

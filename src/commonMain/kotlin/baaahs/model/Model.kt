@@ -61,7 +61,6 @@ class Model(
     }
 
     interface Entity : FixtureInfo {
-        val name: String
         val title: String get() = name
         val description: String?
         val defaultFixtureOptions: FixtureOptions?
@@ -133,6 +132,7 @@ class Model(
     )
 
     interface FixtureInfo {
+        val name: String
         val transformation: Matrix4F
         val bounds: Pair<Vector3F, Vector3F>
 
