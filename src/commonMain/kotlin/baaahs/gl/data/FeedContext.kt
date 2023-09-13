@@ -4,7 +4,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.render.RenderTarget
-import baaahs.glsl.Uniform
+import baaahs.glsl.TextureUniform
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 
@@ -85,7 +85,7 @@ abstract class PerPixelProgramFeedContext(
     override val updateMode: UpdateMode
 ) : ProgramFeedContext {
     abstract val buffer: ParamBuffer
-    abstract val uniform: Uniform
+    abstract val textureUniform: TextureUniform
 
     override val callSetEarly: Boolean get() = true
     override val callSetBeforeFrame: Boolean get() =
@@ -93,7 +93,7 @@ abstract class PerPixelProgramFeedContext(
     override val callSetBeforeFixture: Boolean get() = false
 
     final override fun setOnProgram() {
-        buffer.setTexture(uniform)
+        buffer.setTexture(textureUniform.uniform)
     }
 
     final override fun setOnProgram(renderTarget: RenderTarget) {}
