@@ -1,7 +1,7 @@
 package baaahs.gl.data
 
 import baaahs.gl.glsl.GlslProgram
-import baaahs.glsl.Uniform
+import baaahs.glsl.GlslUniform
 import baaahs.show.Feed
 import baaahs.util.Logger
 
@@ -9,7 +9,7 @@ class SingleUniformFeedContext(
     glslProgram: GlslProgram,
     feed: Feed,
     val id: String,
-    val setUniform: (Uniform) -> Unit
+    val setUniform: (GlslUniform) -> Unit
 ) : ProgramFeedContext {
     private val type: Any = feed.getType()
     private val varName = feed.getVarName(id)

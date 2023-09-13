@@ -4,7 +4,7 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.ResourceAllocationException
-import baaahs.glsl.Uniform
+import baaahs.glsl.GlslUniform
 import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
@@ -252,7 +252,7 @@ abstract class GlContext(
             check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) }
         }
 
-        fun setUniform(uniform: Uniform) {
+        fun setUniform(uniform: GlslUniform) {
             uniform.set(unitNumber)
         }
 
