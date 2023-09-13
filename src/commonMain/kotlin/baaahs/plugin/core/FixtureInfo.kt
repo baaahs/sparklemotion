@@ -56,15 +56,15 @@ val fixtureInfoStruct = GlslType.Struct(
 
     // TODO: Switch to `int[] name` when Kgl supports `uniform1iv`.
     // See: https://github.com/gergelydaniel/kgl/pull/15
-//    GlslType.Field("name", GlslType.IntArray)
-    GlslType.Field("name0", GlslType.Int, "The first ASCII value in the fixture entity's name, or 0."),
-    GlslType.Field("name1", GlslType.Int),
-    GlslType.Field("name2", GlslType.Int),
-    GlslType.Field("name3", GlslType.Int),
-    GlslType.Field("name4", GlslType.Int),
-    GlslType.Field("name5", GlslType.Int),
-    GlslType.Field("name6", GlslType.Int),
-    GlslType.Field("name7", GlslType.Int),
+    GlslType.Field("name", GlslType.Int.arrayOf(8), "ASCII values in the fixture entity's name, or 0's."),
+//    GlslType.Field("name0", GlslType.Int, "The first ASCII value in the fixture entity's name, or 0."),
+//    GlslType.Field("name1", GlslType.Int),
+//    GlslType.Field("name2", GlslType.Int),
+//    GlslType.Field("name3", GlslType.Int),
+//    GlslType.Field("name4", GlslType.Int),
+//    GlslType.Field("name5", GlslType.Int),
+//    GlslType.Field("name6", GlslType.Int),
+//    GlslType.Field("name7", GlslType.Int),
     GlslType.Field(
         "nameLength", GlslType.Int,
         "The length of the fixture entity's name."
