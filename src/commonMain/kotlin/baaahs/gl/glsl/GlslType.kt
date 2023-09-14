@@ -119,11 +119,41 @@ sealed class GlslType(
             publicStructNames: Set<String>,
             buf: StringBuilder
         ) {
-            val typeStr = if (type is Struct) {
-                if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
-            } else type.glslLiteral
+            buf.append("    ")
+
+            fun String.maybeQualify() =
+                if (publicStructNames.contains(this)) this
+                else namespace?.qualify(this)
+                    ?: this
+
+            when (type) {
+                is Struct -> {
+                    buf.append(type.name.maybeQualify())
+                    buf.append(" ")
+                    buf.append(name)
+                }
+
+                is Array -> {
+                    buf.append(type.memberType.glslLiteral.maybeQualify())
+                    buf.append(" ")
+                    buf.append(name)
+                    buf.append("[")
+                    buf.append(type.length.toString())
+                    buf.append("]")
+                }
+
+                else -> {
+                    buf.append(type.glslLiteral)
+                    buf.append(" ")
+                    buf.append(name)
+                }
+            }
+
+            buf.append(";")
+
             val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
-            buf.append("    $typeStr $name;$comment\n")
+            buf.append(comment)
+            buf.append("\n")
         }
 
         override fun equals(other: Any?): Boolean {
@@ -153,7 +183,7 @@ sealed class GlslType(
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
 
-    class Array(val type: GlslType, length: kotlin.Int) : GlslType("${type.glslLiteral}[$length]")
+    class Array(val memberType: GlslType, val length: kotlin.Int) : GlslType("${memberType.glslLiteral}[$length]")
 
     fun arrayOf(count: kotlin.Int): Array = Array(this, count)
 
