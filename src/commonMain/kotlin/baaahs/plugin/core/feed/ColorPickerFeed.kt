@@ -5,7 +5,7 @@ import baaahs.ShowPlayer
 import baaahs.control.MutableColorPickerControl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -42,10 +42,7 @@ data class ColorPickerFeed(
                 createGadget()
             }
 
-        return SingleUniformFeedContext(this@ColorPickerFeed, id) { uniform ->
-            val color = colorPicker.color
-            uniform.set(color.redF, color.greenF, color.blueF, color.alphaF)
-        }
+        return singleUniformFeedContext<Color>(id) { colorPicker.color }
     }
 
     companion object : FeedBuilder<ColorPickerFeed> {

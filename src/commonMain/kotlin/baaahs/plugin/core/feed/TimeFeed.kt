@@ -2,7 +2,7 @@ package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -36,9 +36,6 @@ data class TimeFeed(@Transient val `_`: Boolean = true) : Feed {
 
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val clock = showPlayer.toolchain.plugins.pluginContext.clock
-        return SingleUniformFeedContext(this@TimeFeed, id) { uniform ->
-            val thisTime = clock.now().makeSafeForGlsl()
-            uniform.set(thisTime)
-        }
+        return singleUniformFeedContext<Float>(id) { clock.now().makeSafeForGlsl() }
     }
 }
