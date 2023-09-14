@@ -84,7 +84,7 @@ data class ImageFeed(override val title: String) : Feed {
         private val textureUnit: GlContext.TextureUnit
     ) : ProgramFeedContext {
         private val textureId = "ds_${varName}_texture"
-        private val textureUniform = glslProgram.getUniform(textureId)
+        private val textureUniform = glslProgram.getTextureUniform(textureId)
         override val isValid: Boolean
             get() = textureUniform != null
 

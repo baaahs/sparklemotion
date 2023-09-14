@@ -1,12 +1,8 @@
 package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
-import baaahs.gl.GlContext
-import baaahs.gl.data.EngineFeedContext
-import baaahs.gl.data.FeedContext
-import baaahs.gl.data.ProgramFeedContext
-import baaahs.gl.data.SingleUniformFeedContext
-import baaahs.gl.glsl.GlslProgram
+import baaahs.geom.Vector2F
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -14,8 +10,6 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
-import baaahs.util.RefCounted
-import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -45,13 +39,6 @@ data class ResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.Resolution
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
-        object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
-                    SingleUniformFeedContext(glslProgram, this@ResolutionFeed, id) { uniform ->
-                        uniform.set(1f, 1f)
-                    }
-            }
-        }
+    override fun open(showPlayer: ShowPlayer, id: String) =
+        singleUniformFeedContext<Vector2F>(id) { Vector2F.unit2d }
 }

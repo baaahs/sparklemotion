@@ -6,7 +6,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
-import baaahs.glsl.Uniform
+import baaahs.glsl.GlslUniform
 import com.danielgergely.kgl.*
 
 class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeKgl, "1234") {
@@ -488,12 +488,13 @@ class FakeKgl : Kgl {
     }
 }
 
-class FakeUniform : Uniform {
+class FakeUniform : GlslUniform {
     var value: Any? = null
 
     override fun set(x: Int) { value = x }
     override fun set(x: Int, y: Int) { value = listOf(x, y) }
     override fun set(x: Int, y: Int, z: Int) { value = listOf(x, y, z) }
+    override fun set(x: Int, y: Int, z: Int, w: Int) { value = listOf(x, y, z, w) }
     override fun set(x: Float) { value = x }
     override fun set(x: Float, y: Float) { value = Vector2F(x, y) }
     override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z) }
@@ -514,7 +515,7 @@ open class StubGlslProgram : GlslProgram {
     override fun aboutToRenderFrame(): Unit = TODO("not implemented")
     override fun setPixDimens(width: Int, height: Int) = TODO("not implemented")
     override fun aboutToRenderFixture(renderTarget: RenderTarget): Unit = TODO("not implemented")
-    override fun getUniform(name: String): Uniform? = TODO("not implemented")
+    override fun getUniform(name: String): GlslUniform? = TODO("not implemented")
     override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
     override fun use(): Unit = TODO("not implemented")
     override fun release(): Unit = TODO("not implemented")
@@ -523,7 +524,7 @@ open class StubGlslProgram : GlslProgram {
 class FakeGlslProgram(
     val uniforms: MutableMap<String, FakeUniform?> = mutableMapOf()
 ) : StubGlslProgram() {
-    override fun getUniform(name: String): Uniform? {
+    override fun getUniform(name: String): GlslUniform? {
         return uniforms.getOrPut(name) { FakeUniform() }
     }
 }

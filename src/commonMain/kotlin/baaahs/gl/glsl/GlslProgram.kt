@@ -7,8 +7,7 @@ import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.render.RenderTarget
-import baaahs.glsl.Uniform
-import baaahs.glsl.UniformImpl
+import baaahs.glsl.*
 import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
@@ -23,7 +22,23 @@ interface GlslProgram {
     fun setPixDimens(width: Int, height: Int)
     fun aboutToRenderFrame()
     fun aboutToRenderFixture(renderTarget: RenderTarget)
-    fun getUniform(name: String): Uniform?
+
+    fun getUniform(name: String): GlslUniform?
+
+    fun getIntUniform(name: String): IntUniform? = getUniform(name)?.let { IntUniform(it) }
+    fun getInt2Uniform(name: String): Int2Uniform? = getUniform(name)?.let { Int2Uniform(it) }
+    fun getInt3Uniform(name: String): Int3Uniform? = getUniform(name)?.let { Int3Uniform(it) }
+    fun getInt4Uniform(name: String): Int4Uniform? = getUniform(name)?.let { Int4Uniform(it) }
+
+    fun getFloatUniform(name: String): FloatUniform? = getUniform(name)?.let { FloatUniform(it) }
+    fun getFloat2Uniform(name: String): Float2Uniform? = getUniform(name)?.let { Float2Uniform(it) }
+    fun getFloat3Uniform(name: String): Float3Uniform? = getUniform(name)?.let { Float3Uniform(it) }
+    fun getFloat4Uniform(name: String): Float4Uniform? = getUniform(name)?.let { Float4Uniform(it) }
+
+    fun getMatrix4FUniform(name: String): Matrix4Uniform? = getUniform(name)?.let { Matrix4Uniform(it) }
+    fun getEulerAngleUniform(name: String): EulerAngleUniform? = getUniform(name)?.let { EulerAngleUniform(it) }
+    fun getTextureUniform(name: String): TextureUniform? = getUniform(name)?.let { TextureUniform(it) }
+
     fun <T> withProgram(fn: Kgl.() -> T): T
     fun use()
     fun release()
@@ -73,25 +88,23 @@ class GlslProgramImpl(
 
     class GlslProgramSpy(val delegate: GlslProgram) : GlslProgram by delegate {
         val uniforms = mutableMapOf<String, UniformSpy?>()
-        override fun getUniform(name: String): Uniform? =
+        override fun getUniform(name: String): GlslUniform? =
             delegate.getUniform(name)?.let { UniformSpy(name, it) }
-                .also { uniforms.put(name, it) }
+                .also { uniforms[name] = it }
     }
 
-    class UniformSpy(val name: String, val delegate: Uniform) : Uniform {
+    class UniformSpy(val name: String, val delegate: GlslUniform) : GlslUniform {
         var value: Any? = null
 
         override fun set(x: Int) { value = x; delegate.set(x) }
         override fun set(x: Int, y: Int) { value = listOf(x, y); delegate.set(x, y) }
         override fun set(x: Int, y: Int, z: Int) { value = listOf(x, y, z); delegate.set(x, y, z) }
+        override fun set(x: Int, y: Int, z: Int, w: Int) { value = listOf(x, y, z, w); delegate.set(x, y, z, w) }
         override fun set(x: Float) { value = x; delegate.set(x) }
         override fun set(x: Float, y: Float) { value = Vector2F(x, y); delegate.set(x, y) }
         override fun set(x: Float, y: Float, z: Float) { value = Vector3F(x, y, z); delegate.set(x, y, z) }
         override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w); delegate.set(x, y, z, w) }
         override fun set(matrix: Matrix4F) { value = matrix; delegate.set(matrix) }
-        override fun set(vector2F: Vector2F) { value = vector2F; delegate.set(vector2F) }
-        override fun set(vector3F: Vector3F) { value = vector3F; delegate.set(vector3F) }
-        override fun set(vector4F: Vector4F) { value = vector4F; delegate.set(vector4F) }
         override fun set(eulerAngle: EulerAngle) { value; delegate.set(eulerAngle) }
         override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit; delegate.set(textureUnit) }
     }
@@ -107,7 +120,7 @@ class GlslProgramImpl(
         fun release() = programFeedContext.release()
     }
 
-    private val vertexShader_resolution by lazy { getUniform("vertexShader_resolution") }
+    private val vertexShader_resolution by lazy { getFloat2Uniform("vertexShader_resolution") }
 
     init {
         gl.runInContext {
@@ -167,7 +180,7 @@ class GlslProgramImpl(
 //        TODO gl.runInContext { gl.check { deleteProgram(id) } }
     }
 
-    override fun getUniform(name: String): Uniform? = gl.runInContext {
+    override fun getUniform(name: String): GlslUniform? = gl.runInContext {
         gl.useProgram(this)
         val uniformLoc = gl.check { getUniformLocation(id, name) }
         if (uniformLoc == null) {
