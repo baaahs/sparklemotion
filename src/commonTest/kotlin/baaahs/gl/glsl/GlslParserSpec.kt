@@ -39,7 +39,9 @@ object GlslParserSpec : Spek({
                         vec3 position;
                         vec3 rotation;
                     } leftEye;
-
+                    
+                    uniform vec4 palette[3]; // @@Palette
+                    
                     void mainFunc( out vec4 fragColor, in vec2 fragCoord )
                     {
                         vec2 uv = fragCoord.xy / resolution.xy;
@@ -98,6 +100,14 @@ object GlslParserSpec : Spek({
                                 lineNumber = 13,
                                 comments = listOf("@@AnotherClass key=value key2=value2")
                             ),
+                            GlslVar(
+                                "palette",
+                                GlslType.Vec4.arrayOf(4),
+                                "uniform vec4 palette[3];",
+                                isUniform = true,
+                                lineNumber = 18,
+                                comments = listOf("@@Palette")
+                            ),
                             GlslFunction(
                                 "mainFunc",
                                 GlslType.Void,
@@ -110,7 +120,7 @@ object GlslParserSpec : Spek({
                                         "    vec2 uv = fragCoord.xy / resolution.xy;\n" +
                                         "    fragColor = vec4(uv.xy, 0., 1.);\n" +
                                         "}",
-                                lineNumber = 18
+                                lineNumber = 20
                             ),
                             GlslFunction(
                                 "anotherFunc",
@@ -119,7 +129,7 @@ object GlslParserSpec : Spek({
                                     GlslParam("color[3]", GlslType.Vec3),
                                 ),
                                 fullText = "void anotherFunc(vec3 color[3]) {}",
-                                lineNumber = 24
+                                lineNumber = 26
                             ),
                             GlslFunction(
                                 "yetAnotherFunc",
@@ -128,7 +138,7 @@ object GlslParserSpec : Spek({
                                     GlslParam("color[4]", GlslType.Vec3),
                                 ),
                                 fullText = "lowp void yetAnotherFunc(mediump vec3 color[4]) {}",
-                                lineNumber = 26
+                                lineNumber = 28
                             ),
                             GlslFunction(
                                 "main",
@@ -137,7 +147,7 @@ object GlslParserSpec : Spek({
                                 fullText = "void main() {\n" +
                                         "    mainFunc(gl_FragColor, gl_FragCoord);\n" +
                                         "}",
-                                lineNumber = 29
+                                lineNumber = 31
                             )
                         ), { glslParser.findStatements(shaderText) }, true
                     )
@@ -150,11 +160,18 @@ object GlslParserSpec : Spek({
                                 "time", GlslType.Float,
                                 fullText = "uniform float time;", isUniform = true, lineNumber = 5,
                                 comments = listOf(" trailing comment")
-                            ), GlslVar(
+                            ),
+                            GlslVar(
                                 "resolution", GlslType.Vec2,
                                 fullText = "uniform vec2  resolution;", isUniform = true, lineNumber = 10,
                                 comments = listOf(" @@HintClass", "   key=value", "   key2=value2")
-                            ), GlslVar(
+                            ),
+                            GlslVar(
+                                "palette", GlslType.Vec4.arrayOf(3),
+                                fullText = "uniform vec4 palette[3];", isUniform = true, lineNumber = 18,
+                                comments = listOf(" @@Palette")
+                            ),
+                            GlslVar(
                                 "leftEye",
                                 GlslType.Struct(
                                     "FixtureInfo",
