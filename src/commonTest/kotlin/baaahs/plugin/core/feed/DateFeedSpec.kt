@@ -7,7 +7,7 @@ import baaahs.gl.override
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.dialect.IsfShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
-import baaahs.glsl.Uniform
+import baaahs.glsl.GlslUniform
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.shows.FakeUniform
@@ -32,7 +32,7 @@ object DateFeedSpec : Spek({
             }
             val gl = FakeGlContext()
             val fakeProgram = object : StubGlslProgram() {
-                override fun getUniform(name: String): Uniform = uniform
+                override fun getUniform(name: String): GlslUniform = uniform
                 override fun <T> withProgram(fn: Kgl.() -> T): T = fn(gl.fakeKgl)
             }
 

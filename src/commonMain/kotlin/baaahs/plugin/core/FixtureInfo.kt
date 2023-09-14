@@ -71,11 +71,11 @@ class FixtureInfoFeedContext(
         override fun bind(glslProgram: GlslProgram) = object : ProgramFeedContext {
             override val updateMode: UpdateMode get() = UpdateMode.PER_FIXTURE
 
-            private val positionUniform = glslProgram.getUniform("$id.position")
-            private val rotationUniform = glslProgram.getUniform("$id.rotation")
-            private val transformationUniform = glslProgram.getUniform("$id.transformation")
-            private val boundaryMinUniform = glslProgram.getUniform("$id.boundaryMin")
-            private val boundaryMaxUniform = glslProgram.getUniform("$id.boundaryMax")
+            private val positionUniform = glslProgram.getFloat3Uniform("$id.position")
+            private val rotationUniform = glslProgram.getEulerAngleUniform("$id.rotation")
+            private val transformationUniform = glslProgram.getMatrix4FUniform("$id.transformation")
+            private val boundaryMinUniform = glslProgram.getFloat3Uniform("$id.boundaryMin")
+            private val boundaryMaxUniform = glslProgram.getFloat3Uniform("$id.boundaryMax")
 
             override val isValid: Boolean get() =
                 positionUniform != null || rotationUniform != null || transformationUniform != null ||

@@ -43,7 +43,7 @@ class PerFixtureFeedForTest(val updateMode: UpdateMode) : Feed {
     inner class TestProgramFeedContext(glslProgram: GlslProgram) : ProgramFeedContext {
         override val updateMode: UpdateMode get() = this@PerFixtureFeedForTest.updateMode
 
-        val uniform = glslProgram.getUniform("perFixtureData")
+        val uniform = glslProgram.getIntUniform("perFixtureData")
         var released = false
 
         override fun setOnProgram() = run {
