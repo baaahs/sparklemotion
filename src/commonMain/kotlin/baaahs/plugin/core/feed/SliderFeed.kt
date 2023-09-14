@@ -4,7 +4,7 @@ import baaahs.ShowPlayer
 import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -57,20 +57,15 @@ data class SliderFeed(
         val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
         val beatSource = plugin?.beatSource
 
-        return SingleUniformFeedContext(this@SliderFeed, id) { uniform ->
+        return singleUniformFeedContext<Float>(id) {
             if (beatSource != null && slider.beatLinked) {
                 val beatData = beatSource.getBeatData()
                 if (beatData.confidence > .2f) {
-                    uniform.set(
-                        (slider.position - slider.floor) *
-                                beatData.fractionTillNextBeat(clock) +
-                                slider.floor
-                    )
-                    return@SingleUniformFeedContext
-                }
-            }
-
-            uniform.set(slider.position)
+                    (slider.position - slider.floor) *
+                            beatData.fractionTillNextBeat(clock) +
+                            slider.floor
+                } else slider.position
+            } else slider.position
         }
     }
 

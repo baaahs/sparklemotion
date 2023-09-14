@@ -5,7 +5,7 @@ import baaahs.control.MutableXyPadControl
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -48,9 +48,7 @@ data class XyPadFeed(
                 XyPad(title, initialValue, minValue, maxValue)
             }
 
-        return SingleUniformFeedContext(this@XyPadFeed, id) { uniform ->
-            uniform.set(xyPad.position)
-        }
+        return singleUniformFeedContext<Vector2F>(id) { xyPad.position }
     }
 
     companion object : FeedBuilder<XyPadFeed> {

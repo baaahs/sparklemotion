@@ -1,8 +1,9 @@
 package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
+import baaahs.geom.Vector4F
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -53,9 +54,9 @@ data class DateFeed(
 
     override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
         val clock = showPlayer.toolchain.plugins.pluginContext.clock
-        return SingleUniformFeedContext(this@DateFeed, id) { uniform ->
+        return singleUniformFeedContext<Vector4F>(id) {
             val dateTime = DateTime(clock.now() * 1000)
-            uniform.set(
+            Vector4F(
                 dateTime.yearInt.toFloat(),
                 dateTime.month1.toFloat() - if (zeroBasedMonth) 1 else 0,
                 dateTime.dayOfMonth.toFloat() - if (zeroBasedDay) 1 else 0,

@@ -7,7 +7,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
@@ -127,8 +127,8 @@ class BeatLinkPlugin internal constructor(
         override fun getType(): GlslType = GlslType.Float
 
         override fun open(showPlayer: ShowPlayer, id: String) =
-            SingleUniformFeedContext(this, id) { uniform ->
-                uniform.set(beatSource.getBeatData().fractionTillNextBeat(clock))
+            singleUniformFeedContext<Float>(id) {
+                beatSource.getBeatData().fractionTillNextBeat(clock)
             }
     }
 

@@ -5,7 +5,7 @@ import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.gadgets.Switch
 import baaahs.gl.data.FeedContext
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -52,9 +52,7 @@ data class SwitchFeed(
                 Switch(buttonTitle, initiallyEnabled)
             }
 
-        return SingleUniformFeedContext(this@SwitchFeed, id) { uniform ->
-            uniform.set(if (switch.enabled) 1 else 0)
-        }
+        return singleUniformFeedContext<Boolean>(id) { switch.enabled }
     }
 
     companion object : FeedBuilder<SwitchFeed> {

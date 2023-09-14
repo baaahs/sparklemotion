@@ -1,7 +1,8 @@
 package baaahs.plugin.core.feed
 
 import baaahs.ShowPlayer
-import baaahs.gl.data.SingleUniformFeedContext
+import baaahs.geom.Vector2F
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -39,7 +40,5 @@ data class ResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
         get() = ContentType.Resolution
 
     override fun open(showPlayer: ShowPlayer, id: String) =
-        SingleUniformFeedContext(this@ResolutionFeed, id) { uniform ->
-            uniform.set(1f, 1f)
-        }
+        singleUniformFeedContext<Vector2F>(id) { Vector2F.unit2d }
 }
