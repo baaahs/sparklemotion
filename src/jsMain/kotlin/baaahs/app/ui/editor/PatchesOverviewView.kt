@@ -126,27 +126,29 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                     key = "new patch"
                     ref = newPatchCardRef
 
-                    attrs.onClick = handleNewPatchClick.withMouseEvent()
+                    CardActionArea {
+                        attrs.onClick = handleNewPatchClick.withMouseEvent()
 
-                    CardContent {
-                        icon(AddCircleOutline)
-                        typographySubtitle1 {
-                            attrs.component = ReactHTML.div
-                            +"New Shader…"
+                        CardContent {
+                            icon(AddCircleOutline)
+                            typographySubtitle1 {
+                                attrs.component = ReactHTML.div
+                                +"New Shader…"
+                            }
                         }
-                    }
 
-                    Menu {
-                        attrs.anchorEl = newPatchMenuAnchor.asDynamic()
-                        attrs.open = newPatchMenuAnchor != null
-                        attrs.onClose = handleNewPatchMenuClose
+                        Menu {
+                            attrs.anchorEl = newPatchMenuAnchor.asDynamic()
+                            attrs.open = newPatchMenuAnchor != null
+                            attrs.onClose = handleNewPatchMenuClose
 
-                        populateNewShaderMenu(
-                            appContext.plugins.shaderTypes,
-                            handleNewShaderMenuClick,
-                            handleNewShaderFromTemplateMenuClick,
-                            handleNewFromShaderLibrary
-                        )
+                            populateNewShaderMenu(
+                                appContext.plugins.shaderTypes,
+                                handleNewShaderMenuClick,
+                                handleNewShaderFromTemplateMenuClick,
+                                handleNewFromShaderLibrary
+                            )
+                        }
                     }
                 }
             }
