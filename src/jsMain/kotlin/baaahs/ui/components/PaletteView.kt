@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.geom.Vector2I
 import baaahs.sim.ui.simulatorContext
 import baaahs.ui.*
+import external.mui.Portal
 import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
@@ -14,7 +15,6 @@ import kotlinx.css.height
 import kotlinx.css.px
 import kotlinx.css.width
 import materialui.icon
-import mui.base.Portal
 import mui.material.Paper
 import org.w3c.dom.events.MouseEvent
 import react.PropsWithChildren
