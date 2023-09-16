@@ -1,6 +1,5 @@
 package baaahs.glsl
 
-import baaahs.Color
 import baaahs.geom.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
@@ -31,29 +30,6 @@ interface GlslUniform {
     fun set(matrix: Matrix4F)
     fun set(eulerAngle: EulerAngle)
     fun set(textureUnit: GlContext.TextureUnit)
-
-    fun set(value: Any) =
-        when (value) {
-            is Boolean -> set(value)
-
-            is Int -> set(value)
-            is Vector2I -> set(value)
-//            is Vector3I -> uniform.set(newValue)
-//            is Vector4I -> uniform.set(newValue)
-
-            is Float -> set(value)
-            is Vector2F -> set(value)
-            is Vector3F -> set(value)
-            is Vector4F -> set(value)
-
-            is Matrix4F -> set(value)
-            is EulerAngle -> set(value)
-            is GlContext.TextureUnit -> set(value)
-
-            is Color -> set(value.redF, value.greenF, value.blueF, value.alphaF)
-
-            else -> error("unsupported uniform type ${value::class.simpleName}")
-        }
 }
 
 interface Uniform
