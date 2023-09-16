@@ -181,6 +181,7 @@ kotlin {
                 implementation(npm("memoize-one", "^5.1.1"))
                 // </react-beautiful-dnd bug workaround>
 
+                implementation(npm("clsx", "^2.0.0"))
                 implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))

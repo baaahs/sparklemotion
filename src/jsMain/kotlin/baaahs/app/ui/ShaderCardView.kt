@@ -39,48 +39,50 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
     }
 
     Card {
+        key = mutablePatch.id
         attrs.classes = jso { this.root = -styles.shaderCard }
         attrs.sx {
             maxWidth = important("initial".unsafeCast<MaxWidth>())
         }
 
-        key = mutablePatch.id
-        attrs.onClick = handleCardClick
+        CardActionArea {
+            attrs.onClick = handleCardClick
 
-        CardHeader {
-            attrs.avatar = buildElement {
-                Avatar { icon(openShader.shaderType.icon) }
-            }
-            attrs.title = buildElement { +shader.title }
+            CardHeader {
+                attrs.avatar = buildElement {
+                    Avatar { icon(openShader.shaderType.icon) }
+                }
+                attrs.title = buildElement { +shader.title }
 //                                attrs.subheader { +"${shader.type.name} Shader" }
-        }
+            }
 
-        shaderPreview {
-            attrs.shader = shader
-            attrs.width = props.cardSize ?: styles.cardWidth
-            attrs.height = props.cardSize ?: styles.cardWidth
-            attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
-            attrs.toolchain = props.toolchain
-        }
+            shaderPreview {
+                attrs.shader = shader
+                attrs.width = props.cardSize ?: styles.cardWidth
+                attrs.height = props.cardSize ?: styles.cardWidth
+                attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
+                attrs.toolchain = props.toolchain
+            }
 
-        CardActions {
-            attrs.classes = jso { this.root = -styles.shaderCardActions }
-            Typography {
-                attrs.classes = jso { this.root = -styles.shaderCardContent }
-                attrs.variant = TypographyVariant.body2
-                attrs.sx {
-                    display = Display.block
-                    color = Colors.secondary
+            CardActions {
+                attrs.classes = jso { this.root = -styles.shaderCardActions }
+                Typography {
+                    attrs.classes = jso { this.root = -styles.shaderCardContent }
+                    attrs.variant = TypographyVariant.body2
+                    attrs.sx {
+                        display = Display.block
+                        color = Colors.secondary
+                    }
+
+                    +"${openShader.shaderType.title} Shader"
                 }
 
-                +"${openShader.shaderType.title} Shader"
-            }
+                if (props.onDelete != null) {
+                    IconButton {
+                        attrs.onClick = handleDeleteClick
 
-            if (props.onDelete != null) {
-                IconButton {
-                    attrs.onClick = handleDeleteClick
-
-                    icon(mui.icons.material.Delete)
+                        icon(mui.icons.material.Delete)
+                    }
                 }
             }
         }
