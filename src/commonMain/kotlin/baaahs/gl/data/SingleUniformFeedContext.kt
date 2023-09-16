@@ -1,5 +1,3 @@
-@file:Suppress("FINAL_UPPER_BOUND")
-
 package baaahs.gl.data
 
 import baaahs.Color
@@ -11,41 +9,55 @@ import baaahs.show.Feed
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
+import kotlin.jvm.JvmName
 
 // Somewhat delicate code follows, proceed with caution.
 //
 // Kotlin/JS can't discriminate at runtime between Int and Float values,
 // so we can't funnel them through a single GlslUniform.set(Any) method.
 
-fun <T: Boolean> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextBoolean")
+fun <T: Boolean?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
 
-fun <T: Int> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextInt")
+fun <T: Int?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-fun <T: Vector2I> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextVector2I")
+fun <T: Vector2I?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-// <T: Vector3I>fun Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-//    innerSingleUniformFeedContext(id, getValue) { set(it) }
-// <T: Vector4I>fun Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-//    innerSingleUniformFeedContext(id, getValue) { set(it) }
+//@JvmName("singleUniformFeedContextVector4I")
+// fun <T: Vector3I?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+//    bindContext(id, getValue) { set(it) }
+//@JvmName("singleUniformFeedContextVector4I")
+// fun <T: Vector4I?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+//    bindContext(id, getValue) { set(it) }
 
- fun <T: Float> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextFloat")
+fun <T: Float?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-fun <T: Vector2F> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextVector2F")
+fun <T: Vector2F?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-fun <T: Vector3F> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextVector3F")
+fun <T: Vector3F?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-fun <T: Vector4F> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-    bindContext(id, getValue) { set(it) }
-
-fun <T: Matrix4F> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-    bindContext(id, getValue) { set(it) }
-fun <T: EulerAngle> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-    bindContext(id, getValue) { set(it) }
-fun <T: GlContext.TextureUnit> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextVector4F")
+fun <T: Vector4F?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
 
-fun <T: Color> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+@JvmName("singleUniformFeedContextMatrix4F")
+fun <T: Matrix4F?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+    bindContext(id, getValue) { set(it) }
+@JvmName("singleUniformFeedContextEulerAngle")
+fun <T: EulerAngle?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+    bindContext(id, getValue) { set(it) }
+@JvmName("singleUniformFeedContextTextureUnit")
+fun <T: GlContext.TextureUnit?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
+    bindContext(id, getValue) { set(it) }
+
+@JvmName("singleUniformFeedContextColor")
+fun <T: Color?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it.redF, it.greenF, it.blueF, it.alphaF) }
 
 private fun <T: Any> Feed.bindContext(
