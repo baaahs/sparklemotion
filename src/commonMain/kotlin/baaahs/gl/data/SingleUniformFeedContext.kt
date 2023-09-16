@@ -52,18 +52,7 @@ private fun <T: Any> Feed.bindContext(
     id: String,
     getValue: (oldValue: T?) -> T?,
     setUniform: GlslUniform.(value: T) -> Unit
-): FeedContext {
-    var oldValue: T? = null
-    return SingleUniformFeedContext(this, id) { uniform ->
-        val value = getValue(oldValue)
-
-        if (value != null && value != oldValue) {
-            uniform.setUniform(value)
-        }
-
-        oldValue = value
-    }
-}
+): FeedContext = SingleUniformFeedContext(this, id, getValue, setUniform)
 
 // We used to do this, but it fails obscurely in Kotlin/JS:
 //fun GlslUniform.set(value: Any) {
@@ -93,10 +82,11 @@ private fun <T: Any> Feed.bindContext(
 //    }
 //}
 
-class SingleUniformFeedContext(
+class SingleUniformFeedContext<T>(
     feed: Feed,
     private val id: String,
-    private val setUniform: (GlslUniform) -> Unit
+    private val getValue: (T?) -> T?,
+    private val setUniform: GlslUniform.(T) -> Unit
 ) : FeedContext, RefCounted by RefCounter() {
     private val type: Any = feed.getType()
     private val varName = feed.getVarName(id)
@@ -110,19 +100,25 @@ class SingleUniformFeedContext(
 
             return object : ProgramFeedContext {
                 override val isValid: Boolean get() = uniform != null
+                private var oldValue: T? = null
 
                 override fun setOnProgram() {
-                    try {
-                        uniform?.let { setUniform(it) }
-                    } catch (e: Exception) {
-                        logger.error(e) { "Failed to set uniform $type $varName for $id." }
+                    val value = getValue(oldValue)
+                    if (value != null/* && value != oldValue*/) {
+                        try {
+                            uniform?.setUniform(value)
+                        } catch (e: Exception) {
+                            logger.error(e) { "Failed to set uniform $type $varName for $id." }
+                        }
                     }
+
+                    oldValue = value
                 }
             }
         }
     }
 
     companion object {
-        private val logger = Logger<SingleUniformFeedContext>()
+        private val logger = Logger<SingleUniformFeedContext<*>>()
     }
 }
