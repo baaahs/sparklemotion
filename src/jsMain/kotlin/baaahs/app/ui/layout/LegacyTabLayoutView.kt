@@ -12,12 +12,10 @@ import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import web.cssom.FlexDirection
-import web.cssom.ident
 import external.dragDropContext
-import kotlinx.css.*
+import external.mui.Portal
 import js.core.jso
-import mui.base.Portal
+import kotlinx.css.*
 import mui.material.Paper
 import react.Props
 import react.RBuilder
@@ -26,6 +24,8 @@ import react.dom.div
 import react.dom.header
 import react.useContext
 import styled.inlineStyles
+import web.cssom.FlexDirection
+import web.cssom.ident
 
 private val LegacyTabLayoutView = xComponent<LegacyTabLayoutProps>("LegacyTabLayout") { props ->
     val appContext = useContext(appContext)

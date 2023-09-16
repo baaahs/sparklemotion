@@ -22,10 +22,10 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
+import external.mui.Portal
 import external.react_resizable.buildResizeHandle
 import kotlinx.css.*
 import materialui.icon
-import mui.base.Portal
 import mui.material.*
 import react.*
 import react.dom.div
