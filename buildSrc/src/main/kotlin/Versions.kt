@@ -23,7 +23,6 @@ object Versions {
     const val junitPlatform = "1.8.1"
     const val spek = "2.0.11-rc.1" // custom build with LetValues enabled
     const val mockk = "1.12.1"
-    const val atrium = "0.16.0"
-    const val atriumApi = "atrium-fluent-en_GB"
+    const val atrium = "1.0.0"
     const val coroutinesTest = coroutines
 }

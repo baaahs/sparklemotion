@@ -85,7 +85,7 @@ kotlin {
                 implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation("spek:spek-dsl:${Versions.spek}")
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
+                implementation("ch.tutteli.atrium:atrium-fluent:${Versions.atrium}")
             }
         }
 
@@ -140,7 +140,6 @@ kotlin {
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
                 implementation("io.mockk:mockk:${Versions.mockk}")
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}:${Versions.atrium}")
 
                 // For RunOpenGLTests:
                 implementation("org.junit.platform:junit-platform-launcher:${Versions.junitPlatform}")
@@ -203,7 +202,6 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}-js:${Versions.atrium}")
             }
         }
 
