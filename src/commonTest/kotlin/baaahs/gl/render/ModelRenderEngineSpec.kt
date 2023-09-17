@@ -22,7 +22,6 @@ import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
@@ -135,7 +134,6 @@ object ModelRenderEngineSpec : Spek({
 
                     it("should release the texture") {
                         expect(texture.isDeleted).toBe(true)
-                        expect(gl.allocatedTextureUnits).isEmpty()
                     }
                 }
             }

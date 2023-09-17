@@ -128,7 +128,7 @@ object StageManagerSpec : Spek({
             context("port wiring") {
                 it("wires up UV texture stuff") {
                     val pixelCoordsTextureUnit = fakeProgram.getUniform("ds_pixelLocation_texture") as Int
-                    val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit)
+                    val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit, GL_TEXTURE_2D)
 
                     expect(textureConfig.width to textureConfig.height).toBe(100 to 1)
                     expect(textureConfig.internalFormat).toBe(GlContext.GL_RGB32F)

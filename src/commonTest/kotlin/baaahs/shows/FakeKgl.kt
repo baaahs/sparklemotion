@@ -7,12 +7,12 @@ import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GlslUniform
+import baaahs.glsl.TextureUniform
 import com.danielgergely.kgl.*
 
 class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeKgl, "1234") {
     val programs get() = fakeKgl.programs.let { it.subList(1, it.size) }
     val textures get() = fakeKgl.textures.let { it.subList(1, it.size) }
-    val allocatedTextureUnits get() = textureUnits
 
     override fun <T> runInContext(fn: () -> T): T {
         ++fakeKgl.nestLevel
@@ -24,8 +24,8 @@ class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeK
         try { return fn() } finally { fakeKgl.nestLevel-- }
     }
 
-    fun getTextureConfig(textureUnit: Int): FakeKgl.TextureConfig {
-        return fakeKgl.getTextureConfig(textureUnit)
+    fun getTextureConfig(textureUnit: Int, target: Int): FakeKgl.TextureConfig {
+        return fakeKgl.getTextureConfig(textureUnit, target)
             ?: error("no texture bound on unit $textureUnit")
     }
 
@@ -43,9 +43,8 @@ class FakeKgl : Kgl {
     private val uniforms = arrayListOf<Any?>(null) // 1-based
 
     internal val textures = arrayListOf(TextureConfig()) // 1-based
-    private var activeTextureUnit: Int? = null
-    private var textureUnits: MutableMap<Int, TextureConfig> = mutableMapOf()
-    private var targets: MutableMap<Int, TextureConfig> = mutableMapOf()
+    private var activeTextureUnit: FakeTextureUnit? = null
+    private var textureUnits: MutableMap<Int, FakeTextureUnit> = mutableMapOf()
 
     private fun checkContext() {
         if (nestLevel == 0) error("ran GL command outside of context!")
@@ -53,6 +52,10 @@ class FakeKgl : Kgl {
 
     inner class FakeShader(val type: Int) {
         var src: String? = null
+    }
+
+    inner class FakeTextureUnit(val unitNumber: Int) {
+        val targets: MutableMap<Int, TextureConfig?> = mutableMapOf()
     }
 
     inner class FakeProgram {
@@ -109,7 +112,12 @@ class FakeKgl : Kgl {
 
     override fun activeTexture(texture: Int) {
         checkContext()
-        activeTextureUnit = texture - GL_TEXTURE0
+        activeTextureUnit = if (texture == 0) {
+            null
+        } else {
+            val unitNumber = texture - GL_TEXTURE0
+            textureUnits.getOrPut(unitNumber) { FakeTextureUnit(unitNumber) }
+        }
     }
 
     override fun attachShader(programId: Program, shaderId: Shader) {
@@ -131,13 +139,10 @@ class FakeKgl : Kgl {
     override fun bindTexture(target: Int, texture: Texture?) {
         checkContext()
         if (texture == null) {
-            targets.remove(target)
-            textureUnits.remove(activeTextureUnit)
+            activeTextureUnit?.targets?.remove(target)
         } else {
-            @Suppress("CAST_NEVER_SUCCEEDS")
             val boundTextureConfig = textures[defake(texture)]
-            targets[target] = boundTextureConfig
-            textureUnits[activeTextureUnit!!] = boundTextureConfig
+            activeTextureUnit?.targets?.put(target, boundTextureConfig)
         }
     }
 
@@ -319,7 +324,7 @@ class FakeKgl : Kgl {
         buffer: Buffer
     ) {
         checkContext()
-        targets[target]!!.apply {
+        activeTextureUnit?.targets?.get(target)!!.apply {
             this.level = level
             this.internalFormat = internalFormat
             this.width = width
@@ -334,7 +339,7 @@ class FakeKgl : Kgl {
 
     override fun texParameteri(target: Int, pname: Int, value: Int) {
         checkContext()
-        targets[target]!!.params[pname] = value
+        activeTextureUnit?.targets?.get(target)!!.params[pname] = value
     }
 
     fun UniformLocation.set(value: Any) {
@@ -461,8 +466,8 @@ class FakeKgl : Kgl {
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) { checkContext() }
 
-    fun getTextureConfig(textureUnit: Int): TextureConfig? {
-        return textureUnits[textureUnit]
+    fun getTextureConfig(textureUnit: Int, target: Int): TextureConfig? {
+        return textureUnits[textureUnit]?.targets?.get(target)
     }
 
     companion object {
@@ -488,7 +493,7 @@ class FakeKgl : Kgl {
     }
 }
 
-class FakeUniform : GlslUniform {
+class FakeUniform(override val name: String = "fake") : GlslUniform {
     var value: Any? = null
 
     override fun set(x: Int) { value = x }
@@ -504,7 +509,6 @@ class FakeUniform : GlslUniform {
     override fun set(vector3F: Vector3F) { value = vector3F }
     override fun set(vector4F: Vector4F) { value = vector4F }
     override fun set(eulerAngle: EulerAngle) { value }
-    override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit }
 }
 
 open class StubGlslProgram : GlslProgram {
@@ -516,6 +520,7 @@ open class StubGlslProgram : GlslProgram {
     override fun setPixDimens(width: Int, height: Int) = TODO("not implemented")
     override fun aboutToRenderFixture(renderTarget: RenderTarget): Unit = TODO("not implemented")
     override fun getUniform(name: String): GlslUniform? = TODO("not implemented")
+    override fun getTextureUniform(name: String): TextureUniform? = TODO("not implemented")
     override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
     override fun use(): Unit = TODO("not implemented")
     override fun release(): Unit = TODO("not implemented")
