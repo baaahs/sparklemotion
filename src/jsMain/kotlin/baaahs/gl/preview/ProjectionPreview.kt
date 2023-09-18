@@ -32,7 +32,7 @@ class ProjectionPreview(
     private var width: Int,
     private var height: Int,
     model: Model,
-    private val preRenderCallback: (() -> Unit)? = null
+    private val preRenderCallback: ((ShaderPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = ProjectionPreviewDevice
@@ -101,6 +101,8 @@ class ProjectionPreview(
         projectionProgram = program
     }
 
+    override fun getProgram(): GlslProgram? = projectionProgram
+
     override fun render() {
         if (!running) return
 
@@ -109,7 +111,7 @@ class ProjectionPreview(
 
     private suspend fun asyncRender() {
         if (projectionProgram != null) {
-            preRenderCallback?.invoke()
+            preRenderCallback?.invoke(this)
 
             renderEngine.draw()
             renderEngine.finish()

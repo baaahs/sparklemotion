@@ -19,7 +19,10 @@ import web.canvas.CanvasRenderingContext2D
 import web.canvas.RenderingContextId
 import web.html.HTMLCanvasElement
 import web.timers.requestAnimationFrame
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 
 private val Float.short: String
@@ -35,7 +38,7 @@ class MovingHeadPreview(
     private var width: Int,
     private var height: Int,
     model: Model,
-    private val preRenderCallback: (() -> Unit)? = null
+    private val preRenderCallback: ((ShaderPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = MovingHeadDevice
@@ -76,6 +79,8 @@ class MovingHeadPreview(
         movingHeadProgram = program
     }
 
+    override fun getProgram(): GlslProgram? = movingHeadProgram
+
     override fun render() {
         if (!running) return
 
@@ -84,7 +89,7 @@ class MovingHeadPreview(
 
     private suspend fun asyncRender() {
         if (movingHeadProgram != null) {
-            preRenderCallback?.invoke()
+            preRenderCallback?.invoke(this)
 
             renderEngine.draw()
             renderEngine.finish()

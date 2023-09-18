@@ -138,6 +138,7 @@ object PaintShaderSpec : Spek({
                                 "identity" to GlslExpr("p0_identity"),
                                 "gl_FragColor" to GlslExpr("sm_result")
                             ),
+                            emptyList(),
                             emptyList()
                         ),
                     ).trim()
@@ -296,6 +297,7 @@ object PaintShaderSpec : Spek({
                                 "identity" to GlslExpr("p0_identity"),
                                 "fragCoord" to GlslExpr("gl_FragCoord.xy")
                             ),
+                            emptyList(),
                             emptyList()
                         )
                     ).trim()

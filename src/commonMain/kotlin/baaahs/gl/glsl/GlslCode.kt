@@ -189,6 +189,8 @@ class GlslCode(
         private val tags: List<Pair<String, String>>,
         val lineNumber: Int? = null
     ) {
+        val isPassThrough: Boolean get() = tags.any { it.first == "pass-through" }
+
         fun tag(name: String) =
             tags.find { it.first == name }?.second
 
