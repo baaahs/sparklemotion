@@ -8,10 +8,11 @@ class QuadPreview(
     private val gl: GlBase.JsGlContext,
     private var width: Int,
     private var height: Int,
-    private val preRenderCallback: ((QuadPreview) -> Unit)? = null
+    private val preRenderCallback: ((ShaderPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    override var renderEngine = PreviewRenderEngine(gl, width, height)
+    override val renderEngine = PreviewRenderEngine(gl, width, height)
+    private var program: GlslProgram? = null
 
     override fun start() {
         running = true
@@ -29,7 +30,10 @@ class QuadPreview(
 
     override fun setProgram(program: GlslProgram?) {
         renderEngine.useProgram(program)
+        this.program = program
     }
+
+    override fun getProgram(): GlslProgram? = program
 
     override fun render() {
         if (!running) return

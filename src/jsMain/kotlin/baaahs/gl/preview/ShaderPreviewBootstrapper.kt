@@ -24,7 +24,7 @@ actual interface ShaderPreviewBootstrapper {
     fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview
 
     abstract class Helper {
@@ -44,7 +44,7 @@ actual interface ShaderPreviewBootstrapper {
             }
         }
 
-        abstract fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview
+        abstract fun bootstrap(model: Model, preRenderHook: RefObject<(ShaderPreview) -> Unit>): ShaderPreview
 
         abstract fun release(gl: GlContext)
     }
@@ -57,7 +57,7 @@ interface SharedGlContextCapableBootstrapper : ShaderPreviewBootstrapper {
         height: Int,
         sharedGlContext: SharedGlContext,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview
 }
 
@@ -68,7 +68,7 @@ class StandaloneCanvasHelper(
         (document.createElement("canvas") as HTMLCanvasElement)
             .also { it.className = ShaderPreviewStyles.canvas.name }
 
-    override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview {
+    override fun bootstrap(model: Model, preRenderHook: RefObject<(ShaderPreview) -> Unit>): ShaderPreview {
         return bootstrapper.bootstrap(container, model, preRenderHook)
     }
 
@@ -83,7 +83,7 @@ class SharedCanvasHelper(
         (document.createElement("div") as HTMLDivElement)
             .also { it.className = ShaderPreviewStyles.canvas.name }
 
-    override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview =
+    override fun bootstrap(model: Model, preRenderHook: RefObject<(ShaderPreview) -> Unit>): ShaderPreview =
         bootstrapper.bootstrapShared(
             container,
             width?.inPixels() ?: 10,
@@ -102,14 +102,14 @@ actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
         val glslContext = GlBase.manager.createContext()
 
         return MovingHeadPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
-            preRenderHook.current!!.invoke()
+            preRenderHook.current!!.invoke(it)
         }
     }
 }
@@ -118,14 +118,14 @@ actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
         val glslContext = GlBase.manager.createContext()
 
         return ProjectionPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
-            preRenderHook.current!!.invoke()
+            preRenderHook.current!!.invoke(it)
         }
     }
 }
@@ -134,11 +134,11 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
         val glslContext = GlBase.jsManager.createContext(visibleCanvas)
         return QuadPreview(glslContext, visibleCanvas.width, visibleCanvas.height) {
-            preRenderHook.current!!.invoke()
+            preRenderHook.current!!.invoke(it)
         }
     }
 
@@ -148,11 +148,11 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
         height: Int,
         sharedGlContext: SharedGlContext,
         model: Model,
-        preRenderHook: RefObject<() -> Unit>
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
         val glslContext = sharedGlContext.createSubContext(container)
         return QuadPreview(glslContext, width, height) {
-            preRenderHook.current!!.invoke()
+            preRenderHook.current!!.invoke(it)
         }
     }
 }

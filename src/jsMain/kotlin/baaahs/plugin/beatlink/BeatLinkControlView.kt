@@ -57,6 +57,12 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader
+                attrs.onRenderCallback = { shaderPreview ->
+                    val beatData = beatLink.beatData
+                    update(beatData)
+                    val program = shaderPreview.getProgram()
+                    program?.getFloatUniform("brightness")?.set(.5f)
+                }
             }
 
             div(+Styles.bpm) { ref = bpmDiv }

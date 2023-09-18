@@ -75,6 +75,14 @@ class ShaderComponent(
         buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
         buf.append("// ", openShader.title, "\n")
 
+        val passThroughUniforms = linkedPatch.passThroughUniforms
+        if (passThroughUniforms.isNotEmpty()) {
+            buf.append("\n")
+            passThroughUniforms.forEach { glslVar ->
+                buf.append("uniform ${glslVar.type.glslLiteral} ${glslVar.name};\n")
+            }
+        }
+
         buf.append("\n")
         with(openShader.outputPort) {
             buf.append("${dataType.glslLiteral} $resultVar = ${contentType.initializer(dataType).s};\n")
@@ -82,7 +90,8 @@ class ShaderComponent(
 
         appendInjectionCode(buf)
 
-        val substitutions = ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap, globalStructs)
+        val substitutions = ShaderSubstitutions(
+            linkedPatch.shader, namespace, resolvedPortMap, globalStructs, passThroughUniforms)
         buf.append(openShader.toGlsl(index, substitutions), "\n")
     }
 

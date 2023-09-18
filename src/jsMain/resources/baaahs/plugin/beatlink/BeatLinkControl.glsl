@@ -7,6 +7,8 @@ precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
+uniform float brightness; // @pass-through
+
 uniform vec4 pixCoords; // @@baaahs.Core:RasterCoordinate @type raster-coordinate
 uniform vec2 pixDimens; // @@baaahs.Core:PreviewResolution @type preview-resolution
 
@@ -202,5 +204,5 @@ void main(void) {
     color += o * drawBeats(paddedPos).rgb;
     color = mix(color.rrr * .125 + color.ggg * .25 + color.bbb * .125, color, rawBeatInfo.confidence);
 
-    gl_FragColor = vec4(color, 1.);
+    gl_FragColor = vec4(color * brightness, 1.);
 }

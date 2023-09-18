@@ -38,7 +38,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val canvasParent = ref<HTMLDivElement>()
     var shaderPreview by state<ShaderPreview?> { null }
     var errorPopupAnchor by state<Element?> { null }
-    val preRenderHook = ref({})
+    val preRenderHook = ref<(ShaderPreview) -> Unit> {}
 
     val shaderType = props.previewShaderBuilder?.openShader?.shaderType ?: run {
         // TODO: This is duplicating work that happens later in PreviewShaderBuilder, which is rotten.
@@ -124,7 +124,10 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
             builder?.let { mode.build(builder.gadgets, appContext.clock) }
         }
     }
-    preRenderHook.current = { gadgetAdjuster?.adjustGadgets() }
+    preRenderHook.current = {
+        gadgetAdjuster?.adjustGadgets()
+        props.onRenderCallback?.invoke(it)
+    }
 
     onChange("different builder", gl, shaderPreview, builder, props.adjustGadgets) {
         if (gl == null) return@onChange
@@ -310,6 +313,7 @@ external interface ShaderPreviewProps : Props {
     var toolchain: Toolchain?
     var dumpShader: Boolean?
     var noSharedGlContext: Boolean?
+    var onRenderCallback: ((ShaderPreview) -> Unit)?
 }
 
 fun RBuilder.shaderPreview(handler: RHandler<ShaderPreviewProps>) =

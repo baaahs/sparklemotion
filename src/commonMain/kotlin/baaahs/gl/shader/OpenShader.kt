@@ -111,7 +111,8 @@ class ShaderSubstitutions(
     val openShader: OpenShader,
     val namespace: Namespace,
     portMap: Map<String, GlslExpr>,
-    globalStructs: List<GlslType.Struct>
+    globalStructs: List<GlslType.Struct>,
+    passThroughUniforms: List<GlslCode.GlslVar>
 ) : GlslCode.Substitutions {
     private val uniformGlobalsMap = portMap.filter { (id, _) ->
         val inputPort = openShader.findInputPortOrNull(id)
@@ -125,8 +126,11 @@ class ShaderSubstitutions(
 
     private val symbolsToNamespace =
         openShader.glslCode.symbolNames.toSet() -
-                openShader.portStructs.map { it.name }.toSet() -
-                globalStructs.map { it.name }.toSet()
+                (
+                        openShader.portStructs.map { it.name } +
+                                globalStructs.map { it.name } +
+                                passThroughUniforms.map { it.name }
+                        ).toSet()
 
     private val specialSymbols =
         mapOf(initFnName to GlslExpr(namespacedInitFnName(namespace)))

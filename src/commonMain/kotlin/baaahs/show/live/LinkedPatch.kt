@@ -37,6 +37,9 @@ class LinkedPatch(
         redirectableLink
     }
 
+    val passThroughUniforms =
+        shader.glslCode.globalInputVars.filter { it.hint?.isPassThrough == true }
+
     override fun getNodeId(programLinker: ProgramLinker): String = programLinker.idFor(shader.shader)
 
     override fun traverse(programLinker: ProgramLinker) {
