@@ -22,7 +22,6 @@ import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
@@ -107,9 +106,7 @@ object ModelRenderEngineSpec : Spek({
                     expect(texture.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
                     expect(texture.params[GL_TEXTURE_MAG_FILTER]).toBe(GL_NEAREST)
 
-                    val buffer = texture.buffer
-                    println("buffer = $buffer")
-//                    expect(300) { buffer. }
+                    expect(texture.buffer?.size).toBe(1)
                 }
             }
 
@@ -135,7 +132,6 @@ object ModelRenderEngineSpec : Spek({
 
                     it("should release the texture") {
                         expect(texture.isDeleted).toBe(true)
-                        expect(gl.allocatedTextureUnits).isEmpty()
                     }
                 }
             }
@@ -181,7 +177,8 @@ object ModelRenderEngineSpec : Spek({
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
                             expect(texture.width to texture.height)
                                 .toBe(64 to 2)
-                            expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+
+                            expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
                                 .containsExactly(
                                     listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f),
                                     listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
@@ -247,7 +244,7 @@ object ModelRenderEngineSpec : Spek({
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
                             expect(texture.width to texture.height)
                                 .toBe(3 to 1)
-                            expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+                            expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
                                 .containsExactly(
                                     listOf(10f, 20f, 21f), // First frame, fixture1.
                                     listOf(10f, 20f, 21f), // First frame, fixture2.
@@ -262,7 +259,7 @@ object ModelRenderEngineSpec : Spek({
                             it("should allocate a texture to hold per-pixel data for all fixtures") {
                                 expect(texture.width to texture.height)
                                     .toBe(3 to 1)
-                                expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+                                expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
                                     .containsExactly(
                                         // 10f-41f are currently issued when the feed is first bound;
                                         // we could eliminate that overhead but probably not really worth it.
@@ -289,7 +286,7 @@ object ModelRenderEngineSpec : Spek({
                             it("should allocate a texture to hold per-pixel data for all fixtures") {
                                 expect(texture.width to texture.height)
                                     .toBe(3 to 1)
-                                expect(fakeGlProgram.renders.map { it.textureBuffers.only("texture buffer") })
+                                expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
                                     .containsExactly(
                                         listOf(10f, 20f, 21f), // First frame, fixture1.
                                         listOf(10f, 20f, 21f), // First frame, fixture2.

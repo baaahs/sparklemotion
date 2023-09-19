@@ -4,7 +4,6 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.ResourceAllocationException
-import baaahs.glsl.GlslUniform
 import baaahs.util.Logger
 import com.danielgergely.kgl.*
 
@@ -20,9 +19,7 @@ abstract class GlContext(
     abstract fun <T> runInContext(fn: () -> T): T
     abstract suspend fun <T> asyncRunInContext(fn: suspend () -> T): T
 
-    private val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
-
-    protected val textureUnits get() = state.textureUnits
+    internal val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 
     /**
      * When a GlContext shares a rendering canvas with others, [rasterOffet] indicates this
@@ -39,8 +36,6 @@ abstract class GlContext(
 
     class State {
         var viewport: List<Int> = emptyList()
-        val textureUnits = mutableMapOf<Any, TextureUnit>()
-        var activeTextureUnit: TextureUnit? = null
 
         var activeProgram: GlslProgram? = null
         var activeFrameBuffer: FrameBuffer? = null
@@ -198,68 +193,45 @@ abstract class GlContext(
         }
     }
 
-    fun getTextureUnit(key: Any): TextureUnit {
-        return textureUnits.getOrPut(key) { allocTextureUnit(key) }
+    fun bindActiveTexture(
+        textureUnitNumber: Int = 0,
+        target: Int = GL_TEXTURE_2D,
+        texture: Texture?
+    ) {
+        check { activeTexture(GL_TEXTURE0 + textureUnitNumber) }
+        check { bindTexture(target, texture) }
     }
 
-    private fun allocTextureUnit(key: Any): TextureUnit {
-        val allocatedTextureUnits = textureUnits.values.map { it.unitNumber }.toSet()
-        val nextTextureUnit = (0 until maxTextureUnit).firstOrNull { !allocatedTextureUnits.contains(it) }
-            ?: error("Too many texture units in use; max=$maxTextureUnit.")
-        logger.debug { "$this: Allocated texture unit $nextTextureUnit for ${key::class.simpleName}." }
-        return TextureUnit(key, nextTextureUnit)
+    fun Texture.configure(minFilter: Int = GL_LINEAR, maxFilter: Int = GL_LINEAR) {
+        bindActiveTexture(texture = this)
+
+        check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter) }
+        check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter) }
+        check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) }
+        check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) }
     }
 
-    inner class TextureUnit(private val key: Any, internal val unitNumber: Int) {
-        var boundTexture: Texture? = null
+    fun Texture.upload(level: Int, internalFormat: Int, border: Int, resource: TextureResource) {
+        bindActiveTexture(texture = this)
 
-        private fun activate() {
-            if (state.activeTextureUnit !== this) {
-                stats.activeTexture++
-                check { activeTexture(GL_TEXTURE0 + unitNumber) }
-                state.activeTextureUnit = this
-            }
-        }
+        stats.texImage2D++
+        check { texImage2D(GL_TEXTURE_2D, level, internalFormat, border, resource) }
+    }
 
-        fun bindTexture(texture: Texture) {
-            if (boundTexture != texture) {
-                activate()
-                stats.bindTexture++
-                check { bindTexture(GL_TEXTURE_2D, texture) }
-                boundTexture = texture
-            }
-        }
+    fun Texture.upload(
+        level: Int,
+        internalFormat: Int,
+        width: Int,
+        height: Int,
+        border: Int,
+        format: Int,
+        type: Int,
+        buffer: Buffer
+    ) {
+        bindActiveTexture(texture = this)
 
-        fun uploadTexture(
-            level: Int,
-            internalFormat: Int,
-            border: Int,
-            resource: TextureResource
-        ) {
-            stats.texImage2D++
-            check { texImage2D(GL_TEXTURE_2D, level, internalFormat, border, resource) }
-        }
-
-        fun uploadTexture(level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, buffer: Buffer) {
-            stats.texImage2D++
-            check { texImage2D(GL_TEXTURE_2D, level, internalFormat, width, height, border, format, type, buffer) }
-        }
-
-        fun configure(minFilter: Int = GL_LINEAR, maxFilter: Int = GL_LINEAR) {
-            check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter) }
-            check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter) }
-            check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE) }
-            check { texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE) }
-        }
-
-        fun setUniform(uniform: GlslUniform) {
-            uniform.set(unitNumber)
-        }
-
-        fun release() {
-            textureUnits.remove(key)
-            logger.debug { "$this: Released texture unit $unitNumber for $key." }
-        }
+        stats.texImage2D++
+        check { texImage2D(GL_TEXTURE_2D, level, internalFormat, width, height, border, format, type, buffer) }
     }
 
     open fun checkIfResultBufferCanContainFloats(required: Boolean = false): Boolean = true

@@ -1,13 +1,10 @@
 package baaahs.gl.param
 
-import baaahs.gl.data.ProgramFeedContext
-import baaahs.gl.glsl.GlslProgram
-import baaahs.glsl.GlslUniform
+import baaahs.glsl.TextureUniform
 
 interface ParamBuffer {
     fun resizeBuffer(width: Int, height: Int)
     fun uploadToTexture()
-    fun setTexture(uniform: GlslUniform)
-    fun bind(glslProgram: GlslProgram): ProgramFeedContext
+    fun setTexture(uniform: TextureUniform)
     fun release()
 }

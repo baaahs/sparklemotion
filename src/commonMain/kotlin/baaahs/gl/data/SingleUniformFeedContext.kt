@@ -52,9 +52,6 @@ fun <T: Matrix4F?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue
 @JvmName("singleUniformFeedContextEulerAngle")
 fun <T: EulerAngle?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
     bindContext(id, getValue) { set(it) }
-@JvmName("singleUniformFeedContextTextureUnit")
-fun <T: GlContext.TextureUnit?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =
-    bindContext(id, getValue) { set(it) }
 
 @JvmName("singleUniformFeedContextColor")
 fun <T: Color?> Feed.singleUniformFeedContext(id: String, getValue: (oldValue: T?) -> T?) =

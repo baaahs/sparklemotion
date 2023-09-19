@@ -67,11 +67,10 @@ data class ImageFeed(override val title: String) : Feed {
 
         return object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
-                private val textureUnit = gl.getTextureUnit(id)
                 private val texture = gl.check { createTexture() }
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
-                    ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, textureUnit)
+                    ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, gl)
             }
         }
     }
@@ -81,7 +80,7 @@ data class ImageFeed(override val title: String) : Feed {
         varName: String,
         private val imagePicker: ImagePicker,
         private val texture: Texture,
-        private val textureUnit: GlContext.TextureUnit
+        private val gl: GlContext
     ) : ProgramFeedContext {
         private val textureId = "ds_${varName}_texture"
         private val textureUniform = glslProgram.getTextureUniform(textureId)
@@ -107,18 +106,19 @@ data class ImageFeed(override val title: String) : Feed {
             val image = image
             if (image?.hasChanged() == true) {
                 val bitmap = image.toBitmap()
-                with(textureUnit) {
-                    bindTexture(texture)
-                    configure(GL_LINEAR, GL_LINEAR)
+
+                with(gl) {
+                    texture.configure(GL_LINEAR, GL_LINEAR)
 
                     bitmap.withGlBuffer { buf ->
-                        uploadTexture(
+                        texture.upload(
                             0, GL_RGBA, image.width, image.height, 0,
                             GL_RGBA, GL_UNSIGNED_BYTE, buf
                         )
                     }
                 }
-                textureUniform?.set(textureUnit)
+
+                textureUniform?.set(texture)
             }
         }
     }
