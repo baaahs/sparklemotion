@@ -37,7 +37,7 @@ interface GlslProgram {
 
     fun getMatrix4FUniform(name: String): Matrix4Uniform? = getUniform(name)?.let { Matrix4Uniform(it) }
     fun getEulerAngleUniform(name: String): EulerAngleUniform? = getUniform(name)?.let { EulerAngleUniform(it) }
-    fun getTextureUniform(name: String): TextureUniform? = getUniform(name)?.let { TextureUniform(it) }
+    fun getTextureUniform(name: String): TextureUniform?
 
     fun <T> withProgram(fn: Kgl.() -> T): T
     fun use()
@@ -64,6 +64,8 @@ class GlslProgramImpl(
         gl.createFragmentShader(linkedProgram.toFullGlsl(gl.glslVersion))
 
     val id = gl.compile(vertexShader, fragShader)
+
+    private val textureUniforms = mutableMapOf<String, TextureUniform?>()
 
     internal val openFeeds = gl.runInContext {
         linkedProgram.feedLinks.mapNotNull { (feed, id) ->
@@ -93,7 +95,7 @@ class GlslProgramImpl(
                 .also { uniforms[name] = it }
     }
 
-    class UniformSpy(val name: String, val delegate: GlslUniform) : GlslUniform {
+    class UniformSpy(override val name: String, val delegate: GlslUniform) : GlslUniform {
         var value: Any? = null
 
         override fun set(x: Int) { value = x; delegate.set(x) }
@@ -106,7 +108,6 @@ class GlslProgramImpl(
         override fun set(x: Float, y: Float, z: Float, w: Float) { value = Vector4F(x, y, z, w); delegate.set(x, y, z, w) }
         override fun set(matrix: Matrix4F) { value = matrix; delegate.set(matrix) }
         override fun set(eulerAngle: EulerAngle) { value; delegate.set(eulerAngle) }
-        override fun set(textureUnit: GlContext.TextureUnit) { value = textureUnit; delegate.set(textureUnit) }
     }
 
     class OpenFeed(
@@ -158,6 +159,11 @@ class GlslProgramImpl(
                 logger.warn(e) { "Error in ${it.feed.title}'s setOnProgram." }
             }
         }
+
+        // Update global texture unit bindings.
+        textureUniforms.values.filterNotNull().onEachIndexed { index, textureUniform ->
+            textureUniform.bindTextureUnitForRender(index)
+        }
     }
 
     override fun aboutToRenderFixture(renderTarget: RenderTarget) {
@@ -186,8 +192,11 @@ class GlslProgramImpl(
         if (uniformLoc == null) {
             logger.debug { "no such uniform $name" }
         }
-        uniformLoc?.let { UniformImpl(this@GlslProgramImpl, it) }
+        uniformLoc?.let { UniformImpl(this@GlslProgramImpl, name, it) }
     }
+
+    override fun getTextureUniform(name: String): TextureUniform? =
+        textureUniforms.getOrPut(name) { getUniform(name)?.let { TextureUniform(it, gl) } }
 
     override fun <T> withProgram(fn: Kgl.() -> T): T {
         gl.useProgram(this)

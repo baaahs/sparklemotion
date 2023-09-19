@@ -3,16 +3,13 @@ package baaahs.gl.param
 import baaahs.gl.GlContext
 import baaahs.gl.GlContext.Companion.GL_RGB32F
 import baaahs.gl.GlContext.Companion.GL_RGBA32F
-import baaahs.gl.data.ProgramFeedContext
-import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.result.BufferView
-import baaahs.glsl.GlslUniform
+import baaahs.glsl.TextureUniform
 import com.danielgergely.kgl.*
 import kotlin.math.min
 
 class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlContext) : ParamBuffer {
-    private val textureUnit = gl.getTextureUnit(this)
     private val texture = gl.check { createTexture() }
     private var floats = FloatArray(0)
     private var width = 0
@@ -32,19 +29,16 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
     override fun uploadToTexture() {
         if (width == 0 || height == 0) return
 
-        with(textureUnit) {
-            bindTexture(texture)
-            configure(GL_NEAREST, GL_NEAREST)
-
-            val (internalFormat, format) = when(stride) {
+        with(gl) {
+            texture.configure(GL_NEAREST, GL_NEAREST)
+            val (internalFormat, format) = when (stride) {
                 1 -> GL_R32F to GL_RED
                 2 -> GL_RG32F to GL_RG
                 3 -> GL_RGB32F to GL_RGB
                 4 -> GL_RGBA32F to GL_RGBA
                 else -> error("Stride currently has to be between 1 and 4.")
             }
-
-            uploadTexture(
+            texture.upload(
                 0,
                 internalFormat, width, height, 0,
                 format, GL_FLOAT, FloatBuffer(floats)
@@ -52,23 +46,8 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
         }
     }
 
-    override fun setTexture(uniform: GlslUniform) {
-        uniform.set(textureUnit)
-    }
-
-    override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
-        val uniform = glslProgram.getTextureUniform(id)
-
-        return object : ProgramFeedContext {
-            override val isValid get() = uniform != null
-
-            override fun setOnProgram() {
-                if (uniform != null) {
-                    textureUnit.bindTexture(texture)
-                    uniform.set(textureUnit)
-                }
-            }
-        }
+    override fun setTexture(uniform: TextureUniform) {
+        uniform.set(texture)
     }
 
     fun scoped(
@@ -102,6 +81,5 @@ class FloatsParamBuffer(val id: String, val stride: Int, private val gl: GlConte
 
     override fun release() {
         gl.check { deleteTexture(texture) }
-        textureUnit.release()
     }
 }

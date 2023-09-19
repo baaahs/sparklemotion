@@ -70,7 +70,6 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext {
                     return object : EngineFeedContext {
-                        private val textureUnit = gl.getTextureUnit(VideoInPlugin)
                         private val texture = gl.check { createTexture() }
 
                         override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {
@@ -83,23 +82,21 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
 
                             override fun setOnProgram() {
                                 videoUniform?.let { uniform ->
-                                    with(textureUnit) {
-                                        bindTexture(texture)
-                                        configure(GL_LINEAR, GL_LINEAR)
-                                        uploadTexture(
+                                    with(gl) {
+                                        texture.configure(GL_LINEAR, GL_LINEAR)
+                                        texture.upload(
                                             0, GL_RGBA, 0,
                                             videoProvider.getTextureResource()
                                         )
                                     }
 
-                                    uniform.set(textureUnit)
+                                    uniform.set(texture)
                                 }
                             }
                         }
 
                         override fun release() {
                             gl.check { deleteTexture(texture) }
-                            textureUnit.release()
                         }
                     }
                 }

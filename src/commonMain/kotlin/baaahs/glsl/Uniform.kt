@@ -3,10 +3,14 @@ package baaahs.glsl
 import baaahs.geom.*
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
+import com.danielgergely.kgl.GL_TEXTURE_2D
 import com.danielgergely.kgl.Kgl
+import com.danielgergely.kgl.Texture
 import com.danielgergely.kgl.UniformLocation
 
 interface GlslUniform {
+    val name: String
+
     fun set(value: Boolean) = set(if (value) 1 else 0)
 
     fun set(x: Int)
@@ -29,7 +33,6 @@ interface GlslUniform {
 
     fun set(matrix: Matrix4F)
     fun set(eulerAngle: EulerAngle)
-    fun set(textureUnit: GlContext.TextureUnit)
 }
 
 interface Uniform
@@ -77,12 +80,28 @@ class EulerAngleUniform(private val uniform: GlslUniform) : Uniform {
     fun set(eulerAngle: EulerAngle) = uniform.set(eulerAngle)
 }
 
-class TextureUniform(val uniform: GlslUniform) : Uniform {
-    fun set(textureUnit: GlContext.TextureUnit) = uniform.set(textureUnit)
+class TextureUniform(
+    val uniform: GlslUniform,
+    private val gl: GlContext
+) : Uniform {
+    private var texture: Texture? = null
+
+    fun set(texture: Texture?) {
+        this.texture = texture
+    }
+
+    fun bindTextureUnitForRender(index: Int) {
+        if (index > gl.maxTextureUnit)
+            error("Too many texture units in use; max=${gl.maxTextureUnit}.")
+
+        gl.bindActiveTexture(index, GL_TEXTURE_2D, texture)
+        gl.check { uniform.set(index) }
+    }
 }
 
 class UniformImpl internal constructor(
     private val glslProgram: GlslProgram,
+    override val name: String,
     private val uniformLocation: UniformLocation
 ): GlslUniform {
     override fun set(x: Int) = withProgram { uniform1i(uniformLocation, x) }
@@ -100,8 +119,6 @@ class UniformImpl internal constructor(
 
     override fun set(eulerAngle: EulerAngle) =
         set(eulerAngle.xRad.toFloat(), eulerAngle.yRad.toFloat(), eulerAngle.zRad.toFloat())
-
-    override fun set(textureUnit: GlContext.TextureUnit) = textureUnit.setUniform(this)
 
     private fun <T> withProgram(fn: Kgl.() -> T): T {
         return glslProgram.withProgram(fn)

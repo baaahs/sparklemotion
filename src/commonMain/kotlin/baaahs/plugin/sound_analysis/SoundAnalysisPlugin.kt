@@ -385,7 +385,6 @@ class SoundAnalysisFeedContext(
     override fun bind(gl: GlContext): EngineFeedContext = SoundAnalysisEngineFeedContext(gl)
 
     inner class SoundAnalysisEngineFeedContext(private val gl: GlContext) : EngineFeedContext {
-        private val textureUnit = gl.getTextureUnit(SoundAnalysisPlugin)
         private val texture = gl.check { createTexture() }
 
         init { gl.checkForLinearFilteringOfFloatTextures() }
@@ -407,19 +406,17 @@ class SoundAnalysisFeedContext(
 
                 bucketCountUniform?.set(bucketCount)
                 sampleHistoryCountUniform?.set(historySize)
-                with(textureUnit) {
-                    bindTexture(texture)
-                    configure(GL_NEAREST, GL_NEAREST)
-                    uploadTexture(0, GL_R32F, bucketCount, historySize, 0, GL_RED, GL_FLOAT, textureBuffer)
+                with(gl) {
+                    texture.configure(GL_NEAREST, GL_NEAREST)
+                    texture.upload(0, GL_R32F, bucketCount, historySize, 0, GL_RED, GL_FLOAT, textureBuffer)
                 }
-                bucketsUniform?.set(textureUnit)
+                bucketsUniform?.set(texture)
                 maxMagnitudeUniform?.set(maxMagnitude)
             }
         }
 
         override fun release() {
             gl.check { deleteTexture(texture) }
-            textureUnit.release()
         }
     }
 

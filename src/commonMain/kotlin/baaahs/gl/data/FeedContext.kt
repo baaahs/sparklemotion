@@ -93,7 +93,7 @@ abstract class PerPixelProgramFeedContext(
     override val callSetBeforeFixture: Boolean get() = false
 
     final override fun setOnProgram() {
-        buffer.setTexture(textureUniform.uniform)
+        buffer.setTexture(textureUniform)
     }
 
     final override fun setOnProgram(renderTarget: RenderTarget) {}
