@@ -28,7 +28,7 @@ class BeatLinkBeatSource(
     private val waveformFinder = WaveformFinder.getInstance()
     private val timeFinder = TimeFinder.getInstance()
 
-    private val playerWaveforms = PlayerWaveforms()
+    private val playerStates = PlayerStates()
     private val listeners = BeatLinkListeners()
 
     @Volatile
@@ -194,12 +194,12 @@ class BeatLinkBeatSource(
                 logger.debug { "${beat.deviceName} on channel $deviceNumber: Setting bpm from beat ${beat.beatWithinBar}" }
                 notifyChanged()
 
-                playerWaveforms.byDeviceNumber[deviceNumber]?.also { existingWaveform ->
-                    val newWaveform = existingWaveform.copy(trackStartTime = trackStartTime)
+                playerStates.byDeviceNumber[deviceNumber]?.also { existingPlayerState ->
+                    val newPlayerState = existingPlayerState.copy(trackStartTime = trackStartTime)
 
                     notifyListeners {
                         it.onBeatData(currentBeat)
-                        it.onWaveformUpdate(deviceNumber, newWaveform)
+                        it.onPlayerStateUpdate(deviceNumber, newPlayerState)
                     }
                 }
             }
@@ -212,14 +212,14 @@ class BeatLinkBeatSource(
     fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail) {
         val frameCount = detail.frameCount
         val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
-        val waveform = Waveform.Builder(trackStartTime).apply {
+        val playerState = PlayerState.Builder(trackStartTime).apply {
             for (i in 0 until frameCount) {
                 val height = detail.segmentHeight(i, 1)
                 val color = detail.segmentColor(i, 1)
                 add(height, baaahs.Color(color.rgb))
             }
         }.build()
-        listeners.notifyListeners { it.onWaveformUpdate(deviceNumber, waveform) }
+        listeners.notifyListeners { it.onPlayerStateUpdate(deviceNumber, playerState) }
     }
 
     private fun getTrackStartTime(deviceNumber: Int, now: Time) = if (timeFinder.isRunning) {

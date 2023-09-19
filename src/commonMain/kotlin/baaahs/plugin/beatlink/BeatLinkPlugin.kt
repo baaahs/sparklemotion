@@ -117,7 +117,7 @@ class BeatLinkPlugin internal constructor(
         }
 
         private val beatDataTopic = PubSub.Topic("plugins/$id/beatData", BeatData.serializer())
-        private val playerWaveformsTopic = PubSub.Topic("plugins/$id/playerWaveforms", PlayerWaveforms.serializer())
+        private val playerStateTopic = PubSub.Topic("plugins/$id/playerState", PlayerStates.serializer())
     }
 
     /** Stateful, [Observable] holder of BeatLink data. */
@@ -127,7 +127,7 @@ class BeatLinkPlugin internal constructor(
         var beatData: BeatData = unknownBpm
             private set
 
-        var playerWaveforms = PlayerWaveforms()
+        var playerStates = PlayerStates()
             private set
 
         private val listener = object : BeatLinkListener {
@@ -136,8 +136,8 @@ class BeatLinkPlugin internal constructor(
                 notifyChanged()
             }
 
-            override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
-                playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
+            override fun onPlayerStateUpdate(deviceNumber: Int, playerState: PlayerState) {
+                playerStates = playerStates.updateWith(deviceNumber, playerState)
                 notifyChanged()
             }
         }
@@ -151,10 +151,10 @@ class BeatLinkPlugin internal constructor(
         private val beatSource: BeatSource,
         pluginContext: PluginContext
     ) : OpenBridgePlugin {
-        private var playerWaveforms = PlayerWaveforms()
+        private var playerStates = PlayerStates()
 
         private val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, unknownBpm) { }
-        private val playerWaveformsChannel = pluginContext.pubSub.openChannel(playerWaveformsTopic, playerWaveforms) { }
+        private val playerWaveformsChannel = pluginContext.pubSub.openChannel(playerStateTopic, playerStates) { }
 
         init {
             beatSource.addListener(object : BeatLinkListener {
@@ -162,9 +162,9 @@ class BeatLinkPlugin internal constructor(
                     beatDataChannel.onChange(beatData)
                 }
 
-                override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
-                    playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
-                    playerWaveformsChannel.onChange(playerWaveforms)
+                override fun onPlayerStateUpdate(deviceNumber: Int, playerState: PlayerState) {
+                    playerStates = playerStates.updateWith(deviceNumber, playerState)
+                    playerWaveformsChannel.onChange(playerStates)
                 }
             })
         }
@@ -174,15 +174,15 @@ class BeatLinkPlugin internal constructor(
         beatSource: BeatSource,
         pluginContext: PluginContext
     ) : BeatSource {
-        private var playerWaveforms = PlayerWaveforms()
+        private var playerStates = PlayerStates()
 
         private var beatLinkListeners = BeatLinkListeners()
 
         val beatDataChannel = pluginContext.pubSub.openChannel(beatDataTopic, BeatSource.None.none) {
             error("BeatData update from client? Huh?")
         }
-        val playerWaveformsChannel = pluginContext.pubSub.openChannel(playerWaveformsTopic, playerWaveforms) {
-            error("PlayerWaveforms update from client? Huh?")
+        val playerStateChannel = pluginContext.pubSub.openChannel(playerStateTopic, playerStates) {
+            error("PlayerState update from client? Huh?")
         }
 
         init {
@@ -192,9 +192,9 @@ class BeatLinkPlugin internal constructor(
                     beatDataChannel.onChange(beatData)
                 }
 
-                override fun onWaveformUpdate(deviceNumber: Int, waveform: Waveform) {
-                    playerWaveforms = playerWaveforms.updateWith(deviceNumber, waveform)
-                    playerWaveformsChannel.onChange(playerWaveforms)
+                override fun onPlayerStateUpdate(deviceNumber: Int, playerState: PlayerState) {
+                    playerStates = playerStates.updateWith(deviceNumber, playerState)
+                    playerStateChannel.onChange(playerStates)
                 }
             })
         }
@@ -213,10 +213,10 @@ class BeatLinkPlugin internal constructor(
             pubSub.openChannel(beatDataTopic, defaultBeatData) { beatData ->
                 listeners.notifyListeners { it.onBeatData(beatData) }
             }
-            pubSub.openChannel(playerWaveformsTopic, PlayerWaveforms()) { playerWaveforms ->
+            pubSub.openChannel(playerStateTopic, PlayerStates()) { playerWaveforms ->
                 listeners.notifyListeners {
                     playerWaveforms.byDeviceNumber.forEach { (deviceNumber, waveform) ->
-                        it.onWaveformUpdate(deviceNumber, waveform)
+                        it.onPlayerStateUpdate(deviceNumber, waveform)
                     }
                 }
             }
@@ -239,13 +239,13 @@ class BeatLinkPlugin internal constructor(
                     delay(10000)
 
                     val deviceNumber = Random.nextInt(4) + 1
-                    val waveform = Waveform.Builder(pluginContext.clock.now()).apply {
+                    val playerState = PlayerState.Builder(pluginContext.clock.now()).apply {
                         for (i in 0 until Random.nextInt(1000)) {
                             add(Random.nextInt(32), Color(Random.nextInt(0xffffff)))
                         }
                     }.build()
                     listeners.notifyListeners {
-                        it.onWaveformUpdate(deviceNumber, waveform)
+                        it.onPlayerStateUpdate(deviceNumber, playerState)
                     }
                 }
             }

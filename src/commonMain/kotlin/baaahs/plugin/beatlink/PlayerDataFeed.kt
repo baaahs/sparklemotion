@@ -11,7 +11,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.FloatUniform
 import baaahs.plugin.beatlink.BeatLinkPlugin.Companion.PLAYER_COUNT
-import baaahs.plugin.beatlink.Waveform.Companion.asTotalTimeMs
+import baaahs.plugin.beatlink.PlayerState.Companion.asTotalTimeMs
 import baaahs.plugin.objectSerializer
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
@@ -36,7 +36,7 @@ class PlayerDataFeed internal constructor(
         val varPrefix = getVarName(id)
 
         class PlayerState(val playerNumber: Int) {
-            var currentWaveform: Waveform? = null
+            var currentPlayerState: baaahs.plugin.beatlink.PlayerState? = null
             var trackStartTimeUniform: FloatUniform? = null
             var trackLengthUniform: FloatUniform? = null
 
@@ -48,14 +48,14 @@ class PlayerDataFeed internal constructor(
                 trackLengthUniform = glslProgram.getFloatUniform("${varPrefix}.players[$playerNumber].trackLength")
             }
 
-            fun setFrom(waveform: Waveform?) {
-                if (currentWaveform != waveform) {
-                    currentWaveform = waveform
+            fun setFrom(playerState: baaahs.plugin.beatlink.PlayerState?) {
+                if (currentPlayerState != playerState) {
+                    currentPlayerState = playerState
 
-                    if (waveform != null) {
-                        val sampleCount = waveform.sampleCount
+                    if (playerState != null) {
+                        val sampleCount = playerState.sampleCount
 
-                        trackStartTimeUniform?.set(waveform.trackStartTime.toFloat())
+                        trackStartTimeUniform?.set(playerState.trackStartTime.toFloat())
                         trackLengthUniform?.set(sampleCount.asTotalTimeMs())
                     }
                 }
@@ -77,7 +77,7 @@ class PlayerDataFeed internal constructor(
 
                         override fun setOnProgram() {
                             playerStates.forEach {
-                                it.setFrom(facade.playerWaveforms.byDeviceNumber[it.playerNumber])
+                                it.setFrom(facade.playerStates.byDeviceNumber[it.playerNumber])
                             }
                         }
                     }

@@ -41,7 +41,7 @@ class WaveformsFeed internal constructor(
         class PlayerWaveform(gl: GlContext, val playerNumber: Int) {
             val textureUnit = gl.getTexture("${id}_player$playerNumber")
             val texture = gl.check { createTexture() }
-            var currentWaveform: Waveform? = null
+            var currentPlayerState: PlayerState? = null
             var textureUniform: TextureUniform? = null
 
             val isBound: Boolean get() = textureUniform != null
@@ -50,17 +50,17 @@ class WaveformsFeed internal constructor(
                 textureUniform = glslProgram.getTextureUniform("${varPrefix}[${playerNumber - 1}]")
             }
 
-            fun setFrom(waveform: Waveform?) {
-                if (currentWaveform != waveform) {
-                    currentWaveform = waveform
+            fun setFrom(playerState: PlayerState?) {
+                if (currentPlayerState != playerState) {
+                    currentPlayerState = playerState
 
-                    if (waveform != null) {
-                        val sampleCount = waveform.sampleCount
+                    if (playerState != null) {
+                        val sampleCount = playerState.sampleCount
 
                         val bytes = ByteBuffer(sampleCount * 4)
                         for (i in 0 until sampleCount) {
-                            val height = waveform.heightAt(i) * 8
-                            val color = waveform.colorAt(i)
+                            val height = playerState.heightAt(i) * 8
+                            val color = playerState.colorAt(i)
 
                             bytes[i * 4 + 0] = height.toByte()
                             bytes[i * 4 + 1] = color.redB
@@ -97,7 +97,7 @@ class WaveformsFeed internal constructor(
 
                         override fun setOnProgram() {
                             playerWaveforms.forEach {
-                                it.setFrom(facade.playerWaveforms.byDeviceNumber[it.playerNumber])
+                                it.setFrom(facade.playerStates.byDeviceNumber[it.playerNumber])
                             }
                         }
                     }
