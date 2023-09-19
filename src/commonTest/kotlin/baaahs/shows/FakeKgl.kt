@@ -40,8 +40,6 @@ class FakeKgl : Kgl {
     internal val programs = arrayListOf(FakeProgram()) // 1-based
     private var activeProgram: FakeProgram? = null
 
-    private val uniforms = arrayListOf<Any?>(null) // 1-based
-
     internal val textures = arrayListOf(TextureConfig()) // 1-based
     private var activeTextureUnit: FakeTextureUnit? = null
     private var textureUnits: MutableMap<Int, FakeTextureUnit> = mutableMapOf()
@@ -55,16 +53,17 @@ class FakeKgl : Kgl {
     }
 
     inner class FakeTextureUnit(val unitNumber: Int) {
-        val targets: MutableMap<Int, TextureConfig?> = mutableMapOf()
+        val targets: MutableMap<Int, Texture?> = mutableMapOf()
     }
 
     inner class FakeProgram {
         val shaders = mutableMapOf<Int, FakeShader>()
+        val uniforms = arrayListOf<Any?>(null) // 1-based
         private val uniformIdsByName = mutableMapOf<String, Int>()
         val renders = mutableListOf<RenderState>()
         var deleted: Boolean = false
 
-        fun getUniformLocation(name: String): UniformLocation? {
+        fun getUniformLocation(name: String): UniformLocation {
             return fake(uniformIdsByName.getOrPut(name) {
                 uniforms.add(null)
                 uniforms.size - 1
@@ -80,17 +79,31 @@ class FakeKgl : Kgl {
 
         fun recordRender() {
             renders.add(
-                RenderState(uniformIdsByName.mapValues { (_, uniformId) -> uniforms[uniformId] })
+                RenderState(
+                    uniformIdsByName.mapValues { (_, uniformId) -> uniforms[uniformId] },
+                    HashMap(textureUnits),
+                    textures.map { it.copy() }
+                )
             )
         }
     }
 
-    inner class RenderState(val uniforms: Map<String, Any?>) {
-        val textureBuffers = textures.subList(1, textures.size)
-            .map { it.buffer?.contents() ?: emptyList() }
+    inner class RenderState(
+        val uniforms: Map<String, Any?>,
+        private val textureUnits: Map<Int, FakeTextureUnit>,
+        private val textures: List<TextureConfig> // 1-based
+    ) {
+        fun findUniformTexture(uniformName: String): Texture {
+            val textureUnitNumber = uniforms[uniformName] ?: error("No uniform $uniformName.")
+            val textureUnit = textureUnits[textureUnitNumber] ?: error("No texture unit $textureUnitNumber.")
+            return textureUnit.targets[GL_TEXTURE_2D] ?: error("No texture bound to unit $textureUnitNumber.")
+        }
+
+        fun findUniformTextureConfig(uniformName: String): TextureConfig =
+            findUniformTexture(uniformName).let { textures[defake(it)] }
     }
 
-    class TextureConfig(
+    data class TextureConfig(
         var params: MutableMap<Int, Int> = mutableMapOf(),
         var level: Int? = null,
         var internalFormat: Int? = null,
@@ -99,7 +112,7 @@ class FakeKgl : Kgl {
         var border: Int? = null,
         var format: Int? = null,
         var type: Int? = null,
-        var buffer: Buffer? = null,
+        var buffer: List<Any>? = null,
         var offset: Int? = null
     ) {
         var isDeleted: Boolean = false
@@ -141,8 +154,7 @@ class FakeKgl : Kgl {
         if (texture == null) {
             activeTextureUnit?.targets?.remove(target)
         } else {
-            val boundTextureConfig = textures[defake(texture)]
-            activeTextureUnit?.targets?.put(target, boundTextureConfig)
+            activeTextureUnit?.targets?.put(target, texture)
         }
     }
 
@@ -274,7 +286,6 @@ class FakeKgl : Kgl {
 
     override fun getUniformLocation(programId: Program, name: String): UniformLocation? {
         checkContext()
-        @Suppress("CAST_NEVER_SUCCEEDS")
         return programs[defake(programId)].getUniformLocation(name)
     }
 
@@ -324,27 +335,29 @@ class FakeKgl : Kgl {
         buffer: Buffer
     ) {
         checkContext()
-        activeTextureUnit?.targets?.get(target)!!.apply {
-            this.level = level
-            this.internalFormat = internalFormat
-            this.width = width
-            this.height = height
-            this.border = border
-            this.format = format
-            this.type = type
-            this.buffer = buffer
-            this.offset = offset
-        }
+        val texture = activeTextureUnit?.targets?.get(target) ?: error("No texture bound to unit $target.")
+        textures[defake(texture)]
+            .apply {
+                this.level = level
+                this.internalFormat = internalFormat
+                this.width = width
+                this.height = height
+                this.border = border
+                this.format = format
+                this.type = type
+                this.buffer = buffer.contents()
+                this.offset = null
+            }
     }
 
     override fun texParameteri(target: Int, pname: Int, value: Int) {
         checkContext()
-        activeTextureUnit?.targets?.get(target)!!.params[pname] = value
+        val texture = activeTextureUnit?.targets?.get(target) ?: error("No texture bound to unit $target.")
+        textures[defake(texture)].params[pname] = value
     }
 
     fun UniformLocation.set(value: Any) {
-        @Suppress("CAST_NEVER_SUCCEEDS")
-        uniforms[defake(this)] = value
+        (activeProgram ?: error("No active program")).uniforms[defake(this)] = value
     }
 
     override fun uniform1f(location: UniformLocation, f: Float) {
@@ -439,7 +452,6 @@ class FakeKgl : Kgl {
 
     override fun useProgram(programId: Program) {
         checkContext()
-        @Suppress("CAST_NEVER_SUCCEEDS")
         activeProgram = programs[defake(programId)]
     }
 
@@ -467,7 +479,8 @@ class FakeKgl : Kgl {
     override fun viewport(x: Int, y: Int, width: Int, height: Int) { checkContext() }
 
     fun getTextureConfig(textureUnit: Int, target: Int): TextureConfig? {
-        return textureUnits[textureUnit]?.targets?.get(target)
+        val texture = textureUnits[textureUnit]?.targets?.get(target) ?: return null
+        return textures[defake(texture)]
     }
 
     companion object {
@@ -540,6 +553,5 @@ private fun <T : Any> fake(i: Int): T {
 }
 
 private fun <T : Any> defake(i: T): Int {
-    @Suppress("UNCHECKED_CAST")
     return i as Int
 }
