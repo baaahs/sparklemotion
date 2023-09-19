@@ -68,16 +68,15 @@ class WaveformsFeed internal constructor(
                             bytes[i * 4 + 3] = color.blueB
                         }
 
-                        with(textureUnit) {
-                            bindTexture(texture)
-                            configure(GL_LINEAR, GL_LINEAR)
+                        with(gl) {
+                            texture.configure(GL_LINEAR, GL_LINEAR)
 
-                            uploadTexture(
+                            texture.upload(
                                 0, GL_RGBA, sampleCount, 1, 0,
                                 GL_RGBA, GL_UNSIGNED_BYTE, bytes
                             )
                         }
-                        textureUniform?.set(textureUnit)
+                        textureUniform?.set(texture)
                     }
                 }
             }

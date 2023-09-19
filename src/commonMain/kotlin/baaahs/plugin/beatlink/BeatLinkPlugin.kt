@@ -101,7 +101,7 @@ class BeatLinkPlugin internal constructor(
 
                 override fun getServerPlugin(pluginContext: PluginContext, bridgeClient: BridgeClient) =
                     BeatLinkPlugin(
-                        PubSubPublisher(SimBeatSource(bridgeClient), pluginContext),
+                        PubSubPublisher(SimBeatSource(bridgeClient, pluginContext), pluginContext),
                         pluginContext
                     )
 
@@ -226,7 +226,7 @@ class BeatLinkPlugin internal constructor(
         override fun removeListener(listener: BeatLinkListener) { listeners.removeListener(listener) }
     }
 
-    class SimBeatSource(bridgeClient: BridgeClient) : PubSubSubscriber(
+    class SimBeatSource(bridgeClient: BridgeClient, pluginContext: PluginContext) : PubSubSubscriber(
         bridgeClient.pubSub,
         simulatorDefaultBpm
     ) {
@@ -239,8 +239,8 @@ class BeatLinkPlugin internal constructor(
                     delay(10000)
 
                     val deviceNumber = Random.nextInt(4) + 1
-                    val waveform = Waveform.Builder(0.0).apply {
-                        for (i in 0 until 100) {
+                    val waveform = Waveform.Builder(pluginContext.clock.now()).apply {
+                        for (i in 0 until Random.nextInt(1000)) {
                             add(Random.nextInt(32), Color(Random.nextInt(0xffffff)))
                         }
                     }.build()
