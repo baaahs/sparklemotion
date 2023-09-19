@@ -5,11 +5,12 @@ import baaahs.util.Time
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Waveform(
-    private val encoded: String,
+data class PlayerState(
+    /** Each sample is 8 hex bytes: HHRRGGBB where 'H' is height. */
+    private val encodedWaveform: String,
     val trackStartTime: Time
 ) {
-    val sampleCount get() = encoded.length / 8
+    val sampleCount get() = encodedWaveform.length / 8
 
     /**
      * The total time of the waveform in milliseconds.
@@ -19,12 +20,12 @@ data class Waveform(
     val totalTimeMs get() = sampleCount.asTotalTimeMs()
 
     fun heightAt(index: Int): Int {
-        val hex = encoded.substring(index * 8, index * 8 + 2)
+        val hex = encodedWaveform.substring(index * 8, index * 8 + 2)
         return hex.toInt(16)
     }
 
     fun colorAt(index: Int): Color {
-        val hex = encoded.substring(index * 8 + 2, index * 8 + 8)
+        val hex = encodedWaveform.substring(index * 8 + 2, index * 8 + 8)
         return Color(hex.toInt(16) or 0xff000000.toInt())
     }
 
@@ -36,7 +37,7 @@ data class Waveform(
             encoded.append(color.rgb.toHexString().substring(2))
         }
 
-        fun build(): Waveform = Waveform(encoded.toString(), trackStartTime)
+        fun build(): PlayerState = PlayerState(encoded.toString(), trackStartTime)
     }
 
     companion object {
@@ -46,10 +47,10 @@ data class Waveform(
 }
 
 @Serializable
-data class PlayerWaveforms(
-    val byDeviceNumber: Map<Int, Waveform> = emptyMap()
+data class PlayerStates(
+    val byDeviceNumber: Map<Int, PlayerState> = emptyMap()
 ) {
-    fun updateWith(deviceNumber: Int, waveform: Waveform): PlayerWaveforms {
-        return copy(byDeviceNumber = byDeviceNumber + (deviceNumber to waveform))
+    fun updateWith(deviceNumber: Int, playerState: PlayerState): PlayerStates {
+        return copy(byDeviceNumber = byDeviceNumber + (deviceNumber to playerState))
     }
 }
