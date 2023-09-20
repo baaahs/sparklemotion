@@ -34,6 +34,6 @@ object DistortionShader : ShaderType {
     }
 
     override fun pickPreviewShaders(openShader: OpenShader, previewShaders: PreviewShaders): List<OpenShader> {
-        return listOf(previewShaders.screenCoordsProjection, openShader, previewShaders.smpteColorBars)
+        return listOf(previewShaders.screenCoordsProjection, openShader, previewShaders.backgroundImage)
     }
 }
