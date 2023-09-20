@@ -55,6 +55,9 @@ actual object GlBase {
         override fun <T> runInContext(fn: () -> T): T = fn()
         override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T = fn()
 
+        override fun getGlInt(parameter: Int): Int =
+            webgl.getParameter(parameter) as Int
+
         // For RGBA32F in FloatsResultType.
         override fun checkIfResultBufferCanContainFloats(required: Boolean): Boolean {
             return ensureExtension("EXT_color_buffer_float", required)

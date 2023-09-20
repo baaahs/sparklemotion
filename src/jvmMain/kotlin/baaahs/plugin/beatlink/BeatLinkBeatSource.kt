@@ -188,19 +188,17 @@ class BeatLinkBeatSource(
             if (currentBeat.beatIntervalMs != beatIntervalMs ||
                 abs(currentBeat.measureStartTime - measureStartTime) > 0.003
             ) {
-                val trackStartTime = getTrackStartTime(deviceNumber, now)
-
-                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f, trackStartTime = trackStartTime)
+                currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
                 logger.debug { "${beat.deviceName} on channel $deviceNumber: Setting bpm from beat ${beat.beatWithinBar}" }
                 notifyChanged()
 
+                notifyListeners { it.onBeatData(currentBeat) }
+
                 playerStates.byDeviceNumber[deviceNumber]?.also { existingPlayerState ->
+                    val trackStartTime = getTrackStartTime(deviceNumber, now)
                     val newPlayerState = existingPlayerState.copy(trackStartTime = trackStartTime)
 
-                    notifyListeners {
-                        it.onBeatData(currentBeat)
-                        it.onPlayerStateUpdate(deviceNumber, newPlayerState)
-                    }
+                    notifyListeners { it.onPlayerStateUpdate(deviceNumber, newPlayerState) }
                 }
             }
             lastBeatAt = now
