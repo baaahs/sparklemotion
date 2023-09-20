@@ -18,10 +18,6 @@ import baaahs.show.FeedOpenContext
 import baaahs.util.Clock
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
-import com.danielgergely.kgl.ByteBuffer
-import com.danielgergely.kgl.GL_LINEAR
-import com.danielgergely.kgl.GL_RGBA
-import com.danielgergely.kgl.GL_UNSIGNED_BYTE
 import kotlinx.serialization.SerialName
 
 @SerialName("baaahs.BeatLink:Waveforms")
@@ -55,27 +51,7 @@ class WaveformsFeed internal constructor(
                     currentPlayerState = playerState
 
                     if (playerState != null) {
-                        val sampleCount = playerState.sampleCount
-
-                        val bytes = ByteBuffer(sampleCount * 4)
-                        for (i in 0 until sampleCount) {
-                            val height = playerState.heightAt(i) * 8
-                            val color = playerState.colorAt(i)
-
-                            bytes[i * 4 + 0] = height.toByte()
-                            bytes[i * 4 + 1] = color.redB
-                            bytes[i * 4 + 2] = color.greenB
-                            bytes[i * 4 + 3] = color.blueB
-                        }
-
-                        with(gl) {
-                            texture.configure(GL_LINEAR, GL_LINEAR)
-
-                            texture.upload(
-                                0, GL_RGBA, sampleCount, 1, 0,
-                                GL_RGBA, GL_UNSIGNED_BYTE, bytes
-                            )
-                        }
+                        playerState.updateTexture(gl, texture)
                         textureUniform?.set(texture)
                     }
                 }

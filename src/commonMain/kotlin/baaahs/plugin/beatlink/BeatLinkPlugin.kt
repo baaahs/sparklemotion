@@ -240,7 +240,9 @@ class BeatLinkPlugin internal constructor(
 
                     val deviceNumber = Random.nextInt(4) + 1
                     val playerState = PlayerState.Builder(pluginContext.clock.now()).apply {
-                        for (i in 0 until Random.nextInt(1000)) {
+                        val trackLengthSeconds = Random.nextDouble(3.0, 4.0) * 60
+                        /** Per [org.deepsymmetry.beatlink.Util#halfFrameToTime], there are 150 samples per second. */
+                        for (i in 0 until PlayerState.secondsToFrameCount(trackLengthSeconds)) {
                             add(Random.nextInt(32), Color(Random.nextInt(0xffffff)))
                         }
                     }.build()

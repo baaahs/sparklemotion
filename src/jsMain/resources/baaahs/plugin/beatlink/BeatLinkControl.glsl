@@ -22,21 +22,9 @@ struct RawBeatInfo {
 };
 uniform RawBeatInfo rawBeatInfo; // @@baaahs.BeatLink:RawBeatInfo
 
-struct PlayerState {
-    float trackStartTime;
-    float trackLength;
-};
-
-struct PlayerData {
-    PlayerState players[4];
-};
-uniform PlayerData playerData; // @@baaahs.BeatLink:PlayerData
-
-uniform sampler2D waveforms[4]; // @@baaahs.BeatLink:Waveforms
-
 float secPerBeat = rawBeatInfo.beatIntervalMs / 1000.;
 
-const vec2 beatsBorderPx = vec2(5.);
+const vec2 beatsBorderPx = vec2(6.);
 
 const vec3 backgroundColor = vec3(.1, .1, .4);
 const vec3 beatPowerColor = vec3(0., .0, .5);
@@ -128,54 +116,6 @@ vec4 drawBeats(vec2 pos) {
     return vec4(color, 1.);
 }
 
-vec4 drawOneWaveformz(sampler2D waveform, int playerNumber, vec2 pos, float offset, float scale) {
-    float trackStartTime = playerData.players[playerNumber].trackStartTime;
-    float trackLength = playerData.players[playerNumber].trackLength;
-
-    return vec4(0.);
-}
-vec4 drawOneWaveform(sampler2D waveform, PlayerState playerState, vec2 pos, float offset, float scale) {
-    float trackStartTime = playerState.trackStartTime;
-    pos = vec2(pos.x, (pos.y - offset) * scale);
-    float y = pos.y * 2. - 1.;
-
-    vec4 sampleData = texture(waveform, pos);
-    float ampY = abs(y);
-
-    // center dashed line
-    if (ampY < .05 && mod(pos.x * 20., 1.) < .75)
-    return vec4(0., 1., 0., .8);
-
-    // black hairline border
-    if (ampY > .97)
-    return vec4(0., 0., 0., .75);
-
-    // waveform
-    if (ampY <= sampleData.a) {
-        float fadeQuickness = 5.;
-        float alpha = exp(-1. * fadeQuickness * (sampleData.a - ampY));
-        // return vec4(sampleData.rgb, sampleData.a - ampY < .1 ? 1. : .5);
-        return vec4(sampleData.rgb, alpha);
-    }
-
-    // background
-    return vec4(0.);
-}
-
-vec4 drawWaveform(vec2 pos) {
-    vec4 waveformValue;
-    if (pos.y < .25) {
-        waveformValue = drawOneWaveform(waveforms[0], playerData.players[0], pos, 0., 4.);
-    } else if (pos.y < .5) {
-        waveformValue = drawOneWaveform(waveforms[1], playerData.players[1], pos, .25, 4.);
-    } else if (pos.y < .75) {
-        waveformValue = drawOneWaveform(waveforms[2], playerData.players[2], pos, .5, 4.);
-    } else {
-        waveformValue = drawOneWaveform(waveforms[3], playerData.players[3], pos, .75, 4.);
-    }
-    return waveformValue;
-}
-
 void main(void) {
     vec2 pos = gl_FragCoord.xy / resolution.xy;
     vec2 pixPos = pixCoords.xy;
@@ -190,15 +130,10 @@ void main(void) {
     float o = 1.;
 
     // Draw border.
-    float border = 1. - rect(beatsBorderPx, pixDimens - beatsBorderPx, pixPos);
+    float border = 1. - rect(beatsBorderPx - 1., pixDimens - beatsBorderPx + 1., pixPos);
     color += border * borderColor * nowBeatIntensity;
     o -= o * border;
     vec2 paddedPos = (pos * pixDimens - beatsBorderPx) / (pixDimens - beatsBorderPx * 2.);
-
-    // Draw waveform.
-    vec4 waveformColor = drawWaveform(paddedPos);
-    color = mix(color, waveformColor.rgb, waveformColor.a * o);
-    o -= o * waveformColor.a * o;
 
     // Draw beats.
     color += o * drawBeats(paddedPos).rgb;

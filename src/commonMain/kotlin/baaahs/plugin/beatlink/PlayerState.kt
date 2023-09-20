@@ -1,8 +1,12 @@
 package baaahs.plugin.beatlink
 
 import baaahs.Color
+import baaahs.gl.GlContext
 import baaahs.util.Time
+import com.danielgergely.kgl.*
 import kotlinx.serialization.Serializable
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Serializable
 data class PlayerState(
@@ -29,6 +33,32 @@ data class PlayerState(
         return Color(hex.toInt(16) or 0xff000000.toInt())
     }
 
+    fun updateTexture(gl: GlContext, texture: Texture) {
+        val textureWidth = min(sampleCount, gl.maxTextureSize)
+
+        val bytes = ByteBuffer(textureWidth * 4)
+        for (i in 0 until textureWidth) {
+            val sampleI = i * sampleCount / textureWidth
+
+            val height = heightAt(sampleI) * 8
+            val color = colorAt(sampleI)
+
+            bytes[i * 4 + 0] = height.toByte()
+            bytes[i * 4 + 1] = color.redB
+            bytes[i * 4 + 2] = color.greenB
+            bytes[i * 4 + 3] = color.blueB
+        }
+
+        with(gl) {
+            texture.configure(GL_LINEAR, GL_LINEAR)
+
+            texture.upload(
+                0, GL_RGBA, textureWidth, 1, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, bytes
+            )
+        }
+    }
+
     class Builder(val trackStartTime: Time) {
         private val encoded = StringBuilder()
 
@@ -43,6 +73,7 @@ data class PlayerState(
     companion object {
         /** Per [org.deepsymmetry.beatlink.Util#halfFrameToTime], there are 150 samples per second. */
         fun Int.asTotalTimeMs() = this * 100 / 15f
+        fun secondsToFrameCount(seconds: Double) = (seconds * 150).roundToInt()
     }
 }
 

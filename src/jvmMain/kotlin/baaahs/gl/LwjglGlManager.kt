@@ -5,6 +5,7 @@ import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglLwjgl
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.opengl.GL33
 import org.lwjgl.opengl.GLCapabilities
 
 class LwjglGlManager : GlManager() {
@@ -56,6 +57,12 @@ class LwjglGlManager : GlManager() {
                     GLFW.glfwMakeContextCurrent(0)
                 }
             }
+        }
+
+        override fun getGlInt(parameter: Int): Int {
+            val value = IntArray(1)
+            GL33.glGetIntegerv(parameter, value)
+            return value[0]
         }
     }
 
