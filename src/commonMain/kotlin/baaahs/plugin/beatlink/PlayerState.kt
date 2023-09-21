@@ -12,7 +12,7 @@ import kotlin.math.roundToInt
 data class PlayerState(
     /** Each sample is 8 hex bytes: HHRRGGBB where 'H' is height. */
     private val encodedWaveform: String,
-    val trackStartTime: Time
+    val trackStartTime: Time?
 ) {
     val sampleCount get() = encodedWaveform.length / 8
 
