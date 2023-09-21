@@ -28,7 +28,7 @@ class BeatLinkBeatSource(
     private val waveformFinder = WaveformFinder.getInstance()
     private val timeFinder = TimeFinder.getInstance()
 
-    private val playerStates = PlayerStates()
+    private var playerStates = PlayerStates()
     private val listeners = BeatLinkListeners()
 
     @Volatile
@@ -197,7 +197,6 @@ class BeatLinkBeatSource(
                 playerStates.byDeviceNumber[deviceNumber]?.also { existingPlayerState ->
                     val trackStartTime = getTrackStartTime(deviceNumber, now)
                     val newPlayerState = existingPlayerState.copy(trackStartTime = trackStartTime)
-
                     notifyListeners { it.onPlayerStateUpdate(deviceNumber, newPlayerState) }
                 }
             }
@@ -207,22 +206,31 @@ class BeatLinkBeatSource(
         }
     }
 
-    fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail) {
+    fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail?) {
+        if (detail == null) return
+
         val frameCount = detail.frameCount
         val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
+
         val playerState = PlayerState.Builder(trackStartTime).apply {
             for (i in 0 until frameCount) {
-                val height = detail.segmentHeight(i, 1)
+                val height = detail.segmentHeight(i, 1) // TODO: scale 5
                 val color = detail.segmentColor(i, 1)
                 add(height, baaahs.Color(color.rgb))
             }
         }.build()
+        playerStates = playerStates.updateWith(deviceNumber, playerState)
         listeners.notifyListeners { it.onPlayerStateUpdate(deviceNumber, playerState) }
     }
 
     private fun getTrackStartTime(deviceNumber: Int, now: Time) = if (timeFinder.isRunning) {
         val position = timeFinder.getLatestPositionFor(deviceNumber)
-        now - (position.milliseconds / 1000)
+        if (position != null) {
+            now - (position.milliseconds / 1000)
+        } else {
+            logger.warn { "No track start time for device $deviceNumber." }
+            null
+        }
     } else {
         // TODO: null; value for debugging
         now - (200f / 1000)

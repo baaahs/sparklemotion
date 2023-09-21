@@ -55,7 +55,7 @@ class PlayerDataFeed internal constructor(
                     if (playerState != null) {
                         val sampleCount = playerState.sampleCount
 
-                        trackStartTimeUniform?.set(playerState.trackStartTime.toFloat())
+                        trackStartTimeUniform?.set(playerState.trackStartTime?.toFloat() ?: 0f)
                         trackLengthUniform?.set(sampleCount.asTotalTimeMs())
                     }
                 }
