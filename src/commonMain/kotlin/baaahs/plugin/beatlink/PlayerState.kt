@@ -43,10 +43,10 @@ data class PlayerState(
             val height = heightAt(sampleI) * 8
             val color = colorAt(sampleI)
 
-            bytes[i * 4 + 0] = height.toByte()
-            bytes[i * 4 + 1] = color.redB
-            bytes[i * 4 + 2] = color.greenB
-            bytes[i * 4 + 3] = color.blueB
+            bytes[i * 4 + 0] = color.redB
+            bytes[i * 4 + 1] = color.greenB
+            bytes[i * 4 + 2] = color.blueB
+            bytes[i * 4 + 3] = height.toByte()
         }
 
         with(gl) {
@@ -59,15 +59,15 @@ data class PlayerState(
         }
     }
 
-    class Builder(val trackStartTime: Time) {
-        private val encoded = StringBuilder()
+    class Builder(private val trackStartTime: Time?) {
+        private val encodedWaveform = StringBuilder()
 
         fun add(height: Int, color: Color) {
-            encoded.append(height.toHexString().substring(6))
-            encoded.append(color.rgb.toHexString().substring(2))
+            encodedWaveform.append(height.toHexString().substring(6))
+            encodedWaveform.append(color.rgb.toHexString().substring(2))
         }
 
-        fun build(): PlayerState = PlayerState(encoded.toString(), trackStartTime)
+        fun build(): PlayerState = PlayerState(encodedWaveform.toString(), trackStartTime)
     }
 
     companion object {

@@ -142,7 +142,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
                     }
                 }
                 ShaderBuilder.State.Success -> {
-                    shaderPreview?.setProgram(it.glslProgram)
+                    shaderPreview?.program = it.glslProgram
 
                     if (props.dumpShader == true) {
                         println(

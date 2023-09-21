@@ -56,6 +56,10 @@ class WaveformsFeed internal constructor(
                     }
                 }
             }
+
+            fun release() {
+                gl.check { deleteTexture(texture) }
+            }
         }
 
         return object : FeedContext, RefCounted by RefCounter() {
@@ -77,6 +81,10 @@ class WaveformsFeed internal constructor(
                             }
                         }
                     }
+                }
+
+                override fun release() {
+                    playerWaveforms.forEach { it.release() }
                 }
             }
         }
