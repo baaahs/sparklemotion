@@ -16,7 +16,7 @@ abstract class HintedShaderAnalyzer(
         val entryPointParams =
             entryPoint?.params?.filter { it.isIn } ?: emptyList()
 
-        val uniforms = glslCode.globalInputVars.filterNot { it.hint?.isPassThrough == true }
+        val uniforms = glslCode.globalInputVars.filterNot { it.isPassThrough }
         return (uniforms + entryPointParams).map {
             it.resolveInputPort(entryPoint, plugins)
         } + glslCode.functions.filter { it.isAbstract }.map {

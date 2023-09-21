@@ -89,7 +89,7 @@ vec4 drawWaveform(vec2 pos) {
 
     // "now" vertical line
     if (abs(pos.x - trackHistoryOffset) < 1. / pixDimens.x)
-    return vec4(1., 0., 0., .8);
+        return vec4(1., 0., 0., .8);
 
     // waveform
     float fadeQuickness = 5.;

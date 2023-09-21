@@ -45,7 +45,11 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
     val confidenceDiv = ref<HTMLElement>()
 
     var playerStates by state<PlayerStates?> { beatLink.playerStates }
-    val playerStateViews = memo { mutableMapOf<Int, PlayerStateView>() }
+    val playerStateViews = memo {
+        mutableMapOf<Int, PlayerStateView>().also {
+            withCleanup { it.values.forEach { it.release() } }
+        }
+    }
 
     fun update(beatData: BeatData) {
         val bpm = beatData.bpm
@@ -100,7 +104,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                     attrs.shader = beatVisualizerShader
 //                    attrs.height = beatVisHeight.px
                     attrs.onRenderCallback = { shaderPreview ->
-                        val program = shaderPreview.getProgram()
+                        val program = shaderPreview.program
                         program?.getFloatUniform("brightness")?.set(.5f)
                     }
                 }
@@ -127,7 +131,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                             attrs.shader = waveformShader
 //                        attrs.height = waveformVisHeight.px
                             attrs.onRenderCallback = { shaderPreview ->
-                                shaderPreview.getProgram()?.let { program ->
+                                shaderPreview.program?.let { program ->
                                     val playerStateView = playerStateViews.getOrPut(playerNumber) {
                                         PlayerStateView(
                                             shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
@@ -221,13 +225,19 @@ private class PlayerStateView(
             }
         }
 
-    init { playerState.updateTexture(gl, texture) }
+    init {
+        playerState.updateTexture(gl, texture)
+    }
 
     fun setOnProgram() {
-        val trackElapsedTime = clock.now() - playerState.trackStartTime
+        val trackElapsedTime = playerState.trackStartTime?.let { clock.now() - it } ?: 0.0
         trackElapsedTimeUniform?.set(trackElapsedTime.toFloat())
         trackLengthUniform?.set(playerState.totalTimeMs / 1000)
         waveformUniform?.set(texture)
+    }
+
+    fun release() {
+        gl.check { deleteTexture(texture) }
     }
 }
 

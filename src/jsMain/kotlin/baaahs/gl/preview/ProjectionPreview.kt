@@ -39,37 +39,41 @@ class ProjectionPreview(
     override val renderEngine = ComponentRenderEngine(
         gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
     )
-    private var projectionProgram: GlslProgram? = null
-    private val renderTargets: Map<Model.Entity, FixtureRenderTarget>
-
-    init {
-        renderTargets = buildMap {
-            fun addFixture(entity: Model.Entity, pixelLocations: List<Vector3F>) {
-                val pixelCount = pixelLocations.size
-                val fixture = Fixture(
-                    entity, pixelCount, entity.name, NullTransport,
-                    this@ProjectionPreview.fixtureType,
-                    PixelArrayDevice.Config(
-                        pixelCount, PixelFormat.RGB8, 1f,
-                        EnumeratedPixelLocations(pixelLocations)
-                    )
+    override var program: GlslProgram? = null
+        set(value) {
+            field = value
+            renderEngine.setRenderPlan(
+                FixtureTypeRenderPlan(
+                    listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
                 )
-                put(entity, renderEngine.addFixture(fixture))
-            }
+            )
+        }
+    private val renderTargets: Map<Model.Entity, FixtureRenderTarget> = buildMap {
+        fun addFixture(entity: Model.Entity, pixelLocations: List<Vector3F>) {
+            val pixelCount = pixelLocations.size
+            val fixture = Fixture(
+                entity, pixelCount, entity.name, NullTransport,
+                this@ProjectionPreview.fixtureType,
+                PixelArrayDevice.Config(
+                    pixelCount, PixelFormat.RGB8, 1f,
+                    EnumeratedPixelLocations(pixelLocations)
+                )
+            )
+            put(entity, renderEngine.addFixture(fixture))
+        }
 
-            model.visit { entity ->
-                when (entity) {
-                    is Model.Surface -> {
-                        val lineVertices = entity.lines.flatMap { it.vertices }
+        model.visit { entity ->
+            when (entity) {
+                is Model.Surface -> {
+                    val lineVertices = entity.lines.flatMap { it.vertices }
 
-                        // It's not really a PixelArray, we're just hijacking it to pass in surface perimeter vectors.
-                        addFixture(entity, lineVertices)
-                    }
-                    is PixelArray -> {
-                        val pixelCount = entity.defaultFixtureOptions?.componentCount ?: 100
-                        val pixelLocations = entity.calculatePixelLocalLocations(pixelCount)
-                        addFixture(entity, pixelLocations)
-                    }
+                    // It's not really a PixelArray, we're just hijacking it to pass in surface perimeter vectors.
+                    addFixture(entity, lineVertices)
+                }
+                is PixelArray -> {
+                    val pixelCount = entity.defaultFixtureOptions?.componentCount ?: 100
+                    val pixelLocations = entity.calculatePixelLocalLocations(pixelCount)
+                    addFixture(entity, pixelLocations)
                 }
             }
         }
@@ -88,20 +92,8 @@ class ProjectionPreview(
 
     override fun destroy() {
         stop()
-        projectionProgram?.release()
         renderEngine.release()
     }
-
-    override fun setProgram(program: GlslProgram?) {
-        renderEngine.setRenderPlan(
-            FixtureTypeRenderPlan(
-                listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
-            )
-        )
-        projectionProgram = program
-    }
-
-    override fun getProgram(): GlslProgram? = projectionProgram
 
     override fun render() {
         if (!running) return
@@ -110,7 +102,7 @@ class ProjectionPreview(
     }
 
     private suspend fun asyncRender() {
-        if (projectionProgram != null) {
+        if (program != null) {
             preRenderCallback?.invoke(this)
 
             renderEngine.draw()

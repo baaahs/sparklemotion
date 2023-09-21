@@ -185,7 +185,7 @@ abstract class GlContext(
         }
     }
 
-    open fun bindActiveTexture(
+    fun bindActiveTexture(
         textureUnitNumber: Int = 0,
         target: Int = GL_TEXTURE_2D,
         texture: Texture?

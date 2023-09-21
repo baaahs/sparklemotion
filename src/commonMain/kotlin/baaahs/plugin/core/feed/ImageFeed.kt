@@ -72,6 +72,10 @@ data class ImageFeed(override val title: String) : Feed {
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
                     ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, gl)
+
+                override fun release() {
+                    gl.check { deleteTexture(texture) }
+                }
             }
         }
     }
