@@ -11,9 +11,7 @@ import baaahs.onAvailable
 import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
-import baaahs.util.Clock
-import baaahs.util.percent
-import baaahs.util.useResizeListener
+import baaahs.util.*
 import js.core.jso
 import kotlinx.css.*
 import kotlinx.css.properties.s
@@ -28,21 +26,42 @@ import styled.inlineStyles
 import web.dom.Element
 import web.html.HTMLElement
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 private val beatVisualizerShaderLoader = futureAsync {
     Shader("Beat Visualizer", getResourceAsync("baaahs/plugin/beatlink/BeatLinkControl.glsl"))
 }
 
-private val waveformShaderLoader = futureAsync {
-    Shader("Waveform Visualizer", getResourceAsync("baaahs/plugin/beatlink/Waveform.glsl"))
+private val waveformDetailShaderLoader = futureAsync {
+    Shader("Waveform Detail Visualizer", getResourceAsync("baaahs/plugin/beatlink/WaveformDetail.glsl"))
+}
+
+private val waveformOverviewShaderLoader = futureAsync {
+    Shader("Waveform Overview Visualizer", getResourceAsync("baaahs/plugin/beatlink/WaveformOverview.glsl"))
+}
+
+fun PlayerState.remainingTime(clock: Clock): String? =
+    trackEndTime?.let { endTime ->
+        val remainingTime = endTime - clock.now()
+        if (remainingTime >= 0)
+            remainingTime.toHHMMSS()
+        else
+            null
+    }
+
+fun HTMLElement.setInnerText(text: String?) {
+    if (text != null) {
+        if (innerText != text)
+            innerText = text
+    } else {
+        if (innerText.isNotEmpty())
+            innerText = ""
+    }
 }
 
 private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl") { _ ->
     val appContext = useContext(appContext)
     val beatLink = appContext.plugins.getPlugin<BeatLinkPlugin>().facade
-
-    val bpmDiv = ref<HTMLElement>()
-    val confidenceDiv = ref<HTMLElement>()
 
     var playerStates by state<PlayerStates?> { beatLink.playerStates }
     val playerStateViews = memo {
@@ -51,17 +70,35 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         }
     }
 
+    val allPlayers = listOf(1, 2, 3, 4, 5, 6).associateWith { playerNumber ->
+        beatLink.playerStates.byDeviceNumber[playerNumber]
+    }
+    val activePlayerCount = allPlayers.values.filterNotNull().count()
+
+    val bpmDiv = ref<HTMLElement>()
+    val confidenceDiv = ref<HTMLElement>()
+    val trackIdsRefs = allPlayers.map { ref<HTMLElement>() }
+    val timeRemainingRefs = allPlayers.map { ref<HTMLElement>() }
+
     fun update(beatData: BeatData) {
         val bpm = beatData.bpm
-        bpmDiv.current?.innerText = "${bpm.roundToInt()} BPM"
+        bpmDiv.current?.setInnerText("${bpm.roundToInt()} BPM")
 
         val beatConfidence = beatData.confidence
-        confidenceDiv.current?.innerText = "Confidence: ${beatConfidence.percent()}"
+        confidenceDiv.current?.setInnerText("Confidence: ${beatConfidence.percent()}")
 
         playerStates = beatLink.playerStates
         beatLink.playerStates.byDeviceNumber.forEach { (playerNumber, playerState) ->
             val texture = playerStateViews[playerNumber]
             texture?.playerState = playerState
+
+            trackIdsRefs[playerNumber].current?.setInnerText(
+                listOfNotNull(playerState.trackTitle, playerState.trackArtist).joinToString(" – ")
+            )
+
+            timeRemainingRefs[playerNumber].current?.setInnerText(
+                playerState.remainingTime(appContext.clock)
+            )
         }
     }
 
@@ -79,15 +116,27 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
         layoutDimens = Dimen(width, height)
     }
 
+    // Refresh remaining time every 100ms.
+    useInterval(100.milliseconds) {
+        playerStates?.byDeviceNumber?.forEach { (playerNumber, playerState) ->
+            playerState.trackEndTime?.let {
+                val div = timeRemainingRefs[playerNumber].current
+                val remainingTimeStr = playerState.remainingTime(appContext.clock) ?: ""
+                div?.setInnerText(remainingTimeStr)
+            }
+        }
+    }
+
     var beatVisualizerShader by state<Shader?> { null }
     beatVisualizerShaderLoader.onAvailable { beatVisualizerShader = it }
-    var waveformShader by state<Shader?> { null }
-    waveformShaderLoader.onAvailable { waveformShader = it }
+    var waveformDetailShader by state<Shader?> { null }
+    waveformDetailShaderLoader.onAvailable { waveformDetailShader = it }
+    var waveformOverviewShader by state<Shader?> { null }
+    waveformOverviewShaderLoader.onAvailable { waveformOverviewShader = it }
 
-    val allPlayers = listOf(1, 2, 3, 4).associate { playerNumber ->
-        playerNumber to beatLink.playerStates.byDeviceNumber[playerNumber]
-    }
-    val activePlayerCount = allPlayers.values.filterNotNull().count()
+    fun PlayerState?.heightUnits() = if (this == null) 0 else if (isOnAir == true) 2 else 1
+    fun PlayerState?.opacity() = if (this == null) 0.0 else if (isOnAir == true) 1.0 else .5
+    val playerStateHeightUnits = allPlayers.values.sumOf { it.heightUnits() }
 
     Card {
         attrs.classes = jso { this.root = -Styles.card }
@@ -115,20 +164,22 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 
             var layoutY = beatVisHeight
             allPlayers.forEach { (playerNumber, playerState) ->
-                val waveformVisHeight = if (playerState == null) 0 else (layoutDimens.height - beatVisHeight) / activePlayerCount
+                val waveformVisHeight = (layoutDimens.height - beatVisHeight) *
+                        playerState.heightUnits() / playerStateHeightUnits
 
                 div(+Styles.waveformVisualizer) {
                     inlineStyles {
                         top = layoutY.px
-                        height = waveformVisHeight.px
-                        opacity = if (playerState == null) 0 else 1
+                        height = waveformVisHeight.px * .75
+                        opacity = playerState.opacity()
                     }
 
                     if (playerState != null) {
                         div(+Styles.playerNumber) { +playerNumber.toString() }
+                        div(+Styles.trackId) { ref = trackIdsRefs[playerNumber] }
 
                         shaderPreview {
-                            attrs.shader = waveformShader
+                            attrs.shader = waveformDetailShader
 //                        attrs.height = waveformVisHeight.px
                             attrs.onRenderCallback = { shaderPreview ->
                                 shaderPreview.program?.let { program ->
@@ -136,6 +187,31 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                                         PlayerStateView(
                                             shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
                                     }
+
+                                    playerStateView.setOnProgram()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                div(+Styles.waveformVisualizer) {
+                    inlineStyles {
+                        top = layoutY.px + (waveformVisHeight * .75).px
+                        height = waveformVisHeight.px * .25
+                        opacity = playerState.opacity()
+                    }
+
+                    if (playerState != null) {
+                        div(+Styles.timeRemaining) { ref = timeRemainingRefs[playerNumber] }
+
+                        shaderPreview {
+                            attrs.shader = waveformOverviewShader
+//                        attrs.height = waveformVisHeight.px
+                            attrs.onRenderCallback = { shaderPreview ->
+                                shaderPreview.program?.let { program ->
+                                    val playerStateView = PlayerStateView(
+                                        shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
 
                                     playerStateView.setOnProgram()
                                 }
@@ -177,32 +253,42 @@ object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
         transition(duration = .5.s)
     }
 
-    val playerNumber by css {
+    private val overlayText by css {
         position = Position.absolute
-        bottom = 0.px
-        left = 0.px
         color = Color.white
         put("textShadow", "0px 1px 1px black")
+    }
+
+    val playerNumber by css(overlayText) {
+        bottom = 0.px
+        left = 0.px
+        fontWeight = FontWeight.bold
+    }
+
+    val timeRemaining by css(overlayText) {
+        bottom = 0.px
+        right = 0.px
+    }
+
+    val trackId by css(overlayText) {
+        bottom = 0.px
+        right = 0.px
+        fontSize = .6.em
+        fontFamily = "'Press Start 2P', sans-serif"
     }
 
     val div by css {
         position = Position.relative
     }
 
-    val bpm by css {
-        position = Position.absolute
+    val bpm by css(overlayText) {
         bottom = 0.px
         left = 0.px
-        color = Color.white
-        put("textShadow", "0px 1px 1px black")
     }
 
-    val confidence by css {
-        position = Position.absolute
+    val confidence by css(overlayText) {
         bottom = 0.px
         right = 0.px
-        color = Color.white
-        put("textShadow", "0px 1px 1px black")
     }
 }
 
@@ -221,18 +307,18 @@ private class PlayerStateView(
         set(value) {
             if (field != value) {
                 field = value
-                playerState.updateTexture(gl, texture)
+                playerState.waveform?.updateTexture(gl, texture)
             }
         }
 
     init {
-        playerState.updateTexture(gl, texture)
+        playerState.waveform?.updateTexture(gl, texture)
     }
 
     fun setOnProgram() {
-        val trackElapsedTime = playerState.trackStartTime?.let { clock.now() - it } ?: 0.0
-        trackElapsedTimeUniform?.set(trackElapsedTime.toFloat())
-        trackLengthUniform?.set(playerState.totalTimeMs / 1000)
+        val trackElapsedTime = playerState.trackStartTime?.let { clock.now() - it }
+        trackElapsedTimeUniform?.set(trackElapsedTime?.toFloat() ?: 0f)
+        trackLengthUniform?.set(playerState.waveform?.totalTime ?: 0f)
         waveformUniform?.set(texture)
     }
 
