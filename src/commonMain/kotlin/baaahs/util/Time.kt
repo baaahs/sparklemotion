@@ -20,3 +20,20 @@ interface Clock {
 
 fun Time.asMillis(): Long = (this * 1000).roundToLong()
 fun Float.asMillis(): Int = (this * 1000).roundToInt()
+
+fun Time.toHHMMSS(): String {
+    val seconds = this.toInt()
+    val hours = seconds / 3600
+    val minutes = seconds / 60 % 60
+    val secs = seconds % 60
+    return buildString {
+        if (hours > 0) append(hours).append(":")
+        if (isEmpty()) {
+            append(minutes.toString()).append(":")
+        } else {
+            append("0${minutes}".takeLast(2)).append(":")
+        }
+        append("0${secs}".takeLast(2))
+
+    }
+}

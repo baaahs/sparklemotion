@@ -57,7 +57,8 @@ class BeatLinkBeatSource(
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-        virtualCdj.useStandardPlayerNumber = false
+//        virtualCdj.useStandardPlayerNumber = false
+        virtualCdj.deviceNumber = 4
 
         virtualCdj.addLifecycleListener(object : LifecycleListener {
             override fun stopped(sender: LifecycleParticipant?) {
@@ -75,6 +76,12 @@ class BeatLinkBeatSource(
 
         metadataFinder.addTrackMetadataListener { update ->
             println("metadataChanged = $update")
+            updatePlayerState(update.player) { playerState ->
+                playerState.copy(
+                    trackTitle = update.metadata.title,
+                    trackArtist = update.metadata.artist.label
+                )
+            }
         }
 
         analysisTagFinder.addAnalysisTagListener({ update ->
@@ -159,16 +166,34 @@ class BeatLinkBeatSource(
     override fun removeListener(listener: BeatLinkListener) = listeners.removeListener(listener)
     private fun notifyListeners(block: (BeatLinkListener) -> Unit) = listeners.notifyListeners(block)
 
+    private fun updatePlayerState(playerNumber: Int, block: (PlayerState) -> PlayerState) {
+        playerStates = playerStates.updateWith(playerNumber, block)
+        val playerState = playerStates.byDeviceNumber[playerNumber]!!
+        println("playerState = $playerState")
+        listeners.notifyListeners {
+            it.onPlayerStateUpdate(playerNumber, playerState) }
+    }
+
     @Synchronized
     @VisibleForTesting
-    fun channelsOnAir(audibleChannels: MutableSet<Int>?) {
+    fun channelsOnAir(audibleChannels: Set<Int>) {
+        val changedPlayers =
+            (currentlyAudibleChannels - audibleChannels) +
+                    (audibleChannels - currentlyAudibleChannels)
+
         currentlyAudibleChannels.clear()
-        audibleChannels?.let { currentlyAudibleChannels.addAll(it) }
+        currentlyAudibleChannels.addAll(audibleChannels)
+
+        changedPlayers.forEach { playerNumber ->
+            val isOnAir = audibleChannels.contains(playerNumber)
+            updatePlayerState(playerNumber) { it.copy(isOnAir = isOnAir) }
+        }
     }
 
     @Synchronized
     @VisibleForTesting
     fun newBeat(beat: Beat) {
+        println("newBeat($beat)")
         val deviceNumber = beat.deviceNumber
 
         if (
@@ -194,10 +219,10 @@ class BeatLinkBeatSource(
 
                 notifyListeners { it.onBeatData(currentBeat) }
 
-                playerStates.byDeviceNumber[deviceNumber]?.also { existingPlayerState ->
+                updatePlayerState(deviceNumber) { existingPlayerState ->
                     val trackStartTime = getTrackStartTime(deviceNumber, now)
-                    val newPlayerState = existingPlayerState.copy(trackStartTime = trackStartTime)
-                    notifyListeners { it.onPlayerStateUpdate(deviceNumber, newPlayerState) }
+                    println("change trackStartTime by ${(existingPlayerState.trackStartTime ?: 0.0) - (trackStartTime ?: 0.0)}")
+                    existingPlayerState.copy(trackStartTime = trackStartTime)
                 }
             }
             lastBeatAt = now
@@ -207,20 +232,24 @@ class BeatLinkBeatSource(
     }
 
     fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail?) {
+        println("onWaveformDetailChanged($deviceNumber, $detail)")
         if (detail == null) return
 
         val frameCount = detail.frameCount
         val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
 
-        val playerState = PlayerState.Builder(trackStartTime).apply {
-            for (i in 0 until frameCount) {
-                val height = detail.segmentHeight(i, 1) // TODO: scale 5
-                val color = detail.segmentColor(i, 1)
-                add(height, baaahs.Color(color.rgb))
-            }
-        }.build()
-        playerStates = playerStates.updateWith(deviceNumber, playerState)
-        listeners.notifyListeners { it.onPlayerStateUpdate(deviceNumber, playerState) }
+        updatePlayerState(deviceNumber) { existingPlayerState ->
+            println("change trackStartTime by ${(existingPlayerState.trackStartTime ?: 0.0) - ((trackStartTime ?: 0.0))}")
+            existingPlayerState.withWaveform(waveformScale) {
+                for (i in 0 until frameCount step waveformScale) {
+                    val height = detail.segmentHeight(i, waveformScale)
+                    val color = detail.segmentColor(i, waveformScale)
+                    add(height, baaahs.Color(color.rgb))
+                }
+            }.copy(
+                trackStartTime = trackStartTime
+            )
+        }
     }
 
     private fun getTrackStartTime(deviceNumber: Int, now: Time) = if (timeFinder.isRunning) {
@@ -238,5 +267,6 @@ class BeatLinkBeatSource(
 
     companion object {
         private val logger = Logger("BeatLinkBeatSource")
+        private val waveformScale = 8
     }
 }
