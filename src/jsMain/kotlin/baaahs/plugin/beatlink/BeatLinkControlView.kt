@@ -302,17 +302,23 @@ private class PlayerStateView(
     val trackLengthUniform = program.getFloatUniform("trackLength")
     val waveformUniform = program.getTextureUniform("waveform")
     val texture = with(gl) { check { createTexture() } }
+    private var currentWaveform: Waveform? = null
 
     var playerState: PlayerState = playerState
         set(value) {
             if (field != value) {
                 field = value
-                playerState.waveform?.updateTexture(gl, texture)
+                updateWaveform()
             }
         }
 
-    init {
-        playerState.waveform?.updateTexture(gl, texture)
+    init { updateWaveform() }
+
+    private fun updateWaveform() {
+        if (playerState.waveform != currentWaveform) {
+            currentWaveform = playerState.waveform
+            playerState.waveform?.updateTexture(gl, texture)
+        }
     }
 
     fun setOnProgram() {
