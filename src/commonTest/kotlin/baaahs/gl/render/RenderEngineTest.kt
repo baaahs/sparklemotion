@@ -257,7 +257,7 @@ class RenderEngineTest {
                 }
             }
             feed.open(fakeShowPlayer, id)
-        }
+        }.bind()
     }
 
     private fun drawAndFinish() {

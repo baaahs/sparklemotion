@@ -1,6 +1,5 @@
 package baaahs.gl
 
-import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.ResourceAllocationException
@@ -58,26 +57,16 @@ abstract class GlContext(
         return CompiledShader(this, GL_FRAGMENT_SHADER, source)
     }
 
-    fun compile(vertexShader: CompiledShader, fragShader: CompiledShader): Program {
-        return runInContext {
-            val program = runInContext {
-                check {
-                    createProgram()
-                        ?: throw ResourceAllocationException("Failed to allocate a GL program.")
-                }
-            }
-            check { attachShader(program, vertexShader.shaderId) }
-            check { attachShader(program, fragShader.shaderId) }
-            check { linkProgram(program) }
-            if (check { getProgramParameter(program, GL_LINK_STATUS) } != GL_TRUE) {
-                vertexShader.validate()
-                fragShader.validate()
-
-                val infoLog = check { getProgramInfoLog(program) }
-                throw CompilationException(infoLog ?: "Huh? Program error?")
-            }
-            program
+    /** Starts building a program, but doesn't do any potentially blocking validation. */
+    fun compile(vertexShader: CompiledShader, fragShader: CompiledShader): Program = runInContext {
+        val program = noCheck {
+            createProgram()
+                ?: throw ResourceAllocationException("Failed to allocate a GL program.")
         }
+        noCheck { attachShader(program, vertexShader.shaderId) }
+        noCheck { attachShader(program, fragShader.shaderId) }
+        noCheck { linkProgram(program) }
+        program
     }
 
     fun useProgram(glslProgram: GlslProgram) {
