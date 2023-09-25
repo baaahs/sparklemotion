@@ -9,15 +9,13 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.preview.ShaderPreview
 import baaahs.gl.shader.type.PaintShader
 import baaahs.show.Shader
-import baaahs.ui.addObserver
-import baaahs.ui.inPixels
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import baaahs.util.useResizeListener
 import external.IntersectionObserver
 import kotlinx.css.*
 import materialui.icon
 import mui.material.CircularProgress
+import mui.material.CircularProgressVariant
 import mui.material.Typography
 import mui.system.sx
 import react.Props
@@ -194,10 +192,16 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
             ShaderBuilder.State.Analyzing,
             ShaderBuilder.State.Linking,
             ShaderBuilder.State.Linked,
-            ShaderBuilder.State.Compiling -> {
-                CircularProgress {
-                    attrs.size = "1em"
-                    attrs.value = state.ordinal.toFloat() / ShaderBuilder.State.Success.ordinal
+            ShaderBuilder.State.Compiling,
+            ShaderBuilder.State.Binding -> {
+                div(+ShaderPreviewStyles.progress) {
+                    CircularProgress {
+                        attrs.size = ".9em"
+                        attrs.variant = CircularProgressVariant.determinate
+                        attrs.value = state.ordinal.toFloat() / ShaderBuilder.State.Success.ordinal * 100
+                    }
+
+                    +" ${state.name}…"
                 }
             }
 
@@ -233,19 +237,26 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
 }
 
 object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
+    val canvas by css {}
+    val progress by css {}
+
     val container by css {
         position = Position.relative
         width = 100.pct
         height = 100.pct
         userSelect = UserSelect.none
 
-        child("canvas") {
-            position = Position.absolute
-        }
-        child("div") {
+        child(this@ShaderPreviewStyles, ::canvas) {
             position = Position.absolute
             width = 100.pct
             height = 100.pct
+        }
+
+        child(this@ShaderPreviewStyles, ::progress) {
+            position = Position.absolute
+            left = 3.px
+            bottom = 0.px
+            fontSize = .8.em
         }
     }
 
