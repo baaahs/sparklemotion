@@ -64,7 +64,12 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
     val beatLink = appContext.plugins.getPlugin<BeatLinkPlugin>().facade
 
     var playerStates by state<PlayerStates?> { beatLink.playerStates }
-    val playerStateViews = memo {
+    val detailViews = memo {
+        mutableMapOf<Int, PlayerStateView>().also {
+            withCleanup { it.values.forEach { it.release() } }
+        }
+    }
+    val overviewViews = memo {
         mutableMapOf<Int, PlayerStateView>().also {
             withCleanup { it.values.forEach { it.release() } }
         }
@@ -89,12 +94,10 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 
         playerStates = beatLink.playerStates
         beatLink.playerStates.byDeviceNumber.forEach { (playerNumber, playerState) ->
-            val texture = playerStateViews[playerNumber]
-            texture?.playerState = playerState
+            detailViews[playerNumber]?.playerState = playerState
+            overviewViews[playerNumber]?.playerState = playerState
 
-            trackIdsRefs[playerNumber].current?.setInnerText(
-                listOfNotNull(playerState.trackTitle, playerState.trackArtist).joinToString(" – ")
-            )
+            trackIdsRefs[playerNumber].current?.setInnerText(playerState.trackId())
 
             timeRemainingRefs[playerNumber].current?.setInnerText(
                 playerState.remainingTime(appContext.clock)
@@ -151,7 +154,6 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                 inlineStyles { height = beatVisHeight.px }
                 shaderPreview {
                     attrs.shader = beatVisualizerShader
-//                    attrs.height = beatVisHeight.px
                     attrs.onRenderCallback = { shaderPreview ->
                         val program = shaderPreview.program
                         program?.getFloatUniform("brightness")?.set(.5f)
@@ -176,16 +178,14 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 
                     if (playerState != null) {
                         div(+Styles.playerNumber) { +playerNumber.toString() }
-                        div(+Styles.trackId) { ref = trackIdsRefs[playerNumber] }
+                        div(+Styles.trackId) { ref = trackIdsRefs[playerNumber]; +playerState.trackId() }
 
                         shaderPreview {
                             attrs.shader = waveformDetailShader
-//                        attrs.height = waveformVisHeight.px
                             attrs.onRenderCallback = { shaderPreview ->
                                 shaderPreview.program?.let { program ->
-                                    val playerStateView = playerStateViews.getOrPut(playerNumber) {
-                                        PlayerStateView(
-                                            shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
+                                    val playerStateView = detailViews.getOrPut(playerNumber) {
+                                        PlayerStateView(shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
                                     }
 
                                     playerStateView.setOnProgram()
@@ -207,11 +207,11 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
 
                         shaderPreview {
                             attrs.shader = waveformOverviewShader
-//                        attrs.height = waveformVisHeight.px
                             attrs.onRenderCallback = { shaderPreview ->
                                 shaderPreview.program?.let { program ->
-                                    val playerStateView = PlayerStateView(
-                                        shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
+                                    val playerStateView = overviewViews.getOrPut(playerNumber) {
+                                        PlayerStateView(shaderPreview.renderEngine.gl, program, playerState, appContext.clock)
+                                    }
 
                                     playerStateView.setOnProgram()
                                 }
