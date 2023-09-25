@@ -6,12 +6,36 @@ import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.patch.LinkedProgram
+import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.*
 import baaahs.show.Feed
 import baaahs.show.UpdateMode
 import baaahs.util.Logger
+import com.danielgergely.kgl.GL_LINK_STATUS
+import com.danielgergely.kgl.GL_TRUE
 import com.danielgergely.kgl.Kgl
+import com.danielgergely.kgl.Program
+
+/**
+ * A [GlslProgram] that is likely still being compiled by OpenGL.
+ *
+ * See https://registry.khronos.org/webgl/extensions/KHR_parallel_shader_compile/
+ */
+class GlslCompilingProgram(
+    private val linkedProgram: LinkedProgram,
+    private val vertexShader: CompiledShader,
+    private val fragShader: CompiledShader,
+    private val program: Program,
+    private val renderEngine: RenderEngine,
+    private val feedResolver: FeedResolver
+) {
+    fun bind(): GlslProgramImpl =
+        GlslProgramImpl(renderEngine.gl, linkedProgram, vertexShader, fragShader, program) { id: String, feed: Feed ->
+            val feed = feedResolver.openFeed(id, feed)
+            feed?.let { renderEngine.cachedEngineFeed(it) }
+        }.also { it.validate() }
+}
 
 interface GlslProgram {
     val title: String
@@ -40,30 +64,40 @@ interface GlslProgram {
     fun getTextureUniform(name: String): TextureUniform?
 
     fun <T> withProgram(fn: Kgl.() -> T): T
+    fun validate()
     fun use()
     fun release()
 
     interface ResolutionListener {
         fun onResolution(x: Float, y: Float)
     }
+
+    companion object {
+        fun create(
+            gl: GlContext,
+            linkedProgram: LinkedProgram,
+            engineFeedResolver: EngineFeedResolver
+        ): GlslProgram {
+            val vertexShader = vertexShader(gl)
+            val fragShader = gl.createFragmentShader(linkedProgram.toFullGlsl(gl.glslVersion))
+            val program = gl.compile(vertexShader, fragShader)
+            return GlslProgramImpl(gl, linkedProgram, vertexShader(gl), fragShader, program, engineFeedResolver)
+        }
+
+        fun vertexShader(gl: GlContext): CompiledShader =
+            gl.createVertexShader("#version ${gl.glslVersion}\n${GlslProgramImpl.vertexShader}")
+    }
 }
 
 class GlslProgramImpl(
     private val gl: GlContext,
     val linkedProgram: LinkedProgram,
+    private val vertexShader: CompiledShader,
+    override val fragShader: CompiledShader,
+    val id: Program,
     engineFeedResolver: EngineFeedResolver
 ): GlslProgram {
     override val title: String get() = linkedProgram.rootNode.title
-
-    private val vertexShader =
-        gl.createVertexShader(
-            "#version ${gl.glslVersion}\n${GlslProgramImpl.vertexShader}"
-        )
-
-    override val fragShader =
-        gl.createFragmentShader(linkedProgram.toFullGlsl(gl.glslVersion))
-
-    val id = gl.compile(vertexShader, fragShader)
 
     private val textureUniforms = mutableMapOf<String, TextureUniform?>()
 
@@ -201,6 +235,16 @@ class GlslProgramImpl(
     override fun <T> withProgram(fn: Kgl.() -> T): T {
         gl.useProgram(this)
         return gl.check(fn)
+    }
+
+    override fun validate() = gl.runInContext {
+        if (gl.check { getProgramParameter(id, GL_LINK_STATUS) } != GL_TRUE) {
+            vertexShader.validate()
+            fragShader.validate()
+
+            val infoLog = gl.check { getProgramInfoLog(id) }
+            throw CompilationException(infoLog ?: "Huh? Program error?")
+        }
     }
 
     override fun use() {

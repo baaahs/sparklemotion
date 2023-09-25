@@ -7,7 +7,7 @@ import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.PerPixelEngineFeedContext
 import baaahs.gl.glsl.FeedResolver
-import baaahs.gl.glsl.GlslProgram
+import baaahs.gl.glsl.GlslCompilingProgram
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.result.ResultBuffer
 import baaahs.gl.result.ResultType
@@ -78,7 +78,7 @@ class ModelRenderEngine(
         renderTargetsToRemove.add(renderTarget)
     }
 
-    override fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
+    override fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslCompilingProgram {
         logger.debug { "Compiling ${linkedProgram.rootNode.title} for ${fixtureType::class.simpleName}"}
         return super.compile(linkedProgram, feedResolver)
     }

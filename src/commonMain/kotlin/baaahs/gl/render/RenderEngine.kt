@@ -4,10 +4,9 @@ import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.FeedResolver
+import baaahs.gl.glsl.GlslCompilingProgram
 import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.gl.patch.LinkedProgram
-import baaahs.show.Feed
 import baaahs.time
 import baaahs.timeSync
 import kotlin.math.roundToInt
@@ -17,15 +16,16 @@ abstract class RenderEngine(val gl: GlContext) {
 
     val stats = Stats()
 
-    private fun cachedEngineFeed(feedContext: FeedContext): EngineFeedContext {
+    private val vertexShader = GlslProgram.vertexShader(gl)
+
+    internal fun cachedEngineFeed(feedContext: FeedContext): EngineFeedContext {
         return engineFeedContexts.getOrPut(feedContext) { bindFeed(feedContext) }
     }
 
-    open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
-        return GlslProgramImpl(gl, linkedProgram) { id: String, feed: Feed ->
-            val feed = feedResolver.openFeed(id, feed)
-            feed?.let { cachedEngineFeed(it)}
-        }
+    open fun compile(linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslCompilingProgram {
+        val fragShader = gl.createFragmentShader(linkedProgram.toFullGlsl(gl.glslVersion))
+        val program = gl.compile(vertexShader, fragShader)
+        return GlslCompilingProgram(linkedProgram, vertexShader, fragShader, program, this, feedResolver)
     }
 
     private fun bindFeed(feedContext: FeedContext): EngineFeedContext =

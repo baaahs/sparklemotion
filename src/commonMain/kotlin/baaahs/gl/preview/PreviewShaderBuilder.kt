@@ -3,7 +3,9 @@ package baaahs.gl.preview
 import baaahs.BaseShowPlayer
 import baaahs.device.FixtureType
 import baaahs.device.PixelArrayFixtureType
-import baaahs.fixtures.*
+import baaahs.fixtures.ConfigPreview
+import baaahs.fixtures.FixtureConfig
+import baaahs.fixtures.FixtureOptions
 import baaahs.gl.Toolchain
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.*
@@ -55,6 +57,7 @@ interface ShaderBuilder : IObservable {
         Linking,
         Linked,
         Compiling,
+        Binding,
         Success,
         Errors
     }
@@ -94,6 +97,8 @@ class PreviewShaderBuilder(
         private set
     override var linkedProgram: LinkedProgram? = null
         private set
+    private var compiledProgram: GlslCompilingProgram? = null
+        private set
     override var glslProgram: GlslProgram? = null
         private set
 
@@ -131,6 +136,7 @@ class PreviewShaderBuilder(
             ShaderBuilder.State.Linking -> coroutineScope.launch(coroutineExceptionHandler) { link() }
             ShaderBuilder.State.Linked -> { } // No-op; an observer will handle it.
             ShaderBuilder.State.Compiling -> unsupported()
+            ShaderBuilder.State.Binding -> coroutineScope.launch(coroutineExceptionHandler) { bind() }
             ShaderBuilder.State.Success -> unsupported()
             ShaderBuilder.State.Errors -> { } // No-op; an observer will handle it.
         }
@@ -208,8 +214,24 @@ class PreviewShaderBuilder(
     }
 
     private fun compile(renderEngine: RenderEngine, feedResolver: FeedResolver) {
+        val newState = try {
+            compiledProgram = linkedProgram?.let { renderEngine.compile(it, feedResolver) }
+            glslProgram = null
+            ShaderBuilder.State.Binding
+        } catch (e: GlslException) {
+            compileErrors = e.errors
+            ShaderBuilder.State.Errors
+        } catch (e: Exception) {
+            logger.warn(e) { "Failed to compile patch." }
+            compileErrors = listOf(GlslError(e.message ?: e.toString()))
+            ShaderBuilder.State.Errors
+        }
+        transitionTo(newState)
+    }
+
+    private fun bind() {
         try {
-            glslProgram = linkedProgram?.let { renderEngine.compile(it, feedResolver) }
+            glslProgram = compiledProgram?.bind()
             state = ShaderBuilder.State.Success
         } catch (e: GlslException) {
             compileErrors = e.errors
