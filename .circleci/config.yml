@@ -19,17 +19,6 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Checkout Submodules
-          command: |
-            git submodule update --init
-
-      - run:
-          name: Install Native Webcam Driver
-          comment: can be removed pending https://github.com/eduramiba/webcam-capture-driver-native/issues/15
-          command: |
-            pushd webcam-capture-driver-native && mvn install && popd
-
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle.kts" }}
