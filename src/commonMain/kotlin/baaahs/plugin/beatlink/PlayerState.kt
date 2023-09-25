@@ -18,9 +18,12 @@ data class PlayerState(
     val waveform: Waveform? get() = if (encodedWaveform != null && waveformScale != null) {
         Waveform(encodedWaveform, waveformScale)
     } else null
+
     val trackEndTime: Time? get() = waveform?.totalTime?.let { trackTime ->
         if (trackStartTime != null) trackStartTime + trackTime else null
     }
+
+    fun trackId() = listOfNotNull(trackTitle, trackArtist).joinToString(" – ")
 
     fun withWaveform(waveformScale: Int, block: Waveform.Builder.() -> Unit): PlayerState {
         val builder = Waveform.Builder(waveformScale)
