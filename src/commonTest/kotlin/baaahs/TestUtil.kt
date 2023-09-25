@@ -116,7 +116,7 @@ class TestRenderContext(
         val openShader = testToolchain.openShader(Shader("Title", shaderSrc))
         val linkedPatch = LinkedPatch(openShader, incomingLinks, Stream.Main, 0f)
         val linkedProgram = ProgramLinker(linkedPatch).buildLinkedProgram()
-        return renderEngine.compile(linkedProgram) { id, feed -> feed.open(showPlayer, id) }
+        return renderEngine.compile(linkedProgram) { id, feed -> feed.open(showPlayer, id) }.bind()
     }
 
     fun addFixtures() {

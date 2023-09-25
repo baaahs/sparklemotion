@@ -24,8 +24,8 @@ class CompiledShader(
 
     private fun compile() {
         gl.runInContext {
-            gl.check { shaderSource(shaderId, source) }
-            gl.check { compileShader(shaderId) }
+            gl.noCheck { shaderSource(shaderId, source) }
+            gl.noCheck { compileShader(shaderId) }
         }
     }
 

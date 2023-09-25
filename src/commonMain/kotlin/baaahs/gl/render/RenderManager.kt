@@ -37,7 +37,7 @@ class RenderManager(glContext: GlContext) {
     }
 
     fun compile(fixtureType: FixtureType, linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
-        return engineFor(fixtureType).compile(linkedProgram, feedResolver)
+        return engineFor(fixtureType).compile(linkedProgram, feedResolver).bind()
     }
 
     fun setRenderPlan(renderPlan: RenderPlan) {

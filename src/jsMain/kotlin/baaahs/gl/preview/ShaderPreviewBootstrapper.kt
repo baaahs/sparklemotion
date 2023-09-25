@@ -1,11 +1,13 @@
 package baaahs.gl.preview
 
+import baaahs.app.ui.ShaderPreviewStyles
 import baaahs.document
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.SharedGlContext
 import baaahs.model.Model
 import baaahs.ui.inPixels
+import baaahs.ui.name
 import kotlinx.css.LinearDimension
 import react.RefObject
 import web.html.HTMLCanvasElement
@@ -63,8 +65,8 @@ class StandaloneCanvasHelper(
     private val bootstrapper: ShaderPreviewBootstrapper
 ) : ShaderPreviewBootstrapper.Helper() {
     override val container: HTMLCanvasElement =
-        document.createElement("canvas") as HTMLCanvasElement
-
+        (document.createElement("canvas") as HTMLCanvasElement)
+            .also { it.className = ShaderPreviewStyles.canvas.name }
 
     override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview {
         return bootstrapper.bootstrap(container, model, preRenderHook)
@@ -78,7 +80,8 @@ class SharedCanvasHelper(
     private val sharedGlContext: SharedGlContext
 ) : ShaderPreviewBootstrapper.Helper() {
     override val container: HTMLDivElement =
-        document.createElement("div") as HTMLDivElement
+        (document.createElement("div") as HTMLDivElement)
+            .also { it.className = ShaderPreviewStyles.canvas.name }
 
     override fun bootstrap(model: Model, preRenderHook: RefObject<() -> Unit>): ShaderPreview =
         bootstrapper.bootstrapShared(

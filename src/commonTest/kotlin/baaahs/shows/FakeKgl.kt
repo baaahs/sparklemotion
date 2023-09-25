@@ -535,6 +535,7 @@ open class StubGlslProgram : GlslProgram {
     override fun getUniform(name: String): GlslUniform? = TODO("not implemented")
     override fun getTextureUniform(name: String): TextureUniform? = TODO("not implemented")
     override fun <T> withProgram(fn: Kgl.() -> T): T = TODO("not implemented")
+    override fun validate():Unit = TODO("not implemented")
     override fun use(): Unit = TODO("not implemented")
     override fun release(): Unit = TODO("not implemented")
 }
