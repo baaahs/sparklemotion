@@ -44,10 +44,6 @@ repositories {
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
     maven("https://maven.danielgergely.com/releases")
     maven("https://jitpack.io")
-    maven {
-        url=uri("${project.getRootDir()}/webcam-capture-driver-native")
-    }
-    mavenLocal()
 }
 
 group = "org.baaahs"
@@ -129,8 +125,7 @@ kotlin {
 
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
-
-                implementation("com.github.eduramiba:webcam-capture-driver-native:1.0.0-SNAPSHOT")
+                implementation("io.github.eduramiba:webcam-capture-driver-native:1.0.0")
             }
         }
         val jvmTest by getting {
