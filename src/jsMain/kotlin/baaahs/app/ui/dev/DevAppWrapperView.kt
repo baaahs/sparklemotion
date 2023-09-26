@@ -3,7 +3,7 @@ package baaahs.app.ui.dev
 import baaahs.app.ui.*
 import baaahs.gl.Toolchain
 import baaahs.ui.xComponent
-import kotlinx.js.jso
+import js.core.jso
 import mui.material.CssBaseline
 import mui.material.styles.ThemeProvider
 import react.PropsWithChildren

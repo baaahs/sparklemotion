@@ -19,7 +19,7 @@ import baaahs.sim.HostedWebApp
 import baaahs.ui.xComponent
 import baaahs.util.JsClock
 import baaahs.util.globalLaunch
-import kotlinx.js.jso
+import js.core.jso
 import react.*
 
 class ShaderLibraryDevApp(
