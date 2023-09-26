@@ -17,7 +17,7 @@ class ShaderLibraryStyles(private val theme: Theme) : StyleSheet("app-ui-editor-
     }
 
     val dialogTitleActions by css {
-        padding = ".5em"
+        padding = Padding(.5.em)
     }
 
     val dialogContent by css {

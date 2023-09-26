@@ -53,19 +53,19 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
                     Avatar { icon(openShader.shaderType.icon) }
                 }
                 attrs.title = buildElement { +shader.title }
-            props.subtitle?.let {
-                attrs.subheader = buildElement { +it }
-            }
+                props.subtitle?.let {
+                    attrs.subheader = buildElement { +it }
+                }
             }
 
-        shaderPreview {
-            attrs.shader = shader
-            attrs.width = props.cardSize ?: styles.cardWidth
-            attrs.height = props.cardSize ?: styles.cardWidth
-            attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
-            attrs.toolchain = props.toolchain
-            attrs.onShaderStateChange = props.onShaderStateChange
-        }
+            shaderPreview {
+                attrs.shader = shader
+                attrs.width = props.cardSize ?: styles.cardWidth
+                attrs.height = props.cardSize ?: styles.cardWidth
+                attrs.adjustGadgets = if (props.adjustGadgets != false) GadgetAdjuster.Mode.FULL_RANGE else null
+                attrs.toolchain = props.toolchain
+                attrs.onShaderStateChange = props.onShaderStateChange
+            }
 
             CardActions {
                 attrs.className = -styles.shaderCardActions
