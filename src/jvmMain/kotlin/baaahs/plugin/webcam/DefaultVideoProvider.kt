@@ -23,6 +23,8 @@ object WebcamCaptureVideoProvider : VideoProvider {
         webcam.open()
     }
 
+    override fun isReady(): Boolean = true
+
     override fun getTextureResource(): TextureResource {
         val image = webcam.image
         if (textureResource == null || textureResource!!.width != image.width || textureResource!!.height != image.height) {
