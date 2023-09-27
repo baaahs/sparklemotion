@@ -39,7 +39,7 @@ class PatchResolver(
             .filterKeys { portId ->
                 knownInputPorts.contains(portId).also { containsKey ->
                     if (!containsKey)
-                        logger.warn {
+                        logger.debug {
                             "Unknown port mapping \"$portId\" for shader \"${shader.title}\" " +
                                     "(have ${knownInputPorts.keys.sorted()})"
                         }
