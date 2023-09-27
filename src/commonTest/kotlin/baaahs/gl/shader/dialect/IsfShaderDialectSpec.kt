@@ -71,7 +71,7 @@ object IsfShaderDialectSpec : Spek({
                                 "NAME": "channel",
                                 "TYPE": "long",
                                 "VALUES": [ 1, 2, 3 ]
-                            },
+                            }
                         ]
                     }*/
     
