@@ -34,8 +34,10 @@ import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 interface ShaderBuilder : IObservable {
     val shader: Shader
@@ -229,7 +231,12 @@ class PreviewShaderBuilder(
         transitionTo(newState)
     }
 
-    private fun bind() {
+    private suspend fun bind() {
+        while (compiledProgram?.isReady() == false) {
+            logger.debug { "${shader.title} not yet ready, delay..." }
+            delay(10.milliseconds)
+        }
+
         try {
             glslProgram = compiledProgram?.bind()
             state = ShaderBuilder.State.Success
