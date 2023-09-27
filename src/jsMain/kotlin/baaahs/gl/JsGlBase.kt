@@ -69,6 +69,10 @@ actual object GlBase {
             return ensureExtension("OES_texture_float_linear", required)
         }
 
+        override fun checkForParallelShaderCompile(required: Boolean): Boolean {
+            return ensureExtension("KHR_parallel_shader_compile", required)
+        }
+
         /** Creates a related context with shared state and the given Kgl. */
         open fun requestAnimationFrame(callback: (Double) -> Unit) {
             web.timers.requestAnimationFrame(callback)
