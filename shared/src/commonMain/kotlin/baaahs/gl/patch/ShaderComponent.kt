@@ -142,15 +142,20 @@ class ShaderComponent(
     override fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType>) {
         buf.append("    // Invoke ", title, "\n")
 
-        injectionParams.forEach { (paramName, contentType) ->
-            linkedPatch.shader.inputPorts.forEach { inputPort ->
-                if (inputPort.contentType == contentType) {
-                    buf.append("    ${prefix}_global_${inputPort.id} = $paramName;\n")
+        val portMap = buildMap {
+            putAll(resolvedPortMap)
+
+            injectionParams.forEach { (paramName, contentType) ->
+                linkedPatch.shader.inputPorts.forEach { inputPort ->
+                    if (inputPort.contentType == contentType) {
+                        buf.append("    ${prefix}_global_${inputPort.id} = $paramName;\n")
+                        put(inputPort.id, GlslExpr(paramName))
+                    }
                 }
             }
         }
 
-        val invocationGlsl = linkedPatch.shader.invoker(namespace, resolvedPortMap).toGlsl(resultVar)
+        val invocationGlsl = linkedPatch.shader.invoker(namespace, portMap).toGlsl(resultVar)
         buf.append("    ", invocationGlsl, ";\n")
         buf.append("\n")
     }
