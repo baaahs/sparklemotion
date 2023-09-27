@@ -14,12 +14,16 @@ actual val DefaultVideoProvider: VideoProvider
     get() = BrowserWebCamVideoProvider
 
 object BrowserWebCamVideoProvider : VideoProvider {
-    private val videoElement = document.createElement("video").apply {
+    private var isPlaying = false
+
+    private val videoElement = (document.createElement("video") as HTMLVideoElement).apply {
         setAttribute("style", "display:none")
-        setAttribute("autoplay", "")
-        setAttribute("playsinline", "")
-        document.body.appendChild(this)
-    } as HTMLVideoElement
+        autoplay = true
+        playsInline = true
+        onplay = { isPlaying = true }
+    }.also {
+        document.body.appendChild(it)
+    }
 
     private val logger = Logger<BrowserWebCamVideoProvider>()
 
@@ -41,6 +45,8 @@ object BrowserWebCamVideoProvider : VideoProvider {
             console.error("Unable to access the camera/webcam.", error)
         }
     }
+
+    override fun isReady(): Boolean = isPlaying
 
     override fun getTextureResource(): TextureResource {
         return TextureResource(videoElement.unsafeCast<TexImageSource>())
