@@ -35,6 +35,13 @@ class GlslCompilingProgram(
             val feed = feedResolver.openFeed(id, feed)
             feed?.let { renderEngine.cachedEngineFeed(it) }
         }.also { it.validate() }
+
+    fun isReady(): Boolean {
+        val gl = renderEngine.gl
+        return if (gl.checkForParallelShaderCompile()) {
+            gl.runInContext { gl.check { getProgramParameter(program, GlContext.GL_COMPLETION_STATUS_KHR) } == GL_TRUE }
+        } else true
+    }
 }
 
 interface GlslProgram {

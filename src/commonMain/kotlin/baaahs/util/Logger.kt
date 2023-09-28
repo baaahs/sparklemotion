@@ -4,40 +4,37 @@ import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
 
 class Logger(val id: String) {
+    private val nativeLogger = getLogger(id)
+
     fun debug(exception: Throwable? = null, message: () -> String) {
-        log(id, LogLevel.DEBUG, message, exception)
+        nativeLogger.debug(exception, message)
     }
 
     fun info(message: () -> String) {
-        log(id, LogLevel.INFO, message)
+        nativeLogger.info(null, message)
     }
 
     fun warn(message: () -> String) {
-        log(id, LogLevel.WARN, message)
+        nativeLogger.warn(null, message)
     }
 
     fun warn(exception: Throwable, message: () -> String) {
-        log(id, LogLevel.WARN, message, exception)
+        nativeLogger.warn(exception, message)
     }
 
     fun error(message: () -> String) {
-        log(id, LogLevel.ERROR, message)
+        nativeLogger.error(null, message)
     }
 
     fun error(exception: Throwable, message: () -> String) {
-        log(id, LogLevel.ERROR, message, exception)
+        nativeLogger.error(exception, message)
     }
 
     fun <T> group(message: String, block: () -> T): T {
-        logGroupBegin(id, message)
-        return try {
-            block()
-        } finally {
-            logGroupEnd(id, message)
-        }
+        return nativeLogger.group(message, block)
     }
 
-    fun enabled(level: LogLevel): Boolean = logEnabled(id, level)
+    fun enabled(level: LogLevel): Boolean = nativeLogger.isEnabled(level)
 
     companion object {
         private val FORMAT by lazy { DateFormat("yyyy-MM-dd HH:mm:ss.SSS") }
@@ -58,7 +55,14 @@ enum class LogLevel {
 
 inline fun <reified T> Logger() = Logger(T::class.simpleName ?: "unknown")
 
-expect fun log(id: String, level: LogLevel, message: () -> String, exception: Throwable? = null)
-expect fun logEnabled(id: String, level: LogLevel): Boolean
-expect fun logGroupBegin(id: String, message: String)
-expect fun logGroupEnd(id: String, message: String)
+interface NativeLogger {
+    fun debug(exception: Throwable? = null, message: () -> String)
+    fun info(exception: Throwable? = null, message: () -> String)
+    fun warn(exception: Throwable? = null, message: () -> String)
+    fun error(exception: Throwable? = null, message: () -> String)
+
+    fun isEnabled(level: LogLevel): Boolean
+    fun <T> group(message: String, block: () -> T): T
+}
+
+expect fun getLogger(id: String): NativeLogger

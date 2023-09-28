@@ -257,6 +257,7 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
             left = 3.px
             bottom = 0.px
             fontSize = .8.em
+            zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         }
     }
 

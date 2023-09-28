@@ -20,6 +20,7 @@ object VideoInPluginSpec : Spek({
     describe<VideoInPlugin> {
         val videoProvider by value {
             object : VideoProvider {
+                override fun isReady(): Boolean = TODO("not implemented")
                 override fun getTextureResource(): TextureResource = TODO("not implemented")
             }
         }
