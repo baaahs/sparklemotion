@@ -96,7 +96,7 @@ class IsfShaderDialectSpec : DescribeSpec({
             it("finds the input port") {
                 openShader.inputPorts.shouldContainExactly(
                     InputPort(
-                        "level", ContentType.Float, GlslType.Float, "Gray Level",
+                        "level", ContentType.Float, GlslType.Float, "Color Level",
                         pluginRef = PluginRef("baaahs.Core", "Slider"),
                         pluginConfig = buildJsonObject {
                             put("min", 0f.json)
@@ -106,7 +106,7 @@ class IsfShaderDialectSpec : DescribeSpec({
                         isImplicit = true
                     ),
                     InputPort(
-                        "channel", ContentType.Int, GlslType.Int, "Channel",
+                        "channel", ContentType.Int, GlslType.Int, "Color Channel",
                         pluginRef = PluginRef("baaahs.Core", "Select"),
                         pluginConfig = buildJsonObject {
                             put("labels", listOf("Red".json, "Green".json, "Blue".json).json)
@@ -120,7 +120,7 @@ class IsfShaderDialectSpec : DescribeSpec({
 
             it("generates correct data sources") {
                 SelectFeed.build(openShader.inputPorts[1])
-                    .shouldBe(SelectFeed("Channel", emptyList(), 0))
+                    .shouldBe(SelectFeed("Color Channel", listOf(1 to "Red", 2 to "Green", 3 to "Blue"), 0))
             }
 
             it("finds the output port") {
@@ -222,13 +222,13 @@ class IsfShaderDialectSpec : DescribeSpec({
                     openShader.inputPorts.shouldContainExactly(
                         InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates",
                             isImplicit = true),
-                        InputPort("inputImage", ContentType.Color, GlslType.Vec4, "Upstream Image",
+                        InputPort("inputImage", ContentType.Color, GlslType.Vec4, "Input Image",
                             isImplicit = true,
                             injectedData = mapOf("uv" to ContentType.UvCoordinate),
                             glslArgSite = GlslCode.GlslFunction(
-                                "img_inputImage", GlslType.Vec4,
+                                "inputImage", GlslType.Vec4,
                                 listOf(GlslCode.GlslParam("uv", GlslType.Vec2, true)),
-                                "vec4 img_inputImage(vec2 uv);",
+                                "vec4 inputImage(vec2 uv);",
                                 isAbstract = true, isGlobalInput = true
                             )
                         )
@@ -248,7 +248,7 @@ class IsfShaderDialectSpec : DescribeSpec({
                         )
                     ).shouldBe(
                         """
-                            #line 7 0
+                            #line 7
                             void pfx__main() {
                                 gl_FragColor = pfx_inputImage(gl_FragCoord.xy);
                             }
@@ -328,7 +328,7 @@ class IsfShaderDialectSpec : DescribeSpec({
 
                                 layout(location = 0) out vec4 sm_result;
 
-                                // Data source: Resolution
+                                // Feed: Resolution
                                 uniform vec2 in_resolution;
 
                                 // Shader: Pinks; namespace: p0

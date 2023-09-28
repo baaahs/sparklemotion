@@ -36,17 +36,24 @@ data class SelectFeed(
 
         override fun build(inputPort: InputPort): SelectFeed {
             val config = inputPort.pluginConfig
+                ?: error("No config.")
 
-            val initialSelectionIndex = config?.getValue("default")?.jsonPrimitive?.int ?: 0
+            val labels = config["labels"]?.jsonArray
+                ?.map { it.jsonPrimitive.content }
+                ?: error("No labels given.")
+            val values = config["values"]?.jsonArray
+                ?.map { it.jsonPrimitive.int }
+                ?: error("No label values given.")
+            if (labels.size != values.size)
+                error("Labels and values must be the same size.")
 
-            val options = config
-                ?.let { it["options"]?.jsonArray }
-                ?.mapIndexed { index, it -> index to it.jsonPrimitive.content }
-                ?: error("no options given")
+            val default = config["default"]?.jsonPrimitive?.int
+            val initialSelectionIndex = values.indexOf(default)
+                .let { if (it == -1) 0 else it }
 
             return SelectFeed(
                 inputPort.title,
-                options,
+                labels.zip(values) { label, value -> value to label },
                 initialSelectionIndex
             )
         }
