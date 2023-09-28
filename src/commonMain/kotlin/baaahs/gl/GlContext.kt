@@ -229,6 +229,8 @@ abstract class GlContext(
 
     open fun checkForLinearFilteringOfFloatTextures(required: Boolean = false): Boolean = true
 
+    open fun checkForParallelShaderCompile(required: Boolean = false): Boolean = true
+
     fun <T> noCheck(fn: Kgl.() -> T): T {
         return kgl.fn()
     }
@@ -295,5 +297,8 @@ abstract class GlContext(
         const val GL_RG16F = 0x822F
         const val GL_RGB16F  = 0x881B
         const val GL_RGBA16F = 0x881A
+
+        const val GL_COMPLETION_STATUS_KHR = 0x91B1
+
     }
 }
