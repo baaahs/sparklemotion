@@ -201,7 +201,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         bottom = 5.px
         boxShadow += BoxShadow(rgba(0, 0, 0, 0.25), 4.px, 5.px, 2.px, 2.px)
     }
-    
+
     val fakeClientDeviceControls by css {
         position = Position.absolute
         fontSize = 14.px
@@ -210,15 +210,19 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         right = 0.px
         color = Color("#222")
         zIndex = 1
-    }
-    val fakeClientDeviceIconButton by css {
-        color = Color("#222222")
-        padding = Padding(4.px)
-        marginLeft = 8.px
-        cursor = Cursor.pointer
 
-        hover {
-            color = Color("#e3e3e3")
+        button {
+            color = Color("#222222")
+            padding = Padding(4.px)
+            minWidth = 0.px
+            cursor = Cursor.pointer
+
+            svg {
+                fontSize = 1.25.rem
+            }
+            hover {
+                color = Color("#e3e3e3")
+            }
         }
     }
 

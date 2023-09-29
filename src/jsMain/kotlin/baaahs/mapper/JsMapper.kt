@@ -24,11 +24,11 @@ import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
 import js.core.jso
 import kotlinx.coroutines.*
+import mui.icons.material.KeyboardArrowRight
 import react.RBuilder
 import react.ReactElement
 import react.createElement
 import react.dom.br
-import react.dom.i
 import three.js.*
 import three.js.Color
 import three_ext.*
@@ -934,11 +934,10 @@ class JsMapper(
 
         override fun showStats(total: Int, mapped: Int, visible: Int) {
             mapperStatus.stats = {
-                i("fas fa-triangle") {
-                    +"Mapped: $mapped / $total"
-                    br {}
-                    +"Visible: $visible"
-                }
+                KeyboardArrowRight {}
+                +"Mapped: $mapped / $total"
+                br {}
+                +"Visible: $visible"
             }
         }
 

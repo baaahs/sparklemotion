@@ -3,7 +3,6 @@ package baaahs.mapper
 import baaahs.MediaDevices
 import baaahs.app.ui.editor.betterSelect
 import baaahs.app.ui.editor.textFieldEditor
-import baaahs.context2d
 import baaahs.device.PixelFormat
 import baaahs.mapper.twologn.twoLogNSlices
 import baaahs.model.Model
@@ -14,13 +13,13 @@ import external.react_draggable.Draggable
 import kotlinx.css.*
 import kotlinx.html.tabIndex
 import materialui.icon
+import mui.icons.material.*
 import mui.material.Button
 import mui.material.FormControlLabel
 import mui.material.Switch
 import react.*
 import react.dom.canvas
 import react.dom.div
-import react.dom.i
 import react.dom.img
 import styled.inlineStyles
 import web.html.HTMLCanvasElement
@@ -148,27 +147,27 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
                     div(+styles.controlsRow) {
                         Button {
-                            i(classes = "fas fa-play") {}
                             attrs.disabled = !ui.playButtonEnabled
                             attrs.onClick = uiActions.clickedPlay.withMouseEvent()
+                            PlayArrow {}
                         }
                         Button {
-                            i(classes = "fas fa-pause") {}
                             attrs.disabled = !ui.pauseButtonEnabled
                             attrs.onClick = uiActions.clickedPause.withMouseEvent()
+                            Pause {}
                         }
                         Button {
-                            i(classes = "fas fa-redo") {}
                             attrs.disabled = ui.redoFn != null
                             attrs.onClick = uiActions.clickedRedo.withMouseEvent()
+                            Redo {}
                         }
                         Button {
-                            i(classes = "fas fa-stop") {}
                             attrs.onClick = uiActions.clickedStop.withMouseEvent()
+                            Stop {}
                         }
                         Button {
-                            i(classes = "fas fa-sign-in-alt") {}
                             attrs.onClick = uiActions.clickedGoToSurface.withMouseEvent()
+                            Search {}
                         }
                     }
                 }
@@ -307,49 +306,49 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                         div {
                             Button {
                                 attrs.title = "Zoom Out (-)"
-                                i(classes = "fas fa-search-minus") {}
                                 attrs.onClick = { ui.adjustCameraZoom(zoomIn = false, fine = moveIsFine()) }
+                                ZoomOut {}
                             }
                             Button {
                                 attrs.title = "Zoom In (+)"
-                                i(classes = "fas fa-search-plus") {}
                                 attrs.onClick = { ui.adjustCameraZoom(zoomIn = true, fine = moveIsFine()) }
+                                ZoomIn {}
                             }
                         }
 
                         Button {
                             attrs.title = "Left (◀)"
-                            i(classes = "fas fa-arrow-left") {}
                             attrs.onClick = { ui.adjustCameraX(moveRight = false, fine = moveIsFine()) }
+                            ArrowBack {}
                         }
                         div {
                             Button {
                                 attrs.title = "Up (▲)"
-                                i(classes = "fas fa-arrow-up") {}
                                 attrs.onClick = { ui.adjustCameraY(moveUp = true, fine = moveIsFine()) }
+                                ArrowUpward {}
                             }
                             Button {
                                 attrs.title = "Down (▼)"
-                                i(classes = "fas fa-arrow-down") {}
                                 attrs.onClick = { ui.adjustCameraY(moveUp = false, fine = moveIsFine()) }
+                                ArrowDownward {}
                             }
                         }
                         Button {
                             attrs.title = "Right (▶)"
-                            i(classes = "fas fa-arrow-right") {}
                             attrs.onClick = { ui.adjustCameraX(moveRight = true, fine = moveIsFine()) }
+                            ArrowForward {}
                         }
 
                         div {
                             Button {
                                 attrs.title = "Rotate Counter-clockwise (Q)"
-                                i(classes = "fas fa-undo") {}
                                 attrs.onClick = { ui.adjustCameraRotation(clockwise = false, fine = moveIsFine()) }
+                                RotateLeft {}
                             }
                             Button {
-                                attrs.title = "Rotate Clockwise (Q)"
-                                i(classes = "fas fa-redo") {}
+                                attrs.title = "Rotate Clockwise (W)"
                                 attrs.onClick = { ui.adjustCameraRotation(clockwise = true, fine = moveIsFine()) }
+                                RotateRight {}
                             }
                         }
                     }
