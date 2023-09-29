@@ -12,13 +12,17 @@ import kotlinx.css.properties.transform
 import kotlinx.css.properties.translate
 import kotlinx.css.px
 import kotlinx.css.width
+import mui.icons.material.Close
+import mui.icons.material.ZoomIn
+import mui.icons.material.ZoomOut
+import mui.material.Button
 import org.w3c.dom.Node
+import org.w3c.dom.events.EventTarget
 import org.w3c.dom.events.MouseEvent
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
-import react.dom.i
 import react.dom.onClick
 import react.useRef
 import styled.inlineStyles
@@ -45,14 +49,12 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
         val contentNode = clientDeviceContentRef.current
         var eventNode = e.target
 
-        val classList = (eventNode as HTMLElement?)?.classes() ?: emptyList()
-        if (classList.contains(+SimulatorStyles.fakeClientDeviceIconButton))
-            return@handler false
-        if (classList.contains(+SimulatorStyles.fakeClientDeviceHomeButton))
+        if (eventNode.hasClass(+SimulatorStyles.fakeClientDeviceHomeButton))
             return@handler false
 
         while (eventNode != null) {
             when {
+                eventNode.hasClass(+SimulatorStyles.fakeClientDeviceControls) -> return@handler false
                 eventNode === contentNode -> return@handler false
                 eventNode === draggableNode -> return@handler true
                 else -> eventNode = (eventNode as? Node)?.parentNode
@@ -74,16 +76,19 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
                 }
 
                 div(+SimulatorStyles.fakeClientDeviceControls) {
-                    i("fas fa-search-minus ${+SimulatorStyles.fakeClientDeviceIconButton}") {
+                    Button {
                         attrs.onClick = handleZoomOut
+                        ZoomOut {}
                     }
 
-                    i("fas fa-search-plus ${+SimulatorStyles.fakeClientDeviceIconButton}") {
+                    Button {
                         attrs.onClick = handleZoomIn
+                        ZoomIn {}
                     }
 
-                    i("fas fa-times-circle ${+SimulatorStyles.fakeClientDeviceIconButton}") {
+                    Button {
                         attrs.onClick = handleClose
+                        Close {}
                     }
                 }
 
@@ -112,7 +117,10 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
 }
 
 private fun HTMLElement.classes() =
-    buildList<String> { classList.forEach { add(it) } }
+    buildList { classList.forEach { add(it) } }
+
+private fun EventTarget?.hasClass(className: String) =
+    (this as? HTMLElement?)?.classes()?.contains(className) ?: false
 
 external interface FakeClientDeviceProps : Props {
     var name: String
