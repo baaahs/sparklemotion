@@ -9,7 +9,6 @@ import react.createContext
 val dragNDropContext = createContext<DragNDropContext>(jso { })
 
 external interface DragNDropContext {
-    var isLegacy: Boolean
     var gridLayoutContext: GridLayoutContext
 }
 

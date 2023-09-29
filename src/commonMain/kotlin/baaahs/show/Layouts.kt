@@ -1,6 +1,7 @@
 package baaahs.show
 
 import baaahs.camelize
+import baaahs.getBang
 import baaahs.show.live.*
 import baaahs.show.mutable.*
 import kotlinx.serialization.Polymorphic
@@ -14,6 +15,8 @@ data class Layouts(
 ) {
     fun open(openContext: OpenContext): OpenLayouts =
         OpenLayouts(panels, formats.mapValues { (_, format) -> format.open(openContext) })
+
+    fun findLayout(id: String): Layout = formats.getBang(id, "formats")
 }
 
 @Serializable
@@ -28,6 +31,11 @@ data class Layout(
 ) {
     fun open(openContext: OpenContext): OpenLayout =
         OpenLayout(mediaQuery, tabs.map { it.open(openContext) })
+
+    fun findTab(title: String): Tab {
+        return tabs.find { it.title == title }
+            ?: error("No tab with title \"$title\" found in [${tabs.joinToString(", ") { it.title }}]")
+    }
 }
 
 @Polymorphic

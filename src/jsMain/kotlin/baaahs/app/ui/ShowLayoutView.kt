@@ -4,7 +4,6 @@ import baaahs.app.ui.editor.Editor
 import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.app.ui.layout.gridTabLayout
-import baaahs.app.ui.layout.legacyTabLayout
 import baaahs.show.LegacyTab
 import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenLayout
@@ -19,6 +18,10 @@ import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex
 import kotlinx.css.position
+import materialui.icon
+import mui.icons.material.NotificationImportant
+import mui.material.Box
+import mui.material.Paper
 import mui.material.Tab
 import mui.material.Tabs
 import mui.system.sx
@@ -66,11 +69,7 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
     val currentTab = layout.currentTab
 
     val myDragNDropContext = memo<DragNDropContext>(currentTab) {
-        when (currentTab) {
-            is LegacyTab -> jso { this.isLegacy = true }
-            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = appContext.gridLayoutContext }
-            else -> error("huh?")
-        }
+        jso { this.gridLayoutContext = appContext.gridLayoutContext }
     }
 
     sharedGlContext {
@@ -81,14 +80,18 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
 
         dragNDropContext.Provider {
             attrs.value = myDragNDropContext
+
             when (currentTab) {
                 is LegacyTab ->
-                    legacyTabLayout {
-                        attrs.show = props.show
-                        attrs.tab = currentTab
-                        attrs.onShowStateChange = props.onShowStateChange
-                    }
+                    Paper {
+                        attrs.classes = jso { root = -Styles.warningPaper }
 
+                        Box {
+                            icon(NotificationImportant)
+                            typographyH6 { +"Old-style layouts are no longer supported." }
+                            +"Sorry!"
+                        }
+                    }
                 is OpenGridTab ->
                     gridTabLayout {
                         attrs.tab = currentTab

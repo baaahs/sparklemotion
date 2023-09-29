@@ -4,7 +4,6 @@ import baaahs.app.ui.dialog.DialogPanel
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
-import baaahs.show.live.LegacyControlDisplay
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.*
 
@@ -118,21 +117,6 @@ data class AddButtonToButtonGroupEditIntent(
     override fun addToContainer(mutableShow: MutableShow, mutableControl: MutableButtonControl) {
         val container = mutableShow.findControl(containerId) as MutableButtonGroupControl
         container.buttons.add(mutableControl)
-    }
-}
-
-class AddControlToPanelBucket<MC : MutableControl>(
-    private val panelBucket: LegacyControlDisplay.PanelBuckets.PanelBucket,
-    private val createControlFn: (mutableShow: MutableShow) -> MC
-) : AddToContainerEditIntent<MC>() {
-    override fun createControl(mutableShow: MutableShow): MC {
-        return createControlFn(mutableShow)
-    }
-
-    override fun addToContainer(mutableShow: MutableShow, mutableControl: MC) {
-        mutableShow.findPatchHolder(panelBucket.section.container)
-            .editControlLayout(panelBucket.panel)
-            .add(mutableControl)
     }
 }
 
