@@ -1,9 +1,11 @@
 package baaahs.util
 
+import baaahs.imaging.Dimen
 import external.lodash.throttle
 import react.*
 import web.dom.Element
 import web.dom.observers.ResizeObserver
+import web.html.HTMLElement
 import web.timers.clearTimeout
 import web.timers.setTimeout
 import kotlin.time.Duration.Companion.milliseconds
@@ -39,4 +41,20 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
 
         cleanup { clearTimeout(intervalId) }
     }
+}
+
+fun RBuilder.onResize(onResized: ((width: Int, height: Int) -> Unit)? = null): Resizer {
+    val ref = useRef<HTMLElement>()
+    var dimens by useState(Dimen(0, 0))
+    useResizeListener(ref) { width, height ->
+        dimens = Dimen(width, height)
+        onResized?.invoke(width, height)
+    }
+    return Resizer(ref) { dimens }
+}
+
+class Resizer(val ref: MutableRefObject<HTMLElement>, private val getDimens: () -> Dimen) {
+    val dimens get() = getDimens()
+    val width get() = getDimens().width
+    val height get() = getDimens().height
 }
