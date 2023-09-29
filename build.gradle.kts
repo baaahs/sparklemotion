@@ -181,11 +181,10 @@ kotlin {
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
-                implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
-                implementation(npm("react-mosaic-component", "^5.3.0"))
+                implementation(npm("react-mosaic-component", "^6.1.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
-                implementation(npm("ace-builds", "1.14.0"))
-                implementation(npm("react-ace", "^9.0.0"))
+                implementation(npm("ace-builds", "1.28.0"))
+                implementation(npm("react-ace", "10.1.0"))
                 implementation(npm("markdown-it", "~11.0.0"))
 
                 // To support animated GIFs:
@@ -266,10 +265,6 @@ tasks.named<ProcessResources>("jsProcessResources") {
     from("build/js/node_modules/requirejs") { include("require.js") }
     from("build/js/node_modules/three/build") { include("three.js") }
     from("build/js/node_modules/long-press-event/dist") { include("long-press-event.min.js") }
-    from("build/js/node_modules/@fortawesome") {
-        include("fontawesome-free/css/all.min.css")
-        include("fontawesome-free/webfonts/*")
-    }
     from("build/js/node_modules/react-grid-layout") {
         into("react-grid-layout")
         include("css/styles.css")
