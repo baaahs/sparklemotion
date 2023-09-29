@@ -2,14 +2,11 @@ package baaahs.app.ui.editor.layout
 
 import ReactAce.Ace.reactAce
 import acex.AceEditor
-import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.show.Layout
 import baaahs.show.LegacyTab
-import baaahs.show.Panel
 import baaahs.show.Show
 import baaahs.show.mutable.MutableLayout
-import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
 import js.core.jso
@@ -25,14 +22,11 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
-import react.dom.events.FormEvent
 import react.dom.events.MouseEvent
 import react.dom.i
-import react.dom.onChange
 import react.useContext
 import web.cssom.ClassName
 import web.cssom.Float
-import web.html.HTMLDivElement
 import web.timers.clearInterval
 import web.timers.setInterval
 import kotlin.collections.component1
@@ -53,7 +47,6 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
     }
     val mutableShow by state { MutableShow(props.show) }
     val mutableLayouts = mutableShow.layouts
-    var panelIds = mutableLayouts.panels.keys
 
     var showCode by state { false }
     var errorMessage by state<String?> { null }
@@ -70,7 +63,7 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
     val checkLayout = callback {
         if (showCode && changed.current == true) {
             errorMessage = try {
-                panelIds = getLayoutsFromJson().getPanelIds().toMutableSet()
+                getLayoutsFromJson()
                 null
             } catch (e: Exception) {
                 e.message
@@ -96,7 +89,6 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
         props.onApply(mutableShow, true)
     }
 
-    val handlePanelsClick by mouseEventHandler { currentFormat = null }
     val handleLayoutClicks = memo(mutableLayouts.formats.keys) {
         mutableLayouts.formats.keys.associateWith { { _: MouseEvent<*, *> -> currentFormat = it } }
     }
@@ -140,13 +132,6 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
 
             div(+styles.outerContainer) {
                 List {
-                    ListItemButton {
-                        attrs.selected = currentFormat == null
-                        attrs.onClick = handlePanelsClick
-
-                        ListItemText { +"Panels" }
-                    }
-
                     ListSubheader {
                         attrs.classes = jso { this.root = -styles.listSubheader }
                         +"Formats:"
@@ -196,70 +181,7 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
                         }
                     } else {
                         val showFormat = currentFormat
-                        if (showFormat == null) {
-                            List {
-                                mutableLayouts.panels.forEach { (panelId, panel) ->
-                                    ListItem {
-                                        ListItemIcon { icon(CommonIcons.Layout) }
-                                        TextField {
-                                            attrs.autoFocus = false
-                                            attrs.fullWidth = true
-//                                        attrs.label { +panel.title }
-                                            attrs.value = panel.title
-
-                                            // Notify EditableManager of changes as we type, but don't push them to the undo stack...
-                                            attrs.onChange = { event: FormEvent<HTMLDivElement> ->
-                                                panel.title = event.target.value
-                                                props.onApply(mutableShow, false)
-                                            }
-
-                                            // ... until we lose focus or hit return; then, push to the undo stack only if the value would change.
-//                                        attrs.onBlurFunction = handleBlur
-//                                        attrs.onKeyDownFunction = handleKeyDown
-                                        }
-                                        IconButton {
-                                            attrs.onClick = {
-                                                if (confirm("Delete panel \"${panel.title}\"? This might be bad news if anything is still placed in it.")) {
-                                                    mutableLayouts.panels.remove(panelId)
-                                                    props.onApply(mutableShow, true)
-                                                }
-                                            }
-                                            icon(mui.icons.material.Delete)
-                                        }
-                                    }
-                                }
-
-                                ListItemButton {
-                                    attrs.onClick = {
-                                        appContext.prompt(
-                                            Prompt(
-                                                "Create New Panel",
-                                                "Enter a name for your new panel.",
-                                                "",
-                                                fieldLabel = "Panel Name",
-                                                cancelButtonLabel = "Cancel",
-                                                submitButtonLabel = "Create",
-                                                isValid = { name ->
-                                                    if (name.isBlank()) return@Prompt "No name given."
-
-                                                    val newPanel = Panel(name)
-                                                    if (mutableLayouts.panels.containsKey(newPanel.suggestId())) {
-                                                        "Looks like there's already a panel named named \"$name\"."
-                                                    } else null
-                                                },
-                                                onSubmit = { name ->
-                                                    val newPanel = Panel(name)
-                                                    mutableLayouts.panels[newPanel.suggestId()] = MutablePanel(newPanel)
-                                                    props.onApply(mutableShow, true)
-                                                }
-                                            )
-                                        )
-                                    }
-                                    ListItemIcon { icon(CommonIcons.Add) }
-                                    ListItemText { +"New Panel…" }
-                                }
-                            }
-                        } else {
+                        if (showFormat != null) {
                             layoutEditor {
                                 attrs.mutableShow = mutableShow
                                 attrs.format = showFormat

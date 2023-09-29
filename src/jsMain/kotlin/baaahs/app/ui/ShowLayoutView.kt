@@ -1,6 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.editor.layout.legacyLayoutWarning
 import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.app.ui.layout.gridTabLayout
@@ -18,10 +19,6 @@ import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex
 import kotlinx.css.position
-import materialui.icon
-import mui.icons.material.NotificationImportant
-import mui.material.Box
-import mui.material.Paper
 import mui.material.Tab
 import mui.material.Tabs
 import mui.system.sx
@@ -83,15 +80,7 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
 
             when (currentTab) {
                 is LegacyTab ->
-                    Paper {
-                        attrs.classes = jso { root = -Styles.warningPaper }
-
-                        Box {
-                            icon(NotificationImportant)
-                            typographyH6 { +"Old-style layouts are no longer supported." }
-                            +"Sorry!"
-                        }
-                    }
+                    legacyLayoutWarning {}
                 is OpenGridTab ->
                     gridTabLayout {
                         attrs.tab = currentTab
