@@ -182,10 +182,10 @@ kotlin {
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
                 implementation(npm("@fortawesome/fontawesome-free", "^5.12.1"))
-                implementation(npm("react-mosaic-component", "^5.3.0"))
+                implementation(npm("react-mosaic-component", "^6.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
-                implementation(npm("ace-builds", "1.14.0"))
-                implementation(npm("react-ace", "^9.0.0"))
+                implementation(npm("ace-builds", "1.28.0"))
+                implementation(npm("react-ace", "10.1.0"))
                 implementation(npm("markdown-it", "~11.0.0"))
 
                 // To support animated GIFs:
