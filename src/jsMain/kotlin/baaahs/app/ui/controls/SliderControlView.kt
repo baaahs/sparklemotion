@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.gadgets.Slider
+import baaahs.ui.icons.ResetIcon
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.Color
@@ -14,7 +15,6 @@ import mui.icons.material.MusicNote
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.b
 import react.dom.div
 import react.dom.onClick
 import react.useContext
@@ -26,17 +26,11 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
     val slider = props.slider
     val title = slider.title
-//    val channel = props.sliderControl.channel
-
-//    observe(channel)
-//    val handlePositionChange by eventHandler(channel) { newPosition: Float ->
-//        channel.value = newPosition
-//    }
-
 
     var position by state { slider.position }
     var floorPosition by state { slider.floor }
     var beatLinked by state { slider.beatLinked }
+
     onMount(slider) {
         val listener: GadgetListener = {
             position = slider.position
@@ -62,13 +56,13 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
     val handleReset by mouseEventHandler(slider) {
         slider.position = slider.initialValue
+        slider.floor = slider.initialValue
         slider.beatLinked = false
     }
 
     div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
             attrs.title = slider.title
-//        attrs.position = channel.value
             attrs.position = position
             if (beatLinked) {
                 attrs.floorPosition = floorPosition
@@ -100,9 +94,9 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
         div(+Styles.resetSwitch) {
             attrs.onClick = handleReset
-            b { +"R" }
-        }
 
+            ResetIcon {}
+        }
 
         div(+controlsStyles.feedTitle) { +title }
     }

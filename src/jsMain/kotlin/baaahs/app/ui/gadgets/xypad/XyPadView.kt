@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.XyPadStyles
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
+import baaahs.ui.icons.ResetIcon
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*
@@ -139,7 +140,8 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
 
         div(+XyPadStyles.resetButton) {
             attrs.onClick = handleReset
-            b { +"R" }
+
+            ResetIcon {}
         }
     }
 }
