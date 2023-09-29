@@ -1,6 +1,5 @@
 package baaahs.ui
 
-import external.copyFrom
 import external.react_draggable.Draggable
 import mui.material.Paper
 import mui.material.PaperProps

@@ -553,6 +553,17 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         overflow = Overflow.scroll
     }
 
+    val warningPaper by css {
+        height = 100.pct
+        display = Display.flex
+        alignItems = Align.center
+        justifyContent = JustifyContent.center
+
+        child("div") {
+            textAlign = TextAlign.center
+        }
+    }
+
     val global = CssBuilder().apply {
         body {
             fontSize = 0.875.rem
