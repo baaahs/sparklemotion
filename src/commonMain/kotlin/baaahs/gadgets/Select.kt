@@ -11,17 +11,17 @@ import kotlin.random.Random
 @SerialName("baaahs.Core:Select")
 data class Select(
     override val title: String,
-    val buttonTitles: List<Pair<Int, String>>,
+    val options: List<Pair<Int, String>>,
     val initialSelectionIndex: Int
 ) : Gadget() {
     @JsName("selectionIndex")
     var selectionIndex: Int by updatable("selectionIndex", initialSelectionIndex, Int.serializer())
 
     override fun adjustALittleBit() {
-        selectionIndex = Random.nextInt(buttonTitles.size)
+        selectionIndex = Random.nextInt(options.size)
     }
 
     override fun adjustInRange(value: Float) {
-        selectionIndex = (buttonTitles.size * value).toInt()
+        selectionIndex = (options.size * value).toInt()
     }
 }

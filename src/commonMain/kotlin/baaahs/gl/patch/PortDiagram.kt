@@ -53,6 +53,15 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
+    override fun toString(): String = buildString {
+        candidates.forEach { (track, candidates) ->
+            append("Candidates for $track:\n")
+            candidates.sortedEntries.forEach {
+                append("* ${it.openPatch.shader.title}\n")
+            }
+        }
+    }
+
     data class Track(val stream: Stream, val contentType: ContentType) {
         override fun toString(): String {
             return "Track[${stream.id}/${contentType.id}]"

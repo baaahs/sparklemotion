@@ -128,6 +128,7 @@ class CorePlugin(
             PreviewResolutionFeed,
             RasterCoordinateFeed,
             ResolutionFeed,
+            SelectFeed,
             SliderFeed,
             SwitchFeed,
             TimeFeed,
