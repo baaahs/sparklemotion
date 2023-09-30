@@ -11,6 +11,7 @@ import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.plugin.core.feed.XyPadFeed
+import baaahs.show.Shader
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -66,8 +67,16 @@ object IsfShaderDialect : BaseShaderDialect("baaahs.Core:ISF") {
 }
 
 class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatementRewriter(substitutions) {
+    private var chompWhitespace = false
+
     override fun visit(token: String): GlslParser.Tokenizer.State {
         return if (!inComment && !inDotTraversal) {
+            if (token.isBlank()) {
+                if (chompWhitespace) return this
+            } else {
+                chompWhitespace = false
+            }
+
             when (token) {
                 "IMG_PIXEL" -> ImgPixelState()
                 "IMG_NORM_PIXEL" -> ImgPixelState(normalizedCoords = true)
@@ -82,7 +91,8 @@ class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatement
 
     inner class ImgPixelState(
         val implicitCoords: Boolean = false,
-        val normalizedCoords: Boolean = false // TODO: Support this. STOPSHIP
+        // TODO: Coords should always be normalized, right?
+        val normalizedCoords: Boolean = false
     ) : GlslParser.Tokenizer.State {
         var expecting = "("
 
@@ -111,6 +121,7 @@ class IsfStatementRewriter(substitutions: ShaderSubstitutions) : ShaderStatement
                 "," -> {
                     if (token != expecting) error("Unexpected token \"$token\" (expected $expecting)")
                     superVisit("(")
+                    chompWhitespace = true
                     this@IsfStatementRewriter
                 }
                 else -> error("Unexpected token \"$token\" (expected $expecting)")
@@ -128,7 +139,18 @@ class IsfShaderAnalyzer(
 
     override val entryPointName: String = "main"
 
-    private val isfShader = findIsfShaderDeclaration(glslCode)
+    private val isfShader: IsfShader?
+    private val isfShaderError: Exception?
+    init {
+        var error: Exception? = null
+        isfShader = try {
+            findIsfShaderDeclaration(glslCode)
+        } catch (e: Exception) {
+            error = e
+            null
+        }
+        isfShaderError = error
+    }
 
     override val matchLevel: MatchLevel by lazy {
         if (startsWithJsonComment(glslCode) &&
@@ -279,6 +301,11 @@ class IsfShaderAnalyzer(
             add(GlslError("Multiple passes aren't supported."))
         }
     }
+
+    override fun analyze(existingShader: Shader?): ShaderAnalysis =
+        isfShaderError?.let {
+            ErrorsShaderAnalysis(glslCode.src, WrappedException(it), existingShader ?: createShader())
+        } ?: super.analyze(existingShader)
 
     private val defaultContentTypes = mapOf<GlslType, ContentType>(
         GlslType.Vec4 to ContentType.Color

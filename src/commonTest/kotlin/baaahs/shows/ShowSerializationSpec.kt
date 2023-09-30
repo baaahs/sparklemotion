@@ -334,6 +334,9 @@ private fun jsonFor(portRef: PortRef): JsonObject {
 private fun jsonFor(shader: Shader) = buildJsonObject {
     put("title", shader.title)
     put("src", shader.src)
+    put("description", shader.description)
+    put("author", shader.author)
+    put("tags", shader.tags.jsonMap { JsonPrimitive(it) })
 }
 
 private fun jsonFor(patch: Patch) = buildJsonObject {

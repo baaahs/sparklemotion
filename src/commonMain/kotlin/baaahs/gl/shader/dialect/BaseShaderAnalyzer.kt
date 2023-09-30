@@ -128,7 +128,7 @@ abstract class BaseShaderAnalyzer(
             ?: createShader()
     }
 
-    private fun createShader() =
+    protected fun createShader() =
         Shader(
             findTitle() ?: "Untitled Shader",
             glslCode.src,
