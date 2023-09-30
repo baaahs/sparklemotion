@@ -213,7 +213,8 @@ object IsfShaderDialectSpec : Spek({
                         }*/
         
                         void main() {
-                            gl_FragColor = IMG_NORM_PIXEL(inputImage, gl_FragCoord.xy);
+                            vec2 injectedXy = gl_FragCoord.xy;
+                            gl_FragColor = IMG_NORM_PIXEL(inputImage, abs(injectedXy));
                         }
                     """.trimIndent()
 
@@ -244,14 +245,15 @@ object IsfShaderDialectSpec : Spek({
                             ShaderSubstitutions(
                                 openShader,
                                 GlslCode.Namespace("pfx_"),
-                                mapOf("inputImage" to GlslExpr("pfx_inputImage(gl_FragCoord.xy)"))
+                                mapOf("inputImage" to GlslExpr("pfx_inputImage"))
                             )
-                        )
+                        ).trim()
                     ).toEqual(
                         """
                             #line 7
                             void pfx__main() {
-                                gl_FragColor = pfx_inputImage(gl_FragCoord.xy);
+                                vec2 injectedXy = gl_FragCoord.xy;
+                                gl_FragColor = pfx_inputImage(abs(injectedXy));
                             }
                         """.trimIndent()
                     )
@@ -401,8 +403,8 @@ object IsfShaderDialectSpec : Spek({
                     expect(shaderAnalysis.isValid).toBe(false)
                     expect(shaderAnalysis.errors).containsExactly(
                         GlslError(
-                            "Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead at path: \$\n" +
-                                    "JSON input: { \"DESC }", 1
+                            "Shader analysis error: Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead at path: \$\n" +
+                                    "JSON input: { \"DESC }", -1
                         )
                     )
                 }
