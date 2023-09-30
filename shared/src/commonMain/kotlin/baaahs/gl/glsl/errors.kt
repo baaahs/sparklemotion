@@ -1,5 +1,16 @@
 package baaahs.gl.glsl
 
+data class GlslError(val message: String, val row: Int = NO_LINE, val fileId: Int = -1) {
+    constructor(message: String) :
+            this(message, NO_LINE)
+    constructor(message: String, row: Int? = null, fileId: Int? = null) :
+            this(message, row ?: NO_LINE, fileId ?: -1)
+
+    companion object {
+        const val NO_LINE = -1
+    }
+}
+
 abstract class GlslException(message: String) : Exception(message) {
     abstract val errors: List<GlslError>
 }
@@ -45,14 +56,3 @@ class CompilationException(
 }
 
 class ResourceAllocationException(message: String) : Error(message)
-
-data class GlslError(val message: String, val row: Int = NO_LINE, val fileId: Int = -1) {
-    constructor(message: String) :
-            this(message, NO_LINE)
-    constructor(message: String, row: Int? = null, fileId: Int? = null) :
-            this(message, row ?: NO_LINE, fileId ?: -1)
-
-    companion object {
-        const val NO_LINE = -1
-    }
-}

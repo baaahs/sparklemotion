@@ -1,11 +1,13 @@
 package baaahs.gl.patch
 
+import baaahs.device.FixtureType
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.glsl.CompilationException
 import baaahs.gl.glsl.FeedResolver
 import baaahs.gl.glsl.GlslException
+import baaahs.gl.render.RenderEngine
 import baaahs.gl.render.RenderManager
 import baaahs.gl.render.RenderTarget
 import baaahs.glsl.GuruMeditationError
@@ -57,29 +59,42 @@ class ProgramResolver(
                     var source: String? = null
 
                     renderTargets.groupBy { it.renderEngine }.map { (engine, engineTargets) ->
-                        val program = linkedProgram?.let {
-                            try {
-                                engine.compile(linkedProgram, feedResolver)
-                                    .bind()
-                            } catch (e: GlslException) {
-                                logger.error(e) { "Error preparing program." }
-                                if (e is CompilationException) {
-                                    source = e.source
-                                    e.source?.let { logger.error { it } }
-                                }
-
-                                engine.compile(GuruMeditationError(fixtureType).linkedProgram, feedResolver)
-                                    .bind()
-                            }
-                        }
-
-                        ProgramRenderPlan(program, engineTargets, linkedProgram, source, portDiagram)
+                        createProgramRenderPlan(linkedProgram, engine, feedResolver, source, fixtureType, engineTargets, portDiagram)
                     }
                 }
 
                 FixtureTypeRenderPlan(programsRenderPlans.flatten())
             }
         )
+    }
+
+    private fun createProgramRenderPlan(
+        linkedProgram: LinkedProgram?,
+        engine: RenderEngine,
+        feedResolver: FeedResolver,
+        source: String?,
+        fixtureType: FixtureType,
+        engineTargets: List<RenderTarget>,
+        portDiagram: PortDiagram
+    ): ProgramRenderPlan {
+        var source1 = source
+        val program = linkedProgram?.let {
+            try {
+                engine.compile(linkedProgram, feedResolver)
+                    .bind()
+            } catch (e: GlslException) {
+                logger.error(e) { "Error preparing program." }
+                if (e is CompilationException) {
+                    source1 = e.source
+                    e.source?.let { logger.error { it } }
+                }
+
+                engine.compile(GuruMeditationError(fixtureType).linkedProgram, feedResolver)
+                    .bind()
+            }
+        }
+
+        return ProgramRenderPlan(program, engineTargets, linkedProgram, source1, portDiagram)
     }
 
 
