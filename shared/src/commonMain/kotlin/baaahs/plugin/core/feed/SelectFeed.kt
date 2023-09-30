@@ -1,7 +1,9 @@
 package baaahs.plugin.core.feed
 
+import baaahs.control.MutableSelectControl
 import baaahs.gadgets.Select
 import baaahs.gl.data.FeedContext
+import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -10,6 +12,8 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.FeedOpenContext
+import baaahs.show.mutable.MutableControl
+import baaahs.util.Logger
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.int
@@ -23,8 +27,27 @@ data class SelectFeed(
     val options: List<Pair<Int, String>>,
     val initialSelectionIndex: Int
 ) : Feed {
+    override val pluginPackage: String get() = CorePlugin.id
+    override fun getType(): GlslType = GlslType.Int
+    override val contentType: ContentType
+        get() = ContentType.Int
+
+    fun createGadget(): Select =
+        Select(title, options, initialSelectionIndex)
+
+    override fun buildControl(): MutableControl? =
+        MutableSelectControl(title, options.toMutableList(), initialSelectionIndex, this)
+
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
-        TODO("not implemented")
+        val select = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
+            ?: run {
+                logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
+                createGadget()
+            }
+        return singleUniformFeedContext<Int>(id) {
+            select.options[select.selectionIndex].first
+        }
     }
 
     companion object : FeedBuilder<SelectFeed> {
@@ -57,14 +80,7 @@ data class SelectFeed(
                 initialSelectionIndex
             )
         }
-    }
 
-    override val pluginPackage: String get() = CorePlugin.id
-    override fun getType(): GlslType = GlslType.Int
-    override val contentType: ContentType
-        get() = ContentType.Int
-
-    fun createGadget(): Select {
-        return Select(title, options, initialSelectionIndex)
+        private val logger = Logger<SelectFeed>()
     }
 }

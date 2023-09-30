@@ -35,6 +35,13 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
         }
     }
 
+    override fun forSelect(openSelect: OpenSelectControl, controlProps: ControlProps) = renderWrapper {
+        selectControl {
+            attrs.controlProps = controlProps
+            attrs.selectControl = openSelect
+        }
+    }
+
     override fun forSlider(openSlider: OpenSliderControl, controlProps: ControlProps) = renderWrapper {
         sliderControl {
             attrs.controlProps = controlProps

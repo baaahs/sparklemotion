@@ -17,8 +17,10 @@ import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.plugin.core.feed.RasterCoordinateFeed
 import baaahs.plugin.core.feed.SelectFeed
 import baaahs.show.live.LinkedPatch
+import baaahs.show.mutable.MutableFeedPort
 import baaahs.toBeSpecified
 import baaahs.ui.diagnostics.DotDag
 import io.kotest.core.spec.style.DescribeSpec
@@ -296,7 +298,9 @@ class IsfShaderDialectSpec : DescribeSpec({
 
                     context("program generation") {
                         val linkedProgram by value {
-                            autoWireWithDefaults(upstreamShader, openShader.shader) {
+                            autoWireWithDefaults(upstreamShader, openShader.shader,
+                                defaultPorts = mapOf(ContentType.UvCoordinate to MutableFeedPort(RasterCoordinateFeed()))
+                            ) {
                                 editShader(openShader.title) {
                                     // TODO: STOPSHIP: 11/1/22 it should be auto prioritized higher because it's a filter
                                     priority = 1f
