@@ -29,7 +29,7 @@ class ShaderLibraryManager(
     private val shaderLibraryIndexStore =
         DataStore(plugins, ShaderLibraryIndexDataMigrator())
 
-    private lateinit var shaderLibraries: Map<Fs.File, ShaderLibrary>
+    private var shaderLibraries: Map<Fs.File, ShaderLibrary>? = null
     private val channel = pubSub.openChannel(
         Topics.createShaderLibraries(fsSerializer), emptyMap()
     ) { updated ->
@@ -56,7 +56,7 @@ class ShaderLibraryManager(
 
     private fun searchFor(terms: String): List<ShaderLibrary.Entry> = buildList {
         val termList = terms.trim().split(Regex("\\s+"))
-            shaderLibraries.forEach { (_, shaderLibrary) ->
+            shaderLibraries?.forEach { (_, shaderLibrary) ->
                 val libId = shaderLibrary.title.hyphenize()
                 shaderLibrary.entries.forEach { entry ->
                     if (termList.all { entry.matches(it) }) {
