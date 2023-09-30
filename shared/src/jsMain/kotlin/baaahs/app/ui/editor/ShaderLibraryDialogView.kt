@@ -123,7 +123,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
             attrs.scroll = DialogScroll.paper
             attrs.onClose = handleClose
             attrs.PaperProps = jso {
-                this.classes = jso { this.root = -styles.dialogPaper }
+                this.classes = muiClasses { this.root = -styles.dialogPaper }
             }
 
             div(+styles.dialogTitle) {

@@ -212,7 +212,8 @@ class IsfShaderDialectSpec : DescribeSpec({
                         }*/
         
                         void main() {
-                            gl_FragColor = IMG_NORM_PIXEL(inputImage, gl_FragCoord.xy);
+                            vec2 injectedXy = gl_FragCoord.xy;
+                            gl_FragColor = IMG_NORM_PIXEL(inputImage, abs(injectedXy));
                         }
                     """.trimIndent()
 
@@ -242,7 +243,7 @@ class IsfShaderDialectSpec : DescribeSpec({
                         ShaderSubstitutions(
                             openShader,
                             GlslCode.Namespace("pfx_"),
-                            mapOf("inputImage" to GlslExpr("pfx_inputImage(gl_FragCoord.xy)")),
+                            mapOf("inputImage" to GlslExpr("pfx_inputImage")),
                             emptyList(),
                             emptyList()
                         )
@@ -250,7 +251,8 @@ class IsfShaderDialectSpec : DescribeSpec({
                         """
                             #line 7
                             void pfx__main() {
-                                gl_FragColor = pfx_inputImage(gl_FragCoord.xy);
+                                vec2 injectedXy = gl_FragCoord.xy;
+                                gl_FragColor = pfx_inputImage(abs(injectedXy));
                             }
                         """.trimIndent()
                     )
@@ -400,8 +402,8 @@ class IsfShaderDialectSpec : DescribeSpec({
                     shaderAnalysis.isValid.shouldBeFalse()
                     shaderAnalysis.errors.shouldContainExactly(
                         GlslError(
-                            "Unexpected JSON token at offset 7: Expected quotation mark '\"', but had ' ' instead at path: \$\n" +
-                                    "JSON input: { \"DESC }", 1
+                            "Shader analysis error: Unexpected JSON token at offset 7: Expected quotation mark '\"', but had ' ' instead at path: \$\n" +
+                                    "JSON input: { \"DESC }", -1
                         )
                     )
                 }
