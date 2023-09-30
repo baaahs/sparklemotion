@@ -45,7 +45,7 @@ object IsfShaderDialectSpec : Spek({
         val openShader by value { testToolchain.openShader(shaderAnalysis) }
 
         context("a shader having an ISF block at the top") {
-            override(fileName) { "Float Input.fs" }
+            override(fileName) { "Image Filter.fs" }
             override(src) {
                 """
                     /*{
@@ -91,7 +91,7 @@ object IsfShaderDialectSpec : Spek({
             }
 
             it("gets its title from the file name") {
-                expect(openShader.title).toEqual("Float Input")
+                expect(openShader.title).toEqual("Image Filter")
             }
 
             it("finds the input port") {
@@ -286,14 +286,12 @@ object IsfShaderDialectSpec : Spek({
                     it("suggests sensible options") {
                         expect(suggestions.find { it.mutableShader.title == openShader.title }!!
                             .linkOptionsFor("inputImage").stringify()).toBe("""
-                                Data Source:
-                                - BeatLink
-                                - Custom slider Slider (advanced)
-                                - Pixel Distance from Edge
-                                * The Scale Slider
-                                - Time
+                                Feed:
+                                - Date (advanced)
+                                - Input Image Color Picker
+                                - Input Image Image
                                 Stream:
-                                - Main Stream
+                                * Main Stream
                             """.trimIndent())
                     }
 
@@ -302,14 +300,14 @@ object IsfShaderDialectSpec : Spek({
                             autoWireWithDefaults(upstreamShader, openShader.shader) {
                                 editShader(openShader.title) {
                                     // TODO: STOPSHIP: 11/1/22 it should be auto prioritized higher because it's a filter
-//                                    priority = 1f
+                                    priority = 1f
                                 }
                             }
                             patches.openForPreview(testToolchain, ContentType.Color)!!
                         }
                         val glsl by value { linkedProgram.toGlsl().trim() }
 
-                        it("generates a valid GLSL program") {
+                        it("links components sensibly") {
                             val linkNodes = linkedProgram.linkNodes
                                 .filter { (p,l) -> p is LinkedPatch }
                                 .values
@@ -320,7 +318,9 @@ object IsfShaderDialectSpec : Spek({
                             DotDag().apply {
                                 visit(PixelArrayDevice, linkedProgram)
                             }.text.also { println(it) }
+                        }
 
+                        it("generates a valid GLSL program") {
                             /*language=glsl*/
                             val expected = """
                                 #ifdef GL_ES
@@ -345,12 +345,12 @@ object IsfShaderDialectSpec : Spek({
                                     p0_pinks_gl_FragColor = vec4(p0_global_gl_FragCoord.xy / in_resolution, 0.0, 1.0);
                                 }
 
-                                // Shader: Float Input; namespace: p1
-                                // Float Input
+                                // Shader: Image Filter; namespace: p1
+                                // Image Filter
 
-                                vec4 p1_floatInput_gl_FragColor = vec4(0., 0., 0., 1.);
+                                vec4 p1_imageFilter_gl_FragColor = vec4(0., 0., 0., 1.);
 
-                                vec4 p1_floatInput_inputImage(vec2 uv) {
+                                vec4 p1_imageFilter_inputImage(vec2 uv) {
                                     // Invoke Pinks
                                     p0_global_gl_FragCoord = uv;
                                     p0_pinks_main();
@@ -359,17 +359,18 @@ object IsfShaderDialectSpec : Spek({
                                 }
 
                                 #line 7 1
-                                void p1_floatInput_main() {
-                                    p1_floatInput_gl_FragColor = p1_floatInput_inputImage(gl_FragCoord.xy);
+                                void p1_imageFilter_main() {
+                                    vec2 injectedXy = gl_FragCoord.xy;
+                                    p1_imageFilter_gl_FragColor = p1_imageFilter_inputImage(abs(injectedXy));
                                 }
 
 
                                 #line 10001
                                 void main() {
-                                    // Invoke Float Input
-                                    p1_floatInput_main();
+                                    // Invoke Image Filter
+                                    p1_imageFilter_main();
 
-                                    sm_result = p1_floatInput_gl_FragColor;
+                                    sm_result = p1_imageFilter_gl_FragColor;
                                 }
                             """.trimIndent()
                             expect(glsl).toEqual(expected)
