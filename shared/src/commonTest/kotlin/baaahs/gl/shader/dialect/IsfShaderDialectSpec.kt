@@ -1,6 +1,6 @@
 package baaahs.gl.shader.dialect
 
-import baaahs.describe
+import baaahs.*
 import baaahs.device.PixelArrayDevice
 import baaahs.gl.autoWire
 import baaahs.gl.autoWireWithDefaults
@@ -15,13 +15,12 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.gl.testToolchain
 import baaahs.kotest.value
-import baaahs.only
 import baaahs.plugin.PluginRef
+import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.core.feed.RasterCoordinateFeed
 import baaahs.plugin.core.feed.SelectFeed
 import baaahs.show.live.LinkedPatch
 import baaahs.show.mutable.MutableFeedPort
-import baaahs.toBeSpecified
 import baaahs.ui.diagnostics.DotDag
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.booleans.shouldBeFalse
@@ -72,6 +71,17 @@ class IsfShaderDialectSpec : DescribeSpec({
                                 "NAME": "channel",
                                 "TYPE": "long",
                                 "VALUES": [ 1, 2, 3 ]
+                            },
+                            {
+                                "NAME": "fillColor",
+                                "LABEL": "Fill Color",
+                                "TYPE": "color",
+                                "DEFAULT": [
+                                    1.0,
+                                    0.0,
+                                    0.0,
+                                    1.0
+                                ]
                             }
                         ]
                     }*/
@@ -116,13 +126,26 @@ class IsfShaderDialectSpec : DescribeSpec({
                             put("default", 1.json)
                         },
                         isImplicit = true
+                    ),
+                    InputPort(
+                        "fillColor", ContentType.Color, GlslType.Vec4, "Fill Color",
+                        pluginRef = PluginRef("baaahs.Core", "ColorPicker"),
+                        pluginConfig = buildJsonObject {
+                            put("default", "#ff0000".json)
+                        },
+                        isImplicit = true
                     )
                 )
             }
 
-            it("generates correct data sources") {
+            it("generates correct select feed") {
                 SelectFeed.build(openShader.inputPorts[1])
                     .shouldBe(SelectFeed("Color Channel", listOf(1 to "Red", 2 to "Green", 3 to "Blue"), 0))
+            }
+
+            it("generates correct color picker feed") {
+                ColorPickerFeed.build(openShader.inputPorts[2])
+                    .shouldBe(ColorPickerFeed("Fill Color", Color.from("#ff0000")))
             }
 
             it("finds the output port") {
