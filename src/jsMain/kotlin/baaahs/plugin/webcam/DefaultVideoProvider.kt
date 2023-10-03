@@ -9,6 +9,8 @@ import org.khronos.webgl.TexImageSource
 import web.html.HTMLVideoElement
 import web.media.streams.ConstrainULongRange
 import web.navigator.navigator
+import web.window.Window
+import web.window.window
 
 actual val DefaultVideoProvider: VideoProvider
     get() = BrowserWebCamVideoProvider
@@ -28,7 +30,18 @@ object BrowserWebCamVideoProvider : VideoProvider {
     private val logger = Logger<BrowserWebCamVideoProvider>()
 
     init {
+        startCamera()
+    }
+
+    private fun startCamera() {
         logger.info { "Initializing." }
+        if (!window.isSecureContext) {
+            // The browser considers our session to be not secure; see
+            // https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts.
+            console.warn("navigator.MediaDevices isn't available. Try connecting to localhost directly?")
+            return
+        }
+
         navigator.mediaDevices.getUserMedia(jso {
             video = jso {
                 width = jso<ConstrainULongRange> { min = 320; ideal = 640; max = 1920 }
@@ -51,4 +64,7 @@ object BrowserWebCamVideoProvider : VideoProvider {
     override fun getTextureResource(): TextureResource {
         return TextureResource(videoElement.unsafeCast<TexImageSource>())
     }
+
+    private val Window.isSecureContext: Boolean
+        get() = asDynamic().isSecureContext as Boolean
 }
