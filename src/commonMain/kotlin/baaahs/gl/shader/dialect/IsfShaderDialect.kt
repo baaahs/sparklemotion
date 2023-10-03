@@ -1,5 +1,6 @@
 package baaahs.gl.shader.dialect
 
+import baaahs.Color
 import baaahs.englishize
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.ContentType
@@ -10,6 +11,7 @@ import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.listOf
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
+import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.core.feed.XyPadFeed
 import baaahs.show.Shader
 import baaahs.util.Logger
@@ -248,7 +250,16 @@ class IsfShaderAnalyzer(
     private fun createColor(input: IsfColorInput): InputPort {
         return InputPort(
             input.NAME, ContentType.Color, title = input.LABEL ?: input.NAME.englishize(),
-            pluginRef = PluginRef("baaahs.Core", "ColorPicker")
+            pluginRef = ColorPickerFeed.pluginRef,
+            pluginConfig = buildJsonObject {
+                input.DEFAULT?.let {
+                    if (it.size == 4) {
+                        val (r, g, b, a) = it
+                        val defaultColor = Color(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+                        put("default", JsonPrimitive(defaultColor.toHexString()))
+                    }
+                }
+            }
         )
     }
 
