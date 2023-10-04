@@ -7,6 +7,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -68,7 +69,7 @@ data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
 
     override fun isImplicit(): Boolean = true
 
-    override fun appendDeclaration(buf: StringBuilder, id: String) {
+    override fun appendDeclaration(buf: ProgramBuilder, id: String) {
         val offsetUniformId = "ds_${id}_offset"
         val varName = getVarName(id)
         buf.append("""

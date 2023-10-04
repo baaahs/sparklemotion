@@ -9,6 +9,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
@@ -38,7 +39,7 @@ data class PixelIndexFeed(@Transient val `_`: Boolean = true) : Feed {
         return PixelIndexFeedContext(getVarName(id), "ds_${id}_texture")
     }
 
-    override fun appendDeclaration(buf: StringBuilder, id: String) {
+    override fun appendDeclaration(buf: ProgramBuilder, id: String) {
         val textureUniformId = "ds_${id}_texture"
         val varName = getVarName(id)
         buf.append("""
