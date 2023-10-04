@@ -7,8 +7,6 @@ import baaahs.ui.className
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.DraggableProvided
-import external.copyFrom
 import js.core.jso
 import materialui.icon
 import mui.material.Card
@@ -36,11 +34,6 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
             render()
         }
 
-        props.draggableProvided?.let { draggableProvided ->
-            ref = draggableProvided.innerRef
-            copyFrom(draggableProvided.draggableProps)
-        }
-
         problemBadge(control)
 
         if (editMode.isAvailable && !props.disableEdit) {
@@ -50,20 +43,12 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
                 icon(mui.icons.material.Edit)
             }
         }
-
-        props.draggableProvided?.let { draggableProvided ->
-            div(+Styles.dragHandle) {
-                copyFrom(draggableProvided.dragHandleProps)
-                icon(mui.icons.material.DragIndicator)
-            }
-        }
     }
 }
 
 external interface ControlWrapperProps : Props {
     var control: OpenControl
     var controlProps: ControlProps
-    var draggableProvided: DraggableProvided?
     var disableEdit: Boolean
     var className: String?
 }

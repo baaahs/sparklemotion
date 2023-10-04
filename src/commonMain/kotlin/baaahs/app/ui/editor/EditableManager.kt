@@ -129,7 +129,7 @@ abstract class EditableManager<T>(
         val mutableDocument: MutableDocument<T>,
         val editIntent: EditIntent,
     ) {
-        val mutableEditable: MutableEditable<*> = editIntent.findMutableEditable(mutableDocument)
+        val mutableEditable: MutableEditable = editIntent.findMutableEditable(mutableDocument)
         var cachedIsChanged: Boolean? = null
 
         fun getEditorPanels(): List<DialogPanel> =

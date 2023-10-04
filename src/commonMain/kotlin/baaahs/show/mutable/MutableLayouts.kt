@@ -17,8 +17,11 @@ class MutableLayouts(
         }
     }
 
+    fun findLayout(id: String) =
+        formats.getOrPut(id) { MutableLayout(null) }
+
     fun editLayout(id: String, block: MutableLayout.() -> Unit): MutableLayouts {
-        formats.getOrPut(id) { MutableLayout(null) }.apply(block)
+        findLayout(id).apply(block)
         return this
     }
 
@@ -85,8 +88,21 @@ class MutableLayout(
         tabs.add(MutableGridTab(title).apply(block))
     }
 
+    fun findTab(title: String) =
+        tabs.find { it.title == title }
+            ?: error("No tab with title \"$title\" found in [${tabs.joinToString(", ") { it.title }}]")
+
+    fun editTab(title: String, block: MutableGridTab.() -> Unit) {
+        val tab = findTab(title)
+        (tab as? MutableGridTab?)?.apply(block)
+    }
+
     fun build(showBuilder: ShowBuilder): Layout {
         return Layout(mediaQuery, tabs.map { it.build(showBuilder) })
+    }
+
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        tabs.forEach { it.accept(visitor, log) }
     }
 }
 
@@ -94,6 +110,7 @@ interface MutableTab {
     var title: String
 
     fun build(showBuilder: ShowBuilder): Tab
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog)
 }
 
 class MutableLegacyTab(
@@ -116,6 +133,10 @@ class MutableLegacyTab(
             rows.map { it.build() },
             areas.map { showBuilder.idFor(it.build()) }
         )
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        // No op.
+    }
 
     fun appendColumn() {
         duplicateColumn(columns.size - 1)
@@ -196,6 +217,10 @@ class MutableGridTab(
 
     override fun build(showBuilder: ShowBuilder): Tab =
         GridTab(title, columns, rows, items.map { it.build(showBuilder) })
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        items.forEach { it.accept(visitor, log) }
+    }
 }
 
 class MutableGridLayout(
@@ -213,6 +238,10 @@ class MutableGridLayout(
 
     fun build(showBuilder: ShowBuilder): GridLayout =
         GridLayout(columns, rows, matchParent, items.map { it.build(showBuilder) })
+
+    override fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        items.forEach { it.accept(visitor, log) }
+    }
 
 }
 
@@ -237,9 +266,16 @@ class MutableGridItem(
             column, row, width, height,
             layout?.build(showBuilder)
         )
+
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog) {
+        control.accept(visitor, log)
+        layout?.accept(visitor, log)
+    }
 }
 
-interface MutableILayout
+interface MutableILayout {
+    fun accept(visitor: MutableShowVisitor, log: VisitationLog)
+}
 
 interface MutableIGridLayout : MutableILayout {
     var columns: Int
@@ -288,6 +324,12 @@ interface MutableIGridLayout : MutableILayout {
             column, row, width, height
         )
     }
+
+    fun find(title: String): MutableGridItem = items.find { it.control.title == title }
+        ?: error("No control with title \"$title\" among [${items.joinToString(", ") { it.control.title }}]")
+
+    fun find(control: MutableControl): MutableGridItem = items.find { it.control == control }
+        ?: error("No control \"${control.title}\" among [${items.joinToString(", ") { it.control.title }}]")
 
     fun applyChanges(
         originalItems: List<OpenGridItem>,

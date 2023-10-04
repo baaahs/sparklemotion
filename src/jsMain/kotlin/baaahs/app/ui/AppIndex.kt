@@ -63,7 +63,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
     val allStyles = memo(theme) { AllStyles(theme) }
 
-    val dragNDrop by state { ReactBeautifulDragNDrop() }
     var prompt by state<Prompt?> { null }
     val editableManager by state { ShowEditableManager { newShow -> showManager.onEdit(newShow) } }
     val sceneEditableManager by state { SceneEditableManager { newScene -> sceneManager.onEdit(newScene) } }
@@ -73,7 +72,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val myAppContext = memo(uiSettings, allStyles) {
         jso<AppContext> {
             this.showPlayer = props.stageManager
-            this.dragNDrop = dragNDrop
             this.webClient = webClient
             this.plugins = webClient.plugins
             this.uiSettings = uiSettings

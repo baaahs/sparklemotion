@@ -166,16 +166,6 @@ kotlin {
                 // For diagnostics:
                 implementation(npm("dagre-d3", "^0.6.4"))
 
-                // TODO: re-enable when https://github.com/atlassian/react-beautiful-dnd/pull/1890 is addressed
-//                implementation(npm("react-beautiful-dnd", "^13.0.0"))
-                // <react-beautiful-dnd bug workaround>
-                implementation(npm("css-box-model", "^1.2.0"))
-                implementation(npm("raf-schd", "^4.0.2"))
-                implementation(npm("react-redux", "^7.2.0"))
-                implementation(npm("use-memo-one", "^1.1.1"))
-                implementation(npm("memoize-one", "^5.1.1"))
-                // </react-beautiful-dnd bug workaround>
-
                 implementation(npm("clsx", "^2.0.0"))
                 implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^4.4.4"))

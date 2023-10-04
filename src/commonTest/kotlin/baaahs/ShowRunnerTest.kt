@@ -65,7 +65,7 @@ class ShowRunnerTest {
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor()
         )
-        stageManager.switchTo(SampleData.sampleLegacyShow)
+        stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(testSceneData())
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()

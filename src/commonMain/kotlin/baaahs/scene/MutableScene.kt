@@ -174,7 +174,7 @@ class MutableModel(baseModel: ModelData) {
         }
 }
 
-abstract class MutableEntity : MutableEditable<Model.Entity> {
+abstract class MutableEntity : MutableEditable {
     constructor(baseEntity: EntityData) {
         this.title = baseEntity.title
         this.description = baseEntity.description

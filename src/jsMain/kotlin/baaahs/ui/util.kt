@@ -2,8 +2,6 @@ package baaahs.ui
 
 import baaahs.context2d
 import baaahs.document
-import external.DroppableProvided
-import external.copyFrom
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
@@ -147,16 +145,6 @@ fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
 
 fun <T> StyledElement.important(property: KProperty<T>, value: T) {
     put(property.name, "$value !important")
-}
-
-fun RDOMBuilder<*>.install(droppableProvided: DroppableProvided) {
-    ref = droppableProvided.innerRef
-    copyFrom(droppableProvided.droppableProps)
-}
-
-fun RElementBuilder<*>.install(droppableProvided: DroppableProvided) {
-    ref = droppableProvided.innerRef
-    copyFrom(droppableProvided.droppableProps)
 }
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
@@ -330,3 +318,26 @@ fun StyledElement.transition(
 
 fun Length.toLinearDimension(): LinearDimension =
     LinearDimension(toString())
+
+external interface CopyableProps
+
+fun RElementBuilder<*>.copyFrom(fromProps: Props?) {
+    copyFrom(fromProps.unsafeCast<CopyableProps>())
+}
+
+private val jsObj = js("Object")
+fun RElementBuilder<*>.copyFrom(fromProps: CopyableProps?) {
+    if (fromProps == null) return
+
+    val from = fromProps.asDynamic()
+    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    keys.forEach { key -> attrs.asDynamic()[key] = from[key] }
+}
+
+fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
+    if (fromProps == null) return
+
+    val from = fromProps.asDynamic()
+    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    keys.forEach { key -> setProp(key, from[key]) }
+}

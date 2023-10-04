@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.editor.Editor
+import baaahs.app.ui.editor.layout.legacyLayoutWarning
 import baaahs.app.ui.layout.DragNDropContext
 import baaahs.app.ui.layout.dragNDropContext
 import baaahs.app.ui.layout.gridTabLayout
-import baaahs.app.ui.layout.legacyTabLayout
 import baaahs.show.LegacyTab
 import baaahs.show.live.OpenGridTab
 import baaahs.show.live.OpenLayout
@@ -66,11 +66,7 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
     val currentTab = layout.currentTab
 
     val myDragNDropContext = memo<DragNDropContext>(currentTab) {
-        when (currentTab) {
-            is LegacyTab -> jso { this.isLegacy = true }
-            is OpenGridTab -> jso { this.isLegacy = false; this.gridLayoutContext = appContext.gridLayoutContext }
-            else -> error("huh?")
-        }
+        jso { this.gridLayoutContext = appContext.gridLayoutContext }
     }
 
     sharedGlContext {
@@ -81,14 +77,10 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
 
         dragNDropContext.Provider {
             attrs.value = myDragNDropContext
+
             when (currentTab) {
                 is LegacyTab ->
-                    legacyTabLayout {
-                        attrs.show = props.show
-                        attrs.tab = currentTab
-                        attrs.onShowStateChange = props.onShowStateChange
-                    }
-
+                    legacyLayoutWarning {}
                 is OpenGridTab ->
                     gridTabLayout {
                         attrs.tab = currentTab

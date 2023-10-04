@@ -15,7 +15,6 @@ import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
 import baaahs.ui.KeyboardShortcutHandler
 import baaahs.ui.Prompt
-import baaahs.ui.ReactBeautifulDragNDrop
 import baaahs.util.Clock
 import js.core.jso
 import react.createContext
@@ -31,7 +30,6 @@ val toolchainContext = createContext<Toolchain>(jso {})
  */
 external interface AppContext {
     var showPlayer: ClientStageManager
-    var dragNDrop: ReactBeautifulDragNDrop
     var webClient: WebClient.Facade
     var plugins: Plugins
     var uiSettings: UiSettings
