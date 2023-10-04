@@ -26,11 +26,16 @@ class ShaderComponent(
         linkedPatch.incomingLinks.forEach { (toPortId, fromLink) ->
             val inputPort = linkedPatch.shader.findInputPort(toPortId)
 
-            val upstreamComponent = findUpstreamComponent(fromLink)
-            var expression = upstreamComponent.getExpression(prefix)
-            val type = upstreamComponent.resultType
-            if (inputPort.type != type) {
-                expression = inputPort.contentType.adapt(expression, type)
+            val expression = if (inputPort.isAbstractFunction) {
+                GlslExpr(namespace.qualify(inputPort.varName))
+            } else {
+                val upstreamComponent = findUpstreamComponent(fromLink)
+                var expression = upstreamComponent.getExpression(prefix)
+                val type = upstreamComponent.resultType
+                if (inputPort.type != type) {
+                    expression = inputPort.contentType.adapt(expression, type)
+                }
+                expression
             }
             tmpPortMap[toPortId] = expression
         }
@@ -117,9 +122,9 @@ class ShaderComponent(
         link: ProgramNode
     ) {
         val fn = inputPort.glslArgSite as GlslCode.GlslFunction
-        buf.append(fn.toGlsl(index) {
+        buf.append(fn.toGlsl(index, GlslCode.TokenRewriter {
             if (it == fn.name) namespace.qualify(it) else it
-        })
+        }))
         val destComponent = findUpstreamComponent(link)
         buf.append(" {\n")
         destComponent.appendInvokeAndReturn(buf, inputPort)
@@ -129,15 +134,20 @@ class ShaderComponent(
     override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
         buf.append("    // Invoke ", title, "\n")
 
-        injectionParams.forEach { (paramName, contentType) ->
-            linkedPatch.shader.inputPorts.forEach { inputPort ->
-                if (inputPort.contentType == contentType) {
-                    buf.append("    ${prefix}_global_${inputPort.id} = $paramName;\n")
+        val portMap = buildMap {
+            putAll(resolvedPortMap)
+
+            injectionParams.forEach { (paramName, contentType) ->
+                linkedPatch.shader.inputPorts.forEach { inputPort ->
+                    if (inputPort.contentType == contentType) {
+                        buf.append("    ${prefix}_global_${inputPort.id} = $paramName;\n")
+                        put(inputPort.id, GlslExpr(paramName))
+                    }
                 }
             }
         }
 
-        val invocationGlsl = linkedPatch.shader.invoker(namespace, resolvedPortMap).toGlsl(resultVar)
+        val invocationGlsl = linkedPatch.shader.invoker(namespace, portMap).toGlsl(resultVar)
         buf.append("    ", invocationGlsl, ";\n")
         buf.append("\n")
     }
@@ -167,5 +177,4 @@ class ShaderComponent(
     }
 
     override fun toString(): String = "ShaderComponent(${prefix}_$id)"
-
 }

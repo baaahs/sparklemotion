@@ -7,6 +7,10 @@ class GlslParser {
 
     internal fun findStatements(glslSrc: String): List<GlslCode.GlslStatement> {
         val context = Context()
+
+        // TODO: Where should the version come from?
+        context.macros["__VERSION__"] = Macro(null, "330")
+
         context.parse(glslSrc, ParseState.initial(context)).visitEof()
         return context.statements
     }
@@ -28,11 +32,11 @@ class GlslParser {
             return tokenizationPattern.findAll(text).map { it.groupValues[0] }
         }
 
-        fun <S: State<S>> processTokens(
+        fun processTokens(
             text: String,
-            initialState: S,
+            initialState: State,
             freezeLineNumber: Boolean = false
-        ): S {
+        ): State {
             var state = initialState
             tokenize(text).forEach { token ->
                 if (!freezeLineNumber && token == "\n") lineNumber++
@@ -43,8 +47,8 @@ class GlslParser {
             return state
         }
 
-        interface State<S: State<S>> {
-            fun visit(token: String): S
+        interface State {
+            fun visit(token: String): State
         }
     }
 
@@ -68,7 +72,7 @@ class GlslParser {
             initialState: ParseState,
             freezeLineNumber: Boolean = false
         ): ParseState {
-            return tokenizer.processTokens(text, initialState, freezeLineNumber)
+            return tokenizer.processTokens(text, initialState, freezeLineNumber) as ParseState
         }
 
         fun doUndef(args: List<String>) {
@@ -149,6 +153,7 @@ class GlslParser {
 
                     tokenizer.processTokens(macro.replacement.trim(), parseState, freezeLineNumber = true)
                         .also { macroDepth-- }
+                            as ParseState
                 }
                 else -> ParseState.MacroExpansion(this, parseState, macro)
             }
@@ -163,7 +168,7 @@ class GlslParser {
         val replacement: String
     )
 
-    private sealed class ParseState(val context: Context) : Tokenizer.State<ParseState> {
+    private sealed class ParseState(val context: Context) : Tokenizer.State {
         companion object {
             fun initial(context: Context): ParseState =
                 UnidentifiedStatement(context)

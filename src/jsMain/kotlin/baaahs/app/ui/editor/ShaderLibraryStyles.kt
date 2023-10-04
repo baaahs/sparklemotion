@@ -5,15 +5,34 @@ import mui.material.styles.Theme
 import styled.StyleSheet
 
 class ShaderLibraryStyles(private val theme: Theme) : StyleSheet("app-ui-editor-ShaderLibrary", isStatic = true) {
+    val dialogPaper by css {
+        height = 90.vh
+        position = Position.absolute
+        bottom = 0.px
+    }
+
+    val dialogTitle by css {
+        display = Display.flex
+        justifyContent = JustifyContent.spaceBetween
+    }
+
+    val dialogTitleActions by css {
+        padding = Padding(.5.em)
+    }
+
     val dialogContent by css {
         display = Display.flex
         flexDirection = FlexDirection.column
+        overflowY = Overflow.hidden
     }
 
     val results by css {
         position = Position.relative
         flex = Flex(1, 0, FlexBasis.auto)
-        height = 100.vh
+        top = 0.px
+        left = 0.px
+        right = 0.px
+        bottom = 0.px
     }
 
     val shaderGridScrollContainer by css {

@@ -6,7 +6,11 @@ import baaahs.sm.webapi.SearchShaderLibraries
 import baaahs.sm.webapi.Topics
 import kotlinx.serialization.modules.SerializersModule
 
-class ShaderLibraries(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsSerializer) {
+interface ShaderLibraries {
+    suspend fun searchFor(terms: String): List<ShaderLibrary.Entry>
+}
+
+class ShaderLibrariesClient(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsSerializer) {
     val facade = Facade()
 
     private val shaderLibraries = mutableMapOf<String, ShaderLibrary>()
@@ -23,8 +27,8 @@ class ShaderLibraries(pubSub: PubSub.Client, remoteFsSerializer: RemoteFsSeriali
         pubSub.commandSender(commands.searchShaderLibraries)
     }
 
-    inner class Facade : baaahs.ui.Facade() {
-        suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
+    inner class Facade : baaahs.ui.Facade(), ShaderLibraries {
+        override suspend fun searchFor(terms: String): List<ShaderLibrary.Entry> {
             return searchShaderLibraries(SearchShaderLibraries(terms)).matches
         }
     }

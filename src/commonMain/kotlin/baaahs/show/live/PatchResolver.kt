@@ -16,21 +16,14 @@ class PatchResolver(
     private val toolchain: Toolchain,
     private val gadgetProvider: GadgetProvider? = null
 ) {
-    private val openPatches = hashMapOf<String, OpenPatch>()
-
-    init {
-        patches.keys.forEach { patchId ->
-            resolve(patchId)
-        }
-    }
+    private val openPatches: Map<String, OpenPatch> =
+        patches.keys.associateWith { patchId -> resolve(patchId) }
 
     private fun findFeed(id: String) = feeds.getBang(id, "feed")
     private fun findShader(id: String): OpenShader = openShaders.getBang(id, "open shader")
     private fun findPatch(id: String): Patch = patches.getBang(id, "patch")
 
     private fun resolve(id: String): OpenPatch {
-        openPatches[id]?.let { return it }
-
         val patch = findPatch(id)
         val shader = findShader(patch.shaderId)
         val knownInputPorts = shader.inputPorts.associateBy { it.id }
@@ -55,7 +48,6 @@ class PatchResolver(
             }
 
         return build(shader, patch, links, toolchain, gadgetProvider, id)
-            .also { openPatches[id] = it }
     }
 
     fun getResolvedPatches() = openPatches

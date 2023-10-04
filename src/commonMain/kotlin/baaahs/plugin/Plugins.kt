@@ -405,6 +405,18 @@ sealed class Plugins(
         inputPort: InputPort
     ): Feed? = builder.safeBuild(inputPort)
 
+    class PluginArgs(private val map: Map<Plugin<Any>, Any>) {
+        constructor(allPlugins: Collection<Plugin<*>>, pinkyArgs: PinkyArgs): this(
+            allPlugins.associate { it as Plugin<Any> to it.getArgs(pinkyArgs) }
+        )
+
+        fun openForServer(pluginContext: PluginContext): List<OpenServerPlugin> {
+            return map.map { (plugin, pluginArgs) ->
+                plugin.openForServer(pluginContext, pluginArgs)
+            }
+        }
+    }
+
     companion object {
         private val logger = Logger<Plugins>()
 
@@ -416,18 +428,11 @@ sealed class Plugins(
         ): ServerPlugins {
             val parser = ArgParser(programName)
             val pinkyArgs = PinkyArgs(parser)
-            val pluginToArgs = (listOf(CorePlugin) + plugins).map {
-                it as Plugin<Any>
-                it to it.getArgs(parser)
-            }
-
-            parser.parse(startupArgs)
-
-            val serverPlugins = pluginToArgs.map { (plugin, pluginArgs) ->
-                plugin.openForServer(pluginContext, pluginArgs)
-            }
-
-            return ServerPlugins(serverPlugins, pluginContext, pinkyArgs)
+            val allPlugins = listOf(CorePlugin) + plugins
+            val pluginArgs = PluginArgs(allPlugins, pinkyArgs)
+            val result = parser.parse(startupArgs)
+            val openServerPlugins = pluginArgs.openForServer(pluginContext)
+            return ServerPlugins(openServerPlugins, pluginContext, pinkyArgs)
         }
 
         fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =

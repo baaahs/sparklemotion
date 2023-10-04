@@ -2,7 +2,8 @@ package baaahs.di
 
 import baaahs.MediaDevices
 import baaahs.PubSub
-import baaahs.app.ui.PatchEditorApp
+import baaahs.app.ui.dev.PatchEditorDevApp
+import baaahs.app.ui.dev.ShaderLibraryDevApp
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.browser.RealMediaDevices
 import baaahs.client.*
@@ -86,7 +87,8 @@ open class JsUiWebClientModule : WebClientModule() {
             }
 
             // Dev only:
-            scoped { PatchEditorApp(get(), get(), get()) }
+            scoped { PatchEditorDevApp(get(), get(), get()) }
+            scoped { ShaderLibraryDevApp(get(), get(), get()) }
         }
     }
 }

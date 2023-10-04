@@ -1,5 +1,6 @@
 package baaahs.gl.patch
 
+import baaahs.device.FixtureType
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.RenderPlan
@@ -54,29 +55,39 @@ class ProgramResolver(
                         feeds
                     )
 
-                    var source: String? = null
-                    val program = linkedPatch?.let {
-                        try {
-                            renderManager.compile(fixtureType, it, feedResolver)
-                        } catch (e: GlslException) {
-                            logger.error(e) { "Error preparing program." }
-                            if (e is CompilationException) {
-                                source = e.source
-                                e.source?.let { logger.error { it } }
-                            }
-
-                            renderManager.compile(
-                                fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
-                            )
-                        }
-                    }
-
-                    ProgramRenderPlan(program, renderTargets, linkedPatch, source, portDiagram)
+                    createProgramRenderPlan(linkedPatch, fixtureType, feedResolver, renderTargets, portDiagram)
                 }
 
                 FixtureTypeRenderPlan(programsRenderPlans)
             }
         )
+    }
+
+    private fun createProgramRenderPlan(
+        linkedPatch: LinkedProgram?,
+        fixtureType: FixtureType,
+        feedResolver: FeedResolver,
+        renderTargets: List<RenderTarget>,
+        portDiagram: PortDiagram
+    ): ProgramRenderPlan {
+        var source: String? = null
+        val program = linkedPatch?.let {
+            try {
+                renderManager.compile(fixtureType, it, feedResolver)
+            } catch (e: GlslException) {
+                logger.error(e) { "Error preparing program." }
+                if (e is CompilationException) {
+                    source = e.source
+                    e.source?.let { logger.error { it } }
+                }
+
+                renderManager.compile(
+                    fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
+                )
+            }
+        }
+
+        return ProgramRenderPlan(program, renderTargets, linkedPatch, source, portDiagram)
     }
 
 

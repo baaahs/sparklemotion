@@ -1,6 +1,7 @@
 package baaahs
 
-import baaahs.app.ui.PatchEditorApp
+import baaahs.app.ui.dev.PatchEditorDevApp
+import baaahs.app.ui.dev.ShaderLibraryDevApp
 import baaahs.client.WebClient
 import baaahs.di.*
 import baaahs.monitor.MonitorUi
@@ -86,7 +87,12 @@ private fun launchUi(appName: String?) {
 
             "PatchEditor" -> {
                 koin.loadModules(listOf(JsUiWebClientModule().getModule()))
-                koin.createScope<WebClient>().get<PatchEditorApp>()
+                koin.createScope<WebClient>().get<PatchEditorDevApp>()
+            }
+
+            "ShaderLibrary" -> {
+                koin.loadModules(listOf(JsUiWebClientModule().getModule()))
+                koin.createScope<WebClient>().get<ShaderLibraryDevApp>()
             }
 
             else -> throw UnsupportedOperationException("unknown mode $appName")

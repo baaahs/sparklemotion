@@ -1,6 +1,5 @@
 package baaahs.gl.shader
 
-import baaahs.app.ui.patchmod.*
 import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
@@ -28,6 +27,9 @@ interface OpenShader : RefCounted {
 
     val errors: List<GlslError>
 
+    /** True iff any input port's content type matches the output content type. */
+    val isFilter get() = inputPorts.any { it.contentType == outputPort.contentType }
+
     fun findInputPortOrNull(portId: String): InputPort? =
         inputPorts.find { it.id == portId }
 
@@ -39,7 +41,10 @@ interface OpenShader : RefCounted {
         (inputPorts.map { it.contentType.glslType } + outputPort.contentType.glslType)
             .filterIsInstance<GlslType.Struct>()
 
-    fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String
+    fun toGlsl(fileNumber: Int?, substitutions: ShaderSubstitutions) =
+        toGlsl(fileNumber, shaderDialect.buildStatementRewriter(substitutions))
+
+    fun toGlsl(fileNumber: Int?, statementRewriter: GlslCode.StatementRewriter): String
 
     fun invoker(
         namespace: Namespace,
@@ -67,31 +72,24 @@ interface OpenShader : RefCounted {
 
         override val requiresInit = globalVars.any { it.deferInitialization }
 
-        override fun toGlsl(fileNumber: Int?, substitutions: GlslCode.Substitutions): String {
-            val buf = StringBuilder()
-            globalVars.forEach { glslVar ->
-                buf.append(glslVar.declarationToGlsl(fileNumber, substitutions))
-                buf.append("\n")
-            }
-
-            glslCode.functions.filterNot { it.isAbstract }.forEach { glslFunction ->
-                buf.append(glslFunction.toGlsl(fileNumber, substitutions))
-                buf.append("\n")
-            }
-
-            if (requiresInit) {
-                buf.append("\n")
-                buf.append("void ${substitutions.substitute(ShaderSubstitutions.initFnName)}() {")
-                globalVars.forEach {
-                    if (it.deferInitialization) {
-                        buf.append("    ${it.assignmentToGlsl(fileNumber, substitutions)}\n")
-                    }
+        override fun toGlsl(fileNumber: Int?, statementRewriter: GlslCode.StatementRewriter): String =
+            buildString {
+                shaderDialect.genGlslStatements(glslCode).forEach { glslStatement ->
+                    append(glslStatement.toGlsl(fileNumber, statementRewriter))
+                    append("\n")
                 }
-                buf.append("}\n")
-            }
 
-            return buf.toString()
-        }
+                if (requiresInit) {
+                    append("\n")
+                    append("void ${statementRewriter.substitute(ShaderSubstitutions.initFnName)}() {")
+                    globalVars.forEach {
+                        if (it.deferInitialization) {
+                            append("    ${it.assignmentToGlsl(fileNumber, statementRewriter)}\n")
+                        }
+                    }
+                    append("}\n")
+                }
+            }
 
         override fun invoker(namespace: Namespace, portMap: Map<String, GlslExpr>): GlslCode.Invoker {
             return entryPoint.invoker(namespace, portMap)
@@ -108,11 +106,47 @@ interface OpenShader : RefCounted {
     }
 }
 
+open class ShaderStatementRewriter(
+    private val shaderSubstitutions: ShaderSubstitutions
+) : GlslCode.StatementRewriter {
+    private val buf = StringBuilder()
+    protected var inComment = false
+    protected var inDotTraversal = false
+
+    override fun visit(token: String): GlslParser.Tokenizer.State {
+        when (token) {
+            "//" -> {
+                inComment = true; buf.append(token)
+            }
+            "." -> {
+                if (!inComment) inDotTraversal = true; buf.append(token)
+            }
+            "\n" -> {
+                inComment = false; buf.append(token)
+            }
+            else -> {
+                buf.append(
+                    if (inComment || inDotTraversal) token
+                    else shaderSubstitutions.substitute(token)
+                )
+                inDotTraversal = false
+            }
+        }
+        return this
+    }
+
+    override fun substitute(text: String): String =
+        shaderSubstitutions.substitute(text)
+
+    override fun drain(): String =
+        buf.toString().also { buf.clear() }
+}
+
 class ShaderSubstitutions(
     val openShader: OpenShader,
     val namespace: Namespace,
     portMap: Map<String, GlslExpr>
-) : GlslCode.Substitutions {
+) {
     private val uniformGlobalsMap = portMap.filter { (id, _) ->
         val inputPort = openShader.findInputPortOrNull(id)
         inputPort?.isGlobal == true ||
@@ -131,7 +165,7 @@ class ShaderSubstitutions(
 
     private val symbolMap = uniformGlobalsMap + nonUniformGlobalsMap + specialSymbols
 
-    override fun substitute(word: String): String =
+    fun substitute(word: String): String =
         symbolMap[word]?.s
             ?: if (symbolsToNamespace.contains(word)) {
                 namespace.qualify(word)

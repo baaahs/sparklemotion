@@ -1,10 +1,13 @@
 package baaahs.sm.server
 
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.default
+import baaahs.libraries.ShaderLibraryManager
+import kotlinx.cli.*
+import org.koin.core.scope.Scope
 
-class PinkyArgs(parser: ArgParser) {
+@OptIn(ExperimentalCli::class)
+class PinkyArgs(
+    internal val parser: ArgParser
+) {
     // TODO: Use this.
     val sceneName by parser.option(ArgType.String, shortName = "m")
 
@@ -23,6 +26,32 @@ class PinkyArgs(parser: ArgParser) {
 
     val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
         .default(false)
+
+    var subcommand: Subcommand? = null
+        private set
+
+    init {
+        parser.subcommands(IndexShaderLibrary())
+    }
+
+    inner class IndexShaderLibrary : kotlinx.cli.Subcommand(
+        "index-shader-library",
+        "Generate an index for a shader library."
+    ), Subcommand {
+        val libraryName by argument(ArgType.String)
+
+        override fun execute() { subcommand = this }
+
+        override suspend fun Scope.execute() {
+            get<ShaderLibraryManager>().buildIndex(libraryName)
+        }
+    }
+
+    interface Subcommand {
+        val name: String
+
+        suspend fun Scope.execute()
+    }
 
     companion object {
         val defaults: PinkyArgs = PinkyArgs(ArgParser("void"))

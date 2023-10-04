@@ -13,6 +13,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibraries
+import baaahs.libraries.ShaderLibrariesClient
 import baaahs.mapper.JsMapper
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -57,7 +58,7 @@ class WebClient(
         }
     }
 
-    private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
+    private val shaderLibraries = ShaderLibrariesClient(pubSub, remoteFsSerializer)
 
     private val listDmxUniverses = pubSub.commandSender(
         DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule))
@@ -133,7 +134,7 @@ class WebClient(
         val notifier: Notifier.Facade
             get() = this@WebClient.notifier.facade
 
-        val shaderLibraries : ShaderLibraries.Facade
+        val shaderLibraries : ShaderLibraries
             get() = this@WebClient.shaderLibraries.facade
 
         val uiSettings: UiSettings

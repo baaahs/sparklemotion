@@ -42,11 +42,10 @@ class PinkyMain(private val args: Array<String>) {
     fun run() {
         GlBase.manager // First thing, we need to wake up OpenGL on the main thread.
 
-        logger.info { "Are you pondering what I'm pondering?" }
-
         val programName = PinkyMain::class.simpleName ?: "Pinky"
+
         val clock = SystemClock
-        val pinkyInjector = koinApplication {
+        val serverInjector = koinApplication {
             logger(KoinLogger())
 
             modules(
@@ -56,15 +55,39 @@ class PinkyMain(private val args: Array<String>) {
             )
         }
 
-        val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
+        // TODO: Too much of Pinky still starts up for subcommands.
+        // TODO: More granular Koin modules, add OpenPlugin.start() and .stop(), etc.
+        val pinkyScope = serverInjector.koin.createScope<Pinky>()
+        val pinkyArgs = pinkyScope.get<PinkyArgs>()
+        val subcommand = pinkyArgs.subcommand
+        if (subcommand == null) {
+            runServer(pinkyArgs, pinkyScope)
+        } else {
+            try {
+                runBlocking {
+                    with(subcommand) { pinkyScope.execute() }
+                }
+            } catch (e: Throwable) {
+                logger.error(e) { "Failed to run command ${subcommand.name}." }
+                exitProcess(1)
+            } finally {
+                exitProcess(0)
+            }
+        }
+    }
+
+    private fun runServer(pinkyArgs: PinkyArgs, pinkyScope: Scope) {
         val pinky = pinkyScope.get<Pinky>()
+
+        logger.info { "Are you pondering what I'm pondering?" }
+
         configureKtor(pinky, pinkyScope)
 
         logger.info { responses.random() }
 
+        val pinkyDispatcher: CoroutineDispatcher = pinkyScope.get(named("PinkyMainDispatcher"))
         try {
-            val pinkyArgs = pinkyScope.get<PinkyArgs>()
-            runBlocking(pinkyScope.get<CoroutineDispatcher>(named("PinkyMainDispatcher"))) {
+            runBlocking(pinkyDispatcher) {
                 pinky.startAndRun {
                     if (pinkyArgs.simulateBrains) {
                         pinkyScope.get<ProdBrainSimulator>().enableSimulation()
@@ -73,9 +96,10 @@ class PinkyMain(private val args: Array<String>) {
             }
         } catch (e: Throwable) {
             logger.error(e) { "Failed to start Pinky." }
+            exitProcess(1)
         } finally {
             logger.info { "Exiting." }
-            exitProcess(1)
+            exitProcess(0)
         }
     }
 
