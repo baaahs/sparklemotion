@@ -1,6 +1,5 @@
 package baaahs.device
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -15,6 +14,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -31,7 +31,7 @@ data class PixelCountFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         return PixelCountFeedContext(getVarName(id))
     }
 

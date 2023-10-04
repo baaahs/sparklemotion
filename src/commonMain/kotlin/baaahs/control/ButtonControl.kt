@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.editor.ButtonPropsEditor
 import baaahs.app.ui.editor.PropsEditor
 import baaahs.camelize
@@ -40,10 +39,10 @@ data class ButtonControl(
         )
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonControl {
+    override fun open(id: String, openContext: OpenContext): OpenButtonControl {
         val controlledFeed = controlledFeedId?.let { openContext.getFeed(it) }
         return OpenButtonControl(id, this, openContext, controlledFeed)
-            .also { showPlayer.registerGadget(id, it.switch, controlledFeed) }
+            .also { openContext.registerGadget(id, it.switch, controlledFeed) }
     }
 }
 

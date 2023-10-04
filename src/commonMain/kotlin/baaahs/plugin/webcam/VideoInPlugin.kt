@@ -1,6 +1,5 @@
 package baaahs.plugin.webcam
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -13,6 +12,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
@@ -66,7 +66,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
             buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
         }
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext {
                     return object : EngineFeedContext {

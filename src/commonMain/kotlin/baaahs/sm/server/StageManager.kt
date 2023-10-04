@@ -31,7 +31,7 @@ class StageManager(
     private val pubSub: PubSub.Server,
     private val storage: Storage,
     private val fixtureManager: FixtureManager,
-    private val clock: Clock,
+    override val clock: Clock,
     private val gadgetManager: GadgetManager,
     private val serverNotices: ServerNotices,
     private val sceneMonitor: SceneMonitor

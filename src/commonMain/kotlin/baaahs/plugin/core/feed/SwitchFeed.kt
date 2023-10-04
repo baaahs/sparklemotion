@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.control.ButtonControl
 import baaahs.control.MutableButtonControl
 import baaahs.gadgets.Switch
@@ -13,6 +12,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableShow
 import baaahs.util.Logger
@@ -44,9 +44,9 @@ data class SwitchFeed(
         return MutableButtonControl(createGadget(), MutableShow("Temp Show"), this)
     }
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val switch = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val switch = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 Switch(buttonTitle, initiallyEnabled)

@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -13,6 +12,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -23,7 +23,7 @@ import kotlinx.serialization.Transient
  * This feed provides `gl_FragColor` for quad previews.
  *
  * Because `gl_FragColor` is always given as absolute pixels relative to the bottom-left
- * of the screen/canvas, _not_ relative to the the viewport, and we might be rendering
+ * of the screen/canvas, _not_ relative to the viewport, and we might be rendering
  * into a `SharedGlContext` (which adjusts the viewport to a rectangle within the shared
  * canvas), we need to adjust `gl_FragColor` to account for any offset.
  */
@@ -49,7 +49,7 @@ data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.RasterCoordinate
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 val offsetUniformId = "ds_${id}_offset"

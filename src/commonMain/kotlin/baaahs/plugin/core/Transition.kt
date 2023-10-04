@@ -1,6 +1,5 @@
 package baaahs.plugin.core
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
@@ -28,7 +27,7 @@ data class TransitionControl(@Transient private val `_`: Boolean = false) : Cont
         return MutableTransitionControl()
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+    override fun open(id: String, openContext: OpenContext): OpenControl {
         return OpenTransitionControl(id)
     }
 }

@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.control.MutableImagePickerControl
 import baaahs.gadgets.ImagePicker
 import baaahs.gadgets.ImageRef
@@ -18,6 +17,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -57,9 +57,9 @@ data class ImageFeed(override val title: String) : Feed {
         buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
     }
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val imagePicker = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val imagePicker = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()
