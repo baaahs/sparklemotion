@@ -1,7 +1,6 @@
 package baaahs.plugin.sound_analysis
 
 import baaahs.PubSub
-import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.clamp
@@ -18,6 +17,7 @@ import baaahs.plugin.*
 import baaahs.show.Control
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
 import baaahs.util.*
 import com.danielgergely.kgl.*
@@ -69,7 +69,7 @@ class SoundAnalysisPlugin internal constructor(
         override val contentType: ContentType get() = soundAnalysisContentType
         override fun getType(): GlslType = soundAnalysisStruct
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
             SoundAnalysisFeedContext(getVarName(id), soundAnalyzer, historySize)
     }
 

@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.control.MutableXyPadControl
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
@@ -14,6 +13,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
@@ -40,9 +40,9 @@ data class XyPadFeed(
     override fun buildControl(): MutableControl =
         MutableXyPadControl(title, initialValue, minValue, maxValue, this)
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val xyPad = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val xyPad = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 XyPad(title, initialValue, minValue, maxValue)

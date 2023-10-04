@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
@@ -38,11 +37,11 @@ data class XyPadControl(
         )
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenXyPadControl {
+    override fun open(id: String, openContext: OpenContext): OpenXyPadControl {
         val controlledFeed = openContext.getFeed(controlledFeedId)
         val xyPad = XyPad(title, initialValue, minValue, maxValue)
         return OpenXyPadControl(id, xyPad, controlledFeed)
-            .also { showPlayer.registerGadget(id, xyPad, controlledFeed) }
+            .also { openContext.registerGadget(id, xyPad, controlledFeed) }
     }
 }
 

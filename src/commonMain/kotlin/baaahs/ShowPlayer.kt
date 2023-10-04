@@ -4,27 +4,15 @@ import baaahs.gl.Toolchain
 import baaahs.gl.data.FeedContext
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.withCache
+import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
-import baaahs.show.Feed
-import baaahs.show.Shader
-import baaahs.show.Show
-import baaahs.show.ShowState
+import baaahs.show.*
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
+import baaahs.util.Clock
 
 interface ShowPlayer {
-    val toolchain: Toolchain
-
-    /**
-     * This is for [baaahs.plugin.core.feed.ModelInfoFeed], but we should probably find
-     * a better way to get it. Don't add more uses.
-     */
-    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
-    val sceneProvider: SceneProvider
-
     fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed? = null)
-    fun <T : Gadget> useGadget(id: String): T = error("override me?")
-    fun <T : Gadget> useGadget(feed: Feed): T?
 
     fun openFeed(id: String, feed: Feed): FeedContext
 
@@ -32,10 +20,15 @@ interface ShowPlayer {
 }
 
 abstract class BaseShowPlayer(
-    final override val toolchain: Toolchain,
+    val toolchain: Toolchain,
     @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     final override val sceneProvider: SceneProvider
-) : ShowPlayer {
+) : ShowPlayer, FeedOpenContext {
+    override val clock: Clock
+        get() = toolchain.plugins.pluginContext.clock
+    override val plugins: Plugins
+        get() = toolchain.plugins
+
     private val feeds = mutableMapOf<Feed, FeedContext>()
     private val shaders = mutableMapOf<Shader, OpenShader>()
 

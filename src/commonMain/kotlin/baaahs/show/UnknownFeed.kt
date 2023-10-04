@@ -1,6 +1,5 @@
 package baaahs.show
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -25,7 +24,7 @@ data class UnknownFeed(
 
     override fun getType(): GlslType = GlslType.Void
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         UnknownFeedContext()
 
     class UnknownFeedContext : FeedContext, RefCounted by RefCounter() {

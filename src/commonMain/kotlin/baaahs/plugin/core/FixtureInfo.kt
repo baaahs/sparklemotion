@@ -1,6 +1,5 @@
 package baaahs.plugin.core
 
-import baaahs.ShowPlayer
 import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
@@ -18,6 +17,7 @@ import baaahs.model.Model
 import baaahs.plugin.classSerializer
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -46,7 +46,7 @@ data class FixtureInfoFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = fixtureInfoContentType
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         return FixtureInfoFeedContext(getVarName(id))
     }
 

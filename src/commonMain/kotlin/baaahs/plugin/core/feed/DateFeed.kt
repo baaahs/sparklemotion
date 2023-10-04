@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.geom.Vector4F
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.singleUniformFeedContext
@@ -11,6 +10,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import com.soywiz.klock.DateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -52,8 +52,8 @@ data class DateFeed(
     override val contentType: ContentType
         get() = ContentType.Date
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val clock = showPlayer.toolchain.plugins.pluginContext.clock
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val clock = feedOpenContext.clock
         return singleUniformFeedContext<Vector4F>(id) {
             val dateTime = DateTime(clock.now() * 1000)
             Vector4F(

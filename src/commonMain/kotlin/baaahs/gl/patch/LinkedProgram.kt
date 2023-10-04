@@ -11,7 +11,7 @@ class LinkedProgram(
     internal val linkNodes: Map<ProgramNode, LinkNode> // For diagnostics only.
 ) {
     fun toGlsl(): String {
-        val buf = StringBuilder()
+        val buf = ProgramBuilder()
         buf.append("#ifdef GL_ES\n")
         buf.append("precision mediump float;\n")
         buf.append("#endif\n")
@@ -39,7 +39,7 @@ class LinkedProgram(
         return buf.toString()
     }
 
-    private fun appendMain(buf: StringBuilder) {
+    private fun appendMain(buf: ProgramBuilder) {
         buf.append("\n#line 10001\n")
         buf.append("void main() {\n")
 
@@ -64,4 +64,10 @@ class LinkedProgram(
     fun toFullGlsl(glslVersion: String): String {
         return "#version ${glslVersion}\n\n${toGlsl()}\n"
     }
+}
+
+class ProgramBuilder(
+    private val buf: StringBuilder = StringBuilder()
+) : Appendable by buf {
+    override fun toString(): String = buf.toString()
 }

@@ -1,6 +1,5 @@
 package baaahs.show
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.editor.Editable
 import baaahs.camelize
 import baaahs.show.live.OpenContext
@@ -18,5 +17,5 @@ interface Control : Editable {
     /** Don't call this directly; use [MutableShow.findControl]. */
     fun createMutable(mutableShow: MutableShow): MutableControl
 
-    fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl
+    fun open(id: String, openContext: OpenContext): OpenControl
 }

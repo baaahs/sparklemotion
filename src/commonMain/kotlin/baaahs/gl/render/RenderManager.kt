@@ -4,20 +4,17 @@ import baaahs.device.FixtureType
 import baaahs.fixtures.Fixture
 import baaahs.fixtures.RenderPlan
 import baaahs.gl.GlContext
-import baaahs.gl.glsl.FeedResolver
-import baaahs.gl.glsl.GlslProgram
-import baaahs.gl.patch.LinkedProgram
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 
 class RenderManager(glContext: GlContext) {
-    private val renderEngines = CacheBuilder<FixtureType, ModelRenderEngine> { fixtureType ->
-        ModelRenderEngine(
+    private val renderEngines = CacheBuilder<FixtureType, ComponentRenderEngine> { fixtureType ->
+        ComponentRenderEngine(
             glContext, fixtureType, resultDeliveryStrategy = glContext.pickResultDeliveryStrategy()
         )
     }
 
-    private fun engineFor(fixtureType: FixtureType): ModelRenderEngine =
+    private fun engineFor(fixtureType: FixtureType): FixtureRenderEngine =
         renderEngines.getBang(fixtureType, "render engine")
 
     suspend fun draw() {
@@ -30,14 +27,6 @@ class RenderManager(glContext: GlContext) {
 
     fun addFixture(fixture: Fixture): FixtureRenderTarget {
         return engineFor(fixture.fixtureType).addFixture(fixture)
-    }
-
-    fun removeRenderTarget(renderTarget: FixtureRenderTarget) {
-        engineFor(renderTarget.fixture.fixtureType).removeRenderTarget(renderTarget)
-    }
-
-    fun compile(fixtureType: FixtureType, linkedProgram: LinkedProgram, feedResolver: FeedResolver): GlslProgram {
-        return engineFor(fixtureType).compile(linkedProgram, feedResolver).bind()
     }
 
     fun setRenderPlan(renderPlan: RenderPlan) {

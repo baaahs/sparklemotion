@@ -1,5 +1,6 @@
 package baaahs.show.live
 
+import baaahs.Gadget
 import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
@@ -21,7 +22,7 @@ import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 
-interface OpenContext {
+interface OpenContext : GadgetProvider {
     val allControls: List<OpenControl>
     val allPatchModFeeds: List<Feed>
 
@@ -47,6 +48,9 @@ object EmptyOpenContext : OpenContext {
     override fun getPanel(id: String): Panel = error("not really an open context")
 
     override fun getPatch(it: String): OpenPatch = error("not really an open context")
+
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
+        error("not really an open context")
 
     override fun release() {
     }

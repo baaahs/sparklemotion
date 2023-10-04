@@ -8,19 +8,26 @@ import baaahs.gl.data.FeedContext
 import baaahs.gl.testToolchain
 import baaahs.gl.withCache
 import baaahs.model.ModelInfo
+import baaahs.plugin.Plugins
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
+import baaahs.show.FeedOpenContext
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
+import baaahs.util.Clock
 
 class FakeShowPlayer(
     @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
     override val sceneProvider: SceneProvider = SceneMonitor(ModelInfo.EmptyScene),
-    override val toolchain: Toolchain = testToolchain
-) : ShowPlayer {
+    val toolchain: Toolchain = testToolchain
+) : ShowPlayer, FeedOpenContext {
+    override val clock: Clock
+        get() = toolchain.plugins.pluginContext.clock
+    override val plugins: Plugins
+        get() = toolchain.plugins
     val feeds = mutableMapOf<Feed, FeedContext>()
     val gadgets: MutableMap<String, Gadget> = mutableMapOf()
     private val feedGadgets: MutableMap<Feed, Gadget> = mutableMapOf()

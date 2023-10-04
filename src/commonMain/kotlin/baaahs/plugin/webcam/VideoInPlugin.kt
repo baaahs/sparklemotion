@@ -1,6 +1,5 @@
 package baaahs.plugin.webcam
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -9,10 +8,12 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
@@ -52,13 +53,13 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
         override fun getType(): GlslType = GlslType.Sampler2D
         override val contentType: ContentType get() = ContentType.Color
 
-        override fun appendDeclaration(buf: StringBuilder, id: String) {
+        override fun appendDeclaration(buf: ProgramBuilder, id: String) {
             val textureUniformId = "ds_${getVarName(id)}_texture"
             /**language=glsl*/
             buf.append("uniform sampler2D $textureUniformId;\n")
         }
 
-        override fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) {
+        override fun appendInvoke(buf: ProgramBuilder, varName: String, inputPort: InputPort) {
             val fn = inputPort.glslArgSite as GlslCode.GlslFunction
 
             val textureUniformId = "ds_${getVarName(varName)}_texture"
@@ -66,7 +67,7 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
             buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
         }
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext {
                     return object : EngineFeedContext {

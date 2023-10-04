@@ -61,7 +61,7 @@ class ShaderComponent(
 
     private val substitutions = ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap)
 
-    override fun appendStructs(buf: StringBuilder) {
+    override fun appendStructs(buf: ProgramBuilder) {
         val openShader = linkedPatch.shader
         val portStructs = openShader.portStructs
         openShader.glslCode.structs.forEach { struct ->
@@ -71,7 +71,7 @@ class ShaderComponent(
         }
     }
 
-    override fun appendDeclarations(buf: StringBuilder) {
+    override fun appendDeclarations(buf: ProgramBuilder) {
         val openShader = linkedPatch.shader
 
         buf.append("// Shader: ", openShader.title, "; namespace: ", prefix, "\n")
@@ -87,7 +87,7 @@ class ShaderComponent(
         buf.append(openShader.toGlsl(index, substitutions), "\n")
     }
 
-    private fun appendInjectionCode(buf: StringBuilder) {
+    private fun appendInjectionCode(buf: ProgramBuilder) {
         linkedPatch.incomingLinks.forEach { (portId, link) ->
             val inputPort = linkedPatch.shader.findInputPort(portId)
 
@@ -102,7 +102,7 @@ class ShaderComponent(
     }
 
     private fun appendInjectionAssignment(
-        buf: StringBuilder,
+        buf: ProgramBuilder,
         inputPort: InputPort,
         portId: String
     ) {
@@ -112,7 +112,7 @@ class ShaderComponent(
     }
 
     private fun appendAbstractFunctionImpl(
-        buf: StringBuilder,
+        buf: ProgramBuilder,
         inputPort: InputPort,
         link: ProgramNode
     ) {
@@ -126,7 +126,7 @@ class ShaderComponent(
         buf.append("}\n")
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
+    override fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType>) {
         buf.append("    // Invoke ", title, "\n")
 
         injectionParams.forEach { (paramName, contentType) ->
@@ -142,7 +142,7 @@ class ShaderComponent(
         buf.append("\n")
     }
 
-    override fun appendInvokeAndReturn(buf: StringBuilder, inputPort: InputPort) {
+    override fun appendInvokeAndReturn(buf: ProgramBuilder, inputPort: InputPort) {
         appendInvokeAndSet(buf, inputPort.injectedData)
         buf.append("    return ", outputVar, ";\n")
     }

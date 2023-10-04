@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -13,6 +12,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import kotlinx.serialization.SerialName
@@ -43,7 +43,7 @@ data class PixelCoordsTextureFeed(@Transient val `_`: Boolean = true) : Feed {
         get() = ContentType.PixelCoordinatesTexture
     override fun suggestId(): String = "pixelCoordsTexture"
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
             override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext = object : ProgramFeedContext {

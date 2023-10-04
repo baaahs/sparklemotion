@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
@@ -30,7 +29,7 @@ data class VacuityControl(
     override fun createMutable(mutableShow: MutableShow): MutableVacuityControl =
         MutableVacuityControl(title)
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl =
+    override fun open(id: String, openContext: OpenContext): OpenControl =
         OpenVacuityControl(id, title)
 }
 

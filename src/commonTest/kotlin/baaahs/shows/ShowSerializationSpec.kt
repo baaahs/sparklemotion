@@ -1,6 +1,5 @@
 package baaahs.shows
 
-import baaahs.ShowPlayer
 import baaahs.control.*
 import baaahs.device.PixelLocationFeed
 import baaahs.gl.data.FeedContext
@@ -370,7 +369,7 @@ class FakeFeed(
     override val contentType: ContentType = ContentType.Unknown
 
     override fun getType(): GlslType = TODO("not implemented")
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext = TODO("not implemented")
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext = TODO("not implemented")
 
     object Builder : FeedBuilder<FakeFeed> {
         override val title: String get() = TODO("not implemented")

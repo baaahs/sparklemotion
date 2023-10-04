@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.ButtonGroupPropsEditor
 import baaahs.app.ui.editor.EditableManager
@@ -39,7 +38,7 @@ data class ButtonGroupControl(
             }.toMutableList(), mutableShow
         )
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenButtonGroupControl {
+    override fun open(id: String, openContext: OpenContext): OpenButtonGroupControl {
         return OpenButtonGroupControl(id, this, openContext)
     }
 }
