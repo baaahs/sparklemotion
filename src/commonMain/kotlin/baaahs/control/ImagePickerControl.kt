@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
@@ -33,10 +32,10 @@ data class ImagePickerControl(
         )
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+    override fun open(id: String, openContext: OpenContext): OpenControl {
         val controlledFeed = openContext.getFeed(controlledFeedId)
         val imagePicker = ImagePicker(title)
-        showPlayer.registerGadget(id, imagePicker, controlledFeed)
+        openContext.registerGadget(id, imagePicker, controlledFeed)
         return OpenImagePickerControl(id, imagePicker, controlledFeed)
     }
 }

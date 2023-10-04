@@ -1,6 +1,5 @@
 package baaahs.plugin.beatlink
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
@@ -27,7 +26,7 @@ data class BeatLinkControl(@Transient private val `_`: Boolean = false) : Contro
         return MutableBeatLinkControl()
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+    override fun open(id: String, openContext: OpenContext): OpenControl {
         return OpenBeatLinkControl(id)
     }
 }

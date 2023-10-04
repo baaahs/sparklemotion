@@ -1,6 +1,5 @@
 package baaahs.gl.render
 
-import baaahs.ShowPlayer
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
 import baaahs.gl.data.FeedContext
@@ -12,6 +11,7 @@ import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
 import baaahs.show.Feed
+import baaahs.show.FeedOpenContext
 import baaahs.show.UpdateMode
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -28,7 +28,7 @@ class PerPixelFeedForTest(val updateMode: UpdateMode) : Feed {
 
     var counter = 0f
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext =
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         TestFeedContext(id).also { feeds.add(it) }
 
     inner class TestFeedContext(val id: String) : FeedContext, RefCounted by RefCounter() {

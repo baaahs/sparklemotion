@@ -1,17 +1,20 @@
 package baaahs.show
 
-import baaahs.ShowPlayer
+import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
+import baaahs.plugin.Plugins
 import baaahs.plugin.SerializerRegistrar
+import baaahs.scene.SceneProvider
 import baaahs.show.live.OpenPatch
 import baaahs.show.mutable.MutableControl
 import baaahs.show.mutable.MutableFeedPort
 import baaahs.ui.Markdown
+import baaahs.util.Clock
 import baaahs.util.Logger
 import kotlinx.serialization.Polymorphic
 
@@ -87,7 +90,7 @@ interface Feed {
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
 
-    fun open(showPlayer: ShowPlayer, id: String): FeedContext
+    fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext
 
     fun link(varName: String) = OpenPatch.FeedLink(this, varName, emptyMap())
 
@@ -112,6 +115,21 @@ interface Feed {
     }
 
     fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) = Unit
+}
+
+interface FeedOpenContext {
+    val clock: Clock
+    val plugins: Plugins
+
+    /**
+     * This is for [baaahs.plugin.core.feed.ModelInfoFeed], but we should probably find
+     * a better way to get it. Don't add more uses.
+     */
+    @Deprecated("Get it some other way", level = DeprecationLevel.WARNING)
+    val sceneProvider: SceneProvider
+
+    fun <T : Gadget> useGadget(id: String): T = error("override me?")
+    fun <T : Gadget> useGadget(feed: Feed): T?
 }
 
 enum class UpdateMode {

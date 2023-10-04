@@ -1,7 +1,6 @@
 package baaahs.plugin.beatlink
 
 import baaahs.PubSub
-import baaahs.ShowPlayer
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
@@ -15,6 +14,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
@@ -126,7 +126,7 @@ class BeatLinkPlugin internal constructor(
 
         override fun getType(): GlslType = GlslType.Float
 
-        override fun open(showPlayer: ShowPlayer, id: String) =
+        override fun open(feedOpenContext: FeedOpenContext, id: String) =
             singleUniformFeedContext<Float>(id) {
                 beatSource.getBeatData().fractionTillNextBeat(clock)
             }
@@ -140,7 +140,7 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = beatInfoContentType
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
@@ -180,7 +180,7 @@ class BeatLinkPlugin internal constructor(
         override val contentType: ContentType
             get() = rawBeatInfoContentType
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {

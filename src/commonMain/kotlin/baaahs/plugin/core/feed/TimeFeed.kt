@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.gl.data.FeedContext
 import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
@@ -10,6 +9,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.makeSafeForGlsl
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,8 +34,8 @@ data class TimeFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.Time
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val clock = showPlayer.toolchain.plugins.pluginContext.clock
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val clock = feedOpenContext.clock
         return singleUniformFeedContext<Float>(id) { clock.now().makeSafeForGlsl() }
     }
 }

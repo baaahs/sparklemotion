@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.EngineFeedContext
@@ -14,6 +13,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.UpdateMode
 import baaahs.ui.addObserver
 import baaahs.util.RefCounted
@@ -43,8 +43,8 @@ data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.ModelInfo
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val sceneProvider = showPlayer.sceneProvider
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val sceneProvider = feedOpenContext.sceneProvider
 
         return object : FeedContext, RefCounted by RefCounter() {
             var center: Vector3F? = null
