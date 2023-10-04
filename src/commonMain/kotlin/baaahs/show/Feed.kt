@@ -6,6 +6,7 @@ import baaahs.camelize
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.Plugins
 import baaahs.plugin.SerializerRegistrar
@@ -98,14 +99,14 @@ interface Feed {
 
     fun buildControl(): MutableControl? = null
 
-    fun appendDeclaration(buf: StringBuilder, id: String) {
+    fun appendDeclaration(buf: ProgramBuilder, id: String) {
         if (!isImplicit())
             buf.append("uniform ${getType().glslLiteral} ${getVarName(id)};\n")
     }
 
     fun invocationGlsl(varName: String): String? = null
 
-    fun appendInvokeAndSet(buf: StringBuilder, varName: String) {
+    fun appendInvokeAndSet(buf: ProgramBuilder, varName: String) {
         val invocationGlsl = invocationGlsl(varName)
         if (invocationGlsl != null) {
             buf.append("    // Invoke ", title, "\n")
@@ -114,7 +115,7 @@ interface Feed {
         }
     }
 
-    fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) = Unit
+    fun appendInvoke(buf: ProgramBuilder, varName: String, inputPort: InputPort) = Unit
 }
 
 interface FeedOpenContext {
