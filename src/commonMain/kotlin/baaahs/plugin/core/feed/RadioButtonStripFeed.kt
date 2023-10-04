@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.gadgets.RadioButtonStrip
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
@@ -10,6 +9,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.int
@@ -23,7 +23,7 @@ data class RadioButtonStripFeed(
     val options: List<String>,
     val initialSelectionIndex: Int
 ) : Feed {
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         TODO("not implemented")
     }
 

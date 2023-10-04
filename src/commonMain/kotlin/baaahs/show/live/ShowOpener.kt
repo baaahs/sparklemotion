@@ -25,7 +25,7 @@ open class ShowOpener(
 
     private val openControlCache = CacheBuilder<String, OpenControl> { controlId ->
         (implicitControls[controlId] ?: show.getControl(controlId))
-            .open(controlId, this, showPlayer)
+            .open(controlId, this)
     }
 
     override val allControls: List<OpenControl> get() = openControlCache.all.values.toList()
@@ -43,8 +43,6 @@ open class ShowOpener(
             override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
                 showPlayer.registerGadget(id, gadget)
 
-            override fun <T : Gadget> useGadget(id: String): T =
-                showPlayer.useGadget(id)
         }
     )
 
@@ -80,6 +78,10 @@ open class ShowOpener(
     open fun openShader(shader: Shader) =
         toolchain.openShader(shader)
 
+    override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
+        showPlayer.registerGadget(id, gadget, controlledFeed)
+    }
+
     override fun release() {
 //        allControls.forEach { it.release() }
 //        openShaders.forEach { it.release() }
@@ -93,5 +95,4 @@ open class ShowOpener(
 
 interface GadgetProvider {
     fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed? = null)
-    fun <T : Gadget> useGadget(id: String): T = error("override me?")
 }

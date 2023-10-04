@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.geom.Vector2F
 import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslType
@@ -10,6 +9,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -39,6 +39,6 @@ data class ResolutionFeed(@Transient val `_`: Boolean = true) : Feed {
     override val contentType: ContentType
         get() = ContentType.Resolution
 
-    override fun open(showPlayer: ShowPlayer, id: String) =
+    override fun open(feedOpenContext: FeedOpenContext, id: String) =
         singleUniformFeedContext<Vector2F>(id) { Vector2F.unit2d }
 }

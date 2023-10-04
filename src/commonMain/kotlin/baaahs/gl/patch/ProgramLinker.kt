@@ -126,13 +126,13 @@ data class DefaultValueNode(
 
     override fun getNodeId(programLinker: ProgramLinker): String = "n/a"
 
-    override fun appendStructs(buf: StringBuilder) {
+    override fun appendStructs(buf: ProgramBuilder) {
     }
 
-    override fun appendDeclarations(buf: StringBuilder) {
+    override fun appendDeclarations(buf: ProgramBuilder) {
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
+    override fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType>) {
     }
 
     override fun getExpression(prefix: String): GlslExpr {
@@ -169,9 +169,9 @@ abstract class ExprNode : ProgramNode, Component {
         return this
     }
 
-    override fun appendStructs(buf: StringBuilder) {}
-    override fun appendDeclarations(buf: StringBuilder) {}
-    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {}
+    override fun appendStructs(buf: ProgramBuilder) {}
+    override fun appendDeclarations(buf: ProgramBuilder) {}
+    override fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType>) {}
 }
 
 data class ConstNode(val glsl: String, override val outputPort: OutputPort) : ExprNode() {

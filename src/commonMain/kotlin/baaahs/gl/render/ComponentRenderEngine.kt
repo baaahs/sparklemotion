@@ -17,18 +17,18 @@ import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
 import kotlin.math.max
 import kotlin.math.min
 
-class ModelRenderEngine(
+class ComponentRenderEngine(
     gl: GlContext,
     private val fixtureType: FixtureType,
     private val minTextureWidth: Int = 16,
     private val maxFramebufferWidth: Int = fbMaxPixWidth,
     private val resultDeliveryStrategy: ResultDeliveryStrategy = SyncResultDeliveryStrategy()
-) : RenderEngine(gl) {
+) : FixtureRenderEngine(gl) {
     private val renderTargetsToAdd: MutableList<FixtureRenderTarget> = mutableListOf()
     private val renderTargetsToRemove: MutableList<FixtureRenderTarget> = mutableListOf()
     var componentCount: Int = 0
-    var nextComponentOffset: Int = 0
-    var nextRectOffset: Int = 0
+    private var nextComponentOffset: Int = 0
+    private var nextRectOffset: Int = 0
 
     private val renderTargets: MutableList<FixtureRenderTarget> = mutableListOf()
     private var renderPlan: FixtureTypeRenderPlan? = null
@@ -52,7 +52,7 @@ class ModelRenderEngine(
     // Workaround for compile error on case-insensitive FS:
     init { arrangement = gl.runInContext { Arrangement(0, emptyList()) } }
 
-    fun addFixture(fixture: Fixture): FixtureRenderTarget {
+    override fun addFixture(fixture: Fixture): FixtureRenderTarget {
         if (fixture.fixtureType != fixtureType) {
             throw IllegalArgumentException(
                 "This RenderEngine can't accept ${fixture.fixtureType} devices, only $fixtureType."
@@ -65,7 +65,8 @@ class ModelRenderEngine(
             fixture
         )
         val renderTarget = FixtureRenderTarget(
-            fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage
+            fixture, nextRectOffset, rects, fixture.componentCount, nextComponentOffset, resultStorage,
+            this@ComponentRenderEngine
         )
         nextComponentOffset += fixture.componentCount
         nextRectOffset += rects.size
@@ -226,7 +227,7 @@ class ModelRenderEngine(
     }
 
     companion object {
-        private val logger = Logger<ModelRenderEngine>()
+        private val logger = Logger<ComponentRenderEngine>()
         private const val fbMaxPixWidth = 1024
 
         /** Resulting Rect is in pixel coordinates starting at (0,0) with Y increasing. */

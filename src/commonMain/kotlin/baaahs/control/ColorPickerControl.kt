@@ -1,7 +1,6 @@
 package baaahs.control
 
 import baaahs.Color
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.camelize
@@ -36,10 +35,10 @@ data class ColorPickerControl(
         )
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+    override fun open(id: String, openContext: OpenContext): OpenControl {
         val controlledFeed = openContext.getFeed(controlledFeedId)
         val colorPicker = ColorPicker(title, initialValue)
-        showPlayer.registerGadget(id, colorPicker, controlledFeed)
+        openContext.registerGadget(id, colorPicker, controlledFeed)
         return OpenColorPickerControl(id, colorPicker, controlledFeed)
     }
 }

@@ -48,33 +48,36 @@ class ProgramResolver(
         return RenderPlan(
             portDiagrams.mapValues { (fixtureType, devicePortDiagrams) ->
                 val programsRenderPlans = devicePortDiagrams.map { (portDiagram, renderTargets) ->
-                    val linkedPatch = portDiagram.resolvePatch(
+                    val linkedProgram = portDiagram.resolvePatch(
                         Stream.Main,
                         fixtureType.resultContentType,
                         feeds
                     )
 
                     var source: String? = null
-                    val program = linkedPatch?.let {
-                        try {
-                            renderManager.compile(fixtureType, it, feedResolver)
-                        } catch (e: GlslException) {
-                            logger.error(e) { "Error preparing program." }
-                            if (e is CompilationException) {
-                                source = e.source
-                                e.source?.let { logger.error { it } }
+
+                    renderTargets.groupBy { it.renderEngine }.map { (engine, engineTargets) ->
+                        val program = linkedProgram?.let {
+                            try {
+                                engine.compile(linkedProgram, feedResolver)
+                                    .bind()
+                            } catch (e: GlslException) {
+                                logger.error(e) { "Error preparing program." }
+                                if (e is CompilationException) {
+                                    source = e.source
+                                    e.source?.let { logger.error { it } }
+                                }
+
+                                engine.compile(GuruMeditationError(fixtureType).linkedProgram, feedResolver)
+                                    .bind()
                             }
-
-                            renderManager.compile(
-                                fixtureType, GuruMeditationError(fixtureType).linkedProgram, feedResolver
-                            )
                         }
-                    }
 
-                    ProgramRenderPlan(program, renderTargets, linkedPatch, source, portDiagram)
+                        ProgramRenderPlan(program, engineTargets, linkedProgram, source, portDiagram)
+                    }
                 }
 
-                FixtureTypeRenderPlan(programsRenderPlans)
+                FixtureTypeRenderPlan(programsRenderPlans.flatten())
             }
         )
     }

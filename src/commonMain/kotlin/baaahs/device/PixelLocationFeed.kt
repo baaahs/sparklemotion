@@ -1,6 +1,5 @@
 package baaahs.device
 
-import baaahs.ShowPlayer
 import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.data.FeedContext
@@ -11,6 +10,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.render.FixtureRenderTarget
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
@@ -20,6 +20,7 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -40,11 +41,10 @@ data class PixelLocationFeed(@Transient val `_`: Boolean = true) : Feed {
     override val dependencies: Map<String, Feed>
         get() = mapOf("fixtureInfo" to FixtureInfoFeed())
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        return PixelLocationFeedContext(getVarName(id), "ds_${id}_texture")
-    }
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
+        PixelLocationFeedContext(getVarName(id), "ds_${id}_texture")
 
-    override fun appendDeclaration(buf: StringBuilder, id: String) {
+    override fun appendDeclaration(buf: ProgramBuilder, id: String) {
         val textureUniformId = "ds_${id}_texture"
         val varName = getVarName(id)
 

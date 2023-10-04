@@ -19,24 +19,24 @@ class FeedComponent(
     override val invokeFromMain: Boolean
         get() = true
 
-    override fun appendStructs(buf: StringBuilder) {
+    override fun appendStructs(buf: ProgramBuilder) {
         val glslType = feed.contentType.glslType
         if (glslType is GlslType.Struct) {
             buf.append(glslType.toGlsl(null, emptySet()))
         }
     }
 
-    override fun appendDeclarations(buf: StringBuilder) {
+    override fun appendDeclarations(buf: ProgramBuilder) {
         buf.append("// Feed: ", feed.title, "\n")
         feed.appendDeclaration(buf, varName)
         buf.append("\n")
     }
 
-    override fun appendInvokeAndSet(buf: StringBuilder, injectionParams: Map<String, ContentType>) {
+    override fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType>) {
         feed.appendInvokeAndSet(buf, varName)
     }
 
-    override fun appendInvokeAndReturn(buf: StringBuilder, inputPort: InputPort) {
+    override fun appendInvokeAndReturn(buf: ProgramBuilder, inputPort: InputPort) {
         buf.append("    return ")
         feed.appendInvoke(buf, varName, inputPort)
         buf.append(";\n")

@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.control.MutableImagePickerControl
 import baaahs.gadgets.ImagePicker
 import baaahs.gadgets.ImageRef
@@ -12,12 +11,14 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.patch.ProgramBuilder
 import baaahs.gl.shader.InputPort
 import baaahs.imaging.Image
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import baaahs.util.RefCounted
@@ -43,13 +44,13 @@ data class ImageFeed(override val title: String) : Feed {
     override fun buildControl(): MutableControl =
         MutableImagePickerControl(title, this)
 
-    override fun appendDeclaration(buf: StringBuilder, id: String) {
+    override fun appendDeclaration(buf: ProgramBuilder, id: String) {
         val textureUniformId = "ds_${getVarName(id)}_texture"
         /**language=glsl*/
         buf.append("uniform sampler2D $textureUniformId;\n")
     }
 
-    override fun appendInvoke(buf: StringBuilder, varName: String, inputPort: InputPort) {
+    override fun appendInvoke(buf: ProgramBuilder, varName: String, inputPort: InputPort) {
         val fn = inputPort.glslArgSite as GlslCode.GlslFunction
 
         val textureUniformId = "ds_${getVarName(varName)}_texture"
@@ -57,9 +58,9 @@ data class ImageFeed(override val title: String) : Feed {
         buf.append("texture($textureUniformId, vec2($uvParamName.x, 1. - $uvParamName.y))")
     }
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val imagePicker = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val imagePicker = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()

@@ -1,6 +1,5 @@
 package baaahs.plugin.core.feed
 
-import baaahs.ShowPlayer
 import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
 import baaahs.gl.data.FeedContext
@@ -13,6 +12,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
@@ -44,17 +44,17 @@ data class SliderFeed(
     override fun buildControl(): MutableControl =
         MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
-        val clock = showPlayer.toolchain.plugins.pluginContext.clock
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
+        val clock = feedOpenContext.clock
 //        val channel = showPlayer.useChannel<Float>(id)
-        val slider = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+        val slider = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()
             }
 
-        val plugin = showPlayer.toolchain.plugins.findPlugin<BeatLinkPlugin>()
+        val plugin = feedOpenContext.plugins.findPlugin<BeatLinkPlugin>()
         val beatSource = plugin?.beatSource
 
         return singleUniformFeedContext<Float>(id) {

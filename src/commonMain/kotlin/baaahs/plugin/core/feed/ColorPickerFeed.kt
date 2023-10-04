@@ -1,7 +1,6 @@
 package baaahs.plugin.core.feed
 
 import baaahs.Color
-import baaahs.ShowPlayer
 import baaahs.control.MutableColorPickerControl
 import baaahs.gadgets.ColorPicker
 import baaahs.gl.data.FeedContext
@@ -13,6 +12,7 @@ import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.show.mutable.MutableControl
 import baaahs.util.Logger
 import kotlinx.serialization.SerialName
@@ -33,10 +33,10 @@ data class ColorPickerFeed(
         return MutableColorPickerControl(colorPickerTitle, initialValue, this)
     }
 
-    override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+    override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
 //        val channel = showPlayer.useChannel<Float>(id)
-        val colorPicker = showPlayer.useGadget(this)
-            ?: showPlayer.useGadget(id)
+        val colorPicker = feedOpenContext.useGadget(this)
+            ?: feedOpenContext.useGadget(id)
             ?: run {
                 logger.debug { "No control gadget registered for feed $id, creating one. This is probably busted." }
                 createGadget()

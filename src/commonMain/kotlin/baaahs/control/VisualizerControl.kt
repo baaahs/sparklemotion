@@ -1,6 +1,5 @@
 package baaahs.control
 
-import baaahs.ShowPlayer
 import baaahs.app.ui.dialog.DialogPanel
 import baaahs.app.ui.editor.EditableManager
 import baaahs.app.ui.editor.GenericPropertiesEditorPanel
@@ -37,7 +36,7 @@ data class VisualizerControl(
         return MutableVisualizerControl(surfaceDisplayMode, rotate)
     }
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
+    override fun open(id: String, openContext: OpenContext): OpenControl {
         return OpenVisualizerControl(id, this)
     }
 }
