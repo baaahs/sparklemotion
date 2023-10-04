@@ -288,6 +288,7 @@ class PreviewShaders(val toolchain: Toolchain) {
     val pixelUvIdentity by lazy { analyze(Shaders.pixelUvIdentity) }
     val smpteColorBars by lazy { analyze(Shaders.smpteColorBars) }
     val earthLikePlanet by lazy { analyze(Shaders.earthLikePlanet) }
+    val backgroundImage by lazy { earthLikePlanet }
 }
 
 object ProjectionPreviewDevice: PixelArrayFixtureType() {
