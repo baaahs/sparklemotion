@@ -108,11 +108,7 @@ private val LayoutEditorView = xComponent<LayoutEditorProps>("LayoutEditor") { p
 
         when (currentTab) {
             is MutableLegacyTab ->
-                legacyLayoutEditor {
-                    attrs.layouts = mutableLayouts
-                    attrs.tab = currentTab
-                    attrs.onLayoutChange = props.onLayoutChange
-                }
+                legacyLayoutWarning {}
 
             is MutableGridTab ->
                 gridLayoutEditor {

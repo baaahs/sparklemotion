@@ -112,6 +112,24 @@ class OpenShow(
 
     fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
+    fun findGridItem(
+        layoutId: String,
+        tabTitle: String,
+        vararg controlTitles: String
+    ): GridItem {
+        var layout = layouts
+            .findLayout(layoutId)
+            .findTab(tabTitle) as IGridLayout?
+        var item: GridItem? = null
+        for (title in controlTitles) {
+            if (layout == null) error("layout not found")
+            item = layout.items.find { openContext.getControl(it.controlId).gadget?.title == title }
+                ?: error("No item \"$title\".")
+            layout = item.layout
+        }
+        return item!!
+    }
+
     /**
      * Don't hold on to MutableShows; create them, apply changes, and commit or abandon them promptly!
      */

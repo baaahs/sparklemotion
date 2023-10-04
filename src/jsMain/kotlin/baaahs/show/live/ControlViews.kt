@@ -1,12 +1,10 @@
 package baaahs.show.live
 
 import baaahs.app.ui.controls.*
-import baaahs.app.ui.layout.dragNDropContext
 import baaahs.control.*
 import baaahs.plugin.core.OpenTransitionControl
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
-import react.useContext
 
 actual fun getControlViews(): ControlViews = object : ControlViews {
     override fun forButton(openButtonControl: OpenButtonControl, controlProps: ControlProps): View = renderWrapper {
@@ -17,17 +15,9 @@ actual fun getControlViews(): ControlViews = object : ControlViews {
     }
 
     override fun forButtonGroup(openButtonGroupControl: OpenButtonGroupControl, controlProps: ControlProps) = renderWrapper {
-        val isLegacyLayout = useContext(dragNDropContext).isLegacy
-        if (isLegacyLayout) {
-            legacyButtonGroupControl {
-                attrs.controlProps = controlProps
-                attrs.buttonGroupControl = openButtonGroupControl
-            }
-        } else {
-            gridButtonGroupControl {
-                attrs.controlProps = controlProps
-                attrs.buttonGroupControl = openButtonGroupControl
-            }
+        gridButtonGroupControl {
+            attrs.controlProps = controlProps
+            attrs.buttonGroupControl = openButtonGroupControl
         }
     }
 

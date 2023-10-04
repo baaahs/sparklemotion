@@ -8,7 +8,7 @@ import baaahs.show.Surfaces
 import org.spekframework.spek2.Spek
 
 object MutableShowVisitorSpec : Spek({
-    val show by value { MutableShow(SampleData.sampleLegacyShow) }
+    val show by value { MutableShow(SampleData.sampleShow) }
 
     describe<MutableShowVisitor> {
         val visitor by value { CollectingVisitor() }
@@ -24,29 +24,26 @@ object MutableShowVisitorSpec : Spek({
                     mapOf(
                         "Some patch holder" to 8, // These represent distinct items that don't have distinguishing short names.
                         "Some patch" to 9, // These represent distinct items that don't have distinguishing short names.
-                        "Control Backdrops" to 2, // There really are two controls named "Backdrops"
+                        "Control Backdrops" to 1,
                         "Control Blue Aqua Green" to 1,
                         "Control Brightness" to 1,
-                        "Control Checkerboard Size" to 1,
                         "Control Checkerboard" to 1,
                         "Control Color" to 1,
                         "Control Fire" to 1,
-                        "Control Holocene" to 1,
-                        "Control Intensity" to 1,
-                        "Control Pleistocene" to 1,
                         "Control Red Yellow Green" to 1,
-                        "Control Saturation" to 1,
-                        "Control Scenes" to 1,
                         "Control Ripple" to 1,
+                        "Control Saturation" to 1,
+                        "Control Vacuity" to 1,
+                        "Control Visualizer" to 1,
                         "Feed Brightness Slider" to 1,
                         "Feed Checkerboard Size Slider" to 1,
                         "Feed Model Info" to 1,
                         "Feed Pixel Location" to 1,
                         "Feed Redness Slider" to 1,
                         "Feed Resolution" to 1,
+                        "Feed Ripple Amount Slider" to 1,
                         "Feed Saturation Slider" to 1,
                         "Feed Time" to 1,
-                        "Feed Ripple Amount Slider" to 1,
                         "Shader Another GLSL Hue Test Pattern" to 1,
                         "Shader Brightness" to 1,
                         "Shader Checkerboard" to 1,
@@ -56,6 +53,8 @@ object MutableShowVisitorSpec : Spek({
                         "Shader Ripple" to 1,
                         "Shader Saturation" to 1,
                         "Shader XY Projection" to 1,
+                        "Some patch" to 9,
+                        "Some patch holder" to 6,
                         "Stream main" to 1,
                         "Surfaces All Surfaces" to 1,
                     )
