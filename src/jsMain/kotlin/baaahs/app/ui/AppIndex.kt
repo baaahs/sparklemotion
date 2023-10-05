@@ -285,6 +285,17 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                         +"Please wait."
                                                     }
                                                 }
+                                            } else if (webClient.sceneProvider.openScene == null) {
+                                                Backdrop {
+                                                    attrs.open = true
+                                                    attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
+                                                    Container {
+                                                        icon(NotificationImportant)
+
+                                                        typographyH6 { +"No scene loaded." }
+                                                        +"Maybe you'd like to open one?"
+                                                    }
+                                                }
                                             } else {
                                                 showUi {
                                                     attrs.show = showManager.openShow!!
@@ -305,19 +316,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                                 if (showShaderLibraryDialog) {
                                                     shaderLibraryDialog {
                                                         attrs.devWarning = true
-                                                    }
-                                                }
-                                            }
-
-                                            if (webClient.sceneProvider.openScene == null) {
-                                                Backdrop {
-                                                    attrs.open = true
-                                                    attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
-                                                    Container {
-                                                        icon(NotificationImportant)
-
-                                                        typographyH6 { +"No scene loaded." }
-                                                        +"Maybe you'd like to open one?"
                                                     }
                                                 }
                                             }
