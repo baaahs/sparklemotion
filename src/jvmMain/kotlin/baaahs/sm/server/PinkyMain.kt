@@ -91,6 +91,7 @@ class PinkyMain(private val args: Array<String>) {
             get("") { call.respondRedirect("/ui/") }
             get("monitor") { call.respondRedirect("/monitor/") }
             get("ui") { call.respondRedirect("/ui/") }
+            get("midi") { call.respondRedirect("midi/") }
 
             staticResources("", "htdocs")
             get("ui/") { respondWith("ui/index.html", "htdocs") }
