@@ -24,7 +24,7 @@ object CorePluginSpec : Spek({
         val toolchain by value { RootToolchain(testPlugins(clock) ) }
         val feedContext by value { feed.open(FakeShowPlayer(toolchain = toolchain), "time") }
         val gl by value { FakeGlContext() }
-        val glFeed by value { feedContext.bind(gl) }
+        val glFeed by value { feedContext.bind(gl, locationStrategy) }
         val program by value {
             val mutablePatch = toolchain.autoWire(Shaders.red)
                 .acceptSuggestedLinkOptions()

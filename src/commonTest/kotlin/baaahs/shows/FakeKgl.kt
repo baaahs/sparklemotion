@@ -527,7 +527,7 @@ class FakeUniform(override val name: String = "fake") : GlslUniform {
 open class StubGlslProgram : GlslProgram {
     override val title: String get() = TODO("not implemented")
     override val fragShader: CompiledShader get() = TODO("not implemented")
-    override val vertexAttribLocation: Int get() = TODO("not implemented")
+    override val vertexPositionAttrib: Int get() = TODO("not implemented")
     override fun setResolution(x: Float, y: Float): Unit = TODO("not implemented")
     override fun aboutToRenderFrame(): Unit = TODO("not implemented")
     override fun setPixDimens(width: Int, height: Int) = TODO("not implemented")

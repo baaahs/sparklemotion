@@ -6,12 +6,14 @@ import baaahs.control.MutableButtonControl
 import baaahs.control.MutableButtonGroupControl
 import baaahs.control.OpenButtonControl
 import baaahs.control.OpenButtonGroupControl
+import baaahs.device.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.Toolchain
 import baaahs.gl.openShader
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.LinkedProgram
 import baaahs.gl.patch.ProgramResolver
+import baaahs.gl.preview.ProjectionPreviewDevice
 import baaahs.gl.shader.OpenShader
 import baaahs.randomId
 import baaahs.show.*
@@ -274,7 +276,7 @@ class MutablePatchSet(val mutablePatches: MutableList<MutablePatch> = mutableLis
             PatchResolver(openShaders, showBuilder.getPatches(), showBuilder.getFeeds(), toolchain)
                 .getResolvedPatches()
         val openPatches = resolvedPatches.values.toTypedArray()
-        val portDiagram = ProgramResolver.buildPortDiagram(*openPatches)
+        val portDiagram = ProgramResolver.buildPortDiagram(PixelArrayDevice, *openPatches)
         return portDiagram.resolvePatch(Stream.Main, resultContentType, showBuilder.getFeeds())
     }
 

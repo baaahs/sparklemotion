@@ -3,6 +3,7 @@ package baaahs.di
 import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
+import baaahs.controller.DisplayManager
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
@@ -11,6 +12,7 @@ import baaahs.dmx.DmxUniverseListener
 import baaahs.fixtures.FixtureManager
 import baaahs.fixtures.FixtureManagerImpl
 import baaahs.fixtures.FixturePublisher
+import baaahs.gl.Displays
 import baaahs.gl.GlBase
 import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
@@ -91,6 +93,10 @@ interface PinkyModule : KModule {
         val pinkyContext = named("PinkyContext")
         val pinkyJob = named("PinkyJob")
         val fallbackDmxUniverse = named("Fallback")
+        val controllerListeners = named("ControllerListeners")
+        val fixtureListeners = named("FixtureListeners")
+        val controllerManagers = named("ControllerManagers")
+        val displayProviders = named("DisplayProviders")
 
         return module {
             scope<Pinky> {
@@ -133,23 +139,29 @@ interface PinkyModule : KModule {
                     MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext)), backupMappingManager)
                 }
                 scoped<ModelManager> { ModelManagerImpl() }
-                scoped(named("ControllerManagers")) {
+                scoped(controllerManagers) {
                     listOf(
                         get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
                     )
                 }
                 scoped { FixturePublisher(get(), get()) }
                 scoped { ControllersPublisher(get(), get()) }
+                scoped(controllerListeners) {
+                    listOf(
+                        get<ControllersPublisher>()
+                    )
+                }
+                scoped(fixtureListeners) {
+                    listOf(
+                        get<FixtureManager>(),
+                        get<FixturePublisher>(),
+                    )
+                }
                 scoped {
                     ControllersManager(
-                        get(named("ControllerManagers")), get(), get(),
-                        listOf(
-                            get<FixtureManager>(),
-                            get<FixturePublisher>(),
-                        ),
-                        listOf(
-                            get<ControllersPublisher>()
-                        )
+                        get(controllerManagers), get(), get(),
+                        get(fixtureListeners),
+                        get(controllerListeners)
                     )
                 }
                 scoped { ProdBrainSimulator(get(), get()) }
@@ -157,12 +169,14 @@ interface PinkyModule : KModule {
                 scoped { pinkySettings }
                 scoped { ServerNotices(get(), get(pinkyContext)) }
                 scoped { PinkyMapperHandlers(get()) }
+                scoped { Displays() }
+                scoped { DisplayManager(get(displayProviders), get(), get(), get(fixtureListeners), get(), get()) }
                 scoped {
                     Pinky(
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
                         get(), get(), get(), get(), get(), get(),
-                        pinkyMapperHandlers
+                        pinkyMapperHandlers, get()
                     )
                 }
             }

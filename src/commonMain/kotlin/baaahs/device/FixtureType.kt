@@ -3,7 +3,7 @@ package baaahs.device
 import baaahs.fixtures.FixtureOptions
 import baaahs.getBang
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.RenderResults
+import baaahs.gl.render.*
 import baaahs.gl.result.ResultStorage
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
@@ -24,6 +24,7 @@ interface FixtureType {
     val emptyOptions: FixtureOptions
     val defaultOptions: FixtureOptions
     val serialModule: SerializersModule get() = SerializersModule {}
+    val renderRegime: RenderRegime get() = RenderRegime.Components
 
     fun createResultStorage(renderResults: RenderResults): ResultStorage
 

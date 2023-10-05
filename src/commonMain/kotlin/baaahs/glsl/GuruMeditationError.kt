@@ -36,7 +36,7 @@ class GuruMeditationError(fixtureType: FixtureType) {
         val showPlayer = FakeShowPlayer(toolchain)
         val openShow = ShowOpener(toolchain, show, showPlayer).openShow()
         val openPatch = openShow.patches.only("patch")
-        linkedProgram = ProgramResolver.buildPortDiagram(openPatch)
+        linkedProgram = ProgramResolver.buildPortDiagram(fixtureType, openPatch)
             .resolvePatch(Stream.Main, fixtureType.resultContentType, openShow.allFeeds)
             ?: error("Couldn't build guru meditation error patch.")
     }

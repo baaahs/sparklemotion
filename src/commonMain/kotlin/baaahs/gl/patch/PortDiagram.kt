@@ -1,27 +1,38 @@
 package baaahs.gl.patch
 
+import baaahs.device.FixtureType
 import baaahs.getBang
 import baaahs.gl.shader.InputPort
 import baaahs.show.Feed
+import baaahs.show.FeedBuilder
 import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.util.Logger
 
-class PortDiagram(val patches: List<OpenPatch>) {
+class PortDiagram(
+    val patches: List<OpenPatch>,
+    private val fixtureType: FixtureType
+) {
     internal val candidates: Map<Track, Candidates>
     private val resolvedNodes = hashMapOf<OpenPatch, ProgramNode>()
 
     init {
-        val candidates = hashMapOf<Track, MutableList<TrackEntry>>()
+        val candidates = hashMapOf<Track, MutableList<PatchCandidate>>()
         var level = 0
+
+        fun candidatesFor(track: Track, block: MutableList<PatchCandidate>.() -> Unit) {
+            val trackCandidates = candidates.getOrPut(track) { arrayListOf() }
+            block(trackCandidates)
+        }
 
         fun addToChannel(openPatch: OpenPatch, level: Int) {
             val track = openPatch.track()
-            val trackCandidates = candidates.getOrPut(track) { arrayListOf() }
-            if (trackCandidates.any { it.openPatch == openPatch }) {
-                error("candidates for $track already include ${openPatch.shader.title}")
+            candidatesFor(track) {
+                if (any { it.openPatch == openPatch }) {
+                    error("candidates for $track already include ${openPatch.shader.title}")
+                }
+                add(PatchCandidate(openPatch, level = level))
             }
-            trackCandidates.add(TrackEntry(openPatch, level = level))
         }
 
         fun add(patch: OpenPatch) {
@@ -46,7 +57,7 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
         return if (rootProgramNode != null) {
             logger.debug { "Resolved $track to $rootProgramNode." }
-            ProgramLinker(rootProgramNode, resolver.warnings).buildLinkedProgram()
+            ProgramLinker(rootProgramNode, resolver.warnings, fixtureType).buildLinkedProgram()
         } else {
             logger.warn { "Failed to resolve $track." }
             null
@@ -59,13 +70,13 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    internal class Candidates(entries: List<TrackEntry>) {
+    internal class Candidates(entries: List<PatchCandidate>) {
         companion object {
             val comparator =
-                compareByDescending<TrackEntry> { it.priority }
+                compareByDescending<PatchCandidate> { it.priority }
                     .thenByDescending { it.typePriority }
                     .thenByDescending { it.level }
-                    .thenBy { it.openPatch.shader.title }
+                    .thenBy { it.title }
         }
 
         internal val sortedEntries = entries.sortedWith(comparator)
@@ -97,13 +108,16 @@ class PortDiagram(val patches: List<OpenPatch>) {
 
         private fun resolveFeed(id: String, feed: Feed): OpenPatch.FeedLink {
             return feedLinks.getOrPut(id to feed.contentType) {
-                val deps = feed.dependencies.mapValues { (_, depFeed) ->
-                    val dependencyId = feedsToId.getBang(depFeed, "feed dependency")
-                    resolveFeed(dependencyId, depFeed)
-                }
+                val deps = resolveFeedDeps(feed)
                 OpenPatch.FeedLink(feed, id, deps)
             }
         }
+
+        private fun resolveFeedDeps(feed: Feed): Map<String, OpenPatch.FeedLink> =
+            feed.dependencies.mapValues { (_, depFeed) ->
+                val dependencyId = feedsToId.getBang(depFeed, "feed dependency")
+                resolveFeed(dependencyId, depFeed)
+            }
 
         init {
             feeds.forEach { (id, feed) ->
@@ -214,12 +228,15 @@ class PortDiagram(val patches: List<OpenPatch>) {
         }
     }
 
-    class TrackEntry(
+    class PatchCandidate(
         val openPatch: OpenPatch,
         val priority: Float = openPatch.priority,
         val level: Int = 0
-    ) {
-        val typePriority: Int get() = if (openPatch.isFilter) 1 else 0
+    )  {
+        val typePriority: Int
+            get() = if (openPatch.isFilter) 1 else 0
+        val title: String
+            get() = openPatch.title
 
         override fun toString(): String {
             return "ChannelEntry(shader=${openPatch.shader.title}, priority=$priority, level=$level)"

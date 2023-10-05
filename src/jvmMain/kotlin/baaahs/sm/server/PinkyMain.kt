@@ -5,6 +5,7 @@ import baaahs.Pluggables
 import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
 import baaahs.di.PluginsModule
+import baaahs.gl.Displays
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
@@ -40,7 +41,8 @@ class PinkyMain(private val args: Array<String>) {
     private val logger by lazy { Logger("PinkyMain") }
 
     fun run() {
-        GlBase.manager // First thing, we need to wake up OpenGL on the main thread.
+        // First thing, we need to wake up OpenGL on the main thread.
+        val glManager = GlBase.manager
 
         logger.info { "Are you pondering what I'm pondering?" }
 
@@ -61,6 +63,9 @@ class PinkyMain(private val args: Array<String>) {
         configureKtor(pinky, pinkyScope)
 
         logger.info { responses.random() }
+
+        val displays = pinkyScope.get<Displays>()
+        glManager.observeDisplays(displays)
 
         try {
             val pinkyArgs = pinkyScope.get<PinkyArgs>()

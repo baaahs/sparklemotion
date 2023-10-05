@@ -261,6 +261,7 @@ sealed class Plugins(
         polymorphic(EntityData::class) {
             subclass(ImportedEntityData::class, ImportedEntityData.serializer())
             subclass(MovingHeadData::class, MovingHeadData.serializer())
+            subclass(ProjectorData::class, ProjectorData.serializer())
             subclass(LightBarData::class, LightBarData.serializer())
             subclass(PolyLineData::class, PolyLineData.serializer())
             subclass(GridData::class, GridData.serializer())

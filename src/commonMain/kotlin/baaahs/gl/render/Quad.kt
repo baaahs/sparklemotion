@@ -7,13 +7,13 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
     private val vertices = rects.flatMap { rect ->
         listOf(
             // First triangle:
-            rect.right, rect.top,
-            rect.left, rect.top,
-            rect.left, rect.bottom,
+            rect.right, rect.top, 0f, 0f,
+            rect.left, rect.top, 0f, 0f,
+            rect.left, rect.bottom, 0f, 0f,
             // Second triangle:
-            rect.left, rect.bottom,
-            rect.right, rect.bottom,
-            rect.right, rect.top
+            rect.left, rect.bottom, 0f, 0f,
+            rect.right, rect.bottom, 0f, 0f,
+            rect.right, rect.top, 0f, 0f
         )
     }.toFloatArray()
 
@@ -35,7 +35,7 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
     internal fun prepareToRender(vertexAttr: Int, fn: () -> Unit) {
         gl.check { bindVertexArray(vao) } // <- required on lwjgl, not on webgl :-(
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
-        gl.check { vertexAttribPointer(vertexAttr, 2, GL_FLOAT, false, 0, 0) }
+        gl.check { vertexAttribPointer(vertexAttr, 4, GL_FLOAT, false, 0, 0) }
         gl.check { enableVertexAttribArray(vertexAttr) }
 
         fn()

@@ -12,7 +12,7 @@ import baaahs.geom.Vector3F
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ComponentRenderEngine
-import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ComponentRenderTarget
 import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
@@ -40,7 +40,7 @@ class ProjectionPreview(
         gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
     )
     private var projectionProgram: GlslProgram? = null
-    private val renderTargets: Map<Model.Entity, FixtureRenderTarget>
+    private val renderTargets: Map<Model.Entity, ComponentRenderTarget>
 
     init {
         renderTargets = buildMap {

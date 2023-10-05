@@ -12,6 +12,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.imaging.Image
 import baaahs.plugin.classSerializer
@@ -67,7 +68,7 @@ data class ImageFeed(override val title: String) : Feed {
             }
 
         return object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+            override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                 private val texture = gl.check { createTexture() }
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =

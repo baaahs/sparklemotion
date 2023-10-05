@@ -8,16 +8,13 @@ import baaahs.util.Logger
 import js.core.jso
 import react.ReactElement
 import react.createElement
+import react.dom.client.Root
 import react.dom.client.createRoot
 import web.location.location
 
 object Launcher {
-    fun launch(name: String, buildWebApp: () -> HostedWebApp) {
+    fun launch(name: String, buildWebApp: () -> HostedWebApp): Window {
         console.log("Launch $name", this)
-
-        val containerDiv = document.createElement("div").also {
-            document.body.appendChild(it)
-        }
 
         val webApp = try {
             // Into the darkness.
@@ -36,19 +33,27 @@ object Launcher {
             }
         }
 
+        val containerDiv = document.createElement("div").also {
+            document.body.appendChild(it)
+        }
+
         val root = createRoot(containerDiv)
         val props = jso<FakeClientDeviceProps> {
             this.name = name
             width = 1024
             height = 768
-            hostedWebApp = webApp
+            render = { webApp.render() }
             onClose = {
                 document.body.removeChild(containerDiv)
                 root.unmount()
+                webApp.onClose()
             }
         }
         root.render(createElement(FakeClientDevice, props))
+        return Window(name, webApp, root)
     }
+
+    class Window(val name: String, val webApp: HostedWebApp, root: Root)
 
     private val logger = Logger<Launcher>()
 }

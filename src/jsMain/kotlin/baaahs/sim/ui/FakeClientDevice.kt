@@ -1,6 +1,5 @@
 package baaahs.sim.ui
 
-import baaahs.sim.HostedWebApp
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_draggable.Draggable
@@ -19,12 +18,9 @@ import mui.material.Button
 import org.w3c.dom.Node
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.events.MouseEvent
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.onClick
-import react.useRef
 import styled.inlineStyles
 import web.html.HTMLElement
 
@@ -38,9 +34,8 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
     val handleZoomOut by mouseEventHandler { zoom *= .5f }
     val handleZoomIn by mouseEventHandler { zoom *= 2f }
 
-    val handleClose by mouseEventHandler(props.hostedWebApp) {
+    val handleClose by mouseEventHandler(props.onClose) {
         isOpen = false
-        props.hostedWebApp.onClose()
         props.onClose()
     }
 
@@ -109,7 +104,7 @@ val FakeClientDevice = xComponent<FakeClientDeviceProps>("FakeClientDevice") { p
                         }
                     }
 
-                    child(props.hostedWebApp.render())
+                    child(props.render())
                 }
             }
         }
@@ -126,7 +121,7 @@ external interface FakeClientDeviceProps : Props {
     var name: String
     var width: Int
     var height: Int
-    var hostedWebApp: HostedWebApp
+    var render: () -> ReactElement<*>
     var onClose: () -> Unit
 }
 

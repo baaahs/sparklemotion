@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -52,7 +53,7 @@ data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext =
         object : FeedContext, RefCounted by RefCounter() {
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+            override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                 val offsetUniformId = "ds_${id}_offset"
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
                     object : ProgramFeedContext {
@@ -79,7 +80,7 @@ data class RasterCoordinateFeed(@Transient val `_`: Boolean = true) : Feed {
         """.trimIndent())
     }
 
-    override fun invocationGlsl(varName: String): String {
+    override fun invocationGlsl(varName: String, locationStrategy: LocationStrategy): String {
         val offsetUniformId = "ds_${varName}_offset"
         return "${getVarName(varName)} = gl_FragCoord - vec4($offsetUniformId, 0., 0.)"
     }

@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
+import baaahs.gl.Displays
 import baaahs.monitor.MonitorUi
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
@@ -21,6 +22,7 @@ class SheepSimulator(
 
     private lateinit var pinky: Pinky
     private lateinit var fixturesSimulator: FixturesSimulator
+    private lateinit var displaySimulator: DisplaySimulator
 
     init {
         window.asDynamic().simulator = this
@@ -33,6 +35,9 @@ class SheepSimulator(
         pinky = pinkyScope.get()
         val controllersManager = pinkyScope.get<ControllersManager>()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
+        val displays = pinkyScope.get<Displays>()
+        displaySimulator = pinkyScope.get(parameters = { parametersOf(displays) })
+        displaySimulator.loadSettings()
 
         launch { pinky.startAndRun() }
 
@@ -75,6 +80,8 @@ class SheepSimulator(
             get() = this@SheepSimulator.visualizer.facade
         val fixturesSimulator: FixturesSimulator.Facade
             get() = this@SheepSimulator.fixturesSimulator.facade
+        val displaySimulator: DisplaySimulator.Facade
+            get() = this@SheepSimulator.displaySimulator.facade
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },

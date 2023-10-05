@@ -11,7 +11,10 @@ import baaahs.time
 import baaahs.timeSync
 import kotlin.math.roundToInt
 
-abstract class RenderEngine(val gl: GlContext) {
+abstract class RenderEngine(
+    val gl: GlContext,
+    val locationStrategy: LocationStrategy
+) {
     internal val engineFeedContexts = mutableMapOf<FeedContext, EngineFeedContext>()
 
     val stats = Stats()
@@ -29,7 +32,7 @@ abstract class RenderEngine(val gl: GlContext) {
     }
 
     private fun bindFeed(feedContext: FeedContext): EngineFeedContext =
-        feedContext.bind(gl).also { engineFeed -> onBind(engineFeed) }
+        feedContext.bind(gl, locationStrategy).also { engineFeed -> onBind(engineFeed) }
 
     abstract fun onBind(engineFeedContext: EngineFeedContext)
 
@@ -107,4 +110,21 @@ abstract class RenderEngine(val gl: GlContext) {
             frameCount = 0
         }
     }
+}
+
+/**
+ * Hint to [GlslProgramImpl] and [baaahs.device.PixelLocationFeed] about how
+ * to determine the location of pixels in model space.
+ */
+enum class LocationStrategy {
+    /**
+     * Neighboring rendered pixels are also physically adjacent, like on a screen,
+     * so their positions can be interpolated. */
+    Continuous,
+
+    /**
+     * Each pixel may have an arbitrary physical location, so each position must
+     * be provided explicitly.
+     */
+    Discrete
 }

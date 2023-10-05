@@ -47,7 +47,8 @@ class GlslCompilingProgram(
 interface GlslProgram {
     val title: String
     val fragShader: CompiledShader
-    val vertexAttribLocation: Int
+    val vertexPositionAttrib: Int
+    val transformUniform: Matrix4Uniform?
 
     fun setResolution(x: Float, y: Float)
     fun setPixDimens(width: Int, height: Int)
@@ -177,9 +178,12 @@ class GlslProgramImpl(
 
     private val perFixtureFeeds = openFeeds.filter { it.updateMode == UpdateMode.PER_FIXTURE }
 
-    override val vertexAttribLocation: Int = gl.runInContext {
-        gl.check { getAttribLocation(id, "Vertex") }
+    override val vertexPositionAttrib: Int = gl.runInContext {
+        gl.check { getAttribLocation(id, "vertexPosition") }
     }
+
+    override val transformUniform: Matrix4Uniform? =
+        getMatrix4FUniform("transform")
 
     private inline fun <reified T> feedsOf(): List<T> =
         openFeeds.map { it.programFeedContext }.filterIsInstance<T>()
@@ -265,15 +269,21 @@ class GlslProgramImpl(
         val vertexShader = """
             precision highp float;
 
-            // xy = vertex position in device pixel coordinates.
-            in vec2 Vertex;
-            
+            // Vertex position in world coordinates.
+            in vec4 vertexPosition;
+
+            uniform mat4 transform;
             uniform vec2 vertexShader_resolution;
+
+            // Varying pixel position in world coordinates.
+            out vec3 sm_pixelPosition;
 
             void main()
             {
-                // scale vertex attribute to [-1,1] range
-                gl_Position = vec4(Vertex / vertexShader_resolution * 2. - 1., 0.0, 1.0);
+                vec4 projectedPosition = transform * vertexPosition;
+                // Scale vertex attribute to [-1,1] range.
+                gl_Position = vec4(projectedPosition.xy / vertexShader_resolution * 2. - 1., 0.0, 1.0);
+                sm_pixelPosition = projectedPosition.xyz;
             }
         """.trimIndent()
 

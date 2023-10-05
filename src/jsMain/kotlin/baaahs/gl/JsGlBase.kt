@@ -22,6 +22,16 @@ actual object GlBase {
 
         override fun createContext(trace: Boolean): JsGlContext {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
+            return createContext(canvas, trace).also { it.canvas.id = "jsGlContext" }
+        }
+
+        override fun createContext(display: Display, mode: Mode, trace: Boolean): GlContext {
+            val canvas = document.createElement("canvas") as HTMLCanvasElement
+            canvas.width = mode.width
+            canvas.height = mode.height
+            canvas.style.position = "fixed"
+            canvas.style.zIndex = "10000"
+            document.body.appendChild(canvas)
             return createContext(canvas, trace)
         }
 
@@ -41,6 +51,10 @@ actual object GlBase {
                 "300 es",
                 webgl
             )
+        }
+
+        override fun observeDisplays(displays: Displays) {
+            // No-op in JS.
         }
     }
 

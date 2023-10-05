@@ -11,7 +11,8 @@ import baaahs.gl.param.FloatsParamBuffer
 import baaahs.gl.param.ParamBuffer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
-import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ComponentRenderTarget
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.shader.InputPort
 import baaahs.model.Model
@@ -55,7 +56,7 @@ data class PixelDistanceFromEdgeFeed(@Transient val `_`: Boolean = true) : Feed 
         """.trimIndent())
     }
 
-    override fun invocationGlsl(varName: String): String {
+    override fun invocationGlsl(varName: String, locationStrategy: LocationStrategy): String {
         return "${getVarName(varName)} = ds_${varName}_getPixelDistanceFromEdge(gl_FragCoord.xy)"
     }
 
@@ -79,14 +80,14 @@ class PixelDistanceFromEdgeFeedContext(
     private val textureUniformId: String
 ) : FeedContext, RefCounted by RefCounter() {
 
-    override fun bind(gl: GlContext): EngineFeedContext = EngineFeedContext(gl)
+    override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = EngineFeedContext(gl)
 
     inner class EngineFeedContext(gl: GlContext) : PerPixelEngineFeedContext {
         override val buffer = FloatsParamBuffer(id, 1, gl)
 
         override fun setOnBuffer(renderTarget: RenderTarget) = run {
             val fixture = renderTarget.fixture
-            if (renderTarget is FixtureRenderTarget && fixture.fixtureConfig is PixelArrayDevice.Config) {
+            if (renderTarget is ComponentRenderTarget && fixture.fixtureConfig is PixelArrayDevice.Config) {
                 val pixelLocations = fixture.fixtureConfig.pixelLocations
                 val surface = fixture.modelEntity as? Model.Surface
                 val lines = surface?.lines

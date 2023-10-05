@@ -8,6 +8,7 @@ import baaahs.gl.data.ProgramFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.classSerializer
 import baaahs.plugin.core.CorePlugin
@@ -57,7 +58,7 @@ data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
 
             private val varPrefix = getVarName(id)
 
-            override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+            override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                     return object : ProgramFeedContext {
                         override val updateMode: UpdateMode get() = UpdateMode.PER_FRAME

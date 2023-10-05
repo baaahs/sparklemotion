@@ -1041,7 +1041,7 @@ private fun generateLinkedProgram(feeds: Map<String, Feed>, activePatchSet: Acti
     val renderManager = RenderManager(FakeGlContext())
     val fixture = model.allEntities.first()
     val renderTarget = renderManager.addFixture(fakeFixture(1, fixture, model = model))
-    val patchResolution = ProgramResolver(listOf(renderTarget), activePatchSet, renderManager)
+    val patchResolution = ProgramResolver(listOf(renderTarget), activePatchSet)
     val portDiagram = patchResolution.portDiagrams
         .getBang(PixelArrayDevice, "fixture type")
         .only("port diagram to render targets")

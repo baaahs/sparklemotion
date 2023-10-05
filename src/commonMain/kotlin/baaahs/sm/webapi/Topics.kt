@@ -5,6 +5,7 @@ import baaahs.PubSub
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerState
 import baaahs.fixtures.FixtureInfo
+import baaahs.gl.Display
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
@@ -43,6 +44,9 @@ object Topics {
             "movingHeadPresets",
             MapSerializer(String.serializer(), MovingHead.MovingHeadPosition.serializer())
         )
+
+    val displays =
+        PubSub.Topic("displays", ListSerializer(Display.serializer()))
 
     fun createShaderLibraries(fsSerializer: RemoteFsSerializer) =
         PubSub.Topic(

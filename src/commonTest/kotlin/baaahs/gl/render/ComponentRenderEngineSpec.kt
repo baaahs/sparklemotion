@@ -75,7 +75,7 @@ object ComponentRenderEngineSpec : Spek({
             val incomingLinks by value { mapOf("gl_FragCoord" to feed.link("coord")) }
             val linkedPatch by value {
                 val rootNode = LinkedPatch(openShader, incomingLinks, Stream.Main, 0f)
-                ProgramLinker(rootNode).buildLinkedProgram()
+                ProgramLinker(rootNode, fixtureType = fixtureType).buildLinkedProgram()
             }
             val program by value {
                 renderEngine.compile(linkedPatch) { id, feed -> feed.open(FakeShowPlayer(), id) }.bind()

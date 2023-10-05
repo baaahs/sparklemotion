@@ -10,6 +10,7 @@ import baaahs.gl.data.singleUniformFeedContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
+import baaahs.gl.render.LocationStrategy
 import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
@@ -143,7 +144,7 @@ class BeatLinkPlugin internal constructor(
         override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                     override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                         return object : ProgramFeedContext {
                             val beatUniform = glslProgram.getFloatUniform("${varPrefix}.beat")
@@ -183,7 +184,7 @@ class BeatLinkPlugin internal constructor(
         override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
-                override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {
+                override fun bind(gl: GlContext, locationStrategy: LocationStrategy): EngineFeedContext = object : EngineFeedContext {
                     override fun bind(glslProgram: GlslProgram): ProgramFeedContext {
                         return object : ProgramFeedContext {
                             val measureStartTime = glslProgram.getFloatUniform("${varPrefix}.measureStartTime")

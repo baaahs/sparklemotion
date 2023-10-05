@@ -81,6 +81,12 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
         }
     }
 
+    override fun getProjectorEditorView(editingEntity: EditingEntity<out MutableProjectorData>): View = renderWrapper {
+        projectorEditor {
+            attrs.editingEntity = editingEntity
+        }
+    }
+
     override fun getImportedEntityEditorView(editingEntity: EditingEntity<out MutableImportedEntityGroup>): View = renderWrapper {
         objGroupEditor {
             attrs.editingEntity = editingEntity

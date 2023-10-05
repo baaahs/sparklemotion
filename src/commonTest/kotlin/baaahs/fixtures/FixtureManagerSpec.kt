@@ -5,7 +5,7 @@ import baaahs.fakeModel
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
-import baaahs.gl.render.FixtureRenderTarget
+import baaahs.gl.render.ComponentRenderTarget
 import baaahs.gl.render.FixtureTypeForTest
 import baaahs.gl.render.RenderManager
 import baaahs.gl.shader.OpenShader
@@ -36,7 +36,7 @@ object FixtureManagerSpec : Spek({
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
         val renderManager by value { RenderManager(FakeGlContext()) }
-        val renderTargets by value { linkedMapOf<Fixture, FixtureRenderTarget>() }
+        val renderTargets by value { linkedMapOf<Fixture, ComponentRenderTarget>() }
         val surfacePixelStrategy by value { LinearSurfacePixelStrategy(Random(1)) }
 
         // Maintain stable fixture order for test:

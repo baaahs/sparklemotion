@@ -84,11 +84,19 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
 
         if (props.simulator.launchItems.isNotEmpty()) {
             div(+SimulatorStyles.launchButtonsContainer) {
-                header { +"Launch:" }
-                props.simulator.launchItems.forEach { launchItem ->
+                header {
+                    +"Launch:"
+
+                    props.simulator.launchItems.forEach { launchItem ->
+                        button {
+                            attrs.onClick = { launchItem.onLaunch() }
+                            +launchItem.title
+                        }
+                    }
+
                     button {
-                        attrs.onClick = { launchItem.onLaunch() }
-                        +launchItem.title
+                        attrs.onClick = { props.simulator.displaySimulator.createNew() }
+                        +"New Screen"
                     }
                 }
             }
