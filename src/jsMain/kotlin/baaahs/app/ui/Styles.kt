@@ -286,7 +286,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         minWidth = 0.px
     }
 
-    val noShowLoadedPaper by css {
+    val fullScreenMessagePaper by css {
         height = 100.pct
         display = Display.flex
         flexDirection = FlexDirection.column

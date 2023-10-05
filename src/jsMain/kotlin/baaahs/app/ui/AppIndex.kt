@@ -23,17 +23,13 @@ import baaahs.window
 import external.ErrorBoundary
 import js.core.jso
 import materialui.icon
-import mui.icons.material.NotificationImportant
-import mui.material.*
+import mui.material.CssBaseline
+import mui.material.Paper
 import mui.material.styles.ThemeProvider
-import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
-import react.dom.p
-import web.cssom.Display
-import web.cssom.ZIndex
 
 val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
     val webClient = props.webClient
@@ -199,6 +195,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
+    val appState = AppState.getState(webClient, show, props.sceneManager.scene)
+
     appContext.Provider {
         attrs.value = myAppContext
 
@@ -236,106 +234,45 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                         }
 
                         div(+themeStyles.appContent) {
-                            if (!webClient.isConnected) {
-                                Paper {
-                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                    CircularProgress {}
-                                    icon(NotificationImportant)
-                                    typographyH6 { +"Connecting…" }
-                                    +"Attempting to connect to Sparkle Motion."
-                                }
-                            } else if (!webClient.serverIsOnline) {
-                                Paper {
-                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                    CircularProgress {}
-                                    icon(NotificationImportant)
-                                    typographyH6 { +"Connecting…" }
-                                    +"Sparkle Motion is initializing."
-                                }
-                            } else {
-                                ErrorBoundary {
-                                    attrs.FallbackComponent = ErrorDisplay
+                            ErrorBoundary {
+                                attrs.FallbackComponent = ErrorDisplay
 
-                                    when (appMode) {
-                                        AppMode.Show -> {
-                                            if (!webClient.showManagerIsReady) {
-                                                Paper {
-                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                    CircularProgress {}
-                                                    NotificationImportant {}
-                                                    typographyH6 { +"Connecting…" }
-                                                    +"Show manager is initializing."
-                                                }
-                                            } else if (show == null) {
-                                                Paper {
-                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                    NotificationImportant {}
-                                                    typographyH6 { +"No open show." }
-                                                    p { +"Maybe you'd like to open one? " }
-                                                }
-                                            } else if (props.webClient.isMapping) {
-                                                Backdrop {
-                                                    attrs.open = true
-                                                    Container {
-                                                        CircularProgress {}
-                                                        icon(NotificationImportant)
+                                if (appState is AppState.FullScreenMessage) {
+                                    Paper {
+                                        attrs.classes = js.core.jso { root = -themeStyles.fullScreenMessagePaper }
+                                        if (appState.isInProgress)
+                                            mui.material.CircularProgress {}
+                                        icon(mui.icons.material.NotificationImportant)
+                                        typographyH6 { +appState.title }
+                                        +appState.message
+                                    }
+                                } else if (appState == AppState.ShowView) {
+                                    showUi {
+                                        attrs.show = showManager.openShow!!
+                                        attrs.onShowStateChange = handleShowStateChange
+                                        attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
+                                        attrs.onShaderLibraryDialogToggle = handleShaderLibraryDialogToggle
+                                    }
 
-                                                        typographyH6 { +"Mapper Running…" }
-                                                        +"Please wait."
-                                                    }
-                                                }
-                                            } else if (webClient.sceneProvider.openScene == null) {
-                                                Backdrop {
-                                                    attrs.open = true
-                                                    attrs.sx { zIndex = 100 as ZIndex; display = Display.grid }
-                                                    Container {
-                                                        icon(NotificationImportant)
-
-                                                        typographyH6 { +"No scene loaded." }
-                                                        +"Maybe you'd like to open one?"
-                                                    }
-                                                }
-                                            } else {
-                                                showUi {
-                                                    attrs.show = showManager.openShow!!
-                                                    attrs.onShowStateChange = handleShowStateChange
-                                                    attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
-                                                    attrs.onShaderLibraryDialogToggle = handleShaderLibraryDialogToggle
-                                                }
-
-                                                if (showLayoutEditorDialog) {
-                                                    // Layout Editor dialog
-                                                    layoutEditorDialog {
-                                                        attrs.open = showLayoutEditorDialog
-                                                        attrs.show = show
-                                                        attrs.onApply = handleLayoutEditorChange
-                                                        attrs.onClose = handleLayoutEditorDialogClose
-                                                    }
-                                                }
-                                                if (showShaderLibraryDialog) {
-                                                    shaderLibraryDialog {
-                                                        attrs.devWarning = true
-                                                    }
-                                                }
-                                            }
+                                    if (showLayoutEditorDialog) {
+                                        // Layout Editor dialog
+                                        layoutEditorDialog {
+                                            attrs.open = showLayoutEditorDialog
+                                            attrs.show = show!!
+                                            attrs.onApply = handleLayoutEditorChange
+                                            attrs.onClose = handleLayoutEditorDialogClose
                                         }
-
-                                        AppMode.Scene -> {
-                                            if (props.sceneManager.scene == null) {
-                                                Paper {
-                                                    attrs.classes = jso { root = -themeStyles.noShowLoadedPaper }
-                                                    icon(NotificationImportant)
-                                                    typographyH6 { +"No open scene." }
-                                                    p { +"Maybe you'd like to open one? " }
-                                                }
-                                            } else {
-                                                sceneEditor {
-                                                    attrs.sceneEditorClient = props.sceneEditorClient
-                                                    attrs.mapper = props.mapper
-                                                    attrs.sceneManager = sceneManager
-                                                }
-                                            }
+                                    }
+                                    if (showShaderLibraryDialog) {
+                                        shaderLibraryDialog {
+                                            attrs.devWarning = true
                                         }
+                                    }
+                                } else if (appState == AppState.SceneView) {
+                                    sceneEditor {
+                                        attrs.sceneEditorClient = props.sceneEditorClient
+                                        attrs.mapper = props.mapper
+                                        attrs.sceneManager = sceneManager
                                     }
                                 }
                             }
