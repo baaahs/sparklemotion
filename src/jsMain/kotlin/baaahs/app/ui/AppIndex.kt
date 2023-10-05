@@ -11,7 +11,6 @@ import baaahs.app.ui.settings.settingsDialog
 import baaahs.client.ClientStageManager
 import baaahs.client.SceneEditorClient
 import baaahs.client.WebClient
-import baaahs.client.document.DocumentManager
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
@@ -371,22 +370,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
             }
         }
     }
-}
-
-enum class AppMode {
-    Show {
-        override val otherOne: AppMode get() = Scene
-        override fun getDocumentManager(appContext: AppContext): ShowManager.Facade =
-            appContext.showManager
-    },
-    Scene {
-        override val otherOne: AppMode get() = Show
-        override fun getDocumentManager(appContext: AppContext): SceneManager.Facade =
-            appContext.sceneManager
-    };
-
-    abstract val otherOne: AppMode
-    abstract fun getDocumentManager(appContext: AppContext): DocumentManager<*, *>.Facade
 }
 
 external interface AppIndexProps : Props {
