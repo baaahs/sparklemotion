@@ -12,7 +12,8 @@ import baaahs.util.Logger
 
 class OpenScene(
     val model: Model,
-    val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
+    val controllers: Map<ControllerId, ControllerConfig> = emptyMap(),
+    val isFallback: Boolean = false
 ) : OpenDocument {
     override val title: String
         get() = model.name

@@ -1,19 +1,23 @@
 package baaahs.sim.ui
 
 import baaahs.SheepSimulator
-import baaahs.ui.unaryPlus
-import baaahs.ui.withTChangeEvent
-import baaahs.ui.xComponent
+import baaahs.app.ui.AppMode
+import baaahs.client.WebClient
+import baaahs.sim.HostedWebApp
+import baaahs.ui.*
+import baaahs.ui.Styles
 import baaahs.visualizer.ui.visualizerPanel
-import mui.material.FormControlLabel
-import mui.material.Size
-import mui.material.Switch
+import kotlinx.css.rem
+import mui.material.*
+import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import react.dom.html.ReactHTML
+import web.cssom.Cursor
 
 val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { props ->
-    val visualizer = props.simulator.visualizer
+    val visualizer = observe(props.simulator.visualizer)
     var rotate by state { visualizer.rotate }
 
     onChange("rotate sync", rotate) {
@@ -30,14 +34,55 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
         visualizerPanel {
             attrs.visualizer = visualizer
 
-            div(+SimulatorStyles.vizToolbar) {
-                FormControlLabel {
-                    attrs.control = Switch.create {
-                        size = Size.small
-                        checked = rotate
-                        onChange = onRotateChange.withTChangeEvent()
+            if (visualizer.haveScene) {
+                div(+SimulatorStyles.vizToolbar) {
+                    FormControlLabel {
+                        attrs.control = Switch.create {
+                            size = Size.small
+                            checked = rotate
+                            onChange = onRotateChange.withTChangeEvent()
+                        }
+                        attrs.label = buildElement { +"Rotate" }
                     }
-                    attrs.label = buildElement { +"Rotate" }
+                }
+            } else {
+                div(+SimulatorStyles.vizWarning) {
+                    +"No scene loaded."
+
+                    help {
+                        attrs.iconSize = 1.25.rem
+                        attrs.title { +"No scene loaded." }
+                        attrs.child {
+                            Typography {
+                                markdown {
+                                    +"""
+                                        A scene describes the physical layout and configuration of your lighting
+                                        fixtures. Sparkle Motion needs a scene to know how to render shows.
+                                        
+                                        No scene is currently loaded, so nothing will be shown in the hardware simulation.
+                                    """.trimIndent()
+                                }
+
+                                val webApp = props.hostedWebApp
+                                if (webApp is WebClient) {
+                                    ReactHTML.p {
+                                        +"You can "
+
+                                        Link {
+                                            attrs.className = -Styles.helpAutoClose
+                                            attrs.sx { cursor = Cursor.pointer }
+                                            attrs.onClick = {
+                                                webApp.facade.appMode = AppMode.Scene
+                                            }
+                                            +"create or load a scene here"
+                                        }
+
+                                        +"."
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -46,6 +91,7 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
 
 external interface ModelSimulationProps : Props {
     var simulator: SheepSimulator.Facade
+    var hostedWebApp: HostedWebApp
 }
 
 fun RBuilder.modelSimulation(handler: RHandler<ModelSimulationProps>) =

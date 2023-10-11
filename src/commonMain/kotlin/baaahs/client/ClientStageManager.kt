@@ -2,6 +2,7 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
+import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
 import baaahs.show.Show
@@ -14,7 +15,7 @@ class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
     sceneProvider: SceneProvider
-) : BaseShowPlayer(toolchain, sceneProvider) {
+) : BaseShowPlayer(toolchain, SceneProviderWithFallback(sceneProvider)) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
@@ -78,6 +79,11 @@ class ClientStageManager(
             channel.onChange(g.state)
             checkForChanges()
         }
+    }
+
+    class SceneProviderWithFallback(private val delegate: SceneProvider) : SceneProvider by delegate {
+        override val openScene: OpenScene
+            get() = openSceneOrFallback
     }
 
     interface Listener {

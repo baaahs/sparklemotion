@@ -12,6 +12,11 @@ class SceneMonitor(
     override var openScene: OpenScene? = openScene
         private set
 
+    private val fallbackScene by lazy { OpenScene(Scene.Fallback.model.open(), isFallback = true) }
+
+    override val openSceneOrFallback: OpenScene
+        get() = openScene ?: fallbackScene
+
     override fun addBeforeChangeListener(callback: SceneChangeListener) {
         beforeChangeListeners.add(callback)
     }
