@@ -41,6 +41,8 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
                             DialogTitle { +title }
                             DialogContent {
                                 List {
+                                    attrs.dense = true
+
                                     options.forEach { option ->
                                         when (option) {
                                             is Divider -> {

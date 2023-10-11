@@ -100,6 +100,10 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         padding = Padding(0.px, 16.px)
     }
 
+    val vizWarning by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
+        zIndex = 10
+    }
+
     val statusPanel by css {
         display = Display.flex
 

@@ -30,8 +30,6 @@ interface AppState {
                     FullScreenMessage("No open show.", "Maybe you'd like to open one?", isInProgress = false)
                 } else if (webClient.isMapping) {
                     FullScreenMessage("Mapper Running…", "Please wait.")
-                } else if (scene == null) {
-                    FullScreenMessage("No scene loaded.", "Maybe you'd like to open one?", isInProgress = false)
                 } else ShowView
             } else if (appMode == AppMode.Scene) {
                 if (scene == null) {
