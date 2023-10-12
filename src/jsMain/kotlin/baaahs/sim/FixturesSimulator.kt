@@ -69,7 +69,6 @@ class FixturesSimulator(
                     }
 
                     val entityAdapter = EntityAdapter(simulationEnv, newOpenScene.model.units)
-                    visualizer.facade.clear()
                     visualizer.facade.units = entityAdapter.units
                     visualizer.initialViewingAngle = newOpenScene.model.initialViewingAngle
                     buildMap {
@@ -85,6 +84,7 @@ class FixturesSimulator(
                 visualizer.add(it.itemVisualizer)
             }
             visualizer.fitCameraToObject()
+            visualizer.facade.notifyChanged()
 
             simMappingManager.mappingData =
                 newOpenScene?.let {

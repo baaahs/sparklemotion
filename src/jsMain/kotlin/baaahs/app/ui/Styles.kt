@@ -29,10 +29,6 @@ fun linearRepeating(
 class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true) {
     private val drawerWidth = 260.px
 
-    val help by css {
-
-    }
-
     val global = CssBuilder().apply {
         "header" {
             color = Color(theme.palette.primary.contrastText.asDynamic())
@@ -44,7 +40,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             paddingRight = 16.px
             position = Position.relative
 
-            child(this@ThemeStyles, ::help) {
+            child(baaahs.ui.Styles, baaahs.ui.Styles::help) {
                 fontSize = 1.rem
                 position = Position.absolute
                 top = .5.em
@@ -286,7 +282,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         minWidth = 0.px
     }
 
-    val noShowLoadedPaper by css {
+    val fullScreenMessagePaper by css {
         height = 100.pct
         display = Display.flex
         flexDirection = FlexDirection.column
