@@ -1,26 +1,28 @@
 package baaahs.app.ui.controls
 
+import baaahs.app.ui.AppMode
 import baaahs.app.ui.appContext
 import baaahs.app.ui.preview.ClientPreview
 import baaahs.control.OpenVisualizerControl
 import baaahs.show.live.ControlProps
+import baaahs.ui.*
 import baaahs.ui.diagnostics.dmxDiagnostics
 import baaahs.ui.diagnostics.patchDiagnostics
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.withMouseEvent
-import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import js.core.jso
+import kotlinx.css.rem
 import materialui.icon
 import mui.icons.material.Settings
 import mui.material.*
+import mui.system.sx
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.html.ReactHTML.p
 import react.dom.onClick
 import react.useContext
+import web.cssom.Cursor
 import web.dom.Element
 import web.events.Event
 import web.html.HTMLDivElement
@@ -28,33 +30,30 @@ import web.html.HTMLDivElement
 private val VisualizerControlView = xComponent<VisualizerControlProps>("VisualizerControl") { props ->
     val appContext = useContext(appContext)
 
-    val sceneManager = appContext.sceneManager
-    observe(sceneManager)
-    val model = sceneManager.openScene?.model
+    val sceneProvider = appContext.sceneProvider
+    observe(sceneProvider)
+    val scene = sceneProvider.openSceneOrFallback
+    val model = scene.model
 
     val rootEl = ref<Element>()
 
     val clientPreview = memo(model) {
-        model?.let {
-            ClientPreview(it, appContext.showPlayer, appContext.clock, appContext.plugins)
+        ClientPreview(model, appContext.showPlayer, appContext.clock, appContext.plugins)
+    }
+
+    clientPreview.visualizer.rotate = props.visualizerControl.rotate
+    val visualizer = clientPreview.visualizer
+    onMount(visualizer) {
+        visualizer.container = rootEl.current as HTMLDivElement
+
+        withCleanup {
+            visualizer.container = null
+            clientPreview.detach()
         }
     }
 
-    if (clientPreview != null) {
-        clientPreview.visualizer.rotate = props.visualizerControl.rotate
-        val visualizer = clientPreview.visualizer
-        onMount(visualizer) {
-            visualizer.container = rootEl.current as HTMLDivElement
-
-            withCleanup {
-                visualizer.container = null
-                clientPreview.detach()
-            }
-        }
-
-        useResizeListener(rootEl) { _, _ ->
-            visualizer.resize()
-        }
+    useResizeListener(rootEl) { _, _ ->
+        visualizer.resize()
     }
 
     var menuAnchor by state<Element?> { null }
@@ -76,8 +75,41 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
             icon(Settings)
         }
 
-        if (model == null) {
-            +"No scene loaded!"
+        if (scene.isFallback) {
+            div(+Styles.visualizerWarning) {
+                +"No scene loaded."
+
+                help {
+                    attrs.iconSize = 1.25.rem
+                    attrs.title { +"No scene loaded." }
+                    attrs.child {
+                        Typography {
+                            markdown {
+                                +"""
+                                    A scene describes the physical layout and configuration of your lighting fixtures.
+                                    No scene is currently loaded, so a simple generic scene is being shown in the
+                                    visualizer.
+                                """.trimIndent()
+                            }
+
+                            p {
+                                +"You can "
+
+                                Link {
+                                    attrs.className = -baaahs.ui.Styles.helpAutoClose
+                                    attrs.sx { cursor = Cursor.pointer }
+                                    attrs.onClick = {
+                                        appContext.webClient.appMode = AppMode.Scene
+                                    }
+                                    +"create or load a scene here"
+                                }
+
+                                +"."
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
