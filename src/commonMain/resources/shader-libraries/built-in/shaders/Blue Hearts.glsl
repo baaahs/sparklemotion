@@ -1,4 +1,4 @@
-// Blue Steel
+// Blue Hearts
 // From https://www.shadertoy.com/view/wt2GWK
 
 #define t iTime

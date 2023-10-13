@@ -13,7 +13,6 @@ precision highp float;
 uniform vec2 resolution;
 uniform float time;
 //uniform vec2 mouse;
-uniform float zoom;
 
 // SPARKLEMOTION GADGET: Slider {name: "MouseX", initialValue: 1.0, minValue: 0.0, maxValue: 1.5}
 uniform float mouseX;
@@ -156,7 +155,7 @@ vec4 Shade(float distance)
 	float c1 = saturate(distance*5.0 + 0.5);
 	float c2 = saturate(distance*5.0);
 	float c3 = saturate(distance*3.4 - 0.5);
-	
+
 	vec4 a = mix(Color1,Color2, c1);
 	vec4 b = mix(a,     Color3, c2);
 	return 	 mix(b,     Color4, c3);
@@ -169,7 +168,7 @@ float RenderScene(vec3 position, out float distance)
 	float noise = Turbulence(position * NoiseFrequency + Animation*time, 0.1, 1.5, 0.03) * NoiseAmplitude;
 	noise = saturate(abs(noise));
 	distance = SphereDist(position) - noise;
-		
+
 	return noise;
 }
 
@@ -177,16 +176,16 @@ float RenderScene(vec3 position, out float distance)
 vec4 March(vec3 rayOrigin, vec3 rayStep)
 {
 	vec3 position = rayOrigin;
-	
+
 	float distance;
 	float displacement;
-	
+
 	for(int step = MarchSteps; step >=0  ; --step)
 	{
 		displacement = RenderScene(position, distance);
-	
+
 		if(distance < 0.05) break;
-		
+
 		position += rayStep * distance;
 	}
 	return mix(Shade(displacement), Background, float(distance >= 0.5));
@@ -195,20 +194,20 @@ vec4 March(vec3 rayOrigin, vec3 rayStep)
 bool IntersectSphere(vec3 ro, vec3 rd, vec3 pos, float radius, out vec3 intersectPoint)
 {
 	vec3 relDistance = (ro - pos);
-	
+
 	float b = dot(relDistance, rd);
 	float c = dot(relDistance, relDistance) - radius*radius;
 	float d = b*b - c;
-	
+
 	intersectPoint = ro + rd*(-b - sqrt(d));
-	
+
 	return d >= 0.0;
 }
 
 void main(void)
 {
 	vec2 p = (gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0;
-	
+
 	p.x *= resolution.x/resolution.y;
 
 	float rotx = mouseY * 4.0;
@@ -225,11 +224,11 @@ void main(void)
 	vec4 col = Background;
 
 	vec3 origin;
-	
+
 	if(IntersectSphere(ro, rd, ExpPosition, Radius + NoiseAmplitude*6.0, origin))
 	{
 		col = March(origin, rd);
 	}
-	
+
 	gl_FragColor = col;
 }
