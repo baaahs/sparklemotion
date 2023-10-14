@@ -133,8 +133,6 @@ class Pinky(
 
                 mappingResultsLoaderJob = launch { mappingManager.start() }
 
-                launch { shaderLibraryManager.start() }
-
                 launch {
                     val config = storage.loadConfig()
 
@@ -198,6 +196,8 @@ class Pinky(
 
     private suspend fun launchDaemonJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
+            launch { shaderLibraryManager.start() }
+
             launch {
                 while (true) {
                     if (mapperIsRunning) {
