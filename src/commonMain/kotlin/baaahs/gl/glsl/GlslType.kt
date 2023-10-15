@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePort
 
-sealed class GlslType constructor(
+sealed class GlslType(
     val glslLiteral: String,
     val defaultInitializer: GlslExpr = GlslExpr("$glslLiteral(0.)")
 ) {
@@ -15,6 +15,7 @@ sealed class GlslType constructor(
     val mutableDefaultInitializer: MutablePort get() = MutableConstPort(defaultInitializer.s, this)
 
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+
     class Struct(
         val name: String,
         val fields: List<Field>,
@@ -118,11 +119,40 @@ sealed class GlslType constructor(
             publicStructNames: Set<String>,
             buf: StringBuilder
         ) {
-            val typeStr = if (type is Struct) {
-                if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
-            } else type.glslLiteral
+            buf.append("    ")
+
+            when (type) {
+                is Struct -> {
+                    buf.append(
+                        if (publicStructNames.contains(name)) name
+                        else namespace?.qualify(name)
+                            ?: name
+                    )
+                    buf.append(" ")
+                    buf.append(name)
+                }
+
+                is Array -> {
+                    buf.append(type.memberType.glslLiteral)
+                    buf.append(" ")
+                    buf.append(name)
+                    buf.append("[")
+                    buf.append(type.length.toString())
+                    buf.append("]")
+                }
+
+                else -> {
+                    buf.append(type.glslLiteral)
+                    buf.append(" ")
+                    buf.append(name)
+                }
+            }
+
+            buf.append(";")
+
             val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
-            buf.append("    $typeStr $name;$comment\n")
+            buf.append(comment)
+            buf.append("\n")
         }
 
         override fun equals(other: Any?): Boolean {
@@ -143,14 +173,21 @@ sealed class GlslType constructor(
     }
 
     object Bool : GlslType("bool", GlslExpr("false"))
+    object Int : GlslType("int", GlslExpr("0"))
+    object Int2 : GlslType("int2")
+    object Int3 : GlslType("int3")
+    object Int4 : GlslType("int4")
     object Float : GlslType("float", GlslExpr("0."))
-    object Matrix4 : GlslType("mat4")
     object Vec2 : GlslType("vec2")
     object Vec3 : GlslType("vec3")
     object Vec4 : GlslType("vec4")
-    object Int : GlslType("int", GlslExpr("0"))
+    object Matrix4 : GlslType("mat4")
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
+
+    class Array(val memberType: GlslType, val length: kotlin.Int) : GlslType("${memberType.glslLiteral}[$length]")
+
+    fun arrayOf(count: kotlin.Int): Array = Array(this, count)
 
     open fun matches(otherType: GlslType): Boolean =
         this == otherType
@@ -179,7 +216,7 @@ sealed class GlslType constructor(
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
         }
 
-        fun Array<Pair<String, GlslType>>.toFields() =
+        fun kotlin.Array<Pair<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =
