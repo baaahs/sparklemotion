@@ -77,9 +77,19 @@ interface BeatSource : IObservable {
     fun getBeatData(): BeatData
 
     object None : Observable(), BeatSource {
-        val none = BeatData(0.0, 0, 4, 0f)
+        val noBeatData = BeatData(0.0, 0, 4, 0f)
+        val noTrackData = TrackData(
+            -1,
+            "",
+            "",
+            "",
+            listOf()
+        )
 
-        override fun getBeatData(): BeatData = none
+        override fun getBeatData(): BeatData = noBeatData
+        override fun getCurrentTrack(): TrackData = noTrackData
     }
+
+    fun getCurrentTrack(): TrackData
 }
 
