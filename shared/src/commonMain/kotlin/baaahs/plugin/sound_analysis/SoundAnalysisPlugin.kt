@@ -357,7 +357,7 @@ class SoundAnalysisFeedContext(
             textureBuffer.position = 0
             textureBuffer = FloatBuffer(sampleBuffer)
         } catch (e: Exception) {
-            println("texture buffer size == ${textureBuffer.size}")
+//            println("texture buffer size == ${textureBuffer.size}")
             println("sample buffer size == ${sampleBuffer.size}")
             e.printStackTrace()
         }

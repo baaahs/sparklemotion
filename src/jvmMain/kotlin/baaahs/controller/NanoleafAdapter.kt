@@ -37,6 +37,10 @@ actual class NanoleafAdapter actual constructor(
     actual fun stop() {
     }
 
+    actual fun getAccessToken(deviceMetadata: NanoleafDeviceMetadata): String {
+        return NanoleafSetup.createAccessToken(deviceMetadata.hostName, deviceMetadata.port)
+    }
+
     actual fun openDevice(
         deviceMetadata: NanoleafDeviceMetadata,
         accessToken: String
@@ -54,8 +58,6 @@ actual class NanoleafAdapter actual constructor(
         override val deviceName: String,
         val accessToken: String
     ) : baaahs.controller.NanoleafDevice {
-
-        //    val accessToken = NanoleafSetup.createAccessToken(meta.hostName, meta.port)
         //    val accessToken = "xI2UVHZzcbuWWMIbig1Zv9NhajekW0oC"
         val device: NanoleafDevice = NanoleafDevice.createDevice(hostName, port, accessToken)
             .also { it.enableExternalStreaming() }
