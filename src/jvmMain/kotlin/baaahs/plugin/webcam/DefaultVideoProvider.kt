@@ -6,6 +6,7 @@ import com.danielgergely.kgl.TextureResource
 import com.github.eduramiba.webcamcapture.drivers.NativeDriver
 import com.github.sarxos.webcam.Webcam
 import org.lwjgl.opengl.GL11
+import java.awt.image.BufferedImage
 
 actual val DefaultVideoProvider: VideoProvider
     get() = WebcamCaptureVideoProvider
@@ -13,20 +14,20 @@ actual val DefaultVideoProvider: VideoProvider
 
 object WebcamCaptureVideoProvider : VideoProvider {
     private var textureResource: TextureResource? = null
+    private var isOpen = false
 
     private val webcam: Webcam = run {
         Webcam.setDriver(NativeDriver())
         Webcam.getDefault()
     }
+    private val noImage = BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB)
 
-    init {
-        webcam.open()
-    }
-
-    override fun isReady(): Boolean = true
+    override fun isReady(): Boolean = isOpen.also { ensureOpen() }
 
     override fun getTextureResource(): TextureResource {
-        val image = webcam.image
+        ensureOpen()
+
+        val image: BufferedImage = webcam.image ?: noImage
         if (textureResource == null || textureResource!!.width != image.width || textureResource!!.height != image.height) {
             val vals = ByteBuffer(image.width * image.height * 3)
             textureResource = TextureResource(
@@ -55,4 +56,9 @@ object WebcamCaptureVideoProvider : VideoProvider {
         return textureResource!!
     }
 
+    private fun ensureOpen() {
+        if (!isOpen) {
+            isOpen = webcam.open(true)
+        }
+    }
 }
