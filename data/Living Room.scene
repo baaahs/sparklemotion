@@ -1,0 +1,46 @@
+{
+    "model": {
+        "title": "Living Room",
+        "entities": [
+            {
+                "type": "Grid",
+                "title": "New Grid",
+                "rows": 10,
+                "columns": 10,
+                "rowGap": 0.1,
+                "columnGap": 0.1,
+                "zigZag": true
+            }
+        ]
+    },
+    "controllers": {
+        "Nanoleaf:192.168.1.9": {
+            "type": "Nanoleaf",
+            "hostName": "192.168.1.9",
+            "port": 16021,
+            "deviceId": "192.168.1.9",
+            "deviceName": "Light Panels 50:72:54",
+            "accessToken": "xI2UVHZzcbuWWMIbig1Zv9NhajekW0oC",
+            "defaultFixtureOptions": {
+                "type": "PixelArray",
+                "pixelFormat": "RGB8"
+            }
+        },
+        "SACN:wled-b187d1": {
+            "type": "SACN",
+            "title": "SACN:wled-b187d1",
+            "address": "192.168.1.15",
+            "universes": 1,
+            "fixtures": [
+                {
+                    "fixtureConfig": {
+                        "type": "PixelArray",
+                        "pixelCount": 42,
+                        "pixelFormat": "RGB8",
+                        "gammaCorrection": 1.2
+                    }
+                }
+            ]
+        }
+    }
+}

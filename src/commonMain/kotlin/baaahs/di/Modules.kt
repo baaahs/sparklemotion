@@ -3,6 +3,7 @@ package baaahs.di
 import baaahs.*
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
+import baaahs.controller.NanoleafManager
 import baaahs.controller.SacnManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
@@ -127,6 +128,7 @@ interface PinkyModule : KModule {
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(pinkyContext), get(), get()) }
+                scoped { NanoleafManager(get(), get(pinkyContext), get()) }
                 scoped { sceneMonitor }
                 scoped<SceneProvider> { get<SceneMonitor>() }
                 scoped<MappingManager> {
@@ -135,7 +137,10 @@ interface PinkyModule : KModule {
                 scoped<ModelManager> { ModelManagerImpl() }
                 scoped(named("ControllerManagers")) {
                     listOf(
-                        get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
+                        get<BrainManager>(),
+                        get<DmxManager>(),
+                        get<NanoleafManager>(),
+                        get<SacnManager>()
                     )
                 }
                 scoped { FixturePublisher(get(), get()) }

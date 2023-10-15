@@ -19,6 +19,13 @@ enum class PixelFormat {
             setter(redF, greenF, blueF)
         }
 
+        override fun readColorInts(reader: ByteArrayReader, setter: (Int, Int, Int) -> Unit) {
+            val redI = reader.readByte().asUnsignedToInt()
+            val greenI = reader.readByte().asUnsignedToInt()
+            val blueI = reader.readByte().asUnsignedToInt()
+            setter(redI, greenI, blueI)
+        }
+
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
             buf.writeByte(color.redB)
             buf.writeByte(color.greenB)
@@ -72,6 +79,13 @@ enum class PixelFormat {
             setter(redF, greenF, blueF)
         }
 
+        override fun readColorInts(reader: ByteArrayReader, setter: (Int, Int, Int) -> Unit) {
+            val greenI = reader.readByte().asUnsignedToInt()
+            val redI = reader.readByte().asUnsignedToInt()
+            val blueI = reader.readByte().asUnsignedToInt()
+            setter(redI, greenI, blueI)
+        }
+
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
             buf.writeByte(color.greenB)
             buf.writeByte(color.redB)
@@ -102,6 +116,13 @@ enum class PixelFormat {
             setter(redF, greenF, blueF)
         }
 
+        override fun readColorInts(reader: ByteArrayReader, setter: (Int, Int, Int) -> Unit) {
+            val greenI = reader.readByte().asUnsignedToInt()
+            val redI = reader.readByte().asUnsignedToInt()
+            val blueI = reader.readByte().asUnsignedToInt()
+            setter(redI, greenI, blueI)
+        }
+
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
             buf.writeByte(1) // Mode: manual dimming
             buf.writeByte(0) // Palette (garbage!)
@@ -117,6 +138,7 @@ enum class PixelFormat {
     abstract val channelsPerPixel: Int
     abstract fun readColor(reader: ByteArrayReader): Color
     abstract fun readColor(reader: ByteArrayReader, setter: (Float, Float, Float) -> Unit)
+    abstract fun readColorInts(reader: ByteArrayReader, setter: (Int, Int, Int) -> Unit)
     abstract fun writeColor(color: Color, buf: ByteArrayWriter)
 
     companion object {

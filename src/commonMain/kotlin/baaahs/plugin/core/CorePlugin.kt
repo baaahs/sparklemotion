@@ -3,6 +3,7 @@ package baaahs.plugin.core
 import baaahs.app.ui.CommonIcons
 import baaahs.control.*
 import baaahs.controller.ControllerManager
+import baaahs.controller.NanoleafManager
 import baaahs.controller.SacnManager
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
@@ -80,6 +81,7 @@ class CorePlugin(
         get() = listOf(
             BrainManager,
             DmxManager,
+            NanoleafManager,
             SacnManager
         )
 

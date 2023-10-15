@@ -1,6 +1,9 @@
 package baaahs.io
 
-class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
+class ByteArrayWriter(
+    private var bytes: ByteArray = ByteArray(128),
+    var offset: Int = 0
+) {
     constructor(size: Int) : this(ByteArray(size))
 
     fun writeBoolean(b: Boolean) {
@@ -108,6 +111,12 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
     fun reset() {
         offset = 0
     }
+
+    /**
+     * Builds an inexpensive [ByteArrayReader] with access to whatever
+     * bytes have been written. Note that the underlying data is subject to change.
+     */
+    fun reader() = ByteArrayReader(bytes, offset = 0, size = offset)
 
     private fun growIfNecessary(by: Int) {
         if (offset + by > bytes.size) {
