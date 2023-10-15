@@ -129,63 +129,65 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
             div(+themeStyles.logotype) { +"Sparkle Motion™" }
 
             div(+themeStyles.appToolbarActions) {
-                div(+themeStyles.appToolbarEditModeActions) {
-                    inlineStyles {
-                        if (!editMode.isOn && !documentManager.isUnsaved) {
-                            opacity = 0
-                            pointerEvents = PointerEvents.none
+                if (editMode.isAvailable) {
+                    div(+themeStyles.appToolbarEditModeActions) {
+                        inlineStyles {
+                            if (!editMode.isOn && !documentManager.isUnsaved) {
+                                opacity = 0
+                                pointerEvents = PointerEvents.none
+                            }
+                            transition(::opacity, duration = .5.s, timing = Timing.linear)
                         }
-                        transition(::opacity, duration = .5.s, timing = Timing.linear)
-                    }
 
-                    Button {
-                        attrs.startIcon = +Undo
-                        attrs.disabled = !documentManager.canUndo
-                        attrs.variant = ButtonVariant.contained
-                        attrs.size = Size.small
-                        attrs.onClick = handleUndo
-
-                        +"Undo"
-                    }
-
-                    Button {
-                        attrs.startIcon = +Redo
-                        attrs.disabled = !documentManager.canRedo
-                        attrs.variant = ButtonVariant.contained
-                        attrs.size = Size.small
-                        attrs.onClick = handleRedo
-
-                        +"Redo"
-                    }
-
-                    if (props.appMode == AppMode.Scene) {
                         Button {
-                            attrs.startIcon = +Sync
-                            attrs.disabled = documentManager.isSynced
+                            attrs.startIcon = +Undo
+                            attrs.disabled = !documentManager.canUndo
                             attrs.variant = ButtonVariant.contained
                             attrs.size = Size.small
-                            attrs.onClick = handleSync
+                            attrs.onClick = handleUndo
 
-                            +"Sync"
+                            +"Undo"
                         }
-                    }
 
-                    if (!documentManager.isLoaded) {
                         Button {
-                            attrs.startIcon = +FileCopy
+                            attrs.startIcon = +Redo
+                            attrs.disabled = !documentManager.canRedo
                             attrs.variant = ButtonVariant.contained
                             attrs.size = Size.small
-                            attrs.onClick = handleSaveAs
-                            +"Save As…"
+                            attrs.onClick = handleRedo
+
+                            +"Redo"
                         }
-                    } else {
-                        Button {
-                            attrs.startIcon = +Save
-                            attrs.disabled = !documentManager.isUnsaved
-                            attrs.variant = ButtonVariant.contained
-                            attrs.size = Size.small
-                            attrs.onClick = handleSave
-                            +"Save"
+
+                        if (props.appMode == AppMode.Scene) {
+                            Button {
+                                attrs.startIcon = +Sync
+                                attrs.disabled = documentManager.isSynced
+                                attrs.variant = ButtonVariant.contained
+                                attrs.size = Size.small
+                                attrs.onClick = handleSync
+
+                                +"Sync"
+                            }
+                        }
+
+                        if (!documentManager.isLoaded) {
+                            Button {
+                                attrs.startIcon = +FileCopy
+                                attrs.variant = ButtonVariant.contained
+                                attrs.size = Size.small
+                                attrs.onClick = handleSaveAs
+                                +"Save As…"
+                            }
+                        } else {
+                            Button {
+                                attrs.startIcon = +Save
+                                attrs.disabled = !documentManager.isUnsaved
+                                attrs.variant = ButtonVariant.contained
+                                attrs.size = Size.small
+                                attrs.onClick = handleSave
+                                +"Save"
+                            }
                         }
                     }
                 }

@@ -97,6 +97,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         position = Position.absolute
         width = 100.pct
         height = 100.pct
+        overflow = Overflow.scroll
     }
 
     val appDrawerOpen by css {}
