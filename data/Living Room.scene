@@ -21,7 +21,7 @@
             "deviceId": "192.168.1.9",
             "deviceName": "Light Panels 50:72:54",
             "accessToken": "xI2UVHZzcbuWWMIbig1Zv9NhajekW0oC",
-            "defaultFixtureConfig": {
+            "defaultFixtureOptions": {
                 "type": "PixelArray",
                 "pixelFormat": "RGB8"
             }

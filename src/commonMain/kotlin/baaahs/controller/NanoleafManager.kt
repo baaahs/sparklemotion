@@ -108,6 +108,7 @@ class NanoleafController(
 ) : Controller {
     private val upSince = clock.now()
     private var accessToken: String? = config?.accessToken
+        ?: nanoleafAdapter.getAccessToken(deviceMetadata,)
     private var device = accessToken?.let {
         nanoleafAdapter.openDevice(deviceMetadata, it)
     }
@@ -126,7 +127,7 @@ class NanoleafController(
             deviceMetadata.deviceId,
             accessToken
         )
-    override val defaultFixtureConfig: FixtureConfig?
+    override val defaultFixtureOptions: FixtureOptions?
         get() = null
     override val defaultTransportConfig: TransportConfig?
         get() = null
@@ -136,9 +137,7 @@ class NanoleafController(
     override fun createTransport(
         entity: Model.Entity?,
         fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?,
-        componentCount: Int,
-        bytesPerComponent: Int
+        transportConfig: TransportConfig?
     ): Transport = object : Transport {
         override val name: String
             get() = deviceMetadata.deviceName
@@ -189,7 +188,7 @@ class NanoleafController(
 
         return listOf(
             FixtureMapping(null,
-                PixelArrayDevice.Config(
+                PixelArrayDevice.Options(
                     panels.size,
                     PixelFormat.RGB8,
                     pixelLocations = scaledPixelLocations
@@ -228,6 +227,7 @@ class NanoleafTransportConfig() : TransportConfig {
 expect class NanoleafAdapter(coroutineContext: CoroutineContext, clock: Clock) {
     fun start(callback: (NanoleafDeviceMetadata) -> Unit)
     fun stop()
+    fun getAccessToken(deviceMetadata: NanoleafDeviceMetadata): String
     fun openDevice(deviceMetadata: NanoleafDeviceMetadata, accessToken: String): NanoleafDevice
 }
 
@@ -274,7 +274,7 @@ data class NanoleafControllerConfig(
     override val deviceName: String,
     val accessToken: String? = null,
     override val fixtures: List<FixtureMappingData> = emptyList(),
-    override val defaultFixtureConfig: FixtureConfig? = null,
+    override val defaultFixtureOptions: FixtureOptions? = null,
     override val defaultTransportConfig: TransportConfig? = null
 ) : ControllerConfig, NanoleafDeviceMetadata {
     override val title: String get() = deviceName
@@ -299,19 +299,22 @@ data class NanoleafControllerConfig(
         }
     }
 
-    override fun createFixturePreview(fixtureConfig: FixtureConfig, transportConfig: TransportConfig): FixturePreview {
+    override fun createFixturePreview(
+        fixtureOptions: FixtureOptions,
+        transportConfig: TransportConfig
+    ): FixturePreview {
         val staticDmxMapping = dmxAllocator!!.allocate(
-            fixtureConfig.componentCount!!,
-            fixtureConfig.bytesPerComponent,
+            fixtureOptions.componentCount!!,
+            fixtureOptions.bytesPerComponent,
             transportConfig as DmxTransportConfig
         )
-        val dmxPreview = error("foo")
+//        val dmxPreview = error("foo")
 
         return object : FixturePreview {
-            override val fixtureConfig: ConfigPreview
-                get() = fixtureConfig.preview()
+            override val fixtureOptions: ConfigPreview
+                get() = fixtureOptions.preview()
             override val transportConfig: ConfigPreview
-                get() = dmxPreview
+                get() = transportConfig.preview()
         }
     }
 }
@@ -329,8 +332,8 @@ class MutableNanoleafControllerConfig(config: NanoleafControllerConfig) : Mutabl
 
     override val fixtures: MutableList<MutableFixtureMapping> =
         config.fixtures.map { it.edit() }.toMutableList()
-    override var defaultFixtureConfig: MutableFixtureConfig? =
-        config.defaultFixtureConfig?.edit()
+    override var defaultFixtureOptions: MutableFixtureOptions? =
+        config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
 
@@ -339,7 +342,7 @@ class MutableNanoleafControllerConfig(config: NanoleafControllerConfig) : Mutabl
             hostName, port, deviceId, deviceName,
             accessToken,
             fixtures.map { it.build() },
-            defaultFixtureConfig?.build(),
+            defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
 

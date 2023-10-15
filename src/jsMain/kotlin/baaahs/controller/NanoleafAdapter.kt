@@ -10,6 +10,10 @@ actual class NanoleafAdapter actual constructor(coroutineContext: CoroutineConte
     actual fun stop() {
     }
 
+    actual fun getAccessToken(deviceMetadata: NanoleafDeviceMetadata): String {
+        TODO("not implemented")
+    }
+
     actual fun openDevice(
         deviceMetadata: NanoleafDeviceMetadata,
         accessToken: String

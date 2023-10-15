@@ -116,6 +116,13 @@ enum class PixelFormat {
             setter(redF, greenF, blueF)
         }
 
+        override fun readColorInts(reader: ByteArrayReader, setter: (Int, Int, Int) -> Unit) {
+            val greenI = reader.readByte().asUnsignedToInt()
+            val redI = reader.readByte().asUnsignedToInt()
+            val blueI = reader.readByte().asUnsignedToInt()
+            setter(redI, greenI, blueI)
+        }
+
         override fun writeColor(color: Color, buf: ByteArrayWriter) {
             buf.writeByte(1) // Mode: manual dimming
             buf.writeByte(0) // Palette (garbage!)
