@@ -364,6 +364,8 @@ class GridItem(
      * @param  {Object} callbackData  an object with node, delta and position information
      */
     private fun onDragStart(e: MouseEvent, callbackData: DraggableData): Any {
+        if (context.draggingDisabled) return Unit
+
         val container = state.parentContainer
         val node = callbackData.node
         val newPxPosition = container.calculatePxPositionInLayout(node)

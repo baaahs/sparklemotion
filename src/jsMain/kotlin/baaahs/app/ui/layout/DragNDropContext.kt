@@ -21,6 +21,7 @@ class GridLayoutContext : Observable() {
             field = value
             notifyChanged()
         }
+    var draggingDisabled = false
 
     init {
         console.log("new GridLayoutContext id $id.")
