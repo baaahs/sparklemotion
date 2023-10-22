@@ -71,13 +71,17 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     }
 
     var showAddMenu by state<AddMenuContext?> { null }
-    val closeAddMenu by handler { showAddMenu = null }
+    val closeAddMenu by handler {
+        showAddMenu = null
+        appContext.gridLayoutContext.draggingDisabled = false
+    }
 
     var draggingItem by state<String?> { null }
     val layoutGrid = memo(columns, rows, gridLayout, draggingItem) {
         LayoutGrid(columns, rows, gridLayout.items, draggingItem)
     }
 
+    // Don't bubble event up to container grid.
     val handleEmptyGridCellMouseDown by eventHandler { e ->
         e.stopPropagation()
     }
@@ -88,6 +92,10 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
         val x = (dataset.cellX as String).toInt()
         val y = (dataset.cellY as String).toInt()
         showAddMenu = AddMenuContext(target, x, y, 1, 1)
+
+        // Ignore dragstart events in GridItem while a menu is visible.
+        appContext.gridLayoutContext.draggingDisabled = true
+        e.stopPropagation()
     }
 
     val layout = Layout(gridLayout.items.map { gridItem ->
