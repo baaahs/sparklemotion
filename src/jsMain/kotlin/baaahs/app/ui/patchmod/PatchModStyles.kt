@@ -1,5 +1,6 @@
 package baaahs.app.ui.patchmod
 
+import baaahs.app.ui.controls.XyPadStyles
 import kotlinx.css.*
 import mui.material.styles.Theme
 import styled.StyleSheet
@@ -33,10 +34,13 @@ class PatchModStyles(private val theme: Theme) : StyleSheet("app-ui-patchmod", i
         width = 100.pct
         height = 100.pct
         position = Position.absolute
+        overflow = Overflow.hidden
     }
 
-    val xyPadBackground by css {
+    val xyPadBackground by css {}
 
+    val xyPadKnob by css(XyPadStyles.knob) {
+        background = "none"
     }
 
     val sliderContainer by css {

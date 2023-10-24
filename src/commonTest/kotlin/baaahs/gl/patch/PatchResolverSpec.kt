@@ -207,7 +207,7 @@ object PatchResolverSpec : Spek({
 
                         #line 5 1
                         vec2 p1m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
-                            return (uvIn - offset - .5) / scale + .5;
+                            return (uvIn - .5) / scale - -offset + .5;
                         }
 
                         // Shader: Orange Shader; namespace: p1
@@ -357,7 +357,7 @@ object PatchResolverSpec : Spek({
 
                             #line 5 2
                             vec2 p2m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
-                                return (uvIn - offset - .5) / scale + .5;
+                                return (uvIn - .5) / scale - -offset + .5;
                             }
 
                             // Shader: Orange Shader; namespace: p2
@@ -548,7 +548,7 @@ object PatchResolverSpec : Spek({
 
                         #line 5 2
                         vec2 p2m0_positionAndScalePatchmodForAMainShader_main(vec2 uvIn, vec2 offset, float scale) {
-                            return (uvIn - offset - .5) / scale + .5;
+                            return (uvIn - .5) / scale - -offset + .5;
                         }
 
                         // Shader: A Main Shader; namespace: p2
@@ -568,7 +568,7 @@ object PatchResolverSpec : Spek({
 
                         #line 5 3
                         vec2 p3m0_positionAndScalePatchmodForOrangeShader_main(vec2 uvIn, vec2 offset, float scale) {
-                            return (uvIn - offset - .5) / scale + .5;
+                            return (uvIn - .5) / scale - -offset + .5;
                         }
 
                         // Shader: Orange Shader; namespace: p3
@@ -893,7 +893,7 @@ object PatchResolverSpec : Spek({
 
                     #line 5 1
                     vec2 p1m0_positionAndScalePatchmodForRipple_main(vec2 uvIn, vec2 offset, float scale) {
-                        return (uvIn - offset - .5) / scale + .5;
+                        return (uvIn - .5) / scale - -offset + .5;
                     }
 
                     // Shader: Ripple; namespace: p1
@@ -915,7 +915,7 @@ object PatchResolverSpec : Spek({
 
                     #line 5 2
                     vec2 p2m0_positionAndScalePatchmodForScale_main(vec2 uvIn, vec2 offset, float scale) {
-                        return (uvIn - offset - .5) / scale + .5;
+                        return (uvIn - .5) / scale - -offset + .5;
                     }
 
                     // Shader: Scale; namespace: p2
@@ -946,7 +946,7 @@ object PatchResolverSpec : Spek({
 
                     #line 5 4
                     vec2 p4m0_positionAndScalePatchmodForBadgerOverlay_main(vec2 uvIn, vec2 offset, float scale) {
-                        return (uvIn - offset - .5) / scale + .5;
+                        return (uvIn - .5) / scale - -offset + .5;
                     }
 
                     // Shader: Badger Overlay; namespace: p4

@@ -224,7 +224,7 @@ class AddMenuContext(
         gridLayoutEditor: Editor<MutableIGridLayout>,
         addControlMenuItem: AddControlMenuItem,
         appContext: AppContext,
-        showAddMenu: () -> Unit,
+        closeAddMenu: () -> Unit,
     ) {
         MenuItem {
             attrs.onClick = {
@@ -235,7 +235,7 @@ class AddMenuContext(
                     addControlMenuItem.createControlFn
                 )
                 appContext.openEditor(editIntent)
-                showAddMenu()
+                closeAddMenu()
             }
 
             ListItemIcon { icon(addControlMenuItem.icon) }
