@@ -45,7 +45,7 @@ class PositionAndScalePatchMod(
         .1f,
         4f
     )
-    val scaleSlider = scaleFeed.createGadget()
+    val scaleSlider = scaleFeed.createGadget("Scale")
 
     override val feeds: List<Feed>
         get() = listOf(positionFeed, scaleFeed)
