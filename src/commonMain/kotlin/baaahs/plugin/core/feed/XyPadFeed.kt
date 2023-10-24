@@ -29,8 +29,7 @@ data class XyPadFeed(
     override val title: String,
     val initialValue: Vector2F = Vector2F.origin,
     val minValue: Vector2F = Vector2F.origin - Vector2F.unit2d,
-    val maxValue: Vector2F = Vector2F.unit2d,
-    val varPrefix: String? = null
+    val maxValue: Vector2F = Vector2F.unit2d
 ) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override fun getType(): GlslType = GlslType.Vec2

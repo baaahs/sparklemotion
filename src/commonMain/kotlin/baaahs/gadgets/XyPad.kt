@@ -53,28 +53,33 @@ data class XyPad(
                 ) * spread
     }
 
-    fun getHelper(padSize: Vector2F, knobSize: Vector2F) = Helper(this, padSize, knobSize)
+    fun getHelper(padSize: Vector2F, knobSize: Vector2F, knobBufferZone: Boolean) =
+        Helper(this, padSize, knobSize, knobBufferZone)
 
     class Helper(
         private val xyPad: XyPad,
         private val padSize: Vector2F,
-        private val knobSize: Vector2F
+        private val knobSize: Vector2F,
+        private val knobBufferZone: Boolean
     ) {
-        private val padUsableSize = padSize - knobSize
+        private val padUsableSize = if (knobBufferZone) padSize - knobSize else padSize
         private val range = xyPad.maxValue - xyPad.minValue
 
-        val knobPositionPx: Vector2F
-            get() = run {
-                ((xyPad.clampedPosition - xyPad.minValue) / range * padUsableSize)
-                    .flipY()
-            }
-
         val crosshairPositionPx: Vector2F
-            get() = knobPositionPx + knobSize / 2f
+            get() = ((xyPad.clampedPosition - xyPad.minValue) / range * padUsableSize)
+                .flipY() +
+                    if (knobBufferZone) knobSize / 2f else Vector2F.origin
+
+        val knobPositionPx: Vector2F
+            get() = crosshairPositionPx - knobSize / 2f
 
         fun positionFromPx(px: Vector2F): Vector2F {
-            val halfKnob = knobSize / 2f
-            val withinUsable = px.clamp(halfKnob, padSize - halfKnob) - halfKnob
+            val withinUsable = if (knobBufferZone) {
+                val halfKnob = knobSize / 2f
+                px.clamp(halfKnob, padSize - halfKnob) - halfKnob
+            } else {
+                px.clamp(Vector2F.origin, padSize)
+            }
             return withinUsable.flipY() / padUsableSize * range + xyPad.minValue
         }
 
