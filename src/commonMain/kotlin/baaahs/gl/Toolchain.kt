@@ -3,6 +3,7 @@ package baaahs.gl
 import baaahs.device.FixtureType
 import baaahs.gl.glsl.*
 import baaahs.gl.patch.*
+import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -15,6 +16,7 @@ import baaahs.util.Stats
 
 interface Toolchain {
     val plugins: Plugins
+    val defaultPreviewShaders: PreviewShaders
 
     fun parse(src: String, fileName: String? = null): GlslCode
 
@@ -59,6 +61,8 @@ class RootToolchain(
     val glslAnalyzer: GlslAnalyzer = GlslAnalyzer(plugins),
     val autoWirer: AutoWirer = AutoWirer(plugins)
 ) : Toolchain {
+    override val defaultPreviewShaders = PreviewShaders(this)
+
     val stats = ToolchainStats()
 
     override fun parse(src: String, fileName: String?): GlslCode = stats.parse.time {

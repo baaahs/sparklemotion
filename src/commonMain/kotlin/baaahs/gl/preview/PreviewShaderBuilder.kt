@@ -75,18 +75,9 @@ class PreviewShaderBuilder(
     override val shader: Shader,
     private val toolchain: Toolchain,
     private val sceneProvider: SceneProvider,
+    private val previewShaders: PreviewShaders = toolchain.defaultPreviewShaders,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : Observable(), ShaderBuilder {
-
-    constructor(
-        openShader: OpenShader,
-        toolchain: Toolchain,
-        sceneProvider: SceneProvider,
-        coroutineScope: CoroutineScope = GlobalScope
-    ) : this(openShader.shader, toolchain, sceneProvider, coroutineScope) {
-        this.openShader = openShader
-    }
-
     override var state: ShaderBuilder.State =
         ShaderBuilder.State.Unbuilt
         private set
@@ -113,8 +104,6 @@ class PreviewShaderBuilder(
     private var compileErrors: List<GlslError> = emptyList()
 
     val feedContexts = mutableListOf<FeedContext>()
-
-    private val previewShaders = PreviewShaders(toolchain)
 
     override fun startBuilding() {
         transitionTo(
