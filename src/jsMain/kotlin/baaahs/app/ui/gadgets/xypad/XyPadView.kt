@@ -3,25 +3,27 @@ package baaahs.app.ui.gadgets.xypad
 import baaahs.Gadget
 import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.XyPadStyles
+import baaahs.document
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.ui.icons.ResetIcon
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import js.core.jso
 import kotlinx.css.*
 import react.*
 import react.dom.*
 import styled.inlineStyles
+import web.events.EventHandler
 import web.html.HTMLElement
+import web.uievents.*
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
-    val appContext = useContext(appContext)
-    val controlsStyles = appContext.allStyles.controls
-
     val padSize = props.padSize ?: Vector2F(200f, 200f)
     val knobSize = props.knobSize ?: Vector2F(20f, 20f)
-    val helper = memo(padSize, knobSize, props.xyPad) {
-        props.xyPad.getHelper(padSize, knobSize)
+    val knobBufferZone = props.knobBufferZone ?: true
+    val helper = memo(props.xyPad, padSize, knobSize, knobBufferZone) {
+        props.xyPad.getHelper(padSize, knobSize, knobBufferZone)
     }
     val backgroundRef = useRef<HTMLElement>()
     val knobRef = useRef<HTMLElement>()
@@ -47,38 +49,67 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         withCleanup { props.xyPad.unlisten(gadgetListener) }
     }
 
-    val pointerDraggingState = useRef(false)
+    val pointerIsDown = useRef(false)
+    val pointerDownOffset = useRef(Vector2F(0f, 0f))
     val handlePointerEvent by pointerEventHandler(props.xyPad, helper) { e ->
-        val bounds = backgroundRef.current!!.getBoundingClientRect()
-        val clickPosPx = Vector2F(
-            (e.clientX - bounds.left).toFloat(),
-            (e.clientY - bounds.top).toFloat()
-        )
+        if (pointerIsDown.current!!) {
+            val positionPx = e.relativePositionPx(backgroundRef) -
+                    pointerDownOffset.current!!
 
-        props.xyPad.position = helper.positionFromPx(clickPosPx)
+            props.xyPad.position = helper.positionFromPx(positionPx)
+        }
     }
 
-    val handlePointerDownEvent by pointerEventHandler(handlePointerEvent) { e ->
-        if (e.isPrimary) pointerDraggingState.current = true
+    val handleDocumentPointerUp by pointerEventHandler(handlePointerEvent) { e ->
+        if (pointerIsDown.current == true) {
+            pointerIsDown.current = false
+            e.preventDefault()
+        }
+    }
+
+    val handlePointerDownEvent by pointerEventHandler(handlePointerEvent, handleDocumentPointerUp) { e ->
+        if (e.isPrimary) {
+            pointerIsDown.current = true
+
+            // Ensure we don't miss a pointer up event if the pointer leaves the pad.
+            document.addEventListener(
+                PointerEvent.POINTER_UP,
+                handleDocumentPointerUp as EventHandler<PointerEvent>,
+                jso { once = true }
+            )
+
+            // If the pointer starts on the knob, move it relative to the pointer, otherwise jump to the pointer.
+            val downPositionPx = e.relativePositionPx(backgroundRef)
+            val crosshairPositionPx = helper.crosshairPositionPx
+            val distFromKnobCenter = downPositionPx - crosshairPositionPx
+            val absDist = distFromKnobCenter.abs()
+            val halfKnob = knobSize / 2f
+            if (absDist.x < halfKnob.x && absDist.y < halfKnob.y) {
+                pointerDownOffset.current = distFromKnobCenter
+            } else {
+                pointerDownOffset.current = Vector2F(0f, 0f)
+            }
+
+            handlePointerEvent(e)
+            e.preventDefault()
+        }
+    }
+
+    val handlePointerMoveEvent by pointerEventHandler(handlePointerEvent) { e ->
         handlePointerEvent(e)
         e.preventDefault()
     }
 
     val handlePointerUpEvent by pointerEventHandler(handlePointerEvent) { e ->
         handlePointerEvent(e)
-        pointerDraggingState.current = false
-        e.preventDefault()
-    }
-
-    val handlePointerMoveEvent by pointerEventHandler(handlePointerEvent) { e ->
-        if (pointerDraggingState.current == true && e.isPrimary)
-            handlePointerEvent(e)
+        pointerIsDown.current = false
         e.preventDefault()
     }
 
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
 
+    val ignorePointerDown by mouseEventHandler { it.stopPropagation() }
     val handleReset by mouseEventHandler {
         props.xyPad.position = props.xyPad.initialValue
     }
@@ -128,7 +159,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
             }
         }
 
-        div(+XyPadStyles.knob) {
+        div(props.knobClasses ?: +XyPadStyles.knob) {
             ref = knobRef
             inlineStyles {
                 width = knobSize.x.px
@@ -139,6 +170,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         }
 
         div(+XyPadStyles.resetButton) {
+            attrs.onPointerDown = ignorePointerDown
             attrs.onClick = handleReset
 
             ResetIcon {}
@@ -146,11 +178,24 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     }
 }
 
+private fun react.dom.events.PointerEvent<*>.relativePositionPx(
+    backgroundRef: MutableRefObject<HTMLElement>
+): Vector2F {
+    val bounds = backgroundRef.current!!.getBoundingClientRect()
+    val clickPosPx = Vector2F(
+        (clientX - bounds.left).toFloat(),
+        (clientY - bounds.top).toFloat()
+    )
+    return clickPosPx
+}
+
 external interface XyPadProps : Props {
     var xyPad: XyPad
     var backgroundClasses: String?
     var padSize: Vector2F?
     var knobSize: Vector2F?
+    var knobClasses: String?
+    var knobBufferZone: Boolean?
 }
 
 fun RBuilder.xyPad(handler: RHandler<XyPadProps>) =

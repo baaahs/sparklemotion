@@ -22,6 +22,8 @@ private val PositionAndScaleView = xComponent<PositionAndScaleProps>("PositionAn
     val styles = appContext.allStyles.patchModStyles
 
     val xyPad = props.patchMod.positionXyPad
+    val slider = props.patchMod.scaleSlider
+        .also { observe(it.observable) }
 
     val containerRef = ref<HTMLElement>()
     var padSize by state<Vector2F?> { null }
@@ -43,6 +45,9 @@ private val PositionAndScaleView = xComponent<PositionAndScaleProps>("PositionAn
             attrs.xyPad = xyPad
             attrs.backgroundClasses = +styles.xyPadBackground
             attrs.padSize = padSize
+            attrs.knobSize = padSize?.div(slider.position)
+            attrs.knobClasses = +styles.xyPadKnob
+            attrs.knobBufferZone = false
         }
     }
 
