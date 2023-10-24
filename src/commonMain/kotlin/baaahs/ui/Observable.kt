@@ -11,6 +11,8 @@ interface IObservable {
 open class Observable : IObservable {
     private val observers = mutableListOf<Observer>()
 
+    protected fun anyObservers(): Boolean = observers.isNotEmpty()
+
     override fun addObserver(observer: Observer): Observer {
         observers.add(observer)
         return observer

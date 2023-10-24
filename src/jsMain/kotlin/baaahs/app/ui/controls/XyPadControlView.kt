@@ -47,6 +47,7 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
         position = Position.relative
         background = "linear-gradient(#DDFFDD, #88EE88)"
         overscrollBehavior = OverscrollBehavior.contain
+        cursor = Cursor.grab
     }
 
     val centerLine by css {
@@ -66,7 +67,7 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
         background = "linear-gradient(#6ABBC0, #00A4D1)"
 
         position = Position.absolute
-        cursor = Cursor.move
+        cursor = Cursor.grabbing
     }
 
     val crosshairs by css {

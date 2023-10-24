@@ -1,6 +1,9 @@
 package baaahs
 
 import baaahs.gadgets.*
+import baaahs.ui.IObservable
+import baaahs.ui.Observable
+import baaahs.ui.Observer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.Serializable
@@ -80,6 +83,21 @@ abstract class Gadget {
             }
         }
     }
+
+    val observable: IObservable
+        get() = object : Observable() {
+            private val gadgetListener: GadgetListener = { notifyChanged() }
+
+            override fun addObserver(observer: Observer): Observer {
+                if (!anyObservers()) listen(gadgetListener)
+                return super.addObserver(observer)
+            }
+
+            override fun removeObserver(observer: Observer) {
+                super.removeObserver(observer)
+                if (!anyObservers()) unlisten(gadgetListener)
+            }
+        }
 
     protected fun <T> updatable(name: String, initialValue: T, serializer: KSerializer<T>): ReadWriteProperty<Gadget, T> =
         GadgetValueObserver(name, initialValue, serializer) { changed() }

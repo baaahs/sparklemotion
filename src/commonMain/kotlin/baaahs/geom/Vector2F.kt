@@ -27,6 +27,8 @@ data class Vector2F(val x: Float, val y: Float) {
             y.clamp(minValue.y, maxValue.y)
         )
 
+    fun abs(): Vector2F = Vector2F(kotlin.math.abs(x), kotlin.math.abs(y))
+
     override fun toString(): String = "Vector2F(x=$x, y=$y)"
 
     companion object {
