@@ -42,5 +42,5 @@ external interface HandlesProps : Props {
 
 external interface HandleItem {
     var key: String
-    var `val`: Number
+    var `val`: Double
 }

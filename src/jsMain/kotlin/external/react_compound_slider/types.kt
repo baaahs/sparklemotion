@@ -16,19 +16,18 @@ external interface HandleEventHandlers {
 }
 
 external interface EventData {
-    var value: Number
-    var percent: Number
+    var value: Double
+    var percent: Double
 }
-
-//typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
-//
-//typealias EmitMouse = (e: MouseEvent__1<Element>, id: String) -> Unit
-//
-//typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
 
 external interface OtherProps {
     @nativeGetter
     operator fun get(key: String): Any?
     @nativeSetter
     operator fun set(key: String, value: Any)
+}
+
+external interface Scale {
+    var domain: Array<Double>
+    var range: Array<Double>
 }

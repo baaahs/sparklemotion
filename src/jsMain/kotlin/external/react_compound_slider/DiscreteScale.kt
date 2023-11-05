@@ -3,12 +3,12 @@
 
 package external.react_compound_slider
 
-external interface DiscreteScale {
-    var step: Number
-    var domain: Array<Number>
-    var range: Array<Number>
-    var setDomain: (param_val: Array<Number>) -> DiscreteScale
-    var setRange: (param_val: Array<Number>) -> DiscreteScale
-    var setStep: (param_val: Number) -> DiscreteScale
-    var getValue: (x: Number) -> Number
+external class DiscreteScale : Scale {
+    var step: Double
+    override var domain: Range
+    override var range: Range
+    var setDomain: (param_val: Range) -> DiscreteScale
+    var setRange: (param_val: Range) -> DiscreteScale
+    var setStep: (param_val: Double) -> DiscreteScale
+    var getValue: (x: Double) -> Double
 }
