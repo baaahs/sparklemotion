@@ -16,25 +16,25 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val priorValuesRef = ref<Array<Number>>(arrayOf(0f, 0f))
-    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Array<Number> ->
+    val priorValuesRef = ref(arrayOf(0.0, 0.0))
+    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Array<Double> ->
         val priorValues = priorValuesRef.current!!
-        val newPosition = values[0].toFloat()
+        val newPosition = values[0]
         if (newPosition != priorValues[0]) {
             priorValues[0] = newPosition
-            props.onPositionChange(newPosition)
+            props.onPositionChange(newPosition.toFloat())
         }
 
         if (values.size > 1) {
-            val newFloorPosition = values[1].toFloat()
+            val newFloorPosition = values[1]
             if (newFloorPosition != priorValues[1]) {
                 priorValues[0] = newFloorPosition
-                props.onFloorPositionChange?.invoke(newFloorPosition)
+                props.onFloorPositionChange?.invoke(newFloorPosition.toFloat())
             }
         }
     }
 
-    val handleUpdate = throttle({ value: Array<Number> ->
+    val handleUpdate = throttle({ value: Array<Double> ->
         handleChange(value)
     }, wait = 10)
 
@@ -50,18 +50,20 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 //            +props.title
 //        }
 
-        Slider {
+        betterSlider {
             attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = props.reversed
             attrs.mode = 3
-            attrs.step = props.stepValue ?: ((props.maxValue - props.minValue) / 256)
+            attrs.step = (props.stepValue ?: ((props.maxValue - props.minValue) / 256)).toDouble()
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
-            attrs.values = listOfNotNull(props.position, props.floorPosition, props.contextPosition).toTypedArray()
+            attrs.values = listOfNotNull(props.position, props.floorPosition, props.contextPosition)
+                .map { it.toDouble() }
+                .toTypedArray()
 
             Rail {
                 attrs.children = { railObject ->
@@ -79,34 +81,34 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                         div(+styles.handles) {
                             handlesObject.handles.forEachIndexed { index, handle ->
                                 when (index) {
-                                0 -> {
-                                    handle {
-                                        key = handle.id
-                                        attrs.domain = domain
-                                        attrs.handle = handle
-                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    0 -> {
+                                        handle {
+                                            key = handle.id
+                                            attrs.domain = domain
+                                            attrs.handle = handle
+                                            attrs.getHandleProps = handlesObject.getHandleProps
+                                        }
                                     }
-                                }
-                                1 -> {
-                                    // Floor handle.
-                                    altHandle {
-                                        key = handle.id
-                                        attrs.domain = domain
-                                        attrs.handle = handle
-                                        attrs.getHandleProps = handlesObject.getHandleProps
+                                    1 -> {
+                                        // Floor handle.
+                                        altHandle {
+                                            key = handle.id
+                                            attrs.domain = domain
+                                            attrs.handle = handle
+                                            attrs.getHandleProps = handlesObject.getHandleProps
+                                        }
                                     }
-                                }
-//                                else -> {
-//                                    // Non-draggable alt handle.
-//                                    altHandle {
-//                                        key = handle.id
-//                                        attrs.domain = domain
-//                                        attrs.handle = handle
-//                                        attrs.getHandleProps = handlesObject.getHandleProps
+//                                    else -> {
+//                                        // Non-draggable alt handle.
+//                                        altHandle {
+//                                            key = handle.id
+//                                            attrs.domain = domain
+//                                            attrs.handle = handle
+//                                            attrs.getHandleProps = handlesObject.getHandleProps
+//                                        }
 //                                    }
-//                                }
+                                }
                             }
-                        }
 
                         }
                     }

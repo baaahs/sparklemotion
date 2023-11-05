@@ -15,6 +15,16 @@ external interface TicksObject {
     val ticks: Array<SliderItem>
 }
 
+external interface RcsProps : Props {
+    var scale: LinearScale?
+    var handles: Array<SliderItem>
+    var activeHandleID: String?
+    var getEventData: GetEventData?
+    var emitKeyboard: EmitKeyboard?
+    var emitMouse: EmitMouse?
+    var emitTouch: EmitTouch?
+}
+
 external interface TicksProps : Props {
     /** @ignore */
     var scale: LinearScale?

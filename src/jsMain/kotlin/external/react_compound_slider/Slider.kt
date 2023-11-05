@@ -4,13 +4,7 @@
 package external.react_compound_slider
 
 import react.ElementType
-import react.Props
-import react.ReactElement
-
-external interface `T$13` {
-    var value: Any
-    var percent: Any
-}
+import react.PropsWithChildren
 
 external interface SliderData {
     var activeHandleID: String
@@ -18,7 +12,7 @@ external interface SliderData {
 
 external val Slider : ElementType<SliderProps>
 
-external interface SliderProps : Props {
+external interface SliderProps : PropsWithChildren {
     /**
      * String component used for slider root. Defaults to 'div'.
      */
@@ -39,17 +33,17 @@ external interface SliderProps : Props {
      * Two element array of numbers providing the min and max values for the slider [min, max] e.g. [0, 100].
      * It does not matter if the slider is reversed on the screen, domain is always [min, max] with min < max.
      */
-    var domain: Array<Number>?
+    var domain: Array<Double>?
     /**
      * An array of numbers. You can supply one for a value slider, two for a range slider or more to create n-handled sliders.
      * The values should correspond to valid step values in the domain.
      * The numbers will be forced into the domain if they are two small or large.
      */
-    var values: Array<Number>
+    var values: Array<Double>
     /**
      * The step value for the slider.
      */
-    var step: Number?
+    var step: Double?
     /**
      * The interaction mode. Value of 1 will allow handles to cross each other.
      * Value of 2 will keep the sliders from crossing and separated by a step.
@@ -69,19 +63,19 @@ external interface SliderProps : Props {
     /**
      * Function triggered when the value of the slider has changed. This will recieve changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values.
      */
-    var onChange: ((values: Array<Number>) -> Unit)?
+    var onChange: ((values: Array<Double>) -> Unit)?
     /**
      * Function called with the values at each update (caution: high-volume updates when dragging). Receives values.
      */
-    var onUpdate: ((values: Array<Number>) -> Unit)?
+    var onUpdate: ((values: Array<Double>) -> Unit)?
     /**
      * Function triggered with ontouchstart or onmousedown on a handle. Receives values.
      */
-    var onSlideStart: ((values: Array<Number>, data: SliderData) -> Unit)?
+    var onSlideStart: ((values: Array<Double>, data: SliderData) -> Unit)?
     /**
      * Function triggered on ontouchend or onmouseup on a handle. Receives values.
      */
-    var onSlideEnd: ((values: Array<Number>, data: SliderData) -> Unit)?
+    var onSlideEnd: ((values: Array<Double>, data: SliderData) -> Unit)?
     /**
      * Ignore all mouse, touch and keyboard events.
      */
@@ -94,14 +88,10 @@ external interface SliderProps : Props {
      * When true, the slider will warn if values are changed to fit domain and step values.  Defaults to false.
      */
     var warnOnChanges: Boolean
-    /**
-     * Component children to render.
-     */
-    var children: () -> ReactElement<*>
 }
 
 external interface SliderItem {
     var id: String
-    var value: Number
-    var percent: Number
+    var value: Double
+    var percent: Double
 }
