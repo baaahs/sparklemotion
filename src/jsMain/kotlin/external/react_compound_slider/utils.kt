@@ -11,8 +11,12 @@ import kotlin.math.min
 fun isRCSComponent(item: ReactNode): Boolean {
     if (!react.isValidElement(item)) return false
     val type = item.asDynamic().type
-    val name = type?.name ?: ""
-    return (name == "Rail" || name == "Handles" || name == "Ticks" || name == "Tracks")
+    val name = type?.displayName ?: type?.name ?: ""
+    return (name == "Rail" ||
+            name == "Handles" || name == "BetterHandles" ||
+            name == "Ticks" ||
+            name == "Tracks"
+            )
 }
 
 fun getNextValue(

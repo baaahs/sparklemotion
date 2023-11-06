@@ -1,12 +1,13 @@
 package external.react_compound_slider
 
+import baaahs.app.ui.gadgets.slider.HandleProps
 import js.core.jso
 import react.dom.events.*
 import web.dom.Element
 
 typealias CustomMode = (curr: Array<HandleItem>, next: Array<HandleItem>, step: Number, reversed: Boolean, getValue: (x: Double) -> Double) -> Array<HandleItem>
 typealias GetEventData = (e: UIEvent<*, *>, isTouch: Boolean) -> EventData
-typealias GetHandleProps = (id: String/*, props: OtherProps*/) -> Any
+typealias GetHandleProps = (id: String/*, props: HandlesProps*/) -> HandleProps
 typealias GetRailProps = (/*OtherProps?*/) -> Any
 typealias GetTrackProps = (/*props: OtherProps*/) -> Any
 typealias Interpolator = (x: Number) -> Number

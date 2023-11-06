@@ -5,6 +5,7 @@ import baaahs.ui.and
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import external.react_compound_slider.HandleEventHandlers
 import external.react_compound_slider.SliderItem
 import kotlinx.css.pct
 import kotlinx.css.top
@@ -48,10 +49,10 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
     }
 }
 
-external interface HandleProps : Props {
+external interface HandleProps : Props, HandleEventHandlers {
     var domain: Array<Float>
     var handle: SliderItem
-    var getHandleProps: (id: String) -> dynamic
+    var getHandleProps: (id: String) -> HandleProps
 }
 
 fun RBuilder.handle(handler: RHandler<HandleProps>) =
