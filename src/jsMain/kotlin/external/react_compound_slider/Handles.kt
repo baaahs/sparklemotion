@@ -21,20 +21,20 @@ external interface HandlesObject {
     var getHandleProps: GetHandleProps
 }
 
-external interface HandlesProps : Props {
+external interface HandlesProps : Props, HandleEventHandlers {
     var activeHandleID: String?
         get() = definedExternally
         set(value) = definedExternally
     var handles: Array<SliderItem>?
         get() = definedExternally
         set(value) = definedExternally
-    //    var emitMouse: EmitMouse?
+    var emitMouse: EmitMouse?
 //        get() = definedExternally
 //        set(value) = definedExternally
-//    var emitKeyboard: EmitKeyboard?
+    var emitKeyboard: EmitKeyboard?
 //        get() = definedExternally
 //        set(value) = definedExternally
-//    var emitTouch: EmitTouch?
+    var emitTouch: EmitTouch?
 //        get() = definedExternally
 //        set(value) = definedExternally
     var children: (handlesObject: HandlesObject) -> ReactElement<*>

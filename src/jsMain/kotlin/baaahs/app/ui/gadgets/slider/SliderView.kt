@@ -75,7 +75,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            Handles {
+            betterHandles {
                 attrs.children = { handlesObject: HandlesObject ->
                     buildElement {
                         div(+styles.handles) {

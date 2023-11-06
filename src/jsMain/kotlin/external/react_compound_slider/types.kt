@@ -3,16 +3,20 @@
 
 package external.react_compound_slider
 
+import react.dom.events.KeyboardEvent
+import react.dom.events.MouseEvent
+import react.dom.events.TouchEvent
+
 external interface HandleEventHandlers {
-//    var onKeyDown: ((event: React.KeyboardEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
-//    var onMouseDown: ((event: React.MouseEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
-//    var onTouchStart: ((event: React.TouchEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
+    var onKeyDown: ((event: KeyboardEvent<*>) -> Unit)?
+        get() = definedExternally
+        set(value) = definedExternally
+    var onMouseDown: ((event: MouseEvent<*, *>) -> Unit)?
+        get() = definedExternally
+        set(value) = definedExternally
+    var onTouchStart: ((event: TouchEvent<*>) -> Unit)?
+        get() = definedExternally
+        set(value) = definedExternally
 }
 
 external interface EventData {

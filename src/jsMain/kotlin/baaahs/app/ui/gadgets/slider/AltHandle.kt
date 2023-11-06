@@ -43,7 +43,7 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
 external interface AltHandleProps : Props {
     var domain: Array<Float>
     var handle: SliderItem
-    var getHandleProps: (id: String) -> dynamic
+    var getHandleProps: (id: String) -> HandleProps
 }
 
 fun RBuilder.altHandle(handler: RHandler<AltHandleProps>) =
