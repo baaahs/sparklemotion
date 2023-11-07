@@ -139,6 +139,12 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
     }
 }
 
+fun RElementBuilder<*>.mixin(jsObj: dynamic) {
+    keys(jsObj).forEach { key ->
+        attrs.asDynamic()[key] = jsObj[key]
+    }
+}
+
 fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
     return CssBuilder().apply { block() }
 }

@@ -65,7 +65,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 .map { it.toDouble() }
                 .toTypedArray()
 
-            Rail {
+            betterRail {
                 attrs.children = { railObject ->
                     buildElement {
                         sliderRail {
@@ -115,7 +115,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            Tracks {
+            betterTracks {
                 attrs.left = false
                 attrs.right = !showSecondSlider
                 attrs.children = { tracksObject ->

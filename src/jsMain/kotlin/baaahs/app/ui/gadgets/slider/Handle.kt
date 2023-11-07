@@ -5,8 +5,8 @@ import baaahs.ui.and
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_compound_slider.HandleEventHandlers
 import external.react_compound_slider.SliderItem
+import external.react_compound_slider.StandardEventHandlers
 import kotlinx.css.pct
 import kotlinx.css.top
 import react.Props
@@ -27,12 +27,14 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
             put("WebkitTapHighlightColor", "rgba(0,0,0,0)")
         }
 
-        mixin(props.getHandleProps(props.handle.id))
+        mixin(props.getHandleProps(props.handle.id).also {
+            console.log("handle props", it)
+        })
     }
 
     div(+styles.handleWrapper) {
         setProp("role", "slider")
-        setProp("aria-valuemin", props.domain[9])
+        setProp("aria-valuemin", props.domain[0])
         setProp("aria-valuemax", props.domain[1])
         setProp("aria-valuenow", props.handle.value)
         inlineStyles {
@@ -49,7 +51,7 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
     }
 }
 
-external interface HandleProps : Props, HandleEventHandlers {
+external interface HandleProps : Props, StandardEventHandlers {
     var domain: Array<Float>
     var handle: SliderItem
     var getHandleProps: (id: String) -> HandleProps

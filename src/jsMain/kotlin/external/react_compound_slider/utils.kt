@@ -2,8 +2,6 @@ package external.react_compound_slider
 
 import baaahs.util.Logger
 import react.ReactNode
-import react.dom.events.TouchEvent
-import react.dom.events.UIEvent
 import web.dom.Element
 import kotlin.math.max
 import kotlin.math.min
@@ -12,10 +10,10 @@ fun isRCSComponent(item: ReactNode): Boolean {
     if (!react.isValidElement(item)) return false
     val type = item.asDynamic().type
     val name = type?.displayName ?: type?.name ?: ""
-    return (name == "Rail" ||
+    return (name == "Rail" || name == "BetterRail" ||
             name == "Handles" || name == "BetterHandles" ||
-            name == "Ticks" ||
-            name == "Tracks"
+            name == "Ticks" || name == "BetterTicks" ||
+            name == "Tracks" || name == "BetterTracks"
             )
 }
 
@@ -102,18 +100,6 @@ fun getSliderDomain(slider: Element?, vertical: Boolean): Range {
     val d1 = if (vertical) s.bottom else s.right
 
     return arrayOf(d0, d1)
-}
-
-fun isNotValidTouch(event: UIEvent<*, *>, touches: Array<TouchEvent<Element>>? = null): Boolean {
-    return touches == null ||
-            touches.size > 1 ||
-            (event.asDynamic().toLowerCase() == "touchend" && touches.isNotEmpty())
-}
-
-fun isNotValidTouch(event: web.uievents.UIEvent, touches: Array<TouchEvent<Element>>? = null): Boolean {
-    return touches == null ||
-            touches.size > 1 ||
-            (event.asDynamic().toLowerCase() == "touchend" && touches.isNotEmpty())
 }
 
 fun getTouchPosition(vertical: Boolean, e: web.uievents.TouchEvent): Double =
