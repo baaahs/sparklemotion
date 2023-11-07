@@ -6,15 +6,16 @@ import react.dom.events.*
 import web.dom.Element
 
 typealias CustomMode = (curr: Array<HandleItem>, next: Array<HandleItem>, step: Number, reversed: Boolean, getValue: (x: Double) -> Double) -> Array<HandleItem>
-typealias GetEventData = (e: UIEvent<*, *>, isTouch: Boolean) -> EventData
+typealias GetEventData = (e: PointerEvent<*>) -> EventData
 typealias GetHandleProps = (id: String/*, props: HandlesProps*/) -> HandleProps
-typealias GetRailProps = (/*OtherProps?*/) -> Any
-typealias GetTrackProps = (/*props: OtherProps*/) -> Any
+typealias GetRailProps = (/*OtherProps?*/) -> RailProps
+typealias GetTrackProps = (/*props: OtherProps*/) -> TracksProps
 typealias Interpolator = (x: Number) -> Number
 
 typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
 typealias EmitMouse = (e: MouseEvent<Element, NativeMouseEvent>, id: String) -> Unit
 typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
+typealias EmitPointer = (e: PointerEvent<Element>, location: String, handleId: String?) -> Unit
 
 typealias Range = Array<Double>
 

@@ -6,15 +6,11 @@ import react.RBuilder
 import react.RHandler
 import react.dom.div
 import react.dom.events.KeyboardEvent
-import react.dom.events.MouseEvent
-import react.dom.events.TouchEvent
-import react.dom.events.UIEvent
+import react.dom.events.PointerEvent
 import web.dom.Element
 import web.dom.document
-import web.uievents.MOUSE_MOVE
-import web.uievents.MOUSE_UP
-import web.uievents.TOUCH_END
-import web.uievents.TOUCH_MOVE
+import web.uievents.POINTER_MOVE
+import web.uievents.POINTER_UP
 import kotlin.math.abs
 
 private val defaultDomain = arrayOf(0.0, 1.0)
@@ -76,7 +72,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     }
 
 
-    val handleMouseMove by handler(handles, pixelToStep, vertical, reversed, submitUpdate) { e: web.uievents.MouseEvent ->
+    val handlePointerMove by handler(handles, pixelToStep, vertical, reversed, submitUpdate) { e: web.uievents.PointerEvent ->
         // double check the dimensions of the slider
         pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
 
@@ -91,23 +87,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         Unit
     }
 
-    val handleTouchMove by handler(handles, pixelToStep, vertical, reversed, submitUpdate) { e: web.uievents.TouchEvent ->
-        if (isNotValidTouch(e)) return@handler
-
-        // double check the dimensions of the slider
-        pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
-
-        // find the closest value (aka step) to the event location
-        val updateValue = pixelToStep.getValue(getTouchPosition(vertical, e))
-
-        // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(handles, activeHandleID, updateValue, reversed)
-
-        // submit the candidate values
-        submitUpdate(nextHandles, false)
-    }
-
-    val handleMouseUp by handler(handles, handleMouseMove) { e: web.uievents.MouseEvent ->
+    val handlePointerUp by handler(handles, handlePointerMove) { e: web.uievents.PointerEvent ->
         // find the closest value (aka step) to the event location
         val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
 
@@ -119,24 +99,10 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         props.onSlideEnd?.invoke(nextHandles.map { it.value }.toTypedArray(), jso { this.activeHandleID = activeHandleID })
         activeHandleID = ""
 
-        document.removeEventListener(web.uievents.MouseEvent.MOUSE_MOVE, handleMouseMove)
-    }
-
-    val handleTouchEnd by handler(handles, handleTouchMove) { e: web.uievents.TouchEvent ->
-        if (isNotValidTouch(e)) return@handler
-
-        // find the closest value (aka step) to the event location
-        val updateValue = pixelToStep.getValue(getTouchPosition(vertical, e))
-
-        // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(handles, activeHandleID, updateValue, reversed)
-
-        // submit the candidate values
-        submitUpdate(nextHandles, true)
-        props.onSlideEnd?.invoke(nextHandles.map { it.value }.toTypedArray(), jso { this.activeHandleID = activeHandleID })
-        activeHandleID = ""
-
-        document.removeEventListener(web.uievents.TouchEvent.TOUCH_MOVE, handleTouchMove)
+        val sliderEl = slider.current!!
+        sliderEl.releasePointerCapture(e.pointerId)
+        sliderEl.removeEventListener(web.uievents.PointerEvent.POINTER_MOVE, handlePointerMove)
+        sliderEl.removeEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerMove)
     }
 
     val handleKeyDown by handler(handles, vertical, reversed) { e: KeyboardEvent<*>, handleId: String ->
@@ -173,35 +139,18 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         submitUpdate(nextHandles, true)
     }
 
-    val addMouseEvents by handler(handleMouseMove, handleMouseUp) {
-        document.addEventListener(web.uievents.MouseEvent.MOUSE_MOVE, handleMouseMove)
-        document.addEventListener(web.uievents.MouseEvent.MOUSE_UP, handleMouseUp, jso { once = true })
-    }
-
-    val addTouchEvents by handler(handleTouchMove, handleTouchEnd) {
-        document.addEventListener(web.uievents.TouchEvent.TOUCH_MOVE, handleTouchMove)
-        document.addEventListener(web.uievents.TouchEvent.TOUCH_END, handleTouchEnd, jso { once = true })
-    }
-
-    val handleRailAndTrackClicks by handler(handles, pixelToStep, vertical, reversed, addMouseEvents, addTouchEvents) { e: UIEvent<*, *>, isTouch: Boolean ->
-        val curr = handles
-
+    val handleRailAndTrackClicks by handler(handles, pixelToStep, vertical, reversed) { e: PointerEvent<*> ->
         // double check the dimensions of the slider
         pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
 
         // find the closest value (aka step) to the event location
-        val updateValue = if (isTouch) {
-            pixelToStep.getValue(getTouchPosition(vertical, e as web.uievents.TouchEvent))
-        } else {
-            e as MouseEvent<*, *>
-            pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
-        }
+        val updateValue = pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
 
         // find the closest handle key
         var updateKey = ""
         var minDiff = Double.POSITIVE_INFINITY
 
-        for (item in curr) {
+        for (item in handles) {
             val diff = abs(item.value - updateValue)
 
             if (diff < minDiff) {
@@ -211,58 +160,47 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         }
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(curr, updateKey, updateValue, reversed)
+        val nextHandles = getUpdatedHandles(handles, updateKey, updateValue, reversed)
 
         // submit the candidate values
         activeHandleID = updateKey
         // TODO: on state change:
         submitUpdate(nextHandles, true)
-        if (isTouch) addTouchEvents() else addMouseEvents()
     }
 
-    val handleStart by handler(handles, handleRailAndTrackClicks) { e: UIEvent<*, *>, handleID: String, isTouch: Boolean ->
-        if (!isTouch) {
-            e.preventDefault()
-        }
+    val handlePointerDown by handler<EmitPointer>(handles, handlePointerMove, handlePointerUp, handleRailAndTrackClicks) { e: PointerEvent<*>, location: String, handleID: String? ->
+//        if (!isTouch) {
+//            e.preventDefault()
+//        }
 
         e.stopPropagation()
 
-        val found = handles.any { it.key == handleID }
+        val sliderEl = slider.current!!
+        sliderEl.setPointerCapture(e.pointerId)
+        sliderEl.addEventListener(web.uievents.PointerEvent.POINTER_MOVE, handlePointerMove)
+        sliderEl.addEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerUp, jso { once = true })
 
-        if (found) {
+        if (handleID != null) {
+            handles.firstOrNull { it.key == handleID }
+                ?: error("Cannot find handle with id $handleID.")
+
             activeHandleID = handleID
             props.onSlideStart?.invoke(
                 handles.map { it.value }.toTypedArray(),
                 jso { this.activeHandleID = handleID }
             )
-            if (isTouch) addTouchEvents() else addMouseEvents()
         } else {
             activeHandleID = ""
-            handleRailAndTrackClicks(e, isTouch)
+            handleRailAndTrackClicks(e)
         }
     }
 
-    val handleMouseDown by handler(handleStart) { e: MouseEvent<*, *>, handleID: String ->
-        handleStart(e, handleID, false)
-    }
 
-    val handleTouchStart by handler(handleStart) { e: TouchEvent<*>, handleID: String ->
-        if (isNotValidTouch(e)) return@handler
-
-        handleStart(e, handleID, true)
-    }
-
-
-    val getEventData by handler(pixelToStep, vertical, valueToPerc) { e: UIEvent<*, *>, isTouch: Boolean ->
+    val getEventData by handler(pixelToStep, vertical, valueToPerc) { e: PointerEvent<*> ->
         // double check the dimensions of the slider
         pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
 
-        val value = if (isTouch /*&& e instanceof TouchEvent*/) {
-            pixelToStep.getValue(getTouchPosition(vertical, e as web.uievents.TouchEvent))
-        } else /*if (e instanceof MouseEvent)*/ {
-            e as MouseEvent<*, *>
-            pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
-        }
+        val value = pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
 
         jso<EventData> {
             this.value = value
@@ -273,10 +211,8 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     onMount(slider, props.vertical) {
         pixelToStep.domain = getSliderDomain(slider.current, props.vertical == true)
         withCleanup {
-            document.removeEventListener(web.uievents.MouseEvent.MOUSE_MOVE, handleMouseMove)
-            document.removeEventListener(web.uievents.MouseEvent.MOUSE_UP, handleMouseUp)
-            document.removeEventListener(web.uievents.TouchEvent.TOUCH_MOVE, handleTouchMove)
-            document.removeEventListener(web.uievents.TouchEvent.TOUCH_END, handleTouchEnd)
+            document.removeEventListener(web.uievents.PointerEvent.POINTER_MOVE, handlePointerMove)
+            document.removeEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerUp)
         }
     }
 
@@ -299,8 +235,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
                 this.activeHandleID = activeHandleID
                 this.getEventData = getEventData
                 this.emitKeyboard = if (props.disabled) null else handleKeyDown
-                this.emitMouse = if (props.disabled) null else handleMouseDown
-                this.emitTouch = if (props.disabled) null else handleTouchStart
+                this.emitPointer = if (props.disabled) null else handlePointerDown
             })
         } else {
             child
