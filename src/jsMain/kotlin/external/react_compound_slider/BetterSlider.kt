@@ -22,24 +22,29 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     val reversed = props.reversed == true
     var activeHandleID by state { "" }
 
-    val baseSlider = memo { Slider.asDynamic().getDerivedStateFromProps(props, jso()) }
-//    console.log("BetterSlider render", props)
+    // Finagle access to the Slider's scales:
+    val baseSlider = memo(domain, step, reversed) {
+        Slider.asDynamic().getDerivedStateFromProps(jso<SliderProps> {
+            this.domain = props.domain
+            this.step = props.step
+            this.reversed = props.reversed
+        }, jso()) }
 
-    val valueToPerc = memo(domain, step, reversed) {
+    val valueToPerc = memo(baseSlider, domain, step, reversed) {
         (baseSlider.valueToPerc.unsafeCast<LinearScale>()).apply {
             this.domain = domain
             this.range = if (reversed) arrayOf(100.0, 0.0) else arrayOf(0.0, 100.0)
 //            this.range = arrayOf(0.0, 100.0).letIf(reversed) { it.reversedArray() }
         }
     }
-    val valueToStep = memo(domain, step, reversed) {
+    val valueToStep = memo(baseSlider, domain, step, reversed) {
         (baseSlider.valueToStep.unsafeCast<DiscreteScale>()).apply {
             this.step = step
             this.range = domain
             this.domain = domain
         }
     }
-    val pixelToStep = memo(domain, step, reversed) {
+    val pixelToStep = memo(baseSlider, domain, step, reversed) {
         (baseSlider.pixelToStep.unsafeCast<DiscreteScale>()).apply {
             this.step = step
             this.range = if (reversed) domain.reversedArray() else domain
@@ -56,21 +61,21 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         getHandles(values, reversed, valueToStep, props.warnOnChanges, logger)
     }
     if (changes > 0) {
-        props.onUpdate?.invoke(handles.map { it.value }.toTypedArray())
-        props.onChange?.invoke(handles.map { it.value }.toTypedArray())
+        val updatedHandles = handles.associate { it.key to it.value }
+        props.onUpdate?.invoke(updatedHandles)
+        props.onChange?.invoke(updatedHandles)
     }
 
     val slider = ref<Element>()
 
-    val submitUpdate = callback(valueToStep) { newHandles: Array<HandleItem>, callOnChange: Boolean ->
-        props.onUpdate?.invoke(newHandles.map { it.value }.toTypedArray())
-        if (callOnChange) {
-            props.onChange?.invoke(newHandles.map { it.value }.toTypedArray())
-        }
+    val submitUpdate = callback(valueToStep) { newHandles: Array<HandleItem>, callOnChange: Boolean, callOnSlideEnd: Boolean ->
+        val updatedHandles = newHandles.associate { it.key to it.value }
+        props.onUpdate?.invoke(updatedHandles)
+        if (callOnChange) props.onChange?.invoke(updatedHandles)
+        if (callOnSlideEnd) props.onSlideEnd?.invoke(updatedHandles, jso { this.activeHandleID = activeHandleID })
 
         newHandles
     }
-
 
     val handlePointerMove by handler(handles, pixelToStep, vertical, reversed, submitUpdate) { e: web.uievents.PointerEvent ->
         // double check the dimensions of the slider
@@ -80,10 +85,10 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(handles, activeHandleID, updateValue, reversed)
+        val nextHandles = updateHandles(handles, activeHandleID, updateValue, reversed)
 
         // submit the candidate values
-        submitUpdate(nextHandles, false)
+        submitUpdate(nextHandles, false, false)
         Unit
     }
 
@@ -92,11 +97,10 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(handles, activeHandleID, updateValue, reversed)
+        val nextHandles = updateHandles(handles, activeHandleID, updateValue, reversed)
 
         // submit the candidate values
-        submitUpdate(nextHandles, true)
-        props.onSlideEnd?.invoke(nextHandles.map { it.value }.toTypedArray(), jso { this.activeHandleID = activeHandleID })
+        submitUpdate(nextHandles, true, true)
         activeHandleID = ""
 
         val sliderEl = slider.current!!
@@ -136,7 +140,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
             if (v.key == handleId) handleItem(key, newVal) else v
         }.toTypedArray()
 
-        submitUpdate(nextHandles, true)
+        submitUpdate(nextHandles, true, false)
     }
 
     val handleRailAndTrackClicks by handler(handles, pixelToStep, vertical, reversed) { e: PointerEvent<*> ->
@@ -160,15 +164,15 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         }
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = getUpdatedHandles(handles, updateKey, updateValue, reversed)
+        val nextHandles = updateHandles(handles, updateKey, updateValue, reversed)
 
         // submit the candidate values
         activeHandleID = updateKey
         // TODO: on state change:
-        submitUpdate(nextHandles, true)
+        submitUpdate(nextHandles, true, false)
     }
 
-    val handlePointerDown by handler<EmitPointer>(handles, handlePointerMove, handlePointerUp, handleRailAndTrackClicks) { e: PointerEvent<*>, location: String, handleID: String? ->
+    val handlePointerDown by handler<EmitPointer>(handles, handlePointerMove, handlePointerUp, handleRailAndTrackClicks) { e: PointerEvent<*>, location: Location, handleID: String? ->
 //        if (!isTouch) {
 //            e.preventDefault()
 //        }
@@ -186,7 +190,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
 
             activeHandleID = handleID
             props.onSlideStart?.invoke(
-                handles.map { it.value }.toTypedArray(),
+                handles.associate { it.key to it.value },
                 jso { this.activeHandleID = handleID }
             )
         } else {

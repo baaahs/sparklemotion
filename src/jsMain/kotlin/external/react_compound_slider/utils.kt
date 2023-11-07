@@ -38,56 +38,38 @@ fun getPrevValue(
 }
 
 fun getHandles(
-    values: Array<Double>,
+    values: Map<String, Double>,
     reversed: Boolean,
     valueToStep: DiscreteScale,
     warn: Boolean,
     logger: Logger
 ): Pair<Array<HandleItem>, Int> {
     var changes = 0
-    val handles = values.mapIndexed { index, x ->
-        val value = valueToStep.getValue(x)
-        if (x != value) {
+    val handles = values.entries.map { (handleId, value) ->
+        val adjustedValue = valueToStep.getValue(value)
+        if (adjustedValue != value) {
             changes += 1
             if (warn) {
-                logger.warn { "Value $x is not a valid step value. Using $value instead." }
+                logger.warn { "Value $value is not a valid step value. Using $adjustedValue instead." }
             }
         }
-        handleItem("\$\$-$index", value)
+        handleItem(handleId, adjustedValue)
     }
-        .sortedBy { it.value }
-        .let { if (reversed) it.reversed() else it }
+//        .sortedBy { it.value }
+//        .let { if (reversed) it.reversed() else it }
         .toTypedArray()
     return handles to changes
 }
 
-fun getUpdatedHandles(
+fun updateHandles(
     handles: Array<HandleItem>,
     updateKey: String,
     updateValue: Double,
     reversed: Boolean = false
-): Array<HandleItem> {
-    val index = handles.indexOfFirst { item -> item.key == updateKey }
-
-    if (index != -1) {
-        val handleItem = handles[index]
-
-        if (handleItem.value == updateValue) {
-            return handles
-        }
-
-        return buildList {
-            addAll(handles.slice(0 until index))
-            add(handleItem(updateKey, updateValue))
-            addAll(handles.slice(index + 1 until handles.size))
-        }
-            .sortedBy { it.value }
-            .let { if (reversed) it.reversed() else it }
-            .toTypedArray()
-    }
-
-    return handles;
-}
+): Array<HandleItem> =
+    handles.map {
+        if (it.key == updateKey) handleItem(it.key, updateValue) else it
+    }.toTypedArray()
 
 fun getSliderDomain(slider: Element?, vertical: Boolean): Range {
     if (slider == null) {

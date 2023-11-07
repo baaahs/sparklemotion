@@ -12,30 +12,31 @@ import react.dom.div
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
+private const val positionHandle = "position"
+private const val floorHandle = "floor"
+
 private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val priorValuesRef = ref(arrayOf(0.0, 0.0))
-    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Array<Double> ->
+    val priorValuesRef = ref(mutableMapOf<String, Double>())
+    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Map<String, Double> ->
         val priorValues = priorValuesRef.current!!
-        val newPosition = values[0]
-        if (newPosition != priorValues[0]) {
-            priorValues[0] = newPosition
+        val newPosition = values[positionHandle] ?: error("No position.")
+        if (newPosition != priorValues[positionHandle]) {
+            priorValues[positionHandle] = newPosition
             props.onPositionChange(newPosition.toFloat())
         }
 
-        if (values.size > 1) {
-            val newFloorPosition = values[1]
-            if (newFloorPosition != priorValues[1]) {
-                priorValues[0] = newFloorPosition
-                props.onFloorPositionChange?.invoke(newFloorPosition.toFloat())
-            }
+        val newFloorPosition = values[floorHandle]
+        if (newFloorPosition != null && newFloorPosition != priorValues[floorHandle]) {
+            priorValues[floorHandle] = newFloorPosition
+            props.onFloorPositionChange?.invoke(newFloorPosition.toFloat())
         }
     }
 
-    val handleUpdate = throttle({ value: Array<Double> ->
-        handleChange(value)
+    val handleUpdate = throttle({ values: Map<String, Double> ->
+        handleChange(values)
     }, wait = 10)
 
     val domain = memo(props.minValue, props.maxValue) {
@@ -61,9 +62,10 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
-            attrs.values = listOfNotNull(props.position, props.floorPosition, props.contextPosition)
-                .map { it.toDouble() }
-                .toTypedArray()
+            attrs.values = buildMap {
+                put(positionHandle, props.position.toDouble())
+                props.floorPosition?.let { put(floorHandle, it.toDouble()) }
+            }
 
             betterRail {
                 attrs.children = { railObject ->
@@ -80,8 +82,8 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                     buildElement {
                         div(+styles.handles) {
                             handlesObject.handles.forEachIndexed { index, handle ->
-                                when (index) {
-                                    0 -> {
+                                when (handle.id) {
+                                    positionHandle -> {
                                         handle {
                                             key = handle.id
                                             attrs.domain = domain
@@ -89,7 +91,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                             attrs.getHandleProps = handlesObject.getHandleProps
                                         }
                                     }
-                                    1 -> {
+                                    floorHandle -> {
                                         // Floor handle.
                                         altHandle {
                                             key = handle.id
