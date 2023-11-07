@@ -7,23 +7,17 @@ import react.ElementType
 import react.Props
 import react.ReactElement
 
-external interface `T$15` {
-//    var onKeyDown: (e: React.KeyboardEvent<Element>) -> Unit
-//    var onMouseDown: (e: React.MouseEvent<Element, MouseEvent>) -> Unit
-//    var onTouchStart: (e: React.TouchEvent<Element>) -> Unit
-}
-
 external val Handles : ElementType<HandlesProps>
 
 external interface HandlesObject {
     var handles: Array<SliderItem>
-    var activeHandleID: String
+    var activeHandleID: String?
     var getHandleProps: GetHandleProps
 }
 
 external interface HandlesProps : Props, StandardEventHandlers, StandardEventEmitters {
+    var handles: Array<SliderItem>
     var activeHandleID: String?
-    var handles: Array<SliderItem>?
     var children: (handlesObject: HandlesObject) -> ReactElement<*>
 }
 

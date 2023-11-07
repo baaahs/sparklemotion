@@ -39,7 +39,7 @@ external interface SliderProps : PropsWithChildren {
      * The values should correspond to valid step values in the domain.
      * The numbers will be forced into the domain if they are two small or large.
      */
-    var values: Array<Double>
+    var values: Map<String, Double>
     /**
      * The step value for the slider.
      */
@@ -63,19 +63,19 @@ external interface SliderProps : PropsWithChildren {
     /**
      * Function triggered when the value of the slider has changed. This will recieve changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values.
      */
-    var onChange: ((values: Array<Double>) -> Unit)?
+    var onChange: ((values: Map<String, Double>) -> Unit)?
     /**
      * Function called with the values at each update (caution: high-volume updates when dragging). Receives values.
      */
-    var onUpdate: ((values: Array<Double>) -> Unit)?
+    var onUpdate: ((values: Map<String, Double>) -> Unit)?
     /**
      * Function triggered with ontouchstart or onmousedown on a handle. Receives values.
      */
-    var onSlideStart: ((values: Array<Double>, data: SliderData) -> Unit)?
+    var onSlideStart: ((values: Map<String, Double>, data: SliderData) -> Unit)?
     /**
      * Function triggered on ontouchend or onmouseup on a handle. Receives values.
      */
-    var onSlideEnd: ((values: Array<Double>, data: SliderData) -> Unit)?
+    var onSlideEnd: ((values: Map<String, Double>, data: SliderData) -> Unit)?
     /**
      * Ignore all mouse, touch and keyboard events.
      */

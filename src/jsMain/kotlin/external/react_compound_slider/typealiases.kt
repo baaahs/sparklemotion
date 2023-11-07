@@ -15,7 +15,7 @@ typealias Interpolator = (x: Number) -> Number
 typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
 typealias EmitMouse = (e: MouseEvent<Element, NativeMouseEvent>, id: String) -> Unit
 typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
-typealias EmitPointer = (e: PointerEvent<Element>, location: String, handleId: String?) -> Unit
+typealias EmitPointer = (e: PointerEvent<Element>, location: Location, handleId: String?) -> Unit
 
 typealias Range = Array<Double>
 
@@ -24,3 +24,7 @@ fun handleItem(key: String, value: Double) = jso<HandleItem> {
     this.`val` = value
 }
 val HandleItem.value get() = `val`
+
+enum class Location {
+    Handle, Rail, Track, Ticks
+}

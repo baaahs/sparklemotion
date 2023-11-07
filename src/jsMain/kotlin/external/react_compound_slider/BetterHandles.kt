@@ -1,7 +1,9 @@
 package external.react_compound_slider
 
+import baaahs.app.ui.gadgets.slider.HandleProps
 import baaahs.ui.mixin
 import baaahs.ui.xComponent
+import js.core.jso
 import react.RBuilder
 import react.RHandler
 import react.dom.events.MouseEvent
@@ -15,25 +17,26 @@ fun autofocus(e: MouseEvent<*, *>) {
 }
 
 val BetterHandles = xComponent<HandlesProps>("BetterHandles") { props ->
-    // render():
-    Handles {
-        mixin(props)
-        attrs.children = { handlesObject ->
-            val origGetHandleProps = handlesObject.getHandleProps
-            handlesObject.getHandleProps = { id: String ->
-                origGetHandleProps(id).apply {
-                    onMouseDown = null
-                    onTouchStart = null
-                    onPointerDown = { e ->
-                        props.onPointerDown?.invoke(e)
-                        autofocus(e)
-                        props.emitPointer?.invoke(e, "handle", id)
-                    }
-                }
+    val getHandleProps = { handleId: String ->
+        jso<HandleProps> {
+            onKeyDown = { e ->
+                props.onKeyDown?.invoke(e)
+                props.emitKeyboard?.invoke(e, handleId)
             }
-            props.children.invoke(handlesObject)
+            onPointerDown = { e ->
+                props.onPointerDown?.invoke(e)
+                autofocus(e)
+                props.emitPointer?.invoke(e, Location.Handle, handleId)
+            }
         }
     }
+
+    val renderedChildren = props.children.invoke(jso {
+        this.handles = props.handles
+        this.activeHandleID = props.activeHandleID
+        this.getHandleProps = getHandleProps
+    })
+    +react.Children.only(renderedChildren)
 }
 
 fun RBuilder.betterHandles(handler: RHandler<HandlesProps>) =
@@ -52,7 +55,7 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
                     onPointerDown = { e ->
                         props.onPointerDown?.invoke(e)
                         autofocus(e)
-                        props.emitPointer?.invoke(e, "track", null)
+                        props.emitPointer?.invoke(e, Location.Track, null)
                     }
                 }
             }
@@ -77,7 +80,7 @@ val BetterRail = xComponent<RailProps>("BetterRail") { props ->
                     onPointerDown = { e ->
                         props.onPointerDown?.invoke(e)
                         autofocus(e)
-                        props.emitPointer?.invoke(e, "rail", null)
+                        props.emitPointer?.invoke(e, Location.Rail, null)
                     }
                 }
             }
