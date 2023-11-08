@@ -8,7 +8,6 @@ import react.dom.div
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent
 import web.dom.Element
-import web.dom.document
 import web.uievents.POINTER_MOVE
 import web.uievents.POINTER_UP
 import kotlin.math.abs
@@ -20,7 +19,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     val domain = props.domain ?: defaultDomain
     val vertical = props.vertical == true
     val reversed = props.reversed == true
-    var activeHandleID by state { "" }
+    var activeHandleId by state { "" }
 
     // Finagle access to the Slider's scales:
     val baseSlider = memo(domain, step, reversed) {
@@ -72,7 +71,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val updatedHandles = newHandles.associate { it.key to it.value }
         props.onUpdate?.invoke(updatedHandles)
         if (callOnChange) props.onChange?.invoke(updatedHandles)
-        if (callOnSlideEnd) props.onSlideEnd?.invoke(updatedHandles, jso { this.activeHandleID = activeHandleID })
+        if (callOnSlideEnd) props.onSlideEnd?.invoke(updatedHandles, jso { this.activeHandleID = activeHandleId })
 
         newHandles
     }
@@ -85,7 +84,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = updateHandles(handles, activeHandleID, updateValue, reversed)
+        val nextHandles = updateHandles(handles, activeHandleId, updateValue, reversed)
 
         // submit the candidate values
         submitUpdate(nextHandles, false, false)
@@ -97,16 +96,15 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
 
         // generate a "candidate" set of values - a suggestion of what to do
-        val nextHandles = updateHandles(handles, activeHandleID, updateValue, reversed)
+        val nextHandles = updateHandles(handles, activeHandleId, updateValue, reversed)
 
         // submit the candidate values
         submitUpdate(nextHandles, true, true)
-        activeHandleID = ""
+        activeHandleId = ""
 
         val sliderEl = slider.current!!
         sliderEl.releasePointerCapture(e.pointerId)
         sliderEl.removeEventListener(web.uievents.PointerEvent.POINTER_MOVE, handlePointerMove)
-        sliderEl.removeEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerMove)
     }
 
     val handleKeyDown by handler(handles, vertical, reversed) { e: KeyboardEvent<*>, handleId: String ->
@@ -167,15 +165,14 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val nextHandles = updateHandles(handles, updateKey, updateValue, reversed)
 
         // submit the candidate values
-        activeHandleID = updateKey
-        // TODO: on state change:
+        activeHandleId = updateKey
         submitUpdate(nextHandles, true, false)
     }
 
-    val handlePointerDown by handler<EmitPointer>(handles, handlePointerMove, handlePointerUp, handleRailAndTrackClicks) { e: PointerEvent<*>, location: Location, handleID: String? ->
-//        if (!isTouch) {
-//            e.preventDefault()
-//        }
+    val handlePointerDown by handler<EmitPointer>(
+        handles, handlePointerMove, handlePointerUp, handleRailAndTrackClicks, props.onSlideStart
+    ) { e: PointerEvent<*>, location: Location, handleID: String? ->
+        if (e.button != 0) return@handler
 
         e.stopPropagation()
 
@@ -188,17 +185,16 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
             handles.firstOrNull { it.key == handleID }
                 ?: error("Cannot find handle with id $handleID.")
 
-            activeHandleID = handleID
+            activeHandleId = handleID
             props.onSlideStart?.invoke(
                 handles.associate { it.key to it.value },
                 jso { this.activeHandleID = handleID }
             )
         } else {
-            activeHandleID = ""
+            activeHandleId = ""
             handleRailAndTrackClicks(e)
         }
     }
-
 
     val getEventData by handler(pixelToStep, vertical, valueToPerc) { e: PointerEvent<*> ->
         // double check the dimensions of the slider
@@ -212,12 +208,8 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         }
     }
 
-    onMount(slider, props.vertical) {
-        pixelToStep.domain = getSliderDomain(slider.current, props.vertical == true)
-        withCleanup {
-            document.removeEventListener(web.uievents.PointerEvent.POINTER_MOVE, handlePointerMove)
-            document.removeEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerUp)
-        }
+    onMount(pixelToStep, slider, vertical) {
+        pixelToStep.domain = getSliderDomain(slider.current, vertical)
     }
 
     // render():
@@ -236,7 +228,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
             react.cloneElement(child.unsafeCast<react.ReactElement<RcsProps>>(), jso {
                 this.scale = valueToPerc
                 this.handles = mappedHandles
-                this.activeHandleID = activeHandleID
+                this.activeHandleID = activeHandleId
                 this.getEventData = getEventData
                 this.emitKeyboard = if (props.disabled) null else handleKeyDown
                 this.emitPointer = if (props.disabled) null else handlePointerDown
