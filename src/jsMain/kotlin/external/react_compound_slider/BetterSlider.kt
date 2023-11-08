@@ -20,6 +20,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     val vertical = props.vertical == true
     val reversed = props.reversed == true
     var activeHandleId by state { "" }
+    val pointerDownOffset = ref<Double>()
 
     // Finagle access to the Slider's scales:
     val baseSlider = memo(domain, step, reversed) {
@@ -76,12 +77,23 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         newHandles
     }
 
-    val handlePointerMove by handler(handles, pixelToStep, vertical, reversed, submitUpdate) { e: web.uievents.PointerEvent ->
-        // double check the dimensions of the slider
+    val getEventValue by handler(pixelToStep, vertical, valueToPerc) { e: web.uievents.PointerEvent ->
+        // double-check the dimensions of the slider
         pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
+        pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX) +
+                (pointerDownOffset.current ?: 0.0)
+    }
 
-        // find the closest value (aka step) to the event location
-        val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
+    val getEventData by handler(getEventValue, valueToPerc) { e: web.uievents.PointerEvent ->
+        val value = getEventValue(e)
+        jso<EventData> {
+            this.value = value
+            this.percent = valueToPerc.getValue(value)
+        }
+    }
+
+    val handlePointerMove by handler(getEventData, handles, submitUpdate) { e: web.uievents.PointerEvent ->
+        val updateValue = getEventValue(e)
 
         // generate a "candidate" set of values - a suggestion of what to do
         val nextHandles = updateHandles(handles, activeHandleId, updateValue, reversed)
@@ -92,8 +104,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     }
 
     val handlePointerUp by handler(handles, handlePointerMove) { e: web.uievents.PointerEvent ->
-        // find the closest value (aka step) to the event location
-        val updateValue = pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX)
+        val updateValue = getEventValue(e)
 
         // generate a "candidate" set of values - a suggestion of what to do
         val nextHandles = updateHandles(handles, activeHandleId, updateValue, reversed)
@@ -142,11 +153,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     }
 
     val handleRailAndTrackClicks by handler(handles, pixelToStep, vertical, reversed) { e: PointerEvent<*> ->
-        // double check the dimensions of the slider
-        pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
-
-        // find the closest value (aka step) to the event location
-        val updateValue = pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
+        val updateValue = getEventValue(e.nativeEvent)
 
         // find the closest handle key
         var updateKey = ""
@@ -182,29 +189,20 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         sliderEl.addEventListener(web.uievents.PointerEvent.POINTER_UP, handlePointerUp, jso { once = true })
 
         if (handleID != null) {
-            handles.firstOrNull { it.key == handleID }
+            val handle = handles.firstOrNull { it.key == handleID }
                 ?: error("Cannot find handle with id $handleID.")
 
+            pointerDownOffset.current = null
+            pointerDownOffset.current = handle.value - getEventValue(e.nativeEvent)
             activeHandleId = handleID
             props.onSlideStart?.invoke(
                 handles.associate { it.key to it.value },
                 jso { this.activeHandleID = handleID }
             )
         } else {
+            pointerDownOffset.current = null
             activeHandleId = ""
             handleRailAndTrackClicks(e)
-        }
-    }
-
-    val getEventData by handler(pixelToStep, vertical, valueToPerc) { e: PointerEvent<*> ->
-        // double check the dimensions of the slider
-        pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
-
-        val value = pixelToStep.getValue(if (vertical) e.clientY else e.pageX)
-
-        jso<EventData> {
-            this.value = value
-            this.percent = valueToPerc.getValue(value)
         }
     }
 
