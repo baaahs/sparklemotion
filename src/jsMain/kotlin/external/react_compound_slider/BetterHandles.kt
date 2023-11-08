@@ -47,6 +47,16 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
     Tracks {
         mixin(props)
         attrs.children = { tracksObject ->
+            // Flip tracks if they're backwards.
+            tracksObject.tracks = tracksObject.tracks.map { track ->
+                if (track.source.value < track.target.value) {
+                    jso {
+                        this.id = track.id
+                        this.source = track.target
+                        this.target = track.source
+                    }
+                } else track
+            }.toTypedArray()
             val origGetProps = tracksObject.getTrackProps
             tracksObject.getTrackProps = {
                 origGetProps().apply {
