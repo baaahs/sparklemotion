@@ -27,9 +27,7 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
             put("WebkitTapHighlightColor", "rgba(0,0,0,0)")
         }
 
-        mixin(props.getHandleProps(props.handle.id).also {
-            console.log("handle props", it)
-        })
+        mixin(props.getHandleProps(props.handle.id))
     }
 
     div(+styles.handleWrapper) {
