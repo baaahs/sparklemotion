@@ -123,12 +123,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         callback(showShaderLibraryDialog) { showShaderLibraryDialog = !showShaderLibraryDialog }
 //    val handleShaderLibrarySelect = callback { _: Shader? -> showShaderLibraryDialog = false }
 
-    val handleShowStateChange = callback {
-        // TODO: don't pass this around? ... and forceRender() is unnecessary.
-        showManager.onShowStateChange()
-        forceRender()
-    }
-
     val handleSettings = callback {
         renderDialog = {
             settingsDialog {
@@ -249,7 +243,6 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 } else if (appState == AppState.ShowView) {
                                     showUi {
                                         attrs.show = showManager.openShow!!
-                                        attrs.onShowStateChange = handleShowStateChange
                                         attrs.onLayoutEditorDialogToggle = handleLayoutEditorDialogToggle
                                         attrs.onShaderLibraryDialogToggle = handleShaderLibraryDialogToggle
                                     }

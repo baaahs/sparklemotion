@@ -37,7 +37,6 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
-    val onShowStateChange = props.controlProps.onShowStateChange
 
     var layoutDimens by state<Pair<Int, Int>?> { null }
     val gridLayout = props.controlProps.layout
@@ -114,7 +113,6 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
                 gridLayout.items.forEachIndexed { index, it ->
                     (it.control as? OpenButtonControl)?.isPressed = index == clickedItemIndex
                 }
-                onShowStateChange()
                 e.stopPropagation()
             }
         }
