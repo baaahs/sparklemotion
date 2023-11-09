@@ -31,6 +31,10 @@ open class Observable : IObservable {
     }
 }
 
+class ObservableValue<T: Any?>(initialValue: T) : Observable() {
+    var value: T by notifyOnChange<T>(initialValue)
+}
+
 fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {
     val observer = RemovableObserver(this, callback)
     addObserver(observer)

@@ -56,7 +56,6 @@ interface ControlViews {
 }
 
 class ControlProps(
-    val onShowStateChange: () -> Unit,
     val controlDisplay: ControlDisplay?,
     val layout: OpenGridLayout? = null,
     val layoutEditor: Editor<MutableIGridLayout>? = null,
@@ -71,7 +70,7 @@ class ControlProps(
         editor: Editor<MutableIGridLayout>?,
         parentDimens: GridDimens?
     ): ControlProps =
-        ControlProps(onShowStateChange, controlDisplay, layout, editor, parentDimens)
+        ControlProps(controlDisplay, layout, editor, parentDimens)
 }
 
 val controlViews by lazy { getControlViews() }
