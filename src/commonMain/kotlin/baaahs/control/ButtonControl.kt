@@ -88,7 +88,9 @@ class OpenButtonControl(
     openContext: OpenContext,
     val controlledFeed: Feed? = buttonControl.controlledFeedId?.let { openContext.getFeed(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
-    val switch: Switch = Switch(buttonControl.title)
+    val switch: Switch = Switch(buttonControl.title).also {
+        it.listen { openContext.onActivePatchSetMayBeAffected() }
+    }
     override val gadget: Switch
         get() = switch
 

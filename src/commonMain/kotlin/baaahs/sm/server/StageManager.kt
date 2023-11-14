@@ -21,7 +21,6 @@ import baaahs.show.buildEmptyShow
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
-import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.globalLaunch
 
@@ -40,14 +39,10 @@ class StageManager(
     private var showRunner: ShowRunner? = null
 
     private val fsSerializer = storage.fsSerializer
-    private var gadgetsChanged: Boolean = false
+    private var checkActivePatchSet: Boolean = false
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
-
-        gadgetManager.addObserver {
-            gadgetsChanged = true
-        }
     }
 
     @Suppress("unused")
@@ -127,10 +122,14 @@ class StageManager(
         }
     }
 
+    override fun onActivePatchSetMayHaveChanged() {
+        checkActivePatchSet = true
+    }
+
     private fun housekeeping() {
-        if (gadgetsChanged) {
+        if (checkActivePatchSet) {
             showRunner?.onSelectedPatchesChanged()
-            gadgetsChanged = false
+            checkActivePatchSet = false
         }
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.
