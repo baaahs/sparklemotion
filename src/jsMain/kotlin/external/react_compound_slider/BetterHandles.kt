@@ -49,11 +49,13 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
         attrs.children = { tracksObject ->
             // Flip tracks if they're backwards.
             tracksObject.tracks = tracksObject.tracks.map { track ->
-                if (track.source.value < track.target.value) {
+                val source = track.source
+                val target = track.target
+                if (source.value < target.value) {
                     jso {
                         this.id = track.id
-                        this.source = track.target
-                        this.target = track.source
+                        this.source = target
+                        this.target = source
                     }
                 } else track
             }.toTypedArray()

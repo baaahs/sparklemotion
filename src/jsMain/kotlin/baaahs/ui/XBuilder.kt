@@ -108,9 +108,12 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
         }
     }
 
-    fun <T: IObservable> observe(item: T): T {
+    fun <T: IObservable> observe(
+        item: T,
+        callback: () -> Unit = { forceRender() }
+    ): T {
         onChange("observe", item) {
-            val observer = item.addObserver { forceRender() }
+            val observer = item.addObserver { callback.invoke() }
             withCleanup { observer.remove() }
         }
         return item

@@ -10,13 +10,13 @@ import react.ReactElement
 external val Handles : ElementType<HandlesProps>
 
 external interface HandlesObject {
-    var handles: Array<SliderItem>
+    var handles: Array<BetterSliderItem>
     var activeHandleID: String?
     var getHandleProps: GetHandleProps
 }
 
 external interface HandlesProps : Props, StandardEventHandlers, StandardEventEmitters {
-    var handles: Array<SliderItem>
+    var handles: Array<BetterSliderItem>
     var activeHandleID: String?
     var children: (handlesObject: HandlesObject) -> ReactElement<*>
 }

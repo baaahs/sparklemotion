@@ -1,6 +1,5 @@
 package external.react_compound_slider
 
-import baaahs.util.Logger
 import react.ReactNode
 import web.dom.Element
 import kotlin.math.max
@@ -36,40 +35,6 @@ fun getPrevValue(
     val newVal = if (reversed) curr + step else curr - step
     return if (reversed) min(domain[1], newVal) else max(domain[0], newVal)
 }
-
-fun getHandles(
-    values: Map<String, Double>,
-    reversed: Boolean,
-    valueToStep: DiscreteScale,
-    warn: Boolean,
-    logger: Logger
-): Pair<Array<HandleItem>, Int> {
-    var changes = 0
-    val handles = values.entries.map { (handleId, value) ->
-        val adjustedValue = valueToStep.getValue(value)
-        if (adjustedValue != value) {
-            changes += 1
-            if (warn) {
-                logger.warn { "Value $value is not a valid step value. Using $adjustedValue instead." }
-            }
-        }
-        handleItem(handleId, adjustedValue)
-    }
-//        .sortedBy { it.value }
-//        .let { if (reversed) it.reversed() else it }
-        .toTypedArray()
-    return handles to changes
-}
-
-fun updateHandles(
-    handles: Array<HandleItem>,
-    updateKey: String,
-    updateValue: Double,
-    reversed: Boolean = false
-): Array<HandleItem> =
-    handles.map {
-        if (it.key == updateKey) handleItem(it.key, updateValue) else it
-    }.toTypedArray()
 
 fun getSliderDomain(slider: Element?, vertical: Boolean): Range {
     if (slider == null) {
