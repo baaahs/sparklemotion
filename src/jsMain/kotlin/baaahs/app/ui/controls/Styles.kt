@@ -295,6 +295,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 
     val vacuityContainer by css {
         display = Display.flex
+        alignContent = Align.stretch
         overflow = Overflow.scroll
         borderWidth = .25.em
         borderStyle = "inset".asDynamic()
