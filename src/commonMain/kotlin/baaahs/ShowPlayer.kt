@@ -9,6 +9,7 @@ import baaahs.scene.SceneProvider
 import baaahs.show.*
 import baaahs.show.live.OpenShow
 import baaahs.show.live.ShowOpener
+import baaahs.ui.addObserver
 import baaahs.util.Clock
 
 interface ShowPlayer {
@@ -36,6 +37,8 @@ abstract class BaseShowPlayer(
 
     private val cachingToolchain = toolchain.withCache(this::class.simpleName ?: "BaseShowPlayer")
 
+    open fun onActivePatchSetMayHaveChanged() {}
+
     override fun openFeed(id: String, feed: Feed): FeedContext {
         // TODO: This is another reference to feeds, so we should .use() it... but then we'll never release them!
         // TODO: Also, it could conceivably be handed out after it's had onRelease() called. How should we handle this?
@@ -55,7 +58,13 @@ abstract class BaseShowPlayer(
 
     open fun openShow(show: Show, showState: ShowState? = null): OpenShow =
         cachingToolchain.pruneUnused {
-            ShowOpener(cachingToolchain, show, this).openShow(showState)
+            ShowOpener(cachingToolchain, show, this)
+                .openShow(showState)
+                .apply {
+                    activePatchSetMonitor.addObserver {
+                        onActivePatchSetMayHaveChanged()
+                    }
+                }
         }
 
     override fun releaseUnused() {
