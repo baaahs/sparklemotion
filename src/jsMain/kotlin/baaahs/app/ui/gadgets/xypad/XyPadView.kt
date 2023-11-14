@@ -54,7 +54,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     }
 
     val handlePointerDownEvent by pointerEventHandler(handlePointerEvent) { e ->
-        if (pointerIsDown.current == null) {
+        if (pointerIsDown.current == null && e.button == 0) {
             pointerIsDown.current = e.pointerId
             e.currentTarget.setPointerCapture(e.pointerId)
 
