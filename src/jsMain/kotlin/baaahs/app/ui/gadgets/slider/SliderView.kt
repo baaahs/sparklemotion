@@ -1,6 +1,8 @@
 package baaahs.app.ui.gadgets.slider
 
+import baaahs.GadgetListener
 import baaahs.app.ui.appContext
+import baaahs.gadgets.Slider
 import baaahs.ui.disableScroll
 import baaahs.ui.enableScroll
 import baaahs.ui.unaryPlus
@@ -19,19 +21,26 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val priorValuesRef = ref(mutableMapOf<String, Double>())
-    val handleChange by handler(priorValuesRef, props.onPositionChange) { values: Map<String, Double> ->
-        val priorValues = priorValuesRef.current!!
-        val newPosition = values[positionHandle] ?: error("No position.")
-        if (newPosition != priorValues[positionHandle]) {
-            priorValues[positionHandle] = newPosition
-            props.onPositionChange(newPosition.toFloat())
-        }
+    val slider = props.slider
 
-        val newFloorPosition = values[floorHandle]
-        if (newFloorPosition != null && newFloorPosition != priorValues[floorHandle]) {
-            priorValues[floorHandle] = newFloorPosition
-            props.onFloorPositionChange?.invoke(newFloorPosition.toFloat())
+    val listener: GadgetListener = {
+        forceRender()
+    }
+    onMount(slider) {
+        slider.listen(listener)
+        withCleanup { slider.unlisten(listener) }
+    }
+
+    val handleChange by handler(slider) { values: Map<String, Double> ->
+        // BetterSlider will deal with moving the handles, so we don't want to trigger a full re-render.
+        slider.withoutTriggering(listener) {
+            val newPosition = values[positionHandle] ?: error("No position.")
+            slider.position = newPosition.toFloat()
+
+            val newFloorPosition = values[floorHandle]
+            if (newFloorPosition != null) {
+                slider.floor = newFloorPosition.toFloat()
+            }
         }
     }
 
@@ -39,11 +48,13 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         handleChange(values)
     }, wait = 10)
 
-    val domain = memo(props.minValue, props.maxValue) {
-        arrayOf(props.minValue, props.maxValue)
+    val minValue = slider.minValue
+    val maxValue = slider.maxValue
+    val domain = memo(minValue, maxValue) {
+        arrayOf(minValue, maxValue)
     }
 
-    val showSecondSlider = props.floorPosition != null
+    val showSecondSlider = slider.beatLinked
 
     div(+styles.wrapper) {
 //        label(+styles.label) {
@@ -54,17 +65,18 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         betterSlider {
             attrs.className = +styles.slider
             attrs.vertical = true
-            attrs.reversed = props.reversed
-            attrs.mode = 3
-            attrs.step = (props.stepValue ?: ((props.maxValue - props.minValue) / 256)).toDouble()
+            attrs.reversed = true
+            val stepValue = slider.stepValue ?: ((maxValue - minValue) / 256f)
+            val position = slider.position
+            attrs.step = (stepValue ).toDouble()
             attrs.domain = domain.asDynamic()
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
             attrs.values = buildMap {
-                put(positionHandle, props.position.toDouble())
-                props.floorPosition?.let { put(floorHandle, it.toDouble()) }
+                put(positionHandle, position.toDouble())
+                if (slider.beatLinked) { put(floorHandle, slider.floor.toDouble()) }
             }
 
             betterRail {
@@ -136,24 +148,21 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            if (props.showTicks != false) {
-                val ticksScale = props.ticksScale ?: 1f
-
-                Ticks {
-                    attrs.count = 10
-                    attrs.children = { ticksObject ->
-                        buildElement {
-                            div(+styles.ticks) {
-                                ticksObject.ticks.forEach { tick ->
-                                    tick {
-                                        key = tick.id
-                                        attrs.tick = tick
-                                        attrs.format = { item ->
-                                            if (ticksScale != 1f) {
-                                                floor(item.value.toFloat() * ticksScale).toString()
-                                            } else {
-                                                ((item.value.toFloat() * 100f).roundToInt().toFloat() / 100f).toString()
-                                            }
+            val ticksScale = if (maxValue <= 2) 100f else 1f
+            Ticks {
+                attrs.count = 10
+                attrs.children = { ticksObject ->
+                    buildElement {
+                        div(+styles.ticks) {
+                            ticksObject.ticks.forEach { tick ->
+                                tick {
+                                    key = tick.id
+                                    attrs.tick = tick
+                                    attrs.format = { item ->
+                                        if (ticksScale != 1f) {
+                                            floor(item.value.toFloat() * ticksScale).toString()
+                                        } else {
+                                            ((item.value.toFloat() * 100f).roundToInt().toFloat() / 100f).toString()
                                         }
                                     }
                                 }
@@ -167,26 +176,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 }
 
 external interface SliderProps : Props {
-    var title: String
-
-    var position: Float
-
-    /** If non-null, this is a second slider constrained to less than the main slider, representing a floor. */
-    var floorPosition: Float?
-
-    /** If non-null, this position is displayed as uneditable context. */
-    var contextPosition: Float?
-
-    var minValue: Float
-    var maxValue: Float
-    var stepValue: Float?
-
-    var reversed: Boolean?
-    var showTicks: Boolean?
-    var ticksScale: Float?
-
-    var onPositionChange: (Float) -> Unit
-    var onFloorPositionChange: ((Float) -> Unit)?
+    var slider: Slider
 }
 
 fun RBuilder.slider(handler: RHandler<SliderProps>) =
