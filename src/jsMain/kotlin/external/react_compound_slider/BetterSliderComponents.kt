@@ -42,6 +42,19 @@ val BetterHandles = xComponent<HandlesProps>("BetterHandles") { props ->
 fun RBuilder.betterHandles(handler: RHandler<HandlesProps>) =
     child(BetterHandles, handler = handler)
 
+val BetterTicks = xComponent<TicksProps>("BetterTicks") { props ->
+    Ticks {
+        mixin(props)
+        attrs.children = { ticksObject ->
+            ticksObject.scale = props.scale
+            props.children.invoke(ticksObject)
+        }
+    }
+}
+
+fun RBuilder.betterTicks(handler: RHandler<TicksProps>) =
+    child(BetterTicks, handler = handler)
+
 val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
     // render():
     Tracks {

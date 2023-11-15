@@ -9,8 +9,11 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.lodash.throttle
 import external.react_compound_slider.*
+import kotlinx.css.bottom
+import kotlinx.css.pct
 import react.*
 import react.dom.div
+import styled.inlineStyles
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
@@ -149,7 +152,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             }
 
             val ticksScale = if (maxValue <= 2) 100f else 1f
-            Ticks {
+            betterTicks {
                 attrs.count = 10
                 attrs.children = { ticksObject ->
                     buildElement {
@@ -164,6 +167,15 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                         } else {
                                             ((item.value.toFloat() * 100f).roundToInt().toFloat() / 100f).toString()
                                         }
+                                    }
+                                }
+                            }
+
+                            val scale = ticksObject.scale
+                            if (scale != null) {
+                                div(+styles.defaultTickMark) {
+                                    inlineStyles {
+                                        bottom = (100 - scale.getValue(slider.initialValue.toDouble())).pct
                                     }
                                 }
                             }
