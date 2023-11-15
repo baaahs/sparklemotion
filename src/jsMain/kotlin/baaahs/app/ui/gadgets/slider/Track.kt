@@ -15,15 +15,19 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.inlineStyles
+import kotlin.math.max
+import kotlin.math.min
 
 private val track = xComponent<TrackProps>("Track") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
+    val upper = min(props.source.percent, props.target.percent)
+    val lower = max(props.source.percent, props.target.percent)
     div(+styles.track) {
         inlineStyles {
-            top = props.source.percent.pct
-            height = (props.target.percent.toFloat() - props.source.percent.toFloat()).pct
+            top = upper.pct
+            height = (lower.toFloat() - upper.toFloat()).pct
         }
 
         mixin(props.getTrackProps())

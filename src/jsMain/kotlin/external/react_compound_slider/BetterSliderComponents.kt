@@ -60,18 +60,6 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
     Tracks {
         mixin(props)
         attrs.children = { tracksObject ->
-            // Flip tracks if they're backwards.
-            tracksObject.tracks = tracksObject.tracks.map { track ->
-                val source = track.source
-                val target = track.target
-                if (source.value < target.value) {
-                    jso {
-                        this.id = track.id
-                        this.source = target
-                        this.target = source
-                    }
-                } else track
-            }.toTypedArray()
             val origGetProps = tracksObject.getTrackProps
             tracksObject.getTrackProps = {
                 origGetProps().apply {
@@ -79,7 +67,6 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
                     onTouchStart = null
                     onPointerDown = { e ->
                         props.onPointerDown?.invoke(e)
-                        autofocus(e)
                         props.emitPointer?.invoke(e, Location.Track, null)
                     }
                 }
@@ -104,7 +91,6 @@ val BetterRail = xComponent<RailProps>("BetterRail") { props ->
                     onTouchStart = null
                     onPointerDown = { e ->
                         props.onPointerDown?.invoke(e)
-                        autofocus(e)
                         props.emitPointer?.invoke(e, Location.Rail, null)
                     }
                 }
