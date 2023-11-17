@@ -29,30 +29,12 @@ external interface TracksObject {
     var getTrackProps: GetTrackProps
 }
 
-external interface TracksProps : Props {
+external interface TracksProps : Props, StandardEventHandlers, StandardEventEmitters {
     var left: Boolean?
-        get() = definedExternally
-        set(value) = definedExternally
     var right: Boolean?
-        get() = definedExternally
-        set(value) = definedExternally
     var getEventData: GetEventData?
-        get() = definedExternally
-        set(value) = definedExternally
     var activeHandleID: String?
-        get() = definedExternally
-        set(value) = definedExternally
     var scale: LinearScale?
-        get() = definedExternally
-        set(value) = definedExternally
     var handles: Array<SliderItem>?
-        get() = definedExternally
-        set(value) = definedExternally
-//    var emitMouse: EmitMouse?
-//        get() = definedExternally
-//        set(value) = definedExternally
-//    var emitTouch: EmitTouch?
-//        get() = definedExternally
-//        set(value) = definedExternally
     var children: (tracksObject: TracksObject) -> ReactElement<*>
 }

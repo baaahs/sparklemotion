@@ -2,6 +2,7 @@ package baaahs.ui
 
 import baaahs.context2d
 import baaahs.document
+import js.core.jso
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
@@ -139,6 +140,12 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
     }
 }
 
+fun RElementBuilder<*>.mixin(jsObj: dynamic) {
+    keys(jsObj).forEach { key ->
+        attrs.asDynamic()[key] = jsObj[key]
+    }
+}
+
 fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
     return CssBuilder().apply { block() }
 }
@@ -226,9 +233,9 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (web.events.Event) -> Unit = { event -> event.preventDefault() }
+val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
-    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, js("{ passive: false }"))
+    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
 }
 val enableScroll = {
     document.body.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault)

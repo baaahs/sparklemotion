@@ -25,28 +25,15 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     val controlsStyles = appContext.allStyles.controls
 
     val slider = props.slider
-    val title = slider.title
 
-    var position by state { slider.position }
-    var floorPosition by state { slider.floor }
     var beatLinked by state { slider.beatLinked }
 
     onMount(slider) {
         val listener: GadgetListener = {
-            position = slider.position
-            floorPosition = slider.floor
             beatLinked = slider.beatLinked
         }
         slider.listen(listener)
         withCleanup { slider.unlisten(listener) }
-    }
-
-    val handlePositionChange by handler(slider) { newPosition: Float ->
-        slider.position = newPosition
-    }
-
-    val handleFloorPositionChange by handler(slider) { newPosition: Float ->
-        slider.floor = newPosition
     }
 
     val handleToggleBeatLinked by mouseEventHandler(slider) {
@@ -62,23 +49,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
     div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
-            attrs.title = slider.title
-            attrs.position = position
-            if (beatLinked) {
-                attrs.floorPosition = floorPosition
-            }
-            attrs.contextPosition = null
-            attrs.minValue = slider.minValue
-            attrs.maxValue = slider.maxValue
-            attrs.stepValue = slider.stepValue
-            attrs.reversed = true
-            attrs.showTicks = true
-            if (slider.maxValue <= 2) {
-                attrs.ticksScale = 100f
-            }
-
-            attrs.onPositionChange = handlePositionChange
-            attrs.onFloorPositionChange = handleFloorPositionChange
+            attrs.slider = slider
         }
 
         div(+Styles.beatLinkedSwitch) {
@@ -98,7 +69,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
             ResetIcon {}
         }
 
-        div(+controlsStyles.feedTitle) { +title }
+        div(+controlsStyles.feedTitle) { +slider.title }
     }
 }
 

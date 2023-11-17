@@ -142,6 +142,10 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         backgroundColor = theme.paperMediumContrast
     }
 
+    val defaultTickMark by css(tickMark) {
+        backgroundColor = Color.orange
+    }
+
     val tickText by css {
         position = Position.absolute
 //        right = (-30).px

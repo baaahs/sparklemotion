@@ -8,6 +8,7 @@ import baaahs.gl.openShader
 import baaahs.gl.shader.OpenShader
 import baaahs.internalTimerClock
 import baaahs.show.*
+import baaahs.ui.Observable
 import baaahs.util.CacheBuilder
 import baaahs.util.Logger
 import baaahs.util.elapsedMs
@@ -50,6 +51,8 @@ open class ShowOpener(
     override val allPatchModFeeds: List<Feed>
         get() = allPatches.values.flatMap { it.patchMods.flatMap { it.feeds } }
 
+    private val activePatchSetMonitor = Observable()
+
     override fun findControl(id: String): OpenControl? =
         if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
 
@@ -69,7 +72,7 @@ open class ShowOpener(
 
         val implicitOpenControls = implicitControls.keys.map { getControl(it) }
 
-        return OpenShow(show, showPlayer, this, implicitOpenControls)
+        return OpenShow(show, showPlayer, this, implicitOpenControls, activePatchSetMonitor)
             .also { if (showState != null) it.applyState(showState) }
             .also { it.applyConstraints() }
             .also { logger.info { "Opened \"${show.title}\" in ${startTime.elapsedMs() }ms." } }
@@ -80,6 +83,10 @@ open class ShowOpener(
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
         showPlayer.registerGadget(id, gadget, controlledFeed)
+    }
+
+    override fun onActivePatchSetMayBeAffected() {
+        activePatchSetMonitor.notifyChanged()
     }
 
     override fun release() {

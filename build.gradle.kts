@@ -44,6 +44,7 @@ repositories {
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
     maven("https://maven.danielgergely.com/releases")
     maven("https://jitpack.io")
+    maven("https://mvn.0110.be/releases") // TarsosDSP
 }
 
 group = "org.baaahs"
@@ -98,7 +99,6 @@ kotlin {
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
-                implementation(files("src/jvmMain/lib/TarsosDSP-2.4-bin.jar")) // sound analysis
 
                 implementation("org.joml:joml:1.9.25")
 
@@ -122,6 +122,10 @@ kotlin {
 
                 // To support animated GIFs:
                 implementation("com.madgag:animated-gif-lib:1.4")
+
+                // SoundAnalysisPlugin:
+                implementation("be.tarsos.dsp:core:2.5")
+                implementation("be.tarsos.dsp:jvm:2.5")
 
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")

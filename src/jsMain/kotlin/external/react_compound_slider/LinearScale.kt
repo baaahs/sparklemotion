@@ -3,18 +3,18 @@
 
 package external.react_compound_slider
 
-external interface LinearScale {
+external class LinearScale : Scale {
     var interpolator: Interpolator?
-    var domain: Array<Number>
-    var range: Array<Number>
-    fun createInterpolator(domain: Array<Number>, range: Array<Number>): (x: Number) -> Number
-    fun interpolateValue(a: Number, b: Number): (t: Number) -> Number
-    fun deinterpolateValue(a: Number, b: Number): (x: Number) -> Number
+    override var domain: Array<Double>
+    override var range: Array<Double>
+    fun createInterpolator(domain: Array<Double>, range: Array<Double>): (x: Double) -> Double
+    fun interpolateValue(a: Double, b: Double): (t: Double) -> Double
+    fun deinterpolateValue(a: Double, b: Double): (x: Double) -> Double
     fun rescale(): LinearScale /* this */
-    fun getValue(x: Number): Number
-    fun setDomain(param_val: Array<Number>): LinearScale /* this */
-    fun getDomain(): Array<Number>
-    fun setRange(param_val: Array<Number>): LinearScale /* this */
-    fun getRange(): Array<Number>
-    fun getTicks(count: Number): Array<Number>
+    fun getValue(x: Double): Double
+    fun setDomain(param_val: Array<Double>): LinearScale /* this */
+    fun getDomain(): Array<Double>
+    fun setRange(param_val: Array<Double>): LinearScale /* this */
+    fun getRange(): Array<Double>
+    fun getTicks(count: Double): Array<Double>
 }

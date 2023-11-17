@@ -3,32 +3,38 @@
 
 package external.react_compound_slider
 
-external interface HandleEventHandlers {
-//    var onKeyDown: ((event: React.KeyboardEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
-//    var onMouseDown: ((event: React.MouseEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
-//    var onTouchStart: ((event: React.TouchEvent) -> Unit)?
-//        get() = definedExternally
-//        set(value) = definedExternally
+import react.dom.events.KeyboardEvent
+import react.dom.events.MouseEvent
+import react.dom.events.PointerEvent
+import react.dom.events.TouchEvent
+
+external interface StandardEventHandlers {
+    var onKeyDown: ((event: KeyboardEvent<*>) -> Unit)?
+    var onMouseDown: ((event: MouseEvent<*, *>) -> Unit)?
+    var onTouchStart: ((event: TouchEvent<*>) -> Unit)?
+    var onPointerDown: ((event: PointerEvent<*>) -> Unit)?
+}
+
+external interface StandardEventEmitters {
+    var emitMouse: EmitMouse?
+    var emitKeyboard: EmitKeyboard?
+    var emitTouch: EmitTouch?
+    var emitPointer: EmitPointer?
 }
 
 external interface EventData {
-    var value: Number
-    var percent: Number
+    var value: Double
+    var percent: Double
 }
-
-//typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
-//
-//typealias EmitMouse = (e: MouseEvent__1<Element>, id: String) -> Unit
-//
-//typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
 
 external interface OtherProps {
     @nativeGetter
     operator fun get(key: String): Any?
     @nativeSetter
     operator fun set(key: String, value: Any)
+}
+
+external interface Scale {
+    var domain: Array<Double>
+    var range: Array<Double>
 }
