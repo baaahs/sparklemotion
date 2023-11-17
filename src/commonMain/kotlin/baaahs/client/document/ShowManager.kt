@@ -120,9 +120,5 @@ class ShowManager(
         override fun onEdit(document: Show, pushToUndoStack: Boolean) {
             onEdit(document, openShow!!.getShowState(), pushToUndoStack)
         }
-
-        fun onShowStateChange() {
-            notifyChanged()
-        }
     }
 }

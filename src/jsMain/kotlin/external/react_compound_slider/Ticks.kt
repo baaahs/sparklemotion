@@ -9,10 +9,15 @@ import react.ReactElement
 
 external val Ticks : ElementType<TicksProps>
 
-external interface TicksObject {
-    val activeHandleID: String
-    val getEventData: GetEventData
-    val ticks: Array<SliderItem>
+external interface TicksObject : RcsProps {
+    var ticks: Array<SliderItem>
+}
+
+external interface RcsProps : Props, StandardEventEmitters {
+    var scale: LinearScale?
+    var handles: Array<SliderItem>
+    var activeHandleID: String?
+    var getEventData: GetEventData?
 }
 
 external interface TicksProps : Props {

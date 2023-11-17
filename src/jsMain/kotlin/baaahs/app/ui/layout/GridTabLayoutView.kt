@@ -101,8 +101,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             .also { withCleanup { it.release() } }
     }
 
-    val genericControlProps = memo(props.onShowStateChange, controlDisplay) {
-        ControlProps(props.onShowStateChange, controlDisplay)
+    val genericControlProps = memo(controlDisplay) {
+        ControlProps(controlDisplay)
     }
 
 
@@ -254,7 +254,6 @@ external interface GridTabLayoutProps : Props {
     var tab: OpenIGridLayout
     var controlProps: ControlProps
     var tabEditor: Editor<MutableIGridLayout>
-    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.gridTabLayout(handler: RHandler<GridTabLayoutProps>) =

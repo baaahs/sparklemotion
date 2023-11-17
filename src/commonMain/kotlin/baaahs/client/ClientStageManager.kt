@@ -52,6 +52,10 @@ class ClientStageManager(
         listeners.remove(listener)
     }
 
+    override fun onActivePatchSetMayHaveChanged() {
+        checkForChanges()
+    }
+
     private inner class ClientGadget(
         id: String,
         pubSub: PubSub.Client,
@@ -69,7 +73,6 @@ class ClientStageManager(
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
                     gadget.applyState(json)
-                    checkForChanges()
                 }
             }
         }
@@ -77,7 +80,6 @@ class ClientStageManager(
         // GadgetListener callback.
         fun onGadgetChange(g: Gadget) {
             channel.onChange(g.state)
-            checkForChanges()
         }
     }
 

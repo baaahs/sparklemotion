@@ -754,8 +754,8 @@ class GridLayout(
                         val newLayout = synchronizeLayoutWithChildren(
                             baseLayout,
                             nextProps.children?.asArray() ?: emptyArray(),
-                            nextProps.cols!!,
-                            nextProps.maxRows
+                            baseLayout.cols,
+                            baseLayout.rows
                         )
 
                         jso {

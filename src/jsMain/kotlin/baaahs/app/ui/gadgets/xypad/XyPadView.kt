@@ -1,22 +1,17 @@
 package baaahs.app.ui.gadgets.xypad
 
 import baaahs.Gadget
-import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.XyPadStyles
-import baaahs.document
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
 import baaahs.ui.icons.ResetIcon
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
 import kotlinx.css.*
 import react.*
 import react.dom.*
 import styled.inlineStyles
-import web.events.EventHandler
 import web.html.HTMLElement
-import web.uievents.*
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val padSize = props.padSize ?: Vector2F(200f, 200f)
@@ -49,34 +44,19 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
         withCleanup { props.xyPad.unlisten(gadgetListener) }
     }
 
-    val pointerIsDown = useRef(false)
+    val pointerIsDown = useRef<Number>(null)
     val pointerDownOffset = useRef(Vector2F(0f, 0f))
     val handlePointerEvent by pointerEventHandler(props.xyPad, helper) { e ->
-        if (pointerIsDown.current!!) {
-            val positionPx = e.relativePositionPx(backgroundRef) -
-                    pointerDownOffset.current!!
+        val positionPx = e.relativePositionPx(backgroundRef) -
+                pointerDownOffset.current!!
 
-            props.xyPad.position = helper.positionFromPx(positionPx)
-        }
+        props.xyPad.position = helper.positionFromPx(positionPx)
     }
 
-    val handleDocumentPointerUp by pointerEventHandler(handlePointerEvent) { e ->
-        if (pointerIsDown.current == true) {
-            pointerIsDown.current = false
-            e.preventDefault()
-        }
-    }
-
-    val handlePointerDownEvent by pointerEventHandler(handlePointerEvent, handleDocumentPointerUp) { e ->
-        if (e.isPrimary) {
-            pointerIsDown.current = true
-
-            // Ensure we don't miss a pointer up event if the pointer leaves the pad.
-            document.addEventListener(
-                PointerEvent.POINTER_UP,
-                handleDocumentPointerUp as EventHandler<PointerEvent>,
-                jso { once = true }
-            )
+    val handlePointerDownEvent by pointerEventHandler(handlePointerEvent) { e ->
+        if (pointerIsDown.current == null && e.button == 0) {
+            pointerIsDown.current = e.pointerId
+            e.currentTarget.setPointerCapture(e.pointerId)
 
             // If the pointer starts on the knob, move it relative to the pointer, otherwise jump to the pointer.
             val downPositionPx = e.relativePositionPx(backgroundRef)
@@ -96,21 +76,26 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     }
 
     val handlePointerMoveEvent by pointerEventHandler(handlePointerEvent) { e ->
-        handlePointerEvent(e)
-        e.preventDefault()
+        if (pointerIsDown.current == e.pointerId) {
+            handlePointerEvent(e)
+            e.preventDefault()
+        }
     }
 
     val handlePointerUpEvent by pointerEventHandler(handlePointerEvent) { e ->
-        handlePointerEvent(e)
-        pointerIsDown.current = false
-        e.preventDefault()
+        if (pointerIsDown.current == e.pointerId) {
+            handlePointerEvent(e)
+            pointerIsDown.current = null
+            e.currentTarget.releasePointerCapture(e.pointerId)
+            e.preventDefault()
+        }
     }
 
     val knobPositionPx = helper.knobPositionPx
     val crosshairPositionPx = helper.crosshairPositionPx
 
-    val ignorePointerDown by mouseEventHandler { it.stopPropagation() }
-    val handleReset by mouseEventHandler {
+    val ignorePointerDown by pointerEventHandler { it.stopPropagation() }
+    val handleReset by mouseEventHandler(props.xyPad) {
         props.xyPad.position = props.xyPad.initialValue
     }
 

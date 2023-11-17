@@ -60,13 +60,11 @@ private val ShowUiView = xComponent<ShowUiProps>("ShowUi") { props ->
         attrs.show = show
         attrs.layout = currentLayout
         attrs.layoutEditor = layoutEditor
-        attrs.onShowStateChange = props.onShowStateChange
     }
 }
 
 external interface ShowUiProps : Props {
     var show: OpenShow
-    var onShowStateChange: () -> Unit
     var onLayoutEditorDialogToggle: () -> Unit
     var onShaderLibraryDialogToggle: () -> Unit
 }

@@ -16,16 +16,26 @@ import react.dom.setProp
 import react.dom.svg
 import react.useContext
 import styled.inlineStyles
+import web.html.HTMLElement
 
 private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
+    val handleRef = ref<HTMLElement>()
+    observe(props.handle) {
+        handleRef.current?.let { handle ->
+            handle.style.top = props.handle.percent.pct.toString()
+            handle.ariaValueNow = props.handle.value.toString()
+        }
+    }
+
     div(+styles.altHandleWrapper) {
+        ref = handleRef
         mixin(props.getHandleProps(props.handle.id))
 
         setProp("role", "slider")
-        setProp("aria-valuemin", props.domain[9])
+        setProp("aria-valuemin", props.domain[0])
         setProp("aria-valuemax", props.domain[1])
         setProp("aria-valuenow", props.handle.value)
         inlineStyles {
@@ -43,7 +53,7 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
 external interface AltHandleProps : Props {
     var domain: Array<Float>
     var handle: SliderItem
-    var getHandleProps: (id: String) -> dynamic
+    var getHandleProps: (id: String) -> HandleProps
 }
 
 fun RBuilder.altHandle(handler: RHandler<AltHandleProps>) =

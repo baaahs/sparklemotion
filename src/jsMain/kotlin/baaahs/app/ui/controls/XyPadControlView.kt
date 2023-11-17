@@ -3,8 +3,10 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.xypad.xyPad
 import baaahs.control.OpenXyPadControl
+import baaahs.geom.Vector2F
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
+import baaahs.util.useResizeListener
 import kotlinx.css.*
 import kotlinx.css.properties.BoxShadow
 import react.Props
@@ -13,17 +15,25 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.StyleSheet
+import web.dom.Element
 
 private val XyPadControlView = xComponent<XyPadProps>("XyPadControl") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
     val xyPad = props.xyPadControl.xyPad
-
+    var padSize by state<Vector2F?> { null }
+    val containerRef = ref<Element>()
+    useResizeListener(containerRef) { width, height ->
+        padSize = Vector2F(height.toFloat(), height.toFloat())
+    }
 
     div(props.containerClasses ?: (+XyPadStyles.container and props.xyPadControl.inUseStyle)) {
+        ref = containerRef
+
         xyPad {
             attrs.xyPad = xyPad
+            attrs.padSize = padSize
         }
 
         div(+controlsStyles.feedTitle) { +xyPad.title }
@@ -41,6 +51,7 @@ object XyPadStyles : StyleSheet("app-ui-controls-xypad", isStatic = true) {
     val container by css {
         display = Display.flex
         border = Border(3.px, baaahs.ui.inset)
+        height = 100.pct
     }
 
     val background by css {

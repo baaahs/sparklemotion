@@ -31,6 +31,7 @@ interface OpenContext : GadgetProvider {
     fun getFeed(id: String): Feed
     fun getPanel(id: String): Panel
     fun getPatch(it: String): OpenPatch
+    fun onActivePatchSetMayBeAffected()
     fun release()
 }
 
@@ -52,8 +53,9 @@ object EmptyOpenContext : OpenContext {
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
         error("not really an open context")
 
-    override fun release() {
-    }
+    override fun onActivePatchSetMayBeAffected() = error("not really an open context")
+
+    override fun release() {}
 }
 
 class OpenShow(
@@ -61,6 +63,7 @@ class OpenShow(
     private val showPlayer: ShowPlayer,
     private val openContext: OpenContext,
     internal val implicitControls: List<OpenControl>,
+    val activePatchSetMonitor: Observable,
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter(), OpenDocument {
     val id = randomId("show")
     val layouts get() = show.layouts
