@@ -4,9 +4,6 @@ import baaahs.app.ui.appContext
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_compound_slider.BetterSliderItem
-import external.react_compound_slider.GetTrackProps
-import external.react_compound_slider.SliderItem
 import kotlinx.css.height
 import kotlinx.css.pct
 import kotlinx.css.top

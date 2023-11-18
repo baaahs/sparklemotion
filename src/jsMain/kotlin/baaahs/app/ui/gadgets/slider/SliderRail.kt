@@ -4,7 +4,6 @@ import baaahs.app.ui.appContext
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_compound_slider.GetRailProps
 import react.Props
 import react.RBuilder
 import react.RHandler

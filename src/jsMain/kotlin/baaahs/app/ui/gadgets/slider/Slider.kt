@@ -1,7 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 @file:JsModule("react-compound-slider")
 
-package external.react_compound_slider
+package baaahs.app.ui.gadgets.slider
 
 import react.ElementType
 import react.PropsWithChildren
@@ -12,7 +12,7 @@ external interface SliderData {
 
 external val Slider : ElementType<SliderProps>
 
-external interface SliderProps : PropsWithChildren {
+external interface BetterSliderProps : PropsWithChildren {
     /**
      * String component used for slider root. Defaults to 'div'.
      */
