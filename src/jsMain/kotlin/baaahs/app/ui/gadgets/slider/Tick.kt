@@ -1,6 +1,7 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
+import baaahs.ui.slider.SliderItem
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.bottom

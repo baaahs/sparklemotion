@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import baaahs.ui.xComponent
 import js.core.jso
@@ -15,7 +15,7 @@ external interface RcsProps : Props, StandardEventEmitters {
     var getEventData: GetEventData?
 }
 
-val BetterTicks = xComponent<TicksProps>("BetterTicks") { props ->
+private val BetterTicks = xComponent<TicksProps>("BetterTicks") { props ->
     val scale = props.scale
     val ticks = memo(props.values, scale, props.count) {
         (props.values ?: scale.getTicks(props.count)).map { value ->
@@ -69,5 +69,5 @@ external interface TicksProps : Props {
     var children: (ticksObject: TicksObject) -> ReactElement<*>
 }
 
-fun RBuilder.betterTicks(handler: RHandler<TicksProps>) =
+fun RBuilder.ticks(handler: RHandler<TicksProps>) =
     child(BetterTicks, handler = handler)

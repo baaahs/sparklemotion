@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent

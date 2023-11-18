@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import baaahs.ui.Observable
 import baaahs.ui.xComponent
@@ -15,9 +15,13 @@ import web.uievents.POINTER_MOVE
 import web.uievents.POINTER_UP
 import kotlin.math.abs
 
+/**
+ * Generic slider component derived from react-compound-slider.
+ */
+
 private val defaultDomain = 0.0..1.0
 
-val BetterSlider = xComponent<BetterSliderProps>("BetterSlider") { props ->
+private val Slider = xComponent<BetterSliderProps>("BetterSlider") { props ->
     val step = props.step
     val domain = props.domain?.properlyOrdered() ?: defaultDomain
     val vertical = props.vertical == true
@@ -34,16 +38,14 @@ val BetterSlider = xComponent<BetterSliderProps>("BetterSlider") { props ->
 
     val values = props.values
     val sliderItems = memo(
-        values, valueToValue, valueToPercent, props.onUpdate, props.onChange, props.warnOnChanges
+        values, valueToValue, valueToPercent, props.onUpdate, props.onChange
     ) {
         var changes = 0
         values.entries.associate { (handleId, value) ->
             val adjustedValue = valueToValue.getValue(value)
             if (adjustedValue != value) {
                 changes += 1
-                if (props.warnOnChanges) {
-                    logger.warn { "Value $value is not a valid step value. Using $adjustedValue instead." }
-                }
+                logger.warn { "Value $value is not a valid step value. Using $adjustedValue instead." }
             }
             handleId to BetterSliderItem(handleId, adjustedValue, valueToPercent.getValue(adjustedValue))
         }.also {
@@ -208,7 +210,6 @@ val BetterSlider = xComponent<BetterSliderProps>("BetterSlider") { props ->
 
             pointerDownOffset.current = null
             pointerDownOffset.current = sliderItem.value - getEventValue(e.nativeEvent)
-            println("v=${sliderItem.value} offset=${pointerDownOffset.current}")
             activeHandleId = handleID
             props.onSlideStart?.invoke(
                 sliderItems.entries.associate { (key, item) -> key to item.value },
@@ -250,21 +251,7 @@ class BetterSliderItem(
 ) : Observable(), SliderItem
 
 external interface BetterSliderProps : PropsWithChildren {
-    /**
-     * String component used for slider root. Defaults to 'div'.
-     */
-    var component: String?
-    /**
-     * An object with any inline styles you want applied to the root element.
-     */
-    var rootStyle: Any?
-    /**
-     * An object with any props you want applied to the root element.
-     */
-    var rootProps: Any?
-    /**
-     * CSS class name applied to the root element of the slider.
-     */
+    /** CSS class name applied to the root element of the slider. */
     var className: String?
     /**
      * Two element array of numbers providing the min and max values for the slider [min, max] e.g. [0, 100].
@@ -277,54 +264,22 @@ external interface BetterSliderProps : PropsWithChildren {
      * The numbers will be forced into the domain if they are two small or large.
      */
     var values: Map<String, Double>
-    /**
-     * The step value for the slider.
-     */
+    /** The step value for the slider. */
     var step: Double?
-    /**
-     * The interaction mode. Value of 1 will allow handles to cross each other.
-     * Value of 2 will keep the sliders from crossing and separated by a step.
-     * Value of 3 will make the handles pushable and keep them a step apart.
-     * ADVANCED: You can also supply a function that will be passed the current values and the incoming update.
-     * Your function should return what the state should be set as.
-     */
-    var mode: Any? // ?: 1 | 2 | 3 | CustomMode;
-    /**
-     * Set to true if the slider is displayed vertically to tell the slider to use the height to calculate positions.
-     */
+    /** Set to true if the slider is displayed vertically to tell the slider to use the height to calculate positions. */
     var vertical: Boolean?
-    /**
-     * Reverse the display of slider values.
-     */
+    /** Reverse the display of slider values. */
     var reversed: Boolean?
-    /**
-     * Function triggered when the value of the slider has changed. This will recieve changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values.
-     */
+    /** Function triggered when the value of the slider has changed. This will receive changes at the end of a slide as well as changes from clicks on rails and tracks. Receives values. */
     var onChange: ((values: Map<String, Double>) -> Unit)?
-    /**
-     * Function called with the values at each update (caution: high-volume updates when dragging). Receives values.
-     */
+    /** Function called with the values at each update (caution: high-volume updates when dragging). Receives values. */
     var onUpdate: ((values: Map<String, Double>) -> Unit)?
-    /**
-     * Function triggered with ontouchstart or onmousedown on a handle. Receives values.
-     */
+    /** Function triggered with ontouchstart or onmousedown on a handle. Receives values. */
     var onSlideStart: ((values: Map<String, Double>, data: SliderData) -> Unit)?
-    /**
-     * Function triggered on ontouchend or onmouseup on a handle. Receives values.
-     */
+    /** Function triggered on ontouchend or onmouseup on a handle. Receives values. */
     var onSlideEnd: ((values: Map<String, Double>, data: SliderData) -> Unit)?
-    /**
-     * Ignore all mouse, touch and keyboard events.
-     */
+    /** Ignore all mouse, touch and keyboard events. */
     var disabled: Boolean
-    /**
-     * Render slider children as siblings. This is primarily for SVG sliders. See the SVG example.
-     */
-    var flatten: Boolean
-    /**
-     * When true, the slider will warn if values are changed to fit domain and step values.  Defaults to false.
-     */
-    var warnOnChanges: Boolean
 }
 
 external interface SliderData {
@@ -337,5 +292,5 @@ external interface SliderItem {
     var percent: Double
 }
 
-fun RBuilder.betterSlider(handler: RHandler<BetterSliderProps>) =
-    child(BetterSlider, handler = handler)
+fun RBuilder.slider(handler: RHandler<BetterSliderProps>) =
+    child(Slider, handler = handler)

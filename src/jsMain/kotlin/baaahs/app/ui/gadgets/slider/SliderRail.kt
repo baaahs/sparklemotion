@@ -2,6 +2,7 @@ package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
 import baaahs.ui.mixin
+import baaahs.ui.slider.GetRailProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.Props

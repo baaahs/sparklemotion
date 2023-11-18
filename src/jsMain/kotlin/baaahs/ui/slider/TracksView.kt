@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import baaahs.ui.xComponent
 import js.core.jso
@@ -17,7 +17,7 @@ external interface TracksObject {
     var getTrackProps: GetTrackProps
 }
 
-val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
+private val Tracks = xComponent<TracksProps>("BetterTracks") { props ->
     val domain = props.scale?.domain ?: 0.0..1.0
     val handles = props.handles ?: emptyArray()
     val left = props.left != false
@@ -69,8 +69,8 @@ val BetterTracks = xComponent<TracksProps>("BetterTracks") { props ->
     +Children.only(props.children.invoke(tracksObject))
 }
 
-fun RBuilder.betterTracks(handler: RHandler<TracksProps>) =
-    child(BetterTracks, handler = handler)
+fun RBuilder.tracks(handler: RHandler<TracksProps>) =
+    child(Tracks, handler = handler)
 
 external interface TracksProps : Props, StandardEventHandlers, StandardEventEmitters {
     var left: Boolean?

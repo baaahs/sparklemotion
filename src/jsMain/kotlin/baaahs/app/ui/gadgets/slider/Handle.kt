@@ -3,6 +3,9 @@ package baaahs.app.ui.gadgets.slider
 import baaahs.app.ui.appContext
 import baaahs.ui.and
 import baaahs.ui.mixin
+import baaahs.ui.slider.BetterSliderItem
+import baaahs.ui.slider.Range
+import baaahs.ui.slider.StandardEventHandlers
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.pct
