@@ -1,4 +1,4 @@
-package external.react_compound_slider
+package baaahs.app.ui.gadgets.slider
 
 import react.ReactNode
 import web.dom.Element

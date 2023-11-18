@@ -3,7 +3,6 @@ package baaahs.app.ui.gadgets.slider
 import baaahs.app.ui.appContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_compound_slider.SliderItem
 import kotlinx.css.bottom
 import kotlinx.css.pct
 import react.Props

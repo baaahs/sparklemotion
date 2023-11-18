@@ -1,6 +1,5 @@
-package external.react_compound_slider
+package baaahs.app.ui.gadgets.slider
 
-import baaahs.app.ui.gadgets.slider.HandleProps
 import js.core.jso
 import react.dom.events.*
 import web.dom.Element

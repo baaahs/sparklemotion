@@ -1,4 +1,4 @@
-package external.react_compound_slider
+package baaahs.app.ui.gadgets.slider
 
 import baaahs.ui.Observable
 import baaahs.ui.xComponent
@@ -15,7 +15,7 @@ import kotlin.math.abs
 
 private val defaultDomain = 0.0..1.0
 
-val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
+val BetterSlider = xComponent<BetterSliderProps>("BetterSlider") { props ->
     val step = props.step
     val domain = props.domain?.properlyOrdered() ?: defaultDomain
     val vertical = props.vertical == true
@@ -206,6 +206,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
 
             pointerDownOffset.current = null
             pointerDownOffset.current = sliderItem.value - getEventValue(e.nativeEvent)
+            println("v=${sliderItem.value} offset=${pointerDownOffset.current}")
             activeHandleId = handleID
             props.onSlideStart?.invoke(
                 sliderItems.entries.associate { (key, item) -> key to item.value },

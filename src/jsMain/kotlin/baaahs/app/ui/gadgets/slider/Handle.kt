@@ -5,9 +5,6 @@ import baaahs.ui.and
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.react_compound_slider.BetterSliderItem
-import external.react_compound_slider.Range
-import external.react_compound_slider.StandardEventHandlers
 import kotlinx.css.pct
 import kotlinx.css.top
 import react.Props

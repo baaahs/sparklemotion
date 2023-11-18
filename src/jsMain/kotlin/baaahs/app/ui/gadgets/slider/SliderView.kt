@@ -8,7 +8,6 @@ import baaahs.ui.enableScroll
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.lodash.throttle
-import external.react_compound_slider.*
 import kotlinx.css.bottom
 import kotlinx.css.pct
 import react.*
