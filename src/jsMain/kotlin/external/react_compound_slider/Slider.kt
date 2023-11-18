@@ -33,7 +33,7 @@ external interface SliderProps : PropsWithChildren {
      * Two element array of numbers providing the min and max values for the slider [min, max] e.g. [0, 100].
      * It does not matter if the slider is reversed on the screen, domain is always [min, max] with min < max.
      */
-    var domain: Array<Double>?
+    var domain: Range?
     /**
      * An array of numbers. You can supply one for a value slider, two for a range slider or more to create n-handled sliders.
      * The values should correspond to valid step values in the domain.

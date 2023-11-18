@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import external.react_compound_slider.Range
 import external.react_compound_slider.SliderItem
 import kotlinx.css.pct
 import kotlinx.css.top
@@ -35,8 +36,8 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
         mixin(props.getHandleProps(props.handle.id))
 
         setProp("role", "slider")
-        setProp("aria-valuemin", props.domain[0])
-        setProp("aria-valuemax", props.domain[1])
+        setProp("aria-valuemin", props.domain.start)
+        setProp("aria-valuemax", props.domain.endInclusive)
         setProp("aria-valuenow", props.handle.value)
         inlineStyles {
             top = props.handle.percent.pct
@@ -51,7 +52,7 @@ private val altHandle = xComponent<HandleProps>("AltHandle") { props ->
 }
 
 external interface AltHandleProps : Props {
-    var domain: Array<Float>
+    var domain: Range
     var handle: SliderItem
     var getHandleProps: (id: String) -> HandleProps
 }
