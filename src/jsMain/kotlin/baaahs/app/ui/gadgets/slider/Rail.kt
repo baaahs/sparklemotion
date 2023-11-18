@@ -1,25 +1,28 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
-@file:JsModule("react-compound-slider")
-
 package baaahs.app.ui.gadgets.slider
 
-import org.w3c.dom.TouchEvent
-import org.w3c.dom.events.MouseEvent
-import react.ElementType
-import react.Props
-import react.ReactElement
-
-external interface `T$14` {
-    var onMouseDown: (e: MouseEvent) -> Unit
-    var onTouchStart: (e: TouchEvent) -> Unit
-}
-
-external val Rail: ElementType<RailProps>
+import baaahs.ui.xComponent
+import js.core.jso
+import react.*
 
 external interface RailObject {
-    var activeHandleID: String
+    var activeHandleId: String
     var getEventData: GetEventData
     var getRailProps: GetRailProps
+}
+
+val BetterRail = xComponent<RailProps>("BetterRail") { props ->
+    // render():
+    val railObject = jso<RailObject> {
+        getRailProps = {
+            jso {
+                onPointerDown = { e ->
+                    props.onPointerDown?.invoke(e)
+                    props.emitPointer?.invoke(e, Location.Rail, null)
+                }
+            }
+        }
+    }
+    +Children.only(props.children.invoke(railObject))
 }
 
 external interface RailProps : Props, StandardEventHandlers, StandardEventEmitters {
@@ -28,3 +31,6 @@ external interface RailProps : Props, StandardEventHandlers, StandardEventEmitte
      */
     var children: (railObject: RailObject) -> ReactElement<*>
 }
+
+fun RBuilder.betterRail(handler: RHandler<RailProps>) =
+    child(BetterRail, handler = handler)

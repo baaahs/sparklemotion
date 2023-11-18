@@ -1,13 +1,8 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
-@file:JsModule("react-compound-slider")
-
 package baaahs.app.ui.gadgets.slider
 
-import react.ElementType
-import react.Props
-import react.ReactElement
-
-external val Ticks : ElementType<TicksProps>
+import baaahs.ui.xComponent
+import js.core.jso
+import react.*
 
 external interface TicksObject : RcsProps {
     var ticks: Array<SliderItem>
@@ -18,6 +13,29 @@ external interface RcsProps : Props, StandardEventEmitters {
     var handles: Array<SliderItem>
     var activeHandleId: String?
     var getEventData: GetEventData?
+}
+
+val BetterTicks = xComponent<TicksProps>("BetterTicks") { props ->
+    val scale = props.scale
+    val ticks = memo(props.values, scale, props.count) {
+        (props.values ?: scale.getTicks(props.count)).map { value ->
+            jso<SliderItem> {
+                id = "$$-$value"
+                this.value = value
+                percent = scale.getValue(value)
+            }
+        }.toTypedArray()
+    }
+
+    val ticksObject = jso<TicksObject> {
+        this.scale = props.scale
+        this.ticks = ticks
+        activeHandleId = props.activeHandleId
+        getEventData = props.getEventData
+
+    }
+
+    +Children.only(props.children.invoke(ticksObject))
 }
 
 external interface TicksProps : Props {
@@ -50,3 +68,6 @@ external interface TicksProps : Props {
      */
     var children: (ticksObject: TicksObject) -> ReactElement<*>
 }
+
+fun RBuilder.betterTicks(handler: RHandler<TicksProps>) =
+    child(BetterTicks, handler = handler)
