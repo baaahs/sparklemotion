@@ -5,6 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.gadgets.Slider
 import baaahs.ui.disableScroll
 import baaahs.ui.enableScroll
+import baaahs.ui.slider.*
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.lodash.throttle
@@ -15,6 +16,7 @@ import react.dom.div
 import styled.inlineStyles
 import kotlin.math.floor
 import kotlin.math.roundToInt
+import baaahs.ui.slider.slider as baaahsSlider
 
 private const val positionHandle = "position"
 private const val floorHandle = "floor"
@@ -64,7 +66,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 //            +props.title
 //        }
 
-        betterSlider {
+        baaahsSlider {
             attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = true
@@ -79,7 +81,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 if (slider.beatLinked) { put(floorHandle, slider.floor.toDouble()) }
             }
 
-            betterRail {
+            rails {
                 attrs.children = { railObject ->
                     buildElement {
                         sliderRail {
@@ -89,7 +91,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            betterHandles {
+            handles {
                 attrs.children = { handlesObject: HandlesObject ->
                     buildElement {
                         div(+styles.handles) {
@@ -112,15 +114,6 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                                             attrs.getHandleProps = handlesObject.getHandleProps
                                         }
                                     }
-//                                    else -> {
-//                                        // Non-draggable alt handle.
-//                                        altHandle {
-//                                            key = handle.id
-//                                            attrs.domain = domain
-//                                            attrs.handle = handle
-//                                            attrs.getHandleProps = handlesObject.getHandleProps
-//                                        }
-//                                    }
                                 }
                             }
 
@@ -129,7 +122,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
                 }
             }
 
-            betterTracks {
+            tracks {
                 attrs.left = false
                 attrs.right = !showSecondSlider
                 attrs.children = { tracksObject ->
@@ -149,7 +142,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             }
 
             val ticksScale = if (maxValue <= 2) 100f else 1f
-            betterTicks {
+            ticks {
                 attrs.count = 10
                 attrs.children = { ticksObject ->
                     buildElement {

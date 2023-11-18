@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import external.ticks
 

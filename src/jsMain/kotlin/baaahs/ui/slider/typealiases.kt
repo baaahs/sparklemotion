@@ -1,7 +1,9 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
+import baaahs.app.ui.gadgets.slider.HandleProps
 import js.core.jso
-import react.dom.events.*
+import react.dom.events.KeyboardEvent
+import react.dom.events.PointerEvent
 import web.dom.Element
 
 typealias GetEventData = (e: web.uievents.PointerEvent) -> EventData
@@ -10,8 +12,6 @@ typealias GetRailProps = (/*OtherProps?*/) -> RailProps
 typealias GetTrackProps = (/*props: OtherProps*/) -> TracksProps
 
 typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
-typealias EmitMouse = (e: MouseEvent<Element, NativeMouseEvent>, id: String) -> Unit
-typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
 typealias EmitPointer = (e: PointerEvent<Element>, location: Location, handleId: String?) -> Unit
 
 typealias Range = ClosedFloatingPointRange<Double>

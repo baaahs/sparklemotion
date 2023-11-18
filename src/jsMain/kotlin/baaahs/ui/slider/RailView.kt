@@ -1,4 +1,4 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
 import baaahs.ui.xComponent
 import js.core.jso
@@ -10,7 +10,7 @@ external interface RailObject {
     var getRailProps: GetRailProps
 }
 
-val BetterRail = xComponent<RailProps>("BetterRail") { props ->
+private val Rails = xComponent<RailProps>("BetterRail") { props ->
     // render():
     val railObject = jso<RailObject> {
         getRailProps = {
@@ -32,5 +32,5 @@ external interface RailProps : Props, StandardEventHandlers, StandardEventEmitte
     var children: (railObject: RailObject) -> ReactElement<*>
 }
 
-fun RBuilder.betterRail(handler: RHandler<RailProps>) =
-    child(BetterRail, handler = handler)
+fun RBuilder.rails(handler: RHandler<RailProps>) =
+    child(Rails, handler = handler)

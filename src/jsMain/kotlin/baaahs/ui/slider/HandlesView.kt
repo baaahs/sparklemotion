@@ -1,5 +1,6 @@
-package baaahs.app.ui.gadgets.slider
+package baaahs.ui.slider
 
+import baaahs.app.ui.gadgets.slider.HandleProps
 import baaahs.ui.xComponent
 import js.core.jso
 import react.*
@@ -19,7 +20,7 @@ fun autofocus(e: MouseEvent<*, *>) {
     }
 }
 
-val BetterHandles = xComponent<HandlesProps>("BetterHandles") { props ->
+private val Handles = xComponent<HandlesProps>("BetterHandles") { props ->
     val getHandleProps = { handleId: String ->
         jso<HandleProps> {
             onKeyDown = { e ->
@@ -48,8 +49,8 @@ external interface HandlesProps : Props, StandardEventHandlers, StandardEventEmi
     var children: (handlesObject: HandlesObject) -> ReactElement<*>
 }
 
-fun RBuilder.betterHandles(handler: RHandler<HandlesProps>) =
-    child(BetterHandles, handler = handler)
+fun RBuilder.handles(handler: RHandler<HandlesProps>) =
+    child(Handles, handler = handler)
 
 external interface HandleItem {
     var key: String
