@@ -13,64 +13,37 @@ import web.uievents.POINTER_MOVE
 import web.uievents.POINTER_UP
 import kotlin.math.abs
 
-private val defaultDomain = arrayOf(0.0, 1.0)
+private val defaultDomain = 0.0..1.0
 
 val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
-    val step = props.step ?: 0.1
-    val domain = props.domain ?: defaultDomain
+    val step = props.step
+    val domain = props.domain?.properlyOrdered() ?: defaultDomain
     val vertical = props.vertical == true
     val reversed = props.reversed == true
     var activeHandleId by state { "" }
     val pointerDownOffset = ref<Double>()
 
-    // Finagle access to the Slider's scales:
-    val baseSlider = memo(domain, step, reversed) {
-        Slider.asDynamic().getDerivedStateFromProps(jso<SliderProps> {
-            this.domain = props.domain
-            this.step = props.step
-            this.reversed = props.reversed
-        }, jso()) }
-
-    val valueToPerc = memo(baseSlider, domain, step, reversed) {
-        (baseSlider.valueToPerc.unsafeCast<LinearScale>()).apply {
-            this.domain = domain
-            this.range = if (reversed) arrayOf(100.0, 0.0) else arrayOf(0.0, 100.0)
-//            this.range = arrayOf(0.0, 100.0).letIf(reversed) { it.reversedArray() }
-        }
+    val valueToPercent = memo(domain, reversed) {
+        LinearScale(domain, 0.0..100.0, reversed)
     }
-    val valueToStep = memo(baseSlider, domain, step, reversed) {
-        (baseSlider.valueToStep.unsafeCast<DiscreteScale>()).apply {
-            this.step = step
-            this.range = domain
-            this.domain = domain
-        }
-    }
-    val pixelToStep = memo(baseSlider, domain, step, reversed) {
-        (baseSlider.pixelToStep.unsafeCast<DiscreteScale>()).apply {
-            this.step = step
-            this.range = if (reversed) domain.reversedArray() else domain
-        }
-    }
-
-    val (min, max) = domain
-    if (max < min) {
-        console.warn("Max must be greater than min (even if reversed). Max is $max. Min is $min.")
+    val valueToValue = memo(domain, step) {
+        DiscreteScale(step, domain, domain)
     }
 
     val values = props.values
     val sliderItems = memo(
-        values, reversed, valueToStep, valueToPerc, props.onUpdate, props.onChange, props.warnOnChanges
+        values, valueToValue, valueToPercent, props.onUpdate, props.onChange, props.warnOnChanges
     ) {
         var changes = 0
         values.entries.associate { (handleId, value) ->
-            val adjustedValue = valueToStep.getValue(value)
+            val adjustedValue = valueToValue.getValue(value)
             if (adjustedValue != value) {
                 changes += 1
                 if (props.warnOnChanges) {
                     logger.warn { "Value $value is not a valid step value. Using $adjustedValue instead." }
                 }
             }
-            handleId to BetterSliderItem(handleId, adjustedValue, valueToPerc.getValue(adjustedValue))
+            handleId to BetterSliderItem(handleId, adjustedValue, valueToPercent.getValue(adjustedValue))
         }.also {
             if (changes > 0) {
                 val updatedHandles = it.entries.associate { (k, v) -> k to v.value }
@@ -84,13 +57,23 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
 
     val slider = ref<Element>()
 
+    val pixelToValue = memo(domain, step, reversed) {
+        DiscreteScale(step, domain, domain, reversed)
+    }
+    useResizeListener(slider) { _, _ ->
+        pixelToValue.domain = getSliderDomain(slider.current, vertical)
+    }
+    onMount(pixelToValue, slider, vertical) {
+        pixelToValue.domain = getSliderDomain(slider.current, vertical)
+    }
+
     val submitUpdate = callback(
-        valueToStep, valueToPerc, sliderItems, props.onUpdate, props.onChange, props.onSlideEnd
+        valueToValue, valueToPercent, sliderItems, props.onUpdate, props.onChange, props.onSlideEnd
     ) { newHandles: Array<HandleItem>, callOnChange: Boolean, callOnSlideEnd: Boolean ->
         val updatedHandles = newHandles.associate { updatedHandle ->
             sliderItems[updatedHandle.key]?.let { sliderItem ->
                 sliderItem.value = updatedHandle.value
-                sliderItem.percent = valueToPerc.getValue(updatedHandle.value)
+                sliderItem.percent = valueToPercent.getValue(updatedHandle.value)
                 sliderItem.notifyChanged()
             }
             updatedHandle.key to updatedHandle.value
@@ -102,18 +85,16 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         newHandles
     }
 
-    val getEventValue by handler(pixelToStep, vertical, valueToPerc) { e: web.uievents.PointerEvent ->
-        // double-check the dimensions of the slider
-        pixelToStep.setDomain(getSliderDomain(slider.current, vertical))
-        pixelToStep.getValue(if (vertical) e.clientY.toDouble() else e.pageX) +
-                (pointerDownOffset.current ?: 0.0)
+    val getEventValue by handler(domain, pixelToValue, vertical, pointerDownOffset) { e: web.uievents.PointerEvent ->
+        domain.clamp(pixelToValue.getValue(if (vertical) e.clientY.toDouble() else e.pageX) +
+                (pointerDownOffset.current ?: 0.0))
     }
 
-    val getEventData by handler(getEventValue, valueToPerc) { e: web.uievents.PointerEvent ->
+    val getEventData by handler(getEventValue, valueToPercent) { e: web.uievents.PointerEvent ->
         val value = getEventValue(e)
         jso<EventData> {
             this.value = value
-            this.percent = valueToPerc.getValue(value)
+            this.percent = valueToPercent.getValue(value)
         }
     }
 
@@ -134,7 +115,7 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         Unit
     }
 
-    val handlePointerUp by handler(getEventValue, updateSliderItems, handlePointerMove) { e: web.uievents.PointerEvent ->
+    val handlePointerUp by handler(getEventValue, updateSliderItems, handlePointerMove, slider) { e: web.uievents.PointerEvent ->
         val updateValue = getEventValue(e)
 
         // generate a "candidate" set of values - a suggestion of what to do
@@ -170,9 +151,9 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         val currVal = found.value
         var newVal = currVal
 
-        if (validUpKeys.contains(key)) {
+        if (step != null && validUpKeys.contains(key)) {
             newVal = getNextValue(currVal, step, domain, reversed)
-        } else if (validDownKeys.contains(key)) {
+        } else if (step != null && validDownKeys.contains(key)) {
             newVal = getPrevValue(currVal, step, domain, reversed)
         }
         val nextHandles = sliderItems.map { (k, v) ->
@@ -207,7 +188,8 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
     }
 
     val handlePointerDown by handler<EmitPointer>(
-        sliderItems, handlePointerMove, handlePointerUp, handleRailAndTrackClicks, props.onSlideStart
+        sliderItems, handlePointerMove, handlePointerUp, handleRailAndTrackClicks, props.onSlideStart,
+        pointerDownOffset, slider, getEventValue
     ) { e: PointerEvent<*>, _: Location, handleID: String? ->
         if (e.button != 0) return@handler
 
@@ -236,17 +218,13 @@ val BetterSlider = xComponent<SliderProps>("BetterSlider") { props ->
         }
     }
 
-    onMount(pixelToStep, slider, vertical) {
-        pixelToStep.domain = getSliderDomain(slider.current, vertical)
-    }
-
     // render():
     val children = react.Children.map(props.children) { child ->
         if (isRCSComponent(child)) {
             react.cloneElement(child.unsafeCast<react.ReactElement<RcsProps>>(), jso {
-                this.scale = valueToPerc
+                this.scale = valueToPercent
                 this.handles = sliders
-                this.activeHandleID = activeHandleId
+                this.activeHandleId = activeHandleId
                 this.getEventData = getEventData
                 this.emitKeyboard = if (props.disabled) null else handleKeyDown
                 this.emitPointer = if (props.disabled) null else handlePointerDown

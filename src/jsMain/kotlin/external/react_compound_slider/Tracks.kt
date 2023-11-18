@@ -24,7 +24,7 @@ external interface TrackEventHandlers {
 
 external interface TracksObject {
     var tracks: Array<TrackItem>
-    var activeHandleID: String
+    var activeHandleId: String?
     var getEventData: GetEventData
     var getTrackProps: GetTrackProps
 }
@@ -32,8 +32,8 @@ external interface TracksObject {
 external interface TracksProps : Props, StandardEventHandlers, StandardEventEmitters {
     var left: Boolean?
     var right: Boolean?
-    var getEventData: GetEventData?
-    var activeHandleID: String?
+    var getEventData: GetEventData
+    var activeHandleId: String?
     var scale: LinearScale?
     var handles: Array<SliderItem>?
     var children: (tracksObject: TracksObject) -> ReactElement<*>

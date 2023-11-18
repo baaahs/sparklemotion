@@ -54,7 +54,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val minValue = slider.minValue
     val maxValue = slider.maxValue
     val domain = memo(minValue, maxValue) {
-        arrayOf(minValue, maxValue)
+        minValue.toDouble()..maxValue.toDouble()
     }
 
     val showSecondSlider = slider.beatLinked
@@ -69,16 +69,14 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.className = +styles.slider
             attrs.vertical = true
             attrs.reversed = true
-            val stepValue = slider.stepValue ?: ((maxValue - minValue) / 256f)
-            val position = slider.position
-            attrs.step = (stepValue ).toDouble()
-            attrs.domain = domain.asDynamic()
+            attrs.step = slider.stepValue?.toDouble()
+            attrs.domain = domain
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
             attrs.onUpdate = handleUpdate
             attrs.onChange = handleChange
             attrs.values = buildMap {
-                put(positionHandle, position.toDouble())
+                put(positionHandle, slider.position.toDouble())
                 if (slider.beatLinked) { put(floorHandle, slider.floor.toDouble()) }
             }
 

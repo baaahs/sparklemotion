@@ -10,14 +10,13 @@ typealias GetEventData = (e: web.uievents.PointerEvent) -> EventData
 typealias GetHandleProps = (id: String/*, props: HandlesProps*/) -> HandleProps
 typealias GetRailProps = (/*OtherProps?*/) -> RailProps
 typealias GetTrackProps = (/*props: OtherProps*/) -> TracksProps
-typealias Interpolator = (x: Number) -> Number
 
 typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
 typealias EmitMouse = (e: MouseEvent<Element, NativeMouseEvent>, id: String) -> Unit
 typealias EmitTouch = (e: TouchEvent<Element>, id: String) -> Unit
 typealias EmitPointer = (e: PointerEvent<Element>, location: Location, handleId: String?) -> Unit
 
-typealias Range = Array<Double>
+typealias Range = ClosedFloatingPointRange<Double>
 
 fun handleItem(key: String, value: Double) = jso<HandleItem> {
     this.key = key

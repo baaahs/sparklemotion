@@ -33,8 +33,3 @@ external interface OtherProps {
     @nativeSetter
     operator fun set(key: String, value: Any)
 }
-
-external interface Scale {
-    var domain: Array<Double>
-    var range: Array<Double>
-}

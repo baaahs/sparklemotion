@@ -171,7 +171,6 @@ kotlin {
                 implementation(npm("dagre-d3", "^0.6.4"))
 
                 implementation(npm("clsx", "^2.0.0"))
-                implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
@@ -187,6 +186,9 @@ kotlin {
                 // Used by GridLayout:
                 implementation(npm("react-resizable", "3.0.4"))
                 implementation(npm("lodash.isequal", "4.5.0"))
+
+                // Used by slider view:
+                implementation(npm("d3-array", "^3.2.4"))
             }
         }
         val jsTest by getting {

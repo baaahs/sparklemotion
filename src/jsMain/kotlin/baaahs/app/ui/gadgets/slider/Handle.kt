@@ -6,6 +6,7 @@ import baaahs.ui.mixin
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import external.react_compound_slider.BetterSliderItem
+import external.react_compound_slider.Range
 import external.react_compound_slider.StandardEventHandlers
 import kotlinx.css.pct
 import kotlinx.css.top
@@ -47,8 +48,8 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
     div(+styles.handleWrapper) {
         ref = handleRef
         setProp("role", "slider")
-        setProp("aria-valuemin", props.domain[0])
-        setProp("aria-valuemax", props.domain[1])
+        setProp("aria-valuemin", props.domain.start)
+        setProp("aria-valuemax", props.domain.endInclusive)
         setProp("aria-valuenow", props.handle.value)
         inlineStyles {
             top = props.handle.percent.pct
@@ -65,7 +66,7 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
 }
 
 external interface HandleProps : Props, StandardEventHandlers {
-    var domain: Array<Float>
+    var domain: Range
     var handle: BetterSliderItem
     var getHandleProps: (id: String) -> HandleProps
 }
