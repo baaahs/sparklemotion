@@ -4,7 +4,6 @@ import js.core.jso
 import react.dom.events.*
 import web.dom.Element
 
-typealias CustomMode = (curr: Array<HandleItem>, next: Array<HandleItem>, step: Number, reversed: Boolean, getValue: (x: Double) -> Double) -> Array<HandleItem>
 typealias GetEventData = (e: web.uievents.PointerEvent) -> EventData
 typealias GetHandleProps = (id: String/*, props: HandlesProps*/) -> HandleProps
 typealias GetRailProps = (/*OtherProps?*/) -> RailProps
