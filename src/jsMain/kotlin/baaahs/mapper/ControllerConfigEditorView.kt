@@ -60,7 +60,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     Card {
         attrs.classes = jso { this.root = -styles.defaultConfigs }
-        attrs.elevation = 4
+//        attrs.elevation = 4
 
         header {
             +"Controller Defaults"

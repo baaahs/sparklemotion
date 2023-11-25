@@ -23,7 +23,6 @@ import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
-import web.uievents.POINTER_DOWN
 import web.uievents.PointerEvent
 import web.window.RESIZE
 import kotlin.math.*

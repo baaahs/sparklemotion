@@ -3,15 +3,15 @@ package baaahs.ui.slider
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import js.core.jso
-import react.*
+import react.PropsWithChildren
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent
 import web.dom.Element
 import web.events.EventHandler
 import web.html.HTMLElement
-import web.uievents.POINTER_MOVE
-import web.uievents.POINTER_UP
 import kotlin.math.abs
 
 /**

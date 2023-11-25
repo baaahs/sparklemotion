@@ -5,7 +5,6 @@ import web.events.EventTarget
 import web.html.HTMLElement
 import web.html.HTMLInputElement
 import web.html.HTMLTextAreaElement
-import web.uievents.KEY_DOWN
 import web.uievents.KeyboardEvent
 
 class KeyboardShortcutHandler(val target: EventTarget? = null) {

@@ -29,7 +29,6 @@ import web.events.EventTarget
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
-import web.uievents.TOUCH_MOVE
 import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
