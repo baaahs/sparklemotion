@@ -32,6 +32,8 @@ data class Slider(
     var beatLinked: Boolean by updatable("beatLinked", false, Boolean.serializer())
     private val spread = maxValue - minValue
 
+    val domain get() = minValue..maxValue
+
     override fun adjustALittleBit() {
         val amount = (Random.nextFloat() - .5f) * spread * adjustmentFactor
         position = (position + amount).clamp(minValue, maxValue)
@@ -40,4 +42,8 @@ data class Slider(
     override fun adjustInRange(value: Float) {
         position = minValue + spread * value
     }
+}
+
+fun ClosedFloatingPointRange<Float>.toDoubles(): ClosedFloatingPointRange<Double> {
+    return start.toDouble()..endInclusive.toDouble()
 }

@@ -41,10 +41,11 @@ abstract class Gadget {
     protected val adjustmentFactor get() = 1f / 64
 
     @JsName("listen")
-    fun listen(gadgetListener: GadgetListener) {
+    fun listen(gadgetListener: GadgetListener): GadgetListener {
         if (findListener(gadgetListener) != -1)
             throw IllegalStateException("$gadgetListener already listening to $this")
         listeners.add(Listener(gadgetListener))
+        return gadgetListener
     }
 
     @JsName("unlisten")

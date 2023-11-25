@@ -1,5 +1,6 @@
 package baaahs.ui
 
+import baaahs.Gadget
 import baaahs.util.Logger
 import react.ComponentType
 import react.MutableRefObject
@@ -117,6 +118,17 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
             withCleanup { observer.remove() }
         }
         return item
+    }
+
+    fun <T: Gadget> observe(
+        gadget: T,
+        callback: () -> Unit = { forceRender() }
+    ): T {
+        onChange("observe", gadget) {
+            val observer = gadget.listen { callback.invoke() }
+            withCleanup { gadget.unlisten(observer) }
+        }
+        return gadget
     }
 
     fun onChange(name: String, vararg watch: Any?, callback: ChangeDetector.() -> Unit) {

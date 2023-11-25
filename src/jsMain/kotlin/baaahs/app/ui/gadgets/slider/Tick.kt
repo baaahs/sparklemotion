@@ -1,7 +1,6 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.slider.SliderItem
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.bottom
@@ -13,30 +12,35 @@ import react.dom.div
 import react.useContext
 import styled.inlineStyles
 
-private val tick = xComponent<TickProps>("Tick") { props ->
+val tick = xComponent<TickProps>("Tick") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
+
+    val percent = if (props.reversed) props.percent else 100 - props.percent
+    val formatter = props.formatter ?: { value: Double -> value.toString() }
 
     div {
         div(+styles.tickMark) {
             inlineStyles {
-                bottom = (100 - props.tick.percent.toFloat()).pct
+                bottom = percent.pct
             }
         }
 
         div(+styles.tickText) {
             inlineStyles {
-                bottom = (100 - props.tick.percent.toFloat()).pct
+                bottom = percent.pct
             }
 
-            +props.format(props.tick)
+            +formatter(props.value)
         }
     }
 }
 
 external interface TickProps: Props {
-    var tick: SliderItem
-    var format: (SliderItem) -> String
+    var value: Double
+    var percent: Double
+    var formatter: ((Double) -> String)?
+    var reversed: Boolean
 }
 
 fun RBuilder.tick(handler: RHandler<TickProps>) =
