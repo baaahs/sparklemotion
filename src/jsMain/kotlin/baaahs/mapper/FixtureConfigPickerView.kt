@@ -30,7 +30,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
     Card {
         attrs.classes = jso { this.root = -styles.configCardOuter }
-        attrs.elevation = 4
+//        attrs.elevation = 4
 
         betterSelect<FixtureType?> {
             attrs.label = "Fixture Type"

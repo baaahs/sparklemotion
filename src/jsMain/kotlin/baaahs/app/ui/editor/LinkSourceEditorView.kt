@@ -94,7 +94,6 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
                         attrs.checked = showAdvanced
                         attrs.onClick = handleToggleShowAdvanced
                     }
-                    attrs.onClick = handleToggleShowAdvanced
 
                     ListItemText {
                         attrs.onClick = handleToggleShowAdvanced

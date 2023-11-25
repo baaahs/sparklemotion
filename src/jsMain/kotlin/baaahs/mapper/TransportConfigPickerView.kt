@@ -31,7 +31,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
 
     Card {
         attrs.classes = jso { this.root = -styles.configCardOuter }
-        attrs.elevation = 4
+//        attrs.elevation = 4
 
         betterSelect<TransportType?> {
             attrs.label = "Transport Type"
