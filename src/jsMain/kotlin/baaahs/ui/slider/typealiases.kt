@@ -18,9 +18,8 @@ typealias Range = ClosedFloatingPointRange<Double>
 
 fun handleItem(key: String, value: Double) = jso<HandleItem> {
     this.key = key
-    this.`val` = value
+    this.value = value
 }
-val HandleItem.value get() = `val`
 
 enum class Location {
     Handle, Rail, Track, Ticks

@@ -1,14 +1,14 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.mixin
-import baaahs.ui.slider.GetRailProps
+import baaahs.ui.slider.RailProps
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.onPointerDown
 import react.useContext
 
 private val sliderRail = xComponent<SliderRailProps>("SliderRail") { props ->
@@ -16,15 +16,13 @@ private val sliderRail = xComponent<SliderRailProps>("SliderRail") { props ->
     val styles = appContext.allStyles.gadgetsSlider
 
     div(+styles.railBackground) {
-        mixin(props.getRailProps())
+        props.onPointerDown?.run { attrs.onPointerDown = this }
     }
 
     div(+styles.railChannel) {}
 }
 
-
-external interface SliderRailProps : Props {
-    var getRailProps: GetRailProps
+external interface SliderRailProps : Props, RailProps {
 }
 
 fun RBuilder.sliderRail(handler: RHandler<SliderRailProps>) =

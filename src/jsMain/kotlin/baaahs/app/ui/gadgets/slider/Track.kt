@@ -1,16 +1,11 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
-import baaahs.ui.mixin
-import baaahs.ui.slider.BetterSliderItem
-import baaahs.ui.slider.GetTrackProps
-import baaahs.ui.slider.SliderItem
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.height
 import kotlinx.css.pct
 import kotlinx.css.top
-import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
@@ -20,26 +15,26 @@ import web.html.HTMLElement
 import kotlin.math.max
 import kotlin.math.min
 
-private val track = xComponent<TrackProps>("Track") { props ->
+val track = xComponent<TrackProps>("Track") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
 
-    val source = props.source
-    val target = props.target
+    val fromPercent = props.fromHandle?.let { props.scale.getValue(it.value) } ?: 0.0
+    val toPercent = props.toHandle?.let { props.scale.getValue(it.value) } ?: 100.0
     val trackRef = ref<HTMLElement>()
-    val drawTrack = callback(source, target) {
+    val adjustTrack = callback(trackRef, fromPercent, toPercent) {
         trackRef.current?.let {
-            val upper = min(source.percent, target.percent)
-            val lower = max(source.percent, target.percent)
+            val upper = min(fromPercent, toPercent)
+            val lower = max(fromPercent, toPercent)
             it.style.top = upper.pct.toString()
             it.style.height = (lower.toFloat() - upper.toFloat()).pct.toString()
         }
     }
-    if (source is BetterSliderItem) observe(source) { drawTrack() }
-    if (target is BetterSliderItem) observe(target) { drawTrack() }
+    props.fromHandle?.let { observe(it) { adjustTrack() } }
+    props.toHandle?.let { observe(it) { adjustTrack() } }
 
-    val upper = min(source.percent, target.percent)
-    val lower = max(source.percent, target.percent)
+    val upper = min(fromPercent, toPercent)
+    val lower = max(fromPercent, toPercent)
     div(+styles.track) {
         ref = trackRef
 
@@ -47,16 +42,10 @@ private val track = xComponent<TrackProps>("Track") { props ->
             top = upper.pct
             height = (lower.toFloat() - upper.toFloat()).pct
         }
-
-        mixin(props.getTrackProps())
     }
 }
 
-external interface TrackProps : Props {
-    var source: SliderItem
-    var target: SliderItem
-    var getTrackProps: GetTrackProps
-}
+external interface TrackProps : baaahs.ui.slider.TrackProps
 
 fun RBuilder.track(handler: RHandler<TrackProps>) =
     child(track, handler = handler)
