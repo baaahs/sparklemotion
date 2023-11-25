@@ -197,7 +197,7 @@ abstract class MutableEntity : MutableEditable {
         this.id = id
     }
 
-    override var title: String
+    final override var title: String
     var description: String?
     var position: Vector3F
     var rotation: EulerAngle
