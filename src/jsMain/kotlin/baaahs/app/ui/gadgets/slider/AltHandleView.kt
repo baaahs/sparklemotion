@@ -1,13 +1,16 @@
 package baaahs.app.ui.gadgets.slider
 
 import baaahs.app.ui.appContext
+import baaahs.ui.slider.Handle
+import baaahs.ui.slider.getKeyDownHandlerFor
+import baaahs.ui.slider.getPointerDownHandlerFor
+import baaahs.ui.slider.sliderContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.pct
 import kotlinx.css.top
-import kotlinx.html.DIV
-import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
+import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.*
@@ -18,29 +21,33 @@ import web.html.HTMLElement
 val altHandle = xComponent<AltHandleProps>("AltHandle") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.gadgetsSlider
+    val sliderContext = useContext(sliderContext)
 
-//    val handleRef = ref<HTMLElement>()
-//    observe(props.handle) {
-//        handleRef.current?.let { handle ->
-//            handle.style.top = props.handle.percent.pct.toString()
-//            handle.ariaValueNow = props.handle.value.toString()
-//        }
-//    }
+    val handleRef = ref<HTMLElement>()
+    val handle = props.handle
+    observe(props.handle) {
+        val value = handle.value
+        val percent = sliderContext.scale.getValue(value)
+        handleRef.current?.let { handle ->
+            handle.style.top = percent.pct.toString()
+            handle.ariaValueNow = value.toString()
+        }
+    }
 
+    val value = handle.value
+    val percent = sliderContext.scale.getValue(value)
     div(+styles.altHandleWrapper) {
-//        ref = handleRef
-//        val rdomBuilder: RDOMBuilder<HTMLTag> = this
-//        attrs.onPointerDown = props.onPointerDown
+        ref = handleRef
 
-//        props.onPointerDown?.let { attrs.onPointerDown = it }
-//        props.onKeyDown?.let { attrs.onKeyDown = it }
-//        setProp("role", "slider")
-//        setProp("aria-valuemin", props.domain.start)
-//        setProp("aria-valuemax", props.domain.endInclusive)
-//        setProp("aria-valuenow", props.handle.value)
-//        inlineStyles {
-//            top = props.handle.percent.pct
-//        }
+        setProp("role", "slider")
+        setProp("aria-valuemin", sliderContext.domain.start)
+        setProp("aria-valuemax", sliderContext.domain.endInclusive)
+        setProp("aria-valuenow", props.handle.value)
+        inlineStyles {
+            top = percent.pct
+        }
+        attrs.onPointerDown = sliderContext.getPointerDownHandlerFor(handle)
+        attrs.onKeyDown = sliderContext.getKeyDownHandlerFor(handle)
 
         svg(+styles.altHandleLeft) {
             attrs.unsafe {
@@ -50,7 +57,9 @@ val altHandle = xComponent<AltHandleProps>("AltHandle") { props ->
     }
 }
 
-external interface AltHandleProps : baaahs.ui.slider.HandleProps
+external interface AltHandleProps : Props {
+    var handle: Handle
+}
 
 fun RBuilder.altHandle(handler: RHandler<AltHandleProps>) =
     child(altHandle, handler = handler)

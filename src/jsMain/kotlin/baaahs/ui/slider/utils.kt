@@ -1,20 +1,8 @@
 package baaahs.ui.slider
 
-import react.ReactNode
 import web.dom.Element
 import kotlin.math.max
 import kotlin.math.min
-
-fun isRCSComponent(item: ReactNode): Boolean {
-    if (!react.isValidElement(item)) return false
-    val type = item.asDynamic().type
-    val name = type?.displayName ?: type?.name ?: ""
-    return (name == "Rail" || name == "BetterRail" ||
-            name == "Handles" || name == "BetterHandles" ||
-            name == "Ticks" || name == "BetterTicks" ||
-            name == "Tracks" || name == "BetterTracks"
-            )
-}
 
 fun getNextValue(
     curr: Double,
