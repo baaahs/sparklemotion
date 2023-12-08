@@ -5,15 +5,13 @@ import baaahs.gadgets.Slider
 import baaahs.gadgets.toDoubles
 import baaahs.ui.disableScroll
 import baaahs.ui.enableScroll
-import baaahs.ui.slider.*
+import baaahs.ui.slider.Handle
+import baaahs.ui.slider.ticks
+import baaahs.ui.slider.tracks
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import external.lodash.throttle
-import kotlinx.css.bottom
-import kotlinx.css.pct
 import react.*
 import react.dom.div
-import styled.inlineStyles
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import baaahs.ui.slider.slider as baaahsSlider
@@ -26,41 +24,28 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
     val styles = appContext.allStyles.gadgetsSlider
 
     val slider = props.slider
-    var isBeatLinked by state { slider.beatLinked }
-    observe(slider) { isBeatLinked = slider.beatLinked }
-
-    val handleChange by handler(slider) { values: Map<String, Double> ->
-        val newPosition = values[positionHandle] ?: error("No position.")
-        slider.position = newPosition.toFloat()
-
-        val newFloorPosition = values[floorHandle]
-        if (newFloorPosition != null) {
-            slider.floor = newFloorPosition.toFloat()
-        }
-    }
-
-    val handleUpdate = throttle({ values: Map<String, Double> ->
-        handleChange(values)
-    }, wait = 10)
-
     val maxValue = slider.maxValue
     val domain = slider.domain.toDoubles()
 
+    var isBeatLinked by state { slider.beatLinked }
+
     val positionHandle = memo(slider) {
-        ExtHandle(
-            positionHandle, slider.position.toDouble(),
-            component = handle.create()
-        )
+        Handle(positionHandle, slider.position.toDouble()) { value ->
+            slider.position = value.toFloat()
+        }
     }
-    observe(positionHandle) { slider.position = positionHandle.value.toFloat() }
 
     val floorHandle = memo(slider) {
-        ExtHandle(
-            floorHandle, slider.floor.toDouble(),
-            component = altHandle.create()
-        )
+        Handle(floorHandle, slider.floor.toDouble()) { value ->
+            slider.floor =  value.toFloat()
+        }
     }
-    observe(floorHandle) { slider.floor = floorHandle.value.toFloat() }
+
+    observe(slider) {
+        positionHandle.update(slider.position.toDouble())
+        floorHandle.update(slider.floor.toDouble())
+        isBeatLinked = slider.beatLinked
+    }
 
     val handles = memo(positionHandle, floorHandle, isBeatLinked) {
         buildList {
@@ -76,47 +61,49 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.reversed = true
             attrs.step = slider.stepValue?.toDouble()
             attrs.domain = domain
+            attrs.handles = handles
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
-            attrs.onUpdate = handleUpdate
-            attrs.onChange = handleChange
-            attrs.handles = handles
 
-            attrs.renderRail = { railProps ->
-                buildElement {
-                    sliderRail {
-                        attrs.onPointerDown = railProps.onPointerDown
+            sliderRail {}
+
+            div(+styles.tracks) {
+                tracks {
+                    attrs.renderTrack = track.create() {
+                        this.fillToZero = !isBeatLinked
                     }
                 }
             }
 
-            attrs.renderTrack = { trackProps ->
-                buildElement {
-                    track {
-                        key = trackProps.id
-                        attrs.fromHandle = trackProps.fromHandle
-                        attrs.toHandle = trackProps.toHandle
-                    }
+            handle {
+                attrs.handle = positionHandle
+            }
+
+            if (isBeatLinked) {
+                altHandle {
+                    attrs.handle = floorHandle
                 }
             }
-            attrs.trackComponent = track.create()
 
-            attrs.tickComponent = tick.create()
-            attrs.tickCount = 10
             val ticksScale = if (maxValue <= 2) 100f else 1f
-            attrs.tickFormatter = { value: Double ->
-                if (ticksScale != 1f) {
-                    floor(value * ticksScale).toString()
-                } else {
-                    ((value * 100f).roundToInt().toFloat() / 100f).toString()
+            div(+styles.ticks) {
+                ticks {
+                    attrs.count = 10
+                    attrs.tickComponent = tick.create() {
+                        this.formatter = { value ->
+                            if (ticksScale != 1f) {
+                                floor(value * ticksScale).toString()
+                            } else {
+                                ((value * 100f).roundToInt().toFloat() / 100f).toString()
+                            }
+                        }
+                    }
+                    attrs.defaultValue = slider.initialValue.toDouble()
+                    attrs.defaultTickComponent = tick.create() {
+                        this.isDefaultValue = true
+                    }
                 }
             }
-
-//            div(+styles.defaultTickMark) {
-//                inlineStyles {
-//                    bottom = (100 - ticksScale.getValue(slider.initialValue.toDouble())).pct
-//                }
-//            }
         }
     }
 }
