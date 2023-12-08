@@ -29,9 +29,14 @@ private val Tracks = xComponent<TracksProps>("BetterTracks") { props ->
     }
 }
 
-fun RBuilder.tracks(handler: RHandler<TracksProps>) =
-    child(Tracks, handler = handler)
-
 external interface TracksProps : Props {
     var renderTrack : ReactElement<out TrackProps>?
 }
+
+external interface TrackProps : Props {
+    var fromHandle: Handle?
+    var toHandle: Handle?
+}
+
+fun RBuilder.tracks(handler: RHandler<TracksProps>) =
+    child(Tracks, handler = handler)

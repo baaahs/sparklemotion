@@ -1,8 +1,17 @@
 package baaahs.ui.slider
 
+import react.dom.events.KeyboardEvent
+import react.dom.events.PointerEvent
 import web.dom.Element
 import kotlin.math.max
 import kotlin.math.min
+
+typealias EmitKeyboard = (e: KeyboardEvent<Element>, id: String) -> Unit
+typealias EmitPointer = (e: PointerEvent<Element>, location: Location, handleId: String?) -> Unit
+
+enum class Location {
+    Handle, Rail, Track, Tick
+}
 
 fun getNextValue(
     curr: Double,
@@ -36,24 +45,3 @@ fun getSliderDomain(slider: Element?, vertical: Boolean): Range {
 
     return d0..d1
 }
-
-fun Range.interpolateValue(t: Double): Double {
-    return start + spread() * t
-}
-
-fun Range.deinterpolateValue(t: Double): Double {
-    val spread = spread()
-    return if (spread == 0.0) spread else (t - start) / spread
-}
-
-fun Range.properlyOrdered() : Range =
-    reversedIf(start > endInclusive)
-
-fun Range.clamp(x: Double): Double =
-    x.coerceIn(start, endInclusive)
-
-fun Range.spread(): Double =
-    endInclusive - start
-
-fun Range.reversedIf(reversed: Boolean): Range =
-    if (reversed) endInclusive..start else this

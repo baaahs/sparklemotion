@@ -1,6 +1,5 @@
 package baaahs.ui.slider
 
-import baaahs.ui.Observable
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
 import js.core.jso
@@ -247,56 +246,6 @@ external interface BetterSliderProps : PropsWithChildren {
     /** Ignore all mouse, touch and keyboard events. */
     var disabled: Boolean
 }
-
-class Handle(
-    val id: String,
-    var value: Double,
-    /** Called when the user releases the handle. */
-    val onChange: (Double) -> Unit = {},
-    /** Called when the user moves the handle, potentially very frequently. */
-    val onUpdate: (Double) -> Unit = onChange
-) : Observable() {
-    fun update(value: Double) {
-        if (this.value == value) return
-        this.value = value
-        notifyChanged()
-    }
-
-    fun changeTo(value: Double, isFinal: Boolean) {
-        if (this.value != value || isFinal) {
-            this.value = value
-            this.notifyChanged()
-            if (isFinal) this.onChange(value) else this.onUpdate(value)
-        }
-    }
-}
-
-external interface TrackProps : Props {
-    var fromHandle: Handle?
-    var toHandle: Handle?
-}
-
-external interface SliderContext {
-    var domain: Range
-    var isReversed: Boolean
-    var isVertical: Boolean
-    var scale: LinearScale
-
-    var emitPointer: EmitPointer
-    var emitKeyboard: EmitKeyboard
-    var handles: List<Handle>
-
-    var onHandlePointerDowns: Map<String, (event: PointerEvent<*>) -> Unit>
-    var onHandleKeyDowns: Map<String, (event: KeyboardEvent<*>) -> Unit>
-}
-
-fun SliderContext.getPointerDownHandlerFor(handle: Handle): (event: PointerEvent<*>) -> Unit =
-    onHandlePointerDowns[handle.id] ?: { _: PointerEvent<*> -> }
-
-fun SliderContext.getKeyDownHandlerFor(handle: Handle): (event: KeyboardEvent<*>) -> Unit =
-    onHandleKeyDowns[handle.id] ?: { _: KeyboardEvent<*> -> }
-
-val sliderContext = createContext<SliderContext>(jso {})
 
 fun RBuilder.slider(handler: RHandler<BetterSliderProps>) =
     child(Slider, handler = handler)
