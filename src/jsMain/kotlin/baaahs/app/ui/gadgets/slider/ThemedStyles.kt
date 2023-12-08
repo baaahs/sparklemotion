@@ -1,9 +1,7 @@
 package baaahs.app.ui.gadgets.slider
 
-import baaahs.ui.paperHighContrast
-import baaahs.ui.paperLowContrast
-import baaahs.ui.paperMediumContrast
-import baaahs.ui.rgba
+import baaahs.app.ui.linearRepeating
+import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
 import mui.material.styles.Theme
@@ -29,7 +27,6 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         flexDirection = FlexDirection.column
         alignItems = Align.flexStart
         fontSize = 14.px
-        marginBottom = 8.px
         put("textShadow", "0px 1px 1px ${theme.paperHighContrast}")
         border = Border(2.px, baaahs.ui.groove, theme.paperLowContrast)
     }
@@ -123,8 +120,9 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
 
     val railChannel by css {
         position = Position.absolute
-        height = 100.pct
         width = 7.px
+        top = (-3).px
+        bottom = (-3).px
         transform.translateX((-50).pct)
         borderRadius = 7.px
         pointerEvents = PointerEvents.none
@@ -162,9 +160,12 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         position = Position.absolute
         zIndex = 1
         backgroundColor = indicatorColor
+        backgroundImage = Image(linearRepeating(indicatorColor, indicatorColor.darken(40), 2.px, 0.deg))
         borderRadius = 7.px
         cursor = Cursor.pointer
         width = 2.px
         transform.translateX((-50).pct)
+        transition(::top, duration = 0.05.s)
+        transition(::bottom, duration = 0.05.s)
     }
 }

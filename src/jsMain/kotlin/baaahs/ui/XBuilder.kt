@@ -111,9 +111,10 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
 
     fun <T: IObservable> observe(
         item: T,
+        vararg otherWatch: Any,
         callback: () -> Unit = { forceRender() }
     ): T {
-        onChange("observe", item) {
+        onChange("observe", item, *otherWatch) {
             val observer = item.addObserver { callback.invoke() }
             withCleanup { observer.remove() }
         }
@@ -122,9 +123,10 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
 
     fun <T: Gadget> observe(
         gadget: T,
+        vararg otherWatch: Any,
         callback: () -> Unit = { forceRender() }
     ): T {
-        onChange("observe", gadget) {
+        onChange("observe", gadget, *otherWatch) {
             val observer = gadget.listen { callback.invoke() }
             withCleanup { gadget.unlisten(observer) }
         }

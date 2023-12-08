@@ -7,7 +7,7 @@ import baaahs.ui.slider.LinearScale
 import baaahs.ui.slider.sliderContext
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.css.height
+import kotlinx.css.bottom
 import kotlinx.css.pct
 import kotlinx.css.top
 import react.dom.div
@@ -35,7 +35,7 @@ val track = xComponent<TrackProps>("Track") { props ->
         val (lower, upper) = sliderContext.scale.minMax(props.fromHandle, props.toHandle)
         trackRef.current?.let {
             it.style.top = upper.pct.toString()
-            it.style.height = (lower.toFloat() - upper.toFloat()).pct.toString()
+            it.style.bottom = (100 - lower).pct.toString()
         }
     }
     observe(props.fromHandle ?: Observable()) { adjustTrack() }
@@ -49,7 +49,7 @@ val track = xComponent<TrackProps>("Track") { props ->
 
             inlineStyles {
                 top = upper.pct
-                height = (lower.toFloat() - upper.toFloat()).pct
+                bottom = (100 - lower).pct
             }
         }
     }
