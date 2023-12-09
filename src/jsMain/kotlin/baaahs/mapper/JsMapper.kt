@@ -32,18 +32,18 @@ import react.dom.br
 import three.js.*
 import three.js.Color
 import three_ext.*
+import web.animations.requestAnimationFrame
 import web.canvas.CanvasImageSource
 import web.canvas.CanvasRenderingContext2D
 import web.canvas.ImageBitmap
-import web.canvas.RenderingContextId
 import web.cssom.Cursor
 import web.events.Event
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLImageElement
 import web.prompts.prompt
-import web.timers.requestAnimationFrame
-import web.uievents.*
+import web.uievents.KeyboardEvent
+import web.uievents.MouseEvent
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -190,7 +190,7 @@ class JsMapper(
         this.diffCanvas = diffCanvas
         this.snapshotCanvas = snapshotCanvas
         this.baseCanvas = baseCanvas
-        this.diffCtx = diffCanvas.context2d()
+        this.diffCtx = diffCanvas.get2DContext()
         this.panelMaskCanvas = panelMaskCanvas
         this.perfStatsDiv = perfStatsDiv
 
@@ -1036,7 +1036,7 @@ class JsMapper(
         paintCamImage(image)
 
         changeRegion?.apply {
-            val ui2dCtx = ui2dCanvas.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
+            val ui2dCtx = ui2dCanvas.get2DContext()
             ui2dCtx.lineWidth = 2.0
             ui2dCtx.strokeStyle = "#ff0000"
             ui2dCtx.strokeRect(x0.toDouble(), y0.toDouble(), width.toDouble(), height.toDouble())
@@ -1056,7 +1056,7 @@ class JsMapper(
 
     private fun HTMLCanvasElement.showImage(bitmap: Bitmap, changeRegion: MediaDevices.Region? = null) {
         console.log("Draw ", bitmap, " to ", this)
-        val ctx2d = getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
+        val ctx2d = get2DContext()
         ctx2d.resetTransform()
         val renderBitmap = when (bitmap) { // TODO: huh?
             is CanvasBitmap -> bitmap.canvas

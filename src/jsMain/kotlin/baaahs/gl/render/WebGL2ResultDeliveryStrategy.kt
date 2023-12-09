@@ -3,16 +3,19 @@ package baaahs.gl.render
 import baaahs.document
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
-import baaahs.gl.WebGL2RenderingContext
-import baaahs.gl.WebGL2RenderingContext.Companion.PIXEL_PACK_BUFFER
-import baaahs.gl.WebGL2RenderingContext.Companion.STREAM_READ
-import baaahs.gl.WebGL2RenderingContext.Companion.SYNC_GPU_COMMANDS_COMPLETE
-import baaahs.gl.WebGLSync
 import baaahs.gl.result.ResultStorage
 import baaahs.internalTimerClock
 import com.danielgergely.kgl.Buffer
 import com.danielgergely.kgl.GlBuffer
+import com.danielgergely.kgl.Kgl
+import js.buffer.ArrayBufferView
 import kotlinx.coroutines.delay
+import web.gl.GLenum
+import web.gl.WebGL2RenderingContext
+import web.gl.WebGL2RenderingContext.Companion.PIXEL_PACK_BUFFER
+import web.gl.WebGL2RenderingContext.Companion.STREAM_READ
+import web.gl.WebGL2RenderingContext.Companion.SYNC_GPU_COMMANDS_COMPLETE
+import web.gl.WebGLSync
 
 actual fun pickResultDeliveryStrategy(gl: GlContext): ResultDeliveryStrategy {
     return SwitchingResultDeliveryStrategy(gl as GlBase.JsGlContext)
@@ -76,7 +79,9 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
             gl.check { bindBuffer(PIXEL_PACK_BUFFER, glBuf) }
             gl.check {
                 webgl2.getBufferSubData(
-                    PIXEL_PACK_BUFFER, 0, cpuBuffer.getJsBufferWithOffset(), 0, 0
+                    PIXEL_PACK_BUFFER, 0,
+                    cpuBuffer.getJsBufferWithOffset().unsafeCast<ArrayBufferView>(),
+                    0, 0
                 )
             }
             gl.check { bindBuffer(PIXEL_PACK_BUFFER, null) }
@@ -86,12 +91,17 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
     }
 }
 
+private fun Kgl.bindBuffer(target: GLenum, bufferId: GlBuffer?) =
+    bindBuffer(target as Int, bufferId)
+
 class FenceSync(private val gl: GlBase.JsGlContext) {
     private val webgl2 = gl.webgl
 
     private val fenceSync = gl.check { webgl2.fenceSync(SYNC_GPU_COMMANDS_COMPLETE, 0) }
 
     suspend fun await() {
+        fenceSync ?: error("Fence sync not supported.")
+
         gl.check { webgl2.flush() }
 
         val startTime = internalTimerClock.now()
