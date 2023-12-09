@@ -33,7 +33,9 @@ val _init_ =
     document.getElementById("_patience_")?.let { patience ->
         patience.innerHTML = arrayOf(
             "Reticulating Splines…",
-            "Grooming Llamas…"
+            "Grooming Llamas…",
+            "Prefiguring Blandishments…",
+            "Zeroing Matrices…"
         ).random()
     }
 

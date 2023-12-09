@@ -140,7 +140,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         left = 0.px
         bottom = 0.px
         padding = Padding(0.px, 4.px)
-        userSelect = UserSelect.none
     }
 
     val resetSwitch by css {
@@ -148,7 +147,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         right = 0.px
         bottom = 0.px
         padding = Padding(0.px, 4.px)
-        userSelect = UserSelect.none
     }
 
     val inUse by css {
