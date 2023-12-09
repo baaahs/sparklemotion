@@ -17,9 +17,9 @@ import react.dom.*
 import react.dom.events.MouseEvent
 import react.useRef
 import styled.inlineStyles
+import web.animations.requestAnimationFrame
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
-import web.timers.requestAnimationFrame
 import kotlin.math.min
 
 private const val pickerRadius = 12

@@ -1,8 +1,10 @@
 package baaahs
 
-import web.canvas.RenderingContextId
+import web.canvas.CanvasRenderingContext2D
 import web.dom.DOMTokenList
 import web.dom.Element
+import web.gl.WebGL2RenderingContext
+import web.gl.WebGLRenderingContext
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 
@@ -29,4 +31,6 @@ fun DOMTokenList.clear() {
 fun <T : HTMLElement> HTMLElement.first(className: String) : T =
     (getElementsByClassName(className)[0] as T?)!!
 
-fun HTMLCanvasElement.context2d() = this.getContext(RenderingContextId.canvas)!!
+fun HTMLCanvasElement.get2DContext() = this.getContext(CanvasRenderingContext2D.ID)!!
+fun HTMLCanvasElement.getWebGLContext() = this.getContext(WebGLRenderingContext.ID)
+fun HTMLCanvasElement.getWebGL2Context() = this.getContext(WebGL2RenderingContext.ID)

@@ -44,7 +44,7 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
                     lastStats = curStats
                     forceRender()
                 }
-            }, ms = 50)
+            }, timeout = 50)
 
             withCleanup {
                 clearInterval(callback)

@@ -159,8 +159,8 @@ kotlin {
                 implementation(kotlinw("react"))
                 implementation(kotlinw("react-dom"))
                 implementation(kotlinw("styled"))
-                implementation(kotlinw("mui"))
-                implementation(kotlinw("mui-icons"))
+                implementation(kotlinw("mui-material"))
+                implementation(kotlinw("mui-icons-material"))
                 implementation(kotlinw("emotion"))
 
                 implementation(npm("camera-controls", "^1.35.0"))

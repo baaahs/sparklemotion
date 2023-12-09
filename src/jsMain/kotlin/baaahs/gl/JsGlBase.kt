@@ -1,11 +1,12 @@
 package baaahs.gl
 
 import baaahs.document
+import baaahs.getWebGL2Context
+import baaahs.getWebGLContext
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
-import org.khronos.webgl.ArrayBufferView
-import org.khronos.webgl.WebGLObject
-import web.canvas.RenderingContextId
+import org.khronos.webgl.WebGLRenderingContext
+import web.gl.WebGL2RenderingContext
 import web.html.HTMLCanvasElement
 import web.prompts.alert
 
@@ -16,7 +17,7 @@ actual object GlBase {
     class JsGlManager : GlManager() {
         override val available: Boolean by lazy {
             val canvas = document.createElement("canvas") as HTMLCanvasElement
-            val gl = canvas.getContext(RenderingContextId.webgl)
+            val gl = canvas.getWebGLContext()
             gl != null
         }
 
@@ -26,7 +27,7 @@ actual object GlBase {
         }
 
         fun createContext(canvas: HTMLCanvasElement, trace: Boolean = false): JsGlContext {
-            val webgl = canvas.getContext(RenderingContextId.webgl2) as WebGL2RenderingContext?
+            val webgl = canvas.getWebGL2Context()
             if (webgl == null) {
                 alert(
                     "Running GLSL shows on iOS requires WebGL 2.0.\n" +
@@ -37,7 +38,7 @@ actual object GlBase {
             }
             return JsGlContext(
                 canvas,
-                maybeTrace(KglJs(webgl), trace),
+                maybeTrace(KglJs(webgl.unsafeCast<WebGLRenderingContext>()), trace),
                 "300 es",
                 webgl
             )
@@ -75,11 +76,11 @@ actual object GlBase {
 
         /** Creates a related context with shared state and the given Kgl. */
         open fun requestAnimationFrame(callback: (Double) -> Unit) {
-            web.timers.requestAnimationFrame(callback)
+            web.animations.requestAnimationFrame(callback)
         }
 
         private fun ensureExtension(name: String, required: Boolean): Boolean {
-            val extension = webgl.getExtension(name)
+            val extension = webgl.getExtension(name) as Any?
             if (required && extension == null) {
                 alert("$name not supported")
                 throw Exception("$name not supported")
@@ -88,24 +89,3 @@ actual object GlBase {
         }
     }
 }
-
-abstract external class WebGL2RenderingContext : com.danielgergely.kgl.WebGL2RenderingContext {
-    fun fenceSync(condition: Int, flags: Int): WebGLSync
-    fun clientWaitSync(sync: WebGLSync, flags: Int, timeout: Number): Int
-    fun deleteSync(sync: WebGLSync): WebGLSync
-    fun readPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, offset: Int)
-    fun getBufferSubData(target: Int, srcByteOffset: Int, dstData: ArrayBufferView, dstOffset: Int, length: Int)
-
-    companion object {
-        val PIXEL_PACK_BUFFER: Int
-        val SYNC_GPU_COMMANDS_COMPLETE: Int
-        val ALREADY_SIGNALED: Int
-        val TIMEOUT_EXPIRED: Int
-        val CONDITION_SATISFIED: Int
-        val WAIT_FAILED: Int
-        val STATIC_READ: Int
-        val STREAM_READ: Int
-    }
-}
-
-external class WebGLSync : WebGLObject

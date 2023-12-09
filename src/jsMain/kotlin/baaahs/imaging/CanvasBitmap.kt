@@ -1,7 +1,7 @@
 package baaahs.imaging
 
 import baaahs.MediaDevices
-import baaahs.context2d
+import baaahs.get2DContext
 import com.danielgergely.kgl.ByteBuffer
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
@@ -15,7 +15,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     override val width = canvas.width
     override val height = canvas.height
 
-    internal val ctx = canvas.context2d()
+    internal val ctx = canvas.get2DContext()
 
     override fun drawImage(image: Image) {
         (image as JsImage).draw(ctx, 0, 0)
@@ -113,7 +113,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
 
     override fun clone(): Bitmap {
         val newCanvas = createCanvas(canvas.width, canvas.height)
-        val ctx = newCanvas.context2d()
+        val ctx = newCanvas.get2DContext()
         ctx.drawImage(canvas, 0.0, 0.0)
         return CanvasBitmap(newCanvas)
     }
