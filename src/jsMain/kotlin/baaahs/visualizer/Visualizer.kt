@@ -461,7 +461,7 @@ open class BaseVisualizer(
     }
 
     private fun requestAnimationFrame() {
-        web.timers.requestAnimationFrame { render() }
+        web.animations.requestAnimationFrame { render() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord
