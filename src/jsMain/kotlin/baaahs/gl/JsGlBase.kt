@@ -89,22 +89,3 @@ actual object GlBase {
         }
     }
 }
-
-//abstract external class WebGL2RenderingContext : com.danielgergely.kgl.WebGL2RenderingContext {
-//    fun fenceSync(condition: Int, flags: Int): WebGLSync
-//    fun clientWaitSync(sync: WebGLSync, flags: Int, timeout: Number): Int
-//    fun deleteSync(sync: WebGLSync): WebGLSync
-//    fun readPixels(x: Int, y: Int, width: Int, height: Int, format: Int, type: Int, offset: Int)
-//    fun getBufferSubData(target: Int, srcByteOffset: Int, dstData: ArrayBufferView, dstOffset: Int, length: Int)
-//
-//    companion object {
-//        val PIXEL_PACK_BUFFER: Int
-//        val SYNC_GPU_COMMANDS_COMPLETE: Int
-//        val ALREADY_SIGNALED: Int
-//        val TIMEOUT_EXPIRED: Int
-//        val CONDITION_SATISFIED: Int
-//        val WAIT_FAILED: Int
-//        val STATIC_READ: Int
-//        val STREAM_READ: Int
-//    }
-//}

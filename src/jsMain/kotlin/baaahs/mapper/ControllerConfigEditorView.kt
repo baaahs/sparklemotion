@@ -60,7 +60,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     Card {
         attrs.classes = jso { this.root = -styles.defaultConfigs }
-//        attrs.elevation = 4
+//        attrs.elevation = 4 // TODO: Replace when https://github.com/JetBrains/kotlin-wrappers/issues/2175 is fixed.
 
         header {
             +"Controller Defaults"
