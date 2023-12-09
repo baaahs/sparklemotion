@@ -26,7 +26,7 @@ private val Ticks = xComponent<TicksProps>("Ticks") { props ->
             props.defaultTickComponent?.let { component ->
                 props.defaultValue?.let { defaultValue ->
                     add(cloneElement(component) {
-                        key = "$$-$defaultValue"
+                        key = "$$-defaultValue"
                         this.value = defaultValue
                         this.percent = scale.getValue(defaultValue)
                     })
