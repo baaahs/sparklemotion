@@ -1,9 +1,8 @@
 package baaahs.sm.server
 
-import baaahs.Gadget
-import baaahs.GadgetDataSerializer
-import baaahs.PubSub
+import baaahs.*
 import baaahs.util.Clock
+import kotlinx.serialization.modules.SerializersModule
 import kotlin.coroutines.CoroutineContext
 
 class GadgetManager(
@@ -14,12 +13,20 @@ class GadgetManager(
     private val gadgets: MutableMap<String, Gadget> = mutableMapOf()
     var lastUserInteraction = clock.now()
 
+    init {
+        val commands = ShowControlCommands(SerializersModule {})
+        pubSub.listenOnCommandChannel(commands.setGadgetStateCommand) { command ->
+            gadgets.getBang(command.id, "gadget")
+                .applyState(command.state)
+        }
+    }
+
     fun <T : Gadget> registerGadget(id: String, gadget: T) {
-        val topic =
-            PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+        gadgets[id] = gadget
+
+        val topic = PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
         val channel = pubSub.publish(topic, gadget.state) { updated ->
             lastUserInteraction = clock.now()
-
             gadget.applyState(updated)
         }
         gadget.listen { channel.onChange(it.state) }

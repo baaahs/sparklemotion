@@ -166,6 +166,16 @@ private class GadgetValueObserver<T>(
     }
 }
 
+@Serializable
+class SetGadgetStateCommand(val id: String, val state: Map<String, JsonElement>)
+
+class ShowControlCommands(serialModule: SerializersModule) {
+    val setGadgetStateCommand = PubSub.CommandPort(
+        "pinky/showControl/setGadgetState", SetGadgetStateCommand.serializer(),
+        Unit.serializer(), serialModule
+    )
+}
+
 val GadgetDataSerializer = MapSerializer(String.serializer(), JsonElement.serializer())
 
 private val jsonParser = Json

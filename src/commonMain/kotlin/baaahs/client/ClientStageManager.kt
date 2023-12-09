@@ -9,18 +9,34 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.util.coroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    sceneProvider: SceneProvider
+    sceneProvider: SceneProvider,
+    private val coroutineScope: CoroutineScope = GlobalScope
 ) : BaseShowPlayer(toolchain, SceneProviderWithFallback(sceneProvider)) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
         get() = openShow!!.buildActivePatchSet()
+
+    private val showControlCommands = run {
+        val commands = ShowControlCommands(SerializersModule {})
+        pubSub.commandSender(commands.setGadgetStateCommand)
+    }
+
+    private suspend fun setGadgetState(id: String, state: Map<String, JsonElement>) =
+        showControlCommands(SetGadgetStateCommand(id, state))
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
@@ -64,11 +80,14 @@ class ClientStageManager(
         private val channel: PubSub.Channel<Map<String, JsonElement>>
 
         init {
-            val gadgetListener = this::onGadgetChange
+            val gadgetListener: GadgetListener = {
+                coroutineScope.launch(coroutineExceptionHandler) {
+                    setGadgetState(id, gadget.state)
+                }
+            }
             gadget.listen(gadgetListener)
 
-            val topic =
-                PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+            val topic = PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
 
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
