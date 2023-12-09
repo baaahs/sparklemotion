@@ -6,6 +6,7 @@ import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.movingHeadFixture
+import baaahs.get2DContext
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ComponentRenderEngine
@@ -15,11 +16,12 @@ import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import web.canvas.CanvasRenderingContext2D
-import web.canvas.RenderingContextId
+import web.animations.requestAnimationFrame
 import web.html.HTMLCanvasElement
-import web.timers.requestAnimationFrame
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 
 private val Float.short: String
@@ -50,7 +52,7 @@ class MovingHeadPreview(
             val fixture = movingHeadFixture(movingHead, 1, movingHead.name, NullTransport, movingHead.adapter)
             renderEngine.addFixture(fixture)
         }
-    private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
+    private val context2d = canvas2d.get2DContext()
 
     override fun start() {
         running = true

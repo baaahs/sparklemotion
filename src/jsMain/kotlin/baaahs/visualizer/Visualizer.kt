@@ -23,7 +23,6 @@ import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
-import web.uievents.POINTER_DOWN
 import web.uievents.PointerEvent
 import web.window.RESIZE
 import kotlin.math.*
@@ -462,7 +461,7 @@ open class BaseVisualizer(
     }
 
     private fun requestAnimationFrame() {
-        web.timers.requestAnimationFrame { render() }
+        web.animations.requestAnimationFrame { render() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord

@@ -1,7 +1,7 @@
 package baaahs.ui
 
-import baaahs.context2d
 import baaahs.document
+import baaahs.get2DContext
 import js.core.jso
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
@@ -29,7 +29,6 @@ import web.events.EventTarget
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
-import web.uievents.TOUCH_MOVE
 import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
@@ -277,7 +276,7 @@ fun HTMLElement.fitText() {
     val buttonWidth = parentEl.clientWidth - marginX
     val buttonHeight = parentEl.clientHeight - marginY
     val canvas = document.createElement("canvas") as HTMLCanvasElement
-    val ctx = canvas.context2d()
+    val ctx = canvas.get2DContext()
     val elementStyle = getComputedStyle(this)
     ctx.font = elementStyle.font
     val width = innerText.split(Regex("\\s+")).maxOf { word ->
