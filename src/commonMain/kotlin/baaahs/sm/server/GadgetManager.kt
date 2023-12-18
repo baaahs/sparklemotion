@@ -1,8 +1,12 @@
 package baaahs.sm.server
 
-import baaahs.*
+import baaahs.Gadget
+import baaahs.GadgetDataSerializer
+import baaahs.PubSub
+import baaahs.getBang
+import baaahs.sm.webapi.ShowControlCommands
 import baaahs.util.Clock
-import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.json.JsonElement
 import kotlin.coroutines.CoroutineContext
 
 class GadgetManager(
@@ -14,11 +18,13 @@ class GadgetManager(
     var lastUserInteraction = clock.now()
 
     init {
-        val commands = ShowControlCommands(SerializersModule {})
-        pubSub.listenOnCommandChannel(commands.setGadgetStateCommand) { command ->
-            gadgets.getBang(command.id, "gadget")
-                .applyState(command.state)
-        }
+        ShowControlCommands.IMPL
+            .createReceiver(pubSub, object : ShowControlCommands {
+                override suspend fun setGadgetState(id: String, state: Map<String, JsonElement>) {
+                    gadgets.getBang(id, "gadget")
+                        .applyState(state)
+                }
+            })
     }
 
     fun <T : Gadget> registerGadget(id: String, gadget: T) {

@@ -29,13 +29,7 @@ class ClassProcessor(
 
         out.appendLine("/** RPC implementation for [${baseName}]. */")
         out.appendLine("class ${baseName}Rpc$typeParams(")
-        out.indent {
-            out.appendLine("channelPrefix: String,")
-            typeParameters.forEach {
-                out.appendLine("${it.lowerName}Serializer: KSerializer<${it.name}>,")
-            }
-            out.appendLine("serialModule: SerializersModule = SerializersModule {}")
-        }
+        emitConstructorParams()
         out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName> {")
         out.indent {
             out.appendLine("override fun createSender(client: $rpcClientName) =")
@@ -81,6 +75,32 @@ class ClassProcessor(
             out.appendLine("}")
         }
         out.appendLine("}")
+
+        out.appendLine()
+
+        emitGetImpl()
+    }
+
+    private fun emitGetImpl() {
+        out.appendLine("fun ${typeParams.wrapIfNotEmpty { "$it " }}$baseName.Companion.getImpl(")
+        emitConstructorParams()
+        out.appendLine(") = ${baseName}Rpc(${constructorArgNames()})")
+    }
+
+    private fun constructorArgNames() = buildList {
+        add("channelPrefix")
+        typeParameters.forEach { add("${it.lowerName}Serializer") }
+        add("serialModule")
+    }.joinToString(", ")
+
+    private fun emitConstructorParams() {
+        out.indent {
+            out.appendLine("channelPrefix: String,")
+            typeParameters.forEach {
+                out.appendLine("${it.lowerName}Serializer: KSerializer<${it.name}>,")
+            }
+            out.appendLine("serialModule: SerializersModule = SerializersModule {}")
+        }
     }
 
     class RpcTypeParam(param: KSTypeParameter) {
@@ -94,6 +114,7 @@ class ClassProcessor(
         private val params = fn.parameters.map { RpcParam(it) }
         private val genericParams = params.filter { it.type.isParameterized }
         private val returnType = RpcType(fn.returnType!!.resolve())
+        private val nonUnitReturn = returnType.fullName != "kotlin.Unit"
 
         fun emitCommandPort(out: IndentingWriter) {
             out.appendLine("private val ${fnName}Command = $commandPortName(")
@@ -102,10 +123,10 @@ class ClassProcessor(
                 val serializers = genericParams
                     .joinToString(", ") { "${it.type.name.lowercase()}Serializer" }
                 out.appendLine("${className}Command.serializer(${serializers}),")
-                if (returnType.isParameterized) {
-                    out.appendLine("${returnType.name.lowercase()}Serializer,")
+                if (nonUnitReturn) {
+                    out.appendLine("${className}Response.serializer(),")
                 } else {
-                    out.appendLine("${returnType.name}.serializer(),")
+                    out.appendLine("kotlin.Unit.serializer(),")
                 }
                 out.appendLine("serialModule")
             }
@@ -124,13 +145,23 @@ class ClassProcessor(
             if (params.isNotEmpty()) {
                 out.indent {
                     out.append(params.joinToString(",") { rpcParam ->
-                        "\nval ${rpcParam.name}: ${rpcParam.type.nullableName}"
+                        "\nval ${rpcParam.name}: ${rpcParam.type.fullName}"
                     })
                 }
                 out.appendLine()
             }
             out.appendLine(")")
             out.appendLine()
+
+            if (nonUnitReturn) {
+                out.appendLine("@kotlinx.serialization.Serializable")
+                out.appendLine("private class ${className}Response(")
+                out.indent {
+                    out.appendLine("val value: ${returnType.fullName}")
+                }
+                out.appendLine(")")
+                out.appendLine()
+            }
         }
 
         fun emitCommandSender(out: IndentingWriter) {
@@ -141,17 +172,29 @@ class ClassProcessor(
             out.appendLine(
                 "override suspend fun $fnName(${
                     params.joinToString(", ") { rpcParam ->
-                        "${rpcParam.name}: ${rpcParam.type.nullableName}"
+                        "${rpcParam.name}: ${rpcParam.type.fullName}"
                     }
                 }) =")
             out.indent {
-                out.appendLine("${fnName}Sender(${className}Command(${params.joinToString(", ") { it.name }}))")
+                out.appendLine(
+                    "${fnName}Sender(${className}Command(${params.joinToString(", ") { it.name }}))" +
+                            if (nonUnitReturn) ".value" else ""
+                )
             }
         }
 
         fun emitListenCommand(out: IndentingWriter) {
             val paramList = params.joinToString(", ") { "it.${it.name}" }
-            out.appendLine("server.listenOnCommandChannel(${fnName}Command) { handler.$fnName($paramList) }")
+            out.appendLine("server.listenOnCommandChannel(${fnName}Command) {")
+            out.indent {
+                val invoke = "handler.$fnName($paramList)"
+                if (nonUnitReturn) {
+                    out.appendLine("${className}Response($invoke)")
+                } else {
+                    out.appendLine(invoke)
+                }
+            }
+            out.appendLine("}")
         }
 
         inner class RpcParam(param: KSValueParameter) {
@@ -167,8 +210,11 @@ class ClassProcessor(
         } else {
             type.declaration.qualifiedName?.asString() ?: "!!!"
         }
+        private val types: String = type.arguments
+            .joinToString(", ") { RpcType(it.type!!.resolve()).fullName }
+            .wrapIfNotEmpty { "<$it>" }
         private val nullable = if (type.isMarkedNullable) "?" else ""
-        val nullableName = "$name$nullable"
+        val fullName: String = "$name$types$nullable"
     }
 
     companion object {
