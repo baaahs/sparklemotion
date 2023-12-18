@@ -9,14 +9,12 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.sm.webapi.ShowControlCommands
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.modules.SerializersModule
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 class ClientStageManager(
     toolchain: Toolchain,
@@ -30,13 +28,8 @@ class ClientStageManager(
     val activePatchSet: ActivePatchSet
         get() = openShow!!.buildActivePatchSet()
 
-    private val showControlCommands = run {
-        val commands = ShowControlCommands(SerializersModule {})
-        pubSub.commandSender(commands.setGadgetStateCommand)
-    }
-
-    private suspend fun setGadgetState(id: String, state: Map<String, JsonElement>) =
-        showControlCommands(SetGadgetStateCommand(id, state))
+    private val showControlCommands = ShowControlCommands.IMPL
+        .createSender(pubSub)
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
@@ -82,7 +75,7 @@ class ClientStageManager(
         init {
             val gadgetListener: GadgetListener = {
                 coroutineScope.launch(coroutineExceptionHandler) {
-                    setGadgetState(id, gadget.state)
+                    showControlCommands.setGadgetState(id, gadget.state)
                 }
             }
             gadget.listen(gadgetListener)
@@ -94,11 +87,6 @@ class ClientStageManager(
                     gadget.applyState(json)
                 }
             }
-        }
-
-        // GadgetListener callback.
-        fun onGadgetChange(g: Gadget) {
-            channel.onChange(g.state)
         }
     }
 

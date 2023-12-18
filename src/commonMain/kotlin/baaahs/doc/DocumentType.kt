@@ -2,7 +2,7 @@ package baaahs.doc
 
 import baaahs.rpc.RpcImpl
 import baaahs.sm.webapi.DocumentCommands
-import baaahs.sm.webapi.DocumentCommandsRpc
+import baaahs.sm.webapi.getImpl
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
@@ -15,7 +15,7 @@ interface DocumentType {
         tSerializer: KSerializer<T>,
         serializersModule: SerializersModule
     ): RpcImpl<DocumentCommands<T>> =
-        DocumentCommandsRpc("pinky/$channelName", tSerializer, serializersModule)
+        DocumentCommands.getImpl("pinky/$channelName", tSerializer, serializersModule)
 }
 
 object SceneDocumentType : DocumentType {
