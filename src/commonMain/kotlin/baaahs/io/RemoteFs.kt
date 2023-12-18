@@ -1,6 +1,6 @@
 package baaahs.io
 
-import baaahs.PubSub
+import baaahs.rpc.CommandPort
 import baaahs.sim.FakeFs
 import baaahs.sim.MergedFs
 import kotlinx.serialization.KSerializer
@@ -121,8 +121,8 @@ interface RemoteFsSerializer {
     val asSerializer: KSerializer<Fs>
         get() = this as KSerializer<Fs>
 
-    fun createCommandPort(): PubSub.CommandPort<RemoteFsOp, RemoteFsOp.Response> {
-        return PubSub.CommandPort(
+    fun createCommandPort(): CommandPort<RemoteFsOp, RemoteFsOp.Response> {
+        return CommandPort(
             "pinky/remoteFs",
             RemoteFsOp.serializer(),
             RemoteFsOp.Response.serializer(),

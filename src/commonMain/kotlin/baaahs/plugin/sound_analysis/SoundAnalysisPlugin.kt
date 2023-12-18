@@ -14,6 +14,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.internalTimerClock
 import baaahs.plugin.*
+import baaahs.rpc.CommandPort
 import baaahs.show.Control
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
@@ -128,7 +129,7 @@ class SoundAnalysisPlugin internal constructor(
         private val inputsTopic = PubSub.Topic("plugins/${id}/inputs", ListSerializer(AudioInput.serializer()))
         private val currentInputTopic = PubSub.Topic("plugins/${id}/currentInput", AudioInput.serializer().nullable)
 
-        private val switchToCommand = PubSub.CommandPort(
+        private val switchToCommand = CommandPort(
             "plugins/${id}/switchTo",
             SwitchToCommand.serializer(),
             Unit.serializer()
@@ -137,7 +138,7 @@ class SoundAnalysisPlugin internal constructor(
         @Serializable
         class SwitchToCommand(val audioInput: AudioInput?)
 
-        private val updateCommand = PubSub.CommandPort(
+        private val updateCommand = CommandPort(
             "plugins/${id}/update",
             UpdateCommand.serializer(),
             UpdateCommand.Response.serializer()
