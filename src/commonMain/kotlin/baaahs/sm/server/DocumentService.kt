@@ -6,8 +6,7 @@ import baaahs.doc.DocumentType
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.Storage
-import baaahs.sm.webapi.NewCommand
-import baaahs.sm.webapi.Topics
+import baaahs.sm.webapi.DocumentCommands
 import baaahs.ui.Observable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
@@ -20,7 +19,7 @@ abstract class DocumentService<T, TState>(
     remoteFsSerializer: RemoteFsSerializer,
     serializersModule: SerializersModule,
     val documentType: DocumentType
-): Observable() {
+) : Observable() {
     var document: T? = null
         private set
     var file: Fs.File? = null
@@ -43,18 +42,11 @@ abstract class DocumentService<T, TState>(
         }
 
     init {
-        val commands = Topics.DocumentCommands(documentType.channelName, tSerializer, SerializersModule {
+        val rpc = documentType.getRpcImpl(tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(serializersModule)
         })
-        pubSub.listenOnCommandChannel(commands.newCommand) { command -> handleNew(command) }
-        pubSub.listenOnCommandChannel(commands.switchToCommand) { command -> handleSwitchTo(command.file) }
-        pubSub.listenOnCommandChannel(commands.saveCommand) { command -> handleSave() }
-        pubSub.listenOnCommandChannel(commands.saveAsCommand) { command ->
-            val saveAsFile = storage.resolve(command.file.fullPath)
-            handleSaveAs(saveAsFile)
-            onFileChanged(saveAsFile)
-        }
+        rpc.createReceiver(pubSub, DocumentCommandsHandler())
     }
 
     abstract fun createDocument(): T
@@ -75,26 +67,29 @@ abstract class DocumentService<T, TState>(
         this.isUnsaved = isUnsaved
     }
 
-    private suspend fun handleNew(command: NewCommand<T>) {
-        switchTo(command.template ?: createDocument())
-    }
+    inner class DocumentCommandsHandler : DocumentCommands<T> {
+        override suspend fun new(template: T?) =
+            switchTo(template ?: createDocument())
 
-    private suspend fun handleSwitchTo(file: Fs.File?) {
-        if (file != null) {
-            switchTo(load(file), file = file, isUnsaved = false)
-        } else {
-            switchTo(null, null, null)
+        override suspend fun switchTo(file: Fs.File?) {
+            if (file != null) {
+                switchTo(load(file), file = file, isUnsaved = false)
+            } else {
+                switchTo(null, null, null)
+            }
         }
-    }
 
-    private suspend fun handleSave() {
-        file?.let { file ->
-            document?.let { document -> doSave(file, document) }
+        override suspend fun save() {
+            file?.let { file ->
+                document?.let { document -> doSave(file, document) }
+            }
         }
-    }
 
-    private suspend fun handleSaveAs(file: Fs.File) {
-        document?.let { document -> doSave(file, document) }
+        override suspend fun saveAs(file: Fs.File) {
+            val saveAsFile = storage.resolve(file.fullPath)
+            document?.let { document -> doSave(saveAsFile, document) }
+            onFileChanged(saveAsFile)
+        }
     }
 
     private suspend fun doSave(file: Fs.File, document: T) {

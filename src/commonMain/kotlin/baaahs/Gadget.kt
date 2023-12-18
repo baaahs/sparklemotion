@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.gadgets.*
+import baaahs.rpc.CommandPort
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.ui.Observer
@@ -170,7 +171,7 @@ private class GadgetValueObserver<T>(
 class SetGadgetStateCommand(val id: String, val state: Map<String, JsonElement>)
 
 class ShowControlCommands(serialModule: SerializersModule) {
-    val setGadgetStateCommand = PubSub.CommandPort(
+    val setGadgetStateCommand = CommandPort(
         "pinky/showControl/setGadgetState", SetGadgetStateCommand.serializer(),
         Unit.serializer(), serialModule
     )

@@ -6,6 +6,7 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
 import baaahs.plugin.Plugins
+import baaahs.rpc.CommandPort
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
@@ -91,7 +92,7 @@ class DmxManagerImpl(
     companion object {
         internal val logger = DmxManager.logger
 
-        fun createCommandPort(serializersModule: SerializersModule) = PubSub.CommandPort(
+        fun createCommandPort(serializersModule: SerializersModule) = CommandPort(
             "pinky/dmx/universes",
             ListDmxUniverses.serializer(), ListDmxUniverses.Response.serializer(),
             serializersModule
