@@ -9,7 +9,6 @@ import baaahs.app.ui.dialog.FileDialog
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.dmx.DmxManagerImpl
-import baaahs.dmx.ListDmxUniverses
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
@@ -60,8 +59,9 @@ class WebClient(
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
-    private val listDmxUniverses = pubSub.commandSender(
-        DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule))
+    private val listDmxUniverses =
+        DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule)
+            .createSender(pubSub)
 
     private var uiSettings = UiSettings()
 
@@ -150,8 +150,7 @@ class WebClient(
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
 
-        suspend fun listDmxUniverses() =
-            listDmxUniverses.invoke(ListDmxUniverses())
+        suspend fun listDmxUniverses() = listDmxUniverses.listDmxUniverses()
 
     }
 }
