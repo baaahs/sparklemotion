@@ -6,14 +6,12 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
 import baaahs.plugin.Plugins
-import baaahs.rpc.CommandPort
 import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 
 interface DmxManager {
@@ -48,9 +46,10 @@ class DmxManagerImpl(
     override val dmxUniverse = findDmxUniverse(attachedDevices)
 
     init {
-        pubSub.listenOnCommandChannel(createCommandPort(plugins.serialModule)) { command ->
-            ListDmxUniverses.Response(universeListener?.lastFrames ?: emptyMap())
-        }
+        createCommandPort(plugins.serialModule).createReceiver(pubSub, object : DmxCommands {
+            override suspend fun listDmxUniverses(): Map<String, DmxUniverseListener.LastFrame> =
+                universeListener?.lastFrames ?: emptyMap()
+        })
     }
 
     override fun start() {
@@ -92,24 +91,7 @@ class DmxManagerImpl(
     companion object {
         internal val logger = DmxManager.logger
 
-        fun createCommandPort(serializersModule: SerializersModule) = CommandPort(
-            "pinky/dmx/universes",
-            ListDmxUniverses.serializer(), ListDmxUniverses.Response.serializer(),
-            serializersModule
-        )
+        fun createCommandPort(serializersModule: SerializersModule) =
+            DmxCommands.getImpl("pinky/dmx/universes", serializersModule)
     }
-}
-
-@Serializable
-data class DmxInfo(
-    val id: String,
-    val name: String,
-    val type: String,
-    val universe: Int?
-)
-
-@Serializable
-class ListDmxUniverses() {
-    @Serializable
-    class Response(val universes: Map<String, DmxUniverseListener.LastFrame>)
 }
