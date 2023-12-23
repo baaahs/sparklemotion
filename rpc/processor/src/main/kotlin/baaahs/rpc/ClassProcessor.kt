@@ -14,10 +14,19 @@ class ClassProcessor(
         .joinToString(", ") { it.name }
         .wrapIfNotEmpty { "<$it>" }
     private val fullName = "$baseName$typeParams"
-    private val rpcMethods = classDeclaration
-        .getAllFunctions()
-        .filter { !ignoredMethods.contains(it.simpleName.asString()) }
-        .map { fn -> RpcMethod(fn) }
+    private val rpcMethods = run {
+        val rpcMethodOverloads = mutableMapOf<String, Int>()
+
+        classDeclaration
+            .getAllFunctions()
+            .filter { !ignoredMethods.contains(it.simpleName.asString()) && it.isAbstract }
+            .map { fn ->
+                val name = fn.simpleName.asString()
+                val overloadNumber = rpcMethodOverloads[name] ?: 0
+                rpcMethodOverloads[name] = overloadNumber + 1
+                RpcMethod(fn, overloadNumber)
+            }
+    }.toList()
 
     fun process() {
         out.appendLine("package $packageName")
@@ -108,8 +117,9 @@ class ClassProcessor(
         val lowerName = name.lowercase()
     }
 
-    class RpcMethod(fn: KSFunctionDeclaration) {
-        private val fnName = fn.simpleName.getShortName()
+    class RpcMethod(fn: KSFunctionDeclaration, overloadNumber: Int) {
+        private val fnNameOverloadable = fn.simpleName.getShortName()
+        private val fnName = fnNameOverloadable + if (overloadNumber > 0) overloadNumber else ""
         private val className = fnName[0].uppercase() + fnName.substring(1)
         private val params = fn.parameters.map { RpcParam(it) }
         private val genericParams = params.filter { it.type.isParameterized }
@@ -170,7 +180,7 @@ class ClassProcessor(
 
         fun emitSenderFunction(out: IndentingWriter) {
             out.appendLine(
-                "override suspend fun $fnName(${
+                "override suspend fun $fnNameOverloadable(${
                     params.joinToString(", ") { rpcParam ->
                         "${rpcParam.name}: ${rpcParam.type.fullName}"
                     }
@@ -187,7 +197,7 @@ class ClassProcessor(
             val paramList = params.joinToString(", ") { "it.${it.name}" }
             out.appendLine("endpoint.listenOnCommandChannel(${fnName}Command) {")
             out.indent {
-                val invoke = "handler.$fnName($paramList)"
+                val invoke = "handler.$fnNameOverloadable($paramList)"
                 if (nonUnitReturn) {
                     out.appendLine("${className}Response($invoke)")
                 } else {
