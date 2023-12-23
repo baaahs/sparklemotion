@@ -4,9 +4,8 @@ import baaahs.PubSub
 import baaahs.io.Fs
 import baaahs.mapper.Storage
 import baaahs.show.Shader
-import baaahs.sm.webapi.SearchShaderLibraries
+import baaahs.sm.webapi.ShaderLibraryCommands
 import baaahs.sm.webapi.Topics
-import kotlinx.serialization.modules.SerializersModule
 
 class ShaderLibraryManager(
     private val storage: Storage,
@@ -20,20 +19,16 @@ class ShaderLibraryManager(
     }
 
     init {
-        pubSub.listenOnCommandChannel(Topics.Commands(SerializersModule {
-
-
-        }).searchShaderLibraries) { command ->
-            val matches = arrayListOf<ShaderLibrary.Entry>()
-            shaderLibraries.forEach { (libRoot, shaderLibrary) ->
-                shaderLibrary.entries.forEach { entry ->
-                    if (entry.matches(command.terms)) {
-                        matches.add(entry)
+        Topics.shaderLibrariesCommands.createReceiver(pubSub, object : ShaderLibraryCommands {
+            override suspend fun search(terms: String): List<ShaderLibrary.Entry> =
+                buildList {
+                    shaderLibraries.forEach { (_, shaderLibrary) ->
+                        shaderLibrary.entries.forEach { entry ->
+                            if (entry.matches(terms)) add(entry)
+                        }
                     }
                 }
-            }
-            SearchShaderLibraries.Response(matches)
-        }
+        })
     }
 
     suspend fun start() {

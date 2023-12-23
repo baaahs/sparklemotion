@@ -9,12 +9,10 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibrary
 import baaahs.model.MovingHead
 import baaahs.plugin.Plugins
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.modules.SerializersModule
 
 object Topics {
     fun createClientData(fsSerializer: RemoteFsSerializer) =
@@ -51,25 +49,5 @@ object Topics {
             fsSerializer.serialModule
         )
 
-    class Commands(serialModule: SerializersModule) {
-        val searchShaderLibraries = PubSub.CommandPort(
-            "pinky/shaderLibraries/search",
-            SearchShaderLibraries.serializer(), SearchShaderLibraries.Response.serializer(), serialModule
-        )
-    }
-
-    class DocumentCommands<T>(documentType: String, tSerializer: KSerializer<T>, serialModule: SerializersModule) {
-        val newCommand = PubSub.CommandPort(
-            "pinky/$documentType/new", NewCommand.serializer(tSerializer), Unit.serializer(), serialModule
-        )
-        val switchToCommand = PubSub.CommandPort(
-            "pinky/$documentType/switchTo", SwitchToCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveCommand = PubSub.CommandPort(
-            "pinky/$documentType/save", SaveCommand.serializer(), Unit.serializer(), serialModule
-        )
-        val saveAsCommand = PubSub.CommandPort(
-            "pinky/$documentType/saveAs", SaveAsCommand.serializer(), Unit.serializer(), serialModule
-        )
-    }
+    val shaderLibrariesCommands by lazy { ShaderLibraryCommands.getImpl("pinky/shaderLibraries") }
 }

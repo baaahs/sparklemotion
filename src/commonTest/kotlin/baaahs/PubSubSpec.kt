@@ -1,6 +1,7 @@
 package baaahs
 
 import baaahs.gl.override
+import baaahs.rpc.CommandPort
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -225,7 +226,7 @@ object PubSubSpec : Spek({
         }
 
         context("commands") {
-            val commandPort by value { PubSub.CommandPort("command", String.serializer(), String.serializer()) }
+            val commandPort by value { CommandPort("command", String.serializer(), String.serializer()) }
             val serverCommandHandler by value {
                 val x: suspend (String) -> String = { s: String -> "reply for $s" }; x
             }
@@ -241,7 +242,7 @@ object PubSubSpec : Spek({
 
             describe("async command handling") {
                 context("when a command suspends") {
-                    val otherCommandPort by value { PubSub.CommandPort("otherCommand", String.serializer(), String.serializer()) }
+                    val otherCommandPort by value { CommandPort("otherCommand", String.serializer(), String.serializer()) }
                     val serverOtherCommandChannel by value {
                         testRig.server.listenOnCommandChannel(otherCommandPort) { command: String -> "immediate reply for $command" }
                     }

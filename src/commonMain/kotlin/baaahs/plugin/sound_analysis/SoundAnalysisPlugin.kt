@@ -14,6 +14,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.internalTimerClock
 import baaahs.plugin.*
+import baaahs.rpc.Service
 import baaahs.show.Control
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
@@ -28,7 +29,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
-import kotlinx.serialization.builtins.serializer
 import kotlin.math.PI
 import kotlin.math.tan
 
@@ -86,6 +86,8 @@ class SoundAnalysisPlugin internal constructor(
     companion object : Plugin<Args>, SimulatorPlugin {
         override val id = "baaahs.SoundAnalysis"
 
+        private val commandsRpc = SoundAnalysisCommands.getImpl("plugins/$id")
+
         private val logger = Logger<SoundAnalysisPlugin>()
 
         val soundAnalysisStruct = GlslType.Struct(
@@ -127,32 +129,6 @@ class SoundAnalysisPlugin internal constructor(
 
         private val inputsTopic = PubSub.Topic("plugins/${id}/inputs", ListSerializer(AudioInput.serializer()))
         private val currentInputTopic = PubSub.Topic("plugins/${id}/currentInput", AudioInput.serializer().nullable)
-
-        private val switchToCommand = PubSub.CommandPort(
-            "plugins/${id}/switchTo",
-            SwitchToCommand.serializer(),
-            Unit.serializer()
-        )
-
-        @Serializable
-        class SwitchToCommand(val audioInput: AudioInput?)
-
-        private val updateCommand = PubSub.CommandPort(
-            "plugins/${id}/update",
-            UpdateCommand.serializer(),
-            UpdateCommand.Response.serializer()
-        )
-
-        @Serializable
-        class UpdateCommand(val frequenciesVersion: Int?, val magnitudesVersion: Int?) {
-            @Serializable
-            class Response(
-                val frequenciesVersion: Int? = null,
-                val frequencies: FloatArray? = null,
-                val magnitudesVersion: Int,
-                val magnitudes: FloatArray
-            )
-        }
     }
 
     @Serializable
@@ -191,11 +167,8 @@ class SoundAnalysisPlugin internal constructor(
                     currentInputChannel.onChange(currentInput)
                 }
             }
-
-            pubSub.listenOnCommandChannel(switchToCommand) { command ->
-                soundAnalyzer.switchTo(command.audioInput)
-            }
         }
+
         private var magnitudes = floatArrayOf()
         private var magnitudesVersion = 0
         private var frequencies = floatArrayOf()
@@ -220,19 +193,29 @@ class SoundAnalysisPlugin internal constructor(
                     oldUpdateChannel.complete(Unit)
                 }
             }
+        }
 
-            pubSub.listenOnCommandChannel(updateCommand) { command ->
-                while (command.frequenciesVersion == frequenciesVersion && command.magnitudesVersion == magnitudesVersion) {
+        init {
+            suspend fun doUpdate(newFrequenciesVersion: Int?, newMagnitudesVersion: Int?): UpdateResponse {
+                while (newFrequenciesVersion == frequenciesVersion && newMagnitudesVersion == magnitudesVersion) {
                     val theUpdateChannel = updateChannel
                     theUpdateChannel.await()
                 }
 
-                if (command.frequenciesVersion == frequenciesVersion) {
-                    UpdateCommand.Response(null, null, magnitudesVersion, magnitudes)
+                return if (newFrequenciesVersion == frequenciesVersion) {
+                    UpdateResponse(null, null, magnitudesVersion, magnitudes)
                 } else {
-                    UpdateCommand.Response(frequenciesVersion, frequencies, magnitudesVersion, magnitudes)
+                    UpdateResponse(frequenciesVersion, frequencies, magnitudesVersion, magnitudes)
                 }
             }
+
+            commandsRpc.createReceiver(pubSub, object : SoundAnalysisCommands {
+                override suspend fun switchTo(audioInput: AudioInput?) =
+                    soundAnalyzer.switchTo(audioInput)
+
+                override suspend fun update(frequenciesVersion: Int?, magnitudesVersion: Int?) =
+                    doUpdate(frequenciesVersion, magnitudesVersion)
+            })
         }
     }
 
@@ -251,8 +234,7 @@ class SoundAnalysisPlugin internal constructor(
         private val inputsListeners = mutableSetOf<SoundAnalyzer.InputsListener>()
 
         private val currentInputChannel: PubSub.Channel<AudioInput?>
-        private val switchTo = (pubSub as PubSub.Client).commandSender(switchToCommand)
-        private val update = (pubSub as PubSub.Client).commandSender(updateCommand)
+        private val rpcClient = commandsRpc.createSender(pubSub)
 
         init {
             pubSub.openChannel(inputsTopic, audioInputs) { inputs ->
@@ -277,7 +259,7 @@ class SoundAnalysisPlugin internal constructor(
                 delay(100)
             }
 
-            val response = update.invoke(UpdateCommand(frequenciesVersion, magnitudesVersion))
+            val response = rpcClient.update(frequenciesVersion, magnitudesVersion)
             if (response.frequenciesVersion != null &&
                 response.frequencies != null &&
                 response.frequenciesVersion != frequenciesVersion
@@ -309,7 +291,7 @@ class SoundAnalysisPlugin internal constructor(
         override fun listAudioInputs(): List<AudioInput> = audioInputs
 
         override suspend fun switchTo(audioInput: AudioInput?) {
-            switchTo.invoke(SwitchToCommand(audioInput))
+            rpcClient.switchTo(audioInput)
         }
 
         override fun listen(analysisListener: SoundAnalyzer.AnalysisListener): SoundAnalyzer.AnalysisListener {
@@ -335,10 +317,10 @@ class SoundAnalysisPlugin internal constructor(
             frequencies = (0 until buckets).map {
                 it.toFloat() * 20f
             }.toFloatArray()
-            val t = internalTimerClock.now().toFloat();
-            magnitudes = arrayOf(t * 2, t*3, t*4, t*8).map{
+            val t = internalTimerClock.now().toFloat()
+            magnitudes = arrayOf(t * 2, t * 3, t * 4, t * 8).map {
                 tan(it * PI).clamp(0.0, 1.0).toFloat()
-            }.map{it / buckets} // pre-compensate for normalization
+            }.map { it / buckets } // pre-compensate for normalization
                 .toFloatArray()
             sendSample()
             delay(20)
@@ -428,6 +410,22 @@ class SoundAnalysisFeedContext(
         private val logger = Logger<SoundAnalysisFeedContext>()
     }
 }
+
+@Service
+interface SoundAnalysisCommands {
+    suspend fun switchTo(audioInput: AudioInput?)
+    suspend fun update(frequenciesVersion: Int?, magnitudesVersion: Int?): UpdateResponse
+
+    companion object
+}
+
+@Serializable
+class UpdateResponse(
+    val frequenciesVersion: Int? = null,
+    val frequencies: FloatArray? = null,
+    val magnitudesVersion: Int,
+    val magnitudes: FloatArray
+)
 
 @Serializable
 data class AudioInput(
