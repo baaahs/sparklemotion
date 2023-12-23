@@ -5,7 +5,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
 import baaahs.sim.FixtureSimulation
-import baaahs.sim.LightBarSimulation
+import baaahs.sim.simulations
 import baaahs.visualizer.EntityAdapter
 import kotlinx.serialization.Transient
 
@@ -38,7 +38,7 @@ class LightBar(
     }
 
     override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
-        LightBarSimulation(this, adapter)
+        simulations.forLightBar(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
         adapter.createLightBarVisualizer(this)

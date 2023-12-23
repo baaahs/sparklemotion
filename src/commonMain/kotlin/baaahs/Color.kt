@@ -18,7 +18,7 @@ import kotlin.random.Random
 /**
  * Canonical representation of a color.
  */
-@Serializable
+@Serializable(Color.Companion::class)
 data class Color(val argb: Int) {
     /** Values are bounded at `0f..1f`. */
     constructor(red: Float, green: Float, blue: Float, alpha: Float = 1f) : this(asArgb(red, green, blue, alpha))

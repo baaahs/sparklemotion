@@ -13,7 +13,7 @@ import baaahs.util.globalLaunch
 import baaahs.visualizer.*
 import three_ext.toVector3F
 
-actual class BrainSurfaceSimulation actual constructor(
+class BrainSurfaceSimulation(
     private val surface: Model.Surface,
     adapter: EntityAdapter
 ) : FixtureSimulation {

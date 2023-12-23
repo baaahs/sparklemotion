@@ -8,7 +8,7 @@ import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.sim.FixtureSimulation
-import baaahs.sim.LightBarSimulation
+import baaahs.sim.simulations
 import baaahs.visualizer.EntityAdapter
 import kotlinx.serialization.Transient
 
@@ -98,7 +98,7 @@ open class PolyLine(
     }
 
     override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
-        LightBarSimulation(this, adapter)
+        simulations.forLightBar(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
         adapter.createPolyLineVisualizer(this)

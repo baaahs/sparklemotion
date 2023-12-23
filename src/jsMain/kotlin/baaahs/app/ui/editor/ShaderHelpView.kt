@@ -129,7 +129,7 @@ class ShaderHelpStyles(
             declarations["counterReset"] = "listing"
         }
 
-        code {
+        "code" {
             declarations["counterIncrement"] = "listing"
 
             before {

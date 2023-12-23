@@ -5,31 +5,39 @@ import mui.material.PaletteMode
 import mui.material.styles.Theme
 import mui.material.styles.ThemeOptions
 import mui.material.styles.createTheme
+import kotlin.js.JSON.parse
 
 object Themes {
     private val BaseTheme = baseTheme {
-        components = jso {
-            MuiListSubheader = jso {
-                styleOverrides = jso {
-                    root = jso {
-                        backgroundColor = "inherit"
-                        lineHeight = "inherit"
+        /**language=json*/
+        components = parse("""
+            {
+                "MuiListSubheader": {
+                    "styleOverrides": {
+                        "root": {
+                            "backgroundColor": "inherit",
+                            "lineHeight": "inherit"
+                        }
+                    }
+                },
+                "MuiFormControlLabel": {
+                    "styleOverrides": {
+                        "root": {
+                            "userSelect": "none"
+                        }
                     }
                 }
             }
-            MuiFormControlLabel = jso {
-                styleOverrides = jso {
-                    root = jso {
-                        userSelect = "none"
-                    }
+        """.trimIndent())
+
+        /**language=json*/
+        typography = parse("""
+            {
+                "button": {
+                    "textTransform": "none"
                 }
             }
-        }
-        typography = jso {
-            button = jso {
-                textTransform = "none"
-            }
-        }
+        """.trimIndent())
     }
 
     val Light = createTheme {
