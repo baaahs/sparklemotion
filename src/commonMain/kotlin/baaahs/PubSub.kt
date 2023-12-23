@@ -3,9 +3,7 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import baaahs.rpc.CommandPort
-import baaahs.rpc.RpcClient
-import baaahs.rpc.RpcServer
+import baaahs.rpc.*
 import baaahs.util.Logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -143,8 +141,8 @@ abstract class PubSub {
         }
     }
 
-    interface CommandChannel<C, R> {
-        suspend fun send(command: C): R
+    interface CommandChannel<C, R> : RpcCommandChannel<C, R> {
+        override suspend fun send(command: C): R
     }
 
     class Topics {
@@ -481,18 +479,18 @@ abstract class PubSub {
         handlerScope: CoroutineScope
     ) : Connection(name, topics, commandChannels, handlerScope), CommandRecipient
 
-    interface CommandRecipient {
+    interface CommandRecipient : RpcCommandRecipient {
         val commandChannels: CommandChannels
 
-        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+        override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
 
-        fun <C, R> openCommandChannel(
+        override fun <C, R> openCommandChannel(
             commandPort: CommandPort<C, R>
         ): CommandChannel<C, R> {
             return commandChannels.open(commandPort, this)
         }
 
-        fun <C, R> commandSender(
+        override fun <C, R> commandSender(
             commandPort: CommandPort<C, R>
         ): suspend (command: C) -> R {
             val commandChannel = openCommandChannel(commandPort)
@@ -500,7 +498,7 @@ abstract class PubSub {
         }
     }
 
-    abstract class Endpoint {
+    abstract class Endpoint : RpcEndpoint {
         protected abstract val commandChannels: CommandChannels
 
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
@@ -509,7 +507,7 @@ abstract class PubSub {
 
         abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
 
-        fun <C, R> listenOnCommandChannel(
+        override fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
             callback: suspend (command: C) -> R
         ) {
@@ -524,7 +522,7 @@ abstract class PubSub {
     class Server(
         httpServer: Network.HttpServer,
         private val handlerScope: CoroutineScope
-    ) : Endpoint(), IServer, RpcServer {
+    ) : Endpoint(), IServer, RpcEndpoint {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         override val commandChannels: CommandChannels = CommandChannels()

@@ -32,11 +32,11 @@ class ClassProcessor(
         emitConstructorParams()
         out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName> {")
         out.indent {
-            out.appendLine("override fun createSender(client: $rpcClientName) =")
-            out.indent { out.appendLine("Sender(client)") }
+            out.appendLine("override fun createSender(endpoint: $rpcEndpointName) =")
+            out.indent { out.appendLine("Sender(endpoint as $rpcClientName)") }
             out.appendLine()
-            out.appendLine("override fun createReceiver(server: $rpcServerName, handler: $fullName) {")
-            out.indent { out.appendLine("Receiver(server, handler)") }
+            out.appendLine("override fun createReceiver(endpoint: $rpcEndpointName, handler: $fullName) {")
+            out.indent { out.appendLine("Receiver(endpoint, handler)") }
             out.appendLine("}")
             out.appendLine()
 
@@ -48,7 +48,7 @@ class ClassProcessor(
                 rpcMethod.emitSerializationClass(out)
             }
 
-            out.appendLine("inner class Sender(client: $rpcClientName) : $fullName {")
+            out.appendLine("inner class Sender(endpoint: $rpcClientName) : $fullName {")
             out.indent {
                 rpcMethods.forEach { rpcMethod ->
                     rpcMethod.emitCommandSender(out)
@@ -62,7 +62,7 @@ class ClassProcessor(
 
             out.appendLine()
 
-            out.appendLine("inner class Receiver(server: $rpcServerName, handler: $fullName) {")
+            out.appendLine("inner class Receiver(endpoint: $rpcEndpointName, handler: $fullName) {")
             out.indent {
                 out.appendLine("init {")
                 out.indent {
@@ -165,7 +165,7 @@ class ClassProcessor(
         }
 
         fun emitCommandSender(out: IndentingWriter) {
-            out.appendLine("private val ${fnName}Sender = client.commandSender(${fnName}Command)")
+            out.appendLine("private val ${fnName}Sender = endpoint.commandSender(${fnName}Command)")
         }
 
         fun emitSenderFunction(out: IndentingWriter) {
@@ -185,7 +185,7 @@ class ClassProcessor(
 
         fun emitListenCommand(out: IndentingWriter) {
             val paramList = params.joinToString(", ") { "it.${it.name}" }
-            out.appendLine("server.listenOnCommandChannel(${fnName}Command) {")
+            out.appendLine("endpoint.listenOnCommandChannel(${fnName}Command) {")
             out.indent {
                 val invoke = "handler.$fnName($paramList)"
                 if (nonUnitReturn) {
@@ -220,8 +220,8 @@ class ClassProcessor(
     companion object {
         private val ignoredMethods = arrayOf("equals", "hashCode", "toString")
         private val commandPortName = CommandPort::class.qualifiedName!!
+        private val rpcEndpointName = RpcEndpoint::class.qualifiedName!!
         private val rpcClientName = RpcClient::class.qualifiedName!!
-        private val rpcServerName = RpcServer::class.qualifiedName!!
     }
 }
 
