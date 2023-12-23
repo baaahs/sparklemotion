@@ -1,6 +1,7 @@
 package baaahs.io
 
-import baaahs.rpc.CommandPort
+import baaahs.rpc.RpcImpl
+import baaahs.rpc.Service
 import baaahs.sim.FakeFs
 import baaahs.sim.MergedFs
 import kotlinx.serialization.KSerializer
@@ -11,7 +12,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 import kotlin.reflect.KClass
 
 @Serializable
@@ -114,6 +114,20 @@ abstract class FsClientSideSerializer : KSerializer<RemoteFs>, RemoteFsSerialize
 internal class MissingFieldException(fieldName: String) :
     SerializationException("Field '$fieldName' is required, but it was missing")
 
+@Service
+interface RemoteFsCommands {
+    suspend fun listFiles(directory: Fs.File): List<Fs.File>
+    suspend fun loadFile(file: Fs.File): String?
+    suspend fun saveFile(file: Fs.File, content: ByteArray, allowOverwrite: Boolean)
+    suspend fun saveFile(file: Fs.File, content: String, allowOverwrite: Boolean)
+    suspend fun exists(file: Fs.File): Boolean
+    suspend fun isDirectory(file: Fs.File): Boolean
+    suspend fun renameFile(fromFile: Fs.File, toFile: Fs.File)
+    suspend fun delete(file: Fs.File)
+
+    companion object
+}
+
 interface RemoteFsSerializer {
     val serialModule: SerializersModule
 
@@ -121,14 +135,10 @@ interface RemoteFsSerializer {
     val asSerializer: KSerializer<Fs>
         get() = this as KSerializer<Fs>
 
-    fun createCommandPort(): CommandPort<RemoteFsOp, RemoteFsOp.Response> {
-        return CommandPort(
+    fun createRpcImpl(): RpcImpl<RemoteFsCommands> {
+        return RemoteFsCommands.getImpl(
             "pinky/remoteFs",
-            RemoteFsOp.serializer(),
-            RemoteFsOp.Response.serializer(),
             SerializersModule {
-                polymorphic(RemoteFsOp::class)
-                polymorphic(RemoteFsOp.Response::class)
                 include(serialModule)
             }
         )
