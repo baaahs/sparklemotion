@@ -32,6 +32,7 @@ plugins {
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
+    id("com.google.devtools.ksp") version Versions.ksp
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
@@ -54,6 +55,8 @@ fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
 kotlin {
+    metadata {}
+
     jvm {
         withJava()
     }
@@ -67,6 +70,8 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
+            kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
+
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
@@ -75,6 +80,7 @@ kotlin {
                 implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
+                implementation(project(":rpc"))
             }
         }
         val commonTest by getting {
@@ -147,8 +153,6 @@ kotlin {
         }
 
         val jsMain by getting {
-            kotlin.srcDir("src/jsMain/js")
-
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
 
@@ -205,6 +209,10 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", project(":rpc:processor"))
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
@@ -341,5 +349,17 @@ tasks.withType<DependencyUpdatesTask> {
 
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+
+// Janky. See https://github.com/google/ksp/issues/963#issuecomment-1780330007.
+gradle.projectsEvaluated {
+    tasks {
+        val kspCommonMainKotlinMetadata by getting
+        withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>> {
+            if (this !== kspCommonMainKotlinMetadata) {
+                dependsOn(kspCommonMainKotlinMetadata)
+            }
+        }
     }
 }

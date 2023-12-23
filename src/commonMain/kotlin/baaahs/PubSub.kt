@@ -3,6 +3,7 @@ package baaahs
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
+import baaahs.rpc.*
 import baaahs.util.Logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -45,20 +46,6 @@ abstract class PubSub {
 
         @JsName("unsubscribe")
         fun unsubscribe()
-    }
-
-    class CommandPort<C, R>(
-        val name: String,
-        private val serializer: KSerializer<C>,
-        private val replySerializer: KSerializer<R>,
-        serialModule: SerializersModule = SerializersModule {}
-    ) {
-        private val json = Json { serializersModule = serialModule }
-
-        fun toJson(command: C): String = json.encodeToString(serializer, command)
-        fun fromJson(command: String): C = json.decodeFromString(serializer, command)
-        fun replyToJson(command: R): String = json.encodeToString(replySerializer, command)
-        fun replyFromJson(command: String): R = json.decodeFromString(replySerializer, command)
     }
 
     data class Topic<T>(
@@ -154,8 +141,8 @@ abstract class PubSub {
         }
     }
 
-    interface CommandChannel<C, R> {
-        suspend fun send(command: C): R
+    interface CommandChannel<C, R> : RpcCommandChannel<C, R> {
+        override suspend fun send(command: C): R
     }
 
     class Topics {
@@ -492,18 +479,18 @@ abstract class PubSub {
         handlerScope: CoroutineScope
     ) : Connection(name, topics, commandChannels, handlerScope), CommandRecipient
 
-    interface CommandRecipient {
+    interface CommandRecipient : RpcCommandRecipient {
         val commandChannels: CommandChannels
 
-        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+        override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
 
-        fun <C, R> openCommandChannel(
+        override fun <C, R> openCommandChannel(
             commandPort: CommandPort<C, R>
         ): CommandChannel<C, R> {
             return commandChannels.open(commandPort, this)
         }
 
-        fun <C, R> commandSender(
+        override fun <C, R> commandSender(
             commandPort: CommandPort<C, R>
         ): suspend (command: C) -> R {
             val commandChannel = openCommandChannel(commandPort)
@@ -511,7 +498,7 @@ abstract class PubSub {
         }
     }
 
-    abstract class Endpoint {
+    abstract class Endpoint : RpcEndpoint {
         protected abstract val commandChannels: CommandChannels
 
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
@@ -520,7 +507,7 @@ abstract class PubSub {
 
         abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
 
-        fun <C, R> listenOnCommandChannel(
+        override fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
             callback: suspend (command: C) -> R
         ) {
@@ -532,7 +519,10 @@ abstract class PubSub {
         fun <T : Any?> publish(topic: Topic<T>, data: T, onUpdate: (T) -> Unit): Channel<T>
     }
 
-    class Server(httpServer: Network.HttpServer, private val handlerScope: CoroutineScope) : Endpoint(), IServer {
+    class Server(
+        httpServer: Network.HttpServer,
+        private val handlerScope: CoroutineScope
+    ) : Endpoint(), IServer, RpcEndpoint {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         override val commandChannels: CommandChannels = CommandChannels()
@@ -617,7 +607,7 @@ abstract class PubSub {
         private val serverAddress: Network.Address,
         private val port: Int,
         private val coroutineScope: CoroutineScope = GlobalScope
-    ) : Endpoint(), CommandRecipient {
+    ) : Endpoint(), CommandRecipient, RpcClient {
         override val commandChannels: CommandChannels = CommandChannels()
 
         val isConnected: Boolean
@@ -719,6 +709,10 @@ abstract class PubSub {
         override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
             connectionToServer.sendCommand(commandPort, command, commandId)
         }
+
+        override fun <C, R> commandSender(
+            commandPort: CommandPort<C, R>
+        ): suspend (command: C) -> R = super.commandSender(commandPort)
 
         fun <T> state(
             topic: Topic<T>,

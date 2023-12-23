@@ -5,6 +5,7 @@ object Versions {
     const val serializationRuntime = "1.5.1"
     const val koin = "3.1.3"
     const val dokka = "1.7.10"
+    const val ksp = "1.9.21-1.0.15"
 
     // GL:
     const val kgl = "0.6.2"
