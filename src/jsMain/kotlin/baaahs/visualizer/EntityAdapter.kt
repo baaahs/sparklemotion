@@ -9,7 +9,7 @@ actual class EntityAdapter actual constructor(
     val units: ModelUnit,
     private val isEditing: Boolean
 ) : Adapter<Model.Entity> {
-    override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
+    actual override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity> {
         return (entity.createVisualizer(this) as ItemVisualizer<Model.Entity>)
             .apply { this.isEditing = this@EntityAdapter.isEditing }
     }

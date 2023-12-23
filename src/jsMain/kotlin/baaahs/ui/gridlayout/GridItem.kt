@@ -103,7 +103,7 @@ class GridItem(
             nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState
         )
         return oldPosition != newPosition ||
-                props.useCSSTransforms !== nextProps.useCSSTransforms
+                props.useCSSTransforms != nextProps.useCSSTransforms
     }
 
     override fun componentDidMount() {

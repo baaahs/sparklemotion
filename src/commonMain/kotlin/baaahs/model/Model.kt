@@ -6,8 +6,8 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.FixtureOptions
 import baaahs.geom.*
-import baaahs.sim.BrainSurfaceSimulation
 import baaahs.sim.FixtureSimulation
+import baaahs.sim.simulations
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.ItemVisualizer
@@ -165,7 +165,7 @@ class Model(
         open fun allVertices(): Collection<Vector3F> = faces.flatMap { it.vertices.toList() }
 
         override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
-            BrainSurfaceSimulation(this, adapter)
+            simulations.forSurface(this, adapter)
 
         override fun createVisualizer(adapter: EntityAdapter) =
             adapter.createSurfaceVisualizer(this)
