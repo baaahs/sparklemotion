@@ -1,4 +1,4 @@
-package baaahs.show.migration.scene
+package baaahs.scene.migration
 
 import baaahs.describe
 import baaahs.gl.override
@@ -22,7 +22,7 @@ object V1_GridDirectionBackwardsSpec : Spek({
         val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<String> { toBeSpecified() }
         val fromJsonObj by value { json.parseToJsonElement(fromJson) as JsonObject }
-        val toJsonObj by value { migration.migrate(fromJsonObj) }
+        val toJsonObj by value { V1_GridDirectionBackwards.migrate(fromJsonObj) }
 
         context("migration of default grid direction and zigZag") {
             override(fromJson) {

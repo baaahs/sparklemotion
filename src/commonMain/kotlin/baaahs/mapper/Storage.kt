@@ -8,9 +8,9 @@ import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
-import baaahs.show.SceneMigrator
+import baaahs.scene.migration.SceneMigrator
 import baaahs.show.Show
-import baaahs.show.ShowMigrator
+import baaahs.show.migration.ShowMigrator
 import baaahs.sim.MergedFs
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
