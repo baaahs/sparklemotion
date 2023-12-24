@@ -1,6 +1,6 @@
 package baaahs.show.migration
 
-import baaahs.show.DataMigrator
+import baaahs.migrator.DataMigrator
 
 val AllShowMigrations: List<DataMigrator.Migration> = listOf(
     V1_UpdateDataSourceRefs,

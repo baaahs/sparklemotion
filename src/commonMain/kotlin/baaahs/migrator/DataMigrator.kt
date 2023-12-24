@@ -1,15 +1,8 @@
-package baaahs.show
+package baaahs.migrator
 
-import baaahs.scene.Scene
-import baaahs.show.migration.AllShowMigrations
-import baaahs.show.migration.scene.AllSceneMigrations
-import baaahs.show.migration.toJsonObj
 import baaahs.util.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
-
-object ShowMigrator : DataMigrator<Show>(Show.serializer(), AllShowMigrations)
-object SceneMigrator : DataMigrator<Scene>(Scene.serializer(), AllSceneMigrations)
 
 abstract class DataMigrator<T : Any>(
     tSerializer: KSerializer<T>,

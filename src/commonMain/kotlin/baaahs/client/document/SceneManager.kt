@@ -11,7 +11,7 @@ import baaahs.io.resourcesFs
 import baaahs.mapper.Storage
 import baaahs.plugin.Plugins
 import baaahs.scene.*
-import baaahs.show.SceneMigrator
+import baaahs.scene.migration.SceneMigrator
 import baaahs.show.mutable.MutableDocument
 import baaahs.ui.DialogHolder
 import baaahs.ui.DialogMenuItem
