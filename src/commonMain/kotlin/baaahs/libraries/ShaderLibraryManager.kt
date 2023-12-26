@@ -3,8 +3,8 @@ package baaahs.libraries
 import baaahs.PubSub
 import baaahs.client.document.DataStore
 import baaahs.io.Fs
+import baaahs.io.FsServerSideSerializer
 import baaahs.io.resourcesFs
-import baaahs.mapper.Storage
 import baaahs.migrator.DataMigrator
 import baaahs.plugin.Plugins
 import baaahs.show.Shader
@@ -16,7 +16,7 @@ import baaahs.util.Logger
 class ShaderLibraryManager(
     plugins: Plugins,
     private val fs: Fs,
-    storage: Storage,
+    fsSerializer: FsServerSideSerializer,
     pubSub: PubSub.Server
 ) {
     private val shaderLibraryIndexStore =
@@ -24,7 +24,7 @@ class ShaderLibraryManager(
 
     private lateinit var shaderLibraries: Map<Fs.File, ShaderLibrary>
     private val channel = pubSub.publish(
-        Topics.createShaderLibraries(storage.fsSerializer), emptyMap()
+        Topics.createShaderLibraries(fsSerializer), emptyMap()
     ) { updated ->
         // TODO: tbd.
     }

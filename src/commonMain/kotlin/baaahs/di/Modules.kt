@@ -16,6 +16,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
+import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapper.Storage
@@ -119,11 +120,12 @@ interface PinkyModule : KModule {
                 scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
                 scoped { RenderManager(get(named("PinkyGlContext"))) }
                 scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+                scoped { FsServerSideSerializer() }
                 scoped { Storage(get(), get()) }
                 scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(pinkyContext), get(), get()) }
