@@ -17,6 +17,7 @@ import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -64,7 +65,8 @@ class ShowRunnerTest {
         stageManager = StageManager(
             testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
-            ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer()
+            ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
+            PinkyConfigStore(plugins, fs.rootFile)
         )
         stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(testSceneData())

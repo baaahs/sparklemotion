@@ -33,6 +33,7 @@ import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.brain.proto.Type
 import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -75,7 +76,8 @@ object PinkySpec : Spek({
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, storage, fixtureManager, clock,
-                gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer()
+                gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
+                PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
         val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
@@ -100,10 +102,8 @@ object PinkySpec : Spek({
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
-                Pinky.NetworkStats(),
-                PinkySettings(),
-                serverNotices,
-                PinkyMapperHandlers(storage)
+                Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(storage),
+                PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
         val pinkyLink by value { network.links.only() }

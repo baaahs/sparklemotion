@@ -18,6 +18,7 @@ import baaahs.show.Show
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.server.DocumentService
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.sm.webapi.Topics
@@ -48,9 +49,10 @@ class Pinky(
     val brainManager: BrainManager,
     private val shaderLibraryManager: ShaderLibraryManager,
     private val networkStats: NetworkStats,
-    val pinkySettings: PinkySettings,
-    val serverNotices: ServerNotices,
-    val pinkyMapperHandlers: PinkyMapperHandlers
+    private val pinkySettings: PinkySettings,
+    private val serverNotices: ServerNotices,
+    private val pinkyMapperHandlers: PinkyMapperHandlers,
+    private val pinkyConfigStore: PinkyConfigStore
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -134,7 +136,7 @@ class Pinky(
                 mappingResultsLoaderJob = launch { mappingManager.start() }
 
                 launch {
-                    val config = storage.loadConfig()
+                    val config = pinkyConfigStore.load()
 
                     config?.runningScenePath?.let { path ->
                         launch { stageManager.sceneDocumentService.load(path) }
@@ -289,12 +291,6 @@ class Pinky(
         val framerate = Framerate()
     }
 }
-
-@Serializable
-data class PinkyConfig(
-    val runningShowPath: String? = null,
-    val runningScenePath: String? = null
-)
 
 data class PinkySettings(
     var targetFramerate: Float = 30f, // Frames per second

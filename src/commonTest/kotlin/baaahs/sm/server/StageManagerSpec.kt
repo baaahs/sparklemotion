@@ -62,7 +62,8 @@ object StageManagerSpec : Spek({
                 gadgetManager,
                 ServerNotices(pubSub.server, dispatcher),
                 SceneMonitor(),
-                FsServerSideSerializer()
+                FsServerSideSerializer(),
+                PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
 
