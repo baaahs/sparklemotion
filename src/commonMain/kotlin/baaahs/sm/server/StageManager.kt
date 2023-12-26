@@ -1,6 +1,8 @@
 package baaahs.sm.server
 
 import baaahs.*
+import baaahs.client.document.sceneStore
+import baaahs.client.document.showStore
 import baaahs.doc.SceneDocumentType
 import baaahs.doc.ShowDocumentType
 import baaahs.fixtures.FixtureManager
@@ -47,7 +49,7 @@ class StageManager(
 
     @Suppress("unused")
     private val clientData =
-        pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.fs.rootFile))
+        pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.dataDir))
 
     internal val showDocumentService = ShowDocumentService()
     internal val sceneDocumentService = SceneDocumentService()
@@ -146,7 +148,7 @@ class StageManager(
     }
 
     inner class ShowDocumentService : DocumentService<Show, ShowState>(
-        pubSub, storage,
+        pubSub, plugins.showStore, storage.dataDir,
         ShowState.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer
@@ -159,14 +161,6 @@ class StageManager(
         private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
         override fun createDocument(): Show = buildEmptyShow()
-
-        override suspend fun load(file: Fs.File): Show? {
-            return storage.loadShow(file)
-        }
-
-        override suspend fun save(file: Fs.File, document: Show) {
-            storage.saveShow(file, document)
-        }
 
         override fun onFileChanged(saveAsFile: Fs.File) {
             updateRunningShowPath(saveAsFile)
@@ -210,7 +204,7 @@ class StageManager(
     }
 
     inner class SceneDocumentService : DocumentService<Scene, Unit>(
-        pubSub, storage,
+        pubSub, plugins.sceneStore, storage.dataDir,
         Scene.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer
@@ -221,14 +215,6 @@ class StageManager(
         SceneDocumentType
     ) {
         override fun createDocument(): Scene = Scene.Empty
-
-        override suspend fun load(file: Fs.File): Scene? {
-            return storage.loadScene(file)
-        }
-
-        override suspend fun save(file: Fs.File, document: Scene) {
-            storage.saveScene(file, document)
-        }
 
         override fun onFileChanged(saveAsFile: Fs.File) {
             updateRunningScenePath(saveAsFile)

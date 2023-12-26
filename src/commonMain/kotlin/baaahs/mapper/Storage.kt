@@ -7,10 +7,6 @@ import baaahs.io.resourcesFs
 import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
-import baaahs.scene.Scene
-import baaahs.scene.migration.SceneMigrator
-import baaahs.show.Show
-import baaahs.show.migration.ShowMigrator
 import baaahs.sim.MergedFs
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
@@ -21,7 +17,8 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 
-class Storage(val fs: Fs, val plugins: Plugins) {
+class Storage(private val fs: Fs, val plugins: Plugins) {
+    val dataDir = fs.resolve(".")
     val json = Json(plugins.json) { isLenient = true }
     val fsSerializer = FsServerSideSerializer()
     val mappingSessionsDir = fs.resolve("mapping-sessions")
@@ -141,22 +138,6 @@ class Storage(val fs: Fs, val plugins: Plugins) {
 
     private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {
         return fs.loadFile(file)?.let { plugins.json.decodeFromString(serializer, it) }
-    }
-
-    suspend fun loadScene(file: Fs.File): Scene? {
-        return loadJson(file, SceneMigrator)
-    }
-
-    suspend fun saveScene(file: Fs.File, scene: Scene) {
-        file.write(plugins.json.encodeToString(SceneMigrator, scene), true)
-    }
-
-    suspend fun loadShow(file: Fs.File): Show? {
-        return loadJson(file, ShowMigrator)
-    }
-
-    suspend fun saveShow(file: Fs.File, show: Show) {
-        file.write(plugins.json.encodeToString(ShowMigrator, show), true)
     }
 
     suspend fun listShaderLibraries(): List<Fs.File> {

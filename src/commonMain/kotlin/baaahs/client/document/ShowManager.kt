@@ -9,7 +9,6 @@ import baaahs.doc.ShowDocumentType
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
-import baaahs.mapper.Storage
 import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.ShowMonitor
@@ -80,7 +79,7 @@ class ShowManager(
 
     private suspend fun fromResources(fileName: String): Show {
         val file = resourcesFs.resolve("templates", "shows", fileName)
-        return Storage(resourcesFs, toolchain.plugins).loadShow(file)
+        return toolchain.plugins.showStore.load(file)
             ?.copy(title = "New ${documentType.title}")
             ?: error("Couldn't find show")
     }
