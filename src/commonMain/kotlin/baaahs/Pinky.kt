@@ -166,7 +166,7 @@ class Pinky(
         }
     }
 
-    private suspend fun <T> DocumentService<T, *>.load(path: String) {
+    private suspend fun <T : Any> DocumentService<T, *>.load(path: String) {
         val file = storage.resolve(path)
         try {
             val doc = load(file)

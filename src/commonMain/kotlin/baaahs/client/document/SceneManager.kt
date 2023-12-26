@@ -8,7 +8,6 @@ import baaahs.doc.SceneDocumentType
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
-import baaahs.mapper.Storage
 import baaahs.plugin.Plugins
 import baaahs.scene.*
 import baaahs.scene.migration.SceneMigrator
@@ -78,7 +77,7 @@ class SceneManager(
 
     private suspend fun sceneFromResources(fileName: String): Scene {
         val file = fileFromResources(fileName)
-        return Storage(resourcesFs, plugins).loadScene(file)?.let {
+        return plugins.sceneStore.load(file)?.let {
             it.copy(model = it.model.copy(title = "New Scene"))
         } ?: error("Couldn't find scene")
     }
