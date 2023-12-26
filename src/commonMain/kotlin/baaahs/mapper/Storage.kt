@@ -3,11 +3,8 @@ package baaahs.mapper
 import baaahs.PinkyConfig
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
-import baaahs.io.resourcesFs
-import baaahs.libraries.ShaderLibraryIndexFile
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
-import baaahs.sim.MergedFs
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
@@ -139,23 +136,6 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
     private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {
         return fs.loadFile(file)?.let { plugins.json.decodeFromString(serializer, it) }
     }
-
-    suspend fun listShaderLibraries(): List<Fs.File> {
-        return MergedFs(fs, resourcesFs)
-            .resolve("shader-libraries").listFiles()
-            .also { println("shader libraries: $it") }
-            .filter { it.libraryIndexFile().exists() }
-            .also { println("shader libraries with index: $it") }
-    }
-
-    suspend fun loadShaderLibraryIndexFile(libDir: Fs.File): ShaderLibraryIndexFile {
-        return json.decodeFromString(
-            ShaderLibraryIndexFile.serializer(),
-            libDir.libraryIndexFile().read()!!
-        )
-    }
-
-    private fun Fs.File.libraryIndexFile() = resolve("_libraryIndex.json", isDirectory = false)
 
     fun resolve(path: String): Fs.File = fs.resolve(path)
 }

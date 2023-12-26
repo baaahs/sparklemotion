@@ -4,9 +4,10 @@ import baaahs.util.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
 
-abstract class DataMigrator<T : Any>(
+open class DataMigrator<T : Any>(
     tSerializer: KSerializer<T>,
-    private val migrations: List<Migration>
+    private val migrations: List<Migration> = emptyList(),
+    private val versionKey: String = "version"
 ) : JsonTransformingSerializer<T>(tSerializer) {
     init {
         val versionDupes = migrations.groupBy { it.toVersion }
@@ -17,8 +18,7 @@ abstract class DataMigrator<T : Any>(
             throw Error("Duplicate migrations for version(s): ${versionDupes.joinToString(", ")}")
         }
     }
-    private val currentVersion = migrations.maxOf { it.toVersion }
-    private val versionKey = "version"
+    private val currentVersion = migrations.maxOfOrNull { it.toVersion } ?: 0
 
     override fun transformDeserialize(element: JsonElement): JsonElement {
         if (element !is JsonObject) return element
