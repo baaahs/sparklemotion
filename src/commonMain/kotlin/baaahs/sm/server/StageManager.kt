@@ -10,6 +10,7 @@ import baaahs.fixtures.RenderPlan
 import baaahs.gl.Toolchain
 import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
+import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
 import baaahs.mapper.Storage
 import baaahs.scene.OpenScene
@@ -35,12 +36,12 @@ class StageManager(
     override val clock: Clock,
     private val gadgetManager: GadgetManager,
     private val serverNotices: ServerNotices,
-    private val sceneMonitor: SceneMonitor
+    private val sceneMonitor: SceneMonitor,
+    private val fsSerializer: FsServerSideSerializer
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
 
-    private val fsSerializer = storage.fsSerializer
     private var checkActivePatchSet: Boolean = false
 
     init {

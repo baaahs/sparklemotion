@@ -10,6 +10,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
+import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.PinkyMapperHandlers
@@ -74,7 +75,7 @@ object PinkySpec : Spek({
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, storage, fixtureManager, clock,
-                gadgetManager, serverNotices, sceneMonitor
+                gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer()
             )
         }
         val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
@@ -98,7 +99,7 @@ object PinkySpec : Spek({
                 clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
                 stageManager, controllersManager, brainManager,
-                ShaderLibraryManager(plugins, fakeFs, storage, pubSub),
+                ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(),
                 PinkySettings(),
                 serverNotices,

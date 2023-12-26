@@ -2,7 +2,6 @@ package baaahs.mapper
 
 import baaahs.PinkyConfig
 import baaahs.io.Fs
-import baaahs.io.FsServerSideSerializer
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
 import baaahs.util.Logger
@@ -17,7 +16,6 @@ import kotlinx.serialization.json.jsonObject
 class Storage(private val fs: Fs, val plugins: Plugins) {
     val dataDir = fs.resolve(".")
     val json = Json(plugins.json) { isLenient = true }
-    val fsSerializer = FsServerSideSerializer()
     val mappingSessionsDir = fs.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")
 
