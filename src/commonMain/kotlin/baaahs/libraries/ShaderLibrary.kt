@@ -30,7 +30,7 @@ data class ShaderLibrary(
 
 /** On-disk representation of [ShaderLibrary]. */
 @Serializable
-data class ShaderLibraryIndexFile(
+data class ShaderLibraryIndex(
     val title: String,
     val description: String?,
     val license: String?,
