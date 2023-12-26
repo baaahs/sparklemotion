@@ -39,6 +39,7 @@ import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.util.Clock
@@ -125,7 +126,8 @@ interface PinkyModule : KModule {
                 scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
                 scoped { GadgetManager(get(), get(), get(pinkyContext)) }
                 scoped<Toolchain> { RootToolchain(get()) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+                scoped { PinkyConfigStore(get(), fs.resolve(".")) }
+                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
                 scoped { Pinky.NetworkStats() }
                 scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
                 scoped { SacnManager(get(), get(pinkyContext), get(), get()) }
@@ -164,7 +166,7 @@ interface PinkyModule : KModule {
                         get(), get(), get(), get(), get(), get(),
                         get(), get(), get(), get(), get(pinkyContext), get(), get(),
                         get(), get(), get(), get(), get(), get(),
-                        pinkyMapperHandlers
+                        pinkyMapperHandlers, get()
                     )
                 }
             }

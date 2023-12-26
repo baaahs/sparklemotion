@@ -1,6 +1,5 @@
 package baaahs.mapper
 
-import baaahs.PinkyConfig
 import baaahs.io.Fs
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
@@ -18,8 +17,6 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
     val json = Json(plugins.json) { isLenient = true }
     val mappingSessionsDir = fs.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")
-
-    private val configFile = fs.resolve("config.json")
 
     companion object {
         private val logger = Logger("Storage")
@@ -117,18 +114,6 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
             logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.name()})" }
         }
         return mappingSession
-    }
-
-    suspend fun loadConfig(): PinkyConfig? {
-        return loadJson(configFile, PinkyConfig.serializer())
-    }
-
-    suspend fun updateConfig(update: PinkyConfig.() -> PinkyConfig) {
-        val oldConfig = loadConfig() ?: PinkyConfig(null, null)
-        val newConfig = oldConfig.update()
-        if (newConfig != oldConfig) {
-            configFile.write(json.encodeToString(PinkyConfig.serializer(), newConfig), true)
-        }
     }
 
     private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {

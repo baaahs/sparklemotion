@@ -37,7 +37,8 @@ class StageManager(
     private val gadgetManager: GadgetManager,
     private val serverNotices: ServerNotices,
     private val sceneMonitor: SceneMonitor,
-    private val fsSerializer: FsServerSideSerializer
+    private val fsSerializer: FsServerSideSerializer,
+    private val pinkyConfigStore: PinkyConfigStore
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -95,7 +96,7 @@ class StageManager(
 
     private fun updateRunningScenePath(file: Fs.File?) {
         globalLaunch {
-            storage.updateConfig {
+            pinkyConfigStore.update {
                 copy(runningScenePath = file?.fullPath)
             }
         }
@@ -103,7 +104,7 @@ class StageManager(
 
     private fun updateRunningShowPath(file: Fs.File?) {
         globalLaunch {
-            storage.updateConfig {
+            pinkyConfigStore.update {
                 copy(runningShowPath = file?.fullPath)
             }
         }
