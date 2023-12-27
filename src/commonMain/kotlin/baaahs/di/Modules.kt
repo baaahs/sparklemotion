@@ -89,86 +89,89 @@ interface PinkyModule : KModule {
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
 
-    override fun getModule(): Module {
+    object Named {
         val pinkyContext = named("PinkyContext")
         val pinkyJob = named("PinkyJob")
         val fallbackDmxUniverse = named("Fallback")
+        val dataDir = named("dataDir")
+        val firmwareDir = named("firmwareDir")
+    }
 
-        return module {
-            scope<Pinky> {
-                scoped { fs }
-                scoped { PluginContext(get(), get()) }
-                scoped { serverPlugins }
-                scoped<Plugins> { get<ServerPlugins>() }
-                scoped { get<ServerPlugins>().pinkyArgs }
-                scoped(named("firmwareDir")) { firmwareDir }
-                scoped { firmwareDaddy }
-                scoped { pinkyLink }
-                scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
-                scoped<Job>(pinkyJob) { SupervisorJob() }
-                scoped(pinkyContext) {
-                    get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
-                            get<Job>(pinkyJob) +
-                            coroutineExceptionHandler
-                }
-                scoped { PubSub.Server(get(), CoroutineScope(get(pinkyContext))) }
-                scoped<PubSub.Endpoint> { get<PubSub.Server>() }
-                scoped<PubSub.IServer> { get<PubSub.Server>() }
-                scoped { dmxDriver }
-                scoped { DmxUniverseListener(get()) }
-                scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
-                scoped<DmxManager> { DmxManagerImpl(get(), get(), get(fallbackDmxUniverse), get(), get(), get()) }
-                scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
-                scoped { RenderManager(get(named("PinkyGlContext"))) }
-                scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
-                scoped { FsServerSideSerializer() }
-                scoped { Storage(get(), get()) }
-                scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
-                scoped { GadgetManager(get(), get(), get(pinkyContext)) }
-                scoped<Toolchain> { RootToolchain(get()) }
-                scoped { PinkyConfigStore(get(), fs.resolve(".")) }
-                scoped { StageManager(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-                scoped { Pinky.NetworkStats() }
-                scoped { BrainManager(get(), get(), get(), get(), get(pinkyContext)) }
-                scoped { SacnManager(get(), get(pinkyContext), get(), get()) }
-                scoped { sceneMonitor }
-                scoped<SceneProvider> { get<SceneMonitor>() }
-                scoped<MappingManager> {
-                    MappingManagerImpl(get(), get(), CoroutineScope(get(pinkyContext)), backupMappingManager)
-                }
-                scoped<ModelManager> { ModelManagerImpl() }
-                scoped(named("ControllerManagers")) {
+    override fun getModule(): Module = module {
+        scope<Pinky> {
+            scoped { fs }
+            scoped { PluginContext(get(), get()) }
+            scoped { serverPlugins }
+            scoped<Plugins> { get<ServerPlugins>() }
+            scoped { get<ServerPlugins>().pinkyArgs }
+            scoped(Named.firmwareDir) { firmwareDir }
+            scoped(Named.dataDir) { fs.rootFile }
+            scoped { firmwareDaddy }
+            scoped { pinkyLink }
+            scoped(pinkyMainDispatcher) { this.pinkyMainDispatcher }
+            scoped<Job>(Named.pinkyJob) { SupervisorJob() }
+            scoped(Named.pinkyContext) {
+                get<CoroutineDispatcher>(PinkyModule.pinkyMainDispatcher) +
+                        get<Job>(Named.pinkyJob) +
+                        coroutineExceptionHandler
+            }
+            scoped { PubSub.Server(get(), CoroutineScope(get(Named.pinkyContext))) }
+            scoped<PubSub.Endpoint> { get<PubSub.Server>() }
+            scoped<PubSub.IServer> { get<PubSub.Server>() }
+            scoped { dmxDriver }
+            scoped { DmxUniverseListener(get()) }
+            scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
+            scoped<DmxManager> { DmxManagerImpl(get(), get(), get(Named.fallbackDmxUniverse), get(), get(), get()) }
+            scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
+            scoped { RenderManager(get(named("PinkyGlContext"))) }
+            scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+            scoped { FsServerSideSerializer() }
+            scoped { Storage(get(Named.dataDir), get()) }
+            scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
+            scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
+            scoped<Toolchain> { RootToolchain(get()) }
+            scoped { PinkyConfigStore(get(), fs.resolve(".")) }
+            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { Pinky.NetworkStats() }
+            scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
+            scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }
+            scoped { sceneMonitor }
+            scoped<SceneProvider> { get<SceneMonitor>() }
+            scoped<MappingManager> {
+                MappingManagerImpl(get(), get(), CoroutineScope(get(Named.pinkyContext)), backupMappingManager)
+            }
+            scoped<ModelManager> { ModelManagerImpl() }
+            scoped(named("ControllerManagers")) {
+                listOf(
+                    get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
+                )
+            }
+            scoped { FixturePublisher(get(), get()) }
+            scoped { ControllersPublisher(get(), get()) }
+            scoped {
+                ControllersManager(
+                    get(named("ControllerManagers")), get(), get(),
                     listOf(
-                        get<BrainManager>(), get<DmxManager>(), get<SacnManager>()
+                        get<FixtureManager>(),
+                        get<FixturePublisher>(),
+                    ),
+                    listOf(
+                        get<ControllersPublisher>()
                     )
-                }
-                scoped { FixturePublisher(get(), get()) }
-                scoped { ControllersPublisher(get(), get()) }
-                scoped {
-                    ControllersManager(
-                        get(named("ControllerManagers")), get(), get(),
-                        listOf(
-                            get<FixtureManager>(),
-                            get<FixturePublisher>(),
-                        ),
-                        listOf(
-                            get<ControllersPublisher>()
-                        )
-                    )
-                }
-                scoped { ProdBrainSimulator(get(), get()) }
-                scoped { ShaderLibraryManager(get(), get(), get(), get()) }
-                scoped { pinkySettings }
-                scoped { ServerNotices(get(), get(pinkyContext)) }
-                scoped { PinkyMapperHandlers(get()) }
-                scoped {
-                    Pinky(
-                        get(), get(), get(), get(), get(), get(),
-                        get(), get(), get(), get(), get(pinkyContext), get(), get(),
-                        get(), get(), get(), get(), get(), get(),
-                        pinkyMapperHandlers, get()
-                    )
-                }
+                )
+            }
+            scoped { ProdBrainSimulator(get(), get()) }
+            scoped { ShaderLibraryManager(get(), get(), get(), get()) }
+            scoped { pinkySettings }
+            scoped { ServerNotices(get(), get(Named.pinkyContext)) }
+            scoped { PinkyMapperHandlers(get()) }
+            scoped {
+                Pinky(
+                    get(), get(), get(), get(Named.dataDir), get(), get(),
+                    get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
+                    get(), get(), get(), get(), get(), get(),
+                    pinkyMapperHandlers, get()
+                )
             }
         }
     }

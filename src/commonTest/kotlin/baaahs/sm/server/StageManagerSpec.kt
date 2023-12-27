@@ -12,7 +12,6 @@ import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.io.FsServerSideSerializer
-import baaahs.mapper.Storage
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.scene.SceneMonitor
 import baaahs.shaders.fakeFixture
@@ -56,7 +55,7 @@ object StageManagerSpec : Spek({
                 testToolchain,
                 renderManager,
                 pubSub.server,
-                Storage(fakeFs, plugins),
+                fakeFs.rootFile,
                 fixtureManager,
                 FakeClock(),
                 gadgetManager,

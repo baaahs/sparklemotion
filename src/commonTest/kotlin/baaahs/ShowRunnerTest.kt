@@ -9,7 +9,6 @@ import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
 import baaahs.io.FsServerSideSerializer
-import baaahs.mapper.Storage
 import baaahs.net.TestNetwork
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
@@ -63,7 +62,7 @@ class ShowRunnerTest {
         val plugins = testPlugins()
         fixtureManager = FixtureManagerImpl(renderManager, plugins)
         stageManager = StageManager(
-            testToolchain, renderManager, server, Storage(fs, plugins), fixtureManager,
+            testToolchain, renderManager, server, fs.rootFile, fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
             PinkyConfigStore(plugins, fs.rootFile)
