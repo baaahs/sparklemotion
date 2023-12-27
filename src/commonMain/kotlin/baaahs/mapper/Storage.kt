@@ -6,20 +6,21 @@ import baaahs.scene.OpenScene
 import baaahs.util.Logger
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 
-class Storage(private val fs: Fs, val plugins: Plugins) {
-    val dataDir = fs.resolve(".")
+class Storage(
+    private val dataDir: Fs.File,
+    private val plugins: Plugins
+) {
     val json = Json(plugins.json) { isLenient = true }
-    val mappingSessionsDir = fs.resolve("mapping-sessions")
+    val mappingSessionsDir = dataDir.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")
 
     companion object {
-        private val logger = Logger("Storage")
+        private val logger = Logger<Storage>()
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
 
@@ -45,7 +46,7 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
     suspend fun saveSession(mappingSession: MappingSession): Fs.File {
         val name = "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
         val file = mappingSessionsDir.resolve(name)
-        fs.saveFile(file, json.encodeToString(MappingSession.serializer(), mappingSession))
+        file.write(json.encodeToString(MappingSession.serializer(), mappingSession))
         return file
     }
 
@@ -60,12 +61,12 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
 
     suspend fun saveImage(name: String, imageData: ByteArray) {
         val file = imagesDir.resolve(name)
-        fs.saveFile(file, imageData, allowOverwrite = true)
+        file.write(imageData, allowOverwrite = true)
     }
 
     suspend fun loadImage(name: String): ByteArray? {
         val file = imagesDir.resolve(name)
-        return fs.loadFile(file)?.let { contents ->
+        return file.read()?.let { contents ->
             ByteArray(contents.length) { i ->
                 contents[i].code.toByte()
             }
@@ -73,16 +74,15 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadMappingData(scene: OpenScene): SessionMappingResults {
-        val sessions = arrayListOf<MappingSession>()
-        val path = fs.resolve("mapping", scene.model.name)
-        fs.listFiles(path)
-            .flatMap { fs.listFiles(it) }
-            .sortedBy { it.name }
-            .filter { it.name.endsWith(".json") }
-            .forEach { f ->
-                sessions.add(loadMappingSession(f))
-            }
-        return SessionMappingResults(scene, sessions)
+        return SessionMappingResults(scene, buildList {
+            dataDir.resolve("mapping", scene.model.name).listFiles()
+                .flatMap { it.listFiles() }
+                .sortedBy { it.name }
+                .filter { it.name.endsWith(".json") }
+                .forEach { f ->
+                    add(loadMappingSession(f))
+                }
+        })
     }
 
     suspend fun loadMappingSession(name: String): MappingSession {
@@ -91,7 +91,7 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
     }
 
     suspend fun loadMappingSession(f: Fs.File): MappingSession {
-        val mappingJson = fs.loadFile(f)
+        val mappingJson = f.read()
             ?: error("No such file \"${f.fullPath}\".")
         val mappingSession = try {
             val json = plugins.json.parseToJsonElement(mappingJson).jsonObject.let {
@@ -115,10 +115,4 @@ class Storage(private val fs: Fs, val plugins: Plugins) {
         }
         return mappingSession
     }
-
-    private suspend fun <T> loadJson(file: Fs.File, serializer: KSerializer<T>): T? {
-        return fs.loadFile(file)?.let { plugins.json.decodeFromString(serializer, it) }
-    }
-
-    fun resolve(path: String): Fs.File = fs.resolve(path)
 }

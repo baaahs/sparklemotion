@@ -58,7 +58,7 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val plugins by value { testPlugins() }
-        val storage by value { Storage(fakeFs, plugins) }
+        val storage by value { Storage(fakeFs.rootFile, plugins) }
         val link by value { network.link("pinky") }
         val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
@@ -75,7 +75,7 @@ object PinkySpec : Spek({
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
         val stageManager by value {
             StageManager(
-                toolchain, renderManager, pubSub, storage, fixtureManager, clock,
+                toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
                 gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
                 PinkyConfigStore(plugins, fakeFs.rootFile)
             )
@@ -98,7 +98,7 @@ object PinkySpec : Spek({
             }
 
             Pinky(
-                clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
+                clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),

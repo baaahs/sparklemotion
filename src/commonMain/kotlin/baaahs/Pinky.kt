@@ -9,7 +9,6 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -35,7 +34,7 @@ class Pinky(
     val plugins: Plugins,
 //    private val switchShowAfterIdleSeconds: Int? = 600,
 //    private val adjustShowAfterIdleSeconds: Int? = null,
-    private val storage: Storage,
+    private val dataDir: Fs.File,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
     pubSub: PubSub.Server,
@@ -169,7 +168,7 @@ class Pinky(
     }
 
     private suspend fun <T : Any> DocumentService<T, *>.load(path: String) {
-        val file = storage.resolve(path)
+        val file = dataDir.resolve(path)
         try {
             val doc = load(file)
             if (doc == null) {
@@ -178,7 +177,7 @@ class Pinky(
                 switchTo(doc, file = file)
             }
         } catch (e: Exception) {
-            reportError("Failed to load ${documentType.title.lowercase()} at $path", e)
+            reportError("Failed to load ${documentType.title.lowercase()} at $file", e)
         }
     }
 

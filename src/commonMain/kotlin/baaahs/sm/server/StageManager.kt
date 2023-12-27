@@ -12,7 +12,6 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
-import baaahs.mapper.Storage
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.scene.SceneChangeListener
@@ -31,7 +30,7 @@ class StageManager(
     toolchain: Toolchain,
     private val renderManager: RenderManager,
     private val pubSub: PubSub.Server,
-    private val storage: Storage,
+    private val dataDir: Fs.File,
     private val fixtureManager: FixtureManager,
     override val clock: Clock,
     private val gadgetManager: GadgetManager,
@@ -51,7 +50,7 @@ class StageManager(
 
     @Suppress("unused")
     private val clientData =
-        pubSub.state(Topics.createClientData(fsSerializer), ClientData(storage.dataDir))
+        pubSub.state(Topics.createClientData(fsSerializer), ClientData(dataDir))
 
     internal val showDocumentService = ShowDocumentService()
     internal val sceneDocumentService = SceneDocumentService()
@@ -150,7 +149,7 @@ class StageManager(
     }
 
     inner class ShowDocumentService : DocumentService<Show, ShowState>(
-        pubSub, plugins.showStore, storage.dataDir,
+        pubSub, plugins.showStore, dataDir,
         ShowState.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer
@@ -206,7 +205,7 @@ class StageManager(
     }
 
     inner class SceneDocumentService : DocumentService<Scene, Unit>(
-        pubSub, plugins.sceneStore, storage.dataDir,
+        pubSub, plugins.sceneStore, dataDir,
         Scene.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer

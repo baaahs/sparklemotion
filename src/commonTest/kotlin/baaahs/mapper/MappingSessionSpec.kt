@@ -43,7 +43,7 @@ class MappingSessionSpec : Spek({
                 val decoded by value {
                     val file = fs.resolve("mapping-session.json")
                     doRunBlocking { fs.saveFile(file, json) }
-                    doRunBlocking { Storage(fs, plugins).loadMappingSession(file) }
+                    doRunBlocking { Storage(fs.rootFile, plugins).loadMappingSession(file) }
                 }
 
                 it("deserializes equally") {
