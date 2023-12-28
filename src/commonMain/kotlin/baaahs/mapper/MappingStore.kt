@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 
-class Storage(
+class MappingStore(
     private val dataDir: Fs.File,
     private val plugins: Plugins
 ) {
@@ -20,7 +20,7 @@ class Storage(
     val imagesDir = mappingSessionsDir.resolve("images")
 
     companion object {
-        private val logger = Logger<Storage>()
+        private val logger = Logger<MappingStore>()
 
         private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
 

@@ -18,8 +18,8 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryManager
+import baaahs.mapper.MappingStore
 import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.mapping.MappingManagerImpl
 import baaahs.model.ModelManager
@@ -126,7 +126,7 @@ interface PinkyModule : KModule {
             scoped { RenderManager(get(named("PinkyGlContext"))) }
             scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
             scoped { FsServerSideSerializer() }
-            scoped { Storage(get(Named.dataDir), get()) }
+            scoped { MappingStore(get(Named.dataDir), get()) }
             scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }
             scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
             scoped<Toolchain> { RootToolchain(get()) }
