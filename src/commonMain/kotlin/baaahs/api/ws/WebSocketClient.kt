@@ -2,7 +2,7 @@ package baaahs.api.ws
 
 import baaahs.imaging.Bitmap
 import baaahs.mapper.MappingSession
-import baaahs.mapper.Storage
+import baaahs.mapper.MappingStore
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Ports
@@ -31,7 +31,7 @@ class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Add
     }
 
     suspend fun saveImage(sessionStartTime: DateTime, name: String, bitmap: Bitmap): String {
-        val filename = "${Storage.formatDateTime(sessionStartTime)}/$name.webp"
+        val filename = "${MappingStore.formatDateTime(sessionStartTime)}/$name.webp"
         val dataUrl = bitmap.toDataUrl()
         val startOfData = ";base64,"
         val i = dataUrl.indexOf(startOfData)
