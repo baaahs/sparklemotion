@@ -1,6 +1,7 @@
 package baaahs.gl.preview
 
 import baaahs.util.Clock
+import baaahs.util.asDoubleSeconds
 
 interface GadgetAdjuster {
     enum class Mode {
@@ -35,7 +36,7 @@ class FullRangeGadgetAdjuster(
     val clock: Clock
 ) : GadgetAdjuster {
     override fun adjustGadgets() {
-        val now = clock.now() / 2
+        val now = clock.now().asDoubleSeconds / 2
         val count = gadgets.size
 
         val activeGadget = now.rem(count).toInt()

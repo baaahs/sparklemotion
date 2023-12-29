@@ -19,7 +19,7 @@ import org.spekframework.spek2.meta.*
 import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
 
-fun testPlugins(clock: Clock = FakeClock(0.0)) =
+fun testPlugins(clock: Clock = FakeClock()) =
     Plugins.safe(PluginContext(clock, StubPubSub()))
 
 fun <T> LifecycleAware.override(letValue: T, factory: () -> T) {

@@ -58,7 +58,7 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val plugins by value { testPlugins() }
-        val mappingStore by value { MappingStore(fakeFs.rootFile, plugins) }
+        val mappingStore by value { MappingStore(fakeFs.rootFile, plugins, FakeClock()) }
         val link by value { network.link("pinky") }
         val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
@@ -127,8 +127,9 @@ object PinkySpec : Spek({
                     )
                     val mappingSessionPath = mappingStore.saveSession(
                         MappingSession(
-                            0.0, listOf(surfaceData),
-                            Matrix4F.identity, null, notes = "Simulated pixels"
+                            clock.now(), listOf(surfaceData),
+                            Matrix4F.identity, null, savedAt = clock.now(),
+                            notes = "Simulated pixels"
                         )
                     )
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))

@@ -317,7 +317,7 @@ class SoundAnalysisPlugin internal constructor(
             frequencies = (0 until buckets).map {
                 it.toFloat() * 20f
             }.toFloatArray()
-            val t = internalTimerClock.now().toFloat()
+            val t = internalTimerClock.now().asDoubleSeconds.toFloat()
             magnitudes = arrayOf(t * 2, t * 3, t * 4, t * 8).map {
                 tan(it * PI).clamp(0.0, 1.0).toFloat()
             }.map { it / buckets } // pre-compensate for normalization

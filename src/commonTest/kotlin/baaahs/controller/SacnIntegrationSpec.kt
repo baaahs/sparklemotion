@@ -168,14 +168,15 @@ object SacnIntegrationSpec : Spek({
         describe("SACN fixture config from legacy mapping files") {
             val mappingSession by value {
                 MappingSession(
-                    0.0, listOf(
+                    FakeClock.now(), listOf(
                         MappingSession.SurfaceData(
                             "SACN", "sacn1", "bar1",
                             pixelCount = 3,
                             pixelFormat = PixelFormat.GRB8,
                             channels = DmxTransportConfig()
                         )
-                    )
+                    ),
+                    savedAt = FakeClock.now()
                 )
 
             }

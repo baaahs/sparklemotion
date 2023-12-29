@@ -9,8 +9,6 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTime
 import js.core.jso
 import materialui.icon
 import mui.icons.material.Search
@@ -136,21 +134,14 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                         if (onlineSince != null) {
                                             +"Online"
 
-                                            val since = DateTime(onlineSince * 1000)
-                                                .toString(DateFormat.FORMAT1)
-                                            attrs.title = "Online since $since"
+                                            attrs.title = "Online since $onlineSince"
                                         } else {
                                             +"Offline"
                                         }
                                     }
                                     TableCell { +(state?.firmwareVersion ?: "") }
                                     TableCell { +(state?.lastErrorMessage ?: "") }
-                                    TableCell {
-                                        +(state?.lastErrorAt?.let {
-                                            DateTime(it * 1000)
-                                                .toString(DateFormat.FORMAT1)
-                                        } ?: "")
-                                    }
+                                    TableCell { +(state?.lastErrorAt?.toString() ?: "") }
                                 }
                             }
                         }

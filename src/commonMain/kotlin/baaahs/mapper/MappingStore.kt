@@ -3,9 +3,11 @@ package baaahs.mapper
 import baaahs.io.Fs
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
+import baaahs.util.Clock
 import baaahs.util.Logger
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTime
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -13,7 +15,8 @@ import kotlinx.serialization.json.jsonObject
 
 class MappingStore(
     private val dataDir: Fs.File,
-    private val plugins: Plugins
+    private val plugins: Plugins,
+    private val clock: Clock
 ) {
     val json = Json(plugins.json) { isLenient = true }
     val mappingSessionsDir = dataDir.resolve("mapping-sessions")
@@ -22,10 +25,11 @@ class MappingStore(
     companion object {
         private val logger = Logger<MappingStore>()
 
-        private val format = DateFormat("yyyy''MM''dd'-'HH''mm''ss")
-
-        fun formatDateTime(dateTime: DateTime): String {
-            return dateTime.format(format)
+        fun formatDateTime(dateTime: Instant, timeZone: TimeZone): String {
+            return dateTime.toLocalDateTime(timeZone).toString()
+                .replace(Regex(".\\d+$"), "")
+                .replace(Regex("[-:]"), "")
+                .replace("T", "-")
         }
     }
 
@@ -44,7 +48,7 @@ class MappingStore(
     }
 
     suspend fun saveSession(mappingSession: MappingSession): Fs.File {
-        val name = "${formatDateTime(mappingSession.startedAtDateTime)}-v${mappingSession.version}.json"
+        val name = "${formatDateTime(mappingSession.startedAt, clock.tz())}-v${mappingSession.version}.json"
         val file = mappingSessionsDir.resolve(name)
         file.write(json.encodeToString(MappingSession.serializer(), mappingSession))
         return file
