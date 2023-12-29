@@ -1,22 +1,33 @@
 package baaahs.util
 
 import baaahs.internalTimerClock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 typealias Time = Double
-fun Interval(n: Number): Time = n.toDouble()
+fun Interval(n: Int): Duration = n.seconds
+fun Interval(n: Double): Duration = n.seconds
 
-fun Time.elapsedMs() = ((internalTimerClock.now() - this) * 10000).roundToInt() / 10.0
+/** Formats elapsed time as in 123.4ms. */
+fun Instant.elapsedMs() = ((internalTimerClock.now() - this).inWholeMicroseconds / 100)
+        .toDouble() / 10
 
 /** Truncate time to 4 digits of seconds so we don't overflow a GLSL float. */
 fun Time.makeSafeForGlsl() = (this % 10000.0).toFloat()
 
-fun Time.isBefore(otherTime: Time) = this < otherTime
+fun Instant.isBefore(otherTime: Instant) = this < otherTime
 
 interface Clock {
-    fun now(): Time
+    fun now(): Instant
+    fun tz(): TimeZone = TimeZone.currentSystemDefault()
 }
 
 fun Time.asMillis(): Long = (this * 1000).roundToLong()
 fun Float.asMillis(): Int = (this * 1000).roundToInt()
+
+val Instant.unixMillis: Long get() = toEpochMilliseconds()
+val Instant.asDoubleSeconds: Time get() = epochSeconds + (nanosecondsOfSecond / 1_000_000_000.0)

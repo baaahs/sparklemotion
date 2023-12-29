@@ -1,7 +1,6 @@
 package baaahs.imaging
 
 import baaahs.util.Clock
-import kotlin.math.roundToInt
 
 class Animator(
     private val durationsMs: List<Int>,
@@ -11,7 +10,7 @@ class Animator(
     val durationMs: Int = durationsMs.sum()
 
     fun getCurrentFrame(): Int =
-        getFrameAt(((clock.now() - startedAt) * 1000).roundToInt())
+        getFrameAt((clock.now() - startedAt).inWholeMilliseconds.toInt())
 
     fun getFrameAt(offsetTimeMs: Int): Int {
         val offsetTimeModStartMs = offsetTimeMs % durationMs

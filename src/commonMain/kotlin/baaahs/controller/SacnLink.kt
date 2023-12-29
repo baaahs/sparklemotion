@@ -4,8 +4,13 @@ import baaahs.Color
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
-import baaahs.util.*
+import baaahs.util.Clock
+import baaahs.util.Logger
+import baaahs.util.Stats
+import baaahs.util.isBefore
+import kotlinx.datetime.Instant
 import kotlin.math.min
+import kotlin.time.Duration.Companion.seconds
 
 class SacnLink(
     link: Network.Link,
@@ -14,7 +19,7 @@ class SacnLink(
     private val clock: Clock
 ) {
     var lastError: Exception? = null
-    var lastErrorAt: Time? = null
+    var lastErrorAt: Instant? = null
 
     init {
         if (senderCid.size != 16) error("Nope! Sender CID nees to be 16 bytes.")
@@ -173,7 +178,7 @@ class SacnLink(
 
     companion object {
         const val sAcnPort = 5568
-        const val waitPeriodAfterNetworkError = 5
+        val waitPeriodAfterNetworkError = 5.seconds
 
         const val VECTOR_ROOT_E131_DATA = 0x4
         private const val VECTOR_ROOT_E131_EXTENDED = 0x8

@@ -2,6 +2,7 @@ package baaahs.plugin
 
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.fromEpochSeconds
 import baaahs.gl.RootToolchain
 import baaahs.gl.autoWire
 import baaahs.gl.glsl.GlslProgram
@@ -15,6 +16,7 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.datetime.Instant
 import org.spekframework.spek2.Spek
 
 object CorePluginSpec : Spek({
@@ -36,11 +38,11 @@ object CorePluginSpec : Spek({
         val programFeed by value { glFeed.bind(program) }
 
         it("should pass the time as a float, truncating high bits") {
-            clock.time = 1234567890.1234
+            clock.time = Instant.fromEpochSeconds(1234567890.1234)
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1234f)
+            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1235f)
         }
     }
 })

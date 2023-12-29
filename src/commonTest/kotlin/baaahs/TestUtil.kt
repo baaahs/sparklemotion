@@ -26,7 +26,6 @@ import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
-import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -39,6 +38,7 @@ import ch.tutteli.atrium.reporting.Reporter
 import ch.tutteli.atrium.reporting.ReporterFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
+import kotlinx.datetime.Instant
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -72,11 +72,27 @@ fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
     return json.decodeFromString(serializer, jsonString)
 }
 
-fun <T: Any?> toBeSpecified(): T = error("override me!")
+fun <T : Any?> toBeSpecified(): T = error("override me!")
 
-class FakeClock(var time: Time = 0.0) : Clock {
-    override fun now(): Time = time
+class FakeClock(
+    var time: Instant = Instant.fromEpochMilliseconds(0)
+) : Clock {
+    constructor(epochSeconds: Double) : this(
+        Instant.fromEpochSeconds(epochSeconds)
+    )
+
+    override fun now(): Instant = time
+
+    companion object {
+        fun now(): Instant = FakeClock().now()
+    }
 }
+
+fun Instant.Companion.fromEpochSeconds(epochSeconds: Double) =
+    fromEpochSeconds(
+        epochSeconds.toLong(),
+        (epochSeconds % 1.0 * 1_000_000_000).toInt()
+    )
 
 fun testModelSurface(
     name: String,
@@ -108,7 +124,7 @@ class TestRenderContext(
     val model = fakeModel(modelEntities.toList())
     val fixtureType = modelEntities.map { it.fixtureType }.distinct().only("fixture type")
     val gl = FakeGlContext()
-    val renderEngine = ComponentRenderEngine(gl, fixtureType, minTextureWidth = 1,)
+    val renderEngine = ComponentRenderEngine(gl, fixtureType, minTextureWidth = 1)
     val showPlayer = FakeShowPlayer()
     val renderTargets = mutableListOf<RenderTarget>()
 
@@ -145,7 +161,7 @@ class TestRenderContext(
 class FakeDmxManager(private val universe: Dmx.Universe) : DmxManager {
     override val dmxUniverse: Dmx.Universe get() = universe
 
-    override fun allOff():Unit = TODO("not implemented")
+    override fun allOff(): Unit = TODO("not implemented")
 }
 
 object ImmediateDispatcher : CoroutineDispatcher() {

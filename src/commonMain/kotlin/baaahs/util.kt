@@ -2,6 +2,7 @@ package baaahs
 
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.asDoubleSeconds
 import baaahs.util.asMillis
 import kotlinx.coroutines.*
 import kotlin.math.PI
@@ -95,16 +96,16 @@ expect fun encodeBase64(b: ByteArray): String
 
 internal suspend fun time(function: suspend () -> Unit) = internalTimerClock.time(function)
 internal suspend fun Clock.time(function: suspend () -> Unit): Int {
-    val then = now()
+    val then = now().asDoubleSeconds
     function.invoke()
-    return (now() - then).asMillis().toInt()
+    return (now().asDoubleSeconds - then).asMillis().toInt()
 }
 
 internal fun timeSync(function: () -> Unit) = internalTimerClock.timeSync(function)
 internal fun Clock.timeSync(function: () -> Unit): Int {
-    val then = now()
+    val then = now().asDoubleSeconds
     function.invoke()
-    return (now() - then).asMillis().toInt()
+    return (now().asDoubleSeconds - then).asMillis().toInt()
 }
 
 fun String.camelize(): String =
@@ -139,11 +140,11 @@ fun debugger(arg: String = "?") {
 operator fun <T> Lazy<T>.getValue(thisRef: Any?, property: KProperty<*>) = value
 
 suspend fun throttle(targetRatePerSecond: Float, logger: Logger? = null, block: suspend () -> Unit) {
-    val startTime = internalTimerClock.now()
+    val startTime = internalTimerClock.now().asDoubleSeconds
 
     block()
 
-    val endTime = internalTimerClock.now()
+    val endTime = internalTimerClock.now().asDoubleSeconds
     val elapsed = endTime - startTime
     val target = 1f / targetRatePerSecond
     val delayMs = ((target - elapsed) * 1000).roundToInt()

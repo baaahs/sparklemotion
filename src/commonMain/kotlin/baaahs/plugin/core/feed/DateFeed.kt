@@ -11,7 +11,7 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.FeedOpenContext
-import com.soywiz.klock.DateTime
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonPrimitive
@@ -55,12 +55,13 @@ data class DateFeed(
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val clock = feedOpenContext.clock
         return singleUniformFeedContext<Vector4F>(id) {
-            val dateTime = DateTime(clock.now() * 1000)
+            val tz = clock.tz()
+            val dateTime = clock.now().toLocalDateTime(tz)
             Vector4F(
-                dateTime.yearInt.toFloat(),
-                dateTime.month1.toFloat() - if (zeroBasedMonth) 1 else 0,
+                dateTime.year.toFloat(),
+                dateTime.monthNumber.toFloat() - if (zeroBasedMonth) 1 else 0,
                 dateTime.dayOfMonth.toFloat() - if (zeroBasedDay) 1 else 0,
-                (dateTime.yearOneMillis / 1000.0 % SECONDS_PER_DAY).toFloat()
+                dateTime.time.toMillisecondOfDay() / 1000.0.toFloat()
             )
         }
     }

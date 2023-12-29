@@ -88,14 +88,16 @@ class FixturesSimulator(
 
             simMappingManager.mappingData =
                 newOpenScene?.let {
+                    val now = clock.now()
                     SessionMappingResults(
                         newOpenScene, listOf(
                             MappingSession(
-                                clock.now(),
+                                now,
                                 fixtureSimulations.values.mapNotNull { it.mappingData },
                                 null,
                                 null,
-                                notes = "Simulated mapping session"
+                                notes = "Simulated mapping session",
+                                savedAt = now
                             )
                         )
                     )

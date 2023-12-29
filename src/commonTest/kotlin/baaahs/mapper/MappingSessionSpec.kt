@@ -1,16 +1,14 @@
 package baaahs.mapper
 
-import baaahs.describe
-import baaahs.doRunBlocking
+import baaahs.*
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.identity
-import baaahs.only
 import baaahs.show.SampleData
 import baaahs.sim.FakeFs
-import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import org.spekframework.spek2.Spek
 
@@ -23,7 +21,7 @@ class MappingSessionSpec : Spek({
                 /**language=json*/
                 """
                     {
-                      "startedAt": 1234.56,
+                      "startedAt": "${Instant.fromEpochMilliseconds(12345600)}",
                       "surfaces": [
                         {
                           "brainId": "brain1234",
@@ -33,7 +31,8 @@ class MappingSessionSpec : Spek({
                       ],
                       "cameraMatrix": {
                         "elements": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1] 
-                      }
+                      },
+                      "savedAt": "${Instant.fromEpochMilliseconds(12345600)}"
                     }
                 """.trimIndent()
             }
@@ -43,12 +42,12 @@ class MappingSessionSpec : Spek({
                 val decoded by value {
                     val file = fs.resolve("mapping-session.json")
                     doRunBlocking { fs.saveFile(file, json) }
-                    doRunBlocking { MappingStore(fs.rootFile, plugins).loadMappingSession(file) }
+                    doRunBlocking { MappingStore(fs.rootFile, plugins, FakeClock()).loadMappingSession(file) }
                 }
 
                 it("deserializes equally") {
                     expect(decoded)
-                        .its({ startedAt }) { toEqual(1234.56) }
+                        .its({ startedAt }) { toEqual(Instant.fromEpochMilliseconds(12345600)) }
 
                     val surfaces = decoded.surfaces.only("surface")
                     expect(surfaces)
