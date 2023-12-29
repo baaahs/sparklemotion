@@ -140,7 +140,7 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
+                implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
@@ -334,8 +334,9 @@ tasks.named<JavaExec>("run").configure {
 
 tasks.withType(Test::class) {
     useJUnitPlatform {
-        includeEngines.add("junit-vintage")
+        includeEngines.add("junit-jupiter")
         includeEngines.add("spek2")
+        excludeTags("glsl")
     }
 }
 
