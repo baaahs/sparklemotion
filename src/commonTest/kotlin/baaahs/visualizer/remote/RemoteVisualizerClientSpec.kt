@@ -64,14 +64,14 @@ object RemoteVisualizerClientSpec : Spek({
         beforeEachTest {
             server.run {}
             client.run {}
-            dispatcher.advanceUntilIdle()
+            dispatcher.scheduler.advanceUntilIdle()
 
             fakeFixtureManager.sendFixtureInfo(
                 pixelArrayFixture(entity, 2, transport = NullTransport,
                     pixelLocations = listOf(Vector3F.origin, Vector3F.unit3d)
                 )
             )
-            dispatcher.advanceUntilIdle()
+            dispatcher.scheduler.advanceUntilIdle()
         }
 
         afterEachTest { coroutineScope.cleanupTestCoroutines() }
@@ -98,7 +98,7 @@ object RemoteVisualizerClientSpec : Spek({
                     PixelFormat.RGB8.writeColor(Color.MAGENTA, out)
                     PixelFormat.RGB8.writeColor(Color.GREEN, out)
                 }
-                dispatcher.advanceUntilIdle()
+                dispatcher.scheduler.advanceUntilIdle()
             }
 
             it("updates the visualizer with pixel colors") {

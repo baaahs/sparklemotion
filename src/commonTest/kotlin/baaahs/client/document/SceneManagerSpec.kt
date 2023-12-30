@@ -11,6 +11,7 @@ import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
+import baaahs.sm.server.ServerNotices
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -38,6 +39,7 @@ object SceneManagerSpec : Spek({
         }
 
         beforeEachTest {
+            ServerNotices(pubSubRig.server, pubSubRig.dispatcher)
             serverSceneChannel.run {}
             sceneManager.run {}
         }
@@ -54,7 +56,7 @@ object SceneManagerSpec : Spek({
             val newScene by value { Scene.Empty }
             beforeEachTest {
                 serverSceneChannel.onChange(DocumentState(newScene, Unit, false, null))
-                pubSubRig.testCoroutineScope.advanceUntilIdle()
+                pubSubRig.dispatcher.scheduler.advanceUntilIdle()
             }
 
             it("has a scene loaded") {

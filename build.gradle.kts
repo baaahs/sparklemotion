@@ -73,10 +73,10 @@ kotlin {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
+                implementation(kotlinx("cli", "0.3.5"))
+                implementation(kotlinx("coroutines-core", Versions.coroutines))
+                implementation(kotlinx("datetime", "0.5.0"))
+                implementation(kotlinx("serialization-json", Versions.serializationRuntime))
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
@@ -86,7 +86,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-//                implementation("io.insert-koin:koin-test:${Versions.koin}")
+                implementation(kotlinx("coroutines-test", Versions.coroutines))
                 implementation("spek:spek-dsl:${Versions.spek}")
                 implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
             }
@@ -94,7 +94,6 @@ kotlin {
 
         val jvmMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${Versions.coroutines}")
                 implementation("io.ktor:ktor-server-core:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
@@ -154,7 +153,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
+                implementation(kotlinx("html-js", Versions.kotlinxHtml))
 
                 implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
 

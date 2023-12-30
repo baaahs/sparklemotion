@@ -46,7 +46,7 @@ object BeatLinkDataFlowSpec : Spek({
                 serverPlugin.run {}
                 clientPlugin.run {}
                 fakeBeatSource.notifyChanged()
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.dispatcher.scheduler.advanceUntilIdle()
             }
 
             it("flows from beat source to server feed") {
@@ -60,7 +60,7 @@ object BeatLinkDataFlowSpec : Spek({
                 expect(beatUniform.value).toEqual(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.dispatcher.scheduler.advanceUntilIdle()
                 programFeed.setOnProgram()
                 expect(beatUniform.value).toEqual(2.5f)
             }
@@ -76,7 +76,7 @@ object BeatLinkDataFlowSpec : Spek({
                 expect(beatUniform.value).toEqual(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
-                testRig.dispatcher.advanceUntilIdle()
+                testRig.dispatcher.scheduler.advanceUntilIdle()
                 programFeed.setOnProgram()
                 expect(beatUniform.value).toEqual(2.5f)
             }

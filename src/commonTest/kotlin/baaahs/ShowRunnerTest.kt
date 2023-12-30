@@ -23,9 +23,9 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -53,7 +53,7 @@ class ShowRunnerTest {
 
     @BeforeTest
     fun setUp() {
-        val dispatcher = TestCoroutineDispatcher()
+        val dispatcher = StandardTestDispatcher()
         server = PubSub.listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()

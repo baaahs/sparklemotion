@@ -31,10 +31,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import org.spekframework.spek2.Spek
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -354,7 +354,7 @@ object EditingShaderSpec : Spek({
         }
 
         context("preview") {
-            val dispatcher by value { TestCoroutineDispatcher() }
+            val dispatcher by value { StandardTestDispatcher() }
             override(shaderInEdit) { paintShader }
             override(otherShaderInShow) { null }
             override(getShaderBuilder) {
@@ -372,14 +372,14 @@ object EditingShaderSpec : Spek({
                 // Run through the shader building steps.
                 expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
                 expect(editingShader.state).toBe(State.Building)
-                dispatcher.runCurrent()
+                dispatcher.scheduler.runCurrent()
 
                 expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Linked)
                 expect(editingShader.state).toBe(State.Building)
                 editingShader.shaderBuilder.startCompile(renderEngine)
 
                 expect(editingShader.state).toBe(State.Building)
-                dispatcher.runCurrent()
+                dispatcher.scheduler.runCurrent()
                 expect(editingShader.state).toBe(State.Success)
             }
 

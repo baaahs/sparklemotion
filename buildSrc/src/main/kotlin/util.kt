@@ -3,6 +3,9 @@ import java.io.File
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 
+fun kotlinx(name: String, version: String): String =
+    "org.jetbrains.kotlinx:kotlinx-$name:$version"
+
 fun createResourceFilesList(baseDir: File) {
     val basePath = baseDir.toPath()
     val list = mutableListOf<String>()

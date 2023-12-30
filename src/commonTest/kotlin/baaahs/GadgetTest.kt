@@ -1,15 +1,15 @@
 package baaahs
 
 import baaahs.sim.FakeNetwork
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 
 @InternalCoroutinesApi
 class GadgetTest {
-    private val dispatcher = TestCoroutineDispatcher()
+    private val dispatcher = StandardTestDispatcher()
     private val network = FakeNetwork(0, coroutineScope = CoroutineScope(dispatcher))
     private val serverLink = network.link("test")
     private val clientLink = network.link("test")

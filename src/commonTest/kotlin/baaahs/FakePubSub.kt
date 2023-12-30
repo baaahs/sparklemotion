@@ -1,15 +1,16 @@
 package baaahs
 
 import baaahs.sim.FakeNetwork
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import ext.kotlinx_coroutines_test.TestCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 
 @InternalCoroutinesApi
 class FakePubSub(
-    val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher(),
+    val dispatcher: TestDispatcher = StandardTestDispatcher(),
     val network: FakeNetwork = FakeNetwork(0, CoroutineScope(dispatcher))
 ) : PubSub() {
     val serverNetwork = network.link("server")
@@ -28,7 +29,7 @@ class FakePubSub(
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 class TestRig {
-    val dispatcher = TestCoroutineDispatcher()
+    val dispatcher = StandardTestDispatcher()
     val testCoroutineScope = TestCoroutineScope(dispatcher)
     val network = FakeNetwork(0, coroutineScope = testCoroutineScope)
 
@@ -57,7 +58,7 @@ class TestRig {
 
 @InternalCoroutinesApi
 class SpyPubSub(
-    dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    dispatcher: TestDispatcher = StandardTestDispatcher()
 ) : PubSub.Endpoint() {
     override val commandChannels: PubSub.CommandChannels = PubSub.CommandChannels()
 

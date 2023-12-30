@@ -29,11 +29,11 @@ import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
-import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.serialization.json.JsonPrimitive
 import org.spekframework.spek2.Spek
 
@@ -43,7 +43,7 @@ object StageManagerSpec : Spek({
     describe<StageManager> {
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
-        val dispatcher by value { TestCoroutineDispatcher() }
+        val dispatcher by value { StandardTestDispatcher() }
         val pubSub by value { FakePubSub(dispatcher) }
         val fakeGlslContext by value { FakeGlContext() }
         val renderManager by value { RenderManager(fakeGlslContext) }
@@ -219,14 +219,14 @@ object StageManagerSpec : Spek({
                         activePatchSets.clear()
                         val backdrop1Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop1", GadgetDataSerializer)) {}
                         val backdrop2Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop2", GadgetDataSerializer)) {}
-                        dispatcher.runCurrent()
+                        dispatcher.scheduler.runCurrent()
                         backdrop1Channel.onChange(mapOf("enabled" to JsonPrimitive(false)))
                         backdrop2Channel.onChange(mapOf("enabled" to JsonPrimitive(true)))
-                        dispatcher.runCurrent()
+                        dispatcher.scheduler.runCurrent()
                         CoroutineScope(dispatcher).launch {
                             stageManager.renderAndSendNextFrame(true)
                         }
-                        dispatcher.runCurrent()
+                        dispatcher.scheduler.runCurrent()
                     }
 
                     it("delivers just one new patchset to FixtureManager") {
@@ -237,7 +237,7 @@ object StageManagerSpec : Spek({
                         CoroutineScope(dispatcher).launch {
                             stageManager.renderAndSendNextFrame(true)
                         }
-                        dispatcher.runCurrent()
+                        dispatcher.scheduler.runCurrent()
                         expect(activePatchSets.size).toEqual(1)
                     }
 
@@ -280,7 +280,7 @@ object StageManagerSpec : Spek({
                 editingClientChannel.let {}
                 otherClientChannel.let {}
                 stageManager.switchTo(baseShow, file = fakeFs.resolve("fake-file.sparkle"))
-                pubSub.dispatcher.runCurrent()
+                pubSub.dispatcher.scheduler.runCurrent()
             }
 
 //        afterEachTest {
@@ -309,7 +309,7 @@ object StageManagerSpec : Spek({
                             file = editingClientDocumentState!!.file
                         )
                     )
-                    dispatcher.runCurrent()
+                    dispatcher.scheduler.runCurrent()
                 }
 
                 it("no additional pubsub updates are received by the editing client") {
