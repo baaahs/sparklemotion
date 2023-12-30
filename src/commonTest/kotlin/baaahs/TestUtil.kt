@@ -26,6 +26,7 @@ import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.Clock
+import baaahs.util.asInstant
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
@@ -79,9 +80,7 @@ class FakeClock(
     var time: Instant = Instant.fromEpochMilliseconds(0),
     private val tz: TimeZone = TimeZone.of("America/New_York")
 ) : Clock {
-    constructor(epochSeconds: Double) : this(
-        Instant.fromEpochSeconds(epochSeconds)
-    )
+    constructor(epochSeconds: Double) : this(epochSeconds.asInstant())
 
     override fun now(): Instant = time
     override fun tz(): TimeZone = tz
