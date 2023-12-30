@@ -54,7 +54,7 @@ object DateFeedSpec : Spek({
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
                 expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 3f, 22f, 24567.793f).toString())
+                    .toEqual(Vector4F(2021f, 3f, 22f, 35367.793f).toString())
             }
         }
 
@@ -68,7 +68,7 @@ object DateFeedSpec : Spek({
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
                 expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 4f, 22f, 24567.793f).toString())
+                    .toEqual(Vector4F(2021f, 4f, 22f, 35367.793f).toString())
             }
         }
     }

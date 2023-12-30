@@ -39,6 +39,7 @@ import ch.tutteli.atrium.reporting.ReporterFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -75,13 +76,15 @@ fun <T> serializationRoundTrip(serializer: KSerializer<T>, obj: T): T {
 fun <T : Any?> toBeSpecified(): T = error("override me!")
 
 class FakeClock(
-    var time: Instant = Instant.fromEpochMilliseconds(0)
+    var time: Instant = Instant.fromEpochMilliseconds(0),
+    private val tz: TimeZone = TimeZone.of("America/New_York")
 ) : Clock {
     constructor(epochSeconds: Double) : this(
         Instant.fromEpochSeconds(epochSeconds)
     )
 
     override fun now(): Instant = time
+    override fun tz(): TimeZone = tz
 
     companion object {
         fun now(): Instant = FakeClock().now()
