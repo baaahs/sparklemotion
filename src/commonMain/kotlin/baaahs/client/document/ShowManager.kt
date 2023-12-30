@@ -14,7 +14,6 @@ import baaahs.show.Show
 import baaahs.show.ShowMonitor
 import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
-import baaahs.show.migration.ShowMigrator
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Topics
@@ -89,7 +88,7 @@ class ShowManager(
     }
 
     override suspend fun onUpload(name: String, content: String) {
-        val show = toolchain.plugins.json.decodeFromString(ShowMigrator, content)
+        val show = toolchain.plugins.showStore.decode(content)
         onNew(show)
     }
 

@@ -21,7 +21,7 @@ class MappingSessionSpec : Spek({
                 /**language=json*/
                 """
                     {
-                      "startedAt": "${Instant.fromEpochMilliseconds(12345600)}",
+                      "startedAt": 12345600000,
                       "surfaces": [
                         {
                           "brainId": "brain1234",
@@ -32,7 +32,7 @@ class MappingSessionSpec : Spek({
                       "cameraMatrix": {
                         "elements": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1] 
                       },
-                      "savedAt": "${Instant.fromEpochMilliseconds(12345600)}"
+                      "savedAt": 12345600000
                     }
                 """.trimIndent()
             }
@@ -47,7 +47,7 @@ class MappingSessionSpec : Spek({
 
                 it("deserializes equally") {
                     expect(decoded)
-                        .its({ startedAt }) { toEqual(Instant.fromEpochMilliseconds(12345600)) }
+                        .its({ startedAt }) { toEqual(Instant.fromEpochMilliseconds(12345600_000)) }
 
                     val surfaces = decoded.surfaces.only("surface")
                     expect(surfaces)

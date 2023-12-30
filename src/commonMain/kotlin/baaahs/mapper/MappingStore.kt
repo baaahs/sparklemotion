@@ -1,5 +1,6 @@
 package baaahs.mapper
 
+import baaahs.client.document.mappingSessionStore
 import baaahs.io.Fs
 import baaahs.plugin.Plugins
 import baaahs.scene.OpenScene
@@ -9,15 +10,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
 
 class MappingStore(
     private val dataDir: Fs.File,
     private val plugins: Plugins,
     private val clock: Clock
 ) {
+    private val mappingSessionStore = plugins.mappingSessionStore
     val json = Json(plugins.json) { isLenient = true }
     val mappingSessionsDir = dataDir.resolve("mapping-sessions")
     val imagesDir = mappingSessionsDir.resolve("images")
@@ -49,9 +48,9 @@ class MappingStore(
 
     suspend fun saveSession(mappingSession: MappingSession): Fs.File {
         val name = "${formatDateTime(mappingSession.startedAt, clock.tz())}-v${mappingSession.version}.json"
-        val file = mappingSessionsDir.resolve(name)
-        file.write(json.encodeToString(MappingSession.serializer(), mappingSession))
-        return file
+        return mappingSessionsDir.resolve(name).also {
+            mappingSessionStore.save(it, mappingSession)
+        }
     }
 
     suspend fun listImages(sessionName: String?): List<Fs.File> {
@@ -95,25 +94,8 @@ class MappingStore(
     }
 
     suspend fun loadMappingSession(f: Fs.File): MappingSession {
-        val mappingJson = f.read()
+        val mappingSession = mappingSessionStore.load(f)
             ?: error("No such file \"${f.fullPath}\".")
-        val mappingSession = try {
-            val json = plugins.json.parseToJsonElement(mappingJson).jsonObject.let {
-                // Janky data migration.
-                buildJsonObject {
-                    it.entries.forEach { (k, v) ->
-                        put(k, if (k == "cameraMatrix") {
-                            if (v is JsonObject) {
-                                v["elements"]!!
-                            } else v
-                        } else v)
-                    }
-                }
-            }
-            plugins.json.decodeFromJsonElement(MappingSession.serializer(), json)
-        } catch (e: Exception) {
-            throw Exception("Error loading \"${f.fullPath}\": ${e.message}.", e)
-        }
         mappingSession.surfaces.forEach { surface ->
             logger.debug { "Found pixel mapping for ${surface.entityName} (${surface.controllerId.name()})" }
         }

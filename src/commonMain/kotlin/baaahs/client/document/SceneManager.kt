@@ -10,7 +10,6 @@ import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
 import baaahs.plugin.Plugins
 import baaahs.scene.*
-import baaahs.scene.migration.SceneMigrator
 import baaahs.show.mutable.MutableDocument
 import baaahs.ui.DialogHolder
 import baaahs.ui.DialogMenuItem
@@ -90,7 +89,7 @@ class SceneManager(
     }
 
     override suspend fun onUpload(name: String, content: String) {
-        val scene = plugins.json.decodeFromString(SceneMigrator, content)
+        val scene = plugins.sceneStore.decode(content)
         onNew(scene)
     }
 

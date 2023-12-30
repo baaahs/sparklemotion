@@ -1,5 +1,6 @@
 package baaahs.api.ws
 
+import baaahs.client.document.mappingSessionStore
 import baaahs.imaging.Bitmap
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingStore
@@ -22,6 +23,7 @@ class WebSocketClient(
     link: Network.Link,
     address: Network.Address
 ) : Network.WebSocketListener {
+    private val mappingSessionStore = plugins.mappingSessionStore
     private val json = plugins.json
     private lateinit var tcpConnection: Network.TcpConnection
     private var connected = false
@@ -69,7 +71,7 @@ class WebSocketClient(
     suspend fun saveSession(mappingSession: MappingSession): String {
         return sendCommand(
             "saveSession",
-            json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
+            mappingSessionStore.encodeToJsonElement(mappingSession)
         ).jsonPrimitive.contentOrNull ?: error("Failed to save session!")
     }
 
@@ -78,7 +80,7 @@ class WebSocketClient(
             "loadSession",
             json.encodeToJsonElement(String.serializer(), name)
         )
-        return json.decodeFromJsonElement(MappingSession.serializer(), response)
+        return mappingSessionStore.decode(response)
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {
