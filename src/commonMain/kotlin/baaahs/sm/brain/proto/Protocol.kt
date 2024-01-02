@@ -4,6 +4,7 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
+import baaahs.net.Network
 import baaahs.sm.brain.BrainId
 
 object Ports {
@@ -221,3 +222,8 @@ open class Message(val type: Type) {
 
     open fun size(): Int = 8192
 }
+
+fun Network.UdpSocket.sendUdp(address: Network.Address, port: Int, message: Message) =
+    sendUdp(address, port, message.toBytes())
+fun Network.UdpSocket.broadcastUdp(port: Int, message: Message) =
+    broadcastUdp(port, message.toBytes())

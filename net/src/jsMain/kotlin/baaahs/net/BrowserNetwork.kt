@@ -13,7 +13,7 @@ import org.w3c.dom.WebSocket
 /**
  * Uses WebSockets for TCP, and proxies UDP via Pinky.
  */
-class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
+public class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, private val udpProxyPort: Int = 0) : Network {
     override fun link(name: String): Network.Link = object : Network.Link {
         override val myAddress: Network.Address = object : Network.Address {
             override fun asString(): String = "BrowserNetwork:localhost"
@@ -108,7 +108,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             TODO("BrowserNetwork.createAddress not implemented")
     }
 
-    data class BrowserAddress(
+    public data class BrowserAddress(
         private val protocol: String,
         val host: String,
         val port: String
@@ -119,7 +119,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
         override fun toString(): String = asString()
     }
 
-    companion object {
+    public companion object {
         private val logger = Logger<BrowserNetwork>()
     }
 }

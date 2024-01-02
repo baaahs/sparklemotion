@@ -2,8 +2,11 @@ package baaahs.io
 
 import kotlin.math.min
 
-class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
-    var offset = offset
+public class ByteArrayReader(
+    public val bytes: ByteArray,
+    offset: Int = 0
+) {
+    public var offset: Int = offset
         set(value) {
             if (value > bytes.size) {
                 throw IllegalStateException("array index out of bounds ($value > ${bytes.size})")
@@ -11,39 +14,39 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
             field = value
         }
 
-    fun readBoolean(): Boolean = bytes[offset++].toInt() != 0
+    public fun readBoolean(): Boolean = bytes[offset++].toInt() != 0
 
-    fun readByte(): Byte = bytes[offset++]
+    public fun readByte(): Byte = bytes[offset++]
 
-    fun readShort(): Short =
+    public fun readShort(): Short =
         (bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff).toShort()
 
-    fun readChar(): Char = readShort().toChar()
+    public fun readChar(): Char = readShort().toChar()
 
-    fun readInt(): Int =
+    public fun readInt(): Int =
         (bytes[offset++].toInt() and 0xff shl 24)
             .or(bytes[offset++].toInt() and 0xff shl 16)
             .or(bytes[offset++].toInt() and 0xff shl 8)
             .or(bytes[offset++].toInt() and 0xff)
 
-    fun readLong(): Long =
+    public fun readLong(): Long =
         (readInt().toLong() and 0xffffffff shl 32)
             .or(readInt().toLong() and 0xffffffff)
 
-    fun readFloat(): Float = Float.fromBits(readInt())
+    public fun readFloat(): Float = Float.fromBits(readInt())
 
-    fun readString(): String = readBytesWithSize().decodeToString()
+    public fun readString(): String = readBytesWithSize().decodeToString()
 
-    fun readNullableString(): String? = if (readBoolean()) readString() else null
+    public fun readNullableString(): String? = if (readBoolean()) readString() else null
 
-    fun readBytes(count: Int): ByteArray {
+    public fun readBytes(count: Int): ByteArray {
         val bytes = bytes.copyOfRange(offset, offset + count)
         offset += count
         return bytes
     }
 
-    fun readBytes(
+    public fun readBytes(
         dest: ByteArray,
         count: Int = dest.size,
         destOffset: Int = 0
@@ -58,7 +61,7 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return bytes
     }
 
-    fun readBytesWithSize(): ByteArray {
+    public fun readBytesWithSize(): ByteArray {
         val count = readInt()
         return readBytes(count)
     }
@@ -67,7 +70,7 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
      * Reads up to as many bytes as are present in `buffer`, or as many bytes are available in the incoming byte array,
      * and returns the number of bytes actually read. Any unread incoming bytes are skipped.
      */
-    fun readBytesWithSize(buffer: ByteArray): Int {
+    public fun readBytesWithSize(buffer: ByteArray): Int {
         val count = readInt()
         val toCopy = min(buffer.size, count)
         bytes.copyInto(buffer, 0, offset, offset + toCopy)
@@ -75,9 +78,9 @@ class ByteArrayReader(val bytes: ByteArray, offset: Int = 0) {
         return toCopy
     }
 
-    fun hasMoreBytes(): Boolean = offset < bytes.size
+    public fun hasMoreBytes(): Boolean = offset < bytes.size
 
-    fun skipBytes(count: Int) {
+    public fun skipBytes(count: Int) {
         offset += count
     }
 }

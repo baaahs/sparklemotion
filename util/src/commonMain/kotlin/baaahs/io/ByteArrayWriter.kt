@@ -1,34 +1,39 @@
 package baaahs.io
 
-class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset: Int = 0) {
-    constructor(size: Int) : this(ByteArray(size))
+public class ByteArrayWriter(
+    private var bytes: ByteArray = ByteArray(128),
+    public var offset: Int = 0
+) {
+    public constructor(size: Int) : this(ByteArray(size))
 
-    fun writeBoolean(b: Boolean) {
+    public fun writeBoolean(b: Boolean) {
         growIfNecessary(1)
         bytes[offset++] = if (b) 1 else 0
     }
 
-    fun writeByte(b: Byte) {
+    public fun writeByte(b: Byte) {
         growIfNecessary(1)
         bytes[offset++] = b
     }
 
-    fun writeShort(i: Int) {
+    public fun writeShort(i: Int) {
         if (i and 0xffff != i) {
             throw IllegalArgumentException("$i doesn't fit in a short")
         }
         writeShort(i.toShort())
     }
 
-    fun writeShort(s: Short) {
+    public fun writeShort(s: Short) {
         growIfNecessary(2)
         bytes[offset++] = s.toInt().shr(8).and(0xff).toByte()
         bytes[offset++] = s.toInt().and(0xff).toByte()
     }
 
-    fun writeChar(c: Char) = writeShort(c.toShort())
+    public fun writeChar(c: Char) {
+        writeShort(c.toShort())
+    }
 
-    fun writeInt(i: Int) {
+    public fun writeInt(i: Int) {
         growIfNecessary(4)
         bytes[offset++] = i.shr(24).and(0xff).toByte()
         bytes[offset++] = i.shr(16).and(0xff).toByte()
@@ -36,28 +41,28 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         bytes[offset++] = i.and(0xff).toByte()
     }
 
-    fun writeLong(l: Long) {
+    public fun writeLong(l: Long) {
         growIfNecessary(8)
         writeInt(l.shr(32).and(0xffffffff).toInt())
         writeInt(l.and(0xffffffff).toInt())
     }
 
-    fun writeFloat(f: Float) {
+    public fun writeFloat(f: Float) {
         writeInt(f.toBits())
     }
 
-    fun writeString(s: String) {
+    public fun writeString(s: String) {
         writeBytesWithSize(s.encodeToByteArray())
     }
 
-    fun writeNullableString(s: String?) {
+    public fun writeNullableString(s: String?) {
         writeBoolean(s != null)
         if (s != null) {
             writeString(s)
         }
     }
 
-    fun writeBytes(vararg bytes: Int) {
+    public fun writeBytes(vararg bytes: Int) {
         for (byte in bytes) {
             val b = byte.toByte()
             if (b.toInt() != byte) {
@@ -68,13 +73,13 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         }
     }
 
-    fun writeBytes(vararg bytes: Byte) {
+    public fun writeBytes(vararg bytes: Byte) {
         for (byte in bytes) {
             writeByte(byte)
         }
     }
 
-    fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+    public fun writeBytes(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
         growIfNecessary(size)
@@ -83,7 +88,7 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         offset += size
     }
 
-    fun writeBytesWithSize(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
+    public fun writeBytesWithSize(data: ByteArray, startIndex: Int = 0, endIndex: Int = data.size) {
         val size = endIndex - startIndex
 
         growIfNecessary(4 + size)
@@ -93,19 +98,19 @@ class ByteArrayWriter(private var bytes: ByteArray = ByteArray(128), var offset:
         offset += size
     }
 
-    fun toBytes(): ByteArray {
+    public fun toBytes(): ByteArray {
         return if (bytes.size == offset)
             bytes
         else
             bytes.copyOf(offset)
     }
 
-    fun copyBytes(): ByteArray =
+    public fun copyBytes(): ByteArray =
         bytes.copyOf(offset)
 
-    fun at(offset: Int): ByteArrayWriter = ByteArrayWriter(bytes, offset)
+    public fun at(offset: Int): ByteArrayWriter = ByteArrayWriter(bytes, offset)
 
-    fun reset() {
+    public fun reset() {
         offset = 0
     }
 

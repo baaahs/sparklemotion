@@ -8,12 +8,12 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.random.Random
 
-class FakeNetwork(
+public class FakeNetwork(
     private val networkDelay: Int = 1,
     private val coroutineScope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 ) : Network {
     private val addressCounters = hashMapOf<String, Int>()
-    val facade = Facade()
+    public val facade: Facade = Facade()
 
     private val udpListeners: MutableMap<Pair<Network.Address, Int>, Network.UdpListener> = hashMapOf()
     private val udpListenersByPort: MutableMap<Int, MutableList<Network.UdpListener>> = hashMapOf()
@@ -30,24 +30,24 @@ class FakeNetwork(
         return FakeLink(address)
     }
 
-    fun link(address: FakeAddress): FakeLink {
+    public fun link(address: FakeAddress): FakeLink {
         return FakeLink(address)
     }
 
-    var packetLossRate: Float = .005f
-    var packetsReceived: Int = 0
-    var packetsDropped: Int = 0
-    var packetsQueued: Int = 0
+    public var packetLossRate: Float = .005f
+    public var packetsReceived: Int = 0
+    public var packetsDropped: Int = 0
+    public var packetsQueued: Int = 0
 
     private fun sendPacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
     private fun receivePacketShouldSucceed() = Random.nextFloat() > packetLossRate / 2
 
-    inner class FakeLink(override val myAddress: FakeAddress) : Network.Link {
-        override val udpMtu = 1500
-        override val myHostname = "FakeHost"
+    public inner class FakeLink(override val myAddress: FakeAddress) : Network.Link {
+        override val udpMtu: Int = 1500
+        override val myHostname: String = "FakeHost"
         private var nextAvailablePort = 65000
-        var webSocketListeners = mutableListOf<Network.WebSocketListener>()
-        var tcpConnections = mutableListOf<Network.TcpConnection>()
+        public var webSocketListeners: MutableList<Network.WebSocketListener> = mutableListOf()
+        public var tcpConnections: MutableList<Network.TcpConnection> = mutableListOf<Network.TcpConnection>()
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val serverPort = if (port == 0) nextAvailablePort++ else port
@@ -57,7 +57,7 @@ class FakeNetwork(
             return FakeUdpSocket(serverPort)
         }
 
-        override val mdns = this@FakeNetwork.mdns
+        override val mdns: FakeMdns = this@FakeNetwork.mdns
 
         override fun startHttpServer(port: Int): Network.HttpServer {
             val fakeHttpServer = FakeHttpServer(port)
@@ -122,7 +122,7 @@ class FakeNetwork(
 
         override fun createAddress(name: String): Network.Address = FakeAddress(name)
 
-        inner class FakeTcpConnection(
+        public inner class FakeTcpConnection(
             override val fromAddress: Network.Address,
             override val toAddress: Network.Address,
             override val port: Int,
@@ -188,10 +188,10 @@ class FakeNetwork(
             }
         }
 
-        internal inner class FakeHttpServer(val port: Int) : Network.HttpServer {
-            val httpGetResponses: MutableMap<String, ByteArray> = mutableMapOf()
+        public inner class FakeHttpServer(public val port: Int) : Network.HttpServer {
+            public val httpGetResponses: MutableMap<String, ByteArray> = mutableMapOf()
 
-            val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
+            public val webSocketListeners: MutableMap<String, (Network.TcpConnection) -> Network.WebSocketListener> =
                 mutableMapOf()
 
             override fun listenWebSocket(
@@ -211,24 +211,24 @@ class FakeNetwork(
         if (networkDelay != 0) delay(networkDelay.toLong())
     }
 
-    data class FakeAddress(val name: String) : Network.Address {
+    public data class FakeAddress(val name: String) : Network.Address {
         override fun asString(): String = name
         override fun toString(): String = asString()
     }
 
-    companion object {
+    private companion object {
         val logger = Logger<FakeNetwork>()
     }
 
-    inner class Facade : baaahs.ui.Facade() {
-        var packetLossRate: Float
+    public inner class Facade : baaahs.ui.Observable() {
+        public var packetLossRate: Float
             get() = this@FakeNetwork.packetLossRate
             set(value) { this@FakeNetwork.packetLossRate = value }
-        val packetsReceived: Int get() = this@FakeNetwork.packetsReceived
-        val packetsDropped: Int get() = this@FakeNetwork.packetsDropped
-        val packetsQueued: Int get() = this@FakeNetwork.packetsQueued
+        public val packetsReceived: Int get() = this@FakeNetwork.packetsReceived
+        public val packetsDropped: Int get() = this@FakeNetwork.packetsDropped
+        public val packetsQueued: Int get() = this@FakeNetwork.packetsQueued
     }
 
     @Suppress("unused")
-    fun Any?.updates(facade: Facade) = facade.notifyChanged()
+    public fun Any?.updates(facade: Facade): Unit = facade.notifyChanged()
 }

@@ -2,7 +2,7 @@ package baaahs.sim
 
 import baaahs.net.Network
 
-class FakeMdns : Network.Mdns {
+public class FakeMdns : Network.Mdns {
     private var services = mutableMapOf<String, FakeMdns.FakeMdnsService>()
     private var listeners = mutableMapOf<String, MutableList<Network.MdnsListenHandler>>()
     private var nextServiceId : Int = 0
@@ -28,7 +28,7 @@ class FakeMdns : Network.Mdns {
         listeners.getOrPut("$type.$proto.${domain.normalizeMdnsDomain()}") { mutableListOf() }.add(handler)
     }
 
-    open inner class FakeMdnsService(
+    public open inner class FakeMdnsService(
         override val hostname: String,
         override val type: String,
         override val proto: String,
@@ -37,7 +37,7 @@ class FakeMdns : Network.Mdns {
         params: Map<String, String>
     ) : Network.MdnsService {
         private var id : Int = nextServiceId++
-        protected val params = params.toMutableMap()
+        protected val params: MutableMap<String, String> = params.toMutableMap()
 
         override fun getAddress(): Network.Address? = FakeNetwork.FakeAddress(hostname)
 
@@ -46,14 +46,15 @@ class FakeMdns : Network.Mdns {
         override fun getAllTXTs(): Map<String, String> = params
     }
 
-    inner class FakeRegisteredService(
+    public inner class FakeRegisteredService(
         hostname: String,
         type: String,
         proto: String,
         port: Int,
         domain: String,
         params: Map<String, String>
-    ) : FakeMdnsService(hostname, type, proto, port, domain.normalizeMdnsDomain(), params), Network.MdnsRegisteredService {
+    ) : FakeMdnsService(hostname, type, proto, port, domain.normalizeMdnsDomain(), params),
+        Network.MdnsRegisteredService {
         override fun unregister() {
             val fullname = "$hostname.$type.$proto.${domain.normalizeMdnsDomain()}"
             (services.remove(fullname) as? FakeRegisteredService)?.announceRemoved()

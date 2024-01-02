@@ -3,9 +3,11 @@ package baaahs
 import baaahs.app.ui.PatchEditorApp
 import baaahs.client.WebClient
 import baaahs.di.*
+import baaahs.gl.KglTracer
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.scene.SceneMonitor
+import baaahs.show.live.ShowOpener
 import baaahs.sim.FakeNetwork
 import baaahs.sim.HostedWebApp
 import baaahs.sim.SimMappingManager
@@ -40,7 +42,11 @@ val _init_ =
     }
 
 fun main(args: Array<String>) {
-    window.asDynamic().LoggerConfig = LoggerConfig
+    window.asDynamic().LoggerConfig = LoggerConfig.apply {
+//        setLevel(PubSub::class, LogLevel.DEBUG)
+        setLevel(KglTracer::class, LogLevel.DEBUG)
+        setLevel(ShowOpener::class, LogLevel.DEBUG)
+    }
 
     ConsoleFormatters.install()
     installCameraControls()

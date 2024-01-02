@@ -73,6 +73,9 @@ kotlin {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
+                implementation(project(":net"))
+                implementation(project(":rpc"))
+                implementation(project(":util"))
                 implementation(kotlinx("cli", "0.3.5"))
                 implementation(kotlinx("coroutines-core", Versions.coroutines))
                 implementation(kotlinx("datetime", "0.5.0"))
@@ -80,7 +83,6 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
-                implementation(project(":rpc"))
             }
         }
         val commonTest by getting {
@@ -99,7 +101,6 @@ kotlin {
                 implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-call-logging:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
-                implementation("ch.qos.logback:logback-classic:1.3.11")
                 implementation("org.deepsymmetry:beat-link:0.6.3")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))

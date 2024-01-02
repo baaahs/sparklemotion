@@ -3,12 +3,12 @@ package baaahs.ui
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-interface IObservable {
-    fun addObserver(observer: Observer): Observer
-    fun removeObserver(observer: Observer)
+public interface IObservable {
+    public fun addObserver(observer: Observer): Observer
+    public fun removeObserver(observer: Observer)
 }
 
-open class Observable : IObservable {
+public open class Observable : IObservable {
     private val observers = mutableListOf<Observer>()
 
     protected fun anyObservers(): Boolean = observers.isNotEmpty()
@@ -22,7 +22,7 @@ open class Observable : IObservable {
         observers.remove(observer)
     }
 
-    fun notifyChanged() {
+    public fun notifyChanged() {
         observers.forEach { it.notifyChanged() }
     }
 
@@ -31,26 +31,26 @@ open class Observable : IObservable {
     }
 }
 
-class ObservableValue<T: Any?>(initialValue: T) : Observable() {
-    var value: T by notifyOnChange<T>(initialValue)
+public class ObservableValue<T: Any?>(initialValue: T) : Observable() {
+    public var value: T by notifyOnChange<T>(initialValue)
 }
 
-fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {
+public fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {
     val observer = RemovableObserver(this, callback)
     addObserver(observer)
     if (fireImmediately) callback(this)
     return observer
 }
 
-class RemovableObserver<T : IObservable>(
+public class RemovableObserver<T : IObservable>(
     private val observable: T,
     private val callback: (T) -> Unit
 ) : Observer {
-    override fun notifyChanged() = callback.invoke(observable)
-    fun remove() = observable.removeObserver(this)
+    override fun notifyChanged(): Unit = callback.invoke(observable)
+    public fun remove(): Unit = observable.removeObserver(this)
 }
 
-class NotifyOnChangeProperty<V>(initialValue: V) : ReadWriteProperty<Observable, V> {
+public class NotifyOnChangeProperty<V>(initialValue: V) : ReadWriteProperty<Observable, V> {
     private var value = initialValue
 
     override fun getValue(thisRef: Observable, property: KProperty<*>): V = value

@@ -2,7 +2,7 @@ package baaahs.util
 
 import org.slf4j.LoggerFactory
 
-class JvmLogger(id: String) : NativeLogger {
+public class JvmLogger(id: String) : NativeLogger {
     private val logger = LoggerFactory.getLogger(id)
 
     override fun debug(exception: Throwable?, message: () -> String) {
@@ -40,4 +40,4 @@ class JvmLogger(id: String) : NativeLogger {
     }
 }
 
-actual fun getLogger(id: String): NativeLogger = JvmLogger(id)
+internal actual fun getLogger(id: String): NativeLogger = JvmLogger(id)

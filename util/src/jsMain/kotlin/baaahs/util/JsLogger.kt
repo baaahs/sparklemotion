@@ -1,6 +1,8 @@
 package baaahs.util
 
-class JsLogger(
+import kotlin.reflect.KClass
+
+public open class JsLogger(
     private val id: String
 ) : NativeLogger {
     override fun debug(exception: Throwable?, message: () -> String) {
@@ -52,4 +54,35 @@ class JsLogger(
     }
 }
 
-actual fun getLogger(id: String): NativeLogger = JsLogger(id)
+public object LoggerConfig {
+    private val allLevels: MutableMap<String, LogLevel> = mutableMapOf()
+
+    public var defaultLevel: LogLevel = LogLevel.WARN
+
+    @JsName("levelFor")
+    public fun levelFor(id: String): LogLevel = allLevels[id] ?: defaultLevel
+
+    public fun setLevel(id: String, level: LogLevel?) {
+        if (level == null) {
+            allLevels.remove(id)
+        } else {
+            allLevels[id] = level
+        }
+    }
+
+    public fun setLevel(kClass: KClass<*>, level: LogLevel?) {
+        setLevel(kClass.simpleName!!, level)
+    }
+
+    @JsName("setLevel")
+    public fun setLevel(id: String, level: String?) {
+        setLevel(id, level?.let { LogLevel.valueOf(it) })
+    }
+
+    @JsName("setDefault")
+    public fun setDefault(level: String) {
+        defaultLevel = LogLevel.valueOf(level)
+    }
+}
+
+internal actual fun getLogger(id: String): NativeLogger = JsLogger(id)
