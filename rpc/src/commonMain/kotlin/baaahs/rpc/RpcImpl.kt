@@ -19,12 +19,6 @@ public class CommandPort<C, R>(
 }
 
 public interface RpcCommandRecipient {
-    public fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
-
-    public fun <C, R> openCommandChannel(
-        commandPort: CommandPort<C, R>
-    ): RpcCommandChannel<C, R>
-
     public fun <C, R> commandSender(
         commandPort: CommandPort<C, R>
     ): suspend (command: C) -> R

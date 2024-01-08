@@ -482,9 +482,9 @@ abstract class PubSub {
     interface CommandRecipient : RpcCommandRecipient {
         val commandChannels: CommandChannels
 
-        override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+        fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
 
-        override fun <C, R> openCommandChannel(
+        fun <C, R> openCommandChannel(
             commandPort: CommandPort<C, R>
         ): CommandChannel<C, R> {
             return commandChannels.open(commandPort, this)
