@@ -39,7 +39,7 @@ class ClassProcessor(
         out.appendLine("/** RPC implementation for [${baseName}]. */")
         out.appendLine("class ${baseName}Rpc$typeParams(")
         emitConstructorParams()
-        out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName> {")
+        out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName>, ${RpcServiceDesc::class.qualifiedName!!}<$fullName> {")
         out.indent {
             out.appendLine("override fun createSender(endpoint: $rpcEndpointName) =")
             out.indent { out.appendLine("Sender(endpoint as $rpcClientName)") }
@@ -49,8 +49,17 @@ class ClassProcessor(
             out.appendLine("}")
             out.appendLine()
 
+            out.appendLine("override public val commands: List<$commandPortName<*, *>> = listOf(")
+            out.indent {
+                rpcMethods.forEach { rpcMethod ->
+                    rpcMethod.emitCommandPort(out)
+                    out.appendLine(",")
+                }
+            }
+            out.appendLine(")\n")
+
             rpcMethods.forEach { rpcMethod ->
-                rpcMethod.emitCommandPort(out)
+                rpcMethod.emitCommandPortVar(out)
             }
 
             rpcMethods.forEach { rpcMethod ->
@@ -126,8 +135,14 @@ class ClassProcessor(
         private val returnType = RpcType(fn.returnType!!.resolve())
         private val nonUnitReturn = returnType.fullName != "kotlin.Unit"
 
+        fun emitCommandPortVar(out: IndentingWriter) {
+            out.append("private val ${fnName}Command = ")
+            emitCommandPort(out)
+            out.appendLine("\n")
+        }
+
         fun emitCommandPort(out: IndentingWriter) {
-            out.appendLine("private val ${fnName}Command = $commandPortName(")
+            out.appendLine("$commandPortName(")
             out.indent {
                 out.appendLine("\"\$channelPrefix/$fnName\",")
                 val serializers = genericParams
@@ -140,8 +155,7 @@ class ClassProcessor(
                 }
                 out.appendLine("serialModule")
             }
-            out.appendLine(")")
-            out.appendLine()
+            out.append(")")
         }
 
         fun emitSerializationClass(out: IndentingWriter) {

@@ -4,6 +4,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.net.Network
 import baaahs.rpc.*
+import baaahs.ui.Observer
 import baaahs.util.Logger
 import kotlinx.coroutines.*
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -609,6 +610,9 @@ abstract class PubSub {
         private val coroutineScope: CoroutineScope = GlobalScope
     ) : Endpoint(), CommandRecipient, RpcClient {
         override val commandChannels: CommandChannels = CommandChannels()
+        override val state: RpcClient.State get() = TODO("not implemented")
+        override fun addObserver(observer: Observer): Observer = TODO("not implemented")
+        override fun removeObserver(observer: Observer): Unit = TODO("not implemented")
 
         val isConnected: Boolean
             get() = connectionToServer.isConnected
