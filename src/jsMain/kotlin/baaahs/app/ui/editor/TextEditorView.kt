@@ -13,7 +13,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.Time
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import mui.material.PaletteMode
 import mui.material.styles.useTheme
 import react.Props

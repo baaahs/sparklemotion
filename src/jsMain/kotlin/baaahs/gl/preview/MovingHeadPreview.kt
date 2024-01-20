@@ -116,17 +116,17 @@ class MovingHeadPreview(
             val firstParams = (renderTargets.values.first().fixtureResults as MovingHeadParams.ResultBuffer.FixtureResults)
                 .movingHeadParams
 
-            val centerX = context2d.canvas.width / 2
-            val centerY = context2d.canvas.height / 2
+            val centerX = context2d.canvas.width / 2.0
+            val centerY = context2d.canvas.height / 2.0
 
             val initialX = centerX
             val initialY = centerY + ( context2d.canvas.height / 4)  * (-firstParams.tilt / 2.2)
 
-            val targetX = centerX + (initialX-centerX)*cos(-firstParams.pan) - (initialY-centerY)*sin(-firstParams.pan);
-            val targetY = centerY + (initialX-centerX)*sin(-firstParams.pan) + (initialY-centerY)*cos(-firstParams.pan);
+            val targetX = centerX + (initialX-centerX)*cos(-firstParams.pan) - (initialY-centerY)*sin(-firstParams.pan)
+            val targetY = centerY + (initialX-centerX)*sin(-firstParams.pan) + (initialY-centerY)*cos(-firstParams.pan)
 
             fun getRadians(degrees: Int): Double {
-                return degrees * PI / 180;
+                return degrees * PI / 180
             }
 
             val vectorX = targetX - centerX
@@ -138,23 +138,23 @@ class MovingHeadPreview(
             val beamCenterX = (p1X + p2X) / 2
             val beamCenterY = (p1Y + p2Y) / 2
 
-            context2d.beginPath();
-            context2d.moveTo(centerX, centerY);
-            context2d.lineTo(targetX, targetY);
-            context2d.stroke();
+            context2d.beginPath()
+            context2d.moveTo(centerX, centerY)
+            context2d.lineTo(targetX, targetY)
+            context2d.stroke()
 
-            context2d.beginPath();
-            context2d.moveTo(centerX, centerY);
-            context2d.lineTo(p1X, p1Y);
-            context2d.lineTo(p2X, p2Y);
-            context2d.fillStyle = "rgba(255, 0, 2, 0.4)";
-            context2d.fill();
+            context2d.beginPath()
+            context2d.moveTo(centerX, centerY)
+            context2d.lineTo(p1X, p1Y)
+            context2d.lineTo(p2X, p2Y)
+            context2d.fillStyle = "rgba(255, 0, 2, 0.4)"
+            context2d.fill()
 
-            context2d.beginPath();
-            context2d.ellipse(beamCenterX, beamCenterY, 30, 20, PI / 4, 0, 2 * PI);
-            context2d.fillStyle = "rgba(255, 0, 2, 0.7)";
-            context2d.fill();
-            context2d.stroke();
+            context2d.beginPath()
+            context2d.ellipse(beamCenterX, beamCenterY, 30.0, 20.0, PI / 4, 0.0, 2 * PI)
+            context2d.fillStyle = "rgba(255, 0, 2, 0.7)"
+            context2d.fill()
+            context2d.stroke()
         }
         requestAnimationFrame { render() }
     }

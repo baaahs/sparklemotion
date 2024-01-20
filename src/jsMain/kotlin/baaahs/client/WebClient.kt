@@ -20,7 +20,7 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
 import baaahs.util.globalLaunch
-import js.core.jso
+import js.objects.jso
 import react.ReactElement
 import react.createElement
 

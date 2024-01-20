@@ -2,7 +2,7 @@ package baaahs.ui.diagnostics
 
 import external.dagre_d3.Graph
 import external.dagre_d3.d3
-import js.core.jso
+import js.objects.jso
 
 class GraphDag(
     includePatchMods: Boolean = false

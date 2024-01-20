@@ -11,7 +11,7 @@ import baaahs.ui.value
 import baaahs.ui.xComponent
 import com.soywiz.klock.DateFormat
 import com.soywiz.klock.DateTime
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*

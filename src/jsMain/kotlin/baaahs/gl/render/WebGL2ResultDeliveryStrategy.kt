@@ -62,7 +62,9 @@ class WebGl2ResultDeliveryStrategy(private val gl: GlBase.JsGlContext) : ResultD
                 gl.check {
                     webgl2.readPixels(
                         0, 0, gpuBuffer.curWidth, gpuBuffer.curHeight,
-                        resultType.readFormat, resultType.readType, 0
+                        resultType.readFormat.unsafeCast<GLenum>(),
+                        resultType.readType.unsafeCast<GLenum>(),
+                        0
                     )
                 }
                 gl.check { bindBuffer(PIXEL_PACK_BUFFER, null) }

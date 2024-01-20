@@ -5,8 +5,8 @@ import baaahs.geom.Vector2I
 import baaahs.x
 import baaahs.y
 import external.react_resizable.ResizeHandleAxis
-import js.core.Object
-import js.core.jso
+import js.objects.Object
+import js.objects.jso
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 import react.*

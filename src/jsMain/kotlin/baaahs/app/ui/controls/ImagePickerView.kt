@@ -12,7 +12,7 @@ import baaahs.gadgets.ImageRef
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.globalLaunch
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.Box
 import mui.material.Modal

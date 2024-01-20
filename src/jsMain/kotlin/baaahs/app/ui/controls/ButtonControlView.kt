@@ -8,7 +8,7 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import mui.material.ToggleButton
 import react.Props
 import react.RBuilder

@@ -3,7 +3,7 @@ package baaahs.app.ui.editor
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.*
 import react.Props
 import react.RBuilder

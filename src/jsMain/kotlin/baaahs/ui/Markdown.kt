@@ -1,7 +1,7 @@
 package baaahs.ui
 
 import external.markdownit.MarkdownIt
-import js.core.jso
+import js.objects.jso
 import react.Props
 import react.RBuilder
 import react.RHandler

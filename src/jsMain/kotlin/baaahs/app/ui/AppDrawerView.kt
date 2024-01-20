@@ -3,7 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.document.documentMenu
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import mui.material.styles.Theme

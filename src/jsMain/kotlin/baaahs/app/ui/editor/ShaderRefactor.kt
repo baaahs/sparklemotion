@@ -10,7 +10,7 @@ import baaahs.gl.glsl.GlslType
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.Prompt
 import baaahs.ui.unaryPlus
-import js.core.jso
+import js.objects.jso
 
 class ShaderRefactor(
     private val editingShader: EditingShader,

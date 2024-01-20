@@ -8,7 +8,7 @@ import baaahs.show.live.ControlProps
 import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.StyledElement
 import mui.material.Button
 import mui.material.ButtonColor

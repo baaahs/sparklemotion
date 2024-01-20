@@ -4,7 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
 import baaahs.plugin.PluginRef
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
