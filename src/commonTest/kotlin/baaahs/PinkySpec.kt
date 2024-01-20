@@ -10,10 +10,11 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
+import baaahs.io.FsServerSideSerializer
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
+import baaahs.mapper.MappingStore
 import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.Storage
 import baaahs.mapping.MappingManagerImpl
 import baaahs.model.Model
 import baaahs.net.FragmentingUdpSocket
@@ -32,6 +33,7 @@ import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.brain.proto.Type
 import baaahs.sm.server.GadgetManager
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
@@ -56,7 +58,7 @@ object PinkySpec : Spek({
 
         val fakeFs by value { FakeFs() }
         val plugins by value { testPlugins() }
-        val storage by value { Storage(fakeFs, plugins) }
+        val mappingStore by value { MappingStore(fakeFs.rootFile, plugins, FakeClock()) }
         val link by value { network.link("pinky") }
         val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
@@ -73,11 +75,12 @@ object PinkySpec : Spek({
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
         val stageManager by value {
             StageManager(
-                toolchain, renderManager, pubSub, storage, fixtureManager, clock,
-                gadgetManager, serverNotices, sceneMonitor
+                toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
+                gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
+                PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
-        val mappingManager by value { MappingManagerImpl(storage, sceneMonitor, coroutineScope) }
+        val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
         val controllersManager by value {
             ControllersManager(listOf(brainManager), mappingManager, sceneMonitor, listOf(fixtureManager))
         }
@@ -95,14 +98,12 @@ object PinkySpec : Spek({
             }
 
             Pinky(
-                clock, PermissiveFirmwareDaddy(), plugins, storage, link, httpServer, pubSub,
+                clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
                 dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
                 stageManager, controllersManager, brainManager,
-                ShaderLibraryManager(storage, pubSub),
-                Pinky.NetworkStats(),
-                PinkySettings(),
-                serverNotices,
-                PinkyMapperHandlers(storage)
+                ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
+                Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
+                PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
         val pinkyLink by value { network.links.only() }
@@ -124,10 +125,11 @@ object PinkySpec : Spek({
                     val surfaceData = MappingSession.SurfaceData(
                         BrainManager.controllerTypeName, brainId.uuid, surface.name, null, null
                     )
-                    val mappingSessionPath = storage.saveSession(
+                    val mappingSessionPath = mappingStore.saveSession(
                         MappingSession(
-                            0.0, listOf(surfaceData),
-                            Matrix4F.identity, null, notes = "Simulated pixels"
+                            clock.now(), listOf(surfaceData),
+                            Matrix4F.identity, null, savedAt = clock.now(),
+                            notes = "Simulated pixels"
                         )
                     )
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))

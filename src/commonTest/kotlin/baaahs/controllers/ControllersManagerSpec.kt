@@ -24,9 +24,9 @@ import baaahs.only
 import baaahs.scene.*
 import baaahs.toEqual
 import baaahs.ui.Observable
-import baaahs.util.Time
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.datetime.Instant
 import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
@@ -404,10 +404,10 @@ class FakeController(
     override val state: ControllerState = object : ControllerState() {
         override val title: String get() = TODO("not implemented")
         override val address: String get() = TODO("not implemented")
-        override val onlineSince: Time get() = TODO("not implemented")
+        override val onlineSince: Instant? get() = TODO("not implemented")
         override val firmwareVersion: String get() = TODO("not implemented")
         override val lastErrorMessage: String get() = TODO("Not yet implemented")
-        override val lastErrorAt: Time get() = TODO("Not yet implemented")
+        override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
     }
     override val transportType: TransportType
         get() = DmxTransport

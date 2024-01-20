@@ -4,6 +4,7 @@ import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Time
+import baaahs.util.asDoubleSeconds
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
@@ -28,13 +29,13 @@ data class BeatData(
 
     fun beatWithinMeasure(clock: Clock): Float {
         if (beatIntervalMs == 0) return -1f
-        val elapsedSinceStartOfMeasure = clock.now() - measureStartTime
+        val elapsedSinceStartOfMeasure = clock.now().asDoubleSeconds - measureStartTime
         return ((elapsedSinceStartOfMeasure / beatIntervalSec).toFloat()) % beatsPerMeasure
     }
 
     fun timeSinceMeasure(clock: Clock): Float {
         if (beatIntervalMs == 0) return -1f
-        val elapsedSinceStartOfMeasure = clock.now() - measureStartTime
+        val elapsedSinceStartOfMeasure = clock.now().asDoubleSeconds - measureStartTime
         return (elapsedSinceStartOfMeasure / beatIntervalSec).toFloat()
     }
 
@@ -47,7 +48,7 @@ data class BeatData(
     }
 
     fun millisTillNextBeat(clock: Clock): Int {
-        val elapsedSinceStartOfMeasure = (clock.now() - measureStartTime)
+        val elapsedSinceStartOfMeasure = (clock.now().asDoubleSeconds - measureStartTime)
         return ((beatIntervalSec - elapsedSinceStartOfMeasure % beatIntervalSec) * 1000).roundToInt()
     }
 

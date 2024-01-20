@@ -2,18 +2,19 @@ package baaahs.sm.server
 
 import baaahs.DocumentState
 import baaahs.PubSub
+import baaahs.client.document.DataStore
 import baaahs.doc.DocumentType
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
-import baaahs.mapper.Storage
 import baaahs.sm.webapi.DocumentCommands
 import baaahs.ui.Observable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
-abstract class DocumentService<T, TState>(
+abstract class DocumentService<T : Any, TState>(
     pubSub: PubSub.Server,
-    private val storage: Storage,
+    private val dataStore: DataStore<T>,
+    private val dataDir: Fs.File,
     topic: PubSub.Topic<DocumentState<T, TState>?>,
     tSerializer: KSerializer<T>,
     remoteFsSerializer: RemoteFsSerializer,
@@ -50,10 +51,14 @@ abstract class DocumentService<T, TState>(
     }
 
     abstract fun createDocument(): T
-    abstract suspend fun load(file: Fs.File): T?
-    abstract suspend fun save(file: Fs.File, document: T)
     abstract fun onFileChanged(saveAsFile: Fs.File)
     protected abstract fun getDocumentState(): DocumentState<T, TState>?
+
+    suspend fun load(file: Fs.File): T? =
+        dataStore.load(file)
+
+    suspend fun save(file: Fs.File, document: T) =
+        dataStore.save(file, document, allowOverwrite = true)
 
     open fun notifyOfDocumentChanges(fromClientUpdate: Boolean = false) {
         if (!fromClientUpdate) {
@@ -86,7 +91,7 @@ abstract class DocumentService<T, TState>(
         }
 
         override suspend fun saveAs(file: Fs.File) {
-            val saveAsFile = storage.resolve(file.fullPath)
+            val saveAsFile = dataDir.resolve(file.fullPath)
             document?.let { document -> doSave(saveAsFile, document) }
             onFileChanged(saveAsFile)
         }

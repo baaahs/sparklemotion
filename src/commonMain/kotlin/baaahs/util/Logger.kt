@@ -1,7 +1,6 @@
 package baaahs.util
 
-import com.soywiz.klock.DateFormat
-import com.soywiz.klock.DateTime
+import baaahs.internalTimerClock
 
 class Logger(val id: String) {
     private val nativeLogger = getLogger(id)
@@ -37,10 +36,8 @@ class Logger(val id: String) {
     fun enabled(level: LogLevel): Boolean = nativeLogger.isEnabled(level)
 
     companion object {
-        private val FORMAT by lazy { DateFormat("yyyy-MM-dd HH:mm:ss.SSS") }
-
         fun ts(): String {
-            return DateTime.now().format(FORMAT)
+            return internalTimerClock.now().toString()
         }
 
     }

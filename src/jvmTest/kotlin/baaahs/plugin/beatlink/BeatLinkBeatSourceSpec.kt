@@ -10,6 +10,7 @@ import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
 import org.spekframework.spek2.Spek
 import kotlin.test.assertNotEquals
+import kotlin.time.Duration.Companion.seconds
 
 object BeatLinkBeatSourceSpec : Spek({
     describe<BeatLinkBeatSource> {
@@ -43,11 +44,11 @@ object BeatLinkBeatSourceSpec : Spek({
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
 
-                fakeClock.time += 0.486
+                fakeClock.time += 0.486.seconds
                 beatSource.newBeat(mockBeat(123.4, 2))
                 expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
 
-                fakeClock.time += 0.490
+                fakeClock.time += 0.490.seconds
                 beatSource.newBeat(mockBeat(123.4, 3))
                 expect(beatSource.currentBeat.measureStartTime).toBeWithErrorTolerance(10.003, 0.0009)
                 expect(beatSource.currentBeat.beatIntervalMs).toBe(486)
@@ -59,7 +60,7 @@ object BeatLinkBeatSourceSpec : Spek({
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
 
-                fakeClock.time += 0.486
+                fakeClock.time += 0.486.seconds
                 beatSource.newBeat(mockBeat(123.5, 2))
                 assertNotEquals(10.0, beatSource.currentBeat.measureStartTime)
                 expect(beatSource.currentBeat.measureStartTime).toBeWithErrorTolerance(10.0, 0.0009)
@@ -75,7 +76,7 @@ object BeatLinkBeatSourceSpec : Spek({
 
             context("when we hear beat updates at appropriate intervals") {
                 beforeEachTest {
-                    fakeClock.time += 2.0
+                    fakeClock.time += 2.0.seconds
                     beatSource.adjustConfidence()
                 }
 
@@ -86,7 +87,7 @@ object BeatLinkBeatSourceSpec : Spek({
 
             context("when we haven't heard a beat update for more than a measure") {
                 beforeEachTest {
-                    fakeClock.time += 2.1
+                    fakeClock.time += 2.1.seconds
                     beatSource.adjustConfidence()
                 }
 

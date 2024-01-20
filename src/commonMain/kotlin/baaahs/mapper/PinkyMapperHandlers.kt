@@ -9,15 +9,15 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
-open class PinkyMapperHandlers(val storage: Storage) {
+open class PinkyMapperHandlers(val mappingStore: MappingStore) {
     fun register(builder: WebSocketRouter.HandlerBuilder) {
         builder.apply {
             handle("listImages") { args ->
                 val sessionName = args[1].jsonPrimitive.contentOrNull
                 json.encodeToJsonElement(
                     ListSerializer(String.serializer()),
-                    storage.listImages(sessionName).map {
-                        it.relativeTo(storage.imagesDir)
+                    mappingStore.listImages(sessionName).map {
+                        it.relativeTo(mappingStore.imagesDir)
                     }
                 )
             }
@@ -26,7 +26,7 @@ open class PinkyMapperHandlers(val storage: Storage) {
                 val name = args[1].jsonPrimitive.contentOrNull
                 val imageDataBase64 = args[2].jsonPrimitive.contentOrNull
                 val imageData = decodeBase64(imageDataBase64!!)
-                storage.saveImage(name!!, imageData)
+                mappingStore.saveImage(name!!, imageData)
                 JsonNull
             }
 
@@ -38,8 +38,8 @@ open class PinkyMapperHandlers(val storage: Storage) {
             handle("listSessions") {
                 json.encodeToJsonElement(
                     ListSerializer(String.serializer()),
-                    storage.listSessions().map {
-                        it.relativeTo(storage.mappingSessionsDir)
+                    mappingStore.listSessions().map {
+                        it.relativeTo(mappingStore.mappingSessionsDir)
                     }
                 )
             }
@@ -48,14 +48,14 @@ open class PinkyMapperHandlers(val storage: Storage) {
                 val mappingSession = json.decodeFromJsonElement(
                     MappingSession.serializer(), args[1]
                 )
-                val file = storage.saveSession(mappingSession)
-                val sessionName = file.relativeTo(storage.mappingSessionsDir)
+                val file = mappingStore.saveSession(mappingSession)
+                val sessionName = file.relativeTo(mappingStore.mappingSessionsDir)
                 JsonPrimitive(sessionName)
             }
 
             handle("loadSession") { args ->
                 val sessionName = json.decodeFromJsonElement(String.serializer(), args[1])
-                val mappingSession = storage.loadMappingSession(sessionName)
+                val mappingSession = mappingStore.loadMappingSession(sessionName)
                 json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
             }
         }

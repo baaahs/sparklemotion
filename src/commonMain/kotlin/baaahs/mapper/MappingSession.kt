@@ -7,23 +7,21 @@ import baaahs.geom.Matrix4F
 import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.sm.brain.BrainManager
-import com.soywiz.klock.DateTime
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MappingSession(
-    val startedAt: Double,
+    val startedAt: Instant,
     val surfaces: List<SurfaceData>, // TODO: Rename to entities.
     val cameraMatrix: Matrix4F? = null, // TODO: Remove.
     val cameraPosition: CameraPosition? = null,
     val baseImage: String? = null,
     val metadata: MappingStrategy.SessionMetadata? = null,
     val version: Int = 0,
-    val savedAt: Double = DateTime.nowUnix(),
+    val savedAt: Instant?,
     val notes: String? = null
 ) {
-    val startedAtDateTime: DateTime get() = DateTime(startedAt)
-
     @Serializable
     data class SurfaceData(
         val controllerType: String? = BrainManager.controllerTypeName,

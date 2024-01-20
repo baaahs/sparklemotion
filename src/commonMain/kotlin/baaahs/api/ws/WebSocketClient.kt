@@ -1,21 +1,29 @@
 package baaahs.api.ws
 
+import baaahs.client.document.mappingSessionStore
 import baaahs.imaging.Bitmap
 import baaahs.mapper.MappingSession
-import baaahs.mapper.Storage
+import baaahs.mapper.MappingStore
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.sm.brain.proto.Ports
+import baaahs.util.Clock
 import baaahs.util.Logger
-import com.soywiz.klock.DateTime
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 
-class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Address) : Network.WebSocketListener {
+class WebSocketClient(
+    plugins: Plugins,
+    private val clock: Clock,
+    link: Network.Link,
+    address: Network.Address
+) : Network.WebSocketListener {
+    private val mappingSessionStore = plugins.mappingSessionStore
     private val json = plugins.json
     private lateinit var tcpConnection: Network.TcpConnection
     private var connected = false
@@ -30,8 +38,8 @@ class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Add
             sendCommand("listImages", sessionName?.let { JsonPrimitive(it) } ?: JsonNull))
     }
 
-    suspend fun saveImage(sessionStartTime: DateTime, name: String, bitmap: Bitmap): String {
-        val filename = "${Storage.formatDateTime(sessionStartTime)}/$name.webp"
+    suspend fun saveImage(sessionStartTime: Instant, name: String, bitmap: Bitmap): String {
+        val filename = "${MappingStore.formatDateTime(sessionStartTime, clock.tz())}/$name.webp"
         val dataUrl = bitmap.toDataUrl()
         val startOfData = ";base64,"
         val i = dataUrl.indexOf(startOfData)
@@ -63,7 +71,7 @@ class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Add
     suspend fun saveSession(mappingSession: MappingSession): String {
         return sendCommand(
             "saveSession",
-            json.encodeToJsonElement(MappingSession.serializer(), mappingSession)
+            mappingSessionStore.encodeToJsonElement(mappingSession)
         ).jsonPrimitive.contentOrNull ?: error("Failed to save session!")
     }
 
@@ -72,7 +80,7 @@ class WebSocketClient(plugins: Plugins, link: Network.Link, address: Network.Add
             "loadSession",
             json.encodeToJsonElement(String.serializer(), name)
         )
-        return json.decodeFromJsonElement(MappingSession.serializer(), response)
+        return mappingSessionStore.decode(response)
     }
 
     private suspend fun sendCommand(command: String, vararg args: JsonElement): JsonElement {

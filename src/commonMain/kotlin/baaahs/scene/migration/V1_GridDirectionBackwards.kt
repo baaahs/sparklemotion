@@ -1,7 +1,6 @@
-package baaahs.show.migration.scene
+package baaahs.scene.migration
 
-import baaahs.show.DataMigrator
-import baaahs.show.migration.*
+import baaahs.migrator.*
 import kotlinx.serialization.json.*
 
 /**

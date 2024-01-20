@@ -11,9 +11,9 @@ import baaahs.app.ui.appContext
 import baaahs.ui.Styles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import baaahs.util.Time
 import baaahs.util.useResizeListener
 import js.objects.jso
+import kotlinx.datetime.Instant
 import mui.material.PaletteMode
 import mui.material.styles.useTheme
 import react.Props
@@ -24,6 +24,8 @@ import react.useContext
 import web.dom.Element
 import web.timers.clearInterval
 import web.timers.setInterval
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = true) { props ->
     val appContext = useContext(appContext)
@@ -31,9 +33,9 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     val rootEl = ref<Element>()
     val aceEditor = ref<AceEditor>()
     val src = ref("")
-    val srcLastChangedAt = ref<Time>()
+    val srcLastChangedAt = ref<Instant>()
 
-    val defaultDebounceSeconds = 0f
+    val defaultDebouncePeriod = 0.seconds
 
     onMount {
         aceEditor.current?.let { props.onAceEditor(it) }
@@ -45,12 +47,12 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     }
 
     val handleChangeDebounced = callback(
-        props.document, props.debounceSeconds, props.onChange
+        props.document, props.debouncePeriod, props.onChange
     ) { value: String, _: Any ->
         props.document.content = value
 
-        val debounceSeconds = props.debounceSeconds ?: defaultDebounceSeconds
-        if (debounceSeconds <= 0) {
+        val debounceSeconds = props.debouncePeriod ?: defaultDebouncePeriod
+        if (debounceSeconds <= 0.seconds) {
             props.onChange?.invoke(value)
         } else {
             // Change will get picked up soon by [applySrcChangesDebounced].
@@ -64,9 +66,9 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     val setOptions = memo { jso<IAceOptions> { autoScrollEditorIntoView = true } }
     val editorProps = memo { jso<IEditorProps> { `$blockScrolling` = true } }
 
-    onChange("debouncer", props.onChange, props.debounceSeconds) {
+    onChange("debouncer", props.onChange, props.debouncePeriod) {
         val interval = setInterval({
-            val debounceSeconds = props.debounceSeconds ?: defaultDebounceSeconds
+            val debounceSeconds = props.debouncePeriod ?: defaultDebouncePeriod
 
             // Changed since we last passed on updates?
             srcLastChangedAt.current?.let { lastChange ->
@@ -120,7 +122,7 @@ external interface TextEditorProps : Props {
     var mode: Mode?
     var theme: Theme?
     var onAceEditor: (AceEditor) -> Unit
-    var debounceSeconds: Float?
+    var debouncePeriod: Duration?
     var onChange: ((value: String) -> Unit)?
     var onCursorChange: ((value: Any, event: Any) -> Unit)?
 }

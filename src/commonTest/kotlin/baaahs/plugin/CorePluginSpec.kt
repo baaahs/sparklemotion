@@ -13,6 +13,7 @@ import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
+import baaahs.util.asInstant
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
@@ -36,11 +37,11 @@ object CorePluginSpec : Spek({
         val programFeed by value { glFeed.bind(program) }
 
         it("should pass the time as a float, truncating high bits") {
-            clock.time = 1234567890.1234
+            clock.time = 1234567890.1234.asInstant()
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1234f)
+            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1235f)
         }
     }
 })

@@ -9,9 +9,10 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.util.Time
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.datetime.Instant
+import kotlin.time.Duration.Companion.seconds
 
 class BrainSimulator(
     val id: String,
@@ -24,7 +25,7 @@ class BrainSimulator(
 
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
-    private var lastInstructionsReceivedAt: Time? = null
+    private var lastInstructionsReceivedAt: Instant? = null
     private var modelElementName : String? = null
         set(value) { field = value; facade.notifyChanged() }
     private var pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
@@ -80,9 +81,9 @@ class BrainSimulator(
 
     private suspend fun sendHello() {
         while (keepRunning) {
-            val elapsedSinceMessage = clock.now() - (lastInstructionsReceivedAt ?: 0.0)
-            if (elapsedSinceMessage > 100) {
-                if (lastInstructionsReceivedAt != null) {
+            val elapsedSinceMessage = lastInstructionsReceivedAt?.let { clock.now() - it }
+            if (elapsedSinceMessage == null || elapsedSinceMessage > 100.seconds) {
+                if (elapsedSinceMessage != null) {
                     logger.info { "[$id] haven't heard from Pinky in ${elapsedSinceMessage}s" }
                 }
                 udpSocket.broadcastUdp(

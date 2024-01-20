@@ -16,9 +16,13 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.scene.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
-import baaahs.util.*
+import baaahs.util.Clock
+import baaahs.util.Logger
+import baaahs.util.isBefore
+import baaahs.util.unixMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -28,6 +32,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 class BrainManager(
     private val firmwareDaddy: FirmwareDaddy,
@@ -131,14 +136,14 @@ class BrainManager(
         override val defaultFixtureOptions: FixtureOptions?,
         override val defaultTransportConfig: TransportConfig?,
         private val isSimulatedBrain: Boolean,
-        private val startedAt: Time = clock.now()
+        private val startedAt: Instant = clock.now()
     ) : Controller {
         override val controllerId: ControllerId
             get() = brainId.asControllerId()
 
         var lastError: Exception? = null
             internal set
-        var lastErrorAt: Time? = null
+        var lastErrorAt: Instant? = null
             internal set
 
         override val state: ControllerState get() = State(
@@ -167,10 +172,10 @@ class BrainManager(
     data class State(
         override val title: String,
         override val address: String?,
-        override val onlineSince: Time?,
+        override val onlineSince: Instant?,
         override val firmwareVersion: String?,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Time? = null
+        override val lastErrorAt: Instant? = null
     ) : ControllerState()
 
     inner class BrainTransport(
@@ -257,14 +262,14 @@ class BrainManager(
     /** If we want a pong back from a [BrainShaderMessage], send this. */
     private fun generatePongPayload(): ByteArray {
         return ByteArrayWriter().apply {
-            writeLong(clock.now().asMillis())
+            writeLong(clock.now().unixMillis)
         }.toBytes()
     }
 
     fun receivedPing(fromAddress: Network.Address, message: PingMessage) {
         if (message.isPong) {
             val originalSentAt = ByteArrayReader(message.data).readLong()
-            val elapsedMs = clock.now().asMillis() - originalSentAt
+            val elapsedMs = clock.now().unixMillis - originalSentAt
             logger.debug { "Shader pong from $fromAddress took ${elapsedMs}ms" }
         }
     }
@@ -272,7 +277,7 @@ class BrainManager(
     companion object : ControllerManager.Meta {
         override val controllerTypeName: String = "Brain"
 
-        const val waitPeriodAfterNetworkError = 5
+        val waitPeriodAfterNetworkError = 5.seconds
 
         private const val defaultPixelCount = 2048
         override val defaultFixtureOptions = PixelArrayDevice.Options(
@@ -305,7 +310,7 @@ data class BrainInfo(
     val pixelCount: Int,
     val mappedPixelCount: Int,
     val status: Status,
-    val onlineSince: Time
+    val onlineSince: Instant
 ) {
     enum class Status {
         Online
