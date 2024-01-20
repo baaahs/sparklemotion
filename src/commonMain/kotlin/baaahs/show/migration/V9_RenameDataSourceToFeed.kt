@@ -1,6 +1,6 @@
 package baaahs.show.migration
 
-import baaahs.show.DataMigrator
+import baaahs.migrator.*
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject

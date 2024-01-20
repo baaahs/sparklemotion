@@ -1,7 +1,7 @@
 package baaahs.util
 
-import kotlin.js.Date
+import kotlinx.datetime.Instant
 
 object JsClock : Clock {
-    override fun now(): Time = Date.now() / 1000.0
+    override fun now(): Instant = kotlinx.datetime.Clock.System.now()
 }

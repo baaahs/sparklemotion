@@ -6,7 +6,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.util.Logger
-import baaahs.util.Time
+import kotlinx.datetime.Instant
 
 class SacnController(
     val id: String,
@@ -15,7 +15,7 @@ class SacnController(
     override val defaultFixtureOptions: FixtureOptions?,
     override val defaultTransportConfig: TransportConfig?,
     private val universeCount: Int,
-    private val onlineSince: Time?,
+    private val onlineSince: Instant?,
     private val universeListener: Dmx.UniverseListener? = null
 ) : Controller {
     override val controllerId: ControllerId = ControllerId(SacnManager.controllerTypeName, id)

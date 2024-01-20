@@ -21,7 +21,6 @@ import baaahs.ui.addObserver
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Stats
-import com.soywiz.klock.DateTime
 import kotlinx.coroutines.*
 import kotlin.random.Random
 
@@ -87,7 +86,7 @@ abstract class Mapper(
             // Less voltage causes less LED glitches.
             mappableBrain.shade { MapperUtil.solidColor(Color.GREEN.withBrightness(.4f)) }
         }
-        mapperBackend = MapperBackend(plugins, link, pinkyAddress, udpSockets)
+        mapperBackend = MapperBackend(plugins, clock, link, pinkyAddress, udpSockets)
 
         launch {
             mapperBackend.listSessions().forEach {
@@ -203,7 +202,7 @@ abstract class Mapper(
     inner class Session(
         scope: CoroutineScope
     ) {
-        internal val sessionStartTime = DateTime.now()
+        internal val sessionStartTime = clock.now()
         private val mappingStrategySession = mappingStrategy.beginSession(
             scope, this@Mapper, this@Session, stats, ui, brainsToMap, mapperBackend
         )
@@ -310,12 +309,13 @@ abstract class Mapper(
             // Save data.
             val mappingSession =
                 MappingSession(
-                    sessionStartTime.unixMillis,
+                    sessionStartTime,
                     surfaces,
                     null,
                     cameraPosition,
                     baseImageName,
-                    metadata
+                    metadata,
+                    savedAt = clock.now()
                 )
             val sessionName: String = mapperBackend.saveSession(mappingSession)
             onNewSession(sessionName, mappingSession)

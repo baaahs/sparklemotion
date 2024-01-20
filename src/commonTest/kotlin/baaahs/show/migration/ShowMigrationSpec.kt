@@ -1,10 +1,8 @@
-package baaahs.shows
+package baaahs.show.migration
 
 import baaahs.describe
 import baaahs.gl.testPlugins
 import baaahs.show.Show
-import baaahs.show.ShowMigrator
-import baaahs.show.migration.AllShowMigrations
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import kotlinx.serialization.json.Json

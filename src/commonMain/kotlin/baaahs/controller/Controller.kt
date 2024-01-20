@@ -3,7 +3,7 @@ package baaahs.controller
 import baaahs.dmx.DmxTransport
 import baaahs.fixtures.*
 import baaahs.model.Model
-import baaahs.util.Time
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 /** A Controller represents a physical device directly connected to one or more fixtures. */
@@ -35,7 +35,7 @@ open class NullController(
     override val defaultTransportConfig: TransportConfig? = null
 ) : Controller {
     override val state: ControllerState =
-        State("Null Controller", "N/A", 0.0)
+        State("Null Controller", "N/A", null)
     override val transportType: TransportType
         get() = DmxTransport
 
@@ -43,10 +43,10 @@ open class NullController(
     class State(
         override val title: String,
         override val address: String?,
-        override val onlineSince: Time?,
+        override val onlineSince: Instant?,
         override val firmwareVersion: String? = null,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Time? = null
+        override val lastErrorAt: Instant? = null
     ) : ControllerState()
 
     override fun createTransport(
