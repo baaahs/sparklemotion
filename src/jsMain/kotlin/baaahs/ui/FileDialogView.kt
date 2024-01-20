@@ -6,7 +6,7 @@ import baaahs.doc.FileDisplay
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.Folder
 import mui.icons.material.InsertDriveFile

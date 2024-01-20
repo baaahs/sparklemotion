@@ -15,8 +15,8 @@ import external.react_draggable.DraggableCore
 import external.react_draggable.DraggableCoreProps
 import external.react_draggable.DraggableData
 import external.react_resizable.*
-import js.core.Object
-import js.core.jso
+import js.objects.Object
+import js.objects.jso
 import org.w3c.dom.events.MouseEvent
 import react.*
 import web.dom.Element

@@ -22,7 +22,7 @@ import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import baaahs.visualizer.Rotator
 import baaahs.visualizer.toVector3
-import js.core.jso
+import js.objects.jso
 import kotlinx.coroutines.*
 import mui.icons.material.KeyboardArrowRight
 import react.RBuilder
@@ -507,8 +507,8 @@ class JsMapper(
     }
 
     private fun HTMLImageElement.resize(thumbnailDimen: Dimen) {
-        width = thumbnailDimen.width.toDouble()
-        height = thumbnailDimen.height.toDouble()
+        width = thumbnailDimen.width
+        height = thumbnailDimen.height
     }
 
     private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>): PanelInfo {

@@ -16,7 +16,7 @@ import baaahs.scene.SceneProvider
 import baaahs.ui.KeyboardShortcutHandler
 import baaahs.ui.Prompt
 import baaahs.util.Clock
-import js.core.jso
+import js.objects.jso
 import react.createContext
 
 val appContext = createContext<AppContext>(jso {})

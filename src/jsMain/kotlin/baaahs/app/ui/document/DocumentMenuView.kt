@@ -5,7 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
 import baaahs.ui.DialogMenuItem.*
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.files.FileReader

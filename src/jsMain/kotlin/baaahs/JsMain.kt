@@ -16,7 +16,7 @@ import baaahs.sm.brain.proto.Ports
 import baaahs.ui.ErrorDisplay
 import baaahs.util.*
 import baaahs.util.JsPlatform.decodeQueryParams
-import js.core.jso
+import js.objects.jso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise

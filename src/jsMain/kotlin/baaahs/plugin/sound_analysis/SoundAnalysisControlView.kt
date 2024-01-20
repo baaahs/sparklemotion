@@ -14,7 +14,7 @@ import baaahs.ui.important
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import mui.material.Card
 import react.Props

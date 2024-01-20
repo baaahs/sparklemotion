@@ -20,8 +20,8 @@ private class Bitmap(
     height: Int
 ) {
     private val image = ctx.createImageData(
-        max(width.toDouble(), 1.0),
-        max(height.toDouble(), 1.0)
+        max(width, 1),
+        max(height, 1)
     )
     private val data = image.data
 
@@ -36,7 +36,7 @@ private class Bitmap(
     }
 
     fun draw() {
-        ctx.putImageData(image, 0.0, 0.0)
+        ctx.putImageData(image, 0, 0)
     }
 
     companion object {

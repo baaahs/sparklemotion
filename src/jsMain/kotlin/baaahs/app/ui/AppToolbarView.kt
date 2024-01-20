@@ -6,7 +6,7 @@ import baaahs.app.ui.editor.ShowEditIntent
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.PointerEvents
 import kotlinx.css.opacity
 import kotlinx.css.pointerEvents

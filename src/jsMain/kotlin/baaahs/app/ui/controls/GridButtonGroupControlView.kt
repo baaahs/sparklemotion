@@ -18,7 +18,7 @@ import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import js.core.jso
+import js.objects.jso
 import mui.material.Card
 import mui.material.Menu
 import react.Props

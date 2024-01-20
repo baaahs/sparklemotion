@@ -3,7 +3,7 @@ package baaahs.mapper
 import baaahs.app.ui.appContext
 import baaahs.client.SceneEditorClient
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import react.Props

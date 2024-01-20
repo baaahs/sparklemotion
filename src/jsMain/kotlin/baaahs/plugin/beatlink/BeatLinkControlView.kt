@@ -9,7 +9,7 @@ import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.percent
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import mui.material.Card
 import react.Props

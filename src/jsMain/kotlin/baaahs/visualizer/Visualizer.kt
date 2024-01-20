@@ -8,7 +8,7 @@ import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
 import baaahs.window
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.hyphenize
 import three.js.*
 import three_ext.OrbitControls

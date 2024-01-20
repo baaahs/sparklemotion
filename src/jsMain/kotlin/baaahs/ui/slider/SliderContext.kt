@@ -1,6 +1,6 @@
 package baaahs.ui.slider
 
-import js.core.jso
+import js.objects.jso
 import react.createContext
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent

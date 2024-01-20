@@ -5,9 +5,12 @@ import baaahs.document
 import baaahs.imaging.Image
 import baaahs.imaging.VideoElementImage
 import baaahs.util.globalLaunch
-import js.core.jso
+import js.objects.jso
 import kotlinx.browser.window
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.await
+import kotlinx.coroutines.delay
 import org.w3c.dom.ImageBitmap
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.mediacapture.*

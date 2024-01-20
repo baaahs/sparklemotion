@@ -6,7 +6,7 @@ import baaahs.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import org.w3c.dom.get
-import web.buffer.atob
+import web.encoding.atob
 import kotlin.math.min
 
 actual fun <T> doRunBlocking(block: suspend () -> T): T {
