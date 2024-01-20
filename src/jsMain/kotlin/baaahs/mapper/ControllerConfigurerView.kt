@@ -9,7 +9,7 @@ import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*

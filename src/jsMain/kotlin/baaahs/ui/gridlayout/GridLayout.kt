@@ -6,7 +6,7 @@ import baaahs.app.ui.layout.dragNDropContext
 import baaahs.geom.Vector2D
 import baaahs.y
 import external.lodash.isEqual
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import kotlinx.css.Position
 import org.w3c.dom.events.Event

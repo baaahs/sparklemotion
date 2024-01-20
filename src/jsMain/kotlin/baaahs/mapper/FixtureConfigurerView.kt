@@ -5,7 +5,7 @@ import baaahs.scene.MutableScene
 import baaahs.ui.typographyH4
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.*
 import react.Props
 import react.RBuilder

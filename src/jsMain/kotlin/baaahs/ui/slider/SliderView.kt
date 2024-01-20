@@ -2,7 +2,7 @@ package baaahs.ui.slider
 
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import react.PropsWithChildren
 import react.RBuilder
 import react.RHandler
@@ -12,6 +12,7 @@ import react.dom.events.PointerEvent
 import web.dom.Element
 import web.events.EventHandler
 import web.html.HTMLElement
+import web.uievents.MouseButton
 import kotlin.math.abs
 
 /**
@@ -143,7 +144,7 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         handlesById, handlePointerMove, handlePointerUp, handleRailAndTrackClicks, props.onSlideStart,
         pointerDownOffset, slider, getEventValue
     ) { e: PointerEvent<*>, _: Location, handleId: String? ->
-        if (e.button != 0) return@handler
+        if (e.button != MouseButton.MAIN) return@handler
 
         e.stopPropagation()
 

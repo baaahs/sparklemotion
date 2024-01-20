@@ -4,7 +4,7 @@ import baaahs.app.ui.Colors
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import mui.system.sx

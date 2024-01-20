@@ -260,7 +260,7 @@ class GifImage(data: ByteArray, clock: Clock = JsClock) : Image {
         recentFrame = frameIndex
 
         return CanvasBitmap(width, height).apply {
-            canvas.get2DContext().putImageData(imageDatas[frameIndex], 0.0, 0.0)
+            canvas.get2DContext().putImageData(imageDatas[frameIndex], 0, 0)
         }
     }
 

@@ -4,7 +4,7 @@ import baaahs.app.ui.PatchHolderEditorHelpText
 import baaahs.app.ui.controls.problemBadge
 import baaahs.ui.*
 import external.ErrorBoundary
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.Props

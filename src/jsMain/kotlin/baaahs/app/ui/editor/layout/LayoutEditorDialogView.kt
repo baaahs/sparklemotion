@@ -9,7 +9,7 @@ import baaahs.show.Show
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json

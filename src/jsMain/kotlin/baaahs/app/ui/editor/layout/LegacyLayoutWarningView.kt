@@ -4,7 +4,7 @@ import baaahs.app.ui.Styles
 import baaahs.ui.typographyH6
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.NotificationImportant
 import mui.material.Box

@@ -8,7 +8,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.window
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.Props

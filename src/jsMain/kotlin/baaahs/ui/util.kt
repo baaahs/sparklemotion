@@ -2,7 +2,7 @@ package baaahs.ui
 
 import baaahs.document
 import baaahs.get2DContext
-import js.core.jso
+import js.objects.jso
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time

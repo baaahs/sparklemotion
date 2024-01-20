@@ -4,7 +4,7 @@ import baaahs.gl.preview.ShaderBuilder
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.Divider
 import mui.material.Popover
 import react.Props

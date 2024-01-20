@@ -5,7 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.doc.FileType
 import baaahs.ui.*
 import dropzone
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.FileUpload
 import mui.material.SvgIconSize

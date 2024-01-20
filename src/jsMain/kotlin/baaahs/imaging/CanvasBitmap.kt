@@ -68,10 +68,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     override fun toDataUrl(): String = canvas.toDataURL("image/webp")
 
     override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
-        val x = region.x0.toDouble()
-        val y = region.y0.toDouble()
-        val width = region.width.toDouble()
-        val height = region.height.toDouble()
+        val x = region.x0
+        val y = region.y0
+        val width = region.width
+        val height = region.height
         val imageData = ctx.getImageData(x, y, width, height)
         if (fn(JsUByteClampedArray(imageData.data))) {
             ctx.putImageData(imageData, x, y, x, y, width, height)
@@ -79,10 +79,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     }
 
     override fun withGlBuffer(region: MediaDevices.Region, fn: (data: ByteBuffer) -> Unit) {
-        val x = region.x0.toDouble()
-        val y = region.y0.toDouble()
-        val width = region.width.toDouble()
-        val height = region.height.toDouble()
+        val x = region.x0
+        val y = region.y0
+        val width = region.width
+        val height = region.height
         val imageData = ctx.getImageData(x, y, width, height)
         fn(ByteBuffer(Uint8Array(imageData.data.buffer as ArrayBuffer)))
     }

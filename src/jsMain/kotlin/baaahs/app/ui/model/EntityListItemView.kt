@@ -5,7 +5,7 @@ import baaahs.scene.MutableEntity
 import baaahs.scene.MutableEntityGroup
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.List
 import mui.material.ListItemButton
 import mui.material.ListItemText

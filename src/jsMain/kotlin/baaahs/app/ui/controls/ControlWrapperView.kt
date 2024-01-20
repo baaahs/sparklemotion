@@ -7,7 +7,7 @@ import baaahs.ui.className
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.Card
 import react.Props

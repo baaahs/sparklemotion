@@ -12,7 +12,7 @@ import baaahs.ui.Styles
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import kotlinx.datetime.Instant
 import mui.material.PaletteMode
 import mui.material.styles.useTheme
