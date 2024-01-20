@@ -2,8 +2,8 @@ package baaahs.mapping
 
 import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureMapping
+import baaahs.mapper.MappingStore
 import baaahs.mapper.SessionMappingResults
-import baaahs.mapper.Storage
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.ui.IObservable
@@ -24,7 +24,7 @@ interface MappingManager : IObservable {
 }
 
 class MappingManagerImpl(
-    private val storage: Storage,
+    private val mappingStore: MappingStore,
     private val sceneProvider: SceneProvider,
     private val coroutineScope: CoroutineScope = GlobalScope,
     private val backupMappingManager: MappingManager? = null
@@ -45,7 +45,7 @@ class MappingManagerImpl(
         if (openScene == null) {
             sessionMappingResults = null
         } else {
-            sessionMappingResults = storage.loadMappingData(openScene)
+            sessionMappingResults = mappingStore.loadMappingData(openScene)
             dataHasLoaded = true
         }
         notifyChanged()

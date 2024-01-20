@@ -105,7 +105,7 @@ class JsSimPinkyModule(
     override val Scope.pinkyMapperHandlers: PinkyMapperHandlers
         get() = object : PinkyMapperHandlers(get()) {
             override suspend fun getImageUrl(name: String): String {
-                val imageData = storage.loadImage(name)?.let { encodeBase64(it) }
+                val imageData = mappingStore.loadImage(name)?.let { encodeBase64(it) }
                 return "data:image/webp;base64,$imageData"
             }
         }

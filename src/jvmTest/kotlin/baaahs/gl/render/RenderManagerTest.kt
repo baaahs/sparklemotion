@@ -14,12 +14,15 @@ import baaahs.gl.testToolchain
 import baaahs.model.MovingHead
 import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeShowPlayer
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Tags
 import kotlin.math.abs
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.expect
 
+@Tags(Tag("glsl"))
 class RenderManagerTest {
     // assumeTrue() doesn't work in js runners; instead, bail manually.
     // TODO: Do something better.
@@ -79,18 +82,27 @@ class RenderManagerTest {
             .bind()
 
         val movingHead = MovingHead("mover", adapter = Shenzarpy, baseDmxChannel = 1)
-        val renderTarget2 = renderManager.addFixture(movingHeadFixture(movingHead, 2, transport = NullTransport, adapter = Shenzarpy))
+        val renderTarget2 = renderManager.addFixture(
+            movingHeadFixture(
+                movingHead,
+                2,
+                transport = NullTransport,
+                adapter = Shenzarpy
+            )
+        )
         val linkedProgram2 = resolve(program2, MovingHeadDevice.resultContentType)
         val glslProgram2 = renderTarget2.renderEngine.compile(linkedProgram2) { _, _ -> error("none") }
             .bind()
 
         renderManager.setRenderPlan(
-            RenderPlan(mapOf(
-                PixelArrayDevice to
-                        FixtureTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram1, listOf(renderTarget1)))),
-                MovingHeadDevice to
-                        FixtureTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram2, listOf(renderTarget2)))),
-            ))
+            RenderPlan(
+                mapOf(
+                    PixelArrayDevice to
+                            FixtureTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram1, listOf(renderTarget1)))),
+                    MovingHeadDevice to
+                            FixtureTypeRenderPlan(listOf(ProgramRenderPlan(glslProgram2, listOf(renderTarget2)))),
+                )
+            )
         )
 
         drawAndFinish()

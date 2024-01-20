@@ -3,9 +3,9 @@ package baaahs.app.ui
 import baaahs.doc.FileType
 import baaahs.plugin.Plugins
 import baaahs.scene.Scene
-import baaahs.show.SceneMigrator
+import baaahs.scene.migration.SceneMigrator
 import baaahs.show.Show
-import baaahs.show.ShowMigrator
+import baaahs.show.migration.ShowMigrator
 import baaahs.util.encodeURIComponent
 import js.objects.jso
 import kotlinx.serialization.KSerializer
@@ -47,9 +47,9 @@ actual object UiActions {
             a.download = filename
             a.href = "data:${contentType},${encodeURIComponent(docJson)}"
             a.target = WindowTarget._blank
-            baaahs.document.body!!.appendChild(a)
+            baaahs.document.body.appendChild(a)
             a.click()
-            baaahs.document.body!!.removeChild(a)
+            baaahs.document.body.removeChild(a)
         }
     }
 }

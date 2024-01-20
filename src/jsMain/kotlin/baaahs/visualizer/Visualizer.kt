@@ -7,7 +7,6 @@ import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.util.asMillis
 import baaahs.window
 import js.objects.jso
 import kotlinx.css.hyphenize
@@ -453,7 +452,7 @@ open class BaseVisualizer(
             fitCamera = false
         }
         renderer.render(realScene, camera)
-        facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
+        facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(realScene, camera) }
 

@@ -25,6 +25,7 @@ import react.useContext
 import styled.inlineStyles
 import web.dom.Element
 import web.events.Event
+import kotlin.time.Duration.Companion.seconds
 
 private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { props ->
     val appContext = useContext(appContext)
@@ -109,7 +110,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         attrs.document = glslDoc
         attrs.mode = Modes.glsl
         attrs.onAceEditor = handleAceEditor
-        attrs.debounceSeconds = 0.25f
+        attrs.debouncePeriod = 0.25.seconds
         attrs.onChange = handleSrcChange
         attrs.onCursorChange = handleCursorChange
     }

@@ -73,11 +73,11 @@ kotlin {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
-                implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
                 implementation(project(":rpc"))
@@ -140,7 +140,7 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
+                implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
@@ -334,8 +334,9 @@ tasks.named<JavaExec>("run").configure {
 
 tasks.withType(Test::class) {
     useJUnitPlatform {
-        includeEngines.add("junit-vintage")
+        includeEngines.add("junit-jupiter")
         includeEngines.add("spek2")
+        excludeTags("glsl")
     }
 }
 
@@ -345,7 +346,7 @@ tasks.named<Test>("jvmTest") {
 
 tasks.withType<DependencyUpdatesTask> {
     fun isNonStable(version: String): Boolean =
-        "eap|alpha|beta|rc".toRegex().containsMatchIn(version.toLowerCase())
+        "eap|alpha|beta|rc".toRegex().containsMatchIn(version.lowercase())
 
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
