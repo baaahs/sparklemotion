@@ -1,7 +1,6 @@
 package baaahs.gl
 
 import com.danielgergely.kgl.Kgl
-import org.khronos.webgl.WebGLRenderingContext
 import web.geometry.DOMRect
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
@@ -18,7 +17,7 @@ class SharedGlContext(
     private var subContextCount = 0
 
     init {
-        glContext.webgl.enable(WebGLRenderingContext.SCISSOR_TEST)
+        glContext.webgl.enable(glContext.webgl.SCISSOR_TEST)
         updateVisibility()
     }
 

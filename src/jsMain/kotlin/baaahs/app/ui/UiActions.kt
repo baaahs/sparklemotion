@@ -7,7 +7,7 @@ import baaahs.show.SceneMigrator
 import baaahs.show.Show
 import baaahs.show.ShowMigrator
 import baaahs.util.encodeURIComponent
-import js.core.jso
+import js.objects.jso
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.w3c.files.Blob

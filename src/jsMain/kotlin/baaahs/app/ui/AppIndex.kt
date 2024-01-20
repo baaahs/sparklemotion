@@ -21,7 +21,7 @@ import baaahs.ui.*
 import baaahs.util.JsClock
 import baaahs.window
 import external.ErrorBoundary
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.CssBaseline
 import mui.material.Paper
@@ -233,7 +233,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 if (appState is AppState.FullScreenMessage) {
                                     Paper {
-                                        attrs.classes = js.core.jso { root = -themeStyles.fullScreenMessagePaper }
+                                        attrs.classes = jso { root = -themeStyles.fullScreenMessagePaper }
                                         if (appState.isInProgress)
                                             mui.material.CircularProgress {}
                                         icon(mui.icons.material.NotificationImportant)

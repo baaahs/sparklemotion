@@ -9,7 +9,7 @@ import baaahs.ui.*
 import baaahs.ui.diagnostics.dmxDiagnostics
 import baaahs.ui.diagnostics.patchDiagnostics
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.rem
 import materialui.icon
 import mui.icons.material.Settings

@@ -5,7 +5,7 @@ import baaahs.ui.markdown
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.Alert
 import mui.material.AlertColor
 import mui.material.AlertTitle

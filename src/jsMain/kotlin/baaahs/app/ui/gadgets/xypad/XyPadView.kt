@@ -12,6 +12,7 @@ import react.*
 import react.dom.*
 import styled.inlineStyles
 import web.html.HTMLElement
+import web.uievents.MouseButton
 
 private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     val padSize = props.padSize ?: Vector2F(200f, 200f)
@@ -54,7 +55,7 @@ private val XyPadView = xComponent<XyPadProps>("XyPad") { props ->
     }
 
     val handlePointerDownEvent by pointerEventHandler(handlePointerEvent) { e ->
-        if (pointerIsDown.current == null && e.button == 0) {
+        if (pointerIsDown.current == null && e.button == MouseButton.MAIN) {
             pointerIsDown.current = e.pointerId
             e.currentTarget.setPointerCapture(e.pointerId)
 

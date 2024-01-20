@@ -14,7 +14,7 @@ import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex

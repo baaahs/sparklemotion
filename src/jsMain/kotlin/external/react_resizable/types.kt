@@ -1,6 +1,6 @@
 package external.react_resizable
 
-import js.core.jso
+import js.objects.jso
 import mui.material.SvgIcon
 import react.ReactElement
 import react.Ref

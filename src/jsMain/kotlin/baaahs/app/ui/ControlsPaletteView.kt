@@ -16,7 +16,7 @@ import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
 import external.react_resizable.buildResizeHandle
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.Paper
 import org.w3c.dom.events.MouseEvent

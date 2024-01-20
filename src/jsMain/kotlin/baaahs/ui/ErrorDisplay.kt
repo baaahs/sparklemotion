@@ -1,6 +1,6 @@
 package baaahs.ui
 
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import kotlinx.css.properties.deg
 import kotlinx.css.properties.rotate

@@ -1,6 +1,6 @@
 package three_ext
 
-import js.core.jso
+import js.objects.jso
 
 @JsModule("three")
 external val three: dynamic
