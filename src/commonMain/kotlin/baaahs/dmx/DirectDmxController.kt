@@ -11,7 +11,7 @@ import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
 import baaahs.util.Clock
-import baaahs.util.Time
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -60,10 +60,10 @@ class DirectDmxController(
     data class State(
         override val title: String,
         override val address: String?,
-        override val onlineSince: Time?,
+        override val onlineSince: Instant?,
         override val firmwareVersion: String? = null,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Time? = null
+        override val lastErrorAt: Instant? = null
     ) : ControllerState()
 
     inner class DirectDmxTransport(

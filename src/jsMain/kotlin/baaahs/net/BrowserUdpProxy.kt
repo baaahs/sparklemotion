@@ -2,9 +2,7 @@ package baaahs.net
 
 import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
-import baaahs.util.JsClock
 import baaahs.util.Logger
-import baaahs.util.asMillis
 
 internal class BrowserUdpProxy(
     link: Network.Link, address: BrowserNetwork.BrowserAddress, port: Int
@@ -29,15 +27,16 @@ internal class BrowserUdpProxy(
             ByteArrayReader(bytes).apply {
                 val op = readByte()
                 when (op) {
-                    Network.UdpProxy.RECEIVE_OP.toByte() -> {
+                    Network.UdpProxy.RECEIVE_OP.code.toByte() -> {
                         val fromAddress = UdpProxyAddress(readBytesWithSize())
                         val fromPort = readInt()
                         val data = readBytesWithSize()
-                        log("UDP: Received ${data.size} bytes ${msgId(data)} from $fromAddress:$fromPort")
+                        logger.debug { "UDP: Received ${data.size} bytes ${msgId(data)} from $fromAddress:$fromPort" }
                         udpListener!!.receive(fromAddress, fromPort, data)
                     }
+
                     else -> {
-                        log("UDP: Huh? unknown op $op: $bytes")
+                        logger.debug { "UDP: Huh? unknown op $op: $bytes" }
                     }
                 }
             }
@@ -63,8 +62,8 @@ internal class BrowserUdpProxy(
         }
 
         tcpConnectionSend(ByteArrayWriter().apply {
-            writeByte(Network.UdpProxy.LISTEN_OP.toByte())
-            log("UDP: Listen")
+            writeByte(Network.UdpProxy.LISTEN_OP.code.toByte())
+            logger.debug { "UDP: Listen" }
         }.toBytes())
 
         return UdpSocketProxy(port)
@@ -79,20 +78,20 @@ internal class BrowserUdpProxy(
             }
 
             tcpConnectionSend(ByteArrayWriter().apply {
-                writeByte(Network.UdpProxy.SEND_OP.toByte())
+                writeByte(Network.UdpProxy.SEND_OP.code.toByte())
                 writeBytesWithSize(toAddress.bytes)
                 writeInt(port)
                 writeBytesWithSize(bytes)
-                log("UDP: Sent ${bytes.size} bytes ${msgId(bytes)} to $toAddress:$port")
+                logger.debug { "UDP: Sent ${bytes.size} bytes ${msgId(bytes)} to $toAddress:$port" }
             }.toBytes())
         }
 
         override fun broadcastUdp(port: Int, bytes: ByteArray) {
             tcpConnectionSend(ByteArrayWriter().apply {
-                writeByte(Network.UdpProxy.BROADCAST_OP.toByte())
+                writeByte(Network.UdpProxy.BROADCAST_OP.code.toByte())
                 writeInt(port)
                 writeBytesWithSize(bytes)
-                log("UDP: Broadcast ${bytes.size} bytes ${msgId(bytes)} to *:$port")
+                logger.debug { "UDP: Broadcast ${bytes.size} bytes ${msgId(bytes)} to *:$port" }
             }.toBytes())
         }
 
@@ -104,10 +103,6 @@ internal class BrowserUdpProxy(
         } else {
             toSend.add(bytes)
         }
-    }
-
-    private fun log(s: String) {
-        println("[${JsClock.now().asMillis()}] $s")
     }
 
     private fun msgId(data: ByteArray): String {

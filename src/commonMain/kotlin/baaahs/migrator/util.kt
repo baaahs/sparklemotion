@@ -1,4 +1,4 @@
-package baaahs.show.migration
+package baaahs.migrator
 
 import kotlinx.serialization.json.*
 

@@ -1,7 +1,7 @@
 package baaahs.dmx
 
 import baaahs.util.Clock
-import baaahs.util.Time
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 interface Dmx {
@@ -80,7 +80,7 @@ class DmxUniverseListener(
 
     @Serializable
     class LastFrame(
-        val time: Time,
+        val time: Instant,
         val channels: ByteArray
     )
 }

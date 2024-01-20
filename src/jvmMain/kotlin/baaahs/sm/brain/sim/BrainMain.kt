@@ -1,8 +1,8 @@
 package baaahs.sm.brain.sim
 
 import baaahs.Color
+import baaahs.client.document.sceneStore
 import baaahs.io.RealFs
-import baaahs.mapper.Storage
 import baaahs.model.Model
 import baaahs.net.JvmNetwork
 import baaahs.plugin.Plugins
@@ -34,10 +34,10 @@ suspend fun main(args: Array<String>) {
 
 class BrainMain(private val args: Args) {
     fun run() = globalLaunch {
+        val plugins = Plugins.safe(Plugins.dummyContext)
         val fs = RealFs("Files", File(".").toPath())
-        val storage = Storage(fs, Plugins.safe(Plugins.dummyContext))
         val sceneFile = fs.resolve(args.scene ?: error("No scene specified."))
-        val model = storage.loadScene(sceneFile)
+        val model = plugins.sceneStore.load(sceneFile)
             ?.open()?.model
             ?: error("No such scene file: \"$sceneFile\"")
 

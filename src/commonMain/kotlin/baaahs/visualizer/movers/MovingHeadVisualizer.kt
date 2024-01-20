@@ -5,6 +5,7 @@ import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
 import baaahs.util.Clock
+import baaahs.util.asDoubleSeconds
 import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -16,11 +17,11 @@ class PhysicalModel(
 ) {
     var currentState = State()
         private set
-    private var lastUpdate = clock.now()
+    private var lastUpdate = clock.now().asDoubleSeconds
     private var momentumState = State()
 
     fun update(buffer: MovingHead.Buffer): State {
-        val now = clock.now()
+        val now = clock.now().asDoubleSeconds
         val elapsed = (now - lastUpdate).toFloat()
 
         val requestedState = State(

@@ -68,7 +68,7 @@ public class ColorTest {
     fun testWithSaturation() {
         val red = Color.from("#ff0000")
         assertEquals(red, red.withSaturation(1f))
-        assertEquals(Color.from("#ff7f7f"), red.withSaturation(.5f))
+        assertEquals(Color.from("#ff8080"), red.withSaturation(.5f))
     }
 
     @Test

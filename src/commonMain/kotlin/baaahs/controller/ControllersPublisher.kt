@@ -4,7 +4,7 @@ import baaahs.PubSub
 import baaahs.plugin.Plugins
 import baaahs.sm.webapi.Topics
 import baaahs.ui.Observable
-import baaahs.util.Time
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 class ControllersPublisher(
@@ -32,10 +32,10 @@ class ControllersPublisher(
 abstract class ControllerState : Observable() {
     abstract val title: String
     abstract val address: String?
-    abstract val onlineSince: Time?
+    abstract val onlineSince: Instant?
     abstract val firmwareVersion: String?
     abstract val lastErrorMessage: String?
-    abstract val lastErrorAt: Time?
+    abstract val lastErrorAt: Instant?
 
     open fun matches(controllerMatcher: ControllerMatcher): Boolean =
         controllerMatcher.matches(title, address)

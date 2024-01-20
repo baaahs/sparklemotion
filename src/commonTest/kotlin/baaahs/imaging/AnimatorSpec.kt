@@ -4,6 +4,7 @@ import baaahs.FakeClock
 import baaahs.describe
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import kotlinx.datetime.Instant
 import org.spekframework.spek2.Spek
 
 object AnimatorSpec : Spek({
@@ -18,7 +19,7 @@ object AnimatorSpec : Spek({
             }
 
             it("keeps track of start time") {
-                expect(animator.startedAt).toEqual(1.0)
+                expect(animator.startedAt).toEqual(Instant.fromEpochMilliseconds(1000))
             }
 
             context("#getFrameAt") {

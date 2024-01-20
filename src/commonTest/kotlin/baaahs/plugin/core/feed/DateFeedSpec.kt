@@ -17,6 +17,7 @@ import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.Kgl
+import kotlinx.datetime.Instant
 import org.spekframework.spek2.Spek
 
 object DateFeedSpec : Spek({
@@ -25,7 +26,7 @@ object DateFeedSpec : Spek({
         val builder by value { DateFeed }
         val inputPort by value { toBeSpecified<InputPort>() }
         val feed by value { builder.build(inputPort) }
-        val time by value { 1619099367.792 } // 2021-04-22 00:13:49.793 UTC
+        val time by value { Instant.fromEpochMilliseconds(1619099367792) } // 2021-04-22 00:13:49.793 UTC
         val uniform by value { FakeUniform() }
         val feedContext by value {
             val showPlayer = FakeShowPlayer().also {
@@ -53,7 +54,7 @@ object DateFeedSpec : Spek({
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
                 expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 3f, 22f, 49767.793f).toString())
+                    .toEqual(Vector4F(2021f, 3f, 22f, 35367.793f).toString())
             }
         }
 
@@ -64,11 +65,10 @@ object DateFeedSpec : Spek({
                 expect(feed).toEqual(DateFeed(zeroBasedMonth = false, zeroBasedDay = false))
             }
 
-
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
                 expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 4f, 22f, 49767.793f).toString())
+                    .toEqual(Vector4F(2021f, 4f, 22f, 35367.793f).toString())
             }
         }
     }

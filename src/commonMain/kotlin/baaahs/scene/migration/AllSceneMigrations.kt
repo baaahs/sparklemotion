@@ -1,6 +1,6 @@
-package baaahs.show.migration.scene
+package baaahs.scene.migration
 
-import baaahs.show.DataMigrator
+import baaahs.migrator.DataMigrator
 
 val AllSceneMigrations: List<DataMigrator.Migration> = listOf(
     V1_GridDirectionBackwards
