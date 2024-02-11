@@ -71,12 +71,15 @@ jobs:
               # don't ignore files starting with _
               touch build/gh-pages/.nojekyll
 
-              echo "Build ${CIRCLE_BUILD_NUM:-unknown} at `date`." > build/gh-pages/BUILT.txt
+              build=${CIRCLE_BUILD_NUM:-unknown}
+              rev=$(git rev-parse --short HEAD)
+              message=$(git log -1 --pretty=%B)
+              echo "Build $build at `date`." > build/gh-pages/BUILT.txt
 
               git config --global user.email "ci-build@baaahs.org"
               git config --global user.name "CI Builder"
 
               mkdir -p deploy/node_modules
               npm install --prefix deploy --silent gh-pages@3.0
-              `npm bin --prefix deploy`/gh-pages --dotfiles --message "Auto deploy" --dist build/gh-pages
+              `npm bin --prefix deploy`/gh-pages --dotfiles --message "Deploy $build: [$rev] $message" --dist build/gh-pages
             fi
