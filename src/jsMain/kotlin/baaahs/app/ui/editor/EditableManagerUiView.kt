@@ -10,6 +10,7 @@ import mui.base.Portal
 import mui.icons.material.Redo
 import mui.icons.material.Undo
 import mui.material.*
+import mui.system.Union
 import react.*
 import react.dom.div
 import react.dom.form
@@ -132,7 +133,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             attrs.onClose = { _, _ -> showModifiedWarning = false }
 
                             Alert {
-                                attrs.severity = AlertColor.error
+                                attrs.severity = AlertColor.error.unsafeCast<Union>()
                                 attrs.onClose = { showModifiedWarning = false }
 
                                 AlertTitle {
