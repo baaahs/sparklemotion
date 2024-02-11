@@ -31,7 +31,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
 
     Card {
         attrs.classes = jso { this.root = -styles.configCardOuter }
-//        attrs.elevation = 4 // TODO: Replace when https://github.com/JetBrains/kotlin-wrappers/issues/2175 is fixed.
+        attrs.elevation = 4
 
         betterSelect<TransportType?> {
             attrs.label = "Transport Type"
