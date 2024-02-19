@@ -4,11 +4,13 @@ import baaahs.net.Network
 import baaahs.net.listenFragmentingUdp
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
-import baaahs.util.asMillis
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.datetime.Instant
 import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class UdpSockets(
     link: Network.Link,
@@ -71,14 +73,17 @@ class UdpSockets(
             deliveryAttempt.attemptDelivery()
         }
 
-        suspend fun await(retryAfterSeconds: Double = .25, failAfterSeconds: Double = 10.0) {
+        suspend fun await(
+            retryAfter: Duration = .25.seconds,
+            failAfter: Duration = 10.0.seconds
+        ) {
             val oldMessage2 = ui.message2
 
             Mapper.logger.debug { "Waiting pongs from ${outstanding.values.map { it.mappableBrain.brainId }}..." }
 
             outstanding.values.forEach {
-                it.retryAt = it.sentAt + retryAfterSeconds
-                it.failAt = it.sentAt + failAfterSeconds
+                it.retryAt = it.sentAt + retryAfter
+                it.failAt = it.sentAt + failAfter
             }
 
             while (outstanding.isNotEmpty()) {
@@ -88,7 +93,7 @@ class UdpSockets(
                 ui.message2 = "Waiting for PONG from ${waitingFor.joinToString(",")}"
 //                logger.debug { "pongs outstanding: ${outstanding.keys.map { it.stringify() }}" }
 
-                var sleepUntil = Double.MAX_VALUE
+                var sleepUntil = Instant.DISTANT_FUTURE
 
                 val now = clock.now()
 
@@ -109,7 +114,7 @@ class UdpSockets(
                                         " retrying (attempt ${++it.retryCount})..."
                             }
                             it.attemptDelivery()
-                            it.retryAt = now + retryAfterSeconds
+                            it.retryAt = now + retryAfter
                         }
                         if (sleepUntil > it.retryAt) sleepUntil = it.retryAt
                         false
@@ -118,7 +123,7 @@ class UdpSockets(
 
                 val timeoutSec = sleepUntil - now
 //                logger.debug { "Before pongs.receive() withTimeout(${timeoutSec}s)" }
-                val pong = withTimeoutOrNull(timeoutSec.asMillis()) {
+                val pong = withTimeoutOrNull(timeoutSec.inWholeMilliseconds) {
                     pongs.receive()
                 }
 
@@ -149,8 +154,8 @@ class UdpSockets(
         private val tag = Random.nextBytes(8)
         val key get() = tag.toList()
         val sentAt = clock.now()
-        var retryAt = 0.0
-        var failAt = 0.0
+        var retryAt = Instant.DISTANT_PAST
+        var failAt = Instant.DISTANT_PAST
         var retryCount = 0
 
         fun attemptDelivery() {

@@ -7,7 +7,7 @@ import baaahs.util.useResizeListener
 import external.react_draggable.Draggable
 import external.react_draggable.DraggableBounds
 import external.react_draggable.DraggableData
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import mui.material.Button
 import react.Props
@@ -17,9 +17,10 @@ import react.dom.*
 import react.dom.events.MouseEvent
 import react.useRef
 import styled.inlineStyles
+import web.animations.requestAnimationFrame
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
-import web.timers.requestAnimationFrame
+import web.uievents.MouseButton
 import kotlin.math.min
 
 private const val pickerRadius = 12
@@ -94,7 +95,7 @@ val ColorWheelView = xComponent<ColorWheelProps>("ColorWheelView") { props ->
                 attrs.width = (radius * 2).toString()
                 attrs.height = (radius * 2).toString()
                 attrs.onMouseDown = { e ->
-                    if (e.buttons == Events.ButtonMask.primary) {
+                    if (e.button == MouseButton.MAIN) {
                         mouseDraggingState.current = true
                         updateColors(e, selectedIndex ?: 0)
                         handleColorChange()

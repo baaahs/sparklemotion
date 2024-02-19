@@ -9,7 +9,6 @@ import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditHandler
-import baaahs.sm.webapi.*
 import baaahs.ui.DialogHolder
 import baaahs.ui.confirm
 import baaahs.util.UndoStack
@@ -70,21 +69,16 @@ abstract class DocumentManager<T, TState>(
             facade.notifyChanged()
         }
 
-    private val serverCommands = object {
-        private val commands = Topics.DocumentCommands(documentType.channelName, tSerializer, SerializersModule {
+    private val serverCommands =
+        documentType.getRpcImpl(tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(plugins.serialModule)
-        })
-        val newCommand = pubSub.commandSender(commands.newCommand)
-        val switchToCommand = pubSub.commandSender(commands.switchToCommand)
-        val saveCommand = pubSub.commandSender(commands.saveCommand)
-        val saveAsCommand = pubSub.commandSender(commands.saveAsCommand)
-    }
+        }).createSender(pubSub)
 
     abstract suspend fun onNew(dialogHolder: DialogHolder)
 
     suspend fun onNew(newDocument: T? = null) {
-        serverCommands.newCommand(NewCommand(newDocument))
+        serverCommands.new(newDocument)
     }
 
     suspend fun onOpen() {
@@ -92,29 +86,29 @@ abstract class DocumentManager<T, TState>(
 
         fileDialog.open(fileType, file)
             ?.withExtension(fileType.extension)
-            ?.also { serverCommands.switchToCommand(SwitchToCommand(it)) }
+            ?.also { serverCommands.switchTo(it) }
     }
 
     suspend fun onOpen(file: Fs.File?) {
-        serverCommands.switchToCommand(SwitchToCommand(file))
+        serverCommands.switchTo(file)
     }
 
     suspend fun onSave() {
         if (file == null) {
             onSaveAs()
         } else {
-            serverCommands.saveCommand(SaveCommand())
+            serverCommands.save()
         }
     }
 
     suspend fun onSaveAs() {
         fileDialog.saveAs(fileType, file)
             ?.withExtension(fileType.extension)
-            ?.also { serverCommands.saveAsCommand(SaveAsCommand(it)) }
+            ?.also { serverCommands.saveAs(it) }
     }
 
     suspend fun onSaveAs(file: Fs.File) {
-        serverCommands.saveAsCommand(SaveAsCommand(file))
+        serverCommands.saveAs(file)
     }
     
     abstract suspend fun onDownload()
@@ -124,7 +118,7 @@ abstract class DocumentManager<T, TState>(
     suspend fun onClose() {
         confirmCloseIfUnsaved() || return
 
-        serverCommands.switchToCommand(SwitchToCommand(null))
+        serverCommands.switchTo(null)
     }
 
     protected abstract fun switchTo(documentState: DocumentState<T, TState>?, isLocalEdit: Boolean)

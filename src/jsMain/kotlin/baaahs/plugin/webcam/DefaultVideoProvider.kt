@@ -3,7 +3,7 @@ package baaahs.plugin.webcam
 import baaahs.document
 import baaahs.util.Logger
 import com.danielgergely.kgl.TextureResource
-import js.core.jso
+import js.objects.jso
 import js.promise.catch
 import org.khronos.webgl.TexImageSource
 import web.html.HTMLVideoElement
@@ -16,6 +16,7 @@ actual val DefaultVideoProvider: VideoProvider
     get() = BrowserWebCamVideoProvider
 
 object BrowserWebCamVideoProvider : VideoProvider {
+    private var isOpen = false
     private var isPlaying = false
 
     private val videoElement = (document.createElement("video") as HTMLVideoElement).apply {
@@ -28,10 +29,6 @@ object BrowserWebCamVideoProvider : VideoProvider {
     }
 
     private val logger = Logger<BrowserWebCamVideoProvider>()
-
-    init {
-        startCamera()
-    }
 
     private fun startCamera() {
         logger.info { "Initializing." }
@@ -60,9 +57,18 @@ object BrowserWebCamVideoProvider : VideoProvider {
     }
 
     override fun isReady(): Boolean = isPlaying
+        .also { ensureOpen() }
 
     override fun getTextureResource(): TextureResource {
+        ensureOpen()
         return TextureResource(videoElement.unsafeCast<TexImageSource>())
+    }
+
+    private fun ensureOpen() {
+        if (!isOpen) {
+            isOpen = true
+            startCamera()
+        }
     }
 
     private val Window.isSecureContext: Boolean

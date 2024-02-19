@@ -3,6 +3,7 @@ package baaahs.plugin.sound_analysis
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
+import baaahs.util.asDoubleSeconds
 import be.tarsos.dsp.AudioDispatcher
 import be.tarsos.dsp.AudioEvent
 import be.tarsos.dsp.AudioProcessor
@@ -37,7 +38,7 @@ class AnalyzerStream(
 
         dispatcher.addAudioProcessor(object : AudioProcessor {
             override fun process(audioEvent: AudioEvent): Boolean {
-                val time = clock.now()
+                val time = clock.now().asDoubleSeconds
                 constantQ.process(audioEvent)
                 val magnitudes = constantQ.magnitudes.copyOf()
                 onProcess(magnitudes, time)

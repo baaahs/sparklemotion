@@ -10,6 +10,7 @@ import baaahs.plugin.core.CorePlugin
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.FeedOpenContext
+import baaahs.util.asDoubleSeconds
 import baaahs.util.makeSafeForGlsl
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -36,6 +37,6 @@ data class TimeFeed(@Transient val `_`: Boolean = true) : Feed {
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val clock = feedOpenContext.clock
-        return singleUniformFeedContext<Float>(id) { clock.now().makeSafeForGlsl() }
+        return singleUniformFeedContext<Float>(id) { clock.now().asDoubleSeconds.makeSafeForGlsl() }
     }
 }

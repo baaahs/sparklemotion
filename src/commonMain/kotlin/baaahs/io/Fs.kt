@@ -52,7 +52,8 @@ interface Fs {
 
         suspend fun listFiles(): List<File> = fs.listFiles(this)
         suspend fun read(): String? = fs.loadFile(this)
-        suspend fun write(content: String, allowOverwrite: Boolean) = fs.saveFile(this, content, allowOverwrite)
+        suspend fun write(content: ByteArray, allowOverwrite: Boolean = false) = fs.saveFile(this, content, allowOverwrite)
+        suspend fun write(content: String, allowOverwrite: Boolean = false) = fs.saveFile(this, content, allowOverwrite)
         suspend fun exists(): Boolean = fs.exists(this)
         suspend fun isDir(): Boolean = fs.isDirectory(this)
         suspend fun renameTo(toFile: File) = fs.renameFile(this, toFile)
@@ -66,11 +67,11 @@ interface Fs {
             }
         }
 
-        fun resolve(relPath: String, isDirectory: Boolean? = null): File =
+        fun resolve(vararg relPath: String, isDirectory: Boolean? = null): File =
             if (isRoot) {
-                File(fs, relPath, isDirectory)
+                File(fs, relPath.joinToString("/"), isDirectory)
             } else {
-                File(fs, "${fullPath}/$relPath", isDirectory)
+                File(fs, "${fullPath}/${relPath.joinToString("/")}", isDirectory)
             }
 
         fun relativeTo(relPath: File): String =

@@ -9,8 +9,10 @@ import baaahs.doc.ShowDocumentType
 import baaahs.gl.Toolchain
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
-import baaahs.mapper.Storage
-import baaahs.show.*
+import baaahs.show.SampleData
+import baaahs.show.Show
+import baaahs.show.ShowMonitor
+import baaahs.show.ShowState
 import baaahs.show.live.OpenShow
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.webapi.Problem
@@ -76,7 +78,7 @@ class ShowManager(
 
     private suspend fun fromResources(fileName: String): Show {
         val file = resourcesFs.resolve("templates", "shows", fileName)
-        return Storage(resourcesFs, toolchain.plugins).loadShow(file)
+        return toolchain.plugins.showStore.load(file)
             ?.copy(title = "New ${documentType.title}")
             ?: error("Couldn't find show")
     }
@@ -86,7 +88,7 @@ class ShowManager(
     }
 
     override suspend fun onUpload(name: String, content: String) {
-        val show = toolchain.plugins.json.decodeFromString(ShowMigrator, content)
+        val show = toolchain.plugins.showStore.decode(content)
         onNew(show)
     }
 
@@ -119,10 +121,6 @@ class ShowManager(
 
         override fun onEdit(document: Show, pushToUndoStack: Boolean) {
             onEdit(document, openShow!!.getShowState(), pushToUndoStack)
-        }
-
-        fun onShowStateChange() {
-            notifyChanged()
         }
     }
 }

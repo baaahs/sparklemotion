@@ -76,6 +76,11 @@ object Styles : StyleSheet("ui", isStatic = true) {
         border = Border(1.px, groove)
     }
 
+    val help by css {
+    }
+    val helpAutoClose by css {
+    }
+
     val helpInline by css {
         display = Display.inline
         padding = Padding(0.em, .5.em)

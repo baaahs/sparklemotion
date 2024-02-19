@@ -8,7 +8,7 @@ import baaahs.scene.MutableFixtureOptions
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -30,7 +30,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
     Card {
         attrs.classes = jso { this.root = -styles.configCardOuter }
-        attrs.elevation = 4
+//        attrs.elevation = 4 // TODO: Replace when https://github.com/JetBrains/kotlin-wrappers/issues/2175 is fixed.
 
         betterSelect<FixtureType?> {
             attrs.label = "Fixture Type"

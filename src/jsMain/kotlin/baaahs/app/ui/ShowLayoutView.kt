@@ -14,7 +14,7 @@ import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableLayout
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.FlexBasis
 import kotlinx.css.Position
 import kotlinx.css.flex
@@ -85,7 +85,6 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
                     gridTabLayout {
                         attrs.tab = currentTab
                         attrs.tabEditor = tabEditor
-                        attrs.onShowStateChange = props.onShowStateChange
                     }
                 null -> { +"No tabs?" }
             }
@@ -121,7 +120,6 @@ external interface ShowLayoutProps : Props {
     var show: OpenShow
     var layout: OpenLayout
     var layoutEditor: Editor<MutableLayout>
-    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.showLayout(handler: RHandler<ShowLayoutProps>) =

@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.get
-import web.timers.requestAnimationFrame
+import web.animations.requestAnimationFrame
 
 class ClientPreview(
     model: Model,

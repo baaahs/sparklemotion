@@ -37,6 +37,7 @@ class VizPixels(
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
+        name = "VizPixels"
         side = if (bothSides) DoubleSide else FrontSide
         transparent = true
         blending = AdditiveBlending

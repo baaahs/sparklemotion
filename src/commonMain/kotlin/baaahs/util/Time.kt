@@ -1,28 +1,41 @@
 package baaahs.util
 
 import baaahs.internalTimerClock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 typealias Time = Double
-fun Interval(n: Number): Time = n.toDouble()
 
-fun Time.elapsedMs() = ((internalTimerClock.now() - this) * 10000).roundToInt() / 10.0
+/** Formats elapsed time as in 123.4ms. */
+fun Instant.elapsedMs() = ((internalTimerClock.now() - this).inWholeMicroseconds / 100)
+        .toDouble() / 10
 
 /** Truncate time to 4 digits of seconds so we don't overflow a GLSL float. */
 fun Time.makeSafeForGlsl() = (this % 10000.0).toFloat()
 
-fun Time.isBefore(otherTime: Time) = this < otherTime
+fun Instant.isBefore(otherTime: Instant) = this < otherTime
 
 interface Clock {
-    fun now(): Time
+    fun now(): Instant
+    fun tz(): TimeZone = TimeZone.currentSystemDefault()
 }
+
+fun Time.asInstant(): Instant =
+    Instant.fromEpochSeconds(
+        this.toLong(),
+        (this % 1.0 * 1_000_000_000).toInt()
+    )
 
 fun Time.asMillis(): Long = (this * 1000).roundToLong()
 fun Float.asMillis(): Int = (this * 1000).roundToInt()
 
-fun Time.toHHMMSS(): String {
-    val seconds = this.toInt()
+fun Duration.toHHMMSS(): String {
+    val seconds = this.toDouble(DurationUnit.SECONDS)
     val hours = seconds / 3600
     val minutes = seconds / 60 % 60
     val secs = seconds % 60
@@ -37,3 +50,8 @@ fun Time.toHHMMSS(): String {
 
     }
 }
+
+val Instant.unixMillis: Long get() = toEpochMilliseconds()
+val Instant.asDoubleSeconds: Time get() = epochSeconds + (nanosecondsOfSecond / 1_000_000_000.0)
+
+val Float.seconds: Duration get() = this.toDouble().seconds

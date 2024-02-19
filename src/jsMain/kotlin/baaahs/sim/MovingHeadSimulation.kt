@@ -10,20 +10,22 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.ItemVisualizer
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
-actual class MovingHeadSimulation actual constructor(
+class MovingHeadSimulation(
     private val movingHead: MovingHead,
     private val adapter: EntityAdapter
 ) : FixtureSimulation {
     override val mappingData: MappingSession.SurfaceData?
         get() = null
 
-    override val itemVisualizer: MovingHeadVisualizer by lazy {
+    override val itemVisualizer: ItemVisualizer<*> get() = visualizer
+    private val visualizer: MovingHeadVisualizer by lazy {
         MovingHeadVisualizer(movingHead, adapter)
     }
 
-    override val previewFixture: Fixture by lazy {
+    override val previewFixture: Fixture? by lazy {
         Fixture(
             movingHead, 1, movingHead.name, PreviewTransport(), MovingHeadDevice,
             MovingHeadDevice.Config(movingHead.adapter)
@@ -38,7 +40,7 @@ actual class MovingHeadSimulation actual constructor(
 
         init {
             dmxUniverse.listen {
-                itemVisualizer.receivedUpdate(adapterBuffer)
+                visualizer.receivedUpdate(adapterBuffer)
             }
         }
 

@@ -359,7 +359,10 @@ object EditingShaderSpec : Spek({
             override(otherShaderInShow) { null }
             override(getShaderBuilder) {
                 { shader: Shader ->
-                    PreviewShaderBuilder(shader, toolchain, SceneMonitor(OpenScene(TestModel)), CoroutineScope(dispatcher))
+                    PreviewShaderBuilder(
+                        shader, toolchain, SceneMonitor(OpenScene(TestModel)),
+                        coroutineScope = CoroutineScope(dispatcher)
+                    )
                 }
             }
             val gl by value { FakeGlContext() }

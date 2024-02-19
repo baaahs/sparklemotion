@@ -1,8 +1,8 @@
 package baaahs.imaging
 
-import baaahs.context2d
 import baaahs.decodeBase64
 import baaahs.document
+import baaahs.get2DContext
 import baaahs.util.Clock
 import baaahs.util.JsClock
 import external.gifuct.ParsedFrameDims
@@ -11,20 +11,20 @@ import external.gifuct.parseGIF
 import js.typedarrays.Uint8Array
 import js.typedarrays.Uint8ClampedArray
 import kotlinx.coroutines.await
-import org.khronos.webgl.WebGLRenderingContext
 import org.khronos.webgl.get
 import web.canvas.CanvasRenderingContext2D
 import web.canvas.ImageBitmap
-import web.canvas.ImageBitmapSource
 import web.canvas.ImageData
+import web.gl.WebGLRenderingContext
 import web.html.HTMLCanvasElement
+import web.html.HTMLImageElement
 import web.html.HTMLVideoElement
 
 actual fun imageFromDataUrl(dataUrl: String): Image {
     return if (dataUrl.looksLikeGif()) {
         GifImage(decodeBase64(dataUrl.substringAfter(",")))
     } else {
-        val image = org.w3c.dom.Image()
+        val image = web.html.Image()
         image.src = dataUrl
         return DomImage(image)
     }
@@ -49,11 +49,11 @@ abstract class JsImage : Image {
     )
 }
 
-class DomImage(val image: org.w3c.dom.Image) : JsImage() {
+class DomImage(val image: web.html.Image) : JsImage() {
     override val width: Int
-        get() = image.width
+        get() = image.width.toInt()
     override val height: Int
-        get() = image.height
+        get() = image.height.toInt()
 
     override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
         ctx.drawImage(image, x.toDouble(), y.toDouble())
@@ -87,18 +87,20 @@ class DomImage(val image: org.w3c.dom.Image) : JsImage() {
 
 class WebGlImage(private val webGlContext: WebGLRenderingContext) : JsImage() {
     override val width: Int
-        get() = webGlContext.drawingBufferWidth
+        get() = webGlContext.drawingBufferWidth.toInt()
     override val height: Int
-        get() = webGlContext.drawingBufferHeight
+        get() = webGlContext.drawingBufferHeight.toInt()
+    private val canvas: HTMLCanvasElement
+        get() = webGlContext.canvas as HTMLCanvasElement
 
     override fun toBitmap(): Bitmap {
         val newCanvas = createCanvas(width, height)
-        newCanvas.context2d().drawImage(webGlContext.canvas, 0.0, 0.0)
+        newCanvas.get2DContext().drawImage(canvas, 0.0, 0.0)
         return CanvasBitmap(newCanvas)
     }
 
     override fun draw(ctx: CanvasRenderingContext2D, x: Int, y: Int) {
-        ctx.drawImage(webGlContext.canvas, x.toDouble(), y.toDouble())
+        ctx.drawImage(canvas, x.toDouble(), y.toDouble())
     }
 
     override fun draw(
@@ -107,7 +109,7 @@ class WebGlImage(private val webGlContext: WebGLRenderingContext) : JsImage() {
         dX: Int, dY: Int, dWidth: Int, dHeight: Int
     ) {
         ctx.drawImage(
-            webGlContext.canvas,
+            canvas,
             sX.toDouble(), sY.toDouble(), sWidth.toDouble(), sHeight.toDouble(),
             dX.toDouble(), dY.toDouble(), dWidth.toDouble(), dHeight.toDouble()
         )
@@ -141,7 +143,7 @@ class ImageBitmapImage(private val imageBitmap: ImageBitmap) : JsImage() {
     }
 
     companion object {
-        suspend fun fromImg(image: ImageBitmapSource) =
+        suspend fun fromImg(image: HTMLImageElement) =
             ImageBitmapImage(
                 kotlinx.browser.window.createImageBitmap(
                     image.unsafeCast<org.w3c.dom.ImageBitmapSource>()
@@ -258,7 +260,7 @@ class GifImage(data: ByteArray, clock: Clock = JsClock) : Image {
         recentFrame = frameIndex
 
         return CanvasBitmap(width, height).apply {
-            canvas.context2d().putImageData(imageDatas[frameIndex], 0.0, 0.0)
+            canvas.get2DContext().putImageData(imageDatas[frameIndex], 0, 0)
         }
     }
 

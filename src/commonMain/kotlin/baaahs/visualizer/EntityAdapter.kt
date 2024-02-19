@@ -8,6 +8,7 @@ expect class EntityAdapter(
     units: ModelUnit,
     isEditing: Boolean = false
 ) : Adapter<Model.Entity> {
+    override fun createVisualizer(entity: Model.Entity): ItemVisualizer<Model.Entity>
     fun createEntityGroupVisualizer(objGroup: Model.EntityGroup): ItemVisualizer<Model.EntityGroup>
     fun createLightBarVisualizer(lightBar: LightBar): ItemVisualizer<LightBar>
     fun createLightRingVisualizer(lightRing: LightRing): ItemVisualizer<LightRing>

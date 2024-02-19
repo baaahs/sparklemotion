@@ -8,7 +8,7 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import js.core.jso
+import js.objects.jso
 import mui.material.ToggleButton
 import react.Props
 import react.RBuilder
@@ -23,28 +23,25 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val appContext = useContext(appContext)
 
     val buttonControl = props.buttonControl
-    val onShowStateChange = props.controlProps.onShowStateChange
+    observe(buttonControl.switch.observable)
+
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
-    val handleToggleClick by eventHandler(props.buttonControl, onShowStateChange) {
+    val handleToggleClick by eventHandler(props.buttonControl) {
         buttonControl.click()
-        onShowStateChange()
     }
 
-    val handleMomentaryPress by eventHandler(props.buttonControl, onShowStateChange) {
+    val handleMomentaryPress by eventHandler(props.buttonControl) {
         if (!buttonControl.isPressed) buttonControl.click()
-        onShowStateChange()
     }
 
-    val handleMomentaryRelease by eventHandler(props.buttonControl, onShowStateChange) {
+    val handleMomentaryRelease by eventHandler(props.buttonControl) {
         if (buttonControl.isPressed) buttonControl.click()
-        onShowStateChange()
     }
 
-    val handlePatchModSwitch by handler(props.buttonControl, onShowStateChange) {
+    val handlePatchModSwitch by handler(props.buttonControl) {
         buttonControl.click()
-        onShowStateChange()
     }
 
     val buttonRef = ref<HTMLButtonElement>()

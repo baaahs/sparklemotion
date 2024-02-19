@@ -1,7 +1,7 @@
 package baaahs.imaging
 
 import baaahs.MediaDevices
-import baaahs.context2d
+import baaahs.get2DContext
 import com.danielgergely.kgl.ByteBuffer
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
@@ -15,7 +15,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     override val width = canvas.width
     override val height = canvas.height
 
-    internal val ctx = canvas.context2d()
+    internal val ctx = canvas.get2DContext()
 
     override fun drawImage(image: Image) {
         (image as JsImage).draw(ctx, 0, 0)
@@ -68,10 +68,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     override fun toDataUrl(): String = canvas.toDataURL("image/webp")
 
     override fun withData(region: MediaDevices.Region, fn: (data: UByteClampedArray) -> Boolean) {
-        val x = region.x0.toDouble()
-        val y = region.y0.toDouble()
-        val width = region.width.toDouble()
-        val height = region.height.toDouble()
+        val x = region.x0
+        val y = region.y0
+        val width = region.width
+        val height = region.height
         val imageData = ctx.getImageData(x, y, width, height)
         if (fn(JsUByteClampedArray(imageData.data))) {
             ctx.putImageData(imageData, x, y, x, y, width, height)
@@ -79,10 +79,10 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
     }
 
     override fun withGlBuffer(region: MediaDevices.Region, fn: (data: ByteBuffer) -> Unit) {
-        val x = region.x0.toDouble()
-        val y = region.y0.toDouble()
-        val width = region.width.toDouble()
-        val height = region.height.toDouble()
+        val x = region.x0
+        val y = region.y0
+        val width = region.width
+        val height = region.height
         val imageData = ctx.getImageData(x, y, width, height)
         fn(ByteBuffer(Uint8Array(imageData.data.buffer as ArrayBuffer)))
     }
@@ -113,7 +113,7 @@ open class CanvasBitmap(internal val canvas: HTMLCanvasElement) : Bitmap {
 
     override fun clone(): Bitmap {
         val newCanvas = createCanvas(canvas.width, canvas.height)
-        val ctx = newCanvas.context2d()
+        val ctx = newCanvas.get2DContext()
         ctx.drawImage(canvas, 0.0, 0.0)
         return CanvasBitmap(newCanvas)
     }

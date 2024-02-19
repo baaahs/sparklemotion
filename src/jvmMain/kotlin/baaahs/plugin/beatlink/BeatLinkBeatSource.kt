@@ -4,6 +4,7 @@ import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
+import baaahs.util.asDoubleSeconds
 import org.deepsymmetry.beatlink.*
 import org.deepsymmetry.beatlink.data.*
 import org.jetbrains.annotations.VisibleForTesting
@@ -153,7 +154,7 @@ class BeatLinkBeatSource(
         lastBeatAt?.let { lastBeatAt ->
             val nextBeatExpectedAt = lastBeatAt + currentBeat.beatIntervalMs / 1000.0 * currentBeat.beatsPerMeasure
 
-            if (clock.now() > nextBeatExpectedAt) {
+            if (clock.now().asDoubleSeconds > nextBeatExpectedAt) {
                 currentBeat = currentBeat.copy(confidence = currentBeat.confidence * .99f)
 
                 // TODO: This is pretty MT-dodgy, refactor all this to use coroutines.
@@ -208,7 +209,7 @@ class BeatLinkBeatSource(
         ) {
             val beatIntervalSec = 60.0 / beat.effectiveTempo
             val beatIntervalMs = (beatIntervalSec * 1000).toInt()
-            val now = clock.now()
+            val now = clock.now().asDoubleSeconds
             val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
             if (currentBeat.beatIntervalMs != beatIntervalMs ||
                 abs(currentBeat.measureStartTime - measureStartTime) > 0.003

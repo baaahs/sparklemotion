@@ -1,26 +1,35 @@
 package baaahs.ui
 
-import baaahs.app.ui.appContext
+import kotlinx.css.LinearDimension
+import kotlinx.css.fontSize
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
+import styled.inlineStyles
+import web.html.HTMLElement
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
-    val styles = useContext(appContext).allStyles.appUi
-
     var open by state { false }
 
     val toggleHelp = callback { open = !open }
     val closeHelp = callback { _: Event, _: String -> open = false }
 
-    div("${styles.help.name} ${props.divClass}") {
+    div("${Styles.help.name} ${props.divClass ?: ""}") {
+        props.iconSize?.let { iconSize ->
+            inlineStyles { fontSize = iconSize }
+        }
+
         Link {
             attrs.onClick = toggleHelp.withMouseEvent()
-            icon(mui.icons.material.HelpOutline)
+            icon(mui.icons.material.HelpOutline) {
+                if (props.iconSize != null) {
+                    fontSize = SvgIconSize.inherit
+                }
+            }
         }
     }
 
@@ -34,6 +43,12 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
             }
 
             DialogContent {
+                attrs.onClick = {
+                    val classList = (it.target as? HTMLElement)?.classList
+                    if (classList?.contains(Styles.helpAutoClose.name) == true) {
+                        open = false
+                    }
+                }
                 props.children?.forEach { child(it) }
             }
         }
@@ -49,6 +64,7 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
 }
 
 external interface HelpProps : Props {
+    var iconSize: LinearDimension?
     var divClass: String?
     var children: Array<ReactElement<*>>?
 }

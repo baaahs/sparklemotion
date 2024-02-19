@@ -9,7 +9,7 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.*
 import react.*
 import react.dom.div
@@ -87,7 +87,7 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                     if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
                             attrs.classes = jso { root = -Styles.controlBox }
-                            with(control.getView(ControlProps({}, null, null, null))) {
+                            with(control.getView(ControlProps(null, null, null))) {
                                 render()
                             }
                         }

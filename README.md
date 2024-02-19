@@ -2,6 +2,8 @@
 
 [![CircleCI:main](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
+[Discord](https://discord.gg/gj4STNUQ) | [Demo](https://baaahs.github.io/sparklemotion)
+
 Sparkle Motion is the system used to control the lights on [BAAAHS](http://baaahs.org), but it's
 designed so it could be applied to pretty much any lighting project. It includes a browser-based
 light show designer and performance interface, 3D light mapping, IP-based control protocol, and

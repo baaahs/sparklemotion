@@ -14,7 +14,7 @@ import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.VizPixels
 import baaahs.visualizer.toVector3
 
-actual abstract class PixelArraySimulation actual constructor(
+abstract class PixelArraySimulation(
     val pixelArray: PixelArray,
     adapter: EntityAdapter
 ) : FixtureSimulation {
@@ -31,7 +31,7 @@ actual abstract class PixelArraySimulation actual constructor(
         )
     }
 
-    override val mappingData: MappingSession.SurfaceData
+    override val mappingData: MappingSession.SurfaceData?
         get() = MappingSession.SurfaceData(
             SacnManager.controllerTypeName,
             "wled-X${pixelArray.name}X",
@@ -46,7 +46,7 @@ actual abstract class PixelArraySimulation actual constructor(
         wledsSimulator.createFakeWledDevice(pixelArray.name, vizPixels)
     }
 
-    override val previewFixture: Fixture by lazy {
+    override val previewFixture: Fixture? by lazy {
         Fixture(
             pixelArray,
             pixelLocations.size,

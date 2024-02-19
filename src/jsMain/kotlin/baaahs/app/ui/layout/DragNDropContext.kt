@@ -3,7 +3,7 @@ package baaahs.app.ui.layout
 import baaahs.ui.Observable
 import baaahs.ui.gridlayout.GridLayoutState
 import baaahs.util.Logger
-import js.core.jso
+import js.objects.jso
 import react.createContext
 
 val dragNDropContext = createContext<DragNDropContext>(jso { })
@@ -21,6 +21,7 @@ class GridLayoutContext : Observable() {
             field = value
             notifyChanged()
         }
+    var draggingDisabled = false
 
     init {
         console.log("new GridLayoutContext id $id.")

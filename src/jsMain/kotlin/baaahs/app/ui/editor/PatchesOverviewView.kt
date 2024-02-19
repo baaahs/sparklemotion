@@ -12,7 +12,7 @@ import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.icons.material.AddCircleOutline
 import mui.icons.material.CloudDownload

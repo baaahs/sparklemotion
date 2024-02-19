@@ -18,7 +18,7 @@ import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import js.core.jso
+import js.objects.jso
 import mui.material.Card
 import mui.material.Menu
 import react.Props
@@ -37,7 +37,6 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     val editMode = observe(appContext.showManager.editMode)
 
     val buttonGroupControl = props.buttonGroupControl
-    val onShowStateChange = props.controlProps.onShowStateChange
 
     var layoutDimens by state<Pair<Int, Int>?> { null }
     val gridLayout = props.controlProps.layout
@@ -71,13 +70,17 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     }
 
     var showAddMenu by state<AddMenuContext?> { null }
-    val closeAddMenu by handler { showAddMenu = null }
+    val closeAddMenu by handler {
+        showAddMenu = null
+        appContext.gridLayoutContext.draggingDisabled = false
+    }
 
     var draggingItem by state<String?> { null }
     val layoutGrid = memo(columns, rows, gridLayout, draggingItem) {
         LayoutGrid(columns, rows, gridLayout.items, draggingItem)
     }
 
+    // Don't bubble event up to container grid.
     val handleEmptyGridCellMouseDown by eventHandler { e ->
         e.stopPropagation()
     }
@@ -88,6 +91,10 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
         val x = (dataset.cellX as String).toInt()
         val y = (dataset.cellY as String).toInt()
         showAddMenu = AddMenuContext(target, x, y, 1, 1)
+
+        // Ignore dragstart events in GridItem while a menu is visible.
+        appContext.gridLayoutContext.draggingDisabled = true
+        e.stopPropagation()
     }
 
     val layout = Layout(gridLayout.items.map { gridItem ->
@@ -106,7 +113,6 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
                 gridLayout.items.forEachIndexed { index, it ->
                     (it.control as? OpenButtonControl)?.isPressed = index == clickedItemIndex
                 }
-                onShowStateChange()
                 e.stopPropagation()
             }
         }

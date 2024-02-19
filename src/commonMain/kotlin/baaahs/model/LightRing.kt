@@ -7,7 +7,7 @@ import baaahs.geom.Vector3F
 import baaahs.geom.boundingBox
 import baaahs.model.WtfMaths.cross
 import baaahs.sim.FixtureSimulation
-import baaahs.sim.LightRingSimulation
+import baaahs.sim.simulations
 import baaahs.visualizer.EntityAdapter
 import kotlinx.serialization.Transient
 import kotlin.math.PI
@@ -57,7 +57,7 @@ class LightRing(
     }
 
     override fun createFixtureSimulation(adapter: EntityAdapter): FixtureSimulation =
-        LightRingSimulation(this, adapter)
+        simulations.forLightRing(this, adapter)
 
     override fun createVisualizer(adapter: EntityAdapter) =
         adapter.createLightRingVisualizer(this)

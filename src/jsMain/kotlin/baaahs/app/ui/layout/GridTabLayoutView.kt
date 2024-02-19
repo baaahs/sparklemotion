@@ -22,10 +22,10 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import baaahs.unknown
 import baaahs.util.useResizeListener
-import external.mui.Portal
 import external.react_resizable.buildResizeHandle
 import kotlinx.css.*
 import materialui.icon
+import mui.base.Portal
 import mui.material.*
 import react.*
 import react.dom.div
@@ -101,8 +101,8 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
             .also { withCleanup { it.release() } }
     }
 
-    val genericControlProps = memo(props.onShowStateChange, controlDisplay) {
-        ControlProps(props.onShowStateChange, controlDisplay)
+    val genericControlProps = memo(controlDisplay) {
+        ControlProps(controlDisplay)
     }
 
 
@@ -224,7 +224,7 @@ class AddMenuContext(
         gridLayoutEditor: Editor<MutableIGridLayout>,
         addControlMenuItem: AddControlMenuItem,
         appContext: AppContext,
-        showAddMenu: () -> Unit,
+        closeAddMenu: () -> Unit,
     ) {
         MenuItem {
             attrs.onClick = {
@@ -235,7 +235,7 @@ class AddMenuContext(
                     addControlMenuItem.createControlFn
                 )
                 appContext.openEditor(editIntent)
-                showAddMenu()
+                closeAddMenu()
             }
 
             ListItemIcon { icon(addControlMenuItem.icon) }
@@ -254,7 +254,6 @@ external interface GridTabLayoutProps : Props {
     var tab: OpenIGridLayout
     var controlProps: ControlProps
     var tabEditor: Editor<MutableIGridLayout>
-    var onShowStateChange: () -> Unit
 }
 
 fun RBuilder.gridTabLayout(handler: RHandler<GridTabLayoutProps>) =

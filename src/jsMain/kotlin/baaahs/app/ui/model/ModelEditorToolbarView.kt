@@ -9,7 +9,7 @@ import baaahs.util.CacheBuilder
 import baaahs.visualizer.ModelVisualEditor
 import baaahs.visualizer.TransformMode
 import external.react_draggable.Draggable
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.events.Event

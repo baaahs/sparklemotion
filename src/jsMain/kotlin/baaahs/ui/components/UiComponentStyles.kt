@@ -76,7 +76,7 @@ class UiComponentStyles(val theme: Theme) : StyleSheet("app-ui-components", isSt
             declarations["counterReset"] = "listing"
         }
 
-        code {
+        "code" {
             display = Display.block
             declarations["counterIncrement"] = "listing"
             whiteSpace = WhiteSpace.pre

@@ -11,6 +11,8 @@ interface IObservable {
 open class Observable : IObservable {
     private val observers = mutableListOf<Observer>()
 
+    protected fun anyObservers(): Boolean = observers.isNotEmpty()
+
     override fun addObserver(observer: Observer): Observer {
         observers.add(observer)
         return observer
@@ -27,6 +29,10 @@ open class Observable : IObservable {
     protected fun <V> notifyOnChange(initialValue: V): ReadWriteProperty<Observable, V> {
         return NotifyOnChangeProperty<V>(initialValue)
     }
+}
+
+class ObservableValue<T: Any?>(initialValue: T) : Observable() {
+    var value: T by notifyOnChange<T>(initialValue)
 }
 
 fun <T : IObservable> T.addObserver(fireImmediately: Boolean = false, callback: (T) -> Unit): RemovableObserver<T> {

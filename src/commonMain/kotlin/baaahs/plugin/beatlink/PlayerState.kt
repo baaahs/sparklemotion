@@ -1,8 +1,11 @@
 package baaahs.plugin.beatlink
 
-import baaahs.util.Time
+import baaahs.util.seconds
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 data class PlayerState(
@@ -11,7 +14,7 @@ data class PlayerState(
     /** Each sample is 8 hex bytes: HHRRGGBB where 'H' is height. */
     private val encodedWaveform: String? = null,
     private val waveformScale: Int? = null,
-    val trackStartTime: Time? = null,
+    val trackStartTime: Instant? = null,
     val mode: String? = null,
     val isOnAir: Boolean? = null
 ) {
@@ -19,8 +22,8 @@ data class PlayerState(
         Waveform(encodedWaveform, waveformScale)
     } else null
 
-    val trackEndTime: Time? get() = waveform?.totalTime?.let { trackTime ->
-        if (trackStartTime != null) trackStartTime + trackTime else null
+    val trackEndTime: Instant? get() = waveform?.totalTimeInSeconds?.let { totalTimeInSeconds ->
+        if (trackStartTime != null) trackStartTime + totalTimeInSeconds.seconds else null
     }
 
     fun trackId() = listOfNotNull(trackTitle, trackArtist).joinToString(" – ")

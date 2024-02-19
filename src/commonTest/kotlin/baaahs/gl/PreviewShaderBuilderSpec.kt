@@ -30,7 +30,10 @@ object PreviewShaderBuilderSpec : Spek({
         val shader by value { Shaders.checkerboard }
         val dispatcher by value { TestCoroutineDispatcher() }
         val previewShaderBuilder by value {
-            PreviewShaderBuilder(shader, testToolchain, SceneMonitor(ModelInfo.EmptyScene), CoroutineScope(dispatcher))
+            PreviewShaderBuilder(
+                shader, testToolchain, SceneMonitor(ModelInfo.EmptyScene),
+                coroutineScope = CoroutineScope(dispatcher)
+            )
         }
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 

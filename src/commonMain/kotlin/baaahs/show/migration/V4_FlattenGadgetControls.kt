@@ -1,6 +1,9 @@
 package baaahs.show.migration
 
-import baaahs.show.DataMigrator
+import baaahs.migrator.DataMigrator
+import baaahs.migrator.mapObjsInDict
+import baaahs.migrator.toJsonObj
+import baaahs.migrator.type
 import kotlinx.serialization.json.*
 
 /**

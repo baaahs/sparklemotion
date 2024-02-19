@@ -17,7 +17,7 @@ data class Waveform(
      * See WaveformDetail.getTotalTime() in BeatLink.
      */
     internal val totalTimeMs get() = sampleCount.asTotalTimeMs() * scale
-    val totalTime get() = totalTimeMs / 1000
+    val totalTimeInSeconds get() = totalTimeMs / 1000
 
     fun heightAt(index: Int): Int {
         val hex = encodedWaveform.substring(index * 8, index * 8 + 2)

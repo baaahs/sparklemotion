@@ -52,16 +52,6 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val previewContainer = helper.container
     val sceneProvider = appContext.sceneProvider
     observe(sceneProvider)
-    val model = sceneProvider.openScene?.model
-//    var model by state { sceneManager.openScene?.model }
-//    onMount {
-//        val listener = sceneManager.addSceneChangeListener { newScene ->
-//            model = newScene?.model
-//        }
-//        withCleanup { sceneManager.removeSceneChangeListener(listener) }
-//    }
-
-    var gl by state<GlContext?> { null }
 
     onMount(canvasParent.current, previewContainer, shaderPreview) {
         canvasParent.current?.let { parent ->
@@ -75,28 +65,28 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         withCleanup { canvasParent.current?.removeChild(previewContainer) }
     }
 
+    val model = sceneProvider.openSceneOrFallback.model
+    var gl by state<GlContext?> { null }
     onChange("shader type", helper, shaderType, model) {
-        model?.let { model ->
-            val preview = helper.bootstrap(model, preRenderHook)
-//            console.log("Rememoize preview for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
+        val preview = helper.bootstrap(model, preRenderHook)
+        //            console.log("Rememoize preview for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
 
-            gl = preview.renderEngine.gl
+        gl = preview.renderEngine.gl
 
-            val intersectionObserver = IntersectionObserver(callback = { entries ->
-                if (entries.any { it.isIntersecting }) {
-                    preview.start()
-                } else {
-                    preview.stop()
-                }
-            })
-            intersectionObserver.observe(previewContainer)
-
-            shaderPreview = preview
-
-            withCleanup {
-                intersectionObserver.disconnect()
-                preview.destroy()
+        val intersectionObserver = IntersectionObserver(callback = { entries ->
+            if (entries.any { it.isIntersecting }) {
+                preview.start()
+            } else {
+                preview.stop()
             }
+        })
+        intersectionObserver.observe(previewContainer)
+
+        shaderPreview = preview
+
+        withCleanup {
+            intersectionObserver.disconnect()
+            preview.destroy()
         }
     }
 

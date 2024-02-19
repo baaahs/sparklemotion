@@ -10,7 +10,7 @@ import baaahs.scene.MutableScene
 import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.Button
 import mui.material.ButtonColor
@@ -60,7 +60,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     Card {
         attrs.classes = jso { this.root = -styles.defaultConfigs }
-        attrs.elevation = 4
+//        attrs.elevation = 4 // TODO: Replace when https://github.com/JetBrains/kotlin-wrappers/issues/2175 is fixed.
 
         header {
             +"Controller Defaults"
