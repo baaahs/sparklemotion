@@ -22,7 +22,7 @@ val DmxDiagnosticsView = xComponent<DmxDiagnosticsProps>("DmxDiagnostics") { pro
     var dmxUniverses by state<Map<String, DmxUniverseListener.LastFrame>> { emptyMap() }
     val handleUpdateChannels by handler(appContext.webClient) {
         globalLaunch {
-            dmxUniverses = appContext.webClient.listDmxUniverses().universes
+            dmxUniverses = appContext.webClient.listDmxUniverses()
         }
     }
 

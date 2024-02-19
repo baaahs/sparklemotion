@@ -8,7 +8,7 @@ import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.window
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.Props
@@ -44,7 +44,7 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
                     lastStats = curStats
                     forceRender()
                 }
-            }, ms = 50)
+            }, timeout = 50)
 
             withCleanup {
                 clearInterval(callback)

@@ -5,7 +5,7 @@ import baaahs.client.SceneEditorClient
 import baaahs.plugin.Plugins
 import baaahs.ui.KeyboardShortcutHandler
 import baaahs.util.Clock
-import js.core.jso
+import js.objects.jso
 import react.createContext
 
 val mapperAppContext = createContext<MapperAppContext>(jso {})

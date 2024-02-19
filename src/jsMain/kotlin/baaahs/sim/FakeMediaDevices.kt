@@ -6,11 +6,12 @@ import baaahs.imaging.Image
 import baaahs.imaging.WebGlImage
 import baaahs.visualizer.BaseVisualizer
 import baaahs.visualizer.Visualizer
-import js.core.jso
+import js.objects.jso
 import three.js.Camera
 import three.js.PerspectiveCamera
 import three.js.Scene
 import three.js.WebGLRenderer
+import web.gl.WebGLRenderingContext
 
 class FakeMediaDevices(
     private val visualizer: Visualizer,
@@ -48,13 +49,13 @@ class FakeMediaDevices(
 
     inner class FakeCamera(val width: Int, val height: Int) : MediaDevices.Camera, BaseVisualizer.FrameListener {
         // offscreen renderer for virtual camera:
-        var camRenderer = WebGLRenderer(jso { preserveDrawingBuffer = true}).apply {
+        private var camRenderer = WebGLRenderer(jso { preserveDrawingBuffer = true}).apply {
             setSize(width, height)
         }
 
         private val camCtx = camRenderer.getContext()
         private val altCamera = PerspectiveCamera(45, 1.0, 1, 10000)
-        private val webGlImage = WebGlImage(camCtx)
+        private val webGlImage = WebGlImage(camCtx.unsafeCast<WebGLRenderingContext>())
 
         override fun onFrameReady(scene: Scene, camera: Camera) {
             altCamera.copy(camera, true)

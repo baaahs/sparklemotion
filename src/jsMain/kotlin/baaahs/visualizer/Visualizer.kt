@@ -7,9 +7,8 @@ import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.util.asMillis
 import baaahs.window
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.hyphenize
 import three.js.*
 import three_ext.OrbitControls
@@ -23,7 +22,6 @@ import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
-import web.uievents.POINTER_DOWN
 import web.uievents.PointerEvent
 import web.window.RESIZE
 import kotlin.math.*
@@ -35,6 +33,8 @@ class Visualizer(
     override val facade = Facade()
 
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
+
+    var haveScene: Boolean = false
 
     var selectedEntity: ItemVisualizer<*>? = null
 
@@ -112,6 +112,7 @@ class Visualizer(
     }
 
     inner class Facade : BaseVisualizer.Facade() {
+        val haveScene get() = this@Visualizer.haveScene
         val selectedEntity get() = this@Visualizer.selectedEntity
 
         var container: HTMLElement?
@@ -451,7 +452,7 @@ open class BaseVisualizer(
             fitCamera = false
         }
         renderer.render(realScene, camera)
-        facade.framerate.elapsed((clock.now() - startTime).asMillis().toInt())
+        facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(realScene, camera) }
 
@@ -459,7 +460,7 @@ open class BaseVisualizer(
     }
 
     private fun requestAnimationFrame() {
-        web.timers.requestAnimationFrame { render() }
+        web.animations.requestAnimationFrame { render() }
     }
 
 // vector.applyMatrix(object.matrixWorld).project(camera) to get 2d x,y coord

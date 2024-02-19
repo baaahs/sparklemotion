@@ -4,7 +4,7 @@ import baaahs.document
 import baaahs.sim.HostedWebApp
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
-import js.core.jso
+import js.objects.jso
 import react.ReactElement
 import react.createElement
 import react.react

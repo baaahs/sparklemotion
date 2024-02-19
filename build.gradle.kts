@@ -32,6 +32,7 @@ plugins {
     kotlin("multiplatform") version Versions.kotlin
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
+    id("com.google.devtools.ksp") version Versions.ksp
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
@@ -44,6 +45,7 @@ repositories {
     maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
     maven("https://maven.danielgergely.com/releases")
     maven("https://jitpack.io")
+    maven("https://mvn.0110.be/releases") // TarsosDSP
 }
 
 group = "org.baaahs"
@@ -53,6 +55,8 @@ fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
 kotlin {
+    metadata {}
+
     jvm {
         withJava()
     }
@@ -66,14 +70,17 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
+            kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
+
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
                 implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
-                implementation("com.soywiz.korlibs.klock:klock:2.1.2")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
+                implementation(project(":rpc"))
             }
         }
         val commonTest by getting {
@@ -98,7 +105,6 @@ kotlin {
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
-                implementation(files("src/jvmMain/lib/TarsosDSP-2.4-bin.jar")) // sound analysis
 
                 implementation("org.joml:joml:1.9.25")
 
@@ -123,6 +129,10 @@ kotlin {
                 // To support animated GIFs:
                 implementation("com.madgag:animated-gif-lib:1.4")
 
+                // SoundAnalysisPlugin:
+                implementation("be.tarsos.dsp:core:2.5")
+                implementation("be.tarsos.dsp:jvm:2.5")
+
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
                 implementation("io.github.eduramiba:webcam-capture-driver-native:1.0.0")
@@ -130,7 +140,7 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                runtimeOnly("org.junit.vintage:junit-vintage-engine:${Versions.junit}")
+                implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
                 runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
                 runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
 
@@ -143,8 +153,6 @@ kotlin {
         }
 
         val jsMain by getting {
-            kotlin.srcDir("src/jsMain/js")
-
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
 
@@ -155,8 +163,8 @@ kotlin {
                 implementation(kotlinw("react"))
                 implementation(kotlinw("react-dom"))
                 implementation(kotlinw("styled"))
-                implementation(kotlinw("mui"))
-                implementation(kotlinw("mui-icons"))
+                implementation(kotlinw("mui-material"))
+                implementation(kotlinw("mui-icons-material"))
                 implementation(kotlinw("emotion"))
 
                 implementation(npm("camera-controls", "^1.35.0"))
@@ -167,7 +175,6 @@ kotlin {
                 implementation(npm("dagre-d3", "^0.6.4"))
 
                 implementation(npm("clsx", "^2.0.0"))
-                implementation(npm("react-compound-slider", "^3.3.1"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
                 implementation(npm("three", "^0.120.0", generateExternals = false))
@@ -183,6 +190,9 @@ kotlin {
                 // Used by GridLayout:
                 implementation(npm("react-resizable", "3.0.4"))
                 implementation(npm("lodash.isequal", "4.5.0"))
+
+                // Used by slider view:
+                implementation(npm("d3-array", "^3.2.4"))
             }
         }
         val jsTest by getting {
@@ -199,6 +209,10 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", project(":rpc:processor"))
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
@@ -320,8 +334,9 @@ tasks.named<JavaExec>("run").configure {
 
 tasks.withType(Test::class) {
     useJUnitPlatform {
-        includeEngines.add("junit-vintage")
+        includeEngines.add("junit-jupiter")
         includeEngines.add("spek2")
+        excludeTags("glsl")
     }
 }
 
@@ -331,9 +346,21 @@ tasks.named<Test>("jvmTest") {
 
 tasks.withType<DependencyUpdatesTask> {
     fun isNonStable(version: String): Boolean =
-        "eap|alpha|beta|rc".toRegex().containsMatchIn(version.toLowerCase())
+        "eap|alpha|beta|rc".toRegex().containsMatchIn(version.lowercase())
 
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+}
+
+// Janky. See https://github.com/google/ksp/issues/963#issuecomment-1780330007.
+gradle.projectsEvaluated {
+    tasks {
+        val kspCommonMainKotlinMetadata by getting
+        withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>> {
+            if (this !== kspCommonMainKotlinMetadata) {
+                dependsOn(kspCommonMainKotlinMetadata)
+            }
+        }
     }
 }

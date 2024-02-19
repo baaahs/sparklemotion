@@ -2,8 +2,8 @@ package baaahs.app.ui.gadgets.color
 
 import baaahs.Color
 import baaahs.geom.Vector2F
+import baaahs.get2DContext
 import web.canvas.CanvasRenderingContext2D
-import web.canvas.RenderingContextId
 import web.html.HTMLCanvasElement
 import kotlin.math.floor
 import kotlin.math.max
@@ -20,8 +20,8 @@ private class Bitmap(
     height: Int
 ) {
     private val image = ctx.createImageData(
-        max(width.toDouble(), 1.0),
-        max(height.toDouble(), 1.0)
+        max(width, 1),
+        max(height, 1)
     )
     private val data = image.data
 
@@ -36,7 +36,7 @@ private class Bitmap(
     }
 
     fun draw() {
-        ctx.putImageData(image, 0.0, 0.0)
+        ctx.putImageData(image, 0, 0)
     }
 
     companion object {
@@ -50,7 +50,7 @@ class ColorWheel(
     var harmonyMode: HarmonyMode = HarmonyMode.triad,
     var colors: Array<Color> = Array(3) { Color.WHITE }
 ) {
-    private val ctx = canvasEl.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
+    private val ctx = canvasEl.get2DContext()
 
     private var priorRadius: Int? = null
 

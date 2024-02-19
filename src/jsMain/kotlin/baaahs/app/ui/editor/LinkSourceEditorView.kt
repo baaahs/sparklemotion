@@ -6,7 +6,7 @@ import baaahs.show.mutable.EditingShader
 import baaahs.ui.unaryMinus
 import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.*
@@ -98,7 +98,6 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
                         attrs.checked = showAdvanced
                         attrs.onClick = handleToggleShowAdvanced
                     }
-                    attrs.onClick = handleToggleShowAdvanced
 
                     ListItemText {
                         attrs.onClick = handleToggleShowAdvanced

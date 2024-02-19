@@ -7,7 +7,7 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.LinearDimension
 import materialui.icon
 import mui.material.*

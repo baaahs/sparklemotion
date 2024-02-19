@@ -2,24 +2,34 @@ package baaahs.client
 
 import baaahs.*
 import baaahs.gl.Toolchain
+import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.sm.webapi.ShowControlCommands
+import baaahs.util.coroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
 
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    sceneProvider: SceneProvider
-) : BaseShowPlayer(toolchain, sceneProvider) {
+    sceneProvider: SceneProvider,
+    private val coroutineScope: CoroutineScope = GlobalScope
+) : BaseShowPlayer(toolchain, SceneProviderWithFallback(sceneProvider)) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
         get() = openShow!!.buildActivePatchSet()
+
+    private val showControlCommands = ShowControlCommands.IMPL
+        .createSender(pubSub)
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
@@ -51,6 +61,10 @@ class ClientStageManager(
         listeners.remove(listener)
     }
 
+    override fun onActivePatchSetMayHaveChanged() {
+        checkForChanges()
+    }
+
     private inner class ClientGadget(
         id: String,
         pubSub: PubSub.Client,
@@ -59,25 +73,26 @@ class ClientStageManager(
         private val channel: PubSub.Channel<Map<String, JsonElement>>
 
         init {
-            val gadgetListener = this::onGadgetChange
+            val gadgetListener: GadgetListener = {
+                coroutineScope.launch(coroutineExceptionHandler) {
+                    showControlCommands.setGadgetState(id, gadget.state)
+                }
+            }
             gadget.listen(gadgetListener)
 
-            val topic =
-                PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+            val topic = PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
 
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
                     gadget.applyState(json)
-                    checkForChanges()
                 }
             }
         }
+    }
 
-        // GadgetListener callback.
-        fun onGadgetChange(g: Gadget) {
-            channel.onChange(g.state)
-            checkForChanges()
-        }
+    class SceneProviderWithFallback(private val delegate: SceneProvider) : SceneProvider by delegate {
+        override val openScene: OpenScene
+            get() = openSceneOrFallback
     }
 
     interface Listener {

@@ -306,7 +306,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             pointerEvents = PointerEvents.none
         }
 
-        ".react-draggable-dragging, .react-draggable-dragging *" {
+        ".react-draggable.react-draggable-dragging, .react-draggable.react-draggable-dragging *" {
             pointerEvents = PointerEvents.none
             transition(::top, 0.s)
             transition(::left, 0.s)
@@ -318,7 +318,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
             cursor = Cursor.grab
         }
 
-        ".react-draggable-dragging" {
+        ".react-draggable.react-draggable-dragging" {
             cursor = Cursor.grabbing
         }
 

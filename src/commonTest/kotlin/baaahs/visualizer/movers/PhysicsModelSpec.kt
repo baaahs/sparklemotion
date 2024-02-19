@@ -5,6 +5,8 @@ import baaahs.TestMovingHeadAdapter
 import baaahs.describe
 import baaahs.sim.FakeDmxUniverse
 import org.spekframework.spek2.Spek
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 object PhysicsModelSpec: Spek({
     describe<PhysicalModel> {
@@ -39,7 +41,7 @@ object PhysicsModelSpec: Spek({
 
         context("when a frame requests motor movement") {
             beforeEachTest {
-                sendDmxFrame(1/16f, 1/4f, 0f, 0f, 1f)
+                sendDmxFrame((1.0/16).seconds, 1/4f, 0f, 0f, 1f)
             }
 
             it("doesn't move immediately") {
@@ -50,7 +52,7 @@ object PhysicsModelSpec: Spek({
 
             context("on the next frame") {
                 beforeEachTest {
-                    sendDmxFrame(1/16f, 1/4f, 0f, 0f, 1f)
+                    sendDmxFrame((1.0/16).seconds, 1/4f, 0f, 0f, 1f)
                 }
 
                 it("moves as far as it could have moved in the time between frames") {
@@ -62,7 +64,7 @@ object PhysicsModelSpec: Spek({
 
             context("then moving back") {
                 beforeEachTest {
-                    sendDmxFrame(1/16f, 0f, 0f, 0f, 1f)
+                    sendDmxFrame((1.0/16).seconds, 0f, 0f, 0f, 1f)
                 }
 
                 it("moves as far as it could have moved in the time between frames") {
@@ -73,7 +75,7 @@ object PhysicsModelSpec: Spek({
 
                 context("after another frame") {
                     beforeEachTest {
-                        sendDmxFrame(1/16f, 0f, 0f, 0f, 1f)
+                        sendDmxFrame((1.0/16).seconds, 0f, 0f, 0f, 1f)
                     }
 
                     it("moves as far as it could have moved in the time between frames") {
@@ -88,7 +90,7 @@ object PhysicsModelSpec: Spek({
 })
 
 typealias UpdateMoverState = (
-    elapsedTime: Float,
+    elapsedTime: Duration,
     pan: Float,
     tilt: Float,
     colorWheelPosition: Float,

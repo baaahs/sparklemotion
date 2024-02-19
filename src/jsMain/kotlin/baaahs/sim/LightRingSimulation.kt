@@ -4,7 +4,7 @@ import baaahs.model.LightRing
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.LightRingVisualizer
 
-actual class LightRingSimulation actual constructor(
+class LightRingSimulation(
     val lightRing: LightRing,
     adapter: EntityAdapter
 ) : PixelArraySimulation(lightRing, adapter) {

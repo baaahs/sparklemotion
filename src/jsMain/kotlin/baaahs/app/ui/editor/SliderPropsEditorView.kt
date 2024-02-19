@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.app.ui.model.numberTextField
 import baaahs.control.MutableSliderControl
+import baaahs.gadgets.Slider
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*
@@ -23,8 +24,6 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
     val mutableSliderControl = props.mutableSliderControl
-
-    val handlePositionChange by handler { _: Float -> }
 
     div(+EditableStyles.propertiesSection) {
         inlineStyles {
@@ -84,17 +83,9 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
             }
 
             slider {
-                attrs.title = props.mutableSliderControl.title
-                attrs.position = props.mutableSliderControl.initialValue
-                attrs.minValue = props.mutableSliderControl.minValue
-                attrs.maxValue = props.mutableSliderControl.maxValue
-                attrs.stepValue = props.mutableSliderControl.stepValue
-                attrs.reversed = true
-                attrs.showTicks = true
-                if (props.mutableSliderControl.maxValue <= 2) {
-                    attrs.ticksScale = 100f
+                attrs.slider = with (props.mutableSliderControl) {
+                    Slider(title, initialValue, minValue, maxValue, stepValue)
                 }
-                attrs.onPositionChange = handlePositionChange
             }
 
             div(+controlsStyles.feedTitle) { +props.mutableSliderControl.title }

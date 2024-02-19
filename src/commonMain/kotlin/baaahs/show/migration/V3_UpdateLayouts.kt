@@ -1,7 +1,10 @@
 package baaahs.show.migration
 
 import baaahs.camelize
-import baaahs.show.DataMigrator
+import baaahs.migrator.DataMigrator
+import baaahs.migrator.mapObjsInDict
+import baaahs.migrator.replaceJsonObj
+import baaahs.migrator.toJsonObj
 import kotlinx.serialization.json.*
 
 @Suppress("ClassName")

@@ -10,7 +10,7 @@ import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import js.core.jso
+import js.objects.jso
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

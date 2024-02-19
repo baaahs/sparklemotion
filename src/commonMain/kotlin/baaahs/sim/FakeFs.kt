@@ -55,9 +55,9 @@ abstract class BaseFakeFs : Fs {
                 val inPath = it.substring(prefix.length)
                 val slash = inPath.indexOf('/')
                 if (slash == -1) {
-                    directory.resolve(inPath, false)
+                    directory.resolve(inPath, isDirectory = false)
                 } else {
-                    directory.resolve(inPath.substring(0, slash), true)
+                    directory.resolve(inPath.substring(0, slash), isDirectory = true)
                 }
             }.distinct()
         logger.debug { "FakeFs.listFiles($directory) -> $entries" }

@@ -9,6 +9,7 @@ import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector2D
 import baaahs.geom.Vector3F
+import baaahs.get2DContext
 import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ComponentRenderEngine
@@ -20,11 +21,9 @@ import baaahs.model.PixelArray
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import three.js.Vector2
-import web.canvas.CanvasRenderingContext2D
+import web.animations.requestAnimationFrame
 import web.canvas.Path2D
-import web.canvas.RenderingContextId
 import web.html.HTMLCanvasElement
-import web.timers.requestAnimationFrame
 
 class ProjectionPreview(
     canvas2d: HTMLCanvasElement,
@@ -79,7 +78,7 @@ class ProjectionPreview(
         }
     }
 
-    private val context2d = canvas2d.getContext(RenderingContextId.canvas) as CanvasRenderingContext2D
+    private val context2d = canvas2d.get2DContext()
 
     override fun start() {
         running = true

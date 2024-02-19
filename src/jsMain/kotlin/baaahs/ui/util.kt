@@ -1,7 +1,8 @@
 package baaahs.ui
 
-import baaahs.context2d
 import baaahs.document
+import baaahs.get2DContext
+import js.objects.jso
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
@@ -28,7 +29,6 @@ import web.events.EventTarget
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
-import web.uievents.TOUCH_MOVE
 import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
@@ -139,6 +139,12 @@ fun RDOMBuilder<*>.mixin(jsObj: dynamic) {
     }
 }
 
+fun RElementBuilder<*>.mixin(jsObj: dynamic) {
+    keys(jsObj).forEach { key ->
+        attrs.asDynamic()[key] = jsObj[key]
+    }
+}
+
 fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
     return CssBuilder().apply { block() }
 }
@@ -226,9 +232,9 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (web.events.Event) -> Unit = { event -> event.preventDefault() }
+val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
 val disableScroll = {
-    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, js("{ passive: false }"))
+    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
 }
 val enableScroll = {
     document.body.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault)
@@ -270,7 +276,7 @@ fun HTMLElement.fitText() {
     val buttonWidth = parentEl.clientWidth - marginX
     val buttonHeight = parentEl.clientHeight - marginY
     val canvas = document.createElement("canvas") as HTMLCanvasElement
-    val ctx = canvas.context2d()
+    val ctx = canvas.get2DContext()
     val elementStyle = getComputedStyle(this)
     ctx.font = elementStyle.font
     val width = innerText.split(Regex("\\s+")).maxOf { word ->

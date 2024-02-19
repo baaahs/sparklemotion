@@ -28,7 +28,7 @@ private val GadgetsPreviewView = xComponent<GadgetsPreviewProps>("GadgetsPreview
     }
 
     div(+GadgetsPreviewStyles.gadgetsPreview) {
-        val previewControlProps = ControlProps({ }, null)
+        val previewControlProps = ControlProps(null)
 
         mutableControls.forEach { gadgetPreview ->
             val openControl = gadgetPreview.openControl

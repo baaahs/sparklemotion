@@ -8,7 +8,7 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
-import js.core.jso
+import js.objects.jso
 import kotlinx.html.unsafe
 import mui.material.Container
 import react.*

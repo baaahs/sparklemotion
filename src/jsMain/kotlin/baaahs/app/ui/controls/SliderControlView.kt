@@ -2,51 +2,37 @@ package baaahs.app.ui.controls
 
 import baaahs.GadgetListener
 import baaahs.app.ui.appContext
+import baaahs.app.ui.gadgets.slider.resetButton
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.control.OpenSliderControl
 import baaahs.gadgets.Slider
-import baaahs.ui.icons.ResetIcon
+import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import kotlinx.css.Color
-import kotlinx.css.backgroundColor
-import materialui.icon
 import mui.icons.material.MusicNote
+import mui.material.IconButton
+import mui.material.IconButtonColor
+import mui.material.Size
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
-import react.dom.onClick
 import react.useContext
-import styled.inlineStyles
 
 private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
     val appContext = useContext(appContext)
     val controlsStyles = appContext.allStyles.controls
 
     val slider = props.slider
-    val title = slider.title
 
-    var position by state { slider.position }
-    var floorPosition by state { slider.floor }
     var beatLinked by state { slider.beatLinked }
 
     onMount(slider) {
         val listener: GadgetListener = {
-            position = slider.position
-            floorPosition = slider.floor
             beatLinked = slider.beatLinked
         }
         slider.listen(listener)
         withCleanup { slider.unlisten(listener) }
-    }
-
-    val handlePositionChange by handler(slider) { newPosition: Float ->
-        slider.position = newPosition
-    }
-
-    val handleFloorPositionChange by handler(slider) { newPosition: Float ->
-        slider.floor = newPosition
     }
 
     val handleToggleBeatLinked by mouseEventHandler(slider) {
@@ -54,51 +40,27 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
         slider.floor = slider.position
     }
 
-    val handleReset by mouseEventHandler(slider) {
-        slider.position = slider.initialValue
-        slider.floor = slider.initialValue
-        slider.beatLinked = false
-    }
-
     div(props.sliderControl?.inUseStyle?.let { +it }) {
         slider {
-            attrs.title = slider.title
-            attrs.position = position
-            if (beatLinked) {
-                attrs.floorPosition = floorPosition
-            }
-            attrs.contextPosition = null
-            attrs.minValue = slider.minValue
-            attrs.maxValue = slider.maxValue
-            attrs.stepValue = slider.stepValue
-            attrs.reversed = true
-            attrs.showTicks = true
-            if (slider.maxValue <= 2) {
-                attrs.ticksScale = 100f
-            }
-
-            attrs.onPositionChange = handlePositionChange
-            attrs.onFloorPositionChange = handleFloorPositionChange
+            attrs.slider = slider
         }
 
-        div(+Styles.beatLinkedSwitch) {
+        IconButton {
+            attrs.className = -Styles.beatLinkedSwitch
+            attrs.size = Size.small
+            if (beatLinked) {
+                attrs.color = IconButtonColor.primary
+            }
             attrs.onClick = handleToggleBeatLinked
 
-            if (beatLinked) {
-                inlineStyles {
-                    backgroundColor = Color.orange
-                }
-            }
-            icon(MusicNote)
+            MusicNote {}
         }
 
-        div(+Styles.resetSwitch) {
-            attrs.onClick = handleReset
-
-            ResetIcon {}
+        resetButton {
+            attrs.slider = slider
         }
 
-        div(+controlsStyles.feedTitle) { +title }
+        div(+controlsStyles.feedTitle) { +slider.title }
     }
 }
 

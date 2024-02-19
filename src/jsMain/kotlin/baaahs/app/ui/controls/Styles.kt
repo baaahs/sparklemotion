@@ -6,6 +6,7 @@ import baaahs.show.live.FeedOpenControl
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.Timing
+import kotlinx.css.properties.lh
 import kotlinx.css.properties.s
 import mui.material.styles.Theme
 import styled.StyleSheet
@@ -75,11 +76,28 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     val visualizerMenuAffordance by css {
         position = Position.absolute
         padding = Padding(2.px)
+        borderRadius = 3.px
         backgroundColor = Color.white.withAlpha(.5)
         width = 2.em
         height = 2.em
         right = .5.em
         bottom = .5.em
+    }
+
+    val visualizerWarning by css {
+        display = Display.flex
+        lineHeight = 1.em.lh
+        alignItems = Align.center
+        position = Position.absolute
+        padding = Padding(2.px, .5.em)
+        borderRadius = 3.px
+        backgroundColor = Color.darkRed.withAlpha(.5)
+        left = .5.em
+        bottom = .5.em
+
+        svg { // Margin on the (?) help icon.
+            marginLeft = .3.em
+        }
     }
 
     val dragHandle by css {
@@ -122,7 +140,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         left = 0.px
         bottom = 0.px
         padding = Padding(0.px, 4.px)
-        userSelect = UserSelect.none
     }
 
     val resetSwitch by css {
@@ -130,7 +147,6 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         right = 0.px
         bottom = 0.px
         padding = Padding(0.px, 4.px)
-        userSelect = UserSelect.none
     }
 
     val inUse by css {
@@ -277,6 +293,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-controls-theme", isStat
 
     val vacuityContainer by css {
         display = Display.flex
+        alignContent = Align.stretch
         overflow = Overflow.scroll
         borderWidth = .25.em
         borderStyle = "inset".asDynamic()

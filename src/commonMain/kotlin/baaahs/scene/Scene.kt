@@ -5,8 +5,10 @@ import baaahs.PubSub
 import baaahs.controller.ControllerId
 import baaahs.fixtures.*
 import baaahs.io.RemoteFsSerializer
+import baaahs.model.GridData
 import baaahs.model.Model
 import baaahs.model.ModelData
+import baaahs.model.ModelUnit
 import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -26,6 +28,13 @@ data class Scene(
 
     companion object {
         val Empty: Scene = Scene(ModelData("Untitled", emptyList()))
+
+        val Fallback = Scene(
+            ModelData("Fallback Scene", listOf(
+                GridData("Grid", columns = 320, rows = 240, columnGap = 1.25f, rowGap = 1.25f, zigZag = true)
+            ), ModelUnit.Centimeters),
+            emptyMap()
+        )
 
         fun createTopic(
             serializersModule: SerializersModule,

@@ -12,7 +12,7 @@ import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.*
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import kotlinx.css.properties.s
 import mui.material.Card
@@ -27,6 +27,8 @@ import web.dom.Element
 import web.html.HTMLElement
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 private val beatVisualizerShaderLoader = futureAsync {
     Shader("Beat Visualizer", getResourceAsync("baaahs/plugin/beatlink/BeatLinkControl.glsl"))
@@ -43,7 +45,7 @@ private val waveformOverviewShaderLoader = futureAsync {
 fun PlayerState.remainingTime(clock: Clock): String? =
     trackEndTime?.let { endTime ->
         val remainingTime = endTime - clock.now()
-        if (remainingTime >= 0)
+        if (remainingTime >= 0.seconds)
             remainingTime.toHHMMSS()
         else
             null
@@ -323,8 +325,8 @@ private class PlayerStateView(
 
     fun setOnProgram() {
         val trackElapsedTime = playerState.trackStartTime?.let { clock.now() - it }
-        trackElapsedTimeUniform?.set(trackElapsedTime?.toFloat() ?: 0f)
-        trackLengthUniform?.set(playerState.waveform?.totalTime ?: 0f)
+        trackElapsedTimeUniform?.set(trackElapsedTime?.toDouble(DurationUnit.SECONDS)?.toFloat() ?: 0f)
+        trackLengthUniform?.set(playerState.waveform?.totalTimeInSeconds ?: 0f)
         waveformUniform?.set(texture)
     }
 

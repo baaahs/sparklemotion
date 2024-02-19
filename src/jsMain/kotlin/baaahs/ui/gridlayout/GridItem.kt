@@ -15,8 +15,8 @@ import external.react_draggable.DraggableCore
 import external.react_draggable.DraggableCoreProps
 import external.react_draggable.DraggableData
 import external.react_resizable.*
-import js.core.Object
-import js.core.jso
+import js.objects.Object
+import js.objects.jso
 import org.w3c.dom.events.MouseEvent
 import react.*
 import web.dom.Element
@@ -103,7 +103,7 @@ class GridItem(
             nextProps.x, nextProps.y, nextProps.w, nextProps.h, nextState
         )
         return oldPosition != newPosition ||
-                props.useCSSTransforms !== nextProps.useCSSTransforms
+                props.useCSSTransforms != nextProps.useCSSTransforms
     }
 
     override fun componentDidMount() {
@@ -364,6 +364,8 @@ class GridItem(
      * @param  {Object} callbackData  an object with node, delta and position information
      */
     private fun onDragStart(e: MouseEvent, callbackData: DraggableData): Any {
+        if (context.draggingDisabled) return Unit
+
         val container = state.parentContainer
         val node = callbackData.node
         val newPxPosition = container.calculatePxPositionInLayout(node)

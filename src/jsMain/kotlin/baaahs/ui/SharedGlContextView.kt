@@ -4,7 +4,7 @@ import baaahs.app.ui.AppGlContext
 import baaahs.app.ui.StyleConstants
 import baaahs.app.ui.appContext
 import baaahs.app.ui.appGlContext
-import js.core.jso
+import js.objects.jso
 import kotlinx.css.*
 import react.PropsWithChildren
 import react.RBuilder

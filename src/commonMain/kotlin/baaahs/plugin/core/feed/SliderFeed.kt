@@ -38,8 +38,8 @@ data class SliderFeed(
     override val contentType: ContentType
         get() = ContentType.Float
 
-    fun createGadget(): Slider =
-        Slider(sliderTitle, initialValue, minValue, maxValue, stepValue)
+    fun createGadget(title: String? = null): Slider =
+        Slider(title ?: sliderTitle, initialValue, minValue, maxValue, stepValue)
 
     override fun buildControl(): MutableControl =
         MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)

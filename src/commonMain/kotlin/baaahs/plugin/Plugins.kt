@@ -34,8 +34,9 @@ import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.util.Time
 import kotlinx.cli.ArgParser
+import kotlinx.datetime.Instant
+import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.MapSerializer
@@ -48,6 +49,7 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.serializersModuleOf
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 
@@ -244,6 +246,7 @@ sealed class Plugins(
     }
 
     val serialModule = SerializersModule {
+        include(serializersModuleOf(Instant::class, InstantIso8601Serializer))
         include(Gadget.serialModule)
         include(contentTypes.serialModule)
         include(controlSerialModule)
@@ -445,7 +448,7 @@ sealed class Plugins(
         internal val dummyContext = PluginContext(ZeroClock(), StubPubSub())
 
         private class ZeroClock : Clock {
-            override fun now(): Time = 0.0
+            override fun now(): Instant = Instant.fromEpochMilliseconds(0)
         }
 
         private class StubPubSub : PubSub.Endpoint() {

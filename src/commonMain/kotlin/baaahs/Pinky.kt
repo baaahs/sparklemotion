@@ -9,7 +9,6 @@ import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.PinkyMapperHandlers
-import baaahs.mapper.Storage
 import baaahs.mapping.MappingManager
 import baaahs.net.Network
 import baaahs.plugin.Plugins
@@ -18,6 +17,7 @@ import baaahs.show.Show
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.server.DocumentService
+import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
 import baaahs.sm.server.StageManager
 import baaahs.sm.webapi.Topics
@@ -34,7 +34,7 @@ class Pinky(
     val plugins: Plugins,
 //    private val switchShowAfterIdleSeconds: Int? = 600,
 //    private val adjustShowAfterIdleSeconds: Int? = null,
-    private val storage: Storage,
+    private val dataDir: Fs.File,
     private val link: Network.Link,
     val httpServer: Network.HttpServer,
     pubSub: PubSub.Server,
@@ -48,9 +48,10 @@ class Pinky(
     val brainManager: BrainManager,
     private val shaderLibraryManager: ShaderLibraryManager,
     private val networkStats: NetworkStats,
-    val pinkySettings: PinkySettings,
-    val serverNotices: ServerNotices,
-    val pinkyMapperHandlers: PinkyMapperHandlers
+    private val pinkySettings: PinkySettings,
+    private val serverNotices: ServerNotices,
+    private val pinkyMapperHandlers: PinkyMapperHandlers,
+    private val pinkyConfigStore: PinkyConfigStore
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -133,10 +134,8 @@ class Pinky(
 
                 mappingResultsLoaderJob = launch { mappingManager.start() }
 
-                launch { shaderLibraryManager.start() }
-
                 launch {
-                    val config = storage.loadConfig()
+                    val config = pinkyConfigStore.load()
 
                     config?.runningScenePath?.let { path ->
                         launch { stageManager.sceneDocumentService.load(path) }
@@ -168,8 +167,8 @@ class Pinky(
         }
     }
 
-    private suspend fun <T> DocumentService<T, *>.load(path: String) {
-        val file = storage.resolve(path)
+    private suspend fun <T : Any> DocumentService<T, *>.load(path: String) {
+        val file = dataDir.resolve(path)
         try {
             val doc = load(file)
             if (doc == null) {
@@ -178,7 +177,7 @@ class Pinky(
                 switchTo(doc, file = file)
             }
         } catch (e: Exception) {
-            reportError("Failed to load ${documentType.title.lowercase()} at $path", e)
+            reportError("Failed to load ${documentType.title.lowercase()} at $file", e)
         }
     }
 
@@ -198,6 +197,8 @@ class Pinky(
 
     private suspend fun launchDaemonJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
+            launch { shaderLibraryManager.start() }
+
             launch {
                 while (true) {
                     if (mapperIsRunning) {
@@ -289,12 +290,6 @@ class Pinky(
         val framerate = Framerate()
     }
 }
-
-@Serializable
-data class PinkyConfig(
-    val runningShowPath: String? = null,
-    val runningScenePath: String? = null
-)
 
 data class PinkySettings(
     var targetFramerate: Float = 30f, // Frames per second

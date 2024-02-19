@@ -11,7 +11,7 @@ import external.mosaic.MosaicParent
 import external.mosaic.MosaicWindow
 import external.mosaic.MosaicWindowProps
 import external.mosaic.mosaic
-import js.core.jso
+import js.objects.jso
 import mui.system.Breakpoint
 import react.*
 import react.dom.div
@@ -106,6 +106,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                             when (window) {
                                 SimulatorWindows.Visualizer -> createElement(ModelSimulationView, jso {
                                     this.simulator = props.simulator
+                                    this.hostedWebApp = props.hostedWebApp
                                 })
                                 SimulatorWindows.Console -> createElement(StatusPanelView, jso {
                                     this.simulator = props.simulator

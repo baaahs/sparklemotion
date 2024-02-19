@@ -4,11 +4,11 @@ import baaahs.PinkyState
 import baaahs.PubSub
 import baaahs.app.settings.UiSettings
 import baaahs.app.ui.AppIndex
+import baaahs.app.ui.AppMode
 import baaahs.app.ui.dialog.FileDialog
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.dmx.DmxManagerImpl
-import baaahs.dmx.ListDmxUniverses
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
@@ -20,7 +20,7 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
 import baaahs.sm.webapi.Topics
 import baaahs.util.globalLaunch
-import js.core.jso
+import js.objects.jso
 import react.ReactElement
 import react.createElement
 
@@ -39,7 +39,7 @@ class WebClient(
     private val sceneManager: SceneManager,
     private val stageManager: ClientStageManager
 ) : HostedWebApp {
-    private val facade = Facade()
+    val facade = Facade()
 
     private val pubSubListener = { facade.notifyChanged() }.also {
         pubSub.addStateChangeListener(it)
@@ -59,8 +59,9 @@ class WebClient(
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
 
-    private val listDmxUniverses = pubSub.commandSender(
-        DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule))
+    private val listDmxUniverses =
+        DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule)
+            .createSender(pubSub)
 
     private var uiSettings = UiSettings()
 
@@ -139,12 +140,17 @@ class WebClient(
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings
 
+        var appMode: AppMode
+            get() = this@WebClient.uiSettings.appMode
+            set(value) {
+                updateUiSettings(uiSettings.copy(appMode = value), saveToStorage = true)
+            }
+
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
 
-        suspend fun listDmxUniverses() =
-            listDmxUniverses.invoke(ListDmxUniverses())
+        suspend fun listDmxUniverses() = listDmxUniverses.listDmxUniverses()
 
     }
 }

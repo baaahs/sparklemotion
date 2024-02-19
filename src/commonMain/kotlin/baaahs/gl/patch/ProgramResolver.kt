@@ -23,7 +23,7 @@ class ProgramResolver(
     val portDiagrams = renderTargets
         .groupBy { it.fixture.fixtureType }
         .mapValues { (_, renderTargets) ->
-            val patchSetsByKey = mutableMapOf<String, PatchSet>()
+            val patchSetsByKey = mutableMapOf<String, List<OpenPatch>>()
             val renderTargetsByPatchSetKey = mutableMapOf<String, MutableList<RenderTarget>>()
 
             renderTargets.forEach { renderTarget ->
@@ -89,5 +89,3 @@ class ProgramResolver(
         fun buildPortDiagram(vararg patches: OpenPatch) = PortDiagram(patches.toList())
     }
 }
-
-private typealias PatchSet = List<OpenPatch>
