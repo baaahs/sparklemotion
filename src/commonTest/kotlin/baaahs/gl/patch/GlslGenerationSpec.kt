@@ -713,7 +713,7 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        MovingHeadParams p0_untitledShader_params = MovingHeadParams(0., 0., 0., 1., false, 0.);
+                        MovingHeadParams p0_untitledShader_params = { 0., 0., 0., 1., false, 0. };
 
                         #line 21 0
                         void p0_untitledShader_main(out MovingHeadParams params) {
@@ -817,7 +817,7 @@ object GlslGenerationSpec : Spek({
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader
 
-                        MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1., false, 0.);
+                        MovingHeadParams p0_untitledShaderi_result = { 0., 0., 0., 1., false, 0. };
 
                         #line 5 0
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
