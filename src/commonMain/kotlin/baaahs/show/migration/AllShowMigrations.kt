@@ -11,5 +11,6 @@ val AllShowMigrations: List<DataMigrator.Migration> = listOf(
     V6_FlattenPatches,
     V7_LegacyTabs,
     V8_RenameShaderChannelToStream,
-    V9_RenameDataSourceToFeed
+    V9_RenameDataSourceToFeed,
+    V10_RemoveVarPrefixFromXyPad
 )
