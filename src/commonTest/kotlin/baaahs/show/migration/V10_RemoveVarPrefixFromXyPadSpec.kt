@@ -12,7 +12,7 @@ object V10_RemoveVarPrefixFromXyPadSpec : Spek({
         val from by value { /*language=json*/
             """
                 {
-                    "controls": {
+                    "feeds": {
                         "control1": {
                             "type": "baaahs.Core:XyPad",
                             "varPrefix": "foo"
@@ -32,7 +32,7 @@ object V10_RemoveVarPrefixFromXyPadSpec : Spek({
             expect(to).toEqual( /*language=json*/
                 """
                     {
-                        "controls": {
+                        "feeds": {
                             "control1": {
                                 "type": "baaahs.Core:XyPad"
                             },
