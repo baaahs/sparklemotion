@@ -723,6 +723,7 @@ object GlslGenerationSpec : Spek({
                             params.dimmer = in_fixtureInfo.rotation.y;
                         }
 
+                        p0_fromGlobal
 
                         #line 10001
                         void main() {
@@ -745,7 +746,7 @@ object GlslGenerationSpec : Spek({
             }
         }
 
-        context("with a shader using a struct internally") {
+        context("with a shader using a struct internally which differs in form from the target struct") {
             override(shaderText) {
                 /**language=glsl*/
                 """
@@ -778,10 +779,18 @@ object GlslGenerationSpec : Spek({
             }
 
             // TODO: should be something like:
-            // MovingHeadParams p0_untitledShader_main() {
+            // p0_untitledShader_MovingHeadParams p0_untitledShader_main() {
             //     return p0_untitledShader_MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
             // }
+            // ...
+            // Or, actually: if a function has a struct param or return type, and it is annotated as being of a content
+            // type known to the system, then:
+            // * the explicit struct declaration may be omitted from the shader;
+            // * if the struct declaration is included, it should be validated as a subset of the content type's struct;
+            // * the local struct name should be mapped to the global struct name in the generated GLSL.
+            // Note that any other structs local to the shader should continue to be namespaced.
             it("generates GLSL") {
+                debugger()
                 kexpect(glsl).toBe(
                     /**language=glsl*/
                     """
@@ -823,16 +832,20 @@ object GlslGenerationSpec : Spek({
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
 
                         #line 15 0
-                        MovingHeadParams p0_untitledShader_main() {
+                        p0_untitledShader_MovingHeadParams p0_untitledShader_main() {
                             p0_untitledShader_AnotherStruct b;
-                            return MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+                            return p0_untitledShader_MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
+                        }
+
+                        MovingHeadParams toMovingHeadParams(p0_untitledShader_MovingHeadParams p) {
+                            return MovingHeadParams(p.pan, p.tilt, p.colorWheel, p.dimmer, false, 0.);
                         }
 
 
                         #line 10001
                         void main() {
                             // Invoke Untitled Shader
-                            p0_untitledShaderi_result = p0_untitledShader_main();
+                            p0_untitledShaderi_result = toMovingHeadParams(p0_untitledShader_main());
 
                             sm_result = vec4(
                                 p0_untitledShaderi_result.pan,
@@ -1177,4 +1190,8 @@ object GlslGenerationSpec : Spek({
         }
     }
 })
+
+fun debugger() {
+    println("STOP!")
+}
 

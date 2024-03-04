@@ -88,7 +88,7 @@ sealed class GlslType(
                     fields.forEachIndexed { index, field ->
                         if (index > 0)
                             append(", ")
-                        append(field.defaultInitializer.s)
+                        append(field.defaultInitializer?.s ?: field.type.defaultInitializer.s)
                     }
                     append(" }")
                 }.toString().let { GlslExpr(it) }
@@ -114,7 +114,7 @@ sealed class GlslType(
         val type: GlslType,
         val description: String? = null,
         val deprecated: Boolean = false,
-        val defaultInitializer: GlslExpr = type.defaultInitializer
+        val defaultInitializer: GlslExpr? = null
     ) {
         fun toGlsl(
             namespace: GlslCode.Namespace?,
