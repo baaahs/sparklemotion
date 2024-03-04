@@ -1,6 +1,7 @@
 package baaahs.show.live
 
 import baaahs.app.ui.patchmod.PatchMod
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.Component
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.patch.ProgramNode
@@ -50,9 +51,10 @@ class LinkedPatch(
         id: String,
         index: Int,
         prefix: String,
+        globalStructs: Set<GlslType.Struct>,
         findUpstreamComponent: (ProgramNode) -> Component
     ): Component {
-        return ShaderComponent(id, index, prefix, this, findUpstreamComponent)
+        return ShaderComponent(id, index, prefix, this, globalStructs, findUpstreamComponent)
     }
 
     override fun toString(): String = "LinkedPatch(shader=${shader.title})"

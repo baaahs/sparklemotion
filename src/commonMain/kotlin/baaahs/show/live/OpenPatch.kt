@@ -174,6 +174,7 @@ class OpenPatch(
             id: String,
             index: Int,
             prefix: String,
+            globalStructs: Set<GlslType.Struct>,
             findUpstreamComponent: (ProgramNode) -> Component
         ): Component {
 //            feed.incomingLinks.forEach { (toPortId, fromLink) ->

@@ -34,14 +34,13 @@ data class MovingHeadParams(
     companion object {
         val struct = GlslType.Struct(
             "MovingHeadParams",
-            "pan" to GlslType.Float,
-            "tilt" to GlslType.Float,
-            "colorWheel" to GlslType.Float,
-            "dimmer" to GlslType.Float,
-            "prism" to GlslType.Bool,
-            "prismRotation" to GlslType.Float,
-            defaultInitializer = GlslExpr("MovingHeadParams(0., 0., 0., 1., false, 0.)"),
-            outputOverride = { varName: String ->
+            GlslType.Field("pan", GlslType.Float),
+            GlslType.Field("tilt", GlslType.Float),
+            GlslType.Field("colorWheel", GlslType.Float),
+            GlslType.Field("dimmer", GlslType.Float, defaultInitializer = GlslExpr("1.")),
+            GlslType.Field("prism", GlslType.Bool),
+            GlslType.Field("prismRotation", GlslType.Float),
+            outputRepresentationOverride = { varName: String ->
                 """
                     vec4(
                         ${varName}.pan,

@@ -1,6 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -177,7 +177,7 @@ kotlin {
                 implementation(npm("clsx", "^2.0.0"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
-                implementation(npm("three", "^0.120.0", generateExternals = false))
+                implementation(npm("three", "^0.120.0"))
                 implementation(npm("react-mosaic-component", "^6.1.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("ace-builds", "1.28.0"))
@@ -275,7 +275,7 @@ tasks.named<ProcessResources>("jsProcessResources") {
     }
 
     doLast {
-        createResourceFilesList(File(buildDir, "processedResources/js/main"))
+        createResourceFilesList(buildDir("processedResources/js/main"))
     }
 }
 
@@ -288,12 +288,12 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 
     doLast {
-        createResourceFilesList(File(buildDir, "processedResources/jvm/main"))
+        createResourceFilesList(buildDir("processedResources/jvm/main"))
     }
 }
 
 tasks.named<DokkaTask>("dokkaHtml") {
-    outputDirectory.set(buildDir.resolve("javadoc"))
+    outputDirectory.set(buildDir("javadoc"))
 }
 
 // This task is deprecated, use `run` instead.
@@ -305,24 +305,24 @@ tasks.create<JavaExec>("runBrainJvm") {
     dependsOn("compileKotlinJvm")
     mainClass.set("baaahs.sm.brain.sim.BrainMainKt")
 
-    val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
-    classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
+    val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilation
+    classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles!!
 }
 
 tasks.create<JavaExec>("runBridgeJvm") {
     dependsOn("compileKotlinJvm")
     mainClass.set("baaahs.sm.bridge.SimulatorBridgeKt")
 
-    val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilationToRunnableFiles
-    classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles
+    val jvmMain = kotlin.targets["jvm"].compilations["main"] as KotlinCompilation
+    classpath = files(jvmMain.output) + jvmMain.runtimeDependencyFiles!!
 }
 
 tasks.create<JavaExec>("runGlslJvmTests") {
     dependsOn("compileTestKotlinJvm")
     mainClass.set("baaahs.RunOpenGLTestsKt")
 
-    val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilationToRunnableFiles
-    classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles
+    val jvmTest = kotlin.targets["jvm"].compilations["test"] as KotlinCompilation
+    classpath = files(jvmTest.output) + jvmTest.runtimeDependencyFiles!!
     if (isMac()) {
         jvmArgs = listOf("-XstartOnFirstThread") // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
     }
@@ -364,3 +364,5 @@ gradle.projectsEvaluated {
         }
     }
 }
+
+fun Project.buildDir(path: String) = layout.buildDirectory.file(path).get().asFile

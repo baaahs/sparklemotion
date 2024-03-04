@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePort
 
-sealed class GlslType constructor(
+sealed class GlslType(
     val glslLiteral: String,
     val defaultInitializer: GlslExpr = GlslExpr("$glslLiteral(0.)")
 ) {
@@ -18,28 +18,30 @@ sealed class GlslType constructor(
     class Struct(
         val name: String,
         val fields: List<Field>,
-        defaultInitializer: GlslExpr = initializerFor(fields),
+        defaultInitializer: GlslExpr? = null,
         val outputRepresentationOverride: ((varName: String) -> String)? = null,
-    ) : GlslType(name, defaultInitializer) {
+    ) : GlslType(name, defaultInitializer ?: initializerFor(fields)) {
         constructor(glslStruct: GlslCode.GlslStruct)
                 : this(glslStruct.name, glslStruct.fields.entries.toFields())
 
         constructor(
             name: String,
-            vararg fields: Field
-        ) : this(name, listOf(*fields))
+            vararg fields: Field,
+            defaultInitializer: GlslExpr? = null,
+            outputRepresentationOverride: ((varName: String) -> String)? = null
+        ) : this(name, listOf(*fields), defaultInitializer, outputRepresentationOverride)
 
         constructor(
             name: String,
-            vararg fields: Pair<String, GlslType>
+            vararg fields: Pair<String, GlslType>,
         ) : this(name, mapOf(*fields).entries.toFields())
 
         constructor(
             name: String,
             vararg fields: Pair<String, GlslType>,
-            defaultInitializer: GlslExpr,
-            outputOverride: ((varName: String) -> String)?
-        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputOverride)
+            defaultInitializer: GlslExpr? = null,
+            outputRepresentationOverride: ((varName: String) -> String)?
+        ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputRepresentationOverride)
 
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
@@ -86,7 +88,7 @@ sealed class GlslType constructor(
                     fields.forEachIndexed { index, field ->
                         if (index > 0)
                             append(", ")
-                        append(field.type.defaultInitializer.s)
+                        append(field.defaultInitializer?.s ?: field.type.defaultInitializer.s)
                     }
                     append(" }")
                 }.toString().let { GlslExpr(it) }
@@ -112,6 +114,7 @@ sealed class GlslType constructor(
         val type: GlslType,
         val description: String? = null,
         val deprecated: Boolean = false,
+        val defaultInitializer: GlslExpr? = null
     ) {
         fun toGlsl(
             namespace: GlslCode.Namespace?,
