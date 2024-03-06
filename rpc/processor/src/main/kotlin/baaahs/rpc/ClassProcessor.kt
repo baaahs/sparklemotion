@@ -49,18 +49,17 @@ class ClassProcessor(
             out.appendLine("}")
             out.appendLine()
 
-            out.appendLine("override public val commands: List<$commandPortName<*, *>> = listOf(")
+            rpcMethods.forEach { rpcMethod ->
+                rpcMethod.emitCommandPortVar(fullName, out)
+            }
+
+            out.appendLine("override public val commands: List<$commandPortName<$fullName, *, *>> = listOf(")
             out.indent {
                 rpcMethods.forEach { rpcMethod ->
-                    rpcMethod.emitCommandPort(out)
-                    out.appendLine(",")
+                    out.appendLine("${rpcMethod.fnName}Command,")
                 }
             }
             out.appendLine(")\n")
-
-            rpcMethods.forEach { rpcMethod ->
-                rpcMethod.emitCommandPortVar(out)
-            }
 
             rpcMethods.forEach { rpcMethod ->
                 rpcMethod.emitSerializationClass(out)
@@ -128,15 +127,15 @@ class ClassProcessor(
 
     class RpcMethod(fn: KSFunctionDeclaration, overloadNumber: Int) {
         private val fnNameOverloadable = fn.simpleName.getShortName()
-        private val fnName = fnNameOverloadable + if (overloadNumber > 0) overloadNumber else ""
+        val fnName = fnNameOverloadable + if (overloadNumber > 0) overloadNumber else ""
         private val className = fnName[0].uppercase() + fnName.substring(1)
         private val params = fn.parameters.map { RpcParam(it) }
         private val genericParams = params.filter { it.type.isParameterized }
         private val returnType = RpcType(fn.returnType!!.resolve())
         private val nonUnitReturn = returnType.fullName != "kotlin.Unit"
 
-        fun emitCommandPortVar(out: IndentingWriter) {
-            out.append("private val ${fnName}Command = ")
+        fun emitCommandPortVar(fullName: String, out: IndentingWriter) {
+            out.append("private val ${fnName}Command: $commandPortName<$fullName, ${className}Command, ${className}Response> = ")
             emitCommandPort(out)
             out.appendLine("\n")
         }
@@ -153,6 +152,7 @@ class ClassProcessor(
                 } else {
                     out.appendLine("kotlin.Unit.serializer(),")
                 }
+                out.appendLine("{ ${className}Response($fnName()) },")
                 out.appendLine("serialModule")
             }
             out.append(")")

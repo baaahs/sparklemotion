@@ -12,13 +12,13 @@ import kotlinx.coroutines.withContext
 
 public abstract class WebSocketRpcEndpoint internal constructor(
     private val handlerScope: CoroutineScope,
-    private val findCommandHandler: (String) -> CommandHandler<*, *>
+    private val findCommandHandler: (String) -> CommandHandler<*, *, *>
 ): RpcEndpoint {
     private val verbose = false
-    private val commandHandlers: MutableMap<String, CommandHandler<*, *>> = hashMapOf()
-    private val responseHandlers: MutableMap<String, ResponseHandler<*, *>> = hashMapOf()
+    private val commandHandlers: MutableMap<String, CommandHandler<*, *, *>> = hashMapOf()
+    private val responseHandlers: MutableMap<String, ResponseHandler<*, *, *>> = hashMapOf()
 
-    public fun <C, R> commandSender(commandPort: CommandPort<C, R>): suspend (command: C) -> R {
+    public fun <T, C, R> commandSender(commandPort: CommandPort<T, C, R>): suspend (command: C) -> R {
         val name = commandPort.name
         if (responseHandlers.containsKey(name))
             error("Command channel $name already exists.")
@@ -28,10 +28,10 @@ public abstract class WebSocketRpcEndpoint internal constructor(
         return { command: C -> commandChannel.send(command) }
     }
 
-    public abstract fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String)
+    public abstract fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String)
 
-    override fun <C, R> listenOnCommandChannel(
-        commandPort: CommandPort<C, R>,
+    override fun <T: Any, C, R> listenOnCommandChannel(
+        commandPort: CommandPort<T, C, R>,
         callback: suspend (command: C) -> R
     ) {
         val name = commandPort.name
@@ -106,7 +106,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
             }
         }
 
-        public fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
+        public fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
             if (isConnected) {
                 if (verbose) {
                     logger.debug { "$connectionInfo: command ${commandPort.name} $commandId ${commandPort.toJson(command)}" }
@@ -123,7 +123,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
             }
         }
 
-        public fun <C, R> sendReply(commandPort: CommandPort<C, R>, reply: R, commandId: String) {
+        public fun <T, C, R> sendReply(commandPort: CommandPort<T, C, R>, reply: R, commandId: String) {
             if (isConnected) {
                 if (verbose) {
                     logger.debug {
@@ -142,7 +142,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
             }
         }
 
-        public fun <C, R> sendError(commandPort: CommandPort<C, R>, message: String, commandId: String) {
+        public fun <T, C, R> sendError(commandPort: CommandPort<T, C, R>, message: String, commandId: String) {
             if (isConnected) {
                 if (verbose) {
                     logger.debug { "$connectionInfo: commandError ${commandPort.name} $commandId $message" }
@@ -197,9 +197,9 @@ internal class CommandHandler<T : Any, C, R>(
     }
 }
 
-internal class ResponseHandler<C, R>(
-    private val commandPort: CommandPort<C, R>,
-    private val sendCommand: (CommandPort<C, R>, C, String) -> Unit
+internal class ResponseHandler<T, C, R>(
+    private val commandPort: CommandPort<T, C, R>,
+    private val sendCommand: (CommandPort<T, C, R>, C, String) -> Unit
 ) : RpcCommandChannel<C, R> {
     private val mutex = Mutex()
     private val handlers = mutableMapOf<String, CommandHandler<R>>()

@@ -87,9 +87,9 @@ object WebSocketRpcClientSpec : Spek({
         context("services") {
             val serviceDesc by value {
                 object : RpcServiceDesc<TestService> {
-                    override val commands: List<CommandPort<*, *>>
+                    override val commands: List<CommandPort<*, *, *>>
                         get() = listOf(
-                            CommandPort("testMethod", String.serializer(), String.serializer())
+                            CommandPort<Unit, String, String>("testMethod", String.serializer(), String.serializer(), { TODO() })
                         )
                 }
             }
@@ -183,7 +183,7 @@ object WebSocketRpcClientSpec : Spek({
         }
 
         context("commands") {
-            val commandPort by value { CommandPort("testCommand", String.serializer(), String.serializer()) }
+            val commandPort by value { CommandPort<Unit, String, String>("testCommand", String.serializer(), String.serializer(), { TODO() }) }
             val serverCommandHandler by value {
                 val x: suspend (String) -> String = { s: String -> "reply for $s" }; x
             }
@@ -247,10 +247,11 @@ object WebSocketRpcClientSpec : Spek({
             describe("async command handling") {
                 context("when a command suspends") {
                     val otherCommandPort by value {
-                        CommandPort(
+                        CommandPort<Unit, String, String>(
                             "otherCommand",
                             String.serializer(),
-                            String.serializer()
+                            String.serializer(),
+                            { TODO() }
                         )
                     }
                     val serverOtherCommandChannel by value {

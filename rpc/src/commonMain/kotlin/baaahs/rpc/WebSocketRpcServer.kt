@@ -32,7 +32,7 @@ public class WebSocketRpcServer(
         }
     }
 
-    public fun <C, R> listenOnCommandChannel(commandPort: CommandPort<C, R>, callback: suspend (C) -> R) {
+    public fun <T, C, R> listenOnCommandChannel(commandPort: CommandPort<T, C, R>, callback: suspend (C) -> R) {
         TODO("not implemented")
     }
 
@@ -55,11 +55,11 @@ public class WebSocketRpcServer(
 
     internal inner class WebSocketRpcServerEndpoint(
         tcpConnection: Network.TcpConnection
-    ) : WebSocketRpcEndpoint(handlerScope, { commandPath -> findHandler(commandPath) }) {
+    ) : WebSocketRpcEndpoint(handlerScope, { commandPath -> findHandler(commandPath); TODO() }) {
         val connection =
             Connection("Client-side connection from ${tcpConnection.fromAddress} to server at ${tcpConnection.toAddress}")
 
-        fun <T : Any, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
+        override fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
             connection.sendCommand(commandPort, command, commandId)
         }
     }

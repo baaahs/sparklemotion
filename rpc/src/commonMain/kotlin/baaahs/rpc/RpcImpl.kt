@@ -21,8 +21,8 @@ public class CommandPort<T, C, R>(
 }
 
 public interface RpcCommandRecipient {
-    public fun <C, R> commandSender(
-        commandPort: CommandPort<C, R>
+    public fun <T, C, R> commandSender(
+        commandPort: CommandPort<T, C, R>
     ): suspend (command: C) -> R
 }
 
@@ -49,8 +49,8 @@ public interface RpcServer {
 }
 
 public interface RpcEndpoint {
-    public fun <C, R> listenOnCommandChannel(
-        commandPort: CommandPort<C, R>, callback: suspend (command: C) -> R
+    public fun <T: Any, C, R> listenOnCommandChannel(
+        commandPort: CommandPort<T, C, R>, callback: suspend (command: C) -> R
     )
 }
 

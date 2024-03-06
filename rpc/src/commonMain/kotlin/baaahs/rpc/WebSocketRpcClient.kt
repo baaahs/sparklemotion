@@ -19,7 +19,7 @@ public class WebSocketRpcClient(
     private val port: Int,
     private val path: String,
     handlerScope: CoroutineScope
-) : WebSocketRpcEndpoint(handlerScope), RpcClient {
+) : WebSocketRpcEndpoint(handlerScope, { TODO() }), RpcClient {
     private val observable = Observable()
     private var connection: Connection? = null
 
@@ -48,7 +48,7 @@ public class WebSocketRpcClient(
         link.connectWebSocket(serverAddress, port, path, connection)
     }
 
-    override fun <C, R> sendCommand(commandPort: CommandPort<C, R>, command: C, commandId: String) {
+    override fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
         connection?.sendCommand(commandPort, command, commandId)
     }
 
