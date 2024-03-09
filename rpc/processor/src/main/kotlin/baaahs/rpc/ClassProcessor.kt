@@ -133,26 +133,30 @@ class ClassProcessor(
         private val genericParams = params.filter { it.type.isParameterized }
         private val returnType = RpcType(fn.returnType!!.resolve())
         private val nonUnitReturn = returnType.fullName != "kotlin.Unit"
+        private val commandClassName = "${className}Command"
+        private val maybeTypeParams = params
+            .filter { it.type.isParameterized }
+            .joinToString(", ") { it.type.name }
+            .wrapIfNotEmpty { "<$it>" }
+        private val responseClassName = if (nonUnitReturn) "${className}Response" else "kotlin.Unit"
 
         fun emitCommandPortVar(fullName: String, out: IndentingWriter) {
-            out.append("private val ${fnName}Command: $commandPortName<$fullName, ${className}Command, ${className}Response> = ")
+            out.append("private val ${fnName}Command: $commandPortName<$fullName, $commandClassName$maybeTypeParams, $responseClassName> = ")
             emitCommandPort(out)
             out.appendLine("\n")
         }
 
-        fun emitCommandPort(out: IndentingWriter) {
+        private fun emitCommandPort(out: IndentingWriter) {
             out.appendLine("$commandPortName(")
             out.indent {
                 out.appendLine("\"\$channelPrefix/$fnName\",")
                 val serializers = genericParams
                     .joinToString(", ") { "${it.type.name.lowercase()}Serializer" }
-                out.appendLine("${className}Command.serializer(${serializers}),")
-                if (nonUnitReturn) {
-                    out.appendLine("${className}Response.serializer(),")
-                } else {
-                    out.appendLine("kotlin.Unit.serializer(),")
-                }
-                out.appendLine("{ ${className}Response($fnName()) },")
+                out.appendLine("$commandClassName.serializer(${serializers}),")
+                out.appendLine("$responseClassName.serializer(),")
+                out.append("{ ")
+                emitCommandInvocation("", out)
+                out.appendLine(" },")
                 out.appendLine("serialModule")
             }
             out.append(")")
@@ -160,12 +164,8 @@ class ClassProcessor(
 
         fun emitSerializationClass(out: IndentingWriter) {
             out.appendLine("@kotlinx.serialization.Serializable")
-            val maybeTypeParams = params
-                .filter { it.type.isParameterized }
-                .joinToString(", ") { it.type.name }
-                .wrapIfNotEmpty { "<$it>" }
 
-            out.append("private class ${className}Command${maybeTypeParams}(")
+            out.append("private class $commandClassName$maybeTypeParams(")
             if (params.isNotEmpty()) {
                 out.indent {
                     out.append(params.joinToString(",") { rpcParam ->
@@ -201,24 +201,31 @@ class ClassProcessor(
                 }) =")
             out.indent {
                 out.appendLine(
-                    "${fnName}Sender(${className}Command(${params.joinToString(", ") { it.name }}))" +
+                    "${fnName}Sender($commandClassName(${params.joinToString(", ") { it.name }}))" +
                             if (nonUnitReturn) ".value" else ""
                 )
             }
         }
 
         fun emitListenCommand(out: IndentingWriter) {
-            val paramList = params.joinToString(", ") { "it.${it.name}" }
             out.appendLine("endpoint.listenOnCommandChannel(${fnName}Command) {")
             out.indent {
-                val invoke = "handler.$fnNameOverloadable($paramList)"
-                if (nonUnitReturn) {
-                    out.appendLine("${className}Response($invoke)")
-                } else {
-                    out.appendLine(invoke)
-                }
+                emitCommandInvocation("handler.", out)
+                out.appendLine()
             }
             out.appendLine("}")
+        }
+
+        private fun emitCommandInvocation(context: String = "", out: IndentingWriter) {
+            val paramList = params.joinToString(", ") { "it.${it.name}" }
+            val invoke = "$context$fnNameOverloadable($paramList)"
+            if (nonUnitReturn) {
+                out.append("${className}Response(")
+                out.append(invoke)
+                out.append(")")
+            } else {
+                out.append(invoke)
+            }
         }
 
         inner class RpcParam(param: KSValueParameter) {
