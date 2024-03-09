@@ -2,7 +2,7 @@
 
 [![CircleCI:main](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
 
-[Discord](https://discord.gg/gj4STNUQ) | [Demo](https://baaahs.github.io/sparklemotion)
+[Discord](https://discord.gg/cxW2XtpqjS) | [Demo](https://baaahs.github.io/sparklemotion)
 
 Sparkle Motion is the system used to control the lights on [BAAAHS](http://baaahs.org), but it's
 designed so it could be applied to pretty much any lighting project. It includes a browser-based
@@ -94,13 +94,13 @@ connected to a laptop.
 
 ## Simulator
 
-The entire system can be run within a web browser in simulation mode. Every component is modeled in software
+The entire system can be run within a web browser in simulation mode ([here!](https://baaahs.github.io/sparklemotion)). Every component is modeled in software
 so you can see how it will behave in the real world.
 
 
 -->
 
-## Old Documentation
+## Very Old Documentation
 * [Show API](show_api.md) (outdated)
 * [API docs](https://baaahs.github.io/sparklemotion/doc/sparklemotion/) (outdated)
 
