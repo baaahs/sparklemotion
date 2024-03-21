@@ -5,11 +5,13 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.Time
 import baaahs.util.asDoubleSeconds
+import kotlinx.datetime.Instant
 import org.deepsymmetry.beatlink.*
 import org.deepsymmetry.beatlink.data.*
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.concurrent.thread
 import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Listens to all connected CDJs' beat and tempo updates.
@@ -209,7 +211,8 @@ class BeatLinkBeatSource(
         ) {
             val beatIntervalSec = 60.0 / beat.effectiveTempo
             val beatIntervalMs = (beatIntervalSec * 1000).toInt()
-            val now = clock.now().asDoubleSeconds
+            val nowInstant = clock.now()
+            val now = nowInstant.asDoubleSeconds
             val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
             if (currentBeat.beatIntervalMs != beatIntervalMs ||
                 abs(currentBeat.measureStartTime - measureStartTime) > 0.003
@@ -221,14 +224,22 @@ class BeatLinkBeatSource(
                 notifyListeners { it.onBeatData(currentBeat) }
 
                 updatePlayerState(deviceNumber) { existingPlayerState ->
-                    val trackStartTime = getTrackStartTime(deviceNumber, now)
-                    println("change trackStartTime by ${(existingPlayerState.trackStartTime ?: 0.0) - (trackStartTime ?: 0.0)}")
+                    val trackStartTime = getTrackStartTime(deviceNumber, nowInstant)
+                    showChange(trackStartTime, existingPlayerState)
                     existingPlayerState.copy(trackStartTime = trackStartTime)
                 }
             }
             lastBeatAt = now
         } else {
             logger.debug { "${beat.deviceName} on channel $deviceNumber: Ignoring beat ${beat.beatWithinBar}" }
+        }
+    }
+
+    private fun showChange(trackStartTime: Instant?, existingPlayerState: PlayerState) {
+        if (trackStartTime != null) {
+            existingPlayerState.trackStartTime?.run {
+                println("change trackStartTime by ${this - trackStartTime}")
+            }
         }
     }
 
@@ -240,7 +251,7 @@ class BeatLinkBeatSource(
         val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
 
         updatePlayerState(deviceNumber) { existingPlayerState ->
-            println("change trackStartTime by ${(existingPlayerState.trackStartTime ?: 0.0) - ((trackStartTime ?: 0.0))}")
+            showChange(trackStartTime, existingPlayerState)
             existingPlayerState.withWaveform(waveformScale) {
                 for (i in 0 until frameCount step waveformScale) {
                     val height = detail.segmentHeight(i, waveformScale)
@@ -253,21 +264,21 @@ class BeatLinkBeatSource(
         }
     }
 
-    private fun getTrackStartTime(deviceNumber: Int, now: Time) = if (timeFinder.isRunning) {
+    private fun getTrackStartTime(deviceNumber: Int, now: Instant) = if (timeFinder.isRunning) {
         val position = timeFinder.getLatestPositionFor(deviceNumber)
         if (position != null) {
-            now - (position.milliseconds / 1000)
+            now - position.milliseconds.milliseconds
         } else {
             logger.warn { "No track start time for device $deviceNumber." }
             null
         }
     } else {
-        // TODO: null; value for debugging
-        now - (200f / 1000)
+        // TODO: should be null; value is just for debugging STOPSHIP
+        now - 200.milliseconds
     }
 
     companion object {
         private val logger = Logger("BeatLinkBeatSource")
-        private val waveformScale = 8
+        private const val waveformScale = 8
     }
 }
