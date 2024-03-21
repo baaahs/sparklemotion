@@ -1,6 +1,6 @@
 package baaahs.doc
 
-import baaahs.rpc.RpcImpl
+import baaahs.rpc.RpcService
 import baaahs.sm.webapi.DocumentCommands
 import baaahs.sm.webapi.getImpl
 import kotlinx.serialization.KSerializer
@@ -11,10 +11,10 @@ interface DocumentType {
     val channelName: String
     val fileType: FileType
 
-    fun <T> getRpcImpl(
+    fun <T> getRpcService(
         tSerializer: KSerializer<T>,
         serializersModule: SerializersModule
-    ): RpcImpl<DocumentCommands<T>> =
+    ): RpcService<DocumentCommands<T>> =
         DocumentCommands.getImpl("pinky/$channelName", tSerializer, serializersModule)
 }
 

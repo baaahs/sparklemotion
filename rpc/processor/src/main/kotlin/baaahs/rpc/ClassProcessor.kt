@@ -39,13 +39,13 @@ class ClassProcessor(
         out.appendLine("/** RPC implementation for [${baseName}]. */")
         out.appendLine("class ${baseName}Rpc$typeParams(")
         emitConstructorParams()
-        out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName>, ${RpcServiceDesc::class.qualifiedName!!}<$fullName> {")
+        out.appendLine(") : ${RpcImpl::class.qualifiedName!!}<$fullName>, ${RpcService::class.qualifiedName!!}<$fullName> {")
         out.indent {
             out.appendLine("override fun createSender(endpoint: $rpcEndpointName) =")
             out.indent { out.appendLine("Sender(endpoint as $rpcClientName)") }
             out.appendLine()
-            out.appendLine("override fun createReceiver(endpoint: $rpcEndpointName, handler: $fullName) {")
-            out.indent { out.appendLine("Receiver(endpoint, handler)") }
+            out.appendLine("override fun createReceiver(handler: $fullName) {")
+            out.indent { out.appendLine("Receiver(handler)") }
             out.appendLine("}")
             out.appendLine()
 
@@ -68,10 +68,6 @@ class ClassProcessor(
             out.appendLine("inner class Sender(endpoint: $rpcClientName) : $fullName {")
             out.indent {
                 rpcMethods.forEach { rpcMethod ->
-                    rpcMethod.emitCommandSender(out)
-                }
-                out.appendLine()
-                rpcMethods.forEach { rpcMethod ->
                     rpcMethod.emitSenderFunction(out)
                 }
             }
@@ -79,7 +75,7 @@ class ClassProcessor(
 
             out.appendLine()
 
-            out.appendLine("inner class Receiver(endpoint: $rpcEndpointName, handler: $fullName) {")
+            out.appendLine("inner class Receiver(handler: $fullName) {")
             out.indent {
                 out.appendLine("init {")
                 out.indent {
@@ -188,10 +184,6 @@ class ClassProcessor(
             }
         }
 
-        fun emitCommandSender(out: IndentingWriter) {
-            out.appendLine("private val ${fnName}Sender = endpoint.commandSender(${fnName}Command)")
-        }
-
         fun emitSenderFunction(out: IndentingWriter) {
             out.appendLine(
                 "override suspend fun $fnNameOverloadable(${
@@ -201,7 +193,7 @@ class ClassProcessor(
                 }) =")
             out.indent {
                 out.appendLine(
-                    "${fnName}Sender($commandClassName(${params.joinToString(", ") { it.name }}))" +
+                    "${fnName}Command.transmit($commandClassName(${params.joinToString(", ") { it.name }}))" +
                             if (nonUnitReturn) ".value" else ""
                 )
             }

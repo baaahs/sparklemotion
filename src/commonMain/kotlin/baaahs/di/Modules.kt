@@ -29,6 +29,7 @@ import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
+import baaahs.rpc.ServerBuilder
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
 import baaahs.sim.FakeDmxUniverse
@@ -115,6 +116,7 @@ interface PinkyModule : KModule {
                         get<Job>(Named.pinkyJob) +
                         coroutineExceptionHandler
             }
+            scoped { ServerBuilder() }
             scoped { PubSub.Server(get(), CoroutineScope(get(Named.pinkyContext))) }
             scoped<PubSub.Endpoint> { get<PubSub.Server>() }
             scoped<PubSub.IServer> { get<PubSub.Server>() }

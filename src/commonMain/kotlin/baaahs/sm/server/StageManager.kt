@@ -12,6 +12,7 @@ import baaahs.gl.render.RenderManager
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsServerBackend
+import baaahs.rpc.ServerBuilder
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.scene.SceneChangeListener
@@ -29,6 +30,7 @@ import baaahs.util.globalLaunch
 class StageManager(
     toolchain: Toolchain,
     private val renderManager: RenderManager,
+    private val serverBuilder: ServerBuilder,
     private val pubSub: PubSub.Server,
     private val dataDir: Fs.File,
     private val fixtureManager: FixtureManager,
@@ -149,7 +151,7 @@ class StageManager(
     }
 
     inner class ShowDocumentService : DocumentService<Show, ShowState>(
-        pubSub, plugins.showStore, dataDir,
+        serverBuilder, pubSub, plugins.showStore, dataDir,
         ShowState.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer
@@ -205,7 +207,7 @@ class StageManager(
     }
 
     inner class SceneDocumentService : DocumentService<Scene, Unit>(
-        pubSub, plugins.sceneStore, dataDir,
+        serverBuilder, pubSub, plugins.sceneStore, dataDir,
         Scene.createTopic(
             toolchain.plugins.serialModule,
             fsSerializer

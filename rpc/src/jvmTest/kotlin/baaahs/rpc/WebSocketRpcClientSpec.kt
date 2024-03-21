@@ -17,6 +17,7 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 
+// TODO: Move back to commonTest when ksp handles test stuff better.
 object WebSocketRpcClientSpec : Spek({
     describe<WebSocketRpcClient> {
         val dispatcher by value { StandardTestDispatcher() }
@@ -85,23 +86,16 @@ object WebSocketRpcClientSpec : Spek({
 //        }
 
         context("services") {
-            val serviceDesc by value {
-                object : RpcServiceDesc<TestService> {
-                    override val commands: List<CommandPort<*, *, *>>
-                        get() = listOf(
-                            CommandPort<Unit, String, String>("testMethod", String.serializer(), String.serializer(), { TODO() })
-                        )
-                }
-            }
             val path by value { "testService" }
+            val rpcService by value { TestServiceRpc(path) }
             val serviceHandler by value<TestService> {
                 object : TestService {
                     override suspend fun testMethod(arg: String): String = "reply for $arg"
                     override suspend fun testMethodReturningService(arg: String): AnotherTestService = TODO()
                 }
             }
-            val rpcServer by value { server.registerServiceHandler(path, serviceDesc, serviceHandler) }
-            val rpcClient by value { client.remoteService(path, serviceDesc) }
+            val rpcServer by value { server.registerServiceHandler(path, rpcService, serviceHandler,) }
+            val rpcClient by value { client.remoteService(path, rpcService) }
 
             beforeEachTest {
                 server.run {}
@@ -183,7 +177,13 @@ object WebSocketRpcClientSpec : Spek({
         }
 
         context("commands") {
-            val commandPort by value { CommandPort<Unit, String, String>("testCommand", String.serializer(), String.serializer(), { TODO() }) }
+            val commandPort by value {
+                CommandPort<Unit, String, String>(
+                    "testCommand",
+                    String.serializer(),
+                    String.serializer(),
+                    { TODO() })
+            }
             val serverCommandHandler by value {
                 val x: suspend (String) -> String = { s: String -> "reply for $s" }; x
             }
@@ -304,13 +304,16 @@ fun GroupBody.describe(fn: KFunction<*>, skip: Skip = Skip.No, body: Suite.() ->
 fun GroupBody.describe(prop: KProperty<*>, skip: Skip = Skip.No, body: Suite.() -> Unit) =
     describe(prop.toString(), skip, body)
 
+@Service
 interface TestService {
     suspend fun testMethod(arg: String): String
 
     //    suspend fun testMethodReturningSequence(arg: String): Sequence<String>
     suspend fun testMethodReturningService(arg: String): AnotherTestService
 
-    open class Stub : TestService {
+    companion object
+
+Z    open class Stub : TestService {
         override suspend fun testMethod(arg: String): String = TODO()
         override suspend fun testMethodReturningService(arg: String): AnotherTestService = TODO()
     }

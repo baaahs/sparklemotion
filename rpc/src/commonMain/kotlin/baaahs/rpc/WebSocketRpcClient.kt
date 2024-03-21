@@ -6,6 +6,7 @@ import baaahs.ui.Observer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonElement
 
 // TODO: dedupe this with other globalLaunch
 private fun globalLaunch(block: suspend CoroutineScope.() -> Unit) =
@@ -26,9 +27,8 @@ public class WebSocketRpcClient(
     override var state: RpcClient.State = RpcClient.State.Disconnected
         private set
 
-    override fun <T : Any> remoteService(path: String, service: RpcServiceDesc<T>): T {
-        TODO("not implemented")
-    }
+    override fun <T : Any> remoteService(path: String, service: RpcService<T>): T =
+        service.createSender(this)
 
     init {
         globalLaunch {
@@ -48,9 +48,21 @@ public class WebSocketRpcClient(
         link.connectWebSocket(serverAddress, port, path, connection)
     }
 
-    override fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
+    public override suspend fun sendCommand(
+        commandPort: CommandPort<*, *, *>,
+        command: JsonElement,
+        commandId: String
+    ) {
         connection?.sendCommand(commandPort, command, commandId)
     }
+
+    override suspend fun awaitReply(commandPort: CommandPort<*, *, *>, commandId: String): JsonElement {
+        TODO("not implemented")
+    }
+
+    //    override fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
+//        connection?.sendCommand(commandPort, command, commandId)
+//    }
 
     override fun addObserver(observer: Observer): Observer = observable.addObserver(observer)
 

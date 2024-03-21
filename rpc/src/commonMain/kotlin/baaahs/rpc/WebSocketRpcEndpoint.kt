@@ -9,6 +9,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 public abstract class WebSocketRpcEndpoint internal constructor(
     private val handlerScope: CoroutineScope,
@@ -18,17 +21,17 @@ public abstract class WebSocketRpcEndpoint internal constructor(
     private val commandHandlers: MutableMap<String, CommandHandler<*, *, *>> = hashMapOf()
     private val responseHandlers: MutableMap<String, ResponseHandler<*, *, *>> = hashMapOf()
 
-    public fun <T, C, R> commandSender(commandPort: CommandPort<T, C, R>): suspend (command: C) -> R {
-        val name = commandPort.name
-        if (responseHandlers.containsKey(name))
-            error("Command channel $name already exists.")
-        val commandChannel = ResponseHandler(commandPort, ::sendCommand).also {
-            responseHandlers[name] = it
-        }
-        return { command: C -> commandChannel.send(command) }
-    }
+//    public fun <T, C, R> commandSender(commandPort: CommandPort<T, C, R>): suspend (command: C) -> R {
+//        val name = commandPort.name
+//        if (responseHandlers.containsKey(name))
+//            error("Command channel $name already exists.")
+//        val commandChannel = ResponseHandler(commandPort, ::sendCommand).also {
+//            responseHandlers[name] = it
+//        }
+//        return { command: C -> commandChannel.send(command) }
+//    }
 
-    public abstract fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String)
+//    public abstract fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String)
 
     override fun <T: Any, C, R> listenOnCommandChannel(
         commandPort: CommandPort<T, C, R>,
@@ -40,7 +43,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
         commandHandlers[name] = CommandHandler(commandPort) { command -> callback(command) }
     }
 
-    public inner class Connection(
+    public abstract inner class Connection(
         private val name: String
     ) : Network.WebSocketListener {
         private var tcpConnection: Network.TcpConnection? = null
@@ -70,13 +73,36 @@ public abstract class WebSocketRpcEndpoint internal constructor(
             isConnected = false
         }
 
+        internal abstract fun handleInvoke(rpcMessage: RpcInvokeMessage)
+
+        private fun handleSuccess(rpcMessage: RpcInvokeMessage) {
+
+        }
+        private fun handleError(rpcMessage: RpcInvokeMessage) {
+
+        }
+
+        internal fun send(rpcMessage: RpcMessage) {
+            sendMessage(
+                Json.encodeToString(RpcMessage.serializer(), rpcMessage)
+                    .encodeToByteArray()
+            )
+        }
+
         private suspend fun doReceive(bytes: ByteArray) {
+            val json = bytes.decodeToString()
+            val rpcMessage = Json.decodeFromString(RpcMessage.serializer(), json)
+            logger.debug { "[$name] received: $json" }
+            when (rpcMessage) {
+                is RpcInvokeMessage -> handleInvoke(rpcMessage)
+                is RpcSuccessMessage -> handleSuccess(rpcMessage)
+                is RpcErrorMessage -> handleError(rpcMessage)
+            }
             val reader = ByteArrayReader(bytes)
             when (val command = reader.readString()) {
                 "command" -> {
                     val name = reader.readString()
                     val commandId = reader.readString()
-                    logger.debug { "command $name $commandId"}
                     val commandChannel = commandHandlers[name]
                         ?: error("No command channel named $name.")
                     commandChannel.receiveCommand(reader.readString(), commandId, this, handlerScope)
@@ -106,7 +132,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
             }
         }
 
-        public fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: C, commandId: String) {
+        public fun <T, C, R> sendCommand(commandPort: CommandPort<T, C, R>, command: JsonElement, commandId: String) {
             if (isConnected) {
                 if (verbose) {
                     logger.debug { "$connectionInfo: command ${commandPort.name} $commandId ${commandPort.toJson(command)}" }
@@ -116,7 +142,7 @@ public abstract class WebSocketRpcEndpoint internal constructor(
                 writer.writeString("command")
                 writer.writeString(commandPort.name)
                 writer.writeString(commandId)
-                writer.writeString(commandPort.toJson(command))
+                writer.writeString(Json.encodeToString<JsonElement>(command.))
                 sendMessage(writer.toBytes())
             } else {
                 logger.warn { "$connectionInfo: not connected; dropping command ${commandPort.name}" }

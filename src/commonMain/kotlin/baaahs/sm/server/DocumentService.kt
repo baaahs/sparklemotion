@@ -6,12 +6,15 @@ import baaahs.client.document.DataStore
 import baaahs.doc.DocumentType
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
+import baaahs.rpc.RpcHandler
+import baaahs.rpc.ServerBuilder
 import baaahs.sm.webapi.DocumentCommands
 import baaahs.ui.Observable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
 abstract class DocumentService<T : Any, TState>(
+    serverBuilder: ServerBuilder,
     pubSub: PubSub.Server,
     private val dataStore: DataStore<T>,
     private val dataDir: Fs.File,
@@ -43,11 +46,14 @@ abstract class DocumentService<T : Any, TState>(
         }
 
     init {
-        val rpc = documentType.getRpcImpl(tSerializer, SerializersModule {
+        val rpc = documentType.getRpcService(tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(serializersModule)
         })
-        rpc.createReceiver(pubSub, DocumentCommandsHandler())
+//        rpc.createReceiver(pubSub, DocumentCommandsHandler())
+
+        val handler = RpcHandler(rpc, DocumentCommandsHandler())
+        serverBuilder.registerServiceHandler("pinky/${documentType.channelName}", handler)
     }
 
     abstract fun createDocument(): T

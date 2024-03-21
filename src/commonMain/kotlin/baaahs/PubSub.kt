@@ -499,7 +499,7 @@ abstract class PubSub {
         }
     }
 
-    abstract class Endpoint : RpcEndpoint {
+    abstract class Endpoint {
         protected abstract val commandChannels: CommandChannels
 
         protected fun <T> buildTopicInfo(topic: Topic<T>): TopicInfo<T> {
@@ -508,7 +508,7 @@ abstract class PubSub {
 
         abstract fun <T : Any?> openChannel(topic: Topic<T>, initialValue: T, onUpdate: (T) -> Unit): Channel<T>
 
-        override fun <C, R> listenOnCommandChannel(
+        fun <C, R> listenOnCommandChannel(
             commandPort: CommandPort<C, R>,
             callback: suspend (command: C) -> R
         ) {
@@ -523,7 +523,7 @@ abstract class PubSub {
     class Server(
         httpServer: Network.HttpServer,
         private val handlerScope: CoroutineScope
-    ) : Endpoint(), IServer, RpcEndpoint {
+    ) : Endpoint(), IServer {
         private val publisher = Origin("Server-side publisher")
         private val topics: Topics = Topics()
         override val commandChannels: CommandChannels = CommandChannels()

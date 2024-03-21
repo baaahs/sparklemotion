@@ -70,7 +70,7 @@ abstract class DocumentManager<T, TState>(
         }
 
     private val serverCommands =
-        documentType.getRpcImpl(tSerializer, SerializersModule {
+        documentType.getRpcService(tSerializer, SerializersModule {
             include(remoteFsSerializer.serialModule)
             include(plugins.serialModule)
         }).createSender(pubSub)
