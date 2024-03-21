@@ -35,7 +35,7 @@ fun Time.asMillis(): Long = (this * 1000).roundToLong()
 fun Float.asMillis(): Int = (this * 1000).roundToInt()
 
 fun Duration.toHHMMSS(): String {
-    val seconds = this.toDouble(DurationUnit.SECONDS)
+    val seconds = this.toInt(DurationUnit.SECONDS)
     val hours = seconds / 3600
     val minutes = seconds / 60 % 60
     val secs = seconds % 60
