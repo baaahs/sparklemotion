@@ -171,7 +171,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                 val waveformVisHeight = (layoutDimens.height - beatVisHeight) *
                         playerState.heightUnits() / playerStateHeightUnits
 
-                div(+Styles.waveformVisualizer) {
+                div(+Styles.waveformVisualizerDetail) {
                     inlineStyles {
                         top = layoutY.px
                         height = waveformVisHeight.px * .75
@@ -197,7 +197,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
                     }
                 }
 
-                div(+Styles.waveformVisualizer) {
+                div(+Styles.waveformVisualizerOverview) {
                     inlineStyles {
                         top = layoutY.px + (waveformVisHeight * .75).px
                         height = waveformVisHeight.px * .25
@@ -253,6 +253,13 @@ object Styles : StyleSheet("plugin-Beatlink", isStatic = true) {
         right = 0.px
         height = 0.pct
         transition(duration = .5.s)
+    }
+    val waveformVisualizerDetail by css(waveformVisualizer) {
+        borderBottom = Border(.5.px, BorderStyle.solid, Color.orange)
+        paddingBottom = 1.px
+    }
+    val waveformVisualizerOverview by css(waveformVisualizer) {
+        borderBottom = Border(1.px, BorderStyle.solid, Color.white)
     }
 
     private val overlayText by css {
