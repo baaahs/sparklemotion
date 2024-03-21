@@ -10,6 +10,7 @@ import mui.material.Alert
 import mui.material.AlertColor
 import mui.material.AlertTitle
 import mui.material.Backdrop
+import mui.system.Union
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -31,7 +32,7 @@ private val NotifierView = xComponent<NotifierProps>("Notifier") { props ->
                         Alert {
                             attrs.classes = jso { this.message = -Styles.serverNoticeAlertMessage }
 
-                            attrs.severity = AlertColor.error
+                            attrs.severity = AlertColor.error.unsafeCast<Union>()
                             attrs.onClose = { notifier.confirmServerNotice(serverNotice.id) }
 
                             AlertTitle {
