@@ -645,7 +645,7 @@ object GlslGenerationSpec : Spek({
                     struct FixtureInfo {
                         vec3 position;            
                         vec3 rotation; // in Euler angles
-                        vec3 transformation;
+                        mat4 transformation;
                         vec3 boundaryMin;
                         vec3 boundaryMax;
                     };
@@ -749,9 +749,14 @@ object GlslGenerationSpec : Spek({
             override(shaderText) {
                 /**language=glsl*/
                 """
+                    struct YetAnotherStruct {
+                        float yasss;
+                    };
+
                     struct AnotherStruct {
                         float first;
-                        float second;
+                        float second[2];
+                        YetAnotherStruct yassses[3];
                     };
                     AnotherStruct a;
 
@@ -801,10 +806,15 @@ object GlslGenerationSpec : Spek({
                             bool prism;
                             float prismRotation;
                         };
-                        
+
+                        struct p0_untitledShader_YetAnotherStruct {
+                            float yasss;
+                        };
+
                         struct p0_untitledShader_AnotherStruct {
                             float first;
-                            float second;
+                            float second[2];
+                            p0_untitledShader_YetAnotherStruct yassses[3];
                         };
 
                         struct p0_untitledShader_MovingHeadParams {
@@ -819,10 +829,10 @@ object GlslGenerationSpec : Spek({
 
                         MovingHeadParams p0_untitledShaderi_result = MovingHeadParams(0., 0., 0., 1., false, 0.);
 
-                        #line 5 0
+                        #line 10 0
                         p0_untitledShader_AnotherStruct p0_untitledShader_a;
 
-                        #line 15 0
+                        #line 20 0
                         MovingHeadParams p0_untitledShader_main() {
                             p0_untitledShader_AnotherStruct b;
                             return MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
@@ -1140,6 +1150,10 @@ object GlslGenerationSpec : Spek({
                         // SparkleMotion-generated GLSL
 
                         layout(location = 0) out vec4 sm_result;
+
+                        struct p0_untitledShader_BeatInfo {
+                            float beat;
+                        };
 
                         // Shader: Untitled Shader; namespace: p0
                         // Untitled Shader

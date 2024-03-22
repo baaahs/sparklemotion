@@ -100,6 +100,7 @@ object GlslAnalyzerSpec : Spek({
                             uniform float time;
                             uniform vec2  resolution;
                             uniform float blueness;
+                            uniform float bluenesses[3];
         
                             void main( void ) {
                                 vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -118,7 +119,8 @@ object GlslAnalyzerSpec : Spek({
                                 InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
                                 InputPort("time", ContentType.Time, GlslType.Float, "Time"),
                                 InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
-                                InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness")
+                                InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness"),
+                                InputPort("bluenesses", ContentType.unknown(GlslType.Float.arrayOf(3)), GlslType.Float.arrayOf(3), "Bluenesses")
                             )
                     }
 

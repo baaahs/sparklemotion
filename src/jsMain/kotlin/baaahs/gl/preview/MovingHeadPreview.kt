@@ -37,13 +37,23 @@ class MovingHeadPreview(
     private var width: Int,
     private var height: Int,
     model: Model,
-    private val preRenderCallback: (() -> Unit)? = null
+    private val preRenderCallback: ((ShaderPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = MovingHeadDevice
     override val renderEngine = ComponentRenderEngine(
         gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
     )
+    override var program: GlslProgram? = null
+        set(value) {
+            field = value
+            renderEngine.setRenderPlan(
+                FixtureTypeRenderPlan(
+                    listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
+                )
+            )
+        }
+
     private var movingHeadProgram: GlslProgram? = null
     private val renderTargets = model.allEntities
         .filterIsInstance<MovingHead>()
@@ -65,17 +75,7 @@ class MovingHeadPreview(
 
     override fun destroy() {
         stop()
-        movingHeadProgram?.release()
         renderEngine.release()
-    }
-
-    override fun setProgram(program: GlslProgram?) {
-        renderEngine.setRenderPlan(
-            FixtureTypeRenderPlan(
-                listOf(ProgramRenderPlan(program, renderTargets.values.toList()))
-            )
-        )
-        movingHeadProgram = program
     }
 
     override fun render() {
@@ -86,7 +86,7 @@ class MovingHeadPreview(
 
     private suspend fun asyncRender() {
         if (movingHeadProgram != null) {
-            preRenderCallback?.invoke()
+            preRenderCallback?.invoke(this)
 
             renderEngine.draw()
             renderEngine.finish()

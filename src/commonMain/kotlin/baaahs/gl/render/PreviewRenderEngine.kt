@@ -18,8 +18,6 @@ class PreviewRenderEngine(
         gl.runInContext { Quad(gl, listOf(Quad.Rect(height.toFloat(), 0f, 0f, width.toFloat()))) }
 
     fun useProgram(glslProgram: GlslProgram?) {
-        this.program?.release()
-
         this.program = glslProgram
         glslProgram?.setResolution()
     }

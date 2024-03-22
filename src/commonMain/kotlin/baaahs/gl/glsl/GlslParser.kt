@@ -329,7 +329,7 @@ class GlslParser {
 
                 // Escaped closing brace/bracket required for Kotlin 1.5+/JS or we fail with "lone quantifier brackets".
                 @Suppress("RegExpRedundantEscape")
-                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(\\s*\\[\\s*\\d+\\s*\\])?(\\s*=.*)?;", RegexOption.MULTILINE)
+                return Regex("(?:(const|uniform|varying)\\s+)?(\\w+)\\s+(\\w+)(?:\\s*\\[\\s*(\\d+)\\s*\\])?(\\s*=.*)?;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (qualifier, type, name, arraySpec, initExpr) = it.destructured
                         var (isConst, isUniform, isVarying) = arrayOf(false, false, false)
@@ -339,8 +339,13 @@ class GlslParser {
                             "varying" -> isVarying = true
                         }
                         val (trimmedText, trimmedLineNumber) = chomp(text, lineNumber)
+                        var glslType = context.findType(type)
+                        if (arraySpec.isNotEmpty()) {
+                            val arity = arraySpec.toInt()
+                            glslType = glslType.arrayOf(arity)
+                        }
                         GlslCode.GlslVar(
-                            name, context.findType(type), trimmedText, isConst, isUniform, isVarying,
+                            name, glslType, trimmedText, isConst, isUniform, isVarying,
                             initExpr.ifEmpty { null }, trimmedLineNumber, comments
                         )
                     }
@@ -494,7 +499,7 @@ class GlslParser {
                             qualifier = trimmed
                         }
 
-                        type == null -> type = GlslType.from(trimmed)
+                        type == null -> type = context.findType(trimmed)
 
                         name == null -> name = trimmed
 

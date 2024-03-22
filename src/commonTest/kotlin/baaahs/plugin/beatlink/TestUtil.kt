@@ -1,16 +1,12 @@
 package baaahs.plugin.beatlink
 
-import baaahs.ui.Observable
+class FakeBeatSource : BeatSource {
+    private val listeners = BeatLinkListeners()
 
-class FakeBeatSource(
-    beatData: BeatData = BeatData(0.0, 0, confidence = 0f)
-) : Observable(), BeatSource {
-    private var fakeData = beatData
-
-    override fun getBeatData(): BeatData = fakeData
+    override fun addListener(listener: BeatLinkListener) = listeners.addListener(listener)
+    override fun removeListener(listener: BeatLinkListener) = listeners.removeListener(listener)
 
     fun setBeatData(beatData: BeatData) {
-        fakeData = beatData
-        notifyChanged()
+        listeners.notifyListeners { it.onBeatData(beatData) }
     }
 }

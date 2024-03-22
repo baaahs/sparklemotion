@@ -72,6 +72,10 @@ data class ImageFeed(override val title: String) : Feed {
 
                 override fun bind(glslProgram: GlslProgram): ProgramFeedContext =
                     ImageProgramFeedContext(glslProgram, getVarName(id), imagePicker, texture, gl)
+
+                override fun release() {
+                    gl.check { deleteTexture(texture) }
+                }
             }
         }
     }
@@ -100,7 +104,7 @@ data class ImageFeed(override val title: String) : Feed {
                     image = when (imageRef) {
                         is ImageRef.Local -> Image.fromDataUrl(imageRef.dataUrl)
                         null -> null
-                        else -> error("Unsupported nmageRef type $imageRef")
+                        else -> error("Unsupported ImageRef type $imageRef")
                     }
                 }
             }

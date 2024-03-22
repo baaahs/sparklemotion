@@ -1,6 +1,5 @@
 package baaahs.gl.patch
 
-import baaahs.gl.glsl.GlslType
 import baaahs.show.live.OpenPatch
 
 class LinkedProgram(
@@ -11,6 +10,8 @@ class LinkedProgram(
     internal val linkNodes: Map<ProgramNode, LinkNode> // For diagnostics only.
 ) {
     fun toGlsl(): String {
+        val outputContentType = rootNode.outputPort.contentType
+
         val buf = ProgramBuilder()
         buf.append("#ifdef GL_ES\n")
         buf.append("precision mediump float;\n")
@@ -18,21 +19,22 @@ class LinkedProgram(
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
         buf.append("\n")
-        with(rootNode.outputPort) {
-            buf.append("layout(location = 0) out ${contentType.outputRepresentation.glslLiteral} sm_result;\n")
-            buf.append("\n")
+        buf.append("layout(location = 0) out ${outputContentType.outputRepresentation.glslLiteral} sm_result;\n")
+        buf.append("\n")
 
-            if (contentType.glslType is GlslType.Struct) {
-                buf.append(contentType.glslType.toGlsl(null, emptySet()))
-            }
+        val outputStructs = outputContentType.glslType.collectTransitiveStructs()
+        outputStructs.forEach { struct ->
+            buf.append(struct.toGlsl(null, emptySet()))
+        }
+
+        val globalStructs = (outputStructs + components.flatMap { it.exportedStructs }).distinct()
+
+        components.forEach { component ->
+            component.appendStructs(buf, globalStructs)
         }
 
         components.forEach { component ->
-            component.appendStructs(buf)
-        }
-
-        components.forEach { component ->
-            component.appendDeclarations(buf)
+            component.appendDeclarations(buf, globalStructs)
         }
 
         appendMain(buf)

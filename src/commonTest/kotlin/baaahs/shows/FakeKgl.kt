@@ -24,6 +24,12 @@ class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeK
         try { return fn() } finally { fakeKgl.nestLevel-- }
     }
 
+    override fun getGlInt(parameter: Int): Int =
+        mapOf(
+            GL_MAX_TEXTURE_SIZE to 1024 * 16,
+            GL_MAX_TEXTURE_IMAGE_UNITS to 8
+        )[parameter] ?: error("unknown parameter $parameter")
+
     fun getTextureConfig(textureUnit: Int, target: Int): FakeKgl.TextureConfig {
         return fakeKgl.getTextureConfig(textureUnit, target)
             ?: error("no texture bound on unit $textureUnit")

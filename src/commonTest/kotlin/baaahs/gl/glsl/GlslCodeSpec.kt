@@ -35,7 +35,7 @@ object GlslCodeSpec : Spek({
 
             context("arrays") {
                 override(text) { "vec4 colorsArray[9];" }
-                expectValue(GlslCode.GlslVar("colorsArray", GlslType.Vec4, "vec4 colorsArray[9];")) { variable }
+                expectValue(GlslCode.GlslVar("colorsArray", GlslType.Vec4.arrayOf(9), "vec4 colorsArray[9];")) { variable }
             }
 
             context("const") {

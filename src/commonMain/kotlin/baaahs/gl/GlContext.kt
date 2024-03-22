@@ -18,7 +18,10 @@ abstract class GlContext(
     abstract fun <T> runInContext(fn: () -> T): T
     abstract suspend fun <T> asyncRunInContext(fn: suspend () -> T): T
 
-    internal val maxTextureUnit = 31 // TODO: should be gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+    abstract fun getGlInt(parameter: Int): Int
+
+    val maxTextureUnit by lazy { getGlInt(GL_MAX_TEXTURE_IMAGE_UNITS) }
+    val maxTextureSize by lazy { getGlInt(GL_MAX_TEXTURE_SIZE) }
 
     /**
      * When a GlContext shares a rendering canvas with others, [rasterOffet] indicates this

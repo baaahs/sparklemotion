@@ -6,6 +6,7 @@ import baaahs.getWebGLContext
 import com.danielgergely.kgl.Kgl
 import com.danielgergely.kgl.KglJs
 import org.khronos.webgl.WebGLRenderingContext
+import web.gl.GLenum
 import web.gl.WebGL2RenderingContext
 import web.html.HTMLCanvasElement
 import web.prompts.alert
@@ -55,6 +56,9 @@ actual object GlBase {
     ) : GlContext(kgl, glslVersion, checkForErrors, state) {
         override fun <T> runInContext(fn: () -> T): T = fn()
         override suspend fun <T> asyncRunInContext(fn: suspend () -> T): T = fn()
+
+        override fun getGlInt(parameter: Int): Int =
+            webgl.getParameter(parameter as GLenum) as Int
 
         // For RGBA32F in FloatsResultType.
         override fun checkIfResultBufferCanContainFloats(required: Boolean): Boolean {

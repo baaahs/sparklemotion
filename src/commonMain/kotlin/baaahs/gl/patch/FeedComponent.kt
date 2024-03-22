@@ -19,14 +19,16 @@ class FeedComponent(
     override val invokeFromMain: Boolean
         get() = true
 
-    override fun appendStructs(buf: ProgramBuilder) {
-        val glslType = feed.contentType.glslType
-        if (glslType is GlslType.Struct) {
-            buf.append(glslType.toGlsl(null, emptySet()))
+    override val exportedStructs: List<GlslType.Struct>
+        get() = feed.contentType.glslType.collectTransitiveStructs()
+
+    override fun appendStructs(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {
+        exportedStructs.forEach { struct ->
+            buf.append(struct.toGlsl(null, emptySet()))
         }
     }
 
-    override fun appendDeclarations(buf: ProgramBuilder) {
+    override fun appendDeclarations(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {
         buf.append("// Feed: ", feed.title, "\n")
         feed.appendDeclaration(buf, varName)
         buf.append("\n")
