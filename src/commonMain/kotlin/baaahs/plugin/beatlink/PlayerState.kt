@@ -4,8 +4,6 @@ import baaahs.util.seconds
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 data class PlayerState(
@@ -38,6 +36,11 @@ data class PlayerState(
             waveformScale = waveformScale
         )
     }
+
+    override fun toString(): String {
+        return "PlayerState(trackTitle=$trackTitle, trackArtist=$trackArtist, encodedWaveform=$waveform, waveformScale=$waveformScale, trackStartTime=$trackStartTime, mode=$mode, isOnAir=$isOnAir)"
+    }
+
 
     companion object {
         /** Per [org.deepsymmetry.beatlink.Util#halfFrameToTime], there are 150 samples per second. */

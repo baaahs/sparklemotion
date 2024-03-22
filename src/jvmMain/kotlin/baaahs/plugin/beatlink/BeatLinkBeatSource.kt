@@ -196,7 +196,6 @@ class BeatLinkBeatSource(
     @Synchronized
     @VisibleForTesting
     fun newBeat(beat: Beat) {
-        println("newBeat($beat)")
         val deviceNumber = beat.deviceNumber
 
         if (
@@ -214,6 +213,11 @@ class BeatLinkBeatSource(
             val nowInstant = clock.now()
             val now = nowInstant.asDoubleSeconds
             val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
+
+            println("newBeat($beat) drift=${
+                "%+1.3f".format(currentBeat.measureStartTime - measureStartTime)
+            }s")
+
             if (currentBeat.beatIntervalMs != beatIntervalMs ||
                 abs(currentBeat.measureStartTime - measureStartTime) > 0.003
             ) {

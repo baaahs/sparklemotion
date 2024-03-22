@@ -55,6 +55,12 @@ data class Waveform(
         }
     }
 
+    override fun toString(): String = buildString {
+        append("Waveform(")
+        append(encodedWaveform.length / 8)
+        append(" samples)")
+    }
+
     class Builder(private val waveformScale: Int) {
         internal val encodedWaveform = StringBuilder()
 
@@ -65,4 +71,6 @@ data class Waveform(
 
         fun build(): Waveform = Waveform(encodedWaveform.toString(), waveformScale)
     }
+
+
 }
