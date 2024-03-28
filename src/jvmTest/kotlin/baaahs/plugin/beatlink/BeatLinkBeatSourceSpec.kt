@@ -20,30 +20,30 @@ object BeatLinkBeatSourceSpec : Spek({
         val fakeClock by value { FakeClock(10.0) }
         val beatSource by value { BeatLinkBeatSource(fakeClock) }
 
-        context("beforeAnyBeatsReceived") {
-            it("currentBeatIsZero") {
+        context("before any beats have been received") {
+            it("current beat is zero") {
                 expect(beatSource.currentBeat).toBe(BeatData(0.0, 0, confidence = 0f))
             }
         }
 
-        context("whenNewBeatIsReceived") {
-            it("beatDataIsUpdated") {
+        context("when a new beat is received") {
+            it("beat data is updated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
                 expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
             }
         }
 
-        context("whenMidBarNewBeatIsReceived") {
-            it("beatDataIsUpdated") {
+        context("when a mid-bar new beat is received") {
+            it("beat data is updated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 2))
                 expect(beatSource.currentBeat).toBe(BeatData(10.0 - 60 / 123.4, 486, confidence = 1f))
             }
         }
 
-        context("whenMidBarNewBeatIsReceivedWithSmallMeasureStartVariance") {
-            it("beatDataIsNotUpdated") {
+        context("when a mid-bar new beat is received with a small measure start variance") {
+            it("beat data is not updated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
 
@@ -58,8 +58,8 @@ object BeatLinkBeatSourceSpec : Spek({
             }
         }
 
-        context("whenMidBarNewBeatIsReceivedWithSmallMeasureStartVarianceAndDifferentTempo") {
-            it("beatDataIsUpdated") {
+        context("when a mid-bar new beat is received with a small measure start variance and a different tempo") {
+            it("beat data is updated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
 
