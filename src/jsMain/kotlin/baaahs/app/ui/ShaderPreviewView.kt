@@ -11,7 +11,6 @@ import baaahs.gl.shader.type.PaintShader
 import baaahs.show.Shader
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import external.IntersectionObserver
 import kotlinx.css.*
 import materialui.icon
 import mui.material.CircularProgress
@@ -27,6 +26,7 @@ import react.useContext
 import styled.StyleSheet
 import styled.inlineStyles
 import web.dom.Element
+import web.dom.observers.IntersectionObserver
 import web.html.HTMLDivElement
 
 private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
@@ -73,7 +73,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
 
         gl = preview.renderEngine.gl
 
-        val intersectionObserver = IntersectionObserver(callback = { entries ->
+        val intersectionObserver = IntersectionObserver(callback = { entries, _ ->
             if (entries.any { it.isIntersecting }) {
                 preview.start()
             } else {
@@ -145,7 +145,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         }
         withCleanup { observer.remove() }
 
-        val intersectionObserver = IntersectionObserver(callback = { entries ->
+        val intersectionObserver = IntersectionObserver(callback = { entries, _ ->
             if (entries.any { it.isIntersecting }) {
                 if (builder.state == ShaderBuilder.State.Unbuilt) {
                     builder.startBuilding()

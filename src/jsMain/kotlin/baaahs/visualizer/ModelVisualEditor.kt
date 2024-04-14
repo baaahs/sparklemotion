@@ -7,13 +7,13 @@ import baaahs.model.ModelData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
-import external.IntersectionObserver
 import three.js.Group
 import three.js.Object3D
 import three_ext.OrbitControls
 import three_ext.TransformControls
 import three_ext.clear
 import three_ext.toVector3F
+import web.dom.observers.IntersectionObserver
 
 class ModelVisualEditor(
     var mutableModel: MutableModel,
@@ -71,7 +71,7 @@ class ModelVisualEditor(
             sceneNeedsUpdate = true
         }
 
-    private val intersectionObserver = IntersectionObserver(callback = { entries ->
+    private val intersectionObserver = IntersectionObserver(callback = { entries, _ ->
         val isVisible = entries.any { it.isIntersecting }
         if (isVisible) startRendering() else stopRendering()
     }).apply { observe(canvas) }
