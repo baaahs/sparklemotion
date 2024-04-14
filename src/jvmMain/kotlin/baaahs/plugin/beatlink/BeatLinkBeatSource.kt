@@ -21,7 +21,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * 2) If more than one CDJ is on-air, pick the CDJ that is the Tempo Master
  */
 class BeatLinkBeatSource(
-    private val clock: Clock
+    private val clock: Clock,
+    private val timeFinder: TimeFinder = TimeFinder.getInstance()
 ) : Observable(), BeatSource {
     private val deviceFinder = DeviceFinder.getInstance()
     private val virtualCdj = VirtualCdj.getInstance()
@@ -29,7 +30,6 @@ class BeatLinkBeatSource(
     private val metadataFinder = MetadataFinder.getInstance()
     private val analysisTagFinder = AnalysisTagFinder.getInstance()
     private val waveformFinder = WaveformFinder.getInstance()
-    private val timeFinder = TimeFinder.getInstance()
 
     private var playerStates = PlayerStates()
     private val listeners = BeatLinkListeners()
@@ -41,17 +41,28 @@ class BeatLinkBeatSource(
     private var lastBeatAt: Time? = null
 
     private val currentlyAudibleChannels: MutableSet<Int> = hashSetOf()
+    private val trackPositionListeners = mutableMapOf<Int, TrackPositionListener>()
 
     fun start() {
         logger.info { "Starting Beat Sync" }
 
         deviceFinder.addDeviceAnnouncementListener(object : DeviceAnnouncementListener {
             override fun deviceLost(announcement: DeviceAnnouncement) {
-                logger.info { "Lost device ${announcement.deviceNumber}: ${announcement.deviceName}" }
+                val deviceNumber = announcement.deviceNumber
+                logger.info { "Lost device $deviceNumber: ${announcement.deviceName}" }
+                trackPositionListeners.remove(deviceNumber)?.let {
+                    timeFinder.removeTrackPositionListener(it)
+                }
             }
 
             override fun deviceFound(announcement: DeviceAnnouncement) {
-                logger.info { "Found device ${announcement.deviceNumber}: ${announcement.deviceName}" }
+                val deviceNumber = announcement.deviceNumber
+                logger.info { "Found device $deviceNumber: ${announcement.deviceName}" }
+                trackPositionListeners.computeIfAbsent(deviceNumber) {
+                    logger.info { "Adding track position listener for device $deviceNumber" }
+                    TrackPositionListener { update -> onTrackPositionUpdate(deviceNumber, update) }
+                        .also { timeFinder.addTrackPositionListener(deviceNumber, it) }
+                }
             }
         })
 
@@ -78,13 +89,7 @@ class BeatLinkBeatSource(
         beatListener.addOnAirListener { audibleChannels -> channelsOnAir(audibleChannels) }
 
         metadataFinder.addTrackMetadataListener { update ->
-            println("metadataChanged = $update")
-            updatePlayerState(update.player) { playerState ->
-                playerState.copy(
-                    trackTitle = update.metadata.title,
-                    trackArtist = update.metadata.artist.label
-                )
-            }
+            onTrackMetadata(update.player, update.metadata)
         }
 
         analysisTagFinder.addAnalysisTagListener({ update ->
@@ -193,9 +198,48 @@ class BeatLinkBeatSource(
         }
     }
 
+    private var firstBeat: Instant? = null
+    private var lastBeat: Instant? = null
+
+    @VisibleForTesting
+    fun onTrackPositionUpdate(deviceNumber: Int, update: TrackPositionUpdate?) {
+        logger.info { "Track position update for $deviceNumber: $update" }
+        if (update != null) {
+            val beatGrid: BeatGrid? = update.beatGrid
+            if (beatGrid == null) {
+                logger.warn { "No beat grid for device $deviceNumber." }
+                return
+            }
+
+            val bpm = beatGrid.getBpm(update.beatNumber) / 100.0
+            val effectiveTempo = bpm * update.pitch
+            logger.info { "Beat info: $bpm$beatGrid" }
+
+            val beatIntervalSec = 60.0 / effectiveTempo
+            val beatIntervalMs = (beatIntervalSec * 1000).toInt()
+            val measureStartTime = update.timestamp - beatIntervalSec * (update.beatWithinBar - 1)
+
+            currentBeat = BeatData(measureStartTime, beatIntervalMs, confidence = 1.0f)
+            logger.debug { "$deviceNumber: Setting bpm from beat ${update.beatWithinBar}" }
+            notifyChanged()
+
+            notifyListeners { it.onBeatData(currentBeat) }
+        }
+    }
+
     @Synchronized
     @VisibleForTesting
     fun newBeat(beat: Beat) {
+        return
+        if (firstBeat == null) {
+            firstBeat = kotlinx.datetime.Clock.System.now()
+        }
+        val nowInstant = clock.now()
+        val now = nowInstant.asDoubleSeconds
+//        println("[${(nowInstant - firstBeat!!).inWholeMilliseconds}] newBeat($beat) " +
+//                "at ${(nowInstant - (lastBeat ?: nowInstant)).inWholeMilliseconds}ms")
+        lastBeat = nowInstant
+
         val deviceNumber = beat.deviceNumber
 
         if (
@@ -210,8 +254,6 @@ class BeatLinkBeatSource(
         ) {
             val beatIntervalSec = 60.0 / beat.effectiveTempo
             val beatIntervalMs = (beatIntervalSec * 1000).toInt()
-            val nowInstant = clock.now()
-            val now = nowInstant.asDoubleSeconds
             val measureStartTime = now - beatIntervalSec * (beat.beatWithinBar - 1)
 
             println("newBeat($beat) drift=${
@@ -229,7 +271,7 @@ class BeatLinkBeatSource(
 
                 updatePlayerState(deviceNumber) { existingPlayerState ->
                     val trackStartTime = getTrackStartTime(deviceNumber, nowInstant)
-                    showChange(trackStartTime, existingPlayerState)
+                    showChange(trackStartTime, existingPlayerState, "newBeat")
                     existingPlayerState.copy(trackStartTime = trackStartTime)
                 }
             }
@@ -239,14 +281,26 @@ class BeatLinkBeatSource(
         }
     }
 
-    private fun showChange(trackStartTime: Instant?, existingPlayerState: PlayerState) {
+    @VisibleForTesting
+    fun onTrackMetadata(deviceNumber: Int, trackMetadata: TrackMetadata?) {
+        println("$deviceNumber metadataChanged = $trackMetadata")
+        updatePlayerState(deviceNumber) { playerState ->
+            playerState.copy(
+                trackTitle = trackMetadata?.title,
+                trackArtist = trackMetadata?.artist?.label
+            )
+        }
+    }
+
+    private fun showChange(trackStartTime: Instant?, existingPlayerState: PlayerState, source: String) {
         if (trackStartTime != null) {
             existingPlayerState.trackStartTime?.run {
-                println("change trackStartTime by ${this - trackStartTime}")
+                println("change trackStartTime by ${this - trackStartTime} ($source)")
             }
         }
     }
 
+    @VisibleForTesting
     fun onWaveformDetailChanged(deviceNumber: Int, detail: WaveformDetail?) {
         println("onWaveformDetailChanged($deviceNumber, $detail)")
         if (detail == null) return
@@ -255,7 +309,7 @@ class BeatLinkBeatSource(
         val trackStartTime = getTrackStartTime(deviceNumber, clock.now())
 
         updatePlayerState(deviceNumber) { existingPlayerState ->
-            showChange(trackStartTime, existingPlayerState)
+            showChange(trackStartTime, existingPlayerState, "onWaveformDetailChanged")
             existingPlayerState.withWaveform(waveformScale) {
                 for (i in 0 until frameCount step waveformScale) {
                     val height = detail.segmentHeight(i, waveformScale)
@@ -271,7 +325,7 @@ class BeatLinkBeatSource(
     private fun getTrackStartTime(deviceNumber: Int, now: Instant) = if (timeFinder.isRunning) {
         val position = timeFinder.getLatestPositionFor(deviceNumber)
         if (position != null) {
-            now - position.milliseconds.milliseconds
+            now - position.milliseconds.milliseconds / position.pitch
         } else {
             logger.warn { "No track start time for device $deviceNumber." }
             null
