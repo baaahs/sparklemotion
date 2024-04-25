@@ -6,6 +6,7 @@ import com.danielgergely.kgl.TextureResource
 import js.objects.jso
 import js.promise.catch
 import org.khronos.webgl.TexImageSource
+import web.events.EventHandler
 import web.html.HTMLVideoElement
 import web.media.streams.ConstrainULongRange
 import web.navigator.navigator
@@ -23,7 +24,7 @@ object BrowserWebCamVideoProvider : VideoProvider {
         setAttribute("style", "display:none")
         autoplay = true
         playsInline = true
-        onplay = { isPlaying = true }
+        onplay = EventHandler { isPlaying = true }
     }.also {
         document.body.appendChild(it)
     }

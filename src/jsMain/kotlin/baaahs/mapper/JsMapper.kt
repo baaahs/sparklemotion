@@ -35,12 +35,14 @@ import three_ext.*
 import web.animations.requestAnimationFrame
 import web.canvas.CanvasImageSource
 import web.canvas.CanvasRenderingContext2D
-import web.canvas.ImageBitmap
 import web.cssom.Cursor
 import web.events.Event
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLImageElement
+import web.images.ImageBitmap
 import web.prompts.prompt
 import web.uievents.KeyboardEvent
 import web.uievents.MouseEvent
@@ -199,9 +201,9 @@ class JsMapper(
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        ui3dCanvas.addEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
-        ui3dCanvas.addEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
-        ui3dCanvas.addEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
+        ui3dCanvas.addEventListener(MouseEvent.mouseDown(), ::mouseDown)
+        ui3dCanvas.addEventListener(MouseEvent.mouseMove(), ::mouseMove)
+        ui3dCanvas.addEventListener(MouseEvent.mouseUp(), ::mouseUp)
 
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -211,9 +213,9 @@ class JsMapper(
     }
 
     fun onUnmount() {
-        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
-        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
-        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
+        ui3dCanvas.removeEventListener(MouseEvent.mouseDown(), ::mouseDown)
+        ui3dCanvas.removeEventListener(MouseEvent.mouseMove(), ::mouseMove)
+        ui3dCanvas.removeEventListener(MouseEvent.mouseUp(), ::mouseUp)
 
         onClose()
     }

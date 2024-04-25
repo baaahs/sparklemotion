@@ -2,7 +2,7 @@ package baaahs.ui
 
 import baaahs.document
 import baaahs.get2DContext
-import js.objects.jso
+import js.objects.Object
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
@@ -19,6 +19,7 @@ import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
+import styled.GlobalStyles
 import styled.StyleSheet
 import web.cssom.ClassName
 import web.cssom.Length
@@ -29,7 +30,6 @@ import web.events.EventTarget
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
-import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 
@@ -87,7 +87,14 @@ val EventTarget?.checked: Boolean
         get() = (this as HTMLInputElement).checked
 
 val RuleSet.name: String
-    get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")
+    get() = CssBuilder().apply {
+        +this@name
+    }.classes.joinToString(" ").also {
+        web.scheduling.requestIdleCallback( { deadline ->
+
+        })
+        GlobalStyles.injectScheduled()
+    }
 
 val RuleSet.selector: String
     get() = ".$name"
@@ -232,14 +239,6 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
-val disableScroll = {
-    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
-}
-val enableScroll = {
-    document.body.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault)
-}
-
 object Events {
     object Button {
         const val primary = 0
@@ -300,10 +299,6 @@ fun Element.isParentOf(other: Element): Boolean {
     return false
 }
 
-val groove = "groove".unsafeCast<BorderStyle>()
-val inset = "inset".unsafeCast<BorderStyle>()
-val outset = "outset".unsafeCast<BorderStyle>()
-
 fun StyledElement.transition(
     property: String = "all",
     duration: Time = 0.s,
@@ -331,12 +326,11 @@ fun RElementBuilder<*>.copyFrom(fromProps: Props?) {
     copyFrom(fromProps.unsafeCast<CopyableProps>())
 }
 
-private val jsObj = js("Object")
 fun RElementBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     if (fromProps == null) return
 
     val from = fromProps.asDynamic()
-    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    val keys = Object.keys(fromProps).unsafeCast<Array<String>>()
     keys.forEach { key -> attrs.asDynamic()[key] = from[key] }
 }
 
@@ -344,6 +338,6 @@ fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     if (fromProps == null) return
 
     val from = fromProps.asDynamic()
-    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    val keys = Object.keys(fromProps).unsafeCast<Array<String>>()
     keys.forEach { key -> setProp(key, from[key]) }
 }

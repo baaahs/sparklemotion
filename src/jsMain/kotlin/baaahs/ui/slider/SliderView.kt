@@ -10,7 +10,8 @@ import react.dom.div
 import react.dom.events.KeyboardEvent
 import react.dom.events.PointerEvent
 import web.dom.Element
-import web.events.EventHandler
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLElement
 import web.uievents.MouseButton
 import kotlin.math.abs
@@ -62,20 +63,27 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         pixelToValue.domain = getSliderDomain(slider.current, vertical)
     }
 
-    val getEventValue by handler(domain, pixelToValue, vertical, pointerDownOffset) { e: PointerEvent<*> ->
+    val getEventValueReact by handler(domain, pixelToValue, vertical, pointerDownOffset) { e: PointerEvent<*> ->
         domain.clamp(
             pixelToValue.getValue(if (vertical) e.clientY else e.pageX) +
                     (pointerDownOffset.current ?: 0.0)
         )
     }
 
-    val handlePointerMove by handler(getEventValue) { e: PointerEvent<*> ->
+    val getEventValue by handler(domain, pixelToValue, vertical, pointerDownOffset) { e: web.uievents.PointerEvent ->
+        domain.clamp(
+            pixelToValue.getValue(if (vertical) e.clientY.toDouble() else e.pageX) +
+                    (pointerDownOffset.current ?: 0.0)
+        )
+    }
+
+    val handlePointerMove by handler(getEventValue) { e: web.uievents.PointerEvent ->
         val updateValue = getEventValue(e)
         activeHandle?.changeTo(updateValue, false)
         Unit
     }
 
-    val handlePointerUp by handler(getEventValue, handlePointerMove, slider) { e: PointerEvent<*> ->
+    val handlePointerUp by handler(getEventValue, handlePointerMove, slider) { e: web.uievents.PointerEvent ->
         val updateValue = getEventValue(e)
         activeHandle?.let {
             it.changeTo(updateValue, true)
@@ -86,8 +94,8 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         val sliderEl = slider.current!!
         sliderEl.releasePointerCapture(e.pointerId)
         sliderEl.removeEventListener(
-            web.uievents.PointerEvent.POINTER_MOVE,
-            handlePointerMove.unsafeCast<EventHandler<web.uievents.PointerEvent>>()
+            web.uievents.PointerEvent.pointerMove(),
+            handlePointerMove
         )
     }
 
@@ -120,8 +128,8 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         handle.changeTo(newVal, false)
     }
 
-    val handleRailAndTrackClicks by handler(getEventValue) { e: PointerEvent<*> ->
-        val updateValue = getEventValue(e)
+    val handleRailAndTrackClicks by handler(getEventValueReact) { e: PointerEvent<*> ->
+        val updateValue = getEventValueReact(e)
 
         // find the closest handle key
         var updateHandle: Handle? = null
@@ -142,7 +150,7 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
 
     val handlePointerDown by handler<EmitPointer>(
         handlesById, handlePointerMove, handlePointerUp, handleRailAndTrackClicks, props.onSlideStart,
-        pointerDownOffset, slider, getEventValue
+        pointerDownOffset, slider, getEventValueReact
     ) { e: PointerEvent<*>, _: Location, handleId: String? ->
         if (e.button != MouseButton.MAIN) return@handler
 
@@ -151,12 +159,12 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         val sliderEl = slider.current!!
         sliderEl.setPointerCapture(e.pointerId)
         sliderEl.addEventListener(
-            web.uievents.PointerEvent.POINTER_MOVE,
-            handlePointerMove.unsafeCast<EventHandler<web.uievents.PointerEvent>>()
+            web.uievents.PointerEvent.pointerMove(),
+            handlePointerMove
         )
         sliderEl.addEventListener(
-            web.uievents.PointerEvent.POINTER_UP,
-            handlePointerUp.unsafeCast<EventHandler<web.uievents.PointerEvent>>(),
+            web.uievents.PointerEvent.pointerUp(),
+            handlePointerUp,
             jso { once = true })
 
         if (handleId != null) {
@@ -164,7 +172,7 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
                 ?: error("Cannot find handle with id $handleId.")
 
             pointerDownOffset.current = null
-            pointerDownOffset.current = handle.value - getEventValue(e)
+            pointerDownOffset.current = handle.value - getEventValueReact(e)
             activeHandle = handle
             props.onSlideStart?.invoke(handle)
         } else {

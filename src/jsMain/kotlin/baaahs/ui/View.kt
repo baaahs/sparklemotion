@@ -4,6 +4,7 @@ import kotlinx.browser.window
 import mui.icons.material.SvgIconComponent
 import react.RBuilder
 
+
 actual interface View {
     fun RBuilder.render()
 }

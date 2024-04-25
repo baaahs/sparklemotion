@@ -16,25 +16,26 @@ import baaahs.mapper.MapperStyles
 import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.diagnostics.DiagnosticsStyles
 import mui.material.styles.Theme
+import styled.StyleSheet
 import styled.injectGlobal
 
 class AllStyles(val theme: Theme) {
-    val appUi by lazy { ThemeStyles(theme) }
-    val controls by lazy { baaahs.app.ui.controls.ThemeStyles(theme) }
-    val gadgetsSlider by lazy { ThemedStyles(theme) }
-    val editableManager by lazy { ThemedEditableStyles(theme) }
-    val layout by lazy { LayoutStyles(theme) }
-    val layoutEditor by lazy { LayoutEditorStyles(theme) }
-    val controllerEditor by lazy { ControllerEditorStyles(theme) }
-    val modelEditor by lazy { ModelEditorStyles(theme) }
-    val mapper by lazy { MapperStyles(theme) }
-    val shaderEditor by lazy { ShaderEditorStyles(theme) }
-    val shaderLibrary by lazy { ShaderLibraryStyles(theme) }
-    val shaderHelp by lazy { ShaderHelpStyles(theme) }
-    val uiComponents by lazy { UiComponentStyles(theme) }
-    val fileUploadStyles by lazy { FileUploadStyles(theme) }
-    val diagnosticsStyles by lazy { DiagnosticsStyles(theme) }
-    val patchModStyles by lazy { PatchModStyles(theme) }
+    val appUi by lazy { inject(ThemeStyles(theme)) }
+    val controls by lazy { inject(baaahs.app.ui.controls.ThemeStyles(theme)) }
+    val gadgetsSlider by lazy { inject(ThemedStyles(theme)) }
+    val editableManager by lazy { inject(ThemedEditableStyles(theme)) }
+    val layout by lazy { inject(LayoutStyles(theme)) }
+    val layoutEditor by lazy { inject(LayoutEditorStyles(theme)) }
+    val controllerEditor by lazy { inject(ControllerEditorStyles(theme)) }
+    val modelEditor by lazy { inject(ModelEditorStyles(theme)) }
+    val mapper by lazy { inject(MapperStyles(theme)) }
+    val shaderEditor by lazy { inject(ShaderEditorStyles(theme)) }
+    val shaderLibrary by lazy { inject(ShaderLibraryStyles(theme)) }
+    val shaderHelp by lazy { inject(ShaderHelpStyles(theme)) }
+    val uiComponents by lazy { inject(UiComponentStyles(theme)) }
+    val fileUploadStyles by lazy { inject(FileUploadStyles(theme)) }
+    val diagnosticsStyles by lazy { inject(DiagnosticsStyles(theme)) }
+    val patchModStyles by lazy { inject(PatchModStyles(theme)) }
 
     fun injectGlobals() {
         injectGlobal(Styles.global)
@@ -42,5 +43,8 @@ class AllStyles(val theme: Theme) {
         injectGlobal(baaahs.app.ui.controls.Styles.global)
         injectGlobal(ColorWheelStyles.global)
         injectGlobal(layout.global)
+//        baaahs.app.ui.controls.Styles.inject()
     }
+
+    private fun <T: StyleSheet> inject(styleSheet: T) = styleSheet.also { it.inject() }
 }

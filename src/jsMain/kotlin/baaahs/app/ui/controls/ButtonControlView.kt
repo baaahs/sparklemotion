@@ -17,6 +17,7 @@ import react.dom.div
 import react.dom.events.PointerEvent
 import react.useContext
 import web.events.EventType
+import web.events.addEventListener
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
 import web.uievents.MouseEvent
@@ -61,7 +62,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
-            buttonEl.addEventListener(EventType("long-press"), callback = { e ->
+            buttonEl.addEventListener(EventType("long-press"), { e ->
                 val isPrimaryButton = true // (e as MouseEvent).button.toInt() == Events.Button.primary
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
                     lightboxOpen = true

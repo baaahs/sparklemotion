@@ -41,6 +41,6 @@ actual fun getCommonIcons() = object : PlatformIcons {
 
 fun jsIcon(materialIcon: SvgIconComponent): Icon = JsIcon(materialIcon)
 
-private class JsIcon(private val icon: SvgIconComponent) : Icon {
+class JsIcon(private val icon: SvgIconComponent) : Icon {
     override fun getReactIcon(): SvgIconComponent = icon
 }

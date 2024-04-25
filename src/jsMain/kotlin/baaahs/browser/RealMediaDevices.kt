@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import org.w3c.dom.ImageBitmap
 import org.w3c.dom.events.EventTarget
 import org.w3c.dom.mediacapture.*
+import web.events.EventHandler
 import web.html.HTMLVideoElement
 import kotlin.js.Promise
 
@@ -57,16 +58,16 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
                     videoEl.controls = true
                     videoEl.play()
 
-                    videoEl.oncanplay = {
+                    videoEl.oncanplay = EventHandler {
                         println("oncanplay")
                         globalLaunch { capture() }
                     }
 
-                    videoEl.onended = {
+                    videoEl.onended = EventHandler {
                         println("onended")
                     }
 
-                    videoEl.onloadeddata = {
+                    videoEl.onloadeddata = EventHandler {
                         println("onloadeddata")
                     }
 
