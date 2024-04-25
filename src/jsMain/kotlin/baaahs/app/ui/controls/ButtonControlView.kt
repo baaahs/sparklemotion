@@ -18,6 +18,7 @@ import react.dom.div
 import react.dom.events.PointerEvent
 import react.useContext
 import web.events.EventType
+import web.events.addEventListener
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
 import web.uievents.MouseButton
@@ -77,7 +78,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
-            buttonEl.addEventListener(EventType("long-press"), callback = { e ->
+            buttonEl.addEventListener(EventType("long-press"), { e ->
                 val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
                 val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
@@ -137,7 +138,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
 
 /** [GridButtonGroupControlView] needs a click event so it can deselect other buttons in the group. */
 private fun redispatchAsMouseClick(e: PointerEvent<*>) {
-    val event = MouseEvent(MouseEvent.CLICK, e.unsafeCast<MouseEventInit>())
+    val event = MouseEvent(MouseEvent.click(), e.unsafeCast<MouseEventInit>())
     e.currentTarget.parentElement?.dispatchEvent(event)
 }
 
