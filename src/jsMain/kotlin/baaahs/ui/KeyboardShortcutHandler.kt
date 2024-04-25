@@ -2,6 +2,8 @@ package baaahs.ui
 
 import web.events.Event
 import web.events.EventTarget
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLElement
 import web.html.HTMLInputElement
 import web.html.HTMLTextAreaElement
@@ -45,12 +47,12 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
     }
 
     fun listen(target: EventTarget): EventTarget {
-        target.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        target.addEventListener(KeyboardEvent.keyDown(), handleKeyDown)
         return target
     }
 
     fun unlisten(target: EventTarget) {
-        target.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
+        target.removeEventListener(KeyboardEvent.keyDown(), handleKeyDown)
     }
 
     fun release() {

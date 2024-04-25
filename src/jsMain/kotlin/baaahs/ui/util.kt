@@ -2,7 +2,7 @@ package baaahs.ui
 
 import baaahs.document
 import baaahs.get2DContext
-import js.objects.jso
+import js.objects.Object
 import kotlinext.js.getOwnPropertyNames
 import kotlinx.css.*
 import kotlinx.css.properties.Time
@@ -19,7 +19,9 @@ import react.*
 import react.dom.RDOMBuilder
 import react.dom.events.*
 import react.dom.setProp
+import styled.GlobalStyles
 import styled.StyleSheet
+import web.animations.requestAnimationFrame
 import web.cssom.ClassName
 import web.cssom.Length
 import web.dom.Element
@@ -29,7 +31,6 @@ import web.events.EventTarget
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLInputElement
-import web.uievents.TouchEvent
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 
@@ -86,8 +87,19 @@ val EventTarget?.value: String
 val EventTarget?.checked: Boolean
         get() = (this as HTMLInputElement).checked
 
+var alreadyScheduled = false
 val RuleSet.name: String
-    get() = CssBuilder().apply { +this@name }.classes.joinToString(" ")
+    get() = CssBuilder().apply {
+        +this@name
+    }.classes.joinToString(" ").also {
+        if (!alreadyScheduled) {
+            alreadyScheduled = true
+            requestAnimationFrame { _ ->
+                alreadyScheduled = false
+                GlobalStyles.injectScheduled()
+            }
+        }
+    }
 
 val RuleSet.selector: String
     get() = ".$name"
@@ -152,6 +164,9 @@ fun StyleSheet.partial(block: CssBuilder.() -> Unit): CssBuilder {
 fun <T> StyledElement.important(property: KProperty<T>, value: T) {
     put(property.name, "$value !important")
 }
+
+val <T : CssValue> T.important: T
+    get() = (object : CssValue("${this.value} !important") {}) as T
 
 inline fun RBuilder.typographyH1(crossinline block: RElementBuilder<TypographyProps>.() -> Unit) =
     Typography {
@@ -232,14 +247,6 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 fun buildElements(handler: Render): ReactNode =
     react.buildElements(RBuilder(), handler)
 
-val preventDefault: (Event) -> Unit = { event -> event.preventDefault() }
-val disableScroll = {
-    document.body.addEventListener(TouchEvent.TOUCH_MOVE, preventDefault, jso { passive = false })
-}
-val enableScroll = {
-    document.body.removeEventListener(TouchEvent.TOUCH_MOVE, preventDefault)
-}
-
 object Events {
     object Button {
         const val primary = 0
@@ -300,10 +307,6 @@ fun Element.isParentOf(other: Element): Boolean {
     return false
 }
 
-val groove = "groove".unsafeCast<BorderStyle>()
-val inset = "inset".unsafeCast<BorderStyle>()
-val outset = "outset".unsafeCast<BorderStyle>()
-
 fun StyledElement.transition(
     property: String = "all",
     duration: Time = 0.s,
@@ -331,12 +334,11 @@ fun RElementBuilder<*>.copyFrom(fromProps: Props?) {
     copyFrom(fromProps.unsafeCast<CopyableProps>())
 }
 
-private val jsObj = js("Object")
 fun RElementBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     if (fromProps == null) return
 
     val from = fromProps.asDynamic()
-    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    val keys = Object.keys(fromProps).unsafeCast<Array<String>>()
     keys.forEach { key -> attrs.asDynamic()[key] = from[key] }
 }
 
@@ -344,6 +346,6 @@ fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     if (fromProps == null) return
 
     val from = fromProps.asDynamic()
-    val keys = jsObj.keys(fromProps).unsafeCast<Array<String>>()
+    val keys = Object.keys(fromProps).unsafeCast<Array<String>>()
     keys.forEach { key -> setProp(key, from[key]) }
 }

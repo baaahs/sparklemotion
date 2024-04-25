@@ -15,6 +15,8 @@ import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
 import web.events.Event
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLSpanElement
@@ -23,7 +25,7 @@ import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
-import web.window.RESIZE
+import web.window.resize
 import kotlin.math.*
 import kotlin.reflect.KClass
 
@@ -201,11 +203,11 @@ open class BaseVisualizer(
 
     inner class SelectExtension : Extension(SelectExtension::class) {
         override fun attach() {
-            canvas.addEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
+            canvas.addEventListener(PointerEvent.pointerDown(), this@BaseVisualizer::onMouseDown)
         }
 
         override fun release() {
-            canvas.removeEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
+            canvas.removeEventListener(PointerEvent.pointerDown(), this@BaseVisualizer::onMouseDown)
         }
     }
 
@@ -262,7 +264,7 @@ open class BaseVisualizer(
         updateOriginDot()
 
         var resizeTaskId: Timeout? = null
-        window.addEventListener(Event.RESIZE, {
+        window.addEventListener(Event.resize(), {
             if (resizeTaskId !== null) {
                 clearTimeout(resizeTaskId!!)
             }

@@ -200,7 +200,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val buttonLabelWhenPreview by css {
-        important(::color, Color.white)
+        color = Color.white.important
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
         border = Border(5.px, BorderStyle.dotted, Color.transparent)
         fontWeight = "calc((1 - var(--dimmer-level)) * 600 + 100)".unsafeCast<FontWeight>()
@@ -208,10 +208,10 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val buttonSelectedWhenPreview by css {
-        important(::color, Color.white)
+        color = Color.white.important
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
-        border = Border(5.px, BorderStyle.dotted, Color.orange)
-        important(::backgroundColor, Color.transparent)
+        border = Border(5.px, BorderStyle.dotted, Color.orange).important
+        backgroundColor = Color.transparent.important
     }
 
     val inputLabel by css {

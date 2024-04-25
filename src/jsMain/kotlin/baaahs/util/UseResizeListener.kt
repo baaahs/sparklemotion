@@ -8,7 +8,7 @@ import web.timers.clearTimeout
 import web.timers.setTimeout
 import kotlin.time.Duration.Companion.milliseconds
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (width: Int, height: Int) -> Unit) {
     val onResizedThrottled = useCallback(elementRef, callback = throttle(onResized, 40))
 
@@ -19,6 +19,7 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
         val element = elementRef.current ?: return@useEffect
 
         val ro = ResizeObserver { _, _ ->
+            console.log("resized", element, element.clientWidth, element.clientHeight)
             val size = element.clientWidth to element.clientHeight
             if (previousSize.current != size) {
                 previousSize.current = size
