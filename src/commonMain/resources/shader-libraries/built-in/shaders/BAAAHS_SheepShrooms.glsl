@@ -30,6 +30,17 @@ struct BeatInfo {
     float bpm;
     float intensity;
     float confidence;
+    // New stuff for BAAAHS 2024:
+    // Facilitates seamless transitions
+    float faderlevel;
+    float fader2level;
+    float fader3level;
+    float fader4level;
+    float crossfaderABlevel;
+    float filter1level;
+    float filter2level;
+    float filter3level;
+    float filter4level;
 };
 uniform BeatInfo beatInfo; // @@baaahs.BeatLink:BeatInfo
 
