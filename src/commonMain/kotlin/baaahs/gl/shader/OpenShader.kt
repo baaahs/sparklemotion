@@ -1,6 +1,5 @@
 package baaahs.gl.shader
 
-import baaahs.app.ui.patchmod.*
 import baaahs.gl.glsl.*
 import baaahs.gl.glsl.GlslCode.GlslFunction
 import baaahs.gl.glsl.GlslCode.Namespace
@@ -111,7 +110,8 @@ interface OpenShader : RefCounted {
 class ShaderSubstitutions(
     val openShader: OpenShader,
     val namespace: Namespace,
-    portMap: Map<String, GlslExpr>
+    portMap: Map<String, GlslExpr>,
+    globalStructs: Set<GlslType.Struct>
 ) : GlslCode.Substitutions {
     private val uniformGlobalsMap = portMap.filter { (id, _) ->
         val inputPort = openShader.findInputPortOrNull(id)
@@ -124,7 +124,9 @@ class ShaderSubstitutions(
     }
 
     private val symbolsToNamespace =
-        openShader.glslCode.symbolNames.toSet() - openShader.portStructs.map { it.name }
+        openShader.glslCode.symbolNames.toSet() +
+                openShader.portStructs.map { it.name }.toSet() -
+                globalStructs.map { it.name }.toSet()
 
     private val specialSymbols =
         mapOf(initFnName to GlslExpr(namespacedInitFnName(namespace)))

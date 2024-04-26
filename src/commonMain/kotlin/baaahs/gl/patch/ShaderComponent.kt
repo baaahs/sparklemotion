@@ -12,6 +12,7 @@ class ShaderComponent(
     val index: Int,
     val prefix: String,
     private val linkedPatch: LinkedPatch,
+    private val globalStructs: Set<GlslType.Struct>,
     private val findUpstreamComponent: (ProgramNode) -> Component
 ) : Component {
     override val title: String get() = linkedPatch.shader.title
@@ -59,7 +60,10 @@ class ShaderComponent(
     private val resolvedPortMap get() =
         portMap + mapOf(linkedPatch.shader.outputPort.id to GlslExpr(outputVar))
 
-    private val substitutions = ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap)
+    private val substitutions = run {
+        println("... we should somehow know what structs are declared globally by now maybe?")
+        ShaderSubstitutions(linkedPatch.shader, namespace, resolvedPortMap, globalStructs)
+    }
 
     override fun appendStructs(buf: ProgramBuilder) {
         val openShader = linkedPatch.shader

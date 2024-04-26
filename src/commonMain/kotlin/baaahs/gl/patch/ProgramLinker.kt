@@ -1,7 +1,6 @@
 package baaahs.gl.patch
 
 import baaahs.getBang
-import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.shader.OpenShader
@@ -20,12 +19,12 @@ class ProgramLinker(
     private val feedLinks = hashSetOf<OpenPatch.FeedLink>()
     private val showBuilder: ShowBuilder = ShowBuilder()
     private var curDepth = 0
-    private val structs = hashSetOf<GlslCode.GlslStruct>()
+    private val globalStructs = hashSetOf<GlslType.Struct>()
 
     private val componentBuilder: CacheBuilder<ProgramNode, Component> = CacheBuilder {
         val instanceNode = linkNodes.getBang(it, "instance node")
         with(instanceNode) {
-            programNode.buildComponent(id, index, fullIndex, this@ProgramLinker::findUpstreamComponent)
+            programNode.buildComponent(id, index, fullIndex, globalStructs, this@ProgramLinker::findUpstreamComponent)
         }
     }
 
@@ -62,13 +61,19 @@ class ProgramLinker(
                     .thenBy { it.id }
             )
 
-        // First pass: assign index numbers to first-class patches.
+        // First pass: assign index numbers to first-class patches, and collect global structs.
         allNodes.forEach { instanceNode ->
             val programNode = instanceNode.programNode
             if (programNode is LinkedPatch) {
                 val modsNode = programNode.modsNode as? LinkedPatch
                 if (modsNode == null) {
                     instanceNode.index = pIndex++
+                }
+            }
+            if (programNode is OpenPatch.FeedLink) {
+                val feedType = programNode.feed.contentType.glslType
+                if (feedType is GlslType.Struct) {
+                    globalStructs.add(feedType)
                 }
             }
         }
@@ -112,7 +117,13 @@ interface ProgramNode {
 
     fun traverse(programLinker: ProgramLinker)
 
-    fun buildComponent(id: String, index: Int, prefix: String, findUpstreamComponent: (ProgramNode) -> Component): Component
+    fun buildComponent(
+        id: String,
+        index: Int,
+        prefix: String,
+        globalStructs: Set<GlslType.Struct>,
+        findUpstreamComponent: (ProgramNode) -> Component
+    ): Component
 }
 
 data class DefaultValueNode(
@@ -146,6 +157,7 @@ data class DefaultValueNode(
         id: String,
         index: Int,
         prefix: String,
+        globalStructs: Set<GlslType.Struct>,
         findUpstreamComponent: (ProgramNode) -> Component
     ): Component {
         return this
@@ -164,6 +176,7 @@ abstract class ExprNode : ProgramNode, Component {
         id: String,
         index: Int,
         prefix: String,
+        globalStructs: Set<GlslType.Struct>,
         findUpstreamComponent: (ProgramNode) -> Component
     ): Component {
         return this
