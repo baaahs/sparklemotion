@@ -21,6 +21,7 @@ import react.dom.events.*
 import react.dom.setProp
 import styled.GlobalStyles
 import styled.StyleSheet
+import web.animations.requestAnimationFrame
 import web.cssom.ClassName
 import web.cssom.Length
 import web.dom.Element
@@ -86,14 +87,18 @@ val EventTarget?.value: String
 val EventTarget?.checked: Boolean
         get() = (this as HTMLInputElement).checked
 
+var alreadyScheduled = false
 val RuleSet.name: String
     get() = CssBuilder().apply {
         +this@name
     }.classes.joinToString(" ").also {
-        web.scheduling.requestIdleCallback( { deadline ->
-
-        })
-        GlobalStyles.injectScheduled()
+        if (!alreadyScheduled) {
+            alreadyScheduled = true
+            requestAnimationFrame { _ ->
+                alreadyScheduled = false
+                GlobalStyles.injectScheduled()
+            }
+        }
     }
 
 val RuleSet.selector: String
