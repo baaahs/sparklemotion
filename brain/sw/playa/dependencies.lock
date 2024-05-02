@@ -2,13 +2,13 @@ dependencies:
   brain-common:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-common
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/brain-common
       type: local
     version: '*'
   brain-ui:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-ui
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/brain-ui
       type: local
     version: '*'
   espressif/jsmn:
@@ -31,27 +31,27 @@ dependencies:
   iso:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/iso
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/iso
       type: local
     version: '*'
   led-renderer:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/led-renderer
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/led-renderer
       type: local
     version: '*'
   net:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/net
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/net
       type: local
     version: '*'
   sysmon:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/sysmon
+      path: /Users/sparklehenge/code/sparklemotion/brain/sw/components/sysmon
       type: local
     version: '*'
-manifest_hash: 3995ce6748b3338954dabb2f23aa8a4d9987ed62af1a2a6fa52dda4ef0253f7c
+manifest_hash: d37bde1d546243eb4db5c6b4a5da242601318e3bae2cd358d3dbe4cd265f74e7
 target: esp32
 version: 1.0.0
