@@ -111,7 +111,11 @@ fun calcHengeSegments(
 
     return listOf(
         PolyLine.Segment(Vector3F.origin, Vector3F(0.0f, 2.24f, 0.0f), 68),
-        PolyLine.Segment(Vector3F(0.0f, 2.24f, 0.0f), Vector3F(2.24f,2.24f, 0.0f), 68),
+        PolyLine.Segment(Vector3F(0.0f, 2.6f, 0.3f), Vector3F(0.0f,2.6f, 0.3f + 2.24f), 68),
+        PolyLine.Segment(Vector3F(0.0f, 2.3f, 0.3f + 2.24f), Vector3F(0.0f,0.0f, 0.3f + 2.24f), 68),
+
+        //        PolyLine.Segment(Vector3F.origin, Vector3F(0.0f, 2.24f, 0.0f), 68),
+//        PolyLine.Segment(Vector3F(0.0f, 2.24f, 0.0f), Vector3F(2.24f,2.24f, 0.0f), 68),
     )
 //    return when (direction) {
 //

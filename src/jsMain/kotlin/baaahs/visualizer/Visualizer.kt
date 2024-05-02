@@ -205,8 +205,10 @@ open class BaseVisualizer(
     inner class OrbitControlsExtension : Extension(OrbitControlsExtension::class) {
         val orbitControls by lazy {
             OrbitControls(camera, canvas).apply {
-                minPolarAngle = PI / 2 - .25 // radians
-                maxPolarAngle = PI / 2 + .25 // radians
+                minPolarAngle = 0.1 // radians
+                maxPolarAngle = PI - 0.1 // radians
+//                minPolarAngle = PI / 2 - .25 // radians
+//                maxPolarAngle = PI / 2 + .25 // radians
 
                 enableDamping = false
                 enableKeys = false
