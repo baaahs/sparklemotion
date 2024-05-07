@@ -11,9 +11,11 @@ interface Component {
 
     val invokeFromMain: Boolean
 
-    fun appendStructs(buf: ProgramBuilder)
-    fun appendDeclarations(buf: ProgramBuilder)
-    fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType> = emptyMap())
+    val exportedStructs: List<GlslType.Struct> get() = emptyList()
+
+    fun appendStructs(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {}
+    fun appendDeclarations(buf: ProgramBuilder, globalStructs: List<GlslType.Struct>) {}
+    fun appendInvokeAndSet(buf: ProgramBuilder, injectionParams: Map<String, ContentType> = emptyMap()) {}
     fun appendInvokeAndReturn(buf: ProgramBuilder, inputPort: InputPort) = Unit
 
     fun getExpression(prefix: String): GlslExpr

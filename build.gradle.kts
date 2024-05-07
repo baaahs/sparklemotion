@@ -101,7 +101,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-call-logging:${Versions.ktor}")
                 implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.3.11")
-                implementation("org.deepsymmetry:beat-link:0.6.3")
+                implementation("org.deepsymmetry:beat-link:7.2.0")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj

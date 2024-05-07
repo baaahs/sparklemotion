@@ -1,7 +1,5 @@
 package baaahs.plugin.beatlink
 
-import baaahs.ui.IObservable
-import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Time
 import baaahs.util.asDoubleSeconds
@@ -69,18 +67,6 @@ data class BeatData(
     private fun clamp(f: Float): Float = min(1f, max(f, 0f))
 
     companion object {
-        val UNKNOWN = BeatData(0.0, 0, 4, 0f)
+        val unknown = BeatData(0.0, 0, 4, 0f)
     }
 }
-
-
-interface BeatSource : IObservable {
-    fun getBeatData(): BeatData
-
-    object None : Observable(), BeatSource {
-        val none = BeatData(0.0, 0, 4, 0f)
-
-        override fun getBeatData(): BeatData = none
-    }
-}
-

@@ -167,6 +167,7 @@ class GlslCode(
         override val title get() = name.englishize()
         override val isGlobalInput: Boolean get() = isUniform || isVarying
         override val isAbstractFunction: Boolean get() = false
+        val isPassThrough: Boolean get() = hint?.isPassThrough == true
         override val hint: Hint? by lazy { Hint.parse(comments.joinToString(" ") { it.trim() }, lineNumber) }
         val deferInitialization: Boolean = !isConst && initExpr != null
 
@@ -189,6 +190,8 @@ class GlslCode(
         private val tags: List<Pair<String, String>>,
         val lineNumber: Int? = null
     ) {
+        val isPassThrough: Boolean get() = tags.any { it.first == "pass-through" }
+
         fun tag(name: String) =
             tags.find { it.first == name }?.second
 

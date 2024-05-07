@@ -4,6 +4,7 @@ import baaahs.Gadget
 import baaahs.app.ui.editor.PortLinkOption
 import baaahs.camelize
 import baaahs.gl.data.FeedContext
+import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ProgramBuilder
@@ -81,15 +82,16 @@ interface Feed {
     val title: String
     val isUnknown: Boolean get() = false
 
-    // TODO: kill this
-    fun isImplicit(): Boolean = false
     val contentType: ContentType
-
     val dependencies: Map<String, Feed>
         get() = emptyMap()
 
+    // TODO: kill this
+    fun isImplicit(): Boolean = false
+
     fun getType(): GlslType
     fun getVarName(id: String): String = "in_$id"
+    fun getNamespace(id: String) = GlslCode.Namespace("feed_$id")
 
     fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext
 
@@ -100,8 +102,11 @@ interface Feed {
     fun buildControl(): MutableControl? = null
 
     fun appendDeclaration(buf: ProgramBuilder, id: String) {
-        if (!isImplicit())
-            buf.append("uniform ${getType().glslLiteral} ${getVarName(id)};\n")
+        if (!isImplicit()) {
+            val namespace = null // getNamespace(id)
+            val varName = getVarName(id)
+            buf.append("uniform ${getType().qualifiedName(namespace, emptySet())} $varName;\n")
+        }
     }
 
     fun invocationGlsl(varName: String): String? = null
