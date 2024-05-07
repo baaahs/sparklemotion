@@ -7,20 +7,24 @@ precision mediump float;
 uniform float time;
 uniform vec2 resolution;
 
+uniform float brightness; // @pass-through
+
+uniform vec4 pixCoords; // @@baaahs.Core:RasterCoordinate @type raster-coordinate
+uniform vec2 pixDimens; // @@baaahs.Core:PreviewResolution @type preview-resolution
+
 struct RawBeatInfo {
     float measureStartTime;
     float beatIntervalMs;
     float bpm;
     float beatsPerMeasure;
     float confidence;
+    float trackStartTime;
 };
-uniform RawBeatInfo rawBeatInfo;// @@baaahs.BeatLink:RawBeatInfo
+uniform RawBeatInfo rawBeatInfo; // @@baaahs.BeatLink:RawBeatInfo
 
 float secPerBeat = rawBeatInfo.beatIntervalMs / 1000.;
 
-const vec2 beatsBottomLeft = vec2(.1, .1);
-const vec2 beatsTopRight = vec2(.9, .9);
-const vec2 beatsDimen = beatsTopRight - beatsBottomLeft;
+const vec2 beatsBorderPx = vec2(6.);
 
 const vec3 backgroundColor = vec3(.1, .1, .4);
 const vec3 beatPowerColor = vec3(0., .0, .5);
@@ -34,8 +38,8 @@ const vec3 borderColor = vec3(.0, .4, .0);
 // TODO: This function should be a switchable strategy.
 float beatIntensity_(float power) {
     return clamp(
-        pow(sin((power * 1. + .55) * PI), 4.) * 1.25 + .0,
-        .0, 1.
+    pow(sin((power * 1. + .55) * PI), 4.) * 1.25 + .0,
+    .0, 1.
     );
 }
 
@@ -52,7 +56,7 @@ float not(float v) {
 }
 
 float rect(vec2 bottomLeft, vec2 topRight, vec2 pos) {
-    if (step(pos, beatsBottomLeft) == vec2(0.) && step(beatsTopRight, pos) == vec2(0.)) {
+    if (step(pos, bottomLeft) == vec2(0.) && step(topRight, pos) == vec2(0.)) {
         return 1.;
     } else {
         return 0.;
@@ -109,12 +113,13 @@ vec4 drawBeats(vec2 pos) {
 
     // Background.
     color += o * background(pos);
-
     return vec4(color, 1.);
 }
 
 void main(void) {
     vec2 pos = gl_FragCoord.xy / resolution.xy;
+    vec2 pixPos = pixCoords.xy;
+
     timeInMeasure = mod((time - rawBeatInfo.measureStartTime) / secPerBeat, rawBeatInfo.beatsPerMeasure);
     beatInMeasure = floor(timeInMeasure);
     timeInBeat = mod(timeInMeasure, 1.);
@@ -125,13 +130,14 @@ void main(void) {
     float o = 1.;
 
     // Draw border.
-    float border = 1. - rect(beatsBottomLeft, beatsTopRight, pos);
+    float border = 1. - rect(beatsBorderPx - 1., pixDimens - beatsBorderPx + 1., pixPos);
     color += border * borderColor * nowBeatIntensity;
     o -= o * border;
+    vec2 paddedPos = (pos * pixDimens - beatsBorderPx) / (pixDimens - beatsBorderPx * 2.);
 
     // Draw beats.
-    color += o * drawBeats((pos - beatsBottomLeft) / beatsDimen).rgb;
+    color += o * drawBeats(paddedPos).rgb;
     color = mix(color.rrr * .125 + color.ggg * .25 + color.bbb * .125, color, rawBeatInfo.confidence);
 
-    gl_FragColor = vec4(color, 1.);
+    gl_FragColor = vec4(color * brightness, 1.);
 }
