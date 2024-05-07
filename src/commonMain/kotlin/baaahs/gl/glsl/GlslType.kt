@@ -3,7 +3,7 @@ package baaahs.gl.glsl
 import baaahs.show.mutable.MutableConstPort
 import baaahs.show.mutable.MutablePort
 
-sealed class GlslType constructor(
+sealed class GlslType(
     val glslLiteral: String,
     val defaultInitializer: GlslExpr = GlslExpr("$glslLiteral(0.)")
 ) {
@@ -15,6 +15,7 @@ sealed class GlslType constructor(
     val mutableDefaultInitializer: MutablePort get() = MutableConstPort(defaultInitializer.s, this)
 
     private class OtherGlslType(glslLiteral: String) : GlslType(glslLiteral)
+
     class Struct(
         val name: String,
         val fields: List<Field>,
@@ -41,6 +42,11 @@ sealed class GlslType constructor(
             outputOverride: ((varName: String) -> String)?
         ) : this(name, mapOf(*fields).entries.toFields(), defaultInitializer = defaultInitializer, outputRepresentationOverride = outputOverride)
 
+        override fun collectTransitiveStructs(): List<Struct> = buildList {
+            fields.forEach { field -> addAll(field.type.collectTransitiveStructs()) }
+            add(this@Struct)
+        }.distinct()
+
         fun toGlsl(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
             val buf = StringBuilder()
             buf.append("struct ${namespace?.qualify(name) ?: name} {\n")
@@ -50,6 +56,12 @@ sealed class GlslType constructor(
             buf.append("};\n\n")
 
             return buf.toString()
+        }
+
+        override fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String {
+            return if (publicStructNames.contains(name)) name
+            else namespace?.qualify(name)
+                ?: name
         }
 
         override fun matches(otherType: GlslType): Boolean {
@@ -118,11 +130,16 @@ sealed class GlslType constructor(
             publicStructNames: Set<String>,
             buf: StringBuilder
         ) {
-            val typeStr = if (type is Struct) {
-                if (publicStructNames.contains(name)) name else namespace?.qualify(name) ?: name
-            } else type.glslLiteral
+            buf.append("    ")
+
+            buf.append(type.qualifiedName(namespace, publicStructNames))
+            buf.append(" ")
+            buf.append(name)
+            buf.append(";")
+
             val comment = if (deprecated) " // Deprecated. $description" else description ?: ""
-            buf.append("    $typeStr $name;$comment\n")
+            buf.append(comment)
+            buf.append("\n")
         }
 
         override fun equals(other: Any?): Boolean {
@@ -140,6 +157,10 @@ sealed class GlslType constructor(
             result = 31 * result + type.hashCode()
             return result
         }
+
+        override fun toString(): String {
+            return "Field(name='$name', type=$type, description=$description, deprecated=$deprecated)"
+        }
     }
 
     object Bool : GlslType("bool", GlslExpr("false"))
@@ -151,6 +172,23 @@ sealed class GlslType constructor(
     object Int : GlslType("int", GlslExpr("0"))
     object Sampler2D : GlslType("sampler2D")
     object Void : GlslType("void")
+
+    class Array(val memberType: GlslType, val length: kotlin.Int) : GlslType("${memberType.glslLiteral}[$length]") {
+        override fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>): String =
+            "${memberType.qualifiedName(namespace, publicStructNames)}[$length]"
+
+        override fun collectTransitiveStructs(): List<Struct> = memberType.collectTransitiveStructs()
+    }
+
+    open fun qualifiedName(namespace: GlslCode.Namespace?, publicStructNames: Set<String>) =
+        glslLiteral
+
+    /**
+     * Returns a list of distinct structs (including transitive) for this type.
+     */
+    open fun collectTransitiveStructs(): List<Struct> = emptyList()
+
+    fun arrayOf(count: kotlin.Int): Array = Array(this, count)
 
     open fun matches(otherType: GlslType): Boolean =
         this == otherType
@@ -179,7 +217,7 @@ sealed class GlslType constructor(
             return types.getOrPut(glsl) { OtherGlslType(glsl) }
         }
 
-        fun Array<Pair<String, GlslType>>.toFields() =
+        fun kotlin.Array<Pair<String, GlslType>>.toFields() =
             map { (name, type) -> Field(name, type) }
 
         fun Collection<Map.Entry<String, GlslType>>.toFields() =

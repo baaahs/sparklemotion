@@ -55,11 +55,11 @@ data class SliderFeed(
             }
 
         val plugin = feedOpenContext.plugins.findPlugin<BeatLinkPlugin>()
-        val beatSource = plugin?.beatSource
+        val beatLink = plugin?.facade
 
         return singleUniformFeedContext<Float>(id) {
-            if (beatSource != null && slider.beatLinked) {
-                val beatData = beatSource.getBeatData()
+            if (beatLink != null && slider.beatLinked) {
+                val beatData = beatLink.beatData
                 if (beatData.confidence > .2f) {
                     (slider.position - slider.floor) *
                             beatData.fractionTillNextBeat(clock) +

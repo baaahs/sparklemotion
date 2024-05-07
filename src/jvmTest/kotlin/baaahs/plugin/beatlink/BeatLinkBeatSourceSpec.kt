@@ -1,7 +1,9 @@
 package baaahs.plugin.beatlink
 
+import baaahs.Color
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
 import ch.tutteli.atrium.api.verbs.expect
@@ -9,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
 import org.spekframework.spek2.Spek
+import kotlin.math.roundToInt
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 
@@ -94,6 +97,39 @@ object BeatLinkBeatSourceSpec : Spek({
                 it("reduces the confidence") {
                     expect(beatSource.currentBeat.confidence).toBe(.99f)
                 }
+            }
+        }
+
+        context("waveforms") {
+            val playerState by value { PlayerState(encodedWaveform = "074080bf1a111111", waveformScale = 1) }
+
+            it("#sampleCount") {
+                expect(playerState.waveform?.sampleCount).toBe(2)
+            }
+
+            it("#totalTimeMs") {
+                expect(playerState.waveform?.totalTimeMs?.roundToInt()).toBe(13)
+            }
+
+            it("encodes compactly") {
+                expect(
+                    PlayerState().withWaveform(1) {
+                        add(7, Color(0x40, 0x80, 0xbf))
+                        add(26, Color(0x11, 0x11, 0x11))
+                    }
+                ).toEqual(playerState)
+            }
+
+            it("decodes correctly") {
+                expect(playerState.waveform?.heightAt(0))
+                    .toEqual(7)
+                expect(playerState.waveform?.colorAt(0))
+                    .toEqual(baaahs.Color(0x40, 0x80, 0xbf))
+
+                expect(playerState.waveform?.heightAt(1))
+                    .toEqual(26)
+                expect(playerState.waveform?.colorAt(1))
+                    .toEqual(baaahs.Color(0x11, 0x11, 0x11))
             }
         }
     }

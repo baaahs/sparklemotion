@@ -11,6 +11,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.glsl.Shaders
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
+import baaahs.plugin.beatlink.BeatLinkFeed
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.feed.*
@@ -305,7 +306,7 @@ fun jsonFor(feed: Feed): JsonElement {
                 put("type", "baaahs.Core:RasterCoordinate")
             }
         }
-        is BeatLinkPlugin.BeatLinkFeed -> buildJsonObject {
+        is BeatLinkFeed -> buildJsonObject {
             put("type", "baaahs.BeatLink:BeatLink")
         }
         else -> buildJsonObject { put("type", "unknown") }
