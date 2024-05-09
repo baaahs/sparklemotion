@@ -1,5 +1,5 @@
 {
-    "title": "Eve Rafters",
+    "title": "Ewe Ravterds",
     "patchIds": [
         "xyProjection-patch",
         "darkness-patch",
@@ -19,14 +19,14 @@
                         "type": "Grid",
                         "title": "Main",
                         "columns": 12,
-                        "rows": 9,
+                        "rows": 10,
                         "items": [
                             {
                                 "controlId": "shaderControls",
                                 "column": 0,
                                 "row": 0,
-                                "width": 8,
-                                "height": 2,
+                                "width": 9,
+                                "height": 3,
                                 "layout": {
                                     "columns": 1,
                                     "rows": 1,
@@ -42,17 +42,17 @@
                             {
                                 "controlId": "shaders",
                                 "column": 0,
-                                "row": 2,
-                                "width": 6,
+                                "row": 3,
+                                "width": 7,
                                 "height": 7,
                                 "layout": {
-                                    "columns": 6,
+                                    "columns": 8,
                                     "rows": 7,
                                     "items": [
                                         {
                                             "controlId": "squarezzz",
                                             "column": 2,
-                                            "row": 0
+                                            "row": 1
                                         },
                                         {
                                             "controlId": "colorPulse",
@@ -66,13 +66,13 @@
                                         },
                                         {
                                             "controlId": "complexTrippyShit1",
-                                            "column": 1,
-                                            "row": 1
+                                            "column": 2,
+                                            "row": 0
                                         },
                                         {
                                             "controlId": "baaahzebra",
-                                            "column": 2,
-                                            "row": 1
+                                            "column": 3,
+                                            "row": 0
                                         },
                                         {
                                             "controlId": "orangeSnowflake",
@@ -81,7 +81,7 @@
                                         },
                                         {
                                             "controlId": "acidAtTheDisco",
-                                            "column": 1,
+                                            "column": 2,
                                             "row": 3
                                         },
                                         {
@@ -91,12 +91,7 @@
                                         },
                                         {
                                             "controlId": "plasma",
-                                            "column": 0,
-                                            "row": 4
-                                        },
-                                        {
-                                            "controlId": "evolutionOfAcid",
-                                            "column": 1,
+                                            "column": 3,
                                             "row": 4
                                         },
                                         {
@@ -106,7 +101,7 @@
                                         },
                                         {
                                             "controlId": "gadzooks",
-                                            "column": 1,
+                                            "column": 4,
                                             "row": 5
                                         },
                                         {
@@ -116,8 +111,8 @@
                                         },
                                         {
                                             "controlId": "faeriePulse",
-                                            "column": 2,
-                                            "row": 5
+                                            "column": 4,
+                                            "row": 4
                                         },
                                         {
                                             "controlId": "yasQueen",
@@ -131,7 +126,7 @@
                                         },
                                         {
                                             "controlId": "aquaticFlood",
-                                            "column": 2,
+                                            "column": 3,
                                             "row": 3
                                         },
                                         {
@@ -152,27 +147,27 @@
                                         {
                                             "controlId": "firstRaymarches",
                                             "column": 3,
-                                            "row": 0
+                                            "row": 1
                                         },
                                         {
                                             "controlId": "fireball",
-                                            "column": 3,
+                                            "column": 1,
                                             "row": 1
                                         },
                                         {
                                             "controlId": "blueHearts",
-                                            "column": 3,
+                                            "column": 4,
                                             "row": 3
                                         },
                                         {
                                             "controlId": "blueSClues",
-                                            "column": 3,
+                                            "column": 5,
                                             "row": 4
                                         },
                                         {
                                             "controlId": "checkerboard",
-                                            "column": 3,
-                                            "row": 5
+                                            "column": 0,
+                                            "row": 4
                                         },
                                         {
                                             "controlId": "colorDiffusionFlow",
@@ -186,8 +181,8 @@
                                         },
                                         {
                                             "controlId": "plaid",
-                                            "column": 4,
-                                            "row": 1
+                                            "column": 3,
+                                            "row": 5
                                         },
                                         {
                                             "controlId": "primeWaves",
@@ -196,41 +191,151 @@
                                         },
                                         {
                                             "controlId": "quiver",
-                                            "column": 4,
+                                            "column": 5,
                                             "row": 3
                                         },
                                         {
                                             "controlId": "spaceRings",
-                                            "column": 4,
-                                            "row": 4
+                                            "column": 5,
+                                            "row": 0
                                         },
                                         {
                                             "controlId": "waves",
-                                            "column": 4,
-                                            "row": 5
-                                        },
-                                        {
-                                            "controlId": "sunsetDelight",
-                                            "column": 4,
+                                            "column": 5,
                                             "row": 6
                                         },
                                         {
+                                            "controlId": "sunsetDelight",
+                                            "column": 7,
+                                            "row": 5
+                                        },
+                                        {
                                             "controlId": "huerthquake",
-                                            "column": 2,
+                                            "column": 3,
                                             "row": 2
                                         },
                                         {
                                             "controlId": "jacobianUndistortion",
-                                            "column": 3,
+                                            "column": 1,
+                                            "row": 3
+                                        },
+                                        {
+                                            "controlId": "solidColor",
+                                            "column": 7,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "sunsetClouds",
+                                            "column": 6,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "oceanClouds",
+                                            "column": 6,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "clouds",
+                                            "column": 6,
+                                            "row": 3
+                                        },
+                                        {
+                                            "controlId": "electricEelUniverse",
+                                            "column": 5,
                                             "row": 2
+                                        },
+                                        {
+                                            "controlId": "rainbows",
+                                            "column": 5,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "voronoi",
+                                            "column": 1,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "voxelEdges",
+                                            "column": 1,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "octagrams",
+                                            "column": 6,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "phantomStar",
+                                            "column": 6,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "baseWarp",
+                                            "column": 6,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "sdfs",
+                                            "column": 7,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "randomSin",
+                                            "column": 5,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "diveToCloud",
+                                            "column": 7,
+                                            "row": 3
+                                        },
+                                        {
+                                            "controlId": "proteanClouds",
+                                            "column": 6,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "sincos3d",
+                                            "column": 4,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "midCentruy",
+                                            "column": 7,
+                                            "row": 1
+                                        },
+                                        {
+                                            "controlId": "fractalTrees",
+                                            "column": 7,
+                                            "row": 0
+                                        },
+                                        {
+                                            "controlId": "monitorsAndFractalLife",
+                                            "column": 7,
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "raymarchingBasic",
+                                            "column": 2,
+                                            "row": 5
+                                        },
+                                        {
+                                            "controlId": "discoteq2",
+                                            "column": 2,
+                                            "row": 2
+                                        },
+                                        {
+                                            "controlId": "devilGlass",
+                                            "column": 4,
+                                            "row": 6
                                         }
                                     ]
                                 }
                             },
                             {
                                 "controlId": "effects",
-                                "column": 6,
-                                "row": 2,
+                                "column": 7,
+                                "row": 3,
                                 "width": 2,
                                 "height": 7,
                                 "layout": {
@@ -245,12 +350,12 @@
                                         {
                                             "controlId": "sparklez",
                                             "column": 0,
-                                            "row": 1
+                                            "row": 2
                                         },
                                         {
                                             "controlId": "heart",
-                                            "column": 0,
-                                            "row": 2
+                                            "column": 1,
+                                            "row": 5
                                         },
                                         {
                                             "controlId": "thatSAllFolks",
@@ -280,52 +385,66 @@
                                         {
                                             "controlId": "baaahsLogo",
                                             "column": 1,
-                                            "row": 2
+                                            "row": 4
+                                        },
+                                        {
+                                            "controlId": "static",
+                                            "column": 0,
+                                            "row": 6
+                                        },
+                                        {
+                                            "controlId": "rotateTwist",
+                                            "column": 0,
+                                            "row": 1
                                         }
                                     ]
                                 }
                             },
                             {
                                 "controlId": "globalControls",
-                                "column": 8,
-                                "row": 5,
-                                "width": 4,
+                                "column": 9,
+                                "row": 6,
+                                "width": 3,
                                 "height": 4,
                                 "layout": {
                                     "columns": 4,
                                     "rows": 2,
+                                    "matchParent": true,
                                     "items": [
                                         {
                                             "controlId": "brightness",
                                             "column": 0,
-                                            "row": 0
+                                            "row": 0,
+                                            "height": 4
                                         },
                                         {
                                             "controlId": "saturation",
                                             "column": 1,
-                                            "row": 0
+                                            "row": 0,
+                                            "height": 4
                                         },
                                         {
                                             "controlId": "hueShift",
                                             "column": 2,
-                                            "row": 0
+                                            "row": 0,
+                                            "height": 4
                                         }
                                     ]
                                 }
                             },
                             {
                                 "controlId": "visualizer",
-                                "column": 8,
+                                "column": 9,
                                 "row": 0,
-                                "width": 4,
+                                "width": 3,
                                 "height": 3
                             },
                             {
                                 "controlId": "beatLink",
-                                "column": 8,
+                                "column": 9,
                                 "row": 3,
-                                "width": 4,
-                                "height": 2
+                                "width": 3,
+                                "height": 3
                             }
                         ]
                     }
@@ -381,10 +500,6 @@
         "plasma": {
             "title": "Plasma",
             "src": "// Based on https://www.shadertoy.com/view/MdBGzK\n\n#define DPII (3.1415926535*2.0)\n\n// 0 -> Blue / Pink\n// 1 -> Blue / Green\n// 2 -> Black / White\n// 3 -> Blue / Teal / Black\n// 4 -> Black / White\nint GetPlasmaIndex(int t)\n{\n\treturn 0;\n}\n\nconst int initialL1[5] = int[5](1000, 1000, 3500, 1000, 1000);\nconst int initialL2[5] = int[5](2000, 2000, 1000, 2000, 2000);\nconst int initialL3[5] = int[5](3000, 4000, 3000, 3000, 3000);\nconst int initialL4[5] = int[5](4000, 4000, 1000, 4000, 4000);\n\nconst int initialK1[5] = int[5](3500, 1500, 3500, 3500, 3500);\nconst int initialK2[5] = int[5](2300, 2300, 3300, 2300, 2300);\nconst int initialK3[5] = int[5](3900, 3900, 2900, 3900, 3900);\nconst int initialK4[5] = int[5](3670, 1670, 2670, 3670, 3670);\n\nint GetC1(int nXOffset0or1, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\n\tint nResult = 0;\n\tif (nXOffset0or1 == 0)\n\t{\n\t\tnResult = initialK1[nPlasmaIndex] + (-3 * t);\n\t}\n\telse\n\t{\n\t\tnResult = initialL1[nPlasmaIndex] + (-1 * t);\n\t}\n\t\n\tfloat fResult = float(nResult);\n\tfResult = mod(fResult, 4096.0);\n\n\tif (fResult < 0.0)\n\t{\n\t\tfResult += 4096.0;\n\t}\n\tnResult = int(fResult);\n\n\treturn nResult;\n}\n\nint GetC2(int nXOffset0or1, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\n\tint nResult = 0;\n\tif (nXOffset0or1 == 0)\n\t{\n\t\tnResult = initialK2[nPlasmaIndex] + (-2 * t);\n\t}\n\telse\n\t{\n\t\tnResult = initialL2[nPlasmaIndex] + (-2 * t);\n\t}\n\t\n\tfloat fResult = float(nResult);\n\tfResult = mod(fResult, 4096.0);\n\n\tif (fResult < 0.0)\n\t{\n\t\tfResult += 4096.0;\n\t}\n\tnResult = int(fResult);\n\n\treturn nResult;\n}\n\nint GetC3(int nXOffset0or1, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\n\tint nResult = 0;\n\tif (nXOffset0or1 == 0)\n\t{\n\t\tnResult = initialK3[nPlasmaIndex] + (1 * t);\n\t}\n\telse\n\t{\n\t\tnResult = initialL3[nPlasmaIndex] + (2 * t);\n\t}\n\t\n\tfloat fResult = float(nResult);\n\tfResult = mod(fResult, 4096.0);\n\n\tif (fResult < 0.0)\n\t{\n\t\tfResult += 4096.0;\n\t}\n\tnResult = int(fResult);\n\n\treturn nResult;\n}\n\nint GetC4(int nXOffset0or1, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\n\tint nResult = 0;\n\tif (nXOffset0or1 == 0)\n\t{\n\t\tnResult = initialK4[nPlasmaIndex] + (2 * t);\n\t}\n\telse\n\t{\n\t\tnResult = initialL4[nPlasmaIndex] + (3 * t);\n\t}\n\t\n\tfloat fResult = float(nResult);\n\tfResult = mod(fResult, 4096.0);\n\n\tif (fResult < 0.0)\n\t{\n\t\tfResult += 4096.0;\n\t}\n\tnResult = int(fResult);\n\n\treturn nResult;\n}\n\nfloat Palette0_GetRed(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = fIndex;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t\ta = 63.0 - a;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 192.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette0_GetGreen(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette0_GetBlue(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = fIndex;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t\ta = 63.0 - a;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 192.0;\n\t\ta = 63.0 - a;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette1_GetRed(float fIndex)\n{\n\t\treturn 0.0;\n\t\t\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = fIndex;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t\ta = 63.0 - a;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 192.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette1_GetGreen(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t}\n\telse\n\t{\n\t\ta = 63.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette1_GetBlue(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 192.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette2_GetRed(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 2.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette2_GetGreen(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 2.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette2_GetBlue(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 2.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette3_GetRed(float fIndex)\n{\n\t\treturn 0.0;\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = fIndex;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = 63.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette3_GetGreen(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = fIndex - 128.0;\n\t\ta = 63.0 - a;\n\t}\n\telse\n\t{\n\t\ta = 0.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette3_GetBlue(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 64.0))\n\t{\n\t\ta = 0.0;\n\t}\n\telse if ((fIndex >= 64.0) && (fIndex < 128.0))\n\t{\n\t\ta = fIndex - 64.0;\n\t}\n\telse if ((fIndex >= 128.0) && (fIndex < 192.0))\n\t{\n\t\ta = 63.0;\n\t}\n\telse\n\t{\n\t\ta = 63.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette4_GetRed(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 75.0))\n\t{\n\t\ta = fIndex;\n\t\ta = 63.0 - a * 64.0 / 75.0;\n\t}\n\telse if ((fIndex >= 75.0) && (fIndex < 181.0))\n\t{\n\t\treturn 0.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 181.0;\n\t\ta = (a * 64.0 / 75.0) * 8.0 / 10.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette4_GetGreen(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 75.0))\n\t{\n\t\ta = fIndex;\n\t\ta = 63.0 - a * 64.0 / 75.0;\n\t}\n\telse if ((fIndex >= 75.0) && (fIndex < 181.0))\n\t{\n\t\treturn 0.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 181.0;\n\t\ta = (a * 64.0 / 75.0) * 9.0 / 10.0;\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\nfloat Palette4_GetBlue(float fIndex)\n{\n\tfloat a = 0.0;\n\tif ((fIndex >= 0.0) && (fIndex < 75.0))\n\t{\n\t\ta = fIndex;\n\t\ta = 63.0 - a * 64.0 / 75.0;\n\t}\n\telse if ((fIndex >= 75.0) && (fIndex < 181.0))\n\t{\n\t\treturn 0.0;\n\t}\n\telse\n\t{\n\t\ta = fIndex - 181.0;\n\t\ta = (a * 64.0 / 75.0);\n\t}\n\n\tfloat fResult = cos(a*(3.1415926535*2.0)/128.0+3.1415926535)*31.0+32.0;\n\tfResult /= 63.0;\n\n\treturn fResult;\n}\n\nfloat Palette_GetRed(float fIndex, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\tfloat fResult = 0.0;\n\n\tif (nPlasmaIndex == 0)\n\t{\n\t\tfResult = Palette0_GetRed(fIndex);\n\t}\n\telse if (nPlasmaIndex == 1)\n\t{\n\t\tfResult = Palette1_GetRed(fIndex);\n\t}\n\telse if (nPlasmaIndex == 2)\n\t{\n\t\tfResult = Palette2_GetRed(fIndex);\n\t}\n\telse if (nPlasmaIndex == 3)\n\t{\n\t\tfResult = Palette3_GetRed(fIndex);\n\t}\n\telse if (nPlasmaIndex == 4)\n\t{\n\t\tfResult = Palette4_GetRed(fIndex);\n\t}\n\n\treturn fResult;\n}\nfloat Palette_GetGreen(float fIndex, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\tfloat fResult = 0.0;\n\n\tif (nPlasmaIndex == 0)\n\t{\n\t\tfResult = Palette0_GetGreen(fIndex);\n\t}\n\telse if (nPlasmaIndex == 1)\n\t{\n\t\tfResult = Palette1_GetGreen(fIndex);\n\t}\n\telse if (nPlasmaIndex == 2)\n\t{\n\t\tfResult = Palette2_GetGreen(fIndex);\n\t}\n\telse if (nPlasmaIndex == 3)\n\t{\n\t\tfResult = Palette3_GetGreen(fIndex);\n\t}\n\telse if (nPlasmaIndex == 4)\n\t{\n\t\tfResult = Palette4_GetGreen(fIndex);\n\t}\n\n\treturn fResult;\n}\nfloat Palette_GetBlue(float fIndex, int t)\n{\n\tint nPlasmaIndex = GetPlasmaIndex(t);\n\tfloat fResult = 0.0;\n\n\tif (nPlasmaIndex == 0)\n\t{\n\t\tfResult = Palette0_GetBlue(fIndex);\n\t}\n\telse if (nPlasmaIndex == 1)\n\t{\n\t\tfResult = Palette1_GetBlue(fIndex);\n\t}\n\telse if (nPlasmaIndex == 2)\n\t{\n\t\tfResult = Palette2_GetBlue(fIndex);\n\t}\n\telse if (nPlasmaIndex == 3)\n\t{\n\t\tfResult = Palette3_GetBlue(fIndex);\n\t}\n\telse if (nPlasmaIndex == 4)\n\t{\n\t\tfResult = Palette4_GetBlue(fIndex);\n\t}\n\n\treturn fResult;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\t// t is an integer frame count.\n\tint t = int(iTime * 60.0);\n\n\t// fPlasmaX is a float from 0 to 319,\n\t// fPlasmaY is a float from 0 to 399.\n\tfloat fPlasmaX = (fragCoord.x / iResolution.x) * 319.0;\n\tfloat fPlasmaY = (fragCoord.y / iResolution.y) * 399.0;\n\tfPlasmaY = 399.0 - fPlasmaY;\n\n\tfloat fRed = 0.0;\n\tfloat fGreen = 0.0;\n\tfloat fBlue = 0.0;\n\n\tfloat fScreenX = fragCoord.x;\n\tfloat fScreenY = fragCoord.y;\n\tfloat ah = 0.0;\n\tfloat ccc = fPlasmaX / 4.0;\n\tfloat fOffset = 0.0;\n\tfloat bx = 0.0;\n\n\tint nXOffset0or1 = int(mod(fScreenX, 2.0));\n\t// On every odd row, toggle the x offset. This causes different plasma constants to be\n\t// read for these pixels, achieving a chequered overlay of two plasmas.\n\tint xor = int(mod(fScreenY, 2.0));\n\tif (xor == 1)\n\t{\n\t\tif (nXOffset0or1 == 0)\n\t\t{\n\t\t\tnXOffset0or1 = 1;\n\t\t}\n\t\telse\n\t\t{\n\t\t\tnXOffset0or1 = 0;\n\t\t}\n\t}\n\n\tfloat c1 = float(GetC1(nXOffset0or1, t));\n\tfloat c2 = float(GetC2(nXOffset0or1, t));\n\tfloat c3 = float(GetC3(nXOffset0or1, t));\n\tfloat c4 = float(GetC4(nXOffset0or1, t));\n\n\tfOffset = ((fPlasmaY * 2.0) + (c2 * 2.0) - (ccc * 8.0) + (80.0 * 8.0)) / 2.0;\n\tbx = ((sin(fOffset*DPII/4096.0)*55.0+sin(fOffset*DPII/4096.0*4.0)*5.0+sin(fOffset*DPII/4096.0*17.0)*3.0+64.0)*16.0);\n\n\tfOffset = bx + c1 + (ccc * 8.0);\n\tah = (sin(fOffset*DPII/4096.0)*55.0+sin(fOffset*DPII/4096.0*6.0)*5.0+sin(fOffset*DPII/4096.0*21.0)*4.0+64.0);\n\n\tfOffset = ((fPlasmaY * 2.0) + (c4 * 2.0) + (ccc * 32.0)) / 2.0;\n\tbx = ((sin(fOffset*DPII/4096.0)*55.0+sin(fOffset*DPII/4096.0*5.0)*8.0+sin(fOffset*DPII/4096.0*15.0)*2.0+64.0)*8.0);\n\n\tfOffset = bx + (fPlasmaY * 2.0) + c3 - (ccc * 4.0) + (80.0 * 4.0);\n\tah += (sin(fOffset*DPII/4096.0)*55.0+sin(fOffset*DPII/4096.0*6.0)*5.0+sin(fOffset*DPII/4096.0*21.0)*4.0+64.0);\n\n\tfloat fPaletteIndex = ah;\n\n\tfRed = Palette_GetRed(fPaletteIndex, t);\n\tfGreen = Palette_GetGreen(fPaletteIndex, t);\n\tfBlue = Palette_GetBlue(fPaletteIndex, t);\n\n\tfragColor = vec4(fRed, fGreen, fBlue, 1.0);\n}\n"
-        },
-        "evolutionOfAcid": {
-            "title": "Evolution of Acid",
-            "src": "// Evolution of Acid\n// From http://glslsandbox.com/e#45963\n\n#ifdef GL_ES\nprecision highp float;\n#endif\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n#define PI 3.14159265358979323846\n\nfloat box(vec2 _st, vec2 _size, float _smoothEdges){\n    _size = vec2(1.75)-_size*0.75;\n    vec2 aa = vec2(_smoothEdges*0.5);\n    vec2 uv = smoothstep(_size,_size+aa,_st);\n    uv *= smoothstep(_size,_size+aa,vec2(1.0)-_st);\n    return uv.x*uv.y;\n}\n\nvec2 tile(vec2 _st, float _zoom){\n    _st *= _zoom;\n    return fract(_st);\n}\n\nvec2 rotate2D(vec2 _st, float _angle, vec2 shift){\n    _st -= 0.5 + shift.x;\n    _st =  mat2(cos(_angle),-sin(_angle),\n                sin(_angle),cos(_angle)) * _st;\n    _st += 0.5 + shift.y;\n    return _st;\n}\n\nvoid main(void){\n\tvec2 v = (gl_FragCoord.xy - resolution/2.0) / min(resolution.y,resolution.x) * 5.0;\n\tvec2 vv = v; vec2 vvv = v;\n\tfloat tm = (time + 100.)*0.02;\n\tvec2 mspt = (vec2(\n\t\t\tsin(tm)+cos(tm*0.2)+sin(tm*0.5)+cos(tm*-0.4)+sin(tm*1.3),\n\t\t\tcos(tm)+sin(tm*0.1)+cos(tm*0.8)+sin(tm*-1.1)+cos(tm*1.5)\n\t\t\t)+15.0)*0.03;\n\n\n\tvec2 simple = (vec2(sin(tm), cos(tm)) + 1.5) * 0.15;\n\tfloat R = 0.0;\n\tfloat RR = 0.0;\n\tfloat RRR = 0.0;\n\tfloat a = (.6-simple.x)*6.2;\n\tfloat C = cos(a);\n\tfloat S = sin(a);\n\tvec2 xa=vec2(C, -S);\n\tvec2 ya=vec2(S, C);\n\tvec2 shift = vec2( 1.2, 1.62);\n\tfloat Z = 1.0 + simple.y*6.0;\n\tfloat ZZ = 1.0 + (simple.y)*6.2;\n\tfloat ZZZ = 1.0 + (simple.y)*6.9;\n\n\tvec2 b = gl_FragCoord.xy/(resolution);\n\tb = rotate2D(b, PI*Z, 0.05*xa);\n\t//b = vec2(box(b,vec2(1.1),0.95));\n\n\tfor ( int i = 0; i < 25; i++ ){\n\t\tfloat br = dot(b,b);\n\t\tfloat r = dot(v,v);\n\t\tif ( r > sin(tm) + 3.0 )\n\t\t{\n\t\t\tr = (sin(tm) + 3.0)/r ;\n\t\t\tv.x = v.x * r + 0.;\n\t\t\tv.y = v.y * r + 0.;\n\t\t}\n\t\tif ( br > 0.75 )\n\t\t{\n\t\t\tbr = (0.56)/br ;\n\t\t\t//v.x = v.x * r + 0.;\n\t\t\t//v.y = v.y * r + 0.;\n\t\t}\n\n\t\tR *= 1.05;\n\t\tR += br;//b.x;\n\t\tif(i < 24){\n\t\t\tRR *= 1.05;\n\t\t\tRR += br;//b.x;\n\t\t\tif(i <23){\n\t\t\t\tRRR *= 1.05;\n\t\t\t\tRRR += br;//b.x;\n\t\t\t}\n\t\t}\n\n\t\tv = vec2( dot(v, xa), dot(v, ya)) * Z + shift;\n\t\t//b = vec2( dot(b.xy, xa), dot(b.xy, ya)) * Z + shift;\n\t\t//b = rotate2D(vec2( dot(v, xa), dot(v, ya)), PI*Z, ya);\n\t\t//b = vec2( dot(b, xa), dot(b, ya));\n\t\tb = vec2(box(v,vec2(5.),0.9)) + shift * 0.42;\n\t}\n\tfloat c = ((mod(R,2.0)>1.0)?1.0-fract(R):fract(R));\n\tfloat cc = ((mod(RR,2.0)>1.0)?1.0-fract(RR):fract(RR));\n\tfloat ccc = ((mod(RRR,2.0)>1.0)?1.0-fract(RRR):fract(RRR));\n\tgl_FragColor = vec4(ccc,cc,c, 1.0);\n}\n"
         },
         "wobblyColorGrid": {
             "title": "Wobbly Color Grid",
@@ -486,6 +601,94 @@
             "title": "Jacobian Undistortion",
             "src": "// Tuto: Jacobians and undistortion\n// from https://www.shadertoy.com/view/WlByRW\n\n#define Circle(U,r) smoothstep(50./R.y,0., abs(length(U)-r)-.02 )\n\nvoid mainImage( out vec4 O, vec2 u )\n{\n    vec2 R = iResolution.xy,\n    U = ( 2.*u - R ) / R.y, I, L;                  // normalized coordinates\n\n    U += .5*U*mat2(cos(2.*U+iTime),sin(2.*U-iTime));   // distorted coordinates\n    U *= 4.;\n\n    I =floor(U); L = 2.*fract(U)-1.;                   // draw distorted checker\n    O = vec4 (.4*mod(I.x+I.y,2.) );\n\n    O.r += Circle(L,.4);                               // draw circle in distorted space\n\n    mat2 J = transpose(mat2(dFdx(U),dFdy(U))) *R.y/8.; // the Jacobian store the local distorted frame\n    L *= inverse(J);                                   // undistort by applying the inverse transform\n    // or if you prefer right-multiplying matrices :\n    // mat2 J = mat2(dFdx(U),dFdy(U)) *R.y/8.;            // the Jacobian store the local distorted frame\n    // L = inverse(J)*L;                                  // undistort by applying the inverse transform\n    O.g += Circle(L,.4);                               // draw circle in undistorted space\n\n    O.b = ( .5+.5*determinant(J) ) *.6;                // det(J) shows compression in distortion\n    //O.b = length(vec4(J))/3.;\n    O.a = 1.;\n}"
         },
+        "solidColor": {
+            "title": "Solid Color",
+            "src": "// Solid Color.glsl\n\nuniform float time;\nuniform vec2 resolution;\nuniform vec4 color; // @@ColorPicker default=#3300ff\nuniform float colorBrightness; // @@Slider default=.75\nuniform float sparkliness; // @@Slider default=0 max=.5\n\nfloat random (vec2 st) {\n    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123 + time);\n}\n\nvoid main() {\n    gl_FragColor = color * colorBrightness\n        + ((sparkliness < random(gl_FragCoord.xy / resolution.xy)) ? vec4(0.) : vec4(1.));\n}"
+        },
+        "sunsetClouds": {
+            "title": "Sunset Clouds",
+            "src": "//Cloud Ten\n//by nimitz 2015 (twitter: @stormoid)\n//License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\n// Contact the author for other licensing options\n\n#define time iTime\nmat2 mm2(in float a){float c = cos(a), s = sin(a);return mat2(c,s,-s,c);}\n\nfloat rand(float n){return fract(sin(n) * 43758.5453123);}\n\nfloat noise(float p){\n\tfloat fl = floor(p);\n  float fc = fract(p);\n\treturn mix(rand(fl), rand(fl + 1.0), fc);\n}\nfloat rand(vec2 n) { \n\treturn fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\n\nfloat noise(vec2 p){\n\tvec2 ip = floor(p);\n\tvec2 u = fract(p);\n\tu = u*u*(3.0-2.0*u);\n\t\n\tfloat res = mix(\n\t\tmix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),\n\t\tmix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);\n\treturn res*res;\n}\nfloat mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}\n\nfloat moy = 0.;\n\nfloat noise(in vec3 p)\n{\n    vec3 ip = floor(p);\n    vec3 fp = fract(p);\n\tfp = fp*fp*(3.0-2.0*fp);\n\tvec2 tap = (ip.xy+vec2(37.0,17.0)*ip.z) + fp.xy;\n\tvec2 rz = textureLod( iChannel0, (tap+0.5)/256.0, 0.0 ).yx;\n\treturn mix( rz.x, rz.y, fp.z );\n}\n\nfloat fbm(in vec3 x)\n{\n    float rz = 0.;\n    float a = .35;\n    for (int i = 0; i<2; i++)\n    {\n        rz += noise(x)*a;\n        a*=.35;\n        x*= 4.;\n    }\n    return rz;\n}\n\nfloat path(in float x){ return sin(x*0.01-3.1415)*28.+6.5; }\nfloat map(vec3 p){\n    return p.y*0.07 + (fbm(p*0.3)-0.1) + sin(p.x*0.24 + sin(p.z*.01)*7.)*0.22+0.15 + sin(p.z*0.08)*0.05;\n}\n\nfloat march(in vec3 ro, in vec3 rd)\n{\n    float precis = .3;\n    float h= 1.;\n    float d = 0.;\n    for( int i=0; i<17; i++ )\n    {\n        if( abs(h)<precis || d>70. ) break;\n        d += h;\n        vec3 pos = ro+rd*d;\n        pos.y += .5;\n\t    float res = map(pos)*7.;\n        h = res;\n    }\n\treturn d;\n}\n\nvec3 lgt = vec3(0);\nfloat mapV( vec3 p ){ return clamp(-map(p), 0., 1.);}\nvec4 marchV(in vec3 ro, in vec3 rd, in float t, in vec3 bgc)\n{\n\tvec4 rz = vec4( 0.0 );\n\t\n\tfor( int i=0; i<150; i++ )\n\t{\n\t\tif(rz.a > 0.99 || t > 200.) break;\n\t\t\n\t\tvec3 pos = ro + t*rd;\n        float den = mapV(pos);\n        \n        vec4 col = vec4(mix( vec3(.8,.75,.85), vec3(.0), den ),den);\n        col.xyz *= mix(bgc*bgc*2.5,  mix(vec3(0.1,0.2,0.55),vec3(.8,.85,.9),moy*0.4), clamp( -(den*40.+0.)*pos.y*.03-moy*0.5, 0., 1. ) );\n        col.rgb += clamp((1.-den*6.) + pos.y*0.13 +.55, 0., 1.)*0.35*mix(bgc,vec3(1),0.7); //Fringes\n        col += clamp(den*pos.y*.15, -.02, .0); //Depth occlusion\n        col *= smoothstep(0.2+moy*0.05,.0,mapV(pos+1.*lgt))*.85+0.15; //Shadows\n        \n\t\tcol.a *= .95;\n\t\tcol.rgb *= col.a;\n\t\trz = rz + col*(1.0 - rz.a);\n\n        t += max(.3,(2.-den*30.)*t*0.011);\n\t}\n\n\treturn clamp(rz, 0., 1.);\n}\n\nfloat pent(in vec2 p){    \n    vec2 q = abs(p);\n    return max(max(q.x*1.176-p.y*0.385, q.x*0.727+p.y), -p.y*1.237)*1.;\n}\n\nvec3 lensFlare(vec2 p, vec2 pos)\n{\n\tvec2 q = p-pos;\n    float dq = dot(q, q);\n    vec2 dist = p*(length(p))*0.75;\n\tfloat ang = atan(q.x,q.y);\n    vec2 pp = mix(p, dist, 0.5);\n    float sz = 0.01;\n    float rz = pow(abs(fract(ang*.8+.12)-0.5),3.)*(noise(ang*15.))*0.5;\n    rz *= smoothstep(1.0, 0.0, dot(q,q));\n    rz *= smoothstep(0.0, 0.01, dot(q,q));\n    rz += max(1.0/(1.0 + 30.0*pent(dist + 0.8*pos)),.0)*0.17;\n\trz += clamp(sz-pow(pent(pp + 0.15*pos),1.55),.0, 1.)*5.0;\n\trz += clamp(sz-pow(pent(pp + 0.1*pos),2.4),.0, 1.)*4.0;\n\trz += clamp(sz-pow(pent(pp - 0.05*pos),1.2),.0, 1.)*4.0;\n    rz += clamp(sz-pow(pent((pp + .5*pos)),1.7),.0, 1.)*4.0;\n    rz += clamp(sz-pow(pent((pp + .3*pos)),1.9),.0, 1.)*3.0;\n    rz += clamp(sz-pow(pent((pp - .2*pos)),1.3),.0, 1.)*4.0;\n    return vec3(clamp(rz,0.,1.));\n}\n\nmat3 rot_x(float a){float sa = sin(a); float ca = cos(a); return mat3(1.,.0,.0,    .0,ca,sa,   .0,-sa,ca);}\nmat3 rot_y(float a){float sa = sin(a); float ca = cos(a); return mat3(ca,.0,sa,    .0,1.,.0,   -sa,.0,ca);}\nmat3 rot_z(float a){float sa = sin(a); float ca = cos(a); return mat3(ca,sa,.0,    -sa,ca,.0,  .0,.0,1.);}\n\nvec2 uv;\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\t\n    vec2 q = fragCoord.xy / iResolution.xy;\n    uv = fragCoord.xy;\n    vec2 p = q - 0.5;\n\tfloat asp =iResolution.x/iResolution.y;\n    p.x *= asp;\n\tvec2 mo = iMouse.xy / iResolution.xy;\n\tmoy = mo.y;\n    float st = sin(time*0.3-1.3)*0.2;\n    vec3 ro = vec3(0.,-2.+sin(time*.3-1.)*2.,time*30.);\n    ro.x = path(ro.z);\n    vec3 ta = ro + vec3(0,0,1);\n    vec3 fw = normalize( ta - ro);\n    vec3 uu = normalize(cross( vec3(0.0,1.0,0.0), fw ));\n    vec3 vv = normalize(cross(fw,uu));\n    const float zoom = 1.;\n    vec3 rd = normalize( p.x*uu + p.y*vv + -zoom*fw );\n    \n    float rox = sin(time*0.2)*0.6+2.9;\n    rox += smoothstep(0.6,1.2,sin(time*0.25))*3.5;\n   \tfloat roy = sin(time*0.5)*0.2;\n    mat3 rotation = rot_x(-roy)*rot_y(-rox+st*1.5)*rot_z(st);\n\tmat3 inv_rotation = rot_z(-st)*rot_y(rox-st*1.5)*rot_x(roy);\n    rd *= rotation;\n    rd.y -= dot(p,p)*0.06;\n    rd = normalize(rd);\n    \n    vec3 col = vec3(0.);\n    lgt = normalize(vec3(-0.3,mo.y+0.1,1.));  \n    float rdl = clamp(dot(rd, lgt),0.,1.);\n  \n    vec3 hor = mix( vec3(.9,.6,.7)*0.35, vec3(.5,0.05,0.05), rdl );\n    hor = mix(hor, vec3(.5,.8,1),mo.y);\n    col += mix( vec3(.2,.2,.6), hor, exp2(-(1.+ 3.*(1.-rdl))*max(abs(rd.y),0.)) )*.6;\n    col += .8*vec3(1.,.9,.9)*exp2(rdl*650.-650.);\n    col += .3*vec3(1.,1.,0.1)*exp2(rdl*100.-100.);\n    col += .5*vec3(1.,.7,0.)*exp2(rdl*50.-50.);\n    col += .4*vec3(1.,0.,0.05)*exp2(rdl*10.-10.);  \n    vec3 bgc = col;\n    \n    float rz = march(ro,rd);\n    \n    if (rz < 70.)\n    {   \n        vec4 res = marchV(ro, rd, rz-5., bgc);\n    \tcol = col*(1.0-res.w) + res.xyz;\n    }\n    \n    vec3 proj = (-lgt*inv_rotation);\n    col += 1.4*vec3(0.7,0.7,0.4)*clamp(lensFlare(p,-proj.xy/proj.z*zoom)*proj.z,0., 1.);\n    \n    float g = smoothstep(0.03,.97,mo.x);\n    col = mix(mix(col,col.brg*vec3(1,0.75,1),clamp(g*2.,0.0,1.0)), col.bgr, clamp((g-0.5)*2.,0.0,1.));\n    \n\tcol = clamp(col, 0., 1.);\n    col = col*0.5 + 0.5*col*col*(3.0-2.0*col); //saturation\n    col = pow(col, vec3(0.416667))*1.055 - 0.055; //sRGB\n\tcol *= pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.12 ); //Vign\n\n\tfragColor = vec4( col, 1.0 );\n}"
+        },
+        "oceanClouds": {
+            "title": "Ocean Clouds",
+            "src": "// Clouds: slice based volumetric height-clouds with god-rays, density, sun-radiance/shadow\n// and \n// Water: simple reflecting sky/sun and cloud shaded height-modulated waves\n//\n// Created by Frank Hugenroth 03/2013\n//\n// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n//\n// noise and raymarching based on concepts and code from shaders by inigo quilez\n//\n\n// some variables to change :)\n\n#define RENDER_GODRAYS    1    // set this to 1 to enable god-rays\n//#define RENDER_GODRAYS    0    // disable god-rays\n\n#define RENDER_CLOUDS 1\n#define RENDER_WATER   1\n\nfloat waterlevel = 70.0;        // height of the water\nfloat wavegain   = 1.0;       // change to adjust the general water wave level\nfloat large_waveheight = 1.0; // change to adjust the \"heavy\" waves (set to 0.0 to have a very still ocean :)\nfloat small_waveheight = 1.0; // change to adjust the small waves\n\nvec3 fogcolor    = vec3( 0.5, 0.7, 1.1 );              \nvec3 skybottom   = vec3( 0.6, 0.8, 1.2 );\nvec3 skytop      = vec3(0.05, 0.2, 0.5);\nvec3 reflskycolor= vec3(0.025, 0.10, 0.20);\nvec3 watercolor  = vec3(0.2, 0.25, 0.3);\n\nvec3 light       = normalize( vec3(  0.1, 0.25,  0.9 ) );\n\n\n\n\n\n\n\n\n\n// random/hash function              \nfloat hash( float n )\n{\n  return fract(cos(n)*41415.92653);\n}\n\nfloat rand(vec2 n) { \n\treturn fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\n\nfloat noise(vec2 p){\n\tvec2 ip = floor(p);\n\tvec2 u = fract(p);\n\tu = u*u*(3.0-2.0*u);\n\t\n\tfloat res = mix(\n\t\tmix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),\n\t\tmix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);\n\treturn res*res;\n}\nfloat mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}\n\n\n\n// 3d noise function\nfloat noise( in vec3 x )\n{\n  vec3 p  = floor(x);\n  vec3 f  = smoothstep(0.0, 1.0, fract(x));\n  float n = p.x + p.y*57.0 + 113.0*p.z;\n\n  return mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),\n    mix( hash(n+ 57.0), hash(n+ 58.0),f.x),f.y),\n    mix(mix( hash(n+113.0), hash(n+114.0),f.x),\n    mix( hash(n+170.0), hash(n+171.0),f.x),f.y),f.z);\n}\n\n\nmat3 m = mat3( 0.00,  1.60,  1.20, -1.60,  0.72, -0.96, -1.20, -0.96,  1.28 );\n\n// Fractional Brownian motion\nfloat fbm( vec3 p )\n{\n  float f = 0.5000*noise( p ); p = m*p*1.1;\n  f += 0.2500*noise( p ); p = m*p*1.2;\n  f += 0.1666*noise( p ); p = m*p;\n  f += 0.0834*noise( p );\n  return f;\n}\n\nmat2 m2 = mat2(1.6,-1.2,1.2,1.6);\n\n// Fractional Brownian motion\nfloat fbm( vec2 p )\n{\n  float f = 0.5000*noise( p ); p = m2*p;\n  f += 0.2500*noise( p ); p = m2*p;\n  f += 0.1666*noise( p ); p = m2*p;\n  f += 0.0834*noise( p );\n  return f;\n}\n\n\n// this calculates the water as a height of a given position\nfloat water( vec2 p )\n{\n  float height = waterlevel;\n\n  vec2 shift1 = 0.001*vec2( iTime*160.0*2.0, iTime*120.0*2.0 );\n  vec2 shift2 = 0.001*vec2( iTime*190.0*2.0, -iTime*130.0*2.0 );\n\n  // coarse crossing 'ocean' waves...\n  float wave = 0.0;\n  wave += sin(p.x*0.021  + shift2.x)*4.5;\n  wave += sin(p.x*0.0172+p.y*0.010 + shift2.x*1.121)*4.0;\n  wave -= sin(p.x*0.00104+p.y*0.005 + shift2.x*0.121)*4.0;\n  // ...added by some smaller faster waves...\n  wave += sin(p.x*0.02221+p.y*0.01233+shift2.x*3.437)*5.0;\n  wave += sin(p.x*0.03112+p.y*0.01122+shift2.x*4.269)*2.5 ;\n  wave *= large_waveheight;\n  wave -= fbm(p*0.004-shift2*.5)*small_waveheight*24.;\n  // ...added by some distored random waves (which makes the water looks like water :)\n\n  float amp = 6.*small_waveheight;\n  shift1 *= .3;\n  for (int i=0; i<7; i++)\n  {\n    wave -= abs(sin((noise(p*0.01+shift1)-.5)*3.14))*amp;\n    amp *= .51;\n    shift1 *= 1.841;\n    p *= m2*0.9331;\n  }\n  \n  height += wave;\n  return height;\n}\n\n\n// cloud intersection raycasting\nfloat trace_fog(in vec3 rStart, in vec3 rDirection )\n{\n#ifdef RENDER_CLOUDS\n  // makes the clouds moving...\n  vec2 shift = vec2( iTime*80.0, iTime*60.0 );\n  float sum = 0.0;\n  // use only 12 cloud-layers ;)\n  // this improves performance but results in \"god-rays shining through clouds\" effect (sometimes)...\n  float q2 = 0., q3 = 0.;\n  for (int q=0; q<10; q++)\n  {\n    float c = (q2+350.0-rStart.y) / rDirection.y;// cloud distance\n    vec3 cpos = rStart + c*rDirection + vec3(831.0, 321.0+q3-shift.x*0.2, 1330.0+shift.y*3.0); // cloud position\n    float alpha = smoothstep(0.5, 1.0, fbm( cpos*0.0015 )); // cloud density\n\tsum += (1.0-sum)*alpha; // alpha saturation\n    if (sum>0.98)\n        break;\n    q2 += 120.;\n    q3 += 0.15;\n  }\n  \n  return clamp( 1.0-sum, 0.0, 1.0 );\n#else\n  return 1.0;\n#endif\n}\n\n// fog and water intersection function.\n// 1st: collects fog intensity while traveling\n// 2nd: check if hits the water surface and returns the distance\nbool trace(in vec3 rStart, in vec3 rDirection, in float sundot, out float fog, out float dist)\n{\n  float h = 20.0;\n  float t = 0.0;\n  float st = 1.0;\n  float alpha = 0.1;\n  float asum = 0.0;\n  vec3 p = rStart;\n\t\n  for( int j=1000; j<1120; j++ )\n  {\n    // some speed-up if all is far away...\n    if( t>500.0 ) \n      st = 2.0;\n    else if( t>800.0 ) \n      st = 5.0;\n    else if( t>1000.0 ) \n      st = 12.0;\n\n    p = rStart + t*rDirection; // calc current ray position\n\n#ifdef RENDER_GODRAYS\n    if (rDirection.y>0. && sundot > 0.001 && t>400.0 && t < 2500.0)\n    {\n      alpha = sundot * clamp((p.y-waterlevel)/waterlevel, 0.0, 1.0) * st * 0.024*smoothstep(0.80, 1.0, trace_fog(p,light));\n      asum  += (1.0-asum)*alpha;\n      if (asum > 0.9)\n        break;\n    }\n#endif\n\n    h = p.y - water(p.xz);\n\n    if( h<0.1 ) // hit the water?\n    {\n      dist = t; \n      fog = asum;\n      return true;\n    }\n\n    if( p.y>450.0 ) // lost in space? quit...\n      break;\n    \n    // speed up ray if possible...    \n    if(rDirection.y > 0.0) // look up (sky!) -> make large steps\n      t += 30.0 * st;\n    else\n      t += max(1.0,1.0*h)*st;\n  }\n\n  dist = t; \n  fog = asum;\n  if (h<10.0)\n   return true;\n  return false;\n}\n\n\nvec3 camera( float time )\n{\n  return vec3( 500.0 * sin(1.5+1.57*time), 0.0, 1200.0*time );\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n  vec2 xy = -1.0 + 2.0*fragCoord.xy / iResolution.xy;\n  vec2 s = xy*vec2(1.75,1.0);\n\n  // get camera position and view direction\n  float time = (iTime+13.5+44.)*.05;\n  vec3 campos = camera( time );\n  vec3 camtar = camera( time + 0.4 );\n  campos.y = max(waterlevel+30.0, waterlevel+90.0 + 60.0*sin(time*2.0));\n  camtar.y = campos.y*0.5;\n\n  float roll = 0.14*sin(time*1.2);\n  vec3 cw = normalize(camtar-campos);\n  vec3 cp = vec3(sin(roll), cos(roll),0.0);\n  vec3 cu = normalize(cross(cw,cp));\n  vec3 cv = normalize(cross(cu,cw));\n  vec3 rd = normalize( s.x*cu + s.y*cv + 1.6*cw );\n\n  float sundot = clamp(dot(rd,light),0.0,1.0);\n\n  vec3 col;\n  float fog=0.0, dist=0.0;\n\n  if (!trace(campos,rd,sundot, fog, dist))\n  {\n    // render sky\n    float t = pow(1.0-0.7*rd.y, 15.0);\n    col = 0.8*(skybottom*t + skytop*(1.0-t));\n    // sun\n    col += 0.47*vec3(1.6,1.4,1.0)*pow( sundot, 350.0 );\n    // sun haze\n    col += 0.4*vec3(0.8,0.9,1.0)*pow( sundot, 2.0 );\n\n#ifdef RENDER_CLOUDS\n    // CLOUDS\n    vec2 shift = vec2( iTime*80.0, iTime*60.0 );\n    vec4 sum = vec4(0,0,0,0); \n    for (int q=1000; q<1100; q++) // 100 layers\n    {\n      float c = (float(q-1000)*12.0+350.0-campos.y) / rd.y; // cloud height\n      vec3 cpos = campos + c*rd + vec3(831.0, 321.0+float(q-1000)*.15-shift.x*0.2, 1330.0+shift.y*3.0); // cloud position\n      float alpha = smoothstep(0.5, 1.0, fbm( cpos*0.0015 ))*.9; // fractal cloud density\n      vec3 localcolor = mix(vec3( 1.1, 1.05, 1.0 ), 0.7*vec3( 0.4,0.4,0.3 ), alpha); // density color white->gray\n      alpha = (1.0-sum.w)*alpha; // alpha/density saturation (the more a cloud layer's density, the more the higher layers will be hidden)\n      sum += vec4(localcolor*alpha, alpha); // sum up weightened color\n      \n      if (sum.w>0.98)\n        break;\n    }\n    float alpha = smoothstep(0.7, 1.0, sum.w);\n    sum.rgb /= sum.w+0.0001;\n\n    // This is an important stuff to darken dense-cloud parts when in front (or near)\n    // of the sun (simulates cloud-self shadow)\n    sum.rgb -= 0.6*vec3(0.8, 0.75, 0.7)*pow(sundot,13.0)*alpha;\n    // This brightens up the low-density parts (edges) of the clouds (simulates light scattering in fog)\n    sum.rgb += 0.2*vec3(1.3, 1.2, 1.0)* pow(sundot,5.0)*(1.0-alpha);\n\n    col = mix( col, sum.rgb , sum.w*(1.0-t) );\n#endif\n\n    // add god-rays\n    col += vec3(0.5, 0.4, 0.3)*fog;\n  }\n  else\n  {\n#ifdef RENDER_WATER        \n    //  render water\n    \n    vec3 wpos = campos + dist*rd; // calculate position where ray meets water\n\n    // calculate water-mirror\n    vec2 xdiff = vec2(0.1, 0.0)*wavegain*4.;\n    vec2 ydiff = vec2(0.0, 0.1)*wavegain*4.;\n\n    // get the reflected ray direction\n    rd = reflect(rd, normalize(vec3(water(wpos.xz-xdiff) - water(wpos.xz+xdiff), 1.0, water(wpos.xz-ydiff) - water(wpos.xz+ydiff))));  \n    float refl = 1.0-clamp(dot(rd,vec3(0.0, 1.0, 0.0)),0.0,1.0);\n  \n    float sh = smoothstep(0.2, 1.0, trace_fog(wpos+20.0*rd,rd))*.7+.3;\n    // water reflects more the lower the reflecting angle is...\n    float wsky   = refl*sh;     // reflecting (sky-color) amount\n    float wwater = (1.0-refl)*sh; // water-color amount\n\n    float sundot = clamp(dot(rd,light),0.0,1.0);\n\n    // watercolor\n\n    col = wsky*reflskycolor; // reflecting sky-color \n    col += wwater*watercolor;\n    col += vec3(.003, .005, .005) * (wpos.y-waterlevel+30.);\n\n    // Sun\n    float wsunrefl = wsky*(0.5*pow( sundot, 10.0 )+0.25*pow( sundot, 3.5)+.75*pow( sundot, 300.0));\n    col += vec3(1.5,1.3,1.0)*wsunrefl; // sun reflection\n\n#endif\n\n    // global depth-fog\n    float fo = 1.0-exp(-pow(0.0003*dist, 1.5));\n    vec3 fco = fogcolor + 0.6*vec3(0.6,0.5,0.4)*pow( sundot, 4.0 );\n    col = mix( col, fco, fo );\n\n    // add god-rays\n    col += vec3(0.5, 0.4, 0.3)*fog; \n  }\n\n  fragColor=vec4(col,1.0);\n}\n\n\n"
+        },
+        "clouds": {
+            "title": "Clouds",
+            "src": "const float cloudscale = 1.1;\nconst float speed = 0.03;\nconst float clouddark = 0.5;\nconst float cloudlight = 0.3;\nconst float cloudcover = 0.2;\nconst float cloudalpha = 8.0;\nconst float skytint = 0.5;\nconst vec3 skycolour1 = vec3(0.2, 0.4, 0.6);\nconst vec3 skycolour2 = vec3(0.4, 0.7, 1.0);\n\nconst mat2 m = mat2( 1.6,  1.2, -1.2,  1.6 );\n\nvec2 hash( vec2 p ) {\n\tp = vec2(dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)));\n\treturn -1.0 + 2.0*fract(sin(p)*43758.5453123);\n}\n\nfloat noise( in vec2 p ) {\n    const float K1 = 0.366025404; // (sqrt(3)-1)/2;\n    const float K2 = 0.211324865; // (3-sqrt(3))/6;\n\tvec2 i = floor(p + (p.x+p.y)*K1);\t\n    vec2 a = p - i + (i.x+i.y)*K2;\n    vec2 o = (a.x>a.y) ? vec2(1.0,0.0) : vec2(0.0,1.0); //vec2 of = 0.5 + 0.5*vec2(sign(a.x-a.y), sign(a.y-a.x));\n    vec2 b = a - o + K2;\n\tvec2 c = a - 1.0 + 2.0*K2;\n    vec3 h = max(0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );\n\tvec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));\n    return dot(n, vec3(70.0));\t\n}\n\nfloat fbm(vec2 n) {\n\tfloat total = 0.0, amplitude = 0.1;\n\tfor (int i = 0; i < 7; i++) {\n\t\ttotal += noise(n) * amplitude;\n\t\tn = m * n;\n\t\tamplitude *= 0.4;\n\t}\n\treturn total;\n}\n\n// -----------------------------------------------\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec2 p = fragCoord.xy / iResolution.xy;\n\tvec2 uv = p*vec2(iResolution.x/iResolution.y,1.0);    \n    float time = iTime * speed;\n    float q = fbm(uv * cloudscale * 0.5);\n    \n    //ridged noise shape\n\tfloat r = 0.0;\n\tuv *= cloudscale;\n    uv -= q - time;\n    float weight = 0.8;\n    for (int i=0; i<8; i++){\n\t\tr += abs(weight*noise( uv ));\n        uv = m*uv + time;\n\t\tweight *= 0.7;\n    }\n    \n    //noise shape\n\tfloat f = 0.0;\n    uv = p*vec2(iResolution.x/iResolution.y,1.0);\n\tuv *= cloudscale;\n    uv -= q - time;\n    weight = 0.7;\n    for (int i=0; i<8; i++){\n\t\tf += weight*noise( uv );\n        uv = m*uv + time;\n\t\tweight *= 0.6;\n    }\n    \n    f *= r + f;\n    \n    //noise colour\n    float c = 0.0;\n    time = iTime * speed * 2.0;\n    uv = p*vec2(iResolution.x/iResolution.y,1.0);\n\tuv *= cloudscale*2.0;\n    uv -= q - time;\n    weight = 0.4;\n    for (int i=0; i<7; i++){\n\t\tc += weight*noise( uv );\n        uv = m*uv + time;\n\t\tweight *= 0.6;\n    }\n    \n    //noise ridge colour\n    float c1 = 0.0;\n    time = iTime * speed * 3.0;\n    uv = p*vec2(iResolution.x/iResolution.y,1.0);\n\tuv *= cloudscale*3.0;\n    uv -= q - time;\n    weight = 0.4;\n    for (int i=0; i<7; i++){\n\t\tc1 += abs(weight*noise( uv ));\n        uv = m*uv + time;\n\t\tweight *= 0.6;\n    }\n\t\n    c += c1;\n    \n    vec3 skycolour = mix(skycolour2, skycolour1, p.y);\n    vec3 cloudcolour = vec3(1.1, 1.1, 0.9) * clamp((clouddark + cloudlight*c), 0.0, 1.0);\n   \n    f = cloudcover + cloudalpha*f*r;\n    \n    vec3 result = mix(skycolour, clamp(skytint * skycolour + cloudcolour, 0.0, 1.0), clamp(f + c, 0.0, 1.0));\n    \n\tfragColor = vec4( result, 1.0 );\n}"
+        },
+        "electricEelUniverse": {
+            "title": "Electric Eel Universe",
+            "src": "// CC0: Electric Eel Universe\n//  Saturday tinkering with an old failed shader\n//  Turned out a bit better today\n\n#define PI              3.141592654\n#define TAU             (2.0*PI)\n#define TIME            iTime\n#define RESOLUTION      iResolution\n#define ROT(a)          mat2(cos(a), sin(a), -sin(a), cos(a))\n\n// License: WTFPL, author: sam hocevar, found: https://stackoverflow.com/a/17897228/418488\nconst vec4 hsv2rgb_K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\nvec3 hsv2rgb(vec3 c) {\n  vec3 p = abs(fract(c.xxx + hsv2rgb_K.xyz) * 6.0 - hsv2rgb_K.www);\n  return c.z * mix(hsv2rgb_K.xxx, clamp(p - hsv2rgb_K.xxx, 0.0, 1.0), c.y);\n}\n// License: WTFPL, author: sam hocevar, found: https://stackoverflow.com/a/17897228/418488\n//  Macro version of above to enable compile-time constants\n#define HSV2RGB(c)  (c.z * mix(hsv2rgb_K.xxx, clamp(abs(fract(c.xxx + hsv2rgb_K.xyz) * 6.0 - hsv2rgb_K.www) - hsv2rgb_K.xxx, 0.0, 1.0), c.y))\n\n// License: Unknown, author: Unknown, found: don't remember\nfloat hash(float co) {\n  return fract(sin(co*12.9898) * 13758.5453);\n}\n\n// License: MIT OR CC-BY-NC-4.0, author: mercury, found: https://mercury.sexy/hg_sdf/\nfloat mod1(inout float p, float size) {\n  float halfsize = size*0.5;\n  float c = floor((p + halfsize)/size);\n  p = mod(p + halfsize, size) - halfsize;\n  return c;\n}\n\n// License: MIT, author: Inigo Quilez, found: https://www.iquilezles.org/www/articles/intersectors/intersectors.htm\nvec2 rayCylinder(vec3 ro, vec3 rd, vec3 cb, vec3 ca, float cr) {\n  vec3  oc = ro - cb;\n  float card = dot(ca,rd);\n  float caoc = dot(ca,oc);\n  float a = 1.0 - card*card;\n  float b = dot( oc, rd) - caoc*card;\n  float c = dot( oc, oc) - caoc*caoc - cr*cr;\n  float h = b*b - a*c;\n  if( h<0.0 ) return vec2(-1.0); //no intersection\n  h = sqrt(h);\n  return vec2(-b-h,-b+h)/a;\n}\n\n// License: Unknown, author: Unknown, found: shadertoy somewhere, don't remember where\nfloat dfcos(float x) {\n  return sqrt(x*x+1.0)*0.8-1.8;\n}\n\n// License: Unknown, author: Unknown, found: shadertoy somewhere, don't remember where\nfloat dfcos(vec2 p, float freq) {\n  float x = p.x;\n  float y = p.y;\n  x *= freq;\n    \n  float x1 = abs(mod(x+PI,TAU)-PI);\n  float x2 = abs(mod(x   ,TAU)-PI);\n    \n  float a = 0.18*freq;\n    \n  x1 /= max( y*a+1.0-a,1.0);\n  x2 /= max(-y*a+1.0-a,1.0);\n  return (mix(-dfcos(x2)-1.0,dfcos(x1)+1.0,clamp(y*0.5+0.5,0.0,1.0)))/max(freq*0.8,1.0)+max(abs(y)-1.0,0.0)*sign(y);\n}\n\nvec3 skyColor(vec3 ro, vec3 rd) {\n  const vec3 l = normalize(vec3(0.0, 0., -1.0));\n  vec3 baseCol = hsv2rgb(vec3(0.6, 0.95, .0025));\n  return baseCol/(1.00001+dot(rd, l));\n}\n\nvec3 color(vec3 ww, vec3 uu, vec3 vv, vec3 ro, vec2 p) {\n  const float rdd = 2.0;\n  const float mm = 4.0;\n  const float rep = 27.0;\n\n  vec3 rd = normalize(-p.x*uu + p.y*vv + rdd*ww);\n  \n  vec3 skyCol = skyColor(ro, rd);\n\n  rd.yx *= ROT(0.1*TIME);\n\n  vec3 col = skyCol;\n\n  // I read somewhere that if you call atan in a shader you got no business writing shader code.\n  //  I even call it in a loop :)\n  float a = atan(rd.y, rd.x);\n  for(float i = 0.0; i < mm; ++i) {\n    float ma = a;\n    float sz = rep+i*6.0;\n    float slices = TAU/sz; \n    float na = mod1(ma, slices);\n\n    float h1 = hash(na+13.0*i+123.4);\n    float h2 = fract(h1*3677.0);\n    float h3 = fract(h1*8677.0);\n\n    float tr = mix(0.5, 3.0, h1);\n    vec2 tc = rayCylinder(ro, rd, ro, vec3(0.0, 0.0, 1.0), tr);\n    vec3 tcp = ro + tc.y*rd;\n    vec2 tcp2 = vec2(tcp.z, atan(tcp.y, tcp.x));\n  \n    float zz = mix(0.025, 0.05, sqrt(h1))*rep/sz;\n    float tnpy = mod1(tcp2.y, slices);\n    float fo = smoothstep(0.5*slices, 0.25*slices, abs(tcp2.y));\n    tcp2.x += -h2*TIME;\n    tcp2.y *= tr*PI/3.0;\n\n    tcp2/=zz;\n    float d = dfcos(tcp2, 2.0*zz);\n//    float d = tcp2.y;\n    d = abs(d);\n    d *= zz;\n\n    vec3 bcol = (1.0+cos(vec3(0.0, 1.0, 2.0)+TAU*h3+0.5*h2*h2*tcp.z))*0.00005;\n    bcol /= max(d*d, 0.000+5E-7*tc.y*tc.y);\n    bcol *= exp(-0.04*tc.y*tc.y);\n    bcol *= smoothstep(-0.5, 1.0, sin(mix(0.125, 1.0, h2)*tcp.z));\n    bcol *= fo;\n    col += bcol;\n  }\n\n  return col;\n}\n\n// License: Unknown, author: nmz (twitter: @stormoid), found: https://www.shadertoy.com/view/NdfyRM\nvec3 sRGB(vec3 t) {\n  return mix(1.055*pow(t, vec3(1./2.4)) - 0.055, 12.92*t, step(t, vec3(0.0031308)));\n}\n\n// License: Unknown, author: Matt Taylor (https://github.com/64), found: https://64.github.io/tonemapping/\nvec3 aces_approx(vec3 v) {\n  v = max(v, 0.0);\n  v *= 0.6f;\n  float a = 2.51f;\n  float b = 0.03f;\n  float c = 2.43f;\n  float d = 0.59f;\n  float e = 0.14f;\n  return clamp((v*(a*v+b))/(v*(c*v+d)+e), 0.0f, 1.0f);\n}\n\nvec3 effect(vec2 p, vec2 pp) {\n  float tm = 1.5*TIME+12.3;\n  vec3 ro   = vec3(0.0, 0.0, tm);\n  vec3 dro  = normalize(vec3(1.0, 0.0, 3.0));\n  dro.xz *= ROT(0.2*sin(0.05*tm));\n  dro.yz *= ROT(0.2*sin(0.05*tm*sqrt(0.5)));\n  const vec3 up = vec3(0.0,1.0,0.0);\n  vec3 ww = normalize(dro);\n  vec3 uu = normalize(cross(up, ww));\n  vec3 vv = (cross(ww, uu));\n  vec3 col = color(ww, uu, vv, ro, p);\n  col -= 0.125*vec3(0.0, 1.0, 2.0).yzx*length(pp);\n  col = aces_approx(col);\n  col = sRGB(col);\n  return col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n  vec2 q = fragCoord/RESOLUTION.xy;\n  vec2 p = -1. + 2. * q;\n  vec2 pp = p;\n  p.x *= RESOLUTION.x/RESOLUTION.y;\n\n  vec3 col = effect(p, pp);\n  fragColor = vec4(col, 1.0);\n}\n\n"
+        },
+        "rainbows": {
+            "title": "Rainbows",
+            "src": "float circle(vec2 pos, vec2 pixel, float radius) {\n    return smoothstep(radius, radius * 0.6, distance(pos, pixel));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.xy;\n    uv -= 0.5;\n    uv.x *= iResolution.x / iResolution.y;\n    \n    vec3 rgb = vec3(0.);\n    \n    float frequency = 2.;\n    float amplitude = 0.2;\n    float speed = 2.;\n    float rh = 0.07;\n\n    float sr = (sin((iTime * speed) + uv.x * frequency)) * amplitude;\n    float sg = (sin(((iTime + .2) * speed) + uv.x * frequency)) * amplitude;\n    float sb = (sin(((iTime + .4) * speed) + uv.x * frequency)) * amplitude;\n    \n    sr += cos((iTime + sin(uv.x)) * .6) * 0.2;\n    sg += cos((iTime + sin(uv.x)) * .6) * 0.2;\n    sb += cos((iTime + sin(uv.x)) * .6) * 0.2;\n    \n    rgb.r += smoothstep(sr + rh, sr, uv.y) - smoothstep(sr, sr - rh, uv.y);\n    rgb.g += smoothstep(sg + rh, sg, uv.y) - smoothstep(sg, sg - rh, uv.y);\n    rgb.b += smoothstep(sb + rh, sb, uv.y) - smoothstep(sb, sb - rh, uv.y);\n    \n\n    for(float i = 0.; i < 45.; i++) {\n    \tfloat cx = cos((iTime * cos(clamp(iTime * 0.019, 0.7, 0.8)) * 2.) + i * 0.08) * 0.8;\n    \tfloat cy = sin((iTime * sin(clamp(iTime * 0.01, 0.8, 0.9)) * 1.2) + i * 0.06) * 0.4;    \n        \n\t    rgb += circle(vec2(cx, cy), uv, 0.05) * 0.97;\n    }    \n\n    fragColor = vec4(rgb,1.0);\n}"
+        },
+        "voronoi": {
+            "title": "Voronoi",
+            "src": "// The MIT License\n// Copyright © 2013 Inigo Quilez\n// https://www.youtube.com/c/InigoQuilez\n// https://iquilezles.org/\n// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n// I've not seen anybody out there computing correct cell interior distances for Voronoi\n// patterns yet. That's why they cannot shade the cell interior correctly, and why you've\n// never seen cell boundaries rendered correctly. \n//\n// However, here's how you do mathematically correct distances (note the equidistant and non\n// degenerated grey isolines inside the cells) and hence edges (in yellow):\n//\n// https://iquilezles.org/articles/voronoilines\n//\n// More Voronoi shaders:\n//\n// Exact edges:  https://www.shadertoy.com/view/ldl3W8\n// Hierarchical: https://www.shadertoy.com/view/Xll3zX\n// Smooth:       https://www.shadertoy.com/view/ldB3zc\n// Voronoise:    https://www.shadertoy.com/view/Xd23Dh\n\n#define ANIMATE\n\nvec2 hash2( vec2 p )\n{\n\t// texture based white noise\n\t//return textureLod( iChannel0, (p+0.5)/256.0, 0.0 ).xy;\n\t\n    // procedural white noise\t\n\treturn fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);\n}\n\nvec3 voronoi( in vec2 x )\n{\n    vec2 n = floor(x);\n    vec2 f = fract(x);\n\n    //----------------------------------\n    // first pass: regular voronoi\n    //----------------------------------\n\tvec2 mg, mr;\n\n    float md = 8.0;\n    for( int j=-1; j<=1; j++ )\n    for( int i=-1; i<=1; i++ )\n    {\n        vec2 g = vec2(float(i),float(j));\n\t\tvec2 o = hash2( n + g );\n\t\t#ifdef ANIMATE\n        o = 0.5 + 0.5*sin( iTime + 6.2831*o );\n        #endif\t\n        vec2 r = g + o - f;\n        float d = dot(r,r);\n\n        if( d<md )\n        {\n            md = d;\n            mr = r;\n            mg = g;\n        }\n    }\n\n    //----------------------------------\n    // second pass: distance to borders\n    //----------------------------------\n    md = 8.0;\n    for( int j=-2; j<=2; j++ )\n    for( int i=-2; i<=2; i++ )\n    {\n        vec2 g = mg + vec2(float(i),float(j));\n\t\tvec2 o = hash2( n + g );\n\t\t#ifdef ANIMATE\n        o = 0.5 + 0.5*sin( iTime + 6.2831*o );\n        #endif\t\n        vec2 r = g + o - f;\n\n        if( dot(mr-r,mr-r)>0.00001 )\n        md = min( md, dot( 0.5*(mr+r), normalize(r-mr) ) );\n    }\n\n    return vec3( md, mr );\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 p = fragCoord/iResolution.xx;\n\n    vec3 c = voronoi( 8.0*p );\n\n\t// isolines\n    vec3 col = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);\n    // borders\t\n    col = mix( vec3(1.0,0.6,0.0), col, smoothstep( 0.04, 0.07, c.x ) );\n    // feature points\n\tfloat dd = length( c.yz );\n\tcol = mix( vec3(1.0,0.6,0.1), col, smoothstep( 0.0, 0.12, dd) );\n\tcol += vec3(1.0,0.6,0.1)*(1.0-smoothstep( 0.0, 0.04, dd));\n\n\tfragColor = vec4(col,1.0);\n}\n"
+        },
+        "voxelEdges": {
+            "title": "Voxel Edges",
+            "src": "// Copyright Inigo Quilez, 2013 - https://iquilezles.org/\n// I am the sole copyright owner of this Work.\n// You cannot host, display, distribute or share this Work neither\n// as it is or altered, here on Shadertoy or anywhere else, in any\n// form including physical and digital. You cannot use this Work in any\n// commercial or non-commercial product, website or project. You cannot\n// sell this Work and you cannot mint an NFTs of it or train a neural\n// network with it without permission. I share this Work for educational\n// purposes, and you can link to it, through an URL, proper attribution\n// and unmodified screenshot, as part of your educational material. If\n// these conditions are too restrictive please contact me and we'll\n// definitely work it out.\n\n// Shading technique explained here:\n//\n// https://iquilezles.org/articles/voxellines\n\n\n\n// consider replacing this by a proper noise function\n// float noise( in vec3 x )\n// {\n//     vec3 p = floor(x);\n//     vec3 f = fract(x);\n// \tf = f*f*(3.0-2.0*f);\n// \tvec2 uv = (p.xy+vec2(37.0,17.0)*p.z) + f.xy;\n// \tvec2 rg = textureLod( iChannel0, (uv+0.5)/256.0, 0.0 ).yx;\n// \treturn mix( rg.x, rg.y, f.z );\n// }\n\nfloat mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}\nvec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}\n\nfloat noise(vec3 p){\n    vec3 a = floor(p);\n    vec3 d = p - a;\n    d = d * d * (3.0 - 2.0 * d);\n\n    vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);\n    vec4 k1 = perm(b.xyxy);\n    vec4 k2 = perm(k1.xyxy + b.zzww);\n\n    vec4 c = k2 + a.zzzz;\n    vec4 k3 = perm(c);\n    vec4 k4 = perm(c + 1.0);\n\n    vec4 o1 = fract(k3 * (1.0 / 41.0));\n    vec4 o2 = fract(k4 * (1.0 / 41.0));\n\n    vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);\n    vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);\n\n    return o4.y * d.y + o4.x * (1.0 - d.y);\n}\nfloat mapTerrain( vec3 p )\n{\n\tp *= 0.1; \n\tp.xz *= 0.6;\n\t\n\tfloat time = 0.5 + 0.15*iTime;\n\tfloat ft = fract( time );\n\tfloat it = floor( time );\n\tft = smoothstep( 0.7, 1.0, ft );\n\ttime = it + ft;\n\tfloat spe = 1.4;\n\t\n\tfloat f;\n    f  = 0.5000*noise( p*1.00 + vec3(0.0,1.0,0.0)*spe*time );\n    f += 0.2500*noise( p*2.02 + vec3(0.0,2.0,0.0)*spe*time );\n    f += 0.1250*noise( p*4.01 );\n\treturn 25.0*f-10.0;\n}\n\nvec3 gro = vec3(0.0);\n\nfloat map(in vec3 c) \n{\n\tvec3 p = c + 0.5;\n\t\n\tfloat f = mapTerrain( p ) + 0.25*p.y;\n\n    f = mix( f, 1.0, step( length(gro-p), 5.0 ) );\n\n\treturn step( f, 0.5 );\n}\n\nvec3 lig = normalize( vec3(-0.4,0.3,0.7) );\n\nfloat castRay( in vec3 ro, in vec3 rd, out vec3 oVos, out vec3 oDir )\n{\n\tvec3 pos = floor(ro);\n\tvec3 ri = 1.0/rd;\n\tvec3 rs = sign(rd);\n\tvec3 dis = (pos-ro + 0.5 + rs*0.5) * ri;\n\t\n\tfloat res = -1.0;\n\tvec3 mm = vec3(0.0);\n\tfor( int i=0; i<128; i++ ) \n\t{\n\t\tif( map(pos)>0.5 ) { res=1.0; break; }\n\t\tmm = step(dis.xyz, dis.yzx) * step(dis.xyz, dis.zxy);\n\t\tdis += mm * rs * ri;\n        pos += mm * rs;\n\t}\n\n\tvec3 nor = -mm*rs;\n\tvec3 vos = pos;\n\t\n    // intersect the cube\t\n\tvec3 mini = (pos-ro + 0.5 - 0.5*vec3(rs))*ri;\n\tfloat t = max ( mini.x, max ( mini.y, mini.z ) );\n\t\n\toDir = mm;\n\toVos = vos;\n\n\treturn t*res;\n}\n\nvec3 path( float t, float ya )\n{\n    vec2 p  = 100.0*sin( 0.02*t*vec2(1.0,1.2) + vec2(0.1,0.9) );\n\t     p +=  50.0*sin( 0.04*t*vec2(1.3,1.0) + vec2(1.0,4.5) );\n\t\n\treturn vec3( p.x, 18.0 + ya*4.0*sin(0.05*t), p.y );\n}\n\nmat3 setCamera( in vec3 ro, in vec3 ta, float cr )\n{\n\tvec3 cw = normalize(ta-ro);\n\tvec3 cp = vec3(sin(cr), cos(cr),0.0);\n\tvec3 cu = normalize( cross(cw,cp) );\n\tvec3 cv = normalize( cross(cu,cw) );\n    return mat3( cu, cv, -cw );\n}\n\nfloat maxcomp( in vec4 v )\n{\n    return max( max(v.x,v.y), max(v.z,v.w) );\n}\n\nfloat isEdge( in vec2 uv, vec4 va, vec4 vb, vec4 vc, vec4 vd )\n{\n    vec2 st = 1.0 - uv;\n\n    // edges\n    vec4 wb = smoothstep( 0.85, 0.99, vec4(uv.x,\n                                           st.x,\n                                           uv.y,\n                                           st.y) ) * ( 1.0 - va + va*vc );\n    // corners\n    vec4 wc = smoothstep( 0.85, 0.99, vec4(uv.x*uv.y,\n                                           st.x*uv.y,\n                                           st.x*st.y,\n                                           uv.x*st.y) ) * ( 1.0 - vb + vd*vb );\n    return maxcomp( max(wb,wc) );\n}\n\nfloat calcOcc( in vec2 uv, vec4 va, vec4 vb, vec4 vc, vec4 vd )\n{\n    vec2 st = 1.0 - uv;\n\n    // edges\n    vec4 wa = vec4( uv.x, st.x, uv.y, st.y ) * vc;\n\n    // corners\n    vec4 wb = vec4(uv.x*uv.y,\n                   st.x*uv.y,\n                   st.x*st.y,\n                   uv.x*st.y)*vd*(1.0-vc.xzyw)*(1.0-vc.zywx);\n    \n    return wa.x + wa.y + wa.z + wa.w +\n           wb.x + wb.y + wb.z + wb.w;\n}\n\nvec3 render( in vec3 ro, in vec3 rd )\n{\n    vec3 col = vec3(0.0);\n\t\n    // raymarch\t\n\tvec3 vos, dir;\n\tfloat t = castRay( ro, rd, vos, dir );\n\tif( t>0.0 )\n\t{\n        vec3 nor = -dir*sign(rd);\n        vec3 pos = ro + rd*t;\n        vec3 uvw = pos - vos;\n\t\t\n\t\tvec3 v1  = vos + nor + dir.yzx;\n\t    vec3 v2  = vos + nor - dir.yzx;\n\t    vec3 v3  = vos + nor + dir.zxy;\n\t    vec3 v4  = vos + nor - dir.zxy;\n\t\tvec3 v5  = vos + nor + dir.yzx + dir.zxy;\n        vec3 v6  = vos + nor - dir.yzx + dir.zxy;\n\t    vec3 v7  = vos + nor - dir.yzx - dir.zxy;\n\t    vec3 v8  = vos + nor + dir.yzx - dir.zxy;\n\t    vec3 v9  = vos + dir.yzx;\n\t    vec3 v10 = vos - dir.yzx;\n\t    vec3 v11 = vos + dir.zxy;\n\t    vec3 v12 = vos - dir.zxy;\n \t    vec3 v13 = vos + dir.yzx + dir.zxy; \n\t    vec3 v14 = vos - dir.yzx + dir.zxy ;\n\t    vec3 v15 = vos - dir.yzx - dir.zxy;\n\t    vec3 v16 = vos + dir.yzx - dir.zxy;\n\n\t\tvec4 vc = vec4( map(v1),  map(v2),  map(v3),  map(v4)  );\n\t    vec4 vd = vec4( map(v5),  map(v6),  map(v7),  map(v8)  );\n\t    vec4 va = vec4( map(v9),  map(v10), map(v11), map(v12) );\n\t    vec4 vb = vec4( map(v13), map(v14), map(v15), map(v16) );\n\t\t\n\t\tvec2 uv = vec2( dot(dir.yzx, uvw), dot(dir.zxy, uvw) );\n\t\t\t\n        // wireframe\n        float www = 1.0 - isEdge( uv, va, vb, vc, vd );\n        \n        vec3 wir = smoothstep( 0.4, 0.5, abs(uvw-0.5) );\n        float vvv = (1.0-wir.x*wir.y)*(1.0-wir.x*wir.z)*(1.0-wir.y*wir.z);\n\n        col = vec3(0.5);\n        col += 0.8*vec3(0.1,0.3,0.4);\n        col *= 1.0 - 0.75*(1.0-vvv)*www;\n\t\t\n        // lighting\n        float dif = clamp( dot( nor, lig ), 0.0, 1.0 );\n        float bac = clamp( dot( nor, normalize(lig*vec3(-1.0,0.0,-1.0)) ), 0.0, 1.0 );\n        float sky = 0.5 + 0.5*nor.y;\n        float amb = clamp(0.75 + pos.y/25.0,0.0,1.0);\n        float occ = 1.0;\n\t\n        // ambient occlusion\n        occ = calcOcc( uv, va, vb, vc, vd );\n        occ = 1.0 - occ/8.0;\n        occ = occ*occ;\n        occ = occ*occ;\n        occ *= amb;\n\n        // lighting\n        vec3 lin = vec3(0.0);\n        lin += 2.5*dif*vec3(1.00,0.90,0.70)*(0.5+0.5*occ);\n        lin += 0.5*bac*vec3(0.15,0.10,0.10)*occ;\n        lin += 2.0*sky*vec3(0.40,0.30,0.15)*occ;\n\n        // line glow\t\n        float lineglow = 0.0;\n        lineglow += smoothstep( 0.4, 1.0,     uv.x )*(1.0-va.x*(1.0-vc.x));\n        lineglow += smoothstep( 0.4, 1.0, 1.0-uv.x )*(1.0-va.y*(1.0-vc.y));\n        lineglow += smoothstep( 0.4, 1.0,     uv.y )*(1.0-va.z*(1.0-vc.z));\n        lineglow += smoothstep( 0.4, 1.0, 1.0-uv.y )*(1.0-va.w*(1.0-vc.w));\n        lineglow += smoothstep( 0.4, 1.0,      uv.y*      uv.x )*(1.0-vb.x*(1.0-vd.x));\n        lineglow += smoothstep( 0.4, 1.0,      uv.y* (1.0-uv.x))*(1.0-vb.y*(1.0-vd.y));\n        lineglow += smoothstep( 0.4, 1.0, (1.0-uv.y)*(1.0-uv.x))*(1.0-vb.z*(1.0-vd.z));\n        lineglow += smoothstep( 0.4, 1.0, (1.0-uv.y)*     uv.x )*(1.0-vb.w*(1.0-vd.w));\n\t\t\n        vec3 linCol = 2.0*vec3(5.0,0.6,0.0);\n        linCol *= (0.5+0.5*occ)*0.5;\n        lin += 3.0*lineglow*linCol;\n\t\t\n        col = col*lin;\n        col += 8.0*linCol*vec3(1.0,2.0,3.0)*(1.0-www);//*(0.5+1.0*sha);\n        col += 0.1*lineglow*linCol;\n        col *= min(0.1,exp( -0.07*t ));\n\t\n        // blend to black & white\t\t\n        // vec3 col2 = vec3(1.3)*(0.5+0.5*nor.y)*occ*www*(0.9+0.1*vvv)*exp( -0.04*t );;\n        // float mi = sin(-1.57+0.5*iTime);\n        // mi = smoothstep( 0.70, 0.75, mi );\n        // col = mix( col, col2, mi );\n\t}\n\n\t// gamma\t\n\tcol = pow( col, vec3(0.45) );\n\n    return col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    // inputs\t\n\tvec2 q = fragCoord.xy / iResolution.xy;\n    vec2 p = -1.0 + 2.0*q;\n    p.x *= iResolution.x/ iResolution.y;\n\t\n    vec2 mo = iMouse.xy / iResolution.xy;\n    if( iMouse.z<=0.00001 ) mo=vec2(0.0);\n\t\n\tfloat time = 2.0*iTime + 50.0*mo.x;\n    // camera\n\tfloat cr = 0.2*cos(0.1*iTime);\n\tvec3 ro = path( time+0.0, 1.0 );\n\tvec3 ta = path( time+5.0, 1.0 ) - vec3(0.0,6.0,0.0);\n\tgro = ro;\n\n    mat3 cam = setCamera( ro, ta, cr );\n\t\n\t// build ray\n    float r2 = p.x*p.x*0.32 + p.y*p.y;\n    p *= (7.0-sqrt(37.5-11.5*r2))/(r2+1.0);\n    vec3 rd = normalize( cam * vec3(p.xy,-2.5) );\n\n    vec3 col = render( ro, rd );\n    \n\t// vignetting\t\n\tcol *= 0.5 + 0.5*pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.1 );\n\t\n\tfragColor = vec4( col, 1.0 );\n}\n\nvoid mainVR( out vec4 fragColor, in vec2 fragCoord, in vec3 fragRayOri, in vec3 fragRayDir )\n{\n\tfloat time = 1.0*iTime;\n\n    float cr = 0.0;\n\tvec3 ro = path( time+0.0, 0.0 ) + vec3(0.0,0.7,0.0);\n\tvec3 ta = path( time+2.5, 0.0 ) + vec3(0.0,0.7,0.0);\n\n    mat3 cam = setCamera( ro, ta, cr );\n\n    vec3 col = render( ro + cam*fragRayOri, cam*fragRayDir );\n    \n    fragColor = vec4( col, 1.0 );\n}"
+        },
+        "octagrams": {
+            "title": "Octagrams",
+            "src": "precision highp float;\n\n\nfloat gTime = 0.;\nconst float REPEAT = 5.0;\n\n// 回転行列\nmat2 rot(float a) {\n\tfloat c = cos(a), s = sin(a);\n\treturn mat2(c,s,-s,c);\n}\n\nfloat sdBox( vec3 p, vec3 b )\n{\n\tvec3 q = abs(p) - b;\n\treturn length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);\n}\n\nfloat box(vec3 pos, float scale) {\n\tpos *= scale;\n\tfloat base = sdBox(pos, vec3(.4,.4,.1)) /1.5;\n\tpos.xy *= 5.;\n\tpos.y -= 3.5;\n\tpos.xy *= rot(.75);\n\tfloat result = -base;\n\treturn result;\n}\n\nfloat box_set(vec3 pos, float iTime) {\n\tvec3 pos_origin = pos;\n\tpos = pos_origin;\n\tpos .y += sin(gTime * 0.4) * 2.5;\n\tpos.xy *=   rot(.8);\n\tfloat box1 = box(pos,2. - abs(sin(gTime * 0.4)) * 1.5);\n\tpos = pos_origin;\n\tpos .y -=sin(gTime * 0.4) * 2.5;\n\tpos.xy *=   rot(.8);\n\tfloat box2 = box(pos,2. - abs(sin(gTime * 0.4)) * 1.5);\n\tpos = pos_origin;\n\tpos .x +=sin(gTime * 0.4) * 2.5;\n\tpos.xy *=   rot(.8);\n\tfloat box3 = box(pos,2. - abs(sin(gTime * 0.4)) * 1.5);\t\n\tpos = pos_origin;\n\tpos .x -=sin(gTime * 0.4) * 2.5;\n\tpos.xy *=   rot(.8);\n\tfloat box4 = box(pos,2. - abs(sin(gTime * 0.4)) * 1.5);\t\n\tpos = pos_origin;\n\tpos.xy *=   rot(.8);\n\tfloat box5 = box(pos,.5) * 6.;\t\n\tpos = pos_origin;\n\tfloat box6 = box(pos,.5) * 6.;\t\n\tfloat result = max(max(max(max(max(box1,box2),box3),box4),box5),box6);\n\treturn result;\n}\n\nfloat map(vec3 pos, float iTime) {\n\tvec3 pos_origin = pos;\n\tfloat box_set1 = box_set(pos, iTime);\n\n\treturn box_set1;\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n\tvec2 p = (fragCoord.xy * 2. - iResolution.xy) / min(iResolution.x, iResolution.y);\n\tvec3 ro = vec3(0., -0.2 ,iTime * 4.);\n\tvec3 ray = normalize(vec3(p, 1.5));\n\tray.xy = ray.xy * rot(sin(iTime * .03) * 5.);\n\tray.yz = ray.yz * rot(sin(iTime * .05) * .2);\n\tfloat t = 0.1;\n\tvec3 col = vec3(0.);\n\tfloat ac = 0.0;\n\n\n\tfor (int i = 0; i < 99; i++){\n\t\tvec3 pos = ro + ray * t;\n\t\tpos = mod(pos-2., 4.) -2.;\n\t\tgTime = iTime -float(i) * 0.01;\n\t\t\n\t\tfloat d = map(pos, iTime);\n\n\t\td = max(abs(d), 0.01);\n\t\tac += exp(-d*23.);\n\n\t\tt += d* 0.55;\n\t}\n\n\tcol = vec3(ac * 0.02);\n\n\tcol +=vec3(0.,0.2 * abs(sin(iTime)),0.5 + sin(iTime) * 0.2);\n\n\n\tfragColor = vec4(col ,1.0 - t * (0.02 + 0.02 * sin (iTime)));\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"Octgrams\",\n\t\"description\": \"Lorem ipsum dolor\",\n\t\"model\": \"person\"\n}\n*/"
+        },
+        "phantomStar": {
+            "title": "Phantom Star",
+            "src": "precision highp float;\n\n\nmat2 rot(float a) {\n    float c = cos(a), s = sin(a);\n    return mat2(c,s,-s,c);\n}\n\nconst float pi = acos(-1.0);\nconst float pi2 = pi*2.0;\n\nvec2 pmod(vec2 p, float r) {\n    float a = atan(p.x, p.y) + pi/r;\n    float n = pi2 / r;\n    a = floor(a/n)*n;\n    return p*rot(-a);\n}\n\nfloat box( vec3 p, vec3 b ) {\n    vec3 d = abs(p) - b;\n    return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));\n}\n\nfloat ifsBox(vec3 p) {\n    for (int i=0; i<5; i++) {\n        p = abs(p) - 1.0;\n        p.xy *= rot(iTime*0.3);\n        p.xz *= rot(iTime*0.1);\n    }\n    p.xz *= rot(iTime);\n    return box(p, vec3(0.4,0.8,0.3));\n}\n\nfloat map(vec3 p, vec3 cPos) {\n    vec3 p1 = p;\n    p1.x = mod(p1.x-5., 10.) - 5.;\n    p1.y = mod(p1.y-5., 10.) - 5.;\n    p1.z = mod(p1.z, 16.)-8.;\n    p1.xy = pmod(p1.xy, 5.0);\n    return ifsBox(p1);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec2 p = (fragCoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);\n\n    vec3 cPos = vec3(0.0,0.0, -3.0 * iTime);\n    // vec3 cPos = vec3(0.3*sin(iTime*0.8), 0.4*cos(iTime*0.3), -6.0 * iTime);\n    vec3 cDir = normalize(vec3(0.0, 0.0, -1.0));\n    vec3 cUp  = vec3(sin(iTime), 1.0, 0.0);\n    vec3 cSide = cross(cDir, cUp);\n\n    vec3 ray = normalize(cSide * p.x + cUp * p.y + cDir);\n\n    // Phantom Mode https://www.shadertoy.com/view/MtScWW by aiekick\n    float acc = 0.0;\n    float acc2 = 0.0;\n    float t = 0.0;\n    for (int i = 0; i < 99; i++) {\n        vec3 pos = cPos + ray * t;\n        float dist = map(pos, cPos);\n        dist = max(abs(dist), 0.02);\n        float a = exp(-dist*3.0);\n        if (mod(length(pos)+24.0*iTime, 30.0) < 3.0) {\n            a *= 2.0;\n            acc2 += a;\n        }\n        acc += a;\n        t += dist * 0.5;\n    }\n\n    vec3 col = vec3(acc * 0.01, acc * 0.011 + acc2*0.002, acc * 0.012+ acc2*0.005);\n    fragColor = vec4(col, 1.0 - t * 0.03);\n}"
+        },
+        "baseWarp": {
+            "title": "Base Warp",
+            "src": "// https://www.shadertoy.com/view/tdG3Rd\n\nfloat colormap_red(float x) {\n    if (x < 0.0) {\n        return 54.0 / 255.0;\n    } else if (x < 20049.0 / 82979.0) {\n        return (829.79 * x + 54.51) / 255.0;\n    } else {\n        return 1.0;\n    }\n}\n\nfloat colormap_green(float x) {\n    if (x < 20049.0 / 82979.0) {\n        return 0.0;\n    } else if (x < 327013.0 / 810990.0) {\n        return (8546482679670.0 / 10875673217.0 * x - 2064961390770.0 / 10875673217.0) / 255.0;\n    } else if (x <= 1.0) {\n        return (103806720.0 / 483977.0 * x + 19607415.0 / 483977.0) / 255.0;\n    } else {\n        return 1.0;\n    }\n}\n\nfloat colormap_blue(float x) {\n    if (x < 0.0) {\n        return 54.0 / 255.0;\n    } else if (x < 7249.0 / 82979.0) {\n        return (829.79 * x + 54.51) / 255.0;\n    } else if (x < 20049.0 / 82979.0) {\n        return 127.0 / 255.0;\n    } else if (x < 327013.0 / 810990.0) {\n        return (792.02249341361393720147485376583 * x - 64.364790735602331034989206222672) / 255.0;\n    } else {\n        return 1.0;\n    }\n}\n\nvec4 colormap(float x) {\n    return vec4(colormap_red(x), colormap_green(x), colormap_blue(x), 1.0);\n}\n\n// https://iquilezles.org/articles/warp\n/*float noise( in vec2 x )\n{\n    vec2 p = floor(x);\n    vec2 f = fract(x);\n    f = f*f*(3.0-2.0*f);\n    float a = textureLod(iChannel0,(p+vec2(0.5,0.5))/256.0,0.0).x;\n\tfloat b = textureLod(iChannel0,(p+vec2(1.5,0.5))/256.0,0.0).x;\n\tfloat c = textureLod(iChannel0,(p+vec2(0.5,1.5))/256.0,0.0).x;\n\tfloat d = textureLod(iChannel0,(p+vec2(1.5,1.5))/256.0,0.0).x;\n    return mix(mix( a, b,f.x), mix( c, d,f.x),f.y);\n}*/\n\n\nfloat rand(vec2 n) { \n    return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);\n}\n\nfloat noise(vec2 p){\n    vec2 ip = floor(p);\n    vec2 u = fract(p);\n    u = u*u*(3.0-2.0*u);\n\n    float res = mix(\n        mix(rand(ip),rand(ip+vec2(1.0,0.0)),u.x),\n        mix(rand(ip+vec2(0.0,1.0)),rand(ip+vec2(1.0,1.0)),u.x),u.y);\n    return res*res;\n}\n\nconst mat2 mtx = mat2( 0.80,  0.60, -0.60,  0.80 );\n\nfloat fbm( vec2 p )\n{\n    float f = 0.0;\n\n    f += 0.500000*noise( p + iTime  ); p = mtx*p*2.02;\n    f += 0.031250*noise( p ); p = mtx*p*2.01;\n    f += 0.250000*noise( p ); p = mtx*p*2.03;\n    f += 0.125000*noise( p ); p = mtx*p*2.01;\n    f += 0.062500*noise( p ); p = mtx*p*2.04;\n    f += 0.015625*noise( p + sin(iTime) );\n\n    return f/0.96875;\n}\n\nfloat pattern( in vec2 p )\n{\n\treturn fbm( p + fbm( p + fbm( p ) ) );\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord/iResolution.x;\n\tfloat shade = pattern(uv);\n    fragColor = vec4(colormap(shade).rgb, shade);\n}\n\n/** SHADERDATA\n{\n\t\"title\": \"Base warp fBM\",\n\t\"description\": \"Noise but Pink\",\n\t\"model\": \"person\"\n}\n*/"
+        },
+        "sdfs": {
+            "title": "SDFS",
+            "src": "// https://www.shadertoy.com/view/lfcSWj\n\nfloat sdSphere(vec3 p, float r){\n    return length(p) - r;\n}\n\nfloat sdBox(vec3 p, vec3 b){\n    vec3 q = abs(p) - b;\n    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)), 0.0);\n}\n\nfloat smin(float a, float b, float k){\n    float h = max( k-abs(a-b), 0.0)/k;\n    return min( a,b ) - h*h*h*k*(1.0/6.0);\n}\n\nvec3 rot3D(vec3 p, vec3 axis, float angle){\n    return mix(dot(axis,p) * axis, p, cos(angle)) + cross(axis, p) * sin(angle);\n}\n\nmat2 rot2D(float angle){\n    float s = sin(angle);\n    float c = cos(angle);\n    return mat2(c, -s, s, c);\n}\n\n\nfloat map(vec3 p){\n    p.z += iTime * .4;\n    p = fract(p) - .5;\n    \n    float box = sdBox(p, vec3(.1));\n\n    \n    return box;\n}\n\nvec3 pallet(float t){\n    vec3 a = vec3(0.5, 0.5, 0.5);\n    vec3 b = vec3(0.5, 0.5, 0.5);\n    vec3 c = vec3(1.0, 1.0, 1.0);\n    vec3 d = vec3(0.263, 0.416, 0.557);\n    \n    return a + b*cos(6.28318*(c*t+d));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord){\n    vec2 uv = (fragCoord * 2. - iResolution.xy)/iResolution.y;\n    vec2 mouse =(iMouse.xy *2. - iResolution.xy)/iResolution.y * 3.;\n    vec3 col  = vec3(0.);\n    \n    vec3 ro = vec3(uv, -3.0);\n    vec3 rd = normalize(vec3(uv * 1.1,1.0));\n    float t = 0.; \n    \n    ro.xz *= rot2D(-iTime);\n    //rd.xz *= rot2D(-mouse.x);\n    \n   ro.yz *= rot2D(-iTime);\n    //rd.yz *= rot2D(-mouse.y);\n    for(int i = 0; i < 80; i++){\n        vec3 p = ro + rd * t;\n        float d = map(p);\n        t += d;\n        if(d < 0.01 || t > 100.)break;\n    }\n    col = pallet(t*(0.75));\n    \n    fragColor = vec4(col, 1.);\n}"
+        },
+        "randomSin": {
+            "title": "Random Sin",
+            "src": "// https://www.shadertoy.com/view/lfdSDX\n\n#define PI 3.14\n\nvec3 bgColorDown = vec3(0.2, 0.1, 0.1);\nvec3 bgColorUp = vec3(0.1, 0.1, 0.2);\n\nvec3 P1ColorIn = vec3(1.0, 0.5, 0.0);\nvec3 P1ColorOut = vec3(1.0, 0.0, 0.0);\n\nvec3 P2ColorIn = vec3(0.0, 0.5, 1.0);  //vec3(1.0, 1.0, 1.0);\nvec3 P2ColorOut = vec3(0.0, 0.0, 1.0); //vec3(0.0, 0.5, 1.0);\nfloat surfaceSpeed = 0.5;\n\n\nfloat rand(vec2 co){\n    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    vec2 uv = fragCoord.xy / iResolution.xy;\n\n\tfloat bg = (cos(uv.x*3.14159*2.0) + sin((uv.y)*3.14159)) * 0.15;\n\t\n\tvec2 p = uv*2.0 - 1.0;\n\tp *= 15.0;\n\tvec2 sfunc = vec2(p.x, p.y + 5.0*sin(uv.x*10.0-iTime*2.0)+2.0*cos(uv.x*25.0+iTime*12.0));\n\tsfunc.y *= uv.x*2.0+0.05;\n\tsfunc.y *= 2.0 - uv.x*2.0+0.05;\n\tsfunc.y /= 0.1; // Thickness fix\n\t\n\tvec3 c = vec3(sfunc.y);\n\n\tfragColor = vec4(c,1.0);\n}"
+        },
+        "diveToCloud": {
+            "title": "Dive to Cloud",
+            "src": "// https://www.shadertoy.com/view/ll3SWl\n// referred https://www.shadertoy.com/view/4sXGRM\n\nvec3 skytop = vec3(0.05, 0.2, 0.5);\n\nvec3 light = normalize(vec3(0.1, 0.25, 0.9));\n\nvec2 cloudrange = vec2(0.0, 10000.0);\n\nmat3 m = mat3(0.00, 1.60, 1.20, -1.60, 0.72, -0.96, -1.20, -0.96, 1.28);\n\n// hash function              \nfloat hash(float n)\n{\n    return fract(cos(n) * 114514.1919);\n}\n\n// 3d noise function\nfloat noise(in vec3 x)\n{\n    vec3 p = floor(x);\n    vec3 f = smoothstep(0.0, 1.0, fract(x));\n        \n    float n = p.x + p.y * 10.0 + p.z * 100.0;\n    \n    return mix(\n        mix(mix(hash(n + 0.0), hash(n + 1.0), f.x),\n            mix(hash(n + 10.0), hash(n + 11.0), f.x), f.y),\n        mix(mix(hash(n + 100.0), hash(n + 101.0), f.x),\n            mix(hash(n + 110.0), hash(n + 111.0), f.x), f.y), f.z);\n}\n\n// Fractional Brownian motion\nfloat fbm(vec3 p)\n{\n    float f = 0.5000 * noise(p);\n    p = m * p;\n    f += 0.2500 * noise(p);\n    p = m * p;\n    f += 0.1666 * noise(p);\n    p = m * p;\n    f += 0.0834 * noise(p);\n    return f;\n}\n\nvec3 camera(float time)\n{\n    return vec3(5000.0 * sin(1.0 * time), 5000. + 1500. * sin(0.5 * time), 6000.0 * time);\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord)\n{\n    vec2 uv = 2. * fragCoord.xy / iResolution.xy - 1.0;\n    uv.x *= iResolution.x / iResolution.y;\n\n    float time = (iTime + 13.5 + 44.) * 1.0;\n    vec3 campos = camera(time);\n    vec3 camtar = camera(time + 0.4);\n\n    vec3 front = normalize(camtar - campos);\n    vec3 right = normalize(cross(front, vec3(0.0, 1.0, 0.0)));\n    vec3 up = normalize(cross(right, front));\n    vec3 fragAt = normalize(uv.x * right + uv.y * up + front);\n    \n    // clouds\n    vec4 sum = vec4(0, 0, 0, 0);\n    for (float depth = 0.0; depth < 100000.0; depth += 200.0)\n    {\n        vec3 ray = campos + fragAt * depth;\n        if (cloudrange.x < ray.y && ray.y < cloudrange.y)\n        {\n            float alpha = smoothstep(0.5, 1.0, fbm(ray * 0.00025));\n            vec3 localcolor = mix(vec3(1.1, 1.05, 1.0), vec3(0.3, 0.3, 0.2), alpha);\n            alpha = (1.0 - sum.a) * alpha;\n            sum += vec4(localcolor * alpha, alpha);\n        }\n    }\n    \n    float alpha = smoothstep(0.7, 1.0, sum.a);\n    sum.rgb /= sum.a + 0.0001;\n\n    float sundot = clamp(dot(fragAt, light), 0.0, 1.0);\n    vec3 col = 0.8 * (skytop);\n    col += 0.47 * vec3(1.6, 1.4, 1.0) * pow(sundot, 350.0);\n    col += 0.4 * vec3(0.8, 0.9, 1.0) * pow(sundot, 2.0);\n    \n    sum.rgb -= 0.6 * vec3(0.8, 0.75, 0.7) * pow(sundot, 13.0) * alpha;\n    \n    sum.rgb += 0.2 * vec3(1.3, 1.2, 1.0) * pow(sundot, 5.0) * (1.0 - alpha);\n\n    col = mix(col, sum.rgb, sum.a);\n\n    fragColor = vec4(col, 1.0);\n}"
+        },
+        "proteanClouds": {
+            "title": "Protean Clouds",
+            "src": "// https://www.shadertoy.com/view/3l23Rh\n\n// Protean clouds by nimitz (twitter: @stormoid)\n// https://www.shadertoy.com/view/3l23Rh\n// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License\n// Contact the author for other licensing options\n\n/*\n\tTechnical details:\n\n\tThe main volume noise is generated from a deformed periodic grid, which can produce\n\ta large range of noise-like patterns at very cheap evalutation cost. Allowing for multiple\n\tfetches of volume gradient computation for improved lighting.\n\n\tTo further accelerate marching, since the volume is smooth, more than half the the density\n\tinformation isn't used to rendering or shading but only as an underlying volume\tdistance to \n\tdetermine dynamic step size, by carefully selecting an equation\t(polynomial for speed) to \n\tstep as a function of overall density (not necessarily rendered) the visual results can be \n\tthe\tsame as a naive implementation with ~40% increase in rendering performance.\n\n\tSince the dynamic marching step size is even less uniform due to steps not being rendered at all\n\tthe fog is evaluated as the difference of the fog integral at each rendered step.\n\n*/\n\nmat2 rot(in float a){float c = cos(a), s = sin(a);return mat2(c,s,-s,c);}\nconst mat3 m3 = mat3(0.33338, 0.56034, -0.71817, -0.87887, 0.32651, -0.15323, 0.15162, 0.69596, 0.61339)*1.93;\nfloat mag2(vec2 p){return dot(p,p);}\nfloat linstep(in float mn, in float mx, in float x){ return clamp((x - mn)/(mx - mn), 0., 1.); }\nfloat prm1 = 0.;\nvec2 bsMo = vec2(0);\n\nvec2 disp(float t){ return vec2(sin(t*0.22)*1., cos(t*0.175)*1.)*2.; }\n\nvec2 map(vec3 p)\n{\n    vec3 p2 = p;\n    p2.xy -= disp(p.z).xy;\n    p.xy *= rot(sin(p.z+iTime)*(0.1 + prm1*0.05) + iTime*0.09);\n    float cl = mag2(p2.xy);\n    float d = 0.;\n    p *= .61;\n    float z = 1.;\n    float trk = 1.;\n    float dspAmp = 0.1 + prm1*0.2;\n    for(int i = 0; i < 5; i++)\n    {\n\t\tp += sin(p.zxy*0.75*trk + iTime*trk*.8)*dspAmp;\n        d -= abs(dot(cos(p), sin(p.yzx))*z);\n        z *= 0.57;\n        trk *= 1.4;\n        p = p*m3;\n    }\n    d = abs(d + prm1*3.)+ prm1*.3 - 2.5 + bsMo.y;\n    return vec2(d + cl*.2 + 0.25, cl);\n}\n\nvec4 render( in vec3 ro, in vec3 rd, float time )\n{\n\tvec4 rez = vec4(0);\n    const float ldst = 8.;\n\tvec3 lpos = vec3(disp(time + ldst)*0.5, time + ldst);\n\tfloat t = 1.5;\n\tfloat fogT = 0.;\n\tfor(int i=0; i<130; i++)\n\t{\n\t\tif(rez.a > 0.99)break;\n\n\t\tvec3 pos = ro + t*rd;\n        vec2 mpv = map(pos);\n\t\tfloat den = clamp(mpv.x-0.3,0.,1.)*1.12;\n\t\tfloat dn = clamp((mpv.x + 2.),0.,3.);\n        \n\t\tvec4 col = vec4(0);\n        if (mpv.x > 0.6)\n        {\n        \n            col = vec4(sin(vec3(5.,0.4,0.2) + mpv.y*0.1 +sin(pos.z*0.4)*0.5 + 1.8)*0.5 + 0.5,0.08);\n            col *= den*den*den;\n\t\t\tcol.rgb *= linstep(4.,-2.5, mpv.x)*2.3;\n            float dif =  clamp((den - map(pos+.8).x)/9., 0.001, 1. );\n            dif += clamp((den - map(pos+.35).x)/2.5, 0.001, 1. );\n            col.xyz *= den*(vec3(0.005,.045,.075) + 1.5*vec3(0.033,0.07,0.03)*dif);\n        }\n\t\t\n\t\tfloat fogC = exp(t*0.2 - 2.2);\n\t\tcol.rgba += vec4(0.06,0.11,0.11, 0.1)*clamp(fogC-fogT, 0., 1.);\n\t\tfogT = fogC;\n\t\trez = rez + col*(1. - rez.a);\n\t\tt += clamp(0.5 - dn*dn*.05, 0.09, 0.3);\n\t}\n\treturn clamp(rez, 0.0, 1.0);\n}\n\nfloat getsat(vec3 c)\n{\n    float mi = min(min(c.x, c.y), c.z);\n    float ma = max(max(c.x, c.y), c.z);\n    return (ma - mi)/(ma+ 1e-7);\n}\n\n//from my \"Will it blend\" shader (https://www.shadertoy.com/view/lsdGzN)\nvec3 iLerp(in vec3 a, in vec3 b, in float x)\n{\n    vec3 ic = mix(a, b, x) + vec3(1e-6,0.,0.);\n    float sd = abs(getsat(ic) - mix(getsat(a), getsat(b), x));\n    vec3 dir = normalize(vec3(2.*ic.x - ic.y - ic.z, 2.*ic.y - ic.x - ic.z, 2.*ic.z - ic.y - ic.x));\n    float lgt = dot(vec3(1.0), ic);\n    float ff = dot(dir, normalize(ic));\n    ic += 1.5*dir*sd*ff*lgt;\n    return clamp(ic,0.,1.);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\t\n\tvec2 q = fragCoord.xy/iResolution.xy;\n    vec2 p = (fragCoord.xy - 0.5*iResolution.xy)/iResolution.y;\n    bsMo = (iMouse.xy - 0.5*iResolution.xy)/iResolution.y;\n    \n    float time = iTime*3.;\n    vec3 ro = vec3(0,0,time);\n    \n    ro += vec3(sin(iTime)*0.5,sin(iTime*1.)*0.,0);\n        \n    float dspAmp = .85;\n    ro.xy += disp(ro.z)*dspAmp;\n    float tgtDst = 3.5;\n    \n    vec3 target = normalize(ro - vec3(disp(time + tgtDst)*dspAmp, time + tgtDst));\n    ro.x -= bsMo.x*2.;\n    vec3 rightdir = normalize(cross(target, vec3(0,1,0)));\n    vec3 updir = normalize(cross(rightdir, target));\n    rightdir = normalize(cross(updir, target));\n\tvec3 rd=normalize((p.x*rightdir + p.y*updir)*1. - target);\n    rd.xy *= rot(-disp(time + 3.5).x*0.2 + bsMo.x);\n    prm1 = smoothstep(-0.4, 0.4,sin(iTime*0.3));\n\tvec4 scn = render(ro, rd, time);\n\t\t\n    vec3 col = scn.rgb;\n    col = iLerp(col.bgr, col.rgb, clamp(1.-prm1,0.05,1.));\n    \n    col = pow(col, vec3(.55,0.65,0.6))*vec3(1.,.97,.9);\n\n    col *= pow( 16.0*q.x*q.y*(1.0-q.x)*(1.0-q.y), 0.12)*0.7+0.3; //Vign\n    \n\tfragColor = vec4( col, 1.0 );\n}"
+        },
+        "sincos3d": {
+            "title": "sincos 3d",
+            "src": "// https://www.shadertoy.com/view/XfXGz4\n\n#define A(v) mat2(cos(m.v+radians(vec4(0, -90, 90, 0))))  // rotate\n#define W(v) length(vec3(p.yz-v(p.x+vec2(0, pi_2)+t), 0))-lt  // wave\n//#define W(v) length(p-vec3(round(p.x*pi)/pi, v(t+p.x), v(t+pi_2+p.x)))-lt  // wave\n#define P(v) length(p-vec3(0, v(t), v(t+pi_2)))-pt  // point\nvoid mainImage( out vec4 C, in vec2 U )\n{\n    float lt = .1, // line thickness\n          pt = .3, // point thickness\n          pi = 3.1416,\n          pi2 = pi*2.,\n          pi_2 = pi/2.,\n          t = iTime*pi,\n          s = 1., d = 0., i = d;\n    vec2 R = iResolution.xy,\n         m = (iMouse.xy-.5*R)/R.y*4.;\n    vec3 o = vec3(0, 0, -7), // cam\n         u = normalize(vec3((U-.5*R)/R.y, 1)),\n         c = vec3(0), k = c, p;\n    if (iMouse.z < 1.) m = -vec2(t/20.-pi_2, 0);\n    mat2 v = A(y), h = A(x); // pitch & yaw\n    for (; i++<50.;) // raymarch\n    {\n        p = o+u*d;\n        p.yz *= v;\n        p.xz *= h;\n        p.x -= 3.;\n        if (p.y < -1.5) p.y = 2./p.y;\n        k.x = min( max(p.x+lt, W(sin)), P(sin) );\n        k.y = min( max(p.x+lt, W(cos)), P(cos) );\n        s = min(s, min(k.x, k.y));\n        if (s < .001 || d > 100.) break;\n        d += s*.5;\n    }\n    c = max(cos(d*pi2) - s*sqrt(d) - k, 0.);\n    c.gb += .1;\n    C = vec4(c*.4 + c.brg*.6 + c*c, 1);\n}"
+        },
+        "midCentruy": {
+            "title": "MidCentruy",
+            "src": "// https://www.shadertoy.com/view/mtyGWy\n\n/* This animation is the material of my first youtube tutorial about creative \n   coding, which is a video in which I try to introduce programmers to GLSL \n   and to the wonderful world of shaders, while also trying to share my recent \n   passion for this community.\n                                       Video URL: https://youtu.be/f4s1h2YETNY\n*/\n\n//https://iquilezles.org/articles/palettes/\nvec3 palette( float t ) {\n    vec3 a = vec3(0.5, 0.5, 0.5);\n    vec3 b = vec3(0.5, 0.5, 0.5);\n    vec3 c = vec3(1.0, 1.0, 1.0);\n    vec3 d = vec3(0.263,0.416,0.557);\n\n    return a + b*cos( 6.28318*(c*t+d) );\n}\n\n//https://www.shadertoy.com/view/mtyGWy\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    vec2 uv = (fragCoord * 2.0 - iResolution.xy) / iResolution.y;\n    vec2 uv0 = uv;\n    vec3 finalColor = vec3(0.0);\n    \n    for (float i = 0.0; i < 4.0; i++) {\n        uv = fract(uv * 1.5) - 0.5;\n\n        float d = length(uv) * exp(-length(uv0));\n\n        vec3 col = palette(length(uv0) + i*.4 + iTime*.4);\n\n        d = sin(d*8. + iTime)/8.;\n        d = abs(d);\n\n        d = pow(0.01 / d, 1.2);\n\n        finalColor += col * d;\n    }\n        \n    fragColor = vec4(finalColor, 1.0);\n}"
+        },
+        "fractalTrees": {
+            "title": "Fractal Trees",
+            "src": "// https://www.shadertoy.com/view/llXfRr\n\n#define MAXDIST 50.\n\nstruct Ray {\n\tvec3 ro;\n    vec3 rd;\n};\n  \n// from netgrind\nvec3 hue(vec3 color, float shift) {\n\n    const vec3  kRGBToYPrime = vec3 (0.299, 0.587, 0.114);\n    const vec3  kRGBToI     = vec3 (0.596, -0.275, -0.321);\n    const vec3  kRGBToQ     = vec3 (0.212, -0.523, 0.311);\n\n    const vec3  kYIQToR   = vec3 (1.0, 0.956, 0.621);\n    const vec3  kYIQToG   = vec3 (1.0, -0.272, -0.647);\n    const vec3  kYIQToB   = vec3 (1.0, -1.107, 1.704);\n\n    // Convert to YIQ\n    float   YPrime  = dot (color, kRGBToYPrime);\n    float   I      = dot (color, kRGBToI);\n    float   Q      = dot (color, kRGBToQ);\n\n    // Calculate the hue and chroma\n    float   hue     = atan (Q, I);\n    float   chroma  = sqrt (I * I + Q * Q);\n\n    // Make the user's adjustments\n    hue += shift;\n\n    // Convert back to YIQ\n    Q = chroma * sin (hue);\n    I = chroma * cos (hue);\n\n    // Convert back to RGB\n    vec3    yIQ   = vec3 (YPrime, I, Q);\n    color.r = dot (yIQ, kYIQToR);\n    color.g = dot (yIQ, kYIQToG);\n    color.b = dot (yIQ, kYIQToB);\n\n    return color;\n}\n\n// ------\n\n// by iq\n\nfloat opU( float d1, float d2 )\n{\n    return min(d1,d2);\n}\n\nfloat smin( float a, float b, float k ){\n    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );\n    return mix( b, a, h ) - k*h*(1.0-h);\n}\n\nfloat length6( vec3 p )\n{\n\tp = p*p*p; p = p*p;\n\treturn pow( p.x + p.y + p.z, 1.0/6.0 );\n}\n\n// ------\n\n// from hg_sdf \n\nfloat fPlane(vec3 p, vec3 n, float distanceFromOrigin) {\n\treturn dot(p, n) + distanceFromOrigin;\n}\n\nvoid pR(inout vec2 p, float a) {\n\tp = cos(a)*p + sin(a)*vec2(p.y, -p.x);\n}\n\n// -------\n\n\nfloat fractal(vec3 p)\n{\n    const int iterations = 20;\n\t\n    float d = iTime*5. - p.z;\n   \tp=p.yxz;\n    pR(p.yz, 1.570795);\n    p.x += 6.5;\n\n    p.yz = mod(abs(p.yz)-.0, 20.) - 10.;\n    float scale = 1.25;\n    \n    p.xy /= (1.+d*d*0.0005);\n    \n\tfloat l = 0.;\n\t\n    for (int i=0; i<iterations; i++) {\n\t\tp.xy = abs(p.xy);\n\t\tp = p*scale + vec3(-3. + d*0.0095,-1.5,-.5);\n        \n\t\tpR(p.xy,0.35-d*0.015);\n\t\tpR(p.yz,0.5+d*0.02);\n\t\t\n        l =length6(p);\n\t}\n\treturn l*pow(scale, -float(iterations))-.15;\n}\n\nvec2 map(vec3 pos) \n{\n    float dist = 10.; \n    dist = opU(dist, fractal(pos));\n    dist = smin(dist, fPlane(pos,vec3(0.0,1.0,0.0),10.), 4.6);\n    return vec2(dist, 0.);\n}\n\nvec3 vmarch(Ray ray, float dist)\n{   \n    vec3 p = ray.ro;\n    vec2 r = vec2(0.);\n    vec3 sum = vec3(0);\n    vec3 c = hue(vec3(0.,0.,1.),5.5);\n    for( int i=0; i<20; i++ )\n    {\n        r = map(p);\n        if (r.x > .01) break;\n        p += ray.rd*.015;\n        vec3 col = c;\n        col.rgb *= smoothstep(.0,0.15,-r.x);\n        sum += abs(col)*.5;\n    }\n    return sum;\n}\n\nvec2 march(Ray ray) \n{\n    const int steps = 50;\n    const float prec = 0.001;\n    vec2 res = vec2(0.);\n    \n    for (int i = 0; i < steps; i++) \n    {        \n        vec2 s = map(ray.ro + ray.rd * res.x);\n        \n        if (res.x > MAXDIST || s.x < prec) \n        {\n        \tbreak;    \n        }\n        \n        res.x += s.x;\n        res.y = s.y;\n        \n    }\n   \n    return res;\n}\n\nvec3 calcNormal(vec3 pos) \n{\n\tconst vec3 eps = vec3(0.005, 0.0, 0.0);\n                          \n    return normalize(\n        vec3(map(pos + eps).x - map(pos - eps).x,\n             map(pos + eps.yxz).x - map(pos - eps.yxz).x,\n             map(pos + eps.yzx).x - map(pos - eps.yzx).x ) \n    );\n}\n\nvec4 render(Ray ray) \n{\n    vec3 col = vec3(0.);\n\tvec2 res = march(ray);\n   \n    if (res.x > MAXDIST) \n    {\n        return vec4(col, 50.);\n    }\n    \n    vec3 pos = ray.ro+res.x*ray.rd;\n    ray.ro = pos;\n   \tcol = vmarch(ray, res.x);\n    \n    col = mix(col, vec3(0.), clamp(res.x/50., 0., 1.));\n   \treturn vec4(col, res.x);\n}\n\nmat3 camera(in vec3 ro, in vec3 rd, float rot) \n{\n\tvec3 forward = normalize(rd - ro);\n    vec3 worldUp = vec3(sin(rot), cos(rot), 0.0);\n    vec3 x = normalize(cross(forward, worldUp));\n    vec3 y = normalize(cross(x, forward));\n    return mat3(x, y, forward);\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\tvec2 uv = fragCoord.xy / iResolution.xy;\n    uv = uv * 2.0 - 1.0;\n    uv.x *= iResolution.x / iResolution.y;\n    uv.y -= uv.x*uv.x*0.15;\n    vec3 camPos = vec3(3., -1.5, iTime*5.);\n    vec3 camDir = camPos+vec3(-1.25,0.1, 1.);\n    mat3 cam = camera(camPos, camDir, 0.);\n    vec3 rayDir = cam * normalize( vec3(uv, .8));\n    \n    Ray ray;\n    ray.ro = camPos;\n    ray.rd = rayDir;\n    \n    vec4 col = render(ray);\n    \n\tfragColor = vec4(1.-col.xyz,clamp(1.-col.w/MAXDIST, 0., 1.));\n\tfragColor.a = 1.;\n\tfragColor.g -= fragColor.r;\n\tfragColor.r = 0.;\n\tfragColor.b = 0.;\n}"
+        },
+        "monitorsAndFractalLife": {
+            "title": "monitors and fractal_life",
+            "src": "// https://www.shadertoy.com/view/lfKSR1\n\nuniform float time;\nuniform vec2 mouse;\nuniform vec2 resolution;\n\n#define time iTime\n#define resolution iResolution.xy\nfloat tanh2(float x) {\n    float ex = exp(2.0 * x);\n    return ((ex - 1.) / (ex + 1.));\n}\n\nvec2 tanh2(vec2 x) {\n    vec2 ex = exp(2.0 * x);\n    return ((ex - 1.) / (ex + 1.));\n}\n\n// --------[ Original ShaderToy begins here ]---------- //\n#define pi 3.14159\n\nfloat thc(float a, float b) {\n    return tanh(a * cos(b)) / tanh(a);\n}\n\nfloat ths(float a, float b) {\n    return tanh(a * sin(b)) / tanh(a);\n}\n\nvec2 thc(float a, vec2 b) {\n    return tanh(a * cos(b)) / tanh(a);\n}\n\nvec2 ths(float a, vec2 b) {\n    return tanh(a * sin(b)) / tanh(a);\n}\n\nvec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )\n{\n    return a + b*cos( 6.28318*(c*t+d) );\n}\n\nfloat h21 (vec2 a) {\n    return fract(sin(dot(a.xy, vec2(12.9898, 78.233))) * 43758.5453123);\n}\n\nfloat mlength(vec2 uv) {\n    return max(abs(uv.x), abs(uv.y));\n}\nvec4 se(vec2 p) {\n//\tp.x += time*0.3;\n//\tp.y += sin(time*0.3);\n\tp = mod(p + 1.0, 2.0) - 1.0;\n\t\n\tfloat s = 100000.0;\n\tfloat c = 100000.0;\n\tfloat t=sin(time*0.2);\n\tfor(int i = 0; i < 9; i++) {\n\t\tp = abs(p)/clamp(dot(p, p), t, t+2.0) - vec2(0.5, 0.3);\n\t\ts = min(s, length(p));\n\t\tc = min(c, abs(p.y));\n\t}\n\t\n\tvec3 col = mix(vec3(0, 1, 1), vec3(0.1, 0.5, 1.0), smoothstep(0.0, 0.1, s));\n\tcol = mix(col, vec3(1.2, 1.0, 0.4), smoothstep(0.0, 1.0, c));\n\t\n\treturn vec4(col, s);\n}\n\nvec3 normal(vec2 p) {\n\tvec2 h = vec2(0.006, 0.0);\n\t\n\tvec3 n = vec3(\n\t\tse(p + h.xy).w - se(p - h.xy).w,\n\t\tse(p + h.yx).w - se(p - h.yx).w,\n\t\t-0.04);\n\t\n\treturn normalize(n);\n}\n\nvec3 render(vec2 p) {\n\tvec3 nor = normal(p);\n\tvec3 rd = normalize(vec3(p, 1.0));\n\n\t\n\tvec3 col = vec3(dot(nor, -rd));\n\tcol += clamp(pow(dot(nor, -rd), 32.0), 0.0, 1.0);\n//\tcol += 0.5*clamp(pow(1.0 + dot(rd, nor), 1.0), 0.0, 1.0);\n\tcol *= se(p).xyz;\n\t\n\treturn col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n vec2 uv = fragCoord/iResolution.xy-0.5;\n\tvec2 p = uv;\n\t vec2 uv2 = (fragCoord-0.5*iResolution.xy)/iResolution.y;\n    uv2.y += -0.2 * cos(0.2 * iTime);\n    uv2.x += -0.2 * sin(0.2 * iTime);\n    float a = atan(uv2.y, uv2.x);\n    float r = length(uv2);\n\n    float sc = 12. + 1. * cos(10. * uv.x + iTime);\n    vec2 ipos = floor(sc * uv) + 0.5;\n    vec2 fpos = fract(sc * uv) - 0.5;\n    \n    float v = h21(ipos);\n    float t = 11. * v + iTime;\n    vec2 p2 = cos(t) * 0.2 * vec2(cos(2. * v * t), sin(2. * (1.-v) * t));\n    float d = mlength(fpos - p2);\n    float k = 0.5 + 0.4 * cos(t);\n    float s = smoothstep(-k,k, 0.25 + 0.25 * thc(4., 20. * v + iTime) - d);\n    s *= 2. * s;\n    vec3 col = step(d, 0.45) * pal(1. * mlength(uv) + 0.08 * fract(s + atan(fpos.y, fpos.x)/pi + t) - 0.2 * t, vec3(0.6), vec3(0.6), vec3(1.), 0.22 * (1. + cos(ceil(4. * v) * s + t)) * vec3(0.,0.33,0.66));\n    \n   \n\t\n\tvec3 col2 = render(p);\n\t\n\n\tcol2 = pow(abs(col2*col), vec3(1.2));\n\tfragColor = vec4(col2, 1);\n}"
+        },
+        "raymarchingBasic": {
+            "title": "Raymarching Basic",
+            "src": "// https://www.shadertoy.com/view/Ml2XRD\n\nfloat map(vec3 p) {\n\tvec3 n = vec3(0, 1, 0);\n\tfloat k1 = 1.9;\n\tfloat k2 = (sin(p.x * k1) + sin(p.z * k1)) * 0.8;\n\tfloat k3 = (sin(p.y * k1) + sin(p.z * k1)) * 0.8;\n\tfloat w1 = 4.0 - dot(abs(p), normalize(n)) + k2;\n\tfloat w2 = 4.0 - dot(abs(p), normalize(n.yzx)) + k3;\n\tfloat s1 = length(mod(p.xy + vec2(sin((p.z + p.x) * 2.0) * 0.3, cos((p.z + p.x) * 1.0) * 0.5), 2.0) - 1.0) - 0.2;\n\tfloat s2 = length(mod(0.5+p.yz + vec2(sin((p.z + p.x) * 2.0) * 0.3, cos((p.z + p.x) * 1.0) * 0.3), 2.0) - 1.0) - 0.2;\n\treturn min(w1, min(w2, min(s1, s2)));\n}\n\nvec2 rot(vec2 p, float a) {\n\treturn vec2(\n\t\tp.x * cos(a) - p.y * sin(a),\n\t\tp.x * sin(a) + p.y * cos(a));\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord ) {\n    float time = iTime;\n\tvec2 uv = ( fragCoord.xy / iResolution.xy ) * 2.0 - 1.0;\n\tuv.x *= iResolution.x /  iResolution.y;\n\tvec3 dir = normalize(vec3(uv, 1.0));\n\tdir.xz = rot(dir.xz, time * 0.23);dir = dir.yzx;\n\tdir.xz = rot(dir.xz, time * 0.2);dir = dir.yzx;\n\tvec3 pos = vec3(0, 0, time);\n\tvec3 col = vec3(0.0);\n\tfloat t = 0.0;\n    float tt = 0.0;\n\tfor(int i = 0 ; i < 100; i++) {\n\t\ttt = map(pos + dir * t);\n\t\tif(tt < 0.001) break;\n\t\tt += tt * 0.45;\n\t}\n\tvec3 ip = pos + dir * t;\n\tcol = vec3(t * 0.1);\n\tcol = sqrt(col);\n\tfragColor = vec4(0.05*t+abs(dir) * col + max(0.0, map(ip - 0.1) - tt), 1.0); //Thanks! Shane!\n    fragColor.a = 1.0 / (t * t * t * t);\n}"
+        },
+        "discoteq2": {
+            "title": "Discoteq 2",
+            "src": "// https://www.shadertoy.com/view/DtXfDr\n\n#define S smoothstep\n\nvec4 Line(vec2 uv, float speed, float height, vec3 col) {\n    uv.y += S(1., 0., abs(uv.x)) * sin(iTime * speed + uv.x * height) * .2;\n    return vec4(S(.06 * S(.2, .9, abs(uv.x)), 0., abs(uv.y) - .004) * col, 1.0) * S(1., .3, abs(uv.x));\n}\n\nvoid mainImage(out vec4 O, in vec2 I) {\n    vec2 uv = (I - .5 * iResolution.xy) / iResolution.y;\n    O = vec4 (0.);\n    for (float i = 0.; i <= 5.; i += 1.) {\n        float t = i / 5.;\n        O += Line(uv, 1. + t, 4. + t, vec3(.2 + t * .7, .2 + t * .4, 0.3));\n    }\n}"
+        },
+        "devilGlass": {
+            "title": "Devil Glass",
+            "src": "// https://www.shadertoy.com/view/lcV3Rz\n\n// alternative version of my shader from Revision24 showdown final\n// original version:\n// https://livecode.demozoo.org/event/2024_03_29_shader_showdown_revision_2024.html\n\nmat2 rot (float a) { float c=cos(a),s=sin(a); return mat2(c,-s,s,c); }\nfloat gyroid (vec3 p) { return dot(cos(p),sin(p.yzx)); }\nfloat fbm(vec3 p)\n{\n  float result = 0.;\n  float a = .5;\n  for (float i = 0.; i < 3.; ++i)\n  {\n    p += result;\n    p.z += iTime*.2;\n    result += abs(gyroid(p/a)*a);\n    a /= 2.;\n  }\n  return result;\n}\n\nfloat map(vec3 p)\n{\n  float dist = 100.;\n  \n  p.xz *= rot(iTime * .2);\n  p.xy *= rot(iTime * .1);\n  vec3 q = p;\n  \n  p = abs(p)-1.3;\n  dist = max(p.x, max(p.y, p.z));\n  dist -= fbm(q)*.2;\n  dist = abs(dist)-.03;\n  \n  return dist * .5;\n}\n\nvec3 getResult(vec2 fragCoord)\n{\n    vec2 uv = (fragCoord-iResolution.xy/2.)/iResolution.y;\n    vec3 color = vec3(smoothstep(1., -1., length(uv)));\n    \n    vec3 pos = vec3(0,0,7);\n    vec3 ray = normalize(vec3(uv, -1.5));\n    float total = 0.;\n    float shade = 0.;\n    for (float i = 100.; i > 0.; --i)\n    {\n        float dist = map(pos);\n        if (dist < .001)\n        {\n            shade += 0.1;\n            dist = 0.002;\n        }\n        if (total > 10.) return color;\n        total += dist;\n        pos += ray * dist;\n    }\n\n    if (total < 10.)\n    {\n        color = 0.5 + 0.5 * cos(vec3(1,2,3)*5.5+shade);\n    }\n    \n    return color;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n    fragColor = vec4(getResult(fragCoord),1.0);\n}"
+        },
         "ripple": {
             "title": "Ripple",
             "src": "uniform float time;\nuniform float rippleAmount; // @type float\n\n// @return uv-coordinate\n// @param uvIn uv-coordinate\nvec2 main(vec2 uvIn) {\n  vec2 p = -1.0 + 2.0 * uvIn;\n  float len = length(p);\n  return uvIn + (p/len)*sin(len*12.0-time*4.0)*0.1 * rippleAmount;\n}"
@@ -521,6 +724,14 @@
         "baaahsLogo": {
             "title": "[🐑] BAAAHS Logo",
             "src": "// Basic GLSL construction of the BAAAHS logo -- you can replace primitives in other shaders with this!\n// Ben Bartlett\n\n#define N 5\n#define COORD_SCALE 0.03\n\nuniform float horizontalScale; // @@Slider default=.7 min=0.25 max=1.\n\nuniform vec2 resolution; // @@Resolution\nuniform float time; // @@Time\n\n// @param fragCoord uv-coordinate\n// @return color\nvec4 upstreamColor(vec2 fragCoord);\n\n\n// For reference -- determines if a point is in a polygon. Since you can't pass dynamically sized arrays, we need one for each component :(\nbool pointInPoly(vec2 point, float scale, vec2 offset, vec2 vertices[N]){\n\tint i, j;\n\tbool c = false;\n\tvec2 pt = (point - offset)/scale;\n\tfor (i = 0, j = N-1; i < N; j = i++) {\n\t\tif ( ((vertices[i].y > pt.y) != (vertices[j].y > pt.y)) &&\n\t\t(pt.x < (vertices[j].x-vertices[i].x) * (pt.y-vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) )\n\t\tc = !c;\n\t}\n\treturn c;\n}\n\n// Coordiantes were obtained from image processing using Wolfram Mathematica. Contact Ben for the notebook source code.\nvec2 HEART[187] = vec2[187](vec2(-1.408e1,2.96),vec2(-1.39e1,3.56),vec2(-1.326e1,3.86),vec2(-1.37e1,4.4),vec2(-1.36e1,5.08),vec2(-1.322e1,5.4),vec2(-1.268e1,5.46),vec2(-13,5.92),vec2(-1.292e1,6.52),vec2(-1.242e1,6.92),vec2(-1.174e1,6.84),vec2(-1.198e1,7.4),vec2(-1.174e1,7.98),vec2(-1.126e1,8.22),vec2(-1.054e1,8.02),vec2(-1.058e1,8.66),vec2(-1.012e1,9.14),vec2(-9.6,9.18),vec2(-9.1,8.88),vec2(-9.08,9.42),vec2(-8.62,9.86),vec2(-8,9.86),vec2(-7.54,9.42),vec2(-7.4,9.94),vec2(-6.88,1.028e1),vec2(-6.22,1.014e1),vec2(-5.9,9.56),vec2(-5.46,1.01e1),vec2(-4.78,1.014e1),vec2(-4.42,9.88),vec2(-4.22,9.32),vec2(-3.86,9.8),vec2(-3.2,9.88),vec2(-2.74,9.54),vec2(-2.6,8.88),vec2(-2.02,9.24),vec2(-1.38,9.04),vec2(-1.12,8.6),vec2(-1.14,8.06),vec2(-0.52,8.28),vec2(0,8.02),vec2(0.58,8.16),vec2(1.04,7.96),vec2(1,8.5),vec2(1.28,8.96),vec2(1.98,9.14),vec2(2.54,8.78),vec2(2.52,9.3),vec2(2.98,9.8),vec2(3.6,9.82),vec2(4.12,9.3),vec2(4.22,9.72),vec2(4.62,1.008e1),vec2(5.32,1.006e1),vec2(5.78,9.52),vec2(6.1,1.014e1),vec2(6.74,1.028e1),vec2(7.24,9.98),vec2(7.4,9.44),vec2(7.98,9.92),vec2(8.64,9.82),vec2(8.98,9.4),vec2(8.98,8.88),vec2(9.5,9.24),vec2(1.02e1,9.1),vec2(1.052e1,8.58),vec2(1.046e1,8.04),vec2(1.11e1,8.3),vec2(1.166e1,8.04),vec2(1.188e1,7.38),vec2(1.166e1,6.92),vec2(1.236e1,7),vec2(1.284e1,6.62),vec2(1.294e1,6.06),vec2(1.268e1,5.54),vec2(1.326e1,5.48),vec2(1.368e1,4.92),vec2(1.364e1,4.44),vec2(1.326e1,3.98),vec2(1.378e1,3.82),vec2(1.41e1,3.24),vec2(1.394e1,2.66),vec2(1.34e1,2.36),vec2(1.386e1,2.08),vec2(1.408e1,1.62),vec2(1.388e1,0.94),vec2(1.32e1,0.68),vec2(1.36e1,0.16),vec2(1.356e1,-0.42),vec2(1.322e1,-0.8),vec2(1.262e1,-0.92),vec2(1.302e1,-1.38),vec2(1.294e1,-2.06),vec2(1.244e1,-2.44),vec2(1.188e1,-2.38),vec2(1.212e1,-2.92),vec2(1.198e1,-3.46),vec2(1.152e1,-3.8),vec2(1.094e1,-3.74),vec2(1.114e1,-4.44),vec2(1.08e1,-5.02),vec2(1.036e1,-5.18),vec2(9.86,-5.06),vec2(1.006e1,-5.66),vec2(9.84,-6.16),vec2(9.3,-6.42),vec2(8.72,-6.22),vec2(8.82,-6.92),vec2(8.46,-7.42),vec2(7.88,-7.54),vec2(7.48,-7.38),vec2(7.62,-8),vec2(7.34,-8.48),vec2(6.74,-8.68),vec2(6.26,-8.46),vec2(6.36,-9.14),vec2(5.88,-9.7),vec2(5.34,-9.74),vec2(4.94,-9.48),vec2(4.98,-1.016e1),vec2(4.64,-1.058e1),vec2(4.18,-1.072e1),vec2(3.56,-1.046e1),vec2(3.64,-1.102e1),vec2(3.3,-1.152e1),vec2(2.76,-1.166e1),vec2(2.22,-1.14e1),vec2(2.28,-1.198e1),vec2(1.92,-1.248e1),vec2(1.34,-1.26e1),vec2(0.86,-1.232e1),vec2(0.9,-13),vec2(0.74,-1.328e1),vec2(0.28,-1.354e1),vec2(-0.24,-1.35e1),vec2(-0.6,-1.324e1),vec2(-0.76,-1.242e1),vec2(-1.22,-1.266e1),vec2(-1.84,-1.25e1),vec2(-2.14,-1.204e1),vec2(-2.08,-1.146e1),vec2(-2.62,-1.172e1),vec2(-3.24,-1.152e1),vec2(-3.52,-11),vec2(-3.42,-1.052e1),vec2(-3.9,-1.076e1),vec2(-4.54,-1.062e1),vec2(-4.88,-1.006e1),vec2(-4.8,-9.54),vec2(-5.32,-9.82),vec2(-5.94,-9.64),vec2(-6.24,-9.1),vec2(-6.1,-8.5),vec2(-6.54,-8.74),vec2(-7.18,-8.58),vec2(-7.5,-8.02),vec2(-7.38,-7.44),vec2(-7.82,-7.62),vec2(-8.36,-7.48),vec2(-8.72,-6.88),vec2(-8.56,-6.32),vec2(-9.08,-6.5),vec2(-9.56,-6.36),vec2(-9.94,-5.72),vec2(-9.74,-5.14),vec2(-1.034e1,-5.26),vec2(-1.086e1,-4.96),vec2(-1.104e1,-4.34),vec2(-1.082e1,-3.82),vec2(-1.128e1,-3.92),vec2(-1.168e1,-3.76),vec2(-1.202e1,-3.1),vec2(-1.18e1,-2.48),vec2(-1.242e1,-2.54),vec2(-1.294e1,-2.02),vec2(-1.294e1,-1.46),vec2(-1.256e1,-1.04),vec2(-1.314e1,-0.92),vec2(-1.352e1,-0.46),vec2(-1.352e1,8.0e-2),vec2(-1.31e1,0.54),vec2(-1.382e1,0.78),vec2(-1.406e1,1.5),vec2(-1.382e1,1.98),vec2(-1.336e1,2.22),vec2(-1.386e1,2.46),vec2(-1.406e1,2.94));\nvec2 HEART_MIN_XY = vec2(-70.5, -67.9);\nvec2 HEART_MAX_XY = vec2(70.6, 51.6);\nvec2 FACE[26] = vec2[26](vec2(-5.24,2.5),vec2(-5.18,3.56),vec2(-5.04,3.84),vec2(-4.8,3.88),vec2(-3.58,3.3),vec2(-1.88,2.12),vec2(2.16,2.12),vec2(4.02,3.68),vec2(4.78,4.04),vec2(5.18,4.02),vec2(5.38,3.64),vec2(5.44,2.72),vec2(5.12,0),vec2(2.84,-7.52),vec2(2.7,-8.46),vec2(2.36,-9.22),vec2(1.86,-9.8),vec2(1.14,-1.026e1),vec2(0.46,-1.046e1),vec2(-0.36,-1.044e1),vec2(-1.28,-1.008e1),vec2(-1.88,-9.58),vec2(-2.38,-8.8),vec2(-2.64,-7.5),vec2(-4.76,-0.72),vec2(-5.22,2.48));\nvec2 MOUTH[35] = vec2[35](vec2(-1.66,-6.76),vec2(-1.56,-6.52),vec2(-1.3,-6.58),vec2(-0.32,-7.72),vec2(0.2,-7.86),vec2(0.58,-7.68),vec2(1.4,-6.66),vec2(1.62,-6.52),vec2(1.84,-6.58),vec2(1.82,-6.84),vec2(1.52,-6.98),vec2(1.22,-7.28),vec2(0.3,-8.66),vec2(0.3,-9.18),vec2(0.4,-9.28),vec2(1.14,-9.04),vec2(1.66,-8.64),vec2(1.8,-8.68),vec2(1.78,-8.82),vec2(1.44,-9.2),vec2(0.98,-9.52),vec2(0.42,-9.78),vec2(2.0e-2,-9.84),vec2(-0.86,-9.46),vec2(-1.54,-8.82),vec2(-1.56,-8.68),vec2(-1.44,-8.64),vec2(-1,-8.98),vec2(-0.18,-9.28),vec2(-8.0e-2,-9.16),vec2(-8.0e-2,-8.74),vec2(-0.14,-8.5),vec2(-0.8,-7.54),vec2(-1.26,-7.02),vec2(-1.64,-6.76));\nvec2 EYE_LEFT[10] = vec2[10](vec2(-4.6,2.4),vec2(-4.6,2.72),vec2(-4.46,2.98),vec2(-4.14,3.02),vec2(-3.82,2.8),vec2(-3.48,2.14),vec2(-3.54,1.6),vec2(-4,1.6),vec2(-4.26,1.72),vec2(-4.58,2.38));\nvec2 EYE_RIGHT[10] = vec2[10](vec2(3.64,1.8),vec2(3.72,2.34),vec2(4,2.8),vec2(4.32,3.02),vec2(4.68,2.94),vec2(4.78,2.42),vec2(4.48,1.76),vec2(4.2,1.6),vec2(3.7,1.6),vec2(3.66,1.78));\nvec2 EAR_LEFT[9] = vec2[9](vec2(-1.092e1,6.08),vec2(-1.084e1,6.26),vec2(-1.058e1,6.3),vec2(-7.02,6.24),vec2(-6.94,4.48),vec2(-7.14,4.38),vec2(-7.84,4.42),vec2(-1.078e1,5.88),vec2(-1.09e1,6.06));\nvec2 EAR_RIGHT[10] = vec2[10](vec2(7.22,4.48),vec2(7.42,4.38),vec2(8.12,4.42),vec2(1.106e1,5.88),vec2(1.12e1,6.14),vec2(1.112e1,6.26),vec2(1.086e1,6.3),vec2(7.36,6.28),vec2(7.26,6.18),vec2(7.22,4.5));\n\nbool pointInHeart(vec2 point, float scale, vec2 offset){\n\tint len = 187;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((HEART[i].y > p.y) != (HEART[j].y > p.y)) && (p.x < (HEART[j].x-HEART[i].x) * (p.y-HEART[i].y) / (HEART[j].y-HEART[i].y) + HEART[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInFace(vec2 point, float scale, vec2 offset){\n\tint len = 26;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((FACE[i].y > p.y) != (FACE[j].y > p.y)) && (p.x < (FACE[j].x-FACE[i].x) * (p.y-FACE[i].y) / (FACE[j].y-FACE[i].y) + FACE[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInMouth(vec2 point, float scale, vec2 offset){\n\tint len = 35;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((MOUTH[i].y > p.y) != (MOUTH[j].y > p.y)) && (p.x < (MOUTH[j].x-MOUTH[i].x) * (p.y-MOUTH[i].y) / (MOUTH[j].y-MOUTH[i].y) + MOUTH[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeLeft(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_LEFT[i].y > p.y) != (EYE_LEFT[j].y > p.y)) && (p.x < (EYE_LEFT[j].x-EYE_LEFT[i].x) * (p.y-EYE_LEFT[i].y) / (EYE_LEFT[j].y-EYE_LEFT[i].y) + EYE_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEyeRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EYE_RIGHT[i].y > p.y) != (EYE_RIGHT[j].y > p.y)) && (p.x < (EYE_RIGHT[j].x-EYE_RIGHT[i].x) * (p.y-EYE_RIGHT[i].y) / (EYE_RIGHT[j].y-EYE_RIGHT[i].y) + EYE_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarLeft(vec2 point, float scale, vec2 offset){\n\tint len = 9;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_LEFT[i].y > p.y) != (EAR_LEFT[j].y > p.y)) && (p.x < (EAR_LEFT[j].x-EAR_LEFT[i].x) * (p.y-EAR_LEFT[i].y) / (EAR_LEFT[j].y-EAR_LEFT[i].y) + EAR_LEFT[i].x) ) c = !c; }\n\treturn c;\n}\nbool pointInEarRight(vec2 point, float scale, vec2 offset){\n\tint len = 10;\n\tint i, j; bool c = false; vec2 p = (point - offset)/(scale * COORD_SCALE);\n\tfor (i = 0, j = len-1; i < len; j = i++) { if ( ((EAR_RIGHT[i].y > p.y) != (EAR_RIGHT[j].y > p.y)) && (p.x < (EAR_RIGHT[j].x-EAR_RIGHT[i].x) * (p.y-EAR_RIGHT[i].y) / (EAR_RIGHT[j].y-EAR_RIGHT[i].y) + EAR_RIGHT[i].x) ) c = !c; }\n\treturn c;\n}\n\n// Shades only the black regions of the logo\nbool pointInSheep(vec2 point, float scale, vec2 offset) {\n\t// For speed -- check if it's in a bounding box, else return false\n\tvec2 p = (point - offset)/(scale * COORD_SCALE);\n\tif (p.x > HEART_MAX_XY.x || p.y > HEART_MAX_XY.y || p.x < HEART_MIN_XY.x || p.y < HEART_MIN_XY.y) {\n\t\treturn false;\n\t}\n\t// Check if it's in each part\n\tbool inHeart = pointInHeart(point, scale, offset);\n\tbool inFace = pointInFace(point, scale, offset);\n\tbool inMouth = pointInMouth(point, scale, offset);\n\tbool inEyeLeft = pointInEyeLeft(point, scale, offset);\n\tbool inEyeRight = pointInEyeRight(point, scale, offset);\n\tbool inEarLeft = pointInEarLeft(point, scale, offset);\n\tbool inEarRight = pointInEarRight(point, scale, offset);\n\t// Shade the correct regions\n\treturn inHeart && (!(inFace || inEarLeft || inEarRight) || (inMouth || inEyeLeft || inEyeRight));\n}\n\nvec3 drawScene(vec2 uv) {\n\tvec3 col = upstreamColor(uv).rgb;\n\n\tfloat sheep = -1.0 * float(pointInSheep(uv, .9 + 0.1 * sin(time * 2.), vec2(.15 * sin(time * .47), .1 * sin(time * .37))));\n\n\tcol = mix(vec3(0, 0, 0), col, step(0., sheep));\n\n\treturn col;\n}\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n//\tvec2 uv = fragCoord/iResolution.xy; // <0, 1>\n\n\tvec2 fragPos = fragCoord / resolution.xy;\n\tfragPos = (fragPos - 0.5) * 1.5;\n\tfragPos.x *= resolution.x / resolution.y / horizontalScale;\n\t\n//\tuv -= 0.5; // <-0.5,0.5>\n//\tuv.x *= iResolution.x/iResolution.y; // fix aspect ratio\n\n\tvec3 col = drawScene(fragPos);\n\n\t// Output to screen\n\tfragColor = vec4(col,1.0);\n}\n\n"
+        },
+        "static": {
+            "title": "Static",
+            "src": "// Free for any purpose, commercial or otherwise. \n// But do post here so I can see where it got used!\n// If using on shadertoy, do link to this project on yours :)\n\nfloat noise(vec2 pos, float evolve) {\n    \n    // Loop the evolution (over a very long period of time).\n    float e = fract((evolve*0.01));\n    \n    // Coordinates\n    float cx  = pos.x*e;\n    float cy  = pos.y*e;\n    \n    // Generate a \"random\" black or white value\n    return fract(23.0*fract(2.0/fract(fract(cx*2.4/cy*23.0+pow(abs(cy/22.4),3.3))*fract(cx*evolve/pow(abs(cy),0.050)))));\n}\n\n\nvoid mainImage( out vec4 fragColor, in vec2 fragCoord )\n{\n\n    // Increase this number to test performance\n    int intensity = 1;\n    \n    vec3 colour;\n    for (int i = 0; i < intensity; i++)\n        {\n        // Generate a black to white pixel\n        colour = vec3(noise(fragCoord,iTime), noise(fragCoord + 1.,iTime + 1.), noise(fragCoord - 2.,iTime + 2.));\n        }\n\t\n    // Output to screen\n    fragColor = vec4(max(vec3(.7), colour),1.0);\n}"
+        },
+        "rotateTwist": {
+            "title": "Rotate & Twist",
+            "src": "uniform float rotation; // @@Slider min=-3.14159 max=3.14159 default=0\nuniform float twist; // @@Slider min=-16 max=16 default=0\n\n// @param uvIn uv-coordinate\n// @return uv-coordinate\nvec2 main(vec2 uvIn) {\n    vec2 uv = uvIn - .5;\n    float dist = length(uv) * twist;\n    float theta = rotation + dist;\n    return vec2(\n        cos(theta) * uv.x - sin(theta) * uv.y,\n        sin(theta) * uv.x + cos(theta) * uv.y\n    ) + .5;\n}"
         }
     },
     "patches": {
@@ -539,7 +750,8 @@
         },
         "darkness-patch": {
             "shaderId": "darkness",
-            "incomingLinks": {}
+            "incomingLinks": {
+            }
         },
         "hsb-patch": {
             "shaderId": "hsb",
@@ -561,7 +773,7 @@
                     "feedId": "saturationSlider"
                 }
             },
-            "priority": 10.0
+            "priority": 10
         },
         "squarezzz-patch": {
             "shaderId": "squarezzz",
@@ -787,27 +999,6 @@
                     "stream": "main"
                 },
                 "iResolution": {
-                    "type": "feed",
-                    "feedId": "resolution"
-                }
-            }
-        },
-        "evolutionOfAcid-patch": {
-            "shaderId": "evolutionOfAcid",
-            "incomingLinks": {
-                "time": {
-                    "type": "feed",
-                    "feedId": "time"
-                },
-                "mouse": {
-                    "type": "stream",
-                    "stream": "main"
-                },
-                "gl_FragCoord": {
-                    "type": "stream",
-                    "stream": "main"
-                },
-                "resolution": {
                     "type": "feed",
                     "feedId": "resolution"
                 }
@@ -1374,6 +1565,440 @@
                 }
             }
         },
+        "solidColor-patch": {
+            "shaderId": "solidColor",
+            "incomingLinks": {
+                "time": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "color": {
+                    "type": "feed",
+                    "feedId": "colorColorPicker"
+                },
+                "sparkliness": {
+                    "type": "feed",
+                    "feedId": "sparklinessSlider"
+                },
+                "gl_FragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "colorBrightness": {
+                    "type": "feed",
+                    "feedId": "colorBrightnessSlider"
+                }
+            }
+        },
+        "sunsetClouds-patch": {
+            "shaderId": "sunsetClouds",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iChannel0": {
+                    "type": "feed",
+                    "feedId": "pixelCoordsTexture"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "oceanClouds-patch": {
+            "shaderId": "oceanClouds",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                }
+            }
+        },
+        "clouds-patch": {
+            "shaderId": "clouds",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                }
+            }
+        },
+        "electricEelUniverse-patch": {
+            "shaderId": "electricEelUniverse",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                }
+            }
+        },
+        "rainbows-patch": {
+            "shaderId": "rainbows",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                }
+            }
+        },
+        "voronoi-patch": {
+            "shaderId": "voronoi",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iChannel0": {
+                    "type": "feed",
+                    "feedId": "pixelCoordsTexture"
+                }
+            }
+        },
+        "voxelEdges-patch": {
+            "shaderId": "voxelEdges",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "octagrams-patch": {
+            "shaderId": "octagrams",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "phantomStar-patch": {
+            "shaderId": "phantomStar",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "baseWarp-patch": {
+            "shaderId": "baseWarp",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "sdfs-patch": {
+            "shaderId": "sdfs",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "randomSin-patch": {
+            "shaderId": "randomSin",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "diveToCloud-patch": {
+            "shaderId": "diveToCloud",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "proteanClouds-patch": {
+            "shaderId": "proteanClouds",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "sincos3d-patch": {
+            "shaderId": "sincos3d",
+            "incomingLinks": {
+                "U": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "iMouse": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "midCentruy-patch": {
+            "shaderId": "midCentruy",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "fractalTrees-patch": {
+            "shaderId": "fractalTrees",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "monitorsAndFractalLife-patch": {
+            "shaderId": "monitorsAndFractalLife",
+            "incomingLinks": {
+                "time": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "mouse": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "resolution": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "raymarchingBasic-patch": {
+            "shaderId": "raymarchingBasic",
+            "incomingLinks": {
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "discoteq2-patch": {
+            "shaderId": "discoteq2",
+            "incomingLinks": {
+                "I": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
+        "devilGlass-patch": {
+            "shaderId": "devilGlass",
+            "incomingLinks": {
+                "modelInfo": {
+                    "type": "feed",
+                    "feedId": "modelInfo"
+                },
+                "pixelLocation": {
+                    "type": "feed",
+                    "feedId": "pixelLocation"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "iResolution": {
+                    "type": "feed",
+                    "feedId": "resolution"
+                },
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                }
+            }
+        },
         "ripple-patch": {
             "shaderId": "ripple",
             "incomingLinks": {
@@ -1419,7 +2044,7 @@
                     "feedId": "sparkleBrightnessSlider"
                 }
             },
-            "priority": 15.0
+            "priority": 15
         },
         "heart-patch": {
             "shaderId": "heart",
@@ -1492,7 +2117,7 @@
                 }
             },
             "stream": "time",
-            "priority": 1.0
+            "priority": 1
         },
         "imageOverlay-patch": {
             "shaderId": "imageOverlay",
@@ -1544,7 +2169,7 @@
                     "stream": "main"
                 }
             },
-            "priority": 100.0
+            "priority": 100
         },
         "baaahsLogo-patch": {
             "shaderId": "baaahsLogo",
@@ -1574,6 +2199,37 @@
                     "stream": "main"
                 }
             }
+        },
+        "static-patch": {
+            "shaderId": "static",
+            "incomingLinks": {
+                "iTime": {
+                    "type": "feed",
+                    "feedId": "time"
+                },
+                "fragCoord": {
+                    "type": "stream",
+                    "stream": "main"
+                }
+            }
+        },
+        "rotateTwist-patch": {
+            "shaderId": "rotateTwist",
+            "incomingLinks": {
+                "uvIn": {
+                    "type": "stream",
+                    "stream": "main"
+                },
+                "rotation": {
+                    "type": "feed",
+                    "feedId": "rotationSlider"
+                },
+                "twist": {
+                    "type": "feed",
+                    "feedId": "twistSlider2"
+                }
+            },
+            "priority": 1
         }
     },
     "controls": {
@@ -1581,7 +2237,8 @@
             "type": "baaahs.Core:ButtonGroup",
             "title": "Shader Controls",
             "showTitle": true,
-            "buttonIds": []
+            "buttonIds": [
+            ]
         },
         "vacuity": {
             "type": "baaahs.Core:Vacuity",
@@ -1592,7 +2249,8 @@
             "title": "Shaders",
             "direction": "Vertical",
             "showTitle": true,
-            "buttonIds": []
+            "buttonIds": [
+            ]
         },
         "squarezzz": {
             "type": "baaahs.Core:Button",
@@ -1655,13 +2313,6 @@
             "title": "Plasma",
             "patchIds": [
                 "plasma-patch"
-            ]
-        },
-        "evolutionOfAcid": {
-            "type": "baaahs.Core:Button",
-            "title": "Evolution of Acid",
-            "patchIds": [
-                "evolutionOfAcid-patch"
             ]
         },
         "wobblyColorGrid": {
@@ -1839,13 +2490,168 @@
                 "jacobianUndistortion-patch"
             ]
         },
+        "solidColor": {
+            "type": "baaahs.Core:Button",
+            "title": "Solid Color",
+            "patchIds": [
+                "solidColor-patch"
+            ]
+        },
+        "sunsetClouds": {
+            "type": "baaahs.Core:Button",
+            "title": "Sunset Clouds",
+            "patchIds": [
+                "sunsetClouds-patch"
+            ]
+        },
+        "oceanClouds": {
+            "type": "baaahs.Core:Button",
+            "title": "Ocean Clouds",
+            "patchIds": [
+                "oceanClouds-patch"
+            ]
+        },
+        "clouds": {
+            "type": "baaahs.Core:Button",
+            "title": "Clouds",
+            "patchIds": [
+                "clouds-patch"
+            ]
+        },
+        "electricEelUniverse": {
+            "type": "baaahs.Core:Button",
+            "title": "Electric Eel Universe",
+            "patchIds": [
+                "electricEelUniverse-patch"
+            ]
+        },
+        "rainbows": {
+            "type": "baaahs.Core:Button",
+            "title": "Rainbows",
+            "patchIds": [
+                "rainbows-patch"
+            ]
+        },
+        "voronoi": {
+            "type": "baaahs.Core:Button",
+            "title": "Voronoi",
+            "patchIds": [
+                "voronoi-patch"
+            ]
+        },
+        "voxelEdges": {
+            "type": "baaahs.Core:Button",
+            "title": "Voxel Edges",
+            "patchIds": [
+                "voxelEdges-patch"
+            ]
+        },
+        "octagrams": {
+            "type": "baaahs.Core:Button",
+            "title": "Octagrams",
+            "patchIds": [
+                "octagrams-patch"
+            ]
+        },
+        "phantomStar": {
+            "type": "baaahs.Core:Button",
+            "title": "Phantom Star",
+            "patchIds": [
+                "phantomStar-patch"
+            ]
+        },
+        "baseWarp": {
+            "type": "baaahs.Core:Button",
+            "title": "Base Warp",
+            "patchIds": [
+                "baseWarp-patch"
+            ]
+        },
+        "sdfs": {
+            "type": "baaahs.Core:Button",
+            "title": "SDFS",
+            "patchIds": [
+                "sdfs-patch"
+            ]
+        },
+        "randomSin": {
+            "type": "baaahs.Core:Button",
+            "title": "Random Sin",
+            "patchIds": [
+                "randomSin-patch"
+            ]
+        },
+        "diveToCloud": {
+            "type": "baaahs.Core:Button",
+            "title": "Dive to Cloud",
+            "patchIds": [
+                "diveToCloud-patch"
+            ]
+        },
+        "proteanClouds": {
+            "type": "baaahs.Core:Button",
+            "title": "Protean Clouds",
+            "patchIds": [
+                "proteanClouds-patch"
+            ]
+        },
+        "sincos3d": {
+            "type": "baaahs.Core:Button",
+            "title": "sincos 3d",
+            "patchIds": [
+                "sincos3d-patch"
+            ]
+        },
+        "midCentruy": {
+            "type": "baaahs.Core:Button",
+            "title": "MidCentruy",
+            "patchIds": [
+                "midCentruy-patch"
+            ]
+        },
+        "fractalTrees": {
+            "type": "baaahs.Core:Button",
+            "title": "Fractal Trees",
+            "patchIds": [
+                "fractalTrees-patch"
+            ]
+        },
+        "monitorsAndFractalLife": {
+            "type": "baaahs.Core:Button",
+            "title": "monitors and fractal_life",
+            "patchIds": [
+                "monitorsAndFractalLife-patch"
+            ]
+        },
+        "raymarchingBasic": {
+            "type": "baaahs.Core:Button",
+            "title": "Raymarching Basic",
+            "patchIds": [
+                "raymarchingBasic-patch"
+            ]
+        },
+        "discoteq2": {
+            "type": "baaahs.Core:Button",
+            "title": "Discoteq 2",
+            "patchIds": [
+                "discoteq2-patch"
+            ]
+        },
+        "devilGlass": {
+            "type": "baaahs.Core:Button",
+            "title": "Devil Glass",
+            "patchIds": [
+                "devilGlass-patch"
+            ]
+        },
         "effects": {
             "type": "baaahs.Core:ButtonGroup",
             "title": "Effects",
             "direction": "Vertical",
             "showTitle": true,
             "allowMultiple": true,
-            "buttonIds": []
+            "buttonIds": [
+            ]
         },
         "ripple": {
             "type": "baaahs.Core:Button",
@@ -1911,11 +2717,26 @@
                 "baaahsLogo-patch"
             ]
         },
+        "static": {
+            "type": "baaahs.Core:Button",
+            "title": "Static",
+            "patchIds": [
+                "static-patch"
+            ]
+        },
+        "rotateTwist": {
+            "type": "baaahs.Core:Button",
+            "title": "Rotate & Twist",
+            "patchIds": [
+                "rotateTwist-patch"
+            ]
+        },
         "globalControls": {
             "type": "baaahs.Core:ButtonGroup",
             "title": "Global Controls",
             "showTitle": true,
-            "buttonIds": []
+            "buttonIds": [
+            ]
         },
         "brightness": {
             "type": "baaahs.Core:Slider",
@@ -1933,7 +2754,7 @@
         "hueShift": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Shift",
-            "maxValue": 2.0,
+            "maxValue": 2,
             "controlledFeedId": "hueShiftSlider"
         },
         "visualizer": {
@@ -1953,22 +2774,22 @@
         "hueShiftSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Shift",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 2
         },
         "brightnessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Brightness",
             "initialValue": 0.15,
-            "minValue": 0.0,
+            "minValue": 0,
             "maxValue": 0.75
         },
         "saturationSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Saturation",
-            "initialValue": 1.0,
-            "minValue": 0.0,
+            "initialValue": 1,
+            "minValue": 0,
             "maxValue": 1.25
         },
         "time": {
@@ -1977,9 +2798,9 @@
         "speedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Speed",
-            "initialValue": 3.0,
-            "minValue": 1.0,
-            "maxValue": 5.0
+            "initialValue": 3,
+            "minValue": 1,
+            "maxValue": 5
         },
         "resolution": {
             "type": "baaahs.Core:Resolution"
@@ -1991,8 +2812,8 @@
             "type": "baaahs.Core:Slider",
             "title": "Hue Range",
             "initialValue": 0.3,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "minValue": 0,
+            "maxValue": 1
         },
         "fromCenterSwitch": {
             "type": "baaahs.Core:Switch",
@@ -2002,9 +2823,9 @@
         "pulseSpeedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Pulse Speed",
-            "initialValue": 1.0,
-            "minValue": 1.0,
-            "maxValue": 3.0
+            "initialValue": 1,
+            "minValue": 1,
+            "maxValue": 3
         },
         "center": {
             "type": "baaahs.Core:XyPad",
@@ -2016,37 +2837,37 @@
         "cycleSpeedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Cycle Speed",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 5.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 5
         },
         "speedSlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Speed",
-            "initialValue": 5.0,
-            "minValue": 0.0,
-            "maxValue": 10.0
+            "initialValue": 5,
+            "minValue": 0,
+            "maxValue": 10
         },
         "pulsinessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Pulsiness",
-            "initialValue": 3.0,
-            "minValue": 1.0,
-            "maxValue": 5.0
+            "initialValue": 3,
+            "minValue": 1,
+            "maxValue": 5
         },
         "hueSpreadSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Hue Spread",
-            "initialValue": 2.0,
-            "minValue": 0.0,
-            "maxValue": 10.0
+            "initialValue": 2,
+            "minValue": 0,
+            "maxValue": 10
         },
         "cycleSpeedSlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Cycle Speed",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 10.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 10
         },
         "beatLink": {
             "type": "baaahs.BeatLink:BeatLink"
@@ -2059,28 +2880,28 @@
             "title": "Horizontal Scale",
             "initialValue": 0.7,
             "minValue": 0.25,
-            "maxValue": 1.0
+            "maxValue": 1
         },
         "thingSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Thing",
             "initialValue": 0.866025,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "minValue": 0,
+            "maxValue": 2
         },
         "conflagrationSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Conflagration",
-            "initialValue": 15.0,
-            "minValue": 5.0,
-            "maxValue": 20.0
+            "initialValue": 15,
+            "minValue": 5,
+            "maxValue": 20
         },
         "checkerboardSizeSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Checkerboard Size",
             "initialValue": 0.125,
             "minValue": 0.001,
-            "maxValue": 1.0
+            "maxValue": 1
         },
         "date": {
             "type": "baaahs.Core:Date"
@@ -2096,22 +2917,22 @@
             "type": "baaahs.Core:Slider",
             "title": "Rate1",
             "initialValue": 1.9,
-            "minValue": -3.0,
-            "maxValue": 3.0
+            "minValue": -3,
+            "maxValue": 3
         },
         "rate2Slider": {
             "type": "baaahs.Core:Slider",
             "title": "Rate2",
             "initialValue": 0.6,
-            "minValue": -3.0,
-            "maxValue": 3.0
+            "minValue": -3,
+            "maxValue": 3
         },
         "loopcycleSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Loopcycle",
-            "initialValue": 85.0,
-            "minValue": 20.0,
-            "maxValue": 100.0
+            "initialValue": 85,
+            "minValue": 20,
+            "maxValue": 100
         },
         "color1Slider": {
             "type": "baaahs.Core:Slider",
@@ -2123,7 +2944,7 @@
         "color2Slider": {
             "type": "baaahs.Core:Slider",
             "title": "Color2",
-            "initialValue": 1.0,
+            "initialValue": 1,
             "minValue": -1.25,
             "maxValue": 1.125
         },
@@ -2158,137 +2979,159 @@
         "mysterNumberSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Myster Number",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
         },
         "rxySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Rxy",
-            "initialValue": 11.0,
-            "minValue": 1.0,
-            "maxValue": 17.0
+            "initialValue": 11,
+            "minValue": 1,
+            "maxValue": 17
         },
         "rxzSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Rxz",
-            "initialValue": 13.0,
-            "minValue": 1.0,
-            "maxValue": 17.0
+            "initialValue": 13,
+            "minValue": 1,
+            "maxValue": 17
         },
         "rateSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Rate",
-            "initialValue": -1.0,
-            "minValue": -3.0,
-            "maxValue": 3.0
+            "initialValue": -1,
+            "minValue": -3,
+            "maxValue": 3
         },
         "zoomSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Zoom",
-            "initialValue": 5.0,
-            "minValue": -10.0,
-            "maxValue": 10.0
+            "initialValue": 5,
+            "minValue": -10,
+            "maxValue": 10
         },
         "depthSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Depth",
             "initialValue": 0.6,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "minValue": 0,
+            "maxValue": 1
         },
         "center2": {
             "type": "baaahs.Core:XyPad",
             "title": "Center",
             "initialValue": {
-                "x": -2.0,
-                "y": -1.0
+                "x": -2,
+                "y": -1
             },
             "minValue": {
-                "x": -10.0,
-                "y": -10.0
+                "x": -10,
+                "y": -10
             },
             "maxValue": {
-                "x": 10.0,
-                "y": 10.0
+                "x": 10,
+                "y": 10
             }
         },
         "twistSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Twist",
             "initialValue": 0.2,
-            "minValue": -4.0,
-            "maxValue": 4.0
+            "minValue": -4,
+            "maxValue": 4
         },
         "frequencySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Frequency",
-            "initialValue": 15.0,
+            "initialValue": 15,
             "minValue": 3.14,
-            "maxValue": 25.0
+            "maxValue": 25
         },
         "mouseXSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Mouse X",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
         },
         "mouseYSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Mouse Y",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "colorColorPicker": {
+            "type": "baaahs.Core:ColorPicker",
+            "title": "Color",
+            "initialValue": -13434625
+        },
+        "sparklinessSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Sparkliness",
+            "initialValue": 0.02,
+            "minValue": 0,
+            "maxValue": 0.5
+        },
+        "colorBrightnessSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Color Brightness",
+            "initialValue": 0.75,
+            "minValue": 0,
+            "maxValue": 1
+        },
+        "pixelCoordsTexture": {
+            "type": "baaahs.Core:PixelCoordsTexture"
         },
         "rippleAmountSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ripple Amount",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 1
         },
         "sparkleIntensitySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Sparkle Intensity",
-            "initialValue": 1.0,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "initialValue": 1,
+            "minValue": 0,
+            "maxValue": 2
         },
         "sparkleBrightnessSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Sparkle Brightness",
             "initialValue": 0.5,
-            "minValue": 0.0,
-            "maxValue": 4.0
+            "minValue": 0,
+            "maxValue": 4
         },
         "ringSpeedSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Speed",
-            "initialValue": 10.0,
-            "minValue": -15.0,
-            "maxValue": 20.0
+            "initialValue": 10,
+            "minValue": -15,
+            "maxValue": 20
         },
         "ringDensitySlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Density",
-            "initialValue": 60.0,
-            "minValue": 10.0,
-            "maxValue": 120.0
+            "initialValue": 60,
+            "minValue": 10,
+            "maxValue": 120
         },
         "ringFadeSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Ring Fade",
             "initialValue": 0.5,
-            "minValue": 0.0,
-            "maxValue": 1.0
+            "minValue": 0,
+            "maxValue": 1
         },
         "beatTimeShiftAmountSlider": {
             "type": "baaahs.Core:Slider",
             "title": "Beat Time Shift Amount",
             "initialValue": 0.5,
-            "minValue": 0.0,
-            "maxValue": 2.0
+            "minValue": 0,
+            "maxValue": 2
         },
         "imageImage": {
             "type": "baaahs.Core:Image",
@@ -2298,16 +3141,30 @@
             "type": "baaahs.Core:Slider",
             "title": "Depth",
             "initialValue": 0.1,
-            "minValue": 0.0,
+            "minValue": 0,
             "maxValue": 0.2
         },
         "frequencySlider2": {
             "type": "baaahs.Core:Slider",
             "title": "Frequency",
-            "initialValue": 10.0,
-            "minValue": 0.0,
-            "maxValue": 20.0
+            "initialValue": 10,
+            "minValue": 0,
+            "maxValue": 20
+        },
+        "rotationSlider": {
+            "type": "baaahs.Core:Slider",
+            "title": "Rotation",
+            "initialValue": 0,
+            "minValue": -6.28,
+            "maxValue": 6.28
+        },
+        "twistSlider2": {
+            "type": "baaahs.Core:Slider",
+            "title": "Twist",
+            "initialValue": 0,
+            "minValue": -1,
+            "maxValue": 1
         }
     },
-    "version": 9
+    "version": 10
 }
