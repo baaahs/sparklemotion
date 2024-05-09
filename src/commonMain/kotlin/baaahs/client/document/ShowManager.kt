@@ -64,6 +64,9 @@ class ShowManager(
             Option("BRC 2023") {
                 makeNew { fromResources("BRC 2023.sparkle") }
             },
+            Option("Eve Rafters") {
+                makeNew { fromResources("Eve Rafters.sparkle") }
+            },
             Option("Pasture Bedtime") {
                 makeNew { fromResources("PastureBedtime.sparkle") }
             },
