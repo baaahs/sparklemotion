@@ -1,11 +1,11 @@
 object Versions {
-    const val kotlin = "1.9.22"
+    const val kotlin = "2.0.0-RC2"
     const val kotlinGradlePlugin = kotlin
+    const val ksp = "2.0.0-RC2-1.0.20"
     const val coroutines = "1.7.2"
     const val serializationRuntime = "1.5.1"
     const val koin = "3.1.3"
     const val dokka = "1.7.10"
-    const val ksp = "1.9.22-1.0.17"
 
     // GL:
     const val kgl = "0.6.2"
