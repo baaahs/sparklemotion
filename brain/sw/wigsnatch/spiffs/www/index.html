@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BAAAHS Brain</title>
+    <style>
+        body {
+            font-family: "Lucida Grande", "Geneva", "Helvetica", Arial, sans-serif;
+        }
+        th {
+            text-align: right;
+        }
+
+        td {
+            padding: 0.3rem;
+        }
+
+        .config_title {
+            font-size: 1.4rem;
+            margin-top: 1rem;
+        }
+
+        #id {
+            font-weight: bold;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<h1>Brain Configuration</h1>
+
+<table>
+    <tr>
+        <th>MAC Address</th>
+        <td id="mac">00:00:00:00:00:00</td>
+    </tr>
+    <tr>
+        <th>Rando Message</th>
+        <td id="rando"></td>
+    </tr>
+</table>
+
+<div class="config_title">Current Config</div>
+
+<table>
+    <tr>
+        <th>SSID</th>
+        <td id="currentSsid"></td>
+    </tr>
+    <tr>
+        <th>Password</th>
+        <td id="currentPass"></td>
+    </tr>
+</table>
+<button onclick="getSysData()">Refresh</button>
+
+<div class="config_title">New Config</div>
+
+<form onSubmit="wifiSubmit(event)">
+    <table>
+        <tr>
+            <th>SSID</th>
+            <td><input id="newSsid" type="text" /></td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td><input id="newPass" type="text" /></td>
+        </tr>
+    </table>
+    <button type="submit">Save</button>
+</form>
+<button onclick="restartBrain()">Restart</button>
+
+<hr/>
+
+<h3>Firmware Update</h3>
+
+<div>
+    <label for="newFirmware">Firmware file</label>
+    <input id="newFirmware" type="file" />
+</div>
+
+<button id="uploadFirmware" type="button" onclick="putFirmware()">Upload Firmware</button>
+
+<div id="upStatus">
+</div>
+
+</body>
+
+<script>
+
+    // XMLHttpRequest.readyState values see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+    const UNSENT = 0;
+    const OPENED = 1;
+    const HEADERS_RECEIVED = 2;
+    const LOADING = 3;
+    const DONE = 4;
+
+    function wifiSubmit(ev) {
+        console.log("wifiSubmit ev=", ev);
+        ev.preventDefault();
+
+        const newConfig = {
+            sta_ssid: document.getElementById("newSsid").value,
+            sta_pass: document.getElementById("newPass").value,
+        };
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = () => {
+            if (xhttp.readyState == DONE) {
+                if (xhttp.status == 200) {
+                    alert("Configuration saved");
+                    getSysData();
+                } else {
+                    alert(xhttp.status + " Error!\n" + xhttp.responseText);
+                }
+            }
+        }
+        xhttp.open("PUT", "/config.json");
+        xhttp.send(JSON.stringify(newConfig));
+
+        return false;
+    }
+
+    function putFirmware() {
+        const fileInput = document.getElementById("newFirmware").files;
+
+        // TODO: Error checking on that file, like size
+
+        // TODO: Disable inputs while uploading
+        document.getElementById("uploadFirmware").disabled = true;
+
+        const file = fileInput[0];
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = () => {
+            if (xhttp.readyState == DONE) {
+                if (xhttp.status == 200) {
+                    document.getElementById("uploadFirmware").disabled = false;
+                    document.getElementById("upStatus").innerHTML = "<b>Complete!</b>";
+                } else if (xhttp.status == 0) {
+                    alert("Server closed the connection abruptly!");
+                    location.reload()
+                } else {
+                    alert(xhttp.status + " Error!\n" + xhttp.responseText);
+                    location.reload()
+                }
+            }
+        };
+        xhttp.upload.onprogress = (evt) => {
+            const percent = evt.loaded / evt.total;
+            console.log("Progress = ", percent);
+
+            if (percent < 1.0) {
+                document.getElementById("upStatus").innerHTML = "<i>Sending...</i>";
+            } else {
+                document.getElementById("upStatus").innerHTML = "<i>Waiting...</i>";
+            }
+        };
+        xhttp.open("POST", "/firmware", true);
+        xhttp.send(file);
+    }
+
+    function getSysData() {
+        console.log("getSysData() called");
+        const loading = "<i>Loading...</i>";
+        document.getElementById("mac").innerHTML = loading;
+        document.getElementById("rando").innerHTML = loading;
+        document.getElementById("currentSsid").innerHTML = loading;
+        document.getElementById("currentPass").innerHTML = loading;
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = () => {
+            if (xhttp.readyState == DONE) {
+                // Should have contnet
+                if (xhttp.status == 200) {
+                    try {
+                        const sysData = JSON.parse(xhttp.responseText);
+                        console.log("Got data ", sysData);
+                        gSysData = sysData;
+
+                        document.getElementById("mac").innerText = sysData.mac;
+                        document.getElementById("rando").innerText = sysData.rando;
+
+                        const cfg = sysData.config || {};
+                        document.getElementById("currentSsid").innerText = cfg.sta_ssid;
+                        document.getElementById("currentPass").innerText = cfg.sta_pass;
+                    } catch (e) {
+                        console.error(e);
+                        alert("While displaying existing config: "+e.message);
+                    }
+                } else {
+                    alert(xhttp.status + " Error!\n" + xhttp.responseText);
+                }
+            }
+        }
+
+        xhttp.open("GET", "/sysdata.json", true);
+        xhttp.send();
+    }
+
+    function restartBrain() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = () => {
+            if (xhttp.readyState == DONE) {
+                if (xhttp.status == 200) {
+                    alert("Restart command sent. Let's see what happens...");
+                } else {
+                    alert(xhttp.status + " Error!\n" + xhttp.responseText);
+                }
+            }
+        }
+        xhttp.open("DELETE", "/life");
+        xhttp.send();
+    }
+
+    document.onreadystatechange = () => {
+        console.log("document.readyState = ", document.readyState);
+        // Why wait for complete?
+        if (document.readyState == "interactive") {
+            getSysData();
+        }
+    }
+</script>
+</html>

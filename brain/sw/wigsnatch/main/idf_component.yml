@@ -1,0 +1,30 @@
+dependencies:
+  espressif/jsmn: "*"
+  idf: ">=5.0"
+
+  brain-common:
+    path: ../../components/brain-common
+
+  led-renderer:
+    path: ../../components/led-renderer
+
+#  brain-httpd:
+#    path: ../../components/brain-httpd
+
+  net:
+    path: ../../components/net
+
+#  shaders:
+#    path: ../../components/shaders
+
+  sysmon:
+    path: ../../components/sysmon
+
+  brain-ui:
+    path: ../../components/brain-ui
+
+  iso:
+    path: ../../components/iso
+
+#  clock-sign:
+#    path: ../../components/clock-sign
