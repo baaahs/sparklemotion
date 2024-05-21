@@ -18,6 +18,9 @@
 
 #include "brain-ui-events.h"
 
+#include "shader-growing.h"
+#include "shader-legs.h"
+
 static const char* TAG = TAG_BRAIN;
 
 void glue_handleEvent(void* arg, esp_event_base_t base, int32_t id, void* data) {
@@ -43,7 +46,14 @@ WigSnatch::start() {
 //    m_state.setChosenColor(0, RgbColor(0, 190, 255));
     m_state.setChosenColor(0, RgbColor(0,0,255));
 
-    m_colorList.push(new IsoShaderSolid(m_state));
+    // For testing we just do a growing thing
+//    m_state.setChosenColor(0, RgbColor(255,255,255));
+    m_colorList.push(new ShaderGrowing(m_state));
+    m_state.m_masterAnimationLoop.setDuration(2000);
+
+    m_colorList.push(new ShaderLegs(m_state));
+
+//    m_colorList.push(new IsoShaderSolid(m_state));
 //    m_colorList.push(new IsoShaderRainbow(m_state));
 
 //    m_words.setText(new CSText("Hello friend"));

@@ -1,6 +1,9 @@
 
 idf_component_register(SRCS
                     "main.cpp" "wigsnatch.cpp" "menu.cpp"
+                    "shader-growing.cpp"
+                    "shader-legs.cpp"
+                    "wig-shader.cpp"
                     INCLUDE_DIRS ".")
 
 # This is needed or else the ESP_LOGX functions generate errors during compile

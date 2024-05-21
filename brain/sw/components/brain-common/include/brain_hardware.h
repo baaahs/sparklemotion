@@ -85,6 +85,15 @@
  * A reasonable version of the ws2815 datasheet with timing info:
  * https://www.superlightingled.com/PDF/WS2815-12v-addressable-led-chip-specification-.pdf
  */
+
+#define BRAIN_DEFAULT_PIXEL_COUNT 136
+#define BRAIN_DEFAULT_BRIGHTNESS   200
+#define BRAIN_ETHERNET_ENABLED false
+#define BRAIN_WIFI_ENABLED false
+
+
+
+
 //#define BRAIN_DEFAULT_PIXEL_COUNT 24
 //#define BRAIN_DEFAULT_PIXEL_COUNT 500
 //#define BRAIN_DEFAULT_BRIGHTNESS   32
@@ -455,7 +464,7 @@
  * Use 4 byte color or not. Four byte color is for RGBW pixels
  * so the default is just plain old RGB.
  */
-// BRAIN_USE_RGBW
+#define BRAIN_USE_RGBW
 
 /**
  * SysMon is a component which periodically logs interesting
