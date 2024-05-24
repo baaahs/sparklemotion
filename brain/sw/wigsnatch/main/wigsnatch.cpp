@@ -4,6 +4,7 @@
 
 #include <esp_ota_ops.h>
 #include <esp_event.h>
+#include <esp_system.h>
 #include "wigsnatch.h"
 #include "brain_common.h"
 
@@ -20,6 +21,9 @@
 
 #include "shader-growing.h"
 #include "shader-legs.h"
+#include "shader-mq.h"
+#include "shader-top-sparkles.h"
+#include "shader-rotator.h"
 
 static const char* TAG = TAG_BRAIN;
 
@@ -44,22 +48,31 @@ WigSnatch::start() {
 
 //    m_state.setChosenColor(0, RgbColor(0, 190, 255));
 //    m_state.setChosenColor(0, RgbColor(0, 190, 255));
-    m_state.setChosenColor(0, RgbColor(0,0,255));
+    m_state.setChosenColor(0, RgbColor(0,198,255));
+    m_state.setChosenColor(1, RgbColor(200,32,0));
 
+    m_colorList.setListener(this);
     // For testing we just do a growing thing
 //    m_state.setChosenColor(0, RgbColor(255,255,255));
-    m_colorList.push(new ShaderGrowing(m_state));
-    m_state.m_masterAnimationLoop.setDuration(2000);
+    m_colorList.push(new ShaderRotator(m_state));
+    m_colorList.push(new ShaderMq(m_state));
+
+//    m_colorList.push(new ShaderGrowing(m_state));
 
     m_colorList.push(new ShaderLegs(m_state));
+    m_colorList.push(new IsoShaderRainbow(m_state));
 
-//    m_colorList.push(new IsoShaderSolid(m_state));
+    m_state.m_masterAnimationLoop.setDuration(2000);
+    m_colorList.setMexShaderTime(14000);
+    //    m_colorList.push(new IsoShaderSolid(m_state));
 //    m_colorList.push(new IsoShaderRainbow(m_state));
 
 //    m_words.setText(new CSText("Hello friend"));
 
     // Stack, bottom layer is a color
     m_masterStack.push(&m_colorList);
+
+    m_masterStack.push(new ShaderTopSparkles(m_state));
 
     // Then a mode shader
 //    m_masterStack.push(&m_nyeClock);
@@ -68,6 +81,7 @@ WigSnatch::start() {
 
     // Top is menu which sometimes is enabled and sometimes not
 //    m_masterStack.push(&m_menu);
+
 
     ///// That's it, lets use it!
     m_ledRenderer.setShader(&m_masterStack);
@@ -196,6 +210,25 @@ WigSnatch::doCommand(uint8_t cmd) {
         default:
             break;
     }
+}
+
+void
+WigSnatch::handleShaderListNext(LEDShader* nextShader) {
+    // Select some new colors randomly from our color list
+//    uint32_t ix = esp_random() % 16;
+//    m_state.setChosenColor(0, colorList[ix]);
+//    ix += 2;
+//    ix += esp_random() % 3;
+//    if (ix>15) ix -= 15;
+//    m_state.setChosenColor(1, colorList[ix]);
+    float hue = (float) esp_random() / UINT32_MAX;
+    float hue2 = hue + 0.3f;
+    if (hue2 >= 1.0) hue2 -= 1.0;
+
+    m_state.setChosenColor(0, gPaletteRYBRainbow.colorInPalette(hue));
+    m_state.setChosenColor(1, gPaletteRYBRainbow.colorInPalette(hue2));
+
+    m_state.orientation = esp_random() % 3;
 }
 
 //void

@@ -15,14 +15,22 @@ IsoShaderStack::beginShade(LEDShaderContext* pCtx) {
 
 void
 IsoShaderStack::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
-    uint8_t last[3];
+    uint8_t last[4];
+#ifdef BRAIN_USE_RGBW
+    memcpy((void*)last, (void*)currentColor, 4);
+#else
     memcpy((void*)last, (void*)currentColor, 3);
+#endif
     for(uint8_t i=0; i<m_len; i++) {
         if (m_stack[i]->m_enabled) {
             m_stack[i]->Apply(indexPixel, last, last);
         }
     }
+#ifdef BRAIN_USE_RGBW
+    memcpy((void*)color, (void*)last, 4);
+#else
     memcpy((void*)color, (void*)last, 3);
+#endif
 }
 
 void

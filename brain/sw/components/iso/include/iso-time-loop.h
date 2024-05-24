@@ -42,6 +42,17 @@ public:
     }
 
     /**
+     * Some animations need a small amount of state so this lets them
+     * get the even or odd of a loop.
+     *
+     * @param at
+     * @return
+     */
+    uint32_t count(braintime_t at) {
+        return (at / 1000) / m_duration;
+    }
+
+    /**
      * The duration in milliseconds
      * @return
      */

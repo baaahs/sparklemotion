@@ -8,6 +8,11 @@
 
 #define MAX_SHADER_LIST_LEN 20
 
+class IsoShaderListListener {
+public:
+    virtual void handleShaderListNext(LEDShader* nextShader) = 0;
+};
+
 class IsoShaderList : public LEDShader  {
 public:
     void push(LEDShader* shader) {
@@ -31,6 +36,10 @@ public:
         }
 
         m_nextNextAt = 0;
+        if (m_listener) {
+//            m_listener->handleShaderListNext(nullptr);
+            m_listener->handleShaderListNext(m_list[m_current]);
+        }
         return m_list[m_current];
     }
 
@@ -40,6 +49,10 @@ public:
 
     void setMexShaderTime(uint32_t millis) {
         m_maxShaderTime = millis;
+    }
+
+    void setListener(IsoShaderListListener* listener) {
+        m_listener = listener;
     }
 
     void beginShade(LEDShaderContext* pCtx) override;
@@ -53,4 +66,6 @@ private:
 
     uint32_t m_nextNextAt = 0;
     uint32_t m_maxShaderTime = 5000;
+
+    IsoShaderListListener* m_listener;
 };

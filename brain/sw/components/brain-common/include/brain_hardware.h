@@ -86,8 +86,15 @@
  * https://www.superlightingled.com/PDF/WS2815-12v-addressable-led-chip-specification-.pdf
  */
 
-#define BRAIN_DEFAULT_PIXEL_COUNT 136
-#define BRAIN_DEFAULT_BRIGHTNESS   200
+// For wig machine
+// 4 * 19 for legs
+// 4 * 15 for sides
+// 4 * 15 for top sides
+
+//#define BRAIN_DEFAULT_PIXEL_COUNT 136
+#define BRAIN_DEFAULT_PIXEL_COUNT 196
+
+#define BRAIN_DEFAULT_BRIGHTNESS   255
 #define BRAIN_ETHERNET_ENABLED false
 #define BRAIN_WIFI_ENABLED false
 

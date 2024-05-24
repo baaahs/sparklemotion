@@ -27,7 +27,7 @@
 
 #include "menu.h"
 
-class WigSnatch : public MenuListener/*, WordsHandlerListener */ {
+class WigSnatch : public MenuListener, IsoShaderListListener /*, WordsHandlerListener */ {
 public:
     WigSnatch();
 
@@ -37,6 +37,9 @@ public:
 
     void doCommand(uint8_t cmd) override;
 //    void gotWords(const char* buf, size_t len) override;
+
+    // IsoShaderListListener
+    void handleShaderListNext(LEDShader* nextShader) override;
 
 private:
 //    char m_brainId[8];

@@ -33,6 +33,9 @@ public:
      */
     IsoTimeLoop m_masterAnimationLoop;
 
+    // Hacking this in for wigsnatch rotation
+    uint8_t orientation = 2; // 0 = z, 1=y, 2=x
+
 private:
     uint8_t m_maxChoices;
     RgbColor *m_pColorChoices;

@@ -18,9 +18,10 @@ void
 ShaderLegs::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
     WigShader::Apply(indexPixel, color, currentColor);
 
-    RgbColor primary = m_state.chosenColor(0);
+    RgbColor primary = m_state.chosenColor(1);
     if (m_legIndex >=0 ) {
-        primary = RgbColor(255, 0, 0);
+//        primary = RgbColor(255, 0, 0);
+        primary = m_state.chosenColor(0);
     }
 
     memcpy((void*)color, (void*)&primary, 3);
