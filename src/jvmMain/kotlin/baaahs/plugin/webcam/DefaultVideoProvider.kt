@@ -16,10 +16,11 @@ object WebcamCaptureVideoProvider : VideoProvider {
     private var textureResource: TextureResource? = null
     private var isOpen = false
 
-    private val webcam: Webcam = run {
+    private val webcam: Webcam? = run {
         Webcam.setDriver(NativeDriver())
         Webcam.getDefault()
     }
+
     private val noImage = BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB)
 
     override fun isReady(): Boolean = isOpen.also { ensureOpen() }
@@ -27,7 +28,7 @@ object WebcamCaptureVideoProvider : VideoProvider {
     override fun getTextureResource(): TextureResource {
         ensureOpen()
 
-        val image: BufferedImage = webcam.image ?: noImage
+        val image: BufferedImage = webcam?.image ?: noImage
         if (textureResource == null || textureResource!!.width != image.width || textureResource!!.height != image.height) {
             val vals = ByteBuffer(image.width * image.height * 3)
             textureResource = TextureResource(
@@ -58,6 +59,7 @@ object WebcamCaptureVideoProvider : VideoProvider {
 
     private fun ensureOpen() {
         if (!isOpen) {
+            if (webcam != null)
             isOpen = webcam.open(true)
         }
     }
