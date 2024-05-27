@@ -160,7 +160,10 @@ class BrainManager(
             entity: Model.Entity?,
             fixtureConfig: FixtureConfig,
             transportConfig: TransportConfig?
-        ): Transport = BrainTransport(this, brainAddress, brainId, isSimulatedBrain)
+        ): Transport = BrainTransport(
+            this, brainAddress, brainId, isSimulatedBrain,
+            transportConfig = transportConfig
+        )
 
         override fun getAnonymousFixtureMappings(): List<FixtureMapping> {
             return listOf(FixtureMapping(
@@ -186,27 +189,29 @@ class BrainManager(
         val brainId: BrainId,
         private val isSimulatedBrain: Boolean,
         val firmwareVersion: String? = null,
-        val idfVersion: String? = null
+        val idfVersion: String? = null,
+        val transportConfig: TransportConfig?
     ) : Transport {
         private var pixelBuffer = pixelShader.createBuffer(0)
+        private val pixelOffset = 4
 
         override val name: String
             get() = "Brain ${brainId.uuid} at $brainAddress"
         override val controller: Controller
             get() = brainController
         override val config: TransportConfig?
-            get() = null
+            get() = transportConfig
 
         override fun deliverBytes(byteArray: ByteArray) {
             val pixelCount = byteArray.size / 3
 
             if (pixelCount != pixelBuffer.colors.size) {
-                pixelBuffer = pixelShader.createBuffer(pixelCount)
+                pixelBuffer = pixelShader.createBuffer(pixelCount + pixelOffset)
             }
 
             for (i in 0 until pixelCount) {
                 val j = i * 3
-                pixelBuffer.colors[i] = Color(byteArray[j], byteArray[j + 1], byteArray[j + 2])
+                pixelBuffer.colors[i + pixelOffset * 3] = Color(byteArray[j], byteArray[j + 1], byteArray[j + 2])
             }
 
             deliverShaderMessage()
@@ -218,7 +223,7 @@ class BrainManager(
             fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
         ) {
             if (componentCount != pixelBuffer.colors.size) {
-                pixelBuffer = pixelShader.createBuffer(componentCount)
+                pixelBuffer = pixelShader.createBuffer(componentCount + pixelOffset)
             }
 
             val buf = ByteArrayWriter(bytesPerComponent)
@@ -229,7 +234,7 @@ class BrainManager(
 
                 // Using Color's int constructor fixes a bug in Safari causing
                 // color values above 127 to be treated as 0. Untested. :-(
-                pixelBuffer.colors[i] = Color(
+                pixelBuffer.colors[i + pixelOffset] = Color(
                     colorBytes[0].toInt() and 0xff,
                     colorBytes[1].toInt() and 0xff,
                     colorBytes[2].toInt() and 0xff)
