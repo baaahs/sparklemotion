@@ -14,10 +14,13 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.events.PointerEvent
 import react.useContext
 import web.events.EventType
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
+import web.uievents.MouseEvent
+import web.uievents.MouseEventInit
 
 private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props ->
     val appContext = useContext(appContext)
@@ -28,19 +31,22 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
-    val handleToggleClick by eventHandler(props.buttonControl) {
-        buttonControl.click()
+    val handleToggleRelease by pointerEventHandler(buttonControl) { e ->
+        if (!buttonControl.isPressed) {
+            buttonControl.click()
+            redispatchAsMouseClick(e)
+        }
     }
 
-    val handleMomentaryPress by eventHandler(props.buttonControl) {
+    val handleMomentaryPress by pointerEventHandler(buttonControl) {
         if (!buttonControl.isPressed) buttonControl.click()
     }
 
-    val handleMomentaryRelease by eventHandler(props.buttonControl) {
+    val handleMomentaryRelease by pointerEventHandler(buttonControl) {
         if (buttonControl.isPressed) buttonControl.click()
     }
 
-    val handlePatchModSwitch by handler(props.buttonControl) {
+    val handlePatchModSwitch by handler(buttonControl) {
         buttonControl.click()
     }
 
@@ -93,12 +99,12 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
 
             when (buttonControl.type) {
                 ButtonControl.ActivationType.Toggle -> {
-                    attrs.onClick = handleToggleClick.withTMouseEvent()
+                    attrs.onPointerUp = handleToggleRelease
                 }
 
                 ButtonControl.ActivationType.Momentary -> {
-                    attrs.onMouseDown = handleMomentaryPress.withMouseEvent()
-                    attrs.onMouseUp = handleMomentaryRelease.withMouseEvent()
+                    attrs.onPointerDown = handleMomentaryPress
+                    attrs.onPointerUp = handleMomentaryRelease
                 }
             }
 
@@ -118,6 +124,12 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             attrs.onClose = { lightboxOpen = false }
         }
     }
+}
+
+/** [GridButtonGroupControlView] needs a click event so it can deselect other buttons in the group. */
+private fun redispatchAsMouseClick(e: PointerEvent<*>) {
+    val event = MouseEvent(MouseEvent.CLICK, e.unsafeCast<MouseEventInit>())
+    e.currentTarget.parentElement?.dispatchEvent(event)
 }
 
 // This is stupid. No evident way to override `selected` class?
