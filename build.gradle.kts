@@ -1,8 +1,11 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -240,7 +243,7 @@ java {
 }
 
 tasks.withType(KotlinCompile::class) {
-    kotlinOptions.jvmTarget = "11"
+    compilerOptions.jvmTarget = JvmTarget.JVM_11
 }
 
 // include JS artifacts in any JAR we generate
@@ -259,8 +262,8 @@ tasks.named<Jar>("jvmJar").configure {
 }
 
 tasks.withType(Kotlin2JsCompile::class) {
-    kotlinOptions.sourceMap = true
-    kotlinOptions.sourceMapEmbedSources = "always"
+    compilerOptions.sourceMap = true
+    compilerOptions.sourceMapEmbedSources = JsSourceMapEmbedMode.SOURCE_MAP_SOURCE_CONTENT_ALWAYS
 }
 
 tasks.named<ProcessResources>("jsProcessResources") {
@@ -357,7 +360,7 @@ tasks.withType<DependencyUpdatesTask> {
 gradle.projectsEvaluated {
     tasks {
         val kspCommonMainKotlinMetadata by getting
-        withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>> {
+        withType<KotlinCompilationTask<*>> {
             if (this !== kspCommonMainKotlinMetadata) {
                 dependsOn(kspCommonMainKotlinMetadata)
             }
