@@ -119,12 +119,12 @@ class SharedGlContext(
                 .relativeToBottomLeftOf(sharedCanvasRect)
                 .withWidthAndHeightNoLessThanZero()
 
-            setViewport(rect.left, rect.bottom + 1, rect.width, rect.height)
+            setViewport(rect.left, rect.bottom + 1, rect.width, rect.height - 1)
 
             val scissor = scissorRect
                 .relativeToBottomLeftOf(sharedCanvasRect)
                 .withWidthAndHeightNoLessThanZero()
-            glContext.webgl.scissor(scissor.left, scissor.bottom + 1, scissor.width, scissor.height)
+            glContext.webgl.scissor(scissor.left, scissor.bottom + 1, scissor.width, scissor.height - 1)
         }
     }
 
