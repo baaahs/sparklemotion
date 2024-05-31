@@ -196,7 +196,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         width = 100.pct
         height = 100.pct
         backgroundColor = Color.black
-        opacity = .7
+        opacity = "var(--dimmer-level)".unsafeCast<Number>()
     }
 
     val buttonLabelWhenPreview by css {

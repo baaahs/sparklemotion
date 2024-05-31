@@ -2,6 +2,7 @@ package baaahs.app.ui.dev
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
+import baaahs.document
 import baaahs.gl.RootToolchain
 import baaahs.ui.components.palette
 import baaahs.ui.unaryPlus
@@ -10,6 +11,7 @@ import baaahs.ui.xComponent
 import baaahs.window
 import js.objects.jso
 import materialui.icon
+import mui.base.Orientation
 import mui.material.*
 import react.Props
 import react.RBuilder
@@ -33,6 +35,12 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
 
     var showToolchainStats by state { false }
     val handleToggleShowToolchainStats by handler { showToolchainStats = !showToolchainStats; menuAnchor = null }
+
+    val handleDimmerChange by handler { _: Event, value: dynamic, _: Number ->
+        val dimness = (1 - (value as Number).toFloat() / 100f).toString()
+        println("dimness = ${dimness}")
+        document.body.style.setProperty("--dimmer-level", dimness)
+    }
 
     onMount(showToolchainStats) {
         if (showToolchainStats) {
@@ -66,6 +74,20 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
             }
             attrs.open = menuAnchor != null
             attrs.onClose = hideMenu
+
+            MenuItem {
+                Typography { +"Screen Brightness:" }
+            }
+            MenuItem {
+                Slider {
+                    attrs.defaultValue = 80
+                    attrs.min = 0
+                    attrs.max = 100
+                    attrs.step = 1
+                    attrs.orientation = Orientation.horizontal
+                    attrs.onChange = handleDimmerChange
+                }
+            }
 
             MenuItem {
                 attrs.onClick = handleToggleShowToolchainStats.withMouseEvent()
