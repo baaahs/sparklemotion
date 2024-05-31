@@ -33,6 +33,13 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
     val showMenu by mouseEventHandler { event -> menuAnchor = event.target as Element? }
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
+    val fullScreen by mouseEventHandler {
+        if (document.fullscreenElement == null) {
+            document.documentElement.requestFullscreen()
+        } else {
+            document.exitFullscreen()
+        }
+    }
     var showToolchainStats by state { false }
     val handleToggleShowToolchainStats by handler { showToolchainStats = !showToolchainStats; menuAnchor = null }
 
@@ -62,6 +69,11 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
 
     div(+styles.appToolbarDevMenuIcon) {
         attrs.onClick = showMenu
+        icon(CommonIcons.Settings)
+    }
+
+    div(+styles.appToolbarDevMenuIcon) {
+        attrs.onClick = fullScreen
         icon(CommonIcons.Settings)
     }
 
