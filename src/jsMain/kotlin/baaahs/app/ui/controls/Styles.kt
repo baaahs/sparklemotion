@@ -203,6 +203,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         important(::color, Color.white)
         put("textShadow", "-1px 0px 2px black, 0px -1px 2px black, 1px 0px 2px black, 0px 1px 2px black")
         border = Border(5.px, BorderStyle.dotted, Color.transparent)
+        fontWeight = FontWeight.w100
         important(::backgroundColor, Color.transparent)
     }
 
