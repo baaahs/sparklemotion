@@ -251,12 +251,12 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         }
     }
 
-    val appToolbarDevMenuIcon by css {
+    val appToolbarIcons by css {
         transform.translateY(1.em)
     }
-    val appToolbarHelpIcon by css {
-        transform.translateY(1.em)
-    }
+
+    val appToolbarDevMenuIcon by css(appToolbarIcons) {}
+    val appToolbarHelpIcon by css(appToolbarIcons) {}
 
     val appDrawer by css {
         position = Position.absolute
