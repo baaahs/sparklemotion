@@ -74,7 +74,7 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
 
     div(+styles.appToolbarDevMenuIcon) {
         attrs.onClick = fullScreen
-        icon(CommonIcons.Settings)
+        icon(CommonIcons.EnterFullScreen)
     }
 
     if (menuAnchor != null) {
