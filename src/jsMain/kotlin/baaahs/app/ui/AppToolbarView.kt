@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.dev.devModeToolbarMenu
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
+import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
 import baaahs.ui.*
@@ -244,6 +245,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 if (appContext.uiSettings.developerMode) {
                     devModeToolbarMenu {}
                 }
+                fullScreenToggleButton {}
 
                 help {
                     attrs.divClass = themeStyles.appToolbarHelpIcon.name
