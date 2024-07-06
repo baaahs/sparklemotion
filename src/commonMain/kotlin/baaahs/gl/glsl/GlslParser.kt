@@ -387,6 +387,32 @@ class GlslParser {
                 }
             }
 
+            override fun visitComma(): ParseState {
+                if (context.outputEnabled) {
+                    val tokens = ArrayList(tokensSoFar)
+                    var token = tokens.removeFirstOrNull()
+
+                    val isConst = token == "const"
+                    val isUniform = token == "uniform"
+                    val isVarying = token == "varying"
+                    if (isConst || isUniform || isVarying) {
+                        token = tokens.removeFirstOrNull()
+                    }
+
+                    var glslType = context.findType(token)
+                    if (arraySpec.isNotEmpty()) {
+                        val arity = arraySpec.toInt()
+                        glslType = glslType.arrayOf(arity)
+                    }
+
+                }
+                val maybeVar = asVarOrNull()
+                if (maybeVar != null) {
+                    println("maybeVar = ${maybeVar}")
+                }
+                return super.visitComma()
+            }
+
             override fun visitText(value: String): ParseState {
                 return if (value == "struct") {
                     Struct(context)

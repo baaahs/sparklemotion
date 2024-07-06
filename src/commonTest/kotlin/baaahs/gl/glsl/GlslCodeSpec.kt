@@ -22,6 +22,7 @@ object GlslCodeSpec : Spek({
 
         context("variables") {
             val variable by value { (statement as GlslCode.GlslVar).copy(lineNumber = null) }
+            val variables by value { statements.map { (it as GlslCode.GlslVar).copy(lineNumber = null) } }
 
             context("unqualified") {
                 override(text) { "int i;" }
@@ -43,6 +44,20 @@ object GlslCodeSpec : Spek({
                 expectValue(
                     GlslCode.GlslVar("i", GlslType.Int, "const int i = 3;", isConst = true, initExpr = " = 3")
                 ) { variable }
+            }
+
+            context("for repeated variables") {
+                override(text) {
+                    "int i, j = 2,\n    k;"
+                }
+
+                it("generates multiple variable statements") {
+                    expect(statements).containsExactly(
+                        GlslCode.GlslVar("i", GlslType.Int, "int i;"),
+                        GlslCode.GlslVar("j", GlslType.Int, "int j = 2;", initExpr = " = 2"),
+                        GlslCode.GlslVar("k", GlslType.Int, "int k;"),
+                    )
+                }
             }
 
             context("uniform") {
