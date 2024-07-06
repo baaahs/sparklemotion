@@ -117,7 +117,9 @@ class BrainManager(
             brainAddress, brainId, msg,
             config?.defaultFixtureOptions,
             config?.defaultTransportConfig,
-            isSimulatedBrain
+            isSimulatedBrain,
+            // TODO: Remove. Works around bug in Kotlin 2.0 when calculating default param values on inner cosntructors.
+            startedAt = clock.now()
         )
         activeBrains[brainId] = controller
         notifyListeners { onAdd(controller) }
