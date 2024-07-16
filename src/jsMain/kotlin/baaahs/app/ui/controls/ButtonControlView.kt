@@ -3,7 +3,8 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.app.ui.patchmod.patchMod
 import baaahs.app.ui.shaderPreview
-import baaahs.control.ButtonControl
+import baaahs.control.ButtonControl.ActivationType.Momentary
+import baaahs.control.ButtonControl.ActivationType.Toggle
 import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
@@ -31,19 +32,33 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
     val showPreview = appContext.uiSettings.renderButtonPreviews
     val patchForPreview = if (showPreview) buttonControl.patchForPreview() else null
 
+    val isPressed = ref(false)
+
     val handleToggleRelease by pointerEventHandler(buttonControl) { e ->
-        if (!buttonControl.isPressed) {
+        if (isPressed.current == true) {
             buttonControl.click()
             redispatchAsMouseClick(e)
         }
     }
 
-    val handleMomentaryPress by pointerEventHandler(buttonControl) {
-        if (!buttonControl.isPressed) buttonControl.click()
+    val handlePointerDown by pointerEventHandler(buttonControl) {
+        isPressed.current = true
+
+        when (buttonControl.type) {
+            Momentary -> if (!buttonControl.isPressed) buttonControl.click()
+            Toggle -> {}
+        }
     }
 
-    val handleMomentaryRelease by pointerEventHandler(buttonControl) {
-        if (buttonControl.isPressed) buttonControl.click()
+    val handlePointerUp by pointerEventHandler(buttonControl, handleToggleRelease) {
+        try {
+            when (buttonControl.type) {
+                Momentary -> if (buttonControl.isPressed) buttonControl.click()
+                Toggle -> handleToggleRelease(it)
+            }
+        } finally {
+            isPressed.current = false
+        }
     }
 
     val handlePatchModSwitch by handler(buttonControl) {
@@ -97,16 +112,8 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             // Yep, for some reason you need to set it directly or it doesn't work.
             attrs.selected = buttonControl.isPressed
 
-            when (buttonControl.type) {
-                ButtonControl.ActivationType.Toggle -> {
-                    attrs.onPointerUp = handleToggleRelease
-                }
-
-                ButtonControl.ActivationType.Momentary -> {
-                    attrs.onPointerDown = handleMomentaryPress
-                    attrs.onPointerUp = handleMomentaryRelease
-                }
-            }
+            attrs.onPointerDown = handlePointerDown
+            attrs.onPointerUp = handlePointerUp
 
             div {
                 ref = titleDivRef
