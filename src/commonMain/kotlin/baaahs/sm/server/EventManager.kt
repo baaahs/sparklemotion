@@ -1,27 +1,25 @@
 package baaahs.sm.server
 
-import baaahs.PubSub
-import baaahs.midi.MidiCommandPorts
+import baaahs.midi.MidiDevice
 import baaahs.midi.MidiDevices
-import baaahs.midi.RemoteMidiDevices
+import baaahs.midi.MidiEvent
+import baaahs.midi.MidiGateway
 import baaahs.plugin.Plugins
+import baaahs.rpc.RpcEndpoint
 
 class EventManager(
     private val midiDevices: MidiDevices,
-    private val pubSub: PubSub.Server,
+    private val pubSub: RpcEndpoint,
     private val plugins: Plugins
 ) {
-    private val commands = MidiCommandPorts(plugins)
-    private val listTransmittersCommand = pubSub.listenOnCommandChannel(commands.listTransmittersCommandPort) {
-        midiDevices.listTransmitters().map { RemoteMidiDevices.RemoteMidiDeviceInfo(it) }
-    }
+    val midiGatewayHandler = object : MidiGateway {
+        override suspend fun receivedEvent(midiDevice: MidiDevice, midiEvent: MidiEvent) {
+            TODO("not implemented")
+        }
 
-    private val listenToTransmitterCommand = pubSub.listenOnCommandChannel(commands.listenToTransmitterCommandPort) {
-
-    }
-
-    private val closeTransmitterCommand = pubSub.listenOnCommandChannel(commands.closeTransmitterCommandPort) {
+        override suspend fun deviceOffline(midiDevice: MidiDevice) {
+            TODO("not implemented")
+        }
 
     }
-
 }

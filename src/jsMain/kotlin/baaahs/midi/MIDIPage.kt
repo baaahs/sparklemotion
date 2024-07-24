@@ -1,16 +1,15 @@
 package baaahs.midi
 
-import dom.html.HTMLDivElement
-import external.midi.MIDIAccess
-import external.midi.MIDIOptions
-import external.midi.MIDIInput
-import kotlinx.js.jso
+import js.objects.jso
 import react.RBuilder
 import react.RComponent
+import react.dom.b
 import react.dom.div
 import react.dom.header
-import react.dom.b
 import react.setState
+import web.html.HTMLDivElement
+import web.midi.MIDIAccess
+import web.midi.MIDIInput
 import web.navigator.navigator
 
 class MIDIPage(props: MIDIPageProps) : RComponent<MIDIPageProps, MIDIPageState>(props) {
@@ -47,7 +46,7 @@ class MIDIPage(props: MIDIPageProps) : RComponent<MIDIPageProps, MIDIPageState>(
                     state.midiInputs.forEach { input ->
                         div {
                             console.log(input)
-                            b { +input.name }
+                            b { +(input.name ?: "???") }
                         }
                     }
                 }

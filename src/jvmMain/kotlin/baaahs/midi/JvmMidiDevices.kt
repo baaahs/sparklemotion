@@ -1,12 +1,13 @@
 package baaahs.midi
 
 import baaahs.util.Logger
+import javax.sound.midi.MidiDevice
 import javax.sound.midi.*
 
 class JvmMidiDevices : MidiDevices {
-    private val transmitters = mutableMapOf<String, MidiTransmitter>()
+    private val transmitters = mutableMapOf<String, MidiPort>()
 
-    override suspend fun listTransmitters(): List<MidiTransmitter> {
+    override suspend fun listTransmitters(): List<MidiPort> {
         println("listing transmitters")
         val ids = mutableMapOf<String, Counter>()
 
@@ -22,28 +23,28 @@ class JvmMidiDevices : MidiDevices {
 
                 val maxTransmitters = device.maxTransmitters
                 if (maxTransmitters == -1 || maxTransmitters > 0) {
-                    add(JvmMidiTransmitterTransmitter(id, device))
+                    add(JvmMidiTransmitterPort(id, device))
                 }
             }
         }
     }
 
-    class JvmMidiTransmitterTransmitter(
-        override val id: String,
+    class JvmMidiTransmitterPort(
+        val id: String,
         private val device: MidiDevice
-    ) : MidiTransmitter {
-        override val name: String
+    ) : MidiPort {
+        val name: String
             get() = device.deviceInfo.name
-        override val vendor: String
+        val vendor: String
             get() = device.deviceInfo.vendor
-        override val description: String
+        val description: String
             get() = device.deviceInfo.description
-        override val version: String
+        val version: String
             get() = device.deviceInfo.version
 
         private var transmitter: Transmitter? = null
 
-        override fun listen(callback: (MidiMessage) -> Unit) {
+        fun listen(callback: (MidiMessage) -> Unit) {
             if (transmitter == null) {
                 transmitter = run {
                     device.transmitter.also { device.open() }
@@ -71,7 +72,7 @@ class JvmMidiDevices : MidiDevices {
             }
         }
 
-        override fun close() {
+        fun close() {
             if (transmitter != null) {
                 device.close()
             }

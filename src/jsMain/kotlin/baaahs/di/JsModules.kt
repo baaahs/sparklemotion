@@ -15,8 +15,6 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.JsMapper
 import baaahs.midi.MIDIUi
-import baaahs.midi.MidiDevices
-import baaahs.midi.RemoteMidiDevices
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -72,7 +70,7 @@ open class JsUiWebClientModule : WebClientModule() {
                 ClientStorage(BrowserSandboxFs("Browser Local Storage")) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { WebClient(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-            scoped { ClientStageManager(get(), get(), get(), get()) }
+            scoped { ClientStageManager(get(), get(), get()) }
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
@@ -84,7 +82,6 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
-            scoped<MidiDevices> { RemoteMidiDevices(get(), get()) }
             scoped {
                 JsMapper(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }

@@ -5,14 +5,11 @@ import baaahs.app.ui.shaderPreview
 import baaahs.futureAsync
 import baaahs.io.getResourceAsync
 import baaahs.onAvailable
-import baaahs.plugin.midi.MidiPlugin
 import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
-import baaahs.util.percent
-import dom.html.HTMLElement
+import js.objects.jso
 import kotlinx.css.*
-import kotlinx.js.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -20,7 +17,7 @@ import react.RHandler
 import react.dom.div
 import react.useContext
 import styled.StyleSheet
-import kotlin.math.roundToInt
+import web.html.HTMLElement
 
 private val midiVisualizerShader =
     futureAsync {
@@ -69,7 +66,7 @@ private val midiControl = xComponent<MidiControlProps>("MidiControl") { _ ->
 object Styles : StyleSheet("plugin-Midi", isStatic = true) {
     val card by css {
         display = Display.flex
-        flex(1.0, 0.0)
+        flex = Flex(1.0, 0.0)
 
         // Needed because of [SharedGlContext]. TODO: remove that requirement.
         important(::backgroundColor, Color.transparent)

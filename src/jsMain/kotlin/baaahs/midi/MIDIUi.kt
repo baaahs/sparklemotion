@@ -2,11 +2,11 @@ package baaahs.midi
 
 import baaahs.document
 import baaahs.sim.HostedWebApp
-import dom.html.HTMLDivElement
-import kotlinx.js.jso
+import js.objects.jso
 import react.ReactElement
 import react.createElement
 import react.react
+import web.html.HTMLDivElement
 
 class MIDIUi() : HostedWebApp {
     private val container = document.createElement("div") as HTMLDivElement

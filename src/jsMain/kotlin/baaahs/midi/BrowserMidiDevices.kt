@@ -1,12 +1,12 @@
 package baaahs.midi
 
 import baaahs.util.Logger
-import external.midi.MIDIAccess
-import external.midi.MIDIInput
+import web.midi.MIDIAccess
+import web.midi.MIDIInput
 import web.navigator.navigator
 
 class SimMidiDevices : MidiDevices {
-    override suspend fun listTransmitters(): List<MidiTransmitter> = emptyList()
+    override suspend fun listTransmitters(): List<MidiPort> = emptyList()
 }
 
 class BrowserMidiDevices : MidiDevices {
@@ -19,7 +19,7 @@ class BrowserMidiDevices : MidiDevices {
         }
     }
 
-    override suspend fun listTransmitters(): List<MidiTransmitter> {
+    override suspend fun listTransmitters(): List<MidiPort> {
         val ids = mutableMapOf<String, Counter>()
 
 
@@ -37,22 +37,22 @@ class BrowserMidiDevices : MidiDevices {
         }
     }
 
-    class JsMidiTransmitterTransmitter(
-        override val id: String,
+    class JsMidiTransmitterPort(
+        val id: String,
         private val input: MIDIInput
-    ) : MidiTransmitter {
-        override val name: String
-            get() = input.name
-        override val vendor: String
-            get() = input.manufacturer
-        override val description: String
+    ) : MidiPort {
+        val name: String
+            get() = input.name!!
+        val vendor: String
+            get() = input.manufacturer!!
+        val description: String
             get() = ""
-        override val version: String
-            get() = input.version
+        val version: String
+            get() = input.version!!
 
 //        private var transmitter: Transmitter? = null
 
-        override fun listen(callback: (MidiMessage) -> Unit) {
+        fun listen(callback: (MidiMessage) -> Unit) {
 //            if (transmitter == null) {
 //                transmitter = run {
 //                    input.open()
@@ -80,7 +80,7 @@ class BrowserMidiDevices : MidiDevices {
 //            }
         }
 
-        override fun close() {
+        fun close() {
 //            if (transmitter != null) {
 //                input.close()
 //            }

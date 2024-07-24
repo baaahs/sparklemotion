@@ -53,7 +53,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     }
 
     val simHardwareButtonsContainer by css {
-        padding(.25.em)
+        padding = Padding(.25.em)
     }
 
     val launchButtonsContainer by css {

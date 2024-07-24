@@ -11,7 +11,6 @@ import baaahs.gl.render.RenderManager
 import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
-import baaahs.mapper.Storage
 import baaahs.midi.NullMidiDevices
 import baaahs.io.FsServerSideSerializer
 import baaahs.plugin.core.feed.ColorPickerFeed
@@ -72,13 +71,13 @@ object StageManagerSpec : Spek({
         describe("show management") {
             val shaderSrc by value {
                 /**language=glsl*/
-                "void main() { gl_FragColor = vec4(gl_FragCoord, 0., 1.); }"
+                "void main() { gl_FragColor = vec4(gl_FragCoord.xy, 0., 1.); }"
             }
             val shader2Src by value {
                 /**language=glsl*/
                 """
                     uniform float blue; // @@Slider
-                    void main() { gl_FragColor = vec4(gl_FragCoord, blue, 1.); }
+                    void main() { gl_FragColor = vec4(gl_FragCoord.xy, blue, 1.); }
                 """.trimIndent()
             }
 

@@ -12,6 +12,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.plugin.*
 import baaahs.show.Feed
 import baaahs.show.FeedBuilder
+import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
 import baaahs.sim.SimulatorSettingsManager
 import baaahs.ui.Observable
@@ -29,7 +30,7 @@ import kotlinx.serialization.Serializable
 class MidiPlugin internal constructor(
     internal val midiSystem: MidiSystem,
 ) : OpenServerPlugin, OpenClientPlugin {
-    private val midiSource = midiSystem.midiSources.firstOrNull() ?: MidiSource.None
+    val midiSource = midiSystem.midiSources.firstOrNull() ?: MidiSource.None
 
     override val packageName: String = MidiPlugin.id
     override val title: String = "Midi"
@@ -71,7 +72,7 @@ class MidiPlugin internal constructor(
         override val contentType: ContentType
             get() = midiContentType
 
-        override fun open(showPlayer: ShowPlayer, id: String): FeedContext {
+        override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
             val varPrefix = getVarName(id)
             return object : FeedContext, RefCounted by RefCounter() {
                 override fun bind(gl: GlContext): EngineFeedContext = object : EngineFeedContext {

@@ -136,8 +136,8 @@ interface PinkyModule : KModule {
             scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { PinkyConfigStore(get(), fs.resolve(".")) }
-            scoped { EventManager(get(), get(), get()) }
-            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { EventManager(get(), get<PubSub.Server>(), get()) }
+            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get(), get()) }
             scoped { Pinky.NetworkStats() }
             scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
             scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }

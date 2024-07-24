@@ -23,13 +23,11 @@ import kotlinx.serialization.json.JsonElement
 data class MidiControl(@Transient private val `_`: Boolean = false) : Control {
     override val title: String get() = "Midi"
 
-    override fun createMutable(mutableShow: MutableShow): MutableControl {
-        return MutableMidiControl()
-    }
+    override fun createMutable(mutableShow: MutableShow): MutableControl =
+        MutableMidiControl()
 
-    override fun open(id: String, openContext: OpenContext, showPlayer: ShowPlayer): OpenControl {
-        return OpenMidiControl(id)
-    }
+    override fun open(id: String, openContext: OpenContext): OpenControl =
+        OpenMidiControl(id)
 }
 
 class MutableMidiControl : MutableControl {

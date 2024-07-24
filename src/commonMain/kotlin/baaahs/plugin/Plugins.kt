@@ -117,7 +117,6 @@ class SimulatorPlugins(
 ) {
     private val simulatorPlugins: List<OpenSimulatorPlugin>
     private var pluginsToSimulatorPlugins: List<Pair<Plugin<*>, OpenSimulatorPlugin?>>
-    lateinit var hardwareSimulators: List<HardwareSimulator>
 
     init {
         val forSimulator = mutableListOf<OpenSimulatorPlugin>()
