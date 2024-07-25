@@ -172,7 +172,8 @@ kotlin {
 
                 implementation(npm("camera-controls", "^1.35.0"))
 
-                implementation(npm("long-press-event", "^2.4.4"))
+                // TODO: Revert if https://github.com/john-doherty/long-press-event/pull/52 is ever accepted.
+//                implementation(npm("long-press-event", "^2.4.4"))
 
                 // For diagnostics:
                 implementation(npm("dagre-d3", "^0.6.4"))
