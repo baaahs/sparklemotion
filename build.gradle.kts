@@ -172,7 +172,7 @@ kotlin {
 
                 implementation(npm("camera-controls", "^1.35.0"))
 
-                // TODO: Revert if https://github.com/john-doherty/long-press-event/pull/52 is ever accepted.
+                // TODO: Revert when https://github.com/john-doherty/long-press-event 2.5 is released.
 //                implementation(npm("long-press-event", "^2.4.4"))
 
                 // For diagnostics:
