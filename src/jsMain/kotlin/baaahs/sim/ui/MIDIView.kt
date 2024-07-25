@@ -19,7 +19,7 @@ import react.dom.div
 import react.dom.header
 import react.dom.onClick
 
-val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
+val MIDIView = xComponent<MIDIViewProps>("MIDIView") { props ->
     var isConsoleOpen by state { false }
     var isGlslPaletteOpen by state { false }
     val simulator = props.simulator
@@ -41,7 +41,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
     }
 
     div(+SimulatorStyles.statusPanel) {
-        header { +"Pinky" }
+        header { +"Brain" }
 
         div(+SimulatorStyles.statusPanelToolbar) {
             FormControlLabel {
@@ -52,7 +52,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                         attrs.onChange = handleIsGlslPaletteOpenChange.withTChangeEvent()
                     }
                 }
-                attrs.label = "Diagnostics".asTextNode()
+                attrs.label = "Diagntics".asTextNode()
             }
 
             FormControlLabel {
@@ -63,7 +63,7 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
                         attrs.onChange = handlePauseChange
                     }
                 }
-                attrs.label = "Pause".asTextNode()
+                attrs.label = "Pase".asTextNode()
             }
 
             FormControlLabel {
@@ -80,16 +80,6 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
 
         div(+SimulatorStyles.consoleContainer) {
             if (isConsoleOpen) console { attrs.simulator = simulator }
-        }
-
-        div(+SimulatorStyles.simHardwareButtonsContainer) {
-            header { +"Simulated Hardware:" }
-            props.simulator.hardwareSimulators.forEach { launchItem ->
-                button {
-//                        attrs.onClick = { launchItem.onLaunch() }
-                    +launchItem.title
-                }
-            }
         }
 
         if (props.simulator.launchItems.isNotEmpty()) {
@@ -117,11 +107,6 @@ val StatusPanelView = xComponent<StatusPanelProps>("StatusPanel") { props ->
     }
 }
 
-data class LaunchItem(val title: String, val onLaunch: () -> Unit)
-
-external interface StatusPanelProps : Props {
+external interface MIDIViewProps : Props {
     var simulator: SheepSimulator.Facade
 }
-
-fun RBuilder.statusPanel(handler: RHandler<StatusPanelProps>) =
-    child(StatusPanelView, handler = handler)

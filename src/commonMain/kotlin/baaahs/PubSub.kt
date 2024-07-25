@@ -12,6 +12,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.js.JsName
 import kotlin.jvm.Synchronized
 import kotlin.properties.ReadWriteProperty
@@ -33,7 +34,8 @@ abstract class PubSub {
         val logger = Logger<PubSub>()
     }
 
-    open class Origin(val id: String) {
+    open class Origin(val id: String, clientId: String?) {
+        val clientId = clientId?.let { RpcClientId(it) }
         override fun toString(): String = "Origin($id)"
     }
 
@@ -212,7 +214,9 @@ abstract class PubSub {
             val name = commandPort.name
             if (hasServerChannel(name)) error("Command channel $name already exists.")
             putServerChannel(name,
-                ServerCommandChannel(commandPort) { command -> callback(command) })
+                ServerCommandChannel(commandPort) { command ->
+                    callback(command)
+                })
         }
 
         class ServerCommandChannel<C, R>(
@@ -225,7 +229,7 @@ abstract class PubSub {
                 fromConnection: Connection,
                 handlerScope: CoroutineScope
             ) {
-                handlerScope.launch {
+                handlerScope.launch(fromConnection.clientId ?: EmptyCoroutineContext) {
                     try {
                         val command = commandPort.fromJson(commandJson)
                         val reply = callback.invoke(command)
@@ -271,7 +275,7 @@ abstract class PubSub {
         private val topics: Topics,
         private val commandChannels: CommandChannels,
         private val handlerScope: CoroutineScope
-    ) : Origin("connection $name"), Network.WebSocketListener {
+    ) : Origin("connection $name", name), Network.WebSocketListener {
         var isConnected: Boolean = false
         var everConnected: Boolean = false
 
@@ -523,14 +527,19 @@ abstract class PubSub {
         httpServer: Network.HttpServer,
         private val handlerScope: CoroutineScope
     ) : Endpoint(), IServer, RpcEndpoint {
-        private val publisher = Origin("Server-side publisher")
+        private val publisher = Origin("Server-side publisher", null)
         private val topics: Topics = Topics()
         override val commandChannels: CommandChannels = CommandChannels()
         private val connectionListeners: MutableList<(ConnectionFromClient) -> Unit> = mutableListOf()
+        private val connectionCountByHost = hashMapOf<String, Int>()
 
         init {
             httpServer.listenWebSocket("/sm/ws") { incomingConnection ->
-                val name = "server ${incomingConnection.toAddress} to ${incomingConnection.fromAddress}"
+                val fromAddress = incomingConnection.fromAddress.toString()
+                val number = connectionCountByHost[fromAddress] ?: 0
+                connectionCountByHost[fromAddress] = number + 1
+
+                val name = "${incomingConnection.fromAddress}${if (number > 0) "-$number" else ""}"
                 ConnectionFromClient(name, topics, commandChannels, handlerScope)
                     .also { connection -> connectionListeners.forEach { it.invoke(connection) } }
             }
@@ -664,7 +673,7 @@ abstract class PubSub {
 
         @JsName("subscribe")
         fun <T> subscribe(topic: Topic<T>, onUpdateFn: (T) -> Unit): Channel<T> {
-            val subscriber = Origin("Client-side subscriber at ${link.myAddress}")
+            val subscriber = Origin("Client-side subscriber at ${link.myAddress}", link.myAddress.toString())
 
             val topicName = topic.name
 

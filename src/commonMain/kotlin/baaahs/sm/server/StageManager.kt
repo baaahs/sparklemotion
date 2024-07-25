@@ -36,6 +36,7 @@ class StageManager(
     private val gadgetManager: GadgetManager,
     private val serverNotices: ServerNotices,
     private val sceneMonitor: SceneMonitor,
+    private val eventManager: EventManager,
     private val fsSerializer: FsServerSideSerializer,
     private val pinkyConfigStore: PinkyConfigStore
 ) : BaseShowPlayer(toolchain, sceneMonitor) {

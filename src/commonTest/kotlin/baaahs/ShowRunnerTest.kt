@@ -8,6 +8,7 @@ import baaahs.gl.render.RenderTarget
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
+import baaahs.midi.NullMidiDevices
 import baaahs.io.FsServerSideSerializer
 import baaahs.net.TestNetwork
 import baaahs.scene.SceneMonitor
@@ -15,6 +16,7 @@ import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
+import baaahs.sm.server.EventManager
 import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
@@ -64,8 +66,8 @@ class ShowRunnerTest {
         stageManager = StageManager(
             testToolchain, renderManager, server, fs.rootFile, fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
-            ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
-            PinkyConfigStore(plugins, fs.rootFile)
+            ServerNotices(server, dispatcher), SceneMonitor(), EventManager(NullMidiDevices(), server, plugins),
+            FsServerSideSerializer(), PinkyConfigStore(plugins, fs.rootFile)
         )
         stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(testSceneData())

@@ -3,6 +3,7 @@ package baaahs.rpc
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import kotlin.coroutines.coroutineContext
 
 public class CommandPort<C, R>(
     public val name: String,
@@ -34,7 +35,12 @@ public interface RpcCommandChannel<C, R> {
     public suspend fun send(command: C): R
 }
 
-public interface RpcClient : RpcEndpoint, RpcCommandRecipient
+public interface RpcClient : RpcEndpoint, RpcCommandRecipient {
+    public companion object {
+        public suspend fun id(): String =
+            coroutineContext[RpcClientId]?.id ?: error("not in RPC call")
+    }
+}
 
 public interface RpcServer : RpcEndpoint
 

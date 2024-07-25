@@ -9,6 +9,7 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
+import baaahs.util.globalLaunch
 import baaahs.sm.webapi.ShowControlCommands
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

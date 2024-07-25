@@ -29,6 +29,7 @@ import baaahs.scene.MutableControllerConfig
 import baaahs.show.*
 import baaahs.show.mutable.MutableFeedPort
 import baaahs.sim.BridgeClient
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
@@ -110,6 +111,7 @@ class ClientPlugins : Plugins {
 }
 
 class SimulatorPlugins(
+    simulatorSettingsManager: SimulatorSettingsManager,
     private val bridgeClient: BridgeClient,
     plugins: List<Plugin<*>>
 ) {
@@ -121,7 +123,7 @@ class SimulatorPlugins(
 
         pluginsToSimulatorPlugins = plugins.map {
             it as Plugin<Any>
-            it to (it as? SimulatorPlugin)?.openForSimulator()
+            it to (it as? SimulatorPlugin)?.openForSimulator(simulatorSettingsManager)
         }
         simulatorPlugins = forSimulator
     }
@@ -150,6 +152,11 @@ class SimulatorPlugins(
             },
             pluginContext
         )
+
+    fun getHardwareSimulators() =
+        pluginsToSimulatorPlugins.flatMap { (plugin, simulatorPlugin) ->
+            simulatorPlugin?.getHardwareSimulators() ?: emptyList()
+        }
 }
 
 sealed class Plugins(
@@ -436,8 +443,12 @@ sealed class Plugins(
         fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =
             ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
 
-        fun buildForSimulator(bridgeClient: BridgeClient, plugins: List<Plugin<*>>): SimulatorPlugins =
-            SimulatorPlugins(bridgeClient, listOf(CorePlugin) + plugins)
+        fun buildForSimulator(
+            simulatorSettingsManager: SimulatorSettingsManager,
+            bridgeClient: BridgeClient,
+            plugins: List<Plugin<*>>
+        ): SimulatorPlugins =
+            SimulatorPlugins(simulatorSettingsManager, bridgeClient, listOf(CorePlugin) + plugins)
 
         fun safe(pluginContext: PluginContext): Plugins =
             SafePlugins(pluginContext, listOf(CorePlugin.openSafe(pluginContext)))

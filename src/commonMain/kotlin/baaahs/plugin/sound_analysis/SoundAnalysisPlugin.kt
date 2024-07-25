@@ -20,6 +20,7 @@ import baaahs.show.Feed
 import baaahs.show.FeedBuilder
 import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.util.*
 import com.danielgergely.kgl.*
 import kotlinx.cli.ArgParser
@@ -112,7 +113,7 @@ class SoundAnalysisPlugin internal constructor(
             return SoundAnalysisPlugin(PubSubSubscriber(pluginContext.pubSub))
         }
 
-        override fun openForSimulator(): OpenSimulatorPlugin =
+        override fun openForSimulator(simulatorSettingsManager: SimulatorSettingsManager): OpenSimulatorPlugin =
             object : OpenSimulatorPlugin {
                 override fun getBridgePlugin(pluginContext: PluginContext): OpenBridgePlugin =
                     PubSubPublisher(createServerSoundAnalyzer(pluginContext), pluginContext)

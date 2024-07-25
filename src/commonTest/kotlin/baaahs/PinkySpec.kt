@@ -16,6 +16,7 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingStore
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManagerImpl
+import baaahs.midi.NullMidiDevices
 import baaahs.model.Model
 import baaahs.net.FragmentingUdpSocket
 import baaahs.net.Network
@@ -32,6 +33,7 @@ import baaahs.sm.brain.PermissiveFirmwareDaddy
 import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.brain.proto.Type
+import baaahs.sm.server.EventManager
 import baaahs.sm.server.GadgetManager
 import baaahs.sm.server.PinkyConfigStore
 import baaahs.sm.server.ServerNotices
@@ -73,11 +75,12 @@ object PinkySpec : Spek({
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
+        val eventManager by value { EventManager(NullMidiDevices(), pubSub, plugins) }
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
-                gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
-                PinkyConfigStore(plugins, fakeFs.rootFile)
+                gadgetManager, serverNotices, sceneMonitor, eventManager,
+                FsServerSideSerializer(), PinkyConfigStore(plugins, fakeFs.rootFile)
             )
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }

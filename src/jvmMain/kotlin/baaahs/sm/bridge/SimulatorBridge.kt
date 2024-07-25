@@ -5,12 +5,17 @@ import baaahs.PubSub
 import baaahs.net.JvmNetwork
 import baaahs.plugin.PluginContext
 import baaahs.plugin.SimulatorPlugin
+import baaahs.sim.FakeFs
+import baaahs.sim.SimulatorSettingsManager
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.SystemClock
 import io.ktor.server.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.newSingleThreadContext
 
+/**
+ * The Simulator Bridge is a daemon that can perform work in a JVM on behalf of the simulator running in a browser.
+ */
 class SimulatorBridge {
     private val pubSub: PubSub.Server
 
@@ -24,7 +29,8 @@ class SimulatorBridge {
     }
 
     private val plugins = Pluggables.plugins.filterIsInstance<SimulatorPlugin>().mapNotNull {
-        val simulatorPlugin = it.openForSimulator()
+        val simulatorSettingsManager = SimulatorSettingsManager(FakeFs())
+        val simulatorPlugin = it.openForSimulator(simulatorSettingsManager)
         simulatorPlugin.getBridgePlugin(PluginContext(SystemClock, pubSub))
     }
 

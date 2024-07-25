@@ -2,6 +2,8 @@ package baaahs
 
 import baaahs.gl.override
 import baaahs.rpc.CommandPort
+import baaahs.rpc.RpcClient
+import baaahs.rpc.RpcClientId
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -14,6 +16,7 @@ import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.Suite
+import kotlin.coroutines.coroutineContext
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -228,7 +231,7 @@ object PubSubSpec : Spek({
         context("commands") {
             val commandPort by value { CommandPort("command", String.serializer(), String.serializer()) }
             val serverCommandHandler by value {
-                val x: suspend (String) -> String = { s: String -> "reply for $s" }; x
+                val x: suspend (String) -> String = { s: String -> "reply for $s [${RpcClient.id()}]" }; x
             }
             val serverCommandChannel by value {
                 testRig.server.listenOnCommandChannel(commandPort) { command: String -> serverCommandHandler(command) }
