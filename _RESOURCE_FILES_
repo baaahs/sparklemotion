@@ -20,8 +20,8 @@ fonts/roboto/v30/KFOlCnqEu92Fr1MmWUlfChc4AMP6lbBP.woff2
 fonts/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2
 fonts/roboto/v30/KFOmCnqEu92Fr1Mu7GxKKTU1Kvnz.woff2
 index.html
+lib/long-press-event/src/long-press-event.js
 loading.gif
-long-press-event.min.js
 monitor/index.html
 patch-editor.html
 react-mosaic-component.css
