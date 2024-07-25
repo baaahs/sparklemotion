@@ -126,7 +126,8 @@
         offsetX: originalEvent.offsetX,
         offsetY: originalEvent.offsetY,
         pageX: originalEvent.pageX,
-        pageY: originalEvent.pageY
+        pageY: originalEvent.pageY,
+        originalEvent: originalEvent,
       },
 
       // add coordinate and pointer data that would typically acompany a touch/click event
