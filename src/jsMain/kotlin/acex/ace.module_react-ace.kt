@@ -1,14 +1,10 @@
 @file:JsModule("react-ace")
 @file:JsNonModule
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "EXTERNAL_DELEGATION")
 
 package ReactAce.Ace
 
-import react.Component
-import react.ElementType
-import react.Props
-import react.State
-import web.dom.Element
+import react.*
 import web.html.HTMLElement
 
 external interface IAceEditorProps : Props {
@@ -323,7 +319,7 @@ open external class ReactAce(props: IAceEditorProps) : Component<IAceEditorProps
     open fun handleMarkers(markers: Array<IMarker>)
     open fun updatePlaceholder()
     open fun updateRef(item: HTMLElement)
-    override fun render(): Element
+    override fun render(): ReactNode?
 
     companion object {
 //        var propTypes: ValidationMap<IAceEditorProps>
