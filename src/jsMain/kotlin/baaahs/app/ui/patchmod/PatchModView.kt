@@ -5,10 +5,7 @@ import baaahs.app.ui.controls.Styles
 import baaahs.app.ui.shaderPreview
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenPatchHolder
-import baaahs.ui.asTextNode
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import js.objects.jso
 import mui.material.*
 import react.*
@@ -75,9 +72,8 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                     attrs.noSharedGlContext = true
                 }
 
-                selectedPatchMod?.let {
-                    with(it.getView(selectedPatch)) { render() }
-                }
+                selectedPatchMod?.getView(selectedPatch)
+                    ?.render(this)
             }
 
             div(+styles.controls) {
@@ -87,9 +83,8 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                     if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
                             attrs.classes = jso { root = -Styles.controlBox }
-                            with(control.getView(ControlProps(null, null, null))) {
-                                render()
-                            }
+                            control.getView(ControlProps(null, null, null))
+                                .render(this)
                         }
                     }
                 }

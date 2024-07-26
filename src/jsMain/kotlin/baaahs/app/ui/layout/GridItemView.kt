@@ -6,6 +6,7 @@ import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.and
+import baaahs.ui.render
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import materialui.icon
@@ -44,9 +45,8 @@ private val GridItemView = xComponent<GridItemProps>("GridItem") { props ->
         event.preventDefault()
     }
 
-    with (control.getView(props.controlProps)) {
-        render()
-    }
+    control.getView(props.controlProps)
+        .render(this)
 
     problemBadge(control)
 

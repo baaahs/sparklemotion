@@ -152,7 +152,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
                             attrs.margin = FormControlMargin.dense
 
                             editingEntity.getEditorPanelViews().forEach {
-                                with(it) { render() }
+                                it.render(this)
                             }
 
                             header { +"Actions" }

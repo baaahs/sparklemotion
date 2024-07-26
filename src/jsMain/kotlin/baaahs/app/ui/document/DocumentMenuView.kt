@@ -28,7 +28,7 @@ private val DocumentMenuView = xComponent<DocumentMenuProps>("DocumentMenu") { p
             documentManager.onNew(object : DialogHolder {
                 override fun showDialog(view: View) {
                     renderDialog = {
-                        with(view) { render() }
+                        view.render(this)
                     }
                 }
 
