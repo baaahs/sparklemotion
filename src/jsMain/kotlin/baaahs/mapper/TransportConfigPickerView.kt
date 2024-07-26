@@ -7,6 +7,7 @@ import baaahs.fixtures.TransportType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableTransportConfig
 import baaahs.ui.asTextNode
+import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import js.objects.jso
@@ -44,7 +45,8 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
         if (transportConfig != null) {
             Card {
                 attrs.classes = jso { this.root = -styles.configCardInner }
-                with(transportConfig.getEditorView(props.editingController)) { render() }
+                transportConfig.getEditorView(props.editingController)
+                    .render(this)
             }
         }
     }

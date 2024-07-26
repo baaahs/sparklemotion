@@ -98,7 +98,7 @@ private val EditableManagerUi = xComponent<EditableManagerUiProps>("EditableMana
                             val classes = +styles.singlePanel and
                                     if (dialogPanel.noMargin) styles.singlePanelNoMargin else null
                             div(classes) {
-                                with (dialogPanel.getView()) { render() }
+                                dialogPanel.getView().render(this)
                             }
                         }
                     } else {

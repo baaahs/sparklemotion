@@ -9,6 +9,7 @@ import baaahs.model.ModelUnit
 import baaahs.scene.MutableScene
 import baaahs.show.mutable.*
 import baaahs.ui.View
+import baaahs.ui.render
 import baaahs.ui.renderWrapper
 import baaahs.ui.unaryPlus
 import mui.material.Divider
@@ -27,7 +28,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
     ): View = renderWrapper {
         val mutablePatch = mutablePatchHolder.patches[0]
         val editorPanel = mutablePatch.getEditorPanel(editableManager)
-        with (editorPanel.getView()) { render() }
+        editorPanel.getView().render(this)
     }
 
     override fun forGenericPropertiesPanel(
@@ -41,9 +42,8 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                 }
             }
 
-            with(editorPanelComponent.getView(editableManager)) {
-                render()
-            }
+            editorPanelComponent.getView(editableManager)
+                .render(this)
         }
     }
 

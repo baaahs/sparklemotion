@@ -8,7 +8,7 @@ actual interface DialogHolder {
     actual fun closeDialog()
 
     fun showDialog(block: RBuilder.() -> Unit) {
-        showDialog(object : View {
+        showDialog(object : JsView {
             override fun RBuilder.render() {
                 block()
             }

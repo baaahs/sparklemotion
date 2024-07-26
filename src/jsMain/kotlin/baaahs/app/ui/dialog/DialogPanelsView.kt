@@ -92,7 +92,7 @@ private val DialogPanelsView = xComponent<DialogPanelsProps>("DialogPanels") { p
                 ErrorBoundary {
                     attrs.FallbackComponent = ErrorDisplay
 
-                    with (panelView) { render() }
+                    panelView.render(this)
                 }
             }
         }

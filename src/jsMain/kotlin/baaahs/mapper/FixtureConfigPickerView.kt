@@ -6,6 +6,7 @@ import baaahs.device.FixtureType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableFixtureOptions
 import baaahs.ui.asTextNode
+import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import js.objects.jso
@@ -43,7 +44,8 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
         if (fixtureConfig != null) {
             Card {
                 attrs.classes = jso { this.root = -styles.configCardInner }
-                with(fixtureConfig.getEditorView(props.editingController)) { render() }
+                fixtureConfig.getEditorView(props.editingController)
+                    .render(this)
             }
         }
     }
