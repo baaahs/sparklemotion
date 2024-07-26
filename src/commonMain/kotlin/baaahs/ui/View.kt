@@ -4,7 +4,7 @@ interface View
 
 interface Icon
 
-expect interface DialogHolder {
+interface DialogHolder {
     fun showDialog(view: View)
     fun showMenuDialog(title: String, options: List<DialogMenuItem>)
     fun closeDialog()
