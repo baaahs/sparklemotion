@@ -1,7 +1,6 @@
 package baaahs.ui
 
 import kotlinx.browser.window
-import mui.icons.material.SvgIconComponent
 import react.RBuilder
 
 interface JsView : View {
@@ -9,10 +8,6 @@ interface JsView : View {
 }
 fun View.render(rBuilder: RBuilder) = with (this as JsView) {
     rBuilder.render()
-}
-
-actual interface Icon {
-    fun getReactIcon(): SvgIconComponent
 }
 
 actual fun confirm(message: String): Boolean =

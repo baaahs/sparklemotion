@@ -2,7 +2,7 @@ package baaahs.ui
 
 interface View
 
-expect interface Icon
+interface Icon
 
 expect interface DialogHolder {
     fun showDialog(view: View)
