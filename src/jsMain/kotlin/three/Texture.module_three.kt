@@ -1,22 +1,12 @@
 @file:JsModule("three")
 @file:JsNonModule
-@file:Suppress("ABSTRACT_MEMBER_NOT_IMPLEMENTED", "VAR_TYPE_MISMATCH_ON_OVERRIDE", "INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS", "EXTERNAL_DELEGATION", "PackageDirectoryMismatch")
+@file:Suppress("PackageDirectoryMismatch")
 package three.js
 
-import kotlin.js.*
-import kotlin.js.Json
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLImageElement
+import org.w3c.dom.HTMLVideoElement
+import org.w3c.dom.ImageData
 
 open external class Texture : EventDispatcher {
     constructor(image: HTMLImageElement = definedExternally, mapping: Mapping = definedExternally, wrapS: Wrapping = definedExternally, wrapT: Wrapping = definedExternally, magFilter: TextureFilter = definedExternally, minFilter: TextureFilter = definedExternally, format: PixelFormat = definedExternally, type: TextureDataType = definedExternally, anisotropy: Number = definedExternally, encoding: TextureEncoding = definedExternally)
@@ -26,8 +16,8 @@ open external class Texture : EventDispatcher {
     open var uuid: String
     open var name: String
     open var sourceFile: String
-    open var image: Any
-    open var mipmaps: Array<Any>
+    open var image: ImageData
+    open var mipmaps: Array<ImageData>
     open var mapping: Mapping
     open var wrapS: Wrapping
     open var wrapT: Wrapping
