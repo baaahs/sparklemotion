@@ -1,5 +1,6 @@
 package materialui
 
+import baaahs.app.ui.getReactIcon
 import baaahs.ui.Icon
 import mui.icons.material.SvgIconComponent
 import mui.material.SvgIconProps

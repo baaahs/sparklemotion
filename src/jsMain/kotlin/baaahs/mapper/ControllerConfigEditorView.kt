@@ -7,6 +7,7 @@ import baaahs.scene.EditingController
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
+import baaahs.ui.render
 import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
@@ -55,7 +56,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     editingController.getEditorPanelViews().forEach {
-        with(it) { render() }
+        it.render(this)
     }
 
     Card {

@@ -5,6 +5,7 @@ import baaahs.Gadget
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.app.ui.document.fileUpload
+import baaahs.app.ui.getReactIcon
 import baaahs.doc.FileType
 import baaahs.encodeBase64
 import baaahs.gadgets.ImagePicker

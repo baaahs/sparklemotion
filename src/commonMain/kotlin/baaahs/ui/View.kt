@@ -1,10 +1,10 @@
 package baaahs.ui
 
-expect interface View
+interface View
 
-expect interface Icon
+interface Icon
 
-expect interface DialogHolder {
+interface DialogHolder {
     fun showDialog(view: View)
     fun showMenuDialog(title: String, options: List<DialogMenuItem>)
     fun closeDialog()
