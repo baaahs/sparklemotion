@@ -222,7 +222,7 @@ fun LinearDimension.inPixels(): Int {
 }
 
 fun renderWrapper(block: RBuilder.() -> Unit): View {
-    return object : View {
+    return object : JsView {
         override fun RBuilder.render() {
             block()
         }

@@ -3,10 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
-import baaahs.ui.className
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import js.objects.jso
 import materialui.icon
 import mui.material.Card
@@ -30,9 +27,8 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
 
     Card {
         attrs.classes = jso { root = props.className?.className ?: -Styles.controlBox }
-        with (props.control.getView(props.controlProps)) {
-            render()
-        }
+        props.control.getView(props.controlProps)
+            .render(this)
 
         problemBadge(control)
 

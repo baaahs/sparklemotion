@@ -1,6 +1,6 @@
 package baaahs.ui
 
-expect interface View
+interface View
 
 expect interface Icon
 
