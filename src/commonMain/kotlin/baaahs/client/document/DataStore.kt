@@ -16,20 +16,20 @@ class DataStore<T : Any>(
     private val plugins: Plugins,
     private val migrator: DataMigrator<T>
 ) {
-    fun decode(content: String) =
-        plugins.json.decodeFromString(migrator, content)
+    fun decode(content: String, fileName: String? = null) =
+        plugins.json.decodeFromString(migrator.Migrate(fileName), content)
 
-    fun decode(content: JsonElement) =
-        plugins.json.decodeFromJsonElement(migrator, content)
+    fun decode(content: JsonElement, fileName: String? = null) =
+        plugins.json.decodeFromJsonElement(migrator.Migrate(fileName), content)
 
     suspend fun load(file: Fs.File): T? =
-        file.read()?.let { decode(it) }
+        file.read()?.let { decode(it, file.toString()) }
 
     fun encode(content: T) =
-        plugins.json.encodeToString(migrator, content)
+        plugins.json.encodeToString(migrator.Migrate(), content)
 
     fun encodeToJsonElement(content: T) =
-        plugins.json.encodeToJsonElement(migrator, content)
+        plugins.json.encodeToJsonElement(migrator.Migrate(), content)
 
     suspend fun save(file: Fs.File, content: T, allowOverwrite: Boolean = false) =
         file.write(

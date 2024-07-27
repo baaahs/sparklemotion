@@ -14,7 +14,7 @@ object DataMigratorSpec : Spek({
     describe<DataMigrator<*>> {
         it("should work with no migrations") {
             val migrator = DataMigrator(Foo.serializer())
-            expect(Json.Default.encodeToJsonElement(migrator, Foo("1234")))
+            expect(Json.Default.encodeToJsonElement(migrator.Migrate(), Foo("1234")))
                 .toEqual(buildJsonObject {
                     put("value", JsonPrimitive("1234"))
                     put("version", JsonPrimitive(0))
