@@ -16,7 +16,7 @@ object ShowMigrationSpec : Spek({
         val json by value { Json { serializersModule = testPlugins().serialModule } }
 
         context("when writing") {
-            val toJson by value { json.encodeToJsonElement(ShowMigrator, Show("test")) }
+            val toJson by value { json.encodeToJsonElement(ShowMigrator.Migrate(), Show("test")) }
             it("includes version") {
                 expect(toJson.jsonObject["version"]?.jsonPrimitive?.intOrNull)
                     .toBe(AllShowMigrations.last().toVersion)

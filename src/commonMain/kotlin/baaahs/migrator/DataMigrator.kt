@@ -5,10 +5,10 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.*
 
 open class DataMigrator<T : Any>(
-    tSerializer: KSerializer<T>,
+    private val tSerializer: KSerializer<T>,
     private val migrations: List<Migration> = emptyList(),
     private val versionKey: String = "version"
-) : JsonTransformingSerializer<T>(tSerializer) {
+) {
     init {
         val versionDupes = migrations.groupBy { it.toVersion }
             .filter { (_, matching) -> matching.size > 1 }
@@ -20,39 +20,45 @@ open class DataMigrator<T : Any>(
     }
     private val currentVersion = migrations.maxOfOrNull { it.toVersion } ?: 0
 
-    override fun transformDeserialize(element: JsonElement): JsonElement {
-        if (element !is JsonObject) return element
-        val fromVersion = element[versionKey]?.jsonPrimitive?.int ?: 0
-        if (fromVersion == currentVersion)
-            return element.toMutableMap()
-                .apply { remove(versionKey) }.toJsonObj()
+    inner class Migrate(
+        fileName: String? = null
+    ) : JsonTransformingSerializer<T>(tSerializer) {
+        private val context = fileName?.let { "$it: " } ?: ""
 
-        var newJson = element
-            .toMutableMap().apply {
-                remove(versionKey)
-            }.toJsonObj()
+        override fun transformDeserialize(element: JsonElement): JsonElement {
+            if (element !is JsonObject) return element
+            val fromVersion = element[versionKey]?.jsonPrimitive?.int ?: 0
+            if (fromVersion == currentVersion)
+                return element.toMutableMap()
+                    .apply { remove(versionKey) }.toJsonObj()
 
-        logger.debug { "Migrating from v$fromVersion:\n$newJson" }
+            var newJson = element
+                .toMutableMap().apply {
+                    remove(versionKey)
+                }.toJsonObj()
 
-        migrations.forEach { migration ->
-            if (fromVersion < migration.toVersion) {
-                logger.info {
-                    "Migrating from $fromVersion to ${migration.toVersion} (${migration::class.simpleName})."
+            logger.debug { "${context}Migrating from v$fromVersion:\n$newJson" }
+
+            migrations.forEach { migration ->
+                if (fromVersion < migration.toVersion) {
+                    logger.info {
+                        "${context}Migrating from $fromVersion to ${migration.toVersion} (${migration::class.simpleName})."
+                    }
+                    newJson = migration.migrate(newJson)
                 }
-                newJson = migration.migrate(newJson)
             }
+
+            logger.debug { "${context}Migrated to v$currentVersion:\n$newJson" }
+
+            return newJson.toJsonObj()
         }
 
-        logger.debug { "Migrated to v$currentVersion:\n$newJson" }
-
-        return newJson.toJsonObj()
-    }
-
-    override fun transformSerialize(element: JsonElement): JsonElement {
-        if (element !is JsonObject) return element
-        return element.toMutableMap().apply {
-            put(versionKey, JsonPrimitive(currentVersion))
-        }.toJsonObj()
+        override fun transformSerialize(element: JsonElement): JsonElement {
+            if (element !is JsonObject) return element
+            return element.toMutableMap().apply {
+                put(versionKey, JsonPrimitive(currentVersion))
+            }.toJsonObj()
+        }
     }
 
     abstract class Migration(val toVersion: Int) {
