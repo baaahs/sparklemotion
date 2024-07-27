@@ -20,14 +20,14 @@ actual object UiActions {
         val type = FileType.Show
         val filename = "${show.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"
-        doDownload(filename, show, ShowMigrator, contentType, plugins)
+        doDownload(filename, show, ShowMigrator.Migrate(filename), contentType, plugins)
     }
 
     actual fun downloadScene(scene: Scene, plugins: Plugins) {
         val type = FileType.Scene
         val filename = "${scene.title}${type.extension}"
         val contentType = "application/json;charset=utf-8;"
-        doDownload(filename, scene, SceneMigrator, contentType, plugins)
+        doDownload(filename, scene, SceneMigrator.Migrate(filename), contentType, plugins)
     }
 
     private fun <T: Any> doDownload(
