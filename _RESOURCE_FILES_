@@ -92,6 +92,7 @@ shader-libraries/built-in/shaders/Huearthquake.glsl
 shader-libraries/built-in/shaders/Huenami.glsl
 shader-libraries/built-in/shaders/HypnoSwirl.glsl
 shader-libraries/built-in/shaders/JacobianUndistortion.glsl
+shader-libraries/built-in/shaders/LineOfYourMagic.glsl
 shader-libraries/built-in/shaders/OrangeSnowflake.glsl
 shader-libraries/built-in/shaders/OrangeTang.glsl
 shader-libraries/built-in/shaders/PicassosNightmare.glsl
@@ -108,6 +109,7 @@ shader-libraries/built-in/shaders/Seascape.glsl
 shader-libraries/built-in/shaders/ShatteredWeb.glsl
 shader-libraries/built-in/shaders/Snow.glsl
 shader-libraries/built-in/shaders/SolidColor.glsl
+shader-libraries/built-in/shaders/SpaceRings.glsl
 shader-libraries/built-in/shaders/SpasticRainbow.glsl
 shader-libraries/built-in/shaders/Strings.glsl
 shader-libraries/built-in/shaders/SunsetDelight.glsl
