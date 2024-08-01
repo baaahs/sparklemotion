@@ -33,6 +33,11 @@ private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySetti
 
     val webClient = appContext.webClient
     observe(webClient)
+
+    val handleFullScreenChange = callback {
+        webClient.toggleFullScreen()
+    }
+
     val uiSettings = webClient.uiSettings
     val handleUiSettingsChange by handler(webClient, uiSettings) { callback: (UiSettings) -> UiSettings ->
         val newUiSettings = callback(uiSettings)
@@ -81,6 +86,18 @@ private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySetti
             }
 
             Divider {}
+
+            MenuItem {
+                FormControlLabel {
+                    attrs.control = buildElement {
+                        Switch {
+                            attrs.checked = webClient.inFullScreenMode
+                            attrs.onChange = handleFullScreenChange.withTChangeEvent()
+                        }
+                    }
+                    attrs.label = "Full Screen".asTextNode()
+                }
+            }
 
             MenuItem {
                 FormControlLabel {

@@ -9,6 +9,7 @@ import baaahs.app.ui.dialog.FileDialog
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.dmx.DmxManagerImpl
+import baaahs.document
 import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
@@ -65,6 +66,8 @@ class WebClient(
 
     private var uiSettings = UiSettings()
 
+    private var inFullScreenMode = false
+
     init {
         globalLaunch {
             storage.loadSettings()?.let { updateUiSettings(it, saveToStorage = false) }
@@ -100,6 +103,17 @@ class WebClient(
                 globalLaunch { storage.saveSettings(newSettings) }
             }
         }
+    }
+
+    private fun toggleFullScreen() {
+        if (inFullScreenMode) {
+            document.exitFullscreen()
+            inFullScreenMode = false
+        } else {
+            document.documentElement.requestFullscreen()
+            inFullScreenMode = true
+        }
+        facade.notifyChanged()
     }
 
     inner class Facade : baaahs.ui.Facade() {
@@ -146,11 +160,14 @@ class WebClient(
                 updateUiSettings(uiSettings.copy(appMode = value), saveToStorage = true)
             }
 
+        val inFullScreenMode get() = this@WebClient.inFullScreenMode
+
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }
 
         suspend fun listDmxUniverses() = listDmxUniverses.listDmxUniverses()
 
+        fun toggleFullScreen() = this@WebClient.toggleFullScreen()
     }
 }
