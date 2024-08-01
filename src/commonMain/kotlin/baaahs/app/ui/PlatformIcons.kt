@@ -29,6 +29,8 @@ interface PlatformIcons {
     val Button: Icon
     val ButtonGroup: Icon
     val ColorPalette: Icon
+    val DeveloperMode: Icon
+    val DisplaySettings: Icon
     val EnterFullScreen: Icon
     val ExitFullScreen: Icon
     val ShaderLibrary: Icon

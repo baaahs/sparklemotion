@@ -237,6 +237,7 @@ class LayoutStyles(val theme: Theme) : StyleSheet("app-ui-layout", isStatic = tr
         userSelect = UserSelect.none
         gridColumn = GridColumn("1")
         gridRow = GridRow("1")
+        opacity = "calc((1 - var(--dimmer-level)) / 2 + .5)".unsafeCast<Number>()
     }
 
     val buttonGroupGrid by css {
