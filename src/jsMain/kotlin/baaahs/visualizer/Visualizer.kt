@@ -34,8 +34,6 @@ class Visualizer(
 
     private val selectionSpan = document.createElement("span") as HTMLSpanElement
 
-    var haveScene: Boolean = false
-
     var selectedEntity: ItemVisualizer<*>? = null
 
     private var container: HTMLElement? = null
@@ -112,7 +110,7 @@ class Visualizer(
     }
 
     inner class Facade : BaseVisualizer.Facade() {
-        val haveScene get() = this@Visualizer.haveScene
+        val haveScene get() = this@Visualizer.itemVisualizers.isNotEmpty()
         val selectedEntity get() = this@Visualizer.selectedEntity
 
         var container: HTMLElement?
@@ -444,6 +442,7 @@ open class BaseVisualizer(
 
         val startTime = clock.now()
         if (sceneNeedsUpdate) {
+            facade.notifyChanged()
             realScene.updateMatrixWorld()
             sceneNeedsUpdate = false
         }
