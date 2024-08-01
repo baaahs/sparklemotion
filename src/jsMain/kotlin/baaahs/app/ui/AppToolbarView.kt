@@ -3,6 +3,7 @@ package baaahs.app.ui
 import baaahs.app.ui.dev.devModeToolbarMenu
 import baaahs.app.ui.editor.SceneEditIntent
 import baaahs.app.ui.editor.ShowEditIntent
+import baaahs.app.ui.settings.displaySettings
 import baaahs.app.ui.settings.fullScreenToggleButton
 import baaahs.client.document.DocumentManager
 import baaahs.sm.webapi.Severity
@@ -26,6 +27,7 @@ import react.dom.h4
 import react.dom.html.ReactHTML
 import styled.inlineStyles
 import web.cssom.ClassName
+import web.cssom.pct
 
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
@@ -212,44 +214,62 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                     +"Edit"
                 }
 
-                div(+themeStyles.appToolbarProblemsIcon) {
-                    if (showProblemsSeverity != null) {
-                        val iconClass = ClassName(showProblemsSeverity.cssClass)
-                        Link {
-                            attrs.classes = jso { this.root = iconClass }
-                            attrs.onClick = toggleProblems.withMouseEvent()
-                            icon(showProblemsSeverity.icon)
-                        }
-                    }
-                }
-                if (showProblemsDialogIsOpen) {
-                    Dialog {
-                        attrs.open = true
-                        attrs.onClose = closeProblems
+                ButtonGroup {
+                    attrs.classes = jso { this.root = -themeStyles.appToolbarButtonGroup }
 
-                        DialogTitle { +"Show Problems" }
-                        DialogContent {
-                            attrs.classes = jso { root = -themeStyles.showProblemsDialogContent }
-                            showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
-                                val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
-                                div(iconClass) { icon(problem.severity.icon) }
-                                div {
-                                    h4 { +problem.title }
-                                    problem.message?.let { div { +it } }
+                    if (showProblemsSeverity != null) {
+                        Tooltip {
+                            attrs.title = "Show Problems".asTextNode()
+
+                            IconButton {
+                                attrs.classes = jso { this.root = -themeStyles.appToolbarProblemsIcon }
+                                Link {
+                                    attrs.classes = jso { this.root = ClassName(showProblemsSeverity.cssClass) }
+                                    attrs.onClick = toggleProblems.withMouseEvent()
+                                    icon(showProblemsSeverity.icon)
+                                }
+
+                                mui.material.Badge {
+                                    attrs.sx = jso { height = 50.pct }
+                                    attrs.badgeContent =
+                                        showManager.showProblems.size.toString().asTextNode()
                                 }
                             }
                         }
                     }
-                }
 
-                if (appContext.uiSettings.developerMode) {
-                    devModeToolbarMenu {}
-                }
-                fullScreenToggleButton {}
+                    if (appContext.uiSettings.developerMode) {
+                        devModeToolbarMenu {}
+                    }
 
-                help {
-                    attrs.divClass = themeStyles.appToolbarHelpIcon.name
-                    attrs.inject(HelpText.appToolbar)
+                    displaySettings {}
+
+                    fullScreenToggleButton {}
+
+                    help {
+                        attrs.divClass = themeStyles.appToolbarHelpIcon.name
+                        attrs.inject(HelpText.appToolbar)
+                    }
+                }
+            }
+        }
+
+        if (showProblemsDialogIsOpen) {
+            Dialog {
+                attrs.open = true
+                attrs.onClose = closeProblems
+
+                DialogTitle { +"Show Problems" }
+                DialogContent {
+                    attrs.classes = jso { root = -themeStyles.showProblemsDialogContent }
+                    showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
+                        val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
+                        div(iconClass) { icon(problem.severity.icon) }
+                        div {
+                            h4 { +problem.title }
+                            problem.message?.let { div { +it } }
+                        }
+                    }
                 }
             }
         }

@@ -39,17 +39,6 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
             paddingLeft = 16.px
             paddingRight = 16.px
             position = Position.relative
-
-            child(baaahs.ui.Styles, baaahs.ui.Styles::help) {
-                fontSize = 1.rem
-                position = Position.absolute
-                top = .5.em
-                right = 1.em
-
-                child("a") {
-                    color = Color(theme.palette.primary.contrastText.asDynamic())
-                }
-            }
         }
 
         ".app-ui-editModeOn .app-ui-theme-appToolbar" {
@@ -224,8 +213,14 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         userSelect = UserSelect.none
     }
 
+    val appToolbarButtonGroup by css {
+        child("button") {
+            marginLeft = -4.px
+            marginRight = -4.px
+        }
+    }
+
     val appToolbarProblemsIcon by css {
-        transform.translateY(1.em)
         filter = "drop-shadow(0px 0px 2px white)"
 
         ".infoSeverity" { color = Color.darkGray }
@@ -565,6 +560,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         body {
             fontSize = 0.875.rem
             lineHeight = LineHeight("1.43")
+            put("--dimmer-level", ".5")
         }
 
         button {

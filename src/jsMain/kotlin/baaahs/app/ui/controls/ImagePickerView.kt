@@ -67,7 +67,7 @@ private val ImagePickerView = xComponent<ImagePickerProps>("ImagePicker") { prop
         button {
             attrs.onClick = handleUploadFile
 
-            icon(CommonIcons.Upload.getReactIcon())
+            icon(CommonIcons.Upload)
         }
     }
 
