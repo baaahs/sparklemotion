@@ -77,6 +77,7 @@ class Visualizer(
     override fun add(itemVisualizer: ItemVisualizer<*>) {
         itemVisualizers.add(itemVisualizer)
         scene.add(itemVisualizer.obj)
+        fitCamera = true
         sceneNeedsUpdate = true
     }
 

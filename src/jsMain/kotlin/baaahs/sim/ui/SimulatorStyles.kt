@@ -100,6 +100,16 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         padding = Padding(0.px, 16.px)
     }
 
+    val unstarted by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
+        right = .5.em
+        zIndex = 10
+        justifyContent = JustifyContent.center
+
+        button {
+            color = Color.white
+        }
+    }
+
     val vizWarning by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
         zIndex = 10
         svg {

@@ -28,7 +28,7 @@ private val MarkdownView = xComponent<MarkdownProps>("Markdown", isPure = true) 
 }
 
 external interface MarkdownProps : Props {
-    var children : dynamic
+    var children: dynamic
 }
 
 fun RBuilder.markdown(handler: RHandler<MarkdownProps>) =
