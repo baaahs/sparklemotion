@@ -102,6 +102,9 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
     val vizWarning by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
         zIndex = 10
+        svg {
+            color = Color.white
+        }
     }
 
     val statusPanel by css {

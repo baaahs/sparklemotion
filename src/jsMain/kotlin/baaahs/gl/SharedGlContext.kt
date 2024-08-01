@@ -61,7 +61,7 @@ class SharedGlContext(
 
         override val rasterOffset: RasterOffset
             get() = RasterOffset(
-                (sharedCanvasRect.bottom - subKgl.containerRect.bottom),
+                (sharedCanvasRect.bottom - subKgl.containerRect.bottom) + 1,
                 (subKgl.containerRect.left - sharedCanvasRect.left)
             )
 
@@ -119,12 +119,12 @@ class SharedGlContext(
                 .relativeToBottomLeftOf(sharedCanvasRect)
                 .withWidthAndHeightNoLessThanZero()
 
-            setViewport(rect.left, rect.bottom, rect.width, rect.height)
+            setViewport(rect.left, rect.bottom + 1, rect.width, max(rect.height - 1, 0))
 
             val scissor = scissorRect
                 .relativeToBottomLeftOf(sharedCanvasRect)
                 .withWidthAndHeightNoLessThanZero()
-            glContext.webgl.scissor(scissor.left, scissor.bottom, scissor.width, scissor.height)
+            glContext.webgl.scissor(scissor.left, scissor.bottom + 1, scissor.width, max(scissor.height - 1, 0))
         }
     }
 

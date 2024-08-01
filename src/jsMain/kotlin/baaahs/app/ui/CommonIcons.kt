@@ -28,6 +28,10 @@ actual fun getCommonIcons() = object : PlatformIcons {
     override val Button get() = jsIcon(CropLandscape)
     override val ButtonGroup get() = jsIcon(ViewModule)
     override val ColorPalette get() = jsIcon(Palette)
+    override val DeveloperMode get() = jsIcon(mui.icons.material.DeveloperMode)
+    override val DisplaySettings get() = jsIcon(mui.icons.material.DisplaySettings)
+    override val EnterFullScreen get() = jsIcon(Fullscreen)
+    override val ExitFullScreen get() = jsIcon(FullscreenExit)
     override val ShaderLibrary get() = jsIcon(PhotoLibrary)
     override val SoundAnalysisControl get() = jsIcon(Equalizer)
     override val SoundInput get() = jsIcon(Mic)
@@ -41,7 +45,7 @@ actual fun getCommonIcons() = object : PlatformIcons {
 
 fun jsIcon(materialIcon: SvgIconComponent): Icon = JsIcon(materialIcon)
 
-private class JsIcon(private val icon: SvgIconComponent) : Icon {
+class JsIcon(private val icon: SvgIconComponent) : Icon {
     fun getReactIcon(): SvgIconComponent = icon
 }
 

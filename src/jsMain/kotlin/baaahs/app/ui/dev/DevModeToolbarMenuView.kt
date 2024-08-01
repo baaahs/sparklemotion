@@ -3,8 +3,8 @@ package baaahs.app.ui.dev
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
 import baaahs.gl.RootToolchain
+import baaahs.ui.asTextNode
 import baaahs.ui.components.palette
-import baaahs.ui.unaryPlus
 import baaahs.ui.withMouseEvent
 import baaahs.ui.xComponent
 import baaahs.window
@@ -14,9 +14,7 @@ import mui.material.*
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.div
 import react.dom.html.TdAlign
-import react.dom.onClick
 import react.useContext
 import web.dom.Element
 import web.events.Event
@@ -52,9 +50,13 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
         }
     }
 
-    div(+styles.appToolbarDevMenuIcon) {
-        attrs.onClick = showMenu
-        icon(CommonIcons.Settings)
+    Tooltip {
+        attrs.title = "Dev Mode Menu".asTextNode()
+
+        IconButton {
+            attrs.onClick = showMenu
+            icon(CommonIcons.DeveloperMode)
+        }
     }
 
     if (menuAnchor != null) {
