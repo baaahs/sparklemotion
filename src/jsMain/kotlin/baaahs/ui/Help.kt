@@ -1,13 +1,10 @@
 package baaahs.ui
 
 import kotlinx.css.LinearDimension
-import kotlinx.css.fontSize
 import materialui.icon
 import mui.material.*
 import org.w3c.dom.events.Event
 import react.*
-import react.dom.div
-import styled.inlineStyles
 import web.html.HTMLElement
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -18,12 +15,14 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     val toggleHelp = callback { open = !open }
     val closeHelp = callback { _: Event, _: String -> open = false }
 
-    div("${Styles.help.name} ${props.divClass ?: ""}") {
-        props.iconSize?.let { iconSize ->
-            inlineStyles { fontSize = iconSize }
-        }
+    Tooltip {
+        attrs.title = "Help".asTextNode()
+//        ("${Styles.help.name} ${props.divClass ?: ""}") {
+//        props.iconSize?.let { iconSize ->
+//            inlineStyles { fontSize = iconSize }
+//        }
 
-        Link {
+        IconButton {
             attrs.onClick = toggleHelp.withMouseEvent()
             icon(mui.icons.material.HelpOutline) {
                 if (props.iconSize != null) {
