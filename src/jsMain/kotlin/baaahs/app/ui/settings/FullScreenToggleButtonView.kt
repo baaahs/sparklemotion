@@ -2,7 +2,6 @@ package baaahs.app.ui.settings
 
 import baaahs.app.ui.CommonIcons
 import baaahs.app.ui.appContext
-import baaahs.document
 import baaahs.ui.asTextNode
 import baaahs.ui.xComponent
 import materialui.icon
@@ -15,19 +14,12 @@ import react.useContext
 
 private val FullScreenToggleButtonView = xComponent<FullScreenToggleButtonProps>("FullScreenToggleButton") { props ->
     val appContext = useContext(appContext)
-    val styles = appContext.allStyles.appUi
+    observe(appContext.webClient)
 
-    var inFullScreen by state { false }
-
-    val handleClick by mouseEventHandler {
-        if (document.fullscreenElement == null) {
-            document.documentElement.requestFullscreen()
-            inFullScreen = true
-        } else {
-            document.exitFullscreen()
-            inFullScreen = false
-        }
+    val handleClick by mouseEventHandler(appContext.webClient) {
+        appContext.webClient.toggleFullScreen()
     }
+    val inFullScreen = appContext.webClient.inFullScreenMode
 
     Tooltip {
         attrs.title = when {
