@@ -23,6 +23,8 @@ object MoverShader : ShaderType {
             vec3 position;
             vec3 rotation;
             mat4 transformation;
+            vec3 boundaryMin;
+            vec3 boundaryMax;
         };
 
         struct MovingHeadParams {
@@ -37,13 +39,11 @@ object MoverShader : ShaderType {
         uniform FixtureInfo fixtureInfo;
 
         // @param params moving-head-params
-        void main(out MovingHeadParams params) {
-            params.pan = 0.;
-            params.tilt = .5;
-            params.colorWheel = 0.;
-            params.dimmer = 1.;
-            params.prism = false;
-            params.prismRotation = 0.;
+        void main(in MovingHeadParams upstream, out MovingHeadParams params) {
+            params = upstream;
+            // Override values below
+            // params.tilt = sin(time);
+
         }
     """.trimIndent()
 
