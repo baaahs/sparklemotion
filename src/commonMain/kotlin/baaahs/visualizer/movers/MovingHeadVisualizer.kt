@@ -2,43 +2,11 @@ package baaahs.visualizer.movers
 
 import baaahs.Color
 import baaahs.model.ModelUnit
-import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import baaahs.util.Clock
-import baaahs.util.asDoubleSeconds
 import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
-
-class PhysicalModel(
-    private val adapter: MovingHeadAdapter,
-    private val clock: Clock
-) {
-    var currentState = State()
-        private set
-    private var lastUpdate = clock.now().asDoubleSeconds
-    private var momentumState = State()
-
-    fun update(buffer: MovingHead.Buffer): State {
-        val now = clock.now().asDoubleSeconds
-        val elapsed = (now - lastUpdate).toFloat()
-
-        val requestedState = State(
-            buffer.pan,
-            buffer.tilt,
-            buffer.colorWheelPosition,
-            buffer.dimmer
-        )
-
-        val attainableState = currentState.moveToward(momentumState, requestedState, adapter, elapsed)
-        lastUpdate = now
-        currentState = attainableState
-        momentumState = requestedState
-
-        return attainableState
-    }
-}
 
 enum class ColorMode(
     val isClipped: Boolean,
