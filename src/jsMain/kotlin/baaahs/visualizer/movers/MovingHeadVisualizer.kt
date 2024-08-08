@@ -55,7 +55,7 @@ class MovingHeadVisualizer(
     }
 
     fun receivedUpdate(adapterBuffer: MovingHead.Buffer) {
-        val state = physicalModel.update(adapterBuffer)
-        sharpyVisualizer.update(state)
+        physicalModel.update(adapterBuffer)
+        sharpyVisualizer.update(physicalModel)
     }
 }

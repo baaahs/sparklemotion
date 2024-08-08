@@ -3,6 +3,7 @@ package baaahs.visualizer.movers
 import baaahs.model.ModelUnit
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.EntityStyle
+import js.objects.jso
 import three.js.*
 import kotlin.math.PI
 
@@ -23,8 +24,23 @@ class SharpyVisualizer(
     private val can = Mesh(CylinderBufferGeometry(), sharpyMaterial).also { armature.add(it) }
     private val beam = Beam.selectFor(adapter, units).also { can.add(it.vizObj) }
 
+    private val idealBeamArmature = Group().also { group.add(it) }
+    private val idealBeamCan = Group().also { idealBeamArmature.add(it) }
+
     init {
         updateGeometry(adapter.visualizerInfo)
+
+        // Ideal beam; where the moving head would be pointing if it weren't for physics.
+        Line(BufferGeometry().apply {
+            setFromPoints(arrayOf(Vector3(0, 0, 0), Vector3(0, 4000.cm, 0)))
+        }, LineDashedMaterial(jso {
+            color = 0xff7700
+            linewidth = 5
+            dashSize = 1
+        })).also {
+            it.computeLineDistances()
+            idealBeamCan.add(it)
+        }
     }
 
     private val Int.cm: Double get() = units.fromCm(this.toDouble())
@@ -75,13 +91,20 @@ class SharpyVisualizer(
         entityStyle.applyToMesh(sharpyMaterial, EntityStyle.Use.FixtureHardware)
     }
 
-    fun update(state: State) {
+    fun update(physicalModel: PhysicalModel) {
+        val state = physicalModel.currentState
+
         // When tilt is at minimum, start pan 0 degrees at right, per convention.
         val rotationOffset = (PI / 2).toFloat()
         armature.rotation.y = state.pan + rotationOffset
         can.rotation.x = -state.tilt
 
+        // Update beam appearance.
         beam.update(state)
+
+        val idealState = physicalModel.momentumState
+        idealBeamArmature.rotation.y = idealState.pan + rotationOffset
+        idealBeamCan.rotation.x = -idealState.tilt
 
         group.updateMatrixWorld()
     }
