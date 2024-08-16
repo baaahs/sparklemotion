@@ -13,6 +13,8 @@ import baaahs.plugin.ServerPlugins
 import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.AiAssistantService
+import baaahs.sm.server.OpenAiAssistantService
 import baaahs.util.Clock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -65,4 +67,7 @@ class JvmPinkyModule(
         get() = JvmFtdiDmxDriver
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
+
+    override val Scope.aiAssistant: AiAssistantService
+        get() = OpenAiAssistantService(get())
 }

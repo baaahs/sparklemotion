@@ -20,6 +20,8 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.*
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.PermissiveFirmwareDaddy
+import baaahs.sm.server.AiAssistantService
+import baaahs.sm.server.NoOpAiAssistantService
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
@@ -109,6 +111,8 @@ class JsSimPinkyModule(
                 return "data:image/webp;base64,$imageData"
             }
         }
+    override val Scope.aiAssistant: AiAssistantService
+        get() = NoOpAiAssistantService
 
     override fun getModule(): Module {
         return super.getModule()

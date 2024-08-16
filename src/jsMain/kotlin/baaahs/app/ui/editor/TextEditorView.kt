@@ -20,6 +20,8 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.dom.events.MouseEventHandler
+import react.dom.onContextMenu
 import react.useContext
 import web.dom.Element
 import web.timers.clearInterval
@@ -92,6 +94,8 @@ private val TextEditorView = xComponent<TextEditorProps>("TextEditor", isPure = 
     div(+Styles.textEditor) {
         ref = rootEl
 
+        attrs.onContextMenu = props.onContextClick
+
         reactAce {
             ref = aceEditor
             key = props.document.key
@@ -125,6 +129,7 @@ external interface TextEditorProps : Props {
     var debouncePeriod: Duration?
     var onChange: ((value: String) -> Unit)?
     var onCursorChange: ((value: Any, event: Any) -> Unit)?
+    var onContextClick: MouseEventHandler<*>
 }
 
 fun RBuilder.textEditor(handler: RHandler<TextEditorProps>) =

@@ -16,10 +16,7 @@ import baaahs.scene.Scene
 import baaahs.show.Show
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
-import baaahs.sm.server.DocumentService
-import baaahs.sm.server.PinkyConfigStore
-import baaahs.sm.server.ServerNotices
-import baaahs.sm.server.StageManager
+import baaahs.sm.server.*
 import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
 import baaahs.util.Framerate
@@ -51,7 +48,8 @@ class Pinky(
     private val pinkySettings: PinkySettings,
     private val serverNotices: ServerNotices,
     private val pinkyMapperHandlers: PinkyMapperHandlers,
-    private val pinkyConfigStore: PinkyConfigStore
+    private val pinkyConfigStore: PinkyConfigStore,
+    private val aiAssistantService: AiAssistantService
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -198,6 +196,7 @@ class Pinky(
     private suspend fun launchDaemonJobs(): Job {
         return CoroutineScope(coroutineContext).launch {
             launch { shaderLibraryManager.start() }
+            launch { aiAssistantService.start() }
 
             launch {
                 while (true) {

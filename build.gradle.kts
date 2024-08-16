@@ -139,6 +139,11 @@ kotlin {
                 // VideoInPlugin:
                 implementation("com.github.sarxos:webcam-capture:0.3.12")
                 implementation("io.github.eduramiba:webcam-capture-driver-native:1.0.0")
+
+                // ChatGPT:
+                implementation(project.dependencies.platform("com.aallam.openai:openai-client-bom:3.8.2"))
+                implementation("com.aallam.openai:openai-client")
+                runtimeOnly("io.ktor:ktor-client-okhttp")
             }
         }
         val jvmTest by getting {

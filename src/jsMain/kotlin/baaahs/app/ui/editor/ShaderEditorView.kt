@@ -93,13 +93,37 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
     }
 
     var refactorMenuAnchor by state<Element?> { null }
-    val showRefactorMenu by mouseEventHandler { event -> refactorMenuAnchor = event.target as Element? }
+    val showRefactorMenu by mouseEventHandler { event ->
+        refactorMenuAnchor = event.target as Element?
+        event.preventDefault()
+    }
     val hideRefactorMenu = callback { _: Event?, _: String? -> refactorMenuAnchor = null}
 
     val handleExtractUniform by mouseEventHandler(shaderRefactor) {
         hideRefactorMenu(null, null)
         shaderRefactor?.onExtract()
         Unit
+    }
+
+    var showAiAssistant by state { false }
+    val handleShowAiAssistant by mouseEventHandler(glslDoc) {
+        showAiAssistant = true
+        refactorMenuAnchor = null
+    }
+    val handleHideAiAssistant by handler {
+        showAiAssistant = false
+        refactorMenuAnchor = null
+    }
+    val handleAiSrcChange = memo(props.editingShader) {
+        { incoming: String ->
+            // Update [EditingShader].
+            props.editingShader.updateSrc(incoming)
+
+            val editor = aceEditor?.editor
+            editor?.session?.markUndoGroup()
+            editor?.session?.doc?.setValue(incoming)
+            Unit
+        }
     }
 
     val handleAceEditor by handler { incoming: AceEditor ->
@@ -113,6 +137,7 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
         attrs.debouncePeriod = 0.25.seconds
         attrs.onChange = handleSrcChange
         attrs.onCursorChange = handleCursorChange
+        attrs.onContextClick = showRefactorMenu
     }
 
     shaderRefactor?.selectionEndScreenPosition?.let { (x, y) ->
@@ -151,6 +176,22 @@ private val ShaderEditorView = xComponent<ShaderEditorProps>("ShaderEditor") { p
 
                 ListItemText { +"Rename…" }
             }
+
+            Divider {}
+
+            MenuItem {
+                attrs.onClick = handleShowAiAssistant
+
+                ListItemText { +"AI Assist…" }
+            }
+        }
+    }
+
+    if (showAiAssistant) {
+        aiAssistant {
+            attrs.glslSource = glslDoc.content
+            attrs.onChange = handleAiSrcChange
+            attrs.onClose = handleHideAiAssistant
         }
     }
 }

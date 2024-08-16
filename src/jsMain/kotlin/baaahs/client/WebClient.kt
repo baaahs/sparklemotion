@@ -19,6 +19,7 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
 import baaahs.sim.HostedWebApp
+import baaahs.sm.server.AiAssistantCommands
 import baaahs.sm.webapi.Topics
 import baaahs.util.globalLaunch
 import js.objects.jso
@@ -64,6 +65,8 @@ class WebClient(
         DmxManagerImpl.createCommandPort(toolchain.plugins.serialModule)
             .createSender(pubSub)
 
+    private val aiAssistant = AiAssistantCommands.Companion.IMPL
+        .createSender(pubSub)
     private var uiSettings = UiSettings()
 
     private var inFullScreenMode = false
@@ -150,6 +153,9 @@ class WebClient(
 
         val shaderLibraries : ShaderLibraries.Facade
             get() = this@WebClient.shaderLibraries.facade
+
+        val aiAssistant: AiAssistantCommands
+            get() = this@WebClient.aiAssistant
 
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings

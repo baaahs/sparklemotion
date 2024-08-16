@@ -38,10 +38,7 @@ import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.sm.brain.proto.Ports
-import baaahs.sm.server.GadgetManager
-import baaahs.sm.server.PinkyConfigStore
-import baaahs.sm.server.ServerNotices
-import baaahs.sm.server.StageManager
+import baaahs.sm.server.*
 import baaahs.util.Clock
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineDispatcher
@@ -88,6 +85,7 @@ interface PinkyModule : KModule {
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
+    val Scope.aiAssistant: AiAssistantService
 
     object Named {
         val pinkyContext = named("PinkyContext")
@@ -165,12 +163,13 @@ interface PinkyModule : KModule {
             scoped { pinkySettings }
             scoped { ServerNotices(get(), get(Named.pinkyContext)) }
             scoped { PinkyMapperHandlers(get()) }
+            scoped { aiAssistant }
             scoped {
                 Pinky(
                     get(), get(), get(), get(Named.dataDir), get(), get(),
                     get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
                     get(), get(), get(), get(), get(), get(),
-                    pinkyMapperHandlers, get()
+                    pinkyMapperHandlers, get(), get()
                 )
             }
         }
