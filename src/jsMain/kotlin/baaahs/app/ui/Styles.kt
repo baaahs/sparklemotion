@@ -1,5 +1,6 @@
 package baaahs.app.ui
 
+import baaahs.app.ui.settings.defaultDimmerLevel
 import baaahs.ui.*
 import kotlinx.css.*
 import kotlinx.css.properties.*
@@ -560,7 +561,7 @@ object Styles : StyleSheet("app-ui", isStatic = true) {
         body {
             fontSize = 0.875.rem
             lineHeight = LineHeight("1.43")
-            put("--dimmer-level", ".5")
+            put("--dimmer-level", (1 - defaultDimmerLevel).toString())
         }
 
         button {
