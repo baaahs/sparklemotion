@@ -134,13 +134,14 @@ data class ImageFeed(override val title: String) : Feed {
         override val resourceName: String get() = "Image"
         override val contentType: ContentType get() = ContentType.Color
         override val serializerRegistrar get() = classSerializer(serializer())
+        override val isFunctionFeed: Boolean = true
 
         override fun looksValid(inputPort: InputPort, suggestedContentTypes: Set<ContentType>): Boolean =
             inputPort.dataTypeIs(GlslType.Sampler2D) // TODO: Should be vec4/3 instead?
         override fun build(inputPort: InputPort): ImageFeed =
             ImageFeed("${inputPort.title} Image")
 
-        override fun funDef(varName: String): String =
+        override fun exampleDeclaration(varName: String): String =
             "vec4 $varName(vec2 uv);"
 
         private val logger = Logger<ImageFeed>()
