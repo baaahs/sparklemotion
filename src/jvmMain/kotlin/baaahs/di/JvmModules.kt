@@ -69,5 +69,5 @@ class JvmPinkyModule(
         get() = PinkySettings()
 
     override val Scope.aiAssistant: AiAssistantService
-        get() = OpenAiAssistantService(get())
+        get() = OpenAiAssistantService(get(), get())
 }

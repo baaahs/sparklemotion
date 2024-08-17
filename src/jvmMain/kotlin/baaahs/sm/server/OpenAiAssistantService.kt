@@ -1,10 +1,16 @@
 package baaahs.sm.server
 
 import baaahs.PubSub
+import baaahs.gl.glsl.GlslType
+import baaahs.plugin.OpenPlugin
+import baaahs.plugin.PluginRef
+import baaahs.plugin.Plugins
+import baaahs.show.FeedBuilder
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.assistant.AssistantId
+import com.aallam.openai.api.assistant.AssistantRequest
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.core.Status
 import com.aallam.openai.api.http.Timeout
@@ -23,34 +29,123 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(BetaOpenAI::class)
 class OpenAiAssistantService(
-    pubSub: PubSub.Server
+    pubSub: PubSub.Server,
+    private val plugins: Plugins
 ) : AiAssistantService {
-    private val propsFile = File("openai.properties")
-    private val props = Properties().apply { load(propsFile.reader()) }
-    private val assistant = props.getProperty("assistant")
-    private val openAi = run {
-        val key = props.getProperty("key")
-        logger.info { "key: $key assistant: $assistant" }
-
-        OpenAI(
-            token = key,
-            timeout = Timeout(socket = 60.seconds),
-            // additional configurations...
-        )
-    }
+    private lateinit var openAi: OpenAI
+    private var assistantId: AssistantId = AssistantId("invalid")
 
     init {
         AiAssistantCommands.IMPL.Receiver(pubSub, this)
     }
 
-    init {
+    override fun start() {
+        val propsFile = File("openai.properties")
+        val props = Properties().apply { load(propsFile.reader()) }
+        val key = props.getProperty("key")
+        assistantId = AssistantId(props.getProperty("assistant"))
+        logger.info { "key: $key assistant: $assistantId" }
+
+        openAi = OpenAI(
+            token = key,
+            timeout = Timeout(socket = 60.seconds),
+            // additional configurations...
+        )
+
+        val assistantRequest = generateAssistantRequest()
+        logger.info { "assistantRequest: ${assistantRequest.name}" }
+        logger.info { "  instructions:\n${assistantRequest.instructions}" }
         logger.error { openAi.toString() }
         globalLaunch {
             val models = openAi.models()
             logger.error { "openai = $models" }
             models.forEach { println(it) }
 
+            // TODO: What's the intended lifecycle of assistants?
+            val assistant = openAi.assistant(
+                assistantId,
+                assistantRequest.also {
+                    logger.info { "assistant = $it" }
+                }
+            )
         }
+    }
+
+    internal fun generateAssistantRequest(): AssistantRequest {
+        val instructions = buildString {
+            appendLine(
+                """
+                    You are "Sparkle Motion shader assistant," designed to help an artist create and edit GLSL shaders for
+                    use in Sparkle Motion, an open-source light show authoring environment.
+        
+                    When responding:
+                    1. Shaders must be written in GLSL and compatible with Sparkle Motion's requirements.
+                    2. Return the response in this strict JSON format:
+                    ```json
+                    {
+                        "updatedSource": "[full updated source goes here]",
+                        "responseMessage": "[brief description of the changes or additions goes here]",
+                        "details": "[more detailed explanation of the changes and how they work goes here]",
+                        "success": true
+                    }
+                    ```
+                    3. Ensure the output is valid JSON with all strings properly escaped.
+                    4. Sparkle Motion makes it easy to pass in data using comment-annotated uniforms. For example, you can
+                       use the following code to create a slider:
+                    ```glsl
+                    uniform float gristleThrob; // @@Slider min=0 max=1 default=.2
+                    ```
+                       Here's a full list of input types:
+                    ```glsl
+                """.trimIndent()
+            )
+            append(generateFeedExamples())
+            append("```")
+        }
+        return AssistantRequest(
+            name = "Sparkle Motion shader assistant",
+            instructions = instructions
+        )
+    }
+
+    private fun generateFeedExamples() =
+        plugins.feedBuilders.withPlugin
+            .filterNot { (_, b) -> b.internalOnly }
+            .sortedBy { (_, b) -> b.title }
+            .joinToString("\n") { (plugin, builder) ->
+                generateFeedExample(plugin, builder)
+            }
+
+    internal fun generateFeedExample(plugin: OpenPlugin, feedBuilder: FeedBuilder<*>): String = buildString {
+        val title = feedBuilder.title
+        val description = feedBuilder.description
+        val contentType = feedBuilder.contentType
+        val type = contentType.glslType
+        val pluginRef = PluginRef(plugin.packageName, feedBuilder.resourceName)
+
+        val feedName = "${feedBuilder.resourceName.replaceFirstChar { it.lowercase() }}Data"
+
+        append("/* $title — $description Returns ${contentType.title} as ")
+        if (type is GlslType.Struct) {
+            append("struct ${type.name} {\n")
+
+            type.fields.forEach { field ->
+                val typeStr = if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
+                append("    $typeStr ${field.name};")
+                val comment = if (field.deprecated) "Deprecated. ${field.description}" else field.description
+                comment?.run { append(" // $comment") }
+                append("\n")
+            }
+            append("};\n")
+        } else {
+            append(type.glslLiteral)
+        }
+        if (feedBuilder.isFunctionFeed) {
+            append("\nNote that this is declared and invoked as a function.")
+        }
+        append(" */\n")
+
+        appendLine("${feedBuilder.exampleDeclaration(feedName)} // @@${pluginRef.shortRef()}")
     }
 
     override suspend fun listModels(): List<AiAssistantModel> =
@@ -64,7 +159,7 @@ class OpenAiAssistantService(
 //        val completion: ChatCompletion = openAi.chatCompletion(chatCompletionRequest)
         var run = openAi.createThreadRun(
             ThreadRunRequest(
-                AssistantId(assistant),
+                assistantId,
                 ThreadRequest(
                     listOf(
                         ThreadMessage(
@@ -77,9 +172,9 @@ class OpenAiAssistantService(
                                 append("Preserve whitespace and comments in the shader.\n\n")
                                 append("Sparkle Motion provides some GLSL extensions that you can use:\n")
                                 append("Slider:\n")
-                                append("`uniform float value; // @@Slider min=0 max=1 default=.2`\n")
+                                append("```\nuniform float value; // @@Slider min=0 max=1 default=.2\n```\n")
                                 append("XY Pad (2-dimensional slider):")
-                                append("`uniform vec2 value; // @@XyPad min=[0,0] max=[1,1] default=[.5,.5]`\n")
+                                append("```\nuniform vec2 value; // @@XyPad min=[0,0] max=[1,1] default=[.5,.5]\n```\n")
                             }
                         )
                     )

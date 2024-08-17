@@ -32,10 +32,7 @@ import baaahs.sm.brain.PermissiveFirmwareDaddy
 import baaahs.sm.brain.proto.BrainHelloMessage
 import baaahs.sm.brain.proto.Ports
 import baaahs.sm.brain.proto.Type
-import baaahs.sm.server.GadgetManager
-import baaahs.sm.server.PinkyConfigStore
-import baaahs.sm.server.ServerNotices
-import baaahs.sm.server.StageManager
+import baaahs.sm.server.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -103,7 +100,7 @@ object PinkySpec : Spek({
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
-                PinkyConfigStore(plugins, fakeFs.rootFile)
+                PinkyConfigStore(plugins, fakeFs.rootFile), NoOpAiAssistantService
             )
         }
         val pinkyLink by value { network.links.only() }
