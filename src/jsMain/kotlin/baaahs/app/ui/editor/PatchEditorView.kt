@@ -154,6 +154,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
                             attrs.editingShader = editingShader
                         }
                         PageTabs.Help -> shaderHelp {
+                            attrs.editingShader = editingShader
                         }
                     }
                 }
