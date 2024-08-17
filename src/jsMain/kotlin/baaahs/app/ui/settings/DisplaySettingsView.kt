@@ -20,7 +20,6 @@ import web.events.Event
 
 private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySettings") { props ->
     val appContext = useContext(appContext)
-    val styles = appContext.allStyles.appUi
 
     var menuAnchor by state<Element?> { null }
     val showMenu by mouseEventHandler { event -> menuAnchor = event.target as Element? }
@@ -76,7 +75,7 @@ private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySetti
             MenuItem {
                 attrs.sx { paddingLeft = 1.em; paddingTop = 0.em }
                 Slider {
-                    attrs.defaultValue = 80
+                    attrs.defaultValue = (defaultDimmerLevel * 100).toInt()
                     attrs.min = 5
                     attrs.max = 100
                     attrs.step = 1
@@ -114,6 +113,8 @@ private val DisplaySettingsView = xComponent<DisplaySettingsProps>("DisplaySetti
         }
     }
 }
+
+const val defaultDimmerLevel = .8
 
 external interface DisplaySettingsProps : Props {
 }
