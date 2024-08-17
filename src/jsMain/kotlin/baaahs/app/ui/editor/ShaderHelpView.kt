@@ -46,7 +46,10 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                         TableCell { +feedBuilder.title }
                         val contentType = feedBuilder.contentType
                         TableCell {
-                            markdown { +feedBuilder.description }
+                            markdown {
+                                +feedBuilder.description
+                                    .replace("\n", "\n<br/>")
+                            }
                             div(+styles.codeContainer) {
                                 pre(+styles.code) {
                                     val type = contentType.glslType
