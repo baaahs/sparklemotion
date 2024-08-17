@@ -1,107 +1,53 @@
 package baaahs.app.ui.editor.help
 
 import baaahs.app.ui.appContext
-import baaahs.gl.glsl.GlslType
-import baaahs.plugin.PluginRef
-import baaahs.ui.*
-import js.objects.jso
+import baaahs.show.mutable.EditingShader
+import baaahs.ui.asColor
+import baaahs.ui.components.palette
+import baaahs.ui.xComponent
 import kotlinx.css.*
 import kotlinx.css.properties.TextDecoration
 import kotlinx.css.properties.TextDecorationLine.lineThrough
-import mui.material.*
+import mui.material.Button
 import mui.material.styles.Theme
 import react.Props
 import react.RBuilder
 import react.RHandler
-import react.dom.code
 import react.dom.div
-import react.dom.pre
-import react.dom.span
+import react.dom.p
 import react.useContext
 import styled.StyleSheet
-import web.html.HTMLElement
-import web.navigator.navigator
 
 private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = true) { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.shaderHelp
+    val editingShader = observe(props.editingShader)
+    val openShader = editingShader.openShader
 
-    Table {
-        attrs.stickyHeader = true
+    var showFeedTypes by state { false }
 
-        TableHead {
-            TableRow {
-                TableCell { +"Feed" }
-                TableCell { +"Description" }
-                TableCell { +"Content Type" }
+    div {
+        if (openShader != null) {
+            p {
+                +"It looks like your shader is written in the ${openShader.shaderDialect.title} dialect."
             }
         }
 
-        TableBody {
-            appContext.plugins.feedBuilders.withPlugin
-                .filterNot { (_, v) -> v.internalOnly }
-                .sortedBy { (_, v) -> v.title }
-                .forEach { (plugin, feedBuilder) ->
-                    TableRow {
-                        TableCell { +feedBuilder.title }
-                        val contentType = feedBuilder.contentType
-                        TableCell {
-                            markdown {
-                                +feedBuilder.description
-                                    .replace("\n", "\n<br/>")
-                            }
-                            div(+styles.codeContainer) {
-                                pre(+styles.code) {
-                                    val type = contentType.glslType
-                                    val pluginRef = PluginRef(plugin.packageName, feedBuilder.resourceName)
+        Button {
+            attrs.onClick = {
+                showFeedTypes = !showFeedTypes
+            }
+            +"Show Feed Types"
+        }
 
-                                    if (type is GlslType.Struct) {
-                                        code { +"struct ${type.name} {\n" }
+        if (showFeedTypes) {
+            palette {
+                attrs.title = "Feed Types"
+                attrs.onClose = { showFeedTypes = false }
+                attrs.autoScroll = true
 
-                                        type.fields.forEach { field ->
-                                            val typeStr =
-                                                if (field.type is GlslType.Struct) field.type.name else field.type.glslLiteral
-                                            val style = if (field.deprecated) styles.deprecated else styles.normal
-                                            val comment =
-                                                if (field.deprecated) "Deprecated. ${field.description}" else field.description
-
-                                            code {
-                                                +"    "
-                                                span(+style) { +"$typeStr ${field.name};" }
-                                                comment?.run { +" "; span(+styles.comment) { +"// $comment" } }
-                                                +"\n"
-                                            }
-                                        }
-                                        code { +"};\n" }
-                                    }
-                                    val varName = feedBuilder.resourceName.replaceFirstChar { it.lowercase() }
-
-                                    code {
-                                        +feedBuilder.exampleDeclaration(varName)
-                                        span(+styles.comment) { +" // @@${pluginRef.shortRef()}" }
-                                    }
-                                }
-
-                                Button {
-                                    attrs.classes = jso { this.root = -styles.copyButton }
-                                    attrs.onClick = { event ->
-                                        val target = event.currentTarget as HTMLElement?
-                                        val pre = target
-                                            ?.parentElement
-                                            ?.getElementsByTagName("pre")
-                                            ?.get(0) as HTMLElement?
-                                        pre?.innerText?.let {
-                                            navigator.clipboard.writeText(it)
-                                            target?.innerText = "Copied!"
-                                        }
-                                    }
-                                    +"Copy…"
-                                }
-                            }
-                        }
-                        TableCell { code { +contentType.id } }
-                    }
-                }
+                feedDescriptions {}
+            }
         }
     }
 }
@@ -168,6 +114,7 @@ class ShaderHelpStyles(
 }
 
 external interface ShaderHelpProps : Props {
+    var editingShader: EditingShader
 }
 
 fun RBuilder.shaderHelp(handler: RHandler<ShaderHelpProps>) =

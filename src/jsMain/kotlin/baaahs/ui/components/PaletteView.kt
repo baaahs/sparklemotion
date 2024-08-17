@@ -15,7 +15,9 @@ import kotlinx.css.px
 import kotlinx.css.width
 import materialui.icon
 import mui.base.Portal
+import mui.material.Box
 import mui.material.Paper
+import mui.system.sx
 import org.w3c.dom.events.MouseEvent
 import react.PropsWithChildren
 import react.RBuilder
@@ -25,6 +27,7 @@ import react.dom.header
 import react.dom.onClick
 import react.useContext
 import styled.inlineStyles
+import web.cssom.Overflow
 import web.html.HTMLElement
 
 private var nextId = 0
@@ -91,7 +94,14 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
                             header { +it }
                         }
 
-                        props.children()
+                        if (props.autoScroll == true) {
+                            Box {
+                                attrs.sx { overflow = Overflow.scroll }
+                                props.children()
+                            }
+                        } else {
+                            props.children()
+                        }
                     }
                 }
             }
@@ -113,6 +123,7 @@ external interface PaletteProps : PropsWithChildren {
     var initialHeight: Int?
     var disablePortal: Boolean?
     var onClose: (() -> Unit)?
+    var autoScroll: Boolean?
 }
 
 fun RBuilder.palette(handler: RHandler<PaletteProps>) =
