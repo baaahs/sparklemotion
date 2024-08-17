@@ -38,10 +38,11 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
                 override val contentType get() = ContentType.Color
                 override val serializerRegistrar
                     get() = objectSerializer("$id:$resourceName", videoInFeed)
+                override val isFunctionFeed: Boolean = true
 
                 override fun build(inputPort: InputPort) = videoInFeed
 
-                override fun funDef(varName: String): String =
+                override fun exampleDeclaration(varName: String): String =
                     "vec4 $varName(vec2 uv);"
             }
         )
