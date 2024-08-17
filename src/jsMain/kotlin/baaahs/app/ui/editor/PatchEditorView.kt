@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.help.shaderHelp
 import baaahs.app.ui.shaderDiagnostics
 import baaahs.app.ui.shaderPreview
 import baaahs.app.ui.toolchainContext

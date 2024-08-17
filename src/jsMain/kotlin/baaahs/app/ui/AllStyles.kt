@@ -2,9 +2,9 @@ package baaahs.app.ui
 
 import baaahs.app.ui.document.FileUploadStyles
 import baaahs.app.ui.editor.ShaderEditorStyles
-import baaahs.app.ui.editor.ShaderHelpStyles
 import baaahs.app.ui.editor.ShaderLibraryStyles
 import baaahs.app.ui.editor.ThemedEditableStyles
+import baaahs.app.ui.editor.help.ShaderHelpStyles
 import baaahs.app.ui.editor.layout.LayoutEditorStyles
 import baaahs.app.ui.gadgets.color.ColorWheelStyles
 import baaahs.app.ui.gadgets.slider.ThemedStyles
