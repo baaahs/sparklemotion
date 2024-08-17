@@ -1,4 +1,4 @@
-package baaahs.app.ui.editor
+package baaahs.app.ui.editor.help
 
 import baaahs.app.ui.appContext
 import baaahs.gl.glsl.GlslType
