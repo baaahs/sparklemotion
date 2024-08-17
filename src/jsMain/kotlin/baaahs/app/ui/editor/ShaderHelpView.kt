@@ -77,14 +77,8 @@ private val ShaderHelpView = xComponent<ShaderHelpProps>("ShaderHelp", isPure = 
                                     val varName = feedBuilder.resourceName.replaceFirstChar { it.lowercase() }
 
                                     code {
-                                        val funDef = feedBuilder.funDef(varName)
-                                        if (funDef != null) {
-                                            +funDef
-                                            +" "
-                                        } else {
-                                            +"uniform ${type.glslLiteral} $varName; "
-                                        }
-                                        span(+styles.comment) { +"// @@${pluginRef.shortRef()}\n" }
+                                        +feedBuilder.exampleDeclaration(varName)
+                                        span(+styles.comment) { +" // @@${pluginRef.shortRef()}" }
                                     }
                                 }
 
