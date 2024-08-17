@@ -31,7 +31,7 @@ import kotlinx.serialization.Transient
 data class PixelIndexFeed(@Transient val `_`: Boolean = true) : Feed {
     override val pluginPackage: String get() = CorePlugin.id
     override val title: String get() = "Pixel Index"
-    override fun getType(): GlslType = GlslType.Float
+    override fun getType(): GlslType = GlslType.Int
     override val contentType: ContentType
         get() = ContentType.XyzCoordinate
 
