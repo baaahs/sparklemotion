@@ -166,6 +166,7 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
             pointerDownOffset.current = null
             pointerDownOffset.current = handle.value - getEventValue(e)
             activeHandle = handle
+            println("active handle.id = ${handle.id}")
             props.onSlideStart?.invoke(handle)
         } else {
             pointerDownOffset.current = null
