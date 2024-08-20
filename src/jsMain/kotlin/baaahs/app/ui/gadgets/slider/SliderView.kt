@@ -65,7 +65,19 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.onSlideStart = disableScroll.asDynamic()
             attrs.onSlideEnd = enableScroll.asDynamic()
 
-            sliderRail {}
+            if (isBeatLinked) {
+                sliderBackground {
+                    attrs.handle = floorHandle
+                    attrs.variant = HandleVariant.MIN
+                }
+                sliderBackground {
+                    attrs.variant = HandleVariant.MAX
+                }
+            } else {
+                sliderBackground {}
+            }
+
+            div(+styles.railChannel) {}
 
             div(+styles.tracks) {
                 tracks {

@@ -67,10 +67,8 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
         when (variant) {
             HandleVariant.FULL ->
                 img(src = "/assets/slider-handle-full.svg", classes = +styles.handleNormal) {}
-
             HandleVariant.MIN ->
                 img(src = "/assets/slider-handle-min.svg", classes = +styles.handleNormal) {}
-
             HandleVariant.MAX ->
                 img(src = "/assets/slider-handle-max.svg", classes = +styles.handleNormal) {}
         }
