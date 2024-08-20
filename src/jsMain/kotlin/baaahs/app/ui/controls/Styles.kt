@@ -218,6 +218,7 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
         whiteSpace = WhiteSpace.nowrap
     }
 
+    val slider by css {}
 
     val global = CssBuilder().apply {
         ".${baaahs.app.ui.Styles.editModeOff.name}" {

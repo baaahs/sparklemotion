@@ -2,8 +2,10 @@ package baaahs.gadgets
 
 import baaahs.Gadget
 import baaahs.clamp
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlin.random.Random
 
@@ -30,6 +32,8 @@ data class Slider(
     var position: Float by updatable("position", initialValue, Float.serializer())
     var floor: Float by updatable("floor", minValue, Float.serializer())
     var beatLinked: Boolean by updatable("beatLinked", false, Boolean.serializer())
+    var midiStatus by updatable("midiStatus", null, MidiStatus.serializer().nullable)
+
     private val spread = maxValue - minValue
 
     val domain get() = minValue..maxValue
@@ -43,6 +47,12 @@ data class Slider(
         position = minValue + spread * value
     }
 }
+
+@Serializable
+data class MidiStatus(
+    val lastEventAt: Instant,
+    val targetValue: Float,
+)
 
 fun ClosedFloatingPointRange<Float>.toDoubles(): ClosedFloatingPointRange<Double> {
     return start.toDouble()..endInclusive.toDouble()

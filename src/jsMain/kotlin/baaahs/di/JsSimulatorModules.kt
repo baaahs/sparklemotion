@@ -15,6 +15,7 @@ import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.SimulatorPlugins
+import baaahs.plugin.midi.*
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
 import baaahs.sim.*
@@ -98,6 +99,8 @@ class JsSimPinkyModule(
         get() = simMappingManager
     override val Scope.dmxDriver: Dmx.Driver
         get() = SimDmxDriver(get(named("Fallback")))
+    override val Scope.midiManager: MidiManager
+        get() = MidiManager(listOf(MidiSource.None))
     override val Scope.pinkySettings: PinkySettings
         get() = pinkySettings_
     override val Scope.sceneMonitor: SceneMonitor

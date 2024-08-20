@@ -38,7 +38,8 @@ class WebClient(
     private val fileDialog: FileDialog,
     private val showManager: ShowManager,
     private val sceneManager: SceneManager,
-    private val stageManager: ClientStageManager
+    private val stageManager: ClientStageManager,
+    private val eventManager: EventManager
 ) : HostedWebApp {
     val facade = Facade()
 
@@ -56,6 +57,7 @@ class WebClient(
             pinkyState = newState
             facade.notifyChanged()
         }
+        println("eventManager = ${eventManager}")
     }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)
@@ -71,6 +73,7 @@ class WebClient(
     init {
         globalLaunch {
             storage.loadSettings()?.let { updateUiSettings(it, saveToStorage = false) }
+            eventManager.start()
         }
     }
 
@@ -153,6 +156,9 @@ class WebClient(
 
         val uiSettings: UiSettings
             get() = this@WebClient.uiSettings
+
+        val eventManager: EventManager
+            get() = this@WebClient.eventManager
 
         var appMode: AppMode
             get() = this@WebClient.uiSettings.appMode
