@@ -1,6 +1,7 @@
 package baaahs.visualizer.movers
 
 import baaahs.Color
+import baaahs.diff
 import baaahs.model.MovingHeadAdapter
 import kotlin.math.absoluteValue
 import kotlin.math.min
