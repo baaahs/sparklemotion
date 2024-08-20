@@ -1,4 +1,7 @@
 .nojekyll
+assets/slider-handle-full.svg
+assets/slider-handle-max.svg
+assets/slider-handle-min.svg
 baaahs/plugin/beatlink/BeatLinkControl.glsl
 baaahs/plugin/beatlink/WaveformDetail.glsl
 baaahs/plugin/beatlink/WaveformOverview.glsl
