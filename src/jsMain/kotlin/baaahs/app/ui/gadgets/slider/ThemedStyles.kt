@@ -103,25 +103,6 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
     }
 
-    val handleMin by css {
-        width = 20.px
-        height = 40.px
-        position = Position.relative
-        top = 2.px
-        left = 11.px
-
-        filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
-    }
-    val handleMax by css {
-        width = 20.px
-        height = 40.px
-        position = Position.relative
-        top = 2.px
-        left = 11.px
-
-        filter = "drop-shadow(1px 1px 1px rgba(0, 0, 0, .3))"
-    }
-
     val handleNotch by css {
         height = 1.px
         backgroundColor = Color.black
@@ -168,6 +149,14 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         transform.translateX((-50).pct)
         borderRadius = 7.px
         cursor = Cursor.pointer
+    }
+    val railBackgroundMin by css(railBackground) {
+        width = 32.px
+        left = -17.px
+    }
+    val railBackgroundMax by css(railBackground) {
+        width = 38.px
+        left = 21.px
     }
 
     val railChannel by css {
