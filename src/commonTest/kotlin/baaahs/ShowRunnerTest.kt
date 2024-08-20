@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.client.EventManager
 import baaahs.controller.Controller
 import baaahs.fixtures.*
 import baaahs.gadgets.Slider
@@ -10,6 +11,7 @@ import baaahs.gl.testToolchain
 import baaahs.io.ByteArrayWriter
 import baaahs.io.FsServerSideSerializer
 import baaahs.net.TestNetwork
+import baaahs.plugin.midi.MidiManager
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
 import baaahs.shows.FakeGlContext
@@ -61,11 +63,12 @@ class ShowRunnerTest {
         val renderManager = RenderManager(fakeGlslContext)
         val plugins = testPlugins()
         fixtureManager = FixtureManagerImpl(renderManager, plugins)
+        val eventManager = EventManager(MidiManager(emptyList()))
         stageManager = StageManager(
             testToolchain, renderManager, server, fs.rootFile, fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
-            PinkyConfigStore(plugins, fs.rootFile)
+            PinkyConfigStore(plugins, fs.rootFile), eventManager
         )
         stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(testSceneData())

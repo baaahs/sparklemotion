@@ -2,6 +2,7 @@ package baaahs.show.live
 
 interface ControlsInfo {
     val unplacedControls: Set<OpenControl>
+    val orderedOnScreenControls: List<OpenControl>
     val relevantUnplacedControls: List<OpenControl>
 
     fun release()
@@ -11,17 +12,21 @@ class GridLayoutControlsInfo(show: OpenShow, activePatchSet: ActivePatchSet) : C
     private val placedControls: Set<OpenControl>
     private val onScreenControls: Set<OpenControl>
     override val unplacedControls: Set<OpenControl>
+    override val orderedOnScreenControls: List<OpenControl>
     override val relevantUnplacedControls: List<OpenControl>
 
     init {
         val placedControls = mutableSetOf<OpenControl>()
         val onScreenControls = mutableSetOf<OpenControl>()
+        val orderedOnScreenControls = mutableListOf<OpenControl>()
 
         fun OpenIGridLayout.visitItems(id: String, isOnScreen: Boolean) {
             items.forEach { gridItem ->
                 placedControls.add(gridItem.control)
                 if (isOnScreen)
-                    onScreenControls.add(gridItem.control)
+                    onScreenControls.add(gridItem.control).also { added ->
+                        if (added) orderedOnScreenControls.add(gridItem.control)
+                    }
 
                 gridItem.layout?.visitItems(id + "::" + gridItem.control.id, isOnScreen)
             }
@@ -38,6 +43,7 @@ class GridLayoutControlsInfo(show: OpenShow, activePatchSet: ActivePatchSet) : C
         }
         this.placedControls = placedControls.toSet()
         this.onScreenControls = onScreenControls.toSet()
+        this.orderedOnScreenControls = orderedOnScreenControls.toList()
 
         val activeFeeds = activePatchSet.allFeeds
 

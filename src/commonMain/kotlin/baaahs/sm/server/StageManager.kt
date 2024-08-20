@@ -1,8 +1,10 @@
 package baaahs.sm.server
 
 import baaahs.*
+import baaahs.client.EventManager
 import baaahs.client.document.sceneStore
 import baaahs.client.document.showStore
+import baaahs.control.OpenSliderControl
 import baaahs.doc.SceneDocumentType
 import baaahs.doc.ShowDocumentType
 import baaahs.fixtures.FixtureManager
@@ -20,6 +22,7 @@ import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
+import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
@@ -37,15 +40,41 @@ class StageManager(
     private val serverNotices: ServerNotices,
     private val sceneMonitor: SceneMonitor,
     private val fsSerializer: FsServerSideSerializer,
-    private val pinkyConfigStore: PinkyConfigStore
+    private val pinkyConfigStore: PinkyConfigStore,
+    private val eventManager: EventManager
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
 
     private var checkActivePatchSet: Boolean = false
+    private var controlDisplay: ControlDisplay? = null
+    private var onScreenSliders: List<OpenSliderControl>? = null
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
+
+        eventManager.addSliderListener { channel, value ->
+            println("StageManager found midi event on $channel -> $value")
+            showRunner?.let { showRunner ->
+                val controlsInfo = showRunner.openShow.getSnapshot().controlsInfo
+                onScreenSliders = buildList<OpenSliderControl> {
+                    controlsInfo.relevantUnplacedControls.forEach {
+                        if (it is OpenSliderControl) add(it)
+                    }
+                    controlsInfo.orderedOnScreenControls.forEach {
+                        if (it is OpenSliderControl) add(it)
+                    }
+                }
+                println("Sliders on screen: ${onScreenSliders?.joinToString { it.id }}")
+            }
+
+            val slider = onScreenSliders?.get(channel)
+            if (slider != null) {
+                val scaledValue = slider.slider.domain.scale(value)
+                println("Set slider ${slider.id} to $scaledValue!")
+                slider.slider.position = scaledValue
+            }
+        }
     }
 
     @Suppress("unused")
@@ -133,6 +162,7 @@ class StageManager(
         if (checkActivePatchSet) {
             showRunner?.onSelectedPatchesChanged()
             checkActivePatchSet = false
+            controlDisplay = null
         }
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.

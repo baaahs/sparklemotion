@@ -54,6 +54,11 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
         }
     }
 
+    val handleSlideEnd by handler<(Handle) -> Unit>(props.onSlideEnd) {
+        enableScroll.asDynamic()
+        props.onSlideEnd?.invoke()
+    }
+
     div(+styles.wrapper) {
         baaahsSlider {
             attrs.className = +styles.slider
@@ -63,7 +68,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
             attrs.domain = domain
             attrs.handles = handles
             attrs.onSlideStart = disableScroll.asDynamic()
-            attrs.onSlideEnd = enableScroll.asDynamic()
+            attrs.onSlideEnd = handleSlideEnd
 
             if (isBeatLinked) {
                 sliderBackground {
@@ -124,6 +129,7 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
 external interface SliderProps : Props {
     var slider: Slider
+    var onSlideEnd: (() -> Unit)?
 }
 
 fun RBuilder.slider(handler: RHandler<SliderProps>) =

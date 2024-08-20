@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
@@ -20,6 +21,7 @@ import baaahs.model.Model
 import baaahs.net.FragmentingUdpSocket
 import baaahs.net.Network
 import baaahs.net.TestNetwork
+import baaahs.plugin.midi.MidiManager
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
@@ -73,11 +75,12 @@ object PinkySpec : Spek({
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
+        val eventManager by value { EventManager(MidiManager(emptyList())) }
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
                 gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
-                PinkyConfigStore(plugins, fakeFs.rootFile)
+                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager
             )
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
@@ -103,7 +106,7 @@ object PinkySpec : Spek({
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
-                PinkyConfigStore(plugins, fakeFs.rootFile)
+                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager
             )
         }
         val pinkyLink by value { network.links.only() }
