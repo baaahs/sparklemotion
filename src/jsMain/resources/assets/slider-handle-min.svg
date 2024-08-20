@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     version="1.1" focusable="false"
+     viewBox="0 0 25 64" width="25" height="64"
+     preserveAspectRatio="none">
+    <defs>
+        <linearGradient id="gradient" gradientUnits="userSpaceOnUse" x1="12" y1="0" x2="12" y2="50"
+                        gradientTransform="matrix(1, 0, 0, 1.281417, 0.854204, 0.000001)">
+            <stop offset="0" stop-color="#6ABBC0"/>
+            <stop offset="0.1" stop-color="#6ABBC0"/>
+            <stop offset="0.1" stop-color="#00A4D1"/>
+            <stop offset="0.9" stop-color="#6ABBC0"/>
+            <stop offset="0.9" stop-color="#00A4D1"/>
+            <stop offset="1" stop-color="#00A4D1"/>
+        </linearGradient>
+    </defs>
+    <mask id="led">
+        <rect x="0" y="0" width="25" height="64" fill="white"/>
+        <rect x="3" y="30" width="19" height="5" rx="2" fill="black" stroke="#0040ff"/>
+<!--        <rect x="0" y="0" width="23" height="27" fill=""/>-->
+    </mask>
+    <rect x="3" y="30" width="19" height="5" fill="#00FF28"/>
+    <rect x="0" y="0" width="12" height="64" fill="url(#gradient)" mask="url(#led)"/>
+    <path stroke="#007DA9" d="M 0 6.5 L 12 6.5" opacity=".25"/>
+    <path stroke="#007DA9" d="M 0 13.5 L 12 13.5" opacity=".5"/>
+    <path stroke="#B8D5CF" d="M 0 14.5 L 12 14.5" opacity=".5"/>
+    <path stroke="#007DA9" d="M 0 22 L 12 22" opacity=".5"/>
+    <path stroke="#B8D5CF" d="M 0 23 L 12 23" opacity=".5"/>
+    <path stroke="#007DA9" d="M 0 41 L 12 41"/>
+    <path stroke="#B8D5CF" d="M 0 42 L 12 42"/>
+    <path stroke="#007DA9" d="M 0 50 L 12 50"/>
+    <path stroke="#B8D5CF" d="M 0 51 L 12 51"/>
+    <path stroke="#B8D5CF" d="M 0 58 L 12 58" opacity=".25"/>
+    <path stroke="#007DA9" fill="none" opacity=".75" d="M 12 0 L 12 63.5 L .5 63.5"/>
+    <path stroke="#B8D5CF" fill="none" opacity=".75" d="M 12 0.5 L .5 0 L .5 64"/>
+    <path stroke="#B8D5CF" fill="none" opacity=".75" d="M 12 0 L 0 0 L 0 64"/>
+    <rect x="3" y="30" width="19" height="5" rx="2" fill="none" stroke="#0040ff"/>
+    <path fill="#000000" d="M 2 21 L 6 15 L 10 21" opacity=".5"/>
+</svg>

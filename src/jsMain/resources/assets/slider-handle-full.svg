@@ -15,9 +15,9 @@
     </defs>
     <mask id="led">
         <rect x="0" y="0" width="25" height="64" fill="white"/>
-        <rect x="1" y="30" width="23" height="5" rx="2" fill="black" stroke="#0040ff"/>
+        <rect x="3" y="30" width="19" height="5" rx="2" fill="black" stroke="#0040ff"/>
     </mask>
-    <rect x="1" y="30" width="25" height="5" fill="#00FF28"/>
+    <rect x="3" y="30" width="19" height="5" fill="#00FF28"/>
     <rect x="0" y="0" width="25" height="64" fill="url(#gradient)" mask="url(#led)"/>
     <path stroke="#007DA9" d="M 0 6.5 L 25 6.5" opacity=".25"/>
     <path stroke="#007DA9" d="M 0 13.5 L 25 13.5"/>
@@ -31,5 +31,5 @@
     <path stroke="#B8D5CF" d="M 0 58 L 25 58" opacity=".25"/>
     <path stroke="#007DA9" fill="none" opacity=".75" d="M 24.5 0.5 L 24.5 63.5 L .5 63.5"/>
     <path stroke="#B8D5CF" fill="none" opacity=".75" d="M 25 0.5 L .5 0 L .5 64"/>
-    <rect x="1" y="30" width="23" height="5" rx="2" fill="none" stroke="#0040ff"/>
+    <rect x="3" y="30" width="19" height="5" rx="2" fill="none" stroke="#0040ff"/>
 </svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     version="1.1" focusable="false"
+     viewBox="0 0 25 64" width="25" height="64"
+     preserveAspectRatio="none">
+    <defs>
+        <linearGradient id="gradient" gradientUnits="userSpaceOnUse" x1="12" y1="0" x2="12" y2="50"
+                        gradientTransform="matrix(1, 0, 0, 1.281417, 0.854204, 0.000001)">
+            <stop offset="0" stop-color="#6ABBC0"/>
+            <stop offset="0.1" stop-color="#6ABBC0"/>
+            <stop offset="0.1" stop-color="#00A4D1"/>
+            <stop offset="0.9" stop-color="#6ABBC0"/>
+            <stop offset="0.9" stop-color="#00A4D1"/>
+            <stop offset="1" stop-color="#00A4D1"/>
+        </linearGradient>
+    </defs>
+    <mask id="led">
+        <rect x="0" y="0" width="25" height="64" fill="white"/>
+        <rect x="3" y="30" width="19" height="5" rx="2" fill="black" stroke="#0040ff"/>
+<!--        <rect x="0" y="37" width="25" height="28" fill=""/>-->
+    </mask>
+    <rect x="3" y="30" width="19" height="5" fill="#00FF28"/>
+    <rect x="13" y="0" width="25" height="64" fill="url(#gradient)" mask="url(#led)"/>
+    <path stroke="#007DA9" d="M 13 6.5 L 25 6.5" opacity=".25"/>
+    <path stroke="#007DA9" d="M 13 13.5 L 25 13.5"/>
+    <path stroke="#B8D5CF" d="M 13 14.5 L 25 14.5"/>
+    <path stroke="#007DA9" d="M 13 22 L 25 22"/>
+    <path stroke="#B8D5CF" d="M 13 23 L 25 23"/>
+    <path stroke="#007DA9" d="M 13 41 L 25 41" opacity=".5"/>
+    <path stroke="#B8D5CF" d="M 13 42 L 25 42" opacity=".5"/>
+    <path stroke="#007DA9" d="M 13 50 L 25 50" opacity=".5"/>
+    <path stroke="#B8D5CF" d="M 13 51 L 25 51" opacity=".5"/>
+    <path stroke="#B8D5CF" d="M 13 58 L 25 58" opacity=".25" mask="url(#led)"/>
+    <path stroke="#007DA9" fill="none" opacity=".75" d="M 24.5 0.5 L 24.5 37.5 L 12.5 37.5"/>
+    <path stroke="#B8D5CF" fill="none" opacity=".75" d="M 25 0.5 L 13 0 L 13 64"/>
+    <rect x="3" y="30" width="19" height="5" rx="2" fill="none" stroke="#0040ff"/>
+    <path fill="#000000" d="M 15 43 L 19 49 L 23 43" opacity=".5"/>
+</svg>
