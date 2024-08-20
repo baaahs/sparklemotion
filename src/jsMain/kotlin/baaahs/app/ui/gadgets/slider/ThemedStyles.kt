@@ -65,6 +65,18 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
             pointerEvents = PointerEvents.none
         }
     }
+    val handleTouchAreaMin by css(handleTouchArea) {
+        width = 24.px
+        left = -12.px
+    }
+    val handleTouchAreaMax by css(handleTouchArea) {
+        width = 24.px
+        left = 12.px
+
+        img {
+            left = (-7).px
+        }
+    }
 
     val handleWrapper by css {
         position = Position.absolute

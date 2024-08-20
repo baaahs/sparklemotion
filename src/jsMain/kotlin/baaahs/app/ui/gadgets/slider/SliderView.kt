@@ -77,11 +77,13 @@ private val slider = xComponent<SliderProps>("Slider") { props ->
 
             handle {
                 attrs.handle = positionHandle
+                attrs.variant = if (isBeatLinked) HandleVariant.MAX else HandleVariant.FULL
             }
 
             if (isBeatLinked) {
-                altHandle {
+                handle {
                     attrs.handle = floorHandle
+                    attrs.variant = HandleVariant.MIN
                 }
             }
 

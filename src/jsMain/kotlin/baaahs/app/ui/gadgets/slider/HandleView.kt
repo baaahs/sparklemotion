@@ -48,7 +48,13 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
 
     val value = handle.value
     val percent = sliderContext.scale.getValue(value)
-    div(+styles.handleTouchArea) {
+    val variant = props.variant ?: HandleVariant.FULL
+    val touchAreaClass = when (variant) {
+        HandleVariant.FULL -> styles.handleTouchArea
+        HandleVariant.MIN -> styles.handleTouchAreaMin
+        HandleVariant.MAX -> styles.handleTouchAreaMax
+    }
+    div(+touchAreaClass) {
         ref = touchAreaRef
         inlineStyles {
             top = percent.pct
@@ -58,12 +64,26 @@ private val handle = xComponent<HandleProps>("Handle") { props ->
         attrs.onPointerDown = sliderContext.getPointerDownHandlerFor(handle)
         attrs.onKeyDown = sliderContext.getKeyDownHandlerFor(handle)
 
-        img(src = "/assets/slider-handle-full.svg", classes = +styles.handleNormal) {}
+        when (variant) {
+            HandleVariant.FULL ->
+                img(src = "/assets/slider-handle-full.svg", classes = +styles.handleNormal) {}
+
+            HandleVariant.MIN ->
+                img(src = "/assets/slider-handle-min.svg", classes = +styles.handleNormal) {}
+
+            HandleVariant.MAX ->
+                img(src = "/assets/slider-handle-max.svg", classes = +styles.handleNormal) {}
+        }
     }
 }
 
 external interface HandleProps : Props {
     var handle: Handle
+    var variant: HandleVariant?
+}
+
+enum class HandleVariant {
+    FULL, MIN, MAX
 }
 
 fun RBuilder.handle(handler: RHandler<HandleProps>) =
