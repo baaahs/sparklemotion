@@ -6,22 +6,21 @@ import baaahs.app.ui.gadgets.slider.resetButton
 import baaahs.app.ui.gadgets.slider.slider
 import baaahs.client.EventManager
 import baaahs.control.OpenSliderControl
-import baaahs.document
 import baaahs.gadgets.Slider
 import baaahs.scale
-import baaahs.ui.and
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.show.live.ControlProps
+import baaahs.ui.*
 import baaahs.util.globalLaunch
-import js.array.asList
 import kotlinx.coroutines.delay
 import mui.icons.material.MusicNote
 import mui.material.IconButton
 import mui.material.IconButtonColor
 import mui.material.Size
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
+import react.useContext
 import web.html.HTMLElement
 
 private val SliderControlView = xComponent<SliderControlProps>("SliderControl") { props ->
@@ -34,41 +33,42 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
     val containerRef = ref<HTMLElement>()
     val eventManager = appContext.webClient.eventManager
-    val sliderNumber = ref<Int>(null)
     val midiEventDeBumpifier = memo(slider) {
         MidiEventDeBumpifier(slider)
     }
-    val sliderListener = memo(slider, eventManager) {
-        EventManager.SliderListener { channel, value ->
+    val sliderControl = props.sliderControl
+    val openShow = props.controlProps?.openShow
+    openShow?.activePatchSetMonitor?.addObserver {
+        forceRender()
+    }
+    val controlsInfo = openShow?.getSnapshot()?.controlsInfo
+
+    val sliderNumber = memo(controlsInfo, sliderControl) {
+        val visibleSliders = controlsInfo
+            ?.orderedOnScreenControls
+            ?.filterIsInstance<OpenSliderControl>() ?: emptyList()
+        visibleSliders.indexOf(sliderControl)
+    }
+    val deviceEventListener = memo(slider, eventManager, sliderNumber) {
+        EventManager.DeviceEventListener { channel, value ->
             val scaledValue = slider.domain.scale(value)
-            sliderNumber.current?.let { sliderNumber ->
-                if (channel == sliderNumber) {
-                    midiEventDeBumpifier.maybeApplyChange(scaledValue)
-                    containerRef.current?.let {
-                        it.style.transition = "background-color 0.1s"
-                        it.style.backgroundColor = "rgba(255, 127, 0, .5)"
-                        globalLaunch {
-                            delay(10)
-                            it.style.backgroundColor = "rgba(255, 127, 0, 0)"
-                        }
+            if (channel == sliderNumber) {
+                midiEventDeBumpifier.maybeApplyChange(scaledValue)
+                containerRef.current?.let {
+                    it.style.transition = "background-color 0.1s"
+                    it.style.backgroundColor = "rgba(255, 127, 0, .5)"
+                    globalLaunch {
+                        delay(10)
+                        it.style.backgroundColor = "rgba(255, 127, 0, 0)"
                     }
                 }
             }
         }
     }
-    console.log("I'm a slider!", slider.title)
-    val sliderControl = props.sliderControl
-    onMount(sliderListener) {
-        if (sliderControl != null) {
-            SliderFinder.hereIAm(sliderControl, sliderNumber)
-        }
-        eventManager.addSliderListener(sliderListener)
-        withCleanup {
-            eventManager.removeSliderListener(sliderListener)
-            if (sliderControl != null) {
-                SliderFinder.thereIGo(sliderControl)
-            }
-        }
+
+    onMount(eventManager, deviceEventListener) {
+        eventManager.addSliderListener(deviceEventListener)
+        withCleanup { eventManager.removeSliderListener(deviceEventListener) }
     }
     val handleSliderUpdate by handler(midiEventDeBumpifier) {
         midiEventDeBumpifier.lastUpdate = null
@@ -89,12 +89,13 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
 
     div(+Styles.slider and sliderControl?.inUseStyle?.let { +it }) {
         ref = containerRef
-        attrs[DATA_CONTROL_ID] = sliderControl?.id ?: "???"
 
         slider {
             attrs.slider = slider
             attrs.onSlideEnd = handleSliderUpdate
         }
+
+        div(+Styles.deviceChannelNumber) { +sliderNumber.toString() }
 
         IconButton {
             attrs.className = -Styles.beatLinkedSwitch
@@ -138,36 +139,8 @@ class MidiEventDeBumpifier(
     }
 }
 
-private const val DATA_CONTROL_ID: String = "data-control-id"
-
-object SliderFinder {
-    val knownSliders = mutableMapOf<String, MutableRefObject<Int>>()
-
-    fun hereIAm(sliderControl: OpenSliderControl, sliderNumber: MutableRefObject<Int>) {
-        knownSliders[sliderControl.id] = sliderNumber
-        changed()
-    }
-
-    fun thereIGo(sliderControl: OpenSliderControl) {
-        knownSliders.remove(sliderControl.id)
-        changed()
-    }
-
-    fun changed() {
-        document.getElementsByClassName(+Styles.slider).asList().forEachIndexed { index, element ->
-            val controlId = element.attributes.getNamedItem(DATA_CONTROL_ID)?.value
-            knownSliders[controlId]?.current = index
-            console.log("I'm a slider", controlId, "and my number is", index)
-        }
-    }
-
-    fun findSliderNumber(sliderControl: OpenSliderControl): Int? {
-        return knownSliders[sliderControl.id]?.current
-    }
-
-}
-
 external interface SliderControlProps : Props {
+    var controlProps: ControlProps?
     var slider: Slider
     var sliderControl: OpenSliderControl?
 }

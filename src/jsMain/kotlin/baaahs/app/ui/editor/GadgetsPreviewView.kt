@@ -1,5 +1,6 @@
 package baaahs.app.ui.editor
 
+import baaahs.app.ui.appContext
 import baaahs.app.ui.controls.controlWrapper
 import baaahs.show.live.ControlProps
 import baaahs.show.mutable.EditingShader
@@ -11,9 +12,12 @@ import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.div
+import react.useContext
 import styled.StyleSheet
 
 private val GadgetsPreviewView = xComponent<GadgetsPreviewProps>("GadgetsPreview") { props ->
+    val appContext = useContext(appContext)
+
     var mutableControls by state {
         props.editingShader.gadgets.toTypedArray()
     }
@@ -28,7 +32,7 @@ private val GadgetsPreviewView = xComponent<GadgetsPreviewProps>("GadgetsPreview
     }
 
     div(+GadgetsPreviewStyles.gadgetsPreview) {
-        val previewControlProps = ControlProps()
+        val previewControlProps = ControlProps(appContext.showManager.openShow!!)
 
         mutableControls.forEach { gadgetPreview ->
             val openControl = gadgetPreview.openControl

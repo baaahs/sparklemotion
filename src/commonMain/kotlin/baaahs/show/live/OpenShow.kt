@@ -227,6 +227,16 @@ class OpenShow(
         }
     }
 
+    fun visitTabs(callback: (layout: OpenIGridLayout, isOnScreen: Boolean) -> Unit) {
+        val currentTab = openLayouts.currentFormat?.currentTab as? OpenGridTab
+        openLayouts.currentFormat?.tabs?.forEach { tab ->
+            if (tab is OpenGridTab) {
+                val isOnScreen = tab === currentTab
+                callback(tab, isOnScreen)
+            }
+        }
+    }
+
     companion object {
         private val logger = Logger("OpenShow")
     }

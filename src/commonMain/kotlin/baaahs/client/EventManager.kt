@@ -8,7 +8,7 @@ import baaahs.util.Logger
 class EventManager(
     private val midiManager: MidiManager
 ) {
-    private val sliderListeners = mutableListOf<SliderListener>()
+    private val deviceEventListeners = mutableListOf<DeviceEventListener>()
     private val deviceStates = mutableMapOf<MidiDevice, State>()
 
     init {
@@ -37,7 +37,7 @@ class EventManager(
                     val channel = midiEvent.channel
                     val value = (midiEvent.data1 * 128 + midiEvent.data2).toFloat() / 0x3fff
                     logger.debug {"PITCH_BEND $channel $value (data = ${midiEvent.data1} ${midiEvent.data2})" }
-                    sliderListeners.forEach { it.onSliderChange(channel, value) }
+                    deviceEventListeners.forEach { it.onSliderChange(channel, value) }
                 }
                 else -> {
                     logger.debug {"unknown MIDI event: $midiEvent from ${midiDevice.id}" }
@@ -51,15 +51,15 @@ class EventManager(
         midiManager.start()
     }
 
-    fun addSliderListener(listener: SliderListener) {
-        sliderListeners.add(listener)
+    fun addSliderListener(listener: DeviceEventListener) {
+        deviceEventListeners.add(listener)
     }
 
-    fun removeSliderListener(listener: SliderListener) {
-        sliderListeners.remove(listener)
+    fun removeSliderListener(listener: DeviceEventListener) {
+        deviceEventListeners.remove(listener)
     }
 
-    fun interface SliderListener {
+    fun interface DeviceEventListener {
         fun onSliderChange(channel: Int, value: Float)
     }
 
