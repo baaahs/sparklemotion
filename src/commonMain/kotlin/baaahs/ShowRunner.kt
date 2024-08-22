@@ -46,11 +46,12 @@ class ShowRunner(
 
     fun onSelectedPatchesChanged() {
         activePatchSetChanged = true
+        openShow.invalidateSnapshotCache()
     }
 
     fun housekeeping(): Boolean {
         if (activePatchSetChanged) {
-            fixtureManager.activePatchSetChanged(openShow.buildActivePatchSet())
+            fixtureManager.activePatchSetChanged(openShow.getSnapshot().activePatchSet)
             activePatchSetChanged = false
         }
 

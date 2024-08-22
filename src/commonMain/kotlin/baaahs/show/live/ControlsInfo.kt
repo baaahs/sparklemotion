@@ -1,6 +1,13 @@
 package baaahs.show.live
 
-class GridLayoutControlDisplay(override val show: OpenShow) : ControlDisplay {
+interface ControlsInfo {
+    val unplacedControls: Set<OpenControl>
+    val relevantUnplacedControls: List<OpenControl>
+
+    fun release()
+}
+
+class GridLayoutControlsInfo(show: OpenShow, activePatchSet: ActivePatchSet) : ControlsInfo {
     private val placedControls: Set<OpenControl>
     private val onScreenControls: Set<OpenControl>
     override val unplacedControls: Set<OpenControl>
@@ -32,7 +39,6 @@ class GridLayoutControlDisplay(override val show: OpenShow) : ControlDisplay {
         this.placedControls = placedControls.toSet()
         this.onScreenControls = onScreenControls.toSet()
 
-        val activePatchSet = show.buildActivePatchSet()
         val activeFeeds = activePatchSet.allFeeds
 
         val offScreenControls = show.implicitControls.toSet() - onScreenControls
