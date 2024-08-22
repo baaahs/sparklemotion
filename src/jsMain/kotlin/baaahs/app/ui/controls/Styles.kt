@@ -219,6 +219,13 @@ object Styles : StyleSheet("app-ui-controls", isStatic = true) {
     }
 
     val slider by css {}
+    val deviceChannelNumber by css {
+        position = Position.absolute
+        fontSize = 0.9.em
+        fontWeight = FontWeight.bold
+        top = 3.px
+        right = 4.px
+    }
 
     val global = CssBuilder().apply {
         ".${baaahs.app.ui.Styles.editModeOff.name}" {

@@ -1,53 +1,54 @@
 package baaahs.show.live
 
+import baaahs.control.OpenVacuityControl
+
 interface ControlsInfo {
+    val onScreenControls: Set<OpenControl>
+    val offScreenControls: Set<OpenControl>
     val unplacedControls: Set<OpenControl>
-    val orderedOnScreenControls: List<OpenControl>
+    val visiblePlacedControls: List<OpenControl>
     val relevantUnplacedControls: List<OpenControl>
+    val orderedOnScreenControls: List<OpenControl>
 
     fun release()
 }
 
 class GridLayoutControlsInfo(show: OpenShow, activePatchSet: ActivePatchSet) : ControlsInfo {
     private val placedControls: Set<OpenControl>
-    private val onScreenControls: Set<OpenControl>
+    override val onScreenControls: Set<OpenControl>
+    override val offScreenControls: Set<OpenControl>
     override val unplacedControls: Set<OpenControl>
-    override val orderedOnScreenControls: List<OpenControl>
+    override val visiblePlacedControls: List<OpenControl>
     override val relevantUnplacedControls: List<OpenControl>
+    override val orderedOnScreenControls: List<OpenControl>
 
     init {
         val placedControls = mutableSetOf<OpenControl>()
         val onScreenControls = mutableSetOf<OpenControl>()
-        val orderedOnScreenControls = mutableListOf<OpenControl>()
+        val visiblePlacedControls = mutableListOf<OpenControl>()
 
         fun OpenIGridLayout.visitItems(id: String, isOnScreen: Boolean) {
             items.forEach { gridItem ->
                 placedControls.add(gridItem.control)
                 if (isOnScreen)
                     onScreenControls.add(gridItem.control).also { added ->
-                        if (added) orderedOnScreenControls.add(gridItem.control)
+                        if (added) visiblePlacedControls.add(gridItem.control)
                     }
 
                 gridItem.layout?.visitItems(id + "::" + gridItem.control.id, isOnScreen)
             }
         }
-
-        val currentTab = show.openLayouts.currentFormat?.currentTab as? OpenGridTab
-        show.openLayouts.currentFormat?.tabs?.forEach { tab ->
-            if (tab is OpenGridTab) {
-                val isOnScreen = tab === currentTab
-
-
-                currentTab?.visitItems("_tab_", isOnScreen)
-            }
+        show.visitTabs { layout, isOnScreen ->
+            layout.visitItems("_tab_", isOnScreen)
         }
+
         this.placedControls = placedControls.toSet()
         this.onScreenControls = onScreenControls.toSet()
-        this.orderedOnScreenControls = orderedOnScreenControls.toList()
+        this.visiblePlacedControls = visiblePlacedControls.toList()
 
         val activeFeeds = activePatchSet.allFeeds
 
-        val offScreenControls = show.implicitControls.toSet() - onScreenControls
+        offScreenControls = show.implicitControls.toSet() - onScreenControls
         this.relevantUnplacedControls = offScreenControls.filter { control ->
             activeFeeds.containsAll(control.controlledFeeds())
         }.sortedBy { control ->
@@ -63,6 +64,23 @@ class GridLayoutControlsInfo(show: OpenShow, activePatchSet: ActivePatchSet) : C
         }
 
         unplacedControls = show.allControls.toSet() - placedControls
+
+        // TODO: This list isn't rebuilt when current tab changes, fix!
+        orderedOnScreenControls = buildList {
+            fun OpenIGridLayout.visitItems() {
+                items.forEach { gridItem ->
+                    add(gridItem.control)
+                    if (gridItem.control is OpenVacuityControl) {
+                        addAll(relevantUnplacedControls)
+                    }
+                    gridItem.layout?.visitItems()
+                }
+            }
+
+            show.visitTabs { layout, isOnScreen ->
+                if (isOnScreen) layout.visitItems()
+            }
+        }
     }
 
     override fun release() {

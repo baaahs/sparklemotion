@@ -22,7 +22,6 @@ import baaahs.show.Feed
 import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.buildEmptyShow
-import baaahs.show.live.ControlDisplay
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
@@ -47,7 +46,6 @@ class StageManager(
     private var showRunner: ShowRunner? = null
 
     private var checkActivePatchSet: Boolean = false
-    private var controlDisplay: ControlDisplay? = null
     private var onScreenSliders: List<OpenSliderControl>? = null
 
     init {
@@ -57,7 +55,7 @@ class StageManager(
             println("StageManager found midi event on $channel -> $value")
             showRunner?.let { showRunner ->
                 val controlsInfo = showRunner.openShow.getSnapshot().controlsInfo
-                onScreenSliders = buildList<OpenSliderControl> {
+                onScreenSliders = buildList {
                     controlsInfo.relevantUnplacedControls.forEach {
                         if (it is OpenSliderControl) add(it)
                     }
@@ -162,7 +160,6 @@ class StageManager(
         if (checkActivePatchSet) {
             showRunner?.onSelectedPatchesChanged()
             checkActivePatchSet = false
-            controlDisplay = null
         }
 
         // Start housekeeping early -- as soon as we see a change -- in hopes of avoiding jank.

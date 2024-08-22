@@ -96,7 +96,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     val openShow = showManager.openShow!!
     val controlDisplay = openShow.getSnapshot().controlsInfo
 
-    val genericControlProps = memo(controlDisplay) { ControlProps() }
+    val genericControlProps = memo(controlDisplay) { ControlProps(openShow) }
 
     div(+layoutStyles.gridOuterContainer and
             (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) and
