@@ -29,6 +29,7 @@ interface OpenControl {
     fun toNewMutable(mutableShow: MutableShow): MutableControl
     fun getView(controlProps: ControlProps): View
     fun getEditIntent(): ControlEditIntent? = ControlEditIntent(id)
+    fun listenForActivePatchSetChanges(callback: () -> Unit): Unit = Unit
 }
 
 abstract class FeedOpenControl : OpenControl {
@@ -56,21 +57,16 @@ interface ControlViews {
 }
 
 class ControlProps(
-    val controlDisplay: ControlDisplay?,
     val layout: OpenGridLayout? = null,
     val layoutEditor: Editor<MutableIGridLayout>? = null,
     val parentDimens: GridDimens? = null
 ) {
-    val relevantUnplacedControls get() =
-        controlDisplay?.relevantUnplacedControls
-            ?: emptyList()
-
     fun withLayout(
         layout: OpenGridLayout?,
         editor: Editor<MutableIGridLayout>?,
         parentDimens: GridDimens?
     ): ControlProps =
-        ControlProps(controlDisplay, layout, editor, parentDimens)
+        ControlProps(layout, editor, parentDimens)
 }
 
 val controlViews by lazy { getControlViews() }

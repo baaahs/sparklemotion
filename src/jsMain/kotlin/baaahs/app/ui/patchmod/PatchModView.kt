@@ -83,7 +83,7 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                     if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
                             attrs.classes = jso { root = -Styles.controlBox }
-                            control.getView(ControlProps(null, null, null))
+                            control.getView(ControlProps(null, null))
                                 .render(this)
                         }
                     }
