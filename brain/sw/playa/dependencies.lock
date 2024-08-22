@@ -2,13 +2,13 @@ dependencies:
   brain-common:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-common
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/brain-common
       type: local
     version: 1.0.0
   brain-ui:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/brain-ui
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/brain-ui
       type: local
     version: 1.0.0
   espressif/jsmn:
@@ -18,11 +18,11 @@ dependencies:
       type: service
     version: 1.1.0
   espressif/led_strip:
-    component_hash: 1f8cc130ebd557fde64c02fe5fad0cb36d69947498c540ace6f425e1083d7773
+    component_hash: c240f82567a37357bef313f76b0df93cb2da025835e525006096ea7e0fd61b4f
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 2.4.1
+    version: 2.4.3
   idf:
     component_hash: null
     source:
@@ -31,27 +31,27 @@ dependencies:
   iso:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/iso
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/iso
       type: local
     version: 1.0.0
   led-renderer:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/led-renderer
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/led-renderer
       type: local
     version: 1.0.0
   net:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/net
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/net
       type: local
     version: 1.0.0
   sysmon:
     component_hash: null
     source:
-      path: /System/Volumes/Data/code/github/baaahs/sparklemotion/brain/sw/components/sysmon
+      path: /home/kevin/src/burningman/sparklemotion/brain/sw/components/sysmon
       type: local
     version: 1.0.0
-manifest_hash: b785be90b00aebfbe77181aed119ae84dab657def9ce3bcfb35fd6b8fe76fb15
+manifest_hash: cbb2a9ef48be87235c10a7920814eac1815503bbee23e28aca993751ffc7f766
 target: esp32
 version: 1.0.0

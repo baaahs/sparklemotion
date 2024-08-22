@@ -9,6 +9,6 @@ object Pluggables {
     val plugins = listOf<Plugin<*>>(
         BeatLinkPlugin,
         SoundAnalysisPlugin,
-        VideoInPlugin,
+        //VideoInPlugin,
     )
 }
