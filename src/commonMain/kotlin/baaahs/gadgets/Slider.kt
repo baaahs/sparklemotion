@@ -2,9 +2,11 @@ package baaahs.gadgets
 
 import baaahs.Gadget
 import baaahs.clamp
+import baaahs.client.MidiEventLatch
 import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlin.random.Random
@@ -37,6 +39,9 @@ data class Slider(
     private val spread = maxValue - minValue
 
     val domain get() = minValue..maxValue
+
+    @Transient
+    val latch = MidiEventLatch(this)
 
     override fun adjustALittleBit() {
         val amount = (Random.nextFloat() - .5f) * spread * adjustmentFactor

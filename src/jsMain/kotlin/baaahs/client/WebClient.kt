@@ -57,7 +57,6 @@ class WebClient(
             pinkyState = newState
             facade.notifyChanged()
         }
-        println("eventManager = ${eventManager}")
     }
 
     private val shaderLibraries = ShaderLibraries(pubSub, remoteFsSerializer)

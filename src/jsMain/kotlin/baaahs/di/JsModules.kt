@@ -20,7 +20,6 @@ import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
-import baaahs.plugin.midi.JsMidiSource
 import baaahs.plugin.midi.MidiManager
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
@@ -76,9 +75,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped<RemoteFsSerializer> { PubSubRemoteFsClientBackend(get()) }
             scoped { FileDialog() }
             scoped<IFileDialog> { get<FileDialog>() }
-            scoped { ShowMonitor() }
             scoped { ShowManager(get(), get(), get(), get(), get(), get(), get()) }
-            scoped<ShowProvider> { get<ShowMonitor>() }
             scoped { SceneMonitor() }
             scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
@@ -87,16 +84,19 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped {
                 JsMapper(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
-            scoped { EventManager(get()) }
-            scoped { MidiManager(listOf(JsMidiSource(get()))) }
+            scoped { EventManager(get(), get(), get()) }
+            scoped { ShowMonitor() }
+            scoped<ShowProvider> { get<ShowMonitor>() }
+            // Uncomment this for MIDI via the browser (which only works on desktops).
+            scoped { MidiManager(listOf(/*JsMidiSource(get())*/)) }
 
             // Dev only:
             scoped { PatchEditorApp(get(), get(), get()) }
         }
     }
 }
-class JsMonitorWebClientModule : KModule {
 
+class JsMonitorWebClientModule : KModule {
     override fun getModule(): Module = module {
         scope<MonitorUi> {
             scoped { get<Network>().link("monitor") }

@@ -33,6 +33,8 @@ import baaahs.plugin.ServerPlugins
 import baaahs.plugin.midi.MidiManager
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
+import baaahs.show.ShowMonitor
+import baaahs.show.ShowProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
@@ -124,7 +126,9 @@ interface PinkyModule : KModule {
             scoped<PubSub.IServer> { get<PubSub.Server>() }
             scoped { dmxDriver }
             scoped { midiManager }
-            scoped { EventManager(get()) }
+            scoped { ShowMonitor() }
+            scoped<ShowProvider> { get<ShowMonitor>() }
+            scoped { EventManager(get(), get(), get()) }
             scoped { DmxUniverseListener(get()) }
             scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
             scoped<DmxManager> { DmxManagerImpl(get(), get(), get(Named.fallbackDmxUniverse), get(), get(), get()) }
@@ -137,7 +141,20 @@ interface PinkyModule : KModule {
             scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { PinkyConfigStore(get(), fs.resolve(".")) }
-            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get(), get()) }
+            scoped { StageManager(
+                get(),
+                get(),
+                get(),
+                get(Named.dataDir),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get()
+            ) }
             scoped { Pinky.NetworkStats() }
             scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
             scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }

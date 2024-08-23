@@ -25,6 +25,7 @@ import baaahs.plugin.midi.MidiManager
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
+import baaahs.show.ShowMonitor
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -75,12 +76,13 @@ object PinkySpec : Spek({
         }
         val serverNotices by value { ServerNotices(pubSub, ImmediateDispatcher) }
         val sceneMonitor by value { SceneMonitor(OpenScene(model)) }
-        val eventManager by value { EventManager(MidiManager(emptyList())) }
+        val showMonitor by value { ShowMonitor() }
+        val eventManager by value { EventManager(MidiManager(emptyList()), showMonitor, FakeClock()) }
         val stageManager by value {
             StageManager(
                 toolchain, renderManager, pubSub, fakeFs.rootFile, fixtureManager, clock,
                 gadgetManager, serverNotices, sceneMonitor, FsServerSideSerializer(),
-                PinkyConfigStore(plugins, fakeFs.rootFile), eventManager
+                PinkyConfigStore(plugins, fakeFs.rootFile), showMonitor
             )
         }
         val mappingManager by value { MappingManagerImpl(mappingStore, sceneMonitor, coroutineScope) }
