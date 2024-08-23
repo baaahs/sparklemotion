@@ -1,7 +1,6 @@
 package baaahs.sm.server
 
 import baaahs.*
-import baaahs.client.EventManager
 import baaahs.client.document.sceneStore
 import baaahs.client.document.showStore
 import baaahs.control.OpenSliderControl
@@ -18,10 +17,7 @@ import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.scene.SceneChangeListener
 import baaahs.scene.SceneMonitor
-import baaahs.show.Feed
-import baaahs.show.Show
-import baaahs.show.ShowState
-import baaahs.show.buildEmptyShow
+import baaahs.show.*
 import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
@@ -40,7 +36,7 @@ class StageManager(
     private val sceneMonitor: SceneMonitor,
     private val fsSerializer: FsServerSideSerializer,
     private val pinkyConfigStore: PinkyConfigStore,
-    private val eventManager: EventManager
+    private val showMonitor: ShowMonitor
 ) : BaseShowPlayer(toolchain, sceneMonitor) {
     val facade = Facade()
     private var showRunner: ShowRunner? = null
@@ -50,29 +46,6 @@ class StageManager(
 
     init {
         PubSubRemoteFsServerBackend(pubSub, fsSerializer)
-
-        eventManager.addSliderListener { channel, value ->
-            println("StageManager found midi event on $channel -> $value")
-            showRunner?.let { showRunner ->
-                val controlsInfo = showRunner.openShow.getSnapshot().controlsInfo
-                onScreenSliders = buildList {
-                    controlsInfo.relevantUnplacedControls.forEach {
-                        if (it is OpenSliderControl) add(it)
-                    }
-                    controlsInfo.orderedOnScreenControls.forEach {
-                        if (it is OpenSliderControl) add(it)
-                    }
-                }
-                println("Sliders on screen: ${onScreenSliders?.joinToString { it.id }}")
-            }
-
-            val slider = onScreenSliders?.get(channel)
-            if (slider != null) {
-                val scaledValue = slider.slider.domain.scale(value)
-                println("Set slider ${slider.id} to $scaledValue!")
-                slider.slider.position = scaledValue
-            }
-        }
     }
 
     @Suppress("unused")
@@ -228,6 +201,7 @@ class StageManager(
             updateRunningShowPath(file)
 
             notifyOfDocumentChanges(fromClientUpdate)
+            showMonitor.onChange(newShowRunner?.openShow)
         }
     }
 

@@ -51,7 +51,7 @@ object StageManagerSpec : Spek({
         val renderManager by value { RenderManager(fakeGlslContext) }
         val fixtureManager by value<FixtureManager> { FixtureManagerImpl(renderManager, plugins) }
         val gadgetManager by value { GadgetManager(pubSub.server, FakeClock(), dispatcher) }
-        val eventManager by value { EventManager(MidiManager(emptyList())) }
+        val eventManager by value { EventManager(MidiManager(emptyList()), ShowMonitor(), FakeClock()) }
 
         val stageManager by value {
             StageManager(
@@ -66,7 +66,7 @@ object StageManagerSpec : Spek({
                 SceneMonitor(),
                 FsServerSideSerializer(),
                 PinkyConfigStore(plugins, fakeFs.rootFile),
-                eventManager
+                ShowMonitor()
             )
         }
 
