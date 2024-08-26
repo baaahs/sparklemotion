@@ -24,9 +24,15 @@ open class ShowOpener(
 
     private val implicitControls = mutableMapOf<String, Control>()
 
+    private val activePatchSetMonitor = Observable()
+
     private val openControlCache = CacheBuilder<String, OpenControl> { controlId ->
         (implicitControls[controlId] ?: show.getControl(controlId))
-            .open(controlId, this)
+            .open(controlId, this).also {
+                it.listenForActivePatchSetChanges {
+                    activePatchSetMonitor.notifyChanged()
+                }
+            }
     }
 
     override val allControls: List<OpenControl> get() = openControlCache.all.values.toList()
@@ -50,8 +56,6 @@ open class ShowOpener(
     private val allPatches = resolver.getResolvedPatches()
     override val allPatchModFeeds: List<Feed>
         get() = allPatches.values.flatMap { it.patchMods.flatMap { it.feeds } }
-
-    private val activePatchSetMonitor = Observable()
 
     override fun findControl(id: String): OpenControl? =
         if (implicitControls.contains(id) || show.controls.contains(id)) openControlCache[id] else null
@@ -83,10 +87,6 @@ open class ShowOpener(
 
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) {
         showPlayer.registerGadget(id, gadget, controlledFeed)
-    }
-
-    override fun onActivePatchSetMayBeAffected() {
-        activePatchSetMonitor.notifyChanged()
     }
 
     override fun release() {

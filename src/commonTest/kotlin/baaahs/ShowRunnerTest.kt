@@ -12,6 +12,7 @@ import baaahs.io.FsServerSideSerializer
 import baaahs.net.TestNetwork
 import baaahs.scene.SceneMonitor
 import baaahs.show.SampleData
+import baaahs.show.ShowMonitor
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
@@ -61,11 +62,12 @@ class ShowRunnerTest {
         val renderManager = RenderManager(fakeGlslContext)
         val plugins = testPlugins()
         fixtureManager = FixtureManagerImpl(renderManager, plugins)
+        val showMonitor = ShowMonitor()
         stageManager = StageManager(
             testToolchain, renderManager, server, fs.rootFile, fixtureManager,
             FakeClock(), GadgetManager(server, FakeClock(), dispatcher),
             ServerNotices(server, dispatcher), SceneMonitor(), FsServerSideSerializer(),
-            PinkyConfigStore(plugins, fs.rootFile)
+            PinkyConfigStore(plugins, fs.rootFile), showMonitor
         )
         stageManager.switchTo(SampleData.sampleShow)
         stageManager.switchToScene(testSceneData())
