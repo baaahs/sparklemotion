@@ -18,7 +18,6 @@ import baaahs.show.mutable.ShowBuilder
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
 import baaahs.ui.Observable
-import baaahs.ui.addObserver
 import baaahs.util.Logger
 import baaahs.util.RefCounted
 import baaahs.util.RefCounter
@@ -32,6 +31,7 @@ interface OpenContext : GadgetProvider {
     fun getFeed(id: String): Feed
     fun getPanel(id: String): Panel
     fun getPatch(it: String): OpenPatch
+    fun onActivePatchSetMayBeAffected()
     fun release()
 }
 
@@ -53,6 +53,8 @@ object EmptyOpenContext : OpenContext {
     override fun <T : Gadget> registerGadget(id: String, gadget: T, controlledFeed: Feed?) =
         error("not really an open context")
 
+    override fun onActivePatchSetMayBeAffected() = error("not really an open context")
+
     override fun release() {}
 }
 
@@ -61,7 +63,7 @@ class OpenShow(
     private val showPlayer: ShowPlayer,
     private val openContext: OpenContext,
     internal val implicitControls: List<OpenControl>,
-    upstreamActivePatchSetMonitor: Observable
+    val activePatchSetMonitor: Observable,
 ) : OpenPatchHolder(show, openContext), RefCounted by RefCounter(), OpenDocument {
     val id = randomId("show")
     val layouts get() = show.layouts
@@ -115,13 +117,6 @@ class OpenShow(
             }.apply { visitShow(this@OpenShow) }
         }
 
-    val activePatchSetMonitor = Observable()
-    init {
-        upstreamActivePatchSetMonitor.addObserver {
-            invalidateSnapshotCache()
-            activePatchSetMonitor.notifyChanged()
-        }
-    }
     fun getPanel(id: String) = show.layouts.panels.getBang(id, "panel")
 
     fun findGridItem(
@@ -147,23 +142,6 @@ class OpenShow(
      */
     fun edit(block: MutableShow.() -> Unit = {}): MutableShow =
         MutableShow(show).apply(block)
-
-    private var snapshotCache: ShowStateSnapshot? = null
-
-    fun getSnapshot(): ShowStateSnapshot =
-        snapshotCache ?: buildSnapshot().also { snapshotCache = it }
-
-    fun invalidateSnapshotCache() {
-        println("Snapshot cache invalidated.")
-        snapshotCache?.controlsInfo?.release()
-        snapshotCache = null
-    }
-
-    private fun buildSnapshot(): ShowStateSnapshot {
-        println("Snapshot built.")
-        val activePatchSet = buildActivePatchSet()
-        return ShowStateSnapshot(activePatchSet, GridLayoutControlsInfo(this, activePatchSet))
-    }
 
     fun buildActivePatchSet(): ActivePatchSet {
         val items = arrayListOf<ActivePatchSet.Companion.Item>()
@@ -227,25 +205,10 @@ class OpenShow(
         }
     }
 
-    fun visitTabs(callback: (layout: OpenIGridLayout, isOnScreen: Boolean) -> Unit) {
-        val currentTab = openLayouts.currentFormat?.currentTab as? OpenGridTab
-        openLayouts.currentFormat?.tabs?.forEach { tab ->
-            if (tab is OpenGridTab) {
-                val isOnScreen = tab === currentTab
-                callback(tab, isOnScreen)
-            }
-        }
-    }
-
     companion object {
         private val logger = Logger("OpenShow")
     }
 }
-
-class ShowStateSnapshot(
-    val activePatchSet: ActivePatchSet,
-    val controlsInfo: ControlsInfo
-)
 
 data class OpenLayouts(
     val panels: Map<String, Panel>,

@@ -12,7 +12,7 @@ import baaahs.util.Logger
 class ShowRunner(
     val show: Show,
     initialShowState: ShowState? = null,
-    val openShow: OpenShow,
+    private val openShow: OpenShow,
     internal val clock: Clock,
     private val renderManager: RenderManager,
     private val fixtureManager: FixtureManager,
@@ -46,12 +46,11 @@ class ShowRunner(
 
     fun onSelectedPatchesChanged() {
         activePatchSetChanged = true
-        openShow.invalidateSnapshotCache()
     }
 
     fun housekeeping(): Boolean {
         if (activePatchSetChanged) {
-            fixtureManager.activePatchSetChanged(openShow.getSnapshot().activePatchSet)
+            fixtureManager.activePatchSetChanged(openShow.buildActivePatchSet())
             activePatchSetChanged = false
         }
 

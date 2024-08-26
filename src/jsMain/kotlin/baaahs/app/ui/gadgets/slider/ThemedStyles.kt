@@ -31,20 +31,6 @@ class ThemedStyles(val theme: Theme) : StyleSheet("app-ui-gadgets-Slider", isSta
         border = Border(2.px, baaahs.ui.groove, theme.paperLowContrast)
     }
 
-    val remoteUpdateIndicator by css {
-        position = Position.absolute
-        width = 100.pct
-        height = 100.pct
-        backgroundColor = Color.orange
-        opacity = 0
-        transition(::opacity, 100.ms)
-    }
-
-    val remoteUpdateIndicatorOn by css {
-        opacity = 0.5
-        transition(::opacity, 0.ms)
-    }
-
     val label by css {
         position = Position.absolute
         width = 100.pct

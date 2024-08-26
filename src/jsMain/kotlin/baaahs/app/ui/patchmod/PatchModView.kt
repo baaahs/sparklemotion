@@ -34,8 +34,6 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
         props.onToggle()
     }
 
-    val openShow = appContext.showManager.openShow
-
     Dialog {
         attrs.open = true
         attrs.onClose = { _, _ -> props.onClose() }
@@ -81,11 +79,11 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
             div(+styles.controls) {
                 val incomingFeeds = selectedPatch.feeds
 
-                openShow?.allControls?.forEach { control ->
+                appContext.showManager.openShow?.allControls?.forEach { control ->
                     if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
                             attrs.classes = jso { root = -Styles.controlBox }
-                            control.getView(ControlProps(openShow, null, null))
+                            control.getView(ControlProps(null, null, null))
                                 .render(this)
                         }
                     }

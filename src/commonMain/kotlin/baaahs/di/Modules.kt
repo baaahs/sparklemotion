@@ -1,7 +1,6 @@
 package baaahs.di
 
 import baaahs.*
-import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.controller.ControllersPublisher
 import baaahs.controller.SacnManager
@@ -30,15 +29,11 @@ import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
-import baaahs.plugin.midi.MidiManager
 import baaahs.scene.SceneMonitor
 import baaahs.scene.SceneProvider
-import baaahs.show.ShowMonitor
-import baaahs.show.ShowProvider
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.FakeFs
 import baaahs.sim.FakeNetwork
-import baaahs.sim.SimulatorSettingsManager
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.ProdBrainSimulator
@@ -90,7 +85,6 @@ interface PinkyModule : KModule {
     val Scope.pinkyLink: Network.Link get() = get<Network>().link("pinky")
     val Scope.backupMappingManager: MappingManager? get() = null
     val Scope.dmxDriver: Dmx.Driver
-    val Scope.midiManager: MidiManager
     val Scope.pinkySettings: PinkySettings
     val Scope.sceneMonitor: SceneMonitor get() = SceneMonitor()
     val Scope.pinkyMapperHandlers: PinkyMapperHandlers get() = PinkyMapperHandlers(get())
@@ -125,10 +119,6 @@ interface PinkyModule : KModule {
             scoped<PubSub.Endpoint> { get<PubSub.Server>() }
             scoped<PubSub.IServer> { get<PubSub.Server>() }
             scoped { dmxDriver }
-            scoped { midiManager }
-            scoped { ShowMonitor() }
-            scoped<ShowProvider> { get<ShowMonitor>() }
-            scoped { EventManager(get(), get(), get()) }
             scoped { DmxUniverseListener(get()) }
             scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
             scoped<DmxManager> { DmxManagerImpl(get(), get(), get(Named.fallbackDmxUniverse), get(), get(), get()) }
@@ -141,20 +131,7 @@ interface PinkyModule : KModule {
             scoped { GadgetManager(get(), get(), get(Named.pinkyContext)) }
             scoped<Toolchain> { RootToolchain(get()) }
             scoped { PinkyConfigStore(get(), fs.resolve(".")) }
-            scoped { StageManager(
-                get(),
-                get(),
-                get(),
-                get(Named.dataDir),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get(),
-                get()
-            ) }
+            scoped { StageManager(get(), get(), get(), get(Named.dataDir), get(), get(), get(), get(), get(), get(), get()) }
             scoped { Pinky.NetworkStats() }
             scoped { BrainManager(get(), get(), get(), get(), get(Named.pinkyContext)) }
             scoped { SacnManager(get(), get(Named.pinkyContext), get(), get()) }
@@ -193,7 +170,7 @@ interface PinkyModule : KModule {
                     get(), get(), get(), get(Named.dataDir), get(), get(),
                     get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
                     get(), get(), get(), get(), get(), get(),
-                    pinkyMapperHandlers, get(), get()
+                    pinkyMapperHandlers, get()
                 )
             }
         }
@@ -220,7 +197,6 @@ interface SimulatorModule : KModule {
         single(named(Qualifier.MapperFs)) { FakeFs("Temporary Mapping Files") }
         single<Fs>(named(Qualifier.MapperFs)) { get<FakeFs>(named(Qualifier.MapperFs)) }
         single(named(WebClientModule.Qualifier.PinkyAddress)) { get<Network.Link>(named(Qualifier.PinkyLink)).myAddress }
-        single { SimulatorSettingsManager(get(named(Qualifier.PinkyFs))) }
     }
 
     enum class Qualifier {

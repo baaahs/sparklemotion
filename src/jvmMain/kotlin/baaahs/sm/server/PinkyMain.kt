@@ -90,7 +90,6 @@ class PinkyMain(private val args: Array<String>) {
         ktor.application.routing {
             get("") { call.respondRedirect("/ui/") }
             get("monitor") { call.respondRedirect("/monitor/") }
-            get("midi") { call.respondRedirect("midi/") }
             get("ui") { call.respondRedirect("/ui/") }
 
             staticResources("", "htdocs")

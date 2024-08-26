@@ -11,9 +11,6 @@ import io.ktor.server.websocket.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.newSingleThreadContext
 
-/**
- * The Simulator Bridge is a daemon that can perform work in a JVM on behalf of the simulator running in a browser.
- */
 class SimulatorBridge {
     private val pubSub: PubSub.Server
 
