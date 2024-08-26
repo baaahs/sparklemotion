@@ -10,8 +10,6 @@ import baaahs.net.JvmNetwork
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
-import baaahs.plugin.midi.JvmMidiSource
-import baaahs.plugin.midi.MidiManager
 import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
@@ -65,8 +63,6 @@ class JvmPinkyModule(
         get() = Dispatchers.Default.limitedParallelism(1)
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
-    override val Scope.midiManager: MidiManager
-        get() = MidiManager(listOf(JvmMidiSource(get())))
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
 }

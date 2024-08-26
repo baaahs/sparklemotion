@@ -8,6 +8,7 @@ import baaahs.app.ui.editor.Editor
 import baaahs.control.OpenButtonGroupControl
 import baaahs.plugin.AddControlMenuItem
 import baaahs.show.live.ControlProps
+import baaahs.show.live.GridLayoutControlDisplay
 import baaahs.show.live.OpenIGridLayout
 import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutableShow
@@ -94,9 +95,16 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     }
 
     val openShow = showManager.openShow!!
-    val controlDisplay = openShow.getSnapshot().controlsInfo
+    val enabledSwitchState = openShow.getEnabledSwitchState()
+    val controlDisplay = memo(openShow, enabledSwitchState) {
+        GridLayoutControlDisplay(openShow)
+            .also { withCleanup { it.release() } }
+    }
 
-    val genericControlProps = memo(controlDisplay) { ControlProps(openShow) }
+    val genericControlProps = memo(controlDisplay) {
+        ControlProps(controlDisplay)
+    }
+
 
     div(+layoutStyles.gridOuterContainer and
             (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) and
@@ -197,7 +205,7 @@ private val GridTabLayoutView = xComponent<GridTabLayoutProps>("GridTabLayout") 
     if (editMode.isAvailable) {
         Portal {
             controlsPalette {
-                attrs.controlsInfo = controlDisplay
+                attrs.controlDisplay = controlDisplay
                 attrs.controlProps = genericControlProps
                 attrs.show = openShow
             }

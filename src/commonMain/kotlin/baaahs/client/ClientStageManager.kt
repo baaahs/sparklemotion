@@ -26,7 +26,7 @@ class ClientStageManager(
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
-        get() = openShow!!.getSnapshot().activePatchSet
+        get() = openShow!!.buildActivePatchSet()
 
     private val showControlCommands = ShowControlCommands.IMPL
         .createSender(pubSub)

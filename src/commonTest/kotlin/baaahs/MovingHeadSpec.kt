@@ -2,6 +2,9 @@ package baaahs
 
 import baaahs.dmx.Dmx
 import baaahs.plugin.core.MovingHeadParams
+import baaahs.visualizer.movers.clamp
+import baaahs.visualizer.movers.scale
+import baaahs.visualizer.movers.unscale
 import ch.tutteli.atrium.api.verbs.expect
 import org.spekframework.spek2.Spek
 import kotlin.math.PI

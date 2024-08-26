@@ -3,6 +3,7 @@ package baaahs.app.ui.controls
 import baaahs.app.ui.appContext
 import baaahs.control.OpenVacuityControl
 import baaahs.show.live.ControlProps
+import baaahs.show.live.GridLayoutControlDisplay
 import baaahs.ui.addObserver
 import baaahs.ui.and
 import baaahs.ui.unaryPlus
@@ -16,13 +17,13 @@ import react.useContext
 private val VacuityControlView = xComponent<VacuityProps>("VacuityControl") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.controls
-    val openShow = appContext.showManager.openShow!!
-    openShow.activePatchSetMonitor.addObserver {
+    appContext.showManager.openShow?.activePatchSetMonitor?.addObserver {
         forceRender()
     }
 
-    val controlsInfo = openShow.getSnapshot().controlsInfo
-    val relevantUnplacedControls = controlsInfo.relevantUnplacedControls
+    val relevantUnplacedControls =
+        GridLayoutControlDisplay(appContext.showManager.openShow!!)
+            .relevantUnplacedControls
 
     div(+styles.vacuityContainer and Styles.notExplicitlySized) {
         relevantUnplacedControls.forEachIndexed { index, unplacedControl ->

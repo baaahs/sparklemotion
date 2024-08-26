@@ -1,7 +1,6 @@
 package baaahs
 
 import baaahs.api.ws.WebSocketRouter
-import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
@@ -52,8 +51,7 @@ class Pinky(
     private val pinkySettings: PinkySettings,
     private val serverNotices: ServerNotices,
     private val pinkyMapperHandlers: PinkyMapperHandlers,
-    private val pinkyConfigStore: PinkyConfigStore,
-    private val eventManager: EventManager,
+    private val pinkyConfigStore: PinkyConfigStore
 ) : CoroutineScope {
     val facade = Facade()
 
@@ -70,7 +68,7 @@ class Pinky(
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
     private var mapperIsRunning = false
-    private var isPaused = true
+    private var isPaused = false
 
     init {
         httpServer.listenWebSocket("/ws/api") {
@@ -147,8 +145,6 @@ class Pinky(
                         launch { stageManager.showDocumentService.load(path) }
                     }
                 }
-
-                launch { eventManager.start() }
             }.join()
 
             brainManager.listenForMapperMessages { message ->

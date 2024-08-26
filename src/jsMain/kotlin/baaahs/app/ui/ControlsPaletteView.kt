@@ -1,8 +1,8 @@
 package baaahs.app.ui
 
 import baaahs.app.ui.layout.gridItem
+import baaahs.show.live.ControlDisplay
 import baaahs.show.live.ControlProps
-import baaahs.show.live.ControlsInfo
 import baaahs.show.live.OpenShow
 import baaahs.ui.and
 import baaahs.ui.gridlayout.Layout
@@ -78,8 +78,7 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
                             val paletteWidth = layoutDimens.first
                             val columns = if (paletteWidth > 200) paletteWidth / 100 else paletteWidth / 75
 
-                            val controlsInfo = props.show.getSnapshot().controlsInfo
-                            val items = controlsInfo.relevantUnplacedControls
+                            val items = props.controlDisplay.relevantUnplacedControls
                             val rows = items.size / columns + 1
                             val gridRowHeight = paletteWidth / columns
 
@@ -126,7 +125,7 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
 
 
 external interface ControlsPaletteProps : Props {
-    var controlsInfo: ControlsInfo
+    var controlDisplay: ControlDisplay
     var controlProps: ControlProps
     var show: OpenShow
 }

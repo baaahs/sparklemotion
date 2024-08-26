@@ -8,6 +8,8 @@ import baaahs.util.Clock
 import baaahs.util.asDoubleSeconds
 import baaahs.visualizer.VizObj
 import kotlin.math.absoluteValue
+import kotlin.math.max
+import kotlin.math.min
 
 class PhysicalModel(
     private val adapter: MovingHeadAdapter,
@@ -47,6 +49,18 @@ enum class ColorMode(
     Secondary(true, { state -> this.colorAtPosition(state.colorWheelPosition, next = true) })
 }
 
+fun ClosedRange<Float>.scale(value: Float) =
+    (endInclusive - start) * value + start
+
+fun ClosedRange<Float>.unscale(value: Float) =
+    (value - start) / (endInclusive - start)
+
+fun ClosedRange<Float>.clamp(value: Float) =
+    max(min(value, endInclusive), start)
+
+val ClosedRange<Float>.diff
+    get() =
+        (endInclusive - start).absoluteValue
 
 fun MovingHeadAdapter.colorAtPosition(position: Float, next: Boolean = false): Color {
     var colorIndex = (position.absoluteValue % 1f * colorWheelColors.size).toInt()

@@ -2,12 +2,9 @@ package baaahs
 
 import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
-import baaahs.midi.MIDIUi
 import baaahs.monitor.MonitorUi
-import baaahs.plugin.SimulatorPlugins
 import baaahs.sim.*
 import baaahs.sim.ui.LaunchItem
-import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -31,13 +28,13 @@ class SheepSimulator(
 
     suspend fun start() = coroutineScope {
         val pinkyScope = getKoin().createScope<Pinky>()
-        launch(coroutineExceptionHandler) { cleanUpBrowserStorage() }
+        launch { cleanUpBrowserStorage() }
 
         pinky = pinkyScope.get()
         val controllersManager = pinkyScope.get<ControllersManager>()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
 
-        launch(coroutineExceptionHandler) { pinky.startAndRun() }
+        launch { pinky.startAndRun() }
 
         pinky.awaitMappingResultsLoaded() // Otherwise controllers might report in before they can be mapped.
         facade.notifyChanged()
@@ -45,7 +42,6 @@ class SheepSimulator(
 
     fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
-    fun createMIDIApp(): MIDIUi = getKoin().createScope<MIDIUi>().get()
 
     private suspend fun cleanUpBrowserStorage() {
         val fs = BrowserSandboxFs("BrowserSandboxFs")
@@ -82,8 +78,7 @@ class SheepSimulator(
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
-                launchItem("Monitor") { createMonitorApp() },
-                launchItem("MIDIUi") { createMIDIApp() }
+                launchItem("Monitor") { createMonitorApp() }
             )
     }
 }
