@@ -172,7 +172,7 @@ class BeatLinkBeatSource(
     private fun updatePlayerState(playerNumber: Int, block: (PlayerState) -> PlayerState) {
         playerStates = playerStates.updateWith(playerNumber, block)
         val playerState = playerStates.byDeviceNumber[playerNumber]!!
-        println("playerState = $playerState")
+//        println("playerState = $playerState")
         listeners.notifyListeners {
             it.onPlayerStateUpdate(playerNumber, playerState) }
     }
