@@ -9,27 +9,18 @@ import baaahs.show.Show
 import baaahs.show.ShowState
 import baaahs.show.live.ActivePatchSet
 import baaahs.show.live.OpenShow
-import baaahs.sm.webapi.ShowControlCommands
-import baaahs.util.coroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonElement
 
 class ClientStageManager(
     toolchain: Toolchain,
     private val pubSub: PubSub.Client,
-    sceneProvider: SceneProvider,
-    private val coroutineScope: CoroutineScope = GlobalScope
+    sceneProvider: SceneProvider
 ) : BaseShowPlayer(toolchain, SceneProviderWithFallback(sceneProvider)) {
     private val gadgets: MutableMap<String, ClientGadget> = mutableMapOf()
     private val listeners = mutableListOf<Listener>()
     private var openShow: OpenShow? = null
     val activePatchSet: ActivePatchSet
         get() = openShow!!.buildActivePatchSet()
-
-    private val showControlCommands = ShowControlCommands.IMPL
-        .createSender(pubSub)
 
     private fun checkForChanges() {
         listeners.forEach { it.onPatchSetChanged() }
@@ -73,20 +64,22 @@ class ClientStageManager(
         private val channel: PubSub.Channel<Map<String, JsonElement>>
 
         init {
-            val gadgetListener: GadgetListener = {
-                coroutineScope.launch(coroutineExceptionHandler) {
-                    showControlCommands.setGadgetState(id, gadget.state)
-                }
-            }
+            val gadgetListener = this::onGadgetChange
             gadget.listen(gadgetListener)
 
-            val topic = PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
+            val topic =
+                PubSub.Topic("/gadgets/$id", GadgetDataSerializer)
 
             channel = pubSub.subscribe(topic) { json ->
                 gadget.withoutTriggering(gadgetListener) {
                     gadget.applyState(json)
                 }
             }
+        }
+
+        // GadgetListener callback.
+        fun onGadgetChange(g: Gadget) {
+            channel.onChange(g.state)
         }
     }
 
