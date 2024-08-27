@@ -4,12 +4,14 @@
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
-    <logger name="baaahs.controller.ControllerManager" level="DEBUG"/>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
-    <logger name="io.mockk" level="INFO"/>
+<!--    <logger name="baaahs.controller.ControllerManager" level="DEBUG"/>-->
+<!--    <logger name="org.eclipse.jetty" level="INFO"/>-->
+<!--    <logger name="io.netty" level="INFO"/>-->
+<!--    <logger name="io.mockk" level="INFO"/>-->
     <logger name="javax.jmdns.impl" level="ERROR" />
+    <logger name="com.illposed.osc" level="DEBUG" />
+    <logger name="baaahs.plugin.osc" level="DEBUG" />
 </configuration>
