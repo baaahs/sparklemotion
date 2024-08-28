@@ -16,7 +16,7 @@ class JvmSonicRunwayThing(
 ) : SonicRunwayDataProvider {
     private val listeners = mutableListOf<SonicRunwayListener>()
 
-    private val oscPort      : Int = 7777 // 2390 in production!
+    private val oscPort      : Int = 2390
     private val palette      : Array<Color> = Array(5) { Color.BLACK }
     private val addressRegex : Regex = Regex("Color([0-4])_([rgb])", RegexOption.IGNORE_CASE)
     private val selector     : OSCPatternAddressMessageSelector = OSCPatternAddressMessageSelector("/SonicRunway/Color?_?")
