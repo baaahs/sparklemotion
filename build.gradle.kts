@@ -57,7 +57,7 @@ fun kotlinw(target: String): String =
 
 kotlin {
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(19)
         vendor = JvmVendorSpec.ADOPTIUM
     }
 
