@@ -227,7 +227,6 @@ class SonicRunwayFeedContext(
     override fun onUpdate(data: SonicRunwayData) {
         // Copy this sample's data into the buffer.
         colors = data.colors
-        println("colors = ${colors}")
     }
 
     override fun bind(gl: GlContext): EngineFeedContext = SonicRunwayEngineFeedContext(gl)
@@ -253,7 +252,6 @@ class SonicRunwayFeedContext(
 
             override fun setOnProgram() {
                 val colors = colors
-                println("SonicRunwayEngineFeedContext colors = ${colors}")
                 fun getColor(index: Int) =
                     (if (colors.size > index) colors[index] else Color.BLACK)
                         .let { Vector4F(it.redF, it.greenF, it.blueF, it.alphaF) }
