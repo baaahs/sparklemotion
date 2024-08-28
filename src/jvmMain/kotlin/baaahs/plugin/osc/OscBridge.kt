@@ -8,7 +8,7 @@ import com.illposed.osc.transport.OSCPort
 import com.illposed.osc.transport.OSCPortIn
 
 actual class OscBridge {
-    private val oscPort      : Int = 7777
+    private val oscPort      : Int = 7777 // 2390 in production!
     private val palette      : Array<baaahs.Color> = Array(5) { baaahs.Color.BLACK }
     private val addressRegex : Regex = Regex("Color([0-4])_([rgb])", RegexOption.IGNORE_CASE)
     private val selector     : OSCPatternAddressMessageSelector = OSCPatternAddressMessageSelector("/SonicRunway/Color?_?")
@@ -46,4 +46,4 @@ actual class OscBridge {
     }
 }
 
-// 192.168.0.31 255:255:255:0 port 2390
+// Our very own static IP on Sonic Runway's network: 192.168.0.31 netmask: 255:255:255:0
