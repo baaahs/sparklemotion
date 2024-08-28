@@ -92,11 +92,11 @@
 // 4 * 15 for top sides
 
 //#define BRAIN_DEFAULT_PIXEL_COUNT 136
-#define BRAIN_DEFAULT_PIXEL_COUNT 196
+#define BRAIN_DEFAULT_PIXEL_COUNT 114
 
 #define BRAIN_DEFAULT_BRIGHTNESS   255
 #define BRAIN_ETHERNET_ENABLED false
-#define BRAIN_WIFI_ENABLED false
+#define BRAIN_WIFI_ENABLED true
 
 
 
@@ -471,7 +471,7 @@
  * Use 4 byte color or not. Four byte color is for RGBW pixels
  * so the default is just plain old RGB.
  */
-#define BRAIN_USE_RGBW
+//#define BRAIN_USE_RGBW
 
 /**
  * SysMon is a component which periodically logs interesting

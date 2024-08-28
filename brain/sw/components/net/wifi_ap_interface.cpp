@@ -46,7 +46,7 @@ bool WifiApInterface::init() {
 
     // Set our static IP address
     m_staticIpInfo.ip.addr = 0x0A0A0A0A; // 10.10.10.10
-    m_staticIpInfo.netmask.addr = 0x0AFFFFFF; // 255.255.255.10 - because various bits of the esp code assume this. Also, LSB not FTW :(
+    m_staticIpInfo.netmask.addr = 0x00FFFFFF; // 255.255.255.0 - because various bits of the esp code assume this. Also, LSB not FTW :(
     m_staticIpInfo.gw.addr = 0x0A0A0A0A;
     m_dhcpEnabled = false;
 

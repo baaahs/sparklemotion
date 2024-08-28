@@ -9,6 +9,7 @@
 #include "cs-text.h"
 
 extern CSFontCircles gCircleFont;
+extern CSFont7Seg g7SegFont;
 
 /**
  * The CSShader will use turn off pixels as defined by a CSFont.

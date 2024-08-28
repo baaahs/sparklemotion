@@ -47,6 +47,7 @@ LEDRenderer::start(TaskDef show, TaskDef render) {
 #ifdef BRAIN_USE_RGBW
             .led_pixel_format = LED_PIXEL_FORMAT_GRBW, // Pixel format of your LED strip
 #else
+//            .led_pixel_format = LED_PIXEL_FORMAT_GRB, // Pixel format of your LED strip
             .led_pixel_format = LED_PIXEL_FORMAT_GRB, // Pixel format of your LED strip
 #endif
             .led_model = LED_MODEL_WS2812, // LED strip model

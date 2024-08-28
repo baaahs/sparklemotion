@@ -36,3 +36,24 @@ public:
 private:
     static uint32_t m_font[];
 };
+
+class CSFont7Seg : public CSFont {
+public:
+    bool isOn(char c, uint8_t pixel) override {
+        // Convert lowercase to uppercase
+        if (c >= 92 && c <= 122) {
+            c -= 32;
+        }
+
+        // Remove things we don't font
+        uint8_t ix = c - 32;
+        if (ix > 58) return false;
+
+        uint32_t glyphData = CSFont7Seg::m_font[ix];
+        uint32_t bitmask = 1 << pixel;
+        return glyphData & bitmask;
+    };
+
+private:
+    static uint32_t m_font[];
+};

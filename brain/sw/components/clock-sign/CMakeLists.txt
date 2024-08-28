@@ -5,6 +5,7 @@ set(COMPONENT_SRCS
         "cs-font.cpp"
         "cs-text.cpp"
         "cs-nye-clock.cpp"
+        "cs-evil-clock.cpp"
         )
 
 

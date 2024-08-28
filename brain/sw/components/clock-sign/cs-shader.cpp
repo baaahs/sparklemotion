@@ -3,6 +3,7 @@
 #define TAG TAG_CS
 
 CSFontCircles gCircleFont;
+CSFont7Seg g7SegFont;
 
 CSShader::CSShader(uint8_t pixelsPerChar, CSFont& font) :
         m_pixelsPerChar(pixelsPerChar),
@@ -36,8 +37,25 @@ CSShader::beginShade(LEDShaderContext* pCtx) {
 
 void
 CSShader::Apply(uint16_t indexPixel, uint8_t *color, uint8_t *currentColor) {
-    uint8_t charIndex = indexPixel / m_pixelsPerChar;
-    uint8_t pixelIndex = indexPixel % m_pixelsPerChar;
+    uint16_t effectivePixel = indexPixel;
+
+//    static uint16_t breakLength = 2;
+//    uint16_t breakAt = 2 * m_pixelsPerChar;
+//    if (effectivePixel >= breakAt) {
+//        if (effectivePixel < breakAt + breakLength) {
+//            // It is the breaking area, probably a colon
+//            color[0] = 0;
+//            color[1] = 0;
+//            color[2] = 255;
+//            return;
+//        }
+//        effectivePixel -= breakLength;
+//    }
+
+    static const uint8_t numChars = 4;
+
+    uint8_t charIndex = effectivePixel / m_pixelsPerChar;
+    uint8_t pixelIndex = effectivePixel % m_pixelsPerChar;
 
     char c = 0;
     if (m_pText) {
