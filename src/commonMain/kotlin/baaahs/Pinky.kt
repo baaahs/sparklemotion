@@ -70,7 +70,7 @@ class Pinky(
     private var pinkyState = PinkyState.Initializing
     private val pinkyStateChannel = pubSub.publish(Topics.pinkyState, pinkyState) {}
     private var mapperIsRunning = false
-    private var isPaused = true
+    private var isPaused = false
 
     init {
         httpServer.listenWebSocket("/ws/api") {
