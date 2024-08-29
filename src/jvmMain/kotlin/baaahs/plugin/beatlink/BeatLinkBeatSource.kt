@@ -60,7 +60,7 @@ class BeatLinkBeatSource(
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-//        virtualCdj.useStandardPlayerNumber = false
+        virtualCdj.useStandardPlayerNumber = false
         virtualCdj.deviceNumber = 4
 
         virtualCdj.addLifecycleListener(object : LifecycleListener {
