@@ -108,13 +108,6 @@ class SonicRunwayPlugin internal constructor(
             }
     }
 
-    @Serializable
-    class AnalysisData(val magnitudes: FloatArray, val timestamp: Time)
-
-    class Args(parser: ArgParser) {
-//        val audioInput by parser.option(ArgType.String, description = "Audio input for spectral analysys")
-    }
-
     class PubSubPublisher(
         sonicRunwayDataProvider: SonicRunwayDataProvider,
         pluginContext: PluginContext
