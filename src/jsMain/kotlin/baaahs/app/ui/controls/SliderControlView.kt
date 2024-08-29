@@ -4,7 +4,6 @@ import baaahs.GadgetListener
 import baaahs.app.ui.appContext
 import baaahs.app.ui.gadgets.slider.resetButton
 import baaahs.app.ui.gadgets.slider.slider
-import baaahs.client.EventManager.Companion.visibleSliders
 import baaahs.control.OpenSliderControl
 import baaahs.gadgets.Slider
 import baaahs.show.live.ControlProps
@@ -38,8 +37,9 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
     val controlsInfo = openShow?.getSnapshot()?.controlsInfo
 
     val sliderNumber = memo(controlsInfo, sliderControl) {
-        val visibleSliders = controlsInfo?.visibleSliders() ?: emptyList()
-        visibleSliders.indexOf(sliderControl)
+        if (sliderControl != null) {
+            controlsInfo?.midiChannelNumberForSlider(sliderControl)
+        } else null
     }
 
     onMount(slider) {
@@ -62,7 +62,7 @@ private val SliderControlView = xComponent<SliderControlProps>("SliderControl") 
             attrs.slider = slider
         }
 
-        if (sliderNumber > -1) {
+        if (sliderNumber != null) {
             div(+Styles.deviceChannelNumber) { +sliderNumber.toString() }
         }
 
