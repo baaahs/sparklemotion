@@ -42,7 +42,7 @@ data class SliderFeed(
         Slider(title ?: sliderTitle, initialValue, minValue, maxValue, stepValue)
 
     override fun buildControl(): MutableControl =
-        MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this)
+        MutableSliderControl(sliderTitle, initialValue, minValue, maxValue, stepValue, this, emptyList())
 
     override fun open(feedOpenContext: FeedOpenContext, id: String): FeedContext {
         val clock = feedOpenContext.clock

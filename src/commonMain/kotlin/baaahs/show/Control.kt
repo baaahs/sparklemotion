@@ -9,6 +9,7 @@ import baaahs.show.mutable.MutableShow
 
 interface Control : Editable {
     override val title: String
+    val eventBindings: List<EventBinding> get() = emptyList()
 
     val controlledFeedId: String? get() = null
 
