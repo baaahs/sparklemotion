@@ -67,14 +67,24 @@ class EventManager(
     }
 
     private fun onSliderChange(channel: Int, value: Float) {
+        val slider = findSliderForChannel(channel)
+        slider?.latch?.maybeApplyChange(value, clock)
+    }
+
+    private fun findSliderForChannel(channel: Int): Slider? {
         val openShow = showProvider.openShow
         if (openShow != null) {
             val controlsInfo = openShow.getSnapshot().controlsInfo
-            val visibleSliders = controlsInfo.visibleSliders()
+            controlsInfo.midiChannelToControlMap[channel]?.let {
+                return (it as? OpenSliderControl)?.slider
+            }
 
-            val slider = try { visibleSliders.get(channel) } catch (e: Exception) { null }
-            slider?.slider?.latch?.maybeApplyChange(value, clock)
-        }
+            val visibleSliders = controlsInfo.visibleSliders()
+            visibleSliders.map { it }
+
+            val slider = try { visibleSliders[channel] } catch (e: Exception) { null }
+            return slider?.slider
+        } else return null
     }
 
     class State {

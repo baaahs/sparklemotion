@@ -1,7 +1,6 @@
 package baaahs.plugin.midi
 
 import baaahs.midi.MidiDevice
-import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Logger
 import js.objects.jso
@@ -10,18 +9,6 @@ import web.midi.MIDIConnectionEvent
 import web.midi.MIDIInput
 import web.midi.MIDIMessageEvent
 import web.navigator.navigator
-
-class JsMidiSystem(
-    clock: Clock,
-//    private val midiEventReceiver: MidiEventReceiver
-) : MidiSystem, Observable() {
-    private val jsMidiSource = JsMidiSource(clock)
-
-    override val midiSources: List<MidiSource> =
-        listOf(jsMidiSource)
-
-
-}
 
 /**
  * Listens to a midi controller

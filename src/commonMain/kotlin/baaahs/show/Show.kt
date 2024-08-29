@@ -10,10 +10,7 @@ import baaahs.fixtures.Fixture
 import baaahs.getBang
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.*
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseContextualSerialization
+import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -88,12 +85,13 @@ fun <T> List<T>.assertNoDuplicates(items: String = "items") {
     }
 }
 
+@Polymorphic
+interface EventBinding
+
 @Serializable
-data class EventBinding(
-    val inputType: String,
-    val inputData: JsonElement,
-    val target: FeedRef
-)
+data class MidiChannelEventBinding(
+    val channel: Int
+) : EventBinding
 
 @Serializable
 data class Surfaces(
