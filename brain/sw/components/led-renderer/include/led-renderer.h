@@ -78,7 +78,7 @@ public:
     const uint8_t gPixelWidth = 3;
 #endif
 
-    LEDRenderer(TimeBase& timeBase, uint16_t pixelCount);
+    LEDRenderer(TimeBase& timeBase, uint16_t pixelCount, int gpioNum);
 
     void start(TaskDef show, TaskDef render);
     void stop() { m_timeToDie = true; }
@@ -112,6 +112,7 @@ public:
 private:
     bool m_timeToDie = false;
 
+    int m_gpioNum;
     uint8_t m_nBrightness;
     bool m_localRenderEnabled = true;
 

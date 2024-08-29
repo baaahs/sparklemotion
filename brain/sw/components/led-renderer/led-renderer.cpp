@@ -8,9 +8,10 @@
 #include <freertos/timers.h>
 
 
-LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount) :
+LEDRenderer::LEDRenderer(TimeBase& timeBase, uint16_t pixelCount, int gpioNum = BRAIN_GPIO_PIXEL_CH1) :
 //    m_pixels(pixelCount, BRAIN_GPIO_PIXEL_CH1),
 //    m_buffer(pixelCount, 1, nullptr),
+    m_gpioNum(gpioNum),
     m_pixelCount(pixelCount),
     m_timeBase(timeBase)
 {
@@ -42,7 +43,7 @@ LEDRenderer::start(TaskDef show, TaskDef render) {
 
     /* LED strip initialization with the GPIO and pixels number*/
     led_strip_config_t strip_config = {
-            .strip_gpio_num = BRAIN_GPIO_PIXEL_CH1, // The GPIO that connected to the LED strip's data line
+            .strip_gpio_num = m_gpioNum, // The GPIO that connected to the LED strip's data line
             .max_leds = m_pixelCount, // The number of LEDs in the strip,
 #ifdef BRAIN_USE_RGBW
             .led_pixel_format = LED_PIXEL_FORMAT_GRBW, // Pixel format of your LED strip
