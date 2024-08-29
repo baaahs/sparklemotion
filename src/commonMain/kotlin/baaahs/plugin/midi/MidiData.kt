@@ -3,7 +3,6 @@ package baaahs.plugin.midi
 import baaahs.internalTimerClock
 import baaahs.midi.MidiDevice
 import baaahs.midi.MidiEvent
-import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.util.Clock
 import kotlinx.serialization.Serializable
@@ -52,16 +51,6 @@ abstract class MidiSource(
 
     object None : MidiSource("None", internalTimerClock) {
         override suspend fun start() {}
-    }
-}
-
-interface MidiSystem : IObservable {
-    val midiSources: List<MidiSource>
-
-    object None : Observable(), MidiSystem {
-        override val midiSources: List<MidiSource>
-            get() = emptyList()
-
     }
 }
 
