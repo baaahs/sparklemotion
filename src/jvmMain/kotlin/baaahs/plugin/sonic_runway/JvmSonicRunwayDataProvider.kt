@@ -56,7 +56,6 @@ class JvmSonicRunwayThing(
                 val value : Byte = (255.0 * event.message.arguments[0] as Float).toInt().toByte()
                 if (updateColor(idx, component, value)) {
                     notify(SonicRunwayData(palette.toList(), pluginContext.clock.now()))
-                    // TODO: Send it to SparkleMotion
 //                    println("OscBridge: ${event.time} : [${idx}] ${palette[idx]}")
                 }
             }
