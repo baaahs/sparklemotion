@@ -2983,37 +2983,19 @@
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
       "initialValue": 0.3,
-      "controlledFeedId": "brightnessSlider",
-      "eventBindings": [
-        {
-          "type": "baaahs.show.MidiChannelEventBinding",
-          "channel": 8
-        }
-      ]
+      "controlledFeedId": "brightnessSlider"
     },
     "saturation": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
       "maxValue": 1.25,
-      "controlledFeedId": "saturationSlider",
-      "eventBindings": [
-        {
-          "type": "baaahs.show.MidiChannelEventBinding",
-          "channel": 7
-        }
-      ]
+      "controlledFeedId": "saturationSlider"
     },
     "hueShift": {
       "type": "baaahs.Core:Slider",
       "title": "Hue Shift",
       "maxValue": 2.0,
-      "controlledFeedId": "hueShiftSlider",
-      "eventBindings": [
-        {
-          "type": "baaahs.show.MidiChannelEventBinding",
-          "channel": 6
-        }
-      ]
+      "controlledFeedId": "hueShiftSlider"
     },
     "visualizer": {
       "type": "baaahs.Core:Visualizer"
