@@ -85,7 +85,7 @@ class FixtureInfoFeedContext(
                 val fixtureInfo = renderTarget.fixture.modelEntity as? Model.FixtureInfo
                 positionUniform?.set(fixtureInfo?.position ?: Vector3F.origin)
                 rotationUniform?.set(fixtureInfo?.rotation ?: EulerAngle.identity)
-                transformationUniform?.set(fixtureInfo?.transformation ?: Matrix4F.identity)
+                transformationUniform?.set(fixtureInfo?.transformation?.inverse() ?: Matrix4F.identity)
                 val bounds = fixtureInfo?.bounds
                 boundaryMinUniform?.set(bounds?.first ?: Vector3F.origin)
                 boundaryMaxUniform?.set(bounds?.second ?: Vector3F.origin)
