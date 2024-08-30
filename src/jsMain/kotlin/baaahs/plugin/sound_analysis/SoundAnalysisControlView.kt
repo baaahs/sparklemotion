@@ -30,9 +30,10 @@ private val soundAnalysisVisualizerShader =
         Shader("SoundAnalysis Visualizer", getResourceAsync("baaahs/plugin/sound_analysis/SoundAnalysisControl.glsl"))
     }
 
-private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundAnalysisControl") { _ ->
+private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundAnalysisControl") { props ->
     val appContext = useContext(appContext)
     val soundAnalyzer = appContext.plugins.getPlugin<SoundAnalysisPlugin>().soundAnalyzer
+    val soundAnalysisControl = props.soundAnalysisControl
 
     val inputDiv = ref<HTMLElement>()
 
@@ -54,6 +55,11 @@ private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundA
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader
+                attrs.onRenderCallback = { shader ->
+                    val program = shader.program
+                    val sonicRunwayModeUniform = program?.getBooleanUniform("sonicRunwayMode")
+                    sonicRunwayModeUniform?.set(soundAnalysisControl.sonicRunwayMode)
+                }
             }
 
             div(+Styles.input) { ref = inputDiv }

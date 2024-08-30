@@ -7,6 +7,7 @@ import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.gl.openShader
+import baaahs.plugin.sound_analysis.MutableSoundAnalysisControl
 import baaahs.scene.MutableScene
 import baaahs.show.live.PatchResolver
 import baaahs.show.mutable.MutableIGridLayout
@@ -175,6 +176,8 @@ interface EditorPanelViews {
     fun forModelUnitsComponent(editableManager: EditableManager<*>, mutableScene: MutableScene): View
 
     fun forGridLayout(editableManager: EditableManager<*>, editor: Editor<MutableIGridLayout>): View
+
+    fun forSoundAnalysis(editableManager: EditableManager<*>, mutableSoundAnalysisControl: MutableSoundAnalysisControl): View
 }
 
 val editorPanelViews by lazy { getEditorPanelViews() }

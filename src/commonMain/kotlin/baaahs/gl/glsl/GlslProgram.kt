@@ -56,6 +56,8 @@ interface GlslProgram {
 
     fun getUniform(name: String): GlslUniform?
 
+    fun getBooleanUniform(name: String): BooleanUniform? = getUniform(name)?.let { BooleanUniform(it) }
+
     fun getIntUniform(name: String): IntUniform? = getUniform(name)?.let { IntUniform(it) }
     fun getInt2Uniform(name: String): Int2Uniform? = getUniform(name)?.let { Int2Uniform(it) }
     fun getInt3Uniform(name: String): Int3Uniform? = getUniform(name)?.let { Int3Uniform(it) }

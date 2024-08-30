@@ -6,12 +6,10 @@ import baaahs.control.MutableButtonGroupControl
 import baaahs.control.MutableSliderControl
 import baaahs.control.MutableVisualizerControl
 import baaahs.model.ModelUnit
+import baaahs.plugin.sound_analysis.MutableSoundAnalysisControl
 import baaahs.scene.MutableScene
 import baaahs.show.mutable.*
-import baaahs.ui.View
-import baaahs.ui.render
-import baaahs.ui.renderWrapper
-import baaahs.ui.unaryPlus
+import baaahs.ui.*
 import mui.material.Divider
 import mui.material.DividerVariant
 import mui.material.FormControlLabel
@@ -215,6 +213,26 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
                         attrs.setValue = { newValue -> layout.rows = newValue.toInt() }
                         attrs.onChange = { _ -> editableManager.onChange() }
                     }
+                }
+            }
+        }
+    }
+
+    override fun forSoundAnalysis(
+        editableManager: EditableManager<*>,
+        mutableSoundAnalysisControl: MutableSoundAnalysisControl
+    ): View = renderWrapper {
+        div(+EditableStyles.propertiesSection) {
+            betterSelect<Boolean> {
+                attrs.label = "Mode"
+                attrs.values = listOf(true, false)
+                attrs.value = mutableSoundAnalysisControl.sonicRunwayMode
+                attrs.renderValueOption = { value ->
+                    if (value) "Sonic Runway".asTextNode() else "Full Spectrum".asTextNode()
+                }
+                attrs.onChange = { value ->
+                    mutableSoundAnalysisControl.sonicRunwayMode = value
+                    editableManager.onChange()
                 }
             }
         }

@@ -15,6 +15,8 @@ struct SoundAnalysis {
 };
 uniform SoundAnalysis soundAnalysis; // @@baaahs.SoundAnalysis:SoundAnalysis
 
+uniform bool sonicRunwayMode; // @pass-through
+
 const vec2 eqBottomLeft = vec2(.1, .1);
 const vec2 eqTopRight = vec2(.9, .9);
 const vec2 eqDimen = eqTopRight - eqBottomLeft;
@@ -74,5 +76,8 @@ void main(void) {
     // Draw eq.
     color += o * drawEq((pos - eqBottomLeft) / eqDimen).rgb;
 
+    if (sonicRunwayMode) {
+        color = vec3(0., 0., 1.);
+    }
     gl_FragColor = vec4(color, 1.);
 }

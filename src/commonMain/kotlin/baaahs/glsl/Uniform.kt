@@ -37,6 +37,10 @@ interface GlslUniform {
 
 interface Uniform
 
+class BooleanUniform(private val uniform: GlslUniform) : Uniform {
+    fun set(x: Boolean) = uniform.set(x)
+}
+
 class IntUniform(private val uniform: GlslUniform) : Uniform {
     fun set(x: Int) = uniform.set(x)
 }

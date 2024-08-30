@@ -43,7 +43,7 @@ class SoundAnalysisPlugin internal constructor(
     override val addControlMenuItems: List<AddControlMenuItem>
         get() = listOf(
             AddControlMenuItem("New Sound Analysis Control…", CommonIcons.SoundAnalysisControl) {
-                MutableSoundAnalysisControl()
+                MutableSoundAnalysisControl(false)
             }
         )
 
