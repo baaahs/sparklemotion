@@ -81,6 +81,92 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
     override fun hashCode(): Int {
         return nativeMatrix.elements.contentHashCode()
     }
+
+    actual fun inverse(): Matrix4F {
+        // Ensure the matrix is invertible (determinant != 0)
+        val det = determinant()
+        require(det != 0.0f) { "Matrix is not invertible (determinant is zero)" }
+
+        val invElements = FloatArray(16)
+	val m = elements;
+
+        // Inverse calculation logic here...
+        // This code snippet assumes a row-major order for the matrix elements.
+        // For a 4x4 matrix, you'll have to compute the cofactor matrix,
+        // and then divide by the determinant.
+
+        // Compute the cofactors and fill in invElements accordingly
+        invElements[0] = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15] +
+                         m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10]
+        invElements[1] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15] -
+                         m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10]
+        invElements[2] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15] +
+                         m[5] * m[3] * m[14] + m[13] * m[2] * m[7] - m[13] * m[3] * m[6]
+        invElements[3] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11] -
+                         m[5] * m[3] * m[10] - m[9] * m[2] * m[7] + m[9] * m[3] * m[6]
+
+        invElements[4] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15] -
+                         m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10]
+        invElements[5] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15] +
+                         m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10]
+        invElements[6] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15] -
+                         m[4] * m[3] * m[14] - m[12] * m[2] * m[7] + m[12] * m[3] * m[6]
+        invElements[7] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11] +
+                         m[4] * m[3] * m[10] + m[8] * m[2] * m[7] - m[8] * m[3] * m[6]
+
+        invElements[8] = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15] +
+                         m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9]
+        invElements[9] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15] -
+                         m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9]
+        invElements[10] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15] +
+                          m[4] * m[3] * m[13] + m[12] * m[1] * m[7] - m[12] * m[3] * m[5]
+        invElements[11] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11] -
+                          m[4] * m[3] * m[9] - m[8] * m[1] * m[7] + m[8] * m[3] * m[5]
+
+        invElements[12] = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14] -
+                          m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9]
+        invElements[13] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14] +
+                          m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9]
+        invElements[14] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14] -
+                          m[4] * m[2] * m[13] - m[12] * m[1] * m[6] + m[12] * m[2] * m[5]
+        invElements[15] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10] +
+                          m[4] * m[2] * m[9] + m[8] * m[1] * m[6] - m[8] * m[2] * m[5]
+
+
+        // Finally, divide each element by the determinant
+        for (i in invElements.indices) {
+            invElements[i] /= det
+        }
+
+        return Matrix4F(invElements)
+    }
+
+    actual fun determinant(): Float {
+        // Calculate the determinant of the 4x4 matrix
+        // For a 4x4 matrix in elements[], the determinant calculation will be extensive.
+        // Example:
+        return elements[0] * (
+            elements[5] * (elements[10] * elements[15] - elements[11] * elements[14]) -
+            elements[9] * (elements[6] * elements[15] - elements[7] * elements[14]) +
+            elements[13] * (elements[6] * elements[11] - elements[7] * elements[10])
+        ) -
+        elements[4] * (
+            elements[1] * (elements[10] * elements[15] - elements[11] * elements[14]) -
+            elements[9] * (elements[2] * elements[15] - elements[3] * elements[14]) +
+            elements[13] * (elements[2] * elements[11] - elements[3] * elements[10])
+        ) +
+        elements[8] * (
+            elements[1] * (elements[6] * elements[15] - elements[7] * elements[14]) -
+            elements[5] * (elements[2] * elements[15] - elements[3] * elements[14]) +
+            elements[13] * (elements[2] * elements[7] - elements[3] * elements[6])
+        ) -
+        elements[12] * (
+            elements[1] * (elements[6] * elements[11] - elements[7] * elements[10]) -
+            elements[5] * (elements[2] * elements[11] - elements[3] * elements[10]) +
+            elements[9] * (elements[2] * elements[7] - elements[3] * elements[6])
+        )
+    }
+
 }
 
 actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Matrix4F =
