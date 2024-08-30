@@ -159,8 +159,11 @@ actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vec
         NativeMatrix4F().apply {
             translationRotateScale(
                 position.toNativeVector3F(),
-                NativeQuaternionF().rotateXYZ(
-                    rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+                //NativeQuaternionF().rotateXYZ(
+                //    rotation.xRad.toFloat(), rotation.yRad.toFloat(), rotation.zRad.toFloat()
+                //),
+                NativeQuaternionF().rotateZYX(
+                    rotation.zRad.toFloat(), rotation.yRad.toFloat(), rotation.xRad.toFloat()
                 ),
                 scale.toNativeVector3F()
             )
