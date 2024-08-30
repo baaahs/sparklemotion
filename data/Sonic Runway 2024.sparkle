@@ -482,13 +482,13 @@
                       "row": 1
                     },
                     {
-                      "controlId": "green",
-                      "column": 0,
+                      "controlId": "danceFloor",
+                      "column": 1,
                       "row": 2
                     },
                     {
-                      "controlId": "danceFloor",
-                      "column": 1,
+                      "controlId": "manual",
+                      "column": 0,
                       "row": 2
                     }
                   ]
@@ -783,7 +783,7 @@
     },
     "sonicRunwayRecolor": {
       "title": "Sonic Runway Recolor",
-      "src": "struct SonicRunwayData {\n    vec4 color0;\n    vec4 color1;\n    vec4 color2;\n    vec4 color3;\n    vec4 color4;\n};\nuniform SonicRunwayData sonicRunway; // @@baaahs.SonicRunway:SonicRunway\nuniform float beatLink; // @@baaahs.BeatLink:BeatLink\nuniform bool hueRotation; // @@Switch\n\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nvec4 getSRColor(int idx) {\n    int i = idx % 5;\n    switch(idx) {\n        case 0: return sonicRunway.color0;\n        case 1: return sonicRunway.color1;\n        case 2: return sonicRunway.color2;\n        case 3: return sonicRunway.color3;\n        case 4: return sonicRunway.color4;\n    }\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec3 hsv = rgb2hsv(inColor.rgb);\n    int idx = int(hsv.x + (hueRotation ? beatLink : 0.0)) * 5;\n    float t = (hsv.x * 5.0) - float(idx);\n    hsv.x = mix(rgb2hsv(getSRColor(idx).rgb), rgb2hsv(getSRColor(idx+1).rgb), t).x;\n    \n    return vec4(hsv2rgb(hsv), 1);\n}"
+      "src": "struct SonicRunwayData {\n    vec4 color0;\n    vec4 color1;\n    vec4 color2;\n    vec4 color3;\n    vec4 color4;\n};\nuniform SonicRunwayData sonicRunway; // @@baaahs.SonicRunway:SonicRunway\nuniform float beatLink; // @@baaahs.BeatLink:BeatLink\nuniform bool hueRotation; // @@Switch\n\nvec3 rgb2hsv(vec3 c)\n{\n    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);\n    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));\n    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));\n\n    float d = q.x - min(q.w, q.y);\n    float e = 1.0e-10;\n    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);\n}\n\nvec3 hsv2rgb(vec3 c)\n{\n    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);\n    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);\n    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);\n}\n\nvec4 getSRColor(int idx) {\n    int i = idx % 5;\n    switch(idx) {\n        case 0: return sonicRunway.color0;\n        case 1: return sonicRunway.color1;\n        case 2: return sonicRunway.color2;\n        case 3: return sonicRunway.color3;\n        case 4: return sonicRunway.color4;\n    }\n}\n\n// @return color\n// @param inColor color\nvec4 main(vec4 inColor) {\n    vec3 hsv = rgb2hsv(inColor.rgb);\n    int idx = int(hsv.x + (hueRotation ? beatLink : 0.0)) * 5;\n    float t = (hsv.x * 5.0) - float(idx);\n    hsv.x = rgb2hsv(mix(getSRColor(idx).rgb, getSRColor(idx+1).rgb, t)).x;\n    \n    return vec4(hsv2rgb(hsv), 1);\n}"
     },
     "moversSpin": {
       "title": "Movers Spin",
@@ -801,13 +801,13 @@
       "title": "Beacon Mode",
       "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n    vec3 boundaryMin;\n    vec3 boundaryMax;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n    bool prism;\n    float prismRotation;\n};\n\nuniform FixtureInfo fixtureInfo;\nuniform float time;// @@Time\nuniform float beaconSpeed; // @@Slider min=0.1 max=2.0 default=0.3\nuniform float beaconAmplitude; // @@Slider min=0. max=1.8 default=0.4\n\n\nbool isLeft() {\n    return fixtureInfo.position.z < 0.;\n}\n\n// @param params moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams params) {\n    params = upstream;\n    // Override values below\n    \n    params.tilt = 0.5 * 3.14;\n    params.pan =  3. * 3.14/2.  + sin(time * beaconSpeed) * beaconAmplitude * (isLeft() ? 1. : -1.);\n    params.tilt = 0.5 * 3.14;\n}"
     },
-    "green": {
-      "title": "Green?",
-      "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n    vec3 boundaryMin;\n    vec3 boundaryMax;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n    bool prism;\n    float prismRotation;\n};\n\nuniform FixtureInfo fixtureInfo;\n\n// @param params moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams params) {\n    params = upstream;\n    // Override values below\n    // params.tilt = sin(time);\n    params.colorWheel = 0.14;\n\n}"
-    },
     "danceFloor": {
       "title": "Dance Floor",
       "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n    vec3 boundaryMin;\n    vec3 boundaryMax;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n    bool prism;\n    float prismRotation;\n};\n\nuniform FixtureInfo fixtureInfo;\nuniform float time; // @@Time\n\nbool isLeft() {\n    return fixtureInfo.position.z < 0.;\n}\n\n// @param params moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams params) {\n    params = upstream;\n    if (!isLeft()) {\n        return;\n    }\n    // Override values below\n    // params.tilt = sin(time);\n    params.prism = true;\n    params.prismRotation = 0.09;\n    params.pan = 3.14/4.*3. + cos(time) * 0.1;\n    params.tilt = 3.14 / 2. + sin(time) * 0.1;\n    params.dimmer = 0.3;\n\n}"
+    },
+    "manual": {
+      "title": "Manual",
+      "src": "struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n    mat4 transformation;\n    vec3 boundaryMin;\n    vec3 boundaryMax;\n};\n\nstruct MovingHeadParams {\n    float pan;\n    float tilt;\n    float colorWheel;\n    float dimmer;\n    bool prism;\n    float prismRotation;\n};\n\nuniform FixtureInfo fixtureInfo;\nuniform vec2 leftPanTilt; // @@XyPad\nuniform vec2 rightPanTilt; // @@XyPad\n\nbool isLeft() {\n    return fixtureInfo.position.z < 0.;\n}\n\n// @param params moving-head-params\nvoid main(in MovingHeadParams upstream, out MovingHeadParams params) {\n    params = upstream;\n    // Override values below\n    if (isLeft()) {\n        params.pan = 3.1415 * leftPanTilt.x;\n        params.tilt = 3.1415 * leftPanTilt.y;\n    } else {\n        params.pan = 3.1415 * rightPanTilt.x;\n        params.tilt = 3.1415 * rightPanTilt.y;\n    }\n\n}"
     }
   },
   "patches": {
@@ -848,7 +848,7 @@
           "feedId": "saturationSlider"
         }
       },
-      "priority": 10
+      "priority": 10.0
     },
     "squarezzz-patch": {
       "shaderId": "squarezzz",
@@ -2119,7 +2119,7 @@
           "feedId": "sparkleBrightnessSlider"
         }
       },
-      "priority": 15
+      "priority": 15.0
     },
     "heart-patch": {
       "shaderId": "heart",
@@ -2192,7 +2192,7 @@
         }
       },
       "stream": "time",
-      "priority": 1
+      "priority": 1.0
     },
     "imageOverlay-patch": {
       "shaderId": "imageOverlay",
@@ -2244,7 +2244,7 @@
           "stream": "main"
         }
       },
-      "priority": 100
+      "priority": 100.0
     },
     "baaahsLogo-patch": {
       "shaderId": "baaahsLogo",
@@ -2304,7 +2304,7 @@
           "feedId": "twistSlider2"
         }
       },
-      "priority": 1
+      "priority": 1.0
     },
     "sonicRunwayRecolor-patch": {
       "shaderId": "sonicRunwayRecolor",
@@ -2431,8 +2431,8 @@
         }
       }
     },
-    "green-patch": {
-      "shaderId": "green",
+    "danceFloor-patch": {
+      "shaderId": "danceFloor",
       "incomingLinks": {
         "fixtureInfo": {
           "type": "feed",
@@ -2448,8 +2448,8 @@
         }
       }
     },
-    "danceFloor-patch": {
-      "shaderId": "danceFloor",
+    "manual-patch": {
+      "shaderId": "manual",
       "incomingLinks": {
         "fixtureInfo": {
           "type": "feed",
@@ -2459,9 +2459,13 @@
           "type": "stream",
           "stream": "main"
         },
-        "time": {
+        "leftPanTilt": {
           "type": "feed",
-          "feedId": "time"
+          "feedId": "leftPanTilt"
+        },
+        "rightPanTilt": {
+          "type": "feed",
+          "feedId": "rightPanTilt"
         }
       }
     }
@@ -2979,19 +2983,37 @@
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
       "initialValue": 0.3,
-      "controlledFeedId": "brightnessSlider"
+      "controlledFeedId": "brightnessSlider",
+      "eventBindings": [
+        {
+          "type": "baaahs.show.MidiChannelEventBinding",
+          "channel": 8
+        }
+      ]
     },
     "saturation": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
       "maxValue": 1.25,
-      "controlledFeedId": "saturationSlider"
+      "controlledFeedId": "saturationSlider",
+      "eventBindings": [
+        {
+          "type": "baaahs.show.MidiChannelEventBinding",
+          "channel": 7
+        }
+      ]
     },
     "hueShift": {
       "type": "baaahs.Core:Slider",
       "title": "Hue Shift",
-      "maxValue": 2,
-      "controlledFeedId": "hueShiftSlider"
+      "maxValue": 2.0,
+      "controlledFeedId": "hueShiftSlider",
+      "eventBindings": [
+        {
+          "type": "baaahs.show.MidiChannelEventBinding",
+          "channel": 6
+        }
+      ]
     },
     "visualizer": {
       "type": "baaahs.Core:Visualizer"
@@ -3034,18 +3056,18 @@
         "beaconMode-patch"
       ]
     },
-    "green": {
-      "type": "baaahs.Core:Button",
-      "title": "Green?",
-      "patchIds": [
-        "green-patch"
-      ]
-    },
     "danceFloor": {
       "type": "baaahs.Core:Button",
       "title": "Dance Floor",
       "patchIds": [
         "danceFloor-patch"
+      ]
+    },
+    "manual": {
+      "type": "baaahs.Core:Button",
+      "title": "Manual",
+      "patchIds": [
+        "manual-patch"
       ]
     }
   },
@@ -3059,22 +3081,22 @@
     "hueShiftSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Hue Shift",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 2
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 2.0
     },
     "brightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
       "initialValue": 0.15,
-      "minValue": 0,
+      "minValue": 0.0,
       "maxValue": 0.75
     },
     "saturationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Saturation",
-      "initialValue": 1,
-      "minValue": 0,
+      "initialValue": 1.0,
+      "minValue": 0.0,
       "maxValue": 1.25
     },
     "time": {
@@ -3083,9 +3105,9 @@
     "speedSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Speed",
-      "initialValue": 3,
-      "minValue": 1,
-      "maxValue": 5
+      "initialValue": 3.0,
+      "minValue": 1.0,
+      "maxValue": 5.0
     },
     "resolution": {
       "type": "baaahs.Core:Resolution"
@@ -3097,8 +3119,8 @@
       "type": "baaahs.Core:Slider",
       "title": "Hue Range",
       "initialValue": 0.3,
-      "minValue": 0,
-      "maxValue": 1
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "fromCenterSwitch": {
       "type": "baaahs.Core:Switch",
@@ -3108,9 +3130,9 @@
     "pulseSpeedSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Pulse Speed",
-      "initialValue": 1,
-      "minValue": 1,
-      "maxValue": 3
+      "initialValue": 1.0,
+      "minValue": 1.0,
+      "maxValue": 3.0
     },
     "center": {
       "type": "baaahs.Core:XyPad",
@@ -3122,37 +3144,37 @@
     "cycleSpeedSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Cycle Speed",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 5
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 5.0
     },
     "speedSlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Speed",
-      "initialValue": 5,
-      "minValue": 0,
-      "maxValue": 10
+      "initialValue": 5.0,
+      "minValue": 0.0,
+      "maxValue": 10.0
     },
     "pulsinessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Pulsiness",
-      "initialValue": 3,
-      "minValue": 1,
-      "maxValue": 5
+      "initialValue": 3.0,
+      "minValue": 1.0,
+      "maxValue": 5.0
     },
     "hueSpreadSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Hue Spread",
-      "initialValue": 2,
-      "minValue": 0,
-      "maxValue": 10
+      "initialValue": 2.0,
+      "minValue": 0.0,
+      "maxValue": 10.0
     },
     "cycleSpeedSlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Cycle Speed",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 10
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 10.0
     },
     "beatLink": {
       "type": "baaahs.BeatLink:BeatLink"
@@ -3165,28 +3187,28 @@
       "title": "Horizontal Scale",
       "initialValue": 0.7,
       "minValue": 0.25,
-      "maxValue": 1
+      "maxValue": 1.0
     },
     "thingSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Thing",
       "initialValue": 0.866025,
-      "minValue": 0,
-      "maxValue": 2
+      "minValue": 0.0,
+      "maxValue": 2.0
     },
     "conflagrationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Conflagration",
-      "initialValue": 15,
-      "minValue": 5,
-      "maxValue": 20
+      "initialValue": 15.0,
+      "minValue": 5.0,
+      "maxValue": 20.0
     },
     "checkerboardSizeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Checkerboard Size",
       "initialValue": 0.125,
       "minValue": 0.001,
-      "maxValue": 1
+      "maxValue": 1.0
     },
     "date": {
       "type": "baaahs.Core:Date"
@@ -3202,22 +3224,22 @@
       "type": "baaahs.Core:Slider",
       "title": "Rate1",
       "initialValue": 1.9,
-      "minValue": -3,
-      "maxValue": 3
+      "minValue": -3.0,
+      "maxValue": 3.0
     },
     "rate2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Rate2",
       "initialValue": 0.6,
-      "minValue": -3,
-      "maxValue": 3
+      "minValue": -3.0,
+      "maxValue": 3.0
     },
     "loopcycleSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Loopcycle",
-      "initialValue": 85,
-      "minValue": 20,
-      "maxValue": 100
+      "initialValue": 85.0,
+      "minValue": 20.0,
+      "maxValue": 100.0
     },
     "color1Slider": {
       "type": "baaahs.Core:Slider",
@@ -3229,7 +3251,7 @@
     "color2Slider": {
       "type": "baaahs.Core:Slider",
       "title": "Color2",
-      "initialValue": 1,
+      "initialValue": 1.0,
       "minValue": -1.25,
       "maxValue": 1.125
     },
@@ -3264,88 +3286,88 @@
     "mysterNumberSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Myster Number",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "rxySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Rxy",
-      "initialValue": 11,
-      "minValue": 1,
-      "maxValue": 17
+      "initialValue": 11.0,
+      "minValue": 1.0,
+      "maxValue": 17.0
     },
     "rxzSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Rxz",
-      "initialValue": 13,
-      "minValue": 1,
-      "maxValue": 17
+      "initialValue": 13.0,
+      "minValue": 1.0,
+      "maxValue": 17.0
     },
     "rateSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Rate",
-      "initialValue": -1,
-      "minValue": -3,
-      "maxValue": 3
+      "initialValue": -1.0,
+      "minValue": -3.0,
+      "maxValue": 3.0
     },
     "zoomSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Zoom",
-      "initialValue": 5,
-      "minValue": -10,
-      "maxValue": 10
+      "initialValue": 5.0,
+      "minValue": -10.0,
+      "maxValue": 10.0
     },
     "depthSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Depth",
       "initialValue": 0.6,
-      "minValue": 0,
-      "maxValue": 1
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "center2": {
       "type": "baaahs.Core:XyPad",
       "title": "Center",
       "initialValue": {
-        "x": -2,
-        "y": -1
+        "x": -2.0,
+        "y": -1.0
       },
       "minValue": {
-        "x": -10,
-        "y": -10
+        "x": -10.0,
+        "y": -10.0
       },
       "maxValue": {
-        "x": 10,
-        "y": 10
+        "x": 10.0,
+        "y": 10.0
       }
     },
     "twistSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Twist",
       "initialValue": 0.2,
-      "minValue": -4,
-      "maxValue": 4
+      "minValue": -4.0,
+      "maxValue": 4.0
     },
     "frequencySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Frequency",
-      "initialValue": 15,
+      "initialValue": 15.0,
       "minValue": 3.14,
-      "maxValue": 25
+      "maxValue": 25.0
     },
     "mouseXSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Mouse X",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "mouseYSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Mouse Y",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "colorColorPicker": {
       "type": "baaahs.Core:ColorPicker",
@@ -3356,15 +3378,15 @@
       "type": "baaahs.Core:Slider",
       "title": "Sparkliness",
       "initialValue": 0.02,
-      "minValue": 0,
+      "minValue": 0.0,
       "maxValue": 0.5
     },
     "colorBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Color Brightness",
       "initialValue": 0.75,
-      "minValue": 0,
-      "maxValue": 1
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "pixelCoordsTexture": {
       "type": "baaahs.Core:PixelCoordsTexture"
@@ -3372,51 +3394,51 @@
     "rippleAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ripple Amount",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "sparkleIntensitySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Sparkle Intensity",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 2
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 2.0
     },
     "sparkleBrightnessSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Sparkle Brightness",
       "initialValue": 0.5,
-      "minValue": 0,
-      "maxValue": 4
+      "minValue": 0.0,
+      "maxValue": 4.0
     },
     "ringSpeedSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ring Speed",
-      "initialValue": 10,
-      "minValue": -15,
-      "maxValue": 20
+      "initialValue": 10.0,
+      "minValue": -15.0,
+      "maxValue": 20.0
     },
     "ringDensitySlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ring Density",
-      "initialValue": 60,
-      "minValue": 10,
-      "maxValue": 120
+      "initialValue": 60.0,
+      "minValue": 10.0,
+      "maxValue": 120.0
     },
     "ringFadeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Ring Fade",
       "initialValue": 0.5,
-      "minValue": 0,
-      "maxValue": 1
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "beatTimeShiftAmountSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beat Time Shift Amount",
       "initialValue": 0.5,
-      "minValue": 0,
-      "maxValue": 2
+      "minValue": 0.0,
+      "maxValue": 2.0
     },
     "imageImage": {
       "type": "baaahs.Core:Image",
@@ -3426,29 +3448,29 @@
       "type": "baaahs.Core:Slider",
       "title": "Depth",
       "initialValue": 0.1,
-      "minValue": 0,
+      "minValue": 0.0,
       "maxValue": 0.2
     },
     "frequencySlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Frequency",
-      "initialValue": 10,
-      "minValue": 0,
-      "maxValue": 20
+      "initialValue": 10.0,
+      "minValue": 0.0,
+      "maxValue": 20.0
     },
     "rotationSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Rotation",
-      "initialValue": 0,
+      "initialValue": 0.0,
       "minValue": -6.28,
       "maxValue": 6.28
     },
     "twistSlider2": {
       "type": "baaahs.Core:Slider",
       "title": "Twist",
-      "initialValue": 0,
-      "minValue": -1,
-      "maxValue": 1
+      "initialValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0
     },
     "sonicRunway": {
       "type": "baaahs.SonicRunway:SonicRunway"
@@ -3461,15 +3483,15 @@
     "speedSlider3": {
       "type": "baaahs.Core:Slider",
       "title": "Speed",
-      "initialValue": 2,
+      "initialValue": 2.0,
       "minValue": 0.5,
-      "maxValue": 5
+      "maxValue": 5.0
     },
     "offsetSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Offset",
-      "initialValue": 0,
-      "minValue": 0,
+      "initialValue": 0.0,
+      "minValue": 0.0,
       "maxValue": 3.14
     },
     "mirroredSwitch": {
@@ -3480,9 +3502,9 @@
     "targetYSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Target Y",
-      "initialValue": 0,
-      "minValue": -1000,
-      "maxValue": 1000
+      "initialValue": 0.0,
+      "minValue": -1000.0,
+      "maxValue": 1000.0
     },
     "spotlightLrbf": {
       "type": "baaahs.Core:XyPad",
@@ -3491,9 +3513,9 @@
     "eyeColorSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Eye Color",
-      "initialValue": 1,
-      "minValue": 0,
-      "maxValue": 1
+      "initialValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     "rotateEyeColorsSwitch": {
       "type": "baaahs.Core:Switch",
@@ -3505,14 +3527,22 @@
       "title": "Beacon Speed",
       "initialValue": 0.3,
       "minValue": 0.1,
-      "maxValue": 3
+      "maxValue": 3.0
     },
     "beaconAmplitudeSlider": {
       "type": "baaahs.Core:Slider",
       "title": "Beacon Amplitude",
       "initialValue": 0.4,
-      "minValue": 0,
+      "minValue": 0.0,
       "maxValue": 1.8
+    },
+    "leftPanTilt": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Left Pan Tilt"
+    },
+    "rightPanTilt": {
+      "type": "baaahs.Core:XyPad",
+      "title": "Right Pan Tilt"
     }
   },
   "version": 10
