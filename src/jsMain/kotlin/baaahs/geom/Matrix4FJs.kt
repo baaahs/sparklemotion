@@ -179,7 +179,7 @@ actual fun matrix4F_compose(position: Vector3F, rotation: EulerAngle, scale: Vec
     )
 
 fun EulerAngle.toThreeEuler(): Euler =
-    Euler(xRad, yRad, zRad)
+    Euler(xRad, yRad, zRad, "ZYX")
 
 fun Euler.toEulerAngle() =
     EulerAngle(x.toDouble(), y.toDouble(), z.toDouble())
