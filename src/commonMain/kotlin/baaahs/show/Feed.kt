@@ -30,6 +30,7 @@ interface FeedBuilder<T : Feed> {
     val resourceName: String
     val contentType: ContentType
     val serializerRegistrar: SerializerRegistrar<T>
+    val isFunctionFeed: Boolean get() = false
     val internalOnly: Boolean get() = false
 
     fun suggestFeeds(
@@ -63,6 +64,10 @@ interface FeedBuilder<T : Feed> {
     }
 
     fun funDef(varName: String): String? = null
+
+    /** How one might declare this feed in a shader. */
+    fun exampleDeclaration(varName: String): String =
+        "uniform ${contentType.glslType.glslLiteral} $varName;"
 
     companion object {
         private val logger = Logger<FeedBuilder<*>>()

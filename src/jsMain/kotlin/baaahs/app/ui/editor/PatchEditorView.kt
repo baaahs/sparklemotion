@@ -1,6 +1,7 @@
 package baaahs.app.ui.editor
 
 import baaahs.app.ui.appContext
+import baaahs.app.ui.editor.help.shaderHelp
 import baaahs.app.ui.shaderDiagnostics
 import baaahs.app.ui.shaderPreview
 import baaahs.app.ui.toolchainContext
@@ -153,6 +154,7 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
                             attrs.editingShader = editingShader
                         }
                         PageTabs.Help -> shaderHelp {
+                            attrs.editingShader = editingShader
                         }
                     }
                 }
