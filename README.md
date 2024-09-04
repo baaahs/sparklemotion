@@ -1,8 +1,8 @@
 # Sparkle Motion
 
 [![CircleCI:main](https://circleci.com/gh/baaahs/sparklemotion.svg?style=svg)](https://circleci.com/gh/baaahs/sparklemotion)
-
-[Discord](https://discord.gg/cxW2XtpqjS) | [Demo](https://baaahs.github.io/sparklemotion)
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/AueGMvuTnQ?style=flat-square)](https://discord.gg/AueGMvuTnQ)
+[![Demo Link](https://img.shields.io/badge/Demo-baaahs.github.io/sparklemotion-blue)](https://baaahs.github.io/sparklemotion)
 
 Sparkle Motion is the system used to control the lights on [BAAAHS](http://baaahs.org), but it's
 designed so it could be applied to pretty much any lighting project. It includes a browser-based
