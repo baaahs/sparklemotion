@@ -33,4 +33,10 @@ data class FixtureInfo(
     val entityId: String?,
     val controllerId: ControllerId,
     val transportConfig: TransportConfig?
-)
+) {
+    fun matches(search: String): Boolean {
+        val s = search.lowercase()
+        return name.lowercase().contains(s) ||
+                entityId?.lowercase()?.contains(s) ?: false
+    }
+}
