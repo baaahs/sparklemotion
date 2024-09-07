@@ -4,6 +4,7 @@ import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
 import baaahs.controller.SacnManager
+import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
 import baaahs.ui.*
 import js.objects.jso
@@ -14,6 +15,7 @@ import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import react.dom.html.ReactHTML.span
 import web.cssom.Float
 import web.cssom.Padding
 import web.cssom.em
@@ -28,6 +30,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
     val mutableControllers = props.mutableScene.controllers
     val controllerStates = sceneEditorClient.controllerStates
+    val fixtureInfos = sceneEditorClient.fixtures.groupBy(FixtureInfo::controllerId)
     val allControllerIds = (mutableControllers.keys + controllerStates.keys).sorted()
 
     var controllerMatcher by state { ControllerMatcher("") }
@@ -104,6 +107,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                             TableCell { +"Firmware" }
                             TableCell { +"Last Error" }
                             TableCell { +"Last Error At" }
+                            TableCell { +"Fixtures" }
                         }
                     }
 
@@ -112,7 +116,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                         allControllerIds.forEach { controllerId ->
                             val mutableController = mutableControllers[controllerId]
                             val state = controllerStates[controllerId]
-                            if (controllerMatcher.matches(state, mutableController)) {
+                            if (controllerMatcher.matches(state, mutableController, fixtureInfos[controllerId])) {
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
@@ -147,6 +151,15 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell { +(state?.firmwareVersion ?: "") }
                                     TableCell { +(state?.lastErrorMessage ?: "") }
                                     TableCell { +(state?.lastErrorAt?.toString() ?: "") }
+
+                                    TableCell {
+                                        fixtureInfos[controllerId]?.forEach { fixtureInfo ->
+                                            span {
+                                                attrs.title = fixtureInfo.entityId ?: "[anonymous]"
+                                                +fixtureInfo.name
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
