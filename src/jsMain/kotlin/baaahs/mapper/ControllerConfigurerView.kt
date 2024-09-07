@@ -5,10 +5,7 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
 import baaahs.controller.SacnManager
 import baaahs.scene.MutableScene
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.value
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import js.objects.jso
 import materialui.icon
 import mui.icons.material.Search
@@ -17,6 +14,7 @@ import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import web.cssom.Float
 import web.cssom.Padding
 import web.cssom.em
 import web.html.HTMLElement
@@ -42,13 +40,20 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         val target = event.currentTarget as HTMLElement
         selectedController = ControllerId.fromName(target.dataset["controllerId"] ?: "huh?")
     }
+    val handleDeselectController by mouseEventHandler { event ->
+        selectedController = null
+    }
 
     val handleNewControllerClick by mouseEventHandler() {
         selectedController = ControllerId(SacnManager.controllerTypeName, "new")
     }
 
     Paper {
-        attrs.className = -styles.editorPanes
+        attrs.className = if (selectedController == null) {
+            -styles.editorPanes and styles.noControllerSelected
+        } else {
+            -styles.editorPanes
+        }
 
         div(+styles.navigatorPane) {
             header { +"Controllers" }
@@ -151,7 +156,15 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         }
 
         div(+styles.propertiesPane) {
-            header { +"Properties" }
+            header {
+                +"Properties"
+                IconButton {
+                    attrs.sx { float = Float.right }
+                    attrs.title = "Close"
+                    attrs.onClick = handleDeselectController
+                    icon(mui.icons.material.Close)
+                }
+            }
 
             div(+styles.propertiesPaneContent) {
                 selectedController?.let { selectedController ->
