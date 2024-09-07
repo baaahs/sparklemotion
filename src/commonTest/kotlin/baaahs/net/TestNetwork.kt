@@ -49,6 +49,7 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
                 packetsToSend += Packet(createAddress("*"), port, bytes)
             }
 
+            override fun close() {}
         }
 
         override fun startHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {

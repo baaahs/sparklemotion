@@ -60,6 +60,10 @@ class FragmentingUdpSocket(
         transmitMultipartUdp(bytes) { fragment -> delegate.broadcastUdp(port, fragment) }
     }
 
+    override fun close() {
+        delegate.close()
+    }
+
     /** Sends payloads which might be larger than the network's MTU. */
     private fun transmitMultipartUdp(bytes: ByteArray, fn: (bytes: ByteArray) -> Unit) {
         val maxSize = 65535 * 2 // arbitrary but probably sensible
