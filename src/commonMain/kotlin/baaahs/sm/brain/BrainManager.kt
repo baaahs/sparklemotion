@@ -88,7 +88,7 @@ class BrainManager(
     ) {
         val brainId = BrainId(msg.brainId)
 
-        logger.debug {
+        logger.info {
             "Hello from $brainId (surface=${msg.surfaceName ?: "[unknown]"}) " +
                     "at $brainAddress [firmware=${msg.firmwareVersion}]"
         }
@@ -106,10 +106,14 @@ class BrainManager(
         }
 
         val existingController = activeBrains[brainId]
-        if (existingController != null) {
+        if (existingController != null && existingController.lastError == null) {
             // Duplicate packet?
-            logger.debug { "Ignore hello from ${existingController.controllerId}, duplicate packet?" }
+            logger.warn { "Ignore hello from ${existingController.controllerId} @ $brainAddress, duplicate packet?" }
             return
+        } else if (existingController != null) {
+            // Refresh this brain as its address may have changed
+            // TODO(kcking): could we instead refresh the brain's transport so we don't have to deal with re-initializing the fixture/controller?
+            removeBrain(brainId)
         }
 
         val config = controllerConfigs[brainId.asControllerId()]
@@ -244,7 +248,7 @@ class BrainManager(
         private fun deliverShaderMessage() {
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
             val now = clock.now()
-            if (brainController.lastErrorAt?.isBefore(now - waitPeriodAfterNetworkError) != false) {
+            if (brainController.lastErrorAt?.let { (now - it) >= waitPeriodAfterNetworkError } ?: true) {
                 try {
                     if (!isSimulatedBrain)
                         udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)

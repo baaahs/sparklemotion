@@ -126,7 +126,8 @@ class ComponentRenderEngine(
     // This must be run from within a GL context.
     private fun incorporateNewFixtures() {
         if (renderTargetsToRemove.isNotEmpty()) {
-//            TODO("remove TBD")
+//            TODO(question for xian): ("remove TBD"), how do we do this?
+//            renderTargets.removeAll(renderTargetsToRemove)
         }
 
         if (renderTargetsToAdd.isNotEmpty()) {
