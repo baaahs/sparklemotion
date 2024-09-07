@@ -110,6 +110,7 @@ val SimulatorAppView = xComponent<SimulatorAppProps>("SimulatorApp") { props ->
                                 })
                                 SimulatorWindows.Console -> createElement(ConsoleView, jso {
                                     this.simulator = props.simulator
+                                    this.mainWebApp = props.hostedWebApp
                                 })
                                 SimulatorWindows.UI -> createElement(WebClientWindowView, jso {
                                     this.hostedWebApp = props.hostedWebApp
