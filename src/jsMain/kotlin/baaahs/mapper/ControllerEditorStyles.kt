@@ -1,6 +1,7 @@
 package baaahs.mapper
 
 import baaahs.ui.asColor
+import baaahs.ui.selector
 import kotlinx.css.*
 import mui.material.styles.Theme
 import styled.StyleSheet
@@ -73,6 +74,16 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val propertiesPaneContent by css {
         minHeight = 0.px
         overflow = Overflow.scroll
+    }
+
+    val noControllerSelected by css {
+        gridTemplateColumns = GridTemplateColumns.auto
+        descendants(selector(::propertiesPane)) {
+            display = Display.none
+        }
+        descendants(selector(::fixturesPane)) {
+            display = Display.none
+        }
     }
 
     val searchBarPaper by css {
