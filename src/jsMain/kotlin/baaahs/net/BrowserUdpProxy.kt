@@ -95,6 +95,10 @@ internal class BrowserUdpProxy(
             }.toBytes())
         }
 
+        override fun close() {
+            tcpConnection.close()
+        }
+
     }
 
     private fun tcpConnectionSend(bytes: ByteArray) {

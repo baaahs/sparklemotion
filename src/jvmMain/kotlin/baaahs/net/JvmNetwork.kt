@@ -131,6 +131,10 @@ class JvmNetwork : Network {
                     }
                 }
             }
+
+            override fun close() {
+                udpSocket.close()
+            }
         }
 
         override fun startHttpServer(port: Int): KtorHttpServer =

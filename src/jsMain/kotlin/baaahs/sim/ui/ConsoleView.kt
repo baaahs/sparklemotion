@@ -1,75 +1,76 @@
 package baaahs.sim.ui
 
 import baaahs.SheepSimulator
-import baaahs.sm.brain.sim.BrainSimulator
+import baaahs.ui.asTextNode
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
+import mui.material.Tab
+import mui.material.Tabs
 import react.Props
-import react.RBuilder
-import react.RHandler
-import react.dom.b
+import react.dom.button
 import react.dom.div
-import react.dom.hr
-import styled.css
-import styled.styledDiv
+import react.dom.events.SyntheticEvent
+import react.dom.header
+import react.dom.onClick
 
-private val ConsoleView = xComponent<ConsoleProps>("Console") { props ->
+val ConsoleView = xComponent<ConsoleProps>("Console") { props ->
     val simulator = props.simulator
     observe(simulator)
-    observe(simulator.visualizer)
     observe(simulator.pinky)
-    observe(simulator.fixturesSimulator)
 
-    var selectedBrain by state<BrainSimulator.Facade?> { null }
-    val brainSelectionListener by handler() { brainSimulator: BrainSimulator.Facade ->
-        selectedBrain = brainSimulator
+    var selectedTab by state { ConsoleTabs.entries.first() }
+    val handleTabSelect by handler { _: SyntheticEvent<*, *>, value: dynamic ->
+        selectedTab = value
     }
 
-    div(+SimulatorStyles.console) {
-        networkPanel {
-            attrs.network = simulator.network
+    div(+SimulatorStyles.statusPanel) {
+        header { +"Console" }
+
+        Tabs {
+            attrs.value = selectedTab
+            attrs.onChange = handleTabSelect
+            Tab {
+                attrs.label = "Pinky".asTextNode()
+                attrs.value = ConsoleTabs.Pinky
+            }
+            Tab {
+                attrs.label = "Brains".asTextNode()
+                attrs.value = ConsoleTabs.Brains
+            }
         }
 
-        frameratePanel {
-            attrs.pinkyFramerate = simulator.pinky.framerate
-            attrs.visualizerFramerate = simulator.visualizer.framerate
+        when (selectedTab) {
+            ConsoleTabs.Pinky -> {
+                pinkyConsole {
+                    attrs.simulator = simulator
+                }
+            }
+            ConsoleTabs.Brains -> {
+                brainsConsole {
+                    attrs.simulator = simulator
+                }
+            }
         }
 
-        pinkyPanel {
-            attrs.pinky = simulator.pinky
-        }
-
-        styledDiv {
-            css { +SimulatorStyles.section }
-            b { +"Brains:" }
-            div {
-                simulator.fixturesSimulator.brains.forEach { brain ->
-                    brainIndicator {
-                        attrs.brainSimulator = brain
-                        attrs.brainSelectionListener = brainSelectionListener
+        if (props.simulator.launchItems.isNotEmpty()) {
+            div(+SimulatorStyles.launchButtonsContainer) {
+                header { +"Launch:" }
+                props.simulator.launchItems.forEach { launchItem ->
+                    button {
+                        attrs.onClick = { launchItem.onLaunch() }
+                        +launchItem.title
                     }
-                }
-            }
-            div {
-                selectedBrain?.let { selectedBrain ->
-                    hr {}
-                    b { +"Brain ${selectedBrain.id}" }
-                    div { +"Model Element: ${selectedBrain.modelElementName ?: "unknown"}" }
-                }
-            }
-
-            div {
-                simulator.visualizer.selectedEntity?.let {
-                    +"Selected: ${it.title}"
                 }
             }
         }
     }
 }
+
+data class LaunchItem(val title: String, val onLaunch: () -> Unit)
 
 external interface ConsoleProps : Props {
     var simulator: SheepSimulator.Facade
 }
 
-fun RBuilder.console(handler: RHandler<ConsoleProps>) =
-    child(ConsoleView, handler = handler)
+//fun RBuilder.console(handler: RHandler<ConsoleProps>) =
+//    child(ConsoleView, handler = handler)
