@@ -6,7 +6,6 @@ import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableLegacyTab
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
-import js.objects.jso
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.Tab
@@ -91,7 +90,7 @@ private val LayoutEditorView = xComponent<LayoutEditorProps>("LayoutEditor") { p
                         +tab.title
 
                         child(Delete) {
-                            attrs.classes = jso { root = -styles.deleteTabIcon }
+                            attrs.className = -styles.deleteTabIcon
                             attrs.onClick = handleTabDeleteClick[index].withMouseEvent()
                         }
                     }

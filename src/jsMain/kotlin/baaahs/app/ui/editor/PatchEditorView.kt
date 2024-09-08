@@ -11,10 +11,7 @@ import baaahs.gl.withCache
 import baaahs.show.mutable.EditingShader
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShow
-import baaahs.ui.addObserver
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import js.objects.jso
 import materialui.icon
 import mui.material.*
@@ -124,14 +121,14 @@ private val PatchEditorView = xComponent<PatchEditorProps>("PatchEditor") { prop
 
             div(+shaderEditorStyles.propsTabsAndPanels) {
                 Tabs {
-                    attrs.classes = jso { this.flexContainer = -shaderEditorStyles.tabsContainer }
+                    attrs.classes = muiClasses { flexContainer = -shaderEditorStyles.tabsContainer }
                     attrs.value = selectedTab
                     attrs.onChange = handleChangeTab.asDynamic()
                     attrs.orientation = Orientation.horizontal
                     attrs.variant = TabsVariant.scrollable
                     PageTabs.values().forEach { tab ->
                         Tab {
-                            attrs.classes = jso { this.root = -shaderEditorStyles.tab }
+                            attrs.className = -shaderEditorStyles.tab
                             attrs.label = buildElement { +tab.name }
                             attrs.value = tab.asDynamic()
                             attrs.sx { minWidth = Auto.auto }

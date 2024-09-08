@@ -5,7 +5,6 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Container
 import mui.material.TextField
 import mui.system.sx
@@ -32,7 +31,7 @@ private val TitleAndDescriptionEditorView =
         }
 
         Container {
-            attrs.classes = jso { this.root = -styles.propertiesEditSection }
+            attrs.className = -styles.propertiesEditSection
             attrs.sx {
                 display = web.cssom.Display.flex
                 flexDirection = FlexDirection.column

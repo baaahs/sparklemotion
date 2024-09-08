@@ -40,7 +40,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
     val handleShowDevWarning by handler { _: Shader? -> devWarningIsOpen = true }
     val onSelect = props.onSelect ?: handleShowDevWarning
 
-    val handleClose = callback(onSelect) { _: Event, _: String -> onSelect(null) }
+    val handleClose = callback(onSelect) { _: Any, _: String -> onSelect(null) }
 
     val previewSizeRange = 1 .. 5
     var previewSize by state { 3 }
@@ -117,7 +117,7 @@ private val ShaderLibraryDialogView = xComponent<ShaderLibraryDialogProps>("Shad
             DialogTitle { +"Shader Library" }
 
             DialogContent {
-                attrs.classes = jso { this.root = -styles.dialogContent }
+                attrs.className = -styles.dialogContent
 
                 Box {
                     FormControl {

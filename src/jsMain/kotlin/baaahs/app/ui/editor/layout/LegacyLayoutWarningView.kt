@@ -4,7 +4,6 @@ import baaahs.app.ui.Styles
 import baaahs.ui.typographyH6
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import materialui.icon
 import mui.icons.material.NotificationImportant
 import mui.material.Box
@@ -15,7 +14,7 @@ import react.RHandler
 
 private val LegacyLayoutWarningView = xComponent<LegacyLayoutEditorProps>("LegacyLayoutEditor") { props ->
     Paper {
-        attrs.classes = jso { root = -Styles.warningPaper }
+        attrs.className = -Styles.warningPaper
 
         Box {
             icon(NotificationImportant)

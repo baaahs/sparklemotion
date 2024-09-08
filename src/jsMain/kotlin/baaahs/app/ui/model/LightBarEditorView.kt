@@ -7,7 +7,6 @@ import baaahs.scene.MutableLightBarData
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Container
 import react.*
 import react.dom.header
@@ -40,7 +39,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
     header { +"Light Bar" }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Start:" }
 
         vectorEditor {
@@ -51,7 +50,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"End:" }
 
         vectorEditor {
@@ -62,7 +61,7 @@ private val LightBarEditorView = xComponent<LightBarEditorProps>("LightBarEditor
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Length:" }
 
         with(styles) {

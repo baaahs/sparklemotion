@@ -16,7 +16,6 @@ import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
 import external.react_resizable.buildResizeHandle
-import js.objects.jso
 import materialui.icon
 import mui.material.Paper
 import org.w3c.dom.events.MouseEvent
@@ -65,7 +64,7 @@ private val ControlsPaletteView = xComponent<ControlsPaletteProps>("ControlsPale
                 }
 
                 Paper {
-                    attrs.classes = jso { root = -Styles.unplacedControlsPaper }
+                    attrs.className = -Styles.unplacedControlsPaper
                     attrs.elevation = 3
 
                     header { +"Unplaced Controls" }

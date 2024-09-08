@@ -23,10 +23,10 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
         isInvalidMessage = prompt.isValid(newValue)
     }
 
-    val handleDialogClose by handler(props.onClose, prompt.onCancel) { event: Event, _: String ->
+    val handleDialogClose by handler(props.onClose, prompt.onCancel) { event: Any, _: String ->
         props.onClose()
         prompt.onCancel()
-        event.stopPropagation()
+        (event as Event).stopPropagation()
     }
     val handleCancelClick by mouseEventHandler(props.onClose, prompt.onCancel) { event ->
         props.onClose()

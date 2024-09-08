@@ -245,7 +245,7 @@ fun renderWrapper(block: RBuilder.() -> Unit): View {
 }
 
 fun buildElements(handler: Render): ReactNode =
-    react.buildElements(RBuilder(), handler)
+    react.buildElements(RBuilder(), handler)!!
 
 object Events {
     object Button {
@@ -348,4 +348,13 @@ fun RDOMBuilder<*>.copyFrom(fromProps: CopyableProps?) {
     val from = fromProps.asDynamic()
     val keys = Object.keys(fromProps).unsafeCast<Array<String>>()
     keys.forEach { key -> setProp(key, from[key]) }
+}
+
+fun <T> muiClasses(block: dynamic.() -> Unit): T {
+    val obj = js("{}")
+    block.invoke(obj)
+    Object.keys(obj).forEach { key ->
+        obj["Mui-$key"] = obj[key]
+    }
+    return obj.unsafeCast<T>()
 }

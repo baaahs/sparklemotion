@@ -9,7 +9,6 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import js.objects.jso
 import mui.material.ToggleButton
 import react.Props
 import react.RBuilder
@@ -105,8 +104,8 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             ref = buttonRef
 
             if (showPreview) {
-                attrs.classes = jso {
-                    root = -Styles.buttonLabelWhenPreview
+                attrs.className = -Styles.buttonLabelWhenPreview
+                attrs.classes = muiClasses {
                     selected = -Styles.buttonSelectedWhenPreview
                 }
             }

@@ -14,7 +14,6 @@ import baaahs.ui.important
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.objects.jso
 import kotlinx.css.*
 import mui.material.Card
 import react.Props
@@ -50,7 +49,7 @@ private val SoundAnalysisControl = xComponent<SoundAnalysisControlProps>("SoundA
     soundAnalysisVisualizerShader.onAvailable { shader = it }
 
     Card {
-        attrs.classes = jso { this.root = -Styles.card }
+        attrs.className = -Styles.card
         div(+Styles.card) {
             shaderPreview {
                 attrs.shader = shader

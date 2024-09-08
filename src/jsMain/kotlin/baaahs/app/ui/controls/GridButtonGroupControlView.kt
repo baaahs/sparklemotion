@@ -18,7 +18,6 @@ import baaahs.ui.gridlayout.LayoutItem
 import baaahs.ui.gridlayout.gridLayout
 import baaahs.util.useResizeListener
 import external.react_resizable.buildResizeHandle
-import js.objects.jso
 import mui.material.Card
 import mui.material.Menu
 import react.Props
@@ -119,11 +118,9 @@ private val GridButtonGroupControlView = xComponent<GridButtonGroupProps>("GridB
     }
 
     Card {
-        attrs.classes = jso {
-            root = -layoutStyles.buttonGroupCard and
-                    (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) // and
+        attrs.className = -layoutStyles.buttonGroupCard and
+                (+if (editMode.isOn) layoutStyles.editModeOn else layoutStyles.editModeOff) // and
 //                    +if (gridLayoutContext.dragging) layoutStyles.dragging else layoutStyles.notDragging
-        }
 
         if (buttonGroupControl.title.isNotBlank() && buttonGroupControl.showTitle) {
             header(+layoutStyles.buttonGroupHeader) {

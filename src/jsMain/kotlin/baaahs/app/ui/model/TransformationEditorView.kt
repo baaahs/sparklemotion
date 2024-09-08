@@ -8,7 +8,6 @@ import baaahs.scene.EditingEntity
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
-import js.objects.jso
 import kotlinx.html.unsafe
 import mui.material.Container
 import react.*
@@ -45,7 +44,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
     header { +"Transformation" }
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Position:" }
 
         vectorEditor {
@@ -56,7 +55,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Rotation:" }
 
         rotationEditor {
@@ -66,7 +65,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Scale:" }
 
         vectorEditor {

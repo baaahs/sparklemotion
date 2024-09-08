@@ -6,13 +6,11 @@ import baaahs.doc.FileDisplay
 import baaahs.io.Fs
 import baaahs.ui.Styles.fileDialogFileList
 import baaahs.util.globalLaunch
-import js.objects.jso
 import materialui.icon
 import mui.icons.material.Folder
 import mui.icons.material.InsertDriveFile
 import mui.material.*
 import mui.system.Breakpoint
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.events.FormEvent
 import react.dom.onChange
@@ -80,7 +78,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         }; Unit
     }
 
-    val handleClose = callback(fileDialog) { _: Event, _: String ->
+    val handleClose = callback(fileDialog) { _: Any, _: String ->
         globalLaunch { fileDialog.onCancel() }
         Unit
     }
@@ -136,7 +134,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
             }
 
             List {
-                attrs.classes = jso { root = -fileDialogFileList }
+                attrs.className = -fileDialogFileList
                 val parent = currentDir!!.parent
                 if (parent != null) {
                     ListItemButton {

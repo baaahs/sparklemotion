@@ -6,7 +6,6 @@ import baaahs.model.GridData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableGridData
 import baaahs.ui.*
-import js.objects.jso
 import mui.material.*
 import react.*
 import react.dom.br
@@ -31,7 +30,7 @@ private val GridEditorView = xComponent<GridEditorProps>("GridEditor") { props -
 
     header { +"Grid" }
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         with(styles) {
             betterSelect<GridData.Direction> {
                 attrs.label = "Direction"

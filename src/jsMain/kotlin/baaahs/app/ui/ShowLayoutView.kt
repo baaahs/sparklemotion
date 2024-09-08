@@ -93,7 +93,7 @@ private val ShowLayoutView = xComponent<ShowLayoutProps>("ShowLayout") { props -
 
     if (tabs.size > 1) {
         Tabs {
-            attrs.classes = jso { this.root = -styles.showTabs }
+            attrs.className = -styles.showTabs
             attrs.value = layout.currentTabIndex
             attrs.onChange = handleChangeTab
             tabs.forEachIndexed { index, tab ->

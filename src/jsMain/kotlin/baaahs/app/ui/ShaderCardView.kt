@@ -7,7 +7,6 @@ import baaahs.gl.preview.GadgetAdjuster
 import baaahs.show.mutable.MutablePatch
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import kotlinx.css.LinearDimension
 import materialui.icon
 import mui.material.*
@@ -40,7 +39,7 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
 
     Card {
         key = mutablePatch.id
-        attrs.classes = jso { this.root = -styles.shaderCard }
+        attrs.className = -styles.shaderCard
         attrs.sx {
             maxWidth = important("initial".unsafeCast<MaxWidth>())
         }
@@ -65,9 +64,9 @@ private val ShaderCardView = xComponent<ShaderCardProps>("ShaderCard") { props -
             }
 
             CardActions {
-                attrs.classes = jso { this.root = -styles.shaderCardActions }
+                attrs.className = -styles.shaderCardActions
                 Typography {
-                    attrs.classes = jso { this.root = -styles.shaderCardContent }
+                    attrs.className = -styles.shaderCardContent
                     attrs.variant = TypographyVariant.body2
                     attrs.sx {
                         display = Display.block

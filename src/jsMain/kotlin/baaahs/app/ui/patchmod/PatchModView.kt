@@ -6,7 +6,6 @@ import baaahs.app.ui.shaderPreview
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.*
-import js.objects.jso
 import mui.material.*
 import react.*
 import react.dom.div
@@ -82,7 +81,7 @@ private val PatchModView = xComponent<PatchModProps>("PatchMod") { props ->
                 appContext.showManager.openShow?.allControls?.forEach { control ->
                     if (incomingFeeds.intersect(control.controlledFeeds()).isNotEmpty()) {
                         Card {
-                            attrs.classes = jso { root = -Styles.controlBox }
+                            attrs.className = -Styles.controlBox
                             control.getView(ControlProps(null, null, null))
                                 .render(this)
                         }

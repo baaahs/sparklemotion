@@ -68,8 +68,8 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     private var stateHasChanged = false
 
     init {
-        react.useEffectOnce {
-            cleanup {
+        react.useEffectOnceWithCleanup {
+            onCleanup {
                 context.changeDetectors.forEach { it.runCleanups() }
             }
         }
@@ -152,10 +152,10 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     }
 
     fun onMount(vararg watch: Any?, callback: ChangeDetector.() -> Unit) {
-        react.useEffect(*watch) {
+        react.useEffectWithCleanup(*watch) {
             val sideEffect = ChangeDetector(watch, logger)
             sideEffect.callback()
-            cleanup { sideEffect.runCleanups() }
+            onCleanup { sideEffect.runCleanups() }
         }
     }
 
@@ -209,8 +209,9 @@ class XBuilder(val logger: Logger) : react.RBuilderImpl() {
     fun switchEventHandler(vararg watch: Any?, block: (event: ChangeEvent<*>, checked: Boolean) -> Unit): ReadOnlyProperty<Any?, (event: ChangeEvent<*>, checked: Boolean) -> Unit> =
         handler(*watch, block = block)
 
-    fun <T> syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, value: T) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, value: T) -> Unit> =
-        handler(*watch, block = block)
+    @Suppress("UNCHECKED_CAST")
+    fun <T> syntheticEventHandler(vararg watch: Any?, block: (event: SyntheticEvent<*, *>, value: T) -> Unit): ReadOnlyProperty<Any?, (event: SyntheticEvent<*, *>, value: Any) -> Unit> =
+        handler(*watch, block = block as (SyntheticEvent<*, *>, Any) -> Unit)
 
     fun <T> newEventHandler(vararg watch: Any?, block: EventHandler<T>): ReadOnlyProperty<Any?, EventHandler<T>> =
         handler(*watch, block = block)
