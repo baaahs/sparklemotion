@@ -47,12 +47,12 @@ class KeyboardShortcutHandler(val target: EventTarget? = null) {
     }
 
     fun listen(target: EventTarget): EventTarget {
-        target.addEventListener(KeyboardEvent.keyDown(), handleKeyDown)
+        target.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
         return target
     }
 
     fun unlisten(target: EventTarget) {
-        target.removeEventListener(KeyboardEvent.keyDown(), handleKeyDown)
+        target.removeEventListener(KeyboardEvent.KEY_DOWN, handleKeyDown)
     }
 
     fun release() {

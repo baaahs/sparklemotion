@@ -15,8 +15,8 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
     val previousSize = useRef<Pair<Int, Int>>(null)
 
     // Fire the callback anytime the ref is resized
-    useEffect {
-        val element = elementRef.current ?: return@useEffect
+    useEffectWithCleanup {
+        val element = elementRef.current ?: return@useEffectWithCleanup
 
         val ro = ResizeObserver { _, _ ->
             console.log("resized", element, element.clientWidth, element.clientHeight)
@@ -28,16 +28,16 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
         }
         ro.observe(element)
 
-        cleanup { ro.unobserve(element) }
+        onCleanup { ro.unobserve(element) }
     }
 
     // Fire once when the component first mounts
-    useEffect(elementRef, onResizedThrottled) {
+    useEffectWithCleanup(elementRef, onResizedThrottled) {
         val intervalId = setTimeout(500.milliseconds) {
             val element = elementRef.current ?: return@setTimeout
             onResizedThrottled(element.clientWidth, element.clientHeight)
         }
 
-        cleanup { clearTimeout(intervalId) }
+        onCleanup { clearTimeout(intervalId) }
     }
 }

@@ -137,7 +137,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
 
 /** [GridButtonGroupControlView] needs a click event so it can deselect other buttons in the group. */
 private fun redispatchAsMouseClick(e: PointerEvent<*>) {
-    val event = MouseEvent(MouseEvent.click(), e.unsafeCast<MouseEventInit>())
+    val event = MouseEvent(MouseEvent.CLICK, e.unsafeCast<MouseEventInit>())
     e.currentTarget.parentElement?.dispatchEvent(event)
 }
 
