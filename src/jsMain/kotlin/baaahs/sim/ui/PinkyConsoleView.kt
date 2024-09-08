@@ -55,7 +55,7 @@ private val PinkyConsoleView = xComponent<PinkyConsoleProps>("PinkyConsole") { p
             }
         } else {
             Button {
-                attrs.classes = jso { this.root = -SimulatorStyles.showPinkyConsoleButton }
+                attrs.className = -SimulatorStyles.showPinkyConsoleButton
                 attrs.onClick = handleShowConsole
                 +"Show Pinky Console"
             }
