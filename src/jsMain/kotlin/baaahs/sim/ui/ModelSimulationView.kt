@@ -24,8 +24,11 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
         visualizer.rotate = rotate
     }
 
-    val onRotateChange by eventHandler {
-        rotate = !rotate
+    val onRotateChange by eventHandler { rotate = !rotate }
+
+    val fixturesSimulator = observe(props.simulator.fixturesSimulator)
+    val handleStart by mouseEventHandler(fixturesSimulator) {
+        fixturesSimulator.start()
     }
 
     div(+SimulatorStyles.modelSimulation) {
@@ -34,7 +37,14 @@ val ModelSimulationView = xComponent<ModelSimulationProps>("ModelSimulation") { 
         visualizerPanel {
             attrs.visualizer = visualizer
 
-            if (visualizer.haveScene) {
+            if (!fixturesSimulator.isStarted) {
+                div(+SimulatorStyles.unstarted) {
+                    Button {
+                        attrs.onClick = handleStart
+                        +"Start Simulation"
+                    }
+                }
+            } else if (visualizer.haveScene) {
                 div(+SimulatorStyles.vizToolbar) {
                     FormControlLabel {
                         attrs.control = Switch.create {

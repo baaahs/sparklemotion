@@ -9,9 +9,12 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.sm.brain.proto.*
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.datetime.Instant
+import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class BrainSimulator(
@@ -26,13 +29,13 @@ class BrainSimulator(
     private lateinit var link: Network.Link
     private lateinit var udpSocket: Network.UdpSocket
     private var lastInstructionsReceivedAt: Instant? = null
-    private var modelElementName : String? = null
+    private var modelEntityName : String? = null
         set(value) { field = value; facade.notifyChanged() }
     private var pixelCount: Int = SparkleMotion.MAX_PIXEL_COUNT
     private var pixelLocations: List<Vector3F> = emptyList()
     private var currentShaderDesc: ByteArray? = null
     private var currentRenderTree: RenderTree<*>? = null
-    private val state: State = State.Unknown
+    private var state: State = State.Booting
     private var keepRunning = true
     private var job: Job? = null
 
@@ -40,11 +43,14 @@ class BrainSimulator(
         logger.warn { "[$id]: Skipped frame!" }
     }
 
-    enum class State { Unknown, Link, Online }
+    enum class State { Booting, Linked, Hello, Mapped, Shading, Rebooting, Stopped }
 
     fun start() {
+        state = State.Booting
         link = network.link("brain")
         udpSocket = link.listenFragmentingUdp(Ports.BRAIN, this)
+        state = State.Linked
+        facade.notifyChanged()
 
         keepRunning = true
         job = coroutineScope.launch {
@@ -55,28 +61,40 @@ class BrainSimulator(
 
     fun stop() {
         keepRunning = false
+        udpSocket.close()
+        state = State.Stopped
         job?.cancel()
         job = null
     }
 
     private suspend fun reset() {
         lastInstructionsReceivedAt = null
-        modelElementName = null
+        modelEntityName = null
         pixelCount = SparkleMotion.MAX_PIXEL_COUNT
         pixelLocations = emptyList()
         currentShaderDesc = null
         currentRenderTree = null
 
-        for (i in pixels.indices) pixels[i] = Color.WHITE
+        stop()
 
-        sendHello()
+        globalLaunch {
+            delay(Random.nextInt(100).milliseconds)
+            state = State.Rebooting
+            facade.notifyChanged()
+            for (i in pixels.indices) pixels[i] = Color.WHITE
+
+            globalLaunch {
+                delay(Random.nextInt(200).milliseconds)
+                start()
+            }
+        }
     }
 
     /**
      * So that the JVM standalone can boot up and have a fixture name without mapping
      */
     fun forcedFixtureName(name: String) {
-        modelElementName = name
+        modelEntityName = name
     }
 
     private suspend fun sendHello() {
@@ -88,8 +106,10 @@ class BrainSimulator(
                 }
                 udpSocket.broadcastUdp(
                     Ports.PINKY,
-                    BrainHelloMessage(id, modelElementName, "simulator-firmware")
+                    BrainHelloMessage(id, modelEntityName, "simulator-firmware")
                 )
+                state = State.Hello
+                facade.notifyChanged()
             }
 
             delay(5000)
@@ -108,25 +128,31 @@ class BrainSimulator(
             when (type) {
                 Type.BRAIN_PANEL_SHADE -> {
                     GlobalScope.launch { frameChannel.send(IncomingFrame(reader, fromAddress, fromPort)) }
+                    if (state != State.Shading) {
+                        state = State.Shading
+                        facade.notifyChanged()
+                    }
                 }
 
                 Type.BRAIN_ID_REQUEST -> {
-                    logger.debug { "[$id] $type: Hello($id, $modelElementName)" }
-                    udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, modelElementName))
+                    logger.debug { "[$id] $type: Hello($id, $modelEntityName)" }
+                    udpSocket.sendUdp(fromAddress, fromPort, BrainHelloMessage(id, modelEntityName))
                 }
 
                 Type.BRAIN_MAPPING -> {
                     val message = BrainMappingMessage.parse(reader)
-                    modelElementName = message.fixtureName
+                    modelEntityName = message.fixtureName
                     pixelCount = message.pixelCount
                     pixelLocations = message.pixelLocations
 
                     // next frame we'll need to recreate everything...
                     currentShaderDesc = null
                     currentRenderTree = null
+                    state = State.Mapped
+                    facade.notifyChanged()
 
-                    logger.debug { "[$id] $type: Hello($id, $modelElementName)" }
-                    udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelElementName))
+                    logger.debug { "[$id] $type: Hello($id, $modelEntityName)" }
+                    udpSocket.broadcastUdp(Ports.PINKY, BrainHelloMessage(id, modelEntityName))
                 }
 
                 Type.PING -> {
@@ -213,14 +239,18 @@ class BrainSimulator(
     inner class Facade : baaahs.ui.Facade() {
         val id: String
             get() = this@BrainSimulator.id
+        val link: Network.Link?
+            get() = if (this@BrainSimulator::link.isInitialized) {
+                this@BrainSimulator.link
+            } else null
         val state: State
             get() = this@BrainSimulator.state
-        val modelElementName: String?
-            get() = this@BrainSimulator.modelElementName
+        val modelEntityName: String?
+            get() = this@BrainSimulator.modelEntityName
 
         fun reset() {
             logger.info { "Resetting Brain $id!" }
-            GlobalScope.launch { this@BrainSimulator.reset() }
+            globalLaunch { this@BrainSimulator.reset() }
         }
     }
 

@@ -102,6 +102,7 @@ interface Network {
         fun sendUdp(toAddress: Address, port: Int, message: Message) = sendUdp(toAddress, port, message.toBytes())
         fun broadcastUdp(port: Int, bytes: ByteArray)
         fun broadcastUdp(port: Int, message: Message) = broadcastUdp(port, message.toBytes())
+        fun close()
     }
 
     interface TcpConnection {
