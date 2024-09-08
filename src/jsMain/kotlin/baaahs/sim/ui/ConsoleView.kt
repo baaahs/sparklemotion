@@ -8,7 +8,6 @@ import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.CssBaseline
 import mui.material.Paper
 import mui.material.Tab
@@ -41,7 +40,7 @@ val ConsoleView = xComponent<ConsoleProps>("Console") { props ->
         CssBaseline {}
 
         Paper {
-            attrs.classes = jso { this.root = -SimulatorStyles.statusPanel }
+            attrs.className = -SimulatorStyles.statusPanel
 
             header { +"Console" }
 
