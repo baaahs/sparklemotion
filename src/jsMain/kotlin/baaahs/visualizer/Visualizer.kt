@@ -15,6 +15,8 @@ import three_ext.OrbitControls
 import three_ext.clear
 import three_ext.set
 import web.events.Event
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLSpanElement
@@ -23,7 +25,6 @@ import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
-import web.window.RESIZE
 import kotlin.math.*
 import kotlin.reflect.KClass
 
@@ -196,7 +197,6 @@ open class BaseVisualizer(
     }
 
     init {
-        @Suppress("LeakingThis")
         activeExtensions.values.forEach { it.attach() }
     }
 

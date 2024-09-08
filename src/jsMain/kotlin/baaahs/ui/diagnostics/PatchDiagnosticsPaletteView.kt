@@ -54,7 +54,7 @@ val PatchDiagnosticsView = xComponent<PatchDiagnosticsProps>("PatchDiagnostics")
                 attrs.value = selectedDiagnostic
                 attrs.variant = TabsVariant.scrollable
                 attrs.onChange = { _, value ->
-                    selectedDiagnostic = value
+                    selectedDiagnostic = value.toString()
                 }
 
                 Tab { attrs.value = "DAG"; attrs.label = "DAG".asTextNode() }

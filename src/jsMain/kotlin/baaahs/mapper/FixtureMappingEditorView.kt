@@ -12,7 +12,6 @@ import baaahs.scene.MutableScene
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.icons.material.ExpandMore
 import mui.material.*
 import react.*
@@ -42,7 +41,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     val toggleExpanded by mouseEventHandler { expanded = !expanded }
 
     Accordion {
-        attrs.classes = jso { this.root = -styles.expansionPanelRoot }
+        attrs.className = -styles.expansionPanelRoot
         attrs.expanded = expanded
 
         AccordionSummary {
@@ -93,7 +92,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
         }
 
         AccordionDetails {
-            attrs.classes = jso { this.root = -styles.expansionPanelDetails }
+            attrs.className = -styles.expansionPanelDetails
             fixtureConfigPicker {
                 attrs.editingController = props.editingController
                 attrs.mutableFixtureOptions = props.mutableFixtureMapping.fixtureOptions

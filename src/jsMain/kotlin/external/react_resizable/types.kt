@@ -1,6 +1,5 @@
 package external.react_resizable
 
-import js.objects.jso
 import mui.material.SvgIcon
 import react.ReactElement
 import react.Ref
@@ -21,10 +20,8 @@ val ResizeHandleAxes = arrayOf(
 fun buildResizeHandle(axis: ResizeHandleAxis, ref: Ref<HTMLElement>) = buildElement {
     SvgIcon {
         attrs.viewBox = "0 0 20 20"
-        attrs.classes = jso {
-            this.root = ClassName("app-ui-layout-resize-handle " +
-                    "app-ui-layout-resize-handle-$axis react-resizable-handle")
-        }
+        attrs.className = ClassName("app-ui-layout-resize-handle " +
+                "app-ui-layout-resize-handle-$axis react-resizable-handle")
 
         when (axis.length) {
             1 -> { // edge (south)

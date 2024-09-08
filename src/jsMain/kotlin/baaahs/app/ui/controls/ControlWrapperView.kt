@@ -4,7 +4,6 @@ import baaahs.app.ui.appContext
 import baaahs.show.live.ControlProps
 import baaahs.show.live.OpenControl
 import baaahs.ui.*
-import js.objects.jso
 import materialui.icon
 import mui.material.Card
 import react.Props
@@ -26,7 +25,7 @@ private val ControlWrapper = xComponent<ControlWrapperProps>("Control") { props 
     }
 
     Card {
-        attrs.classes = jso { root = props.className?.className ?: -Styles.controlBox }
+        attrs.className = props.className?.className ?: -Styles.controlBox
         props.control.getView(props.controlProps)
             .render(this)
 

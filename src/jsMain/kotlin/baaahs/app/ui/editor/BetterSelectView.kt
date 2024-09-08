@@ -3,7 +3,6 @@ package baaahs.app.ui.editor
 import baaahs.ui.asTextNode
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.*
 import react.Props
 import react.RBuilder
@@ -36,7 +35,7 @@ private val BetterSelectView = xComponent<BetterSelectProps<Any?>>("BetterSelect
 
         props.label?.let { label ->
             InputLabel {
-                attrs.classes = jso { this.root = -ControlsStyles.inputLabel }
+                attrs.className = -ControlsStyles.inputLabel
                 attrs.margin = InputLabelMargin.dense
                 attrs.component = ReactHTML.legend
                 +label

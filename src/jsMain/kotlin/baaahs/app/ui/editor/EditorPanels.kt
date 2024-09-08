@@ -182,7 +182,7 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
 
                 if (canMatchParent) {
                     FormControlLabel {
-//                    attrs.classes = jso { this.root = -styles.expandSwitchLabel }
+//                    attrs.className = -styles.expandSwitchLabel
 
                         attrs.control = buildElement {
                             Switch {

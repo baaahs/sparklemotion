@@ -2,6 +2,8 @@ package baaahs.ui
 
 import web.events.Event
 import web.events.EventTarget
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLElement
 import web.html.HTMLInputElement
 import web.html.HTMLTextAreaElement

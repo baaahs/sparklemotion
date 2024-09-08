@@ -35,12 +35,14 @@ import three_ext.*
 import web.animations.requestAnimationFrame
 import web.canvas.CanvasImageSource
 import web.canvas.CanvasRenderingContext2D
-import web.canvas.ImageBitmap
 import web.cssom.Cursor
 import web.events.Event
+import web.events.addEventListener
+import web.events.removeEventListener
 import web.html.HTMLCanvasElement
 import web.html.HTMLElement
 import web.html.HTMLImageElement
+import web.images.ImageBitmap
 import web.prompts.prompt
 import web.uievents.KeyboardEvent
 import web.uievents.MouseEvent

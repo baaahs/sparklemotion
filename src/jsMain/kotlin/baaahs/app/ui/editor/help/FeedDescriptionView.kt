@@ -8,7 +8,7 @@ import baaahs.show.FeedBuilder
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.objects.jso
+import baaahs.util.globalLaunch
 import mui.material.Button
 import react.Props
 import react.RBuilder
@@ -59,7 +59,7 @@ private val FeedDeclarationView = xComponent<FeedDeclarationsProps>("FeedDeclara
     }
 
     Button {
-        attrs.classes = jso { this.root = -styles.copyButton }
+        attrs.className = -styles.copyButton
         attrs.onClick = { event ->
             val target = event.currentTarget as HTMLElement?
             val pre = target
@@ -67,8 +67,10 @@ private val FeedDeclarationView = xComponent<FeedDeclarationsProps>("FeedDeclara
                 ?.getElementsByTagName("pre")
                 ?.get(0) as HTMLElement?
             pre?.innerText?.let {
-                navigator.clipboard.writeText(it)
-                target?.innerText = "Copied!"
+                globalLaunch {
+                    navigator.clipboard.writeText(it)
+                    target?.innerText = "Copied!"
+                }
             }
         }
         +"Copy…"

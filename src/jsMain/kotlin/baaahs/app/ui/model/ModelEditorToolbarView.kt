@@ -78,7 +78,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
         attrs.handle = ".handle"
 
         Paper {
-            attrs.classes = jso { this.root = -styles.visualizerToolbar }
+            attrs.className = -styles.visualizerToolbar
             attrs.elevation = 5
 
             header("handle") { +"Tools" }
@@ -138,7 +138,7 @@ private val ModelEditorToolbarView = xComponent<ModelEditorToolbarProps>("ModelE
                     attrs.inputProps = jso {}
                     buildElement {
                         Input {
-                            attrs.classes = jso {
+                            attrs.classes = muiClasses {
                                 input = -styles.gridSizeInput
                                 underline = -styles.partialUnderline
                             }

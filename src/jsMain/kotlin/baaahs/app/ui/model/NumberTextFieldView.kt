@@ -38,7 +38,7 @@ private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("Num
         attrs.variant = "standard"
         attrs.placeholder = props.placeholder
         attrs.InputProps = jso {
-            classes = jso { this.underline = -style.partialUnderline }
+            classes = jso { this.asDynamic().underline = -style.partialUnderline }
             size = Size.small
             margin = InputBaseMargin.dense
             props.adornment?.let { adornment ->
@@ -51,7 +51,7 @@ private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("Num
             }
         }
         attrs.InputLabelProps = jso {
-            this.classes = jso { this.root = -Styles.inputLabel }
+            this.classes = jso { this.asDynamic().root = -Styles.inputLabel }
             this.shrink = true
         }
         attrs.onChange = cachedOnChange

@@ -5,7 +5,6 @@ import baaahs.scene.MutableEntity
 import baaahs.scene.MutableEntityGroup
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.List
 import mui.material.ListItemButton
 import mui.material.ListItemText
@@ -31,7 +30,7 @@ private val EntityListItemView: ComponentType<EntityListItemProps> = xComponent(
 
     if (mutableEntity is MutableEntityGroup) {
         List {
-            attrs.classes = jso { this.root = -styles.entityList }
+            attrs.className = -styles.entityList
             mutableEntity.children.forEach { child ->
                 entityListItem {
                     attrs.mutableEntity = child
