@@ -12,7 +12,6 @@ import baaahs.show.Shader
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.*
-import js.objects.jso
 import kotlinx.css.*
 import kotlinx.css.properties.s
 import mui.material.Card
@@ -144,7 +143,7 @@ private val beatLinkControl = xComponent<BeatLinkControlProps>("BeatLinkControl"
     val playerStateHeightUnits = allPlayers.values.sumOf { it.heightUnits() }
 
     Card {
-        attrs.classes = jso { this.root = -Styles.card }
+        attrs.className = -Styles.card
         div(+Styles.card) {
             ref = containerRef
 

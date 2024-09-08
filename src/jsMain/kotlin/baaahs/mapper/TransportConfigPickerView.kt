@@ -10,7 +10,6 @@ import baaahs.ui.asTextNode
 import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -31,7 +30,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
     val transportConfig = props.mutableTransportConfig
 
     Card {
-        attrs.classes = jso { this.root = -styles.configCardOuter }
+        attrs.className = -styles.configCardOuter
         attrs.elevation = 4
 
         betterSelect<TransportType?> {
@@ -44,7 +43,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
 
         if (transportConfig != null) {
             Card {
-                attrs.classes = jso { this.root = -styles.configCardInner }
+                attrs.className = -styles.configCardInner
                 transportConfig.getEditorView(props.editingController)
                     .render(this)
             }

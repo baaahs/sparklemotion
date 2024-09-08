@@ -7,7 +7,6 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableMovingHeadData
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Container
 import react.*
 import react.dom.header
@@ -27,7 +26,7 @@ private val MovingHeadEditorView = xComponent<MovingHeadEditorProps>("MovingHead
     header { +"Moving Head" }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         betterSelect<MovingHeadAdapter> {
             attrs.label = "Adapter"
             attrs.values = MovingHeadAdapter.all

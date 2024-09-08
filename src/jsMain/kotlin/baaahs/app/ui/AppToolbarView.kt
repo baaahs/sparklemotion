@@ -20,7 +20,6 @@ import mui.icons.material.Menu
 import mui.material.*
 import mui.material.Link
 import mui.material.Tab
-import org.w3c.dom.events.Event
 import react.*
 import react.dom.div
 import react.dom.h4
@@ -73,13 +72,13 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
 
     var showProblemsDialogIsOpen by state { false }
     val toggleProblems = callback { showProblemsDialogIsOpen = !showProblemsDialogIsOpen }
-    val closeProblems = callback { _: Event, _: String -> showProblemsDialogIsOpen = false }
+    val closeProblems = callback { _: Any, _: String -> showProblemsDialogIsOpen = false }
 
     val editMode = observe(props.documentManager.editMode)
     val handleEditModeChange by handler(editMode) { editMode.toggle() }
 
     AppBar {
-        attrs.classes = jso { this.root = -themeStyles.appToolbar }
+        attrs.className = -themeStyles.appToolbar
         attrs.component = ReactHTML.div
         attrs.position = AppBarPosition.relative
 
@@ -92,13 +91,14 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
             }
 
             Tabs {
-                attrs.classes = jso { this.root = -themeStyles.appToolbarTabs }
+                attrs.className = -themeStyles.appToolbarTabs
+                attrs.classes = muiClasses { indicator = -themeStyles.appToolbarTabIndicator }
                 attrs.value = props.appMode
                 attrs.onChange = handleAppModeTabClick
 
-                val tabClasses = jso<TabClasses> {
-                    this.root = -themeStyles.appToolbarTab
-                    this.selected = -themeStyles.appToolbarTabSelected
+                val tabClasses = muiClasses<TabClasses> {
+                    root = -themeStyles.appToolbarTab
+                    selected = -themeStyles.appToolbarTabSelected
                 }
                 Tab {
                     attrs.classes = tabClasses
@@ -196,9 +196,9 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 }
 
                 ToggleButton {
-                    attrs.classes = jso {
-                        this.root = -themeStyles.editModeButton
-                        this.selected = -themeStyles.editModeButtonSelected
+                    attrs.className = -themeStyles.editModeButton
+                    attrs.classes = muiClasses {
+                        selected = -themeStyles.editModeButtonSelected
                     }
 //                        attrs.variant = ButtonVariant.contained
                     attrs.color = ToggleButtonColor.error
@@ -215,16 +215,16 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 }
 
                 ButtonGroup {
-                    attrs.classes = jso { this.root = -themeStyles.appToolbarButtonGroup }
+                    attrs.className = -themeStyles.appToolbarButtonGroup
 
                     if (showProblemsSeverity != null) {
                         Tooltip {
                             attrs.title = "Show Problems".asTextNode()
 
                             IconButton {
-                                attrs.classes = jso { this.root = -themeStyles.appToolbarProblemsIcon }
+                                attrs.className = -themeStyles.appToolbarProblemsIcon
                                 Link {
-                                    attrs.classes = jso { this.root = ClassName(showProblemsSeverity.cssClass) }
+                                    attrs.className = ClassName(showProblemsSeverity.cssClass)
                                     attrs.onClick = toggleProblems.withMouseEvent()
                                     icon(showProblemsSeverity.icon)
                                 }
@@ -261,7 +261,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
 
                 DialogTitle { +"Show Problems" }
                 DialogContent {
-                    attrs.classes = jso { root = -themeStyles.showProblemsDialogContent }
+                    attrs.className = -themeStyles.showProblemsDialogContent
                     showManager.showProblems.sortedByDescending { it.severity }.forEach { problem ->
                         val iconClass = "${themeStyles.showProblem.name} ${problem.severity.cssClass}"
                         div(iconClass) { icon(problem.severity.icon) }

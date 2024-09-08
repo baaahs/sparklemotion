@@ -205,7 +205,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                     CssBaseline {}
 
                     Paper {
-                        attrs.classes = jso { this.root = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle }
+                        attrs.className = -themeStyles.appRoot and appDrawerStateStyle and editModeStyle
 
                         appDrawer {
                             attrs.open = renderAppDrawerOpen
@@ -233,7 +233,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
 
                                 if (appState is AppState.FullScreenMessage) {
                                     Paper {
-                                        attrs.classes = jso { root = -themeStyles.fullScreenMessagePaper }
+                                        attrs.className = -themeStyles.fullScreenMessagePaper
                                         if (appState.isInProgress)
                                             mui.material.CircularProgress {}
                                         icon(mui.icons.material.NotificationImportant)

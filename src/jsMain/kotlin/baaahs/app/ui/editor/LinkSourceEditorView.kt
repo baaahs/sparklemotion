@@ -3,10 +3,10 @@ package baaahs.app.ui.editor
 import baaahs.app.ui.appContext
 import baaahs.gl.shader.InputPort
 import baaahs.show.mutable.EditingShader
+import baaahs.ui.muiClasses
 import baaahs.ui.unaryMinus
 import baaahs.ui.withSelectEvent
 import baaahs.ui.xComponent
-import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.*
@@ -91,7 +91,7 @@ private val LinkSourceEditor = xComponent<LinkSourceEditorProps>("LinkSourceEdit
                 Divider {}
 
                 ListItem {
-                    attrs.classes = jso { this.root = -styles.showAdvancedMenuItem }
+                    attrs.classes = muiClasses { root = -styles.showAdvancedMenuItem }
 
                     Checkbox {
                         ref = showAdvancedCheckbox

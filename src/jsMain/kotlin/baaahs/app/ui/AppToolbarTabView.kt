@@ -5,7 +5,6 @@ import baaahs.client.document.DocumentManager
 import baaahs.client.document.OpenDocument
 import baaahs.show.live.OpenPatchHolder
 import baaahs.ui.*
-import js.objects.jso
 import kotlinx.html.unsafe
 import materialui.icon
 import mui.icons.material.Article
@@ -21,7 +20,7 @@ private val AppToolbarTabView = xComponent<AppToolbarTabProps>("AppToolbarTab") 
     val themeStyles = appContext.allStyles.appUi
 
     typographyH6 {
-        attrs.classes = jso { this.root = -themeStyles.title }
+        attrs.className = -themeStyles.title
         div(+themeStyles.titleHeader) { +"${props.value.name}:" }
 
         val document = props.document

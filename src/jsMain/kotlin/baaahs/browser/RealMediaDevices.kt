@@ -56,7 +56,6 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
 //                    imageCapture = ImageCapture(videoTrack)
                     videoEl.srcObject = stream
                     videoEl.controls = true
-                    videoEl.play()
 
                     videoEl.oncanplay = EventHandler {
                         println("oncanplay")
@@ -71,6 +70,9 @@ class RealMediaDevices : MediaDevices, CoroutineScope by MainScope() {
                         println("onloadeddata")
                     }
 
+                    globalLaunch {
+                        videoEl.play()
+                    }
                 }.catch { t -> println("caught ${t}") }
             }
 

@@ -105,7 +105,7 @@ class WebClient(
         }
     }
 
-    private fun toggleFullScreen() {
+    private suspend fun toggleFullScreen() {
         if (inFullScreenMode) {
             document.exitFullscreen()
             inFullScreenMode = false
@@ -168,6 +168,8 @@ class WebClient(
 
         suspend fun listDmxUniverses() = listDmxUniverses.listDmxUniverses()
 
-        fun toggleFullScreen() = this@WebClient.toggleFullScreen()
+        fun toggleFullScreen() = globalLaunch {
+            this@WebClient.toggleFullScreen()
+        }
     }
 }

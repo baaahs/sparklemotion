@@ -135,6 +135,10 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         important(::color, Color.inherit)
     }
 
+    val appToolbarTabIndicator by css {
+        display = Display.none
+    }
+
     val appToolbarActions by css {
         display = Display.flex
     }
@@ -147,6 +151,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
     val title by css {
         display = Display.flex
         userSelect = UserSelect.none
+        color = theme.palette.text.primary.asColor().important
     }
 
     val unsaved by css {
@@ -168,6 +173,7 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         bottom = 4.px
         fontSize = .6.em
         opacity = .6
+        textWrap = TextWrap.nowrap
 
         child("svg") {
             fontSize = 1.em
@@ -186,8 +192,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         padding = Padding(5.px, 1.em)
         marginLeft = 1.em
         marginRight = 1.em
-        color = theme.palette.primary.contrastText.asColor()
-        important(::backgroundColor, theme.palette.primary.main.asColor())
+        color = theme.palette.primary.contrastText.asColor().important
+        backgroundColor = theme.palette.primary.main.asColor().important
         borderColor = theme.palette.primary.contrastText.asColor()
 
         svg {

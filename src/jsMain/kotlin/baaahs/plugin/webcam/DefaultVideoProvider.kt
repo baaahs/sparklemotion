@@ -2,9 +2,9 @@ package baaahs.plugin.webcam
 
 import baaahs.document
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import com.danielgergely.kgl.TextureResource
 import js.objects.jso
-import js.promise.catch
 import org.khronos.webgl.TexImageSource
 import web.events.EventHandler
 import web.html.HTMLVideoElement
@@ -31,7 +31,7 @@ object BrowserWebCamVideoProvider : VideoProvider {
 
     private val logger = Logger<BrowserWebCamVideoProvider>()
 
-    private fun startCamera() {
+    private suspend fun startCamera() {
         logger.info { "Initializing." }
         if (!window.isSecureContext) {
             // The browser considers our session to be not secure; see
@@ -40,20 +40,21 @@ object BrowserWebCamVideoProvider : VideoProvider {
             return
         }
 
-        navigator.mediaDevices.getUserMedia(jso {
-            video = jso {
-                width = jso<ConstrainULongRange> { min = 320; ideal = 640; max = 1920 }
-                height = jso<ConstrainULongRange> { min = 200; ideal = 480; max = 1080 }
-            }
-        }).then { stream ->
+        try {
+            val mediaStream = navigator.mediaDevices.getUserMedia(jso {
+                video = jso {
+                    width = jso<ConstrainULongRange> { min = 320; ideal = 640; max = 1920 }
+                    height = jso<ConstrainULongRange> { min = 200; ideal = 480; max = 1080 }
+                }
+            })
             logger.warn { "From getUserMedia" }
-            console.warn("From getUserMedia: ", stream)
+            console.warn("From getUserMedia: ", mediaStream)
             // apply the stream to the video element used in the texture
-            videoElement.srcObject = stream
+            videoElement.srcObject = mediaStream
             videoElement.play()
-        }.catch { error ->
-            logger.error { "From getUserMedia" }
-            console.error("Unable to access the camera/webcam.", error)
+        } catch(e: Exception) {
+            logger.error(e) { "From getUserMedia" }
+            console.error("Unable to access the camera/webcam.", e)
         }
     }
 
@@ -68,7 +69,9 @@ object BrowserWebCamVideoProvider : VideoProvider {
     private fun ensureOpen() {
         if (!isOpen) {
             isOpen = true
-            startCamera()
+            globalLaunch {
+                startCamera()
+            }
         }
     }
 

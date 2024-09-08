@@ -17,7 +17,6 @@ import materialui.icon
 import mui.material.*
 import mui.system.Breakpoint
 import mui.system.sx
-import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -99,11 +98,11 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
     }
 
     val handleShowCodeButton by mouseEventHandler { showCode = !showCode }
-    val handleDialogClose = callback(props.onClose) { _: Event, _: String -> props.onClose() }
+    val handleDialogClose = callback(props.onClose) { _: Any, _: String -> props.onClose() }
     val handleCloseButton by mouseEventHandler(props.onClose) { props.onClose() }
 
     Dialog {
-        attrs.classes = jso {
+        attrs.classes = muiClasses {
             paper = ClassName(+styles.dialog and DraggablePaperHandleClassName)
         }
         attrs.open = props.open
@@ -133,7 +132,7 @@ private val LayoutEditorDialogView = xComponent<LayoutEditorDialogProps>("Layout
             div(+styles.outerContainer) {
                 List {
                     ListSubheader {
-                        attrs.classes = jso { this.root = -styles.listSubheader }
+                        attrs.className = -styles.listSubheader
                         +"Formats:"
                     }
                     mutableLayouts.formats.forEach { (id, layout) ->

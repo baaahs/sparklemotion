@@ -4,7 +4,6 @@ import baaahs.app.ui.PatchHolderEditorHelpText
 import baaahs.app.ui.controls.problemBadge
 import baaahs.ui.*
 import external.ErrorBoundary
-import js.objects.jso
 import materialui.icon
 import mui.material.*
 import react.Props
@@ -19,13 +18,13 @@ private val DialogPanelsView = xComponent<DialogPanelsProps>("DialogPanels") { p
 
     fun RBuilder.recursingList(dialogPanels: List<DialogPanel>) {
         List {
-            attrs.classes = jso { this.root = -DialogStyles.tabsList }
+            attrs.className = -DialogStyles.tabsList
             var previousListSubhead: String? = null
             dialogPanels.forEach { dialogPanel ->
                 dialogPanel.listSubhead?.let { subhead ->
                     if (previousListSubhead != subhead) {
                         ListSubheader {
-                            attrs.classes = jso { this.root = -DialogStyles.tabsSubheader }
+                            attrs.className = -DialogStyles.tabsSubheader
                             +subhead
                         }
                         previousListSubhead = subhead
@@ -41,7 +40,7 @@ private val DialogPanelsView = xComponent<DialogPanelsProps>("DialogPanels") { p
 
                     dialogPanel.icon?.let {
                         ListItemIcon {
-                            attrs.classes = jso { this.root = -DialogStyles.tabsListItemIcon }
+                            attrs.className = -DialogStyles.tabsListItemIcon
                             icon(it)
                         }
                     }

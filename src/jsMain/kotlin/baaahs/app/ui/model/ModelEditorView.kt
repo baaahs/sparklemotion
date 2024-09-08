@@ -10,7 +10,6 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
-import js.objects.jso
 import kotlinx.css.Padding
 import kotlinx.css.em
 import kotlinx.css.padding
@@ -107,13 +106,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     }
 
     Paper {
-        attrs.classes = jso { this.root = -styles.editorPanes }
+        attrs.className = -styles.editorPanes
         div(+styles.navigatorPane) {
             header { +"Navigator" }
 
             div(+styles.navigatorPaneContent) {
                 List {
-                    attrs.classes = jso { this.root = -styles.entityList }
+                    attrs.className = -styles.entityList
                     mutableModel.entities.forEach { mutableEntity ->
                         entityListItem {
                             attrs.mutableEntity = mutableEntity

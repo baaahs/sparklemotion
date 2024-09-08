@@ -68,7 +68,7 @@ private val VisualizerControlView = xComponent<VisualizerControlProps>("Visualiz
 
     Card {
         ref = rootEl
-        attrs.classes = jso { this.root = -Styles.visualizerCard }
+        attrs.className = -Styles.visualizerCard
 
         div(+Styles.visualizerMenuAffordance) {
             attrs.onClick = showMenu
