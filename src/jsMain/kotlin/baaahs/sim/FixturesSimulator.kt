@@ -5,13 +5,17 @@ import baaahs.mapper.MappingSession
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.Model
 import baaahs.net.Network
+import baaahs.randomDelay
+import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
 import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
+import baaahs.util.globalLaunch
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.PixelArranger
 import baaahs.visualizer.Visualizer
+import kotlinx.coroutines.launch
 
 /**
  * Steps to setting up a simulator:
@@ -47,66 +51,95 @@ class FixturesSimulator(
     }
     private var fixtureSimulations: Map<Model.Entity, FixtureSimulation> = emptyMap()
 
+    private var isStarted = false
+    private var currentScene: OpenScene? = null
+
     init {
         sceneProvider.addBeforeChangeListener { newOpenScene ->
-            fixtureSimulations.values.forEach { oldFixtureSimulator ->
-                oldFixtureSimulator.stop()
-            }
-            visualizer.facade.clear()
-            controllersManager.reset()
+            currentScene = newOpenScene
+            if (isStarted)
+                handleSceneChange(newOpenScene)
+        }
+    }
 
-            fixtureSimulations =
-                if (newOpenScene == null) {
-                    emptyMap()
-                } else {
-                    // TODO: create the appropriate controller simulators for fixtures that are mapped.
-                    val mappedEntities = buildSet {
-                        newOpenScene.controllers.forEach { (controllerId, controllerConfig) ->
-                            controllerConfig.fixtures.forEach { fixtureMappingData ->
-                                add(fixtureMappingData.entityId)
-                            }
-                        }
-                    }
+    fun start() {
+        if (isStarted)
+            error("FixturesSimulator is already started.")
 
-                    val entityAdapter = EntityAdapter(simulationEnv, newOpenScene.model.units)
-                    visualizer.facade.units = entityAdapter.units
-                    visualizer.initialViewingAngle = newOpenScene.model.initialViewingAngle
-                    buildMap {
-                        newOpenScene.model.visit { entity ->
-                            entity.createFixtureSimulation(entityAdapter)
-                                ?.let { put(entity, it) }
+        isStarted = true
+        handleSceneChange(currentScene)
+        facade.notifyChanged()
+    }
+
+    private fun handleSceneChange(newOpenScene: OpenScene?) {
+        fixtureSimulations.values.forEach { oldFixtureSimulator ->
+            oldFixtureSimulator.stop()
+        }
+        visualizer.facade.clear()
+        controllersManager.reset()
+
+        fixtureSimulations =
+            if (newOpenScene == null) {
+                emptyMap()
+            } else {
+                // TODO: create the appropriate controller simulators for fixtures that are mapped.
+                val mappedEntities = buildSet {
+                    newOpenScene.controllers.forEach { (controllerId, controllerConfig) ->
+                        controllerConfig.fixtures.forEach { fixtureMappingData ->
+                            add(fixtureMappingData.entityId)
                         }
                     }
                 }
 
-            fixtureSimulations.values.forEach {
-                it.start()
-                visualizer.add(it.itemVisualizer)
+                val entityAdapter = EntityAdapter(simulationEnv, newOpenScene.model.units)
+                visualizer.facade.units = entityAdapter.units
+                visualizer.initialViewingAngle = newOpenScene.model.initialViewingAngle
+                buildMap {
+                    newOpenScene.model.visit { entity ->
+                        entity.createFixtureSimulation(entityAdapter)
+                            ?.let { put(entity, it) }
+                    }
+                }
             }
-            visualizer.fitCameraToObject()
-            visualizer.facade.notifyChanged()
 
-            simMappingManager.mappingData =
-                newOpenScene?.let {
-                    val now = clock.now()
-                    SessionMappingResults(
-                        newOpenScene, listOf(
-                            MappingSession(
-                                now,
-                                fixtureSimulations.values.mapNotNull { it.mappingData },
-                                null,
-                                null,
-                                notes = "Simulated mapping session",
-                                savedAt = now
-                            )
+        simMappingManager.mappingData =
+            newOpenScene?.let {
+                val now = clock.now()
+                SessionMappingResults(
+                    newOpenScene, listOf(
+                        MappingSession(
+                            now,
+                            fixtureSimulations.values.mapNotNull { it.mappingData },
+                            null,
+                            null,
+                            notes = "Simulated mapping session",
+                            savedAt = now
                         )
                     )
+                )
+            }
+
+        globalLaunch {
+            fixtureSimulations.values.map {
+                launch {
+                    randomDelay(2000)
+                    it.start()
+                    visualizer.add(it.itemVisualizer)
                 }
+            }.forEach { it.join() }
+            visualizer.fitCameraToObject()
+            visualizer.facade.notifyChanged()
         }
     }
 
     inner class Facade : baaahs.ui.Facade() {
+        val isStarted: Boolean
+            get() = this@FixturesSimulator.isStarted
+
         val brains: List<BrainSimulator.Facade>
             get() = this@FixturesSimulator.brainSimulatorManager.brainSimulators.map { it.facade }
+
+        fun start() =
+            this@FixturesSimulator.start()
     }
 }

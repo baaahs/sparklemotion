@@ -51,7 +51,7 @@ class FakeNetwork(
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
             val serverPort = if (port == 0) nextAvailablePort++ else port
-            udpListeners[Pair(myAddress, serverPort)] = udpListener
+            udpListeners[myAddress to serverPort] = udpListener
             val portListeners = udpListenersByPort.getOrPut(serverPort) { mutableListOf() }
             portListeners.add(udpListener)
             return FakeUdpSocket(serverPort)
@@ -143,18 +143,22 @@ class FakeNetwork(
         }
 
         private inner class FakeUdpSocket(override val serverPort: Int) : Network.UdpSocket {
+            private var closed = false
+
             override fun sendUdp(toAddress: Network.Address, port: Int, bytes: ByteArray) {
+                if (closed) error("Socket is closed.")
                 if (!sendPacketShouldSucceed()) {
                     logger.debug { "Dropped UDP packet to $toAddress:$port" }
                     packetsDropped++.updates(facade)
                     return
                 }
 
-                val listener = udpListeners[Pair(toAddress, port)]
+                val listener = udpListeners[toAddress to port]
                 if (listener != null) transmitUdp(myAddress, serverPort, listener, bytes)
             }
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
+                if (closed) error("Socket is closed.")
                 if (!sendPacketShouldSucceed()) {
                     logger.debug { "Dropped UDP packet to *:$port" }
                     packetsDropped++.updates(facade)
@@ -164,6 +168,12 @@ class FakeNetwork(
                 udpListenersByPort[port]?.forEach { listener ->
                     transmitUdp(myAddress, serverPort, listener, bytes)
                 }
+            }
+
+            override fun close() {
+                println("FakeUdpSocket.close $myAddress")
+                udpListeners.remove(myAddress to serverPort)
+                closed = true
             }
 
             private fun transmitUdp(

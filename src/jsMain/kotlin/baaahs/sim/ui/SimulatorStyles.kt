@@ -100,6 +100,24 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         padding = Padding(0.px, 16.px)
     }
 
+    val unstarted by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
+        right = .5.em
+        zIndex = 10
+        justifyContent = JustifyContent.center
+
+        button {
+            color = Color.white
+        }
+    }
+
+    val showPinkyConsoleButton by css {
+        color = Color.white
+        backgroundColor = Color.darkRed.withAlpha(.5)
+        borderRadius = 3.px
+        margin = Margin(1.em)
+        padding = Padding(.5.em)
+    }
+
     val vizWarning by css(baaahs.app.ui.controls.Styles.visualizerWarning) {
         zIndex = 10
         svg {
@@ -123,20 +141,8 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
     val consoleContainer by css {
         flex = Flex(1)
-    }
-
-    val console by css {
-        color = Color.black
-        backgroundColor = Color.white
-        bottom = 5.px
-        right = 5.px
-        padding = Padding(.25.em)
-        fontSize = 10.pt
-        fontFamily = "Helvetica"
-
-        width = 100.pct
-        height = 100.pct
         overflow = Overflow.scroll
+        fontSize = 11.px
     }
 
     val section by css {
@@ -152,6 +158,10 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         borderWidth = 2.px
         borderStyle = BorderStyle.dotted
         padding = Padding(2.px)
+    }
+
+    val selection by css {
+        paddingBottom = 3.em
     }
 
     private val subsection by css {
@@ -177,19 +187,35 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
     val brainIndicator by css {
         margin = Margin(1.px)
         display = Display.inlineBlock
-        width = 8.px
-        height = 8.px
+        width = 10.px
+        height = 10.px
         border = Border(1.px, BorderStyle.solid, Color.black)
 
         hover {
             cursor = Cursor.pointer
-            backgroundColor = Color("#ff7600")
+            border = Border(1.px, BorderStyle.solid, Color.green)
         }
 
         child(".unknown") { backgroundColor = Color.darkGray }
         child(".link") { backgroundColor = Color.orange }
         child(".online") { backgroundColor = Color.orange }
     }
+
+    val brainStateFOO by css {}
+    @Suppress("unused")
+    val brainStateBooting by css { backgroundColor = Color.red}
+    @Suppress("unused")
+    val brainStateLinked by css { backgroundColor = Color.yellow }
+    @Suppress("unused")
+    val brainStateHello by css { backgroundColor = Color.orange}
+    @Suppress("unused")
+    val brainStateMapped by css { backgroundColor = Color.lightBlue }
+    @Suppress("unused")
+    val brainStateShading by css { backgroundColor = Color.lightGreen }
+    @Suppress("unused")
+    val brainStateRebooting by css { backgroundColor = Color.mediumPurple}
+    @Suppress("unused")
+    val brainStateStopped by css { backgroundColor = Color.gray}
 
     val dataWithUnit by css {
         textAlign = TextAlign.right

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.app.settings.UiSettings
 import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
 import baaahs.monitor.MonitorUi
@@ -80,5 +81,7 @@ class SheepSimulator(
                 launchItem("Web UI") { createWebClientApp() },
                 launchItem("Monitor") { createMonitorApp() }
             )
+        val uiSettings: UiSettings
+            get() = getKoin().get()
     }
 }
