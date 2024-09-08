@@ -23,8 +23,15 @@ private val BrainIndicatorView = xComponent<BrainIndicatorProps>("BrainIndicator
     }
 
 
-    val brainStateClass = (+SimulatorStyles.brainStateFOO)
-        .replace("FOO", props.brainSimulator.state.name)
+    val brainStateClass = (+when (props.brainSimulator.state) {
+        BrainSimulator.State.Booting -> SimulatorStyles.brainStateBooting
+        BrainSimulator.State.Linked -> SimulatorStyles.brainStateLinked
+        BrainSimulator.State.Hello -> SimulatorStyles.brainStateHello
+        BrainSimulator.State.Mapped -> SimulatorStyles.brainStateMapped
+        BrainSimulator.State.Shading -> SimulatorStyles.brainStateShading
+        BrainSimulator.State.Rebooting -> SimulatorStyles.brainStateRebooting
+        BrainSimulator.State.Stopped -> SimulatorStyles.brainStateStopped
+    })
 
     div(+brainIndicator and brainStateClass) {
         attrs.onClick = handleClick

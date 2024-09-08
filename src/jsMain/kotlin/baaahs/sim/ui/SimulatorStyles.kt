@@ -193,7 +193,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
         hover {
             cursor = Cursor.pointer
-            border = Border(1.px, BorderStyle.solid, Color.green)
+            border = Border(1.px, BorderStyle.solid, Color.white)
         }
 
         child(".unknown") { backgroundColor = Color.darkGray }
@@ -201,20 +201,12 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
         child(".online") { backgroundColor = Color.orange }
     }
 
-    val brainStateFOO by css {}
-    @Suppress("unused")
     val brainStateBooting by css { backgroundColor = Color.red}
-    @Suppress("unused")
     val brainStateLinked by css { backgroundColor = Color.yellow }
-    @Suppress("unused")
     val brainStateHello by css { backgroundColor = Color.orange}
-    @Suppress("unused")
     val brainStateMapped by css { backgroundColor = Color.lightBlue }
-    @Suppress("unused")
     val brainStateShading by css { backgroundColor = Color.lightGreen }
-    @Suppress("unused")
     val brainStateRebooting by css { backgroundColor = Color.mediumPurple}
-    @Suppress("unused")
     val brainStateStopped by css { backgroundColor = Color.gray}
 
     val dataWithUnit by css {
