@@ -1,7 +1,7 @@
 object Versions {
-    const val kotlin = "2.0.0"
+    const val kotlin = "2.0.20"
     const val kotlinGradlePlugin = kotlin
-    const val ksp = "2.0.0-1.0.21"
+    const val ksp = "2.0.20-1.0.25"
     const val coroutines = "1.7.2"
     const val serializationRuntime = "1.5.1"
     const val koin = "3.1.3"
