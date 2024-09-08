@@ -9,7 +9,6 @@ import baaahs.ui.asTextNode
 import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Card
 import react.Props
 import react.RBuilder
@@ -30,7 +29,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
     val fixtureConfig = props.mutableFixtureOptions
 
     Card {
-        attrs.classes = jso { this.root = -styles.configCardOuter }
+        attrs.className = -styles.configCardOuter
         attrs.elevation = 4
 
         betterSelect<FixtureType?> {
@@ -43,7 +42,7 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
 
         if (fixtureConfig != null) {
             Card {
-                attrs.classes = jso { this.root = -styles.configCardInner }
+                attrs.className = -styles.configCardInner
                 fixtureConfig.getEditorView(props.editingController)
                     .render(this)
             }

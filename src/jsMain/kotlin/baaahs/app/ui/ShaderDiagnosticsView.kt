@@ -1,10 +1,10 @@
 package baaahs.app.ui
 
 import baaahs.gl.preview.ShaderBuilder
+import baaahs.ui.muiClasses
 import baaahs.ui.unaryMinus
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.Divider
 import mui.material.Popover
 import react.Props
@@ -15,6 +15,7 @@ import react.dom.div
 import react.dom.header
 import react.dom.pre
 import web.dom.Element
+import web.events.Event
 
 private val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagnostics") { props ->
 
@@ -22,12 +23,12 @@ private val ShaderDiagnostics = xComponent<ShaderDiagnosticsProps>("ShaderDiagno
     val linkedPatch = props.builder.linkedProgram
 
     Popover {
-        attrs.classes = jso { this.paper = -ShaderPreviewStyles.errorPopup }
+        attrs.classes = muiClasses { paper = -ShaderPreviewStyles.errorPopup }
         attrs.open = props.anchor != null
         props.anchor?.let { anchor -> attrs.anchorEl = anchor }
         attrs.onClose = { event, _ ->
             props.onClose()
-            event.stopPropagation()
+            (event as Event).stopPropagation()
         }
 
         header { +"Errors:" }

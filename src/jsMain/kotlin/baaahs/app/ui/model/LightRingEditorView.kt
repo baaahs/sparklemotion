@@ -5,7 +5,6 @@ import baaahs.model.LightRing
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableLightRingData
 import baaahs.ui.*
-import js.objects.jso
 import mui.material.*
 import react.*
 import react.dom.header
@@ -36,7 +35,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
     header { +"Light Ring" }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Radius:" }
 
         with(styles) {
@@ -50,7 +49,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"First Pixel:" }
 
         with(styles) {
@@ -64,7 +63,7 @@ private val LightRingEditorView = xComponent<LightRingEditorProps>("LightRingEdi
     }
 
     Container {
-        attrs.classes = jso { this.root = -styles.transformEditSection }
+        attrs.className = -styles.transformEditSection
         header { +"Pixel Direction:" }
 
         FormControlLabel {

@@ -13,12 +13,12 @@ import js.typedarrays.Uint8ClampedArray
 import kotlinx.coroutines.await
 import org.khronos.webgl.get
 import web.canvas.CanvasRenderingContext2D
-import web.canvas.ImageBitmap
-import web.canvas.ImageData
 import web.gl.WebGLRenderingContext
 import web.html.HTMLCanvasElement
 import web.html.HTMLImageElement
 import web.html.HTMLVideoElement
+import web.images.ImageBitmap
+import web.images.ImageData
 
 actual fun imageFromDataUrl(dataUrl: String): Image {
     return if (dataUrl.looksLikeGif()) {

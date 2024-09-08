@@ -3,7 +3,6 @@ package baaahs.app.ui
 import baaahs.app.ui.document.documentMenu
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
-import js.objects.jso
 import materialui.icon
 import mui.material.*
 import mui.material.styles.Theme
@@ -18,8 +17,8 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
     val theme = useTheme<Theme>()
     val themeStyles = appContext.allStyles.appUi
 
-    val handleAppModeChange by handler(props.onAppModeChange) { _: SyntheticEvent<*, *>, value: String ->
-        props.onAppModeChange(AppMode.valueOf(value))
+    val handleAppModeChange by handler(props.onAppModeChange) { _: SyntheticEvent<*, *>, value: Any ->
+        props.onAppModeChange(AppMode.valueOf(value.toString()))
     }
 
     val editMode = observe(props.documentManager.editMode)
@@ -41,8 +40,8 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
 
 
     Drawer {
-        attrs.classes = jso {
-            root = -themeStyles.appDrawer
+        attrs.className = -themeStyles.appDrawer
+        attrs.classes = muiClasses {
             paperAnchorLeft = -themeStyles.appDrawerPaper
         }
         attrs.variant = DrawerVariant.persistent
@@ -57,7 +56,7 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
 
                 for (aMode in AppMode.values()) {
                     Tab {
-                        attrs.classes = jso { root = -themeStyles.appModeTab }
+                        attrs.className = -themeStyles.appModeTab
                         attrs.value = aMode.name
                         attrs.label = ReactNode(aMode.name)
                     }

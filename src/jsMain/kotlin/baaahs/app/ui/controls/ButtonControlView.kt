@@ -9,7 +9,6 @@ import baaahs.control.OpenButtonControl
 import baaahs.show.live.ControlProps
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import js.objects.jso
 import mui.material.ToggleButton
 import react.Props
 import react.RBuilder
@@ -18,6 +17,7 @@ import react.dom.div
 import react.dom.events.PointerEvent
 import react.useContext
 import web.events.EventType
+import web.events.addEventListener
 import web.html.HTMLButtonElement
 import web.html.HTMLDivElement
 import web.uievents.MouseButton
@@ -77,7 +77,7 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
         val buttonEl = buttonRef.current
         if (buttonControl.expandsOnLongPress && buttonEl != null) {
             buttonEl.setAttribute("data-long-press-delay", "750")
-            buttonEl.addEventListener(EventType("long-press"), callback = { e ->
+            buttonEl.addEventListener(EventType("long-press"), { e ->
                 val originalEvent = e.asDynamic().detail.originalEvent as web.uievents.PointerEvent
                 val isPrimaryButton = originalEvent.button == MouseButton.MAIN && !originalEvent.ctrlKey
                 if (isPrimaryButton && appContext.showManager.editMode.isOff) {
@@ -104,8 +104,8 @@ private val ButtonControlView = xComponent<ButtonProps>("ButtonControl") { props
             ref = buttonRef
 
             if (showPreview) {
-                attrs.classes = jso {
-                    root = -Styles.buttonLabelWhenPreview
+                attrs.className = -Styles.buttonLabelWhenPreview
+                attrs.classes = muiClasses {
                     selected = -Styles.buttonSelectedWhenPreview
                 }
             }

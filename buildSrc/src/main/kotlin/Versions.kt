@@ -17,7 +17,7 @@ object Versions {
 
     // JS:
     const val kotlinxHtml = "0.9.1"
-    const val kotlinWrappers = "1.0.0-pre.696"
+    const val kotlinWrappers = "1.0.0-pre.804"
 
     // Test:
     const val junit = "5.8.1"

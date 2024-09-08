@@ -48,14 +48,14 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
     }
 
     Paper {
-        attrs.classes = jso { this.root = -styles.editorPanes }
+        attrs.className = -styles.editorPanes
 
         div(+styles.navigatorPane) {
             header { +"Controllers" }
 
             div(+styles.navigatorPaneActions) {
                 Button {
-                    attrs.classes = jso { this.root = -styles.button }
+                    attrs.className = -styles.button
                     attrs.color = ButtonColor.secondary
                     attrs.onClick = handleNewControllerClick
 
@@ -84,7 +84,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
             div(+styles.navigatorPaneContent) {
                 Table {
-                    attrs.classes = jso { this.root = -styles.controllersTable }
+                    attrs.className = -styles.controllersTable
                     attrs.stickyHeader = true
 
                     TableHead {

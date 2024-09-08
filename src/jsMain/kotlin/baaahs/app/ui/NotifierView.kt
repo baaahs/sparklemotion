@@ -1,11 +1,7 @@
 package baaahs.app.ui
 
 import baaahs.client.Notifier
-import baaahs.ui.markdown
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.xComponent
-import js.objects.jso
+import baaahs.ui.*
 import mui.material.Alert
 import mui.material.AlertColor
 import mui.material.AlertTitle
@@ -24,13 +20,13 @@ private val NotifierView = xComponent<NotifierProps>("Notifier") { props ->
     notifier.serverNotices.let { serverNotices ->
         if (serverNotices.isNotEmpty()) {
             Backdrop {
-                attrs.classes = jso { this.root = -Styles.serverNoticeBackdrop }
+                attrs.className = -Styles.serverNoticeBackdrop
                 attrs { open = true }
 
                 div {
                     serverNotices.forEach { serverNotice ->
                         Alert {
-                            attrs.classes = jso { this.message = -Styles.serverNoticeAlertMessage }
+                            attrs.classes = muiClasses { message = -Styles.serverNoticeAlertMessage }
 
                             attrs.severity = AlertColor.error.unsafeCast<Union>()
                             attrs.onClose = { notifier.confirmServerNotice(serverNotice.id) }

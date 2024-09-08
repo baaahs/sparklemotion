@@ -11,7 +11,6 @@ import baaahs.ui.render
 import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import materialui.icon
 import mui.material.Button
 import mui.material.ButtonColor
@@ -60,7 +59,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     Card {
-        attrs.classes = jso { this.root = -styles.defaultConfigs }
+        attrs.className = -styles.defaultConfigs
         attrs.elevation = 4
 
         header {
@@ -98,7 +97,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     }
 
     Button {
-        attrs.classes = jso { this.root = -styles.button }
+        attrs.className = -styles.button
         attrs.color = ButtonColor.secondary
         attrs.onClick = handleNewFixtureMappingClick
 

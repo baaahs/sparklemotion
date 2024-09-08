@@ -168,7 +168,7 @@ kotlin {
                 implementation(project.dependencies.enforcedPlatform(kotlinw("wrappers-bom:${Versions.kotlinWrappers}")))
                 implementation(kotlinw("react"))
                 implementation(kotlinw("react-dom"))
-                implementation(kotlinw("styled"))
+                implementation(kotlinw("styled-next"))
                 implementation(kotlinw("mui-material"))
                 implementation(kotlinw("mui-icons-material"))
                 implementation(kotlinw("emotion"))

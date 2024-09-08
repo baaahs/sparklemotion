@@ -5,7 +5,6 @@ import baaahs.scene.MutableScene
 import baaahs.ui.typographyH4
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import mui.material.*
 import react.Props
 import react.RBuilder
@@ -20,11 +19,11 @@ private val FixtureConfigurerView = xComponent<FixtureConfigurerProps>("FixtureC
     val styles = appContext.allStyles.controllerEditor
 
     Paper {
-        attrs.classes = jso { this.root = -styles.editorPanes }
+        attrs.className = -styles.editorPanes
         typographyH4 { +"Fixtures" }
 
         Table {
-            attrs.classes = jso { this.root = -styles.controllersTable }
+            attrs.className = -styles.controllersTable
             attrs.stickyHeader = true
 
             TableHead {

@@ -2,6 +2,7 @@ package baaahs.util
 
 import react.RBuilder
 import react.useEffect
+import react.useEffectWithCleanup
 import react.useRef
 import web.timers.clearInterval
 import web.timers.setInterval
@@ -15,11 +16,11 @@ fun RBuilder.useInterval(delay: Duration, callback: () -> Unit) {
         savedCallback.current = callback
     }
 
-    useEffect(delay) {
+    useEffectWithCleanup(delay) {
         val id = setInterval(delay) {
             savedCallback.current!!()
         }
 
-        cleanup { clearInterval(id) }
+        onCleanup { clearInterval(id) }
     }
 }

@@ -12,7 +12,6 @@ import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShader
 import baaahs.ui.*
 import baaahs.util.CacheBuilder
-import js.objects.jso
 import materialui.icon
 import mui.icons.material.AddCircleOutline
 import mui.icons.material.CloudDownload
@@ -122,7 +121,7 @@ private val PatchesOverview = xComponent<PatchesOverviewProps>("PatchesOverview"
                 }
             } else {
                 Card {
-                    attrs.classes = jso { this.root = -styles.shaderCard }
+                    attrs.className = -styles.shaderCard
                     key = "new patch"
                     ref = newPatchCardRef
 

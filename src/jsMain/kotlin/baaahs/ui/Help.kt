@@ -3,7 +3,6 @@ package baaahs.ui
 import kotlinx.css.LinearDimension
 import materialui.icon
 import mui.material.*
-import org.w3c.dom.events.Event
 import react.*
 import web.html.HTMLElement
 import kotlin.properties.ReadWriteProperty
@@ -13,7 +12,7 @@ val Help = xComponent<HelpProps>("Help", isPure = true) { props ->
     var open by state { false }
 
     val toggleHelp = callback { open = !open }
-    val closeHelp = callback { _: Event, _: String -> open = false }
+    val closeHelp = callback { _: Any, _: String -> open = false }
 
     Tooltip {
         attrs.title = "Help".asTextNode()

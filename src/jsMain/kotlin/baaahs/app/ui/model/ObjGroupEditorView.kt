@@ -8,7 +8,6 @@ import baaahs.model.StrandCountEntityMetadataProvider
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableImportedEntityGroup
 import baaahs.ui.*
-import js.objects.jso
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -86,7 +85,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
     header { +"OBJ Import" }
 
     Container {
-        attrs.classes = jso { this.root = -styles.propertiesEditSection }
+        attrs.className = -styles.propertiesEditSection
         FormControlLabel {
             attrs.control = buildElement {
                 Switch {
@@ -115,7 +114,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             }
         } else {
             TextField {
-                attrs.classes = jso { this.root = -styles.jsonEditorTextField }
+                attrs.className = -styles.jsonEditorTextField
                 attrs.fullWidth = true
                 attrs.multiline = true
                 attrs.rows = 6
@@ -168,7 +167,7 @@ private val ObjGroupEditorView = xComponent<ObjGroupEditorProps>("ObjGroupEditor
             }
             is StrandCountEntityMetadataProvider -> {
                 TextField {
-                    attrs.classes = jso { this.root = -styles.jsonEditorTextField }
+                    attrs.className = -styles.jsonEditorTextField
                     attrs.fullWidth = true
                     attrs.multiline = true
                     attrs.rows = 6

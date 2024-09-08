@@ -74,7 +74,7 @@ val ErrorDisplay = fc<ErrorDisplayProps> { props ->
         }
 
         Paper {
-            attrs.classes = jso { this.root = -Styles.guruMeditationErrorStackTrace }
+            attrs.className = -Styles.guruMeditationErrorStackTrace
             attrs.elevation = 5
 
             h3 {

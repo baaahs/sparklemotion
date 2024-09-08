@@ -9,7 +9,6 @@ import external.react_draggable.Draggable
 import external.react_resizable.Resizable
 import external.react_resizable.ResizeCallbackData
 import external.react_resizable.buildResizeHandle
-import js.objects.jso
 import kotlinx.css.height
 import kotlinx.css.px
 import kotlinx.css.width
@@ -87,7 +86,7 @@ private val PaletteView = xComponent<PaletteProps>("Palette") { props ->
                     }
 
                     Paper {
-                        attrs.classes = jso { root = -styles.paper }
+                        attrs.className = -styles.paper
                         attrs.elevation = 3
 
                         props.title?.let {

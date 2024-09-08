@@ -8,10 +8,8 @@ import baaahs.show.live.ControlProps
 import baaahs.ui.and
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
-import js.objects.jso
 import kotlinx.css.StyledElement
 import mui.material.Button
-import mui.material.ButtonColor
 import mui.material.Card
 import mui.material.ToggleButton
 import mui.system.sx
@@ -65,21 +63,20 @@ private val TransitionControlView = xComponent<TransitionProps>("TransitionContr
     }
 
     Card {
-        attrs.classes = jso { this.root = -styles.transitionCard }
+        attrs.className = -styles.transitionCard
         ref = rootEl
 
 //        header { +"Transitions! \uD83D\uDE1E" }
 
         Button {
-            attrs.classes = jso {
+            attrs.className =
                 if (holdEngaged) {
-                    this.root = -styles.transitionHoldButton
+                    -styles.transitionHoldButton
                 } else {
-                    this.root = -styles.transitionHoldButton and styles.transitionHoldEngaged
+                    -styles.transitionHoldButton and styles.transitionHoldEngaged
                 }
-            }
             attrs.sx { gridArea = GridAreas.hold }
-            attrs.color = ButtonColor.secondary
+//            attrs.color = ButtonColor.secondary
             attrs.onClick = handleHoldButtonClick
             +"Hold"
         }
@@ -103,22 +100,22 @@ private val TransitionControlView = xComponent<TransitionProps>("TransitionContr
             inlineStyles { gridArea = "speed" }
             +"Speed: "
             ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
+                attrs.className = -styles.speedButton
                 attrs.selected = speed == ".25s"; +"¼s"
                 attrs.value = ".25s"
             }
             ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
+                attrs.className = -styles.speedButton
                 attrs.selected = speed == ".5s"; +"½s"
                 attrs.value = ".5s"
             }
             ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
+                attrs.className = -styles.speedButton
                 attrs.selected = speed == "1s"; +"1s"
                 attrs.value = "1s"
             }
             ToggleButton {
-                attrs.classes = jso { this.root = -styles.speedButton }
+                attrs.className = -styles.speedButton
                 attrs.selected = speed == "2s"; +"2s"
                 attrs.value = "2s"
             }
