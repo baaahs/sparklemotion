@@ -25,7 +25,6 @@ import web.timers.clearTimeout
 import web.timers.setTimeout
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
-import web.window.resize
 import kotlin.math.*
 import kotlin.reflect.KClass
 
@@ -197,17 +196,16 @@ open class BaseVisualizer(
     }
 
     init {
-        @Suppress("LeakingThis")
         activeExtensions.values.forEach { it.attach() }
     }
 
     inner class SelectExtension : Extension(SelectExtension::class) {
         override fun attach() {
-            canvas.addEventListener(PointerEvent.pointerDown(), this@BaseVisualizer::onMouseDown)
+            canvas.addEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
 
         override fun release() {
-            canvas.removeEventListener(PointerEvent.pointerDown(), this@BaseVisualizer::onMouseDown)
+            canvas.removeEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
     }
 
@@ -264,7 +262,7 @@ open class BaseVisualizer(
         updateOriginDot()
 
         var resizeTaskId: Timeout? = null
-        window.addEventListener(Event.resize(), {
+        window.addEventListener(Event.RESIZE, {
             if (resizeTaskId !== null) {
                 clearTimeout(resizeTaskId!!)
             }

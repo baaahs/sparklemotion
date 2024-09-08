@@ -94,7 +94,7 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         val sliderEl = slider.current!!
         sliderEl.releasePointerCapture(e.pointerId)
         sliderEl.removeEventListener(
-            web.uievents.PointerEvent.pointerMove(),
+            web.uievents.PointerEvent.POINTER_MOVE,
             handlePointerMove
         )
     }
@@ -159,11 +159,11 @@ private val Slider = xComponent<BetterSliderProps>("Slider") { props ->
         val sliderEl = slider.current!!
         sliderEl.setPointerCapture(e.pointerId)
         sliderEl.addEventListener(
-            web.uievents.PointerEvent.pointerMove(),
+            web.uievents.PointerEvent.POINTER_MOVE,
             handlePointerMove
         )
         sliderEl.addEventListener(
-            web.uievents.PointerEvent.pointerUp(),
+            web.uievents.PointerEvent.POINTER_UP,
             handlePointerUp,
             jso { once = true })
 

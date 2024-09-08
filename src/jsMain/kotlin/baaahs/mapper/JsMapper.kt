@@ -201,9 +201,9 @@ class JsMapper(
 
         ui3dDiv.appendChild(ui3dCanvas)
 
-        ui3dCanvas.addEventListener(MouseEvent.mouseDown(), ::mouseDown)
-        ui3dCanvas.addEventListener(MouseEvent.mouseMove(), ::mouseMove)
-        ui3dCanvas.addEventListener(MouseEvent.mouseUp(), ::mouseUp)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
+        ui3dCanvas.addEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
 
 //        screen.focus()
 //        screen.addEventListener("keydown", { event -> gotUiKeypress(event as KeyboardEvent) })
@@ -213,9 +213,9 @@ class JsMapper(
     }
 
     fun onUnmount() {
-        ui3dCanvas.removeEventListener(MouseEvent.mouseDown(), ::mouseDown)
-        ui3dCanvas.removeEventListener(MouseEvent.mouseMove(), ::mouseMove)
-        ui3dCanvas.removeEventListener(MouseEvent.mouseUp(), ::mouseUp)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_DOWN, ::mouseDown)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_MOVE, ::mouseMove)
+        ui3dCanvas.removeEventListener(MouseEvent.MOUSE_UP, ::mouseUp)
 
         onClose()
     }
