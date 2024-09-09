@@ -57,5 +57,5 @@ class EntityGroupVisualizer(
 }
 
 var Object3D.itemVisualizer: ItemVisualizer<*>?
-    get() = userData["entityVisualizer"] as ItemVisualizer<*>?
-    set(value) { userData["entityVisualizer"] = value }
+    get() = userData.asDynamic()["entityVisualizer"] as ItemVisualizer<*>?
+    set(value) { userData.asDynamic()["entityVisualizer"] = value }

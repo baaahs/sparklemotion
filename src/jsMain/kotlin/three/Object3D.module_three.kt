@@ -3,7 +3,7 @@
 @file:Suppress("PackageDirectoryMismatch")
 package three.js
 
-import kotlin.js.Json
+import js.objects.Object
 
 external interface `T$0` {
     var geometries: Any
@@ -36,7 +36,7 @@ open external class Object3D : EventDispatcher {
     open var receiveShadow: Boolean
     open var frustumCulled: Boolean
     open var renderOrder: Number
-    open var userData: Json
+    open var userData: Object
     open var customDepthMaterial: Material
     open var customDistanceMaterial: Material
     open var isObject3D: Boolean
