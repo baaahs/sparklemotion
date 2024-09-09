@@ -1,7 +1,19 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
+
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
 
 external interface ExtrudeGeometryOptions {
     var curveSegments: Number?
@@ -37,30 +49,28 @@ external interface ExtrudeGeometryOptions {
 }
 
 external interface UVGenerator {
-    fun generateTopUV(geometry: ExtrudeBufferGeometry, vertices: Array<Number>, indexA: Number, indexB: Number, indexC: Number): Array<Vector2>
-    fun generateSideWallUV(geometry: ExtrudeBufferGeometry, vertices: Array<Number>, indexA: Number, indexB: Number, indexC: Number, indexD: Number): Array<Vector2>
+    fun generateTopUV(geometry: ExtrudeGeometry, vertices: Array<Number>, indexA: Number, indexB: Number, indexC: Number): Array<Vector2>
+    fun generateSideWallUV(geometry: ExtrudeGeometry, vertices: Array<Number>, indexA: Number, indexB: Number, indexC: Number, indexD: Number): Array<Vector2>
 }
 
-open external class ExtrudeBufferGeometry : BufferGeometry {
-    constructor(shapes: Shape, options: ExtrudeGeometryOptions = definedExternally)
-    constructor(shapes: Array<Shape>, options: ExtrudeGeometryOptions = definedExternally)
-    override var type: String
-    open fun addShapeList(shapes: Array<Shape>, options: Any = definedExternally)
-    open fun addShape(shape: Shape, options: Any = definedExternally)
-
-    companion object {
-        var WorldUVGenerator: UVGenerator
-    }
+external interface `T$78` {
+    val shapes: dynamic /* Shape | Array<Shape> */
+        get() = definedExternally
+    val options: ExtrudeGeometryOptions
 }
 
-open external class ExtrudeGeometry : Geometry {
-    constructor(shapes: Shape, options: ExtrudeGeometryOptions = definedExternally)
-    constructor(shapes: Array<Shape>, options: ExtrudeGeometryOptions = definedExternally)
-    override var type: String
-    open fun addShapeList(shapes: Array<Shape>, options: Any = definedExternally)
-    open fun addShape(shape: Shape, options: Any = definedExternally)
+external open class ExtrudeGeometry : BufferGeometry__0 {
+    constructor(shapes: Shape = definedExternally, options: ExtrudeGeometryOptions = definedExternally)
+    constructor()
+    constructor(shapes: Shape = definedExternally)
+    constructor(shapes: Array<Shape> = definedExternally, options: ExtrudeGeometryOptions = definedExternally)
+    constructor(shapes: Array<Shape> = definedExternally)
+    open var override: Any
+    override val type: String /* String | "ExtrudeGeometry" */
+    open val parameters: `T$78`
+    open fun addShape(shape: Shape)
 
     companion object {
-        var WorldUVGenerator: UVGenerator
+        fun fromJSON(data: Any, shapes: Any): ExtrudeGeometry
     }
 }

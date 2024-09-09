@@ -1,7 +1,19 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
+
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
 
 external interface MeshPhongMaterialParameters : MaterialParameters {
     var color: dynamic /* Color? | String? | Number? */
@@ -49,7 +61,7 @@ external interface MeshPhongMaterialParameters : MaterialParameters {
     var normalMap: Texture?
         get() = definedExternally
         set(value) = definedExternally
-    var normalMapType: NormalMapTypes?
+    var normalMapType: Any?
         get() = definedExternally
         set(value) = definedExternally
     var normalScale: Vector2?
@@ -73,7 +85,10 @@ external interface MeshPhongMaterialParameters : MaterialParameters {
     var envMap: Texture?
         get() = definedExternally
         set(value) = definedExternally
-    var combine: Combine?
+    var envMapRotation: Euler?
+        get() = definedExternally
+        set(value) = definedExternally
+    var combine: Any?
         get() = definedExternally
         set(value) = definedExternally
     var reflectivity: Number?
@@ -94,18 +109,16 @@ external interface MeshPhongMaterialParameters : MaterialParameters {
     var wireframeLinejoin: String?
         get() = definedExternally
         set(value) = definedExternally
-    var skinning: Boolean?
+    var fog: Boolean?
         get() = definedExternally
         set(value) = definedExternally
-    var morphTargets: Boolean?
-        get() = definedExternally
-        set(value) = definedExternally
-    var morphNormals: Boolean?
+    var flatShading: Boolean?
         get() = definedExternally
         set(value) = definedExternally
 }
 
-open external class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = definedExternally) : Material {
+external open class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = definedExternally) : Material {
+    open val isMeshPhongMaterial: Boolean
     override var type: String
     open var color: Color
     open var specular: Color
@@ -121,7 +134,7 @@ open external class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = 
     open var bumpMap: Texture?
     open var bumpScale: Number
     open var normalMap: Texture?
-    open var normalMapType: NormalMapTypes
+    open var normalMapType: Any
     open var normalScale: Vector2
     open var displacementMap: Texture?
     open var displacementScale: Number
@@ -129,17 +142,17 @@ open external class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = 
     open var specularMap: Texture?
     open var alphaMap: Texture?
     open var envMap: Texture?
-    open var combine: Combine
+    open var envMapRotation: Euler
+    open var combine: Any
     open var reflectivity: Number
     open var refractionRatio: Number
     open var wireframe: Boolean
     open var wireframeLinewidth: Number
     open var wireframeLinecap: String
     open var wireframeLinejoin: String
-    open var skinning: Boolean
-    open var morphTargets: Boolean
-    open var morphNormals: Boolean
+    open var flatShading: Boolean
     open var metal: Boolean
+    open var fog: Boolean
     open fun setValues(parameters: MeshPhongMaterialParameters)
     override fun setValues(values: MaterialParameters)
 }

@@ -1,15 +1,27 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
-open external class Points<TGeometry, TMaterial>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D {
-    override var type: String /* 'Points' */
-    open var morphTargetInfluences: Array<Number>
-    open var morphTargetDictionary: `T$20`
-    open var isPoints: Boolean
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
+
+external open class Points<TGeometry : BufferGeometry<NormalOrGLBufferAttributes>, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
+    open val isPoints: Boolean
+    open var override: Any
+    override val type: String /* String | "Points" */
+    open var morphTargetInfluences: Array<Number>?
+    open var morphTargetDictionary: `T$31`?
     open var geometry: TGeometry
     open var material: TMaterial
-    override fun raycast(raycaster: Raycaster, intersects: Array<Intersection>)
     open fun updateMorphTargets()
 }

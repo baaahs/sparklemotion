@@ -1,17 +1,23 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
-external interface `T$47` {
-    var start: Number
-    var count: Number
-    var instances: Number
-}
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
 
-open external class InstancedBufferGeometry : BufferGeometry {
+external open class InstancedBufferGeometry : BufferGeometry__0 {
     override var type: String
-    override var groups: Array<`T$18`>
+    open val isInstancedBufferGeometry: Boolean
     open var instanceCount: Number
-    override fun addGroup(start: Number, count: Number, instances: Number)
+    open fun copy(source: InstancedBufferGeometry): InstancedBufferGeometry /* this */
 }
