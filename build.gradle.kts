@@ -173,6 +173,9 @@ kotlin {
                 implementation(kotlinw("mui-icons-material"))
                 implementation(kotlinw("emotion"))
 
+                // ThreeJS:
+                implementation(project(":ext:three"))
+                implementation(npm("three", "^0.120.0"))
                 implementation(npm("camera-controls", "^1.35.0"))
 
                 // TODO: Revert when https://github.com/john-doherty/long-press-event 2.5 is released.
@@ -184,7 +187,6 @@ kotlin {
                 implementation(npm("clsx", "^2.0.0"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
-                implementation(npm("three", "^0.120.0"))
                 implementation(npm("react-mosaic-component", "^6.1.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("ace-builds", "1.28.0"))
