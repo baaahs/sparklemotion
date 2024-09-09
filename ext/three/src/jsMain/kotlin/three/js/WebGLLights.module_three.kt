@@ -1,11 +1,21 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
-import org.khronos.webgl.WebGLRenderingContext
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
 
-external interface `T$54` {
+external interface `T$65` {
     var directionalLength: Number
     var pointLength: Number
     var spotLength: Number
@@ -14,11 +24,13 @@ external interface `T$54` {
     var numDirectionalShadows: Number
     var numPointShadows: Number
     var numSpotShadows: Number
+    var numSpotMaps: Number
+    var numLightProbes: Number
 }
 
-external interface `T$55` {
+external interface WebGLLightsState {
     var version: Number
-    var hash: `T$54`
+    var hash: `T$65`
     var ambient: Array<Number>
     var probe: Array<Any>
     var directional: Array<Any>
@@ -35,10 +47,13 @@ external interface `T$55` {
     var pointShadowMap: Array<Any>
     var pointShadowMatrix: Array<Any>
     var hemi: Array<Any>
+    var numSpotLightShadowsWithMaps: Number
+    var numLightProbes: Number
 }
 
-open external class WebGLLights(gl: WebGLRenderingContext, properties: Any, info: Any) {
-    open var state: `T$55`
+external open class WebGLLights(extensions: WebGLExtensions) {
+    open var state: WebGLLightsState
     open fun get(light: Any): Any
-    open fun setup(lights: Any, shadows: Any, camera: Any)
+    open fun setup(lights: Any)
+    open fun setupView(lights: Any, camera: Any)
 }

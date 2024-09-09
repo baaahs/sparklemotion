@@ -1,11 +1,23 @@
-@file:JsModule("three")
-@file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
+@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
-open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D = definedExternally, blendMode: AnimationBlendMode = definedExternally) {
-    open var blendMode: AnimationBlendMode
-    open var loop: AnimationActionLoopStyles
+import kotlin.js.*
+import org.khronos.webgl.*
+import org.w3c.dom.*
+import org.w3c.dom.events.*
+import org.w3c.dom.parsing.*
+import org.w3c.dom.svg.*
+import org.w3c.dom.url.*
+import org.w3c.fetch.*
+import org.w3c.files.*
+import org.w3c.notifications.*
+import org.w3c.performance.*
+import org.w3c.workers.*
+import org.w3c.xhr.*
+
+external open class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D__0 = definedExternally, blendMode: Any = definedExternally) {
+    open var blendMode: Any
+    open var loop: Any
     open var time: Number
     open var timeScale: Number
     open var weight: Number
@@ -21,7 +33,7 @@ open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, 
     open fun isRunning(): Boolean
     open fun isScheduled(): Boolean
     open fun startAt(time: Number): AnimationAction
-    open fun setLoop(mode: AnimationActionLoopStyles, repetitions: Number): AnimationAction
+    open fun setLoop(mode: Any, repetitions: Number): AnimationAction
     open fun setEffectiveWeight(weight: Number): AnimationAction
     open fun getEffectiveWeight(): Number
     open fun fadeIn(duration: Number): AnimationAction
@@ -38,5 +50,5 @@ open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, 
     open fun stopWarping(): AnimationAction
     open fun getMixer(): AnimationMixer
     open fun getClip(): AnimationClip
-    open fun getRoot(): Object3D
+    open fun getRoot(): Object3D__0
 }
