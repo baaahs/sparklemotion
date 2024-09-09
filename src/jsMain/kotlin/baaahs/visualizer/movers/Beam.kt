@@ -28,6 +28,7 @@ class ColorWheelBeam(movingHeadAdapter: MovingHeadAdapter, units: ModelUnit) : B
     private val cones = Group().also {
         primaryCone.addTo(it)
         secondaryCone.addTo(it)
+        it.name = "ColorWheelBeam"
     }
 
     override val vizObj: Object3D
@@ -43,6 +44,7 @@ class RgbBeam(movingHeadAdapter: MovingHeadAdapter, units: ModelUnit) : Beam {
     private val cone = Cone(movingHeadAdapter, units)
     private val cones = Group().also {
         cone.addTo(it)
+        it.name = "RgbBeam"
     }
 
     override val vizObj: Object3D

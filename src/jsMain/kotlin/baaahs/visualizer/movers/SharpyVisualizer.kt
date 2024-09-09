@@ -3,6 +3,7 @@ package baaahs.visualizer.movers
 import baaahs.model.ModelUnit
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.EntityStyle
+import baaahs.visualizer.ignoreForCameraFit
 import js.objects.jso
 import three.js.*
 import kotlin.math.PI
@@ -23,9 +24,12 @@ class SharpyVisualizer(
 
     private val can = Mesh(CylinderBufferGeometry(), sharpyMaterial).also { armature.add(it) }
     private val beam = Beam.selectFor(adapter, units).also { can.add(it.vizObj) }
+        .also { it.vizObj.ignoreForCameraFit() }
 
     private val idealBeamArmature = Group().also { group.add(it) }
+        .also { it.ignoreForCameraFit() }
     private val idealBeamCan = Group().also { idealBeamArmature.add(it) }
+        .also { it.ignoreForCameraFit() }
 
     init {
         updateGeometry(adapter.visualizerInfo)
