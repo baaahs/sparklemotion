@@ -197,10 +197,12 @@ open class BaseVisualizer(
     }
 
     fun fitToScene() {
-        fitCameraToObject(1.25)
+        fitCameraToObject()
     }
 
-    fun fitCameraToObject(offset: Double = 1.25) {
+    fun fitCameraToObject(
+        zoom: Double = .9 // zoom out a little so that objects don't completely fill the screen
+    ) {
         if (scene.children.isEmpty()) {
             logger.warn { "No objects in scene, bailing." }
             return
@@ -218,7 +220,7 @@ open class BaseVisualizer(
         val dy = size.z / 2 + abs(size.y / 2 / tan(fov / 2))
         var cameraZ = max(dx, dy)
 
-        cameraZ *= offset // zoom out a little so that objects don't fill the screen
+        camera.zoom = zoom
 
         val camPosition = Vector3(center.x, center.y, cameraZ)
         if (initialViewingAngle != 0f) {
