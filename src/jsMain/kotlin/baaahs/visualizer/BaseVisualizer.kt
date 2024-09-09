@@ -201,12 +201,12 @@ open class BaseVisualizer(
     }
 
     fun fitCameraToObject(offset: Double = 1.25) {
-        val boundingBox = Box3()
         if (scene.children.isEmpty()) {
             logger.warn { "No objects in scene, bailing." }
             return
         }
-        boundingBox.setFromObject(scene)
+        val boundingBox = Box3()
+        boundingBox.expandByObjectForCameraFit(scene)
 
         val center = boundingBox.getCenter(Vector3())
         val size = boundingBox.getSize(Vector3())
