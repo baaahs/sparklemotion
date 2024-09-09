@@ -278,5 +278,5 @@ class GroupVisualizer(
 }
 
 var Object3D.modelEntity: Model.Entity?
-    get() = userData["modelEntity"] as Model.Entity?
-    set(value) { userData["modelEntity"] = value }
+    get() = userData.asDynamic()["modelEntity"] as Model.Entity?
+    set(value) { userData.asDynamic()["modelEntity"] = value }
