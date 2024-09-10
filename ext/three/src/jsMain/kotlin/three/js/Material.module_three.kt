@@ -496,7 +496,7 @@ external interface `T$8` {
     var dispose: Any
 }
 
-open external class Material : EventDispatcher<`T$8`> {
+open external class Material : EventDispatcher/*<`T$8`>*/ {
     open val isMaterial: Boolean
     open var alphaHash: Boolean
     open var alphaToCoverage: Boolean
@@ -545,7 +545,7 @@ open external class Material : EventDispatcher<`T$8`> {
     open var visible: Boolean
     open var userData: Record<String, Any>
     open var version: Number
-//    open fun onBeforeRender(renderer: WebGLRenderer, scene: Scene, camera: Camera, geometry: BufferGeometry__0, obj: Object3D__0, group: Group__0)
+//    open fun onBeforeRender(renderer: WebGLRenderer, scene: Scene, camera: Camera, geometry: BufferGeometry<NormalBufferAttributes>, obj: Object3D/*<Object3DEventMap>*/, group: Object3D/*<Object3DEventMap>*/)
     open fun onBeforeCompile(parameters: WebGLProgramParametersWithUniforms, renderer: WebGLRenderer)
     open fun customProgramCacheKey(): String
     open fun setValues(values: MaterialParameters)
@@ -553,5 +553,5 @@ open external class Material : EventDispatcher<`T$8`> {
     open fun clone(): Material /* this */
     open fun copy(material: Material): Material /* this */
     open fun dispose()
-    open fun onBuild(obj: Object3D__0, parameters: WebGLProgramParametersWithUniforms, renderer: WebGLRenderer)
+    open fun onBuild(obj: Object3D/*<Object3DEventMap>*/, parameters: WebGLProgramParametersWithUniforms, renderer: WebGLRenderer)
 }

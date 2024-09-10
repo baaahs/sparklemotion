@@ -26,7 +26,7 @@ external interface LightJSON : Object3DJSON {
         set(value) = definedExternally
 }
 
-open external class Light<TShadowSupport : LightShadow<out Camera>?> : Object3D__0 {
+open external class Light<TShadowSupport : LightShadow<out Camera>?> : Object3D/*<Object3DEventMap>*/ {
     constructor(color: Color = definedExternally, intensity: Number = definedExternally)
     constructor()
     constructor(color: Color = definedExternally)
@@ -41,7 +41,7 @@ open external class Light<TShadowSupport : LightShadow<out Camera>?> : Object3D_
     open var intensity: Number
     open var shadow: TShadowSupport
     open fun copy(source: Light<TShadowSupport> /* this */, recursive: Boolean = definedExternally): Light<TShadowSupport> /* this */
-//    override fun copy(obj: Object3D__0, recursive: Boolean): Object3D<TEventMap> /* this */
+//    override fun copy(obj: Object3D/*<Object3DEventMap>*/, recursive: Boolean): Object3D/*<Object3DEventMap>*/ /* this */
     open fun dispose()
     override fun toJSON(meta: JSONMeta): LightJSON
 }

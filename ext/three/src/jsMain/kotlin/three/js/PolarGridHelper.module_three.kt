@@ -14,7 +14,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class PolarGridHelper : LineSegments__0 {
+open external class PolarGridHelper : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {
     constructor(radius: Number = definedExternally, radials: Number = definedExternally, circles: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: Color = definedExternally)
     constructor()
     constructor(radius: Number = definedExternally)

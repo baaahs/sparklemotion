@@ -20,7 +20,7 @@ external interface `T$82` {
     val curveSegments: Number
 }
 
-open external class ShapeGeometry : BufferGeometry__0 {
+open external class ShapeGeometry : BufferGeometry<NormalBufferAttributes> {
     constructor(shapes: Shape = definedExternally, curveSegments: Number = definedExternally)
     constructor()
     constructor(shapes: Shape = definedExternally)

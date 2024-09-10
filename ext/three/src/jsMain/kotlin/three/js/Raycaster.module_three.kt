@@ -8,7 +8,7 @@ external interface Face {
     var materialIndex: Number
 }
 
-external interface Intersection<TIntersected : Object3D__0> {
+external interface Intersection<TIntersected : Object3D/*<Object3DEventMap>*/> {
     var distance: Number
     var distanceToRay: Number?
         get() = definedExternally
@@ -44,7 +44,7 @@ external interface Intersection<TIntersected : Object3D__0> {
         set(value) = definedExternally
 }
 
-external interface Intersection__0 : Intersection<Object3D__0>
+external interface Intersection__0 : Intersection<Object3D/*<Object3DEventMap>*/>
 
 external interface `T$19` {
     var threshold: Number
@@ -71,6 +71,6 @@ open external class Raycaster(origin: Vector3 = definedExternally, direction: Ve
     open fun set(origin: Vector3, direction: Vector3)
     open fun setFromCamera(coords: Vector2, camera: Camera)
     open fun setFromXRController(controller: XRTargetRaySpace): Raycaster /* this */
-    open fun <TIntersected : Object3D__0> intersectObject(obj: Object3D__0, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
-    open fun <TIntersected : Object3D__0> intersectObjects(objects: Array<Object3D__0>, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
+    open fun <TIntersected : Object3D/*<Object3DEventMap>*/> intersectObject(obj: Object3D/*<Object3DEventMap>*/, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
+    open fun <TIntersected : Object3D/*<Object3DEventMap>*/> intersectObjects(objects: Array<Object3D/*<Object3DEventMap>*/>, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
 }

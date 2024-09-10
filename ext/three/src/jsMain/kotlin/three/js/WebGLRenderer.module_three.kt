@@ -17,7 +17,7 @@ import org.w3c.xhr.*
 
 external interface Renderer {
     var domElement: HTMLCanvasElement
-    fun render(scene: Object3D__0, camera: Camera)
+    fun render(scene: Object3D/*<Object3DEventMap>*/, camera: Camera)
     fun setSize(width: Number, height: Number, updateStyle: Boolean = definedExternally)
 }
 
@@ -137,12 +137,12 @@ open external class WebGLRenderer(parameters: WebGLRendererParameters = definedE
     open fun clearTarget(renderTarget: WebGLRenderTarget<Texture>, color: Boolean, depth: Boolean, stencil: Boolean)
     open fun resetGLState()
     open fun dispose()
-    open fun renderBufferDirect(camera: Camera, scene: Scene, geometry: BufferGeometry__0, material: Material, obj: Object3D__0, geometryGroup: Any)
+    open fun renderBufferDirect(camera: Camera, scene: Scene, geometry: BufferGeometry<NormalBufferAttributes>, material: Material, obj: Object3D/*<Object3DEventMap>*/, geometryGroup: Any)
     open fun setAnimationLoop(callback: XRFrameRequestCallback?)
     open fun animate(callback: () -> Unit)
-    open var compile: (scene: Object3D__0, camera: Camera, targetScene: Scene?) -> Set<Material>
-    open var compileAsync: (scene: Object3D__0, camera: Camera, targetScene: Scene?) -> Promise<Object3D__0>
-    override fun render(scene: Object3D__0, camera: Camera)
+    open var compile: (scene: Object3D/*<Object3DEventMap>*/, camera: Camera, targetScene: Scene?) -> Set<Material>
+    open var compileAsync: (scene: Object3D/*<Object3DEventMap>*/, camera: Camera, targetScene: Scene?) -> Promise<Object3D/*<Object3DEventMap>*/>
+    override fun render(scene: Object3D/*<Object3DEventMap>*/, camera: Camera)
     open fun getActiveCubeFace(): Number
     open fun getActiveMipmapLevel(): Number
     open fun getRenderTarget(): WebGLRenderTarget<Texture>?

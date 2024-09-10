@@ -15,7 +15,7 @@ import org.w3c.workers.*
 import org.w3c.xhr.*
 
 open external class WebGLGeometries(gl: WebGLRenderingContext, attributes: WebGLAttributes, info: WebGLInfo) {
-    open fun get(obj: Object3D__0, geometry: BufferGeometry__0): BufferGeometry__0
-    open fun update(geometry: BufferGeometry__0)
-    open fun getWireframeAttribute(geometry: BufferGeometry__0): BufferAttribute
+    open fun get(obj: Object3D/*<Object3DEventMap>*/, geometry: BufferGeometry<NormalBufferAttributes>): BufferGeometry<NormalBufferAttributes>
+    open fun update(geometry: BufferGeometry<NormalBufferAttributes>)
+    open fun getWireframeAttribute(geometry: BufferGeometry<NormalBufferAttributes>): BufferAttribute
 }

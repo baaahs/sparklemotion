@@ -29,27 +29,27 @@ external interface AnimationMixerEventMap {
     var finished: `T$67`
 }
 
-open external class AnimationMixer : EventDispatcher<AnimationMixerEventMap> {
-    constructor(root: Object3D__0)
+open external class AnimationMixer : EventDispatcher/*<AnimationMixerEventMap>*/ {
+    constructor(root: Object3D/*<Object3DEventMap>*/)
     constructor(root: AnimationObjectGroup)
     open var time: Number
     open var timeScale: Number
-    open fun clipAction(clip: AnimationClip, root: Object3D__0 = definedExternally, blendMode: Any = definedExternally): AnimationAction
+    open fun clipAction(clip: AnimationClip, root: Object3D/*<Object3DEventMap>*/ = definedExternally, blendMode: Any = definedExternally): AnimationAction
     open fun clipAction(clip: AnimationClip): AnimationAction
-    open fun clipAction(clip: AnimationClip, root: Object3D__0 = definedExternally): AnimationAction
+    open fun clipAction(clip: AnimationClip, root: Object3D/*<Object3DEventMap>*/ = definedExternally): AnimationAction
     open fun clipAction(clip: AnimationClip, root: AnimationObjectGroup = definedExternally, blendMode: Any = definedExternally): AnimationAction
     open fun clipAction(clip: AnimationClip, root: AnimationObjectGroup = definedExternally): AnimationAction
-    open fun existingAction(clip: AnimationClip, root: Object3D__0 = definedExternally): AnimationAction?
+    open fun existingAction(clip: AnimationClip, root: Object3D/*<Object3DEventMap>*/ = definedExternally): AnimationAction?
     open fun existingAction(clip: AnimationClip): AnimationAction?
     open fun existingAction(clip: AnimationClip, root: AnimationObjectGroup = definedExternally): AnimationAction?
     open fun stopAllAction(): AnimationMixer
     open fun update(deltaTime: Number): AnimationMixer
     open fun setTime(timeInSeconds: Number): AnimationMixer
-    open fun getRoot(): dynamic /* Object3D__0 | AnimationObjectGroup */
+    open fun getRoot(): dynamic /* Object3D/*<Object3DEventMap>*/ | AnimationObjectGroup */
     open fun uncacheClip(clip: AnimationClip)
-    open fun uncacheRoot(root: Object3D__0)
+    open fun uncacheRoot(root: Object3D/*<Object3DEventMap>*/)
     open fun uncacheRoot(root: AnimationObjectGroup)
-    open fun uncacheAction(clip: AnimationClip, root: Object3D__0 = definedExternally)
+    open fun uncacheAction(clip: AnimationClip, root: Object3D/*<Object3DEventMap>*/ = definedExternally)
     open fun uncacheAction(clip: AnimationClip)
     open fun uncacheAction(clip: AnimationClip, root: AnimationObjectGroup = definedExternally)
 }

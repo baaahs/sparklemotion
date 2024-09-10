@@ -21,7 +21,7 @@ external interface `T$73` {
     val thetaLength: Number
 }
 
-open external class CircleGeometry(radius: Number = definedExternally, segments: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry__0 {
+open external class CircleGeometry(radius: Number = definedExternally, segments: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry<NormalBufferAttributes> {
     open var override: Any
     override val type: String /* String | "CircleGeometry" */
     open val parameters: `T$73`

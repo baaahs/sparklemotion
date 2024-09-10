@@ -14,7 +14,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D__0 = definedExternally, blendMode: Any = definedExternally) {
+open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D/*<Object3DEventMap>*/ = definedExternally, blendMode: Any = definedExternally) {
     open var blendMode: Any
     open var loop: Any
     open var time: Number
@@ -49,5 +49,5 @@ open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, 
     open fun stopWarping(): AnimationAction
     open fun getMixer(): AnimationMixer
     open fun getClip(): AnimationClip
-    open fun getRoot(): Object3D__0
+    open fun getRoot(): Object3D/*<Object3DEventMap>*/
 }

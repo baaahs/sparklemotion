@@ -16,11 +16,11 @@ import org.w3c.xhr.*
 
 open external class WebXRDepthSensing {
     open var texture: Texture?
-    open var mesh: Mesh__0?
+    open var mesh: Mesh<BufferGeometry<NormalBufferAttributes>, *>?
     open var depthNear: Number
     open var depthFar: Number
     open fun init(renderer: WebGLRenderer, depthData: XRWebGLDepthInformation, renderState: XRRenderState)
-    open fun getMesh(cameraXR: dynamic /* typealias Omit = dynamic */): Mesh__0?
+    open fun getMesh(cameraXR: dynamic /* typealias Omit = dynamic */): Mesh<BufferGeometry<NormalBufferAttributes>, *>?
     open fun reset()
     open fun getDepthTexture(): Texture?
 }

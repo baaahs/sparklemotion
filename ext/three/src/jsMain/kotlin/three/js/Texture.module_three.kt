@@ -42,7 +42,7 @@ external interface TextureJSON {
 
 external class OffscreenCanvas : EventTarget
 
-open external class Texture : EventDispatcher<`T$8`> {
+open external class Texture : EventDispatcher/*<`T$8`>*/ {
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor()
     constructor(image: ImageBitmap = definedExternally)

@@ -26,7 +26,7 @@ import org.w3c.xhr.*
 //typealias EventListener/*<TEventData, TEventType, TTarget>*/ = // (event: TEventData /* TEventData & Event<TEventType, TTarget> */) -> Unit
 //            (event: Event /* TEventData & Event<TEventType, TTarget> */) -> Unit
 
-open external class EventDispatcher<TEventMap : Any> {
+open external class EventDispatcher/*<TEventMap : Any>*/ {
 //    open fun <T : Extract<Any, String>> addEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)
 //    open fun <T : Extract<Any, String>> hasEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>): Boolean
 //    open fun <T : Extract<Any, String>> removeEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)

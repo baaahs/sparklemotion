@@ -14,7 +14,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class InstancedBufferGeometry : BufferGeometry__0 {
+open external class InstancedBufferGeometry : BufferGeometry<NormalBufferAttributes> {
     override var type: String
     open val isInstancedBufferGeometry: Boolean
     open var instanceCount: Number

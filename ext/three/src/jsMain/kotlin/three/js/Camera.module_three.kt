@@ -1,6 +1,6 @@
 package three.js
 
-open external class Camera : Object3D__0 {
+open external class Camera : Object3D/*<Object3DEventMap>*/ {
     open val isCamera: Boolean
     open var override: Any
     override val type: String /* String | "Camera" */

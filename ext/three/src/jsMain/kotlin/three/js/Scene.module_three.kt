@@ -25,7 +25,7 @@ external interface SceneJSON : Object3DJSON {
 //    override var `object`: SceneJSONObject
 }
 
-open external class Scene : Object3D__0 {
+open external class Scene : Object3D/*<Object3DEventMap>*/ {
     open val isScene: Boolean
     override var type: String /* "Scene" */
     open var fog: dynamic /* Fog? | FogExp2? */

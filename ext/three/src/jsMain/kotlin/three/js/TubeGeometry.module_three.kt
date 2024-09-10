@@ -22,7 +22,7 @@ external interface `T$86` {
     val closed: Boolean
 }
 
-open external class TubeGeometry(path: Curve<Vector3> = definedExternally, tubularSegments: Number = definedExternally, radius: Number = definedExternally, radialSegments: Number = definedExternally, closed: Boolean = definedExternally) : BufferGeometry__0 {
+open external class TubeGeometry(path: Curve<Vector3> = definedExternally, tubularSegments: Number = definedExternally, radius: Number = definedExternally, radialSegments: Number = definedExternally, closed: Boolean = definedExternally) : BufferGeometry<NormalBufferAttributes> {
     open var override: Any
     override val type: String /* String | "TubeGeometry" */
     open val parameters: `T$86`

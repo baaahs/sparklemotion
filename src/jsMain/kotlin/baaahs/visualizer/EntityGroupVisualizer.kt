@@ -10,7 +10,7 @@ class EntityGroupVisualizer(
     objGroup: Model.EntityGroup,
     adapter: EntityAdapter
 ) : BaseEntityVisualizer<Model.EntityGroup>(objGroup) {
-    override val obj: Object3D = Group()
+    override val obj: Object3D = VizObj(Group())
     private val groupVisualizer =
         GroupVisualizer("Group: ${objGroup.title}", objGroup.entities, adapter)
             .also { obj.add(it.groupObj) }

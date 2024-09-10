@@ -14,7 +14,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class DirectionalLightHelper : Object3D__0 {
+open external class DirectionalLightHelper : Object3D/*<Object3DEventMap>*/ {
     constructor(light: DirectionalLight, size: Number = definedExternally, color: Color = definedExternally)
     constructor(light: DirectionalLight)
     constructor(light: DirectionalLight, size: Number = definedExternally)
@@ -22,12 +22,12 @@ open external class DirectionalLightHelper : Object3D__0 {
     constructor(light: DirectionalLight, size: Number = definedExternally, color: Number = definedExternally)
     open var override: Any
     override val type: String /* String | "DirectionalLightHelper" */
-    open var lightPlane: Line__0
+    open var lightPlane: Line<*, *>
     open var light: DirectionalLight
     override var matrix: Matrix4
     override var matrixAutoUpdate: Boolean
     open var color: dynamic /* Color? | String? | Number? */
-    open var targetLine: Line__0
+    open var targetLine: Line<*, *>
     open fun update()
     open fun dispose()
 }

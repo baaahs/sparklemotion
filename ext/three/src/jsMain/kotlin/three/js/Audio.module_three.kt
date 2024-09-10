@@ -4,7 +4,7 @@ import org.w3c.dom.HTMLMediaElement
 import web.audio.*
 import web.media.streams.MediaStream
 
-open external class Audio<NodeType : AudioNode>(listener: AudioListener) : Object3D__0 {
+open external class Audio<NodeType : AudioNode>(listener: AudioListener) : Object3D/*<Object3DEventMap>*/ {
     override val type: String /* String | "Audio" */
     open var listener: AudioListener
     open var context: AudioContext

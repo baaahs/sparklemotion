@@ -1,6 +1,6 @@
 package three.js
 
-open external class AxesHelper(size: Number = definedExternally) : LineSegments__0 {
+open external class AxesHelper(size: Number = definedExternally) : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {
     override var override: Any
     override val type: String /* String | "AxesHelper" */
     open fun setColors(xAxisColor: Color, yAxisColor: Color, zAxisColor: Any /* Color | String | Number */): AxesHelper /* this */

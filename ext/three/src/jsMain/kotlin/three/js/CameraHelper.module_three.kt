@@ -7,7 +7,7 @@ external interface `T$88` {
     operator fun set(id: String, value: Array<Number>)
 }
 
-open external class CameraHelper(camera: Camera) : LineSegments__0 {
+open external class CameraHelper(camera: Camera) : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {
     override var override: Any
     override val type: String /* String | "CameraHelper" */
     open var camera: Camera

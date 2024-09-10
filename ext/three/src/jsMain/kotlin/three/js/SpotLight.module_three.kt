@@ -24,7 +24,7 @@ open external class SpotLight : Light<SpotLightShadow> {
     override var override: Any
     override val type: String /* String | "SpotLight" */
     override val position: Vector3
-    open var target: Object3D__0
+    open var target: Object3D/*<Object3DEventMap>*/
     override var castShadow: Boolean
     override var intensity: Number
     open var distance: Number
