@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
 import kotlin.js.*
@@ -16,5 +15,5 @@ import org.w3c.workers.*
 import org.w3c.xhr.*
 
 open external class CompressedTextureLoader(manager: LoadingManager = definedExternally) : Loader__1<CompressedTexture> {
-    override fun load(url: String, onLoad: (data: CompressedTexture) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit): CompressedTexture
+//    override fun load(url: String, onLoad: (data: CompressedTexture) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit): CompressedTexture
 }

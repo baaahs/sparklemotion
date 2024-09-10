@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
 import kotlin.js.*
@@ -22,7 +21,7 @@ import web.time.DOMHighResTimeStamp
 
 typealias XRFrameRequestCallback = (time: DOMHighResTimeStamp, frame: XRFrame) -> Unit
 
-external interface XRSystemDeviceChangeEvent : Event {
+external class XRSystemDeviceChangeEvent : Event {
     override var type: String /* "devicechange" */
 }
 
@@ -470,7 +469,7 @@ open external class XRView {
     open fun requestViewportScale(scale: Number)
 }
 
-external interface XRInputSourcesChangeEvent : XRSessionEvent {
+external class XRInputSourcesChangeEvent : XRSessionEvent {
     val removed: Array<XRInputSource>
     val added: Array<XRInputSource>
 }
@@ -676,7 +675,7 @@ open external class XRWebGLLayer : XRLayer {
     }
 }
 
-external interface XRLayerEvent : Event {
+external class XRLayerEvent : Event {
     override val type: String /* "redraw" */
     val layer: XRLayer
 }
@@ -1110,7 +1109,7 @@ external interface XRSessionGrant {
     var mode: String /* "inline" | "immersive-vr" | "immersive-ar" */
 }
 
-external interface XRSystemSessionGrantedEvent : Event {
+external class XRSystemSessionGrantedEvent : Event {
     override var type: String /* "sessiongranted" */
     var session: XRSessionGrant
 }
