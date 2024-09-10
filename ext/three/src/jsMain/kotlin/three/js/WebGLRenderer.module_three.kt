@@ -3,6 +3,7 @@ package three.js
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
+import web.html.HTMLCanvasElement
 import org.w3c.dom.events.*
 import org.w3c.dom.parsing.*
 import org.w3c.dom.svg.*
