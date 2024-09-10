@@ -105,7 +105,7 @@ external interface MeshLambertMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshLambertMaterial(parameters: MeshLambertMaterialParameters = definedExternally) : Material {
+open external class MeshLambertMaterial(parameters: MeshLambertMaterialParameters = definedExternally) : Material {
     open val isMeshLambertMaterial: Boolean
     override var type: String
     open var color: Color

@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.array.ArrayLike
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -15,6 +16,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class QuaternionKeyframeTrack(name: String, times: ArrayLike<Number>, values: ArrayLike<Number>, interpolation: Any = definedExternally) : KeyframeTrack {
+open external class QuaternionKeyframeTrack(name: String, times: ArrayLike<Number>, values: ArrayLike<Number>, interpolation: Any = definedExternally) : KeyframeTrack {
     override var ValueTypeName: String
 }

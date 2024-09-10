@@ -23,7 +23,7 @@ external interface `T$84` {
     val arc: Number
 }
 
-external open class TorusGeometry(radius: Number = definedExternally, tube: Number = definedExternally, radialSegments: Number = definedExternally, tubularSegments: Number = definedExternally, arc: Number = definedExternally) : BufferGeometry__0 {
+open external class TorusGeometry(radius: Number = definedExternally, tube: Number = definedExternally, radialSegments: Number = definedExternally, tubularSegments: Number = definedExternally, arc: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "TorusGeometry" */
     open val parameters: `T$84`

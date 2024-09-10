@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class InstancedInterleavedBuffer : InterleavedBuffer {
+open external class InstancedInterleavedBuffer : InterleavedBuffer {
     constructor(array: Int8Array, stride: Number, meshPerAttribute: Number = definedExternally)
     constructor(array: Int8Array, stride: Number)
     constructor(array: Uint8Array, stride: Number, meshPerAttribute: Number = definedExternally)

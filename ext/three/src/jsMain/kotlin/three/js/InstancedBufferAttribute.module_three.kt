@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class InstancedBufferAttribute : BufferAttribute {
+open external class InstancedBufferAttribute : BufferAttribute {
     constructor(array: Int8Array, itemSize: Number, normalized: Boolean = definedExternally, meshPerAttribute: Number = definedExternally)
     constructor(array: Int8Array, itemSize: Number)
     constructor(array: Int8Array, itemSize: Number, normalized: Boolean = definedExternally)

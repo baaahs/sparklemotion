@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Box2(min: Vector2 = definedExternally, max: Vector2 = definedExternally) {
+open external class Box2(min: Vector2 = definedExternally, max: Vector2 = definedExternally) {
     open var min: Vector2
     open var max: Vector2
     open fun set(min: Vector2, max: Vector2): Box2

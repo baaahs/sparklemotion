@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -154,7 +155,7 @@ external interface MaterialParameters {
 }
 
 external interface MaterialJSON {
-    var metadata: `T$0`
+    var metadata: `T$0_Object3D`
     var uuid: String
     var type: String
     var name: String?
@@ -496,9 +497,9 @@ external interface MaterialJSON {
     var userData: Record<String, Any>?
         get() = definedExternally
         set(value) = definedExternally
-    var textures: Array<Omit<TextureJSON, String? /* "metadata" */>>?
-        get() = definedExternally
-        set(value) = definedExternally
+//    var textures: Array<Omit<TextureJSON, String? /* "metadata" */>>?
+//        get() = definedExternally
+//        set(value) = definedExternally
     var images: Array<SourceJSON>?
         get() = definedExternally
         set(value) = definedExternally
@@ -508,7 +509,7 @@ external interface `T$8` {
     var dispose: Any
 }
 
-external open class Material : EventDispatcher<`T$8`> {
+open external class Material : EventDispatcher<`T$8`> {
     open val isMaterial: Boolean
     open var alphaHash: Boolean
     open var alphaToCoverage: Boolean
@@ -557,7 +558,7 @@ external open class Material : EventDispatcher<`T$8`> {
     open var visible: Boolean
     open var userData: Record<String, Any>
     open var version: Number
-    open fun onBeforeRender(renderer: WebGLRenderer, scene: Scene, camera: Camera, geometry: BufferGeometry__0, obj: Object3D__0, group: Group__0)
+//    open fun onBeforeRender(renderer: WebGLRenderer, scene: Scene, camera: Camera, geometry: BufferGeometry__0, obj: Object3D__0, group: Group__0)
     open fun onBeforeCompile(parameters: WebGLProgramParametersWithUniforms, renderer: WebGLRenderer)
     open fun customProgramCacheKey(): String
     open fun setValues(values: MaterialParameters)

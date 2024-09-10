@@ -28,7 +28,7 @@ external interface `T$24` {
     var triangles: Number
 }
 
-external open class WebGLInfo(gl: WebGLRenderingContext) {
+open external class WebGLInfo(gl: WebGLRenderingContext) {
     open var autoReset: Boolean
     open var memory: `T$23`
     open var programs: Array<WebGLProgram>?

@@ -37,10 +37,10 @@ external interface SceneJSONObject : Object3DJSONObject {
 }
 
 external interface SceneJSON : Object3DJSON {
-    override var `object`: SceneJSONObject
+//    override var `object`: SceneJSONObject
 }
 
-external open class Scene : Object3D__0 {
+open external class Scene : Object3D__0 {
     open val isScene: Boolean
     override var type: String /* "Scene" */
     open var fog: dynamic /* Fog? | FogExp2? */

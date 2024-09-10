@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -83,7 +84,7 @@ external interface `T$96` {
     var multiDraw: Boolean
 }
 
-external open class ShaderMaterial(parameters: ShaderMaterialParameters = definedExternally) : Material {
+open external class ShaderMaterial(parameters: ShaderMaterialParameters = definedExternally) : Material {
     open val isShaderMaterial: Boolean
     override var type: String
     open var uniforms: `T$17`

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLBindingStates(gl: WebGLRenderingContext, attributes: WebGLAttributes) {
+open external class WebGLBindingStates(gl: WebGLRenderingContext, attributes: WebGLAttributes) {
     open fun setup(obj: Object3D__0, material: Material, program: WebGLProgram, geometry: BufferGeometry__0, index: BufferAttribute)
     open fun reset()
     open fun resetDefaultState()

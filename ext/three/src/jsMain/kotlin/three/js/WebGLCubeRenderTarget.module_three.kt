@@ -15,8 +15,8 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLCubeRenderTarget(size: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget__0 {
-    override var textures: Array<CubeTexture>
+open external class WebGLCubeRenderTarget(size: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget<Texture> {
+//    override var textures: Array<CubeTexture>
     open fun fromEquirectangularTexture(renderer: WebGLRenderer, texture: Texture): WebGLCubeRenderTarget /* this */
     open fun clear(renderer: WebGLRenderer, color: Boolean, depth: Boolean, stencil: Boolean)
 }

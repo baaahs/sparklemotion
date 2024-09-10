@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Sprite<TEventMap : Object3DEventMap>(material: SpriteMaterial = definedExternally) : Object3D<TEventMap> {
+open external class Sprite<TEventMap : Object3DEventMap>(material: SpriteMaterial = definedExternally) : Object3D<TEventMap> {
     open val isSprite: Boolean
     open var override: Any
     override val type: String /* String | "Sprite" */
@@ -25,4 +25,4 @@ external open class Sprite<TEventMap : Object3DEventMap>(material: SpriteMateria
     open var center: Vector2
 }
 
-external open class Sprite__0 : Sprite<Object3DEventMap>
+typealias Sprite__0 = Sprite<Object3DEventMap>

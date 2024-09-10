@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class ShapePath {
+open external class ShapePath {
     open val type: String /* "ShapePath" */
     open var subPaths: Array<Path>
     open val currentPath: Path?

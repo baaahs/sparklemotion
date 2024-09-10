@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Ray(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally) {
+open external class Ray(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally) {
     open var origin: Vector3
     open var direction: Vector3
     open fun set(origin: Vector3, direction: Vector3): Ray

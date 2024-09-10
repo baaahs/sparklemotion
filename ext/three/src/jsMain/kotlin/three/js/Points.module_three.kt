@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Points<TGeometry : BufferGeometry<NormalOrGLBufferAttributes>, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
+open external class Points<TGeometry : BufferGeometry<NormalOrGLBufferAttributes>, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
     open val isPoints: Boolean
     open var override: Any
     override val type: String /* String | "Points" */

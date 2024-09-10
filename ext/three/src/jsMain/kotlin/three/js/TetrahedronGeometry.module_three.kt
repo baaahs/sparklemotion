@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class TetrahedronGeometry(radius: Number = definedExternally, detail: Number = definedExternally) : PolyhedronGeometry {
+open external class TetrahedronGeometry(radius: Number = definedExternally, detail: Number = definedExternally) : PolyhedronGeometry {
     override var override: Any
     override val type: String /* String | "TetrahedronGeometry" */
 

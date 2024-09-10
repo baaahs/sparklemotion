@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLCubeMaps(renderer: WebGLRenderer) {
+open external class WebGLCubeMaps(renderer: WebGLRenderer) {
     open fun get(texture: Any): Any
     open fun dispose()
 }

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Sphere(center: Vector3 = definedExternally, radius: Number = definedExternally) {
+open external class Sphere(center: Vector3 = definedExternally, radius: Number = definedExternally) {
     open val isSphere: Boolean
     open var center: Vector3
     open var radius: Number

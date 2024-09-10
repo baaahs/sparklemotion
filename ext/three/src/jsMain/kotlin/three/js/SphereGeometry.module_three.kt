@@ -25,7 +25,7 @@ external interface `T$83` {
     val thetaLength: Number
 }
 
-external open class SphereGeometry(radius: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally, phiStart: Number = definedExternally, phiLength: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry__0 {
+open external class SphereGeometry(radius: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally, phiStart: Number = definedExternally, phiLength: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "SphereGeometry" */
     open val parameters: `T$83`

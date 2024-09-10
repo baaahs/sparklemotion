@@ -36,7 +36,7 @@ external interface SpriteMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class SpriteMaterial(parameters: SpriteMaterialParameters = definedExternally) : Material {
+open external class SpriteMaterial(parameters: SpriteMaterialParameters = definedExternally) : Material {
     open val isSpriteMaterial: Boolean
     override var type: String
     open var color: Color

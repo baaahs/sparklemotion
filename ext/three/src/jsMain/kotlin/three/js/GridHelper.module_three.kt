@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class GridHelper : LineSegments__2<BufferGeometry__0, LineBasicMaterial> {
+open external class GridHelper : LineSegments__2<BufferGeometry__0, LineBasicMaterial> {
     constructor(size: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: Color = definedExternally)
     constructor()
     constructor(size: Number = definedExternally)

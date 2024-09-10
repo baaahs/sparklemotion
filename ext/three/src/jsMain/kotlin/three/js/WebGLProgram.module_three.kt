@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLProgram(renderer: WebGLRenderer, cacheKey: String, parameters: Any?) {
+open external class WebGLProgram(renderer: WebGLRenderer, cacheKey: String, parameters: Any?) {
     open var name: String
     open var id: Number
     open var cacheKey: String

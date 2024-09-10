@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CompressedArrayTexture(mipmaps: Array<CompressedTextureMipmap>, width: Number, height: Number, depth: Number, format: Any, type: Any = definedExternally) : CompressedTexture {
+open external class CompressedArrayTexture(mipmaps: Array<CompressedTextureMipmap>, width: Number, height: Number, depth: Number, format: Any, type: Any = definedExternally) : CompressedTexture {
     open val isCompressedArrayTexture: Boolean
     open var wrapR: Any
     open var layerUpdates: Set<Number>

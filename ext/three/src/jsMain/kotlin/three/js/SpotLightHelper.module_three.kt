@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SpotLightHelper : Object3D__0 {
+open external class SpotLightHelper : Object3D__0 {
     constructor(light: Light__0, color: Color = definedExternally)
     constructor(light: Light__0)
     constructor(light: Light__0, color: String = definedExternally)

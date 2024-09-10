@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class ShapeUtils {
+open external class ShapeUtils {
     companion object {
         fun area(contour: Array<Vector2Like>): Number
         fun isClockWise(pts: Array<Vector2Like>): Boolean

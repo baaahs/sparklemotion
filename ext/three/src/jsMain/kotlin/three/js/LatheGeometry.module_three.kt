@@ -22,7 +22,7 @@ external interface `T$79` {
     val phiLength: Number
 }
 
-external open class LatheGeometry(points: Array<Vector2> = definedExternally, segments: Number = definedExternally, phiStart: Number = definedExternally, phiLength: Number = definedExternally) : BufferGeometry__0 {
+open external class LatheGeometry(points: Array<Vector2> = definedExternally, segments: Number = definedExternally, phiStart: Number = definedExternally, phiLength: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "LatheGeometry" */
     open val parameters: `T$79`

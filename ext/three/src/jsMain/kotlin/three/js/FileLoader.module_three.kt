@@ -15,8 +15,8 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class FileLoader(manager: LoadingManager = definedExternally) : Loader__1<dynamic /* String | ArrayBuffer */> {
-    override fun load(url: String, onLoad: (data: Any /* String | ArrayBuffer */) -> Unit, onProgress: (event: ProgressEvent__0) -> Unit, onError: (err: Any) -> Unit)
+open external class FileLoader(manager: LoadingManager = definedExternally) : Loader__1<dynamic /* String | ArrayBuffer */> {
+    override fun load(url: String, onLoad: (data: Any /* String | ArrayBuffer */) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit)
     open var mimeType: MimeType?
     open var responseType: String?
     open fun setMimeType(mimeType: MimeType): FileLoader

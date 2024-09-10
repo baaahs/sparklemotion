@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.array.ArrayLike
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -20,7 +21,7 @@ external interface Vector2Like {
     val y: Number
 }
 
-external open class Vector2(x: Number = definedExternally, y: Number = definedExternally) {
+open external class Vector2(x: Number = definedExternally, y: Number = definedExternally) {
     open var x: Number
     open var y: Number
     open var width: Number

@@ -32,7 +32,7 @@ external interface WebXRManagerEventMap {
     var planesdetected: `T$27`
 }
 
-external open class WebXRManager(renderer: WebGLRenderer, gl: WebGLRenderingContext) : EventDispatcher<WebXRManagerEventMap> {
+open external class WebXRManager(renderer: WebGLRenderer, gl: WebGLRenderingContext) : EventDispatcher<WebXRManagerEventMap> {
     open var cameraAutoUpdate: Boolean
     open var enabled: Boolean
     open var isPresenting: Boolean

@@ -30,7 +30,7 @@ external interface AnimationMixerEventMap {
     var finished: `T$67`
 }
 
-external open class AnimationMixer : EventDispatcher<AnimationMixerEventMap> {
+open external class AnimationMixer : EventDispatcher<AnimationMixerEventMap> {
     constructor(root: Object3D__0)
     constructor(root: AnimationObjectGroup)
     open var time: Number

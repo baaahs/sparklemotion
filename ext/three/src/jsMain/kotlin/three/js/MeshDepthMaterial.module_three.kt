@@ -42,7 +42,7 @@ external interface MeshDepthMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshDepthMaterial(parameters: MeshDepthMaterialParameters = definedExternally) : Material {
+open external class MeshDepthMaterial(parameters: MeshDepthMaterialParameters = definedExternally) : Material {
     open val isMeshDepthMaterial: Boolean
     override var type: String
     open var map: Texture?

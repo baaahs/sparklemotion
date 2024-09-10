@@ -22,7 +22,7 @@ external interface `T$90` {
     operator fun set(key: String, value: Texture)
 }
 
-external open class MaterialLoader(manager: LoadingManager = definedExternally) : Loader__1<Material> {
+open external class MaterialLoader(manager: LoadingManager = definedExternally) : Loader__1<Material> {
     open var textures: `T$90`
     open fun parse(json: Any): Material
     open fun setTextures(textures: `T$90`): MaterialLoader /* this */

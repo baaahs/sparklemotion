@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -16,7 +17,7 @@ import org.w3c.workers.*
 import org.w3c.xhr.*
 
 external interface TextureJSON {
-    var metadata: `T$0`
+    var metadata: `T$0_Object3D`
     var uuid: String
     var name: String
     var image: String
@@ -53,7 +54,7 @@ external interface TextureJSON {
 
 external interface OffscreenCanvas : EventTarget
 
-external open class Texture : EventDispatcher<`T$8`> {
+open external class Texture : EventDispatcher<`T$8`> {
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor()
     constructor(image: ImageBitmap = definedExternally)
@@ -64,7 +65,7 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor(image: ImageData = definedExternally)
     constructor(image: ImageData = definedExternally, mapping: Any = definedExternally)
@@ -74,7 +75,7 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: ImageData = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor(image: HTMLImageElement = definedExternally)
     constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally)
@@ -84,7 +85,7 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: HTMLImageElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor(image: HTMLCanvasElement = definedExternally)
     constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally)
@@ -94,7 +95,7 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: HTMLCanvasElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor(image: HTMLVideoElement = definedExternally)
     constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally)
@@ -104,7 +105,7 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: HTMLVideoElement = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor(image: OffscreenCanvas = definedExternally)
     constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally)
@@ -114,13 +115,13 @@ external open class Texture : EventDispatcher<`T$8`> {
     constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally)
     constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally)
     constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally)
-    constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
-    constructor(image: ImageBitmap, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
-    constructor(image: ImageData, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
-    constructor(image: HTMLImageElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
-    constructor(image: HTMLCanvasElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
-    constructor(image: HTMLVideoElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
-    constructor(image: OffscreenCanvas, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: OffscreenCanvas = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
+//    constructor(image: ImageBitmap, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: ImageData, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: HTMLImageElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: HTMLCanvasElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: HTMLVideoElement, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
+//    constructor(image: OffscreenCanvas, mapping: Any, wrapS: Any, wrapT: Any, magFilter: Any, minFilter: Any, format: Any, type: Any, anisotropy: Number)
     open val isTexture: Boolean
     open val id: Number
     open var uuid: String

@@ -15,10 +15,10 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Group<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
+open external class Group<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
     open val isGroup: Boolean
     open var override: Any
     override val type: String /* String | "Group" */
 }
 
-external open class Group__0 : Group<Object3DEventMap>
+typealias Group__0 = Group<Object3DEventMap>

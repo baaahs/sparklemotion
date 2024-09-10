@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class PropertyMixer(binding: Any, typeName: String, valueSize: Number) {
+open external class PropertyMixer(binding: Any, typeName: String, valueSize: Number) {
     open var binding: Any
     open var valueSize: Number
     open var buffer: Any

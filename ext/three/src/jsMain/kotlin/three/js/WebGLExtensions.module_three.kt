@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLExtensions(gl: WebGLRenderingContext) {
+open external class WebGLExtensions(gl: WebGLRenderingContext) {
     open fun has(name: String): Boolean
     open fun init()
     open fun get(name: String): Any

@@ -14,8 +14,11 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.audio.AudioContext
+import web.audio.AudioNode
+import web.audio.GainNode
 
-external open class AudioListener : Object3D__0 {
+open external class AudioListener : Object3D__0 {
     override val type: String /* String | "AudioListener" */
     open var context: AudioContext
     open var gain: GainNode

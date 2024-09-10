@@ -20,7 +20,7 @@ external interface CurvePathJSON : CurveJSON {
     var curves: Array<CurveJSON>
 }
 
-external open class CurvePath<TVector> : Curve<TVector> {
+open external class CurvePath<TVector> : Curve<TVector> {
     open var override: Any
     override val type: String /* String | "CurvePath" */
     open var curves: Array<Curve<TVector>>

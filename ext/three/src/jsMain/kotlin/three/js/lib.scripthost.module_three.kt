@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class VarDate {
+open external class VarDate {
     open var VarDate_typekey: VarDate
 }

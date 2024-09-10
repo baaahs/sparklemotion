@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class LoaderUtils {
+open external class LoaderUtils {
     companion object {
         fun decodeText(array: ArrayBufferView): String
         fun decodeText(array: ArrayBuffer): String

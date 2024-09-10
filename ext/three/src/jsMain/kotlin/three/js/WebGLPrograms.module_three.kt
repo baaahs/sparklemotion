@@ -219,7 +219,7 @@ external interface WebGLProgramParametersWithUniforms : WebGLProgramParameters {
     var uniforms: `T$17`
 }
 
-external open class WebGLPrograms(renderer: WebGLRenderer, cubemaps: WebGLCubeMaps, extensions: WebGLExtensions, capabilities: WebGLCapabilities, bindingStates: WebGLBindingStates, clipping: WebGLClipping) {
+open external class WebGLPrograms(renderer: WebGLRenderer, cubemaps: WebGLCubeMaps, extensions: WebGLExtensions, capabilities: WebGLCapabilities, bindingStates: WebGLBindingStates, clipping: WebGLClipping) {
     open var programs: Array<WebGLProgram>
     open fun getParameters(material: Material, lights: WebGLLightsState, shadows: Array<Light__0>, scene: Scene, obj: Object3D__0): WebGLProgramParameters
     open fun getProgramCacheKey(parameters: WebGLProgramParameters): String

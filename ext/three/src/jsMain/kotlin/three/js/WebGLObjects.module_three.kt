@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLObjects(gl: WebGLRenderingContext, geometries: Any, attributes: Any, info: Any) {
+open external class WebGLObjects(gl: WebGLRenderingContext, geometries: Any, attributes: Any, info: Any) {
     open fun update(obj: Any): Any
     open fun dispose()
 }

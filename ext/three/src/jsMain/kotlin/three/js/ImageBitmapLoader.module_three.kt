@@ -15,8 +15,8 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class ImageBitmapLoader(manager: LoadingManager = definedExternally) : Loader__1<ImageBitmap> {
-    override fun load(url: String, onLoad: (data: ImageBitmap) -> Unit, onProgress: (event: ProgressEvent__0) -> Unit, onError: (err: Any) -> Unit)
+open external class ImageBitmapLoader(manager: LoadingManager = definedExternally) : Loader__1<ImageBitmap> {
+    override fun load(url: String, onLoad: (data: ImageBitmap) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit)
     open var options: Any?
     open val isImageBitmapLoader: Boolean
     open fun setOptions(options: Any?): ImageBitmapLoader

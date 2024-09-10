@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.array.ArrayLike
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -15,7 +16,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SphericalHarmonics3 {
+open external class SphericalHarmonics3 {
     open var coefficients: Array<Vector3>
     open val isSphericalHarmonics3: Boolean
     open fun set(coefficients: Array<Vector3>): SphericalHarmonics3

@@ -20,7 +20,7 @@ external interface `T$64` {
     var needsUpdate: Boolean
 }
 
-external open class WebGLClipping(properties: WebGLProperties) {
+open external class WebGLClipping(properties: WebGLProperties) {
     open var uniform: `T$64`
     open var numPlanes: Number
     open var numIntersection: Number

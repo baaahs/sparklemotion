@@ -22,15 +22,15 @@ external interface `T$89` {
     operator fun set(header: String, value: String)
 }
 
-external open class Loader<TData, TUrl>(manager: LoadingManager = definedExternally) {
+open external class Loader<TData, TUrl>(manager: LoadingManager = definedExternally) {
     open var crossOrigin: String
     open var withCredentials: Boolean
     open var path: String
     open var resourcePath: String
     open var manager: LoadingManager
     open var requestHeader: `T$89`
-    open fun load(url: TUrl, onLoad: (data: TData) -> Unit, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally)
-    open fun loadAsync(url: TUrl, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally): Promise<TData>
+    open fun load(url: TUrl, onLoad: (data: TData) -> Unit, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally)
+    open fun loadAsync(url: TUrl, onProgress: (event: ProgressEvent) -> Unit = definedExternally): Promise<TData>
     open fun setCrossOrigin(crossOrigin: String): Loader<TData, TUrl> /* this */
     open fun setWithCredentials(value: Boolean): Loader<TData, TUrl> /* this */
     open fun setPath(path: String): Loader<TData, TUrl> /* this */
@@ -42,6 +42,6 @@ external open class Loader<TData, TUrl>(manager: LoadingManager = definedExterna
     }
 }
 
-external open class Loader__1<TData> : Loader<TData, String>
+typealias Loader__1<TData> = Loader<TData, String>
 
-external open class Loader__0 : Loader<Any, String>
+typealias Loader__0 = Loader<Any, String>

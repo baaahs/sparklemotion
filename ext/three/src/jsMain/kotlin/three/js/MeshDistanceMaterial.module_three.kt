@@ -42,7 +42,7 @@ external interface MeshDistanceMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshDistanceMaterial(parameters: MeshDistanceMaterialParameters = definedExternally) : Material {
+open external class MeshDistanceMaterial(parameters: MeshDistanceMaterialParameters = definedExternally) : Material {
     open val isMeshDistanceMaterial: Boolean
     override var type: String
     open var map: Texture?

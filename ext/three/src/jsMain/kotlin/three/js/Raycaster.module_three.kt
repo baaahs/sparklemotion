@@ -76,7 +76,7 @@ external interface RaycasterParameters {
     var Sprite: Any
 }
 
-external open class Raycaster(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally, near: Number = definedExternally, far: Number = definedExternally) {
+open external class Raycaster(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally, near: Number = definedExternally, far: Number = definedExternally) {
     open var ray: Ray
     open var near: Number
     open var far: Number

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CubeCamera(near: Number, far: Number, renderTarget: WebGLCubeRenderTarget) : Object3D__0 {
+open external class CubeCamera(near: Number, far: Number, renderTarget: WebGLCubeRenderTarget) : Object3D__0 {
     open var override: Any
     override val type: String /* String | "CubeCamera" */
     open var renderTarget: WebGLCubeRenderTarget

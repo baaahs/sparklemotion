@@ -27,7 +27,7 @@ external interface LineDashedMaterialParameters : LineBasicMaterialParameters {
         set(value) = definedExternally
 }
 
-external open class LineDashedMaterial(parameters: LineDashedMaterialParameters = definedExternally) : LineBasicMaterial {
+open external class LineDashedMaterial(parameters: LineDashedMaterialParameters = definedExternally) : LineBasicMaterial {
     open val isLineDashedMaterial: Boolean
     override var type: String
     open var scale: Number

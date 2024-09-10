@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Spherical(radius: Number = definedExternally, phi: Number = definedExternally, theta: Number = definedExternally) {
+open external class Spherical(radius: Number = definedExternally, phi: Number = definedExternally, theta: Number = definedExternally) {
     open var radius: Number
     open var phi: Number
     open var theta: Number

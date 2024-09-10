@@ -28,7 +28,7 @@ external interface MorphTarget {
     var vertices: Array<Vector3>
 }
 
-external open class AnimationClip(name: String = definedExternally, duration: Number = definedExternally, tracks: Array<KeyframeTrack> = definedExternally, blendMode: Any = definedExternally) {
+open external class AnimationClip(name: String = definedExternally, duration: Number = definedExternally, tracks: Array<KeyframeTrack> = definedExternally, blendMode: Any = definedExternally) {
     open var name: String
     open var tracks: Array<KeyframeTrack>
     open var blendMode: Any

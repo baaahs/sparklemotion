@@ -25,7 +25,7 @@ external interface `T$6` {
     var holes: Array<Array<Vector2>>
 }
 
-external open class Shape(points: Array<Vector2> = definedExternally) : Path {
+open external class Shape(points: Array<Vector2> = definedExternally) : Path {
     override var override: Any
     override val type: String /* String | "Shape" */
     open var uuid: String

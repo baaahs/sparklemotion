@@ -24,7 +24,7 @@ external interface ShadowMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class ShadowMaterial(parameters: ShadowMaterialParameters = definedExternally) : Material {
+open external class ShadowMaterial(parameters: ShadowMaterialParameters = definedExternally) : Material {
     open val isShadowMaterial: Boolean
     override var type: String
     open var color: Color

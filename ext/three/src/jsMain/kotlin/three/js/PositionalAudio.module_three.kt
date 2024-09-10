@@ -14,8 +14,9 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.audio.PannerNode
 
-external open class PositionalAudio(listener: AudioListener) : Audio<PannerNode> {
+open external class PositionalAudio(listener: AudioListener) : Audio<PannerNode> {
     open var panner: PannerNode
     override fun getOutput(): PannerNode
     open fun getRefDistance(): Number

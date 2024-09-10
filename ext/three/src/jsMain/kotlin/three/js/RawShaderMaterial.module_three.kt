@@ -15,8 +15,8 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class RawShaderMaterial(parameters: ShaderMaterialParameters = definedExternally) : ShaderMaterial {
+open external class RawShaderMaterial(parameters: ShaderMaterialParameters = definedExternally) : ShaderMaterial {
     open val isRawShaderMaterial: Boolean
     open var override: Any
-    override val type: String /* "RawShaderMaterial" */
+//    override val type: String /* "RawShaderMaterial" */
 }

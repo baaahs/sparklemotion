@@ -15,8 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLRenderTarget<TTexture>(width: Number = definedExternally, height: Number = definedExternally, options: RenderTargetOptions = definedExternally) : RenderTarget<TTexture> {
+open external class WebGLRenderTarget<TTexture>(width: Number = definedExternally, height: Number = definedExternally, options: RenderTargetOptions = definedExternally) : RenderTarget<TTexture> {
     open val isWebGLRenderTarget: Boolean
 }
-
-external open class WebGLRenderTarget__0 : WebGLRenderTarget<Texture>

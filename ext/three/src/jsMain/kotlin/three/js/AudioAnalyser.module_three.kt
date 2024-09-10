@@ -14,8 +14,10 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.audio.AnalyserNode
+import web.audio.AudioNode
 
-external open class AudioAnalyser(audio: Audio<AudioNode>, fftSize: Number = definedExternally) {
+open external class AudioAnalyser(audio: Audio<AudioNode>, fftSize: Number = definedExternally) {
     open var analyser: AnalyserNode
     open var data: Uint8Array
     open fun getFrequencyData(): Uint8Array

@@ -23,7 +23,7 @@ external interface FogJSON {
     var far: Number
 }
 
-external open class Fog {
+open external class Fog {
     constructor(color: Color, near: Number = definedExternally, far: Number = definedExternally)
     constructor(color: Color)
     constructor(color: Color, near: Number = definedExternally)

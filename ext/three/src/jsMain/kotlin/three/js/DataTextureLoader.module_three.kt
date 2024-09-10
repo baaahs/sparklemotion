@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class DataTextureLoader(manager: LoadingManager = definedExternally) : Loader__1<DataTexture> {
-    open fun load(url: String, onLoad: (data: DataTexture, texData: Any?) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): DataTexture
+open external class DataTextureLoader(manager: LoadingManager = definedExternally) : Loader__1<DataTexture> {
+    open fun load(url: String, onLoad: (data: DataTexture, texData: Any?) -> Unit = definedExternally, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): DataTexture
 }

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class LineCurve(v1: Vector2 = definedExternally, v2: Vector2 = definedExternally) : Curve<Vector2> {
+open external class LineCurve(v1: Vector2 = definedExternally, v2: Vector2 = definedExternally) : Curve<Vector2> {
     open val isLineCurve: Any = definedExternally /* true */
     open var override: Any
     override val type: String /* String | "LineCurve" */

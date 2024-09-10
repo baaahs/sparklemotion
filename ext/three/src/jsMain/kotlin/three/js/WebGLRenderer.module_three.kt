@@ -65,7 +65,7 @@ external interface WebGLDebug {
     var onShaderError: ((gl: WebGLRenderingContext, program: WebGLProgram, glVertexShader: WebGLShader, glFragmentShader: WebGLShader) -> Unit)?
 }
 
-external open class WebGLRenderer(parameters: WebGLRendererParameters = definedExternally) : Renderer {
+open external class WebGLRenderer(parameters: WebGLRendererParameters = definedExternally) : Renderer {
     override var domElement: HTMLCanvasElement
     open var autoClear: Boolean
     open var autoClearColor: Boolean
@@ -134,7 +134,7 @@ external open class WebGLRenderer(parameters: WebGLRendererParameters = definedE
     open fun clearColor()
     open fun clearDepth()
     open fun clearStencil()
-    open fun clearTarget(renderTarget: WebGLRenderTarget__0, color: Boolean, depth: Boolean, stencil: Boolean)
+    open fun clearTarget(renderTarget: WebGLRenderTarget<Texture>, color: Boolean, depth: Boolean, stencil: Boolean)
     open fun resetGLState()
     open fun dispose()
     open fun renderBufferDirect(camera: Camera, scene: Scene, geometry: BufferGeometry__0, material: Material, obj: Object3D__0, geometryGroup: Any)
@@ -145,20 +145,20 @@ external open class WebGLRenderer(parameters: WebGLRendererParameters = definedE
     override fun render(scene: Object3D__0, camera: Camera)
     open fun getActiveCubeFace(): Number
     open fun getActiveMipmapLevel(): Number
-    open fun getRenderTarget(): WebGLRenderTarget__0?
-    open fun getCurrentRenderTarget(): WebGLRenderTarget__0?
-    open fun setRenderTarget(renderTarget: WebGLRenderTarget__0?, activeCubeFace: Number = definedExternally, activeMipmapLevel: Number = definedExternally)
-    open fun setRenderTarget(renderTarget: WebGLRenderTarget__0?)
-    open fun setRenderTarget(renderTarget: WebGLRenderTarget__0?, activeCubeFace: Number = definedExternally)
+    open fun getRenderTarget(): WebGLRenderTarget<Texture>?
+    open fun getCurrentRenderTarget(): WebGLRenderTarget<Texture>?
+    open fun setRenderTarget(renderTarget: WebGLRenderTarget<Texture>?, activeCubeFace: Number = definedExternally, activeMipmapLevel: Number = definedExternally)
+    open fun setRenderTarget(renderTarget: WebGLRenderTarget<Texture>?)
+    open fun setRenderTarget(renderTarget: WebGLRenderTarget<Texture>?, activeCubeFace: Number = definedExternally)
     open fun setRenderTarget(renderTarget: WebGLRenderTarget<Array<Texture>>?, activeCubeFace: Number = definedExternally, activeMipmapLevel: Number = definedExternally)
     open fun setRenderTarget(renderTarget: WebGLRenderTarget<Array<Texture>>?)
     open fun setRenderTarget(renderTarget: WebGLRenderTarget<Array<Texture>>?, activeCubeFace: Number = definedExternally)
-    open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget__0, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally)
-    open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget__0, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */)
+    open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget<Texture>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally)
+    open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget<Texture>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */)
     open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget<Array<Texture>>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally)
     open fun readRenderTargetPixels(renderTarget: WebGLRenderTarget<Array<Texture>>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */)
-    open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget__0, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
-    open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget__0, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
+    open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget<Texture>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
+    open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget<Texture>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
     open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget<Array<Texture>>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */, activeCubeFaceIndex: Number = definedExternally): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
     open fun readRenderTargetPixelsAsync(renderTarget: WebGLRenderTarget<Array<Texture>>, x: Number, y: Number, width: Number, height: Number, buffer: Any /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */): Promise<dynamic /* Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array */>
     open fun copyFramebufferToTexture(texture: Texture, position: Vector2? = definedExternally, level: Number = definedExternally)
@@ -171,7 +171,7 @@ external open class WebGLRenderer(parameters: WebGLRendererParameters = definedE
     open fun copyTextureToTexture3D(srcTexture: Texture, dstTexture: DataArrayTexture)
     open fun copyTextureToTexture3D(srcTexture: Texture, dstTexture: DataArrayTexture, srcRegion: Box3? = definedExternally)
     open fun copyTextureToTexture3D(srcTexture: Texture, dstTexture: DataArrayTexture, srcRegion: Box3? = definedExternally, dstPosition: Vector3? = definedExternally)
-    open fun initRenderTarget(target: WebGLRenderTarget__0)
+    open fun initRenderTarget(target: WebGLRenderTarget<Texture>)
     open fun initTexture(texture: Texture)
     open fun resetState()
     open var vr: Boolean

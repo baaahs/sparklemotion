@@ -59,7 +59,7 @@ external interface `T$78` {
     val options: ExtrudeGeometryOptions
 }
 
-external open class ExtrudeGeometry : BufferGeometry__0 {
+open external class ExtrudeGeometry : BufferGeometry__0 {
     constructor(shapes: Shape = definedExternally, options: ExtrudeGeometryOptions = definedExternally)
     constructor()
     constructor(shapes: Shape = definedExternally)

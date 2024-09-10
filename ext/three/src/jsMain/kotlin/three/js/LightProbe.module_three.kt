@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class LightProbe(sh: SphericalHarmonics3 = definedExternally, intensity: Number = definedExternally) : Light__0 {
+open external class LightProbe(sh: SphericalHarmonics3 = definedExternally, intensity: Number = definedExternally) : Light__0 {
     open val isLightProbe: Boolean
     open var sh: SphericalHarmonics3
     open fun fromJSON(json: Any): LightProbe

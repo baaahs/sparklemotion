@@ -93,7 +93,7 @@ external interface MeshToonMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshToonMaterial(parameters: MeshToonMaterialParameters = definedExternally) : Material {
+open external class MeshToonMaterial(parameters: MeshToonMaterialParameters = definedExternally) : Material {
     open val isMeshToonMaterial: Boolean
     override var type: String
     open var color: Color

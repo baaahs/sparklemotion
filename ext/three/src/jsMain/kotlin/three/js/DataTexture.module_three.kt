@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class DataTexture : Texture {
+open external class DataTexture : Texture {
     constructor(data: ArrayBufferView? = definedExternally, width: Number = definedExternally, height: Number = definedExternally, format: Any = definedExternally, type: Any = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
     constructor()
     constructor(data: ArrayBufferView? = definedExternally)

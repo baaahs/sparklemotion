@@ -19,7 +19,7 @@ external interface `T$87`<TBufferGeometry> {
     val geometry: TBufferGeometry
 }
 
-external open class WireframeGeometry<TBufferGeometry : BufferGeometry__0>(geometry: TBufferGeometry = definedExternally) : BufferGeometry__0 {
+open external class WireframeGeometry<TBufferGeometry : BufferGeometry__0>(geometry: TBufferGeometry = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "WireframeGeometry" */
     open val parameters: `T$87`<Any?>

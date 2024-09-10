@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SpotLight : Light<SpotLightShadow> {
+open external class SpotLight : Light<SpotLightShadow> {
     constructor(color: Color = definedExternally, intensity: Number = definedExternally, distance: Number = definedExternally, angle: Number = definedExternally, penumbra: Number = definedExternally, decay: Number = definedExternally)
     constructor()
     constructor(color: Color = definedExternally)

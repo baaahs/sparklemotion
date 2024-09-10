@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class ImageLoader(manager: LoadingManager = definedExternally) : Loader__1<HTMLImageElement> {
-    open fun load(url: String, onLoad: (data: HTMLImageElement) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): HTMLImageElement
+open external class ImageLoader<TData>(manager: LoadingManager = definedExternally) : Loader<TData, HTMLImageElement> {
+//    open fun load(url: String, onLoad: (data: HTMLImageElement) -> Unit = definedExternally, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): HTMLImageElement
 }

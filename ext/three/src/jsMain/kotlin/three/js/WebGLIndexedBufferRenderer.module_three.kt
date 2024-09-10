@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLIndexedBufferRenderer(gl: WebGLRenderingContext, extensions: Any, info: Any) {
+open external class WebGLIndexedBufferRenderer(gl: WebGLRenderingContext, extensions: Any, info: Any) {
     open var setMode: (value: Any) -> Unit
     open var setIndex: (index: Any) -> Unit
     open var render: (start: Any, count: Number) -> Unit

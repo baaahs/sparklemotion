@@ -114,9 +114,9 @@ external interface MeshPhysicalMaterialParameters : MeshStandardMaterialParamete
         set(value) = definedExternally
 }
 
-external open class MeshPhysicalMaterial(parameters: MeshPhysicalMaterialParameters = definedExternally) : MeshStandardMaterial {
+open external class MeshPhysicalMaterial(parameters: MeshPhysicalMaterialParameters = definedExternally) : MeshStandardMaterial {
     open val isMeshPhysicalMaterial: Boolean
-    override var defines: Json
+//    override var defines: Json
     override var type: String
     open var anisotropyRotation: Number
     open var anisotropyMap: Texture?
