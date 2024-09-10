@@ -1,4 +1,3 @@
-@file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
 import js.objects.Record
@@ -52,7 +51,7 @@ external interface TextureJSON {
         set(value) = definedExternally
 }
 
-external interface OffscreenCanvas : EventTarget
+external class OffscreenCanvas : EventTarget
 
 open external class Texture : EventDispatcher<`T$8`> {
     constructor(image: ImageBitmap = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally)
