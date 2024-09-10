@@ -28,6 +28,6 @@ open external class DirectionalLight : Light<DirectionalLightShadow> {
     override var castShadow: Boolean
     override val position: Vector3
     override var shadow: DirectionalLightShadow
-    open var target: Object3D__0
+    open var target: Object3D/*<Object3DEventMap>*/
     override fun dispose()
 }

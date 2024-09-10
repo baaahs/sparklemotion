@@ -54,7 +54,7 @@ external interface RenderTargetOptions {
         set(value) = definedExternally
 }
 
-open external class RenderTarget<TTexture>(width: Number = definedExternally, height: Number = definedExternally, options: RenderTargetOptions = definedExternally) : EventDispatcher<`T$8`> {
+open external class RenderTarget<TTexture>(width: Number = definedExternally, height: Number = definedExternally, options: RenderTargetOptions = definedExternally) : EventDispatcher/*<`T$8`>*/ {
     open val isRenderTarget: Boolean
     open var width: Number
     open var height: Number

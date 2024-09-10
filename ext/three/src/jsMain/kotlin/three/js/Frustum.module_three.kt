@@ -6,7 +6,7 @@ open external class Frustum(p0: Plane = definedExternally, p1: Plane = definedEx
     open fun clone(): Frustum /* this */
     open fun copy(frustum: Frustum): Frustum /* this */
     open fun setFromProjectionMatrix(m: Matrix4, coordinateSystem: Any = definedExternally): Frustum /* this */
-    open fun intersectsObject(obj: Object3D__0): Boolean
+    open fun intersectsObject(obj: Object3D/*<Object3DEventMap>*/): Boolean
     open fun intersectsSprite(sprite: Sprite__0): Boolean
     open fun intersectsSphere(sphere: Sphere): Boolean
     open fun intersectsBox(box: Box3): Boolean

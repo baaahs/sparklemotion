@@ -1,6 +1,6 @@
 package three.js
 
-open external class GridHelper : LineSegments__2<BufferGeometry__0, LineBasicMaterial> {
+open external class GridHelper : LineSegments<BufferGeometry<NormalBufferAttributes>, LineBasicMaterial> {
     constructor(size: Number = definedExternally, divisions: Number = definedExternally, color1: Color = definedExternally, color2: Color = definedExternally)
     constructor()
     constructor(size: Number = definedExternally)

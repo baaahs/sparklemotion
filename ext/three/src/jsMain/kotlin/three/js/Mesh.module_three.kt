@@ -15,7 +15,7 @@ external interface `T$31` {
     operator fun set(key: String, value: Number)
 }
 
-open external class Mesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
+open external class Mesh<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial/*, TEventMap : Object3DEventMap*/>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D/*<Object3DEventMap>*/ {
     open val isMesh: Boolean
     open var override: Any
     override val type: String /* String | "Mesh" */
@@ -28,6 +28,6 @@ open external class Mesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : O
     override fun toJSON(meta: JSONMeta): MeshJSON
 }
 
-typealias Mesh__0 = Mesh<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>
+//typealias Mesh__0 = Mesh<BufferGeometry<NormalBufferAttributes>, dynamic /* Material | Array<Material> */, Object3DEventMap>
 
-open external class Mesh__2<TGeometry : BufferGeometry__0, TMaterial> : Mesh<TGeometry, TMaterial, Object3DEventMap>
+//typealias Mesh__2<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial> = Mesh<TGeometry, TMaterial, Object3DEventMap>

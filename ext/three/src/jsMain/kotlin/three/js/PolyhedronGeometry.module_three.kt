@@ -21,7 +21,7 @@ external interface `T$76` {
     val detail: Number
 }
 
-open external class PolyhedronGeometry(vertices: Array<Number> = definedExternally, indices: Array<Number> = definedExternally, radius: Number = definedExternally, detail: Number = definedExternally) : BufferGeometry__0 {
+open external class PolyhedronGeometry(vertices: Array<Number> = definedExternally, indices: Array<Number> = definedExternally, radius: Number = definedExternally, detail: Number = definedExternally) : BufferGeometry<NormalBufferAttributes> {
     open var override: Any
     override val type: String /* String | "PolyhedronGeometry" */
     open val parameters: `T$76`

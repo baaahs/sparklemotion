@@ -17,7 +17,7 @@ import web.audio.AudioContext
 import web.audio.AudioNode
 import web.audio.GainNode
 
-open external class AudioListener : Object3D__0 {
+open external class AudioListener : Object3D/*<Object3DEventMap>*/ {
     override val type: String /* String | "AudioListener" */
     open var context: AudioContext
     open var gain: GainNode

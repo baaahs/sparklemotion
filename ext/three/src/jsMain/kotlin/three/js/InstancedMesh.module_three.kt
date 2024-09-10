@@ -30,7 +30,7 @@ external interface InstancedMeshEventMap : Object3DEventMap {
     var dispose: Any
 }
 
-open external class InstancedMesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : InstancedMeshEventMap>(geometry: TGeometry?, material: TMaterial?, count: Number) : Mesh<TGeometry, TMaterial, TEventMap> {
+open external class InstancedMesh<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial, TEventMap : InstancedMeshEventMap>(geometry: TGeometry?, material: TMaterial?, count: Number) : Mesh<TGeometry, TMaterial> {
     open val isInstancedMesh: Boolean
     open var boundingBox: Box3?
     open var boundingSphere: Sphere?
@@ -43,9 +43,9 @@ open external class InstancedMesh<TGeometry : BufferGeometry__0, TMaterial, TEve
     open fun getColorAt(index: Number, color: Color)
     open fun setColorAt(index: Number, color: Color)
     open fun getMatrixAt(index: Number, matrix: Matrix4)
-    open fun getMorphAt(index: Number, mesh: Mesh__0)
+    open fun getMorphAt(index: Number, mesh: Mesh<BufferGeometry<NormalBufferAttributes>, *>)
     open fun setMatrixAt(index: Number, matrix: Matrix4)
-    open fun setMorphAt(index: Number, mesh: Mesh__0)
+    open fun setMorphAt(index: Number, mesh: Mesh<BufferGeometry<NormalBufferAttributes>, *>)
     override var override: Any
     override fun updateMorphTargets()
     open fun dispose(): InstancedMesh<TGeometry, TMaterial, TEventMap> /* this */

@@ -82,7 +82,7 @@ external interface `T$12` {
     operator fun set(name: String, value: Array<dynamic /* BufferAttribute | InterleavedBufferAttribute */>)
 }
 
-open external class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : EventDispatcher<`T$8`> {
+open external class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : EventDispatcher/*<`T$8`>*/ {
     open var id: Number
     open var uuid: String
     open var name: String
@@ -123,11 +123,11 @@ open external class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : Ev
     open fun computeTangents()
     open fun computeVertexNormals()
     open fun normalizeNormals()
-    open fun toNonIndexed(): BufferGeometry__0
+    open fun toNonIndexed(): BufferGeometry<NormalBufferAttributes>
     open fun toJSON(): BufferGeometryJSON
     open fun clone(): BufferGeometry<Attributes> /* this */
-    open fun copy(source: BufferGeometry__0): BufferGeometry<Attributes> /* this */
+    open fun copy(source: BufferGeometry<NormalBufferAttributes>): BufferGeometry<Attributes> /* this */
     open fun dispose()
 }
 
-typealias BufferGeometry__0 = BufferGeometry<NormalBufferAttributes>
+//typealias BufferGeometry__0 = BufferGeometry<NormalBufferAttributes>

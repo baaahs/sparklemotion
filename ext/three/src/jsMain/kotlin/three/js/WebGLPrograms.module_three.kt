@@ -220,7 +220,7 @@ external interface WebGLProgramParametersWithUniforms : WebGLProgramParameters {
 
 open external class WebGLPrograms(renderer: WebGLRenderer, cubemaps: WebGLCubeMaps, extensions: WebGLExtensions, capabilities: WebGLCapabilities, bindingStates: WebGLBindingStates, clipping: WebGLClipping) {
     open var programs: Array<WebGLProgram>
-    open fun getParameters(material: Material, lights: WebGLLightsState, shadows: Array<Light__0>, scene: Scene, obj: Object3D__0): WebGLProgramParameters
+    open fun getParameters(material: Material, lights: WebGLLightsState, shadows: Array<Light__0>, scene: Scene, obj: Object3D/*<Object3DEventMap>*/): WebGLProgramParameters
     open fun getProgramCacheKey(parameters: WebGLProgramParameters): String
     open fun getUniforms(material: Material): `T$17`
     open fun acquireProgram(parameters: WebGLProgramParametersWithUniforms, cacheKey: String): WebGLProgram

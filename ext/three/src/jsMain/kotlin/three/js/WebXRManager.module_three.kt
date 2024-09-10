@@ -31,7 +31,7 @@ external interface WebXRManagerEventMap {
     var planesdetected: `T$27`
 }
 
-open external class WebXRManager(renderer: WebGLRenderer, gl: WebGLRenderingContext) : EventDispatcher<WebXRManagerEventMap> {
+open external class WebXRManager(renderer: WebGLRenderer, gl: WebGLRenderingContext) : EventDispatcher/*<WebXRManagerEventMap>*/ {
     open var cameraAutoUpdate: Boolean
     open var enabled: Boolean
     open var isPresenting: Boolean
@@ -54,7 +54,7 @@ open external class WebXRManager(renderer: WebGLRenderer, gl: WebGLRenderingCont
     open var getFoveation: () -> Number?
     open var setFoveation: (value: Number) -> Unit
     open var hasDepthSensing: () -> Boolean
-    open var getDepthSensingMesh: () -> Mesh__0?
+    open var getDepthSensingMesh: () -> Mesh<BufferGeometry<NormalBufferAttributes>, *>?
     open var setAnimationLoop: (callback: XRFrameRequestCallback?) -> Unit
     open var dispose: () -> Unit
 }

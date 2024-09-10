@@ -1,6 +1,6 @@
 package three.js
 
-open external class ArrowHelper : Object3D__0 {
+open external class ArrowHelper : Object3D/*<Object3DEventMap>*/ {
     constructor(dir: Vector3 = definedExternally, origin: Vector3 = definedExternally, length: Number = definedExternally, color: Color = definedExternally, headLength: Number = definedExternally, headWidth: Number = definedExternally)
     constructor()
     constructor(dir: Vector3 = definedExternally)
@@ -16,8 +16,8 @@ open external class ArrowHelper : Object3D__0 {
     constructor(dir: Vector3 = definedExternally, origin: Vector3 = definedExternally, length: Number = definedExternally, color: Number = definedExternally, headLength: Number = definedExternally)
     open var override: Any
     override val type: String /* String | "ArrowHelper" */
-    open var line: Line__0
-    open var cone: Mesh__0
+    open var line: Line<*, *>
+    open var cone: Mesh<BufferGeometry<NormalBufferAttributes>, *>
     open fun setColor(color: Color)
     open fun setColor(color: String)
     open fun setColor(color: Number)

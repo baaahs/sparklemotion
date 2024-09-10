@@ -6,7 +6,7 @@ external interface `T$105` {
     var z: Number
 }
 
-open external class BatchedMesh(maxInstanceCount: Number, maxVertexCount: Number, maxIndexCount: Number = definedExternally, material: Material = definedExternally) : Mesh__2<BufferGeometry__0, Material> {
+open external class BatchedMesh(maxInstanceCount: Number, maxVertexCount: Number, maxIndexCount: Number = definedExternally, material: Material = definedExternally) : Mesh<BufferGeometry<NormalBufferAttributes>, Material> {
     open var boundingBox: Box3?
     open var boundingSphere: Sphere?
     open var customSort: ((self: BatchedMesh /* this */, list: Array<`T$105`>, camera: Camera) -> Unit)?
@@ -23,9 +23,9 @@ open external class BatchedMesh(maxInstanceCount: Number, maxVertexCount: Number
     open fun setColorAt(instanceId: Number, color: Color)
     open fun setMatrixAt(instanceId: Number, matrix: Matrix4): BatchedMesh /* this */
     open fun setVisibleAt(instanceId: Number, visible: Boolean): BatchedMesh /* this */
-    open fun addGeometry(geometry: BufferGeometry__0, reservedVertexRange: Number = definedExternally, reservedIndexRange: Number = definedExternally): Number
+    open fun addGeometry(geometry: BufferGeometry<NormalBufferAttributes>, reservedVertexRange: Number = definedExternally, reservedIndexRange: Number = definedExternally): Number
     open fun addInstance(geometryId: Number): Number
-    open fun setGeometryAt(geometryId: Number, geometry: BufferGeometry__0): Number
+    open fun setGeometryAt(geometryId: Number, geometry: BufferGeometry<NormalBufferAttributes>): Number
     open fun getBoundingBoxAt(geometryId: Number, target: Box3): Box3?
     open fun getBoundingSphereAt(geometryId: Number, target: Sphere): Sphere?
 }

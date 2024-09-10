@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class XRJointSpace : Group__0 {
+open external class XRJointSpace : Object3D/*<Object3DEventMap>*/ {
     open val jointRadius: Number?
 }
 
@@ -48,19 +48,19 @@ external interface WebXRSpaceEventMap : Object3DEventMap {
     var move: Any
 }
 
-open external class XRHandSpace : Group<WebXRSpaceEventMap> {
+open external class XRHandSpace : Group/*<WebXRSpaceEventMap>*/ {
     open val joints: Any
     open val inputState: XRHandInputState
 }
 
-open external class XRTargetRaySpace : Group<WebXRSpaceEventMap> {
+open external class XRTargetRaySpace : Group/*<WebXRSpaceEventMap>*/ {
     open var hasLinearVelocity: Boolean
     open val linearVelocity: Vector3
     open var hasAngularVelocity: Boolean
     open val angularVelocity: Vector3
 }
 
-open external class XRGripSpace : Group<WebXRSpaceEventMap> {
+open external class XRGripSpace : Group/*<WebXRSpaceEventMap>*/ {
     open var hasLinearVelocity: Boolean
     open val linearVelocity: Vector3
     open var hasAngularVelocity: Boolean

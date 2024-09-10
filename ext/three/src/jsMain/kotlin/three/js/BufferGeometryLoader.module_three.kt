@@ -14,6 +14,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class BufferGeometryLoader(manager: LoadingManager = definedExternally) : Loader__1<dynamic /* InstancedBufferGeometry | BufferGeometry__0 */> {
-    open fun parse(json: Any): dynamic /* InstancedBufferGeometry | BufferGeometry__0 */
+open external class BufferGeometryLoader(manager: LoadingManager = definedExternally) : Loader__1<dynamic /* InstancedBufferGeometry | BufferGeometry<NormalBufferAttributes> */> {
+    open fun parse(json: Any): dynamic /* InstancedBufferGeometry | BufferGeometry<NormalBufferAttributes> */
 }

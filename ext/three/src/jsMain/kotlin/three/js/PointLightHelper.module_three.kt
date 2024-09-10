@@ -14,7 +14,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class PointLightHelper : Object3D__0 {
+open external class PointLightHelper : Object3D/*<Object3DEventMap>*/ {
     constructor(light: PointLight, sphereSize: Number = definedExternally, color: Color = definedExternally)
     constructor(light: PointLight)
     constructor(light: PointLight, sphereSize: Number = definedExternally)

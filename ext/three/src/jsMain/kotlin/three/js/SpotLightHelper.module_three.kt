@@ -14,14 +14,14 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-open external class SpotLightHelper : Object3D__0 {
+open external class SpotLightHelper : Object3D/*<Object3DEventMap>*/ {
     constructor(light: Light__0, color: Color = definedExternally)
     constructor(light: Light__0)
     constructor(light: Light__0, color: String = definedExternally)
     constructor(light: Light__0, color: Number = definedExternally)
     open var override: Any
     override val type: String /* String | "SpotLightHelper" */
-    open var cone: LineSegments__0
+    open var cone: LineSegments<BufferGeometry<NormalBufferAttributes>, *>
     open var light: Light__0
     override var matrix: Matrix4
     open var color: dynamic /* Color? | String? | Number? */

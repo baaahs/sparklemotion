@@ -9,7 +9,7 @@ external interface `T$81` {
     val thetaLength: Number
 }
 
-open external class RingGeometry(innerRadius: Number = definedExternally, outerRadius: Number = definedExternally, thetaSegments: Number = definedExternally, phiSegments: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry__0 {
+open external class RingGeometry(innerRadius: Number = definedExternally, outerRadius: Number = definedExternally, thetaSegments: Number = definedExternally, phiSegments: Number = definedExternally, thetaStart: Number = definedExternally, thetaLength: Number = definedExternally) : BufferGeometry<NormalBufferAttributes> {
     open var override: Any
     override val type: String /* String | "RingGeometry" */
     open val parameters: `T$81`

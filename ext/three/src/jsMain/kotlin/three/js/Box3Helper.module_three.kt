@@ -1,6 +1,6 @@
 package three.js
 
-open external class Box3Helper : LineSegments__0 {
+open external class Box3Helper : LineSegments<BufferGeometry<NormalBufferAttributes>, Material> {
     constructor(box: Box3, color: Color = definedExternally)
     constructor(box: Box3)
     constructor(box: Box3, color: String = definedExternally)
