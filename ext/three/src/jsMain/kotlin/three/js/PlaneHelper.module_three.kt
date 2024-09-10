@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class PlaneHelper(plane: Plane, size: Number = definedExternally, hex: Number = definedExternally) : LineSegments__0 {
+open external class PlaneHelper(plane: Plane, size: Number = definedExternally, hex: Number = definedExternally) : LineSegments__0 {
     override var override: Any
     override val type: String /* String | "PlaneHelper" */
     open var plane: Plane

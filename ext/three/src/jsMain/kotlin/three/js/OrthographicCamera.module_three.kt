@@ -29,10 +29,10 @@ external interface OrthographicCameraJSONObject : Object3DJSONObject {
 }
 
 external interface OrthographicCameraJSON : Object3DJSON {
-    override var `object`: OrthographicCameraJSONObject
+//    override var `object`: OrthographicCameraJSONObject
 }
 
-external open class OrthographicCamera(left: Number = definedExternally, right: Number = definedExternally, top: Number = definedExternally, bottom: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally) : Camera {
+open external class OrthographicCamera(left: Number = definedExternally, right: Number = definedExternally, top: Number = definedExternally, bottom: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally) : Camera {
     open val isOrthographicCamera: Boolean
     override var override: Any
     override val type: String /* String | "OrthographicCamera" */

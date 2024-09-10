@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class BoxHelper : LineSegments__2<BufferGeometry__0, LineBasicMaterial> {
+open external class BoxHelper : LineSegments__2<BufferGeometry__0, LineBasicMaterial> {
     constructor(obj: Object3D__0, color: Color = definedExternally)
     constructor(obj: Object3D__0)
     constructor(obj: Object3D__0, color: String = definedExternally)

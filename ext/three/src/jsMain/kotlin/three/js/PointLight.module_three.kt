@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class PointLight : Light<PointLightShadow> {
+open external class PointLight : Light<PointLightShadow> {
     constructor(color: Color = definedExternally, intensity: Number = definedExternally, distance: Number = definedExternally, decay: Number = definedExternally)
     constructor()
     constructor(color: Color = definedExternally)

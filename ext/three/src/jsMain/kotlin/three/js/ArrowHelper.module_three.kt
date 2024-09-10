@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class ArrowHelper : Object3D__0 {
+open external class ArrowHelper : Object3D__0 {
     constructor(dir: Vector3 = definedExternally, origin: Vector3 = definedExternally, length: Number = definedExternally, color: Color = definedExternally, headLength: Number = definedExternally, headWidth: Number = definedExternally)
     constructor()
     constructor(dir: Vector3 = definedExternally)

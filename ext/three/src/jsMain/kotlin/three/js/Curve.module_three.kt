@@ -16,7 +16,7 @@ import org.w3c.workers.*
 import org.w3c.xhr.*
 
 external interface CurveJSON {
-    var metadata: `T$0`
+    var metadata: `T$0_Object3D`
     var arcLengthDivisions: Number
     var type: String
 }
@@ -27,7 +27,7 @@ external interface `T$7` {
     var binormals: Array<Vector3>
 }
 
-external open class Curve<TVector> {
+open external class Curve<TVector> {
     open val type: String /* String | "Curve" */
     open var arcLengthDivisions: Number
     open fun getPoint(t: Number, optionalTarget: TVector = definedExternally): TVector

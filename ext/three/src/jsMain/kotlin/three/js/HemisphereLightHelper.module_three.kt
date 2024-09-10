@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class HemisphereLightHelper : Object3D__0 {
+open external class HemisphereLightHelper : Object3D__0 {
     constructor(light: HemisphereLight, size: Number, color: Color = definedExternally)
     constructor(light: HemisphereLight, size: Number)
     constructor(light: HemisphereLight, size: Number, color: String = definedExternally)

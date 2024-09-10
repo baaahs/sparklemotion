@@ -14,5 +14,6 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.audio.AudioBuffer
 
-external open class AudioLoader(manager: LoadingManager = definedExternally) : Loader__1<AudioBuffer>
+open external class AudioLoader(manager: LoadingManager = definedExternally) : Loader__1<AudioBuffer>

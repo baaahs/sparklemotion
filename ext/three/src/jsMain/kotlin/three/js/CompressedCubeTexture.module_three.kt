@@ -20,7 +20,7 @@ external interface `T$108` {
     var height: Number
 }
 
-external open class CompressedCubeTexture(images: Array<`T$108`>, format: Any = definedExternally, type: Any = definedExternally) : CompressedTexture {
+open external class CompressedCubeTexture(images: Array<`T$108`>, format: Any = definedExternally, type: Any = definedExternally) : CompressedTexture {
     open val isCompressedCubeTexture: Boolean
     open val isCubeTexture: Boolean
 }

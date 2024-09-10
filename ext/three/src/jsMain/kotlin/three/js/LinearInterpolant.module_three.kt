@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class LinearInterpolant(parameterPositions: Any, samplesValues: Any, sampleSize: Number, resultBuffer: Any = definedExternally) : Interpolant {
+open external class LinearInterpolant(parameterPositions: Any, samplesValues: Any, sampleSize: Number, resultBuffer: Any = definedExternally) : Interpolant {
     open fun interpolate_(i1: Number, t0: Number, t: Number, t1: Number): Any
 }

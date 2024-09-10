@@ -31,7 +31,7 @@ external interface InstancedMeshEventMap : Object3DEventMap {
     var dispose: Any
 }
 
-external open class InstancedMesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : InstancedMeshEventMap>(geometry: TGeometry?, material: TMaterial?, count: Number) : Mesh<TGeometry, TMaterial, TEventMap> {
+open external class InstancedMesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : InstancedMeshEventMap>(geometry: TGeometry?, material: TMaterial?, count: Number) : Mesh<TGeometry, TMaterial, TEventMap> {
     open val isInstancedMesh: Boolean
     open var boundingBox: Box3?
     open var boundingSphere: Sphere?
@@ -50,5 +50,5 @@ external open class InstancedMesh<TGeometry : BufferGeometry__0, TMaterial, TEve
     override var override: Any
     override fun updateMorphTargets()
     open fun dispose(): InstancedMesh<TGeometry, TMaterial, TEventMap> /* this */
-    open fun toJSON(meta: JSONMeta = definedExternally): InstancedMeshJSON
+//    open fun toJSON(meta: JSONMeta = definedExternally): InstancedMeshJSON
 }

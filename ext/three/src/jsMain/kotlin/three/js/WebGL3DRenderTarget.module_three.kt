@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGL3DRenderTarget(width: Number = definedExternally, height: Number = definedExternally, depth: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget__0 {
-    override var textures: Array<Data3DTexture>
+open external class WebGL3DRenderTarget(width: Number = definedExternally, height: Number = definedExternally, depth: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget<Texture> {
+//    override var textures: Array<Data3DTexture>
     open val isWebGL3DRenderTarget: Boolean
 }

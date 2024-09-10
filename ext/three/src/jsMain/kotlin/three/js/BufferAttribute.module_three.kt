@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.array.ArrayLike
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -38,7 +39,7 @@ external interface `T$3` {
     var count: Number
 }
 
-external open class BufferAttribute {
+open external class BufferAttribute {
     constructor(array: Int8Array, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Int8Array, itemSize: Number)
     constructor(array: Uint8Array, itemSize: Number, normalized: Boolean = definedExternally)
@@ -101,7 +102,7 @@ external open class BufferAttribute {
     open fun toJSON(): BufferAttributeJSON
 }
 
-external open class Int8BufferAttribute : BufferAttribute {
+open external class Int8BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -112,7 +113,7 @@ external open class Int8BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Uint8BufferAttribute : BufferAttribute {
+open external class Uint8BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -123,7 +124,7 @@ external open class Uint8BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Uint8ClampedBufferAttribute : BufferAttribute {
+open external class Uint8ClampedBufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -134,7 +135,7 @@ external open class Uint8ClampedBufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Int16BufferAttribute : BufferAttribute {
+open external class Int16BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -145,7 +146,7 @@ external open class Int16BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Uint16BufferAttribute : BufferAttribute {
+open external class Uint16BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -156,7 +157,7 @@ external open class Uint16BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Int32BufferAttribute : BufferAttribute {
+open external class Int32BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -167,7 +168,7 @@ external open class Int32BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Uint32BufferAttribute : BufferAttribute {
+open external class Uint32BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -178,7 +179,7 @@ external open class Uint32BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Float16BufferAttribute : BufferAttribute {
+open external class Float16BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)
@@ -189,7 +190,7 @@ external open class Float16BufferAttribute : BufferAttribute {
     constructor(array: Number, itemSize: Number)
 }
 
-external open class Float32BufferAttribute : BufferAttribute {
+open external class Float32BufferAttribute : BufferAttribute {
     constructor(array: Iterable<Number>, itemSize: Number, normalized: Boolean = definedExternally)
     constructor(array: Iterable<Number>, itemSize: Number)
     constructor(array: ArrayLike<Number>, itemSize: Number, normalized: Boolean = definedExternally)

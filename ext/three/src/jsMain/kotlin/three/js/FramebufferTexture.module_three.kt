@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class FramebufferTexture(width: Number, height: Number) : Texture {
+open external class FramebufferTexture(width: Number, height: Number) : Texture {
     open val isFramebufferTexture: Boolean
     override var magFilter: Any
     override var minFilter: Any

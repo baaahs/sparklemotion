@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Box3Helper : LineSegments__0 {
+open external class Box3Helper : LineSegments__0 {
     constructor(box: Box3, color: Color = definedExternally)
     constructor(box: Box3)
     constructor(box: Box3, color: String = definedExternally)

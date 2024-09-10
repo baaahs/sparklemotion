@@ -21,7 +21,7 @@ external interface PathJSON : CurvePathJSON {
         set(value) = definedExternally
 }
 
-external open class Path(points: Array<Vector2> = definedExternally) : CurvePath<Vector2> {
+open external class Path(points: Array<Vector2> = definedExternally) : CurvePath<Vector2> {
     override var override: Any
     override val type: String /* String | "Path" */
     open var currentPoint: Vector2

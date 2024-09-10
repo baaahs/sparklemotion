@@ -14,6 +14,7 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.gl.WebGL2RenderingContext
 
 external interface `T$63` {
     var buffer: WebGLBuffer
@@ -23,7 +24,7 @@ external interface `T$63` {
     var size: Number
 }
 
-external open class WebGLAttributes {
+open external class WebGLAttributes {
     constructor(gl: WebGLRenderingContext)
     constructor(gl: WebGL2RenderingContext)
     open fun get(attribute: BufferAttribute): `T$63`?

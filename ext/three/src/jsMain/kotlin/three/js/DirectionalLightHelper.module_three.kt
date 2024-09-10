@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class DirectionalLightHelper : Object3D__0 {
+open external class DirectionalLightHelper : Object3D__0 {
     constructor(light: DirectionalLight, size: Number = definedExternally, color: Color = definedExternally)
     constructor(light: DirectionalLight)
     constructor(light: DirectionalLight, size: Number = definedExternally)

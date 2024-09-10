@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class HemisphereLight : Light<Nothing?> {
+open external class HemisphereLight : Light<Nothing?> {
     constructor(skyColor: Color = definedExternally, groundColor: Color = definedExternally, intensity: Number = definedExternally)
     constructor()
     constructor(skyColor: Color = definedExternally)

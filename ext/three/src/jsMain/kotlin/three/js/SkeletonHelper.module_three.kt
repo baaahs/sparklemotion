@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SkeletonHelper : LineSegments__0 {
+open external class SkeletonHelper : LineSegments__0 {
     constructor(obj: SkinnedMesh__0)
     constructor(obj: Object3D__0)
     open val isSkeletonHelper: Any = definedExternally /* true */

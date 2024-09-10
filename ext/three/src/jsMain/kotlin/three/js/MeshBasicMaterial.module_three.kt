@@ -75,7 +75,7 @@ external interface MeshBasicMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshBasicMaterial(parameters: MeshBasicMaterialParameters = definedExternally) : Material {
+open external class MeshBasicMaterial(parameters: MeshBasicMaterialParameters = definedExternally) : Material {
     open val isMeshBasicMaterial: Boolean
     override var type: String
     open var color: Color

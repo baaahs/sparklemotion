@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CatmullRomCurve3(points: Array<Vector3> = definedExternally, closed: Boolean = definedExternally, curveType: String /* "centripetal" | "chordal" | "catmullrom" */ = definedExternally, tension: Number = definedExternally) : Curve<Vector3> {
+open external class CatmullRomCurve3(points: Array<Vector3> = definedExternally, closed: Boolean = definedExternally, curveType: String /* "centripetal" | "chordal" | "catmullrom" */ = definedExternally, tension: Number = definedExternally) : Curve<Vector3> {
     open val isCatmullRomCurve3: Any = definedExternally /* true */
     open var override: Any
     override val type: String /* String | "CatmullRomCurve3" */

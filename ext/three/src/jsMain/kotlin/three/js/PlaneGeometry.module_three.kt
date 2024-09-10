@@ -22,7 +22,7 @@ external interface `T$80` {
     val heightSegments: Number
 }
 
-external open class PlaneGeometry(width: Number = definedExternally, height: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally) : BufferGeometry__0 {
+open external class PlaneGeometry(width: Number = definedExternally, height: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "PlaneGeometry" */
     open val parameters: `T$80`

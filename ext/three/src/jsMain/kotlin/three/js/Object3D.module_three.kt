@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -60,14 +61,14 @@ external interface Object3DJSONObject {
         set(value) = definedExternally
 }
 
-external interface `T$0` {
+external interface `T$0_Object3D` {
     var version: Number
     var type: String
     var generator: String
 }
 
 external interface Object3DJSON {
-    var metadata: `T$0`?
+    var metadata: `T$0_Object3D`?
         get() = definedExternally
         set(value) = definedExternally
     var `object`: Object3DJSONObject
@@ -84,18 +85,18 @@ external interface JSONMeta {
     var nodes: Record<String, Any>
 }
 
-external interface `T$1` {
+external interface `T$1_Object3D` {
     var child: Object3D__0
 }
 
 external interface Object3DEventMap {
     var added: Any
     var removed: Any
-    var childadded: `T$1`
-    var childremoved: `T$1`
+    var childadded: `T$1_Object3D`
+    var childremoved: `T$1_Object3D`
 }
 
-external open class Object3D<TEventMap : Object3DEventMap> : EventDispatcher<TEventMap> {
+open external class Object3D<TEventMap : Object3DEventMap> : EventDispatcher<TEventMap> {
     open val isObject3D: Boolean
     open val id: Number
     open var uuid: String
@@ -179,4 +180,4 @@ external open class Object3D<TEventMap : Object3DEventMap> : EventDispatcher<TEv
     }
 }
 
-external open class Object3D__0 : Object3D<Object3DEventMap>
+typealias Object3D__0 = Object3D<Object3DEventMap>

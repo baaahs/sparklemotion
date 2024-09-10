@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Data3DTexture : Texture {
+open external class Data3DTexture : Texture {
     constructor(data: ArrayBufferView? = definedExternally, width: Number = definedExternally, height: Number = definedExternally, depth: Number = definedExternally)
     constructor()
     constructor(data: ArrayBufferView? = definedExternally)

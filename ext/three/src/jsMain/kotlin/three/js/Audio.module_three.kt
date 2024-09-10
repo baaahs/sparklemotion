@@ -14,8 +14,10 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.audio.*
+import web.media.streams.MediaStream
 
-external open class Audio<NodeType : AudioNode>(listener: AudioListener) : Object3D__0 {
+open external class Audio<NodeType : AudioNode>(listener: AudioListener) : Object3D__0 {
     override val type: String /* String | "Audio" */
     open var listener: AudioListener
     open var context: AudioContext

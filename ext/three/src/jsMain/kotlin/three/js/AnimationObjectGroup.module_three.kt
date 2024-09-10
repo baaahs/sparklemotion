@@ -25,7 +25,7 @@ external interface `T$69` {
     var objects: `T$68`
 }
 
-external open class AnimationObjectGroup(vararg args: Any) {
+open external class AnimationObjectGroup(vararg args: Any) {
     open var uuid: String
     open var stats: `T$69`
     open val isAnimationObjectGroup: Boolean

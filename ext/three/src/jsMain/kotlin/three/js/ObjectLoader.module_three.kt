@@ -45,8 +45,8 @@ external interface `T$94` {
     operator fun set(key: String, value: Source)
 }
 
-external open class ObjectLoader(manager: LoadingManager = definedExternally) : Loader__1<Object3D__0> {
-    override fun load(url: String, onLoad: (data: Object3D__0) -> Unit, onProgress: (event: ProgressEvent__0) -> Unit, onError: (err: Any) -> Unit)
+open external class ObjectLoader(manager: LoadingManager = definedExternally) : Loader__1<Object3D__0> {
+    override fun load(url: String, onLoad: (data: Object3D__0) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit)
     open fun parse(json: Any, onLoad: (obj: Object3D__0) -> Unit = definedExternally): Object3D__0
     open fun parseAsync(json: Any): Promise<Object3D__0>
     open fun parseGeometries(json: Any): `T$91`

@@ -26,10 +26,10 @@ external interface SkinnedMeshJSONObject : MeshJSONObject {
 }
 
 external interface SkinnedMeshJSON : MeshJSON {
-    override var `object`: SkinnedMeshJSONObject
+//    override var `object`: SkinnedMeshJSONObject
 }
 
-external open class SkinnedMesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally, useVertexTexture: Boolean = definedExternally) : Mesh<TGeometry, TMaterial, TEventMap> {
+open external class SkinnedMesh<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally, useVertexTexture: Boolean = definedExternally) : Mesh<TGeometry, TMaterial, TEventMap> {
     open val isSkinnedMesh: Boolean
     override var override: Any
     override val type: String /* String | "SkinnedMesh" */
@@ -48,4 +48,4 @@ external open class SkinnedMesh<TGeometry : BufferGeometry__0, TMaterial, TEvent
     override fun toJSON(meta: JSONMeta): SkinnedMeshJSON
 }
 
-external open class SkinnedMesh__0 : SkinnedMesh<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>
+typealias SkinnedMesh__0 = SkinnedMesh<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>

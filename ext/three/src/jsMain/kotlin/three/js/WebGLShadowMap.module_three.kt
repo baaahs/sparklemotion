@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLShadowMap(_renderer: WebGLRenderer, _objects: WebGLObjects, _capabilities: WebGLCapabilities) {
+open external class WebGLShadowMap(_renderer: WebGLRenderer, _objects: WebGLObjects, _capabilities: WebGLCapabilities) {
     open var enabled: Boolean
     open var autoUpdate: Boolean
     open var needsUpdate: Boolean

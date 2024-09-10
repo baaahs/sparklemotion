@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class AxesHelper(size: Number = definedExternally) : LineSegments__0 {
+open external class AxesHelper(size: Number = definedExternally) : LineSegments__0 {
     override var override: Any
     override val type: String /* String | "AxesHelper" */
     open fun setColors(xAxisColor: Color, yAxisColor: Color, zAxisColor: Any /* Color | String | Number */): AxesHelper /* this */

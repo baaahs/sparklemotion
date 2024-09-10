@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Euler(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally, order: String /* "XYZ" | "YXZ" | "ZXY" | "ZYX" | "YZX" | "XZY" */ = definedExternally) {
+open external class Euler(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally, order: String /* "XYZ" | "YXZ" | "ZXY" | "ZYX" | "YZX" | "XZY" */ = definedExternally) {
     open var x: Number
     open var y: Number
     open var z: Number

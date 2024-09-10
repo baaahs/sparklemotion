@@ -117,7 +117,7 @@ external interface MeshPhongMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = definedExternally) : Material {
+open external class MeshPhongMaterial(parameters: MeshPhongMaterialParameters = definedExternally) : Material {
     open val isMeshPhongMaterial: Boolean
     override var type: String
     open var color: Color

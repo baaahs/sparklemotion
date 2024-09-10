@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLProperties {
+open external class WebGLProperties {
     open var has: (obj: Any) -> Boolean
     open var get: (obj: Any) -> Any
     open var remove: (obj: Any) -> Unit

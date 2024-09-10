@@ -15,10 +15,10 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Bone<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
+open external class Bone<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
     open val isBone: Boolean
     open var override: Any
     override val type: String /* String | "Bone" */
 }
 
-external open class Bone__0 : Bone<Object3DEventMap>
+typealias Bone__0 = Bone<Object3DEventMap>

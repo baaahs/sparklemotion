@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLUniforms(gl: WebGLRenderingContext, program: WebGLProgram) {
+open external class WebGLUniforms(gl: WebGLRenderingContext, program: WebGLProgram) {
     open fun setValue(gl: WebGLRenderingContext, name: String, value: Any, textures: WebGLTextures)
     open fun setOptional(gl: WebGLRenderingContext, obj: Any, name: String)
 

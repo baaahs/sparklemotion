@@ -29,7 +29,7 @@ external interface LODJSONObject : Object3DJSONObject {
 }
 
 external interface LODJSON : Object3DJSON {
-    override var `object`: LODJSONObject
+//    override var `object`: LODJSONObject
 }
 
 external interface `T$107` {
@@ -38,7 +38,7 @@ external interface `T$107` {
     var hysteresis: Number
 }
 
-external open class LOD<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
+open external class LOD<TEventMap : Object3DEventMap> : Object3D<TEventMap> {
     open val isLOD: Boolean
     open var override: Any
     override val type: String /* String | "LOD" */

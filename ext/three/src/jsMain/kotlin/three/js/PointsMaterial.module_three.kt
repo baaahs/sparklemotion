@@ -36,7 +36,7 @@ external interface PointsMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class PointsMaterial(parameters: PointsMaterialParameters = definedExternally) : Material {
+open external class PointsMaterial(parameters: PointsMaterialParameters = definedExternally) : Material {
     open val isPointsMaterial: Boolean
     override var type: String
     open var color: Color

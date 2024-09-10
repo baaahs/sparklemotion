@@ -22,7 +22,7 @@ external interface `T$72` {
     val radialSegments: Number
 }
 
-external open class CapsuleGeometry(radius: Number = definedExternally, length: Number = definedExternally, capSegments: Number = definedExternally, radialSegments: Number = definedExternally) : BufferGeometry__0 {
+open external class CapsuleGeometry(radius: Number = definedExternally, length: Number = definedExternally, capSegments: Number = definedExternally, radialSegments: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "CapsuleGeometry" */
     open val parameters: `T$72`

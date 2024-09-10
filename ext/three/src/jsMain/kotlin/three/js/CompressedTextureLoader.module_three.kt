@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CompressedTextureLoader(manager: LoadingManager = definedExternally) : Loader__1<CompressedTexture> {
-    open fun load(url: String, onLoad: (data: CompressedTexture) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): CompressedTexture
+open external class CompressedTextureLoader(manager: LoadingManager = definedExternally) : Loader__1<CompressedTexture> {
+    override fun load(url: String, onLoad: (data: CompressedTexture) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit): CompressedTexture
 }

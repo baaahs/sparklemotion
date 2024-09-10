@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class DirectionalLightShadow : LightShadow<OrthographicCamera> {
+open external class DirectionalLightShadow : LightShadow<OrthographicCamera> {
     open val isDirectionalLightShadow: Boolean
     override var camera: OrthographicCamera
 }

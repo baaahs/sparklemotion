@@ -23,7 +23,7 @@ external interface `T$4` {
     var normalized: Boolean
 }
 
-external open class InterleavedBufferAttribute(interleavedBuffer: InterleavedBuffer, itemSize: Number, offset: Number, normalized: Boolean = definedExternally) {
+open external class InterleavedBufferAttribute(interleavedBuffer: InterleavedBuffer, itemSize: Number, offset: Number, normalized: Boolean = definedExternally) {
     open var name: String
     open var data: InterleavedBuffer
     open var itemSize: Number

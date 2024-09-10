@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class QuadraticBezierCurve3(v0: Vector3 = definedExternally, v1: Vector3 = definedExternally, v2: Vector3 = definedExternally) : Curve<Vector3> {
+open external class QuadraticBezierCurve3(v0: Vector3 = definedExternally, v1: Vector3 = definedExternally, v2: Vector3 = definedExternally) : Curve<Vector3> {
     open val isQuadraticBezierCurve3: Any = definedExternally /* true */
     open var override: Any
     override val type: String /* String | "QuadraticBezierCurve3" */

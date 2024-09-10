@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.array.ArrayLike
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -178,7 +179,7 @@ external interface RGB {
     var b: Number
 }
 
-external open class Color {
+open external class Color {
     constructor(color: Color = definedExternally)
     constructor()
     constructor(color: String = definedExternally)

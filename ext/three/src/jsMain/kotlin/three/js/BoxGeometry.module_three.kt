@@ -24,7 +24,7 @@ external interface `T$71` {
     val depthSegments: Number
 }
 
-external open class BoxGeometry(width: Number = definedExternally, height: Number = definedExternally, depth: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally, depthSegments: Number = definedExternally) : BufferGeometry__0 {
+open external class BoxGeometry(width: Number = definedExternally, height: Number = definedExternally, depth: Number = definedExternally, widthSegments: Number = definedExternally, heightSegments: Number = definedExternally, depthSegments: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "BoxGeometry" */
     open val parameters: `T$71`

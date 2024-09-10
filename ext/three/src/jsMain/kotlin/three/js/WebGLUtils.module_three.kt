@@ -14,8 +14,9 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.gl.WebGL2RenderingContext
 
-external open class WebGLUtils {
+open external class WebGLUtils {
     constructor(gl: WebGLRenderingContext, extensions: WebGLExtensions)
     constructor(gl: WebGL2RenderingContext, extensions: WebGLExtensions)
     open fun convert(p: Any, colorSpace: Any = definedExternally): Number?

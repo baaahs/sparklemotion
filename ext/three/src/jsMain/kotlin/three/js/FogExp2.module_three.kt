@@ -22,7 +22,7 @@ external interface FogExp2JSON {
     var density: Number
 }
 
-external open class FogExp2 {
+open external class FogExp2 {
     constructor(color: Color, density: Number = definedExternally)
     constructor(color: Color)
     constructor(color: String, density: Number = definedExternally)

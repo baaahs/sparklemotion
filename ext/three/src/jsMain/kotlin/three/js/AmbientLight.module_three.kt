@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class AmbientLight : Light<Nothing?> {
+open external class AmbientLight : Light<Nothing?> {
     constructor(color: Color = definedExternally, intensity: Number = definedExternally)
     constructor()
     constructor(color: Color = definedExternally)

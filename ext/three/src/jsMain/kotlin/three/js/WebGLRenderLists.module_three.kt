@@ -27,7 +27,7 @@ external interface RenderItem {
     var group: Group__0?
 }
 
-external open class WebGLRenderList(properties: WebGLProperties) {
+open external class WebGLRenderList(properties: WebGLProperties) {
     open var opaque: Array<RenderItem>
     open var transparent: Array<RenderItem>
     open var transmissive: Array<RenderItem>
@@ -38,7 +38,7 @@ external open class WebGLRenderList(properties: WebGLProperties) {
     open fun finish()
 }
 
-external open class WebGLRenderLists(properties: WebGLProperties) {
+open external class WebGLRenderLists(properties: WebGLProperties) {
     open fun dispose()
     open fun get(scene: Scene, renderCallDepth: Number): WebGLRenderList
 }

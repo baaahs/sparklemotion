@@ -60,7 +60,7 @@ external interface MeshMatcapMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshMatcapMaterial(parameters: MeshMatcapMaterialParameters = definedExternally) : Material {
+open external class MeshMatcapMaterial(parameters: MeshMatcapMaterialParameters = definedExternally) : Material {
     open val isMeshMatcapMaterial: Boolean
     override var type: String
     open var color: Color

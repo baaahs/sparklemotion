@@ -15,12 +15,12 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class LineSegments<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Line<TGeometry, TMaterial, TEventMap> {
+open external class LineSegments<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Line<TGeometry, TMaterial, TEventMap> {
     open val isLineSegments: Boolean
     override var override: Any
     override val type: String /* String | "LineSegments" */
 }
 
-external open class LineSegments__0 : LineSegments<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>
+typealias LineSegments__0 = LineSegments<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>
 
-external open class LineSegments__2<TGeometry : BufferGeometry__0, TMaterial> : LineSegments<TGeometry, TMaterial, Object3DEventMap>
+open external class LineSegments__2<TGeometry : BufferGeometry__0, TMaterial> : LineSegments<TGeometry, TMaterial, Object3DEventMap>

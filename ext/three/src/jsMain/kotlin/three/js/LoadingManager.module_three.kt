@@ -17,7 +17,7 @@ import org.w3c.xhr.*
 
 external var DefaultLoadingManager: LoadingManager
 
-external open class LoadingManager(onLoad: () -> Unit = definedExternally, onProgress: (url: String, loaded: Number, total: Number) -> Unit = definedExternally, onError: (url: String) -> Unit = definedExternally) {
+open external class LoadingManager(onLoad: () -> Unit = definedExternally, onProgress: (url: String, loaded: Number, total: Number) -> Unit = definedExternally, onError: (url: String) -> Unit = definedExternally) {
     open var onStart: ((url: String, loaded: Number, total: Number) -> Unit)?
     open var onLoad: () -> Unit
     open var onProgress: (url: String, loaded: Number, total: Number) -> Unit

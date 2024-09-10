@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebGLMultipleRenderTargets(width: Number = definedExternally, height: Number = definedExternally, count: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget<Array<Texture>> {
+open external class WebGLMultipleRenderTargets(width: Number = definedExternally, height: Number = definedExternally, count: Number = definedExternally, options: RenderTargetOptions = definedExternally) : WebGLRenderTarget<Array<Texture>> {
     open val isWebGLMultipleRenderTargets: Boolean
 }

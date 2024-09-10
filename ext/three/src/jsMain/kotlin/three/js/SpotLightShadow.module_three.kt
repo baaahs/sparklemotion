@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SpotLightShadow(camera: PerspectiveCamera) : LightShadow<PerspectiveCamera> {
+open external class SpotLightShadow(camera: PerspectiveCamera) : LightShadow<PerspectiveCamera> {
     open val isSpotLightShadow: Boolean
     override var camera: PerspectiveCamera
     open var focus: Number

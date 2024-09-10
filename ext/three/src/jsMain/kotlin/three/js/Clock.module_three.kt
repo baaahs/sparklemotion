@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Clock(autoStart: Boolean = definedExternally) {
+open external class Clock(autoStart: Boolean = definedExternally) {
     open var autoStart: Boolean
     open var startTime: Number
     open var oldTime: Number

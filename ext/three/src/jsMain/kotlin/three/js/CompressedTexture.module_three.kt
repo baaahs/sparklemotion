@@ -23,7 +23,7 @@ external interface CompressedTextureMipmap {
     var height: Number
 }
 
-external open class CompressedTexture(mipmaps: Array<CompressedTextureMipmap> = definedExternally, width: Number = definedExternally, height: Number = definedExternally, format: Any = definedExternally, type: Any = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally) : Texture {
+open external class CompressedTexture(mipmaps: Array<CompressedTextureMipmap> = definedExternally, width: Number = definedExternally, height: Number = definedExternally, format: Any = definedExternally, type: Any = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, anisotropy: Number = definedExternally, colorSpace: Any = definedExternally) : Texture {
     open val isCompressedTexture: Boolean
     override var mipmaps: Array<CompressedTextureMipmap>?
     override var format: Any

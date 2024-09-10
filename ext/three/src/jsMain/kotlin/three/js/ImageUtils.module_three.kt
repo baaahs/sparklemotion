@@ -21,7 +21,7 @@ external interface `T$70` {
     var height: Number
 }
 
-external open class ImageUtils {
+open external class ImageUtils {
     companion object {
         fun getDataURL(image: HTMLImageElement): String
         fun getDataURL(image: HTMLCanvasElement): String

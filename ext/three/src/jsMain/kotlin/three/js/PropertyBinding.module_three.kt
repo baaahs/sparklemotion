@@ -23,14 +23,14 @@ external interface ParseTrackNameResults {
     var propertyIndex: String
 }
 
-external open class Composite(targetGroup: Any, path: Any, parsedPath: Any = definedExternally) {
+open external class Composite(targetGroup: Any, path: Any, parsedPath: Any = definedExternally) {
     open fun getValue(array: Any, offset: Number): Any
     open fun setValue(array: Any, offset: Number)
     open fun bind()
     open fun unbind()
 }
 
-external open class PropertyBinding(rootNode: Any, path: String, parsedPath: Any = definedExternally) {
+open external class PropertyBinding(rootNode: Any, path: String, parsedPath: Any = definedExternally) {
     open var path: String
     open var parsedPath: Any
     open var node: Any

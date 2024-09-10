@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CanvasTexture : Texture {
+open external class CanvasTexture : Texture {
     constructor(canvas: ImageBitmap, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, format: Any = definedExternally, type: Any = definedExternally, anisotropy: Number = definedExternally)
     constructor(canvas: ImageBitmap)
     constructor(canvas: ImageBitmap, mapping: Any = definedExternally)

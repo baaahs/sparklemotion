@@ -21,7 +21,7 @@ external interface `T$105` {
     var z: Number
 }
 
-external open class BatchedMesh(maxInstanceCount: Number, maxVertexCount: Number, maxIndexCount: Number = definedExternally, material: Material = definedExternally) : Mesh__2<BufferGeometry__0, Material> {
+open external class BatchedMesh(maxInstanceCount: Number, maxVertexCount: Number, maxIndexCount: Number = definedExternally, material: Material = definedExternally) : Mesh__2<BufferGeometry__0, Material> {
     open var boundingBox: Box3?
     open var boundingSphere: Sphere?
     open var customSort: ((self: BatchedMesh /* this */, list: Array<`T$105`>, camera: Camera) -> Unit)?

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class WebXRDepthSensing {
+open external class WebXRDepthSensing {
     open var texture: Texture?
     open var mesh: Mesh__0?
     open var depthNear: Number

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Line<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
+open external class Line<TGeometry : BufferGeometry__0, TMaterial, TEventMap : Object3DEventMap>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D<TEventMap> {
     open val isLine: Boolean
     open var override: Any
     override val type: String /* String | "Line" */
@@ -27,4 +27,4 @@ external open class Line<TGeometry : BufferGeometry__0, TMaterial, TEventMap : O
     open fun updateMorphTargets()
 }
 
-external open class Line__0 : Line<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>
+open external class Line__0 : Line<BufferGeometry__0, dynamic /* Material | Array<Material> */, Object3DEventMap>

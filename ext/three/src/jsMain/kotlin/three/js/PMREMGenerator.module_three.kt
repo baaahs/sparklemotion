@@ -15,10 +15,10 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class PMREMGenerator(renderer: WebGLRenderer) {
-    open fun fromScene(scene: Scene, sigma: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally): WebGLRenderTarget__0
-    open fun fromEquirectangular(equirectangular: Texture, renderTarget: WebGLRenderTarget__0? = definedExternally): WebGLRenderTarget__0
-    open fun fromCubemap(cubemap: CubeTexture, renderTarget: WebGLRenderTarget__0? = definedExternally): WebGLRenderTarget__0
+open external class PMREMGenerator(renderer: WebGLRenderer) {
+    open fun fromScene(scene: Scene, sigma: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally): WebGLRenderTarget<Texture>
+    open fun fromEquirectangular(equirectangular: Texture, renderTarget: WebGLRenderTarget<Texture>? = definedExternally): WebGLRenderTarget<Texture>
+    open fun fromCubemap(cubemap: CubeTexture, renderTarget: WebGLRenderTarget<Texture>? = definedExternally): WebGLRenderTarget<Texture>
     open fun compileCubemapShader()
     open fun compileEquirectangularShader()
     open fun dispose()

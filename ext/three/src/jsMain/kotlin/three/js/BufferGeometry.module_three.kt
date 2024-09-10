@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -51,7 +52,7 @@ external interface `T$11` {
 }
 
 external interface BufferGeometryJSON {
-    var metadata: `T$0`?
+    var metadata: `T$0_Object3D`?
         get() = definedExternally
         set(value) = definedExternally
     var uuid: String
@@ -82,7 +83,7 @@ external interface `T$12` {
     operator fun set(name: String, value: Array<dynamic /* BufferAttribute | InterleavedBufferAttribute */>)
 }
 
-external open class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : EventDispatcher<`T$8`> {
+open external class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : EventDispatcher<`T$8`> {
     open var id: Number
     open var uuid: String
     open var name: String
@@ -130,4 +131,4 @@ external open class BufferGeometry<Attributes : NormalOrGLBufferAttributes> : Ev
     open fun dispose()
 }
 
-external open class BufferGeometry__0 : BufferGeometry<NormalBufferAttributes>
+typealias BufferGeometry__0 = BufferGeometry<NormalBufferAttributes>

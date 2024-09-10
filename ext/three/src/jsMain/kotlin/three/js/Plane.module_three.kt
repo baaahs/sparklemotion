@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Plane(normal: Vector3 = definedExternally, constant: Number = definedExternally) {
+open external class Plane(normal: Vector3 = definedExternally, constant: Number = definedExternally) {
     open var normal: Vector3
     open var constant: Number
     open val isPlane: Boolean

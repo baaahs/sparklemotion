@@ -51,7 +51,7 @@ external interface WebGLLightsState {
     var numLightProbes: Number
 }
 
-external open class WebGLLights(extensions: WebGLExtensions) {
+open external class WebGLLights(extensions: WebGLExtensions) {
     open var state: WebGLLightsState
     open fun get(light: Any): Any
     open fun setup(lights: Any)

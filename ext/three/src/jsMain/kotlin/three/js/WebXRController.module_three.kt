@@ -1,6 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.js
 
+import js.objects.Record
 import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
@@ -15,7 +16,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class XRJointSpace : Group__0 {
+open external class XRJointSpace : Group__0 {
     open val jointRadius: Number?
 }
 
@@ -48,19 +49,19 @@ external interface WebXRSpaceEventMap : Object3DEventMap {
     var move: Any
 }
 
-external open class XRHandSpace : Group<WebXRSpaceEventMap> {
+open external class XRHandSpace : Group<WebXRSpaceEventMap> {
     open val joints: Any
     open val inputState: XRHandInputState
 }
 
-external open class XRTargetRaySpace : Group<WebXRSpaceEventMap> {
+open external class XRTargetRaySpace : Group<WebXRSpaceEventMap> {
     open var hasLinearVelocity: Boolean
     open val linearVelocity: Vector3
     open var hasAngularVelocity: Boolean
     open val angularVelocity: Vector3
 }
 
-external open class XRGripSpace : Group<WebXRSpaceEventMap> {
+open external class XRGripSpace : Group<WebXRSpaceEventMap> {
     open var hasLinearVelocity: Boolean
     open val linearVelocity: Vector3
     open var hasAngularVelocity: Boolean
@@ -74,7 +75,7 @@ external interface `T$22` {
         set(value) = definedExternally
 }
 
-external open class WebXRController {
+open external class WebXRController {
     open fun getHandSpace(): XRHandSpace
     open fun getTargetRaySpace(): XRTargetRaySpace
     open fun getGripSpace(): XRGripSpace

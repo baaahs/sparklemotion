@@ -24,7 +24,7 @@ external interface WebGLCapabilitiesParameters {
         set(value) = definedExternally
 }
 
-external open class WebGLCapabilities(gl: WebGLRenderingContext, extensions: Any, parameters: WebGLCapabilitiesParameters) {
+open external class WebGLCapabilities(gl: WebGLRenderingContext, extensions: Any, parameters: WebGLCapabilitiesParameters) {
     open val isWebGL2: Boolean
     open var getMaxAnisotropy: () -> Number
     open var getMaxPrecision: (precision: String) -> String

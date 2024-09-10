@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Layers {
+open external class Layers {
     open var mask: Number
     open fun set(layer: Number)
     open fun enable(layer: Number)

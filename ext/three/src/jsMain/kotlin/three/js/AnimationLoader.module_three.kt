@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class AnimationLoader(manager: LoadingManager = definedExternally) : Loader__1<Array<AnimationClip>> {
+open external class AnimationLoader(manager: LoadingManager = definedExternally) : Loader__1<Array<AnimationClip>> {
     open fun parse(json: Array<Any>): Array<AnimationClip>
 }

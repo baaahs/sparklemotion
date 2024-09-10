@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class CubeTextureLoader(manager: LoadingManager = definedExternally) : Loader<CubeTexture, Array<String>> {
-    open fun load(url: Array<String>, onLoad: (data: CubeTexture) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): CubeTexture
+open external class CubeTextureLoader(manager: LoadingManager = definedExternally) : Loader<CubeTexture, Array<String>> {
+    override fun load(url: Array<String>, onLoad: (data: CubeTexture) -> Unit, onProgress: (event: ProgressEvent) -> Unit, onError: (err: Any) -> Unit): CubeTexture
 }

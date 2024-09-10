@@ -51,7 +51,7 @@ external interface MeshNormalMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class MeshNormalMaterial(parameters: MeshNormalMaterialParameters = definedExternally) : Material {
+open external class MeshNormalMaterial(parameters: MeshNormalMaterialParameters = definedExternally) : Material {
     open val isMeshNormalMaterial: Boolean
     override var type: String
     open var bumpMap: Texture?

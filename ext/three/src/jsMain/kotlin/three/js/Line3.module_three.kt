@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Line3(start: Vector3 = definedExternally, end: Vector3 = definedExternally) {
+open external class Line3(start: Vector3 = definedExternally, end: Vector3 = definedExternally) {
     open var start: Vector3
     open var end: Vector3
     open fun set(start: Vector3 = definedExternally, end: Vector3 = definedExternally): Line3

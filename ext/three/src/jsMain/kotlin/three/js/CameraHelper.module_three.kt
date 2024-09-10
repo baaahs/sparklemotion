@@ -22,7 +22,7 @@ external interface `T$88` {
     operator fun set(id: String, value: Array<Number>)
 }
 
-external open class CameraHelper(camera: Camera) : LineSegments__0 {
+open external class CameraHelper(camera: Camera) : LineSegments__0 {
     override var override: Any
     override val type: String /* String | "CameraHelper" */
     open var camera: Camera

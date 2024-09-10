@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class UniformsGroup : EventDispatcher<`T$8`> {
+open external class UniformsGroup : EventDispatcher<`T$8`> {
     open val isUniformsGroup: Boolean
     open var id: Number
     open var usage: Any

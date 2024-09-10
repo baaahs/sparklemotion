@@ -33,7 +33,7 @@ external interface LineBasicMaterialParameters : MaterialParameters {
         set(value) = definedExternally
 }
 
-external open class LineBasicMaterial(parameters: LineBasicMaterialParameters = definedExternally) : Material {
+open external class LineBasicMaterial(parameters: LineBasicMaterialParameters = definedExternally) : Material {
     open val isLineBasicMaterial: Boolean
     override var type: String
     open var color: Color

@@ -15,6 +15,6 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class TextureLoader(manager: LoadingManager = definedExternally) : Loader__1<Texture> {
-    open fun load(url: String, onLoad: (data: Texture) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): Texture
+open external class TextureLoader(manager: LoadingManager = definedExternally) : Loader__1<Texture> {
+//    open fun load(url: String, onLoad: (data: Texture) -> Unit = definedExternally, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): Texture
 }

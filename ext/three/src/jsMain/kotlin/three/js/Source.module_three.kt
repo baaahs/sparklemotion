@@ -15,12 +15,12 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class SourceJSON {
+open external class SourceJSON {
     open var uuid: String
     open var url: dynamic /* String | `T$18` | Array<dynamic /* String | `T$18` */> */
 }
 
-external open class Source(data: Any) {
+open external class Source(data: Any) {
     open val isSource: Boolean
     open val id: Number
     open var data: Any

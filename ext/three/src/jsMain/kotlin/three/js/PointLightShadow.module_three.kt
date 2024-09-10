@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class PointLightShadow(camera: PerspectiveCamera) : LightShadow<PerspectiveCamera> {
+open external class PointLightShadow(camera: PerspectiveCamera) : LightShadow<PerspectiveCamera> {
     open val isPointLightShadow: Any = definedExternally /* true */
     open var override: Any
     open fun updateMatrices(light: Light__0, viewportIndex: Number = definedExternally)

@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class StereoCamera : Camera {
+open external class StereoCamera : Camera {
     override var type: String /* "StereoCamera" */
     open var aspect: Number
     open var eyeSep: Number

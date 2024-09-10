@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Camera : Object3D__0 {
+open external class Camera : Object3D__0 {
     open val isCamera: Boolean
     open var override: Any
     override val type: String /* String | "Camera" */

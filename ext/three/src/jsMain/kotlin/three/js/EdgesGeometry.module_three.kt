@@ -20,7 +20,7 @@ external interface `T$77`<TBufferGeometry> {
     val thresholdAngle: Number
 }
 
-external open class EdgesGeometry<TBufferGeometry : BufferGeometry__0>(geometry: TBufferGeometry? = definedExternally, thresholdAngle: Number = definedExternally) : BufferGeometry__0 {
+open external class EdgesGeometry<TBufferGeometry : BufferGeometry__0>(geometry: TBufferGeometry? = definedExternally, thresholdAngle: Number = definedExternally) : BufferGeometry__0 {
     open var override: Any
     override val type: String /* String | "EdgesGeometry" */
     open val parameters: `T$77`<Any?>

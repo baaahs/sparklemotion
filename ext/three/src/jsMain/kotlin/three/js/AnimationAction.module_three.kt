@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D__0 = definedExternally, blendMode: Any = definedExternally) {
+open external class AnimationAction(mixer: AnimationMixer, clip: AnimationClip, localRoot: Object3D__0 = definedExternally, blendMode: Any = definedExternally) {
     open var blendMode: Any
     open var loop: Any
     open var time: Number

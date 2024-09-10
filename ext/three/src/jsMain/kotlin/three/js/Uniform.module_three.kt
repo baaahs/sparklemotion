@@ -15,9 +15,9 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class Uniform<T>(value: T) {
+open external class Uniform<T>(value: T) {
     open var value: T
     open fun clone(): Uniform<T>
 }
 
-external open class Uniform__0 : Uniform<Any>
+typealias Uniform__0 = Uniform<Any>

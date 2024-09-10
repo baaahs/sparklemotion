@@ -40,10 +40,10 @@ external interface PerspectiveCameraJSONObject : Object3DJSONObject {
 }
 
 external interface PerspectiveCameraJSON : Object3DJSON {
-    override var `object`: PerspectiveCameraJSONObject
+//    override var `object`: PerspectiveCameraJSONObject
 }
 
-external open class PerspectiveCamera(fov: Number = definedExternally, aspect: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally) : Camera {
+open external class PerspectiveCamera(fov: Number = definedExternally, aspect: Number = definedExternally, near: Number = definedExternally, far: Number = definedExternally) : Camera {
     open val isPerspectiveCamera: Boolean
     override var override: Any
     override val type: String /* String | "PerspectiveCamera" */

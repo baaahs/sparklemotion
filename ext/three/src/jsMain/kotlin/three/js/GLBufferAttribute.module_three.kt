@@ -15,7 +15,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-external open class GLBufferAttribute(buffer: WebGLBuffer, type: GLenum, itemSize: Number, elementSize: Number /* 1 | 2 | 4 */, count: Number) {
+open external class GLBufferAttribute(buffer: WebGLBuffer, type: GLenum, itemSize: Number, elementSize: Number /* 1 | 2 | 4 */, count: Number) {
     open val isGLBufferAttribute: Boolean
     open var name: String
     open var buffer: WebGLBuffer
