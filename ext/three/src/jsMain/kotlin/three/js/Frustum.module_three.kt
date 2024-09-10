@@ -1,19 +1,5 @@
 package three.js
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
-
 open external class Frustum(p0: Plane = definedExternally, p1: Plane = definedExternally, p2: Plane = definedExternally, p3: Plane = definedExternally, p4: Plane = definedExternally, p5: Plane = definedExternally) {
     open var planes: Array<Plane>
     open fun set(p0: Plane, p1: Plane, p2: Plane, p3: Plane, p4: Plane, p5: Plane): Frustum

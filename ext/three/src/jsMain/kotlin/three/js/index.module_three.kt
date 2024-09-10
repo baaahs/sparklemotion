@@ -1,23 +1,18 @@
 package three.js
 
-import kotlin.js.*
 import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.w3c.dom.DOMPointInit
+import org.w3c.dom.DOMPointReadOnly
+import org.w3c.dom.Element
+import org.w3c.dom.EventInit
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
 import web.gamepad.Gamepad
 import web.gl.GLint
 import web.gl.GLsizei
 import web.gl.WebGL2RenderingContext
 import web.time.DOMHighResTimeStamp
+import kotlin.js.Promise
 
 typealias XRFrameRequestCallback = (time: DOMHighResTimeStamp, frame: XRFrame) -> Unit
 
