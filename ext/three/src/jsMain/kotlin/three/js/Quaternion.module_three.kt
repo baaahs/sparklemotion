@@ -1,7 +1,5 @@
 package three.js
 
-import js.array.ArrayLike
-
 external interface QuaternionLike {
     val x: Number
     val y: Number
@@ -41,8 +39,8 @@ open external class Quaternion(x: Number = definedExternally, y: Number = define
     open fun toArray(array: Array<Number> = definedExternally, offset: Number = definedExternally): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
     open fun toArray(): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
     open fun toArray(array: Array<Number> = definedExternally): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
-    open fun toArray(array: ArrayLike<Number>, offset: Number = definedExternally): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
-    open fun toArray(array: ArrayLike<Number>): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
+//    open fun toArray(array: Array<Number>, offset: Number = definedExternally): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
+//    open fun toArray(array: Array<Number>): dynamic /* JsTuple<x, Number, y, Number, z, Number, w, Number> */
     open fun toJSON(): dynamic /* JsTuple<Number, Number, Number, Number> */
     open fun fromBufferAttribute(attribute: BufferAttribute, index: Number): Quaternion /* this */
     open fun fromBufferAttribute(attribute: InterleavedBufferAttribute, index: Number): Quaternion /* this */

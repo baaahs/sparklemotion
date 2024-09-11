@@ -1,20 +1,5 @@
 package three.js
 
-import js.array.ArrayLike
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
-
 open external class SphericalHarmonics3 {
     open var coefficients: Array<Vector3>
     open val isSphericalHarmonics3: Boolean
@@ -27,15 +12,15 @@ open external class SphericalHarmonics3 {
     open fun equals(sh: SphericalHarmonics3): Boolean
     open fun copy(sh: SphericalHarmonics3): SphericalHarmonics3
     open fun clone(): SphericalHarmonics3 /* this */
+//    open fun fromArray(array: Array<Number>, offset: Number = definedExternally): SphericalHarmonics3 /* this */
+//    open fun fromArray(array: Array<Number>): SphericalHarmonics3 /* this */
     open fun fromArray(array: Array<Number>, offset: Number = definedExternally): SphericalHarmonics3 /* this */
     open fun fromArray(array: Array<Number>): SphericalHarmonics3 /* this */
-    open fun fromArray(array: ArrayLike<Number>, offset: Number = definedExternally): SphericalHarmonics3 /* this */
-    open fun fromArray(array: ArrayLike<Number>): SphericalHarmonics3 /* this */
     open fun toArray(array: Array<Number> = definedExternally, offset: Number = definedExternally): Array<Number>
     open fun toArray(): Array<Number>
-    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
-    open fun toArray(array: ArrayLike<Number>, offset: Number = definedExternally): ArrayLike<Number>
-    open fun toArray(array: ArrayLike<Number>): ArrayLike<Number>
+//    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
+//    open fun toArray(array: Array<Number>, offset: Number = definedExternally): Array<Number>
+//    open fun toArray(array: Array<Number>): Array<Number>
     open fun getAt(normal: Vector3, target: Vector3): Vector3
     open fun getIrradianceAt(normal: Vector3, target: Vector3): Vector3
 

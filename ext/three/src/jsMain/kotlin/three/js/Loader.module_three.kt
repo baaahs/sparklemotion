@@ -17,7 +17,7 @@ open external class Loader<TData, TUrl>(manager: LoadingManager = definedExterna
     open var resourcePath: String
     open var manager: LoadingManager
     open var requestHeader: `T$89`
-    open fun load(url: TUrl, onLoad: (data: TData) -> Unit, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally)
+    open fun load(url: TUrl, onLoad: (data: TData) -> Unit, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally): Any?
     open fun loadAsync(url: TUrl, onProgress: (event: ProgressEvent) -> Unit = definedExternally): Promise<TData>
     open fun setCrossOrigin(crossOrigin: String): Loader<TData, TUrl> /* this */
     open fun setWithCredentials(value: Boolean): Loader<TData, TUrl> /* this */

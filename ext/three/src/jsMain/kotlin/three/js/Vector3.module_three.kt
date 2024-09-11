@@ -1,17 +1,15 @@
 package three.js
 
-import js.array.ArrayLike
-
 external interface Vector3Like {
-    val x: Number
-    val y: Number
-    val z: Number
+    val x: Double
+    val y: Double
+    val z: Double
 }
 
-open external class Vector3(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally) {
-    open var x: Number
-    open var y: Number
-    open var z: Number
+open external class Vector3(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally) : Vector3Like {
+    override var x: Double
+    override var y: Double
+    override var z: Double
     open val isVector3: Boolean
     open fun set(x: Number, y: Number, z: Number): Vector3 /* this */
     open fun setScalar(scalar: Number): Vector3 /* this */
@@ -19,7 +17,7 @@ open external class Vector3(x: Number = definedExternally, y: Number = definedEx
     open fun setY(y: Number): Vector3 /* this */
     open fun setZ(z: Number): Vector3 /* this */
     open fun setComponent(index: Number, value: Number): Vector3 /* this */
-    open fun getComponent(index: Number): Number
+    open fun getComponent(index: Number): Double
     open fun clone(): Vector3 /* this */
     open fun copy(v: Vector3Like): Vector3 /* this */
     open fun add(v: Vector3Like): Vector3 /* this */
@@ -53,10 +51,10 @@ open external class Vector3(x: Number = definedExternally, y: Number = definedEx
     open fun round(): Vector3 /* this */
     open fun roundToZero(): Vector3 /* this */
     open fun negate(): Vector3 /* this */
-    open fun dot(v: Vector3Like): Number
-    open fun lengthSq(): Number
-    open fun length(): Number
-    open fun manhattanLength(): Number
+    open fun dot(v: Vector3Like): Double
+    open fun lengthSq(): Double
+    open fun length(): Double
+    open fun manhattanLength(): Double
     open fun normalize(): Vector3 /* this */
     open fun setLength(l: Number): Vector3 /* this */
     open fun lerp(v: Vector3Like, alpha: Number): Vector3 /* this */
@@ -66,10 +64,10 @@ open external class Vector3(x: Number = definedExternally, y: Number = definedEx
     open fun projectOnVector(v: Vector3): Vector3 /* this */
     open fun projectOnPlane(planeNormal: Vector3): Vector3 /* this */
     open fun reflect(vector: Vector3Like): Vector3 /* this */
-    open fun angleTo(v: Vector3): Number
-    open fun distanceTo(v: Vector3Like): Number
-    open fun distanceToSquared(v: Vector3Like): Number
-    open fun manhattanDistanceTo(v: Vector3Like): Number
+    open fun angleTo(v: Vector3): Double
+    open fun distanceTo(v: Vector3Like): Double
+    open fun distanceToSquared(v: Vector3Like): Double
+    open fun manhattanDistanceTo(v: Vector3Like): Double
     open fun setFromSpherical(s: Spherical): Vector3 /* this */
     open fun setFromSphericalCoords(r: Number, phi: Number, theta: Number): Vector3 /* this */
     open fun setFromCylindrical(s: Cylindrical): Vector3 /* this */
@@ -82,16 +80,16 @@ open external class Vector3(x: Number = definedExternally, y: Number = definedEx
     open fun setFromColor(color: RGB): Vector3 /* this */
     open fun equals(v: Vector3Like): Boolean
     open fun fromArray(array: Array<Number>, offset: Number = definedExternally): Vector3 /* this */
-    open fun fromArray(array: Array<Number>): Vector3 /* this */
-    open fun fromArray(array: ArrayLike<Number>, offset: Number = definedExternally): Vector3 /* this */
-    open fun fromArray(array: ArrayLike<Number>): Vector3 /* this */
+//    open fun fromArray(array: Array<Number>): Vector3 /* this */
+//    open fun fromArray(array: Array<Number>, offset: Number = definedExternally): Vector3 /* this */
+//    open fun fromArray(array: Array<Number>): Vector3 /* this */
     open fun toArray(array: Array<Number> = definedExternally, offset: Number = definedExternally): Array<Number>
     open fun toArray(): dynamic /* Array */
-    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
+//    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
     open fun toArray(array: Any /* JsTuple<Number, Number, Number> */ = definedExternally, offset: Number /* 0 */ = definedExternally): dynamic /* JsTuple<Number, Number, Number> */
     open fun toArray(array: Any /* JsTuple<Number, Number, Number> */ = definedExternally): dynamic /* JsTuple<Number, Number, Number> */
-    open fun toArray(array: ArrayLike<Number>, offset: Number = definedExternally): ArrayLike<Number>
-    open fun toArray(array: ArrayLike<Number>): ArrayLike<Number>
+//    open fun toArray(array: Array<Number>, offset: Number = definedExternally): Array<Number>
+//    open fun toArray(array: Array<Number>): Array<Number>
     open fun fromBufferAttribute(attribute: BufferAttribute, index: Number): Vector3 /* this */
     open fun fromBufferAttribute(attribute: InterleavedBufferAttribute, index: Number): Vector3 /* this */
     open fun random(): Vector3 /* this */

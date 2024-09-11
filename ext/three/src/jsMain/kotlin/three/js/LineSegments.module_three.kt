@@ -1,6 +1,6 @@
 package three.js
 
-open external class LineSegments<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial/*, TEventMap : Object3DEventMap*/>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Line<TGeometry, TMaterial> {
+open external class LineSegments<TGeometry : BufferGeometry<NormalBufferAttributes>, TMaterial : Material/*, TEventMap : Object3DEventMap*/>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Line<TGeometry, TMaterial> {
     open val isLineSegments: Boolean
     override var override: Any
     override val type: String /* String | "LineSegments" */
