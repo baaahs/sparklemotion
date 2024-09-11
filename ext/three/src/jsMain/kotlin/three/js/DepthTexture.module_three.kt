@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class DepthTexture(width: Number, height: Number, type: Any = definedExternally, mapping: Any = definedExternally, wrapS: Any = definedExternally, wrapT: Any = definedExternally, magFilter: Any = definedExternally, minFilter: Any = definedExternally, anisotropy: Number = definedExternally, format: Any = definedExternally) : Texture {

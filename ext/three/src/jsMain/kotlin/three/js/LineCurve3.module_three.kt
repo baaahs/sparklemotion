@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class LineCurve3(v1: Vector3 = definedExternally, v2: Vector3 = definedExternally) : Curve<Vector3> {

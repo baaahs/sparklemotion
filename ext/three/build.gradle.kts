@@ -21,6 +21,9 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation(kotlinw("browser-js"))
+
+                implementation(npm("three", "^0.168.0"))
+                implementation(npm("@types/three", "^0.168.0"))
             }
         }
     }

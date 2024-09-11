@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Points<TGeometry : BufferGeometry<NormalOrGLBufferAttributes>, TMaterial/*, TEventMap : Object3DEventMap*/>(geometry: TGeometry = definedExternally, material: TMaterial = definedExternally) : Object3D/*<Object3DEventMap>*/ {

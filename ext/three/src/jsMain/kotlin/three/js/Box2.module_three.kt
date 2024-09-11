@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Box2(min: Vector2 = definedExternally, max: Vector2 = definedExternally) {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Box3Helper : LineSegments<BufferGeometry<NormalBufferAttributes>, Material> {

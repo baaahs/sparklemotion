@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Euler(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally, order: String /* "XYZ" | "YXZ" | "ZXY" | "ZYX" | "YZX" | "XZY" */ = definedExternally) {

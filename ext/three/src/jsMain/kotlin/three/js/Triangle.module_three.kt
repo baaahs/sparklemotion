@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Triangle(a: Vector3 = definedExternally, b: Vector3 = definedExternally, c: Vector3 = definedExternally) {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Spherical(radius: Number = definedExternally, phi: Number = definedExternally, theta: Number = definedExternally) {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Cylindrical(radius: Number = definedExternally, theta: Number = definedExternally, y: Number = definedExternally) {

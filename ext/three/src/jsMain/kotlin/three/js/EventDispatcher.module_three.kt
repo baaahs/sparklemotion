@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 import kotlin.js.*
@@ -26,8 +28,6 @@ import web.events.EventTarget
 //
 //typealias EventListener/*<TEventData, TEventType, TTarget>*/ = // (event: TEventData /* TEventData & Event<TEventType, TTarget> */) -> Unit
 //            (event: Event /* TEventData & Event<TEventType, TTarget> */) -> Unit
-
-typealias EventDispatcher = EventTarget
 
 //open external class EventDispatcher/*<TEventMap : Any>*/ {
 //    open fun addEventListener(type: String, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)

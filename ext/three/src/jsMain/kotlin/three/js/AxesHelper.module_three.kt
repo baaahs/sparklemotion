@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class AxesHelper(size: Number = definedExternally) : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class PlaneHelper(plane: Plane, size: Number = definedExternally, hex: Number = definedExternally) : LineSegments<BufferGeometry<NormalBufferAttributes>, dynamic> {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class EllipseCurve(aX: Number = definedExternally, aY: Number = definedExternally, xRadius: Number = definedExternally, yRadius: Number = definedExternally, aStartAngle: Number = definedExternally, aEndAngle: Number = definedExternally, aClockwise: Boolean = definedExternally, aRotation: Number = definedExternally) : Curve<Vector2> {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 import org.w3c.xhr.ProgressEvent
@@ -29,7 +31,3 @@ open external class Loader<TData, TUrl>(manager: LoadingManager = definedExterna
         var DEFAULT_MATERIAL_NAME: String
     }
 }
-
-typealias Loader__1<TData> = Loader<TData, String>
-
-typealias Loader__0 = Loader<Any, String>
