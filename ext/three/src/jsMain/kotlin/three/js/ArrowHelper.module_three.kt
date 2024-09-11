@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class ArrowHelper : Object3D/*<Object3DEventMap>*/ {

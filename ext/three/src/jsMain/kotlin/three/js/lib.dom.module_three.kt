@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 //external interface AddEventListenerOptions : EventListenerOptions {
@@ -14588,9 +14590,9 @@ package three.js
 //typealias BigInteger = Uint8Array
 //
 //typealias NamedCurve = String
-
-typealias GLenum = Number
-
+//
+//typealias GLenum = Number
+//
 //typealias GLboolean = Boolean
 //
 //typealias GLbitfield = Number

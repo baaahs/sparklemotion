@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 import js.objects.Record
@@ -14,10 +16,6 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
-
-typealias NormalBufferAttributes = Record<String, dynamic /* BufferAttribute | InterleavedBufferAttribute */>
-
-typealias NormalOrGLBufferAttributes = Record<String, dynamic /* BufferAttribute | InterleavedBufferAttribute | GLBufferAttribute */>
 
 external interface `T$9` {
     var type: String

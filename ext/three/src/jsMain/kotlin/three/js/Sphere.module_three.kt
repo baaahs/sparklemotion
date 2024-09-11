@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Sphere(center: Vector3 = definedExternally, radius: Number = definedExternally) {

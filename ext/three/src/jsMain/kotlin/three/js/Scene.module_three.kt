@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 external interface SceneJSONObject : Object3DJSONObject {

@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 open external class Ray(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally) {

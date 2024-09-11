@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 external interface RenderTargetOptions {
@@ -74,5 +76,3 @@ open external class RenderTarget<TTexture>(width: Number = definedExternally, he
     open fun copy(source: RenderTarget__0): RenderTarget<TTexture> /* this */
     open fun dispose()
 }
-
-typealias RenderTarget__0 = RenderTarget<Texture>

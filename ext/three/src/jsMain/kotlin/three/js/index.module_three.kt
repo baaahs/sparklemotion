@@ -1,3 +1,5 @@
+@file:JsModule("three")
+@file:JsNonModule
 package three.js
 
 import org.khronos.webgl.*
@@ -13,8 +15,6 @@ import web.gl.GLsizei
 import web.gl.WebGL2RenderingContext
 import web.time.DOMHighResTimeStamp
 import kotlin.js.Promise
-
-typealias XRFrameRequestCallback = (time: DOMHighResTimeStamp, frame: XRFrame) -> Unit
 
 external class XRSystemDeviceChangeEvent : Event {
     override var type: String /* "devicechange" */
@@ -474,8 +474,6 @@ external class XRInputSourcesChangeEvent : XRSessionEvent {
 //    operator fun invoke(evt: XRInputSourcesChangeEvent): Any
 //}
 
-typealias XRAnchorSet = Set<XRAnchor>
-
 open external class XRAnchor {
     open var anchorSpace: XRSpace
     open fun delete()
@@ -535,8 +533,6 @@ external interface XRHitResult {
     var hitMatrix: Float32Array
 }
 
-typealias XRPlaneSet = Set<XRPlane>
-
 open external class XRPlane {
     open var orientation: String /* "horizontal" | "vertical" */
     open var planeSpace: XRSpace
@@ -544,8 +540,6 @@ open external class XRPlane {
     open var lastChangedTime: DOMHighResTimeStamp
     open var semanticLabel: String?
 }
-
-typealias XRMeshSet = Set<XRMesh>
 
 open external class XRMesh {
     open var meshSpace: XRSpace
