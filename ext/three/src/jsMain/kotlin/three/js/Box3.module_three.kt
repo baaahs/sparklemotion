@@ -1,13 +1,11 @@
 package three.js
 
-import js.array.ArrayLike
-
 open external class Box3(min: Vector3 = definedExternally, max: Vector3 = definedExternally) {
     open var min: Vector3
     open var max: Vector3
     open val isBox3: Boolean
     open fun set(min: Vector3, max: Vector3): Box3 /* this */
-    open fun setFromArray(array: ArrayLike<Number>): Box3 /* this */
+    open fun setFromArray(array: Array<Number>): Box3 /* this */
     open fun setFromBufferAttribute(bufferAttribute: BufferAttribute): Box3 /* this */
     open fun setFromPoints(points: Array<Vector3>): Box3 /* this */
     open fun setFromCenterAndSize(center: Vector3, size: Vector3): Box3 /* this */

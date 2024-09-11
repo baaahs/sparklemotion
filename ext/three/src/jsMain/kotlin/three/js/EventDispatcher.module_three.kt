@@ -13,6 +13,7 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import web.events.EventTarget
 
 //external interface BaseEvent<TEventType : String> {
 //    val type: TEventType
@@ -26,9 +27,11 @@ import org.w3c.xhr.*
 //typealias EventListener/*<TEventData, TEventType, TTarget>*/ = // (event: TEventData /* TEventData & Event<TEventType, TTarget> */) -> Unit
 //            (event: Event /* TEventData & Event<TEventType, TTarget> */) -> Unit
 
-open external class EventDispatcher/*<TEventMap : Any>*/ {
-//    open fun <T : Extract<Any, String>> addEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)
-//    open fun <T : Extract<Any, String>> hasEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>): Boolean
-//    open fun <T : Extract<Any, String>> removeEventListener(type: T, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)
-//    open fun <T : Extract<Any, String>> dispatchEvent(event: BaseEvent<T> /* BaseEvent<T> & dynamic */)
-}
+typealias EventDispatcher = EventTarget
+
+//open external class EventDispatcher/*<TEventMap : Any>*/ {
+//    open fun addEventListener(type: String, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)
+//    open fun hasEventListener(type: String, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>): Boolean
+//    open fun removeEventListener(type: String, listener: EventListener<Any, T, EventDispatcher<TEventMap> /* this */>)
+//    open fun dispatchEvent(event: BaseEvent<T> /* BaseEvent<T> & dynamic */)
+//}

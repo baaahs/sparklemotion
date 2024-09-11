@@ -1,26 +1,26 @@
 package three.js
 
 external interface Face {
-    var a: Number
-    var b: Number
-    var c: Number
+    var a: Int
+    var b: Int
+    var c: Int
     var normal: Vector3
-    var materialIndex: Number
+    var materialIndex: Int
 }
 
 external interface Intersection<TIntersected : Object3D/*<Object3DEventMap>*/> {
-    var distance: Number
-    var distanceToRay: Number?
+    var distance: Double
+    var distanceToRay: Double?
         get() = definedExternally
         set(value) = definedExternally
     var point: Vector3
-    var index: Number?
+    var index: Int?
         get() = definedExternally
         set(value) = definedExternally
     var face: Face?
         get() = definedExternally
         set(value) = definedExternally
-    var faceIndex: Number?
+    var faceIndex: Int?
         get() = definedExternally
         set(value) = definedExternally
     var `object`: TIntersected
@@ -33,13 +33,13 @@ external interface Intersection<TIntersected : Object3D/*<Object3DEventMap>*/> {
     var normal: Vector3?
         get() = definedExternally
         set(value) = definedExternally
-    var instanceId: Number?
+    var instanceId: Int?
         get() = definedExternally
         set(value) = definedExternally
     var pointOnLine: Vector3?
         get() = definedExternally
         set(value) = definedExternally
-    var batchId: Number?
+    var batchId: Int?
         get() = definedExternally
         set(value) = definedExternally
 }
@@ -61,16 +61,16 @@ external interface RaycasterParameters {
     var Sprite: Any
 }
 
-open external class Raycaster(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally, near: Number = definedExternally, far: Number = definedExternally) {
+open external class Raycaster(origin: Vector3 = definedExternally, direction: Vector3 = definedExternally, near: Double = definedExternally, far: Double = definedExternally) {
     open var ray: Ray
-    open var near: Number
-    open var far: Number
+    open var near: Double
+    open var far: Double
     open var camera: Camera
     open var layers: Layers
     open var params: RaycasterParameters
     open fun set(origin: Vector3, direction: Vector3)
     open fun setFromCamera(coords: Vector2, camera: Camera)
     open fun setFromXRController(controller: XRTargetRaySpace): Raycaster /* this */
-    open fun <TIntersected : Object3D/*<Object3DEventMap>*/> intersectObject(obj: Object3D/*<Object3DEventMap>*/, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
-    open fun <TIntersected : Object3D/*<Object3DEventMap>*/> intersectObjects(objects: Array<Object3D/*<Object3DEventMap>*/>, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<TIntersected>> = definedExternally): Array<Intersection<TIntersected>>
+    open fun intersectObject(obj: Object3D/*<Object3DEventMap>*/, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<out Object3D>> = definedExternally): Array<Intersection<out Object3D>>
+    open fun intersectObjects(objects: Array<Object3D/*<Object3DEventMap>*/>, recursive: Boolean = definedExternally, optionalTarget: Array<Intersection<out Object3D>> = definedExternally): Array<Intersection<out Object3D>>
 }

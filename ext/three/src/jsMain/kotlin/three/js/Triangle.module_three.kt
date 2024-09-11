@@ -10,7 +10,7 @@ open external class Triangle(a: Vector3 = definedExternally, b: Vector3 = define
     open fun setFromAttributeAndIndices(attribute: InterleavedBufferAttribute, i0: Number, i1: Number, i2: Number): Triangle /* this */
     open fun clone(): Triangle /* this */
     open fun copy(triangle: Triangle): Triangle /* this */
-    open fun getArea(): Number
+    open fun getArea(): Double
     open fun getMidpoint(target: Vector3): Vector3
     open fun getNormal(target: Vector3): Vector3
     open fun getPlane(target: Plane): Plane

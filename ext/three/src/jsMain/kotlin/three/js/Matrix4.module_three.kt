@@ -1,10 +1,8 @@
 package three.js
 
-import js.array.ArrayLike
-
 open external class Matrix4 {
     open val isMatrix4: Boolean
-    open var elements: dynamic /* JsTuple<n11, Number, n12, Number, n13, Number, n14, Number, n21, Number, n22, Number, n23, Number, n24, Number, n31, Number, n32, Number, n33, Number, n34, Number, n41, Number, n42, Number, n43, Number, n44, Number> */
+    open var elements: DoubleArray /* JsTuple<n11, Number, n12, Number, n13, Number, n14, Number, n21, Number, n22, Number, n23, Number, n24, Number, n31, Number, n32, Number, n33, Number, n34, Number, n41, Number, n42, Number, n43, Number, n44, Number> */
     constructor()
     constructor(n11: Number, n12: Number, n13: Number, n14: Number, n21: Number, n22: Number, n23: Number, n24: Number, n31: Number, n32: Number, n33: Number, n34: Number, n41: Number, n42: Number, n43: Number, n44: Number)
     open fun set(n11: Number, n12: Number, n13: Number, n14: Number, n21: Number, n22: Number, n23: Number, n24: Number, n31: Number, n32: Number, n33: Number, n34: Number, n41: Number, n42: Number, n43: Number, n44: Number): Matrix4 /* this */
@@ -43,8 +41,9 @@ open external class Matrix4 {
     open fun makePerspective(left: Number, right: Number, top: Number, bottom: Number, near: Number, far: Number, coordinateSystem: Any = definedExternally): Matrix4 /* this */
     open fun makeOrthographic(left: Number, right: Number, top: Number, bottom: Number, near: Number, far: Number, coordinateSystem: Any = definedExternally): Matrix4 /* this */
     open fun equals(matrix: Matrix4): Boolean
-    open fun fromArray(array: ArrayLike<Number>, offset: Number = definedExternally): Matrix4 /* this */
-    open fun toArray(): dynamic /* JsTuple<n11, Number, n12, Number, n13, Number, n14, Number, n21, Number, n22, Number, n23, Number, n24, Number, n31, Number, n32, Number, n33, Number, n34, Number, n41, Number, n42, Number, n43, Number, n44, Number> */
-    open fun <TArray : ArrayLike<Number>> toArray(array: TArray, offset: Number = definedExternally): TArray
-    open fun <TArray : ArrayLike<Number>> toArray(array: TArray): TArray
+    open fun fromArray(array: Array<Number>, offset: Int = definedExternally): Matrix4 /* this */
+    open fun fromArray(array: DoubleArray, offset: Int = definedExternally): Matrix4 /* this */
+    open fun toArray(): DoubleArray /* JsTuple<n11, Number, n12, Number, n13, Number, n14, Number, n21, Number, n22, Number, n23, Number, n24, Number, n31, Number, n32, Number, n33, Number, n34, Number, n41, Number, n42, Number, n43, Number, n44, Number> */
+    open fun <TArray : Array<Number>> toArray(array: TArray, offset: Int = definedExternally): TArray
+    open fun <TArray : Array<Number>> toArray(array: TArray): TArray
 }

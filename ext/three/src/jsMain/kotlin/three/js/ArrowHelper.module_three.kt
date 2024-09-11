@@ -16,7 +16,7 @@ open external class ArrowHelper : Object3D/*<Object3DEventMap>*/ {
     constructor(dir: Vector3 = definedExternally, origin: Vector3 = definedExternally, length: Number = definedExternally, color: Number = definedExternally, headLength: Number = definedExternally)
     open var override: Any
     override val type: String /* String | "ArrowHelper" */
-    open var line: Line<*, *>
+    open var line: Line<out BufferGeometry<NormalOrGLBufferAttributes>, out Material>
     open var cone: Mesh<BufferGeometry<NormalBufferAttributes>, *>
     open fun setColor(color: Color)
     open fun setColor(color: String)

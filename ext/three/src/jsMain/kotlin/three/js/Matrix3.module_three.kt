@@ -1,10 +1,8 @@
 package three.js
 
-import js.array.ArrayLike
-
 open external class Matrix3 {
     open val isMatrix3: Boolean
-    open var elements: dynamic /* JsTuple<n11, Number, n12, Number, n13, Number, n21, Number, n22, Number, n23, Number, n31, Number, n32, Number, n33, Number> */
+    open var elements: DoubleArray /* JsTuple<n11, Number, n12, Number, n13, Number, n21, Number, n22, Number, n23, Number, n31, Number, n32, Number, n33, Number> */
     constructor()
     constructor(n11: Number, n12: Number, n13: Number, n21: Number, n22: Number, n23: Number, n31: Number, n32: Number, n33: Number)
     open fun set(n11: Number, n12: Number, n13: Number, n21: Number, n22: Number, n23: Number, n31: Number, n32: Number, n33: Number): Matrix3
@@ -30,9 +28,10 @@ open external class Matrix3 {
     open fun makeRotation(theta: Number): Matrix3 /* this */
     open fun makeScale(x: Number, y: Number): Matrix3 /* this */
     open fun equals(matrix: Matrix3): Boolean
-    open fun fromArray(array: ArrayLike<Number>, offset: Number = definedExternally): Matrix3 /* this */
-    open fun toArray(): dynamic /* JsTuple<n11, Number, n12, Number, n13, Number, n21, Number, n22, Number, n23, Number, n31, Number, n32, Number, n33, Number> */
-    open fun <TArray : ArrayLike<Number>> toArray(array: TArray, offset: Number = definedExternally): TArray
-    open fun <TArray : ArrayLike<Number>> toArray(array: TArray): TArray
+    open fun fromArray(array: Array<Number>, offset: Int = definedExternally): Matrix3 /* this */
+    open fun fromArray(array: DoubleArray, offset: Int = definedExternally): Matrix3 /* this */
+    open fun toArray(): DoubleArray /* JsTuple<n11, Number, n12, Number, n13, Number, n21, Number, n22, Number, n23, Number, n31, Number, n32, Number, n33, Number> */
+    open fun <TArray : Array<Number>> toArray(array: TArray, offset: Int = definedExternally): TArray
+    open fun <TArray : Array<Number>> toArray(array: TArray): TArray
     open fun clone(): Matrix3 /* this */
 }

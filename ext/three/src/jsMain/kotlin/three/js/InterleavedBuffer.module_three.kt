@@ -1,19 +1,6 @@
 package three.js
 
-import js.array.ArrayLike
-import kotlin.js.*
 import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
 
 external interface `T$5` {
     var uuid: String
@@ -41,7 +28,7 @@ open external class InterleavedBuffer {
     open var version: Number
     open var count: Number
     open var uuid: String
-    open fun set(value: ArrayLike<Number>, offset: Number): InterleavedBuffer /* this */
+    open fun set(value: Array<Number>, offset: Number): InterleavedBuffer /* this */
     open fun setUsage(value: Any): InterleavedBuffer /* this */
     open fun addUpdateRange(start: Number, count: Number)
     open fun clearUpdateRanges()

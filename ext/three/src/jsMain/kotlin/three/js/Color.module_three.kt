@@ -1,7 +1,5 @@
 package three.js
 
-import js.array.ArrayLike
-
 external object _colorKeywords {
     var aliceblue: Number /* 0xf0f8ff */
     var antiquewhite: Number /* 0xfaebd7 */
@@ -154,15 +152,15 @@ external object _colorKeywords {
 }
 
 external interface HSL {
-    var h: Number
-    var s: Number
-    var l: Number
+    var h: Double
+    var s: Double
+    var l: Double
 }
 
 external interface RGB {
-    var r: Number
-    var g: Number
-    var b: Number
+    var r: Double
+    var g: Double
+    var b: Double
 }
 
 open external class Color {
@@ -172,9 +170,9 @@ open external class Color {
     constructor(color: Number = definedExternally)
     constructor(r: Number, g: Number, b: Number)
     open val isColor: Boolean
-    open var r: Number
-    open var g: Number
-    open var b: Number
+    open var r: Double
+    open var g: Double
+    open var b: Double
     open fun set(vararg args: Any /* JsTuple<color, Any> | JsTuple<r, Number, g, Number, b, Number> */): Color /* this */
     open fun setFromVector3(vector: Vector3): Color /* this */
     open fun setScalar(scalar: Number): Color
@@ -206,15 +204,15 @@ open external class Color {
     open fun lerpColors(color1: Color, color2: Color, alpha: Number): Color /* this */
     open fun lerpHSL(color: Color, alpha: Number): Color /* this */
     open fun equals(color: Color): Boolean
-    open fun fromArray(array: Array<Number>, offset: Number = definedExternally): Color /* this */
+    open fun fromArray(array: Array<Number>, offset: Int = definedExternally): Color /* this */
     open fun fromArray(array: Array<Number>): Color /* this */
-    open fun fromArray(array: ArrayLike<Number>, offset: Number = definedExternally): Color /* this */
-    open fun fromArray(array: ArrayLike<Number>): Color /* this */
-    open fun toArray(array: Array<Number> = definedExternally, offset: Number = definedExternally): Array<Number>
+//    open fun fromArray(array: Array<Number>, offset: Int = definedExternally): Color /* this */
+//    open fun fromArray(array: Array<Number>): Color /* this */
+    open fun toArray(array: Array<Number> = definedExternally, offset: Int = definedExternally): Array<Number>
     open fun toArray(): Array<Number>
-    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
-    open fun toArray(xyz: ArrayLike<Number>, offset: Number = definedExternally): ArrayLike<Number>
-    open fun toArray(xyz: ArrayLike<Number>): ArrayLike<Number>
+//    open fun toArray(array: Array<Number> = definedExternally): Array<Number>
+//    open fun toArray(xyz: Array<Number>, offset: Int = definedExternally): Array<Number>
+//    open fun toArray(xyz: Array<Number>): Array<Number>
     open fun toJSON(): Number
     open fun fromBufferAttribute(attribute: BufferAttribute, index: Number): Color /* this */
     open fun fromBufferAttribute(attribute: InterleavedBufferAttribute, index: Number): Color /* this */
