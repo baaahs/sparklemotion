@@ -14,7 +14,7 @@ import baaahs.client.WebClient
 import baaahs.client.document.SceneManager
 import baaahs.client.document.ShowManager
 import baaahs.gl.withCache
-import baaahs.mapper.JsMapper
+import baaahs.mapper.JsMapperBuilder
 import baaahs.mapper.sceneEditor
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.*
@@ -264,8 +264,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
                                 } else if (appState == AppState.SceneView) {
                                     sceneEditor {
                                         attrs.sceneEditorClient = props.sceneEditorClient
-                                        attrs.mapper = props.mapper
                                         attrs.sceneManager = sceneManager
+                                        attrs.mapperBuilder = props.mapperBuilder
                                     }
                                 }
                             }
@@ -310,7 +310,7 @@ external interface AppIndexProps : Props {
     var sceneManager: SceneManager.Facade
 
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapper: JsMapper
+    var mapperBuilder: JsMapperBuilder
 }
 
 fun RBuilder.appIndex(handler: RHandler<AppIndexProps>) =

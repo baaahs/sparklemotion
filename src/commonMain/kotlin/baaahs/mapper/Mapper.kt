@@ -27,10 +27,14 @@ import kotlin.random.Random
 /** [SolidBrainShader] appears to be busted as of 2020/09. */
 const val USE_SOLID_SHADERS = false
 
+interface MapperBuilder {
+    fun build(): Mapper
+}
+
 abstract class Mapper(
     private val plugins: Plugins,
     private val network: Network,
-    sceneProvider: SceneProvider,
+    private val sceneProvider: SceneProvider,
     private val mediaDevices: MediaDevices,
     private val pinkyAddress: Network.Address,
     private val clock: Clock,
@@ -64,16 +68,23 @@ abstract class Mapper(
     var mappingController: MappableBrain? = null
 
     init {
-        sceneProvider.addObserver(fireImmediately = true) {
-            it.openScene?.model?.let {
-                model = it
-                ui.addWireframe(it)
-            }
+        sceneProvider.addObserver(fireImmediately = false) {
+            setModel()
         }
     }
 
     open fun onLaunch() {
-        mapperScope.launch { start() }
+        mapperScope.launch {
+            setModel()
+            start()
+        }
+    }
+
+    private fun setModel() {
+        sceneProvider.openScene?.model?.let {
+            model = it
+            ui.addWireframe(it)
+        }
     }
 
     fun start() {

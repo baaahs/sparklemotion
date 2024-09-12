@@ -80,7 +80,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
         tabPanel(PageTabs.Mapping, selectedTab) {
             mapperAppWrapper {
                 attrs.sceneEditorClient = props.sceneEditorClient
-                attrs.mapper = props.mapper
+                attrs.mapperBuilder = props.mapperBuilder
             }
         }
     }
@@ -102,8 +102,8 @@ private fun RBuilder.tabPanel(tab: PageTabs, selectedTab: PageTabs, block: RBuil
 
 external interface SceneEditorViewProps : Props {
     var sceneEditorClient: SceneEditorClient.Facade
-    var mapper: JsMapper
     var sceneManager: SceneManager.Facade
+    var mapperBuilder: JsMapperBuilder
 }
 
 fun RBuilder.sceneEditor(handler: RHandler<SceneEditorViewProps>) =
