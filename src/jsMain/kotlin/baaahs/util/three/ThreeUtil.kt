@@ -1,6 +1,6 @@
 package baaahs.util.three
 
-import three.js.*
+import three.*
 import web.events.Event
 import web.events.EventTarget
 import kotlin.math.abs

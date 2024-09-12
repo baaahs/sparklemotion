@@ -10,7 +10,7 @@ import baaahs.util.three.addEventListener
 import baaahs.window
 import kotlinx.css.hyphenize
 import three.examples.jsm.controls.OrbitControls
-import three.js.*
+import three.*
 import three_ext.set
 import web.events.Event
 import web.events.addEventListener

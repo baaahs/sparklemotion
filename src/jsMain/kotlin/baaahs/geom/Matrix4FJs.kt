@@ -3,17 +3,17 @@ package baaahs.geom
 import baaahs.util.toDoubleArray
 import baaahs.visualizer.toVector3
 import kotlinx.serialization.Serializable
-import three.js.Euler
-import three.js.Object3D
-import three.js.Quaternion
+import three.Euler
+import three.Object3D
+import three.Quaternion
 import three_ext.set
 import three_ext.toVector3F
-import three.js.Matrix4 as NativeMatrix4D
-import three.js.Vector3 as NativeVector3F
+import three.Matrix4 as NativeMatrix4D
+import three.Vector3 as NativeVector3F
 
 @Serializable(Matrix4FSerializer::class)
 actual class Matrix4F actual constructor(elements: FloatArray?) {
-    constructor(nativeMatrix: three.js.Matrix4) : this(nativeMatrix.elements.map { it.toFloat() }.toFloatArray())
+    constructor(nativeMatrix: three.Matrix4) : this(nativeMatrix.elements.map { it.toFloat() }.toFloatArray())
 
     val nativeMatrix = NativeMatrix4D()
         .also { if (elements != null) it.fromArray(elements.toDoubleArray()) }
@@ -56,11 +56,11 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
     }
 
     private fun alter(
-        block: (translation: three.js.Vector3, rotation: Quaternion, scale: three.js.Vector3) -> Unit
+        block: (translation: three.Vector3, rotation: Quaternion, scale: three.Vector3) -> Unit
     ): Matrix4F {
-        val translation = three.js.Vector3()
+        val translation = three.Vector3()
         val rotation = Quaternion()
-        val scale = three.js.Vector3()
+        val scale = three.Vector3()
         nativeMatrix.decompose(translation, rotation, scale)
         block(translation, rotation, scale)
         return Matrix4F(nativeMatrix.compose(translation, rotation, scale))

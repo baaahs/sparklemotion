@@ -2,9 +2,9 @@
 @file:JsNonModule
 package three.examples.jsm.controls
 
-import three.js.EventDispatcher
-import three.js.Object3D
-import three.js.Vector3
+import three.EventDispatcher
+import three.Object3D
+import three.Vector3
 import web.html.HTMLCanvasElement
 
 open external class OrbitControls(theObject: Any, domElement: Any) : EventDispatcher {

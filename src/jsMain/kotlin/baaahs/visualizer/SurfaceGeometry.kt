@@ -2,7 +2,7 @@ package baaahs.visualizer
 
 import baaahs.geom.Vector3F
 import baaahs.model.Model
-import three.js.*
+import three.*
 import three_ext.vector3FacingForward
 
 class SurfaceGeometry(val surface: Model.Surface) {

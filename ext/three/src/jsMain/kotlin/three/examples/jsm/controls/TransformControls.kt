@@ -3,8 +3,8 @@
 package three.examples.jsm.controls
 
 import org.w3c.dom.events.MouseEvent
-import three.js.Camera
-import three.js.Object3D
+import three.Camera
+import three.Object3D
 import web.html.HTMLElement
 
 open external class TransformControls(camera: Camera, domElement: HTMLElement) : Object3D {

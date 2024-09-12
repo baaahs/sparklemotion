@@ -31,8 +31,8 @@ import react.RBuilder
 import react.ReactElement
 import react.createElement
 import react.dom.br
-import three.js.*
-import three.js.Color
+import three.*
+import three.Color
 import three_ext.CameraControls
 import three_ext.plus
 import three_ext.toVector3F
@@ -55,7 +55,7 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 import kotlin.math.*
-import three.js.Clock as ThreeJsClock
+import three.Clock as ThreeJsClock
 
 class MemoizedJsMapper(mapperUi: JsMapper) {
     val changedCamera = mapperUi::changedCamera

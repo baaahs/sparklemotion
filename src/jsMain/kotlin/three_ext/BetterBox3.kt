@@ -1,7 +1,7 @@
 package three_ext
 
-import three.js.Box3
-import three.js.Object3D
+import three.Box3
+import three.Object3D
 
 fun Box3.expandByObjectLocal(obj: Object3D): Box3 {
     // Computes the local bounding box of an object (including its children).

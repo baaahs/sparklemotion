@@ -2,7 +2,7 @@ package baaahs.visualizer
 
 import baaahs.SparkleMotion
 import baaahs.geom.Vector2F
-import three.js.*
+import three.*
 import kotlin.math.*
 import kotlin.random.Random
 

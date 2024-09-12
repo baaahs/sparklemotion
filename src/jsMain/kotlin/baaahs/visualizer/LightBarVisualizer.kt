@@ -7,7 +7,7 @@ import baaahs.model.ModelUnit
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
-import three.js.*
+import three.*
 import three_ext.clear
 import three_ext.plus
 import three_ext.set

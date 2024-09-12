@@ -9,8 +9,8 @@ import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
 import three.examples.jsm.controls.TransformControls
-import three.js.Group
-import three.js.Object3D
+import three.Group
+import three.Object3D
 import three_ext.toVector3F
 import web.dom.observers.IntersectionObserver
 

@@ -5,7 +5,7 @@ import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.EntityStyle
 import baaahs.visualizer.ignoreForCameraFit
 import js.objects.jso
-import three.js.*
+import three.*
 import kotlin.math.PI
 
 class SharpyVisualizer(

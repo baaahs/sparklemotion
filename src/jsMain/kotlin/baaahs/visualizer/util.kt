@@ -1,7 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.geom.Vector3F
-import three.js.*
+import three.*
 
 class Rotator(val from: Vector3, val to: Vector3) {
     private val quaternion = Quaternion()

@@ -15,7 +15,7 @@ import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
 import three.examples.jsm.utils.mergeGeometries
-import three.js.*
+import three.*
 import three_ext.minus
 import three_ext.vector3FacingForward
 import kotlin.math.max
