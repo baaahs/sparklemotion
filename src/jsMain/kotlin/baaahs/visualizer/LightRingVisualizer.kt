@@ -5,7 +5,7 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.LightRing
 import baaahs.sim.LightBarSimulation
-import three.js.*
+import three.*
 
 class LightRingVisualizer(
     lightRing: LightRing,

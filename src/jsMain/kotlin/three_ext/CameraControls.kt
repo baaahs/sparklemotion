@@ -3,10 +3,10 @@
 @file:Suppress("PackageDirectoryMismatch")
 package three_ext
 
-import three.js.Box3
-import three.js.Camera
-import three.js.Mesh
-import three.js.Vector3
+import three.Box3
+import three.Camera
+import three.Mesh
+import three.Vector3
 import web.dom.Element
 
 @JsName("default")

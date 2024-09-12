@@ -1,6 +1,6 @@
 package baaahs.visualizer
 
-import three.js.*
+import three.*
 
 class PixelsPreview {
     val points = Points(BufferGeometry(), EntityStyle.pointsMaterial())

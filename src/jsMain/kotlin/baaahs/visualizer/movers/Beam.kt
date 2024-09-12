@@ -3,8 +3,8 @@ package baaahs.visualizer.movers
 import baaahs.model.ModelUnit
 import baaahs.model.MovingHead
 import baaahs.model.MovingHeadAdapter
-import three.js.Group
-import three.js.Object3D
+import three.Group
+import three.Object3D
 
 interface Beam {
     val vizObj: Object3D

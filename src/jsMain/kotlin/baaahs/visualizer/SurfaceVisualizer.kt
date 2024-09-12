@@ -4,7 +4,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
-import three.js.*
+import three.*
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,

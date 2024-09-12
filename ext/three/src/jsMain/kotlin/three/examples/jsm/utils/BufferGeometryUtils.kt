@@ -2,8 +2,8 @@
 @file:JsNonModule
 package three.examples.jsm.utils
 
-import three.js.BufferGeometry
-import three.js.NormalOrGLBufferAttributes
+import three.BufferGeometry
+import three.NormalOrGLBufferAttributes
 
 external fun mergeGeometries(
     geometries: Array<BufferGeometry<*>>,
