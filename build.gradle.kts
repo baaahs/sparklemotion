@@ -173,6 +173,8 @@ kotlin {
                 implementation(kotlinw("mui-icons-material"))
                 implementation(kotlinw("emotion"))
 
+                // ThreeJS:
+                implementation(project(":ext:three"))
                 implementation(npm("camera-controls", "^1.35.0"))
 
                 // TODO: Revert when https://github.com/john-doherty/long-press-event 2.5 is released.
@@ -184,8 +186,6 @@ kotlin {
                 implementation(npm("clsx", "^2.0.0"))
                 implementation(npm("react-draggable", "^4.4.4"))
                 implementation(npm("react-dropzone", "^14.2.1"))
-                implementation(npm("three", "^0.168.0"))
-                implementation(npm("@types/three", "^0.168.0"))
                 implementation(npm("react-mosaic-component", "^6.1.0"))
                 implementation(npm("react-error-boundary", "^2.2.2"))
                 implementation(npm("ace-builds", "1.28.0"))
@@ -266,7 +266,6 @@ tasks.named<ProcessResources>("jsProcessResources") {
     dependsOn("kotlinNpmInstall") // for node_modules stuff
 
     from("build/js/node_modules/requirejs") { include("require.js") }
-    from("build/js/node_modules/three/build") { include("three.js") }
     from("build/js/node_modules/long-press-event/dist") { include("long-press-event.min.js") }
     from("build/js/node_modules/react-grid-layout") {
         into("react-grid-layout")

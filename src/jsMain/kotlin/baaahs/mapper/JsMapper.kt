@@ -20,7 +20,9 @@ import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
+import baaahs.visualizer.FaceInfo
 import baaahs.visualizer.Rotator
+import baaahs.visualizer.SurfaceGeometry
 import baaahs.visualizer.toVector3
 import js.objects.jso
 import kotlinx.coroutines.*
@@ -31,7 +33,10 @@ import react.createElement
 import react.dom.br
 import three.js.*
 import three.js.Color
-import three_ext.*
+import three_ext.CameraControls
+import three_ext.plus
+import three_ext.toVector3F
+import three_ext.vector3FacingForward
 import web.animations.requestAnimationFrame
 import web.canvas.CanvasImageSource
 import web.canvas.CanvasRenderingContext2D
@@ -513,29 +518,17 @@ class JsMapper(
         height = thumbnailDimen.height
     }
 
-    private fun createEntityDepiction(entity: Model.Surface, vertices: Array<Vector3>): PanelInfo {
-        val surface = entity
-
-        val geom = Geometry()
-        geom.vertices = vertices
-
-        val faceNormalAcc = Vector3()
-        val panelFaces = surface.faces.map { face ->
-            val face3 = Face3(face.vertexA, face.vertexB, face.vertexC, Vector3(), Color(1, 1, 1))
-
-            // just compute this face's normal
-            geom.faces = arrayOf(face3)
-            geom.computeFaceNormals()
-            faceNormalAcc.add(face3.normal)
-
-            face3
-        }
-        val surfaceNormal = faceNormalAcc.divideScalar(surface.faces.size.toDouble())
+    private fun createSurfaceDepiction(
+        entity: Model.Surface
+    ): PanelInfo {
+        val surfaceGeometry = SurfaceGeometry(entity)
+        val geom = surfaceGeometry.geometry
+        val surfaceNormal = surfaceGeometry.panelNormal
 
         val panelMaterial = MeshBasicMaterial().apply { color = Color(0, 0, 0) }
         val mesh = Mesh(geom, panelMaterial)
         entity.transform(mesh)
-        mesh.name = surface.name
+        mesh.name = entity.name
         uiScene.add(mesh)
 
         val lineMaterial = LineBasicMaterial().apply {
@@ -544,8 +537,8 @@ class JsMapper(
         }
 
         // offset the wireframe by one of the panel's face normals so it's not clipped by the panel mesh
-        surface.lines.forEach { line ->
-            val lineGeom = BufferGeometry()
+        entity.lines.forEach { line ->
+            val lineGeom = BufferGeometry<NormalOrGLBufferAttributes>()
             lineGeom.setFromPoints(line.vertices.map { pt ->
                 pt.toVector3() + surfaceNormal
             }.toTypedArray())
@@ -556,15 +549,11 @@ class JsMapper(
             )
         }
 
-        geom.faces = panelFaces.toTypedArray()
-        geom.computeFaceNormals()
-        geom.computeVertexNormals()
-
-        return PanelInfo(surface, panelFaces, mesh, geom, lineMaterial)
+        return PanelInfo(entity, surfaceGeometry.faceInfos, mesh, geom, lineMaterial)
     }
 
     inner class PixelsInfo(private val initialPixelCount: Int) {
-        internal val pixelsGeom = BufferGeometry()
+        internal val pixelsGeom = BufferGeometry<NormalOrGLBufferAttributes>()
         private val pixelsMaterial = PointsMaterial().apply {
             vertexColors = true
             blending = AdditiveBlending
@@ -579,11 +568,11 @@ class JsMapper(
         internal val pixelDatas = mutableMapOf<Int, PixelData?>()
         private var positions = FloatArray(maxPixel * 3) { 0f }
         private var colors = FloatArray(maxPixel * 3) { 0f }
-        private val positionsAttr = Float32BufferAttribute(positions, 3).also {
+        private var positionsAttr = Float32BufferAttribute(positions, 3).also {
             it.usage = DynamicDrawUsage
             pixelsGeom.setAttribute("position", it)
         }
-        private val colorsAttr = Float32BufferAttribute(colors, 3).also {
+        private var colorsAttr = Float32BufferAttribute(colors, 3).also {
             it.usage = DynamicDrawUsage
             pixelsGeom.setAttribute("color", it)
         }
@@ -635,23 +624,26 @@ class JsMapper(
 
         private fun resize(size: Int) {
             positions = positions.resize(size * 3) { 0f }
-            positionsAttr.array = positions.asDynamic()
-            positionsAttr.count = size
-            positionsAttr.needsUpdate = true
+            positionsAttr = Float32BufferAttribute(positions, positionsAttr.itemSize).also {
+                it.usage = DynamicDrawUsage
+                pixelsGeom.setAttribute("position", it)
+            }
 
             colors = colors.resize(size * 3) { 0f }
-            colorsAttr.array = colors.asDynamic()
-            colorsAttr.count = size
-            colorsAttr.needsUpdate = true
+            colorsAttr = Float32BufferAttribute(colors, colorsAttr.itemSize).also {
+                it.usage = DynamicDrawUsage
+                pixelsGeom.setAttribute("color", it)
+            }
+
             maxPixel = size
         }
     }
 
     inner class PanelInfo(
         val surface: Model.Surface,
-        val faces: List<Face3>,
+        val faceInfos: List<FaceInfo>,
         val mesh: Mesh<*, *>,
-        val geom: Geometry,
+        val geom: BufferGeometry<*>,
         private val lineMaterial: LineBasicMaterial
     ) : EntityDepiction {
         override val entity: Model.Entity
@@ -675,10 +667,8 @@ class JsMapper(
         private val vertices: Set<Vector3>
             get() {
                 val v = mutableSetOf<Vector3>()
-                for (face in faces) {
-                    v.add(geom.vertices[face.a])
-                    v.add(geom.vertices[face.b])
-                    v.add(geom.vertices[face.c])
+                for (faceInfo in faceInfos) {
+                    v.addAll(faceInfo.allVertices)
                 }
                 return v
             }
@@ -696,7 +686,7 @@ class JsMapper(
         private val rotator by lazy { Rotator(surfaceNormal, vector3FacingForward) }
 
         private fun toSurfaceNormal(point: Vector3): Vector3 {
-            rotator.rotate(point); return point
+            return point.also { rotator.rotate(it) }
         }
 
         private val normalBoundingBox: Box3 by lazy {
@@ -732,18 +722,17 @@ class JsMapper(
 
         val center get() = boundingBox.getCenter(Vector3())
 
-        val isMultiFaced get() = faces.size > 1
+        val isMultiFaced get() = faceInfos.size > 1
 
         private val _surfaceNormal: Vector3 by lazy {
             val faceNormalSum = Vector3()
-            var totalArea = 0f
-            for (face in faces) {
-                val triangle = Triangle(geom.vertices[face.a], geom.vertices[face.b], geom.vertices[face.c])
-                val faceArea = triangle.getArea() as Float
-                faceNormalSum.addScaledVector(face.normal, faceArea)
+            var totalArea = 0.0
+            for (faceInfo in faceInfos) {
+                val faceArea = faceInfo.area
+                faceNormalSum.addScaledVector(faceInfo.normal, faceArea)
                 totalArea += faceArea
             }
-            faceNormalSum.divideScalar(totalArea.toDouble())
+            faceNormalSum.divideScalar(totalArea)
         }
 
         val surfaceNormal get() = _surfaceNormal.clone()
@@ -807,26 +796,19 @@ class JsMapper(
             entityDepictions.clear()
             resetScene()
 
-            val geometries = mutableMapOf<Model.Geometry, Array<Vector3>>()
-
             model.visit { entity ->
                 entitiesByName[entity.name] = entity
 
                 // TODO: Add wireframe depiction for other entity types.
                 if (entity is Model.Surface) {
-                    val vertices = geometries.getOrPut(entity.geometry) {
-                        entity.geometry.vertices
-                            .map { v -> Vector3(v.x, v.y, v.z) }
-                            .toTypedArray()
-                    }
-                    entityDepictions[entity] = createEntityDepiction(entity, vertices)
+                    entityDepictions[entity] = createSurfaceDepiction(entity)
                 }
             }
 
             uiScene.add(wireframe)
 
             val originMarker = Mesh(
-                SphereBufferGeometry(1, 32, 32),
+                SphereGeometry(1, 32, 32),
                 MeshBasicMaterial().apply { color = Color(0xff0000) })
             uiScene.add(originMarker)
 
@@ -886,10 +868,10 @@ class JsMapper(
             val fixedCamera = uiCamera.clone() as PerspectiveCamera
 
             entityDepictions.forEach { (entity, panelInfo) ->
-                val panelPosition = panelInfo.geom.vertices[panelInfo.faces[0].a]
+                val panelPosition = panelInfo.faceInfos[0].triangle.a
                 val dirToCamera = uiCamera.position.clone().sub(panelPosition)
                 dirToCamera.normalize()
-                val angle = panelInfo.faces[0].normal.dot(dirToCamera)
+                val angle = panelInfo.faceInfos[0].normal.dot(dirToCamera)
                 if (angle > 0) {
                     panelInfo.mesh.updateMatrixWorld()
 
@@ -984,7 +966,7 @@ class JsMapper(
             return Vector2F(point.x.toFloat(), point.y.toFloat())
         }
 
-        private fun findIntersection(uv: Uv): Intersection? {
+        private fun findIntersection(uv: Uv): Intersection<*>? {
             val raycaster = Raycaster()
             raycaster.setFromCamera(uv.toVector2(), camera)
             var intersections = raycaster.intersectObject(panelInfo.mesh, false)

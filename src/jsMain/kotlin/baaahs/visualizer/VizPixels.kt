@@ -14,9 +14,10 @@ import kotlinx.coroutines.delay
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
+import three.examples.jsm.utils.mergeGeometries
 import three.js.*
-import three_ext.*
-import three_ext.Matrix4
+import three_ext.minus
+import three_ext.vector3FacingForward
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -31,15 +32,17 @@ class VizPixels(
     private val bothSides: Boolean = false
 ) : Pixels {
     override val size = positions.size
-    private val vertexColorBufferAttr = Float32BufferAttribute(Float32Array(size * 3 * 4), 3).apply {
-        usage = DynamicDrawUsage
-    }
+    private val vertexColorBufferAttr =
+        Float32BufferAttribute(Float32Array(size * 3 * 4).buffer, 3).apply {
+            usage = DynamicDrawUsage
+        }
     private val colorsAsInts = IntArray(size) // store colors as an int array too for Pixels.get()
 
     private val pixelsMesh = Mesh(BufferGeometry(), MeshBasicMaterial().apply {
         name = "VizPixels"
         side = if (bothSides) DoubleSide else FrontSide
         transparent = true
+        opacity = .3333
         blending = AdditiveBlending
 //            depthFunc = AlwaysDepth
         depthTest = false
@@ -57,14 +60,14 @@ class VizPixels(
             val pixelPlaneGeometries = positions.map { position ->
                 val pixelWidth = pixelSizeRange.interpolate(Random.nextFloat())
                 val pixelHeight = pixelSizeRange.interpolate(Random.nextFloat())
-                PlaneBufferGeometry(pixelWidth, pixelHeight).apply {
+                PlaneGeometry(pixelWidth, pixelHeight).apply {
                     rotator.rotate(this)
                     translate(position.x, position.y, position.z)
                 }
             }
 
             pixelsMesh.geometry =
-                BufferGeometryUtils.mergeBufferGeometries(
+                mergeGeometries(
                     pixelPlaneGeometries.toTypedArray()
                 ).apply {
                     setAttribute("color", vertexColorBufferAttr)
@@ -121,7 +124,7 @@ class VizPixels(
     fun getPixelLocationsInPanelSpace(surfaceVisualizer: SurfaceVisualizer): Array<Vector2> {
         val panelGeom = surfaceVisualizer.geometry.clone()
 
-        val pixGeometry = BufferGeometry()
+        val pixGeometry = BufferGeometry<NormalOrGLBufferAttributes>()
         val positionsArray = Float32Array(size * 3)
         positions.forEachIndexed { i, v ->
             positionsArray[i * 3] = v.x.toFloat()
@@ -129,7 +132,7 @@ class VizPixels(
             positionsArray[i * 3 + 2] = v.z.toFloat()
         }
 
-        val positionsBufferAttr = Float32BufferAttribute(positionsArray, 3)
+        val positionsBufferAttr = Float32BufferAttribute(positionsArray.buffer, 3)
         pixGeometry.setAttribute("position", positionsBufferAttr)
 
         val pixGeom = pixGeometry.clone()
@@ -156,7 +159,7 @@ class VizPixels(
         pixGeom.applyMatrix4(scale)
 
         val pixelVs = mutableListOf<Vector2>()
-        val pixelPositions = pixGeom.getAttribute("position")
+        val pixelPositions = pixGeom.getAttribute("position") as Float32BufferAttribute
         val array = pixelPositions.array as Float32Array
         for (i in 0 until array.length step 3) {
             val v = Vector2(clamp(array[i]).toDouble(), clamp(array[i + 1]).toDouble())

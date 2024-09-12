@@ -2,14 +2,9 @@ package three_ext
 
 import baaahs.geom.Vector3F
 import baaahs.visualizer.toVector3
-import three.js.ArrayLike
 import three.js.Euler
 import three.js.Object3D
 import three.js.Vector3
-
-operator fun <T> ArrayLike<T>.set(i: Int, t: T) {
-    this.asDynamic()[i] = t
-}
 
 operator fun Vector3.plus(other: Vector3): Vector3 {
     return this.clone().add(other)
