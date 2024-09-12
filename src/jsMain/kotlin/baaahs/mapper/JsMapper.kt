@@ -20,9 +20,9 @@ import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
-import baaahs.visualizer.FaceInfo
+import baaahs.visualizer.geometry.FaceInfo
 import baaahs.visualizer.Rotator
-import baaahs.visualizer.SurfaceGeometry
+import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.toVector3
 import js.objects.jso
 import kotlinx.coroutines.*

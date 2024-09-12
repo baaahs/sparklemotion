@@ -1,4 +1,4 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.app.ui.controllers.brainControllerEditor
 import baaahs.app.ui.controllers.directDmxControllerEditor
@@ -15,7 +15,9 @@ import baaahs.scene.*
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
+import baaahs.visualizer.EntityStyle
 import baaahs.visualizer.movers.movingHeadFixtureConfigEditor
+import baaahs.visualizer.toVector3
 
 @Suppress("LeakingThis")
 abstract class BaseEntityVisualizer<T : Model.Entity>(

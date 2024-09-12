@@ -1,50 +1,7 @@
-package baaahs.visualizer
+package baaahs.visualizer.geometry
 
-import baaahs.geom.Vector3F
-import baaahs.model.Model
 import three.*
 import three_ext.vector3FacingForward
-
-class SurfaceGeometry(val surface: Model.Surface) {
-    val name = surface.name
-    internal val geometry = BufferGeometry<NormalOrGLBufferAttributes>()
-    internal val faceInfos: List<FaceInfo>
-    val area: Double
-    var panelNormal: Vector3
-    val isMultiFaced: Boolean
-    internal val edgeNeighbors: EdgeNeighbors
-    val lines = surface.lines
-
-    init {
-        val panelGeometry = this.geometry
-
-        val vertexIds = mutableMapOf<Vector3F, Int>()
-        faceInfos = surface.faces.mapIndexed { index, face ->
-            // Make sure we have a unique id for each vertex.
-            val vertexIds = face.vertices.map { vertex ->
-                vertexIds.getOrPut(vertex) { vertexIds.size }
-            }
-
-            FaceInfo(
-                index,
-                face.a.toVector3(), face.b.toVector3(), face.c.toVector3(),
-                vertexIds[0], vertexIds[1], vertexIds[2]
-            )
-        }
-
-        panelGeometry.setFromPoints(faceInfos.flatMap { it.allVertices }.toTypedArray())
-        panelGeometry.computeVertexNormals()
-
-        area = faceInfos.sumOf { it.area }
-        isMultiFaced = faceInfos.size > 1
-
-        panelNormal = faceInfos.fold(Vector3()) { acc, faceInfo ->
-            acc.addScaledVector(faceInfo.normal, faceInfo.area)
-        }.divideScalar(area)
-
-        this.edgeNeighbors = EdgeNeighbors(faceInfos)
-    }
-}
 
 class FaceInfo(
     val index: Int,
@@ -116,20 +73,4 @@ class FaceInfo(
     companion object {
         private val quaternion = Quaternion()
     }
-}
-
-class EdgeNeighbors(faceInfos: List<FaceInfo>) {
-    val byLineSegment: Map<String, List<FaceInfo>> = run {
-        mutableMapOf<String, MutableList<FaceInfo>>().also { map ->
-            faceInfos.forEach { faceInfo ->
-                faceInfo.segments.forEach { segment ->
-                    map.getOrPut(segment.key) { mutableListOf() }
-                        .add(faceInfo)
-                }
-            }
-        }
-    }
-
-    fun find(segment: FaceInfo.LineSegment): List<FaceInfo> =
-        byLineSegment[segment.key] ?: emptyList()
 }

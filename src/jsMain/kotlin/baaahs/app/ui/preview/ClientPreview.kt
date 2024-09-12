@@ -13,8 +13,8 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.PixelArranger
-import baaahs.visualizer.SwirlyPixelArranger
+import baaahs.visualizer.sim.PixelArranger
+import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart

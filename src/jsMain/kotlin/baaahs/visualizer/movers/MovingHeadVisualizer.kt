@@ -4,12 +4,11 @@ import baaahs.dmx.Dmx
 import baaahs.io.ByteArrayReader
 import baaahs.model.MovingHead
 import baaahs.util.Clock
-import baaahs.visualizer.BaseEntityVisualizer
+import baaahs.visualizer.entity.BaseEntityVisualizer
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityStyle
 import three.Group
 import three.Object3D
-import three_ext.clear
 
 class MovingHeadVisualizer(
     movingHead: MovingHead,

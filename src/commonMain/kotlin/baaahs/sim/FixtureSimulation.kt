@@ -2,7 +2,7 @@ package baaahs.sim
 
 import baaahs.fixtures.Fixture
 import baaahs.mapper.MappingSession
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 
 interface FixtureSimulation {
     val mappingData: MappingSession.SurfaceData?

@@ -20,8 +20,8 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.*
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.PermissiveFirmwareDaddy
-import baaahs.visualizer.PixelArranger
-import baaahs.visualizer.SwirlyPixelArranger
+import baaahs.visualizer.sim.PixelArranger
+import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.Koin

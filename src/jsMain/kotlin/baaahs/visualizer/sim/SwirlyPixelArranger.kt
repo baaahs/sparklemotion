@@ -1,7 +1,9 @@
-package baaahs.visualizer
+package baaahs.visualizer.sim
 
 import baaahs.SparkleMotion
 import baaahs.geom.Vector2F
+import baaahs.visualizer.geometry.FaceInfo
+import baaahs.visualizer.geometry.SurfaceGeometry
 import three.*
 import kotlin.math.*
 import kotlin.random.Random

@@ -10,6 +10,8 @@ import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
+import baaahs.visualizer.sim.PixelArranger
+import baaahs.visualizer.sim.SwirlyPixelArranger
 import kotlinx.css.Padding
 import kotlinx.css.em
 import kotlinx.css.padding

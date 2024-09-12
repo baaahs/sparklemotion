@@ -29,8 +29,8 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.util.Clock
 import baaahs.util.JsClock
-import baaahs.visualizer.PixelArranger
-import baaahs.visualizer.SwirlyPixelArranger
+import baaahs.visualizer.sim.PixelArranger
+import baaahs.visualizer.sim.SwirlyPixelArranger
 import baaahs.visualizer.Visualizer
 import baaahs.visualizer.remote.RemoteVisualizerClient
 import org.koin.core.module.Module
