@@ -4,9 +4,9 @@ import baaahs.model.LightBar
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.ItemVisualizer
-import baaahs.visualizer.LightBarVisualizer
-import baaahs.visualizer.PolyLineVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.LightBarVisualizer
+import baaahs.visualizer.entity.PolyLineVisualizer
 
 class LightBarSimulation(
     pixelArray: PixelArray,

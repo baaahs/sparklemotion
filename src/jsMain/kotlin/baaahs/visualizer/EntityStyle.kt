@@ -1,5 +1,6 @@
 package baaahs.visualizer
 
+import baaahs.visualizer.entity.ItemVisualizer
 import three.*
 
 val Material.color: Color

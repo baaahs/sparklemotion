@@ -10,7 +10,7 @@ import baaahs.sim.FixtureSimulation
 import baaahs.sim.simulations
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 import kotlinx.serialization.Transient
 
 class Model(

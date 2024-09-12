@@ -2,6 +2,8 @@ package baaahs.visualizer
 
 import baaahs.document
 import baaahs.util.Clock
+import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.itemVisualizer
 import three.Object3D
 import web.html.HTMLElement
 import web.html.HTMLSpanElement

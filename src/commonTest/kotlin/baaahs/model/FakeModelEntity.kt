@@ -7,7 +7,7 @@ import baaahs.geom.Vector3F
 import baaahs.sim.FakeFixtureSimulation
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.FakeItemVisualizer
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 
 open class FakeModelEntity(
     override val name: String,

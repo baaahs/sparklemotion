@@ -8,6 +8,8 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
+import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.itemVisualizer
 import three.Group
 import three.Object3D
 import three.examples.jsm.controls.TransformControls
@@ -33,7 +35,7 @@ class ModelVisualEditor(
     var editingEntity: EditingEntity<*>? = null
         private set
 
-    /** [TransformControls] must be created by [OrbitControls]. */
+    /** [TransformControls] must be created before [OrbitControls]. */
     override val extensions get() = listOf(
         extension { TransformControlsExtension() }
     ) + super.extensions

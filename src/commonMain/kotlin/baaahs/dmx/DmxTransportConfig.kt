@@ -6,7 +6,7 @@ import baaahs.fixtures.TransportType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableTransportConfig
 import baaahs.ui.View
-import baaahs.visualizer.visualizerBuilder
+import baaahs.visualizer.entity.visualizerBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,9 +1,11 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
+import baaahs.visualizer.*
+import baaahs.visualizer.geometry.SurfaceGeometry
 import three.*
 
 class SurfaceVisualizer(

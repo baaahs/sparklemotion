@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.model.ModelUnit
+import baaahs.visualizer.entity.ItemVisualizer
 
 interface IVisualizer {
     var units: ModelUnit

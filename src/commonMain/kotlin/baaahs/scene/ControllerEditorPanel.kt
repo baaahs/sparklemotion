@@ -2,7 +2,7 @@ package baaahs.scene
 
 import baaahs.ui.Icon
 import baaahs.ui.View
-import baaahs.visualizer.visualizerBuilder
+import baaahs.visualizer.entity.visualizerBuilder
 
 abstract class ControllerEditorPanel<T: MutableControllerConfig>(
     val title: String? = null,

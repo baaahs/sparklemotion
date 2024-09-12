@@ -2,6 +2,7 @@ package baaahs.visualizer
 
 import baaahs.model.*
 import baaahs.sim.SimulationEnv
+import baaahs.visualizer.entity.ItemVisualizer
 
 actual class EntityAdapter actual constructor(
     simulationEnv: SimulationEnv, units: ModelUnit, isEditing: Boolean

@@ -10,7 +10,7 @@ import baaahs.mapper.MappingSession
 import baaahs.sim.FixtureSimulation
 import baaahs.sm.webapi.Problem
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 import kotlinx.serialization.Transient
 
 class ImportedEntityGroup(

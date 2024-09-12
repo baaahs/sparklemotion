@@ -1,8 +1,11 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.model.ImportedEntityGroup
 import baaahs.model.Model
 import baaahs.util.three.addPadding
+import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.EntityStyle
+import baaahs.visualizer.GroupVisualizer
 import three.*
 import three_ext.expandByObjectLocal
 
