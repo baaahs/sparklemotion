@@ -1,7 +1,6 @@
 @file:JsModule("three/examples/jsm/controls/OrbitControls")
 @file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
-package three_ext
+package three.examples.jsm.controls
 
 import three.js.EventDispatcher
 import three.js.Object3D

@@ -6,7 +6,6 @@ import baaahs.io.ByteArrayReader
 import baaahs.model.LightRing
 import baaahs.sim.LightBarSimulation
 import three.js.*
-import three_ext.clear
 
 class LightRingVisualizer(
     lightRing: LightRing,
@@ -58,7 +57,7 @@ class LightRingVisualizer(
 
         obj.clear()
         obj.add(ringMesh)
-        obj.add(pixelsPreview)
+        obj.add(pixelsPreview.points)
         vizPixels?.addTo(obj)
 
         val pixelLocations = newItem.calculatePixelLocalLocations(pixelCount_UNKNOWN_BUSTED)

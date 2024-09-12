@@ -1,7 +1,6 @@
 @file:JsModule("three/examples/jsm/controls/TransformControls")
 @file:JsNonModule
-@file:Suppress("PackageDirectoryMismatch")
-package three_ext
+package three.examples.jsm.controls
 
 import org.w3c.dom.events.MouseEvent
 import three.js.Camera
