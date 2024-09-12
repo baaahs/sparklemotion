@@ -1,6 +1,6 @@
 package baaahs.visualizer
 
-import three.js.*
+import three.*
 
 val Material.color: Color
     get() = when (this) {

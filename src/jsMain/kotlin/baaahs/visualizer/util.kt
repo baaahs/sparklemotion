@@ -1,11 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.geom.Vector3F
-import three.js.*
-import three_ext.Matrix4
-
-fun Face3.segments() = arrayOf(arrayOf(a, b), arrayOf(b, c), arrayOf(c, a))
-fun Array<Int>.asKey() = sorted().joinToString("-")
+import three.*
 
 class Rotator(val from: Vector3, val to: Vector3) {
     private val quaternion = Quaternion()
@@ -16,11 +12,7 @@ class Rotator(val from: Vector3, val to: Vector3) {
         matrix.makeRotationFromQuaternion(quaternion)
     }
 
-    fun rotate(vararg geoms: Geometry) {
-        geoms.forEach { it.applyMatrix4(matrix) }
-    }
-
-    fun rotate(vararg geoms: BufferGeometry) {
+    fun rotate(vararg geoms: BufferGeometry<*>) {
         geoms.forEach { it.applyMatrix4(matrix) }
     }
 
@@ -47,7 +39,7 @@ fun <T> MutableList<T>.findOrAdd(value: T): Int {
 fun Vector3F.toVector3(): Vector3 = Vector3(x, y, z)
 
 var Object3D.boundsForCameraFit: Box3?
-    get() = this.userData.asDynamic().boundsForCameraFit as Box3?
+    get() = this.userData.asDynamic().boundsForCameraFit as? Box3?
     set(value) { this.userData.asDynamic().boundsForCameraFit = value }
 
 var Object3D.ignoreChildrenForCameraFit: Boolean
@@ -67,14 +59,14 @@ fun Box3.expandByObjectForCameraFit(obj: Object3D) {
 
     obj.updateWorldMatrix(updateParents = false, updateChildren = false)
 
-    val b = obj.boundsForCameraFit ?: run {
+    obj.boundsForCameraFit ?: run {
         val geometry = obj.asDynamic().geometry
         if (geometry !== undefined) {
             if (geometry.boundingBox === null) {
                 geometry.computeBoundingBox()
             }
         }
-        geometry?.boundingBox as Box3?
+        geometry?.boundingBox as? Box3?
     }?.let { boundingBox ->
         _box.copy(boundingBox)
         _box.applyMatrix4(obj.matrixWorld)

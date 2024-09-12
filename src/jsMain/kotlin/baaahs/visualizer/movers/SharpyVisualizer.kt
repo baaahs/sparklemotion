@@ -5,7 +5,7 @@ import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.EntityStyle
 import baaahs.visualizer.ignoreForCameraFit
 import js.objects.jso
-import three.js.*
+import three.*
 import kotlin.math.PI
 
 class SharpyVisualizer(
@@ -22,7 +22,7 @@ class SharpyVisualizer(
     private val rightArm = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it) }
     private val armBase = Mesh(BoxGeometry(), sharpyMaterial).also { armature.add(it) }
 
-    private val can = Mesh(CylinderBufferGeometry(), sharpyMaterial).also { armature.add(it) }
+    private val can = Mesh(CylinderGeometry(), sharpyMaterial).also { armature.add(it) }
     private val beam = Beam.selectFor(adapter, units).also { can.add(it.vizObj) }
         .also { it.vizObj.ignoreForCameraFit() }
 
@@ -35,7 +35,7 @@ class SharpyVisualizer(
         updateGeometry(adapter.visualizerInfo)
 
         // Ideal beam; where the moving head would be pointing if it weren't for physics.
-        Line(BufferGeometry().apply {
+        Line(BufferGeometry<NormalOrGLBufferAttributes>().apply {
             setFromPoints(arrayOf(Vector3(0, 0, 0), Vector3(0, 4000.cm, 0)))
         }, LineDashedMaterial(jso {
             color = 0xff7700
@@ -55,7 +55,7 @@ class SharpyVisualizer(
         val canRadius = visualizerInfo.canRadius.cm
         val canLength = visualizerInfo.canLength.cm
 
-        can.geometry = CylinderBufferGeometry(canRadius, canRadius, canLength)
+        can.geometry = CylinderGeometry(canRadius, canRadius, canLength)
 
         // TODO: All dimensions should be expressed in cm, then converted to the model's units.
         val narrowGap = 1.cm

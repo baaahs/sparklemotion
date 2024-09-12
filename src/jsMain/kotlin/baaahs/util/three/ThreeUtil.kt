@@ -1,9 +1,8 @@
 package baaahs.util.three
 
-import three.js.Box3
-import three.js.Object3D
-import three.js.PerspectiveCamera
-import three.js.Vector3
+import three.*
+import web.events.Event
+import web.events.EventTarget
 import kotlin.math.abs
 import kotlin.math.tan
 
@@ -37,4 +36,19 @@ object ThreeUtil {
 fun Box3.addPadding(fractionalAmount: Double) {
     val padding = min.distanceTo(max) * fractionalAmount
     expandByScalar(padding)
+}
+
+fun Float32BufferAttribute.resize(count: Int): Float32BufferAttribute {
+    val oldSize = this.count * this.itemSize
+    val newArray = DoubleArray(count * itemSize) { i ->
+        if (i < oldSize) array[i] else 0.0
+    }
+    return Float32BufferAttribute(newArray, itemSize)
+}
+
+fun EventTarget.addEventListener(type: String, callback: (Event) -> Unit) {
+    asDynamic().addEventListener(type, callback)
+}
+fun EventTarget.removeEventListener(type: String, callback: (Event) -> Unit) {
+    asDynamic().removeEventListener(type, callback)
 }
