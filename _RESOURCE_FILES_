@@ -149,7 +149,6 @@ templates/shows/PastureBedtime.sparkle
 templates/shows/movers.sparkle
 templates/shows/show-2021-05.sparkle
 templates/shows/show.sparkle
-three.js
 ui-index.html
 ui/index.html
 visualizer/textures/reticle.webp
