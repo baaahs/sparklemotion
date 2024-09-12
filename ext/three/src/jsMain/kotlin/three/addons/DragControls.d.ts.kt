@@ -1,22 +1,11 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.w3c.dom.HTMLElement
+import three.*
 
 external interface `T$55` {
-    var `object`: Object3D__0
+    var `object`: Object3D
 }
 
 external interface DragControlsEventMap {
@@ -45,8 +34,8 @@ external interface `T$57` {
         set(value) = definedExternally
 }
 
-external open class DragControls(objects: Array<Object3D__0>, camera: Camera, domElement: HTMLElement? = definedExternally) : Controls<DragControlsEventMap> {
-    open var objects: Array<Object3D__0>
+open external class DragControls(objects: Array<Object3D>, camera: Camera, domElement: HTMLElement? = definedExternally) : Controls {
+    open var objects: Array<Object3D>
     open var recursive: Boolean
     open var transformGroup: Boolean
     open var rotateSpeed: Number
@@ -57,8 +46,8 @@ external open class DragControls(objects: Array<Object3D__0>, camera: Camera, do
     override fun disconnect()
     override fun dispose()
     open fun getRaycaster(): Raycaster
-    open fun setObjects(objects: Array<Object3D__0>)
-    open fun getObjects(): Array<Object3D__0>
+    open fun setObjects(objects: Array<Object3D>)
+    open fun getObjects(): Array<Object3D>
     open fun activate()
     open fun deactivate()
 }

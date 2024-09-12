@@ -1,7 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.events.*
@@ -14,6 +13,8 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import three.*
+import kotlin.js.*
 
 external interface KTX2LoaderWorkerConfig {
     var astcSupported: Boolean
@@ -24,7 +25,7 @@ external interface KTX2LoaderWorkerConfig {
     var pvrtcSupported: Boolean
 }
 
-external open class KTX2Loader(manager: LoadingManager = definedExternally) : Loader__1<CompressedTexture> {
+open external class KTX2Loader(manager: LoadingManager = definedExternally) : Loader__1<CompressedTexture> {
     open var transcoderPath: String
     open var transcoderBinary: ArrayBuffer?
     open var transcoderPending: Promise<Unit>?
@@ -35,7 +36,7 @@ external open class KTX2Loader(manager: LoadingManager = definedExternally) : Lo
     open fun setWorkerLimit(limit: Number): KTX2Loader /* this */
     open fun detectSupportAsync(renderer: Renderer): Promise<KTX2Loader /* this */>
     open fun detectSupport(renderer: WebGLRenderer): KTX2Loader /* this */
-    open fun detectSupport(renderer: WebGPURenderer): KTX2Loader /* this */
+//    open fun detectSupport(renderer: WebGPURenderer): KTX2Loader /* this */
     open fun init(): Promise<Unit>
     open fun parse(buffer: ArrayBuffer, onLoad: (texture: CompressedTexture) -> Unit = definedExternally, onError: (err: Any) -> Unit = definedExternally)
     open fun dispose(): KTX2Loader /* this */

@@ -1,19 +1,9 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.w3c.dom.HTMLElement
+import three.*
+import web.uievents.PointerEvent
 
 external interface `T$61` {
     var mode: String /* "translate" | "rotate" | "scale" */
@@ -30,10 +20,10 @@ external interface TransformControlsEventMap : Object3DEventMap {
     var objectChange: Any
 }
 
-external open class TransformControls(obj: Camera, domElement: HTMLElement = definedExternally) : Object3D<TransformControlsEventMap> {
+open external class TransformControls(obj: Camera, domElement: HTMLElement = definedExternally) : Object3D {
     open var domElement: HTMLElement
     open var camera: Camera
-    open var `object`: Object3D__0?
+    open var `object`: Object3D?
     open var enabled: Boolean
     open var axis: String /* "X" | "Y" | "Z" | "E" | "XY" | "YZ" | "XZ" | "XYZ" | "XYZE" */
     open var mode: String /* "translate" | "rotate" | "scale" */
@@ -51,7 +41,7 @@ external open class TransformControls(obj: Camera, domElement: HTMLElement = def
     open fun pointerDown(pointer: PointerEvent?)
     open fun pointerMove(pointer: PointerEvent?)
     open fun pointerUp(pointer: PointerEvent?)
-    open fun attach(obj: Object3D__0): TransformControls /* this */
+    override fun attach(obj: Object3D): TransformControls /* this */
     open fun detach(): TransformControls /* this */
     open fun getMode(): String /* "translate" | "rotate" | "scale" */
     open fun getRaycaster(): Raycaster
@@ -66,12 +56,12 @@ external open class TransformControls(obj: Camera, domElement: HTMLElement = def
 }
 
 external interface `T$62` {
-    var translate: Object3D__0
-    var rotate: Object3D__0
-    var scale: Object3D__0
+    var translate: Object3D
+    var rotate: Object3D
+    var scale: Object3D
 }
 
-external open class TransformControlsGizmo : Object3D__0 {
+open external class TransformControlsGizmo : Object3D {
     override var type: String /* "TransformControlsGizmo" */
     open var isTransformControlsGizmo: Boolean
     open var gizmo: `T$62`
@@ -79,7 +69,7 @@ external open class TransformControlsGizmo : Object3D__0 {
     open var picker: `T$62`
 }
 
-external open class TransformControlsPlane : Mesh__0 {
+open external class TransformControlsPlane : Mesh<BufferGeometry<NormalOrGLBufferAttributes>, Material> {
     override var type: String /* "TransformControlsPlane" */
     open var isTransformControlsPlane: Boolean
     open var mode: String /* "translate" | "rotate" | "scale" */

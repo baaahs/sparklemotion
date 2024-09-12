@@ -1,7 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.events.*
@@ -14,9 +13,9 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import three.*
 import three.addons.MTLLoader.MaterialCreator
-import three.addons.MTLLoader.`T$82`
-import three.addons.MTLLoader.`T$83`
+import kotlin.js.*
 
 external interface MaterialCreatorOptions {
     var side: Any?
@@ -36,7 +35,7 @@ external interface MaterialCreatorOptions {
         set(value) = definedExternally
 }
 
-external open class MTLLoader(manager: LoadingManager = definedExternally) : Loader__1<MaterialCreator> {
+open external class MTLLoader(manager: LoadingManager = definedExternally) : Loader__1<MaterialCreator> {
     open var materialOptions: MaterialCreatorOptions
     open fun parse(text: String, path: String): MaterialCreator
     open fun setMaterialOptions(value: MaterialCreatorOptions)
@@ -72,7 +71,7 @@ external open class MTLLoader(manager: LoadingManager = definedExternally) : Loa
         open fun create(materialName: String): Material
         open fun createMaterial_(materialName: String): Material
         open fun getTextureParams(value: String, matParams: Any): TexParams
-        open fun loadTexture(url: String, mapping: Any = definedExternally, onLoad: (bufferGeometry: BufferGeometry__0) -> Unit = definedExternally, onProgress: (event: ProgressEvent__0) -> Unit = definedExternally, onError: (event: ErrorEvent) -> Unit = definedExternally): Texture
+        open fun loadTexture(url: String, mapping: Any = definedExternally, onLoad: (bufferGeometry: BufferGeometry<NormalOrGLBufferAttributes>) -> Unit = definedExternally, onProgress: (event: ProgressEvent) -> Unit = definedExternally, onError: (event: ErrorEvent) -> Unit = definedExternally): Texture
     }
 }
 

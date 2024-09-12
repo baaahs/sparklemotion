@@ -1,19 +1,10 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import three.Data3DTexture
+import three.Loader__1
+import three.LoadingManager
+import three.Vector3
 
 external interface LUTCubeResult {
     var title: String
@@ -23,7 +14,7 @@ external interface LUTCubeResult {
     var texture3D: Data3DTexture
 }
 
-external open class LUTCubeLoader(manager: LoadingManager = definedExternally) : Loader__1<LUTCubeResult> {
+open external class LUTCubeLoader(manager: LoadingManager = definedExternally) : Loader__1<LUTCubeResult> {
     open var type: Any
     open fun setType(type: Any): LUTCubeLoader /* this */
     open fun parse(input: String): LUTCubeResult
