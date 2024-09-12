@@ -10,6 +10,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.resourcesBase
 import baaahs.sm.brain.proto.Pixels
 import baaahs.util.globalLaunch
+import baaahs.visualizer.entity.SurfaceVisualizer
 import kotlinx.coroutines.delay
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get

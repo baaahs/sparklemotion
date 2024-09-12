@@ -1,4 +1,4 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
@@ -9,6 +9,7 @@ import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.IObservable
 import baaahs.ui.View
+import baaahs.visualizer.VizObj
 
 interface ItemVisualizer<T: Any> : IObservable {
     val item: T

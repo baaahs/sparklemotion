@@ -1,10 +1,11 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.LightRing
 import baaahs.sim.LightBarSimulation
+import baaahs.visualizer.*
 import three.*
 
 class LightRingVisualizer(

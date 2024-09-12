@@ -1,4 +1,4 @@
-package baaahs.visualizer
+package baaahs.visualizer.entity
 
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
@@ -7,8 +7,8 @@ import baaahs.model.ModelUnit
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
+import baaahs.visualizer.*
 import three.*
-import three_ext.clear
 import three_ext.plus
 import three_ext.set
 import three_ext.toVector3F

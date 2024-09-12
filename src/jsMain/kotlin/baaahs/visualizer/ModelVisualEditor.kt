@@ -8,6 +8,8 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
+import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.itemVisualizer
 import three.examples.jsm.controls.TransformControls
 import three.Group
 import three.Object3D

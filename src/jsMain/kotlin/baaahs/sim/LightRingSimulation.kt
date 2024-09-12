@@ -2,7 +2,7 @@ package baaahs.sim
 
 import baaahs.model.LightRing
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.LightRingVisualizer
+import baaahs.visualizer.entity.LightRingVisualizer
 
 class LightRingSimulation(
     val lightRing: LightRing,
