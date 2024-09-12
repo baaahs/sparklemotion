@@ -1,7 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.events.*
@@ -14,9 +13,11 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import three.*
+import kotlin.js.*
 
-external open class PCDLoader(manager: LoadingManager = definedExternally) : Loader__1<Points__2<BufferGeometry__0, PointsMaterial>> {
+open external class PCDLoader(manager: LoadingManager = definedExternally) : Loader__1<Points<BufferGeometry<NormalOrGLBufferAttributes>, PointsMaterial>> {
     open var littleEndian: Boolean
-    open fun parse(data: ArrayBuffer): Points__2<BufferGeometry__0, PointsMaterial>
-    open fun parse(data: String): Points__2<BufferGeometry__0, PointsMaterial>
+    open fun parse(data: ArrayBuffer): Points<BufferGeometry<NormalOrGLBufferAttributes>, PointsMaterial>
+    open fun parse(data: String): Points<BufferGeometry<NormalOrGLBufferAttributes>, PointsMaterial>
 }

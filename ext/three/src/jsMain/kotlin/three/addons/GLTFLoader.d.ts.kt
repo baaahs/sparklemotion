@@ -1,19 +1,12 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import js.objects.Record
+import org.khronos.webgl.ArrayBuffer
+import org.w3c.dom.ErrorEvent
+import three.*
+import kotlin.js.Json
+import kotlin.js.Promise
 
 external interface `T$77` {
     var copyright: String?
@@ -38,15 +31,15 @@ external interface `T$77` {
 
 external interface GLTF {
     var animations: Array<AnimationClip>
-    var scene: Group__0
-    var scenes: Array<Group__0>
+    var scene: Group
+    var scenes: Array<Group>
     var cameras: Array<Camera>
     var asset: `T$77`
     var parser: GLTFParser
     var userData: Record<String, Any>
 }
 
-external open class GLTFLoader(manager: LoadingManager = definedExternally) : Loader__1<GLTF> {
+open external class GLTFLoader(manager: LoadingManager = definedExternally) : Loader__1<GLTF> {
     open var dracoLoader: DRACOLoader?
     open var ktx2Loader: KTX2Loader?
     open var meshoptDecoder: Any?
@@ -104,14 +97,14 @@ external interface `T$80` {
         set(value) = definedExternally
 }
 
-external open class GLTFParser {
+open external class GLTFParser {
     open var json: Any
     open var options: `T$78`
     open var fileLoader: FileLoader
     open var textureLoader: dynamic /* TextureLoader | ImageBitmapLoader */
     open var plugins: `T$79`
     open var extensions: Json
-    open var associations: Map<dynamic /* Object3D__0 | Material | Texture */, GLTFReference>
+    open var associations: Map<dynamic /* Object3D | Material | Texture */, GLTFReference>
     open fun setExtensions(extensions: Json)
     open fun setPlugins(plugins: `T$79`)
     open fun parse(onLoad: (gltf: GLTF) -> Unit, onError: (event: ErrorEvent) -> Unit = definedExternally)
@@ -124,18 +117,18 @@ external open class GLTFParser {
     open var loadTextureImage: (textureIndex: Number, sourceIndex: Number, loader: Loader__0) -> Promise<Texture>
     open var loadImageSource: (sourceIndex: Number, loader: Loader__0) -> Promise<Texture>
     open var assignTexture: (materialParams: Json, mapName: String, mapDef: `T$80`, colorSpace: Any?) -> Promise<Texture?>
-    open var assignFinalMaterial: (obj: Mesh__0) -> Unit
+    open var assignFinalMaterial: (obj: Mesh<*, *>) -> Unit
     open var getMaterialType: () -> Any
     open var loadMaterial: (materialIndex: Number) -> Promise<Material>
     open var createUniqueName: (originalName: String) -> String
-    open var createNodeMesh: (nodeIndex: Number) -> Promise<dynamic /* Group__0 | Mesh__0 | SkinnedMesh__0 */>
-    open var loadGeometries: (primitives: Array<Json>) -> Promise<Array<BufferGeometry__0>>
-    open var loadMesh: (meshIndex: Number) -> Promise<dynamic /* Group__0 | Mesh__0 | SkinnedMesh__0 */>
+    open var createNodeMesh: (nodeIndex: Number) -> Promise<dynamic /* Group | Mesh<*, *> | SkinnedMesh<*, *> */>
+    open var loadGeometries: (primitives: Array<Json>) -> Promise<Array<BufferGeometry<NormalOrGLBufferAttributes>>>
+    open var loadMesh: (meshIndex: Number) -> Promise<dynamic /* Group | Mesh<*, *> | SkinnedMesh<*, *> */>
     open var loadCamera: (cameraIndex: Number) -> Promise<Camera>
     open var loadSkin: (skinIndex: Number) -> Promise<Skeleton>
     open var loadAnimation: (animationIndex: Number) -> Promise<AnimationClip>
-    open var loadNode: (nodeIndex: Number) -> Promise<Object3D__0>
-    open var loadScene: () -> Promise<Group__0>
+    open var loadNode: (nodeIndex: Number) -> Promise<Object3D>
+    open var loadScene: () -> Promise<Group>
 }
 
 external interface GLTFLoaderPlugin {
@@ -146,10 +139,10 @@ external interface GLTFLoaderPlugin {
     var afterRoot: ((result: GLTF) -> Promise<Unit>?)?
         get() = definedExternally
         set(value) = definedExternally
-    var loadNode: ((nodeIndex: Number) -> Promise<Object3D__0>?)?
+    var loadNode: ((nodeIndex: Number) -> Promise<Object3D>?)?
         get() = definedExternally
         set(value) = definedExternally
-    var loadMesh: ((meshIndex: Number) -> Promise<dynamic /* Group__0 | Mesh__0 | SkinnedMesh__0 */>?)?
+    var loadMesh: ((meshIndex: Number) -> Promise<dynamic /* Group | Mesh<*, *> | SkinnedMesh<*, *> */>?)?
         get() = definedExternally
         set(value) = definedExternally
     var loadBufferView: ((bufferViewIndex: Number) -> Promise<ArrayBuffer>?)?
@@ -167,10 +160,10 @@ external interface GLTFLoaderPlugin {
     var extendMaterialParams: ((materialIndex: Number, materialParams: Json) -> Promise<Any>?)?
         get() = definedExternally
         set(value) = definedExternally
-    var createNodeMesh: ((nodeIndex: Number) -> Promise<dynamic /* Group__0 | Mesh__0 | SkinnedMesh__0 */>?)?
+    var createNodeMesh: ((nodeIndex: Number) -> Promise<dynamic /* Group | Mesh<*, *> | SkinnedMesh<*, *> */>?)?
         get() = definedExternally
         set(value) = definedExternally
-    var createNodeAttachment: ((nodeIndex: Number) -> Promise<Object3D__0>?)?
+    var createNodeAttachment: ((nodeIndex: Number) -> Promise<Object3D>?)?
         get() = definedExternally
         set(value) = definedExternally
 }

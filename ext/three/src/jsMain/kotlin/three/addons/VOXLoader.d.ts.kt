@@ -1,19 +1,9 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.khronos.webgl.ArrayBuffer
+import org.khronos.webgl.Uint8Array
+import three.*
 
 external interface `T$85` {
     var x: Number
@@ -27,10 +17,10 @@ external interface Chunk {
     var data: Uint8Array
 }
 
-external open class VOXLoader(manager: LoadingManager = definedExternally) : Loader__1<Array<Chunk>> {
+open external class VOXLoader(manager: LoadingManager = definedExternally) : Loader__1<Array<Chunk>> {
     open fun parse(data: ArrayBuffer): Array<Any?>
 }
 
-external open class VOXMesh(chunk: Chunk) : Mesh__0
+open external class VOXMesh(chunk: Chunk) : Mesh<BufferGeometry<NormalOrGLBufferAttributes>, Material>
 
-external open class VOXData3DTexture(chunk: Chunk) : Data3DTexture
+open external class VOXData3DTexture(chunk: Chunk) : Data3DTexture

@@ -1,21 +1,9 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import three.*
 
-external open class SessionLightProbe(xrLight: XREstimatedLight, renderer: WebGLRenderer, lightProbe: LightProbe, environmentEstimation: Boolean, estimationStartCallback: () -> Unit) {
+open external class SessionLightProbe(xrLight: XREstimatedLight, renderer: WebGLRenderer, lightProbe: LightProbe, environmentEstimation: Boolean, estimationStartCallback: () -> Unit) {
     open var xrLight: XREstimatedLight
     open var renderer: WebGLRenderer
     open var lightProbe: LightProbe
@@ -32,7 +20,7 @@ external interface XREstimatedLightEventMap : Object3DEventMap {
     var estimationend: Any
 }
 
-external open class XREstimatedLight(renderer: WebGLRenderer, environmentEstimation: Boolean = definedExternally) : Group<XREstimatedLightEventMap> {
+open external class XREstimatedLight(renderer: WebGLRenderer, environmentEstimation: Boolean = definedExternally) : Group {
     open var lightProbe: LightProbe
     open var directionalLight: DirectionalLight
     open var environment: Texture

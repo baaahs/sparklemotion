@@ -1,19 +1,7 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import three.*
 
 external interface MMDPhysicsParameter {
     var unitStep: Number?
@@ -27,9 +15,9 @@ external interface MMDPhysicsParameter {
         set(value) = definedExternally
 }
 
-external open class MMDPhysics(mesh: SkinnedMesh__0, rigidBodyParams: Array<Any?>, constraintParams: Array<Any?> = definedExternally, params: MMDPhysicsParameter = definedExternally) {
+open external class MMDPhysics(mesh: SkinnedMesh<*, *>, rigidBodyParams: Array<Any?>, constraintParams: Array<Any?> = definedExternally, params: MMDPhysicsParameter = definedExternally) {
     open var manager: ResourceManager
-    open var mesh: SkinnedMesh__0
+    open var mesh: SkinnedMesh<*, *>
     open var unitStep: Number
     open var maxStepNum: Number
     open var gravity: Vector3
@@ -43,7 +31,7 @@ external open class MMDPhysics(mesh: SkinnedMesh__0, rigidBodyParams: Array<Any?
     open fun createHelper(): MMDPhysicsHelper
 }
 
-external open class ResourceManager {
+open external class ResourceManager {
     open var threeVector3s: Array<Vector3>
     open var threeMatrix4s: Array<Matrix4>
     open var threeQuaternions: Array<Quaternion>
@@ -91,8 +79,8 @@ external open class ResourceManager {
     open fun matrix3ToQuaternion(m: Any?): Any?
 }
 
-external open class RigidBody(mesh: SkinnedMesh__0, world: Any?, params: Any?, manager: ResourceManager) {
-    open var mesh: SkinnedMesh__0
+open external class RigidBody(mesh: SkinnedMesh<*, *>, world: Any?, params: Any?, manager: ResourceManager) {
+    open var mesh: SkinnedMesh<*, *>
     open var world: Any?
     open var params: Any?
     open var manager: ResourceManager
@@ -105,8 +93,8 @@ external open class RigidBody(mesh: SkinnedMesh__0, world: Any?, params: Any?, m
     open fun updateBone(): RigidBody /* this */
 }
 
-external open class Constraint(mesh: SkinnedMesh__0, world: Any?, bodyA: RigidBody, bodyB: RigidBody, params: Any?, manager: ResourceManager) {
-    open var mesh: SkinnedMesh__0
+open external class Constraint(mesh: SkinnedMesh<*, *>, world: Any?, bodyA: RigidBody, bodyB: RigidBody, params: Any?, manager: ResourceManager) {
+    open var mesh: SkinnedMesh<*, *>
     open var world: Any?
     open var bodyA: RigidBody
     open var bodyB: RigidBody
@@ -114,8 +102,8 @@ external open class Constraint(mesh: SkinnedMesh__0, world: Any?, bodyA: RigidBo
     open var manager: ResourceManager
 }
 
-external open class MMDPhysicsHelper(mesh: SkinnedMesh__0, physics: MMDPhysics) : Object3D__0 {
-    open var mesh: SkinnedMesh__0
+open external class MMDPhysicsHelper(mesh: SkinnedMesh<*, *>, physics: MMDPhysics) : Object3D {
+    open var mesh: SkinnedMesh<*, *>
     open var physics: MMDPhysics
     open var materials: dynamic /* JsTuple<MeshBasicMaterial, MeshBasicMaterial, MeshBasicMaterial> */
     open fun dispose()
