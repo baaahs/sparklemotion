@@ -1,19 +1,10 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import org.khronos.webgl.Uint8Array
+import three.DataTexture
+import three.WebGLRenderTarget
+import three.WebGLRenderer
 
 external var NO_COMPRESSION: Number /* 0 */
 
@@ -30,9 +21,9 @@ external interface EXRExporterParseOptions {
         set(value) = definedExternally
 }
 
-external open class EXRExporter {
-    open fun parse(renderer: WebGLRenderer, renderTarget: WebGLRenderTarget__0, options: EXRExporterParseOptions = definedExternally): Uint8Array
-    open fun parse(renderer: WebGLRenderer, renderTarget: WebGLRenderTarget__0): Uint8Array
+open external class EXRExporter {
+    open fun parse(renderer: WebGLRenderer, renderTarget: WebGLRenderTarget<*>, options: EXRExporterParseOptions = definedExternally): Uint8Array
+    open fun parse(renderer: WebGLRenderer, renderTarget: WebGLRenderTarget<*>): Uint8Array
     open fun parse(dataTexture: DataTexture, options: EXRExporterParseOptions = definedExternally): Uint8Array
     open fun parse(dataTexture: DataTexture): Uint8Array
 }

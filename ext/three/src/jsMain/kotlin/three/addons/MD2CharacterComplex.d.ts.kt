@@ -1,19 +1,9 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import three.Mesh
+import three.Object3D
+import three.Texture
 
 external interface `T$86` {
     var crouch: Boolean?
@@ -39,7 +29,7 @@ external interface `T$86` {
         set(value) = definedExternally
 }
 
-external open class MD2CharacterComplex {
+open external class MD2CharacterComplex {
     open var scale: Number
     open var animationFPS: Number
     open var transitionFrames: Number
@@ -49,16 +39,16 @@ external open class MD2CharacterComplex {
     open var backAcceleration: Number
     open var frontDecceleration: Number
     open var angularSpeed: Number
-    open var root: Object3D__0
-    open var meshBody: Mesh__0?
-    open var meshWeapon: Mesh__0?
+    open var root: Object3D
+    open var meshBody: Mesh<*, *>?
+    open var meshWeapon: Mesh<*, *>?
     open var controls: `T$86`?
     open var skinsBody: Array<Texture>
     open var skinsWeapon: Array<Texture>
-    open var weapons: Array<Mesh__0>
+    open var weapons: Array<Mesh<*, *>>
     open var currentSkin: Number
     open var onLoadComplete: () -> Unit
-    open var meshes: Array<Mesh__0>
+    open var meshes: Array<Mesh<*, *>>
     open var animations: Array<Any?>
     open var loadCounter: Number
     open var speed: Number

@@ -1,21 +1,11 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
-import org.khronos.webgl.*
-import org.w3c.dom.*
-import org.w3c.dom.events.*
-import org.w3c.dom.parsing.*
-import org.w3c.dom.svg.*
-import org.w3c.dom.url.*
-import org.w3c.fetch.*
-import org.w3c.files.*
-import org.w3c.notifications.*
-import org.w3c.performance.*
-import org.w3c.workers.*
-import org.w3c.xhr.*
+import three.Object3D
+import three.Ray
+import three.Vector3
 
-external open class Face {
+open external class Face {
     open var normal: Vector3
     open var midpoint: Vector3
     open var area: Number
@@ -31,7 +21,7 @@ external open class Face {
     }
 }
 
-external open class HalfEdge(vertex: VertexNode, face: Face) {
+open external class HalfEdge(vertex: VertexNode, face: Face) {
     open var vertex: VertexNode
     open var prev: HalfEdge
     open var next: HalfEdge
@@ -44,14 +34,14 @@ external open class HalfEdge(vertex: VertexNode, face: Face) {
     open fun tail(): VertexNode
 }
 
-external open class VertexNode(point: Vector3) {
+open external class VertexNode(point: Vector3) {
     open var point: Vector3
     open var prev: VertexNode
     open var next: VertexNode
     open var face: Face
 }
 
-external open class VertexList {
+open external class VertexList {
     open var head: VertexNode
     open var tail: VertexNode
     open fun append(vertex: VertexNode): VertexList /* this */
@@ -66,7 +56,7 @@ external open class VertexList {
     open fun removeSubList(a: VertexNode, b: VertexNode): VertexList /* this */
 }
 
-external open class ConvexHull {
+open external class ConvexHull {
     open var tolerance: Number
     open var faces: Array<Face>
     open var newFaces: Array<Face>
@@ -93,5 +83,5 @@ external open class ConvexHull {
     open fun removeVertexFromFace(vertex: VertexNode, face: Face): ConvexHull /* this */
     open fun resolveUnassignedPoints(newFaces: Array<Face>): ConvexHull /* this */
     open fun setFromPoints(points: Array<Vector3>): ConvexHull /* this */
-    open fun setFromObject(obj: Object3D__0): ConvexHull /* this */
+    open fun setFromObject(obj: Object3D): ConvexHull /* this */
 }

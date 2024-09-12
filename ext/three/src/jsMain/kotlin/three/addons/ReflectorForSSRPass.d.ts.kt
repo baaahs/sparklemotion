@@ -1,7 +1,6 @@
 @file:Suppress("INTERFACE_WITH_SUPERCLASS", "OVERRIDING_FINAL_MEMBER", "RETURN_TYPE_MISMATCH_ON_OVERRIDE", "CONFLICTING_OVERLOADS")
 package three.addons
 
-import kotlin.js.*
 import org.khronos.webgl.*
 import org.w3c.dom.*
 import org.w3c.dom.events.*
@@ -14,6 +13,8 @@ import org.w3c.notifications.*
 import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
+import three.*
+import kotlin.js.*
 
 external interface `T$87` {
     var DISTANCE_ATTENUATION: Boolean
@@ -49,7 +50,7 @@ external interface ReflectorForSSRPassOptions {
         set(value) = definedExternally
 }
 
-external open class ReflectorForSSRPass<TGeometry : BufferGeometry__0>(geometry: TGeometry, options: ReflectorForSSRPassOptions) : Mesh__1<TGeometry> {
+open external class ReflectorForSSRPass<TGeometry : BufferGeometry<NormalOrGLBufferAttributes>>(geometry: TGeometry, options: ReflectorForSSRPassOptions) : Mesh<TGeometry, Material> {
     override var type: String /* "ReflectorForSSRPass" */
     open var options: ReflectorForSSRPassOptions
     open var needsUpdate: Boolean
@@ -57,14 +58,14 @@ external open class ReflectorForSSRPass<TGeometry : BufferGeometry__0>(geometry:
     open var opacity: Number
     open var color: Color
     open var resolution: Vector2
-    override var material: ShaderMaterial
-    open var renderTarget: WebGLRenderTarget__0
+//    override var material: ShaderMaterial
+    open var renderTarget: WebGLRenderTarget<*>
     open var doRender: (renderer: WebGLRenderer, scene: Scene, camera: Camera) -> Unit
-    open var getRenderTarget: () -> WebGLRenderTarget__0
+    open var getRenderTarget: () -> WebGLRenderTarget<*>
 
     companion object {
         var ReflectorShader: ReflectorShader
     }
 }
 
-external open class ReflectorForSSRPass__0 : ReflectorForSSRPass<BufferGeometry__0>
+open external class ReflectorForSSRPass__0 : ReflectorForSSRPass<BufferGeometry<NormalOrGLBufferAttributes>>
