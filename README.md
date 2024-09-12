@@ -4,11 +4,12 @@
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/AueGMvuTnQ?style=flat-square)](https://discord.gg/AueGMvuTnQ)
 [![Demo Link](https://img.shields.io/badge/Demo-baaahs.github.io/sparklemotion-blue)](https://baaahs.github.io/sparklemotion)
 
-Sparkle Motion is the system used to control the lights on [BAAAHS](http://baaahs.org), but it's
+Sparkle Motion[^1] is the system used to control the lights on [BAAAHS](http://baaahs.org), but it's
 designed so it could be applied to pretty much any lighting project. It includes a browser-based
 light show designer and performance interface, 3D light mapping, IP-based control protocol, and
 custom LED control hardware and firmware. We designed it all pretty much from scratch, because
 we're nerds. We hope you'll have some fun with it and maybe find it useful.
+[^1]: It's a [Donnie Darko reference](https://www.youtube.com/watch?v=4QJCn04dfek).
 
 | ![SparkleMotionDemo-20220308](https://user-images.githubusercontent.com/40298/157351650-5b3338b7-757a-4e76-bfe2-743a06bb2891.gif) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> |
 | --- | --- |
