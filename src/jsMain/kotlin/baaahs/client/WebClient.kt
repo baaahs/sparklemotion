@@ -14,7 +14,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.libraries.ShaderLibraries
-import baaahs.mapper.JsMapper
+import baaahs.mapper.JsMapperBuilder
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
@@ -32,7 +32,7 @@ class WebClient(
     private val sceneProvider: SceneProvider,
     private val storage: ClientStorage,
     private val sceneEditorClient: SceneEditorClient,
-    private val mapper: JsMapper,
+    private val mapperBuilder: JsMapperBuilder,
     remoteFsSerializer: RemoteFsSerializer,
     private val notifier: Notifier,
     private val fileDialog: FileDialog,
@@ -85,7 +85,7 @@ class WebClient(
             this.sceneManager = this@WebClient.sceneManager.facade
 
             this.sceneEditorClient = this@WebClient.sceneEditorClient.facade
-            this.mapper = this@WebClient.mapper
+            this.mapperBuilder = this@WebClient.mapperBuilder
         })
     }
 

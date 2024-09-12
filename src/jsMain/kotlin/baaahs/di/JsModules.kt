@@ -13,7 +13,7 @@ import baaahs.gl.RootToolchain
 import baaahs.gl.Toolchain
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
-import baaahs.mapper.JsMapper
+import baaahs.mapper.JsMapperBuilder
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
 import baaahs.plugin.ClientPlugins
@@ -82,7 +82,7 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {
-                JsMapper(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
+                JsMapperBuilder(get(), get(), get(), null, get(), get(), get(), get(named(Qualifier.PinkyAddress)), get(), get())
             }
 
             // Dev only:

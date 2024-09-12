@@ -8,12 +8,12 @@ import baaahs.geom.Vector2F
 import baaahs.geom.Vector3F
 import baaahs.geom.toThreeEuler
 import baaahs.imaging.*
+import baaahs.mapper.JsMapper.StatusListener
 import baaahs.mapper.MappingSession.SurfaceData.PixelData
 import baaahs.model.Model
 import baaahs.net.Network
 import baaahs.plugin.Plugins
 import baaahs.scene.SceneProvider
-import baaahs.sim.HostedWebApp
 import baaahs.ui.Keypress
 import baaahs.ui.KeypressResult
 import baaahs.ui.Observable
@@ -28,8 +28,6 @@ import js.objects.jso
 import kotlinx.coroutines.*
 import mui.icons.material.KeyboardArrowRight
 import react.RBuilder
-import react.ReactElement
-import react.createElement
 import react.dom.br
 import three.*
 import three.Color
@@ -78,6 +76,24 @@ class MapperStatus : Observable() {
     var orderedPanels: List<Pair<JsMapper.VisibleSurface, Float>> by notifyOnChange(emptyList())
 }
 
+class JsMapperBuilder(
+    private val plugins: Plugins,
+    private val sceneEditorClient: SceneEditorClient,
+    private val sceneManager: SceneManager,
+    private val statusListener: StatusListener? = null,
+    private val network: Network,
+    private val sceneProvider: SceneProvider,
+    private val mediaDevices: MediaDevices,
+    private val pinkyAddress: Network.Address,
+    private val clock: Clock,
+    private val clientStorage: ClientStorage,
+    private val mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+) : MapperBuilder {
+    override fun build(): JsMapper = JsMapper(
+        plugins, sceneEditorClient, sceneManager, statusListener, network, sceneProvider, mediaDevices, pinkyAddress,
+        clock, clientStorage, mapperScope
+    )
+}
 class JsMapper(
     plugins: Plugins,
     private val sceneEditorClient: SceneEditorClient,
@@ -92,7 +108,7 @@ class JsMapper(
     mapperScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 ) : Mapper(
     plugins, network, sceneProvider, mediaDevices, pinkyAddress, clock, mapperScope
-), HostedWebApp {
+) {
     var mappingEnabled: Boolean = false
         set(value) {
             if (value != field) {
@@ -442,14 +458,6 @@ class JsMapper(
         perfStatsDiv.innerText = mapperStats.summarize()
     }
 
-    override fun render(): ReactElement<*> {
-        return createElement(SceneEditorView, jso {
-            sceneEditorClient = this@JsMapper.sceneEditorClient.facade
-            mapper = this@JsMapper
-            sceneManager = this@JsMapper.sceneManager.facade
-        })
-    }
-
     override fun onLaunch() {
         super<Mapper>.onLaunch()
 
@@ -783,7 +791,9 @@ class JsMapper(
     fun findVisualizer(entityName: String): PanelInfo? =
         entitiesByName[entityName]?.let { entityDepictions[it] }
 
-    override val ui: MapperUi = object : MapperUi {
+    override val ui: MapperUi by lazy { JsMapperUi() }
+
+    inner class JsMapperUi : MapperUi {
         override var message: String?
             get() = mapperStatus.message
             set(value) { mapperStatus.message = value }
