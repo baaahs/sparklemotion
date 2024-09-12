@@ -5,7 +5,7 @@ import baaahs.model.ModelUnit
 import baaahs.model.MovingHeadAdapter
 import baaahs.visualizer.VizObj
 import baaahs.visualizer.toVector3
-import three.js.*
+import three.*
 import three_ext.toVector3F
 import kotlin.math.PI
 

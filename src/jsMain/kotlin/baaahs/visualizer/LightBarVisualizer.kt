@@ -7,7 +7,7 @@ import baaahs.model.ModelUnit
 import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
-import three.js.*
+import three.*
 import three_ext.clear
 import three_ext.plus
 import three_ext.set
@@ -186,7 +186,7 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
         obj.add(containerOutline)
         obj.add(containerMesh)
         obj.add(strandGroup)
-        obj.add(pixelsPreview)
+        obj.add(pixelsPreview.points)
         vizPixels?.addTo(obj)
 
         strandGroup.clear()
@@ -208,8 +208,8 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
                         arrowSize,
                         arrowSize
                     ).apply {
-                        line.material = strandMaterial
-                        cone.material = strandHintMaterial
+                        line.asDynamic().material = strandMaterial
+                        cone.asDynamic().material = strandHintMaterial
                     }
                 )
             }
@@ -223,8 +223,8 @@ abstract class PixelArrayVisualizer<T : PixelArray>(
                     arrowSize,
                     arrowSize
                 ).apply {
-                    line.material = strandMaterial
-                    cone.material = strandHintMaterial
+                    line.asDynamic().material = strandMaterial
+                    cone.asDynamic().material = strandHintMaterial
                 }
             )
             lastEndVertex = segment.endVertex

@@ -7,8 +7,8 @@ import baaahs.util.Clock
 import baaahs.visualizer.BaseEntityVisualizer
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.EntityStyle
-import three.js.Group
-import three.js.Object3D
+import three.Group
+import three.Object3D
 import three_ext.clear
 
 class MovingHeadVisualizer(

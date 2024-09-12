@@ -32,7 +32,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
     val appContext = useContext(mapperAppContext)
     val styles = appContext.allStyles.mapper
 
-    val ui = props.mapper
+    val ui = memo(props.mapperBuilder) { props.mapperBuilder.build() }
     observe(ui)
     val uiActions = memo(ui) { MemoizedJsMapper(ui) }
 
@@ -77,18 +77,18 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 
     ui.setSizes()
 
-    val handleChangeEntity by handler(props.mapper.mappingController) { entity: Model.Entity? ->
-        props.mapper.mappingController?.guessedEntity = entity
+    val handleChangeEntity by handler(ui.mappingController) { entity: Model.Entity? ->
+        ui.mappingController?.guessedEntity = entity
         forceRender()
     }
 
-    val handlePixelCountChange by handler(props.mapper.mappingController) { pixelCount: String ->
-        props.mapper.mappingController?.expectedPixelCount = pixelCount.toIntOrNull()
+    val handlePixelCountChange by handler(ui.mappingController) { pixelCount: String ->
+        ui.mappingController?.expectedPixelCount = pixelCount.toIntOrNull()
         forceRender()
     }
 
-    val handlePixelFormatChange by handler(props.mapper.mappingController) { pixelFormat: PixelFormat? ->
-        props.mapper.mappingController?.pixelFormat = pixelFormat
+    val handlePixelFormatChange by handler(ui.mappingController) { pixelFormat: PixelFormat? ->
+        ui.mappingController?.pixelFormat = pixelFormat
         forceRender()
     }
 
@@ -172,10 +172,10 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                     }
                 }
 
-                props.mapper.mappingController?.let { mappingController ->
+                ui.mappingController?.let { mappingController ->
                     betterSelect<Model.Entity?> {
                         attrs.label = "Entity:"
-                        attrs.values = props.mapper.entitiesByName.values.toList().map<_, Model.Entity?>{ it }.plus(null)
+                        attrs.values = ui.entitiesByName.values.toList().map<_, Model.Entity?>{ it }.plus(null)
                         attrs.renderValueOption = { entity -> buildElement { +(entity?.name ?: "None" ) } }
                         attrs.value = mappingController.guessedEntity
                         attrs.onChange = handleChangeEntity
@@ -264,7 +264,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
         }
 
         statusBar {
-            attrs.mapperStatus = props.mapper.mapperStatus
+            attrs.mapperStatus = ui.mapperStatus
         }
 
         div(+styles.perfStats) {
@@ -284,7 +284,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
                         }
 
                         twoLogNSlices {
-                            attrs.mapper = props.mapper
+                            attrs.mapper = ui
                             attrs.sessionMetadata = metadata
                         }
                     }
@@ -359,7 +359,7 @@ val MapperAppView = xComponent<MapperAppViewProps>("baaahs.mapper.MapperAppView"
 }
 
 external interface MapperAppViewProps : Props {
-    var mapper: JsMapper
+    var mapperBuilder: JsMapperBuilder
 }
 
 fun RBuilder.mapperApp(handler: RHandler<MapperAppViewProps>) =

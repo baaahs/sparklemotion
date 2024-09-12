@@ -7,10 +7,10 @@ import baaahs.imaging.WebGlImage
 import baaahs.visualizer.BaseVisualizer
 import baaahs.visualizer.Visualizer
 import js.objects.jso
-import three.js.Camera
-import three.js.PerspectiveCamera
-import three.js.Scene
-import three.js.WebGLRenderer
+import three.Camera
+import three.PerspectiveCamera
+import three.Scene
+import three.WebGLRenderer
 import web.gl.WebGLRenderingContext
 
 class FakeMediaDevices(

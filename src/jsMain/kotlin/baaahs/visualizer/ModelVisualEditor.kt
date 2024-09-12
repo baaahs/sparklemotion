@@ -7,11 +7,10 @@ import baaahs.model.ModelData
 import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
-import three.js.Group
-import three.js.Object3D
-import three_ext.OrbitControls
-import three_ext.TransformControls
-import three_ext.clear
+import baaahs.util.three.addEventListener
+import three.examples.jsm.controls.TransformControls
+import three.Group
+import three.Object3D
 import three_ext.toVector3F
 import web.dom.observers.IntersectionObserver
 
@@ -22,10 +21,6 @@ class ModelVisualEditor(
     private val onChange: () -> Unit
 ) : BaseVisualizer(clock) {
     override val facade = Facade()
-
-    init {
-        realScene.autoUpdate = true
-    }
 
     private var modelData: ModelData = mutableModel.build()
     var model: Model = modelData.open()
@@ -82,7 +77,7 @@ class ModelVisualEditor(
         }
 
         val orbitControls = findExtension(OrbitControlsExtension::class).orbitControls
-        transformControls.addEventListener("dragging-changed") {
+        transformControls.addEventListener("dragging-changed") { e ->
             val isDragging = transformControls.dragging
 
             orbitControls.enabled = !isDragging

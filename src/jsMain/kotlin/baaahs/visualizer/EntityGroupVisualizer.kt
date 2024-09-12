@@ -3,7 +3,7 @@ package baaahs.visualizer
 import baaahs.model.ImportedEntityGroup
 import baaahs.model.Model
 import baaahs.util.three.addPadding
-import three.js.*
+import three.*
 import three_ext.expandByObjectLocal
 
 class EntityGroupVisualizer(

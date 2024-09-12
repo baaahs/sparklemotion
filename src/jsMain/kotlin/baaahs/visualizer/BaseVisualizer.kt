@@ -6,18 +6,16 @@ import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import baaahs.util.three.addEventListener
 import baaahs.window
-import js.objects.jso
 import kotlinx.css.hyphenize
-import three.js.*
-import three_ext.OrbitControls
-import three_ext.clear
+import three.examples.jsm.controls.OrbitControls
+import three.*
 import three_ext.set
 import web.events.Event
 import web.events.addEventListener
 import web.events.removeEventListener
 import web.html.HTMLCanvasElement
-import web.html.HTMLElement
 import web.timers.Timeout
 import web.timers.clearTimeout
 import web.timers.setTimeout
@@ -74,7 +72,7 @@ open class BaseVisualizer(
             }
         }
 
-    protected val realScene = Scene().apply { autoUpdate = false }
+    protected val realScene = Scene().apply { matrixWorldAutoUpdate = false }
     protected val scene = Group().also { realScene.add(it) }
     protected var sceneNeedsUpdate = true
     protected var fitCamera = true
@@ -131,7 +129,7 @@ open class BaseVisualizer(
 
     private val raycaster = Raycaster()
 
-    private var originDot: Mesh<SphereBufferGeometry, *>? = null
+    private var originDot: Mesh<SphereGeometry, *>? = null
 
     protected var selectedObject: Object3D? = null
         set(value) {
@@ -182,7 +180,7 @@ open class BaseVisualizer(
         }
 
         originDot = Mesh(
-            SphereBufferGeometry(units.fromCm(1f), 16, 16),
+            SphereGeometry(units.fromCm(1f), 16, 16),
             MeshBasicMaterial().apply {
                 color.set(0xff0000)
                 opacity = .25
@@ -218,7 +216,7 @@ open class BaseVisualizer(
         val fovh = 2* atan(tan(fov / 2) * camera.aspect.toDouble())
         val dx = size.z / 2 + abs(size.x / 2 / tan(fovh / 2))
         val dy = size.z / 2 + abs(size.y / 2 / tan(fov / 2))
-        var cameraZ = max(dx, dy)
+        val cameraZ = max(dx, dy)
 
         camera.zoom = zoom
 
@@ -283,7 +281,7 @@ open class BaseVisualizer(
         }
     }
 
-    protected open fun onObjectClick(intersections: List<Intersection>) {
+    protected open fun onObjectClick(intersections: List<Intersection<*>>) {
         intersections.firstOrNull()?.let { intersection ->
             val obj = intersection.`object`
             console.log("Found intersection with ${obj.name} at ${intersection.distance}.")
@@ -366,7 +364,7 @@ open class BaseVisualizer(
     private val resizeDelay = 100
 
     fun resize() {
-        (canvas.parentElement as? HTMLElement)?.let { parent ->
+        canvas.parentElement?.let { parent ->
             canvas.width = parent.offsetWidth
             canvas.height = parent.offsetHeight
 
@@ -405,14 +403,17 @@ open class BaseVisualizer(
     }
 
     fun Object3D.dispatchEvent(eventType: EventType) {
-        dispatchEvent(jso { type = eventType.name.hyphenize().lowercase() })
+        dispatchEvent(Event(eventType.type))
     }
 
     enum class EventType {
         Select,
         Deselect,
         Click,
-        Transform
+        Transform;
+
+        val type: web.events.EventType<Event>
+            get() = web.events.EventType(name.hyphenize().lowercase())
     }
 
     companion object {

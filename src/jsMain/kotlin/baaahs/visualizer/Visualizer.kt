@@ -2,7 +2,7 @@ package baaahs.visualizer
 
 import baaahs.document
 import baaahs.util.Clock
-import three.js.Object3D
+import three.Object3D
 import web.html.HTMLElement
 import web.html.HTMLSpanElement
 

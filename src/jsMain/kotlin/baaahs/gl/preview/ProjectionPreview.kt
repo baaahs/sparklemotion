@@ -20,7 +20,7 @@ import baaahs.model.Model
 import baaahs.model.PixelArray
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import three.js.Vector2
+import three.Vector2
 import web.animations.requestAnimationFrame
 import web.canvas.Path2D
 import web.html.HTMLCanvasElement

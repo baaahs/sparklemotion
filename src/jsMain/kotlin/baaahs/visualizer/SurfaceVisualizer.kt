@@ -4,7 +4,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
-import three.js.*
+import three.*
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,
@@ -18,8 +18,8 @@ class SurfaceVisualizer(
 
     private val lineMaterial = LineDashedMaterial()
     private val lines: List<Line<*, LineDashedMaterial>> = surfaceGeometry.lines.map { line ->
-        val lineGeo = Geometry()
-        lineGeo.vertices = line.vertices.map { pt -> pt.toVector3() }.toTypedArray()
+        val lineGeo = BufferGeometry<NormalOrGLBufferAttributes>()
+        lineGeo.setFromPoints(line.vertices.map { pt -> pt.toVector3() }.toTypedArray())
         Line(lineGeo, lineMaterial).apply {
             matrixAutoUpdate = false
             mesh.add(this)
@@ -27,7 +27,7 @@ class SurfaceVisualizer(
     }
 
     val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
-    val geometry: Geometry get() = surfaceGeometry.geometry
+    val geometry: BufferGeometry<NormalOrGLBufferAttributes> get() = surfaceGeometry.geometry
     var vizPixels: VizPixels? = vizPixels
         set(value) {
             field?.removeFrom(obj)
