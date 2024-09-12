@@ -9,34 +9,33 @@ designed so it could be applied to pretty much any lighting project. It includes
 light show designer and performance interface, 3D light mapping, IP-based control protocol, and
 custom LED control hardware and firmware. We designed it all pretty much from scratch, because
 we're nerds. We hope you'll have some fun with it and maybe find it useful.
-[^1]: It's a [Donnie Darko reference](https://www.youtube.com/watch?v=4QJCn04dfek).
+[^1]: It's a [Donnie Darko](https://www.youtube.com/watch?v=4QJCn04dfek) [reference](https://wakeupdonnie.fandom.com/wiki/Sparkle_Motion).
 
 | ![SparkleMotionDemo-20220308](https://user-images.githubusercontent.com/40298/157351650-5b3338b7-757a-4e76-bfe2-743a06bb2891.gif) | <img src="/brc-2019.gif" alt="BAAAHS at BRC 2019" width="400"> |
 | --- | --- |
 | The Sparkle Motion [Simulator](https://baaahs.github.io/sparklemotion) | BAAAHS at Black Rock City, 2019 |
 
+**tl;dr:**
 
-> **tl;dr:**
->
-> Shows are built out of small scripts called shaders, which are written in
-> [GLSL](https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)). Lots of [awesome](http://glslsandbox.com/)
-> [free](https://www.shadertoy.com/) shaders and [dev](https://github.com/radixzz/awesome-glsl)
-> [tools](https://shaderfrog.com/) already exist on the internet. In the show designer, you can create or
-> import shaders, and attach them to buttons or sliders in a customizable performance UI. Shaders can be
-> combined in interesting ways to create new effects. You can make shows reactive to the environment by
-> connecting external sensor data—like a beat detector, midi controller, sound spectral analysis, or a
-> webcam—to shader variables.
->
-> Sparkle Motion can control LED strips using
-> [sACN](https://artisticlicenceintegration.com/technology-brief/technology-resource/sacn-and-art-net/)
-> or our custom IP protocol, and Sharpy-style moving heads
-> over DMX, but it could be extended to control pretty much any kind of device. Lights can be mapped to a
-> 3D model using computer vision. Individual lighting fixtures, or groups of fixtures, can be controlled
-> separately. All types of lights are controlled using the same language and idioms.
->
-> On the hardware side, Sparkle Motion includes specs for an ESP32-based controller which you could build
-> (or [buy from us](mailto:info@baaahs.org)!) managing WS2812-family LEDs, which is controlled over
-> Ethernet or WiFi.
+Shows are built out of small scripts called shaders, which are written in
+[GLSL](https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)). Lots of [awesome](http://glslsandbox.com/)
+[free](https://www.shadertoy.com/) shaders and [dev](https://github.com/radixzz/awesome-glsl)
+[tools](https://shaderfrog.com/) already exist on the internet. In the show designer, you can create or
+import shaders, and attach them to buttons or sliders in a customizable performance UI. Shaders can be
+combined in interesting ways to create new effects. You can make shows reactive to the environment by
+connecting external sensor data—like a beat detector, midi controller, sound spectral analysis, or a
+webcam—to shader variables.
+
+Sparkle Motion can control LED strips using industry-standard
+[sACN](https://artisticlicenceintegration.com/technology-brief/technology-resource/sacn-and-art-net/)
+(or with our custom IP protocol), and Sharpy-style moving heads
+over DMX, but it could be extended to control pretty much any kind of device. Lights can be mapped to a
+3D model using computer vision. Individual lighting fixtures, or groups of fixtures, can be controlled
+separately. All types of lights are controlled using the same language and idioms.
+
+On the hardware side, Sparkle Motion includes specs for an ESP32-based controller which you could build
+(or [buy from us](mailto:info@baaahs.org)!) managing WS2812-family LEDs, which is controlled over
+Ethernet or WiFi.
 
 ----
 
