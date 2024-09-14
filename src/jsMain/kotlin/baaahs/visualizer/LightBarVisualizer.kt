@@ -8,9 +8,6 @@ import baaahs.model.PixelArray
 import baaahs.model.PolyLine
 import baaahs.util.three.addPadding
 import three.*
-import three_ext.clear
-import three_ext.plus
-import three_ext.set
 import three_ext.toVector3F
 import kotlin.math.abs
 
@@ -31,7 +28,7 @@ class Container(
         Box3Helper(box).apply {
             this.material = material
             applyTransforms(this)
-            position.set(position + offset)
+            position.add(offset)
         }
 
     fun createMesh(material: MeshBasicMaterial): Mesh<BoxGeometry, MeshBasicMaterial> {
@@ -45,9 +42,9 @@ class Container(
     }
 
     private fun applyTransforms(obj: Object3D) {
-        position?.let { obj.position.set(it) }
+        position?.let { obj.position.copy(it) }
         rotation?.let { obj.rotation.setFromQuaternion(it) }
-        scale?.let { obj.scale.set(it) }
+        scale?.let { obj.scale.copy(it) }
     }
 }
 

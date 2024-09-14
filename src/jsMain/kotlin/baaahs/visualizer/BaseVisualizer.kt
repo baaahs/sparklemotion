@@ -9,9 +9,8 @@ import baaahs.util.Logger
 import baaahs.util.three.addEventListener
 import baaahs.window
 import kotlinx.css.hyphenize
-import three.examples.jsm.controls.OrbitControls
 import three.*
-import three_ext.set
+import three.examples.jsm.controls.OrbitControls
 import web.events.Event
 import web.events.addEventListener
 import web.events.removeEventListener
@@ -334,7 +333,7 @@ open class BaseVisualizer(
 
         orbitControlsExtension.update()
 
-        directionalLight.position.set(camera.position)
+        directionalLight.position.copy(camera.position)
         directionalLight.position.y *= 0.125
 
         val startTime = clock.now()
