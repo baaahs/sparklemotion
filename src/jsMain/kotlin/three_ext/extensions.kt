@@ -14,10 +14,6 @@ operator fun Vector3.minus(other: Vector3): Vector3 {
     return this.clone().sub(other)
 }
 
-fun Vector3.set(other: Vector3) {
-    set(other.x, other.y, other.z)
-}
-
 fun Vector3.set(other: Vector3F) {
     set(other.x, other.y, other.z)
 }
