@@ -6,7 +6,7 @@ import baaahs.visualizer.entity.*
 import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
-actual class EntityAdapter actual constructor(
+actual open class EntityAdapter actual constructor(
     val simulationEnv: SimulationEnv,
     val units: ModelUnit,
     private val isEditing: Boolean

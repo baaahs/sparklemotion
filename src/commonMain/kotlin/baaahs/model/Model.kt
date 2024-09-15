@@ -6,6 +6,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.FixtureOptions
 import baaahs.geom.*
+import baaahs.model.WtfMaths.cross
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.simulations
 import baaahs.sm.webapi.Problem
@@ -69,6 +70,10 @@ class Model(
         val fixtureType: FixtureType
         /** Bounds in entity's local space. */
         override val bounds: Pair<Vector3F, Vector3F>
+        /** The center of the entity's bounding box, in local space. */
+        val center: Vector3F get() = center(bounds)
+        /** The centroid of the entity, in local space. */
+        val centroid: Vector3F get() = center
         override val position: Vector3F
         override val rotation: EulerAngle
         val scale: Vector3F
@@ -161,6 +166,9 @@ class Model(
             get() = PixelArrayDevice
         override val bounds: Pair<Vector3F, Vector3F>
             get() = boundingBox(allVertices())
+        override val centroid: Vector3F
+            get() = faces.fold(Vector3F()) { acc, face -> acc + face.centroid * face.area } /
+                    faces.sumOf { it.area.toDouble() }
 
         open fun allVertices(): Collection<Vector3F> = faces.flatMap { it.vertices.toList() }
 
@@ -217,6 +225,9 @@ class Model(
         val c: Vector3F get() = geometry.vertices[vertexC]
 
         val vertices: Array<Vector3F> get() = arrayOf(a, b, c)
+
+        val centroid: Vector3F get() = (a + b + c) / 3f
+        val area: Float get() = 0.5f * (b - a).cross(c - a).length()
     }
 }
 

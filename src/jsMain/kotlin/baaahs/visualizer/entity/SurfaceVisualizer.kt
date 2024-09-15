@@ -2,11 +2,13 @@ package baaahs.visualizer.entity
 
 import baaahs.device.PixelArrayDevice
 import baaahs.fixtures.FixtureConfig
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.model.Model
 import baaahs.visualizer.*
 import baaahs.visualizer.geometry.SurfaceGeometry
 import three.*
+import three_ext.toVector3F
 
 class SurfaceVisualizer(
     private val surface: Model.Surface,
@@ -28,7 +30,6 @@ class SurfaceVisualizer(
         }
     }
 
-    val panelNormal: Vector3 get() = surfaceGeometry.panelNormal
     val geometry: BufferGeometry<NormalOrGLBufferAttributes> get() = surfaceGeometry.geometry
     var vizPixels: VizPixels? = vizPixels
         set(value) {
@@ -42,6 +43,9 @@ class SurfaceVisualizer(
         add(mesh)
         vizPixels?.addTo(this)
     }
+
+    override val normal: Vector3F
+        get() = surfaceGeometry.panelNormal.toVector3F()
 
     init { update(item) }
 

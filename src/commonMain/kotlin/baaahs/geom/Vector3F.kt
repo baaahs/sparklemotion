@@ -11,6 +11,7 @@ import kotlin.math.sqrt
 
 @Serializable
 data class Vector3F(val x: Float, val y: Float, val z: Float) {
+    constructor(): this(0f, 0f, 0f)
     constructor(x: Double, y: Double, z: Double): this(x.toFloat(), y.toFloat(), z.toFloat())
 
     fun min(other: Vector3F): Vector3F = Vector3F(min(x, other.x), min(y, other.y), min(z, other.z))
@@ -87,6 +88,12 @@ data class Vector3F(val x: Float, val y: Float, val z: Float) {
 
 fun center(vectors: Collection<Vector3F>): Vector3F {
     val (min, max) = boundingBox(vectors)
+    val diff = max.minus(min)
+    return diff * 0.5f + min
+}
+
+fun center(vectors: Pair<Vector3F, Vector3F>): Vector3F {
+    val (min, max) = boundingBox(listOf(vectors.first, vectors.second))
     val diff = max.minus(min)
     return diff * 0.5f + min
 }

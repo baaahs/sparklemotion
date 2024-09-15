@@ -15,8 +15,8 @@ import kotlinx.coroutines.delay
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.get
 import org.khronos.webgl.set
-import three.examples.jsm.utils.mergeGeometries
 import three.*
+import three.examples.jsm.utils.mergeGeometries
 import three_ext.minus
 import three_ext.vector3FacingForward
 import kotlin.math.max
@@ -141,7 +141,7 @@ class VizPixels(
         val facingForward = vector3FacingForward
 
         // Rotate to straight on.
-        val rotator = Rotator(surfaceVisualizer.panelNormal, facingForward)
+        val rotator = Rotator(surfaceVisualizer.normal.toVector3(), facingForward)
         rotator.rotate(panelGeom)
         rotator.rotate(pixGeom)
 
