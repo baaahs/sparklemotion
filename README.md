@@ -81,7 +81,7 @@ Anonymous fixtures are mostly for stuff like bikers-by. They are randomly placed
 
 ## Mapper
 
-Sparkle Morton's mapper lets you detect arbitrarily-placed lights on a 2D or 3D model using just a camera
+Sparkle Motion's mapper lets you detect arbitrarily-placed lights on a 2D or 3D model using just a camera
 connected to a laptop.
 
 (more TK)
