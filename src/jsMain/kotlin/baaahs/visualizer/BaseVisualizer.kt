@@ -346,6 +346,8 @@ open class BaseVisualizer(
             fitCameraToObject()
             fitCamera = false
         }
+
+        activeExtensions.values.forEach { it.beforeRender() }
         renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
 
@@ -429,5 +431,6 @@ inline fun <reified T: Extension> extension(
 
 abstract class Extension(val key: KClass<out Extension>) {
     open fun attach() {}
+    open fun beforeRender() {}
     open fun release() {}
 }

@@ -48,7 +48,8 @@ class SurfaceVisualizer(
         entityStyle.applyToLine(lineMaterial, EntityStyle.Use.BacklitSurface)
     }
 
-    override fun isApplicable(newItem: Any): Model.Surface? = null
+    override fun isApplicable(newItem: Any): Model.Surface? =
+        newItem as? Model.Surface
 
     override fun receiveFixtureConfig(fixtureConfig: FixtureConfig) {
         fixtureConfig as PixelArrayDevice.Config

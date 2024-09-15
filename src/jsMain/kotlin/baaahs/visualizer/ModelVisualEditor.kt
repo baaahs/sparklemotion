@@ -8,9 +8,9 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
-import three.examples.jsm.controls.TransformControls
 import three.Group
 import three.Object3D
+import three.examples.jsm.controls.TransformControls
 import three_ext.toVector3F
 import web.dom.observers.IntersectionObserver
 
@@ -49,6 +49,10 @@ class ModelVisualEditor(
 
         override fun attach() {
             transformControls
+        }
+
+        override fun beforeRender() {
+            transformControls.updateMatrixWorld()
         }
     }
 
