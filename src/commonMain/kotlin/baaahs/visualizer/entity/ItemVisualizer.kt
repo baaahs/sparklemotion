@@ -4,8 +4,8 @@ import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.dmx.MutableDmxTransportConfig
 import baaahs.fixtures.FixtureConfig
+import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
-import baaahs.model.Model
 import baaahs.scene.*
 import baaahs.ui.IObservable
 import baaahs.ui.View
@@ -18,6 +18,7 @@ interface ItemVisualizer<T: Any> : IObservable {
     var mapperIsRunning: Boolean
     var selected: Boolean
     val obj: VizObj
+    val normal: Vector3F? get() = null
 
     fun notifyChanged()
 
@@ -27,7 +28,7 @@ interface ItemVisualizer<T: Any> : IObservable {
     fun update(newItem: T)
 
     /** Returns `true` if the three model has been updated to reflect `newEntity`. */
-    fun updateIfApplicable(newEntity: Model.Entity): Boolean {
+    fun updateIfApplicable(newEntity: T): Boolean {
         if (newEntity == item) return true
 
         val tEntity = isApplicable(newEntity)

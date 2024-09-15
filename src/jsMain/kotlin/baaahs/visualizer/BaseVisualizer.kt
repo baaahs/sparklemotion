@@ -25,7 +25,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 open class BaseVisualizer(
-    private val clock: Clock
+    private val clock: Clock,
+    extensions: List<Pair<KClass<out Extension>, () -> Extension>> = emptyList()
 ) : JsMapper.StatusListener {
     open val facade = Facade()
 
@@ -47,8 +48,7 @@ open class BaseVisualizer(
     private val prerenderListeners = mutableListOf<() -> Unit>()
     private val frameListeners = mutableListOf<FrameListener>()
 
-    protected val camera: PerspectiveCamera =
-        PerspectiveCamera(45, 1.0, 0.1, 10000)
+    protected val camera = PerspectiveCamera(45, 1.0, 0.1, 10000)
     private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
     private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
     private val renderer = WebGLRenderer(jso {
@@ -85,14 +85,13 @@ open class BaseVisualizer(
      * The order that these event listeners are registered matters; can't think of a
      * better way to allow subclasses to inject listeners before ours.
      */
-    protected open val extensions = listOf(
+    private val extensions = extensions + listOf(
         extension { SelectExtension() },
         extension { OrbitControlsExtension() }
     )
-    @Suppress("LeakingThis")
-    private val activeExtensions = extensions.associate { (key, factory) ->
-        key to factory()
-    }
+
+    private val activeExtensions =
+        this.extensions.associate { (key, factory) -> key to factory() }
 
     init {
         allExtensions {
@@ -148,20 +147,22 @@ open class BaseVisualizer(
         realScene.add(directionalLight)
 //        renderer.setPixelRatio(window.devicePixelRatio)
 
-        raycaster.asDynamic().params.Points.threshold = 1
+        raycaster.params.Points.threshold = 1
         updateOriginDot()
 
-        var resizeTaskId: Timeout? = null
-        window.addEventListener(Event.RESIZE, {
-            if (resizeTaskId !== null) {
-                clearTimeout(resizeTaskId!!)
-            }
+        window.addEventListener(Event.RESIZE, ::onResize)
+    }
 
-            resizeTaskId = setTimeout({
-                resizeTaskId = null
-                resize()
-            }, resizeDelay)
-        })
+    private var resizeTaskId: Timeout? = null
+    private fun onResize(@Suppress("UNUSED_PARAMETER") e: Event) {
+        if (resizeTaskId !== null) {
+            clearTimeout(resizeTaskId!!)
+        }
+
+        resizeTaskId = setTimeout({
+            resizeTaskId = null
+            resize()
+        }, resizeDelay)
     }
 
     private fun onUnitsChange() {
@@ -186,6 +187,7 @@ open class BaseVisualizer(
 
     open fun clear() {
         scene.clear()
+        allExtensions { context.clearScene() }
         sceneNeedsUpdate = true
     }
 
@@ -240,9 +242,9 @@ open class BaseVisualizer(
         controls.saveState()
     }
 
-    fun <T : Extension> findExtension(tClass: KClass<T>): T {
-        return activeExtensions.getBang(tClass, "visualizer extension") as T
-    }
+    fun <T : Extension> findExtension(tClass: KClass<T>): T =
+        activeExtensions.getBang(tClass, "visualizer extension")
+            .unsafeCast<T>()
 
     fun addPrerenderListener(callback: () -> Unit) {
         prerenderListeners.add(callback)
@@ -348,6 +350,7 @@ open class BaseVisualizer(
 
         allExtensions { context.beforeRender() }
         renderer.render(realScene, camera)
+        allExtensions { context.render() }
         facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
 
         frameListeners.forEach { f -> f.onFrameReady(realScene, camera) }
@@ -372,6 +375,7 @@ open class BaseVisualizer(
             camera.updateProjectionMatrix()
 
             renderer.setSize(parent.offsetWidth, parent.offsetHeight, updateStyle = false)
+            allExtensions { context.resize(parent.offsetWidth, parent.offsetHeight) }
         }
     }
 
@@ -381,6 +385,7 @@ open class BaseVisualizer(
 
     open fun release() {
         allExtensions { context.release() }
+        window.removeEventListener(Event.RESIZE, ::onResize)
     }
 
     interface FrameListener {
@@ -453,8 +458,11 @@ abstract class Extension(val key: KClass<out Extension>) {
     }
 
     open fun VisualizerContext.attach() {}
+    open fun VisualizerContext.render() {}
+    open fun VisualizerContext.resize(width: Int, height: Int) {}
     open fun VisualizerContext.isInUserInteraction(): Boolean = false
     open fun VisualizerContext.beforeRender() {}
+    open fun VisualizerContext.clearScene()  {}
     open fun VisualizerContext.detach() {}
     open fun VisualizerContext.release() {}
 

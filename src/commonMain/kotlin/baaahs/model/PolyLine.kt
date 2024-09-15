@@ -29,7 +29,11 @@ class Grid(
 ): PolyLine(
     name, description,
     calcSegments(rows, columns, rowGap, columnGap, direction, zigZag, stagger),
-    position, rotation, scale, columnGap, rowGap, id) {
+    position, rotation, scale, columnGap, rowGap, id
+) {
+    override val bounds: Pair<Vector3F, Vector3F> by lazy {
+        boundingBox(segments.flatMap { listOf(it.startVertex, it.endVertex) })
+    }
 }
 
 fun calcSegments(

@@ -5,6 +5,7 @@ import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import styled.StyleSheet
+import web.cssom.important
 
 class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", isStatic = true) {
     val editorPanes by css {
@@ -52,6 +53,21 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         top = 10.px
         left = 10.px
         backgroundColor = Color(theme.palette.background.paper).withAlpha(.8)
+    }
+
+    val domOverlay by css {
+        position = Position.absolute
+        top = 0.px
+        left = 0.px
+        bottom = 0.px
+        right = 0.px
+        pointerEvents = PointerEvents.none
+    }
+
+    val domOverlayItem by css {
+        opacity = .7
+        fontSize = .8.em
+        pointerEvents = important(PointerEvents.none)
     }
 
     val propertiesPane by css {

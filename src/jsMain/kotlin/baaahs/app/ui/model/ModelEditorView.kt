@@ -9,7 +9,10 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import baaahs.visualizer.*
+import baaahs.visualizer.DomOverlayExtension
+import baaahs.visualizer.ModelVisualEditor
+import baaahs.visualizer.extension
+import baaahs.visualizer.modelEntity
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import kotlinx.css.Padding
@@ -27,6 +30,7 @@ import react.dom.i
 import react.useContext
 import styled.inlineStyles
 import web.dom.Element
+import web.dom.document
 import web.html.HTMLDivElement
 
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
@@ -34,8 +38,16 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val styles = appContext.allStyles.modelEditor
 
     val mutableModel = props.mutableScene.model
+    val domOverlayExtension = memo {
+        DomOverlayExtension { itemVisualizer ->
+            document.createElement("div").also {
+                it.classList.add(+styles.domOverlayItem)
+                it.innerText = itemVisualizer.title
+            }
+        }
+    }
     val entityAdapter = memo(mutableModel.units) {
-        EntityAdapter(
+        domOverlayExtension.DomOverlayEntityAdapter(
             SimulationEnv {
                 component(appContext.clock)
                 component(FakeDmxUniverse())
@@ -49,7 +61,9 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val lastSelectedEntity = ref<Model.Entity>(null)
 
     val visualizer = memo(entityAdapter, props.onEdit) {
-        ModelVisualEditor(mutableModel, appContext.clock, entityAdapter) {
+        ModelVisualEditor(mutableModel, appContext.clock, entityAdapter,
+            listOf(extension { domOverlayExtension })
+        ) {
             props.onEdit()
         }.also {
             if (lastSelectedEntity.current != null) {
@@ -86,8 +100,11 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
     val visualizerParentEl = ref<Element>()
     onMount(visualizer) {
+        val domElement = domOverlayExtension.domElement
         val parent = visualizerParentEl.current as HTMLDivElement
         parent.insertBefore(visualizer.facade.canvas, null)
+        domElement.classList.add(+styles.domOverlay)
+        parent.insertBefore(domElement, null)
         visualizer.resize()
 
         val observer = visualizer.facade.addObserver {
