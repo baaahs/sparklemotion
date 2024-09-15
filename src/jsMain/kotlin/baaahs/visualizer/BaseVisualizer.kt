@@ -6,11 +6,10 @@ import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
-import baaahs.util.three.addEventListener
 import baaahs.window
+import js.objects.jso
 import kotlinx.css.hyphenize
 import three.*
-import three.examples.jsm.controls.OrbitControls
 import web.events.Event
 import web.events.addEventListener
 import web.events.removeEventListener
@@ -21,7 +20,9 @@ import web.timers.setTimeout
 import web.uievents.MouseEvent
 import web.uievents.PointerEvent
 import kotlin.math.*
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
 open class BaseVisualizer(
     private val clock: Clock
@@ -50,7 +51,9 @@ open class BaseVisualizer(
         PerspectiveCamera(45, 1.0, 0.1, 10000)
     private val ambientLight = AmbientLight(Color(0xFFFFFF), .25)
     private val directionalLight = DirectionalLight(Color(0xFFFFFF), 1)
-    private val renderer = WebGLRenderer().apply {
+    private val renderer = WebGLRenderer(jso {
+        antialias = true
+    }).apply {
         localClippingEnabled = true
     }
     protected val canvas = renderer.domElement
@@ -76,6 +79,8 @@ open class BaseVisualizer(
     protected var sceneNeedsUpdate = true
     protected var fitCamera = true
 
+    private val context = Extension.VisualizerContext(camera, canvas, realScene)
+
     /**
      * The order that these event listeners are registered matters; can't think of a
      * better way to allow subclasses to inject listeners before ours.
@@ -90,40 +95,31 @@ open class BaseVisualizer(
     }
 
     init {
-        activeExtensions.values.forEach { it.attach() }
+        allExtensions {
+            initialize(context)
+        }
+        allExtensions {
+            prepareForAttach(context)
+            context.attach()
+        }
+    }
+
+    private fun allExtensions(reversed: Boolean = false, block: Extension.() -> Unit) {
+        activeExtensions.values.let {
+            if (reversed) it.reversed() else it
+        }.forEach { block.invoke(it) }
     }
 
     inner class SelectExtension : Extension(SelectExtension::class) {
-        override fun attach() {
+        override fun VisualizerContext.attach() {
             canvas.addEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
 
-        override fun release() {
+        override fun VisualizerContext.release() {
             canvas.removeEventListener(PointerEvent.POINTER_DOWN, this@BaseVisualizer::onMouseDown)
         }
     }
 
-    private var orbitControlsActive = false
-    inner class OrbitControlsExtension : Extension(OrbitControlsExtension::class) {
-        val orbitControls by lazy {
-            OrbitControls(camera, canvas).apply {
-                minPolarAngle = PI / 2 - .25 // radians
-                maxPolarAngle = PI / 2 + .25 // radians
-
-                enableDamping = false
-                enableKeys = false
-
-                addEventListener("start") { orbitControlsActive = true }
-                addEventListener("end") { orbitControlsActive = false }
-            }
-        }
-
-        override fun attach() {
-            orbitControls
-        }
-
-        fun update() = orbitControls.update()
-    }
     private val orbitControlsExtension = findExtension(OrbitControlsExtension::class)
 
     private val raycaster = Raycaster()
@@ -295,7 +291,10 @@ open class BaseVisualizer(
         obj?.dispatchEvent(EventType.Click)
     }
 
-    open fun inUserInteraction() = orbitControlsActive
+    private fun inUserInteraction() =
+        activeExtensions.values.any { extension ->
+            with(extension) { context.isInUserInteraction() }
+        }
 
     protected fun startRendering() {
         stopRendering = false
@@ -347,7 +346,7 @@ open class BaseVisualizer(
             fitCamera = false
         }
 
-        activeExtensions.values.forEach { it.beforeRender() }
+        allExtensions { context.beforeRender() }
         renderer.render(realScene, camera)
         facade.framerate.elapsed((clock.now() - startTime).inWholeMilliseconds.toInt())
 
@@ -381,7 +380,7 @@ open class BaseVisualizer(
     }
 
     open fun release() {
-        activeExtensions.values.reversed().forEach { it.release() }
+        allExtensions { context.release() }
     }
 
     interface FrameListener {
@@ -430,7 +429,52 @@ inline fun <reified T: Extension> extension(
 }
 
 abstract class Extension(val key: KClass<out Extension>) {
-    open fun attach() {}
-    open fun beforeRender() {}
-    open fun release() {}
+    private val initializers = mutableListOf<Initializable<*>>()
+    private val attachments = mutableListOf<Initializable<*>>()
+
+    /** Use this to define properties that should be initialized when the visualizer is created. */
+    protected fun <T> initializer(valueInitializer: VisualizerContext.() -> T): ReadOnlyProperty<Any?, T> =
+        Initializable(valueInitializer).also {
+            initializers.add(it)
+        }
+
+    /** Use this to define properties that should be initialized when the visualizer is attached. */
+    protected fun <T> attachment(valueInitializer: VisualizerContext.() -> T): ReadOnlyProperty<Any?, T> =
+        Initializable(valueInitializer).also {
+            attachments.add(it)
+        }
+
+    fun initialize(context: VisualizerContext) {
+        initializers.forEach { it.run(context) }
+    }
+
+    fun prepareForAttach(context: VisualizerContext) {
+        attachments.forEach { it.run(context) }
+    }
+
+    open fun VisualizerContext.attach() {}
+    open fun VisualizerContext.isInUserInteraction(): Boolean = false
+    open fun VisualizerContext.beforeRender() {}
+    open fun VisualizerContext.detach() {}
+    open fun VisualizerContext.release() {}
+
+    class VisualizerContext(
+        val camera: Camera,
+        val canvas: HTMLCanvasElement,
+        val scene: Scene
+    )
+
+    private class Initializable<T>(
+        val initializer: VisualizerContext.() -> T
+    ) : ReadOnlyProperty<Any?, T> {
+        private var value: T? = null
+
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            return value ?: error("Property not initialized.")
+        }
+
+        fun run(context: VisualizerContext) {
+            value = context.initializer()
+        }
+    }
 }

@@ -38,24 +38,6 @@ class ModelVisualEditor(
         extension { TransformControlsExtension() }
     ) + super.extensions
 
-    inner class TransformControlsExtension : Extension(TransformControlsExtension::class) {
-        val transformControls by lazy {
-            TransformControls(camera, canvas).also {
-                it.space = "world"
-                it.enabled = false
-                realScene.add(it)
-            }
-        }
-
-        override fun attach() {
-            transformControls
-        }
-
-        override fun beforeRender() {
-            transformControls.updateMatrixWorld()
-        }
-    }
-
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
     init {
@@ -165,9 +147,6 @@ class ModelVisualEditor(
 
         super.onSelectionChange(obj, priorObj)
     }
-
-    override fun inUserInteraction(): Boolean =
-        super.inUserInteraction() || transformControls.dragging
 
     private fun findParentEntity(obj: Object3D?): Object3D? {
         var curObj = obj

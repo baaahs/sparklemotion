@@ -20,7 +20,7 @@ interface ItemVisualizer<T: Any> : IObservable {
 
     fun notifyChanged()
 
-    /** Returns `true` if this visualizer is capable of visualizing this item. */
+    /** Returns `newItem` if this visualizer is capable of visualizing this item. */
     fun isApplicable(newItem: Any): T?
 
     fun update(newItem: T)
