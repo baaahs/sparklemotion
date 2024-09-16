@@ -1,14 +1,13 @@
 package baaahs.app.ui.model
 
-import baaahs.app.ui.appContext
 import baaahs.geom.Vector3F
 import baaahs.ui.xComponent
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
+import react.ReactElement
 
 private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", true) { props ->
-    val appContext = useContext(appContext)
-    val styles = appContext.allStyles.modelEditor
-
     val updateX by handler(props.vector3F, props.onChange) { v: Float ->
         props.onChange(props.vector3F.copy(x = v))
     }
@@ -22,31 +21,33 @@ private val VectorEditorView = xComponent<VectorEditorProps>("VectorEditor", tru
     }
 
     val vector = props.vector3F
-    with(styles) {
-        numberTextField<Float> {
-            this.attrs.label = "X"
-            this.attrs.value = vector.x
-            this.attrs.adornment = props.adornment
-            this.attrs.onChange = updateX
-        }
-        numberTextField<Float> {
-            this.attrs.label = "Y"
-            this.attrs.value = vector.y
-            this.attrs.adornment = props.adornment
-            this.attrs.onChange = updateY
-        }
-        numberTextField<Float> {
-            this.attrs.label = "Z"
-            this.attrs.value = vector.z
-            this.attrs.adornment = props.adornment
-            this.attrs.onChange = updateZ
-        }
+    numberTextField<Float> {
+        this.attrs.label = "X"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.value = vector.x
+        this.attrs.adornment = props.adornment
+        this.attrs.onChange = updateX
+    }
+    numberTextField<Float> {
+        this.attrs.label = "Y"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.value = vector.y
+        this.attrs.adornment = props.adornment
+        this.attrs.onChange = updateY
+    }
+    numberTextField<Float> {
+        this.attrs.label = "Z"
+        this.attrs.disabled = props.disabled == true
+        this.attrs.value = vector.z
+        this.attrs.adornment = props.adornment
+        this.attrs.onChange = updateZ
     }
 }
 
 external interface VectorEditorProps : Props {
     var vector3F: Vector3F
     var adornment: ReactElement<*>?
+    var disabled: Boolean?
     var onChange: (Vector3F) -> Unit
 }
 

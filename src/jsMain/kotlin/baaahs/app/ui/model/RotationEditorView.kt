@@ -31,18 +31,21 @@ private val RotationEditorView = xComponent<RotationEditorProps>("RotationEditor
     with(styles) {
         numberTextField<Double> {
             this.attrs.label = "Pitch"
+            this.attrs.disabled = props.disabled == true
             this.attrs.value = rotation.pitchRad.asDegrees
             this.attrs.adornment = "°".asTextNode()
             this.attrs.onChange = updatePitch
         }
         numberTextField<Double> {
             this.attrs.label = "Yaw"
+            this.attrs.disabled = props.disabled == true
             this.attrs.value = rotation.yawRad.asDegrees
             this.attrs.adornment = "°".asTextNode()
             this.attrs.onChange = updateYaw
         }
         numberTextField<Double> {
             this.attrs.label = "Roll"
+            this.attrs.disabled = props.disabled == true
             this.attrs.value = rotation.rollRad.asDegrees
             this.attrs.adornment = "°".asTextNode()
             this.attrs.onChange = updateRoll
@@ -55,6 +58,7 @@ val Number.fromDegrees: Double get() = this.toDouble() / 360 * (2 * PI)
 
 external interface RotationEditorProps : Props {
     var eulerAngle: EulerAngle
+    var disabled: Boolean?
     var onChange: (EulerAngle) -> Unit
 }
 

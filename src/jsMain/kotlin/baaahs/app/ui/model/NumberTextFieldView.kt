@@ -54,6 +54,7 @@ private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("Num
             this.classes = jso { this.asDynamic().root = -Styles.inputLabel }
             this.shrink = true
         }
+        attrs.disabled = props.disabled == true
         attrs.onChange = cachedOnChange
         if (props.value != null) attrs.value = props.value
         attrs.label = props.label.asTextNode()
@@ -64,6 +65,7 @@ private val NumberTextFieldView = xComponent<NumberTextFieldProps<Number?>>("Num
 
 external interface NumberTextFieldProps<T: Number?> : Props {
     var label: String
+    var disabled: Boolean?
     var value: T
     var adornment: ReactNode?
     var placeholder: String?

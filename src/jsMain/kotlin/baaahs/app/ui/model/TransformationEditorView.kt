@@ -16,6 +16,7 @@ import react.dom.span
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
@@ -49,6 +50,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
         vectorEditor {
             attrs.vector3F = mutableEntity.position
+            attrs.disabled = editMode.isOff
             attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
             attrs.onChange = handlePositionChange
         }
@@ -60,6 +62,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
         rotationEditor {
             attrs.eulerAngle = mutableEntity.rotation
+            attrs.disabled = editMode.isOff
             attrs.onChange = handleRotationChange
         }
     }
@@ -70,6 +73,7 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
 
         vectorEditor {
             attrs.vector3F = mutableEntity.scale
+            attrs.disabled = editMode.isOff
             attrs.adornment = buildElement {
                 span {
 //                    attrs.entity(Entities.times)
