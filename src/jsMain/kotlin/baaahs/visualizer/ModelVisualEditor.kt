@@ -8,18 +8,28 @@ import baaahs.scene.EditingEntity
 import baaahs.scene.MutableModel
 import baaahs.util.Clock
 import baaahs.util.three.addEventListener
-import three.examples.jsm.controls.TransformControls
+import baaahs.visualizer.entity.ItemVisualizer
+import baaahs.visualizer.entity.itemVisualizer
 import three.Group
 import three.Object3D
+import three.examples.jsm.controls.TransformControls
 import three_ext.toVector3F
 import web.dom.observers.IntersectionObserver
+import kotlin.reflect.KClass
 
 class ModelVisualEditor(
     var mutableModel: MutableModel,
     clock: Clock,
     adapter: EntityAdapter,
+    elements: List<Pair<KClass<out Extension>, () -> Extension>> = emptyList(),
     private val onChange: () -> Unit
-) : BaseVisualizer(clock) {
+) : BaseVisualizer(
+    clock,
+    /** [TransformControls] must be created before [three.examples.jsm.controls.OrbitControls]. */
+    elements + listOf(
+        extension { TransformControlsExtension() }
+    )
+) {
     override val facade = Facade()
 
     private var modelData: ModelData = mutableModel.build()
@@ -32,25 +42,6 @@ class ModelVisualEditor(
 
     var editingEntity: EditingEntity<*>? = null
         private set
-
-    /** [TransformControls] must be created by [OrbitControls]. */
-    override val extensions get() = listOf(
-        extension { TransformControlsExtension() }
-    ) + super.extensions
-
-    inner class TransformControlsExtension : Extension(TransformControlsExtension::class) {
-        val transformControls by lazy {
-            TransformControls(camera, canvas).also {
-                it.space = "world"
-                it.enabled = false
-                realScene.add(it)
-            }
-        }
-
-        override fun attach() {
-            transformControls
-        }
-    }
 
     private val transformControls = findExtension(TransformControlsExtension::class).transformControls
 
@@ -77,7 +68,7 @@ class ModelVisualEditor(
         }
 
         val orbitControls = findExtension(OrbitControlsExtension::class).orbitControls
-        transformControls.addEventListener("dragging-changed") { e ->
+        transformControls.addEventListener("dragging-changed") {
             val isDragging = transformControls.dragging
 
             orbitControls.enabled = !isDragging
@@ -162,9 +153,6 @@ class ModelVisualEditor(
         super.onSelectionChange(obj, priorObj)
     }
 
-    override fun inUserInteraction(): Boolean =
-        super.inUserInteraction() || transformControls.dragging
-
     private fun findParentEntity(obj: Object3D?): Object3D? {
         var curObj = obj
         while (curObj != null && curObj.modelEntity == null) {
@@ -227,20 +215,22 @@ class ModelVisualEditor(
 }
 
 class GroupVisualizer(
-    title: String,
+    private val title: String,
     entities: List<Model.Entity>,
     val adapter: Adapter<Model.Entity>
 ) {
     val groupObj: Group = Group().apply { name = title }
 
-    private val itemVisualizers: MutableList<ItemVisualizer<*>> =
-        entities.map { entity ->
-            adapter.createVisualizer(entity).also {
-                it.obj.itemVisualizer = it
-                it.obj.modelEntity = entity
-                groupObj.add(it.obj)
-            }
-        }.toMutableList()
+    private val itemVisualizers: MutableList<ItemVisualizer<Model.Entity>> =
+        adapter.withinGroup(title) {
+            entities.map { entity ->
+                adapter.createVisualizer(entity).also {
+                    it.obj.itemVisualizer = it
+                    it.obj.modelEntity = entity
+                    groupObj.add(it.obj)
+                }
+            }.toMutableList()
+        }
 
     fun find(predicate: (Any) -> Boolean): ItemVisualizer<*>? =
         itemVisualizers.firstNotNullOfOrNull { it.find(predicate) }
@@ -250,20 +240,14 @@ class GroupVisualizer(
         itemVisualizers.clear()
         groupObj.clear()
 
-        entities.forEachIndexed { index, newChild ->
-            val oldVisualizer = oldChildren.getOrNull(index)
-            val visualizer =
-                if (oldVisualizer != null && oldVisualizer.updateIfApplicable(newChild)) {
-                    oldVisualizer
-                } else {
-                    adapter.createVisualizer(newChild).also {
-                        it.obj.itemVisualizer = it
-                        it.obj.modelEntity = newChild
-                    }
-                }
+        adapter.withinGroup(title) {
+            entities.forEachIndexed { index, newChild ->
+                val oldVisualizer = oldChildren.getOrNull(index)
+                val visualizer = adapter.createOrUpdateVisualizer(oldVisualizer, newChild)
 
-            itemVisualizers.add(visualizer)
-            groupObj.add(visualizer.obj)
+                itemVisualizers.add(visualizer)
+                groupObj.add(visualizer.obj)
+            }
         }
     }
 

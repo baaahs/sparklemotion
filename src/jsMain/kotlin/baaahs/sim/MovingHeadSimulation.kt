@@ -10,7 +10,7 @@ import baaahs.io.ByteArrayWriter
 import baaahs.mapper.MappingSession
 import baaahs.model.MovingHead
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 import baaahs.visualizer.movers.MovingHeadVisualizer
 
 class MovingHeadSimulation(

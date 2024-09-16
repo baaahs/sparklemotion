@@ -1,6 +1,7 @@
 package baaahs.visualizer
 
 import baaahs.model.ModelUnit
+import baaahs.visualizer.entity.ItemVisualizer
 
 class FakeVisualizer(
     override var units: ModelUnit,

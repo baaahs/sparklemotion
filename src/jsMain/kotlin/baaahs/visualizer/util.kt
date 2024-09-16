@@ -24,6 +24,13 @@ class Rotator(val from: Vector3, val to: Vector3) {
         box3.applyMatrix4(matrix)
     }
 
+    /** Rotates the given Euler angle by the rotation. */
+    fun rotate(angle: Euler) =
+        angle.setFromQuaternion(
+            quaternion.clone()
+                .multiply(Quaternion().setFromEuler(angle))
+        )
+
     fun invert(): Rotator = Rotator(to, from)
 }
 

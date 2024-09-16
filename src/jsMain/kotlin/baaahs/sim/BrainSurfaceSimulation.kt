@@ -11,6 +11,9 @@ import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.globalLaunch
 import baaahs.visualizer.*
+import baaahs.visualizer.entity.SurfaceVisualizer
+import baaahs.visualizer.geometry.SurfaceGeometry
+import baaahs.visualizer.sim.PixelArranger
 import three_ext.toVector3F
 
 class BrainSurfaceSimulation(

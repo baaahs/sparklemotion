@@ -3,17 +3,17 @@
 package three
 
 external interface QuaternionLike {
-    val x: Number
-    val y: Number
-    val z: Number
-    val w: Number
+    val x: Double
+    val y: Double
+    val z: Double
+    val w: Double
 }
 
-open external class Quaternion(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally, w: Number = definedExternally) {
-    open var x: Number
-    open var y: Number
-    open var z: Number
-    open var w: Number
+open external class Quaternion(x: Number = definedExternally, y: Number = definedExternally, z: Number = definedExternally, w: Number = definedExternally) : QuaternionLike {
+    override var x: Double
+    override var y: Double
+    override var z: Double
+    override var w: Double
     open val isQuaternion: Boolean
     open fun set(x: Number, y: Number, z: Number, w: Number): Quaternion /* this */
     open fun clone(): Quaternion /* this */

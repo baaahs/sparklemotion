@@ -6,6 +6,7 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.io.ByteArrayReader
 import baaahs.model.FakeModelEntity
 import baaahs.ui.Observable
+import baaahs.visualizer.entity.ItemVisualizer
 import kotlin.math.min
 
 data class FakeItemVisualizer(

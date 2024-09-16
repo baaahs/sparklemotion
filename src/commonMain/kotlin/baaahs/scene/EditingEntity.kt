@@ -5,7 +5,7 @@ import baaahs.geom.Vector3F
 import baaahs.model.ModelUnit
 import baaahs.ui.Observable
 import baaahs.ui.View
-import baaahs.visualizer.ItemVisualizer
+import baaahs.visualizer.entity.ItemVisualizer
 
 class EditingEntity<T : MutableEntity>(
     val mutableEntity: T,
