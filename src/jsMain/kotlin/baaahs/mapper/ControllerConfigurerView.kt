@@ -120,7 +120,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 6
+                                            attrs.colSpan = 7
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header { +controllerId.controllerType }
                                         }
