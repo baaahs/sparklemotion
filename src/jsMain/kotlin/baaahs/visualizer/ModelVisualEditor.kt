@@ -133,13 +133,7 @@ class ModelVisualEditor(
         itemVisualizer?.selected = true
         selectedEntity = modelEntity
 
-        if (obj == null) {
-            transformControls.detach()
-            transformControls.enabled = false
-        } else {
-            transformControls.attach(obj)
-            transformControls.enabled = true
-        }
+        allExtensions { this.onSelectionChange(itemVisualizer, priorObj?.itemVisualizer) }
 
         editingEntity = obj?.let {
             EditingEntity(

@@ -6,6 +6,7 @@ import baaahs.model.ModelUnit
 import baaahs.util.Clock
 import baaahs.util.Framerate
 import baaahs.util.Logger
+import baaahs.visualizer.entity.ItemVisualizer
 import baaahs.window
 import js.objects.jso
 import kotlinx.css.hyphenize
@@ -103,7 +104,7 @@ open class BaseVisualizer(
         }
     }
 
-    private fun allExtensions(reversed: Boolean = false, block: Extension.() -> Unit) {
+    protected fun allExtensions(reversed: Boolean = false, block: Extension.() -> Unit) {
         activeExtensions.values.let {
             if (reversed) it.reversed() else it
         }.forEach { block.invoke(it) }
@@ -458,10 +459,11 @@ abstract class Extension(val key: KClass<out Extension>) {
     }
 
     open fun VisualizerContext.attach() {}
-    open fun VisualizerContext.render() {}
     open fun VisualizerContext.resize(width: Int, height: Int) {}
     open fun VisualizerContext.isInUserInteraction(): Boolean = false
     open fun VisualizerContext.beforeRender() {}
+    open fun VisualizerContext.render() {}
+    open fun onSelectionChange(selection: ItemVisualizer<*>?, priorSelection: ItemVisualizer<*>?) {}
     open fun VisualizerContext.clearScene()  {}
     open fun VisualizerContext.detach() {}
     open fun VisualizerContext.release() {}
