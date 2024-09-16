@@ -15,6 +15,7 @@ import web.cssom.FlexDirection
 private val TitleAndDescriptionEditorView =
     xComponent<TitleAndDescriptionEditorProps>("TitleAndDescriptionEditor") { props ->
         val appContext = useContext(appContext)
+        val editMode = observe(appContext.sceneManager.editMode)
         val styles = appContext.allStyles.modelEditor
 
         observe(props.editingEntity)
@@ -40,6 +41,7 @@ private val TitleAndDescriptionEditorView =
             TextField {
                 attrs.label = buildElement { +"Title" }
                 attrs.fullWidth = true
+                attrs.disabled = editMode.isOff
                 attrs.value = mutableEntity.title
                 attrs.onChange = handleTitleChange
             }
@@ -47,6 +49,7 @@ private val TitleAndDescriptionEditorView =
             TextField {
                 attrs.label = buildElement { +"Description" }
                 attrs.fullWidth = true
+                attrs.disabled = editMode.isOff
                 attrs.value = mutableEntity.description ?: ""
                 attrs.onChange = handleDescriptionChange
             }

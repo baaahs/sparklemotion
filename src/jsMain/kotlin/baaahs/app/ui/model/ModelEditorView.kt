@@ -182,11 +182,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
 
                             header { +"Actions" }
 
-                            IconButton {
-                                attrs.onClick = handleDeleteEntity.withMouseEvent()
-                                attrs.color = IconButtonColor.secondary
-                                icon(Delete)
-                                +"Delete Entity"
+                            if (editMode.isOn) {
+                                IconButton {
+                                    attrs.onClick = handleDeleteEntity.withMouseEvent()
+                                    attrs.color = IconButtonColor.secondary
+                                    icon(Delete)
+                                    +"Delete Entity"
+                                }
                             }
                         }
                     }
