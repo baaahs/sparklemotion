@@ -155,8 +155,12 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell {
                                         fixtureInfos[controllerId]?.forEach { fixtureInfo ->
                                             span {
-                                                attrs.title = fixtureInfo.entityId ?: "[anonymous]"
-                                                +fixtureInfo.name
+                                                attrs.title = run {
+                                                    fixtureInfo.entityId?.let {
+                                                        props.mutableScene.model.findById(it)?.title
+                                                    } ?: "[anonymous]"
+                                                }
+                                                +(fixtureInfo.entityId ?: "[anonymous]")
                                             }
                                         }
                                     }
