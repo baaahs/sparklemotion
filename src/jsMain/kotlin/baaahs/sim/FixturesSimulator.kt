@@ -13,7 +13,7 @@ import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
 import baaahs.util.globalLaunch
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.PixelArranger
+import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.launch
 

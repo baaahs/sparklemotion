@@ -1,5 +1,6 @@
 package baaahs.visualizer
 
+import baaahs.visualizer.entity.ItemVisualizer
 import three.*
 
 val Material.color: Color
@@ -80,20 +81,23 @@ enum class EntityStyle {
         }
     },
     Selected {
+        private val lineColorMultiplier = Color(4.0, 4.0, .75)
+        private val meshColorMultiplier = Color(.75, .75, 4.0)
+
         override fun appliesTo(itemVisualizer: ItemVisualizer<*>) =
             itemVisualizer.selected
 
         override fun applyToLine(material: LineDashedMaterial, use: Use?) {
-            (material.color as Color).multiplyScalar(1.2)
+            material.color.multiply(lineColorMultiplier)
             material.linewidth = 5
             material.visible = true
         }
 
         override fun applyToMesh(material: Material, use: Use?) {
-            material.color.multiplyScalar(1.2)
+            material.color.multiply(meshColorMultiplier)
 
             if (use == Use.LightStrandHint) {
-                material.color.multiplyScalar(1.5)
+                material.color.multiply(meshColorMultiplier)
             }
         }
 

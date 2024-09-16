@@ -20,9 +20,10 @@ import baaahs.ui.Observable
 import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.globalLaunch
-import baaahs.visualizer.FaceInfo
+import baaahs.util.three.center
 import baaahs.visualizer.Rotator
-import baaahs.visualizer.SurfaceGeometry
+import baaahs.visualizer.geometry.FaceInfo
+import baaahs.visualizer.geometry.SurfaceGeometry
 import baaahs.visualizer.toVector3
 import js.objects.jso
 import kotlinx.coroutines.*
@@ -1302,8 +1303,6 @@ private fun Model.Entity.transform(obj: Object3D) {
     obj.rotation.copy(rotation.toThreeEuler())
     obj.scale.copy(scale.toVector3())
 }
-
-private val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
 
 private fun Box3.project(camera: Camera): Box3 {
     min.project(camera)

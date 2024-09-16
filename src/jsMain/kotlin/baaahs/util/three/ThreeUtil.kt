@@ -33,6 +33,9 @@ object ThreeUtil {
     }
 }
 
+val Box2.center: Vector2 get() = max.clone().sub(min).divideScalar(2).add(min)
+val Box3.center: Vector3 get() = max.clone().sub(min).divideScalar(2).add(min)
+
 fun Box3.addPadding(fractionalAmount: Double) {
     val padding = min.distanceTo(max) * fractionalAmount
     expandByScalar(padding)

@@ -15,7 +15,7 @@ import baaahs.scene.MutableFixtureOptions
 import baaahs.show.FeedBuilder
 import baaahs.show.Shader
 import baaahs.ui.View
-import baaahs.visualizer.visualizerBuilder
+import baaahs.visualizer.entity.visualizerBuilder
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
