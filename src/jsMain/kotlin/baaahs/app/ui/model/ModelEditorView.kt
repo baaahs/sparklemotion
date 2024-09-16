@@ -9,10 +9,7 @@ import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.ui.*
 import baaahs.util.useResizeListener
-import baaahs.visualizer.DomOverlayExtension
-import baaahs.visualizer.ModelVisualEditor
-import baaahs.visualizer.extension
-import baaahs.visualizer.modelEntity
+import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import kotlinx.css.Padding
@@ -36,6 +33,7 @@ import web.html.HTMLDivElement
 private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { props ->
     val appContext = useContext(appContext)
     val styles = appContext.allStyles.modelEditor
+    val editMode = observe(appContext.sceneManager.editMode)
 
     val mutableModel = props.mutableScene.model
     val domOverlayExtension = memo {
@@ -75,6 +73,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         visualizer.mutableModel = mutableModel
     }
     visualizer.refresh()
+
+    onMount(editMode, visualizer) {
+        val transformControls = visualizer.findExtension(TransformControlsExtension::class)
+        editMode.addObserver {
+            transformControls.enabled = editMode.isOn
+        }.also { withCleanup { it.remove() } }
+    }
 
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
@@ -147,10 +152,12 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             div(+styles.visualizer) {
                 ref = visualizerParentEl
 
-                modelEditorToolbar {
-                    attrs.visualizer = visualizer.facade
-                    attrs.modelUnit = mutableModel.units
-                    attrs.onAddEntity = handleAddEntity
+                if (editMode.isOn) {
+                    modelEditorToolbar {
+                        attrs.visualizer = visualizer.facade
+                        attrs.modelUnit = mutableModel.units
+                        attrs.onAddEntity = handleAddEntity
+                    }
                 }
             }
         }
