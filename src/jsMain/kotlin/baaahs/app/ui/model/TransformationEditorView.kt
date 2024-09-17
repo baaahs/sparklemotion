@@ -10,12 +10,15 @@ import baaahs.ui.xComponent
 import baaahs.visualizer.toVector3
 import kotlinx.html.unsafe
 import mui.material.Container
+import mui.material.FormControl
+import mui.material.InputLabel
 import react.*
 import react.dom.header
 import react.dom.span
 
 private val TransformationEditorView = xComponent<TransformationEditorProps>("TransformationEditor") { props ->
     val appContext = useContext(appContext)
+    val editMode = observe(appContext.sceneManager.editMode)
     val styles = appContext.allStyles.modelEditor
 
     observe(props.editingEntity)
@@ -45,38 +48,61 @@ private val TransformationEditorView = xComponent<TransformationEditorProps>("Tr
     header { +"Transformation" }
     Container {
         attrs.className = -styles.transformEditSection
-        header { +"Position:" }
 
-        vectorEditor {
-            attrs.vector3F = mutableEntity.position
-            attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
-            attrs.onChange = handlePositionChange
-        }
-    }
-
-    Container {
-        attrs.className = -styles.transformEditSection
-        header { +"Rotation:" }
-
-        rotationEditor {
-            attrs.eulerAngle = mutableEntity.rotation
-            attrs.onChange = handleRotationChange
-        }
-    }
-
-    Container {
-        attrs.className = -styles.transformEditSection
-        header { +"Scale:" }
-
-        vectorEditor {
-            attrs.vector3F = mutableEntity.scale
-            attrs.adornment = buildElement {
-                span {
-//                    attrs.entity(Entities.times)
-                    attrs.unsafe { +"&#xd7;" }
-                }
+        FormControl {
+            attrs.className = -styles.transformThreeColumns
+            InputLabel {
+                attrs.shrink = true
+                +"Position"
             }
-            attrs.onChange = handleScaleChange
+
+            vectorEditor {
+                attrs.vector3F = mutableEntity.position
+                attrs.disabled = editMode.isOff
+                attrs.adornment = buildElement { +props.editingEntity.modelUnit.display }
+                attrs.onChange = handlePositionChange
+            }
+        }
+    }
+
+    Container {
+        attrs.className = -styles.transformEditSection
+
+        FormControl {
+            attrs.className = -styles.transformThreeColumns
+            InputLabel {
+                attrs.shrink = true
+                +"Rotation"
+            }
+            rotationEditor {
+                attrs.eulerAngle = mutableEntity.rotation
+                attrs.disabled = editMode.isOff
+                attrs.onChange = handleRotationChange
+            }
+        }
+    }
+
+    Container {
+        attrs.className = -styles.transformEditSection
+
+        FormControl {
+            attrs.className = -styles.transformThreeColumns
+            InputLabel {
+                attrs.shrink = true
+                +"Scale"
+            }
+
+            vectorEditor {
+                attrs.vector3F = mutableEntity.scale
+                attrs.disabled = editMode.isOff
+                attrs.adornment = buildElement {
+                    span {
+//                    attrs.entity(Entities.times)
+                        attrs.unsafe { +"&#xd7;" }
+                    }
+                }
+                attrs.onChange = handleScaleChange
+            }
         }
     }
 }
