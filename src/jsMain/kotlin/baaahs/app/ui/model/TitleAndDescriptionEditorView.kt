@@ -11,6 +11,7 @@ import mui.system.sx
 import react.*
 import react.dom.onChange
 import web.cssom.FlexDirection
+import web.cssom.em
 
 private val TitleAndDescriptionEditorView =
     xComponent<TitleAndDescriptionEditorProps>("TitleAndDescriptionEditor") { props ->
@@ -44,6 +45,9 @@ private val TitleAndDescriptionEditorView =
                 attrs.disabled = editMode.isOff
                 attrs.value = mutableEntity.title
                 attrs.onChange = handleTitleChange
+                attrs.sx {
+                    marginTop = .5.em
+                }
             }
 
             TextField {
@@ -52,6 +56,10 @@ private val TitleAndDescriptionEditorView =
                 attrs.disabled = editMode.isOff
                 attrs.value = mutableEntity.description ?: ""
                 attrs.onChange = handleDescriptionChange
+                attrs.sx {
+                    marginTop = .5.em
+                    marginBottom = .5.em
+                }
             }
         }
     }
