@@ -115,7 +115,11 @@ actual fun getEditorPanelViews(): EditorPanelViews = object : EditorPanelViews {
         div(+EditableStyles.propertiesSection) {
             textFieldEditor {
                 attrs.label = "Title"
-                attrs.helperText = "Visible on the button"
+                attrs.helperText = if (mutablePatchHolder is MutableShow) {
+                    "Visible in the header"
+                } else {
+                    "Visible on the button"
+                }
 
                 attrs.getValue = { mutablePatchHolder.title }
                 attrs.setValue = { value -> mutablePatchHolder.title = value }
