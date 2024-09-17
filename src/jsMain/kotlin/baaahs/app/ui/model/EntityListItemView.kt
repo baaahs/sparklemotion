@@ -20,8 +20,11 @@ private val EntityListItemView: ComponentType<EntityListItemProps> = xComponent(
         it.stopPropagation()
     }
 
+    val isSelected = mutableEntity == props.selectedMutableEntity
+
     ListItemButton {
-        attrs.selected = mutableEntity == props.selectedMutableEntity
+        attrs.selected = isSelected
+        attrs.autoFocus = isSelected
 //        attrs.onClickFunction = handleClick
         attrs.onMouseDown = handleClick
 

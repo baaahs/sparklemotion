@@ -4,11 +4,9 @@ import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
 import baaahs.controller.SacnManager
+import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
-import baaahs.ui.unaryMinus
-import baaahs.ui.unaryPlus
-import baaahs.ui.value
-import baaahs.ui.xComponent
+import baaahs.ui.*
 import js.objects.jso
 import materialui.icon
 import mui.icons.material.Search
@@ -17,6 +15,8 @@ import mui.system.sx
 import react.*
 import react.dom.div
 import react.dom.header
+import react.dom.html.ReactHTML.span
+import web.cssom.Float
 import web.cssom.Padding
 import web.cssom.em
 import web.html.HTMLElement
@@ -30,6 +30,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 
     val mutableControllers = props.mutableScene.controllers
     val controllerStates = sceneEditorClient.controllerStates
+    val fixtureInfos = sceneEditorClient.fixtures.groupBy(FixtureInfo::controllerId)
     val allControllerIds = (mutableControllers.keys + controllerStates.keys).sorted()
 
     var controllerMatcher by state { ControllerMatcher("") }
@@ -42,13 +43,20 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         val target = event.currentTarget as HTMLElement
         selectedController = ControllerId.fromName(target.dataset["controllerId"] ?: "huh?")
     }
+    val handleDeselectController by mouseEventHandler { event ->
+        selectedController = null
+    }
 
     val handleNewControllerClick by mouseEventHandler() {
         selectedController = ControllerId(SacnManager.controllerTypeName, "new")
     }
 
     Paper {
-        attrs.className = -styles.editorPanes
+        attrs.className = if (selectedController == null) {
+            -styles.editorPanes and styles.noControllerSelected
+        } else {
+            -styles.editorPanes
+        }
 
         div(+styles.navigatorPane) {
             header { +"Controllers" }
@@ -99,6 +107,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                             TableCell { +"Firmware" }
                             TableCell { +"Last Error" }
                             TableCell { +"Last Error At" }
+                            TableCell { +"Fixtures" }
                         }
                     }
 
@@ -107,11 +116,11 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                         allControllerIds.forEach { controllerId ->
                             val mutableController = mutableControllers[controllerId]
                             val state = controllerStates[controllerId]
-                            if (controllerMatcher.matches(state, mutableController)) {
+                            if (controllerMatcher.matches(state, mutableController, fixtureInfos[controllerId])) {
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 6
+                                            attrs.colSpan = 7
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header { +controllerId.controllerType }
                                         }
@@ -142,6 +151,19 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                     TableCell { +(state?.firmwareVersion ?: "") }
                                     TableCell { +(state?.lastErrorMessage ?: "") }
                                     TableCell { +(state?.lastErrorAt?.toString() ?: "") }
+
+                                    TableCell {
+                                        fixtureInfos[controllerId]?.forEach { fixtureInfo ->
+                                            span {
+                                                attrs.title = run {
+                                                    fixtureInfo.entityId?.let {
+                                                        props.mutableScene.model.findById(it)?.title
+                                                    } ?: "[anonymous]"
+                                                }
+                                                +(fixtureInfo.entityId ?: "[anonymous]")
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -151,7 +173,15 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         }
 
         div(+styles.propertiesPane) {
-            header { +"Properties" }
+            header {
+                +"Properties"
+                IconButton {
+                    attrs.sx { float = Float.right }
+                    attrs.title = "Close"
+                    attrs.onClick = handleDeselectController
+                    icon(mui.icons.material.Close)
+                }
+            }
 
             div(+styles.propertiesPaneContent) {
                 selectedController?.let { selectedController ->

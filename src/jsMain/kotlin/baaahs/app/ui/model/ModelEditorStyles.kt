@@ -1,5 +1,6 @@
 package baaahs.app.ui.model
 
+import baaahs.ui.important
 import kotlinx.css.*
 import kotlinx.css.properties.LineHeight
 import kotlinx.css.properties.lh
@@ -87,7 +88,7 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
 
         input {
 //            color = theme.palette.primary.contrastText
-            fontSize = .8.em
+            fontSize = .9.em
         }
 
         header {
@@ -106,9 +107,22 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
     }
 
     val transformEditSection by css(propertiesEditSection) {
+        paddingTop = 1.em
+        paddingBottom = 1.em
+
         input {
             width = 5.em
             textAlign = TextAlign.right
+        }
+    }
+
+    val transformThreeColumns by css {
+        display = important(Display.grid)
+        gridTemplateColumns = GridTemplateColumns(1.fr, 1.fr, 1.fr)
+        gap = 1.em
+
+        "> label" {
+            left = (-1).em.important
         }
     }
 
