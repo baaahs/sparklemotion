@@ -11,9 +11,11 @@ import mui.icons.material.Folder
 import mui.icons.material.InsertDriveFile
 import mui.material.*
 import mui.system.Breakpoint
+import mui.system.sx
 import react.*
 import react.dom.events.FormEvent
 import react.dom.onChange
+import web.cssom.em
 
 private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     val appContext = useContext(appContext)
@@ -28,7 +30,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     val request = fileDialog.fileRequest
 
     val dialogEl = useRef(null)
-    var filesInDir by state { emptyList<Fs.File>() }
+    var filesInDir by state { emptyList<FileDisplay>() }
     var selectedFile by state { request?.defaultTarget }
     val isSaveAs = request?.isSaveAs ?: false
 
@@ -72,6 +74,15 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
         selectedFile = currentDir?.resolve(str)
     }
 
+    val handleTextFieldKeyDown by keyboardEventHandler(selectedFile, fileDialog) { event ->
+        if (event.key == "Enter") {
+            event.preventDefault()
+            selectedFile?.let {
+                globalLaunch { fileDialog.onSelect(it) }
+            }
+        }
+    }
+
     val handleConfirm by mouseEventHandler(selectedFile, fileDialog) {
         selectedFile?.let {
             globalLaunch { fileDialog.onSelect(it) }
@@ -90,11 +101,47 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
 
     onChange("selected fs/dir", request, currentDir) {
         currentDir?.let { currentDir ->
+            selectedFile = null
             val job = globalLaunch {
                 filesInDir = currentDir.listFiles()
                     .sortedWith(compareBy({ !(it.isDirectory ?: false) }, { it.name }))
+                    .map { file ->
+                        val icon = if (file.isDirectory == true) Folder else InsertDriveFile
+                        FileDisplay(file, file.name, jsIcon(icon), file.name.startsWith("."))
+                            .let { fileDialog.adjustFileDisplay(it) }
+                    }
             }
             withCleanup { job.cancel() }
+        }
+    }
+
+    val keyboard = appContext.keyboard
+    onMount(keyboard) {
+        val handler = keyboard.handle { keypress, _ ->
+            var result: KeypressResult? = null
+
+            when (keypress) {
+                Keypress("Enter") -> selectedFile?.let {
+                    globalLaunch { fileDialog.onSelect(it) }
+                }
+                Keypress("ArrowUp") -> selectedFile = run {
+                    val selectableFiles = filesInDir.filter { it.isSelectable }
+                    val idx = selectableFiles.indexOfFirst { it.file == selectedFile }
+                    if (idx > 0) selectableFiles[idx - 1] else selectableFiles.firstOrNull()
+                }?.file
+                Keypress("ArrowDown") -> selectedFile = run {
+                    val selectableFiles = filesInDir.filter { it.isSelectable }
+                    val idx = selectableFiles.indexOfFirst { it.file == selectedFile }
+                    if (idx < selectableFiles.size - 1) selectableFiles[idx + 1] else selectableFiles.lastOrNull()
+                }?.file
+                else -> result = KeypressResult.NotHandled
+            }
+
+            result ?: KeypressResult.Handled
+        }
+
+        withCleanup {
+            handler.remove()
         }
     }
 
@@ -144,15 +191,13 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                         ListItemText { attrs.primary = buildElement  { +".." } }
                     }
                 }
-                filesInDir.forEach { file ->
-                    println("file.fullPath = ${file.fullPath}")
-                    val icon = if (file.isDirectory == true) Folder else InsertDriveFile
-                    val fileDisplay = FileDisplay(file.name, jsIcon(icon), file.name.startsWith("."))
-                    fileDialog.adjustFileDisplay(file, fileDisplay)
-
+                filesInDir.forEach { fileDisplay ->
                     if (!fileDisplay.isHidden) {
+                        val file = fileDisplay.file
                         ListItemButton {
                             attrs.dense = true
+                            attrs.selected = selectedFile == file
+                            attrs.autoFocus = selectedFile == file
                             attrs.disabled = !fileDisplay.isSelectable
                             attrs.onClick = { _ -> handleFileSingleClick(file) }
                             attrs.onDoubleClick = { _ -> handleFileDoubleClick(file) }
@@ -168,8 +213,11 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     attrs.label = buildElement { +"File name…" }
                     attrs.autoFocus = true
                     attrs.fullWidth = true
+                    attrs.margin = FormControlMargin.normal
                     attrs.onChange = handleFileNameChange
+                    attrs.onKeyDown = handleTextFieldKeyDown
                     attrs.value = selectedFile?.name ?: request.defaultTarget?.name ?: ""
+                    attrs.sx { marginTop = 1.em }
                 }
             }
         }
@@ -181,9 +229,9 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     attrs.onClick = handleCancel
                 }
                 Button {
-                        +if (isSaveAs) "Save" else "Open"
-                        attrs.onClick = handleConfirm
+                    +if (isSaveAs) "Save" else "Open"
                     attrs.disabled = selectedFile == null
+                    attrs.onClick = handleConfirm
                 }
             }
         }

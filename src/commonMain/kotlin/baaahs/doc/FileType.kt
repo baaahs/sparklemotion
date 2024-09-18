@@ -3,10 +3,11 @@ package baaahs.doc
 import baaahs.io.Fs
 import baaahs.ui.Icon
 
-class FileDisplay(
-    var name: String,
-    var icon: Icon?,
-    var isHidden: Boolean = false,
+data class FileDisplay(
+    val file: Fs.File,
+    val name: String,
+    val icon: Icon?,
+    val isHidden: Boolean = false,
     var isSelectable: Boolean = true
 )
 
@@ -21,18 +22,18 @@ abstract class FileType {
     open val contentTypeMasks: List<String> get() = emptyList()
     open val matchingExtensions: List<String> get() = listOfNotNull(extension)
 
-    open fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-        if (file.isDirectory != true && matchingExtensions.isNotEmpty()) {
-            fileDisplay.isSelectable = matchingExtensions.any { file.name.endsWith(it) }
-        }
-    }
+    open fun adjustFileDisplay(fileDisplay: FileDisplay): FileDisplay =
+        if (fileDisplay.file.isDirectory != true && matchingExtensions.isNotEmpty()) {
+            fileDisplay.copy(
+                isSelectable = matchingExtensions.any { fileDisplay.file.name.endsWith(it) }
+            )
+        } else fileDisplay
 
     object Any : FileType() {
         override val extension: String? get() = null
 
-        override fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-            // No op.
-        }
+        override fun adjustFileDisplay(fileDisplay: FileDisplay): FileDisplay =
+            fileDisplay
     }
 
     object Show : FileType() {
