@@ -39,9 +39,8 @@ class FileDialog : Observable(), IFileDialog {
         channel.send(null)
     }
 
-    fun adjustFileDisplay(file: Fs.File, fileDisplay: FileDisplay) {
-        fileRequest?.fileType?.adjustFileDisplay(file, fileDisplay)
-    }
+    fun adjustFileDisplay(fileDisplay: FileDisplay): FileDisplay =
+        fileRequest?.fileType?.adjustFileDisplay(fileDisplay) ?: fileDisplay
 
     class FileRequest(
         title: String?,
