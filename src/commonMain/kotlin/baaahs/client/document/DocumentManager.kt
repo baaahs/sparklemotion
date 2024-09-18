@@ -176,8 +176,8 @@ abstract class DocumentManager<T, TState>(
         fun sync() {
             this@DocumentManager.editState = localState
         }
-        fun undo() = undoStack.undo()
-        fun redo() = undoStack.redo()
+        fun undo() { if (undoStack.canUndo()) undoStack.undo() }
+        fun redo() { if (undoStack.canRedo()) undoStack.redo() }
 
         override fun onEdit(document: T, documentState: TState, pushToUndoStack: Boolean, syncToServer: Boolean) {
             val isUnsaved = this@DocumentManager.isModified(document)
