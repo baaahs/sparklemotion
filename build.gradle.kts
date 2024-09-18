@@ -1,4 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -34,7 +35,7 @@ plugins {
     kotlin("plugin.serialization") version Versions.kotlin
     id("org.jetbrains.dokka") version Versions.dokka
     id("com.google.devtools.ksp") version Versions.ksp
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.0"
     id("com.github.ben-manes.versions") version "0.39.0"
     id("maven-publish")
     id("name.remal.check-dependency-updates") version "1.0.211"
@@ -52,12 +53,14 @@ repositories {
 group = "org.baaahs"
 version = "0.0.1"
 
+val JVM_VERSION = 19
+
 fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
 kotlin {
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(19)
+        languageVersion = JavaLanguageVersion.of(JVM_VERSION)
         vendor = JvmVendorSpec.ADOPTIUM
     }
 
@@ -123,11 +126,6 @@ kotlin {
                     runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$platform")
                 }
                 implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
-
-                // GLSL support via JOGL:
-                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
-                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
-//                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
                 implementation("org.jmdns:jmdns:3.5.7")
@@ -237,22 +235,29 @@ application {
     if (isMac()) {
         applicationDefaultJvmArgs += listOf(
             "-XstartOnFirstThread", // required for OpenGL: https://github.com/LWJGL/lwjgl3/issues/311
-            "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
         )
     }
 }
 
-// include JS artifacts in any JAR we generate
-tasks.named<Jar>("jvmJar").configure {
+fun findWebpackTask(): TaskProvider<KotlinWebpack> {
     val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
         "jsBrowserProductionWebpack"
     } else {
         "jsBrowserDevelopmentWebpack"
     }
+    return tasks.named<KotlinWebpack>(taskName)
+}
 
-    // bring output file along into the JAR
-    val webpackTask = tasks.named<KotlinWebpack>(taskName)
-    from(webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }) {
+tasks.named<Jar>("jvmJar").configure {
+    // include JS artifacts in jar
+    from(findWebpackTask().map { it.outputDirectory.file(it.mainOutputFileName) }) {
+        into("htdocs")
+    }
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    // include JS artifacts in shadow jar
+    from(findWebpackTask().map { it.outputDirectory.file(it.mainOutputFileName) }) {
         into("htdocs")
     }
 }
@@ -349,6 +354,91 @@ tasks.withType<DependencyUpdatesTask> {
     rejectVersionIf {
         isNonStable(candidate.version) && !isNonStable(currentVersion)
     }
+}
+
+tasks.register("macApp") {
+    group = "application"
+    description = "Creates a macOS .app bundle for Sparkle Motion."
+
+    val shadowJarTask = tasks.named("shadowJar")
+    dependsOn(shadowJarTask)
+
+    val appName = "Sparkle Motion"
+    val appDir = buildDir("$appName.app")
+    val contentsDir = "$appDir/Contents"
+    val macosDir = "$contentsDir/MacOS"
+    val resourcesDir = "$contentsDir/Resources"
+    val javaDir = "$contentsDir/Java"
+
+    doLast {
+        copy {
+            from(shadowJarTask) {
+                include("*.jar")
+                rename { "sparklemotion.jar" }
+            }
+            into(javaDir)
+        }
+
+        copy {
+            from("src/macApp/resources/SparkleMotion.icns")
+            into(resourcesDir)
+        }
+
+        // Create MacOS directory and add executable script
+        mkdir(macosDir)
+        val javaArgs = listOf(
+            "-Xms512m", "-Xmx2048m",
+            "-Dapple.laf.useScreenMenuBar=true",
+            "-Xdock:name='Sparkle Motion'",
+            "-Xdock:icon=\"\$DIR/Contents/Resources/SparkleMotion.icns\"",
+            "-XstartOnFirstThread",
+            "-jar \"\$DIR/Contents/Java/sparklemotion.jar\""
+        )
+        file("$macosDir/SparkleMotion").writeText("""
+            #!/bin/bash
+            DIR="$(cd "$(dirname "$0")" && pwd)/../.."
+            java ${javaArgs.joinToString(" ")}
+         """.trimIndent())
+        file("$macosDir/SparkleMotion").setExecutable(true)
+
+        // Create Info.plist
+        file("$contentsDir/Info.plist").writeText("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+            <plist version="1.0">
+            <dict>
+                <key>CFBundleName</key>
+                <string>$appName</string>
+                <key>CFBundleDisplayName</key>
+                <string>$appName</string>
+                <key>CFBundleIdentifier</key>
+                <string>com.example.sparklemotion</string>
+                <key>CFBundleVersion</key>
+                <string>1.0</string>
+                <key>CFBundleShortVersionString</key>
+                <string>1.0</string>
+                <key>CFBundleExecutable</key>
+                <string>SparkleMotion</string>
+                <key>CFBundlePackageType</key>
+                <string>APPL</string>
+                <key>CFBundleSignature</key>
+                <string>????</string>
+                <key>CFBundleIconFile</key>
+                <string>SparkleMotion.icns</string>
+                <key>LSMinimumSystemVersion</key>
+                <string>10.9.0</string>
+                <key>NSPrincipalClass</key>
+                <string>NSApplication</string>
+                <key>LSApplicationCategoryType</key>
+                <string>public.app-category.developer-tools</string>
+            </dict>
+            </plist>
+        """.trimIndent())
+    }
+}
+
+tasks.build {
+    dependsOn(tasks.named("macApp"))
 }
 
 // Janky. See https://github.com/google/ksp/issues/963#issuecomment-1780330007.
