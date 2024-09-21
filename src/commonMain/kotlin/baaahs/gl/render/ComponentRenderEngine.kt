@@ -128,6 +128,7 @@ class ComponentRenderEngine(
         if (renderTargetsToRemove.isNotEmpty()) {
 //            TODO(question for xian): ("remove TBD"), how do we do this?
 //            renderTargets.removeAll(renderTargetsToRemove)
+//            context: https://github.com/baaahs/sparklemotion/pull/613/files#r1748974029
         }
 
         if (renderTargetsToAdd.isNotEmpty()) {
