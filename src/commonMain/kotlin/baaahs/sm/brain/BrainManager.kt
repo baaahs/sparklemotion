@@ -106,7 +106,7 @@ class BrainManager(
         }
 
         val existingController = activeBrains[brainId]
-        if (existingController != null && existingController.lastError == null) {
+        if (existingController != null && existingController.lastError == null && existingController.brainAddress == brainAddress) {
             // Duplicate packet?
             logger.warn { "Ignore hello from ${existingController.controllerId} @ $brainAddress, duplicate packet?" }
             return
@@ -134,7 +134,7 @@ class BrainManager(
     }
 
     inner class BrainController(
-        private val brainAddress: Network.Address,
+        public val brainAddress: Network.Address,
         private val brainId: BrainId,
         private val helloMessage: BrainHelloMessage,
         override val defaultFixtureOptions: FixtureOptions?,
@@ -172,6 +172,9 @@ class BrainManager(
                 null,
                 BrainManager.defaultFixtureOptions
             ))
+        }
+        public fun getAddress(): Network.Address {
+          return this.brainAddress
         }
     }
 
