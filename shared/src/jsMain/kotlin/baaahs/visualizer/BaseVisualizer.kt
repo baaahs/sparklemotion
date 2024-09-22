@@ -335,9 +335,6 @@ open class BaseVisualizer(
 
         orbitControlsExtension.update()
 
-        directionalLight.position.copy(camera.position)
-        directionalLight.position.y *= 0.125
-
         val startTime = clock.now()
         if (sceneNeedsUpdate) {
             facade.notifyChanged()

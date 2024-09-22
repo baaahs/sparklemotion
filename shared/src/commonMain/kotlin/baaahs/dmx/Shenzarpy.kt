@@ -40,10 +40,10 @@ object Shenzarpy : MovingHeadAdapter {
 
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
         get() = MovingHeadAdapter.VisualizerInfo(
-            canRadius = 5f.`in`,
+            canRadius = 4f.`in`,
             lensRadius = 3f.`in`,
-            canLengthInFrontOfLight = 9f.`in`,
-            canLengthBehindLight = 3f.`in`
+            canLengthInFrontOfLight = 6f.`in`,
+            canLengthBehindLight = 4f.`in`
         )
 
     override fun newBuffer(dmxBuffer: Dmx.Buffer) = Buffer(dmxBuffer)

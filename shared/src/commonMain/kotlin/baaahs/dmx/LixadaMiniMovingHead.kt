@@ -35,8 +35,8 @@ object LixadaMiniMovingHead : MovingHeadAdapter {
 
     override val visualizerInfo: MovingHeadAdapter.VisualizerInfo
         get() = MovingHeadAdapter.VisualizerInfo(
-            canRadius = 2.5f.`in`,
-            lensRadius = 2f.`in`,
+            canRadius = 1.5f.`in`,
+            lensRadius = 1f.`in`,
             canLengthInFrontOfLight = 3f.`in`,
             canLengthBehindLight = 1f.`in`
         )
