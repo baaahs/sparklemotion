@@ -30,10 +30,6 @@ class ModelEditorStyles(val theme: Theme) : StyleSheet("app-ui-model-editor", is
         overflow = Overflow.scroll
     }
 
-    val entityList by css {
-        marginLeft = 1.em
-    }
-
     val visualizerPane by css {
         position = Position.relative
         height = 100.pct
