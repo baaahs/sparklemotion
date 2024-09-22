@@ -119,8 +119,11 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
     }
 
     val keyboard = appContext.keyboard
-    onMount(keyboard) {
+    onMount(keyboard, request) {
         val handler = keyboard.handle { keypress, _ ->
+            if (request == null)
+                return@handle KeypressResult.NotHandled
+
             var result: KeypressResult? = null
 
             when (keypress) {
