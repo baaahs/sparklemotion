@@ -61,6 +61,9 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
+            Option("BRC 2024") {
+                makeNew { fromResources("BRC 2024.sparkle") }
+            },
             Option("BRC 2023") {
                 makeNew { fromResources("BRC 2023.sparkle") }
             },
