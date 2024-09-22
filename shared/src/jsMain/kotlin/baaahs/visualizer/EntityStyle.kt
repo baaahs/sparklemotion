@@ -58,19 +58,21 @@ enum class EntityStyle {
             material.linewidth = 3
             material.visible = true
 
-            if (use == Use.LightStrand) {
-                material.color.set(0x226622)
+            when (use) {
+                Use.LightStrand -> material.color.set(0x226622)
+                Use.FixtureHardware -> material.color.set(0x444444)
+                else -> {}
             }
         }
 
         override fun applyToMesh(material: Material, use: Use?) {
-            material.color.set(0x222222)
-            material.side = FrontSide
-
-            if (use == Use.LightStrandHint) {
-                material.color.set(0x662222)
-                material.transparent = true
-                material.opacity = .5
+            when (use) {
+                Use.LightStrandHint -> {
+                    material.color.set(0x662222)
+                    material.transparent = true
+                    material.opacity = .5
+                }
+                else -> {}
             }
         }
 
@@ -96,8 +98,9 @@ enum class EntityStyle {
         override fun applyToMesh(material: Material, use: Use?) {
             material.color.multiply(meshColorMultiplier)
 
-            if (use == Use.LightStrandHint) {
-                material.color.multiply(meshColorMultiplier)
+            when (use) {
+                Use.FixtureHardware -> material.color.multiply(Color(2, 2, 2))
+                else -> {}
             }
         }
 
