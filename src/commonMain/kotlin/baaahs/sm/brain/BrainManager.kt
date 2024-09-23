@@ -198,7 +198,7 @@ class BrainManager(
         val transportConfig: TransportConfig?
     ) : Transport {
         private var pixelBuffer = pixelShader.createBuffer(0)
-        private val pixelOffset = 4
+        private val pixelOffset = 0
 
         override val name: String
             get() = "Brain ${brainId.uuid} at $brainAddress"

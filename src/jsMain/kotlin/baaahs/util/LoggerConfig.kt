@@ -1,6 +1,7 @@
 package baaahs.util
 
 import baaahs.gl.KglTracer
+import baaahs.plugin.midi.JsMidiSource
 import baaahs.show.live.ShowOpener
 import kotlin.reflect.KClass
 
@@ -15,7 +16,8 @@ object LoggerConfig {
     val classLevels = mapOf<KClass<*>, LogLevel>(
 //        PubSub::class to LogLevel.DEBUG,
         KglTracer::class to LogLevel.DEBUG,
-        ShowOpener::class to LogLevel.DEBUG
+        ShowOpener::class to LogLevel.DEBUG,
+        JsMidiSource::class to LogLevel.DEBUG,
     )
 
     private val allLevels = (stringLevels + classLevels.mapKeys { (k, _) -> k.simpleName })

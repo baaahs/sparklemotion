@@ -46,10 +46,7 @@ import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.SerializersModuleBuilder
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.serializersModuleOf
+import kotlinx.serialization.modules.*
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 
@@ -304,6 +301,10 @@ sealed class Plugins(
         polymorphic(MappingStrategy.PixelMetadata::class) {
             subclass(OneAtATimeMappingStrategy.OneAtATimePixelMetadata::class, OneAtATimeMappingStrategy.OneAtATimePixelMetadata.serializer())
             subclass(TwoLogNMappingStrategy.TwoLogNPixelMetadata::class, TwoLogNMappingStrategy.TwoLogNPixelMetadata.serializer())
+        }
+
+        polymorphic(EventBinding::class) {
+            subclass(MidiChannelEventBinding::class)
         }
     }
 

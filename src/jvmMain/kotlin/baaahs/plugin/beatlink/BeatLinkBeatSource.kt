@@ -60,7 +60,7 @@ class BeatLinkBeatSource(
         // the tracks themselves, you need to have beat-link create a virtual player on the network. This causes the
         // other players to send detailed status updates directly to beat-link, so it can interpret and keep track of
         // this information for you.
-//        virtualCdj.useStandardPlayerNumber = false
+        virtualCdj.useStandardPlayerNumber = false
         virtualCdj.deviceNumber = 4
 
         virtualCdj.addLifecycleListener(object : LifecycleListener {
@@ -172,7 +172,7 @@ class BeatLinkBeatSource(
     private fun updatePlayerState(playerNumber: Int, block: (PlayerState) -> PlayerState) {
         playerStates = playerStates.updateWith(playerNumber, block)
         val playerState = playerStates.byDeviceNumber[playerNumber]!!
-        println("playerState = $playerState")
+//        println("playerState = $playerState")
         listeners.notifyListeners {
             it.onPlayerStateUpdate(playerNumber, playerState) }
     }

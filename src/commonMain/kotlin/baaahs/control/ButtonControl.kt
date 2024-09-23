@@ -88,8 +88,9 @@ class OpenButtonControl(
     openContext: OpenContext,
     val controlledFeed: Feed? = buttonControl.controlledFeedId?.let { openContext.getFeed(it) }
 ) : OpenPatchHolder(buttonControl, openContext), OpenControl {
+    private var onActivePatchSetChange: (() -> Unit)? = null
     val switch: Switch = Switch(buttonControl.title).also {
-        it.listen { openContext.onActivePatchSetMayBeAffected() }
+        it.listen { onActivePatchSetChange?.invoke() }
     }
     override val gadget: Switch
         get() = switch
@@ -101,6 +102,10 @@ class OpenButtonControl(
         set(value) { switch.enabled = value }
 
     val expandsOnLongPress: Boolean get() = type != ButtonControl.ActivationType.Momentary
+
+    override fun listenForActivePatchSetChanges(callback: () -> Unit) {
+        onActivePatchSetChange = callback
+    }
 
     override fun isActive(): Boolean = isPressed
 
