@@ -1,10 +1,12 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -56,11 +58,6 @@ fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
 kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(19)
-        vendor = JvmVendorSpec.ADOPTIUM
-    }
-
     metadata {}
 
     jvm {
@@ -108,7 +105,6 @@ kotlin {
                 implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
                 implementation("ch.qos.logback:logback-classic:1.3.11")
                 implementation("org.deepsymmetry:beat-link:7.2.0")
-                implementation("com.illposed.osc:javaosc-core:0.9")
 
                 implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
                 implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
@@ -241,6 +237,15 @@ application {
             "-Djava.awt.headless=true" // required for Beat Link; otherwise we get this: https://jogamp.org/bugzilla/show_bug.cgi?id=485
         )
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType(KotlinCompile::class) {
+    compilerOptions.jvmTarget = JvmTarget.JVM_11
 }
 
 // include JS artifacts in any JAR we generate

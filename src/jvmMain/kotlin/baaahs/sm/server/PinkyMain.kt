@@ -43,7 +43,6 @@ class PinkyMain(private val args: Array<String>) {
         GlBase.manager // First thing, we need to wake up OpenGL on the main thread.
 
         logger.info { "Are you pondering what I'm pondering?" }
-        logger.info { "Running JVM ${System.getProperty("java.vendor")} ${System.getProperty("java.version")} from ${System.getProperty("java.home")}." }
 
         val programName = PinkyMain::class.simpleName ?: "Pinky"
         val clock = SystemClock
