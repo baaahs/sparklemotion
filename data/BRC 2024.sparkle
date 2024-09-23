@@ -2945,7 +2945,9 @@
     "brightness": {
       "type": "baaahs.Core:Slider",
       "title": "Brightness",
-      "initialValue": 0.3,
+      "initialValue": 0.15,
+      "minValue": 0.0,
+      "maxValue": 0.75,
       "controlledFeedId": "brightnessSlider"
     },
     "saturation": {
