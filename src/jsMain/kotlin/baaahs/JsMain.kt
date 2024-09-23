@@ -3,6 +3,7 @@ package baaahs
 import baaahs.app.ui.PatchEditorApp
 import baaahs.client.WebClient
 import baaahs.di.*
+import baaahs.midi.MIDIUi
 import baaahs.monitor.MonitorUi
 import baaahs.net.BrowserNetwork
 import baaahs.scene.SceneMonitor
@@ -86,6 +87,11 @@ private fun launchUi(appName: String?) {
                 koin.createScope<WebClient>().get<WebClient>()
             }
 
+            "MIDIUi" -> {
+                koin.loadModules(listOf(JsMidiWebClientModule().getModule()))
+                koin.createScope<MIDIUi>().get<MIDIUi>()
+            }
+
             "PatchEditor" -> {
                 koin.loadModules(listOf(JsUiWebClientModule().getModule()))
                 koin.createScope<WebClient>().get<PatchEditorApp>()
@@ -124,6 +130,7 @@ private fun launchSimulator(
             JsSimPinkyModule(sceneMonitor, pinkySettings, Dispatchers.Main, simMappingManager).getModule(),
             JsUiWebClientModule().getModule(),
             JsMonitorWebClientModule().getModule(),
+            JsMidiWebClientModule().getModule(),
         )
     }.koin
 
@@ -132,6 +139,7 @@ private fun launchSimulator(
     val hostedWebApp = when (val app = queryParams["app"] ?: "UI") {
         "Monitor" -> simulator.createMonitorApp()
         "UI" -> simulator.createWebClientApp()
+        "MIDIUi" -> simulator.createMIDIApp()
         else -> throw UnsupportedOperationException("unknown app $app")
     }
     hostedWebApp.onLaunch()

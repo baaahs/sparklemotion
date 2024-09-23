@@ -1,6 +1,7 @@
 package baaahs.model
 
 import baaahs.Color
+import baaahs.clamp
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Boryli
@@ -9,12 +10,11 @@ import baaahs.dmx.LixadaMiniMovingHead
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.EulerAngle
 import baaahs.geom.Vector3F
+import baaahs.scale
 import baaahs.sim.FixtureSimulation
 import baaahs.sim.simulations
+import baaahs.unscale
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.movers.clamp
-import baaahs.visualizer.movers.scale
-import baaahs.visualizer.movers.unscale
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
