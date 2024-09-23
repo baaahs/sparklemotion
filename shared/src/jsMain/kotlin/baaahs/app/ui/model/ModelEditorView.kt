@@ -22,13 +22,10 @@ import kotlinx.css.padding
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.header
 import react.dom.i
-import react.useContext
 import styled.inlineStyles
 import web.dom.Element
 import web.dom.document
@@ -144,7 +141,7 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     Paper {
         attrs.className = -styles.editorPanes
         div(+styles.navigatorPane) {
-            header { +"Navigator" }
+            header { +"Model Entities" }
 
             div(+styles.navigatorPaneContent) {
                 nestedList<MutableEntity> {
@@ -170,8 +167,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         }
 
         div(+styles.propertiesPane) {
-            header { +"Properties" }
-
             div(+styles.propertiesPaneContent) {
                 if (editingEntity == null) {
                     div {
