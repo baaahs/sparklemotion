@@ -3,8 +3,9 @@ package baaahs.plugin.midi
 import baaahs.midi.MidiDevice
 import baaahs.util.Clock
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import js.objects.jso
-import js.promise.catch
+import web.events.EventHandler
 import web.midi.MIDIConnectionEvent
 import web.midi.MIDIInput
 import web.midi.MIDIMessageEvent
@@ -34,29 +35,31 @@ class JsMidiSource(
             logger.error { "No MIDI access available." }
             return
         }
-        navigator.requestMIDIAccess(jso { sysex = true }).then { midiAccess ->
-            logger.info { "Got MIDI access." }
-            midiAccess.onstatechange = { event ->
-                val port = event.port
-                logger.info { "Found MIDI input during subsequent update: ${port?.id}" }
-                if (port is MIDIInput) {
-                    receivedPortUpdate(port.id, port)
+        try {
+            navigator.requestMIDIAccess(jso { sysex = true }).let { midiAccess ->
+                logger.info { "Got MIDI access." }
+                midiAccess.onstatechange = EventHandler { event ->
+                    val port = event.port
+                    logger.info { "Found MIDI input during subsequent update: ${port?.id}" }
+                    if (port is MIDIInput) {
+                        globalLaunch { receivedPortUpdate(port.id, port) }
+                    }
                 }
-            }
-            midiAccess.inputs.forEach { midiInput, key ->
-                console.log("midiInput:", midiInput, "key:", "key")
-                logger.info { "Found MIDI input during initial request: $key, ${midiInput.id}" }
-                receivedPortUpdate(key, midiInput)
-            }
+                midiAccess.inputs.forEach { midiInput, key ->
+                    console.log("midiInput:", midiInput, "key:", "key")
+                    logger.info { "Found MIDI input during initial request: $key, ${midiInput.id}" }
+                    globalLaunch { receivedPortUpdate(key, midiInput) }
+                }
 
-            logger.info { "Started." }
-        }.catch { e ->
+                logger.info { "Started." }
+            }
+        } catch (e: Exception) {
             logger.error(e) { "Error getting MIDI access." }
         }
     }
 
-    private fun receivedPortUpdate(key: String, midiInput: MIDIInput) {
-        knownInputs.add(JsMidiPort(midiInput))
+    private suspend fun receivedPortUpdate(key: String, midiInput: MIDIInput) {
+        knownInputs.add(JsMidiPort(midiInput).apply { open() })
         logger.info { "Added Input: $key, $midiInput" }
 //        TODO("not implemented")
     }
@@ -74,13 +77,16 @@ class JsMidiSource(
         init {
             logger.info { "Have MIDI device: $midiDevice" }
 
-            port.onmidimessage = ::onMidiMessage
-            port.onstatechange = ::onStateChange
+            port.onmidimessage = EventHandler { e -> onMidiMessage(e) }
+            port.onstatechange = EventHandler { e -> onStateChange(e) }
+        }
 
-            port.open().then {
+        suspend fun open() {
+            try {
+                port.open()
                 logger.info { "Opened ${port.id} ${port.name} (${port.type}, ${port.state})." }
-            }.catch {
-                logger.info { "Error opening ${port.id} ${port.name} (${port.type}, ${port.state})." }
+            } catch (e: Exception) {
+                logger.error(e) { "Error opening ${port.id} ${port.name} (${port.type}, ${port.state})." }
             }
         }
 
