@@ -10,11 +10,9 @@ import baaahs.fixtures.ProgramRenderPlan
 import baaahs.geom.Vector2D
 import baaahs.geom.Vector3F
 import baaahs.get2DContext
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.FixtureRenderTarget
-import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.gl.result.Vec2ResultType
 import baaahs.model.Model
 import baaahs.model.PixelArray
@@ -26,8 +24,8 @@ import web.canvas.Path2D
 import web.html.HTMLCanvasElement
 
 class ProjectionPreview(
+    override val renderEngine: ComponentRenderEngine,
     canvas2d: HTMLCanvasElement,
-    gl: GlContext,
     private var width: Int,
     private var height: Int,
     model: Model,
@@ -35,9 +33,6 @@ class ProjectionPreview(
 ) : ShaderPreview {
     private var running = false
     private val fixtureType = ProjectionPreviewDevice
-    override val renderEngine = ComponentRenderEngine(
-        gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
-    )
     override var program: GlslProgram? = null
         set(value) {
             field = value
