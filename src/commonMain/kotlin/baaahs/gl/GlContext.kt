@@ -3,17 +3,29 @@ package baaahs.gl
 import baaahs.gl.glsl.CompiledShader
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.glsl.ResourceAllocationException
+import baaahs.ui.Observable
 import baaahs.util.Logger
+import baaahs.util.globalLaunch
 import com.danielgergely.kgl.*
+import kotlin.reflect.KClass
 
 abstract class GlContext(
+    val name: String,
     internal val kgl: Kgl,
     val glslVersion: String,
     var checkForErrors: Boolean = false,
     val state: State = State()
 ) {
     val id = nextId++
-    init { logger.debug { "Created $this." } }
+    protected open val allocatedContext: AllocatedContext
+        get() = AllocatedContext(id, name, this::class)
+
+    init {
+        logger.debug { "Created GlContext \"$name\"." }
+        globalLaunch {
+            allocatedContexts.add(allocatedContext)
+        }
+    }
 
     abstract fun <T> runInContext(fn: () -> T): T
     abstract suspend fun <T> asyncRunInContext(fn: suspend () -> T): T
@@ -24,7 +36,7 @@ abstract class GlContext(
     val maxTextureSize by lazy { getGlInt(GL_MAX_TEXTURE_SIZE) }
 
     /**
-     * When a GlContext shares a rendering canvas with others, [rasterOffet] indicates this
+     * When a GlContext shares a rendering canvas with others, `rasterOffet` indicates this
      * context's location in the shared canvas.
      */
     open val rasterOffset: RasterOffset = RasterOffset(0, 0)
@@ -112,7 +124,7 @@ abstract class GlContext(
 
                 val status = check { checkFramebufferStatus(GL_FRAMEBUFFER) }
                 if (status != GL_FRAMEBUFFER_COMPLETE) {
-                    logger.warn { "$this: FrameBuffer huh? ${decodeGlConst(status) ?: status}" }
+                    logger.warn { "$name: FrameBuffer huh? ${decodeGlConst(status) ?: status}" }
                 }
             }
         }
@@ -252,7 +264,7 @@ abstract class GlContext(
         val code = decodeGlConst(error) ?: "unknown error $error"
 
         if (error != 0) {
-            logger.error { "$this: OpenGL Error: $code" }
+            logger.error { "$name: OpenGL Error: $code" }
             throw RuntimeException("OpenGL Error: $code")
         }
     }
@@ -285,7 +297,18 @@ abstract class GlContext(
 
     data class RasterOffset(val bottom: Int, val left: Int)
 
+    class AllocatedContexts : Observable(), MutableList<AllocatedContext> by mutableListOf()
+
+    data class AllocatedContext(
+        val id: Int,
+        val name: String,
+        val type: KClass<out GlContext>,
+        val parentId: Int? = null
+    )
+
     companion object {
+        val allocatedContexts = AllocatedContexts()
+
         private val logger = Logger<GlContext>()
         private var nextId = 0
 
@@ -302,6 +325,5 @@ abstract class GlContext(
         const val GL_RGBA16F = 0x881A
 
         const val GL_COMPLETION_STATUS_KHR = 0x91B1
-
     }
 }

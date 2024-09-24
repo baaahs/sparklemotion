@@ -10,7 +10,9 @@ import baaahs.glsl.GlslUniform
 import baaahs.glsl.TextureUniform
 import com.danielgergely.kgl.*
 
-class FakeGlContext(internal val fakeKgl: FakeKgl = FakeKgl()) : GlContext(fakeKgl, "1234") {
+class FakeGlContext(
+    internal val fakeKgl: FakeKgl = FakeKgl()
+) : GlContext("FakeGlContext", fakeKgl, "1234") {
     val programs get() = fakeKgl.programs.let { it.subList(1, it.size) }
     val textures get() = fakeKgl.textures.let { it.subList(1, it.size) }
 

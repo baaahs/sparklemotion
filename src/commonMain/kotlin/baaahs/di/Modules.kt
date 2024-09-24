@@ -132,7 +132,9 @@ interface PinkyModule : KModule {
             scoped { DmxUniverseListener(get()) }
             scoped<Dmx.UniverseListener> { get<DmxUniverseListener>() }
             scoped<DmxManager> { DmxManagerImpl(get(), get(), get(Named.fallbackDmxUniverse), get(), get(), get()) }
-            scoped(named("PinkyGlContext")) { GlBase.manager.createContext(SparkleMotion.TRACE_GLSL) }
+            scoped(named("PinkyGlContext")) {
+                GlBase.manager.createContext("Pinky Render Context", SparkleMotion.TRACE_GLSL)
+            }
             scoped { RenderManager(get(named("PinkyGlContext"))) }
             scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
             scoped { FsServerSideSerializer() }

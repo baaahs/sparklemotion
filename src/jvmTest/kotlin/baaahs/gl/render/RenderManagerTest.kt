@@ -36,7 +36,7 @@ class RenderManagerTest {
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
-            val context = GlBase.manager.createContext(true)
+            val context = GlBase.manager.createContext("Test Context", true)
             renderManager = RenderManager(context)
             fakeShowPlayer = FakeShowPlayer()
         } else error("GLSL not available!")

@@ -18,7 +18,7 @@ class LwjglGlManager : GlManager() {
     override val available: Boolean
         get() = window != 0L
 
-    override fun createContext(trace: Boolean): GlContext {
+    override fun createContext(name: String, trace: Boolean): GlContext {
         logger.warn { "DANGER!!! LwjglGlManager.createContext() doesn't actually create a new context!" }
 
         if (!available) throw RuntimeException("GLSL not available")
@@ -26,10 +26,10 @@ class LwjglGlManager : GlManager() {
         checkCapabilities()
         GLFW.glfwMakeContextCurrent(0)
 
-        return LwjglGlContext(maybeTrace(KglLwjgl, trace))
+        return LwjglGlContext(name, maybeTrace(KglLwjgl, trace))
     }
 
-    inner class LwjglGlContext(kgl: Kgl) : GlContext(kgl, "330 core") {
+    inner class LwjglGlContext(name: String, kgl: Kgl) : GlContext(name, kgl, "330 core") {
         var nestLevel = 0
         override fun <T> runInContext(fn: () -> T): T {
             if (++nestLevel == 1) {
