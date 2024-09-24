@@ -9,8 +9,9 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class SharedGlContext(
-    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext()
-) : GlBase.JsGlContext(glContext.canvas, glContext.kgl, glContext.glslVersion, glContext.webgl) {
+    name: String,
+    private val glContext: GlBase.JsGlContext = GlBase.jsManager.createContext("Shared GL Context")
+) : GlBase.JsGlContext(name, glContext.canvas, glContext.kgl, glContext.glslVersion, glContext.webgl) {
     private val sharedCanvas = glContext.canvas
     private var sharedLastFrameTimestamp = 0.0
     private var sharedCanvasRect: Rect = sharedCanvas.getBoundingClientRect().asRect()
@@ -21,8 +22,8 @@ class SharedGlContext(
         updateVisibility()
     }
 
-    fun createSubContext(container: HTMLElement): GlBase.JsGlContext =
-        SubJsGlContext(SubKgl(container, kgl)).also {
+    fun createSubContext(name: String, container: HTMLElement): GlBase.JsGlContext =
+        SubJsGlContext(name, SubKgl(container, kgl), this).also {
             subContextCount++
             updateVisibility()
         }
@@ -53,10 +54,16 @@ class SharedGlContext(
     }
 
     inner class SubJsGlContext(
-        private val subKgl: SubKgl
+        name: String,
+        private val subKgl: SubKgl,
+        sharedGlContext: SharedGlContext
     ) : GlBase.JsGlContext(
-        canvas, subKgl, glslVersion, webgl, checkForErrors, state
+        name, canvas, subKgl, glslVersion, webgl, checkForErrors, state
     ) {
+        private val parentId = sharedGlContext.id
+        override val allocatedContext: AllocatedContext
+            get() = AllocatedContext(id, name, this::class, parentId)
+
         private var subLastFrameTimestamp = 0.0
 
         override val rasterOffset: RasterOffset

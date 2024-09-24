@@ -106,7 +106,7 @@ actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
-        val glslContext = GlBase.manager.createContext()
+        val glslContext = GlBase.manager.createContext("MovingHeadPreview")
 
         return MovingHeadPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
             preRenderHook.current!!.invoke(it)
@@ -122,7 +122,7 @@ actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper {
     ): ShaderPreview {
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
-        val glslContext = GlBase.manager.createContext()
+        val glslContext = GlBase.manager.createContext("ProjectionPreview")
 
         return ProjectionPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
             preRenderHook.current!!.invoke(it)
@@ -136,7 +136,7 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
         model: Model,
         preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
-        val glslContext = GlBase.jsManager.createContext(visibleCanvas)
+        val glslContext = GlBase.jsManager.createContext("Quad Preview", visibleCanvas)
         return QuadPreview(glslContext, visibleCanvas.width, visibleCanvas.height) {
             preRenderHook.current!!.invoke(it)
         }
@@ -150,7 +150,7 @@ actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlConte
         model: Model,
         preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
-        val glslContext = sharedGlContext.createSubContext(container)
+        val glslContext = sharedGlContext.createSubContext("Quad Preview", container)
         return QuadPreview(glslContext, width, height) {
             preRenderHook.current!!.invoke(it)
         }

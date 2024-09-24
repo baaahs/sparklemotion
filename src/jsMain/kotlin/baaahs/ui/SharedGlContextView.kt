@@ -28,7 +28,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     val canvasParentRef = ref<HTMLElement>()
     val appGlContext = memo(useSharedContexts) {
         jso<AppGlContext> {
-            this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext() else null
+            this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext("App Shared Context") else null
         }
     }
 

@@ -13,9 +13,9 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.EntityAdapter
+import baaahs.visualizer.Visualizer
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
-import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.GlobalScope
@@ -30,7 +30,7 @@ class ClientPreview(
     plugins: Plugins,
     private val coroutineScope: CoroutineScope = GlobalScope
 ) : ClientStageManager.Listener {
-    private val glContext = GlBase.jsManager.createContext()
+    private val glContext = GlBase.jsManager.createContext("Client Preview")
     private val renderManager = RenderManager(glContext)
     private val fixtureManager = FixtureManagerImpl(renderManager, plugins)
     private val dmxUniverse = FakeDmxUniverse()
