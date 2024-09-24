@@ -31,7 +31,10 @@ import web.html.HTMLDivElement
 
 private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
-    val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
+    val glSharingContext = useContext(appGlSharingContext)
+    val sharedGlContext = if (props.noSharedGlContext == true) null else {
+        glSharingContext.sharedGlContext
+    }
     val toolchain = props.toolchain
         ?: run { useContext(toolchainContext) }
 
@@ -47,7 +50,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) {
 //        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
-        bootstrapper.createHelper(sharedGlContext)
+        bootstrapper.createHelper(sharedGlContext, glSharingContext.sharedRenderEngineProvider)
     }
     val previewContainer = helper.container
     val sceneProvider = appContext.sceneProvider

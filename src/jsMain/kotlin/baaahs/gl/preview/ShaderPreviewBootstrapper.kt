@@ -1,10 +1,15 @@
 package baaahs.gl.preview
 
 import baaahs.app.ui.ShaderPreviewStyles
+import baaahs.app.ui.SharedRenderEngineProvider
+import baaahs.device.FixtureType
+import baaahs.device.MovingHeadDevice
 import baaahs.document
 import baaahs.gl.GlBase
 import baaahs.gl.GlContext
 import baaahs.gl.SharedGlContext
+import baaahs.gl.render.ComponentRenderEngine
+import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.model.Model
 import baaahs.ui.inPixels
 import baaahs.ui.name
@@ -15,10 +20,16 @@ import web.html.HTMLDivElement
 import web.html.HTMLElement
 
 actual interface ShaderPreviewBootstrapper {
-    fun createHelper(sharedGlContext: SharedGlContext?): Helper =
+    fun createHelper(
+        sharedGlContext: SharedGlContext?,
+        sharedRenderEngineProvider: SharedRenderEngineProvider?
+    ): Helper =
         if (this is SharedGlContextCapableBootstrapper && sharedGlContext != null)
             SharedCanvasHelper(this, sharedGlContext)
-        else
+        else if (this is SharedRenderEngineCapableBootstrapper && sharedRenderEngineProvider != null) {
+            val renderEngine = sharedRenderEngineProvider.getSharedRenderEngine(fixtureType)
+            SharedRenderEngineHelper(this, renderEngine)
+        } else
             StandaloneCanvasHelper(this)
 
     fun bootstrap(
@@ -61,6 +72,19 @@ interface SharedGlContextCapableBootstrapper : ShaderPreviewBootstrapper {
     ): ShaderPreview
 }
 
+interface SharedRenderEngineCapableBootstrapper : ShaderPreviewBootstrapper {
+    val fixtureType: FixtureType
+
+    fun bootstrapShared(
+        visibleCanvas: HTMLCanvasElement,
+        width: Int,
+        height: Int,
+        renderEngine: ComponentRenderEngine,
+        model: Model,
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
+    ): ShaderPreview
+}
+
 class StandaloneCanvasHelper(
     private val bootstrapper: ShaderPreviewBootstrapper
 ) : ShaderPreviewBootstrapper.Helper() {
@@ -98,33 +122,100 @@ class SharedCanvasHelper(
     }
 }
 
-actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper {
+class SharedRenderEngineHelper(
+    private val bootstrapper: SharedRenderEngineCapableBootstrapper,
+    private val renderEngine: ComponentRenderEngine
+) : ShaderPreviewBootstrapper.Helper() {
+    override val container: HTMLCanvasElement =
+        (document.createElement("canvas") as HTMLCanvasElement)
+            .also { it.className = ShaderPreviewStyles.canvas.name }
+
+    override fun bootstrap(model: Model, preRenderHook: RefObject<(ShaderPreview) -> Unit>): ShaderPreview =
+        bootstrapper.bootstrapShared(
+            container,
+            width?.inPixels() ?: 10,
+            height?.inPixels() ?: 10,
+            renderEngine,
+            model,
+            preRenderHook
+        )
+
+    override fun release(gl: GlContext) {
+        gl.release()
+    }
+}
+
+actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineCapableBootstrapper {
+    override val fixtureType: FixtureType
+        get() = MovingHeadDevice
+
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
         preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
+        val glslContext = GlBase.manager.createContext("MovingHeadPreview")
+        val renderEngine = ComponentRenderEngine(
+            glslContext, MovingHeadDevice,
+            resultDeliveryStrategy = glslContext.pickResultDeliveryStrategy()
+        )
+
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
-        val glslContext = GlBase.manager.createContext("MovingHeadPreview")
+        return MovingHeadPreview(renderEngine, canvas2d, canvas2d.width, canvas2d.height, model) {
+            preRenderHook.current!!.invoke(it)
+        }
+    }
 
-        return MovingHeadPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
+    override fun bootstrapShared(
+        visibleCanvas: HTMLCanvasElement,
+        width: Int,
+        height: Int,
+        renderEngine: ComponentRenderEngine,
+        model: Model,
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
+    ): ShaderPreview {
+        @Suppress("UnnecessaryVariable")
+        val canvas2d = visibleCanvas
+        return MovingHeadPreview(renderEngine, canvas2d, canvas2d.width, canvas2d.height, model) {
             preRenderHook.current!!.invoke(it)
         }
     }
 }
 
-actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper {
+actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineCapableBootstrapper {
+    override val fixtureType: FixtureType
+        get() = ProjectionPreviewDevice
+
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
         preRenderHook: RefObject<(ShaderPreview) -> Unit>
     ): ShaderPreview {
+        val glslContext = GlBase.manager.createContext("ProjectionPreview")
+        val renderEngine = ComponentRenderEngine(
+            glslContext, MovingHeadDevice,
+            resultDeliveryStrategy = glslContext.pickResultDeliveryStrategy()
+        )
         @Suppress("UnnecessaryVariable")
         val canvas2d = visibleCanvas
-        val glslContext = GlBase.manager.createContext("ProjectionPreview")
 
-        return ProjectionPreview(canvas2d, glslContext, canvas2d.width, canvas2d.height, model) {
+        return ProjectionPreview(renderEngine, canvas2d, canvas2d.width, canvas2d.height, model) {
+            preRenderHook.current!!.invoke(it)
+        }
+    }
+
+    override fun bootstrapShared(
+        visibleCanvas: HTMLCanvasElement,
+        width: Int,
+        height: Int,
+        renderEngine: ComponentRenderEngine,
+        model: Model,
+        preRenderHook: RefObject<(ShaderPreview) -> Unit>
+    ): ShaderPreview {
+        @Suppress("UnnecessaryVariable")
+        val canvas2d = visibleCanvas
+        return ProjectionPreview(renderEngine, canvas2d, canvas2d.width, canvas2d.height, model) {
             preRenderHook.current!!.invoke(it)
         }
     }
