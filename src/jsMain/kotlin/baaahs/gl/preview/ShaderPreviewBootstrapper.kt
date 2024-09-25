@@ -24,10 +24,10 @@ actual interface ShaderPreviewBootstrapper {
         sharedGlContext: SharedGlContext?,
         renderEngineProvider: RenderEngineProvider?
     ): Helper =
-        if (this is SharedGlContextCapableBootstrapper && sharedGlContext != null)
+        if (this is SharedCanvasContextCapableBootstrapper && sharedGlContext != null)
             SharedCanvasHelper(this, sharedGlContext)
-        else if (this is SharedRenderEngineCapableBootstrapper && renderEngineProvider != null) {
-            SharedRenderEngineHelper(this, renderEngineProvider)
+        else if (this is SharedRenderEngineContextCapableBootstrapper && renderEngineProvider != null) {
+            SharedRenderEngineContextHelper(this, renderEngineProvider)
         } else
             StandaloneCanvasHelper(this)
 
@@ -60,7 +60,7 @@ actual interface ShaderPreviewBootstrapper {
     }
 }
 
-interface SharedGlContextCapableBootstrapper : ShaderPreviewBootstrapper {
+interface SharedCanvasContextCapableBootstrapper : ShaderPreviewBootstrapper {
     fun bootstrapShared(
         container: HTMLElement,
         width: Int,
@@ -71,7 +71,7 @@ interface SharedGlContextCapableBootstrapper : ShaderPreviewBootstrapper {
     ): ShaderPreview
 }
 
-interface SharedRenderEngineCapableBootstrapper : ShaderPreviewBootstrapper {
+interface SharedRenderEngineContextCapableBootstrapper : ShaderPreviewBootstrapper {
     val fixtureType: FixtureType
 
     fun bootstrapShared(
@@ -99,7 +99,7 @@ class StandaloneCanvasHelper(
 }
 
 class SharedCanvasHelper(
-    private val bootstrapper: SharedGlContextCapableBootstrapper,
+    private val bootstrapper: SharedCanvasContextCapableBootstrapper,
     private val sharedGlContext: SharedGlContext
 ) : ShaderPreviewBootstrapper.Helper() {
     override val container: HTMLDivElement =
@@ -121,8 +121,8 @@ class SharedCanvasHelper(
     }
 }
 
-class SharedRenderEngineHelper(
-    private val bootstrapper: SharedRenderEngineCapableBootstrapper,
+class SharedRenderEngineContextHelper(
+    private val bootstrapper: SharedRenderEngineContextCapableBootstrapper,
     private val renderEngineProvider: RenderEngineProvider
 ) : ShaderPreviewBootstrapper.Helper() {
     override val container: HTMLCanvasElement =
@@ -144,7 +144,7 @@ class SharedRenderEngineHelper(
     }
 }
 
-actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineCapableBootstrapper {
+actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineContextCapableBootstrapper {
     override val fixtureType: FixtureType
         get() = MovingHeadDevice
 
@@ -182,7 +182,7 @@ actual object MovingHeadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedR
     }
 }
 
-actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineCapableBootstrapper {
+actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper, SharedRenderEngineContextCapableBootstrapper {
     override val fixtureType: FixtureType
         get() = ProjectionPreviewDevice
 
@@ -220,7 +220,7 @@ actual object ProjectionPreviewBootstrapper : ShaderPreviewBootstrapper, SharedR
     }
 }
 
-actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedGlContextCapableBootstrapper {
+actual object QuadPreviewBootstrapper : ShaderPreviewBootstrapper, SharedCanvasContextCapableBootstrapper {
     override fun bootstrap(
         visibleCanvas: HTMLCanvasElement,
         model: Model,
