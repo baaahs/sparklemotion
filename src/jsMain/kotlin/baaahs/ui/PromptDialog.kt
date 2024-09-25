@@ -1,7 +1,6 @@
 package baaahs.ui
 
 import mui.material.*
-import org.w3c.dom.events.Event
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -26,7 +25,11 @@ val PromptDialog = xComponent<PromptDialogProps>("PromptDialog") { props ->
     val handleDialogClose by handler(props.onClose, prompt.onCancel) { event: Any, _: String ->
         props.onClose()
         prompt.onCancel()
-        (event as Event).stopPropagation()
+        try {
+            event.asDynamic().stopPropagation()
+        } catch (e: Exception) {
+            // Ignore.
+        }
     }
     val handleCancelClick by mouseEventHandler(props.onClose, prompt.onCancel) { event ->
         props.onClose()
