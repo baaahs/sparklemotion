@@ -1,7 +1,7 @@
 package baaahs.gl.preview
 
+import baaahs.app.ui.RenderEngineProvider
 import baaahs.app.ui.ShaderPreviewStyles
-import baaahs.app.ui.SharedRenderEngineProvider
 import baaahs.device.FixtureType
 import baaahs.device.MovingHeadDevice
 import baaahs.document
@@ -22,13 +22,12 @@ import web.html.HTMLElement
 actual interface ShaderPreviewBootstrapper {
     fun createHelper(
         sharedGlContext: SharedGlContext?,
-        sharedRenderEngineProvider: SharedRenderEngineProvider?
+        renderEngineProvider: RenderEngineProvider?
     ): Helper =
         if (this is SharedGlContextCapableBootstrapper && sharedGlContext != null)
             SharedCanvasHelper(this, sharedGlContext)
-        else if (this is SharedRenderEngineCapableBootstrapper && sharedRenderEngineProvider != null) {
-            val renderEngine = sharedRenderEngineProvider.getSharedRenderEngine(fixtureType)
-            SharedRenderEngineHelper(this, renderEngine)
+        else if (this is SharedRenderEngineCapableBootstrapper && renderEngineProvider != null) {
+            SharedRenderEngineHelper(this, renderEngineProvider)
         } else
             StandaloneCanvasHelper(this)
 
@@ -124,7 +123,7 @@ class SharedCanvasHelper(
 
 class SharedRenderEngineHelper(
     private val bootstrapper: SharedRenderEngineCapableBootstrapper,
-    private val renderEngine: ComponentRenderEngine
+    private val renderEngineProvider: RenderEngineProvider
 ) : ShaderPreviewBootstrapper.Helper() {
     override val container: HTMLCanvasElement =
         (document.createElement("canvas") as HTMLCanvasElement)
@@ -135,7 +134,7 @@ class SharedRenderEngineHelper(
             container,
             width?.inPixels() ?: 10,
             height?.inPixels() ?: 10,
-            renderEngine,
+            renderEngineProvider.getRenderEngine(bootstrapper.fixtureType),
             model,
             preRenderHook
         )
