@@ -66,8 +66,7 @@ class PositionAndScalePatchMod(
                         // @param scale float
                         // @return uv-coordinate
                         vec2 main(vec2 uvIn, vec2 offset, float scale) {
-                            vec2 offsetAdjusted = vec2(offset.x, 0. - offset.y);
-                            return (uvIn - .5) / scale - -offsetAdjusted + .5;
+                            return (uvIn - .5) / scale - -offset + .5;
                         }
                     """.trimIndent(),
                 )
