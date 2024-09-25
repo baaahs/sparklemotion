@@ -50,7 +50,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) {
 //        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
-        bootstrapper.createHelper(sharedGlContext, glSharingContext.sharedRenderEngineProvider)
+        bootstrapper.createHelper(sharedGlContext, glSharingContext.renderEngineProvider)
     }
     val previewContainer = helper.container
     val sceneProvider = appContext.sceneProvider

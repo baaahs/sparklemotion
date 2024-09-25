@@ -4,6 +4,7 @@ import baaahs.device.FixtureType
 import baaahs.gl.GlBase
 import baaahs.gl.SharedGlContext
 import baaahs.gl.render.ComponentRenderEngine
+import baaahs.gl.render.pickResultDeliveryStrategy
 import js.objects.jso
 import react.createContext
 
@@ -15,15 +16,18 @@ val appGlSharingContext = createContext<AppGlSharingContext>(jso {})
 
 external interface AppGlSharingContext {
     var sharedGlContext: SharedGlContext?
-    var sharedRenderEngineProvider: SharedRenderEngineProvider?
+    var renderEngineProvider: RenderEngineProvider?
 }
 
-class SharedRenderEngineProvider {
-    private val cache = mutableMapOf<FixtureType, ComponentRenderEngine>()
-    private val sharedGlContext by lazy { GlBase.manager.createContext("SharedRenderEngineProvider Context") }
+class RenderEngineProvider {
+    private val sharedGlContext by lazy {
+        GlBase.manager.createContext("SharedRenderEngineProvider Context")
+    }
 
-    fun getSharedRenderEngine(fixtureType: FixtureType): ComponentRenderEngine =
-        cache.getOrPut(fixtureType) {
-            ComponentRenderEngine(sharedGlContext, fixtureType)
-        }
+    fun getRenderEngine(fixtureType: FixtureType): ComponentRenderEngine =
+        ComponentRenderEngine(
+            sharedGlContext,
+            fixtureType,
+            resultDeliveryStrategy = sharedGlContext.pickResultDeliveryStrategy()
+        )
 }

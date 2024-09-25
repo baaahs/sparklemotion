@@ -26,7 +26,7 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     val appGlSharingContext = memo(useSharedContexts) {
         jso<AppGlSharingContext> {
             this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext("App Shared Context") else null
-            this.sharedRenderEngineProvider = if (useSharedContexts) SharedRenderEngineProvider() else null
+            this.renderEngineProvider = if (useSharedContexts) RenderEngineProvider() else null
         }
     }
 
