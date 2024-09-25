@@ -47,10 +47,9 @@ class MovingHeadPreview(
             )
         }
 
-    private var movingHeadProgram: GlslProgram? = null
-    private val renderTargets = model.allEntities
-        .filterIsInstance<MovingHead>()
-        .ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
+    private val renderTargets = buildList {
+        model.visit { if (it is MovingHead) add(it) }
+    }.ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
         .associateWith { movingHead ->
             val fixture = movingHeadFixture(movingHead, 1, movingHead.name, NullTransport, movingHead.adapter)
             renderEngine.addFixture(fixture)
@@ -78,7 +77,7 @@ class MovingHeadPreview(
     }
 
     private suspend fun asyncRender() {
-        if (movingHeadProgram != null) {
+        if (program != null) {
             preRenderCallback?.invoke(this)
 
             renderEngine.draw()
