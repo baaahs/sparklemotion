@@ -237,6 +237,7 @@ fun jsonFor(control: Control): JsonElement {
             put("maxValue", control.maxValue)
             put("stepValue", control.stepValue)
             put("controlledFeedId", control.controlledFeedId)
+            put("eventBindings", control.eventBindings.jsonMap { jsonFor(it) })
         }
         is VisualizerControl -> buildJsonObject {
             put("type", "baaahs.Core:Visualizer")
@@ -246,7 +247,6 @@ fun jsonFor(control: Control): JsonElement {
         is VacuityControl -> buildJsonObject {
             put("type", "baaahs.Core:Vacuity")
             put("title", "Vacuity")
-
         }
         else -> buildJsonObject { put("type", "unknown") }
     }
