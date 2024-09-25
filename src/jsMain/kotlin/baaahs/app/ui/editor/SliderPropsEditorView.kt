@@ -5,12 +5,13 @@ import baaahs.app.ui.gadgets.slider.slider
 import baaahs.app.ui.model.numberTextField
 import baaahs.control.MutableSliderControl
 import baaahs.gadgets.Slider
+import baaahs.show.MidiChannelEventBinding
 import baaahs.ui.unaryPlus
 import baaahs.ui.xComponent
 import kotlinx.css.*
+import mui.material.Divider
 import mui.material.FormControl
 import mui.material.FormLabel
-import mui.types.PropsWithComponent
 import react.Props
 import react.RBuilder
 import react.RHandler
@@ -34,7 +35,7 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
         div {
             FormControl {
                 FormLabel {
-                    (attrs as PropsWithComponent).component = ReactHTML.legend
+                    attrs.component = ReactHTML.legend
                     +"Slider Properties"
                 }
 
@@ -70,6 +71,24 @@ private val SliderPropsEditorView = xComponent<SliderPropsEditorProps>("SliderPr
                     attrs.value = mutableSliderControl.stepValue
                     attrs.onChange = { v: Float? ->
                         mutableSliderControl.stepValue = v
+                        props.editableManager.onChange()
+                    }
+                }
+
+                Divider {}
+
+                FormLabel {
+                    attrs.component = ReactHTML.legend
+                    +"Event Bindings"
+                }
+
+                numberTextField<Int?> {
+                    attrs.label = "MIDI channel"
+                    val eventBinding = mutableSliderControl.eventBindings.firstOrNull() as? MidiChannelEventBinding
+                    attrs.value = eventBinding?.channel
+                    attrs.onChange = { v: Int? ->
+                        mutableSliderControl.eventBindings =
+                            v?.let { listOf(MidiChannelEventBinding(v)) } ?: emptyList()
                         props.editableManager.onChange()
                     }
                 }

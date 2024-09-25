@@ -8,6 +8,7 @@ import baaahs.camelize
 import baaahs.gadgets.Slider
 import baaahs.randomId
 import baaahs.show.Control
+import baaahs.show.EventBinding
 import baaahs.show.Feed
 import baaahs.show.live.*
 import baaahs.show.mutable.MutableControl
@@ -36,12 +37,14 @@ data class SliderControl(
     /** The step value for the slider. */
     val stepValue: Float? = null,
 
-    override val controlledFeedId: String
-) : Control {
+    override val controlledFeedId: String,
+
+    override val eventBindings: List<EventBinding> = emptyList()
+    ) : Control {
     override fun createMutable(mutableShow: MutableShow): MutableSliderControl {
         return MutableSliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            mutableShow.findFeed(controlledFeedId).feed
+            mutableShow.findFeed(controlledFeedId).feed, eventBindings
         )
     }
 
@@ -49,7 +52,7 @@ data class SliderControl(
         val controlledFeed = openContext.getFeed(controlledFeedId)
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
         openContext.registerGadget(id, slider, controlledFeed)
-        return OpenSliderControl(id, slider, controlledFeed)
+        return OpenSliderControl(id, slider, controlledFeed, eventBindings)
     }
 }
 
@@ -69,7 +72,9 @@ data class MutableSliderControl(
     /** The step value for the slider. */
     var stepValue: Float? = null,
 
-    val controlledFeed: Feed
+    val controlledFeed: Feed,
+
+    var eventBindings: List<EventBinding>
 ) : MutableControl {
     override var asBuiltId: String? = null
 
@@ -83,20 +88,21 @@ data class MutableSliderControl(
     override fun buildControl(showBuilder: ShowBuilder): SliderControl {
         return SliderControl(
             title, initialValue, minValue, maxValue, stepValue,
-            showBuilder.idFor(controlledFeed)
+            showBuilder.idFor(controlledFeed), eventBindings
         )
     }
 
     override fun previewOpen(): OpenSliderControl {
         val slider = Slider(title, initialValue, minValue, maxValue, stepValue)
-        return OpenSliderControl(randomId(title.camelize()), slider, controlledFeed)
+        return OpenSliderControl(randomId(title.camelize()), slider, controlledFeed, eventBindings)
     }
 }
 
 class OpenSliderControl(
     override val id: String,
     val slider: Slider,
-    override val controlledFeed: Feed
+    override val controlledFeed: Feed,
+    val eventBindings: List<EventBinding>
 ) : FeedOpenControl() {
     override val gadget: Slider
         get() = slider
@@ -111,7 +117,8 @@ class OpenSliderControl(
 
     override fun toNewMutable(mutableShow: MutableShow): MutableControl {
         return MutableSliderControl(
-            slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue, controlledFeed
+            slider.title, slider.initialValue, slider.minValue, slider.maxValue, slider.stepValue,
+            controlledFeed, eventBindings
         )
     }
 

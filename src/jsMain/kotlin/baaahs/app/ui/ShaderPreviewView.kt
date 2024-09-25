@@ -31,7 +31,10 @@ import web.html.HTMLDivElement
 
 private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") { props ->
     val appContext = useContext(appContext)
-    val sharedGlContext = if (props.noSharedGlContext == true) null else useContext(appGlContext).sharedGlContext
+    val glSharingContext = useContext(appGlSharingContext)
+    val sharedGlContext = if (props.noSharedGlContext == true) null else {
+        glSharingContext.sharedGlContext
+    }
     val toolchain = props.toolchain
         ?: run { useContext(toolchainContext) }
 
@@ -47,7 +50,7 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
     val bootstrapper = shaderType.shaderPreviewBootstrapper
     val helper = memo(bootstrapper, sharedGlContext) {
 //        console.log("Rememoize helper for ${props.shader?.title ?: props.previewShaderBuilder?.openShader?.title}")
-        bootstrapper.createHelper(sharedGlContext)
+        bootstrapper.createHelper(sharedGlContext, glSharingContext.renderEngineProvider)
     }
     val previewContainer = helper.container
     val sceneProvider = appContext.sceneProvider
@@ -170,7 +173,12 @@ private val ShaderPreviewView = xComponent<ShaderPreviewProps>("ShaderPreview") 
         }
     }
 
-    div(+ShaderPreviewStyles.container) {
+    val renderStrategy = if (helper.isRenderedToOpaqueCanvas)
+        ShaderPreviewStyles.renderToOpaqueCanvas
+    else
+        ShaderPreviewStyles.renderToUnderlyingCanvas
+
+    div(+ShaderPreviewStyles.container and renderStrategy) {
         ref = canvasParent
         if (props.width != null || props.height != null) {
             inlineStyles {
@@ -252,6 +260,20 @@ object ShaderPreviewStyles : StyleSheet("ui-ShaderPreview", isStatic = true) {
             fontSize = .8.em
             zIndex = StyleConstants.Layers.aboveSharedGlCanvas
         }
+    }
+
+    val renderToOpaqueCanvas by css {
+        backgroundColor = Color.black
+
+        canvas {
+            backgroundColor = Color.black
+            opacity = "calc(1 - var(--dimmer-level))".unsafeCast<Number>()
+        }
+    }
+
+    val renderToUnderlyingCanvas by css {
+        backgroundColor = Color.black
+        opacity = "var(--dimmer-level)".unsafeCast<Number>()
     }
 
     val errorBox by css {

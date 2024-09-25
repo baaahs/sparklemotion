@@ -5,7 +5,7 @@ import baaahs.app.ui.appContext
 import baaahs.gl.RootToolchain
 import baaahs.ui.asTextNode
 import baaahs.ui.components.palette
-import baaahs.ui.withMouseEvent
+import baaahs.ui.withoutEvent
 import baaahs.ui.xComponent
 import baaahs.window
 import js.objects.jso
@@ -30,7 +30,14 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
     val hideMenu = callback { _: Event?, _: String? -> menuAnchor = null }
 
     var showToolchainStats by state { false }
-    val handleToggleShowToolchainStats by handler { showToolchainStats = !showToolchainStats; menuAnchor = null }
+    val handleToggleShowToolchainStats by mouseEventHandler {
+        showToolchainStats = !showToolchainStats; menuAnchor = null
+    }
+
+    var showGlContexts by state { false }
+    val handleToggleShowGlContexts by mouseEventHandler {
+        showGlContexts = !showGlContexts; menuAnchor = null
+    }
 
     onMount(showToolchainStats) {
         if (showToolchainStats) {
@@ -70,9 +77,15 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
             attrs.onClose = hideMenu
 
             MenuItem {
-                attrs.onClick = handleToggleShowToolchainStats.withMouseEvent()
+                attrs.onClick = handleToggleShowToolchainStats
                 Checkbox { attrs.checked = showToolchainStats }
                 ListItemText { +if (showToolchainStats) "Hide Toolchain Stats" else "Show Toolchain Stats" }
+            }
+
+            MenuItem {
+                attrs.onClick = handleToggleShowGlContexts
+                Checkbox { attrs.checked = showGlContexts }
+                ListItemText { +if (showGlContexts) "Hide GL Contexts" else "Show GL Contexts" }
             }
         }
     }
@@ -82,7 +95,7 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
             attrs.title = "Toolchain Stats"
             attrs.initialWidth = window.innerWidth / 4
             attrs.initialHeight = window.innerHeight * 2 / 3
-            attrs.onClose = handleToggleShowToolchainStats
+            attrs.onClose = handleToggleShowToolchainStats.withoutEvent()
 
             val stats = (appContext.webClient.toolchain as RootToolchain).stats
             Table {
@@ -112,6 +125,12 @@ private val DevModeToolbarMenuView = xComponent<DevModeToolbarMenuProps>("DevMod
                     }
                 }
             }
+        }
+    }
+
+    if (showGlContexts) {
+        devGlContexts {
+            attrs.onClose = handleToggleShowGlContexts.withoutEvent()
         }
     }
 }

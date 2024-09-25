@@ -55,6 +55,9 @@ fun String?.truncate(length: Int): String? {
 }
 
 @Suppress("UNCHECKED_CAST")
+fun Function<*>.withoutEvent(): () -> Unit = this as () -> Unit
+
+@Suppress("UNCHECKED_CAST")
 fun Function<*>.withEvent(): (Event) -> Unit = this as (Event) -> Unit
 
 @Suppress("UNCHECKED_CAST")

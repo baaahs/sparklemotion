@@ -1,9 +1,6 @@
 package baaahs.ui
 
-import baaahs.app.ui.AppGlContext
-import baaahs.app.ui.StyleConstants
-import baaahs.app.ui.appContext
-import baaahs.app.ui.appGlContext
+import baaahs.app.ui.*
 import js.objects.jso
 import kotlinx.css.*
 import react.PropsWithChildren
@@ -17,7 +14,7 @@ import web.html.HTMLElement
 
 private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext") { props ->
     val appContext = useContext(appContext)
-    val oldSharedGlContext = useContext(appGlContext).sharedGlContext
+    val oldSharedGlContext = useContext(appGlSharingContext).sharedGlContext
 
     if (oldSharedGlContext != null) {
         error("There's already a SharedGlContext!")
@@ -26,16 +23,17 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
     val useSharedContexts = appContext.uiSettings.useSharedContexts
 
     val canvasParentRef = ref<HTMLElement>()
-    val appGlContext = memo(useSharedContexts) {
-        jso<AppGlContext> {
-            this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext() else null
+    val appGlSharingContext = memo(useSharedContexts) {
+        jso<AppGlSharingContext> {
+            this.sharedGlContext = if (useSharedContexts) baaahs.gl.SharedGlContext("App Shared Context") else null
+            this.renderEngineProvider = if (useSharedContexts) RenderEngineProvider() else null
         }
     }
 
     onMount(useSharedContexts) {
         val canvasParent = canvasParentRef.current
         if (useSharedContexts && canvasParent != null) {
-            val sharedGlContext = appGlContext.sharedGlContext!!
+            val sharedGlContext = appGlSharingContext.sharedGlContext!!
 
             val canvas = sharedGlContext.canvas
             canvas.classList.add(SharedGlContextStyles.canvas.name)
@@ -60,8 +58,8 @@ private val SharedGlContext = xComponent<SharedGlContextProps>("SharedGlContext"
                 }
             }
 
-            baaahs.app.ui.appGlContext.Provider {
-                attrs.value = appGlContext
+            baaahs.app.ui.appGlSharingContext.Provider {
+                attrs.value = appGlSharingContext
 
                 props.children()
             }

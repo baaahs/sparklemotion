@@ -32,8 +32,8 @@ class RenderEngineTest {
     @BeforeTest
     fun setUp() {
         if (glslAvailable()) {
-            glContext = GlBase.manager.createContext()
-            renderEngine = ComponentRenderEngine(glContext, PixelArrayDevice,)
+            glContext = GlBase.manager.createContext("Test RenderEngine")
+            renderEngine = ComponentRenderEngine(glContext, PixelArrayDevice)
             fakeShowPlayer = FakeShowPlayer()
         }
     }
