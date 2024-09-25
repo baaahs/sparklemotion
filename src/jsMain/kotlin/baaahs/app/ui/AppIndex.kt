@@ -95,8 +95,7 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         }
     }
 
-    val myAppGlContext = memo { jso<AppGlContext> { this.sharedGlContext = null } }
-
+    val myAppGlSharingContext = memo { jso<AppGlSharingContext> {} }
     val documentManager = appMode.getDocumentManager(myAppContext)
 
     onChange("global styles", allStyles) {
@@ -197,8 +196,8 @@ val AppIndex = xComponent<AppIndexProps>("AppIndex") { props ->
         toolchainContext.Provider {
             attrs.value = toolchain
 
-            appGlContext.Provider {
-                attrs.value = myAppGlContext
+            appGlSharingContext.Provider {
+                attrs.value = myAppGlSharingContext
 
                 ThemeProvider {
                     attrs.theme = theme

@@ -5,10 +5,7 @@ import baaahs.util.Logger
 import baaahs.util.asDoubleSeconds
 import baaahs.util.asMillis
 import kotlinx.coroutines.*
-import kotlin.math.PI
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.roundToInt
+import kotlin.math.*
 import kotlin.random.Random
 import kotlin.reflect.KProperty
 
@@ -59,6 +56,20 @@ fun Float.clamp(minValue: Float, maxValue: Float): Float =
 
 fun Double.clamp(minValue: Double, maxValue: Double): Double =
     max(min(this, maxValue), minValue)
+
+fun ClosedRange<Float>.scale(value: Float) =
+    (endInclusive - start) * value + start
+
+fun ClosedRange<Float>.unscale(value: Float) =
+    (value - start) / (endInclusive - start)
+
+fun ClosedRange<Float>.clamp(value: Float) =
+    max(min(value, endInclusive), start)
+
+val ClosedRange<Float>.diff
+    get() =
+        (endInclusive - start).absoluteValue
+
 
 suspend fun randomDelay(timeMs: Int) {
     delay(Random.nextInt(timeMs).toLong())

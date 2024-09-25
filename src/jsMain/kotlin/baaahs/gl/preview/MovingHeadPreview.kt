@@ -1,16 +1,13 @@
 package baaahs.gl.preview
 
-import baaahs.device.MovingHeadDevice
 import baaahs.dmx.Shenzarpy
 import baaahs.fixtures.FixtureTypeRenderPlan
 import baaahs.fixtures.NullTransport
 import baaahs.fixtures.ProgramRenderPlan
 import baaahs.fixtures.movingHeadFixture
 import baaahs.get2DContext
-import baaahs.gl.GlContext
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.ComponentRenderEngine
-import baaahs.gl.render.pickResultDeliveryStrategy
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.plugin.core.MovingHeadParams
@@ -32,18 +29,14 @@ private val Float.short: String
     }
 
 class MovingHeadPreview(
+    override val renderEngine: ComponentRenderEngine,
     canvas2d: HTMLCanvasElement,
-    gl: GlContext,
     private var width: Int,
     private var height: Int,
     model: Model,
     private val preRenderCallback: ((ShaderPreview) -> Unit)? = null
 ) : ShaderPreview {
     private var running = false
-    private val fixtureType = MovingHeadDevice
-    override val renderEngine = ComponentRenderEngine(
-        gl, fixtureType, resultDeliveryStrategy = gl.pickResultDeliveryStrategy()
-    )
     override var program: GlslProgram? = null
         set(value) {
             field = value
@@ -54,10 +47,9 @@ class MovingHeadPreview(
             )
         }
 
-    private var movingHeadProgram: GlslProgram? = null
-    private val renderTargets = model.allEntities
-        .filterIsInstance<MovingHead>()
-        .ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
+    private val renderTargets = buildList {
+        model.visit { if (it is MovingHead) add(it) }
+    }.ifEmpty { listOf(MovingHead("Mover", baseDmxChannel = 1, adapter = Shenzarpy)) }
         .associateWith { movingHead ->
             val fixture = movingHeadFixture(movingHead, 1, movingHead.name, NullTransport, movingHead.adapter)
             renderEngine.addFixture(fixture)
@@ -85,7 +77,7 @@ class MovingHeadPreview(
     }
 
     private suspend fun asyncRender() {
-        if (movingHeadProgram != null) {
+        if (program != null) {
             preRenderCallback?.invoke(this)
 
             renderEngine.draw()

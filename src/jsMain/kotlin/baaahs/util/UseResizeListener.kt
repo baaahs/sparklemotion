@@ -19,7 +19,6 @@ fun RBuilder.useResizeListener(elementRef: RefObject<out Element>, onResized: (w
         val element = elementRef.current ?: return@useEffectWithCleanup
 
         val ro = ResizeObserver { _, _ ->
-            console.log("resized", element, element.clientWidth, element.clientHeight)
             val size = element.clientWidth to element.clientHeight
             if (previousSize.current != size) {
                 previousSize.current = size
