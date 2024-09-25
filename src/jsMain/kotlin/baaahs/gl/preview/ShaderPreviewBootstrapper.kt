@@ -28,6 +28,9 @@ actual interface ShaderPreviewBootstrapper {
     ): ShaderPreview
 
     abstract class Helper {
+        open val isRenderedToOpaqueCanvas: Boolean
+            get() = true
+
         abstract val container: HTMLElement
         protected var width: LinearDimension? = null
         protected var height: LinearDimension? = null

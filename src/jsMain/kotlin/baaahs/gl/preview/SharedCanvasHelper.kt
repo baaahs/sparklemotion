@@ -14,6 +14,9 @@ class SharedCanvasHelper(
     private val bootstrapper: SharedCanvasContextCapableBootstrapper,
     private val sharedGlContext: SharedGlContext
 ) : ShaderPreviewBootstrapper.Helper() {
+    override val isRenderedToOpaqueCanvas: Boolean
+        get() = false
+
     override val container: HTMLDivElement =
         (document.createElement("div") as HTMLDivElement)
             .also { it.className = ShaderPreviewStyles.canvas.name }
