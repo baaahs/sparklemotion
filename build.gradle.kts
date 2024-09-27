@@ -86,6 +86,7 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${Versions.koin}")
                 implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
                 api("com.danielgergely.kgl:kgl:${Versions.kgl}")
+                implementation(project(":glsl"))
                 implementation(project(":rpc"))
             }
         }
