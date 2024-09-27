@@ -11,5 +11,6 @@ plugins {
 rootProject.name = "sparklemotion"
 
 include("ext:three")
+include("glsl")
 include("rpc")
 include("rpc:processor")
