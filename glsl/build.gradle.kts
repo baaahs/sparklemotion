@@ -32,7 +32,7 @@ kotlin {
 
 // From https://github.com/Strumenta/antlr-kotlin/tree/master
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
-    dependsOn("cleanGenerateKotlinGrammarSource")
+//    dependsOn("cleanGenerateKotlinGrammarSource")
 
     // ANTLR .g4 files are under {example-project}/antlr
     // Only include *.g4 files. This allows tools (e.g., IDE plugins)

@@ -2,6 +2,9 @@ package baaahs.gl
 
 import baaahs.device.FixtureType
 import baaahs.gl.glsl.*
+import baaahs.gl.glsl.antlr.AntlrVisitor
+import baaahs.gl.glsl.antlr.CommentCollector
+import baaahs.gl.glsl.antlr.ParseContext
 import baaahs.gl.patch.*
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader
@@ -66,7 +69,13 @@ class RootToolchain(
     val stats = ToolchainStats()
 
     override fun parse(src: String, fileName: String?): GlslCode = stats.parse.time {
-        glslParser.parse(src, fileName)
+        val antlrEnv = GlslAntlrEnv(src, fileName)
+        val commentCollector = CommentCollector(antlrEnv.lexer)
+        antlrEnv.lexer.reset()
+        println("commentCollector.commentsByLine = ${commentCollector.commentsByLine}")
+        val visitor = AntlrVisitor(ParseContext(commentCollector, antlrEnv.tokens))
+        antlrEnv.parser.translation_unit().accept(visitor)
+        visitor.getGlslCode(src, fileName)
     }
 
     override fun import(src: String, fileName: String?): Shader = stats.import.time {

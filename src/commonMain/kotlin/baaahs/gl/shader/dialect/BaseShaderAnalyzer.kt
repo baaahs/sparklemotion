@@ -166,8 +166,8 @@ abstract class BaseShaderAnalyzer(
     open fun findWellKnownInputPorts(declaredInputPorts: Set<String>): List<InputPort> {
         if (wellKnownInputPorts.isEmpty()) return emptyList()
 
-        val symbolsMentionedInShader = glslCode.statements.flatMap { glslFunction ->
-            Regex("\\w+").findAll(glslFunction.fullText).map { it.value }.filter { word ->
+        val symbolsMentionedInShader = glslCode.statements.flatMap { glslStatement ->
+            glslStatement.uniqueTokens.filter { word ->
                 wellKnownInputPortsById.containsKey(word)
             }.toList()
         }.toSet()

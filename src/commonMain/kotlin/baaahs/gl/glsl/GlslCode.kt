@@ -103,6 +103,8 @@ class GlslCode(
         val lineNumber: Int?
         val comments: List<String>
 
+        val uniqueTokens get() = Regex("\\w+").findAll(fullText).map { it.value }
+
         fun toGlsl(fileNumber: Int?, substitutions: Substitutions): String {
             return substituteGlsl(fullText, substitutions, fileNumber)
         }
