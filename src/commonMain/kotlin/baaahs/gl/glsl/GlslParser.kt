@@ -575,8 +575,7 @@ class GlslParser {
         private class Comment(
             context: Context,
             val recipientOfComment: ParseState?,
-            val nextParseState: ParseState,
-            val chompNewlines: Boolean = false
+            val nextParseState: ParseState
         ) : ParseState(context) {
             val commentText = StringBuilder()
 
@@ -587,12 +586,7 @@ class GlslParser {
 
             override fun visitNewline(): ParseState {
                 appendComment()
-                return if (chompNewlines) {
-                    nextParseState.visitNewline()
-                } else {
-                    nextParseState.visitNewline()
-                    nextParseState
-                }
+                return nextParseState.visitNewline()
             }
 
             override fun visitEof(): ParseState {
@@ -728,7 +722,7 @@ class GlslParser {
             override fun visitCommentText(value: String): ParseState = this
 
             override fun visitComment(): ParseState =
-                Comment(context, null, this, chompNewlines = true)
+                Comment(context, null, this)
             override fun visitBlockCommentBegin(): ParseState =
                 BlockComment(context, null, this, chompNewlines = true)
 
