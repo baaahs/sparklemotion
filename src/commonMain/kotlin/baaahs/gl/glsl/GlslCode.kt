@@ -69,7 +69,7 @@ class GlslCode(
 
             var inComment = false
             var inDotTraversal = false
-            GlslParser.Tokenizer().tokenize(originalText).forEach { str ->
+            Tokenizer().tokenize(originalText).forEach { str ->
                 when (str) {
                     "//" -> {
                         inComment = true; buf.append(str)
