@@ -1,11 +1,6 @@
 package baaahs.gl.glsl.parser
 
 abstract class ParseState(val context: Context) : State<ParseState> {
-    companion object {
-        fun initial(context: Context): ParseState =
-            UnidentifiedStatement(context)
-    }
-
     val tokens = mutableListOf<Token>()
     val tokensAsString get() = tokens.joinToString("") { it.text }
     fun textIsEmpty() = tokens.isEmpty() || tokensAsString.isEmpty()

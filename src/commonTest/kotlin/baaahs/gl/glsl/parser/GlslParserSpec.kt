@@ -153,7 +153,7 @@ object GlslParserSpec : Spek({
                                         "}",
                                 lineNumber = 31
                             )
-                        ), { glslParser.findStatements(shaderText) }, true
+                        ), { glslParser.parse(shaderText).statements }, true
                     )
                 }
 
@@ -564,7 +564,7 @@ object GlslParserSpec : Spek({
                                     lineNumber = 3,
                                     comments = listOf(" @return time2")
                                 ),
-                            ), { glslParser.findStatements(shaderText) }, true
+                            ), { glslParser.parse(shaderText).statements }, true
                         )
                     }
                 }

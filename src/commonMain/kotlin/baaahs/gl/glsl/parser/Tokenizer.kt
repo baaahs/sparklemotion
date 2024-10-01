@@ -21,21 +21,6 @@ class Tokenizer {
             }
         }
     }
-
-    fun <S: State<S>> processTokens(text: String, initialState: S): S =
-        processTokens(tokenize(text), initialState)
-
-    fun <S: State<S>> processTokens(
-        tokens: Sequence<Token>,
-        initialState: S
-    ): S {
-        var state = initialState
-        tokens.forEach { token ->
-            if (token.text.isNotEmpty())
-                state = state.visit(token)
-        }
-        return state
-    }
 }
 
 class Token(

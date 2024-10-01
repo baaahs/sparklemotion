@@ -4,14 +4,11 @@ import baaahs.gl.glsl.GlslCode
 
 class GlslParser {
     fun parse(src: String, fileName: String? = null): GlslCode {
-        return GlslCode(src, findStatements(src), fileName)
-    }
-
-    internal fun findStatements(glslSrc: String): List<GlslCode.GlslStatement> {
         val context = Context()
-        context.parse(glslSrc, ParseState.initial(context))
+        val initialState = UnidentifiedStatement(context)
+        context.parse(src, initialState)
             .visitEof(Token("", -1))
-        return context.statements
+        return GlslCode(src, context.statements, fileName)
     }
 
     companion object {

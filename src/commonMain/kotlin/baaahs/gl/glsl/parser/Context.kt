@@ -21,10 +21,22 @@ class Context {
             ?: GlslType.from(name)
 
     fun parse(text: String, initialState: ParseState): ParseState =
-        tokenizer.processTokens(text, initialState)
+        processTokens(tokenizer.tokenize(text), initialState)
 
     fun parse(tokens: List<Token>, initialState: ParseState): ParseState =
-        tokenizer.processTokens(tokens.asSequence(), initialState)
+        processTokens(tokens.asSequence(), initialState)
+
+    fun <S: State<S>> processTokens(
+        tokens: Sequence<Token>,
+        initialState: S
+    ): S {
+        var state = initialState
+        tokens.forEach { token ->
+            if (token.text.isNotEmpty())
+                state = state.visit(token)
+        }
+        return state
+    }
 
     fun doUndef(args: List<String>) {
         if (outputEnabled) {
@@ -102,7 +114,7 @@ class Context {
                 if (macroDepth >= GlslParser.maxMacroDepth)
                     throw glslError("Max macro depth exceeded for \"${token.text}\".")
 
-                tokenizer.processTokens(macro.replacement.asSequence(), parseState)
+                processTokens(macro.replacement.asSequence(), parseState)
                     .also { macroDepth-- }
             }
             else -> MacroExpansion(this, parseState, macro)
