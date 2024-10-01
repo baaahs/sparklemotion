@@ -1,4 +1,4 @@
-package baaahs.gl.glsl
+package baaahs.gl.glsl.parser
 
 class Tokenizer {
     var lineNumber = 1
@@ -44,4 +44,10 @@ class Token(
     val lineNumber: Int
 ) {
     override fun toString(): String = text
+
+    companion object {
+        fun Collection<Token>.contains(value: String): Boolean {
+            return any { it.text == value }
+        }
+    }
 }
