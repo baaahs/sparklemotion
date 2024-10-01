@@ -74,6 +74,7 @@ class MacroExpansion(
     }
 
     private fun insertReplacement(tokens: List<Token>): ParseState {
-        return context.parse(tokens, priorParseState)
+        context.tokenizer.push(tokens)
+        return priorParseState
     }
 }

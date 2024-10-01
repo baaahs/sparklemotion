@@ -4,11 +4,25 @@ import baaahs.gl.glsl.GlslCode
 
 class GlslParser {
     fun parse(src: String, fileName: String? = null): GlslCode {
-        val context = Context()
+        val tokenizer = Tokenizer(src)
+        val context = Context(tokenizer)
         val initialState = UnidentifiedStatement(context)
-        context.parse(src, initialState)
+
+        processTokens(tokenizer, initialState)
             .visitEof(Token("", -1))
         return GlslCode(src, context.statements, fileName)
+    }
+
+    private fun <S: State<S>> processTokens(
+        tokens: Sequence<Token>,
+        initialState: S
+    ): S {
+        var state = initialState
+        tokens.forEach { token ->
+            if (token.text.isNotEmpty())
+                state = state.visit(token)
+        }
+        return state
     }
 
     companion object {

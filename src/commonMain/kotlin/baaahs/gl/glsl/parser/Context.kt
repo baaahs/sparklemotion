@@ -5,38 +5,21 @@ import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslMacroExpressionEvaluator
 import baaahs.gl.glsl.GlslType
 
-class Context {
+class Context(
+    val tokenizer: Tokenizer
+) {
     val macros: MutableMap<String, Macro> = hashMapOf()
     private var macroDepth = 0
     val statements: MutableList<GlslCode.GlslStatement> = arrayListOf()
     var outputEnabled = true
     private var matchedBranch = false
     private val enabledStack = mutableListOf<Boolean>()
-    val tokenizer = Tokenizer()
 
     val structs = mutableMapOf<String, GlslCode.GlslStruct>()
 
     fun findType(name: String): GlslType =
         structs[name]?.let { GlslType.Struct(it) }
             ?: GlslType.from(name)
-
-    fun parse(text: String, initialState: ParseState): ParseState =
-        processTokens(tokenizer.tokenize(text), initialState)
-
-    fun parse(tokens: List<Token>, initialState: ParseState): ParseState =
-        processTokens(tokens.asSequence(), initialState)
-
-    fun <S: State<S>> processTokens(
-        tokens: Sequence<Token>,
-        initialState: S
-    ): S {
-        var state = initialState
-        tokens.forEach { token ->
-            if (token.text.isNotEmpty())
-                state = state.visit(token)
-        }
-        return state
-    }
 
     fun doUndef(args: List<String>) {
         if (outputEnabled) {
@@ -114,7 +97,8 @@ class Context {
                 if (macroDepth >= GlslParser.maxMacroDepth)
                     throw glslError("Max macro depth exceeded for \"${token.text}\".")
 
-                processTokens(macro.replacement.asSequence(), parseState)
+                tokenizer.push(macro.replacement)
+                parseState
                     .also { macroDepth-- }
             }
             else -> MacroExpansion(this, parseState, macro)
