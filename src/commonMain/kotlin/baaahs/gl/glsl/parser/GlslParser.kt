@@ -1,4 +1,6 @@
-package baaahs.gl.glsl
+package baaahs.gl.glsl.parser
+
+import baaahs.gl.glsl.*
 
 class GlslParser {
     fun parse(src: String, fileName: String? = null): GlslCode {

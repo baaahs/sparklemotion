@@ -2,6 +2,7 @@ package baaahs.gl.glsl
 
 import baaahs.describe
 import baaahs.gl.expects
+import baaahs.gl.glsl.parser.GlslParser
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort

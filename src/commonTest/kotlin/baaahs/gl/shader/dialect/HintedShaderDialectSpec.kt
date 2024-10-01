@@ -2,8 +2,8 @@ package baaahs.gl.shader.dialect
 
 import baaahs.describe
 import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslParser
 import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.parser.GlslParser
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.patch.ContentType.Companion.Color

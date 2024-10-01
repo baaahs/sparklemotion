@@ -1,8 +1,10 @@
-package baaahs.gl.glsl
+package baaahs.gl.glsl.parser
 
 import baaahs.describe
 import baaahs.gl.expectStatements
+import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslCode.*
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.only
 import baaahs.toBeSpecified
