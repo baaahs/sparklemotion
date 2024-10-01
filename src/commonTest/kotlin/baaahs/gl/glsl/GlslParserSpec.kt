@@ -244,8 +244,7 @@ object GlslParserSpec : Spek({
                             ),
                             GlslVar(
                                 "shouldBeThis", GlslType.Vec2,
-                                // TODO: 18 is wrong, should be 14!
-                                fullText = "uniform vec2 shouldBeThis;", isUniform = true, lineNumber = 18
+                                fullText = "uniform vec2 shouldBeThis;", isUniform = true, lineNumber = 14
                             )
                         )
                     }

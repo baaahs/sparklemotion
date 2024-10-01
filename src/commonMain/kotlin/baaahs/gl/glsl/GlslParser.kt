@@ -7,7 +7,8 @@ class GlslParser {
 
     internal fun findStatements(glslSrc: String): List<GlslCode.GlslStatement> {
         val context = Context()
-        context.parse(glslSrc, ParseState.initial(context)).visitEof()
+        context.parse(glslSrc, ParseState.initial(context))
+            .visitEof(Token("", -1))
         return context.statements
     }
 
@@ -26,13 +27,11 @@ class GlslParser {
             structs[name]?.let { GlslType.Struct(it) }
                 ?: GlslType.from(name)
 
-        fun parse(
-            text: String,
-            initialState: ParseState,
-            freezeLineNumber: Boolean = false
-        ): ParseState {
-            return tokenizer.processTokens(text, initialState, freezeLineNumber)
-        }
+        fun parse(text: String, initialState: ParseState): ParseState =
+            tokenizer.processTokens(text, initialState)
+
+        fun parse(tokens: List<Token>, initialState: ParseState): ParseState =
+            tokenizer.processTokens(tokens.asSequence(), initialState)
 
         fun doUndef(args: List<String>) {
             if (outputEnabled) {
@@ -101,16 +100,16 @@ class GlslParser {
                 throw glslError(e.message!!)
             }
 
-        fun checkForMacro(value: String, parseState: ParseState): ParseState? {
-            val macro = macros[value]
+        fun checkForMacro(token: Token, parseState: ParseState): ParseState? {
+            val macro = macros[token.text]
             return when {
                 macro == null -> null
                 macro.params == null -> {
                     macroDepth++
                     if (macroDepth >= maxMacroDepth)
-                        throw glslError("Max macro depth exceeded for \"$value\".")
+                        throw glslError("Max macro depth exceeded for \"${token.text}\".")
 
-                    tokenizer.processTokens(macro.replacement.trim(), parseState, freezeLineNumber = true)
+                    tokenizer.processTokens(macro.replacement.asSequence(), parseState)
                         .also { macroDepth-- }
                 }
                 else -> ParseState.MacroExpansion(this, parseState, macro)
@@ -122,76 +121,71 @@ class GlslParser {
     }
 
     private class Macro(
-        val params: List<String>?,
-        val replacement: String
+        val params: List<Token>?,
+        val replacement: List<Token>
     )
 
-    private sealed class ParseState(val context: Context) : Tokenizer.State<ParseState> {
+    private sealed class ParseState(val context: Context) : State<ParseState> {
         companion object {
             fun initial(context: Context): ParseState =
                 UnidentifiedStatement(context)
         }
 
-        private val text = StringBuilder()
-        val textAsString get() = text.toString()
-        fun textIsEmpty() = text.isEmpty()
-        fun textIsBlank() = text.isBlank()
+        val tokens = mutableListOf<Token>()
+        val tokensAsString get() = tokens.joinToString("") { it.text }
+        fun textIsEmpty() = tokens.isEmpty() || tokensAsString.isEmpty()
+        fun textIsBlank() = tokens.isEmpty() || tokensAsString.isBlank()
 
-        fun trimWhitespace() {
-            while (text.lastOrNull() == ' ') text.setLength(text.length - 1)
+        open fun appendText(token: Token) {
+            tokens.add(token)
         }
 
-        open fun appendText(value: String) {
-            text.append(value)
-        }
-
-        override fun visit(token: String): ParseState {
-            return when (token) {
-                "//" -> visitComment()
-                "/*" -> visitBlockCommentBegin()
-                "*/" -> visitBlockCommentEnd()
-                ";" -> visitSemicolon()
-                "{" -> visitLeftCurlyBrace()
-                "}" -> visitRightCurlyBrace()
-                "[" -> visitLeftBracket()
-                "]" -> visitRightBracket()
-                "(" -> visitLeftParen()
-                "," -> visitComma()
-                ")" -> visitRightParen()
-                "#" -> visitDirective()
-                "\n" -> visitNewline()
-                "" -> visitEof()
+        override fun visit(token: Token): ParseState =
+            when (token.text) {
+                "//" -> visitComment(token)
+                "/*" -> visitBlockCommentBegin(token)
+                "*/" -> visitBlockCommentEnd(token)
+                ";" -> visitSemicolon(token)
+                "{" -> visitLeftCurlyBrace(token)
+                "}" -> visitRightCurlyBrace(token)
+                "[" -> visitLeftBracket(token)
+                "]" -> visitRightBracket(token)
+                "(" -> visitLeftParen(token)
+                "," -> visitComma(token)
+                ")" -> visitRightParen(token)
+                "#" -> visitDirective(token)
+                "\n" -> visitNewline(token)
+                "" -> visitEof(token)
                 else -> visitText(token)
             }
-        }
 
-        open fun visitText(value: String): ParseState =
-            if (context.outputEnabled || value == "\n")
-                checkForMacro(value)
+        open fun visitText(token: Token): ParseState =
+            if (context.outputEnabled || token.text == "\n")
+                checkForMacro(token)
             else this
 
-        fun checkForMacro(value: String): ParseState =
-            context.checkForMacro(value, this)
+        fun checkForMacro(token: Token): ParseState =
+            context.checkForMacro(token, this)
                 ?: run {
-                    appendText(value)
+                    appendText(token)
                     this
                 }
 
-        open fun visitCommentText(value: String): ParseState = visitText(value)
-        open fun visitComment(): ParseState = visitText("//")
-        open fun visitBlockCommentBegin(): ParseState = visitText("/*")
-        open fun visitBlockCommentEnd(): ParseState = visitText("*/")
-        open fun visitSemicolon(): ParseState = visitText(";")
-        open fun visitLeftCurlyBrace(): ParseState = visitText("{")
-        open fun visitRightCurlyBrace(): ParseState = visitText("}")
-        open fun visitLeftBracket(): ParseState = visitText("[")
-        open fun visitRightBracket(): ParseState = visitText("]")
-        open fun visitLeftParen(): ParseState = visitText("(")
-        open fun visitComma(): ParseState = visitText(",")
-        open fun visitRightParen(): ParseState = visitText(")")
-        open fun visitDirective(): ParseState = visitText("#")
-        open fun visitNewline(): ParseState = visitText("\n")
-        open fun visitEof(): ParseState = this
+        open fun visitCommentText(token: Token): ParseState = visitText(token)
+        open fun visitComment(token: Token): ParseState = visitText(token)
+        open fun visitBlockCommentBegin(token: Token): ParseState = visitText(token)
+        open fun visitBlockCommentEnd(token: Token): ParseState = visitText(token)
+        open fun visitSemicolon(token: Token): ParseState = visitText(token)
+        open fun visitLeftCurlyBrace(token: Token): ParseState = visitText(token)
+        open fun visitRightCurlyBrace(token: Token): ParseState = visitText(token)
+        open fun visitLeftBracket(token: Token): ParseState = visitText(token)
+        open fun visitRightBracket(token: Token): ParseState = visitText(token)
+        open fun visitLeftParen(token: Token): ParseState = visitText(token)
+        open fun visitComma(token: Token): ParseState = visitText(token)
+        open fun visitRightParen(token: Token): ParseState = visitText(token)
+        open fun visitDirective(token: Token): ParseState = visitText(token)
+        open fun visitNewline(token: Token): ParseState = visitText(token)
+        open fun visitEof(token: Token): ParseState = this
 
         open fun addComment(comment: String) {}
         open fun receiveSubsequentComments() {}
@@ -204,38 +198,38 @@ class GlslParser {
             var braceNestLevel: Int = 0
             val comments = mutableListOf<String>()
 
-            override fun visitComment(): ParseState {
+            override fun visitComment(token: Token): ParseState {
                 return if (braceNestLevel == 0) {
-                    Comment(context, recipientOfNextComment ?: this, this)
+                    Comment(context, token, recipientOfNextComment ?: this, this)
                 } else {
-                    Comment(context, null, this)
+                    Comment(context, token, null, this)
                 }
             }
 
-            override fun visitBlockCommentBegin(): ParseState {
-                return BlockComment(context, recipientOfNextComment ?: this, this)
+            override fun visitBlockCommentBegin(token: Token): ParseState {
+                return BlockComment(context, token, recipientOfNextComment ?: this, this)
             }
 
-            override fun visitSemicolon(): ParseState {
+            override fun visitSemicolon(token: Token): ParseState {
                 return if (braceNestLevel == 0) {
-                    visitText(";")
+                    visitText(token)
                     finishStatement()
                 } else {
-                    visitText(";")
+                    visitText(token)
                 }
             }
 
-            override fun visitLeftCurlyBrace(): ParseState {
+            override fun visitLeftCurlyBrace(token: Token): ParseState {
                 braceNestLevel++
-                return super.visitLeftCurlyBrace()
+                return super.visitLeftCurlyBrace(token)
             }
 
-            override fun visitRightCurlyBrace(): ParseState {
+            override fun visitRightCurlyBrace(token: Token): ParseState {
                 braceNestLevel--
-                super.visitRightCurlyBrace()
+                super.visitRightCurlyBrace(token)
 
                 return if (braceNestLevel == 0) {
-                    val isStruct = textAsString.trim()
+                    val isStruct = tokensAsString.trim()
                         .contains(Regex("^(uniform\\s+)?struct\\s"))
                     if (isStruct) {
                         this
@@ -247,27 +241,26 @@ class GlslParser {
                 }
             }
 
-            override fun visitDirective(): ParseState {
+            override fun visitDirective(token: Token): ParseState {
                 return PreDirective(context, this)
             }
 
-            override fun visitNewline(): ParseState {
+            override fun visitNewline(token: Token): ParseState {
                 recipientOfNextComment?.let {
-                    it.visitNewline()
+                    it.visitNewline(token)
                     receiveSubsequentComments()
                 }
 
                 return if (textIsBlank()) {
-                    trimWhitespace()
                     // Skip leading newlines.
                     lineNumber = context.tokenizer.lineNumber
                     this
                 } else {
-                    super.visitNewline()
+                    super.visitNewline(token)
                 }
             }
 
-            override fun visitEof(): ParseState {
+            override fun visitEof(token: Token): ParseState {
                 if (!isEmpty()) finishStatement()
                 return UnidentifiedStatement(context, this)
             }
@@ -288,7 +281,7 @@ class GlslParser {
             abstract fun createStatement(): GlslCode.GlslStatement
 
             fun asVarOrNull(): GlslCode.GlslVar? {
-                val text = textAsString
+                val text = tokensAsString
 
                 // Escaped closing brace/bracket required for Kotlin 1.5+/JS or we fail with "lone quantifier brackets".
                 @Suppress("RegExpRedundantEscape")
@@ -301,21 +294,21 @@ class GlslParser {
                             "uniform" -> isUniform = true
                             "varying" -> isVarying = true
                         }
-                        val (trimmedText, trimmedLineNumber) = chomp(text, lineNumber)
                         var glslType = context.findType(type)
                         if (arraySpec.isNotEmpty()) {
                             val arity = arraySpec.toInt()
                             glslType = glslType.arrayOf(arity)
                         }
+                        val trimmedText = text.trimStart()
                         GlslCode.GlslVar(
                             name, glslType, trimmedText, isConst, isUniform, isVarying,
-                            initExpr.ifEmpty { null }, trimmedLineNumber, comments
+                            initExpr.ifEmpty { null }, tokens.first().lineNumber, comments
                         )
                     }
             }
 
             fun asSpecialOrNull(): GlslCode.GlslOther? {
-                val text = textAsString
+                val text = tokensAsString
                 return Regex("^(precision)\\s+.*;", RegexOption.MULTILINE)
                     .find(text.trim())?.let {
                         val (keyword) = it.destructured
@@ -324,57 +317,64 @@ class GlslParser {
             }
 
             fun copyFrom(other: Statement): ParseState {
-                appendText(other.textAsString)
+                tokens.addAll(other.tokens)
                 lineNumber = other.lineNumber
                 comments.addAll(other.comments)
                 return this
             }
 
-            fun isEmpty(): Boolean = textAsString.isEmpty() && comments.isEmpty()
+            fun isEmpty(): Boolean = tokensAsString.isEmpty() && comments.isEmpty()
         }
 
         private class UnidentifiedStatement(
             context: Context,
             recipientOfNextComment: Statement? = null
         ) : Statement(context, recipientOfNextComment) {
-            val tokensSoFar = mutableListOf<String>()
+            val tokensSoFar = mutableListOf<Token>()
 
-            override fun visitLeftParen(): ParseState {
+            override fun visitLeftParen(token: Token): ParseState {
                 return if (context.outputEnabled && braceNestLevel == 0 && !tokensSoFar.contains("=")) {
                     val fn = Function(tokensSoFar, context)
                     fn.copyFrom(this)
-                    fn.appendText("(")
+                    fn.appendText(token)
                     fn.Params()
                 } else {
-                    super.visitLeftParen()
+                    super.visitLeftParen(token)
                 }
             }
 
-            override fun visitText(value: String): ParseState {
-                return if (value == "struct") {
+            override fun visitText(token: Token): ParseState {
+                return if (token.text == "struct") {
                     Struct(context)
-                        .copyFrom(this).apply { appendText(value) }
+                        .copyFrom(this)
+                        .apply { appendText(token) }
                 } else {
-                    if (context.outputEnabled && value.isNotBlank())
-                        tokensSoFar.add(value.trim())
-                    super.visitText(value)
+                    if (context.outputEnabled && token.text.isNotBlank()) {
+                        tokensSoFar.add(token)
+                    }
+
+                    if (tokens.isEmpty() && token.text.isBlank()) {
+                        this
+                    } else {
+                        super.visitText(token)
+                    }
                 }
             }
 
             override fun createStatement(): GlslCode.GlslStatement {
                 return asSpecialOrNull()
                     ?: asVarOrNull()
-                    ?: GlslCode.GlslOther("unknown", textAsString, lineNumber)
+                    ?: GlslCode.GlslOther("unknown", tokensAsString, lineNumber)
             }
         }
 
         private class Struct(context: Context) : Statement(context) {
             override fun createStatement(): GlslCode.GlslStatement =
                 asStructOrNull()
-                    ?: throw context.glslError("huh? couldn't find a struct in \"$textAsString\"")
+                    ?: throw context.glslError("huh? couldn't find a struct in \"$tokensAsString\"")
 
             fun asStructOrNull(): GlslCode.GlslStruct? {
-                val text = textAsString
+                val text = tokensAsString
 
                 // Escaped closing brace/bracket required for Kotlin 1.5+/JS or we fail with "lone quantifier brackets".
                 @Suppress("RegExpRedundantEscape")
@@ -406,32 +406,32 @@ class GlslParser {
         }
 
         private class Function(
-            tokensSoFar: List<String>,
+            tokensSoFar: List<Token>,
             context: Context
         ) : Statement(context) {
             val returnType: GlslType
-            val name: String
+            val name: Token
             val params = arrayListOf<GlslCode.GlslParam>()
             var isAbstract = true
 
             init {
                 val leadingModifierCount =
-                    tokensSoFar.indexOfFirst { !precisionStrings.contains(it) }
+                    tokensSoFar.indexOfFirst { !precisionStrings.contains(it.text) }
 
                 if (tokensSoFar.size - leadingModifierCount != 2)
                     throw context.glslError("unexpected tokens $tokensSoFar in function")
 
-                returnType = context.findType(tokensSoFar[leadingModifierCount])
+                returnType = context.findType(tokensSoFar[leadingModifierCount].text)
                 name = tokensSoFar[leadingModifierCount + 1]
             }
 
-            override fun visitLeftCurlyBrace(): ParseState {
+            override fun visitLeftCurlyBrace(token: Token): ParseState {
                 isAbstract = false
-                return super.visitLeftCurlyBrace()
+                return super.visitLeftCurlyBrace(token)
             }
 
             override fun createStatement(): GlslCode.GlslStatement =
-                GlslCode.GlslFunction(name, returnType, params, textAsString, lineNumber, comments, isAbstract)
+                GlslCode.GlslFunction(name.text, returnType, params, tokensAsString, lineNumber, comments, isAbstract)
 
             inner class Params(
                 recipientOfNextComment: Statement? = null
@@ -441,12 +441,12 @@ class GlslParser {
                 var name: String? = null
                 private var inArraySize = false
 
-                override fun appendText(value: String) {
+                override fun appendText(value: Token) {
                     this@Function.appendText(value)
                 }
 
-                override fun visitText(value: String): ParseState {
-                    val trimmed = value.trim()
+                override fun visitText(token: Token): ParseState {
+                    val trimmed = token.text.trim()
                     when {
                         trimmed.isEmpty() -> {} // Ignore.
 
@@ -469,37 +469,37 @@ class GlslParser {
                         else -> throw context.glslError("Unexpected token \"$trimmed\".")
                     }
 
-                    return super.visitText(value)
+                    return super.visitText(token)
                 }
 
-                override fun visitComma(): ParseState {
+                override fun visitComma(token: Token): ParseState {
                     addParam()
-                    appendText(",")
+                    appendText(token)
                     return Params(this)
                 }
 
-                override fun visitLeftBracket(): ParseState {
+                override fun visitLeftBracket(token: Token): ParseState {
                     if (inArraySize) error("Already in param array size.")
                     inArraySize = true
                     name += "["
-                    return super.visitText("[")
+                    return super.visitText(token)
                 }
 
-                override fun visitRightBracket(): ParseState {
+                override fun visitRightBracket(token: Token): ParseState {
                     if (!inArraySize) error("Not in param array size.")
                     inArraySize = false
                     name += "]"
-                    return super.visitText("]")
+                    return super.visitText(token)
                 }
 
-                override fun visitRightParen(): ParseState {
+                override fun visitRightParen(token: Token): ParseState {
                     addParam()
-                    appendText(")")
+                    appendText(token)
                     return this@Function
                 }
 
-                override fun visitNewline(): ParseState {
-                    appendText("\n")
+                override fun visitNewline(token: Token): ParseState {
+                    appendText(token)
                     receiveSubsequentComments()
                     return this
                 }
@@ -537,102 +537,118 @@ class GlslParser {
 
         private class Comment(
             context: Context,
+            val startToken: Token,
             val recipientOfComment: ParseState?,
             val nextParseState: ParseState
         ) : ParseState(context) {
-            val commentText = StringBuilder()
+            val commentText = mutableListOf<Token>()
 
-            override fun visitText(value: String): ParseState {
-                commentText.append(value)
+            override fun visitText(token: Token): ParseState {
+                commentText.add(token)
                 return this
             }
 
-            override fun visitNewline(): ParseState {
-                appendComment()
-                return nextParseState.visitNewline()
+            override fun visitNewline(token: Token): ParseState {
+                appendComment(token)
+                return nextParseState.visitNewline(token)
             }
 
-            override fun visitEof(): ParseState {
-                appendComment()
-                return super.visitEof()
+            override fun visitEof(token: Token): ParseState {
+                appendComment(token)
+                return super.visitEof(token)
             }
 
-            private fun appendComment() {
+            private fun appendComment(endToken: Token) {
                 if (recipientOfComment == null) {
-                    nextParseState.visitCommentText("//")
-                    nextParseState.visitCommentText(commentText.toString())
+                    nextParseState.visitCommentText(startToken)
+                    commentText.forEach {
+                        nextParseState.visitCommentText(it)
+                    }
+                    if (endToken.text != "\n") {
+                        nextParseState.visitCommentText(endToken)
+                    }
                 } else {
-                    recipientOfComment.addComment(commentText.toString())
+                    recipientOfComment.addComment(
+                        commentText.joinToString("") { it.text }
+                    )
                 }
             }
         }
 
         private class BlockComment(
             context: Context,
+            val startToken: Token,
             val recipientOfComment: ParseState?,
             val nextParseState: ParseState,
             val chompNewlines: Boolean = false
         ) : ParseState(context) {
-            val commentText = StringBuilder()
+            val commentText = mutableListOf<Token>()
 
-            override fun visitText(value: String): ParseState {
-                commentText.append(value)
+            override fun visitText(token: Token): ParseState {
+                commentText.add(token)
                 return this
             }
 
-            override fun visitNewline(): ParseState {
-                if (!chompNewlines) nextParseState.visitNewline()
-                return super.visitNewline()
+            override fun visitNewline(token: Token): ParseState {
+                if (!chompNewlines) nextParseState.visitNewline(token)
+                return super.visitNewline(token)
             }
 
-            override fun visitBlockCommentEnd(): ParseState {
-                appendComment()
+            override fun visitBlockCommentEnd(token: Token): ParseState {
+                appendComment(token)
                 return nextParseState
             }
 
-            private fun appendComment() {
+            private fun appendComment(endToken: Token) {
                 if (recipientOfComment == null) {
-                    nextParseState.visitCommentText("/* ")
-                    nextParseState.visitCommentText(commentText.toString())
-                    nextParseState.visitCommentText(" */")
+                    nextParseState.visitCommentText(startToken)
+                    commentText.forEach {
+                        nextParseState.visitCommentText(it)
+                    }
+                    nextParseState.visitCommentText(endToken)
                 } else {
-                    recipientOfComment.addComment(commentText.toString())
+                    recipientOfComment.addComment(
+                        commentText.joinToString("") { it.text }
+                    )
                 }
             }
         }
 
-        private class PreDirective(context: Context, val priorParseState: ParseState) : ParseState(context) {
+        private class PreDirective(
+            context: Context,
+            val priorParseState: ParseState
+        ) : ParseState(context) {
             private inner class Directive(
                 var quoteFirstArgument: Boolean = false,
                 val callback: (List<String>) -> Unit
             ) : ParseState(context) {
-                override fun visitText(value: String): ParseState =
-                    if (value.isNotBlank() && quoteFirstArgument) {
-                        appendText(value)
+                override fun visitText(token: Token): ParseState =
+                    if (token.text.isNotBlank() && quoteFirstArgument) {
+                        appendText(token)
                         quoteFirstArgument = false
                         this
-                    } else checkForMacro(value)
+                    } else checkForMacro(token)
 
-                override fun visitNewline(): ParseState {
+                override fun visitNewline(token: Token): ParseState {
                     context.tokenizer.lineNumberForError -= 1
 
-                    val str = textAsString.trim()
+                    val str = tokensAsString.trim()
                     val args = str.split(Regex("\\s+")).let {
                         // "".split("\\s+") returns [""].
                         if (it == listOf("")) emptyList() else it
                     }
                     callback(args)
-                    priorParseState.visitText("\n")
+                    priorParseState.visitText(token)
                     return priorParseState
                 }
 
-                override fun visitEof(): ParseState =
-                    visitNewline()
+                override fun visitEof(token: Token): ParseState =
+                    visitNewline(token)
             }
 
-            override fun visitText(value: String): ParseState =
-                when (value) {
-                    "define" -> DefineDirective(context, priorParseState)
+            override fun visitText(token: Token): ParseState =
+                when (token.text) {
+                    "define" -> DefineDirective(context, token, priorParseState)
                     "undef" -> Directive(quoteFirstArgument = true) { context.doUndef(it) }
                     "if" -> Directive { context.doIf(it) }
                     "ifdef" -> Directive(quoteFirstArgument = true) { context.doIfdef(it) }
@@ -641,76 +657,92 @@ class GlslParser {
                     "elif" -> Directive { context.doElif(it) }
                     "endif" -> Directive { context.doEndif(it) }
                     "error", "pragma", "extension", "version" ->
-                        throw context.glslError("unsupported directive #$value")
+                        throw context.glslError("unsupported directive #${token.text}")
 
                     "line" -> Directive(quoteFirstArgument = true) { context.doLine(it) }
-                    else -> throw context.glslError("unknown directive #$value")
+                    else -> throw context.glslError("unknown directive #${token.text}")
                 }
         }
 
-        class DefineDirective(context: Context, val priorParseState: ParseState) : ParseState(context) {
-            enum class Mode { Initial, HaveName, InArgs, InReplacement }
+        class DefineDirective(
+            context: Context,
+            val startToken: Token,
+            val priorParseState: ParseState
+        ) : ParseState(context) {
+            enum class Mode { Initial, HaveName, InArgs, InPreReplacement, InReplacement }
 
             private var mode = Mode.Initial
-            private var name: String? = null
-            private var args: MutableList<String>? = null
+            private var name: Token? = null
+            private var args: MutableList<Token>? = null
 
-            override fun visitText(value: String): ParseState {
+            override fun visitText(token: Token): ParseState {
                 when (mode) {
                     Mode.Initial -> {
-                        if (value.isNotBlank()) {
-                            name = value
-                            mode =
-                                Mode.HaveName
+                        if (token.text.isNotBlank()) {
+                            name = token
+                            mode = Mode.HaveName
                         }
                     }
                     Mode.HaveName -> {
-                        mode =
-                            Mode.InReplacement
-                        super.visitText(value)
+                        // Left paren directly after name case handled by visitLeftParen().
+                        if (token.text.isNotBlank()) {
+                            mode = Mode.InReplacement
+                            super.visitText(token)
+                        } else {
+                            mode = Mode.InPreReplacement
+                        }
                     }
                     Mode.InArgs -> {
-                        if (value.isNotBlank() && value.trim() != ",") {
-                            args!!.add(value.trim())
+                        if (token.text.isNotBlank() && token.text.trim() != ",") {
+                            args!!.add(token)
+                        }
+                    }
+                    Mode.InPreReplacement -> {
+                        if (token.text.isNotBlank()) {
+                            mode = Mode.InReplacement
+                            super.visitText(token)
                         }
                     }
                     Mode.InReplacement -> {
-                        super.visitText(value)
+                        super.visitText(token)
                     }
                 }
                 return this
             }
 
             // Ignore comments.
-            override fun visitCommentText(value: String): ParseState = this
+            override fun visitCommentText(token: Token): ParseState = this
 
-            override fun visitComment(): ParseState =
-                Comment(context, null, this)
-            override fun visitBlockCommentBegin(): ParseState =
-                BlockComment(context, null, this, chompNewlines = true)
+            override fun visitComment(token: Token): ParseState =
+                Comment(context, token, null, this)
+            override fun visitBlockCommentBegin(token: Token): ParseState =
+                BlockComment(context, token, null, this, chompNewlines = true)
 
-            override fun visitLeftParen(): ParseState {
+            override fun visitLeftParen(token: Token): ParseState {
                 return if (mode == Mode.HaveName) {
                     mode = Mode.InArgs
                     args = arrayListOf()
                     this
-                } else super.visitLeftParen()
+                } else super.visitLeftParen(token)
             }
 
-            override fun visitRightParen(): ParseState {
+            override fun visitRightParen(token: Token): ParseState {
                 return if (mode == Mode.InArgs) {
-                    mode = Mode.InReplacement
+                    mode = Mode.InPreReplacement
                     this
-                } else super.visitRightParen()
+                } else super.visitRightParen(token)
             }
 
-            override fun visitNewline(): ParseState {
+            override fun visitNewline(token: Token): ParseState {
                 context.tokenizer.lineNumberForError -= 1
                 val name = name ?: throw context.glslError("#define with no macro name")
                 if (context.outputEnabled) {
-                    context.macros[name] = Macro(args, textAsString)
+                    while (tokens.lastOrNull()?.text?.isBlank() == true) {
+                        tokens.removeLast()
+                    }
+                    context.macros[name.text] = Macro(args, ArrayList(tokens))
                 }
-                priorParseState.visitText("\n")
+                priorParseState.visitText(token)
                 return priorParseState
             }
         }
@@ -721,50 +753,75 @@ class GlslParser {
             private val macro: Macro
         ) : ParseState(context) {
             private var parenCount = 0
+            private var chompWhitespace = false
+            private val args = mutableListOf<List<Token>>()
+            private var nextArg = mutableListOf<Token>()
 
-            override fun visitText(value: String): ParseState {
+            override fun visitText(token: Token): ParseState {
+                if (chompWhitespace && token.text.isBlank()) {
+                    return this
+                }
+
+                chompWhitespace = false
                 return if (parenCount == 0) {
-                    priorParseState.visitText(macro.replacement.trim())
-                    insertReplacement(value)
+                    macro.replacement.forEach {
+                        priorParseState.visitText(it)
+                    }
+                    insertReplacement(listOf(token))
                 } else {
-                    context.checkForMacro(value, this)
+                    context.checkForMacro(token, this)
                         ?: run {
-                            super.appendText(value)
+                            nextArg.add(token)
                             this
                         }
                 }
             }
 
-            override fun visitLeftParen(): ParseState {
+            override fun visitLeftParen(token: Token): ParseState {
                 parenCount++
                 return if (parenCount == 1) {
+                    chompWhitespace = true
                     this
                 } else {
-                    super.visitLeftParen()
+                    super.visitLeftParen(token)
                 }
             }
 
-            override fun visitRightParen(): ParseState {
+            override fun visitComma(token: Token): ParseState {
+                return if (parenCount == 1) {
+                    args.add(nextArg)
+                    nextArg = mutableListOf()
+                    chompWhitespace = true
+                    this
+                } else {
+                    super.visitComma(token)
+                }
+            }
+
+            override fun visitRightParen(token: Token): ParseState {
                 parenCount--
 
                 return if (parenCount == 0) {
-                    val args = textAsString.split(',').map { it.trim() }
-                    val subs = (macro.params ?: emptyList()).zip(args).associate { it }
-                    val substituted = macro.replacement.trim().replace(wordRegex) {
-                        subs[it.value] ?: it.value
+                    args.add(nextArg)
+                    nextArg = mutableListOf()
+                    chompWhitespace = true
+
+                    val subs = (macro.params?.map { it.text } ?: emptyList()).zip(args).associate { it }
+                    val substituted = macro.replacement.flatMap { toToken ->
+                        subs[toToken.text] ?: listOf(toToken)
                     }
                     insertReplacement(substituted)
                 } else {
-                    super.visitRightParen()
+                    super.visitRightParen(token)
                 }
             }
 
-            override fun visitNewline(): ParseState {
+            override fun visitNewline(token: Token): ParseState {
                 return priorParseState
             }
 
-            private fun insertReplacement(value: String): ParseState {
-                return context.parse(value, priorParseState, freezeLineNumber = true)
+            private fun insertReplacement(tokens: List<Token>): ParseState {
+                return context.parse(tokens, priorParseState)
             }
         }
     }
@@ -776,21 +833,8 @@ class GlslParser {
         private val modifierStrings = setOf("const") + precisionStrings
         private val varDirections = setOf("in", "out", "inout")
 
-        /** Chomp leading whitespace. */
-        private fun chomp(text: String, lineNumber: Int?): Pair<String, Int?> {
-            var newlineCount = 0
-            var i = 0
-            loop@ while (i < text.length) {
-                when (text[i]) {
-                    '\n' -> newlineCount++
-                    ' ', '\t' -> {}
-                    else -> break@loop
-                }
-                i++
-            }
-            val trimmedText = text.substring(i)
-            val trimmedLineNumber = lineNumber?.plus(newlineCount)
-            return trimmedText to trimmedLineNumber
+        private fun Collection<Token>.contains(value: String): Boolean {
+            return any { it.text == value }
         }
     }
 }
