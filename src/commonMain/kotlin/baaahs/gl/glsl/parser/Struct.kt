@@ -7,7 +7,7 @@ import baaahs.gl.glsl.GlslType
 class Struct(context: Context) : Statement(context) {
     override fun createStatement(): GlslCode.GlslStatement =
         asStructOrNull()
-            ?: throw context.glslError("huh? couldn't find a struct in \"$tokensAsString\"")
+            ?: throw context.glslError(tokens.firstOrNull(), "huh? couldn't find a struct in \"$tokensAsString\"")
 
     fun asStructOrNull(): GlslCode.GlslStruct? {
         val text = tokensAsString

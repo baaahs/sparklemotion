@@ -1,9 +1,6 @@
 package baaahs.gl.glsl.parser
 
-import baaahs.gl.glsl.AnalysisException
-import baaahs.gl.glsl.GlslCode
-import baaahs.gl.glsl.GlslMacroExpressionEvaluator
-import baaahs.gl.glsl.GlslType
+import baaahs.gl.glsl.*
 
 class Context(
     val tokenizer: Tokenizer
@@ -21,71 +18,73 @@ class Context(
         structs[name]?.let { GlslType.Struct(it) }
             ?: GlslType.from(name)
 
-    fun doUndef(args: List<String>) {
+    fun doUndef(undefToken: Token, args: List<Token>) {
         if (outputEnabled) {
-            if (args.size != 1) throw glslError("#undef ${args.joinToString(" ")}")
-            macros.remove(args[0])
+            if (args.size != 1) throw glslError(undefToken, "#undef ${args.joinToString(" ")}")
+            macros.remove(args[0].text)
         }
     }
 
-    fun doIf(args: List<String>) {
-        if (args.isEmpty()) throw glslError("#if ${args.joinToString(" ")}")
+    fun doIf(ifToken: Token, args: List<Token>) {
+        if (args.isEmpty()) throw glslError(ifToken, "#if ${args.joinToString(" ")}")
         enabledStack.add(outputEnabled)
-        val matches = evaluate(args.joinToString(" "))
+        val matches = evaluate(args)
         outputEnabled = outputEnabled && matches
         matchedBranch = matches
     }
 
-    fun doIfdef(args: List<String>) {
-        if (args.size != 1) throw glslError("#ifdef ${args.joinToString(" ")}")
+    fun doIfdef(ifdefToken: Token, args: List<Token>) {
+        if (args.size != 1) throw glslError(ifdefToken, "#ifdef ${args.joinToString(" ")}")
         enabledStack.add(outputEnabled)
-        val matches = macros.containsKey(args.first())
+        val matches = macros.containsKey(args.first().text)
         outputEnabled = outputEnabled && matches
         matchedBranch = matches
     }
 
-    fun doIfndef(args: List<String>) {
-        if (args.size != 1) throw glslError("#ifndef ${args.joinToString(" ")}")
+    fun doIfndef(ifndefToken: Token, args: List<Token>) {
+        if (args.size != 1) throw glslError(ifndefToken, "#ifndef ${args.joinToString(" ")}")
         enabledStack.add(outputEnabled)
-        val matches = !macros.containsKey(args.first())
+        val matches = !macros.containsKey(args.first().text)
         outputEnabled = outputEnabled && matches
         matchedBranch = matches
     }
 
-    fun doElse(args: List<String>) {
-        if (enabledStack.isEmpty()) throw glslError("#else outside of #if/#endif")
-        if (args.isNotEmpty()) throw glslError("#else ${args.joinToString(" ")}")
+    fun doElse(elseToken: Token, args: List<Token>) {
+        if (enabledStack.isEmpty()) throw glslError(elseToken, "#else outside of #if/#endif")
+        if (args.isNotEmpty()) throw glslError(elseToken, "#else ${args.joinToString(" ")}")
         outputEnabled = !matchedBranch && enabledStack.last() && !outputEnabled
         if (outputEnabled) matchedBranch = true
     }
 
-    fun doElif(args: List<String>) {
-        if (enabledStack.isEmpty()) throw glslError("#elif outside of #if/#endif")
-        if (args.isEmpty()) throw glslError("#elif ${args.joinToString(" ")}")
+    fun doElif(elifToken: Token, args: List<Token>) {
+        if (enabledStack.isEmpty()) throw glslError(elifToken, "#elif outside of #if/#endif")
+        if (args.isEmpty()) throw glslError(elifToken, "#elif ${args.joinToString(" ")}")
         if (enabledStack.last()) {
-            val matches = !matchedBranch && evaluate(args.joinToString(" "))
+            val matches = !matchedBranch && evaluate(args)
             outputEnabled = matches
             if (matches) matchedBranch = true
         }
     }
 
-    fun doEndif(args: List<String>) {
-        if (enabledStack.isEmpty()) throw glslError("#endif outside of #if")
-        if (args.isNotEmpty()) throw glslError("#endif ${args.joinToString(" ")}")
+    fun doEndif(endifToken: Token, args: List<Token>) {
+        if (enabledStack.isEmpty()) throw glslError(endifToken, "#endif outside of #if")
+        if (args.isNotEmpty()) throw glslError(endifToken, "#endif ${args.joinToString(" ")}")
         outputEnabled = enabledStack.removeLast()
         matchedBranch = false
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun doLine(args: List<String>) {
+    fun doLine(lineToken: Token, args: List<Token>) {
         // No-op.
     }
 
-    private fun evaluate(args: String) =
+    private fun evaluate(args: List<Token>) =
         try {
             GlslMacroExpressionEvaluator.evaluate(args)
         } catch (e: Exception) {
-            throw glslError(e.message!!)
+            throw glslError(
+                args.firstOrNull(),
+                "${e.message ?: "unknown error"} in \"${args.joinToString(" ")}\".")
         }
 
     fun checkForMacro(token: Token, parseState: ParseState): ParseState? {
@@ -95,7 +94,7 @@ class Context(
             macro.params == null -> {
                 macroDepth++
                 if (macroDepth >= GlslParser.maxMacroDepth)
-                    throw glslError("Max macro depth exceeded for \"${token.text}\".")
+                    throw glslError(token, "Max macro depth exceeded for \"${token.text}\".")
 
                 tokenizer.push(macro.replacement)
                 parseState
@@ -105,6 +104,6 @@ class Context(
         }
     }
 
-    fun glslError(message: String) =
-        AnalysisException(message, tokenizer.lineNumberForError)
+    fun glslError(token: Token?, message: String) =
+        AnalysisException(message, token?.lineNumber ?: GlslError.NO_LINE)
 }

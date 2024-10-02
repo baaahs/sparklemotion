@@ -5,7 +5,6 @@ class Tokenizer(
     tokenizationPattern: Regex = GLSL_TOKENIZATION
 ) : Sequence<Token> {
     var lineNumber = 1
-    var lineNumberForError = 1
 
     private val tokenStream = tokenizationPattern.findAll(text).map {
         val s = it.groupValues[0]

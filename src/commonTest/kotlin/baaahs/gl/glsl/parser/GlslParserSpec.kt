@@ -404,8 +404,8 @@ object GlslParserSpec : Spek({
                         }
 
                         it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO'") }
+                            expect { glslCode }.toThrow<AnalysisException> {
+                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO' in \"FOO\".") }
                             }
                         }
                     }

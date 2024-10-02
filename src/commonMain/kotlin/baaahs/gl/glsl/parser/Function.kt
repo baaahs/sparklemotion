@@ -17,7 +17,7 @@ class Function(
             tokensSoFar.indexOfFirst { !GlslParser.precisionStrings.contains(it.text) }
 
         if (tokensSoFar.size - leadingModifierCount != 2)
-            throw context.glslError("unexpected tokens $tokensSoFar in function")
+            throw context.glslError(tokensSoFar.firstOrNull(), "unexpected tokens $tokensSoFar in function")
 
         returnType = context.findType(tokensSoFar[leadingModifierCount].text)
         name = tokensSoFar[leadingModifierCount + 1]
@@ -39,8 +39,8 @@ class Function(
         var name: String? = null
         private var inArraySize = false
 
-        override fun appendText(value: Token) {
-            this@Function.appendText(value)
+        override fun appendText(token: Token) {
+            this@Function.appendText(token)
         }
 
         override fun visitText(token: Token): ParseState {
@@ -64,7 +64,7 @@ class Function(
 
                 name == null -> name = trimmed
 
-                else -> throw context.glslError("Unexpected token \"$trimmed\".")
+                else -> throw context.glslError(token, "Unexpected token \"$trimmed\".")
             }
 
             return super.visitText(token)
@@ -114,9 +114,9 @@ class Function(
             if (name == null && type == null) return
 
             if (type == null) {
-                throw context.glslError("No type for parameter in ${this@Function.name}().")
+                throw context.glslError(tokens.firstOrNull(), "No type for parameter in ${this@Function.name}().")
             } else if (name == null) {
-                throw context.glslError("No name for parameter in ${this@Function.name}().")
+                throw context.glslError(tokens.firstOrNull(), "No name for parameter in ${this@Function.name}().")
             }
 
             params.add(

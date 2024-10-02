@@ -70,8 +70,7 @@ class DefineDirective(
     }
 
     override fun visitNewline(token: Token): ParseState {
-        context.tokenizer.lineNumberForError -= 1
-        val name = name ?: throw context.glslError("#define with no macro name")
+        val name = name ?: throw context.glslError(token, "#define with no macro name")
         if (context.outputEnabled) {
             while (tokens.lastOrNull()?.text?.isBlank() == true) {
                 tokens.removeLast()
