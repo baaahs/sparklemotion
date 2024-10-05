@@ -2,6 +2,7 @@ package baaahs.gl.glsl
 
 import baaahs.englishize
 import baaahs.getValue
+import baaahs.gl.glsl.parser.Tokenizer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.dialect.findContentType
 import baaahs.plugin.PluginRef
@@ -69,7 +70,8 @@ class GlslCode(
 
             var inComment = false
             var inDotTraversal = false
-            GlslParser.Tokenizer().tokenize(originalText).forEach { str ->
+            Tokenizer(originalText).forEach { token ->
+                val str = token.text
                 when (str) {
                     "//" -> {
                         inComment = true; buf.append(str)

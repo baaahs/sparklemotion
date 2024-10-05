@@ -2,6 +2,7 @@ package baaahs.gl
 
 import baaahs.device.FixtureType
 import baaahs.gl.glsl.*
+import baaahs.gl.glsl.parser.GlslParser
 import baaahs.gl.patch.*
 import baaahs.gl.preview.PreviewShaders
 import baaahs.gl.shader.OpenShader

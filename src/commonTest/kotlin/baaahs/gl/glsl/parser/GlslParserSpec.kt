@@ -1,8 +1,10 @@
-package baaahs.gl.glsl
+package baaahs.gl.glsl.parser
 
 import baaahs.describe
 import baaahs.gl.expectStatements
+import baaahs.gl.glsl.AnalysisException
 import baaahs.gl.glsl.GlslCode.*
+import baaahs.gl.glsl.GlslType
 import baaahs.gl.override
 import baaahs.only
 import baaahs.toBeSpecified
@@ -151,7 +153,7 @@ object GlslParserSpec : Spek({
                                         "}",
                                 lineNumber = 31
                             )
-                        ), { glslParser.findStatements(shaderText) }, true
+                        ), { glslParser.parse(shaderText).statements }, true
                     )
                 }
 
@@ -244,8 +246,7 @@ object GlslParserSpec : Spek({
                             ),
                             GlslVar(
                                 "shouldBeThis", GlslType.Vec2,
-                                // TODO: 18 is wrong, should be 14!
-                                fullText = "uniform vec2 shouldBeThis;", isUniform = true, lineNumber = 18
+                                fullText = "uniform vec2 shouldBeThis;", isUniform = true, lineNumber = 14
                             )
                         )
                     }
@@ -264,6 +265,7 @@ object GlslParserSpec : Spek({
                                 #define iResolution resolution // ignore this comment
                                 #define dividedBy(a,b) (a / b) /* ignore this comment too */
                                 #define circle(U, r) smoothstep(0., 1., abs(length(U)-r)-.02 )
+                                #define ONE_POINT_OH (1.0)
 
                                 uniform vec2 resolution;
                                 void main() {
@@ -271,7 +273,7 @@ object GlslParserSpec : Spek({
                                     foo();
                                 #endif
                                     gl_FragColor = circle(gl_FragCoord, iResolution.x);
-                                    gl_FragColor = circle(dividedBy(gl_FragCoord, 1.0), iResolution.x);
+                                    gl_FragColor = circle(dividedBy(gl_FragCoord, ONE_POINT_OH), iResolution.x);
                                 }
                             """.trimIndent()
                         }
@@ -286,13 +288,13 @@ object GlslParserSpec : Spek({
                             expect(glsl.trim())
                                 .toBe(
                                     """
-                                        #line 6
+                                        #line 7
                                         void ns_main() {
                                         
                                         
                                         
                                             gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
-                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
+                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / (1.0)))-resolution.x)-.02 );
                                         }
                                     """.trimIndent()
                                 )
@@ -402,8 +404,8 @@ object GlslParserSpec : Spek({
                         }
 
                         it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO'") }
+                            expect { glslCode }.toThrow<AnalysisException> {
+                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO' in \"FOO\".") }
                             }
                         }
                     }
@@ -562,7 +564,7 @@ object GlslParserSpec : Spek({
                                     lineNumber = 3,
                                     comments = listOf(" @return time2")
                                 ),
-                            ), { glslParser.findStatements(shaderText) }, true
+                            ), { glslParser.parse(shaderText).statements }, true
                         )
                     }
                 }
