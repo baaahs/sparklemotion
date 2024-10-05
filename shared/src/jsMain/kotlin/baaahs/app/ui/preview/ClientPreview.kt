@@ -14,7 +14,6 @@ import baaahs.util.Logger
 import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.EntityAdapter
 import baaahs.visualizer.Visualizer
-import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -51,7 +50,7 @@ class ClientPreview(
         val simulationEnv = SimulationEnv {
             component(clock)
             component(dmxUniverse)
-            component<PixelArranger>(pixelArranger)
+//            component<PixelArranger>(pixelArranger)
         }
         val adapter = EntityAdapter(simulationEnv, model.units)
         theVisualizer.clear()

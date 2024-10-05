@@ -23,8 +23,6 @@ import baaahs.mapper.MappingStore
 import baaahs.mapper.PinkyMapperHandlers
 import baaahs.mapping.MappingManager
 import baaahs.mapping.MappingManagerImpl
-import baaahs.model.ModelManager
-import baaahs.model.ModelManagerImpl
 import baaahs.net.Network
 import baaahs.plugin.Plugin
 import baaahs.plugin.PluginContext
@@ -163,9 +161,8 @@ interface PinkyModule : KModule {
             scoped { sceneMonitor }
             scoped<SceneProvider> { get<SceneMonitor>() }
             scoped<MappingManager> {
-                MappingManagerImpl(get(), get(), CoroutineScope(get(Named.pinkyContext)), backupMappingManager)
+                MappingManagerImpl(get(), get(), get(), CoroutineScope(get(Named.pinkyContext)), backupMappingManager)
             }
-            scoped<ModelManager> { ModelManagerImpl() }
             scoped(named("ControllerManagers")) {
                 listOf(
                     get<BrainManager>(), get<DmxManager>(), get<SacnManager>()

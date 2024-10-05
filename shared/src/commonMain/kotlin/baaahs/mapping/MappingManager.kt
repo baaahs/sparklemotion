@@ -1,11 +1,13 @@
 package baaahs.mapping
 
+import baaahs.PubSub
 import baaahs.controller.ControllerId
 import baaahs.fixtures.FixtureMapping
 import baaahs.mapper.MappingStore
 import baaahs.mapper.SessionMappingResults
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
+import baaahs.sm.webapi.Topics
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
 import baaahs.ui.addObserver
@@ -24,6 +26,7 @@ interface MappingManager : IObservable {
 }
 
 class MappingManagerImpl(
+    private val pubSub: PubSub.Server,
     private val mappingStore: MappingStore,
     private val sceneProvider: SceneProvider,
     private val coroutineScope: CoroutineScope = GlobalScope,
@@ -31,6 +34,9 @@ class MappingManagerImpl(
 ) : Observable(), MappingManager {
     private var sessionMappingResults: SessionMappingResults? = null
     override var dataHasLoaded: Boolean = false
+
+    private val dataChannel =
+        pubSub.publish(Topics.mappingManager, null) { _ -> error("MappingManager is read-only.") }
 
     override suspend fun start() {
         sceneProvider.addObserver(fireImmediately = true) {
@@ -44,8 +50,10 @@ class MappingManagerImpl(
         dataHasLoaded = false
         if (openScene == null) {
             sessionMappingResults = null
+            dataChannel.onChange(null)
         } else {
             sessionMappingResults = mappingStore.loadMappingData(openScene)
+            dataChannel.onChange(sessionMappingResults.controllerData)
             dataHasLoaded = true
         }
         notifyChanged()

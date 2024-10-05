@@ -14,6 +14,7 @@ import baaahs.gl.Toolchain
 import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.io.RemoteFsSerializer
 import baaahs.mapper.JsMapperBuilder
+import baaahs.mapping.MappingManager
 import baaahs.midi.MIDIUi
 import baaahs.monitor.MonitorUi
 import baaahs.net.Network
@@ -79,6 +80,9 @@ open class JsUiWebClientModule : WebClientModule() {
             scoped { SceneMonitor() }
             scoped { SceneManager(get(), get(), get(), get(), get(), get()) }
             scoped<SceneProvider> { get<SceneMonitor>() }
+            scoped<MappingManager> {
+                ClientMappingManager()
+            }
             scoped { Notifier(get()) }
             scoped { SceneEditorClient(get(), get()) }
             scoped {

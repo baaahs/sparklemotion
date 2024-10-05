@@ -10,7 +10,7 @@ class SimulationEnv(build: Builder.() -> Unit) {
     @Suppress("UNCHECKED_CAST")
     operator fun <T: Any> get(klass: KClass<T>): T {
         return components[klass] as? T
-            ?: error("No $klass component.")
+            ?: error("No ${klass.simpleName} component.")
     }
 
     class Builder(val map: MutableMap<KClass<*>, Any>) {

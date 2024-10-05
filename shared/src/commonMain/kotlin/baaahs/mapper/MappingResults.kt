@@ -7,9 +7,16 @@ import baaahs.scene.OpenScene
 import baaahs.util.Logger
 
 class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSession>) {
-    val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
+    val controllerData: Map<ControllerId, List<FixtureMapping>>
 
     init {
+        val controllerData = mutableMapOf<ControllerId, MutableList<FixtureMapping>>()
+
+        fun add(controllerId: ControllerId, fixtureMapping: FixtureMapping) {
+            controllerData.getOrPut(controllerId) { arrayListOf() }
+                .add(fixtureMapping)
+        }
+
         mappingSessions.forEach { mappingSession ->
             mappingSession.surfaces.forEach { mappingData ->
                 val controllerId = mappingData.controllerId
@@ -42,6 +49,7 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
                 }
             }
         }
+        this.controllerData = controllerData
 
 //        scene.controllers.forEach { (controllerId, controllerConfig) ->
 //            controllerConfig.fixtures.forEach { fixtureMapping ->
@@ -65,11 +73,6 @@ class SessionMappingResults(scene: OpenScene, mappingSessions: List<MappingSessi
 //                }
 //            }
 //        }
-    }
-
-    private fun add(controllerId: ControllerId, fixtureMapping: FixtureMapping) {
-        controllerData.getOrPut(controllerId) { arrayListOf() }
-            .add(fixtureMapping)
     }
 
     fun dataForController(controllerId: ControllerId): List<FixtureMapping> =
