@@ -14,8 +14,8 @@ kotlin {
 
 dependencies {
     implementation(project(":rpc"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:${Versions.ksp}")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation(libs.kspSymbolProcessingApi)
+    testImplementation(libs.kotlinTest)
 }
 
 tasks.test {

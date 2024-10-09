@@ -30,14 +30,14 @@ val lwjglAllNatives = listOf(
 
 plugins {
     application
-    kotlin("multiplatform") version Versions.kotlin
-    kotlin("plugin.serialization") version Versions.kotlin
-    id("org.jetbrains.dokka") version Versions.dokka
-    id("com.google.devtools.ksp") version Versions.ksp
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("com.github.ben-manes.versions") version "0.39.0"
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinPluginSerialization)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.benManesVersions)
     id("maven-publish")
-    id("name.remal.check-dependency-updates") version "1.0.211"
+    alias(libs.plugins.checkDependencyUpdates)
 }
 
 repositories {
@@ -79,13 +79,13 @@ kotlin {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationRuntime}")
-                implementation("io.insert-koin:koin-core:${Versions.koin}")
-                implementation("io.github.murzagalin:multiplatform-expressions-evaluator:0.15.0")
-                api("com.danielgergely.kgl:kgl:${Versions.kgl}")
+                implementation(libs.kotlinxCli)
+                implementation(libs.kotlinxCoroutinesCore)
+                implementation(libs.kotlinxDatetime)
+                implementation(libs.kotlinxSerializationJson)
+                implementation(libs.koinCore)
+                implementation(libs.expressionsEvaluator)
+                api(libs.kgl)
                 implementation(project(":rpc"))
             }
         }
@@ -93,37 +93,37 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
-                implementation("spek:spek-dsl:${Versions.spek}")
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}-common:${Versions.atrium}")
+                implementation(libs.spekDsl)
+                implementation(libs.atriumApiCommon)
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${Versions.coroutines}")
-                implementation("io.ktor:ktor-server-core:${Versions.ktor}")
-                implementation("io.ktor:ktor-server-netty:${Versions.ktor}")
-                implementation("io.ktor:ktor-server-host-common:${Versions.ktor}")
-                implementation("io.ktor:ktor-server-call-logging:${Versions.ktor}")
-                implementation("io.ktor:ktor-server-websockets:${Versions.ktor}")
-                implementation("ch.qos.logback:logback-classic:1.3.11")
-                implementation("org.deepsymmetry:beat-link:7.2.0")
+                implementation(libs.kotlinxCoroutinesDebug)
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerNetty)
+                implementation(libs.ktorServerHostCommon)
+                implementation(libs.ktorServerCallLogging)
+                implementation(libs.ktorServerWebsockets)
+                implementation(libs.logback)
+                implementation(libs.beatLink)
 
                 // DMX
-                implementation("org.bidib.com.ftdi:FTD2xxJ:0.3.7")
+                implementation(libs.ftd2xx)
 
                 // Java 3D maths
-                implementation("org.joml:joml:1.9.25")
+                implementation(libs.joml)
 
                 // GLSL support via LWJGL:
-                implementation("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}")
-                implementation("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}")
+                implementation(libs.lwjglGlfw)
+                implementation(libs.lwjglOpengl)
                 lwjglAllNatives.forEach { platform ->
                     runtimeOnly("org.lwjgl:lwjgl:${Versions.lwjgl}:$platform")
                     runtimeOnly("org.lwjgl:lwjgl-glfw:${Versions.lwjgl}:$platform")
                     runtimeOnly("org.lwjgl:lwjgl-opengl:${Versions.lwjgl}:$platform")
                 }
-                implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
+                implementation(libs.kglLwjgl)
 
                 // GLSL support via JOGL:
 //                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
@@ -131,39 +131,39 @@ kotlin {
 //                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
-                implementation("org.jmdns:jmdns:3.5.7")
+                implementation(libs.jmdns)
 
                 // To support animated GIFs:
-                implementation("com.madgag:animated-gif-lib:1.4")
+                implementation(libs.animatedGifLib)
 
                 // SoundAnalysisPlugin:
-                implementation("be.tarsos.dsp:core:2.5")
-                implementation("be.tarsos.dsp:jvm:2.5")
+                implementation(libs.tarsosDspCore)
+                implementation(libs.tarsosDspJvm)
 
                 // VideoInPlugin:
-                implementation("com.github.sarxos:webcam-capture:0.3.12")
-                implementation("io.github.eduramiba:webcam-capture-driver-native:1.0.0")
+                implementation(libs.webcamCapture)
+                implementation(libs.webcamCaptureDriverNative)
             }
         }
         val jvmTest by getting {
             dependencies {
                 implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
-                runtimeOnly("org.spekframework.spek2:spek-runner-junit5:${Versions.spek}")
-                runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
+                runtimeOnly(libs.spek)
+                runtimeOnly(libs.kotlinReflect)
 
-                implementation("io.mockk:mockk:${Versions.mockk}")
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}:${Versions.atrium}")
+                implementation(libs.mockk)
+                implementation(libs.atriumApiJvm)
 
                 // For RunOpenGLTests:
-                implementation("org.junit.platform:junit-platform-launcher:${Versions.junitPlatform}")
+                implementation(libs.junitPlatformLauncher)
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-html-js:${Versions.kotlinxHtml}")
+                implementation(libs.kotlinxHtmlJs)
 
-                implementation("com.danielgergely.kgl:kgl-js:${Versions.kgl}")
+                implementation(libs.kglJs)
 
                 // kotlin react:
                 implementation(project.dependencies.enforcedPlatform(kotlinw("wrappers-bom:${Versions.kotlinWrappers}")))
@@ -207,7 +207,7 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("ch.tutteli.atrium:${Versions.atriumApi}-js:${Versions.atrium}")
+                implementation(libs.atriumApiJs)
             }
         }
 
