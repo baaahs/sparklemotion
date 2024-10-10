@@ -86,7 +86,7 @@ kotlin {
                 implementation(libs.koinCore)
                 implementation(libs.expressionsEvaluator)
                 api(libs.kgl)
-                implementation(project(":rpc"))
+                implementation(projects.rpc)
             }
         }
         val commonTest by getting {
@@ -175,7 +175,7 @@ kotlin {
                 implementation(kotlinw("emotion"))
 
                 // ThreeJS:
-                implementation(project(":ext:three"))
+                implementation(projects.ext.three)
                 implementation(npm("camera-controls", "^1.35.0"))
 
                 // TODO: Revert when https://github.com/john-doherty/long-press-event 2.5 is released.
@@ -221,7 +221,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":rpc:processor"))
+    add("kspCommonMainMetadata", projects.rpc.processor)
 }
 
 val isProductionBuild = project.hasProperty("isProduction")

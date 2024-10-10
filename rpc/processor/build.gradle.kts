@@ -13,7 +13,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":rpc"))
+    implementation(projects.rpc)
     implementation(libs.kspSymbolProcessingApi)
     testImplementation(libs.kotlinTest)
 }
