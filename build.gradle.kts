@@ -126,8 +126,8 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
 
                 // GLSL support via JOGL:
-                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
-                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
+//                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
+//                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
 //                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
