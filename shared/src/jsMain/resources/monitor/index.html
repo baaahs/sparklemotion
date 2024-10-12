@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-  <title>sparklemotion</title>
-  <script src="../lib/long-press-event/src/long-press-event.js"></script>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>Admin | sparklemotion</title>
   <link rel="icon" href="../favicon.png"/>
   <link rel="stylesheet" href="../styles.css"/>
-  <link rel="stylesheet" href="../react-mosaic-component.css"/>
 </head>
-<body class="sparklemotion-ui">
+<body class="sparklemotion-admin">
 <div id="content">
   <div style="
     background: white;
@@ -25,27 +23,21 @@
     <img style="transform: scale(.5);" src="../loading.gif" alt=""/>
     <div id="_patience_" style="padding-right: 5em;">Patience...</div>
   </div>
-  <div id="_errors_"></div>
 </div>
 
 <script type="application/javascript">
   document.resourcesBase = "..";
-  document.sparklemotionMode = "UI";
-
-  function reportError(path) {
-    document.getElementById("_errors_").innerHTML += "<p>Error loading " + path + ".</p>\n"
-  }
+  document.sparklemotionMode = "Monitor";
 
   (function () {
     function loadJs(path) {
       let el = document.createElement("script");
       el.setAttribute("src", path);
-      el.setAttribute("onerror", "reportError(\"" + path + "\");");
       document.head.appendChild(el);
     }
 
     setTimeout(function () {
-      loadJs("../sparklemotion.js");
+      loadJs("../shared.js");
     });
   })();
 </script>

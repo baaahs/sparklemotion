@@ -4,34 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
   <title>Simulator | sparklemotion</title>
-  <script src="lib/long-press-event/src/long-press-event.js"></script>
-  <link rel="icon" href="favicon-sim.png"/>
+  <script src="long-press-event.min.js"></script>
+  <link rel="icon" href="favicon.png"/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="react-mosaic-component.css"/>
+  <link rel="stylesheet" href="react-grid-layout/css/styles.css"/>
 </head>
-<body>
-<div id="app">
-  <div style="display: flex; height: 100vh;">
-    <div style="
-      background: white;
-      color: black;
-      font-family: 'Press Start 2P', monospace;
-      border: 2px solid black;
-      display: flex;
-      margin: auto;
-      padding: 1em;
-      height: 150px;
-      align-items: center;
+<body class="sparklemotion-ui">
+<div id="content">
+  <div style="
+    background: white;
+    color: black;
+    font-family: 'Press Start 2P', monospace;
+    border: 2px solid black;
+    display: flex;
+    margin: auto;
+    padding: 1em;
+    height: 150px;
+    align-items: center;
   ">
       <img style="transform: scale(.5);" src="loading.gif" alt=""/>
-      <div id="_patience_" style="padding-right: 5em;">Patience...</div>
-    </div>
+    <div id="_patience_" style="padding-right: 5em;">Patience...</div>
   </div>
 </div>
 
 <script type="application/javascript">
   document.resourcesBase = ".";
-  document.sparklemotionMode = "Simulator";
+  document.sparklemotionMode = "PatchEditor";
 
   setTimeout(function () {
     function loadJs(path) {
@@ -40,7 +39,7 @@
       document.head.appendChild(el);
     }
 
-    loadJs("sparklemotion.js");
+    loadJs("shared.js");
   });
 </script>
 </body>

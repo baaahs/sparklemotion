@@ -1,0 +1,80 @@
+[versions]
+kotlin = "2.0.20"
+coroutines = "1.7.2"
+serializationRuntime = "1.5.1"
+koin = "3.1.3"
+ksp = "2.0.20-1.0.25"
+dokka = "1.7.10"
+kgl = "0.6.2"
+#jogl = "2.3.2"
+lwjgl = "3.3.1"
+
+# JVM:
+ktor = "2.3.2"
+
+tarsosDsp = "2.5"
+
+# JS:
+kotlinxHtml = "0.9.1"
+kotlinWrappers = "1.0.0-pre.804"
+
+# Test:
+junit = "5.8.1"
+junitPlatform = "1.8.1"
+spek = "2.0.11-rc.1" # custom build with LetValues enabled
+mockk = "1.12.1"
+atrium = "0.16.0"
+atriumApi = "atrium-fluent-en_GB"
+coroutinesTest = "coroutines"
+
+[libraries]
+kotlinxCli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version = "0.3.5" }
+kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinxCoroutinesDebug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "coroutines" }
+kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.5.0" }
+kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationRuntime" }
+kotlinxHtmlJs = { group = "org.jetbrains.kotlinx", name = "kotlinx-html-js", version.ref = "kotlinxHtml" }
+koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+expressionsEvaluator = { group = "io.github.murzagalin", name = "multiplatform-expressions-evaluator", version = "0.15.0" }
+kgl = { group = "com.danielgergely.kgl", name = "kgl", version.ref = "kgl" }
+kglLwjgl = { group = "com.danielgergely.kgl", name = "kgl-lwjgl", version.ref = "kgl" }
+lwjglGlfw = { group = "org.lwjgl", name = "lwjgl-glfw", version.ref = "lwjgl" }
+lwjglOpengl = { group = "org.lwjgl", name = "lwjgl-opengl", version.ref = "lwjgl" }
+kglJs = { group = "com.danielgergely.kgl", name = "kgl-js", version.ref = "kgl" }
+jmdns = { group = "org.jmdns", name = "jmdns", version = "3.5.7" }
+ktorServerCore = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
+ktorServerNetty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+ktorServerHostCommon = { group = "io.ktor", name = "ktor-server-host-common", version.ref = "ktor" }
+ktorServerCallLogging = { group = "io.ktor", name = "ktor-server-call-logging", version.ref = "ktor" }
+ktorServerWebsockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
+logback = { group = "ch.qos.logback", name = "logback-classic", version = "1.3.11" }
+beatLink = { group = "org.deepsymmetry", name = "beat-link", version = "7.2.0" }
+ftd2xx = { group = "org.bidib.com.ftdi", name = "FTD2xxJ", version = "0.3.7" }
+joml = { group = "org.joml", name = "joml", version = "1.9.25" }
+animatedGifLib = { group = "com.madgag", name = "animated-gif-lib", version = "1.4" }
+tarsosDspCore = { group = "be.tarsos.dsp", name = "core", version.ref = "tarsosDsp" }
+tarsosDspJvm = { group = "be.tarsos.dsp", name = "jvm", version.ref = "tarsosDsp" }
+webcamCapture = { group = "com.github.sarxos", name = "webcam-capture", version = "0.3.12" }
+webcamCaptureDriverNative = { group = "io.github.eduramiba", name = "webcam-capture-driver-native", version = "1.0.0" }
+kspSymbolProcessingApi = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+
+# Test:
+spek = { group = "org.spekframework.spek2", name = "spek-runner-junit5", version.ref = "spek" }
+spekDsl = { group = "spek", name = "spek-dsl", version.ref = "spek" }
+kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+atriumApiJvm = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB", version.ref = "atrium" }
+atriumApiJs = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB-js", version.ref = "atrium" }
+atriumApiCommon = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB-common", version.ref = "atrium" }
+junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
+
+[plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+benManesVersions = { id = "com.github.ben-manes.versions", version = "0.39.0" }
+checkDependencyUpdates = { id = "name.remal.check-dependency-updates", version = "1.0.211" }

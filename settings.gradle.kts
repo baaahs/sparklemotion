@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -10,6 +12,8 @@ plugins {
 
 rootProject.name = "sparklemotion"
 
+include("shared")
+include("server")
 include("ext:three")
 include("rpc")
 include("rpc:processor")
