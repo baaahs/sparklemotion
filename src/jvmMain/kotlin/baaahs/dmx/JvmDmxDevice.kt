@@ -1,10 +1,14 @@
 package baaahs.dmx
 
-import com.ftdichip.ftd2xx.*
+import com.ftdi.FTDevice
+import com.ftdi.FlowControl
+import com.ftdi.Parity
+import com.ftdi.StopBits
+import com.ftdi.WordLength
 
-class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
-    override val id: String = "usb id${usbDevice.deviceDescriptor.serialNumber}"
-    override val name: String = "usb name ${usbDevice.deviceDescriptor.productDescription}"
+class JvmDmxDevice(usbDevice: FTDevice) : Dmx.Device {
+    override val id: String = "usb id${usbDevice.devSerialNumber}"
+    override val name: String = "usb name ${usbDevice.devDescription}"
 
     private val buf = ByteArray(513) // DMX wants byte 0 to always be 0
     private val dmxTransmitter = DmxTransmitter(usbDevice).apply { start() }
@@ -34,7 +38,7 @@ class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
         close()
     }
 
-    private class DmxTransmitter(private val device: Device) : Thread("DMXTransmitter") {
+    private class DmxTransmitter(private val device: FTDevice) : Thread("DMXTransmitter") {
         val DMX_TRANSMIT_DELAY = 20
 
         var keepRunning = true
@@ -48,14 +52,12 @@ class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
         }
 
         private fun configureDmx() {
-            val port = device.getPort()
-            port.setDivisor(12)
-            port.setDataCharacteristics(DataBits.DATA_BITS_8, StopBits.STOP_BITS_2, Parity.NONE)
-            port.setFlowControl(FlowControl.NONE)
-            port.setRTS(false)
+            val port = device.comPortNumber
+            device.setDataCharacteristics(WordLength.BITS_8, StopBits.STOP_BITS_2, Parity.PARITY_NONE)
+            device.setFlowControl(FlowControl.FLOW_NONE)
+            device.setRts(false)
             device.latencyTimer = 40
-            device.purgeReceiveBuffer()
-            device.purgeTransmitBuffer()
+            device.purgeBuffer(true, true)
         }
 
         @Synchronized
@@ -79,11 +81,7 @@ class JvmDmxDevice(usbDevice: Device) : Dmx.Device {
             }
         }
 
-        @Throws(FTD2xxException::class)
         private fun transmit(bytes: ByteArray) {
-            val port = device.port
-            port.setBreakOn(true)
-            port.setBreakOn(false)
             device.write(bytes)
 
             sleep(DMX_TRANSMIT_DELAY)
