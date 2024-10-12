@@ -109,9 +109,10 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:1.3.11")
                 implementation("org.deepsymmetry:beat-link:7.2.0")
 
-                implementation(files("src/jvmMain/lib/ftd2xxj-2.1.jar"))
-                implementation(files("src/jvmMain/lib/javax.util.property-2_0.jar")) // required by ftd2xxj
+                // DMX
+                implementation("org.bidib.com.ftdi:FTD2xxJ:0.3.7")
 
+                // Java 3D maths
                 implementation("org.joml:joml:1.9.25")
 
                 // GLSL support via LWJGL:
@@ -125,8 +126,8 @@ kotlin {
                 implementation("com.danielgergely.kgl:kgl-lwjgl:${Versions.kgl}")
 
                 // GLSL support via JOGL:
-                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
-                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
+//                implementation("org.jogamp.gluegen:gluegen-rt-main:${Versions.jogl}")
+//                implementation("org.jogamp.jogl:jogl-all-main:${Versions.jogl}")
 //                implementation("com.danielgergely.kgl:kgl-jogl:${Versions.kgl}")
 
                 // MDNS support:
