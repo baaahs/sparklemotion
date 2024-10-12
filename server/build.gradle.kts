@@ -27,8 +27,6 @@ val isProductionBuild = project.hasProperty("isProduction")
 application {
     mainClass.set("baaahs.sm.server.PinkyMainKt")
 
-    applicationDefaultJvmArgs += "-Djava.library.path=${project(":shared").file("src/jvmMain/jni")}"
-
     if (!isProductionBuild) {
         applicationDefaultJvmArgs += "-Dio.ktor.development=true"
     }
