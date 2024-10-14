@@ -14,7 +14,7 @@ kotlin {
     }
 
     sourceSets {
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(kotlinw("browser-js"))
 
