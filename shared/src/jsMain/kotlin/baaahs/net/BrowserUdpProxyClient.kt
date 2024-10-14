@@ -4,7 +4,7 @@ import baaahs.io.ByteArrayReader
 import baaahs.io.ByteArrayWriter
 import baaahs.util.Logger
 
-internal class BrowserUdpProxy(
+internal class BrowserUdpProxyClient(
     link: Network.Link, address: BrowserNetwork.BrowserAddress, port: Int
 ) : Network.WebSocketListener {
     private var udpListener: Network.UdpListener? = null
@@ -138,6 +138,6 @@ internal class BrowserUdpProxy(
     }
 
     companion object {
-        val logger = Logger<BrowserUdpProxy>()
+        val logger = Logger<BrowserUdpProxyClient>()
     }
 }
