@@ -1,13 +1,9 @@
 plugins {
-    kotlin("multiplatform") version Versions.kotlin
+    alias(libs.plugins.kotlinMultiplatform)
 }
 
 group = "org.baaahs"
 version = "0.0.1"
-
-repositories {
-    mavenCentral()
-}
 
 kotlin {
     jvm()
