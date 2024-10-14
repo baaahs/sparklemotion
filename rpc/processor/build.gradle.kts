@@ -5,10 +5,6 @@ plugins {
 group = "org.baaahs"
 version = "0.0.1"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
 }
 
