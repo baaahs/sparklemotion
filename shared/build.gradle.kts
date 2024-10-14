@@ -50,7 +50,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
@@ -64,7 +64,7 @@ kotlin {
                 implementation(projects.rpc)
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
@@ -73,7 +73,7 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.ktorServerCore)
@@ -120,7 +120,7 @@ kotlin {
                 implementation(libs.webcamCaptureDriverNative)
             }
         }
-        val jvmTest by getting {
+        jvmTest {
             dependencies {
                 implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
                 runtimeOnly(libs.spek)
@@ -134,7 +134,7 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(libs.kotlinxHtmlJs)
 
@@ -179,7 +179,7 @@ kotlin {
                 implementation(npm("d3-array", "^3.2.4"))
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(kotlin("test-js"))
                 implementation(libs.atriumApiJs)
