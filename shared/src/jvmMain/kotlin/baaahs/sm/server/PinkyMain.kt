@@ -9,6 +9,7 @@ import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
+import baaahs.net.KtorHttpServer
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
@@ -81,7 +82,7 @@ class PinkyMain(private val args: Array<String>) {
     }
 
     private fun configureKtor(pinky: Pinky, pinkyScope: Scope) {
-        val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
+        val ktor = (pinky.httpServer as KtorHttpServer)
 
         ktor.application.install(CallLogging)
 
