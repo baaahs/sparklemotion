@@ -16,7 +16,7 @@ tarsosDsp = "2.5"
 
 # JS:
 kotlinxHtml = "0.9.1"
-kotlinWrappers = "1.0.0-pre.804"
+kotlinWrappers = "1.0.0-pre.816"
 
 # Test:
 junit = "5.11.3"
