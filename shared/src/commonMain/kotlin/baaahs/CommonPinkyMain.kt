@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.net.Network
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.KoinLogger
@@ -24,9 +25,10 @@ abstract class CommonPinkyMain {
         }
 
         val pinkyScope = pinkyInjector.koin.createScope<Pinky>()
-        val pinky = pinkyScope.get<Pinky>()
-        configureKtor(pinky, pinkyScope)
+        val httpServer = pinkyScope.get<Network.HttpServer>()
+        configureKtorApplication(httpServer, pinkyScope)
 
+        val pinky = pinkyScope.get<Pinky>()
         logger.info { responses.random() }
 
         try {
@@ -50,7 +52,7 @@ abstract class CommonPinkyMain {
 
     internal abstract fun homeDir(): String
 
-    internal abstract fun configureKtor(pinky: Pinky, scope: Scope)
+    internal abstract fun configureKtorApplication(httpServer: Network.HttpServer, pinkyScope: Scope)
 
     internal abstract fun exitProcess(code: Int)
 
