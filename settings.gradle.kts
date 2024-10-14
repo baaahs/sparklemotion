@@ -2,7 +2,24 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+
+        // KGL
+        maven("https://maven.danielgergely.com/releases") {
+            content { includeGroupAndSubgroups("com.danielgergely.kgl") }
+        }
+
+        // TarsosDSP
+        maven("https://mvn.0110.be/releases") {
+            content { includeGroupAndSubgroups("be.tarsos") }
+        }
     }
 }
 

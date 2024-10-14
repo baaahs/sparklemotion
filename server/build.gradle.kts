@@ -1,21 +1,9 @@
 import org.gradle.kotlin.dsl.sourceSets
 
-buildscript {
-    dependencies {
-        classpath("com.github.johnrengelman:shadow:8.1.1")
-    }
-}
-
 plugins {
     alias(libs.plugins.kotlinJvm)
     application
     alias(libs.plugins.shadow)
-}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.danielgergely.com/releases")
-    maven("https://mvn.0110.be/releases") // TarsosDSP
 }
 
 dependencies {

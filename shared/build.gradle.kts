@@ -6,19 +6,6 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-    }
-
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinGradlePlugin}")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokka}")
-    }
-}
-
 val lwjglAllNatives = listOf(
     "natives-linux",
     "natives-macos-arm64",
@@ -36,14 +23,6 @@ plugins {
     id("maven-publish")
     alias(libs.plugins.checkDependencyUpdates)
     alias(libs.plugins.kotestMultiplatform)
-}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://maven.danielgergely.com/releases")
-    maven("https://jitpack.io")
-    maven("https://mvn.0110.be/releases") // TarsosDSP
 }
 
 group = "org.baaahs"
