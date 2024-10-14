@@ -1,7 +1,6 @@
 package baaahs.sm.server
 
 import baaahs.CommonPinkyMain
-import baaahs.Pinky
 import baaahs.Pluggables
 import baaahs.di.JvmPinkyModule
 import baaahs.di.JvmPlatformModule
@@ -9,7 +8,8 @@ import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
-import baaahs.net.JvmNetwork
+import baaahs.net.KtorHttpServer
+import baaahs.net.Network
 import baaahs.util.Logger
 import baaahs.util.SystemClock
 import io.ktor.http.*
@@ -55,15 +55,14 @@ class PinkyMain(private val args: Array<String>) : CommonPinkyMain() {
         kotlin.system.exitProcess(code)
     }
 
-    override fun configureKtor(pinky: Pinky, pinkyScope: Scope) {
-        val ktor = (pinky.httpServer as JvmNetwork.RealLink.KtorHttpServer)
-
-        ktor.application.install(CallLogging)
+    override fun configureKtorApplication(httpServer: Network.HttpServer, pinkyScope: Scope) {
+        val application = (httpServer as KtorHttpServer).application
+        application.install(CallLogging)
 
         val dataDir = pinkyScope.get<Fs>().resolve(".")
         val firmwareDir = pinkyScope.get<Fs.File>(named("firmwareDir"))
 
-        ktor.application.routing {
+        application.routing {
             get("") { call.respondRedirect("/ui/") }
             get("monitor") { call.respondRedirect("/monitor/") }
             get("midi") { call.respondRedirect("midi/") }

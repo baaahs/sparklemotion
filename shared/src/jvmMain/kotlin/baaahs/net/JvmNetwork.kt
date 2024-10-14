@@ -1,21 +1,14 @@
 package baaahs.net
 
 import baaahs.util.Logger
-import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import io.ktor.websocket.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import java.io.IOException
 import java.net.*
-import java.nio.ByteBuffer
 import java.time.Duration
 import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
@@ -137,8 +130,22 @@ class JvmNetwork : Network {
             }
         }
 
-        override fun startHttpServer(port: Int): KtorHttpServer =
-            KtorHttpServer(port).also { it.httpServer.start(false) }
+        override fun startHttpServer(port: Int): KtorHttpServer {
+            val httpServer = embeddedServer(Netty, port, configure = {
+                // Let's give brains lots of time for OTA download:
+                responseWriteTimeoutSeconds = 3000
+            }) {
+                install(WebSockets) {
+                    pingPeriod = Duration.ofSeconds(15)
+                    timeout = Duration.ofSeconds(15)
+                    maxFrameSize = Long.MAX_VALUE
+                    masking = false
+                }
+            }
+
+            return KtorHttpServer(httpServer.application, this, port)
+                .also { httpServer.start(false) }
+        }
 
         override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
             val url = URLBuilder().apply {
@@ -171,113 +178,6 @@ class JvmNetwork : Network {
 
         override fun createAddress(name: String): Network.Address {
             return IpAddress(InetAddress.getByName(name))
-        }
-
-        inner class KtorHttpServer(val port: Int) : Network.HttpServer {
-            val httpServer = embeddedServer(Netty, port, configure = {
-                // Let's give brains lots of time for OTA download:
-                responseWriteTimeoutSeconds = 3000
-            }) {
-                install(WebSockets) {
-                    pingPeriod = Duration.ofSeconds(15)
-                    timeout = Duration.ofSeconds(15)
-                    maxFrameSize = Long.MAX_VALUE
-                    masking = false
-                }
-            }
-
-            val application: Application get() = httpServer.application
-
-            override fun listenWebSocket(
-                path: String,
-                onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
-            ) {
-                httpServer.application.routing {
-                    webSocket(path) {
-                        val tcpConnection = object : Network.TcpConnection {
-                            override val fromAddress: Network.Address
-                                get() = myAddress // TODO Fix
-                            override val toAddress: Network.Address
-                                get() = myAddress // TODO fix
-                            override val port: Int
-                                get() = this@KtorHttpServer.port
-
-                            override fun send(bytes: ByteArray) {
-                                val frame = Frame.Binary(true, ByteBuffer.wrap(bytes.clone()))
-                                networkScope.launch {
-                                    this@webSocket.send(frame)
-                                    this@webSocket.flush()
-                                }
-                            }
-
-                            override fun close() {
-                                networkScope.launch {
-                                    this@webSocket.close()
-                                }
-                            }
-                        }
-
-                        logger.info { "Connection from ${this.call.request.host()}…" }
-                        val webSocketListener = onConnect(tcpConnection)
-                        webSocketListener.connected(tcpConnection)
-
-                        try {
-                            while (true) {
-                                val frame = incoming.receive()
-                                if (frame is Frame.Binary) {
-                                    val bytes = frame.readBytes()
-                                    webSocketListener.receive(tcpConnection, bytes)
-                                } else {
-                                    logger.warn { "wait huh? received weird data: $frame" }
-                                }
-                            }
-                        } catch (e: ClosedReceiveChannelException) {
-                            logger.info { "Websocket closed." }
-                            close(CloseReason(
-                                CloseReason.Codes.NORMAL, "Closed."))
-                        } catch (e: Exception) {
-                            logger.error(e) { "Error reading websocket frame." }
-                            close(CloseReason(
-                                CloseReason.Codes.INTERNAL_ERROR, "Internal error: ${e.message}"))
-                        } finally {
-                            webSocketListener.reset(tcpConnection)
-                        }
-                    }
-
-                    webSocket("/sm/udpProxy") {
-                        try {
-                            JvmUdpProxy().handle(this)
-                        } catch (e: Exception) {
-                            logger.error(e) { "Error handling UDP proxy." }
-                        }
-                    }
-                }
-            }
-
-            override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
-                application.routing {
-                    val route = this
-                    val routing = object : Network.HttpServer.HttpRouting {
-                        override fun get(
-                            path: String,
-                            handler: (Network.HttpServer.HttpRequest) -> Network.HttpResponse
-                        ) {
-                            route.get(path) {
-                                val response = handler.invoke(object : Network.HttpServer.HttpRequest {
-                                    override fun param(name: String): String? = call.parameters[name]
-                                })
-                                call.respond(
-                                    ByteArrayContent(
-                                        response.body,
-                                        ContentType.parse(response.contentType),
-                                        HttpStatusCode.fromValue(response.statusCode)
-                                    ))
-                            }
-                        }
-                    }
-                    config.invoke(routing)
-                }
-            }
         }
 
         override val myAddress = IpAddress.mine()
