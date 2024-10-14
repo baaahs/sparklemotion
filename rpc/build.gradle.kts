@@ -14,7 +14,7 @@ kotlin {
     explicitApi()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
             }
