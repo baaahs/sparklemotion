@@ -21,14 +21,14 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
 
         override val myHostname: String get() = "Browser"
 
-        private val udpProxy: BrowserUdpProxy? by lazy {
-            udpProxyAddress?.let { BrowserUdpProxy(this, it, udpProxyPort) }
+        private val udpProxyClient: BrowserUdpProxyClient? by lazy {
+            udpProxyAddress?.let { BrowserUdpProxyClient(this, it, udpProxyPort) }
         }
 
         override val udpMtu = 1500
 
         override fun listenUdp(port: Int, udpListener: Network.UdpListener): Network.UdpSocket {
-            return udpProxy!!.listenUdp(port, udpListener)
+            return udpProxyClient!!.listenUdp(port, udpListener)
         }
 
         override val mdns: Network.Mdns get() {
