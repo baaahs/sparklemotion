@@ -445,7 +445,7 @@ class KglTracer(private val kgl: Kgl) : Kgl {
     }
 
     private fun log(name: String, vararg args: Any?, fn: (() -> Any?)? = null) {
-        logger.debug {
+        logger.info {
             val argsStr = args.joinToString(", ") { stringify(it) }
             "ctx$id: $id $name($argsStr)${fn?.let { " => ${stringify(fn())}" } ?: ""}"
         }

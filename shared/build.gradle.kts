@@ -1,3 +1,4 @@
+import com.android.tools.r8.internal.we
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -5,6 +6,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val lwjglAllNatives = listOf(
     "natives-linux",
@@ -17,6 +19,7 @@ val lwjglAllNatives = listOf(
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinPluginSerialization)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.dokka)
     alias(libs.plugins.ksp)
     alias(libs.plugins.benManesVersions)
@@ -39,9 +42,7 @@ kotlin {
 
     metadata {}
 
-    jvm {
-        withJava()
-    }
+    jvm {}
 
     js(IR) {
         browser {
@@ -49,6 +50,8 @@ kotlin {
             binaries.executable()
         }
     }
+
+    androidTarget {}
 
     sourceSets {
         commonMain {
@@ -139,6 +142,7 @@ kotlin {
 
         jsMain {
             dependencies {
+                implementation(libs.kotlinxCoroutinesCore)
                 implementation(libs.kotlinxHtmlJs)
 
                 implementation(libs.kglJs)
@@ -189,6 +193,22 @@ kotlin {
             }
         }
 
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.kglAndroid)
+                implementation(libs.koinCore)
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerHostCommon)
+                implementation(libs.ktorServerCallLogging)
+                implementation(libs.ktorServerWebsockets)
+                implementation(libs.jmdns)
+
+                // Java 3D maths
+                implementation(libs.joml)
+            }
+        }
+
         sourceSets.all {
             languageSettings.apply {
                 progressiveMode = true
@@ -199,7 +219,19 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", projects.rpc.processor)
+    kspCommonMainMetadata(projects.rpc.processor)
+}
+
+android {
+    namespace = "baaahs.app.shared"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_11
+//        targetCompatibility = JavaVersion.VERSION_11
+    }
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
@@ -252,6 +284,43 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
+afterEvaluate {
+    tasks.named<KotlinCompile>("compileDebugKotlinAndroid") {
+        println("android == ${this::class.java.name}")
+        val jsTask = tasks.named<ProcessResources>("jsProcessResources")
+        dependsOn(jsTask)
+
+        jsTask.map { it.destinationDir }.get().let {
+            println("jsTask: $it")
+        }
+//        from(jsTask.map { it.destinationDir }) {
+//            into("htdocs")
+//        }
+//
+//        doLast {
+//            createResourceFilesList(buildDir("processedResources/jvm/main"))
+//        }
+
+
+        val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
+            "jsBrowserProductionWebpack"
+        } else {
+            "jsBrowserDevelopmentWebpack"
+        }
+
+        // bring output file along into the JAR
+        val webpackTask = tasks.named<KotlinWebpack>(taskName)
+        dependsOn(webpackTask)
+        webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }.get().get().let {
+            println("webpackTask: $it")
+        }
+
+//        from(webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }) {
+//            into("htdocs")
+//        }
+    }
+}
+
 tasks.named<DokkaTask>("dokkaHtml") {
     outputDirectory.set(buildDir("javadoc"))
 }
@@ -271,6 +340,11 @@ tasks.withType(Test::class) {
     useJUnitPlatform {
         excludeTags("glsl")
     }
+}
+
+afterEvaluate {
+    tasks.named("testDebugUnitTest") { enabled = false }
+    tasks.named("testReleaseUnitTest") { enabled = false }
 }
 
 tasks.named<Test>("jvmTest") {
