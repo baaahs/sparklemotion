@@ -139,7 +139,7 @@ interface PinkyModule : KModule {
                 GlBase.manager.createContext("Pinky Render Context", SparkleMotion.TRACE_GLSL)
             }
             scoped { RenderManager(get(named("PinkyGlContext"))) }
-            scoped { get<Network.Link>().startHttpServer(Ports.PINKY_UI_TCP) }
+            scoped { get<Network.Link>().createHttpServer(Ports.PINKY_UI_TCP) }
             scoped { FsServerSideSerializer() }
             scoped { MappingStore(get(Named.dataDir), get(), get()) }
             scoped<FixtureManager> { FixtureManagerImpl(get(), get()) }

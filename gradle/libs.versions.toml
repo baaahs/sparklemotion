@@ -1,4 +1,6 @@
 [versions]
+appcompatV7 = "28.0.0"
+coreKtx = "1.13.1"
 kotlin = "2.0.21"
 coroutines = "1.9.0"
 serializationRuntime = "1.6.3"
@@ -14,6 +16,12 @@ ktor = "2.3.12"
 
 tarsosDsp = "2.5"
 
+# Android
+androidGradlePlugin = "8.5.2"
+android-compileSdk = "34"
+android-minSdk = "28"
+android-targetSdk = "34"
+
 # JS:
 kotlinxHtml = "0.9.1"
 kotlinWrappers = "1.0.0-pre.816"
@@ -28,20 +36,25 @@ coroutinesTest = "coroutines"
 [libraries]
 kotlinxCli = { group = "org.jetbrains.kotlinx", name = "kotlinx-cli", version = "0.3.5" }
 kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinxCoroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinxCoroutinesDebug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "coroutines" }
 kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.5.0" }
 kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationRuntime" }
 kotlinxHtmlJs = { group = "org.jetbrains.kotlinx", name = "kotlinx-html-js", version.ref = "kotlinxHtml" }
+androidCoreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 expressionsEvaluator = { group = "io.github.murzagalin", name = "multiplatform-expressions-evaluator", version = "0.15.0" }
 kgl = { group = "com.danielgergely.kgl", name = "kgl", version.ref = "kgl" }
 kglLwjgl = { group = "com.danielgergely.kgl", name = "kgl-lwjgl", version.ref = "kgl" }
 lwjglGlfw = { group = "org.lwjgl", name = "lwjgl-glfw", version.ref = "lwjgl" }
 lwjglOpengl = { group = "org.lwjgl", name = "lwjgl-opengl", version.ref = "lwjgl" }
 kglJs = { group = "com.danielgergely.kgl", name = "kgl-js", version.ref = "kgl" }
+kglAndroid = { group = "com.danielgergely.kgl", name = "kgl-android", version.ref = "kgl" }
 jmdns = { group = "org.jmdns", name = "jmdns", version = "3.5.7" }
 ktorServerCore = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktorServerNetty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+ktorServerCio = { group = "io.ktor", name = "ktor-server-cio", version.ref = "ktor" }
 ktorServerHostCommon = { group = "io.ktor", name = "ktor-server-host-common", version.ref = "ktor" }
 ktorServerCallLogging = { group = "io.ktor", name = "ktor-server-call-logging", version.ref = "ktor" }
 ktorServerWebsockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
@@ -71,8 +84,11 @@ junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-l
 kotestMultiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 benManesVersions = { id = "com.github.ben-manes.versions", version = "0.39.0" }
