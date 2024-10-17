@@ -21,7 +21,7 @@ class SimulatorBridge {
         val context = newSingleThreadContext("Bridge Main")
         val network = JvmNetwork()
         val link = network.link("bridge")
-        val httpServer = link.startHttpServer(Ports.SIMULATOR_BRIDGE_TCP)
+        val httpServer = link.createHttpServer(Ports.SIMULATOR_BRIDGE_TCP)
         val handlerScope = CoroutineScope(context)
         pubSub = PubSub.Server(httpServer, handlerScope)
     }

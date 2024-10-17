@@ -59,7 +59,7 @@ class FakeNetwork(
 
         override val mdns = this@FakeNetwork.mdns
 
-        override fun startHttpServer(port: Int): Network.HttpServer {
+        override fun createHttpServer(port: Int): Network.HttpServer {
             val fakeHttpServer = FakeHttpServer(port)
             httpServersByPort[myAddress to port] = fakeHttpServer
             logger.info { "HTTP server listening on $myAddress:$port." }
@@ -212,6 +212,10 @@ class FakeNetwork(
             }
 
             override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
+
+            override fun start() {
                 TODO("not implemented")
             }
         }

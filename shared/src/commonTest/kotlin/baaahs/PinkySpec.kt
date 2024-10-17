@@ -69,7 +69,7 @@ class PinkySpec : DescribeSpec({
         val renderManager by value { fakeGlslContext.runInContext { RenderManager(fakeGlslContext) } }
         val fixtureManager by value { FixtureManagerImpl(renderManager, plugins) }
         val toolchain by value { RootToolchain(plugins) }
-        val httpServer by value { link.startHttpServer(Ports.PINKY_UI_TCP) }
+        val httpServer by value { link.createHttpServer(Ports.PINKY_UI_TCP) }
         val coroutineScope by value { CoroutineScope(ImmediateDispatcher) }
         val pubSub by value { PubSub.Server(httpServer, coroutineScope) }
         val clock by value { FakeClock() }

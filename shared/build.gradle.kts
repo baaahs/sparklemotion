@@ -1,3 +1,4 @@
+import com.android.tools.r8.internal.we
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -39,9 +40,7 @@ kotlin {
 
     metadata {}
 
-    jvm {
-        withJava()
-    }
+    jvm {}
 
     js(IR) {
         browser {
@@ -138,6 +137,7 @@ kotlin {
 
         jsMain {
             dependencies {
+                implementation(libs.kotlinxCoroutinesCore)
                 implementation(libs.kotlinxHtmlJs)
 
                 implementation(libs.kglJs)
@@ -197,7 +197,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", projects.rpc.processor)
+    kspCommonMainMetadata(projects.rpc.processor)
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
@@ -249,6 +249,7 @@ tasks.named<ProcessResources>("jvmProcessResources") {
         createResourceFilesList(buildDir("processedResources/jvm/main"))
     }
 }
+
 
 tasks.named<DokkaTask>("dokkaHtml") {
     outputDirectory.set(buildDir("javadoc"))
