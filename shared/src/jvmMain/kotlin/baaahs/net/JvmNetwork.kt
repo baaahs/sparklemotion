@@ -130,7 +130,7 @@ class JvmNetwork : Network {
             }
         }
 
-        override fun startHttpServer(port: Int): KtorHttpServer {
+        override fun createHttpServer(port: Int): KtorHttpServer {
             val httpServer = embeddedServer(Netty, port, configure = {
                 // Let's give brains lots of time for OTA download:
                 responseWriteTimeoutSeconds = 3000
@@ -143,7 +143,7 @@ class JvmNetwork : Network {
                 }
             }
 
-            return KtorHttpServer(httpServer.application, this, port)
+            return KtorHttpServer(httpServer, this, port)
                 .also { httpServer.start(false) }
         }
 

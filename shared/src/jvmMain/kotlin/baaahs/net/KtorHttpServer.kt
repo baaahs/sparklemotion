@@ -4,6 +4,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
+import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.request.host
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
 class KtorHttpServer(
-    internal val application: Application,
+    internal val appEngine: ApplicationEngine,
     private val link: Network.Link,
     private val port: Int
 ) : Network.HttpServer {
@@ -26,7 +27,7 @@ class KtorHttpServer(
         path: String,
         onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
     ) {
-        application.routing {
+        appEngine.application.routing {
             webSocket(path) {
                 val tcpConnection = object : Network.TcpConnection {
                     override val fromAddress: Network.Address
@@ -87,7 +88,7 @@ class KtorHttpServer(
     }
 
     override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
-        application.routing {
+        appEngine.application.routing {
             val route = this
             val routing = object : Network.HttpServer.HttpRouting {
                 override fun get(
@@ -108,5 +109,9 @@ class KtorHttpServer(
             }
             config.invoke(routing)
         }
+    }
+
+    override fun start() {
+        appEngine.start()
     }
 }
