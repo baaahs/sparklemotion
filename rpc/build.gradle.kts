@@ -1,13 +1,9 @@
 plugins {
-    kotlin("multiplatform") version Versions.kotlin
+    alias(libs.plugins.kotlinMultiplatform)
 }
 
 group = "org.baaahs"
 version = "0.0.1"
-
-repositories {
-    mavenCentral()
-}
 
 kotlin {
     jvm()
@@ -18,9 +14,9 @@ kotlin {
     explicitApi()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation(libs.kotlinxSerializationJson)
             }
         }
     }
