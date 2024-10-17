@@ -8,8 +8,9 @@ class ResourcesFs : BaseFakeFs() {
 
     override val keys: List<String>
             by lazy {
-                getResource("_RESOURCE_FILES_").split("\n")
-                    .filterNot { it.isBlank() }
+                emptyList<String>()
+//                getResource("_RESOURCE_FILES_").split("\n")
+//                    .filterNot { it.isBlank() }
             }
 
     override suspend fun loadFile(file: Fs.File): String {

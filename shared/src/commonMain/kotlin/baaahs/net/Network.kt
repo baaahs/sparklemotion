@@ -16,7 +16,7 @@ interface Network {
 
         fun listenUdp(port: Int, udpListener: UdpListener): UdpSocket
 
-        fun startHttpServer(port: Int): HttpServer
+        fun createHttpServer(port: Int): HttpServer
 
         suspend fun httpGetRequest(
             address: Address,
@@ -126,6 +126,8 @@ interface Network {
 
         fun routing(config: HttpRouting.() -> Unit)
         fun listenWebSocket(path: String, onConnect: (incomingConnection: TcpConnection) -> WebSocketListener)
+
+        fun start()
 
         interface HttpRequest {
             fun param(name: String): String?

@@ -4,12 +4,28 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("android")
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
 
         // KGL
         maven("https://maven.danielgergely.com/releases") {
@@ -34,3 +50,4 @@ include("server")
 include("ext:three")
 include("rpc")
 include("rpc:processor")
+include("androidApp")
