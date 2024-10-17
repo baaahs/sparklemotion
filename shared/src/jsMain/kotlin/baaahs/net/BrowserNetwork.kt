@@ -36,7 +36,7 @@ class BrowserNetwork(private val udpProxyAddress: BrowserAddress? = null, privat
             TODO("BrowserNetwork.mdns not yet implemented")
         }
 
-        override fun startHttpServer(port: Int): Network.HttpServer =
+        override fun createHttpServer(port: Int): Network.HttpServer =
             TODO("BrowserNetwork.startHttpServer not implemented")
 
         override fun connectWebSocket(

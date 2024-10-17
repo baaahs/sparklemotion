@@ -55,7 +55,7 @@ class ShowRunnerTest {
     @BeforeTest
     fun setUp() {
         val dispatcher = TestCoroutineDispatcher()
-        server = PubSub.listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
+        server = PubSub.listen(serverNetwork.createHttpServer(1234), CoroutineScope(dispatcher))
         fakeGlslContext = FakeGlContext()
         dmxUniverse = FakeDmxUniverse()
         dmxUniverse.listen(1, 1) { dmxEvents.add("dmx frame sent") }

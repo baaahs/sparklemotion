@@ -52,7 +52,7 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             override fun close() {}
         }
 
-        override fun startHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {
+        override fun createHttpServer(port: Int): Network.HttpServer = object : Network.HttpServer {
             override fun listenWebSocket(
                 path: String,
                 onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
@@ -61,6 +61,10 @@ class TestNetwork(var defaultMtu: Int = 1400) : Network {
             }
 
             override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
+                TODO("not implemented")
+            }
+
+            override fun start() {
                 TODO("not implemented")
             }
         }
