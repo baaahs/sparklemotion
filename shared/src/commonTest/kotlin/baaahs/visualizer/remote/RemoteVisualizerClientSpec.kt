@@ -54,7 +54,7 @@ class RemoteVisualizerClientSpec : DescribeSpec({
         }
         val server by value {
             RemoteVisualizerServer(fakeFixtureManager, testPlugins()).also { server ->
-                serverLink.startHttpServer(Ports.PINKY_UI_TCP)
+                serverLink.createHttpServer(Ports.PINKY_UI_TCP)
                     .listenWebSocket("/ws/visualizer") { server }
             }
         }

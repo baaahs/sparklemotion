@@ -180,6 +180,8 @@ abstract class GlContext(
                 || width != curWidth
                 || height != curHeight
             ) {
+                check { bindRenderbuffer(GL_RENDERBUFFER, renderbuffer) }
+                state.activeRenderBuffer = this
                 check { renderbufferStorage(GL_RENDERBUFFER, internalformat, width, height) }
 
                 curInternalFormat = internalformat
