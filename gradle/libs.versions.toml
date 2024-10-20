@@ -19,7 +19,7 @@ tarsosDsp = "2.5"
 # Android
 androidGradlePlugin = "8.5.2"
 android-compileSdk = "34"
-android-minSdk = "26"
+android-minSdk = "28"
 android-targetSdk = "34"
 
 # JS:
@@ -43,7 +43,6 @@ kotlinxCoroutinesDebug = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinxDatetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.5.0" }
 kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationRuntime" }
 kotlinxHtmlJs = { group = "org.jetbrains.kotlinx", name = "kotlinx-html-js", version.ref = "kotlinxHtml" }
-androidAppcompat = { module = "com.android.support:appcompat-v7", version.ref = "appcompatV7" }
 androidCoreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 koinCore = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koinAndroid = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }

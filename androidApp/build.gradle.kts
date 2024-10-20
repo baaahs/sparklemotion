@@ -31,8 +31,7 @@ kotlin {
         androidMain {
             dependencies {
                 api(projects.shared)
-//                implementation(libs.androidCoreKtx)
-                implementation(libs.androidAppcompat)
+                implementation(libs.androidCoreKtx)
                 implementation(libs.koinCore)
                 implementation(libs.kotlinxDatetime)
                 implementation(libs.kotlinxCoroutinesAndroid)
@@ -101,5 +100,9 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }

@@ -6,8 +6,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import baaahs.Pinky
 import baaahs.Pluggables
 import baaahs.SystemClock
