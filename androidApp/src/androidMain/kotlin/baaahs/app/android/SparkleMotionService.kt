@@ -55,8 +55,8 @@ class SparkleMotionService : Service() {
 
         // Create a notification for the foreground service
         val notification = NotificationCompat.Builder(this, "ktor_http_channel")
-            .setContentTitle("Ktor HTTP Server")
-            .setContentText("Ktor HTTP Server is running")
+            .setContentTitle("Sparkle Motion")
+            .setContentText("Sparkle Motion is running")
 //            .setSmallIcon(R.drawable.ic_notification) // Use an appropriate icon
             .build()
 
