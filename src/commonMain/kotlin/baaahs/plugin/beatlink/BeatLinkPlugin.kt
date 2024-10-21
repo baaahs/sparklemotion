@@ -4,15 +4,10 @@ import baaahs.PubSub
 import baaahs.app.ui.CommonIcons
 import baaahs.gl.patch.ContentType
 import baaahs.plugin.*
-import baaahs.show.Feed
-import baaahs.show.FeedBuilder
 import baaahs.sim.BridgeClient
 import baaahs.ui.Facade
 import baaahs.ui.Observable
 import baaahs.util.Logger
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.default
 
 class BeatLinkPlugin internal constructor(
     beatSource: BeatSource,
@@ -52,17 +47,7 @@ class BeatLinkPlugin internal constructor(
             rawBeatInfoFeed.Builder()
         )
 
-    class ParserArgs(parser: ArgParser) : Args {
-        override val enableBeatLink by parser.option(ArgType.Boolean, description = "Enable beat detection")
-            .default(true)
-    }
-
-    interface Args {
-        val enableBeatLink: Boolean
-        val beatSource: BeatSource? get() = null
-    }
-
-    companion object : Plugin<Args>, SimulatorPlugin {
+    companion object : Plugin, SimulatorPlugin {
         private val logger = Logger<BeatLinkPlugin>()
 
         override val id = "baaahs.BeatLink"
@@ -70,12 +55,15 @@ class BeatLinkPlugin internal constructor(
 
         private val unknownBpm = BeatData(0.0, 500, confidence = 0f)
 
-        override fun getArgs(parser: ArgParser): Args = ParserArgs(parser)
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin {
+            val beatSource = createServerBeatSource(pluginContext)
+            return openForServer(pluginContext, beatSource)
+        }
 
-        override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin {
-            val beatSource = if (args.enableBeatLink) {
-                args.beatSource ?: createServerBeatSource(pluginContext)
-            } else BeatSource.None
+        fun openForServer(
+            pluginContext: PluginContext,
+            beatSource: BeatSource
+        ): BeatLinkPlugin {
             return BeatLinkPlugin(
                 PubSubPublisher(beatSource, pluginContext),
                 pluginContext
@@ -100,9 +88,9 @@ class BeatLinkPlugin internal constructor(
                     openForClient(pluginContext)
             }
 
-        fun forTest(beatSource: BeatSource): Plugin<Args> {
-            return object : Plugin<Args> by BeatLinkPlugin {
-                override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin =
+        fun forTest(beatSource: BeatSource): Plugin {
+            return object : Plugin by BeatLinkPlugin {
+                override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
                     BeatLinkPlugin(beatSource, pluginContext)
             }
         }

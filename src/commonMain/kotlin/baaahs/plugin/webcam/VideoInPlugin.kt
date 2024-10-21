@@ -18,7 +18,6 @@ import baaahs.util.RefCounted
 import baaahs.util.RefCounter
 import com.danielgergely.kgl.GL_LINEAR
 import com.danielgergely.kgl.GL_RGBA
-import kotlinx.cli.ArgParser
 import kotlinx.serialization.SerialName
 
 class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin, OpenClientPlugin {
@@ -110,12 +109,10 @@ class VideoInPlugin(private val videoProvider: VideoProvider) : OpenServerPlugin
         }
     }
 
-    companion object : Plugin<Any> {
+    companion object : Plugin {
         override val id: String = "baaahs.VideoIn"
 
-        override fun getArgs(parser: ArgParser): Any = Any()
-
-        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin {
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin {
             return VideoInPlugin(DefaultVideoProvider)
         }
 
