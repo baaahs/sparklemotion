@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Save test results
           command: |
-            mkdir -p build/test-results-circleci
+            mkdir -p shared/build/test-results-circleci
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} build/test-results-circleci/ \;
           when: always
 
@@ -54,7 +54,7 @@ jobs:
           path: build/test-results
 
       - store_artifacts:
-          path: build/processedResources/js/main
+          path: shared/build/processedResources/js/main
 
       - store_artifacts:
           path: build/reports
@@ -66,7 +66,7 @@ jobs:
               mkdir -p build/gh-pages/.circleci
               cp .circleci/gh-pages-config.yml build/gh-pages/.circleci/config.yml
 
-              cp -r build/dist/js/productionExecutable/* build/gh-pages
+              cp -r shared/build/dist/js/productionExecutable/* build/gh-pages
 
               # don't ignore files starting with _
               touch build/gh-pages/.nojekyll
