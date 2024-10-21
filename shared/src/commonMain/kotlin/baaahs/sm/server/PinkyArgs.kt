@@ -1,30 +1,27 @@
 package baaahs.sm.server
 
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
-import kotlinx.cli.default
-
-class PinkyArgs(parser: ArgParser) {
+interface PinkyArgs {
     // TODO: Use this.
-    val sceneName by parser.option(ArgType.String, shortName = "m")
+    val sceneName: String?
 
     // TODO: Use this.
-    val showName by parser.option(ArgType.String, "show", "s")
+    val showName: String?
 
     // TODO: Use this.
-    val switchShowAfter by parser.option(ArgType.Int, description = "Switch show after no input for x seconds")
-        .default(600)
+    val switchShowAfter: Int?
 
     // TODO: Use this.
-    val adjustShowAfter by parser.option(
-        ArgType.Int,
-        description = "Start adjusting show inputs after no input for x seconds"
-    )
+    val adjustShowAfter: Int?
 
-    val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
-        .default(false)
+    val simulateBrains: Boolean
 
     companion object {
-        val defaults: PinkyArgs = PinkyArgs(ArgParser("void"))
+        val defaults: PinkyArgs = object : PinkyArgs {
+            override val sceneName: String? = null
+            override val showName: String? = null
+            override val switchShowAfter: Int? = null
+            override val adjustShowAfter: Int? = null
+            override val simulateBrains: Boolean = false
+        }
     }
 }

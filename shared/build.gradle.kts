@@ -80,7 +80,6 @@ kotlin {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
 
             dependencies {
-                implementation(libs.kotlinxCli)
                 implementation(libs.kotlinxCoroutinesCore)
                 implementation(libs.kotlinxDatetime)
                 implementation(libs.kotlinxSerializationJson)
@@ -102,6 +101,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
+                implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
                 implementation(libs.ktorServerNetty)
                 implementation(libs.ktorServerHostCommon)
