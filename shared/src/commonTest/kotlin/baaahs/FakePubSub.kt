@@ -13,7 +13,7 @@ class FakePubSub(
     val network: FakeNetwork = FakeNetwork(0, CoroutineScope(dispatcher))
 ) : PubSub() {
     val serverNetwork = network.link("server")
-    val server = listen(serverNetwork.startHttpServer(1234), CoroutineScope(dispatcher))
+    val server = listen(serverNetwork.createHttpServer(1234), CoroutineScope(dispatcher))
     val serverLog = mutableListOf<String>()
 
     fun client(clientName: String): TestClient = TestClient(clientName)
@@ -33,7 +33,7 @@ class TestRig {
     val network = FakeNetwork(0, coroutineScope = testCoroutineScope)
 
     val serverNetwork = network.link("server")
-    val server = PubSub.listen(serverNetwork.startHttpServer(1234), testCoroutineScope)
+    val server = PubSub.listen(serverNetwork.createHttpServer(1234), testCoroutineScope)
     val serverConnections =
         arrayListOf<PubSub.ConnectionFromClient>()
             .also { list ->

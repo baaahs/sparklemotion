@@ -2,7 +2,48 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("android")
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+
+        // KGL
+        maven("https://maven.danielgergely.com/releases") {
+            content { includeGroupAndSubgroups("com.danielgergely.kgl") }
+        }
+
+        // Spek
+        maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/") {
+            content {
+                includeGroupAndSubgroups("org.spekframework")
+                includeGroupAndSubgroups("spek")
+            }
+        }
+
+        // TarsosDSP
+        maven("https://mvn.0110.be/releases") {
+            content { includeGroupAndSubgroups("be.tarsos") }
+        }
     }
 }
 
@@ -17,3 +58,4 @@ include("server")
 include("ext:three")
 include("rpc")
 include("rpc:processor")
+include("androidApp")

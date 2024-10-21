@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version Versions.kotlin
+    alias(libs.plugins.kotlinMultiplatform)
 }
 
 group = "org.baaahs"
@@ -8,17 +8,13 @@ version = "0.0.1"
 fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target:${Versions.kotlinWrappers}"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     js(IR) {
         browser()
     }
 
     sourceSets {
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(kotlinw("browser-js"))
 
