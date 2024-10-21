@@ -19,9 +19,9 @@ import baaahs.show.*
 import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableShow
+import baaahs.sm.server.PinkyArgs
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import kotlinx.cli.ArgParser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -129,7 +129,7 @@ object ShowSerializationSpec : Spek({
 })
 
 private fun buildPlugins(fakePlugin: FakePlugin.Builder) =
-    Plugins.buildForServer(Plugins.dummyContext, listOf(fakePlugin), "fake", emptyArray())
+    Plugins.buildForServer(Plugins.dummyContext, listOf(fakePlugin), PinkyArgs.defaults)
 
 private fun JsonObjectBuilder.mapTo(k: String, v: JsonElement) = put(k, v)
 
@@ -392,10 +392,8 @@ class FakePlugin(
     class Builder(
         override val id: String,
         private val feedBuilders: List<FeedBuilder<out Feed>> = emptyList()
-    ) : Plugin<Any> {
-        override fun getArgs(parser: ArgParser): Any = Unit
-
-        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
+    ) : Plugin {
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
             FakePlugin(id, "$id Plugin", feedBuilders)
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =

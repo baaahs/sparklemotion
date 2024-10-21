@@ -34,7 +34,6 @@ import baaahs.sm.brain.BrainManager
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import baaahs.util.Logger
-import kotlinx.cli.ArgParser
 import kotlinx.datetime.Instant
 import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.KSerializer
@@ -95,7 +94,7 @@ class ServerPlugins(
 ) : Plugins(pluginContext, plugins)
 
 class ClientPlugins : Plugins {
-    constructor(pluginContext: PluginContext, plugins: List<Plugin<*>>) : super(
+    constructor(pluginContext: PluginContext, plugins: List<Plugin>) : super(
         pluginContext,
         plugins.map { it.openForClient(pluginContext) }
     )
@@ -108,16 +107,15 @@ class ClientPlugins : Plugins {
 
 class SimulatorPlugins(
     private val bridgeClient: BridgeClient,
-    plugins: List<Plugin<*>>
+    plugins: List<Plugin>
 ) {
     private val simulatorPlugins: List<OpenSimulatorPlugin>
-    private var pluginsToSimulatorPlugins: List<Pair<Plugin<*>, OpenSimulatorPlugin?>>
+    private var pluginsToSimulatorPlugins: List<Pair<Plugin, OpenSimulatorPlugin?>>
 
     init {
         val forSimulator = mutableListOf<OpenSimulatorPlugin>()
 
         pluginsToSimulatorPlugins = plugins.map {
-            it as Plugin<Any>
             it to (it as? SimulatorPlugin)?.openForSimulator()
         }
         simulatorPlugins = forSimulator
@@ -127,13 +125,7 @@ class SimulatorPlugins(
         ServerPlugins(
             pluginsToSimulatorPlugins.map { (plugin, simulatorPlugin) ->
                 simulatorPlugin?.getServerPlugin(pluginContext, bridgeClient)
-                    ?: run {
-                        plugin as Plugin<Any>
-                        val parser = ArgParser("void")
-                        val args = plugin.getArgs(parser)
-//                        parser.parse(emptyArray())
-                        plugin.openForServer(pluginContext, args)
-                    }
+                    ?: plugin.openForServer(pluginContext)
             },
             pluginContext,
             PinkyArgs.defaults
@@ -414,30 +406,19 @@ sealed class Plugins(
 
         fun buildForServer(
             pluginContext: PluginContext,
-            plugins: List<Plugin<*>>,
-            programName: String,
-            startupArgs: Array<String>
+            plugins: List<Plugin>,
+            pinkyArgs: PinkyArgs
         ): ServerPlugins {
-            val parser = ArgParser(programName)
-            val pinkyArgs = PinkyArgs(parser)
-            val pluginToArgs = (listOf(CorePlugin) + plugins).map {
-                it as Plugin<Any>
-                it to it.getArgs(parser)
-            }
-
-            parser.parse(startupArgs)
-
-            val serverPlugins = pluginToArgs.map { (plugin, pluginArgs) ->
-                plugin.openForServer(pluginContext, pluginArgs)
-            }
-
+            val serverPlugins = (listOf(CorePlugin) + plugins)
+                .map { plugin -> plugin.openForServer(pluginContext) }
+            println("serverPlugins = ${serverPlugins}")
             return ServerPlugins(serverPlugins, pluginContext, pinkyArgs)
         }
 
-        fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin<*>>): ClientPlugins =
+        fun buildForClient(pluginContext: PluginContext, plugins: List<Plugin>): ClientPlugins =
             ClientPlugins(pluginContext, listOf(CorePlugin) + plugins)
 
-        fun buildForSimulator(bridgeClient: BridgeClient, plugins: List<Plugin<*>>): SimulatorPlugins =
+        fun buildForSimulator(bridgeClient: BridgeClient, plugins: List<Plugin>): SimulatorPlugins =
             SimulatorPlugins(bridgeClient, listOf(CorePlugin) + plugins)
 
         fun safe(pluginContext: PluginContext): Plugins =
