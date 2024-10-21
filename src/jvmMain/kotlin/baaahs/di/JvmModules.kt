@@ -8,6 +8,7 @@ import baaahs.io.Fs
 import baaahs.io.RealFs
 import baaahs.net.JvmNetwork
 import baaahs.net.Network
+import baaahs.plugin.Plugin
 import baaahs.plugin.Plugins
 import baaahs.plugin.ServerPlugins
 import baaahs.plugin.midi.JvmMidiSource
@@ -15,7 +16,11 @@ import baaahs.plugin.midi.MidiManager
 import baaahs.sm.brain.DirectoryDaddy
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.proto.Ports
+import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
@@ -43,7 +48,15 @@ class JvmPinkyModule(
     private val dataDir = File(System.getProperty("user.home")).toPath().resolve("sparklemotion/data")
 
     override val Scope.serverPlugins: ServerPlugins
-        get() = Plugins.buildForServer(get(), get(named(PluginsModule.Qualifier.ActivePlugins)), programName, startupArgs)
+        get() {
+            val plugins = get<List<Plugin>>(named(PluginsModule.Qualifier.ActivePlugins))
+
+            val parser = ArgParser(programName)
+            val pinkyArgs = ParserPinkyArgs(parser)
+            parser.parse(startupArgs)
+
+            return Plugins.buildForServer(get(), plugins, pinkyArgs)
+        }
     override val Scope.fs: Fs
         get() = RealFs("Sparkle Motion Data", dataDir)
     override val Scope.firmwareDir: Fs.File
@@ -69,4 +82,22 @@ class JvmPinkyModule(
         get() = MidiManager(listOf(JvmMidiSource(get())))
     override val Scope.pinkySettings: PinkySettings
         get() = PinkySettings()
+}
+
+class ParserPinkyArgs(
+    parser: ArgParser
+) : PinkyArgs {
+    override val sceneName by parser.option(ArgType.String, shortName = "m")
+
+    override val showName by parser.option(ArgType.String, "show", "s")
+
+    override val switchShowAfter by parser.option(ArgType.Int, description = "Switch show after no input for x seconds")
+
+    override val adjustShowAfter by parser.option(
+        ArgType.Int,
+        description = "Start adjusting show inputs after no input for x seconds"
+    )
+
+    override val simulateBrains by parser.option(ArgType.Boolean, description = "Simulate connected brains")
+        .default(false)
 }

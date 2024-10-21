@@ -16,7 +16,6 @@ import baaahs.show.mutable.MutableShow
 import baaahs.sim.BridgeClient
 import baaahs.ui.Icon
 import baaahs.util.Clock
-import kotlinx.cli.ArgParser
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -132,13 +131,11 @@ inline fun <reified T : Any> classSerializer(serializer: KSerializer<T>) =
 inline fun <reified T : Any> objectSerializer(serialName: String, t: T) =
     classSerializer(ObjectSerializer(serialName, t))
 
-interface Plugin<T> {
+interface Plugin {
     val id: String
 
-    fun getArgs(parser: ArgParser): T
-
     /** This plugin is used by Pinky running on JVM. */
-    fun openForServer(pluginContext: PluginContext, args: T): OpenServerPlugin
+    fun openForServer(pluginContext: PluginContext): OpenServerPlugin
 
     /** This plugin is used on the client when connected to Pinky running on JVM. */
     fun openForClient(pluginContext: PluginContext): OpenClientPlugin
