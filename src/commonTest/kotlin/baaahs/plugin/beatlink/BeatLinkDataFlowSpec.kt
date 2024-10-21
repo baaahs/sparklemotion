@@ -27,7 +27,7 @@ object BeatLinkDataFlowSpec : Spek({
             val fakeBeatSource by value { FakeBeatSource() }
             val serverContext by value { PluginContext(clock, testRig.server) }
             val serverPlugin by value {
-                BeatLinkPlugin.openForServer(serverContext, TestArgs(beatSource = fakeBeatSource))
+                BeatLinkPlugin.openForServer(serverContext, fakeBeatSource)
             }
             val serverPlugins by value { ServerPlugins(listOf(serverPlugin), serverContext, PinkyArgs.defaults) }
             val clientContext by value { PluginContext(clock, testRig.client1) }
@@ -83,8 +83,3 @@ object BeatLinkDataFlowSpec : Spek({
         }
     }
 })
-
-class TestArgs(
-    override val enableBeatLink: Boolean = true,
-    override val beatSource: BeatSource? = null
-) : BeatLinkPlugin.Args

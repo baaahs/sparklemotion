@@ -22,7 +22,6 @@ import baaahs.show.FeedOpenContext
 import baaahs.sim.BridgeClient
 import baaahs.util.*
 import com.danielgergely.kgl.*
-import kotlinx.cli.ArgParser
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
@@ -83,7 +82,7 @@ class SoundAnalysisPlugin internal constructor(
         override fun build(inputPort: InputPort): SoundAnalysisFeed = feed
     }
 
-    companion object : Plugin<Args>, SimulatorPlugin {
+    companion object : Plugin, SimulatorPlugin {
         override val id = "baaahs.SoundAnalysis"
 
         private val commandsRpc = SoundAnalysisCommands.getImpl("plugins/$id")
@@ -100,9 +99,7 @@ class SoundAnalysisPlugin internal constructor(
 
         val soundAnalysisContentType = ContentType("sound-analysis", "Sound Analysis", soundAnalysisStruct)
 
-        override fun getArgs(parser: ArgParser): Args = Args(parser)
-
-        override fun openForServer(pluginContext: PluginContext, args: Args): OpenServerPlugin {
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin {
             val soundAnalyzer = createServerSoundAnalyzer(pluginContext)
             PubSubPublisher(soundAnalyzer, pluginContext) // Yuck.
             return SoundAnalysisPlugin(soundAnalyzer)
@@ -133,10 +130,6 @@ class SoundAnalysisPlugin internal constructor(
 
     @Serializable
     class AnalysisData(val magnitudes: FloatArray, val timestamp: Time)
-
-    class Args(parser: ArgParser) {
-//        val audioInput by parser.option(ArgType.String, description = "Audio input for spectral analysys")
-    }
 
     class PubSubPublisher(
         soundAnalyzer: SoundAnalyzer,

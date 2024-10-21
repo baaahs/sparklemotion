@@ -17,7 +17,6 @@ import baaahs.plugin.*
 import baaahs.plugin.core.feed.*
 import baaahs.sm.brain.BrainManager
 import baaahs.util.Logger
-import kotlinx.cli.ArgParser
 
 class CorePlugin(
     private val pluginContext: PluginContext
@@ -105,12 +104,10 @@ class CorePlugin(
             MoverShader
         )
 
-    companion object : Plugin<Any> {
+    companion object : Plugin {
         override val id = "baaahs.Core"
 
-        override fun getArgs(parser: ArgParser): Any = Any()
-
-        override fun openForServer(pluginContext: PluginContext, args: Any): OpenServerPlugin =
+        override fun openForServer(pluginContext: PluginContext): OpenServerPlugin =
             CorePlugin(pluginContext)
 
         override fun openForClient(pluginContext: PluginContext): OpenClientPlugin =

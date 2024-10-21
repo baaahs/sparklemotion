@@ -58,7 +58,7 @@ import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
-class PluginsModule(private val plugins: List<Plugin<*>>) : KModule {
+class PluginsModule(private val plugins: List<Plugin>) : KModule {
     override fun getModule(): Module = module {
         single(named(Qualifier.ActivePlugins)) { plugins }
     }
