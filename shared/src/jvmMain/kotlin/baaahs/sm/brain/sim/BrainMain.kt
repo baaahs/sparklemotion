@@ -45,7 +45,7 @@ class BrainMain(private val args: Args) {
 //        } else {
 //            args.entityName?.let { model.findEntityByName(it) }
 //        }
-//        println("I'll be ${mySurface?.name ?: "anonymous"}!")
+//        println("I'll be ${mySurface ?: "anonymous"}!")
 //        mySurface?.let { brainSimulator.forcedFixtureName(mySurface.name) }
 
         brainSimulator.start()
