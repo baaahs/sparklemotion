@@ -9,7 +9,6 @@ import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
 import javax.jmdns.ServiceListener
-import kotlin.collections.set
 import kotlin.concurrent.thread
 
 
@@ -110,6 +109,7 @@ class JvmNetwork : Network {
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 for (broadcastAddress in broadcastAddresses) {
+                    logger.debug { "Broadcasting to $broadcastAddress:$port" }
                     val broadcastSocketAddress = InetSocketAddress(broadcastAddress, port)
                     val packetOut = DatagramPacket(bytes, 0, bytes.size, broadcastSocketAddress)
                     try {
