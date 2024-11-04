@@ -6,9 +6,10 @@ import baaahs.app.ui.UiActions
 import baaahs.client.ClientStageManager
 import baaahs.client.Notifier
 import baaahs.doc.ShowDocumentType
-import baaahs.gl.Toolchain
+import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.io.resourcesFs
+import baaahs.plugin.Plugins
 import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.ShowMonitor
@@ -25,14 +26,14 @@ import baaahs.ui.DialogMenuItem.Option
 class ShowManager(
     pubSub: PubSub.Client,
     remoteFsSerializer: RemoteFsSerializer,
-    private val toolchain: Toolchain,
+    private val plugins: Plugins,
     notifier: Notifier,
     fileDialog: IFileDialog,
     private val showMonitor: ShowMonitor,
     private val stageManager: ClientStageManager
 ) : DocumentManager<Show, ShowState>(
-    ShowDocumentType, pubSub, ShowState.createTopic(toolchain.plugins.serialModule, remoteFsSerializer),
-    remoteFsSerializer, toolchain.plugins, notifier, fileDialog, Show.serializer()
+    ShowDocumentType, pubSub, ShowState.createTopic(plugins.serialModule, remoteFsSerializer),
+    remoteFsSerializer, plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
 
@@ -61,40 +62,31 @@ class ShowManager(
             Option("Empty Show") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
-            Option("BRC 2024") {
-                makeNew { fromResources("BRC 2024.sparkle") }
-            },
-            Option("BRC 2023") {
-                makeNew { fromResources("BRC 2023.sparkle") }
-            },
-            Option("Eve Rafters") {
-                makeNew { fromResources("Eve Rafters.sparkle") }
-            },
-            Option("Pasture Bedtime") {
-                makeNew { fromResources("PastureBedtime.sparkle") }
-            },
-            Option("Sample template") {
-                makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() }
-            },
-            Option("Fancy template (old layout)") {
-                makeNew { fromResources("Honcho.sparkle") }
-            }
+            Option("BRC 2024") { makeNew { fromResources("BRC 2024.sparkle") } },
+            Option("BRC 2023") { makeNew { fromResources("BRC 2023.sparkle") } },
+            Option("Eve Rafters") { makeNew { fromResources("Eve Rafters.sparkle") } },
+            Option("Pasture Bedtime") { makeNew { fromResources("PastureBedtime.sparkle") } },
+            Option("Sample template") { makeNew { SampleData.createSampleShow(withHeadlightsMode = true).getShow() } },
+            Option("Fancy template (old layout)") { makeNew { fromResources("Honcho.sparkle") } }
         ))
     }
 
     private suspend fun fromResources(fileName: String): Show {
-        val file = resourcesFs.resolve("templates", "shows", fileName)
-        return toolchain.plugins.showStore.load(file)
+        val file = fileFromResources(fileName)
+        return plugins.showStore.load(file)
             ?.copy(title = "New ${documentType.title}")
             ?: error("Couldn't find show")
     }
 
+    private fun fileFromResources(fileName: String): Fs.File =
+        resourcesFs.resolve("templates", "shows", fileName)
+
     override suspend fun onDownload() {
-        UiActions.downloadShow(document!!, toolchain.plugins)
+        UiActions.downloadShow(document!!, plugins)
     }
 
     override suspend fun onUpload(name: String, content: String) {
-        val show = toolchain.plugins.showStore.decode(content)
+        val show = plugins.showStore.decode(content)
         onNew(show)
     }
 
