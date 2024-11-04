@@ -110,6 +110,7 @@ class JvmNetwork : Network {
 
             override fun broadcastUdp(port: Int, bytes: ByteArray) {
                 for (broadcastAddress in broadcastAddresses) {
+                    logger.warn { "Broadcasting to $broadcastAddress:$port" }
                     val broadcastSocketAddress = InetSocketAddress(broadcastAddress, port)
                     val packetOut = DatagramPacket(bytes, 0, bytes.size, broadcastSocketAddress)
                     try {

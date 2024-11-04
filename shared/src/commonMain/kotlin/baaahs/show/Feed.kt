@@ -80,6 +80,8 @@ internal fun Feed.appearsToBePurposeBuiltFor(inputPort: InputPort) =
 /**
  * Descriptor of an external feed which can be used by a shader program.
  */
+//@Serializable(with = Plugins.PluginFeedSerializer::class)
+//@Contextual
 @Polymorphic
 interface Feed {
     val pluginPackage: String

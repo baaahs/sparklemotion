@@ -99,10 +99,11 @@ class BrainSimulator(
 
     private suspend fun sendHello() {
         while (keepRunning) {
+            logger.warn { "sendHellow?" }
             val elapsedSinceMessage = lastInstructionsReceivedAt?.let { clock.now() - it }
             if (elapsedSinceMessage == null || elapsedSinceMessage > 100.seconds) {
                 if (elapsedSinceMessage != null) {
-                    logger.info { "[$id] haven't heard from Pinky in ${elapsedSinceMessage}s" }
+                    logger.warn { "[$id] haven't heard from Pinky in ${elapsedSinceMessage}s" }
                 }
                 udpSocket.broadcastUdp(
                     Ports.PINKY,

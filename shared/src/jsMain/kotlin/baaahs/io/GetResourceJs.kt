@@ -34,5 +34,6 @@ actual suspend fun getResourceAsync(name: String): String = suspendCoroutine { c
     }
 
     xhr.open("GET", url, true)
+    println("GET $url ...")
     xhr.send()
 }

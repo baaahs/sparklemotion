@@ -52,6 +52,25 @@ kotlin {
 
     androidTarget {}
 
+    listOf(
+        iosArm64(),
+        iosX64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "SparkleMotionApp"
+            isStatic = true
+
+            freeCompilerArgs += listOf(
+                "-Xembed-bitcode",
+                "-Xembed-resources"
+            )
+        }
+    }
+
+//    cocoapods {
+//    }
+
     sourceSets {
         commonMain {
             kotlin.srcDirs(file(project.layout.buildDirectory.file("generated/ksp/metadata/commonMain/kotlin").get()))
@@ -206,6 +225,27 @@ kotlin {
             }
         }
 
+        iosMain {
+            dependencies {
+                implementation(libs.kglIos)
+                implementation(libs.koinCore)
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerHostCommon)
+//                implementation(libs.ktorServerCallLogging)
+                implementation(libs.ktorServerWebsockets)
+            }
+
+            resources.srcDirs("src/iosMain/resources",
+//                rootProject.file("shared/src/jsMain/resources"),
+//                rootProject.file("shared/src/commonMain/resources"),
+                rootProject.file("shared/build/processedResources/js/main"),
+                rootProject.file("shared/build/kotlin-webpack/js/developmentExecutable")
+            )
+        }
+//        iosTest {
+//        }
+
         sourceSets.all {
             languageSettings.apply {
                 progressiveMode = true
@@ -281,8 +321,22 @@ tasks.named<ProcessResources>("jvmProcessResources") {
     }
 }
 
-afterEvaluate {
+tasks.create<ProcessResources>("iosProcessResources") {
     val jsTask = tasks.named<ProcessResources>("jsProcessResources")
+    dependsOn(jsTask)
+    destinationDir = buildDir("processedResources/ios/main")
+
+    from(jsTask.map { it.destinationDir }) {
+        into("htdocs")
+    }
+
+    doLast {
+        createResourceFilesList(buildDir("processedResources/ios/main"))
+    }
+}
+
+afterEvaluate {
+    val jsProcessResourcesTask = tasks.named<ProcessResources>("jsProcessResources")
 
     val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
         "jsBrowserProductionWebpack"
@@ -294,10 +348,10 @@ afterEvaluate {
     val webpackTask = tasks.named<KotlinWebpack>(taskName)
 
     tasks.named<KotlinCompile>("compileDebugKotlinAndroid") {
-        dependsOn(jsTask)
+        dependsOn(jsProcessResourcesTask)
         dependsOn(webpackTask)
 
-        jsTask.map { it.destinationDir }.get().let {
+        jsProcessResourcesTask.map { it.destinationDir }.get().let {
             println("jsTask: $it")
         }
         webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }.get().get().let {
@@ -308,6 +362,23 @@ afterEvaluate {
 //            into("htdocs")
 //        }
     }
+
+    tasks.named("embedAndSignAppleFrameworkForXcode") {
+        println("iOS == ${this::class.java.name}")
+
+        dependsOn(jsProcessResourcesTask)
+        dependsOn(webpackTask)
+        dependsOn("iosProcessResources")
+
+        jsProcessResourcesTask.map { it.destinationDir }.get().let {
+            println("iOS: jsTask: $it")
+        }
+        webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }.get().get().let {
+            println("iOS: webpackTask: $it")
+        }
+    }
+
+    tasks.getByName("build").dependsOn("packForXcode")
 }
 
 tasks.named<DokkaTask>("dokkaHtml") {
