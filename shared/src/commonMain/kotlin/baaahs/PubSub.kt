@@ -495,7 +495,14 @@ abstract class PubSub {
             commandPort: CommandPort<C, R>,
             callback: suspend (command: C) -> R
         ) {
-            commandChannels.listen(commandPort, callback)
+            commandChannels.listen(commandPort) {
+                try {
+                    callback(it)
+                } catch (e: Exception) {
+                    logger.error(e) { "Error in remote command invocation (${commandPort.name})." }
+                    throw e
+                }
+            }
         }
     }
 

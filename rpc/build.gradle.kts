@@ -11,6 +11,10 @@ kotlin {
         browser()
     }
 
+    iosArm64()
+    iosX64()
+    iosSimulatorArm64()
+
     explicitApi()
 
     sourceSets {
