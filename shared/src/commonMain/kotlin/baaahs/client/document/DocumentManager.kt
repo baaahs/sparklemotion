@@ -17,15 +17,16 @@ import kotlinx.serialization.modules.SerializersModule
 
 abstract class DocumentManager<T, TState>(
     val documentType: DocumentType,
-    private val pubSub: PubSub.Client,
+    pubSub: PubSub.Client,
     topic: PubSub.Topic<DocumentState<T, TState>?>,
     private val remoteFsSerializer: RemoteFsSerializer,
     private val plugins: Plugins,
     private val notifier: Notifier,
     private val fileDialog: IFileDialog,
-    private val tSerializer: KSerializer<T>
+    tSerializer: KSerializer<T>
 ) {
     abstract val facade: Facade
+    abstract val documentTitle: String?
 
     private val fileType: FileType get() = documentType.fileType
 
@@ -102,7 +103,7 @@ abstract class DocumentManager<T, TState>(
     }
 
     suspend fun onSaveAs() {
-        fileDialog.saveAs(fileType, file)
+        fileDialog.saveAs(fileType, file, documentTitle)
             ?.withExtension(fileType.extension)
             ?.also { serverCommands.saveAs(it) }
     }
