@@ -49,10 +49,6 @@ repositories {
 group = "org.baaahs"
 version = "0.0.1"
 
-configurations {
-    create("jni")
-}
-
 fun kotlinw(target: String): String =
     "org.jetbrains.kotlin-wrappers:kotlin-$target"
 
