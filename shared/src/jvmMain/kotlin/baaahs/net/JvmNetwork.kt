@@ -2,14 +2,9 @@ package baaahs.net
 
 import baaahs.util.Logger
 import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.websocket.*
 import kotlinx.coroutines.*
 import java.io.IOException
 import java.net.*
-import java.time.Duration
 import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo
@@ -131,20 +126,8 @@ class JvmNetwork : Network {
         }
 
         override fun createHttpServer(port: Int): KtorHttpServer {
-            val httpServer = embeddedServer(Netty, port, configure = {
-                // Let's give brains lots of time for OTA download:
-                responseWriteTimeoutSeconds = 3000
-            }) {
-                install(WebSockets) {
-                    pingPeriod = Duration.ofSeconds(15)
-                    timeout = Duration.ofSeconds(15)
-                    maxFrameSize = Long.MAX_VALUE
-                    masking = false
-                }
-            }
-
-            return KtorHttpServer(httpServer, this, port)
-                .also { httpServer.start(false) }
+            return KtorHttpServer(link, port)
+                .also { it.httpServer.start(false) }
         }
 
         override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {

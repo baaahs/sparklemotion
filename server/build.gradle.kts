@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(projects.shared)
+    implementation(libs.kotlinxCoroutinesCore)
 }
 
 val isProductionBuild = project.hasProperty("isProduction")

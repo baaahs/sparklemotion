@@ -4,11 +4,16 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.engine.ApplicationEngine
+import io.ktor.server.application.install
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.server.request.host
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.pingPeriod
+import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
@@ -17,17 +22,31 @@ import io.ktor.websocket.readBytes
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
+import java.time.Duration
 
 class KtorHttpServer(
-    internal val appEngine: ApplicationEngine,
     private val link: Network.Link,
     private val port: Int
 ) : Network.HttpServer {
+    val httpServer = embeddedServer(Netty, port, configure = {
+        // Let's give brains lots of time for OTA download:
+        responseWriteTimeoutSeconds = 3000
+    }) {
+        install(WebSockets) {
+            pingPeriod = Duration.ofSeconds(15)
+            timeout = Duration.ofSeconds(15)
+            maxFrameSize = Long.MAX_VALUE
+            masking = false
+        }
+    }
+
+    val application: Application get() = httpServer.application
+
     override fun listenWebSocket(
         path: String,
         onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
     ) {
-        appEngine.application.routing {
+        application.routing {
             webSocket(path) {
                 val tcpConnection = object : Network.TcpConnection {
                     override val fromAddress: Network.Address
@@ -88,7 +107,7 @@ class KtorHttpServer(
     }
 
     override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
-        appEngine.application.routing {
+        application.routing {
             val route = this
             val routing = object : Network.HttpServer.HttpRouting {
                 override fun get(
@@ -112,6 +131,6 @@ class KtorHttpServer(
     }
 
     override fun start() {
-        appEngine.start()
+        httpServer.start()
     }
 }

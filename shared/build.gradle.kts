@@ -1,4 +1,3 @@
-import com.android.tools.r8.internal.we
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.dsl.JsSourceMapEmbedMode
@@ -283,32 +282,24 @@ tasks.named<ProcessResources>("jvmProcessResources") {
 }
 
 afterEvaluate {
+    val jsTask = tasks.named<ProcessResources>("jsProcessResources")
+
+    val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
+        "jsBrowserProductionWebpack"
+    } else {
+        "jsBrowserDevelopmentWebpack"
+    }
+
+    // bring output file along into the JAR
+    val webpackTask = tasks.named<KotlinWebpack>(taskName)
+
     tasks.named<KotlinCompile>("compileDebugKotlinAndroid") {
-        println("android == ${this::class.java.name}")
-        val jsTask = tasks.named<ProcessResources>("jsProcessResources")
         dependsOn(jsTask)
+        dependsOn(webpackTask)
 
         jsTask.map { it.destinationDir }.get().let {
             println("jsTask: $it")
         }
-//        from(jsTask.map { it.destinationDir }) {
-//            into("htdocs")
-//        }
-//
-//        doLast {
-//            createResourceFilesList(buildDir("processedResources/jvm/main"))
-//        }
-
-
-        val taskName = if (isProductionBuild || project.gradle.startParameter.taskNames.contains("installDist")) {
-            "jsBrowserProductionWebpack"
-        } else {
-            "jsBrowserDevelopmentWebpack"
-        }
-
-        // bring output file along into the JAR
-        val webpackTask = tasks.named<KotlinWebpack>(taskName)
-        dependsOn(webpackTask)
         webpackTask.map { it.outputDirectory.file(it.mainOutputFileName) }.get().get().let {
             println("webpackTask: $it")
         }
