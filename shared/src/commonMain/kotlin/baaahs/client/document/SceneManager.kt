@@ -30,6 +30,7 @@ class SceneManager(
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), IObservable by Observable() {
     override val facade = Facade()
+    override val documentTitle get() = document?.title
 
     private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
@@ -49,13 +50,13 @@ class SceneManager(
             Option("Empty Scene") { makeNew { null } },
             Divider,
             DialogMenuItem.Header("From Template:"),
-            Option("BAAAHS") { makeNew { sceneFromResources("BAAAHS.scene") } },
-            Option("BAAAHS 2023") { makeNew { sceneFromResources("BAAAHS 2023.scene") } },
+            Option("BAAAHS") { makeNew { fromResources("BAAAHS.scene") } },
+            Option("BAAAHS 2023") { makeNew { fromResources("BAAAHS 2023.scene") } },
 //            Option("Demo") { makeNew { sceneFromResources("Demo.scene") } },
-            Option("Club Six") { makeNew { sceneFromResources("ClubSix.scene") } },
-            Option("Hi-Res") { makeNew { sceneFromResources("Hi-Res.scene") } },
-            Option("Honcho") { makeNew { sceneFromResources("Honcho.scene") } },
-            Option("Playa2021") { makeNew { sceneFromResources("Playa2021.scene") } }
+            Option("Club Six") { makeNew { fromResources("ClubSix.scene") } },
+            Option("Hi-Res") { makeNew { fromResources("Hi-Res.scene") } },
+            Option("Honcho") { makeNew { fromResources("Honcho.scene") } },
+            Option("Playa2021") { makeNew { fromResources("Playa2021.scene") } }
         ))
     }
 
@@ -74,10 +75,10 @@ class SceneManager(
             }.build()
     }
 
-    private suspend fun sceneFromResources(fileName: String): Scene {
+    private suspend fun fromResources(fileName: String): Scene {
         val file = fileFromResources(fileName)
         return plugins.sceneStore.load(file)?.let {
-            it.copy(model = it.model.copy(title = "New Scene"))
+            it.copy(model = it.model.copy(title = "${it.model.title} Copy"))
         } ?: error("Couldn't find scene")
     }
 

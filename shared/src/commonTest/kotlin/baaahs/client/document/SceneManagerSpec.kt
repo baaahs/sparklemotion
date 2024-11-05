@@ -88,9 +88,9 @@ object SceneManagerSpec : Spek({
 })
 
 class FakeFileDialog : IFileDialog {
-    override suspend fun open(fileType: FileType, defaultTarget: Fs.File?, title: String?): Fs.File? =
+    override suspend fun open(fileType: FileType, defaultFile: Fs.File?): Fs.File? =
         TODO("not implemented")
-    override suspend fun saveAs(fileType: FileType, defaultTarget: Fs.File?, title: String?): Fs.File? =
+    override suspend fun saveAs(fileType: FileType, defaultFile: Fs.File?, defaultFileName: String?): Fs.File? =
         TODO("not implemented")
     override suspend fun onSelect(file: Fs.File): Unit =
         TODO("not implemented")
