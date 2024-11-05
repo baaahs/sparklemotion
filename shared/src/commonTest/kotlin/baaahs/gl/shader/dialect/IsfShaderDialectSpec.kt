@@ -185,7 +185,7 @@ object IsfShaderDialectSpec : Spek({
                 it("fails to validate") {
                     expect(shaderAnalysis.isValid).toBe(false)
                     expect(shaderAnalysis.errors).containsExactly(
-                        GlslError("Unexpected JSON token at offset 2: Expected quotation mark '\"', but had '\"' instead at path: \$\n" +
+                        GlslError("Unexpected JSON token at offset 7: Expected quotation mark '\"', but had ' ' instead at path: \$\n" +
                                 "JSON input: { \"DESC }", 1)
                     )
                 }
