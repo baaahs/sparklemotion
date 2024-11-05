@@ -30,6 +30,7 @@ class SceneManager(
     remoteFsSerializer, plugins, notifier, fileDialog, Scene.serializer()
 ), IObservable by Observable() {
     override val facade = Facade()
+    override val documentTitle get() = document?.title
 
     private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
@@ -77,7 +78,7 @@ class SceneManager(
     private suspend fun fromResources(fileName: String): Scene {
         val file = fileFromResources(fileName)
         return plugins.sceneStore.load(file)?.let {
-            it.copy(model = it.model.copy(title = "New Scene"))
+            it.copy(model = it.model.copy(title = "${it.model.title} Copy"))
         } ?: error("Couldn't find scene")
     }
 

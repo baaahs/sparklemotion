@@ -31,13 +31,16 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
 
     val dialogEl = useRef(null)
     var filesInDir by state { emptyList<FileDisplay>() }
-    var selectedFile by state { request?.defaultTarget }
-    val isSaveAs = request?.isSaveAs ?: false
+    val defaultFile = request?.defaultFile
+        ?: request?.defaultFileName?.let { fsRoot?.resolve(it) }
+    var selectedFile by state { defaultFile }
+    val isSaveAs = request?.isSaveAs == true
 
-    onChange("default target", request?.defaultTarget) {
-        request?.defaultTarget?.let {
+    onChange("default file", defaultFile) {
+        defaultFile?.let {
             val job = globalLaunch {
                 currentDir = if (it.isDir()) it else it.parent!!
+                if (!it.isDir()) selectedFile = it
             }
             withCleanup {
                 job.cancel()
@@ -104,7 +107,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
             selectedFile = null
             val job = globalLaunch {
                 filesInDir = currentDir.listFiles()
-                    .sortedWith(compareBy({ !(it.isDirectory ?: false) }, { it.name }))
+                    .sortedWith(compareBy({ it.isDirectory != true }, { it.name }))
                     .map { file ->
                         val icon = if (file.isDirectory == true) Folder else InsertDriveFile
                         FileDisplay(file, file.name, jsIcon(icon), file.name.startsWith("."))
@@ -167,7 +170,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
             maxWidth = Breakpoint.md
         }
 
-        DialogTitle { +request.title }
+        DialogTitle { +request.dialogTitle }
 
         DialogContent {
             Breadcrumbs {
@@ -216,7 +219,8 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                     attrs.margin = FormControlMargin.normal
                     attrs.onChange = handleFileNameChange
                     attrs.onKeyDown = handleTextFieldKeyDown
-                    attrs.value = selectedFile?.name ?: request.defaultTarget?.name ?: ""
+                    attrs.value = selectedFile?.name
+                        ?: request.defaultFile?.name ?: ""
                     attrs.sx { marginTop = 1.em }
                 }
             }
@@ -230,7 +234,7 @@ private val FileDialogView = xComponent<Props>("FileDialog") { props ->
                 }
                 Button {
                     +if (isSaveAs) "Save" else "Open"
-                    attrs.disabled = selectedFile == null
+                    attrs.disabled = selectedFile == null && defaultFile == null
                     attrs.onClick = handleConfirm
                 }
             }

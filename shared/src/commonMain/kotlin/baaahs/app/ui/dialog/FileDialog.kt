@@ -13,16 +13,16 @@ class FileDialog : Observable(), IFileDialog {
 
     private val channel: Channel<Fs.File?> = Channel(Channel.RENDEZVOUS)
 
-    override suspend fun open(fileType: FileType, defaultTarget: Fs.File?, title: String?): Fs.File? {
+    override suspend fun open(fileType: FileType, defaultFile: Fs.File?): Fs.File? {
         if (fileRequest != null) error("File dialog already open!")
-        fileRequest = FileRequest(title, false, fileType, defaultTarget)
+        fileRequest = FileRequest(isSaveAs = false, fileType, defaultFile = defaultFile)
         notifyChanged()
         return channel.receive()
     }
 
-    override suspend fun saveAs(fileType: FileType, defaultTarget: Fs.File?, title: String?): Fs.File? {
+    override suspend fun saveAs(fileType: FileType, defaultFile: Fs.File?, defaultFileName: String?): Fs.File? {
         if (fileRequest != null) error("File dialog already open!")
-        fileRequest = FileRequest(title, true, fileType, defaultTarget)
+        fileRequest = FileRequest(isSaveAs = true, fileType, defaultFile, defaultFileName)
         notifyChanged()
         return channel.receive()
     }
@@ -43,12 +43,13 @@ class FileDialog : Observable(), IFileDialog {
         fileRequest?.fileType?.adjustFileDisplay(fileDisplay) ?: fileDisplay
 
     class FileRequest(
-        title: String?,
         val isSaveAs: Boolean = false,
         val fileType: FileType = FileType.Any,
-        val defaultTarget: Fs.File? = null
+        val defaultFile: Fs.File? = null,
+        val defaultFileName: String? = null,
+        dialogTitle: String? = null
     ) {
-        val title = title
+        val dialogTitle = dialogTitle
             ?: if (isSaveAs) "Save ${fileType.title} As…" else "Open ${fileType.title}…"
     }
 }

@@ -36,6 +36,7 @@ class ShowManager(
     remoteFsSerializer, plugins, notifier, fileDialog, Show.serializer()
 ) {
     override val facade = Facade()
+    override val documentTitle get() = document?.title
 
     private var openShow: OpenShow? = null
 
@@ -73,9 +74,9 @@ class ShowManager(
 
     private suspend fun fromResources(fileName: String): Show {
         val file = fileFromResources(fileName)
-        return plugins.showStore.load(file)
-            ?.copy(title = "New ${documentType.title}")
-            ?: error("Couldn't find show")
+        return plugins.showStore.load(file)?.let {
+            it.copy(title = "${it.title} Copy")
+        } ?: error("Couldn't find show")
     }
 
     private fun fileFromResources(fileName: String): Fs.File =
