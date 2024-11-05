@@ -138,6 +138,7 @@ kotlin {
 
         jsMain {
             dependencies {
+                implementation(libs.kotlinxCoroutinesCore)
                 implementation(libs.kotlinxHtmlJs)
 
                 implementation(libs.kglJs)
@@ -197,7 +198,7 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", projects.rpc.processor)
+    kspCommonMainMetadata(projects.rpc.processor)
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
