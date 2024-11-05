@@ -11,10 +11,11 @@ class KoinLogger : Logger(
     @Suppress("RemoveRedundantQualifierName")
     private val logger = baaahs.util.Logger<Koin>()
 
-    override fun log(level: Level, msg: MESSAGE) {
+    override fun display(level: Level, msg: MESSAGE) {
         when (level) {
             Level.DEBUG -> logger.debug { msg }
             Level.INFO -> logger.info { msg }
+            Level.WARNING -> logger.warn { msg }
             Level.ERROR -> logger.error { msg }
             Level.NONE -> {}
         }
