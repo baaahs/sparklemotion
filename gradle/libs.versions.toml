@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.21"
-coroutines = "1.7.2"
+coroutines = "1.9.0"
 serializationRuntime = "1.6.3"
 koin = "3.5.3"
 ksp = "2.0.21-1.0.26"
