@@ -10,7 +10,7 @@ kgl = "0.6.2"
 lwjgl = "3.3.1"
 
 # JVM:
-ktor = "2.3.2"
+ktor = "2.3.12"
 
 tarsosDsp = "2.5"
 
