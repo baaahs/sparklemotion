@@ -1,12 +1,14 @@
 package baaahs.net
 
+import baaahs.net.AndroidNetwork.Companion.logger
+import baaahs.net.AndroidNetwork.Companion.networkScope
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import io.ktor.server.request.host
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
@@ -25,12 +27,12 @@ import java.nio.ByteBuffer
 import java.time.Duration
 
 class KtorHttpServer(
+    val port: Int,
     private val link: Network.Link,
-    private val port: Int
 ) : Network.HttpServer {
-    val httpServer = embeddedServer(Netty, port, configure = {
+    val httpServer = embeddedServer(CIO, port, configure = {
         // Let's give brains lots of time for OTA download:
-        responseWriteTimeoutSeconds = 3000
+//                responseWriteTimeoutSeconds = 3000
     }) {
         install(WebSockets) {
             pingPeriod = Duration.ofSeconds(15)
@@ -46,7 +48,7 @@ class KtorHttpServer(
         path: String,
         onConnect: (incomingConnection: Network.TcpConnection) -> Network.WebSocketListener
     ) {
-        application.routing {
+        httpServer.application.routing {
             webSocket(path) {
                 val tcpConnection = object : Network.TcpConnection {
                     override val fromAddress: Network.Address
@@ -58,20 +60,20 @@ class KtorHttpServer(
 
                     override fun send(bytes: ByteArray) {
                         val frame = Frame.Binary(true, ByteBuffer.wrap(bytes.clone()))
-                        JvmNetwork.Companion.networkScope.launch {
+                        networkScope.launch {
                             this@webSocket.send(frame)
                             this@webSocket.flush()
                         }
                     }
 
                     override fun close() {
-                        JvmNetwork.Companion.networkScope.launch {
+                        networkScope.launch {
                             this@webSocket.close()
                         }
                     }
                 }
 
-                JvmNetwork.Companion.logger.info { "Connection from ${this.call.request.host()}…" }
+                logger.info { "Connection from ${this.call.request.host()}…" }
                 val webSocketListener = onConnect(tcpConnection)
                 webSocketListener.connected(tcpConnection)
 
@@ -82,15 +84,17 @@ class KtorHttpServer(
                             val bytes = frame.readBytes()
                             webSocketListener.receive(tcpConnection, bytes)
                         } else {
-                            JvmNetwork.Companion.logger.warn { "wait huh? received weird data: $frame" }
+                            logger.warn { "wait huh? received weird data: $frame" }
                         }
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    JvmNetwork.Companion.logger.info { "Websocket closed." }
-                    close(CloseReason(CloseReason.Codes.NORMAL, "Closed."))
+                    logger.info { "Websocket closed." }
+                    close(CloseReason(
+                        CloseReason.Codes.NORMAL, "Closed."))
                 } catch (e: Exception) {
-                    JvmNetwork.Companion.logger.error(e) { "Error reading websocket frame." }
-                    close(CloseReason(CloseReason.Codes.INTERNAL_ERROR, "Internal error: ${e.message}"))
+                    logger.error(e) { "Error reading websocket frame." }
+                    close(CloseReason(
+                        CloseReason.Codes.INTERNAL_ERROR, "Internal error: ${e.message}"))
                 } finally {
                     webSocketListener.reset(tcpConnection)
                 }
@@ -98,9 +102,9 @@ class KtorHttpServer(
 
             webSocket("/sm/udpProxy") {
                 try {
-                    JvmUdpProxy().handle(this)
+                    AndroidUdpProxy().handle(this)
                 } catch (e: Exception) {
-                    JvmNetwork.Companion.logger.error(e) { "Error handling UDP proxy." }
+                    logger.error(e) { "Error handling UDP proxy." }
                 }
             }
         }

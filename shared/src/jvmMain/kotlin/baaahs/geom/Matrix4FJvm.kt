@@ -72,7 +72,7 @@ actual class Matrix4F(private val nativeMatrix: NativeMatrix4FC) {
         require(det != 0.0f) { "Matrix is not invertible (determinant is zero)" }
 
         val invElements = FloatArray(16)
-	val m = elements
+        val m = elements
 
         // Inverse calculation logic here...
         // This code snippet assumes a row-major order for the matrix elements.
