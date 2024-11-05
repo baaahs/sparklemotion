@@ -5,7 +5,7 @@ object Versions {
 
     const val lwjgl = "3.3.1"
 
-    const val kotlinWrappers = "1.0.0-pre.804"
+    const val kotlinWrappers = "1.0.0-pre.816"
 
     // Test:
     const val junit = "5.8.1"
