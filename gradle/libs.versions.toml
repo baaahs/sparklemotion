@@ -1,16 +1,16 @@
 [versions]
-kotlin = "2.0.20"
-coroutines = "1.7.2"
-serializationRuntime = "1.5.1"
-koin = "3.1.3"
-ksp = "2.0.20-1.0.25"
+kotlin = "2.0.21"
+coroutines = "1.9.0"
+serializationRuntime = "1.6.3"
+koin = "3.5.3"
+ksp = "2.0.21-1.0.26"
 dokka = "1.7.10"
 kgl = "0.6.2"
 #jogl = "2.3.2"
 lwjgl = "3.3.1"
 
 # JVM:
-ktor = "2.3.2"
+ktor = "2.3.12"
 
 tarsosDsp = "2.5"
 
