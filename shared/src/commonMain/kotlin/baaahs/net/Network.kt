@@ -1,5 +1,6 @@
 package baaahs.net
 
+import baaahs.io.Fs.File
 import baaahs.sm.brain.proto.Message
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -134,7 +135,14 @@ interface Network {
         }
 
         interface HttpRouting {
-            fun get(path: String, handler: (HttpRequest) -> HttpResponse)
+            fun get(path: String, handler: suspend HttpHandling.() -> Unit)
+            fun staticResources(path: String, basePackage: String)
+            fun staticFiles(path: String, dir: File)
+        }
+
+        interface HttpHandling {
+            suspend fun redirect(path: String)
+            suspend fun respondWithResource(path: String, resourcePackage: String)
         }
     }
 

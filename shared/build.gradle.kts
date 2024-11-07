@@ -377,8 +377,6 @@ afterEvaluate {
             println("iOS: webpackTask: $it")
         }
     }
-
-    tasks.getByName("build").dependsOn("packForXcode")
 }
 
 tasks.named<DokkaTask>("dokkaHtml") {
