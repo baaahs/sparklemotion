@@ -23,7 +23,12 @@ class DataStore<T : Any>(
         plugins.json.decodeFromJsonElement(migrator.Migrate(fileName), content)
 
     suspend fun load(file: Fs.File): T? =
-        file.read()?.let { decode(it, file.toString()) }
+        file.read()?.let {
+            println("Loading ${file.fullPath} with ${migrator::class.simpleName}:")
+            println(it)
+            println("------")
+            decode(it, file.toString())
+        }
 
     fun encode(content: T) =
         plugins.json.encodeToString(migrator.Migrate(), content)
