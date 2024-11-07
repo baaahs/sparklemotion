@@ -84,7 +84,7 @@ class SceneManager(
         val file = fileFromResources(fileName)
         return plugins.sceneStore.load(file)?.let {
             it.copy(model = it.model.copy(title = "${it.model.title} Copy"))
-        } ?: error("Couldn't find scene")
+        } ?: error("Couldn't find scene \"$fileName\".")
     }
 
     private fun fileFromResources(fileName: String): Fs.File =

@@ -8,7 +8,7 @@ import baaahs.plugin.webcam.VideoInPlugin
 object Pluggables {
     val plugins = listOf<Plugin>(
         BeatLinkPlugin,
-//        SoundAnalysisPlugin,
+        SoundAnalysisPlugin,
 //        VideoInPlugin,
     )
 }

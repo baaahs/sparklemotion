@@ -81,7 +81,7 @@ class ShowManager(
         val file = fileFromResources(fileName)
         return plugins.showStore.load(file)?.let {
             it.copy(title = "${it.title} Copy")
-        } ?: error("Couldn't find show")
+        } ?: error("Couldn't find show \"$fileName\".")
     }
 
     private fun fileFromResources(fileName: String): Fs.File =

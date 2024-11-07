@@ -427,3 +427,30 @@ data class AudioInput(
 )
 
 internal expect fun createServerSoundAnalyzer(pluginContext: PluginContext): SoundAnalyzer
+
+class StubSoundAnalyzer : SoundAnalyzer {
+    override val currentAudioInput: AudioInput?
+        get() = null
+
+    override fun listAudioInputs(): List<AudioInput> = emptyList()
+
+    override suspend fun switchTo(audioInput: AudioInput?) {
+    }
+
+    override fun listen(analysisListener: SoundAnalyzer.AnalysisListener): SoundAnalyzer.AnalysisListener {
+        return object : SoundAnalyzer.AnalysisListener {
+            override fun onSample(analysis: SoundAnalyzer.Analysis) {
+                analysisListener.onSample(analysis)
+            }
+        }
+    }
+
+    override fun unlisten(analysisListener: SoundAnalyzer.AnalysisListener) {
+    }
+
+    override fun listen(inputsListener: SoundAnalyzer.InputsListener): SoundAnalyzer.InputsListener =
+        inputsListener
+
+    override fun unlisten(inputsListener: SoundAnalyzer.InputsListener) {
+    }
+}
