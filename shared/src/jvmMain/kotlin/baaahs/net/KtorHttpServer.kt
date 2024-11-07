@@ -1,14 +1,21 @@
 package baaahs.net
 
-import io.ktor.http.ContentType
+import baaahs.io.Fs
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.resolveResource
+import io.ktor.server.http.content.staticFiles
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.request.host
-import io.ktor.server.response.respondBytes
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
@@ -21,6 +28,7 @@ import io.ktor.websocket.close
 import io.ktor.websocket.readBytes
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
+import java.io.File
 import java.nio.ByteBuffer
 import java.time.Duration
 
@@ -108,25 +116,44 @@ class KtorHttpServer(
 
     override fun routing(config: Network.HttpServer.HttpRouting.() -> Unit) {
         application.routing {
-            val route = this
-            val routing = object : Network.HttpServer.HttpRouting {
-                override fun get(
-                    path: String,
-                    handler: (Network.HttpServer.HttpRequest) -> Network.HttpResponse
-                ) {
-                    route.get(path) {
-                        val response = handler.invoke(object : Network.HttpServer.HttpRequest {
-                            override fun param(name: String): String? = call.parameters[name]
-                        })
-                        call.respondBytes(
-                            response.body,
-                            ContentType.parse(response.contentType),
-                            HttpStatusCode.fromValue(response.statusCode)
-                        )
-                    }
-                }
-            }
+            val routing = KtorHttpRouting(this)
             config.invoke(routing)
+        }
+    }
+
+    class KtorHttpRouting(
+        val routing: Routing
+    ) : Network.HttpServer.HttpRouting {
+
+        override fun get(
+            path: String,
+            handler: suspend Network.HttpServer.HttpHandling.() -> Unit
+        ) {
+            routing.get(path) {
+                handler.invoke(KtorHttpHandling(call))
+            }
+        }
+
+        override fun staticResources(path: String, basePackage: String) {
+            routing.staticResources(path, basePackage)
+        }
+
+        override fun staticFiles(path: String, dir: Fs.File) {
+            routing.staticFiles(path, File(dir.fullPath))
+        }
+
+        class KtorHttpHandling(
+            val call: ApplicationCall
+        ) : Network.HttpServer.HttpHandling {
+            override suspend fun redirect(path: String) {
+                call.respondRedirect(path)
+            }
+
+            override suspend fun respondWithResource(path: String, resourcePackage: String) {
+                val file = call.resolveResource(path, resourcePackage)
+                if (file is OutgoingContent)
+                    call.respond(HttpStatusCode.OK, file)
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package baaahs.client
 import baaahs.PubSub
 import baaahs.sm.webapi.ServerNotice
 import baaahs.sm.webapi.Topics
+import baaahs.util.Logger
 import baaahs.util.globalLaunch
 
 class Notifier(
@@ -41,9 +42,11 @@ class Notifier(
 
         fun launchAndReportErrors(block: suspend () -> Unit) {
             globalLaunch {
+                println("ZZZ launchAndReportErrors")
                 try {
                     block()
                 } catch (e: Exception) {
+                    logger.error(e) { "Error in launchAndReportErrors." }
                     clientError = ServerNotice(
                         "Command Failed",
                         e.message,
@@ -54,5 +57,9 @@ class Notifier(
                 }
             }
         }
+    }
+
+    companion object {
+        private val logger = Logger<Notifier>()
     }
 }

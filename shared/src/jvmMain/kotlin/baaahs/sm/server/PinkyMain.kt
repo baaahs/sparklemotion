@@ -8,20 +8,13 @@ import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
-import baaahs.net.JvmNetwork
 import baaahs.net.KtorHttpServer
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import baaahs.util.SystemClock
-import io.ktor.http.*
-import io.ktor.http.content.*
 import io.ktor.server.application.*
-import io.ktor.server.http.content.*
 import io.ktor.server.plugins.callloging.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -89,25 +82,20 @@ class PinkyMain(private val args: Array<String>) {
         val dataDir = pinkyScope.get<Fs>().resolve(".")
         val firmwareDir = pinkyScope.get<Fs.File>(named("firmwareDir"))
 
-        ktor.application.routing {
-            get("") { call.respondRedirect("/ui/") }
-            get("monitor") { call.respondRedirect("/monitor/") }
-            get("midi") { call.respondRedirect("midi/") }
-            get("ui") { call.respondRedirect("/ui/") }
+        ktor.routing {
+            get("") { redirect("/ui/") }
+            get("monitor") { redirect("/monitor/") }
+            get("midi") { redirect("midi/") }
+            get("ui") { redirect("/ui/") }
 
             staticResources("", "htdocs")
-            get("ui/") { respondWith("ui/index.html", "htdocs") }
-            get("monitor/") { respondWith("monitor/index.html", "htdocs") }
+            get("ui/") { respondWithResource("ui/index.html", "htdocs") }
+            get("monitor/") { respondWithResource("monitor/index.html", "htdocs") }
 
-            staticFiles("/data/", dataDir.asPath().toFile())
-            staticFiles("/fw/", firmwareDir.asPath().toFile())
+            staticFiles("/data/", dataDir)
+            staticFiles("/fw/", firmwareDir)
         }
-    }
-
-    private suspend fun PipelineContext<Unit, ApplicationCall>.respondWith(path: String, resourcePackage: String) {
-        val file = call.resolveResource(path, resourcePackage)
-        if (file is OutgoingContent)
-            call.respond(HttpStatusCode.OK, file)
+        ktor.start()
     }
 
     companion object {
