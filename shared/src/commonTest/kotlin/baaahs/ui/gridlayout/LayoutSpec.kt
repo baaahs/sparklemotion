@@ -2,12 +2,13 @@ package baaahs.ui.gridlayout
 
 import baaahs.describe
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toThrow
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object LayoutSpec : Spek({
+object LayoutSpec : DescribeSpec({
     describe<Layout> {
         val layout by value {
             """

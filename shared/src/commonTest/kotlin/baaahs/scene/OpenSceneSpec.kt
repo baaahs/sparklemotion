@@ -9,16 +9,17 @@ import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.TransportConfig
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("MoveLambdaOutsideParentheses")
-object OpenSceneSpec : Spek({
+object OpenSceneSpec : DescribeSpec({
     describe<OpenScene> {
         context("#relevantFixtureMappings") {
             val surface123 by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = 123) }

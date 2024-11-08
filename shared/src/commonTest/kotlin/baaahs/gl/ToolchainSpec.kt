@@ -1,13 +1,14 @@
 package baaahs.gl
 
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.show.Shader
 import ch.tutteli.atrium.api.fluent.en_GB.startsWith
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object ToolchainSpec : Spek({
+object ToolchainSpec : DescribeSpec({
     describe<Toolchain> {
         val toolchain by value { RootToolchain(testPlugins()) }
         context("analyze") {

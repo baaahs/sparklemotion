@@ -2,9 +2,10 @@ package baaahs.control
 
 import baaahs.describe
 import baaahs.gadgets.Slider
-import org.spekframework.spek2.Spek
+import baaahs.kotest.value
+import io.kotest.core.spec.style.DescribeSpec
 
-object SliderControlSpec : Spek({
+object SliderControlSpec : DescribeSpec({
     describe<SliderControl> {
         val slider by value { Slider("Brightness", 1f) }
         val feedId by value { "brightnezz" }

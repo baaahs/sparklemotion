@@ -3,18 +3,19 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
+import baaahs.kotest.value
 import baaahs.show.migration.V6_FlattenPatches
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import baaahs.useBetterSpekReporter
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
-object V6_FlattenPatchesSpec : Spek({
+object V6_FlattenPatchesSpec : DescribeSpec({
     useBetterSpekReporter()
 
     describe<V6_FlattenPatches> {

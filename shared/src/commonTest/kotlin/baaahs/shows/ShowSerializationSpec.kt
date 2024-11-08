@@ -9,6 +9,7 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.plugin.*
 import baaahs.plugin.beatlink.BeatLinkControl
 import baaahs.plugin.beatlink.BeatLinkFeed
@@ -22,15 +23,14 @@ import baaahs.show.mutable.MutableShow
 import baaahs.sm.server.PinkyArgs
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
-object ShowSerializationSpec : Spek({
+object ShowSerializationSpec : DescribeSpec({
     describe("Show serialization") {
         val plugins by value<Plugins> { TestSampleData.plugins }
         val jsonWithDefaults by value { Json(plugins.json) { encodeDefaults = true } }

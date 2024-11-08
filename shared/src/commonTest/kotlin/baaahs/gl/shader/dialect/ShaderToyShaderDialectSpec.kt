@@ -11,14 +11,15 @@ import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object ShaderToyShaderDialectSpec : Spek({
+object ShaderToyShaderDialectSpec : DescribeSpec({
     describe<ShaderToyShaderDialectSpec> {
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
         val shader by value { Shader("Title", src) }

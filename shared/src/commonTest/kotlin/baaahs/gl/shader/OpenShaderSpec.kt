@@ -6,14 +6,15 @@ import baaahs.gl.glsl.GlslExpr
 import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object OpenShaderSpec : Spek({
+object OpenShaderSpec : DescribeSpec({
     describe<OpenShaderSpec> {
         val src by value { toBeSpecified<String>() }
         val openShader by value { testToolchain.openShader(Shader("Title", src)) }
@@ -29,7 +30,7 @@ object OpenShaderSpec : Spek({
             testToolchain.openShader(Shader("abstract fn port", abstractFnPortSrc)).findInputPort("imageColor")
         }
 
-        beforeEachTest {
+        beforeEach {
             if (openShader.errors.isNotEmpty()) {
                 error("Analysis errors: ${openShader.errors}")
             }

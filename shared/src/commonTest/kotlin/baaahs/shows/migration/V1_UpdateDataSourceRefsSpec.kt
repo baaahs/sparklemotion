@@ -3,17 +3,18 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
+import baaahs.kotest.value
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import baaahs.useBetterSpekReporter
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.*
-import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
-object V1_UpdateDataSourceRefsSpec : Spek({
+object V1_UpdateDataSourceRefsSpec : DescribeSpec({
     useBetterSpekReporter()
 
     describe<V1_UpdateDataSourceRefs> {

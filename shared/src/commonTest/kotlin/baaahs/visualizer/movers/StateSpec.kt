@@ -2,12 +2,13 @@ package baaahs.visualizer.movers
 
 import baaahs.TestMovingHeadAdapter
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.math.absoluteValue
 
-object StateSpec : Spek({
+object StateSpec : DescribeSpec({
     describe<State> {
         val startingState by value { State() }
         val destinationState by value { State(.75f, .75f, .25f, 1f) }

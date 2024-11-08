@@ -11,6 +11,7 @@ import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.core.feed.TimeFeed
 import baaahs.shaders.fakeFixture
@@ -26,11 +27,10 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object PatchResolverSpec : Spek({
+object PatchResolverSpec : DescribeSpec({
     fun autoWire(
         vararg shaders: Shader,
         stream: Stream = Stream.Main,
@@ -108,7 +108,7 @@ object PatchResolverSpec : Spek({
         }
 
         context("for a show with a couple buttons") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.apply {
                     addPatch(autoWire(uvShader, blackShader))
 
@@ -256,7 +256,7 @@ object PatchResolverSpec : Spek({
             }
 
             context("with a feed filter") {
-                beforeEachTest {
+                beforeEach {
                     mutableShow.apply {
                         addButton(mainPanel, "Time Wobble") {
                             addPatch(autoWire(wobblyTimeFilter, stream = Stream("time")).apply {
@@ -411,7 +411,7 @@ object PatchResolverSpec : Spek({
         }
 
         context("with a color mixer") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.apply {
                     addPatch(autoWire(uvShader, blackShader))
                     addPatch(

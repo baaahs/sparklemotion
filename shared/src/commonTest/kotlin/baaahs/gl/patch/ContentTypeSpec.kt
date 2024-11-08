@@ -4,9 +4,9 @@ import baaahs.describe
 import baaahs.gl.glsl.GlslType
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object ContentTypeSpec : Spek({
+object ContentTypeSpec : DescribeSpec({
     describe<ContentType> {
         context("unknown content types") {
             it("constructs an unknown content type from a GLSL type") {

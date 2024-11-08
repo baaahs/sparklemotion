@@ -8,16 +8,17 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object GenericShaderDialectSpec : Spek({
+object GenericShaderDialectSpec : DescribeSpec({
     describe<GenericShaderDialect> {
         val src by value<String> { toBeSpecified() }
         val dialect by value { GenericShaderDialect }

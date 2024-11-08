@@ -4,6 +4,7 @@ import baaahs.FakeClock
 import baaahs.TestRig
 import baaahs.describe
 import baaahs.gl.shader.InputPort
+import baaahs.kotest.value
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.PluginContext
 import baaahs.plugin.PluginRef
@@ -14,12 +15,12 @@ import baaahs.shows.FakeShowPlayer
 import baaahs.sm.server.PinkyArgs
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
 
 @OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-object BeatLinkDataFlowSpec : Spek({
+object BeatLinkDataFlowSpec : DescribeSpec({
     describe<BeatLinkPlugin> {
         context("data flow") {
             val testRig by value { TestRig() }
@@ -39,7 +40,7 @@ object BeatLinkDataFlowSpec : Spek({
             }
             val fakeGlslProgram by value { FakeGlslProgram() }
 
-            beforeEachTest {
+            beforeEach {
                 testRig.server.run {}
                 testRig.serverConnections.run {}
                 testRig.client1.run {}

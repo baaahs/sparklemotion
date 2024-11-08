@@ -7,13 +7,14 @@ import baaahs.geom.EulerAngle
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
+import baaahs.kotest.value
 import baaahs.model.MovingHead
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object FixtureInfoFeedSpec : Spek({
+object FixtureInfoFeedSpec : DescribeSpec({
     describe<FixtureInfoFeed> {
         val movingHead by value {
             MovingHead(
@@ -41,7 +42,7 @@ object FixtureInfoFeedSpec : Spek({
             "fixtureInfo" to FixtureInfoFeed().link("fixtureInfo")
         )) as GlslProgramImpl }
 
-        beforeEachTest {
+        beforeEach {
             testRenderContext.addFixtures()
             testRenderContext.applyProgram(program)
             testRenderContext.renderEngine.draw()

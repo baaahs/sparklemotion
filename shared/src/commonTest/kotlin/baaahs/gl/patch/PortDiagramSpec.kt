@@ -5,16 +5,17 @@ import baaahs.gl.openShader
 import baaahs.gl.patch.PortDiagram.TrackEntry
 import baaahs.gl.shader.type.FilterShader
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.fakeShader
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.test.assertTrue
 
-object PortDiagramSpec : Spek({
+object PortDiagramSpec : DescribeSpec({
     describe<PortDiagram> {
         context("shader prioritization") {
             fun Shader.enliven(links: Map<String, OpenPatch.Link> = emptyMap()) =

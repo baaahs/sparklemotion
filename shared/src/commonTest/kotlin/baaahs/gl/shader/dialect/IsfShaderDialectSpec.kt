@@ -8,6 +8,7 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
 import baaahs.toEqual
@@ -15,12 +16,12 @@ import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object IsfShaderDialectSpec : Spek({
+object IsfShaderDialectSpec : DescribeSpec({
     describe<IsfShaderDialect> {
         val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }

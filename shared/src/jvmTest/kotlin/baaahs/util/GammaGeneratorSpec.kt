@@ -3,9 +3,9 @@ package baaahs.util
 import baaahs.describe
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object GammaGeneratorSpec : Spek({
+object GammaGeneratorSpec : DescribeSpec({
     describe<GammaGenerator> {
         describe("dithering") {
             it("should dither properly") {

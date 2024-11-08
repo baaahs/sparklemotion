@@ -2,13 +2,14 @@ package baaahs.device
 
 import baaahs.describe
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.kotest.value
 import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object PixelArrayDeviceSpec : Spek({
+object PixelArrayDeviceSpec : DescribeSpec({
     describe<PixelArrayDevice> {
         val defaultOptions by value {
             PixelArrayDevice.Options()

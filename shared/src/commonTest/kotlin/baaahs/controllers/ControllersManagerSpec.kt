@@ -16,6 +16,7 @@ import baaahs.gl.override
 import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayWriter
+import baaahs.kotest.value
 import baaahs.mapping.MappingManager
 import baaahs.model.FakeModelEntity
 import baaahs.model.Model
@@ -26,12 +27,12 @@ import baaahs.toEqual
 import baaahs.ui.Observable
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.datetime.Instant
-import org.spekframework.spek2.Spek
 import kotlin.random.Random
 
 @Suppress("unused")
-object ControllersManagerSpec : Spek({
+object ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
         val modelFixtureType by value { FixtureTypeForTest() }
         val modelEntity by value<Model.Entity> { FakeModelEntity("panel", modelFixtureType) }
@@ -64,7 +65,7 @@ object ControllersManagerSpec : Spek({
 
         context("when model and mapping data haven't loaded yet") {
             override(sceneMonitor) { SceneMonitor() }
-            beforeEachTest { controllersManager.start() }
+            beforeEach { controllersManager.start() }
 
             it("starts controllers when start() is called") {
                 expect(fakeControllerMgr.hasStarted).toBe(true)
@@ -100,7 +101,7 @@ object ControllersManagerSpec : Spek({
         }
 
         context("when mapping data has loaded") {
-            beforeEachTest {
+            beforeEach {
                 mappingManager.dataHasLoaded = true
                 controllersManager.start()
                 sceneMonitor.onChange(scene) // Load model.
@@ -112,7 +113,7 @@ object ControllersManagerSpec : Spek({
         }
 
         context("when controllers are reported") {
-            beforeEachTest {
+            beforeEach {
                 mappingManager.dataHasLoaded = true
                 sceneMonitor.onChange(scene) // Load model.
                 controllersManager.start()
@@ -307,7 +308,7 @@ object ControllersManagerSpec : Spek({
             }
 
             context("when the scene is closed") {
-                beforeEachTest {
+                beforeEach {
                     sceneMonitor.onChange(null)
                 }
 

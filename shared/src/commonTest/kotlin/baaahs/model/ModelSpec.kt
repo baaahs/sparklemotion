@@ -7,12 +7,13 @@ import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.compose
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.nuffin
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object ModelSpec : Spek({
+object ModelSpec : DescribeSpec({
     describe<Model> {
         context("applying parent transformations") {
             it("multiplies them") {
