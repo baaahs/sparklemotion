@@ -75,12 +75,24 @@ kotlin {
             }
         }
 
+        val serverCommonMain by creating {
+            dependsOn(commonMain.get())
+
+            dependencies {
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerWebsockets)
+            }
+        }
+
         jvmMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerNetty)
+//                implementation(libs.ktorServerNetty)
                 implementation(libs.ktorServerHostCommon)
                 implementation(libs.ktorServerCallLogging)
                 implementation(libs.ktorServerWebsockets)
@@ -186,6 +198,45 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-js"))
             }
+        }
+
+        androidMain {
+            dependsOn(serverCommonMain)
+
+            dependencies {
+                implementation(libs.kglAndroid)
+                implementation(libs.koinCore)
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerHostCommon)
+                implementation(libs.ktorServerCallLogging)
+                implementation(libs.ktorServerWebsockets)
+                implementation(libs.jmdns)
+
+                // Java 3D maths
+                implementation(libs.joml)
+            }
+        }
+
+        iosMain {
+            dependsOn(serverCommonMain)
+
+            dependencies {
+                implementation(libs.kglIos)
+                implementation(libs.koinCore)
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerHostCommon)
+//                implementation(libs.ktorServerCallLogging)
+                implementation(libs.ktorServerWebsockets)
+            }
+
+            resources.srcDirs("src/iosMain/resources",
+//                rootProject.file("shared/src/jsMain/resources"),
+//                rootProject.file("shared/src/commonMain/resources"),
+                rootProject.file("shared/build/processedResources/js/main"),
+                rootProject.file("shared/build/kotlin-webpack/js/developmentExecutable")
+            )
         }
 
         sourceSets.all {
