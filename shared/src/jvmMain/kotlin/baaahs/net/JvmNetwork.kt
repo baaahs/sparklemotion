@@ -125,9 +125,9 @@ class JvmNetwork : Network {
             }
         }
 
-        override fun createHttpServer(port: Int): KtorHttpServer {
-            return KtorHttpServer(link, port)
-                .also { it.httpServer.start(false) }
+        override fun createHttpServer(port: Int): JvmKtorHttpServer {
+            return JvmKtorHttpServer(link, port, networkScope)
+                .also { it.start() }
         }
 
         override suspend fun httpGetRequest(address: Network.Address, port: Int, path: String): String {
