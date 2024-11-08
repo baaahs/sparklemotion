@@ -1,16 +1,17 @@
 package baaahs.geom
 
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
-import org.spekframework.spek2.Spek
 
-object Matrix4FSpec : Spek({
+object Matrix4FSpec : DescribeSpec({
     describe<Matrix4F> {
         context("a transformation") {
             val position by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }

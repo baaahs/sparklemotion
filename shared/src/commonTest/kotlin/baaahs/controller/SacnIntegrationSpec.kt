@@ -10,6 +10,7 @@ import baaahs.fixtures.FixtureListener
 import baaahs.fixtures.Transport
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.mapper.MappingSession
 import baaahs.mapper.SessionMappingResults
 import baaahs.model.LightBar
@@ -21,13 +22,12 @@ import baaahs.scene.SceneMonitor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 @OptIn(InternalCoroutinesApi::class)
-object SacnIntegrationSpec : Spek({
+object SacnIntegrationSpec : DescribeSpec({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }
@@ -42,7 +42,7 @@ object SacnIntegrationSpec : Spek({
             ControllersManager(listOf(sacnManager), mappingManager, SceneMonitor(scene), listOf(listener))
         }
 
-        beforeEachTest {
+        beforeEach {
             controllersManager.start()
             sacnManager.onConfigChange(controllerConfigs)
         }
@@ -74,7 +74,7 @@ object SacnIntegrationSpec : Spek({
                 val bar1Bytes by value { PixelColors(1, 2) }
                 val bar2Bytes by value { PixelColors(3, 2) }
 
-                beforeEachTest {
+                beforeEach {
                     controllersManager.beforeFrame()
                     bar1Bytes.deliverTo(bar1Fixture.transport)
                     bar2Bytes.deliverTo(bar2Fixture.transport)

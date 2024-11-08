@@ -8,6 +8,5 @@ object Versions {
     const val kotlinWrappers = "1.0.0-pre.816"
 
     // Test:
-    const val junit = "5.8.1"
-    const val spek = "2.0.11-rc.1" // custom build with LetValues enabled
+    const val junit = "5.11.3"
 }

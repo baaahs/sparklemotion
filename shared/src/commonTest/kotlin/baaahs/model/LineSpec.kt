@@ -2,12 +2,13 @@ package baaahs.model
 
 import baaahs.describe
 import baaahs.geom.Vector3F
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.math.sqrt
 
-object LineSpec : Spek({
+object LineSpec : DescribeSpec({
     describe<Model.Line> {
         val vertices by value {
             listOf(

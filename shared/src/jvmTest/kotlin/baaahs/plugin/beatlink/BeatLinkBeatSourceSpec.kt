@@ -3,19 +3,20 @@ package baaahs.plugin.beatlink
 import baaahs.Color
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import io.mockk.every
 import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
-import org.spekframework.spek2.Spek
 import kotlin.math.roundToInt
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 
-object BeatLinkBeatSourceSpec : Spek({
+object BeatLinkBeatSourceSpec : DescribeSpec({
     describe<BeatLinkBeatSource> {
         val fakeClock by value { FakeClock(10.0) }
         val beatSource by value { BeatLinkBeatSource(fakeClock) }
@@ -72,13 +73,13 @@ object BeatLinkBeatSourceSpec : Spek({
         }
 
         describe("confidence adjustment") {
-            beforeEachTest {
+            beforeEach {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(120.0, 1))
             }
 
             context("when we hear beat updates at appropriate intervals") {
-                beforeEachTest {
+                beforeEach {
                     fakeClock.time += 2.0.seconds
                     beatSource.adjustConfidence()
                 }
@@ -89,7 +90,7 @@ object BeatLinkBeatSourceSpec : Spek({
             }
 
             context("when we haven't heard a beat update for more than a measure") {
-                beforeEachTest {
+                beforeEach {
                     fakeClock.time += 2.1.seconds
                     beatSource.adjustConfidence()
                 }

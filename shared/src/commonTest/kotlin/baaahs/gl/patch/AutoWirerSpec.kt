@@ -9,6 +9,7 @@ import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OpenShader
 import baaahs.gl.shader.OutputPort
 import baaahs.glsl.Shaders.cylindricalProjection
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.feed.ModelInfoFeed
@@ -25,11 +26,9 @@ import baaahs.show.mutable.editor
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.Skip
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
-object AutoWirerSpec : Spek({
+object AutoWirerSpec : DescribeSpec({
     describe("AutoWirer") {
         val autoWirer by value { AutoWirer(testPlugins()) }
         val toolchain by value { RootToolchain(testPlugins(), autoWirer = autoWirer) }
@@ -90,7 +89,7 @@ object AutoWirerSpec : Spek({
                     }
 
                     // TODO: get these working?
-                    context("when the output type matches", skip = Skip.Yes("Not working yet")) {
+                    xcontext("when the output type matches") {
                         override(outContentType) { portContentType }
 
                         it("suggests the feed's channel") {
@@ -419,8 +418,8 @@ object AutoWirerSpec : Spek({
                 }
             }
 
-            // TODO: fix!
-            context("with a shader for a non-PixelArrayDevice fixture with an incomplete struct specification", Skip.Yes("This should work too.")) {
+            // TODO: This should work too.
+            xcontext("with a shader for a non-PixelArrayDevice fixture with an incomplete struct specification") {
                 override(shaderText) {
                     /**language=glsl*/
                     """

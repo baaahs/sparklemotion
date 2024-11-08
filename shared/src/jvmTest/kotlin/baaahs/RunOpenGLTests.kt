@@ -5,7 +5,6 @@ import baaahs.gl.render.RenderEngineTest
 import baaahs.gl.render.RenderManagerTest
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
-import org.junit.platform.launcher.EngineFilter
 import org.junit.platform.launcher.LauncherDiscoveryRequest
 import org.junit.platform.launcher.TestExecutionListener
 import org.junit.platform.launcher.TestIdentifier
@@ -24,7 +23,6 @@ fun main() {
 
     val request: LauncherDiscoveryRequest =
         LauncherDiscoveryRequestBuilder.request()
-            .filters(EngineFilter.excludeEngines("spek2"))
             .selectors(testsRequiringOpenGL.map { selectClass(it.java) })
             .build()
     val launcher = LauncherFactory.create()

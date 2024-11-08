@@ -6,6 +6,7 @@ import baaahs.gl.openShader
 import baaahs.gl.patch.AutoWirer
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.type.PaintShader
+import baaahs.kotest.value
 import baaahs.plugin.ClientPlugins
 import baaahs.plugin.Plugins
 import baaahs.plugin.core.CorePlugin
@@ -14,9 +15,9 @@ import baaahs.show.mutable.MutablePatchSet
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.TextureResource
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object VideoInPluginSpec : Spek({
+object VideoInPluginSpec : DescribeSpec({
     describe<VideoInPlugin> {
         val videoProvider by value {
             object : VideoProvider {

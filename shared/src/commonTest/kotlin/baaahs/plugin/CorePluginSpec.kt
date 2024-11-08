@@ -8,6 +8,7 @@ import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.patch.ContentType
 import baaahs.gl.testPlugins
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.mutable.MutablePatchSet
@@ -16,9 +17,9 @@ import baaahs.shows.FakeShowPlayer
 import baaahs.util.asInstant
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object CorePluginSpec : Spek({
+object CorePluginSpec : DescribeSpec({
     describe<TimeFeed> {
         val clock by value { FakeClock(0.0) }
         val feed by value { TimeFeed() }

@@ -44,14 +44,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import org.spekframework.spek2.dsl.GroupBody
-import org.spekframework.spek2.dsl.Skip
-import org.spekframework.spek2.meta.*
-import org.spekframework.spek2.style.specification.Suite
-import org.spekframework.spek2.style.specification.describe
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.KFunction
-import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
 
 @Suppress("UNCHECKED_CAST")
@@ -168,25 +161,6 @@ class FakeDmxManager(private val universe: Dmx.Universe) : DmxManager {
 
 object ImmediateDispatcher : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) = block.run()
-}
-
-
-@Synonym(SynonymType.GROUP)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-inline fun <reified T> GroupBody.describe(skip: Skip = Skip.No, noinline body: Suite.() -> Unit) {
-    describe(T::class.toString(), skip, body)
-}
-
-@Synonym(SynonymType.GROUP)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-fun GroupBody.describe(fn: KFunction<*>, skip: Skip = Skip.No, body: Suite.() -> Unit) {
-    describe(fn.toString(), skip, body)
-}
-
-@Synonym(SynonymType.GROUP)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-fun GroupBody.describe(prop: KProperty<*>, skip: Skip = Skip.No, body: Suite.() -> Unit) {
-    describe(prop.toString(), skip, body)
 }
 
 fun expectEmptySet(block: () -> Set<*>) {

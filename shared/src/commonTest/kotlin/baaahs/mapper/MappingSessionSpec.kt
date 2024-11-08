@@ -4,15 +4,16 @@ import baaahs.*
 import baaahs.geom.Matrix4F
 import baaahs.geom.Vector3F
 import baaahs.geom.identity
+import baaahs.kotest.value
 import baaahs.show.SampleData
 import baaahs.sim.FakeFs
 import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
-import org.spekframework.spek2.Spek
 
-class MappingSessionSpec : Spek({
+class MappingSessionSpec : DescribeSpec({
     describe<MappingSession> {
         context("deserialization") {
             val plugins by value { SampleData.plugins }

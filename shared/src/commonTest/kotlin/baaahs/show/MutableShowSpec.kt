@@ -8,16 +8,16 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.collections.set
 
-object MutableShowSpec : Spek({
+object MutableShowSpec : DescribeSpec({
     describe("MutableShow") {
         val shader0 by value { testToolchain.testPatch("shader 0") }
         val shader1a by value { testToolchain.testPatch("shader 1a") }
@@ -79,7 +79,7 @@ object MutableShowSpec : Spek({
             val editor by value { mutableShow.patches.only() }
 
             context("when weird port mappings are added") {
-                beforeEachTest {
+                beforeEach {
                     editor.incomingLinks["nonsense"] = MutableConstPort("invalid", GlslType.from("?unknown?"))
                 }
 
@@ -134,7 +134,7 @@ object MutableShowSpec : Spek({
         }
 
 //        context("adding a patchset") {
-//            beforeEachTest {
+//            beforeEach {
 //                mutableShow.apply {
 //                    editScene(1) {
 //                        addButton("patchset 2b") { addPatch(toolchain.testPatch("shader 2b")) }
@@ -150,7 +150,7 @@ object MutableShowSpec : Spek({
 //        }
 
 //        context("editing a patchset") {
-//            beforeEachTest {
+//            beforeEach {
 //                mutableShow.editScene(1) {
 //                    editPatchSet(1) { title = "modified $title" }
 //                }
@@ -167,7 +167,7 @@ object MutableShowSpec : Spek({
 //            val fromIndex = 1
 //            val toIndex = 0
 //
-//            beforeEachTest {
+//            beforeEach {
 //                baseMutableShow.apply {
 //                    addButtonGroup("scene 3") {
 //                        addButton("patchset 3a") { addPatch(toolchain.testPatch("shader 3a")) }
@@ -220,7 +220,7 @@ object MutableShowSpec : Spek({
 //
 //            override(baseShowState) { ShowState(1, listOf(2, 0)) }
 //
-//            beforeEachTest {
+//            beforeEach {
 //                mutableShow.apply {
 //                    editScene(1) { movePatchSet(fromIndex, toIndex) }
 //                }

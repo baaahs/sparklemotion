@@ -4,14 +4,15 @@ import baaahs.describe
 import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object FilterShaderSpec : Spek({
+object FilterShaderSpec : DescribeSpec({
     describe<FilterShader> {
         val shaderText by value { toBeSpecified<String>() }
         val shader by value { Shader("Shader", shaderText) }

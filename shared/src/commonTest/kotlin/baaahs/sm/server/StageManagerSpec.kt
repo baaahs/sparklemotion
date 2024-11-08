@@ -13,6 +13,7 @@ import baaahs.glsl.Shaders
 import baaahs.io.FakeRemoteFsBackend
 import baaahs.io.FsClientSideSerializer
 import baaahs.io.FsServerSideSerializer
+import baaahs.kotest.value
 import baaahs.plugin.core.feed.ColorPickerFeed
 import baaahs.plugin.midi.MidiManager
 import baaahs.scene.SceneMonitor
@@ -32,16 +33,16 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonPrimitive
-import org.spekframework.spek2.Spek
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-object StageManagerSpec : Spek({
+object StageManagerSpec : DescribeSpec({
     describe<StageManager> {
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }
@@ -124,7 +125,7 @@ object StageManagerSpec : Spek({
             val fakeProgram by value { fakeGlslContext.programs.only("program") }
             val addControls by value { {} }
 
-            beforeEachTest {
+            beforeEach {
                 addControls()
                 stageManager.switchTo(show, showState)
                 fixtureManager.fixturesChanged(fixtures, emptyList())
@@ -219,7 +220,7 @@ object StageManagerSpec : Spek({
 
                 context("when a new patch is requested by the user") {
                     val clientPub by value { pubSub.client("client") }
-                    beforeEachTest {
+                    beforeEach {
                         activePatchSets.clear()
                         val backdrop1Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop1", GadgetDataSerializer)) {}
                         val backdrop2Channel = clientPub.subscribe(PubSub.Topic("/gadgets/backdrop2", GadgetDataSerializer)) {}
@@ -279,7 +280,7 @@ object StageManagerSpec : Spek({
 
             val baseShow by value { SampleData.sampleShow }
 
-            beforeEachTest {
+            beforeEach {
                 editingClientDocumentState = null
                 editingClientChannel.let {}
                 otherClientChannel.let {}
@@ -301,7 +302,7 @@ object StageManagerSpec : Spek({
             context("when a ShowEditorState change arrives from a client") {
                 val editedShow by value { MutableShow(baseShow).apply { title = "Edited show" }.getShow() }
 
-                beforeEachTest {
+                beforeEach {
                     editingClient.log.clear()
                     otherClient.log.clear()
 

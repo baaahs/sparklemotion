@@ -7,22 +7,22 @@ import baaahs.fixtures.ProgramRenderPlan
 import baaahs.gl.glsl.GlslCode
 import baaahs.gl.glsl.GlslProgram
 import baaahs.gl.render.RenderTarget
+import baaahs.kotest.value
 import baaahs.plugin.PluginContext
 import baaahs.plugin.Plugins
 import baaahs.show.mutable.MutablePatch
 import baaahs.util.Clock
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.dsl.LifecycleAware
-import org.spekframework.spek2.dsl.Skip
-import org.spekframework.spek2.meta.*
-import org.spekframework.spek2.style.specification.Suite
+import io.kotest.core.spec.style.scopes.ContainerScope
+import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
+import io.kotest.core.test.TestScope
 import kotlin.test.assertEquals
 
 fun testPlugins(clock: Clock = FakeClock()) =
     Plugins.safe(PluginContext(clock, StubPubSub()))
 
-fun <T> LifecycleAware.override(letValue: T, factory: () -> T) {
+fun <T> ContainerScope.override(letValue: T, factory: () -> T) {
     value(letValue, factory)
 }
 
@@ -83,10 +83,11 @@ fun <K, V> expects(expected: Map<K, V>, block: () -> Map<K, V>) {
         assertEquals(expected.prettier(), actual.prettier())
 }
 
-@Synonym(SynonymType.TEST)
-@Descriptions(Description(DescriptionLocation.VALUE_PARAMETER, 0))
-fun <T> Suite.expectValue(expected: T, skip: Skip = Skip.No, actual: () -> T) {
-    delegate.test("should equal", skip, delegate.defaultTimeout) {
+suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
+
+}
+suspend fun <T> DescribeSpecContainerScope.expectValue(expected: T, actual: () -> T) {
+    it("should equal") {
         expect(actual()).toBe(expected)
     }
 }

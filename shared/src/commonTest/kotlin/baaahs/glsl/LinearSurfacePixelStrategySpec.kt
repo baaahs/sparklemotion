@@ -4,16 +4,17 @@ import baaahs.TestModel
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.testModelSurface
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.random.Random
 
 @Suppress("unused")
-object LinearSurfacePixelStrategySpec : Spek({
+object LinearSurfacePixelStrategySpec : DescribeSpec({
     describe<LinearSurfacePixelStrategy> {
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {

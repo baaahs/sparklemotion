@@ -11,6 +11,7 @@ import baaahs.fixtures.pixelArrayFixture
 import baaahs.geom.Vector3F
 import baaahs.gl.testPlugins
 import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.kotest.value
 import baaahs.model.FakeModelEntity
 import baaahs.model.ModelUnit
 import baaahs.scene.OpenScene
@@ -23,16 +24,21 @@ import baaahs.visualizer.FakeVisualizer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineScope
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
 
 @Suppress("unused")
 @OptIn(InternalCoroutinesApi::class)
-object RemoteVisualizerClientSpec : Spek({
+object RemoteVisualizerClientSpec : DescribeSpec({
     describe<RemoteVisualizerClient> {
         val pubSubRig by value { TestRig() }
         val dispatcher by value { pubSubRig.dispatcher }
-        val coroutineScope by value { TestCoroutineScope(dispatcher) }
+        var cleanupTestCoroutines: () -> Unit = {}
+        val coroutineScope by value {
+            TestCoroutineScope(dispatcher).also { scope ->
+                cleanupTestCoroutines = { scope.cleanupTestCoroutines() }
+            }
+        }
         val network by value { FakeNetwork(coroutineScope = coroutineScope) }
         val serverLink by value { network.link("server") }
         val clientLink by value { network.link("server") }
@@ -61,7 +67,7 @@ object RemoteVisualizerClientSpec : Spek({
             )
         }
 
-        beforeEachTest {
+        beforeEach {
             server.run {}
             client.run {}
             dispatcher.advanceUntilIdle()
@@ -74,7 +80,9 @@ object RemoteVisualizerClientSpec : Spek({
             dispatcher.advanceUntilIdle()
         }
 
-        afterEachTest { coroutineScope.cleanupTestCoroutines() }
+        afterEach {
+            cleanupTestCoroutines()
+        }
 
         it("should populate the visualizer with model entities") {
             expect(fakeVisualizer.itemVisualizers).containsExactly(
@@ -92,7 +100,7 @@ object RemoteVisualizerClientSpec : Spek({
         }
 
         context("receiving pixel array frame data") {
-            beforeEachTest {
+            beforeEach {
                 fakeFixtureManager.sendFrameData(entity) { out ->
                     out.writeInt(2)
                     PixelFormat.RGB8.writeColor(Color.MAGENTA, out)

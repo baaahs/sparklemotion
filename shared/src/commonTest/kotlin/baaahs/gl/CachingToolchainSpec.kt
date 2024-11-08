@@ -1,13 +1,14 @@
 package baaahs.gl
 
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.show.Shader
 import ch.tutteli.atrium.api.fluent.en_GB.isNotSameAs
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object CachingToolchainSpec : Spek({
+object CachingToolchainSpec : DescribeSpec({
     describe<CachingToolchain> {
         val cache1 by value { CachingToolchain(testToolchain) }
         val someShader by value {

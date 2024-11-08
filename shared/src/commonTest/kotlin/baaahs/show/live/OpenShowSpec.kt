@@ -7,6 +7,7 @@ import baaahs.gadgets.Slider
 import baaahs.getBang
 import baaahs.gl.glsl.GlslType
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.*
@@ -17,10 +18,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.collections.set
 
-object OpenShowSpec : Spek({
+object OpenShowSpec : DescribeSpec({
     describe<OpenShow> {
         val mutableShow by value {
             MutableShow("Show") {
@@ -37,7 +38,7 @@ object OpenShowSpec : Spek({
         val showOpener by value { ShowOpener(testToolchain, show, showPlayer) }
         val openShow by value { showOpener.openShow() }
 
-        beforeEachTest {
+        beforeEach {
             mutableShow.editLayouts {
                 copyFrom(
                     MutableLayouts(
@@ -64,7 +65,7 @@ object OpenShowSpec : Spek({
         }
 
         context("resource allocation") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.addPatch(
                     testToolchain.wireUp(Shader("Shader", "uniform float time;\nvoid main() { ... }"))
                 )
@@ -86,7 +87,7 @@ object OpenShowSpec : Spek({
         }
 
         context("a show with button groups") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.addPatch(testToolchain.wireUp(fakeShader("Show Shader")))
 
                 mutableShow.addButtonGroup(mutableShow.findPanel("Panel 1"), "Scenes") {
@@ -120,7 +121,7 @@ object OpenShowSpec : Spek({
         }
 
         context("when a feed has no corresponding placed control") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.addPatch(
                     testToolchain.wireUp(
                         Shader("Shader", "uniform float slider; // @@Slider\nvoid main() { ... }")
@@ -142,7 +143,7 @@ object OpenShowSpec : Spek({
         }
 
         context("when a patch has weird incoming links") {
-            beforeEachTest {
+            beforeEach {
                 mutableShow.addPatch(
                     testToolchain.wireUp(
                         Shader(

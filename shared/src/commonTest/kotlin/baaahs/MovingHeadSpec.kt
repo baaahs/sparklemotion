@@ -1,12 +1,13 @@
 package baaahs
 
 import baaahs.dmx.Dmx
+import baaahs.kotest.value
 import baaahs.plugin.core.MovingHeadParams
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.math.PI
 
-object MovingHeadSpec : Spek({
+object MovingHeadSpec : DescribeSpec({
     describe<MovingHeadParams> {
         val testMovingHead by value { TestMovingHeadAdapter() }
         val channels by value { Dmx.Buffer(ByteArray(16)) }

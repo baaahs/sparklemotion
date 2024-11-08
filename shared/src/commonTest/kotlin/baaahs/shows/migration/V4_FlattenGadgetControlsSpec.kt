@@ -3,17 +3,18 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
+import baaahs.kotest.value
 import baaahs.show.migration.V4_FlattenGadgetControls
 import baaahs.toBeSpecified
 import baaahs.toEqualJson
 import baaahs.useBetterSpekReporter
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
-object V4_FlattenGadgetControlsSpec : Spek({
+object V4_FlattenGadgetControlsSpec : DescribeSpec({
     useBetterSpekReporter()
 
     describe<V4_FlattenGadgetControls> {

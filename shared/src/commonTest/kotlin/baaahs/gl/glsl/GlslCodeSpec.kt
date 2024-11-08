@@ -3,18 +3,18 @@ package baaahs.gl.glsl
 import baaahs.gl.expectValue
 import baaahs.gl.override
 import baaahs.gl.undefined
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.PluginRef
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
-object GlslCodeSpec : Spek({
+object GlslCodeSpec : DescribeSpec({
     describe("statements") {
         val text by value { undefined<String>() }
         val statements by value { GlslParser().findStatements(text) }
@@ -25,6 +25,7 @@ object GlslCodeSpec : Spek({
 
             context("unqualified") {
                 override(text) { "int i;" }
+                this
                 expectValue(GlslCode.GlslVar("i", GlslType.Int, "int i;")) { variable }
             }
 

@@ -3,17 +3,18 @@ package baaahs.shows.migration
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
+import baaahs.kotest.value
 import baaahs.show.migration.V3_UpdateLayouts
 import baaahs.toBeSpecified
 import baaahs.toEqualJson
 import baaahs.useBetterSpekReporter
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import org.spekframework.spek2.Spek
 
 @Suppress("ClassName")
-object V3_UpdateLayoutsSpec : Spek({
+object V3_UpdateLayoutsSpec : DescribeSpec({
     useBetterSpekReporter()
 
     describe<V3_UpdateLayouts> {

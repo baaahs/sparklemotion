@@ -11,6 +11,7 @@ import baaahs.gl.patch.ContentType.Companion.Float
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
@@ -19,11 +20,11 @@ import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.buildJsonObject
-import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object HintedShaderDialectSpec : Spek({
+object HintedShaderDialectSpec : DescribeSpec({
     describe<HintedShaderAnalyzer> {
         val shaderText by value<String> { toBeSpecified() }
         val plugins by value { testPlugins() }

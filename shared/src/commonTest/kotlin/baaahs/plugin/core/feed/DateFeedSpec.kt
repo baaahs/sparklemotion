@@ -9,6 +9,7 @@ import baaahs.gl.shader.dialect.IsfShaderDialect
 import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.glsl.GlslUniform
 import baaahs.glsl.TextureUniform
+import baaahs.kotest.value
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.shows.FakeUniform
@@ -17,10 +18,10 @@ import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.Kgl
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.datetime.Instant
-import org.spekframework.spek2.Spek
 
-object DateFeedSpec : Spek({
+object DateFeedSpec : DescribeSpec({
     describe<DateFeed> {
 
         val builder by value { DateFeed }

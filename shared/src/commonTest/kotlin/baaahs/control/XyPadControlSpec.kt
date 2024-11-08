@@ -3,12 +3,12 @@ package baaahs.control
 import baaahs.describe
 import baaahs.gadgets.XyPad
 import baaahs.geom.Vector2F
-import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object XyPadControlSpec : Spek({
+object XyPadControlSpec : DescribeSpec({
     describe<XyPad.Helper> {
         val xyPad by value { XyPad("Brightness") }
         val padSize by value { Vector2F(200f, 200f) }
@@ -59,8 +59,8 @@ object XyPadControlSpec : Spek({
         }
 
         context("when knob buffer zone is disabled") {
-            // wtf? Making knobBufferZone a boolean causes spek to fail.
-            beforeEachTest { knobBufferZone[0] = false }
+            // wtf? Making knobBufferZone a boolean causes spec to fail.
+            beforeEach { knobBufferZone[0] = false }
 
             it("calculates crosshair and knob positions, taking knob size into account") {
                 expect(helper.crosshairPositionPx).toEqual(Vector2F(100f, 100f))

@@ -3,14 +3,15 @@ package baaahs.app.ui.editor
 import baaahs.control.MutableButtonControl
 import baaahs.describe
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Panel
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object EditableSpec : Spek({
+object EditableSpec : DescribeSpec({
     describe<ControlEditIntent> {
         val baseShow by value {
             MutableShow("test show") {
@@ -31,7 +32,7 @@ object EditableSpec : Spek({
         }
 
         context("when the id of its control changes") {
-            beforeEachTest {
+            beforeEach {
                 mutableButton.title = "new title for button"
                 editableManager.onChange()
                 editableManager.undo()
