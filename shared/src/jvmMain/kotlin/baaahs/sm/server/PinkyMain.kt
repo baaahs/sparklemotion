@@ -8,13 +8,10 @@ import baaahs.di.PluginsModule
 import baaahs.gl.GlBase
 import baaahs.io.Fs
 import baaahs.io.RealFs
-import baaahs.net.KtorHttpServer
 import baaahs.sm.brain.ProdBrainSimulator
 import baaahs.util.KoinLogger
 import baaahs.util.Logger
 import baaahs.util.SystemClock
-import io.ktor.server.application.*
-import io.ktor.server.plugins.callloging.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -75,9 +72,7 @@ class PinkyMain(private val args: Array<String>) {
     }
 
     private fun configureKtor(pinky: Pinky, pinkyScope: Scope) {
-        val ktor = (pinky.httpServer as KtorHttpServer)
-
-        ktor.application.install(CallLogging)
+        val ktor = pinky.httpServer
 
         val dataDir = pinkyScope.get<Fs>().resolve(".")
         val firmwareDir = pinkyScope.get<Fs.File>(named("firmwareDir"))

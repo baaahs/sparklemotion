@@ -70,6 +70,7 @@ kotlin {
 
 //    cocoapods {
 //    }
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         commonMain {
@@ -96,12 +97,24 @@ kotlin {
             }
         }
 
+        val serverCommonMain by creating {
+            dependsOn(commonMain.get())
+
+            dependencies {
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerWebsockets)
+            }
+        }
+
         jvmMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerNetty)
+//                implementation(libs.ktorServerNetty)
                 implementation(libs.ktorServerHostCommon)
                 implementation(libs.ktorServerCallLogging)
                 implementation(libs.ktorServerWebsockets)
@@ -209,7 +222,9 @@ kotlin {
             }
         }
 
-        val androidMain by getting {
+        androidMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kglAndroid)
                 implementation(libs.koinCore)
@@ -226,6 +241,8 @@ kotlin {
         }
 
         iosMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kglIos)
                 implementation(libs.koinCore)
@@ -243,8 +260,6 @@ kotlin {
                 rootProject.file("shared/build/kotlin-webpack/js/developmentExecutable")
             )
         }
-//        iosTest {
-//        }
 
         sourceSets.all {
             languageSettings.apply {
