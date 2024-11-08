@@ -219,7 +219,6 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", projects.rpc.processor)
-    add("jni", files("src/jvmMain/jni"))
 }
 
 val isProductionBuild = project.hasProperty("isProduction")
