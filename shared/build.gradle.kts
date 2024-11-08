@@ -73,12 +73,24 @@ kotlin {
             }
         }
 
+        val serverCommonMain by creating {
+            dependsOn(commonMain.get())
+
+            dependencies {
+                implementation(libs.ktorServerCore)
+                implementation(libs.ktorServerCio)
+                implementation(libs.ktorServerWebsockets)
+            }
+        }
+
         jvmMain {
+            dependsOn(serverCommonMain)
+
             dependencies {
                 implementation(libs.kotlinxCoroutinesDebug)
                 implementation(libs.kotlinxCli)
                 implementation(libs.ktorServerCore)
-                implementation(libs.ktorServerNetty)
+//                implementation(libs.ktorServerNetty)
                 implementation(libs.ktorServerHostCommon)
                 implementation(libs.ktorServerCallLogging)
                 implementation(libs.ktorServerWebsockets)
