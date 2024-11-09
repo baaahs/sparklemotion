@@ -3,9 +3,8 @@ package baaahs.visualizer.movers
 import baaahs.TestMovingHeadAdapter
 import baaahs.describe
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlin.math.absoluteValue
 
 object StateSpec : DescribeSpec({
@@ -51,6 +50,6 @@ fun State.shouldRoughlyEqual(otherState: State, difference: Float = .0001f) {
     ) {
         // cool!
     } else {
-        expect(this).toEqual(otherState)
+        this.shouldBe(otherState)
     }
 }

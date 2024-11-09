@@ -2,7 +2,6 @@ package baaahs.gl.patch
 
 import baaahs.device.PixelLocationFeed
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testToolchain
@@ -13,9 +12,9 @@ import baaahs.plugin.core.MovingHeadParams
 import baaahs.plugin.core.feed.*
 import baaahs.show.Stream
 import baaahs.show.mutable.*
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.fail
 
 object GlslGenerationSpec : DescribeSpec({
@@ -66,7 +65,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -158,7 +157,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -241,7 +240,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -330,7 +329,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -505,7 +504,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -578,7 +577,7 @@ object GlslGenerationSpec : DescribeSpec({
                 override(otherShaderActualChannel) { "notOther" }
 
                 it("should give a warning") {
-                    expect(linkedPatch.warnings).containsExactly(
+                    linkedPatch.warnings.shouldContainExactly(
                         "No upstream shader found, using default for color.\n" +
                                 "Stack:\n" +
                                 "    Resolving Track[main/color] -> [Cross-fade shader].inColor2 (color)"
@@ -587,7 +586,7 @@ object GlslGenerationSpec : DescribeSpec({
 
                 it("should use default for that content type") {
                     // TODO: WRONG WRONG WRONG we should tell the user that something's wrong?
-                    kexpect(glsl).toBe(
+                    glsl.shouldBe(
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
@@ -679,7 +678,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL including the struct") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -787,7 +786,7 @@ object GlslGenerationSpec : DescribeSpec({
             //     return p0_untitledShader_MovingHeadParams(p0_untitledShader_a.first, p0_untitledShader_a.second, 0., 0.);
             // }
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -885,7 +884,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -1015,7 +1014,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("generates GLSL, with injected data correctly resolved") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -1140,7 +1139,7 @@ object GlslGenerationSpec : DescribeSpec({
             }
 
             it("doesn't perform namespacing on struct member names") {
-                kexpect(glsl).toBe(
+                glsl.shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES

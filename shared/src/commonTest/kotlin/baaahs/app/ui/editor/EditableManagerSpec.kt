@@ -12,11 +12,11 @@ import baaahs.show.mutable.MutableIGridLayout
 import baaahs.show.mutable.MutablePatchHolder
 import baaahs.show.mutable.MutableShow
 import baaahs.ui.addObserver
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -34,11 +34,11 @@ object EditableManagerSpec : DescribeSpec({
 
         context("when there's no active session") {
             it("isEditing() is false") {
-                expect(editableManager.isEditing()).toBe(false)
+                editableManager.isEditing().shouldBeFalse()
             }
 
             it("editorPanels is empty") {
-                expect(editableManager.dialogPanels).isEmpty()
+                editableManager.dialogPanels.shouldBeEmpty()
             }
         }
 
@@ -52,20 +52,20 @@ object EditableManagerSpec : DescribeSpec({
             }
 
             it("isEditing() is true") {
-                expect(editableManager.isEditing()).toBe(true)
+                editableManager.isEditing().shouldBeTrue()
             }
 
             it("editorPanels comes from the show") {
-                expect(editableManager.dialogPanels.map { it.title })
-                    .toBe(arrayListOf("Properties", "Patches"))
+                editableManager.dialogPanels.map { it.title }
+                    .shouldBe(arrayListOf("Properties", "Patches"))
             }
 
             it("selectedPanel defaults to the first") {
-                expect(editableManager.selectedPanel?.title).toBe("Properties")
+                editableManager.selectedPanel?.title.shouldBe("Properties")
             }
 
             it("creates a MutableShow") {
-                expect(editableManager.session!!.mutableDocument.build()).toBe(baseShow)
+                editableManager.session!!.mutableDocument.build().shouldBe(baseShow)
             }
 
             it("finds the relevant MutableEditable") {
@@ -77,7 +77,7 @@ object EditableManagerSpec : DescribeSpec({
             }
 
             it("is not modified") {
-                expect(editableManager.isModified()).toBe(false)
+                editableManager.isModified().shouldBeFalse()
             }
 
             context("when a change has been made to the editable") {
@@ -87,12 +87,12 @@ object EditableManagerSpec : DescribeSpec({
                 }
 
                 it("pushes the changed show onto the undo stack") {
-                    expect(editableManager.undoStack.stack.map { it.document.title })
-                        .containsExactly("Sample Show", "different title")
+                    editableManager.undoStack.stack.map { it.document.title }
+                        .shouldContainExactly("Sample Show", "different title")
                 }
 
                 it("is modified") {
-                    expect(editableManager.isModified()).toBe(true)
+                    editableManager.isModified().shouldBeTrue()
                 }
 
                 context("when changes are applied") {
@@ -104,16 +104,16 @@ object EditableManagerSpec : DescribeSpec({
                     }
 
                     it("calls onApply callback with new show") {
-                        expect(showUpdates.map { it.title }).containsExactly("different title")
+                        showUpdates.map { it.title }.shouldContainExactly("different title")
                     }
 
                     it("still has the same undo stack") {
-                        expect(editableManager.undoStack.stack.map { it.document.title })
-                            .containsExactly("Sample Show","different title")
+                        editableManager.undoStack.stack.map { it.document.title }
+                            .shouldContainExactly("Sample Show", "different title")
                     }
 
                     it("is not modified") {
-                        expect(editableManager.isModified()).toBe(false)
+                        editableManager.isModified().shouldBeFalse()
                     }
 
                     it("has a different MutableShow") {
@@ -126,7 +126,7 @@ object EditableManagerSpec : DescribeSpec({
                         }
 
                         it("is modified") {
-                            expect(editableManager.isModified()).toBe(true)
+                            editableManager.isModified().shouldBeTrue()
                         }
 
                         context("and user clicks Redo") {
@@ -135,7 +135,7 @@ object EditableManagerSpec : DescribeSpec({
                             }
 
                             it("is not modified") {
-                                expect(editableManager.isModified()).toBe(false)
+                                editableManager.isModified().shouldBeFalse()
                             }
                         }
                     }
@@ -165,21 +165,20 @@ object EditableManagerSpec : DescribeSpec({
                 val mutableButton by value { session.mutableEditable as MutableButtonControl }
 
                 it("creates a new empty button") {
-                    expect(mutableButton.title).toBe("New Button")
+                    mutableButton.title.shouldBe("New Button")
                 }
 
                 it("adds the new button to the MutableButtonGroup") {
-                    expect(mutableButtonGroupGridItem.layout!!.items.map { it.control.title })
-                        .containsExactly("Red Yellow Green", "Fire", "Blue Aqua Green", "Checkerboard", "New Button")
+                    mutableButtonGroupGridItem.layout!!.items.map { it.control.title }
+                        .shouldContainExactly("Red Yellow Green", "Fire", "Blue Aqua Green", "Checkerboard", "New Button")
                 }
 
                 it("returns the new button as the MutableEditable") {
-                    expect(session.mutableEditable)
-                        .toBe(mutableButtonGroupGridItem.layout!!.find("New Button").control)
+                    session.mutableEditable.shouldBe(mutableButtonGroupGridItem.layout!!.find("New Button").control)
                 }
 
                 it("is modified because a button has been added to the button group") {
-                    expect(editableManager.isModified()).toBe(true)
+                    editableManager.isModified().shouldBeTrue()
                 }
 
                 context("when a change has been made to the editable") {
@@ -189,8 +188,8 @@ object EditableManagerSpec : DescribeSpec({
                     }
 
                     it("pushes the changed show with the same edit intent onto the undo stack") {
-                        expect(editableManager.undoStack.stack.map { it.editIntent })
-                            .containsExactly(editIntent,editIntent)
+                        editableManager.undoStack.stack.map { it.editIntent }
+                            .shouldContainExactly(editIntent, editIntent)
                     }
 
                     context("when changes are applied") {
@@ -201,17 +200,17 @@ object EditableManagerSpec : DescribeSpec({
                         val savedButtonId by value { newShow.findControlIdByTitle("My new button") }
 
                         it("still has the same undo stack") {
-                            expect(editableManager.undoStack.stack.map { it.editIntent })
-                                .containsExactly(editIntent,editIntent)
+                            editableManager.undoStack.stack.map { it.editIntent }
+                                .shouldContainExactly(editIntent, editIntent)
                         }
 
                         it("is not modified") {
-                            expect(editableManager.isModified()).toBe(false)
+                            editableManager.isModified().shouldBeFalse()
                         }
 
                         it("has a new EditIntent which modifies the now-existing button") {
                             val newEditIntent = editableManager.session!!.editIntent
-                            expect(newEditIntent).toBe(ControlEditIntent(savedButtonId))
+                            newEditIntent.shouldBe(ControlEditIntent(savedButtonId))
                         }
                     }
                 }

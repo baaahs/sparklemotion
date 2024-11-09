@@ -6,12 +6,10 @@ import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.model.importers.ObjImporter
 import baaahs.only
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.size
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
 class ObjImporterSpec : DescribeSpec({
@@ -35,10 +33,10 @@ class ObjImporterSpec : DescribeSpec({
         val results by value { ObjImporter.import(objData, idPrefix = "") }
 
         it("imports simple OBJ data") {
-            expect(results.entities).size.toEqual(1)
+            results.entities.size.shouldBe(1)
             val surface = results.entities.only()
-            expect(surface.name).toEqual("Panel 1")
-            expect((surface as Model.Surface).faces.map { it.vertices.toList() }).containsExactly(
+            surface.name.shouldBe("Panel 1")
+            (surface as Model.Surface).faces.map { it.vertices.toList() }.shouldContainExactly(
                 listOf(
                     Vector3F(x = 0.0, y = 48.0, z = 0.0),
                     Vector3F(x = 48.0, y = 120.0, z = 0.0),
@@ -53,7 +51,7 @@ class ObjImporterSpec : DescribeSpec({
         }
 
         it("lists no errors") {
-            expect(results.errors).isEmpty()
+            results.errors.shouldBeEmpty()
         }
 
         context("when it contains an error") {
@@ -64,11 +62,11 @@ class ObjImporterSpec : DescribeSpec({
             }
 
             it("creates no entities") {
-                expect(results.entities).isEmpty()
+                results.entities.shouldBeEmpty()
             }
 
             it("lists errors") {
-                expect(results.errors).containsExactly(
+                results.errors.shouldContainExactly(
                     Importer.Error("A vertex must have three coordinates: v 1 2", 1)
                 )
             }

@@ -4,7 +4,6 @@ import baaahs.control.*
 import baaahs.device.PixelLocationFeed
 import baaahs.gl.data.FeedContext
 import baaahs.gl.glsl.GlslType
-import baaahs.gl.kexpect
 import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
@@ -21,9 +20,8 @@ import baaahs.show.mutable.MutableFeedPort
 import baaahs.show.mutable.MutableGridTab
 import baaahs.show.mutable.MutableShow
 import baaahs.sm.server.PinkyArgs
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -84,7 +82,7 @@ object ShowSerializationSpec : DescribeSpec({
                 it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
                     val feed = show.feeds["somePluginFeed"]!!
-                    expect(feed).toEqual(
+                    feed.shouldBe(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
                             "Unknown plugin \"some.plugin\".",
@@ -111,7 +109,7 @@ object ShowSerializationSpec : DescribeSpec({
                 it("deserializes to an UnknownFeed") {
                     val show = Show.fromJson(plugins, showJson.toString())
                     val feed = show.feeds["somePluginFeed"]!!
-                    expect(feed).toEqual(
+                    feed.shouldBe(
                         UnknownFeed(
                             PluginRef("some.plugin", "Fake"),
                             "Unknown feed \"some.plugin:Fake\".",
@@ -351,7 +349,7 @@ fun Plugins.expectJson(expected: JsonElement, block: () -> JsonElement) {
     }
 
     fun JsonElement.toStr() = json.encodeToString(JsonElement.serializer(), this)
-    kexpect(block().toStr()).toBe(expected.toStr())
+    block().toStr().shouldBe(expected.toStr())
 }
 
 @Serializable

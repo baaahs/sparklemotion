@@ -1,21 +1,18 @@
 package baaahs.ui.gridlayout
 
 import baaahs.geom.Vector2I
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object GridSpec : DescribeSpec({
     describe("test helpers") {
         it("convert from string to layout") {
-            expect(
-                """
-                        AA.B
-                        AA..
-                        .CC.
-                    """.trimIndent().toLayout()
-            ).toEqual(
+            """
+                AA.B
+                AA..
+                .CC.
+            """.trimIndent().toLayout().shouldBe(
                 Layout(
                     4, 3,
                     LayoutItem(0, 0, 2, 2, "A"),
@@ -26,19 +23,17 @@ object GridSpec : DescribeSpec({
         }
 
         it("convert from layout to string") {
-            expect(
-                Layout(
-                    4, 3,
-                    LayoutItem(0, 0, 2, 2, "A"),
-                    LayoutItem(3, 0, 1, 1, "B"),
-                    LayoutItem(1, 2, 2, 1, "C")
-                ).stringify()
-            ).toEqual(
+            Layout(
+                4, 3,
+                LayoutItem(0, 0, 2, 2, "A"),
+                LayoutItem(3, 0, 1, 1, "B"),
+                LayoutItem(1, 2, 2, 1, "C")
+            ).stringify().shouldBe(
                 """
-                        AA.B
-                        AA..
-                        .CC.
-                    """.trimIndent()
+                    AA.B
+                    AA..
+                    .CC.
+                """.trimIndent()
             )
         }
     }

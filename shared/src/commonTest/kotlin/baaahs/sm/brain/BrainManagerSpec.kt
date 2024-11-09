@@ -16,11 +16,10 @@ import baaahs.scene.FixtureMappingData
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.sm.brain.proto.BrainHelloMessage
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.feature
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.properties.shouldHaveValue
 
 object BrainManagerSpec : DescribeSpec({
     describe<BrainManager> {
@@ -52,7 +51,7 @@ object BrainManagerSpec : DescribeSpec({
 
         context("with no declared controllers") {
             it("no notifications are sent") {
-                expect(listener.added).isEmpty()
+                listener.added.shouldBeEmpty()
             }
         }
 
@@ -72,7 +71,7 @@ object BrainManagerSpec : DescribeSpec({
 
             context("without any word from the actual controller") {
                 it("no notifications are sent") {
-                    expect(listener.added).isEmpty()
+                    listener.added.shouldBeEmpty()
                 }
             }
 
@@ -82,14 +81,12 @@ object BrainManagerSpec : DescribeSpec({
                 }
 
                 it("notifies listener of controller") {
-                    expect(listener.added.map { it.name }).containsExactly("surface1@Brain:brain1")
+                    listener.added.map { it.name }.shouldContainExactly("surface1@Brain:brain1")
                 }
 
                 it("applies that config") {
                     val fixture = listener.added.only("fixture")
-                    expect(fixture) {
-                        feature { f(it::componentCount) }.toEqual(123)
-                    }
+                    fixture::componentCount shouldHaveValue 123
                 }
             }
         }

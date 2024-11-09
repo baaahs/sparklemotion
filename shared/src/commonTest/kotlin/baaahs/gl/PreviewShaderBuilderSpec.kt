@@ -14,13 +14,12 @@ import baaahs.model.ModelInfo
 import baaahs.scene.SceneMonitor
 import baaahs.show.Shader
 import baaahs.shows.FakeGlContext
-import baaahs.toNotEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.assertNotNull
@@ -39,7 +38,7 @@ object PreviewShaderBuilderSpec : DescribeSpec({
         val renderEngine by value { PreviewRenderEngine(FakeGlContext(), 100, 100) }
 
         it("is in Unbuilt state") {
-            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Unbuilt)
+            previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Unbuilt)
         }
 
         context("when startBuilding() is called") {
@@ -48,22 +47,22 @@ object PreviewShaderBuilderSpec : DescribeSpec({
             }
 
             it("is in Analyzing state") {
-                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
+                previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Analyzing)
             }
 
             context("when Analyzing succeeds") {
                 beforeEach { dispatcher.runOne() }
 
                 it("is in Linking state") {
-                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
-                    expect(previewShaderBuilder.openShader).toNotEqual(null)
+                    previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Linking)
+                    previewShaderBuilder.openShader.shouldNotBeNull()
                 }
 
                 context("after idle") {
                     beforeEach { dispatcher.runCurrent() }
 
                     it("is in Linked state") {
-                        expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
+                        previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Linked)
                     }
 
                     it("has a previewPatch") {
@@ -75,7 +74,7 @@ object PreviewShaderBuilderSpec : DescribeSpec({
                     }
 
                     it("has no gadgets yet") {
-                        expect(previewShaderBuilder.gadgets).isEmpty()
+                        previewShaderBuilder.gadgets.shouldBeEmpty()
                     }
 
                     context("when there's a problem parsing hints") {
@@ -93,8 +92,8 @@ object PreviewShaderBuilderSpec : DescribeSpec({
                         }
 
                         it("should not result in a build error") {
-                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
-                            expect(previewShaderBuilder.openShader!!.errors).isEmpty()
+                            previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Linked)
+                            previewShaderBuilder.openShader!!.errors.shouldBeEmpty()
                         }
                     }
 
@@ -102,25 +101,25 @@ object PreviewShaderBuilderSpec : DescribeSpec({
                         beforeEach { previewShaderBuilder.startCompile(renderEngine) }
 
                         it("is in Compiling state") {
-                            expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Compiling)
+                            previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Compiling)
                         }
 
                         context("after idle") {
                             beforeEach { dispatcher.runCurrent() }
 
                             it("is in Success state") {
-                                expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
+                                previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Success)
                             }
 
                             it("has gadgets") {
-                                expect(previewShaderBuilder.gadgets.map {
+                                previewShaderBuilder.gadgets.map {
                                     when (val openControl = it.openControl) {
                                         is OpenSliderControl -> openControl.slider
                                         is OpenColorPickerControl -> openControl.colorPicker
                                         else -> error("huh? unsupported $openControl")
                                     }
-                                })
-                                    .containsExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
+                                }
+                                    .shouldContainExactly(Slider("Checkerboard Size", .1f, .001f, 1f))
                             }
                         }
                     }
@@ -143,8 +142,8 @@ object PreviewShaderBuilderSpec : DescribeSpec({
                 beforeEach { dispatcher.runOne() }
 
                 it("should result in a build error") {
-                    expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)
-                    expect(previewShaderBuilder.openShader!!.errors).containsExactly(
+                    previewShaderBuilder.state.shouldBe(ShaderBuilder.State.Errors)
+                    previewShaderBuilder.openShader!!.errors.shouldContainExactly(
                         GlslError("unknown directive #unknownDirective", row = 1)
                     )
                 }

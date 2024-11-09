@@ -6,23 +6,21 @@ import baaahs.gl.testPlugins
 import baaahs.kotest.value
 import baaahs.show.migration.V4_FlattenGadgetControls
 import baaahs.toBeSpecified
-import baaahs.toEqualJson
-import baaahs.useBetterSpekReporter
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @Suppress("ClassName")
 object V4_FlattenGadgetControlsSpec : DescribeSpec({
-    useBetterSpekReporter()
-
     describe<V4_FlattenGadgetControls> {
         val migration by value { V4_FlattenGadgetControls }
         val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<String> { toBeSpecified() }
         val fromJsonObj by value { json.parseToJsonElement(fromJson) as JsonObject }
         val toJsonObj by value { migration.migrate(fromJsonObj) }
+        val toJsonStr by value { json.encodeToString(JsonElement.serializer(), toJsonObj) }
 
         context("migration of gadget controls") {
             override(fromJson) {
@@ -45,7 +43,7 @@ object V4_FlattenGadgetControlsSpec : DescribeSpec({
             }
 
             it("replaces any old layout with new sample layout") {
-                expect(toJsonObj).toEqualJson(
+                toJsonStr.shouldEqualJson(
                     /**language=json*/
                     """
                       {

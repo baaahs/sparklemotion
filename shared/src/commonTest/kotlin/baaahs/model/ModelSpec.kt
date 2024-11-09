@@ -9,9 +9,8 @@ import baaahs.geom.compose
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.nuffin
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object ModelSpec : DescribeSpec({
     describe<Model> {
@@ -24,7 +23,7 @@ object ModelSpec : DescribeSpec({
                 )
                 val entity =
                     data.open(Matrix4F.compose(Vector3F(.5, .5, .5), EulerAngle.identity))
-                expect(entity.position).toEqual(Vector3F(1.5, 1.5, 1.5))
+                entity.position.shouldBe(Vector3F(1.5, 1.5, 1.5))
             }
         }
 
@@ -54,26 +53,26 @@ object ModelSpec : DescribeSpec({
                 }
 
                 it("should include all points defining a surface within modelBounds") {
-                    expect(model.modelBounds)
-                        .toEqual(Vector3F(-1f, 0f, -.25f) to Vector3F(1f, 1f, 5f))
+                    model.modelBounds
+                        .shouldBe(Vector3F(-1f, 0f, -.25f) to Vector3F(1f, 1f, 5f))
                 }
 
                 it("should compute the correct center") {
-                    expect(model.center)
-                        .toEqual(Vector3F(0f, .5f, 2.375f))
+                    model.center
+                        .shouldBe(Vector3F(0f, .5f, 2.375f))
                 }
 
                 context("with a transformation") {
                     value(position) { Vector3F.unit3d }
 
                     it("should include all points defining a surface within modelBounds") {
-                        expect(model.modelBounds)
-                            .toEqual(Vector3F(0f, 1f, .75f) to Vector3F(2f, 2f, 6f))
+                        model.modelBounds
+                            .shouldBe(Vector3F(0f, 1f, .75f) to Vector3F(2f, 2f, 6f))
                     }
 
                     it("should compute the correct center") {
-                        expect(model.center)
-                            .toEqual(Vector3F(1f, 1.5f, 3.375f))
+                        model.center
+                            .shouldBe(Vector3F(1f, 1.5f, 3.375f))
                     }
                 }
             }
@@ -90,26 +89,26 @@ object ModelSpec : DescribeSpec({
                 }
 
                 it("should include start and end points in a light bar") {
-                    expect(model.modelBounds)
-                        .toEqual(Vector3F(-1f, -3f, -.25f) to Vector3F(7f, 1f, 5.25f))
+                    model.modelBounds
+                        .shouldBe(Vector3F(-1f, -3f, -.25f) to Vector3F(7f, 1f, 5.25f))
                 }
 
                 it("should compute the correct center") {
-                    expect(model.center)
-                        .toEqual(Vector3F(3f, -1f, 2.5f))
+                    model.center
+                        .shouldBe(Vector3F(3f, -1f, 2.5f))
                 }
 
                 context("with a transformation") {
                     value(bar1Position) { Vector3F.unit3d }
 
                     it("should include start and end points in a light bar") {
-                        expect(model.modelBounds)
-                            .toEqual(Vector3F(0f, -3f, -.25f) to Vector3F(7f, 2f, 6f))
+                        model.modelBounds
+                            .shouldBe(Vector3F(0f, -3f, -.25f) to Vector3F(7f, 2f, 6f))
                     }
 
                     it("should compute the correct center") {
-                        expect(model.center)
-                            .toEqual(Vector3F(3.5f, -.5f, 2.875f))
+                        model.center
+                            .shouldBe(Vector3F(3.5f, -.5f, 2.875f))
                     }
                 }
             }
@@ -123,13 +122,13 @@ object ModelSpec : DescribeSpec({
                 }
 
                 it("should include all points on both light rings") {
-                    expect(model.modelBounds)
-                        .toEqual(Vector3F(-2f, -1f, 0f) to Vector3F(2f, 2f, 5f))
+                    model.modelBounds
+                        .shouldBe(Vector3F(-2f, -1f, 0f) to Vector3F(2f, 2f, 5f))
                 }
 
                 it("should compute the correct center") {
-                    expect(model.center)
-                        .toEqual(Vector3F(0f, .5f, 2.5f))
+                    model.center
+                        .shouldBe(Vector3F(0f, .5f, 2.5f))
                 }
             }
         }

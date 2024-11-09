@@ -7,9 +7,8 @@ import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object FilterShaderSpec : DescribeSpec({
@@ -30,8 +29,8 @@ object FilterShaderSpec : DescribeSpec({
             }
 
             it("#match returns MatchAndFilter") {
-                expect(FilterShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.MatchAndFilter)
+                FilterShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.MatchAndFilter)
             }
         }
 
@@ -44,8 +43,8 @@ object FilterShaderSpec : DescribeSpec({
             }
 
             it("#match returns NoMatch") {
-                expect(FilterShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.NoMatch)
+                FilterShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.NoMatch)
             }
         }
 
@@ -53,8 +52,8 @@ object FilterShaderSpec : DescribeSpec({
             override(shaderText) { shaderType.newShaderFromTemplate().src }
 
             it("generates a filter shader") {
-                expect(openShader.shaderType)
-                    .toEqual(shaderType)
+                openShader.shaderType
+                    .shouldBe(shaderType)
             }
         }
 
@@ -71,8 +70,8 @@ object FilterShaderSpec : DescribeSpec({
             }
 
             it("shouldn't count as a filter") {
-                expect(FilterShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.NoMatch)
+                FilterShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.NoMatch)
             }
         }
     }

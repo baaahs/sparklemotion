@@ -2,9 +2,8 @@ package baaahs.show.mutable
 
 import baaahs.describe
 import baaahs.kotest.value
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldContainExactly
 
 object MutableLayoutSpec : DescribeSpec({
     describe<MutableLegacyTab> {
@@ -20,9 +19,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.appendColumn() }
 
             it("should duplicate the last column's dimension and panels") {
-                expect(columns).containsExactly(1.fr, 2.fr, 2.fr)
-                expect(rows).containsExactly(3.fr, 4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(1.fr, 2.fr, 2.fr)
+                rows.shouldContainExactly(3.fr, 4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "a", "b", "b",
                     "c", "d", "d",
                 )
@@ -33,9 +32,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.duplicateColumn(0) }
 
             it("should duplicate the specified column's dimension and panels") {
-                expect(columns).containsExactly(1.fr, 1.fr, 2.fr)
-                expect(rows).containsExactly(3.fr, 4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(1.fr, 1.fr, 2.fr)
+                rows.shouldContainExactly(3.fr, 4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "a", "a", "b",
                     "c", "c", "d",
                 )
@@ -46,9 +45,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.deleteColumn(0) }
 
             it("should delete the specified column's dimension and panels") {
-                expect(columns).containsExactly(2.fr)
-                expect(rows).containsExactly(3.fr, 4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(2.fr)
+                rows.shouldContainExactly(3.fr, 4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "b",
                     "d",
                 )
@@ -59,9 +58,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.appendRow() }
 
             it("should duplicate the last row's dimension and panels") {
-                expect(columns).containsExactly(1.fr, 2.fr)
-                expect(rows).containsExactly(3.fr, 4.fr, 4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(1.fr, 2.fr)
+                rows.shouldContainExactly(3.fr, 4.fr, 4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "a", "b",
                     "c", "d",
                     "c", "d",
@@ -73,9 +72,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.duplicateRow(0) }
 
             it("should duplicate the specified row's dimension and panels") {
-                expect(columns).containsExactly(1.fr, 2.fr)
-                expect(rows).containsExactly(3.fr, 3.fr, 4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(1.fr, 2.fr)
+                rows.shouldContainExactly(3.fr, 3.fr, 4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "a", "b",
                     "a", "b",
                     "c", "d",
@@ -87,9 +86,9 @@ object MutableLayoutSpec : DescribeSpec({
             beforeEach { tab.deleteRow(0) }
 
             it("should delete the specified row's dimension and panels") {
-                expect(columns).containsExactly(1.fr, 2.fr)
-                expect(rows).containsExactly(4.fr)
-                expect(areas.map { it.title }).containsExactly(
+                columns.shouldContainExactly(1.fr, 2.fr)
+                rows.shouldContainExactly(4.fr)
+                areas.map { it.title }.shouldContainExactly(
                     "c", "d",
                 )
             }

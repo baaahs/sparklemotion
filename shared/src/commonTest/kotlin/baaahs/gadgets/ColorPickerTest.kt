@@ -2,8 +2,7 @@ package baaahs.gadgets
 
 import baaahs.Color
 import baaahs.serializationRoundTrip
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.matchers.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -15,11 +14,11 @@ class ColorPickerTest {
         slider.color = Color(654321)
 
         val otherColorPicker = serializationRoundTrip(ColorPicker.serializer(), slider)
-        expect(otherColorPicker.title).toBe("name")
-        expect(otherColorPicker.color).toBe(Color(123456))
+        otherColorPicker.title.shouldBe("name")
+        otherColorPicker.color.shouldBe(Color(123456))
 
         otherColorPicker.state.putAll(slider.state)
-        expect(otherColorPicker.color).toBe(Color(654321))
+        otherColorPicker.color.shouldBe(Color(654321))
     }
 
     @Test

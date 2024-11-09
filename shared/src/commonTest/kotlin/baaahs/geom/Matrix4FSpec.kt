@@ -2,10 +2,9 @@ package baaahs.geom
 
 import baaahs.describe
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.floats.shouldBeWithinPercentageOf
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
@@ -34,39 +33,39 @@ object Matrix4FSpec : DescribeSpec({
                 )
 
                 matrix.elements.zip(expected).forEachIndexed { index, (actual, expected) ->
-                    expect(actual).toBeWithErrorTolerance(expected, 0.0001f)
+                    actual.shouldBeWithinPercentageOf(expected, 0.0001)
                 }
             }
 
             it("should have correct scale") {
-                expect(matrix.scale.x).toBeWithErrorTolerance(1f, .00001f)
-                expect(matrix.scale.y).toBeWithErrorTolerance(1f, .00001f)
-                expect(matrix.scale.z).toBeWithErrorTolerance(1.5f, .00001f)
+                matrix.scale.x.shouldBeWithinPercentageOf(1f, .0001)
+                matrix.scale.y.shouldBeWithinPercentageOf(1f, .0001)
+                matrix.scale.z.shouldBeWithinPercentageOf(1.5f, .0001)
             }
 
             context("times") {
                 it("should premultiply") {
-                    expect(matrix * Matrix4F.identity)
-                        .toEqual(matrix)
+                    (matrix * Matrix4F.identity)
+                        .shouldBe(matrix)
                 }
 
                 it("should postmultiply") {
-                    expect(Matrix4F.identity * matrix)
-                        .toEqual(matrix)
+                    (Matrix4F.identity * matrix)
+                        .shouldBe(matrix)
                 }
             }
         }
 
         describe("serialization") {
             it("should serialize") {
-                expect(Json.encodeToJsonElement(Matrix4F.identity)).toEqual(
+                Json.encodeToJsonElement(Matrix4F.identity).shouldBe(
                     JsonArray(Matrix4F.identity.elements.map { JsonPrimitive(it) })
                 )
             }
 
             it("should deserialize") {
                 val json = JsonArray(Matrix4F.identity.elements.map { JsonPrimitive(it) })
-                expect(Json.decodeFromJsonElement(Matrix4F.serializer(), json)).toEqual(
+                Json.decodeFromJsonElement(Matrix4F.serializer(), json).shouldBe(
                     Matrix4F.identity
                 )
             }

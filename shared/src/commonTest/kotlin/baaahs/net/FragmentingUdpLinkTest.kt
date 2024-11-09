@@ -2,9 +2,8 @@ package baaahs.net
 
 import baaahs.describe
 import baaahs.kotest.value
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlin.random.Random
 
 object FragmentingUdpSocketSpec : DescribeSpec({
@@ -37,27 +36,27 @@ object FragmentingUdpSocketSpec : DescribeSpec({
             val smallPayload = byteArrayOf(0, 1, 2, 3)
             send(smallPayload)
 
-            expect(receivedPayloads.size).toBe(1)
-            expect(receivedPayloads.first().toList()).toBe(smallPayload.toList())
-            expect(recvLink.receviedPackets.size).toBe(1)
+            receivedPayloads.size.shouldBe(1)
+            receivedPayloads.first().toList().shouldBe(smallPayload.toList())
+            recvLink.receviedPackets.size.shouldBe(1)
         }
 
         it("shouldFragmentAndReassembleLargerPayloads") {
             val mediumPayload = Random.nextBytes((1400 * 4.5).toInt())
             send(mediumPayload)
 
-            expect(receivedPayloads.size).toBe(1)
-            expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
-            expect(recvLink.receviedPackets.size).toBe(5)
+            receivedPayloads.size.shouldBe(1)
+            receivedPayloads.first().toList().shouldBe(mediumPayload.toList())
+            recvLink.receviedPackets.size.shouldBe(5)
         }
 
         it("shouldFragmentAndReassemblePayloadsLargerThan64k") {
             val mediumPayload = Random.nextBytes(100_000)
             send(mediumPayload)
 
-            expect(receivedPayloads.size).toBe(1)
-            expect(receivedPayloads.first().toList()).toBe(mediumPayload.toList())
-            expect(recvLink.receviedPackets.size).toBe(73)
+            receivedPayloads.size.shouldBe(1)
+            receivedPayloads.first().toList().shouldBe(mediumPayload.toList())
+            recvLink.receviedPackets.size.shouldBe(73)
         }
     }
 })

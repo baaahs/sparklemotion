@@ -2,9 +2,8 @@ package baaahs.show.migration
 
 import baaahs.describe
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 
@@ -30,7 +29,7 @@ object V10_RemoveVarPrefixFromXyPadSpec : DescribeSpec({
         it("should remove `varPrefix` key from `baaahs.Core:XyPad` controls") {
             val to = V10_RemoveVarPrefixFromXyPad.migrate(from)
 
-            expect(to).toEqual( /*language=json*/
+            to.shouldBe( /*language=json*/
                 """
                     {
                         "feeds": {

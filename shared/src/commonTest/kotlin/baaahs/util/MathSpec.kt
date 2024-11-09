@@ -1,61 +1,60 @@
 package baaahs.util
 
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.because
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlin.math.PI
 
 object MathSpec : DescribeSpec({
     describe("Math utils") {
         describe("degrees to radians") {
             it("should return a value in (-π, π]") {
-                expect(deg2rad(180.0)).because("180°") {
-                    toEqual(PI)
+                withClue("180°")  {
+                    deg2rad(180.0) shouldBe(PI)
                 }
-                expect(deg2rad(90.0)).because("90°") {
-                    toEqual(PI / 2)
+                withClue("90°") {
+                    deg2rad(90.0).shouldBe(PI / 2)
                 }
-                expect(deg2rad(-90.0)).because("-90°") {
-                    toEqual(-PI / 2)
+                withClue("-90°") {
+                    deg2rad(-90.0).shouldBe(-PI / 2)
                 }
-                expect(deg2rad(-180.0)).because("-180°") {
-                    toEqual(PI)
+                withClue("-180°") {
+                    deg2rad(-180.0).shouldBe(PI)
                 }
-                expect(deg2rad(360.0)).because("360°") {
-                    toEqual(0.0)
+                withClue("360°") {
+                    deg2rad(360.0).shouldBe(0.0)
                 }
-                expect(deg2rad(-540.0)).because("-540°") {
-                    toEqual(PI)
+                withClue("-540°") {
+                    deg2rad(-540.0).shouldBe(PI)
                 }
             }
         }
 
         describe("radians to degrees") {
             it("should return a value in (-180, 180]") {
-                expect(rad2deg(PI)).because("π") {
-                    toEqual(180.0)
+                withClue("π") {
+                    rad2deg(PI).shouldBe(180.0)
                 }
-                expect(rad2deg(2 * PI)).because("2π") {
-                    toEqual(0.0)
+                withClue("2π") {
+                    rad2deg(2 * PI).shouldBe(0.0)
                 }
-                expect(rad2deg(3 * PI)).because("3π") {
-                    toEqual(180.0)
+                withClue("3π") {
+                    rad2deg(3 * PI).shouldBe(180.0)
                 }
-                expect(rad2deg(PI / 2)).because("π/2") {
-                    toEqual(90.0)
+                withClue("π/2") {
+                    rad2deg(PI / 2).shouldBe(90.0)
                 }
-                expect(rad2deg(-PI / 2)).because("-π/2") {
-                    toEqual(-90.0)
+                withClue("-π/2") {
+                    rad2deg(-PI / 2).shouldBe(-90.0)
                 }
-                expect(rad2deg(-PI)).because("-π") {
-                    toEqual(180.0)
+                withClue("-π") {
+                    rad2deg(-PI).shouldBe(180.0)
                 }
-                expect(rad2deg(0.0)).because("0") {
-                    toEqual(0.0)
+                withClue("0") {
+                    rad2deg(0.0).shouldBe(0.0)
                 }
-                expect(rad2deg(-1.5 * PI)).because("π") {
-                    toEqual(90.0)
+                withClue("π") {
+                    rad2deg(-1.5 * PI).shouldBe(90.0)
                 }
             }
         }

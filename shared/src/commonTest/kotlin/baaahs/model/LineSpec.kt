@@ -3,9 +3,8 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlin.math.sqrt
 
 object LineSpec : DescribeSpec({
@@ -24,11 +23,11 @@ object LineSpec : DescribeSpec({
 
         context("shortestDistanceTo") {
             it("calculates the shortest distance to a point") {
-                expect(line.shortestDistanceTo(Vector3F(0f, 0f, 0f)))
-                    .toEqual(0f)
+                line.shortestDistanceTo(Vector3F(0f, 0f, 0f))
+                    .shouldBe(0f)
 
-                expect(line.shortestDistanceTo(Vector3F(1f, 1f, 0f)))
-                    .toEqual(sqrt(2f) / 2f)
+                line.shortestDistanceTo(Vector3F(1f, 1f, 0f))
+                    .shouldBe(sqrt(2f) / 2f)
             }
         }
     }

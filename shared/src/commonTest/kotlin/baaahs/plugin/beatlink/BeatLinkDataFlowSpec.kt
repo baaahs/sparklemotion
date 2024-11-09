@@ -13,9 +13,8 @@ import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeGlslProgram
 import baaahs.shows.FakeShowPlayer
 import baaahs.sm.server.PinkyArgs
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -58,12 +57,12 @@ object BeatLinkDataFlowSpec : DescribeSpec({
                 programFeed.setOnProgram()
 
                 val beatUniform = fakeGlslProgram.uniforms["in_beatInfo.beat"]!!
-                expect(beatUniform.value).toEqual(2f)
+                beatUniform.value.shouldBe(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
                 testRig.dispatcher.advanceUntilIdle()
                 programFeed.setOnProgram()
-                expect(beatUniform.value).toEqual(2.5f)
+                beatUniform.value.shouldBe(2.5f)
             }
 
             it("flows from beat source to client feed") {
@@ -74,12 +73,12 @@ object BeatLinkDataFlowSpec : DescribeSpec({
                 programFeed.setOnProgram()
 
                 val beatUniform = fakeGlslProgram.uniforms["in_beatInfo.beat"]!!
-                expect(beatUniform.value).toEqual(2f)
+                beatUniform.value.shouldBe(2f)
 
                 fakeBeatSource.setBeatData(BeatData(1.0, 400))
                 testRig.dispatcher.advanceUntilIdle()
                 programFeed.setOnProgram()
-                expect(beatUniform.value).toEqual(2.5f)
+                beatUniform.value.shouldBe(2.5f)
             }
         }
     }

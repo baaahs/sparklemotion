@@ -13,13 +13,12 @@ import baaahs.glsl.Shaders
 import baaahs.kotest.value
 import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.hasSize
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.maps.shouldBeEmpty
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
@@ -36,14 +35,14 @@ object GlslAnalyzerSpec : DescribeSpec({
                 val shaderAnalyzer by value { glslAnalyzer.detectDialect(glslParser.parse(shaderText)) }
 
                 it("is generic") {
-                    expect(shaderAnalyzer.dialect).toBe(GenericShaderDialect)
+                    shaderAnalyzer.dialect.shouldBe(GenericShaderDialect)
                 }
 
                 context("for shaders having a mainImage function") {
                     override(shaderText) { "void mainImage() {}" }
 
                     it("is ShaderToy") {
-                        expect(shaderAnalyzer.dialect).toBe(ShaderToyShaderDialect)
+                        shaderAnalyzer.dialect.shouldBe(ShaderToyShaderDialect)
                     }
                 }
             }
@@ -62,7 +61,7 @@ object GlslAnalyzerSpec : DescribeSpec({
                     }
 
                     it("should report them in the ValidationResult") {
-                        expect(validationResult.errors.toSet()).containsExactly(
+                        validationResult.errors.toSet().shouldContainExactly(
                             GlslError("Input port \"foo\" content type is \"unknown/float\"", 1),
                             GlslError("Input port \"inColor\" content type is \"unknown/vec4\"", 2),
                             GlslError("Output port \"[return value]\" content type is \"unknown/vec4\"", 2)
@@ -84,7 +83,7 @@ object GlslAnalyzerSpec : DescribeSpec({
                 }
 
                 it("finds the title") {
-                    expect(importedShader.title).toBe("This Shader's Name")
+                    importedShader.title.shouldBe("This Shader's Name")
                 }
             }
 
@@ -111,17 +110,28 @@ object GlslAnalyzerSpec : DescribeSpec({
                     }
 
                     it("finds the entry point function") {
-                        expect(openShader.entryPoint.name).toBe("main")
+                        openShader.entryPoint.name.shouldBe("main")
                     }
 
                     it("creates inputs for implicit uniforms") {
-                        expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
-                            .containsExactly(
-                                InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
+                        openShader.inputPorts.map { it.copy(glslArgSite = null) }
+                            .shouldContainExactly(
+                                InputPort(
+                                    "gl_FragCoord",
+                                    ContentType.UvCoordinate,
+                                    GlslType.Vec4,
+                                    "Coordinates",
+                                    isImplicit = true
+                                ),
                                 InputPort("time", ContentType.Time, GlslType.Float, "Time"),
                                 InputPort("resolution", ContentType.Resolution, GlslType.Vec2, "Resolution"),
                                 InputPort("blueness", ContentType.unknown(GlslType.Float), GlslType.Float, "Blueness"),
-                                InputPort("bluenesses", ContentType.unknown(GlslType.Float.arrayOf(3)), GlslType.Float.arrayOf(3), "Bluenesses")
+                                InputPort(
+                                    "bluenesses",
+                                    ContentType.unknown(GlslType.Float.arrayOf(3)),
+                                    GlslType.Float.arrayOf(3),
+                                    "Bluenesses"
+                                )
                             )
                     }
 
@@ -141,8 +151,8 @@ object GlslAnalyzerSpec : DescribeSpec({
                         }
 
                         it("creates an input for it") {
-                            expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
-                                .containsExactly(
+                            openShader.inputPorts.map { it.copy(glslArgSite = null) }
+                                .shouldContainExactly(
                                     InputPort("gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4, "Coordinates", isImplicit = true),
                                     InputPort("channelA", ContentType.Color, GlslType.Vec4, "Channel A", isImplicit = false, injectedData = mapOf(
                                         "uv" to ContentType.UvCoordinate
@@ -163,19 +173,19 @@ object GlslAnalyzerSpec : DescribeSpec({
                         }
 
                         it("creates an input for it") {
-                            expect(openShader.inputPorts).hasSize(1)
+                            openShader.inputPorts.shouldHaveSize(1)
                             val inputPort = openShader.inputPorts.first()
 
-                            expect(inputPort.copy(glslArgSite = null))
-                                .toEqual(
+                            inputPort.copy(glslArgSite = null)
+                                .shouldBe(
                                     InputPort(
                                         "upstreamColor", ContentType.Color, GlslType.Vec4, "Upstream Color",
                                         injectedData = emptyMap()
                                     )
                                 )
 
-                            expect(inputPort.isAbstractFunction).toBe(true)
-                            expect(inputPort.injectedData).isEmpty()
+                            inputPort.isAbstractFunction.shouldBeTrue()
+                            inputPort.injectedData.shouldBeEmpty()
                         }
 
                         context("which takes arguments") {
@@ -191,18 +201,18 @@ object GlslAnalyzerSpec : DescribeSpec({
                             }
 
                             it("creates an input for it") {
-                                expect(openShader.inputPorts).hasSize(1)
+                                openShader.inputPorts.shouldHaveSize(1)
                                 val inputPort = openShader.inputPorts.first()
 
-                                expect(inputPort.copy(glslArgSite = null))
-                                    .toEqual(
+                                inputPort.copy(glslArgSite = null)
+                                    .shouldBe(
                                         InputPort(
                                             "upstreamColor", ContentType.Color, GlslType.Vec4, "Upstream Color",
                                             injectedData = mapOf("uv" to ContentType.UvCoordinate)
                                         )
                                     )
 
-                                expect(inputPort.isAbstractFunction).toBe(true)
+                                inputPort.isAbstractFunction.shouldBeTrue()
                             }
                         }
                     }
@@ -226,7 +236,7 @@ object GlslAnalyzerSpec : DescribeSpec({
                     }
 
                     it("identifies mainImage() as the entry point") {
-                        expect(openShader.entryPoint.name).toBe("mainImage")
+                        openShader.entryPoint.name.shouldBe("mainImage")
                     }
 
                     it("creates inputs for implicit uniforms") {
@@ -245,7 +255,7 @@ object GlslAnalyzerSpec : DescribeSpec({
                     override(shaderText) { Shaders.cylindricalProjection.src }
 
                     it("identifies main() as the entry point") {
-                        expect(openShader.entryPoint.name).toBe("main")
+                        openShader.entryPoint.name.shouldBe("main")
                     }
 
                     it("creates inputs for implicit uniforms") {
@@ -268,8 +278,8 @@ object GlslAnalyzerSpec : DescribeSpec({
                     override(shaderText) { "" }
 
                     it("provides a fake entry point function") {
-                        expect(openShader.entryPoint.name)
-                            .toEqual("invalid")
+                        openShader.entryPoint.name
+                            .shouldBe("invalid")
                     }
                 }
 
@@ -290,8 +300,8 @@ object GlslAnalyzerSpec : DescribeSpec({
                     }
 
                     it("creates a non-default input for it") {
-                        expect(openShader.inputPorts.map { it.copy(glslArgSite = null) })
-                            .containsExactly(
+                        openShader.inputPorts.map { it.copy(glslArgSite = null) }
+                            .shouldContainExactly(
                                 InputPort("inColor", ContentType.Color, GlslType.Vec4, "In Color"),
                                 InputPort("heartSize", ContentType.Float, GlslType.Float, "Heart Size", PluginRef.from("Slider"), buildJsonObject {
                                     put("default", JsonPrimitive("1."))

@@ -27,13 +27,11 @@ import baaahs.show.mutable.MutableShow
 import baaahs.show.mutable.ShowBuilder
 import baaahs.shows.FakeGlContext
 import baaahs.sim.FakeFs
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -137,12 +135,12 @@ object StageManagerSpec : DescribeSpec({
                     val pixelCoordsTextureUnit = fakeProgram.getUniform("ds_pixelLocation_texture") as Int
                     val textureConfig = fakeGlslContext.getTextureConfig(pixelCoordsTextureUnit, GL_TEXTURE_2D)
 
-                    expect(textureConfig.width to textureConfig.height).toBe(100 to 1)
-                    expect(textureConfig.internalFormat).toBe(GlContext.GL_RGB32F)
-                    expect(textureConfig.format).toBe(GL_RGB)
-                    expect(textureConfig.type).toBe(GL_FLOAT)
-                    expect(textureConfig.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
-                    expect(textureConfig.params[GL_TEXTURE_MAG_FILTER]).toBe(GL_NEAREST)
+                    (textureConfig.width to textureConfig.height).shouldBe(100 to 1)
+                    textureConfig.internalFormat.shouldBe(GlContext.GL_RGB32F)
+                    textureConfig.format.shouldBe(GL_RGB)
+                    textureConfig.type.shouldBe(GL_FLOAT)
+                    textureConfig.params[GL_TEXTURE_MIN_FILTER].shouldBe(GL_NEAREST)
+                    textureConfig.params[GL_TEXTURE_MAG_FILTER].shouldBe(GL_NEAREST)
                 }
 
                 context("for vec4 uniforms") {
@@ -166,13 +164,13 @@ object StageManagerSpec : DescribeSpec({
                     }
 
                     it("wires it up as a color picker") {
-                        expect(colorPickerGadget.title).toBe("Color")
-                        expect(colorPickerGadget.initialValue).toBe(Color.WHITE)
+                        colorPickerGadget.title.shouldBe("Color")
+                        colorPickerGadget.initialValue.shouldBe(Color.WHITE)
                     }
 
                     it("sets the uniform from the gadget's initial value") {
                         val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
-                        expect(colorUniform).toBe(arrayListOf(1f, 1f, 1f, 1f))
+                        colorUniform.shouldBe(arrayListOf(1f, 1f, 1f, 1f))
                     }
 
                     it("sets the uniform when the gadget value changes") {
@@ -180,7 +178,7 @@ object StageManagerSpec : DescribeSpec({
 
                         doRunBlocking { stageManager.renderAndSendNextFrame(true) }
                         val colorUniform = fakeProgram.getUniform<List<Float>>("in_colorColorPicker")
-                        expect(colorUniform).toBe(arrayListOf(1f, 1f, 0f, 1f))
+                        colorUniform.shouldBe(arrayListOf(1f, 1f, 0f, 1f))
                     }
                 }
             }
@@ -215,7 +213,7 @@ object StageManagerSpec : DescribeSpec({
                 }
 
                 it("starts off with a single calc") {
-                    expect(activePatchSets.size).toEqual(1)
+                    activePatchSets.size.shouldBe(1)
                 }
 
                 context("when a new patch is requested by the user") {
@@ -235,7 +233,7 @@ object StageManagerSpec : DescribeSpec({
                     }
 
                     it("delivers just one new patchset to FixtureManager") {
-                        expect(activePatchSets.size).toEqual(1)
+                        activePatchSets.size.shouldBe(1)
                     }
 
                     it("only delivers a new patchset when something has changed") {
@@ -243,7 +241,7 @@ object StageManagerSpec : DescribeSpec({
                             stageManager.renderAndSendNextFrame(true)
                         }
                         dispatcher.runCurrent()
-                        expect(activePatchSets.size).toEqual(1)
+                        activePatchSets.size.shouldBe(1)
                     }
 
                     // TODO: make sure we don't recalculate e.g. when sliders move.
@@ -293,10 +291,10 @@ object StageManagerSpec : DescribeSpec({
 //        }
 
             it("a pubsub update is received on both clients") {
-                expect(editingClient.log)
-                    .containsExactly("update showEditorState: Sample Show")
-                expect(otherClient.log)
-                    .containsExactly("update showEditorState: Sample Show")
+                editingClient.log
+                    .shouldContainExactly("update showEditorState: Sample Show")
+                otherClient.log
+                    .shouldContainExactly("update showEditorState: Sample Show")
             }
 
             context("when a ShowEditorState change arrives from a client") {
@@ -318,13 +316,13 @@ object StageManagerSpec : DescribeSpec({
                 }
 
                 it("no additional pubsub updates are received by the editing client") {
-                    expect(editingClient.log)
+                    editingClient.log
                         .isEmpty()
                 }
 
                 it("a pubsub update is received by the other client") {
-                    expect(otherClient.log)
-                        .containsExactly("update showEditorState: Edited show")
+                    otherClient.log
+                        .shouldContainExactly("update showEditorState: Edited show")
                 }
             }
         }

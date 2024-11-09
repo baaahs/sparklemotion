@@ -3,10 +3,9 @@ package baaahs.ui.gridlayout
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.toThrow
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object LayoutSpec : DescribeSpec({
     describe<Layout> {
@@ -27,61 +26,73 @@ object LayoutSpec : DescribeSpec({
         }
 
         it("moving A one space down swaps A and D") {
-            expect(move("A", 0, 1)).toEqual("""
+            move("A", 0, 1).shouldBe(
+                """
                     DBC.
                     AEFG
                     .HI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         it("moving C to E's spot fails") {
-            expect { (move("C", -1, -1)) }.toThrow<ImpossibleLayoutException>()
+            shouldThrow<ImpossibleLayoutException> { (move("C", -1, -1)) }
         }
 
         it("moving A two spaces down leaves the rest undisturbed") {
-            expect(move("A", 0, 2)).toEqual("""
+            move("A", 0, 2).shouldBe(
+                """
                     .BC.
                     DEFG
                     AHI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         it("moving A one space right swaps A and B") {
-            expect(move("A", 1, 0)).toEqual("""
+            move("A", 1, 0).shouldBe(
+                """
                     BAC.
                     DEFG
                     .HI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         it("moving A two spaces right shifts C over") {
-            expect(move("A", 2, 0)).toEqual("""
+            move("A", 2, 0).shouldBe(
+                """
                     BCA.
                     DEFG
                     .HI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         it("moving D one space right shifts E into its place") {
-            expect(move("D", 1, 0)).toEqual("""
+            move("D", 1, 0).shouldBe(
+                """
                     ABC.
                     EDFG
                     .HI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         it("moving B one space down and left shifts E down") {
-            expect(move("B", -1, 1)).toEqual("""
+            move("B", -1, 1).shouldBe(
+                """
                     A.C.
                     BEFG
                     DHI.
-                """.trimIndent())
+                """.trimIndent()
+            )
         }
 
         context("with ABCDEF in one row") {
             override(layout) { "ABCDEF".toLayout() }
             it("moving B two spaces over") {
-                expect(move("B", 2, 0)).toEqual("ACDBEF")
+                move("B", 2, 0).shouldBe("ACDBEF")
             }
         }
 
@@ -89,19 +100,19 @@ object LayoutSpec : DescribeSpec({
             override(layout) { ".ABBC.".toLayout() }
 
             xit("moving A one space right should swap A and B") {
-                expect(move("A", 1, 0)).toEqual(".BBAC.")
+                move("A", 1, 0).shouldBe(".BBAC.")
             }
 
             it("moving A two spaces right should swap A and B") {
-                expect(move("A", 2, 0)).toEqual(".BBAC.")
+                move("A", 2, 0).shouldBe(".BBAC.")
             }
 
             xit("moving C one space left should swap B and C") {
-                expect(move("C", -1, 0)).toEqual(".ACBB.")
+                move("C", -1, 0).shouldBe(".ACBB.")
             }
 
             it("moving C two spaces left should swap B and C") {
-                expect(move("C", -2, 0)).toEqual(".ACBB.")
+                move("C", -2, 0).shouldBe(".ACBB.")
             }
         }
     }
