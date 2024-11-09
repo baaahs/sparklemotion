@@ -2,12 +2,13 @@ package baaahs.show.mutable
 
 import baaahs.describe
 import baaahs.gl.expects
+import baaahs.kotest.value
 import baaahs.show.Feed
 import baaahs.show.SampleData
 import baaahs.show.Surfaces
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object MutableShowVisitorSpec : Spek({
+object MutableShowVisitorSpec : DescribeSpec({
     val show by value { MutableShow(SampleData.sampleShow) }
 
     describe<MutableShowVisitor> {

@@ -12,6 +12,7 @@ import baaahs.gl.override
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testPlugins
 import baaahs.io.FsServerSideSerializer
+import baaahs.kotest.value
 import baaahs.libraries.ShaderLibraryManager
 import baaahs.mapper.MappingSession
 import baaahs.mapper.MappingStore
@@ -42,14 +43,13 @@ import baaahs.sm.server.StageManager
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @Suppress("unused")
 @InternalCoroutinesApi
-object PinkySpec : Spek({
+object PinkySpec : DescribeSpec({
     describe("Pinky") {
         val fakeGlslContext by value { FakeGlContext() }
         val network by value { TestNetwork(1_000_000) }
@@ -122,7 +122,7 @@ object PinkySpec : Spek({
             }
         }
 
-        beforeEachTest {
+        beforeEach {
             pinky.switchTo(SampleData.sampleShow)
 
             doRunBlocking {
@@ -147,7 +147,7 @@ object PinkySpec : Spek({
         describe("brains reporting to Pinky") {
             val brainHelloMessage by value { nuffin<BrainHelloMessage>() }
 
-            beforeEachTest {
+            beforeEach {
                 pinkyUdpReceive(clientAddress, clientPort, brainHelloMessage.toBytes())
                 pinky.updateFixtures()
                 renderAndSendFrame()

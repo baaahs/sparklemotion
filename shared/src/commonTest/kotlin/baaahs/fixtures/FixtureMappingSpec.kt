@@ -8,6 +8,7 @@ import baaahs.device.PixelArrayDevice
 import baaahs.dmx.DmxTransportConfig
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.modelForTest
@@ -17,10 +18,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.feature
 import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.its
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object FixtureMappingSpec : Spek({
+object FixtureMappingSpec : DescribeSpec({
     describe<FixtureMapping> {
         context("buildFixture") {
             val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }

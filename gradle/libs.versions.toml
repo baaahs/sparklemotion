@@ -19,9 +19,9 @@ kotlinxHtml = "0.9.1"
 kotlinWrappers = "1.0.0-pre.804"
 
 # Test:
-junit = "5.8.1"
-junitPlatform = "1.8.1"
-spek = "2.0.11-rc.1" # custom build with LetValues enabled
+junit = "5.11.3"
+junitPlatform = "1.11.3"
+kotest = "5.9.1"
 mockk = "1.12.1"
 atrium = "0.16.0"
 atriumApi = "atrium-fluent-en_GB"
@@ -59,8 +59,10 @@ webcamCaptureDriverNative = { group = "io.github.eduramiba", name = "webcam-capt
 kspSymbolProcessingApi = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 
 # Test:
-spek = { group = "org.spekframework.spek2", name = "spek-runner-junit5", version.ref = "spek" }
-spekDsl = { group = "spek", name = "spek-dsl", version.ref = "spek" }
+kotestRunnerJunit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
+kotestFrameworkEngine = { group = "io.kotest", name = "kotest-framework-engine", version.ref = "kotest" }
+kotestAssertionsCore = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotestProperty = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
@@ -70,6 +72,7 @@ atriumApiCommon = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB-com
 junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
 
 [plugins]
+kotestMultiplatform = { id = "io.kotest.multiplatform", version.ref = "kotest" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

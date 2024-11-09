@@ -1,13 +1,14 @@
 package baaahs.show.migration
 
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import org.spekframework.spek2.Spek
 
-object V10_RemoveVarPrefixFromXyPadSpec : Spek({
+object V10_RemoveVarPrefixFromXyPadSpec : DescribeSpec({
     describe<V10_RemoveVarPrefixFromXyPad> {
         val from by value { /*language=json*/
             """

@@ -13,6 +13,7 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.LinearSurfacePixelStrategy
+import baaahs.kotest.value
 import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.only
@@ -28,10 +29,10 @@ import baaahs.shows.FakeShowPlayer
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.random.Random
 
-object FixtureManagerSpec : Spek({
+object FixtureManagerSpec : DescribeSpec({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }
@@ -62,7 +63,7 @@ object FixtureManagerSpec : Spek({
             val fixtures by value { listOf(fogMachine1, fogMachine2, vuzuvela1, vuzuvela2) }
             val initialFixtures by value { fixtures }
 
-            beforeEachTest {
+            beforeEach {
                 fixtureManager.fixturesChanged(initialFixtures, emptyList())
             }
 
@@ -93,7 +94,7 @@ object FixtureManagerSpec : Spek({
 
                 val activePatchSet by value { openShow.buildActivePatchSet() }
 
-                beforeEachTest {
+                beforeEach {
                     fixtureManager.activePatchSetChanged(activePatchSet)
                     val updated = fixtureManager.maybeUpdateRenderPlans()
                     expect(updated).toBe(true)
@@ -119,7 +120,7 @@ object FixtureManagerSpec : Spek({
                 context("when more fixtures are added") {
                     override(initialFixtures) { listOf(fogMachine1) }
 
-                    beforeEachTest {
+                    beforeEach {
                         expect(renderPlan.keys).toBe(setOf(fogMachineDevice))
 
                         fixtureManager.fixturesChanged(listOf(vuzuvela1), emptyList())

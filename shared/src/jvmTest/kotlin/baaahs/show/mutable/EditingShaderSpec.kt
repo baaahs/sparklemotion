@@ -13,6 +13,7 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.plugin.Plugins
 import baaahs.plugin.beatlink.BeatLinkPlugin
 import baaahs.plugin.beatlink.FakeBeatSource
@@ -32,10 +33,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import io.kotest.core.spec.style.DescribeSpec
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -44,7 +45,7 @@ import kotlin.collections.set
 // TODO: move back to commonTest when mockk supports multiplatform.
 @Suppress("unused")
 @InternalCoroutinesApi
-object EditingShaderSpec : Spek({
+object EditingShaderSpec : DescribeSpec({
     describe<EditingShader> {
         val plugins by value {
             Plugins.buildForClient(Plugins.Companion.dummyContext, listOf(BeatLinkPlugin.forTest(FakeBeatSource())))
@@ -94,7 +95,7 @@ object EditingShaderSpec : Spek({
         val patchOnButton by value { MutablePatch(shaderForButton) }
         val button by value { mutableShow.addButton(MutablePanel(Panel("panel")), "button") {} }
 
-        beforeEachTest {
+        beforeEach {
             button.addPatch(patchOnButton)
             every { mockShaderBuilder.addObserver(capture(observerSlot)) } answers { observerSlot.captured }
             every { mockShaderBuilder.startBuilding() } just runs
@@ -109,7 +110,7 @@ object EditingShaderSpec : Spek({
             EditingShader(mutableShow, mutablePatch, toolchain, getShaderBuilder)
                 .also { it.addObserver { notifiedStates.add(it.state) } }
         }
-        beforeEachTest {
+        beforeEach {
             editingShader.let {} // Make sure it's warmed up.
         }
 
@@ -137,7 +138,7 @@ object EditingShaderSpec : Spek({
             context("if shader builder notifies us") {
                 val builderState by value { ShaderBuilder.State.Success }
 
-                beforeEachTest {
+                beforeEach {
                     every { mockShaderBuilder.state } returns builderState
                     observerSlot.captured.notifyChanged()
                 }
@@ -169,7 +170,7 @@ object EditingShaderSpec : Spek({
         }
 
         context("when a shader has successfully compiled") {
-            beforeEachTest {
+            beforeEach {
                 every { mockShaderBuilder.state } returns ShaderBuilder.State.Success
                 observerSlot.captured.notifyChanged()
             }
@@ -245,7 +246,7 @@ object EditingShaderSpec : Spek({
             }
 
             context("when a link has been selected by a human") {
-                beforeEachTest {
+                beforeEach {
                     mutablePatch.incomingLinks["theScale"] =
                         MutableFeedPort(SliderFeed("custom slider", 1f, 0f, 1f))
 
@@ -368,7 +369,7 @@ object EditingShaderSpec : Spek({
             val gl by value { FakeGlContext() }
             val renderEngine by value { PreviewRenderEngine(gl, 1, 1) }
 
-            beforeEachTest {
+            beforeEach {
                 // Run through the shader building steps.
                 expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
                 expect(editingShader.state).toBe(State.Building)

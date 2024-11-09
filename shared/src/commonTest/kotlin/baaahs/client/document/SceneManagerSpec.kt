@@ -9,17 +9,18 @@ import baaahs.gl.testPlugins
 import baaahs.io.Fs
 import baaahs.io.FsServerSideSerializer
 import baaahs.io.PubSubRemoteFsClientBackend
+import baaahs.kotest.value
 import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
 
 @OptIn(InternalCoroutinesApi::class)
-object SceneManagerSpec : Spek({
+object SceneManagerSpec : DescribeSpec({
     describe<SceneManager> {
         val pubSubRig by value { TestRig() }
         val plugins by value { testPlugins() }
@@ -37,7 +38,7 @@ object SceneManagerSpec : Spek({
             pubSubRig.server.publish(topic, documentState) { error("no!") }
         }
 
-        beforeEachTest {
+        beforeEach {
             serverSceneChannel.run {}
             sceneManager.run {}
         }
@@ -52,7 +53,7 @@ object SceneManagerSpec : Spek({
 
         context("when a scene is loaded") {
             val newScene by value { Scene.Empty }
-            beforeEachTest {
+            beforeEach {
                 serverSceneChannel.onChange(DocumentState(newScene, Unit, false, null))
                 pubSubRig.testCoroutineScope.advanceUntilIdle()
             }
@@ -73,7 +74,7 @@ object SceneManagerSpec : Spek({
                 }
 
                 context("when an edit is made") {
-                    beforeEachTest {
+                    beforeEach {
                         mutableScene.run {}
                         sceneManager.facade.onEdit()
                     }

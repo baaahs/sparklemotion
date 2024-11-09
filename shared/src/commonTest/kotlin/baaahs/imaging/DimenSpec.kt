@@ -3,9 +3,9 @@ package baaahs.imaging
 import baaahs.describe
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object DimenSpec : Spek({
+object DimenSpec : DescribeSpec({
     describe<Dimen> {
         context("#bestFit") {
             context("when both are the same ratio") {

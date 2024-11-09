@@ -35,12 +35,12 @@ plugins {
     alias(libs.plugins.benManesVersions)
     id("maven-publish")
     alias(libs.plugins.checkDependencyUpdates)
+    alias(libs.plugins.kotestMultiplatform)
 }
 
 repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
-    maven("https://raw.githubusercontent.com/robolectric/spek/mvnrepo/")
     maven("https://maven.danielgergely.com/releases")
     maven("https://jitpack.io")
     maven("https://mvn.0110.be/releases") // TarsosDSP
@@ -89,7 +89,9 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
-                implementation(libs.spekDsl)
+                implementation(libs.kotestFrameworkEngine)
+                implementation(libs.kotestAssertionsCore)
+                implementation(libs.kotestProperty)
                 implementation(libs.atriumApiCommon)
             }
         }
@@ -145,7 +147,7 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(project.dependencies.platform("org.junit:junit-bom:${Versions.junit}"))
-                runtimeOnly(libs.spek)
+                implementation(libs.kotestRunnerJunit5)
                 runtimeOnly(libs.kotlinReflect)
 
                 implementation(libs.mockk)
@@ -288,8 +290,6 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 
 tasks.withType(Test::class) {
     useJUnitPlatform {
-        includeEngines.add("junit-jupiter")
-        includeEngines.add("spek2")
         excludeTags("glsl")
     }
 }

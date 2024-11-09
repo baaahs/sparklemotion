@@ -9,6 +9,7 @@ import baaahs.gl.preview.PreviewShaderBuilder
 import baaahs.gl.preview.ShaderBuilder
 import baaahs.gl.render.PreviewRenderEngine
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.model.ModelInfo
 import baaahs.scene.SceneMonitor
 import baaahs.show.Shader
@@ -19,13 +20,13 @@ import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import org.spekframework.spek2.Spek
 import kotlin.test.assertNotNull
 
 @InternalCoroutinesApi
-object PreviewShaderBuilderSpec : Spek({
+object PreviewShaderBuilderSpec : DescribeSpec({
     describe<PreviewShaderBuilder> {
         val shader by value { Shaders.checkerboard }
         val dispatcher by value { TestCoroutineDispatcher() }
@@ -42,7 +43,7 @@ object PreviewShaderBuilderSpec : Spek({
         }
 
         context("when startBuilding() is called") {
-            beforeEachTest {
+            beforeEach {
                 previewShaderBuilder.startBuilding()
             }
 
@@ -51,7 +52,7 @@ object PreviewShaderBuilderSpec : Spek({
             }
 
             context("when Analyzing succeeds") {
-                beforeEachTest { dispatcher.runOne() }
+                beforeEach { dispatcher.runOne() }
 
                 it("is in Linking state") {
                     expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linking)
@@ -59,7 +60,7 @@ object PreviewShaderBuilderSpec : Spek({
                 }
 
                 context("after idle") {
-                    beforeEachTest { dispatcher.runCurrent() }
+                    beforeEach { dispatcher.runCurrent() }
 
                     it("is in Linked state") {
                         expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Linked)
@@ -98,14 +99,14 @@ object PreviewShaderBuilderSpec : Spek({
                     }
 
                     context("when startCompile() is called") {
-                        beforeEachTest { previewShaderBuilder.startCompile(renderEngine) }
+                        beforeEach { previewShaderBuilder.startCompile(renderEngine) }
 
                         it("is in Compiling state") {
                             expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Compiling)
                         }
 
                         context("after idle") {
-                            beforeEachTest { dispatcher.runCurrent() }
+                            beforeEach { dispatcher.runCurrent() }
 
                             it("is in Success state") {
                                 expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Success)
@@ -139,7 +140,7 @@ object PreviewShaderBuilderSpec : Spek({
                         """.trimIndent()
                     )
                 }
-                beforeEachTest { dispatcher.runOne() }
+                beforeEach { dispatcher.runOne() }
 
                 it("should result in a build error") {
                     expect(previewShaderBuilder.state).toBe(ShaderBuilder.State.Errors)

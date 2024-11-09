@@ -2,11 +2,12 @@ package baaahs.gl.result
 
 import baaahs.Color
 import baaahs.describe
+import baaahs.kotest.value
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object ColorResultTypeSpec : Spek({
+object ColorResultTypeSpec : DescribeSpec({
     describe<ColorResultType> {
         context("gamma correction") {
 

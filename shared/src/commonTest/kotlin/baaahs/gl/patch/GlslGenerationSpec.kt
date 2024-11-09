@@ -7,6 +7,7 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders.cylindricalProjection
+import baaahs.kotest.value
 import baaahs.plugin.core.FixtureInfoFeed
 import baaahs.plugin.core.MovingHeadParams
 import baaahs.plugin.core.feed.*
@@ -14,11 +15,10 @@ import baaahs.show.Stream
 import baaahs.show.mutable.*
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.test.fail
 
-object GlslGenerationSpec : Spek({
+object GlslGenerationSpec : DescribeSpec({
     describe("Generation of GLSL from patches") {
         val shaderText by value {
             /**language=glsl*/
@@ -52,7 +52,7 @@ object GlslGenerationSpec : Spek({
         val glsl by value { linkedPatch.toGlsl().trim() }
 
         context("with screen coordinates for preview") {
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link("fragCoord", RasterCoordinateFeed())
                     link("resolution", ResolutionFeed())
@@ -149,7 +149,7 @@ object GlslGenerationSpec : Spek({
                 """.trimIndent()
             }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link("resolution", ResolutionFeed())
                     link("fragCoord", RasterCoordinateFeed())
@@ -227,7 +227,7 @@ object GlslGenerationSpec : Spek({
                 """.trimIndent()
             }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link(
                         "blueness",
@@ -311,7 +311,7 @@ object GlslGenerationSpec : Spek({
         }
 
         describe("with projection shader") {
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.apply {
                     addPatch(cylindricalProjection) {
                         link("pixelLocation", PixelLocationFeed())
@@ -490,7 +490,7 @@ object GlslGenerationSpec : Spek({
                 )
             }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainPaintShader)
                 mutablePatchSet.addPatch(otherPaintShader) {
                     link("fragCoord", MutableFeedPort(RasterCoordinateFeed()))
@@ -672,7 +672,7 @@ object GlslGenerationSpec : Spek({
             }
             override(resultContentType) { MovingHeadParams.contentType }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoFeed())
                 }
@@ -776,7 +776,7 @@ object GlslGenerationSpec : Spek({
             }
             override(resultContentType) { MovingHeadParams.contentType }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoFeed())
                 }
@@ -878,7 +878,7 @@ object GlslGenerationSpec : Spek({
             }
             override(resultContentType) { Color }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader) {
                     link("fixtureInfo", FixtureInfoFeed())
                 }
@@ -979,7 +979,7 @@ object GlslGenerationSpec : Spek({
                 )
             }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(testToolchain.import(
                     """
                         // Projection
@@ -1135,7 +1135,7 @@ object GlslGenerationSpec : Spek({
                 """.trimIndent()
             }
 
-            beforeEachTest {
+            beforeEach {
                 mutablePatchSet.addPatch(mainShader)
             }
 

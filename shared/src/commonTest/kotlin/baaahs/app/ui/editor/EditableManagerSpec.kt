@@ -5,6 +5,7 @@ import baaahs.control.MutableButtonControl
 import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.SampleData
 import baaahs.show.Show
 import baaahs.show.mutable.MutableIGridLayout
@@ -15,11 +16,11 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-object EditableManagerSpec : Spek({
+object EditableManagerSpec : DescribeSpec({
     describe<ShowEditableManager> {
         val showUpdates by value { arrayListOf<Show>() }
         val editableManager by value {
@@ -27,7 +28,7 @@ object EditableManagerSpec : Spek({
         }
         val facadeUpdates by value { arrayListOf<String>() }
 
-        beforeEachTest {
+        beforeEach {
             editableManager.addObserver { facadeUpdates.add("updated") }
         }
 
@@ -46,7 +47,7 @@ object EditableManagerSpec : Spek({
             val editIntent by value<EditIntent> { ShowEditIntent() }
             val session: EditableManager<Show>.Session by value { editableManager.session!! }
 
-            beforeEachTest {
+            beforeEach {
                 editableManager.openEditor(baseShow, editIntent, testToolchain)
             }
 
@@ -80,7 +81,7 @@ object EditableManagerSpec : Spek({
             }
 
             context("when a change has been made to the editable") {
-                beforeEachTest {
+                beforeEach {
                     (session.mutableEditable as MutablePatchHolder).title = "different title"
                     editableManager.onChange()
                 }
@@ -97,7 +98,7 @@ object EditableManagerSpec : Spek({
                 context("when changes are applied") {
                     var priorMutableShow: MutableShow? = null
 
-                    beforeEachTest {
+                    beforeEach {
                         priorMutableShow = session.mutableDocument as MutableShow
                         editableManager.applyChanges()
                     }
@@ -120,7 +121,7 @@ object EditableManagerSpec : Spek({
                     }
 
                     context("and user clicks Undo") {
-                        beforeEachTest {
+                        beforeEach {
                             editableManager.undo()
                         }
 
@@ -129,7 +130,7 @@ object EditableManagerSpec : Spek({
                         }
 
                         context("and user clicks Redo") {
-                            beforeEachTest {
+                            beforeEach {
                                 editableManager.redo()
                             }
 
@@ -182,7 +183,7 @@ object EditableManagerSpec : Spek({
                 }
 
                 context("when a change has been made to the editable") {
-                    beforeEachTest {
+                    beforeEach {
                         mutableButton.title = "My new button"
                         editableManager.onChange()
                     }
@@ -193,7 +194,7 @@ object EditableManagerSpec : Spek({
                     }
 
                     context("when changes are applied") {
-                        beforeEachTest {
+                        beforeEach {
                             editableManager.applyChanges()
                         }
                         val newShow by value { showUpdates.last() }

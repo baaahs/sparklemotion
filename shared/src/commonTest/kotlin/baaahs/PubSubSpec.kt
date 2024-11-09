@@ -1,10 +1,13 @@
 package baaahs
 
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.rpc.CommandPort
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -12,18 +15,16 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.Suite
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-object PubSubSpec : Spek({
+object PubSubSpec : DescribeSpec({
     describe<PubSub> {
         val testRig by value { TestRig() }
         val topic1 by value { PubSub.Topic("/one", String.serializer()) }
 
-        beforeEachTest {
+        beforeEach {
             // Server needs to come up first, then client1 and client2.
             testRig.server.run {}
             testRig.serverConnections.run {}
@@ -235,7 +236,7 @@ object PubSubSpec : Spek({
             }
             val clientCommandChannel by value { testRig.client1.commandSender(commandPort) }
 
-            beforeEachTest {
+            beforeEach {
                 serverCommandChannel.run {}
                 clientCommandChannel.run {}
             }
@@ -254,7 +255,7 @@ object PubSubSpec : Spek({
                         val x: suspend (String) -> String = { s: String -> "deferred reply for ${future.await()}" }; x
                     }
 
-                    beforeEachTest {
+                    beforeEach {
                         serverOtherCommandChannel.run {}
 
                         testRig.testCoroutineScope.launch {
@@ -283,7 +284,7 @@ object PubSubSpec : Spek({
             context("when a client sends a command") {
                 val result by value { arrayListOf<String>() }
 
-                beforeEachTest {
+                beforeEach {
                     testRig.testCoroutineScope.launch {
                         try {
                             result.add("response: " + clientCommandChannel("the command"))
@@ -293,7 +294,7 @@ object PubSubSpec : Spek({
                     }
                 }
 
-                fun Suite.sharedCommandSpecs() {
+                suspend fun DescribeSpecContainerScope.sharedCommandSpecs() {
                     it("invokes that command on the server and returns the response to the caller") {
                         testRig.dispatcher.runCurrent()
                         expect(result).containsExactly("response: reply for the command")

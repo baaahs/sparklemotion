@@ -3,12 +3,13 @@ package baaahs.visualizer.movers
 import baaahs.FakeClock
 import baaahs.TestMovingHeadAdapter
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.sim.FakeDmxUniverse
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-object PhysicsModelSpec: Spek({
+object PhysicsModelSpec: DescribeSpec({
     describe<PhysicalModel> {
         val movingHeadAdapter by value {
             TestMovingHeadAdapter(
@@ -37,10 +38,10 @@ object PhysicsModelSpec: Spek({
             }
         }
 
-        beforeEachTest { physicalModel.run {} }
+        beforeEach { physicalModel.run {} }
 
         context("when a frame requests motor movement") {
-            beforeEachTest {
+            beforeEach {
                 sendDmxFrame((1.0/16).seconds, 1/4f, 0f, 0f, 1f)
             }
 
@@ -51,7 +52,7 @@ object PhysicsModelSpec: Spek({
             }
 
             context("on the next frame") {
-                beforeEachTest {
+                beforeEach {
                     sendDmxFrame((1.0/16).seconds, 1/4f, 0f, 0f, 1f)
                 }
 
@@ -63,7 +64,7 @@ object PhysicsModelSpec: Spek({
             }
 
             context("then moving back") {
-                beforeEachTest {
+                beforeEach {
                     sendDmxFrame((1.0/16).seconds, 0f, 0f, 0f, 1f)
                 }
 
@@ -74,7 +75,7 @@ object PhysicsModelSpec: Spek({
                 }
 
                 context("after another frame") {
-                    beforeEachTest {
+                    beforeEach {
                         sendDmxFrame((1.0/16).seconds, 0f, 0f, 0f, 1f)
                     }
 

@@ -2,12 +2,13 @@ package baaahs.imaging
 
 import baaahs.FakeClock
 import baaahs.describe
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.datetime.Instant
-import org.spekframework.spek2.Spek
 
-object AnimatorSpec : Spek({
+object AnimatorSpec : DescribeSpec({
     describe<Animator> {
         context("Given some animation frames") {
             val durations by value { listOf(50, 50, 100, 50) }

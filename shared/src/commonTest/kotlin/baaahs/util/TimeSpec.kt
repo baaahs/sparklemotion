@@ -3,14 +3,14 @@ package baaahs.util
 import baaahs.describe
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-object TimeSpec : Spek({
+object TimeSpec : DescribeSpec({
     describe<Duration> {
         context("toHHMMSS") {
             it("renders correctly") {

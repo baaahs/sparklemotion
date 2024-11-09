@@ -3,11 +3,10 @@ package baaahs.util
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.because
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.math.PI
 
-object MathSpec : Spek({
+object MathSpec : DescribeSpec({
     describe("Math utils") {
         describe("degrees to radians") {
             it("should return a value in (-π, π]") {
