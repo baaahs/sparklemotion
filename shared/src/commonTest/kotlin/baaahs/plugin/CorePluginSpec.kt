@@ -15,9 +15,8 @@ import baaahs.show.mutable.MutablePatchSet
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
 import baaahs.util.asInstant
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object CorePluginSpec : DescribeSpec({
     describe<TimeFeed> {
@@ -42,7 +41,7 @@ object CorePluginSpec : DescribeSpec({
             gl.runInContext { programFeed.setOnProgram() }
 
             val glProgram = gl.programs.only("program")
-            expect(glProgram.getUniform<Float>("in_time")).toBe(7890.1235f)
+            glProgram.getUniform<Float>("in_time").shouldBe(7890.1235f)
         }
     }
 })

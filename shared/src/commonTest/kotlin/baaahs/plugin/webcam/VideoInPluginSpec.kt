@@ -12,10 +12,9 @@ import baaahs.plugin.Plugins
 import baaahs.plugin.core.CorePlugin
 import baaahs.show.Shader
 import baaahs.show.mutable.MutablePatchSet
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.TextureResource
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object VideoInPluginSpec : DescribeSpec({
     describe<VideoInPlugin> {
@@ -57,11 +56,11 @@ object VideoInPluginSpec : DescribeSpec({
         }
 
         it("should not appear to be a FilterShader") {
-            expect(openShader.shaderType).toEqual(PaintShader)
+            openShader.shaderType.shouldBe(PaintShader)
         }
 
         it("should generate sensible GLSL") {
-            expect(glsl).toEqual(
+            glsl.shouldBe(
                 """
                     #ifdef GL_ES
                     precision mediump float;

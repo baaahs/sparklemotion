@@ -11,12 +11,10 @@ import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.contains
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
@@ -62,15 +60,15 @@ object IsfShaderDialectSpec : DescribeSpec({
             }
 
             it("is an excellent match") {
-                expect(matchLevel).toEqual(MatchLevel.Excellent)
+                matchLevel.shouldBe(MatchLevel.Excellent)
             }
 
             it("gets its title from the file name") {
-                expect(openShader.title).toEqual("Float Input")
+                openShader.title.shouldBe("Float Input")
             }
 
             it("finds the input port") {
-                expect(openShader.inputPorts).containsExactly(
+                openShader.inputPorts.shouldContainExactly(
                     InputPort(
                         "level", ContentType.Float, GlslType.Float, "Gray Level",
                         pluginRef = PluginRef("baaahs.Core", "Slider"),
@@ -85,7 +83,7 @@ object IsfShaderDialectSpec : DescribeSpec({
             }
 
             it("finds the output port") {
-                expect(shaderAnalysis.outputPorts).containsExactly(
+                shaderAnalysis.outputPorts.shouldContainExactly(
                     OutputPort(ContentType.Color, description = "Output Color", id = "gl_FragColor")
                 )
             }
@@ -101,7 +99,7 @@ object IsfShaderDialectSpec : DescribeSpec({
                 }
 
                 it("includes it as an input port") {
-                    expect(openShader.inputPorts).containsExactly(
+                    openShader.inputPorts.shouldContainExactly(
                         InputPort(
                             "gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4,
                             "Coordinates", isImplicit = true
@@ -121,7 +119,7 @@ object IsfShaderDialectSpec : DescribeSpec({
                 }
 
                 it("includes it as an input port") {
-                    expect(openShader.inputPorts).containsExactly(
+                    openShader.inputPorts.shouldContainExactly(
                         InputPort(
                             "isf_FragNormCoord", ContentType.UvCoordinate, GlslType.Vec2,
                             "U/V Coordinate", isImplicit = true
@@ -140,7 +138,7 @@ object IsfShaderDialectSpec : DescribeSpec({
                 }
 
                 it("includes it as an input port") {
-                    expect(openShader.inputPorts).containsExactly(
+                    openShader.inputPorts.shouldContainExactly(
                         InputPort("TIME", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
                     )
                 }
@@ -155,7 +153,7 @@ object IsfShaderDialectSpec : DescribeSpec({
                     }
 
                     it("includes it as an input port") {
-                        expect(openShader.inputPorts).containsExactly(
+                        openShader.inputPorts.shouldContainExactly(
                             InputPort("TIME", ContentType.Time, GlslType.Float, "Time", isImplicit = true)
                         )
                     }
@@ -168,8 +166,8 @@ object IsfShaderDialectSpec : DescribeSpec({
                 }
 
                 it("fails to validate") {
-                    expect(shaderAnalysis.isValid).toBe(false)
-                    expect(shaderAnalysis.errors).contains(
+                    shaderAnalysis.isValid.shouldBeFalse()
+                    shaderAnalysis.errors.contains(
                         GlslError("Too many output ports found: [fragColor, gl_FragColor, other].", row = 1)
                     )
                 }
@@ -184,10 +182,12 @@ object IsfShaderDialectSpec : DescribeSpec({
                 }
 
                 it("fails to validate") {
-                    expect(shaderAnalysis.isValid).toBe(false)
-                    expect(shaderAnalysis.errors).containsExactly(
-                        GlslError("Unexpected JSON token at offset 7: Expected quotation mark '\"', but had ' ' instead at path: \$\n" +
-                                "JSON input: { \"DESC }", 1)
+                    shaderAnalysis.isValid.shouldBeFalse()
+                    shaderAnalysis.errors.shouldContainExactly(
+                        GlslError(
+                            "Unexpected JSON token at offset 7: Expected quotation mark '\"', but had ' ' instead at path: \$\n" +
+                                    "JSON input: { \"DESC }", 1
+                        )
                     )
                 }
             }
@@ -196,7 +196,7 @@ object IsfShaderDialectSpec : DescribeSpec({
         context("a shader without an ISF block at the top") {
             override(src) { "void main() {\n  gl_FragColor = vec4(level,level,level,1.0);\n}" }
             it("is not a match") {
-                expect(matchLevel).toEqual(MatchLevel.NoMatch)
+                matchLevel.shouldBe(MatchLevel.NoMatch)
             }
         }
     }

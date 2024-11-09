@@ -14,10 +14,8 @@ import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object PaintShaderSpec : DescribeSpec({
@@ -38,8 +36,8 @@ object PaintShaderSpec : DescribeSpec({
             }
 
             it("#match returns Match") {
-                expect(PaintShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.Match)
+                PaintShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.Match)
             }
         }
 
@@ -51,8 +49,8 @@ object PaintShaderSpec : DescribeSpec({
             }
 
             it("#match returns Match") {
-                expect(PaintShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.Match)
+                PaintShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.Match)
             }
         }
 
@@ -64,8 +62,8 @@ object PaintShaderSpec : DescribeSpec({
             }
 
             it("#match returns NoMatch") {
-                expect(PaintShader.matches(shaderAnalysis))
-                    .toEqual(ShaderType.MatchLevel.NoMatch)
+                PaintShader.matches(shaderAnalysis)
+                    .shouldBe(ShaderType.MatchLevel.NoMatch)
             }
         }
 
@@ -73,8 +71,8 @@ object PaintShaderSpec : DescribeSpec({
             override(shaderText) { shaderType.newShaderFromTemplate().src }
 
             it("generates a paint shader") {
-                expect(openShader.shaderType)
-                    .toEqual(shaderType)
+                openShader.shaderType
+                    .shouldBe(shaderType)
             }
         }
     }
@@ -127,24 +125,21 @@ object PaintShaderSpec : DescribeSpec({
             }
 
             it("generates function declarations") {
-                expect(
-                    openShader.toGlsl(
-                        null,
-                        ShaderSubstitutions(
-                            openShader, namespace,
-                            mapOf(
-                                "resolution" to GlslExpr("in_resolution"),
-                                "blueness" to GlslExpr("aquamarinity"),
-                                "identity" to GlslExpr("p0_identity"),
-                                "gl_FragColor" to GlslExpr("sm_result")
-                            ),
-                            emptyList(),
-                            emptyList()
+                openShader.toGlsl(
+                    null,
+                    ShaderSubstitutions(
+                        openShader, namespace,
+                        mapOf(
+                            "resolution" to GlslExpr("in_resolution"),
+                            "blueness" to GlslExpr("aquamarinity"),
+                            "identity" to GlslExpr("p0_identity"),
+                            "gl_FragColor" to GlslExpr("sm_result")
                         ),
-                    ).trim()
-                )
-                    .toBe(
-                        """
+                        emptyList(),
+                        emptyList()
+                    ),
+                ).trim().shouldBe(
+                    """
                         #line 8
                         int p0_someGlobalVar;
                         
@@ -160,12 +155,11 @@ object PaintShaderSpec : DescribeSpec({
                             sm_result = vec4(uv.xy, p0_identity(aquamarinity), 1.);
                         }
                     """.trimIndent()
-                    )
+                )
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invoker(namespace).toGlsl("resultVar"))
-                    .toBe("p0_main()")
+                openShader.invoker(namespace).toGlsl("resultVar").shouldBe("p0_main()")
             }
 
             context("using entry point parameters") {
@@ -196,14 +190,11 @@ object PaintShaderSpec : DescribeSpec({
                 }
 
                 it("generates invocation GLSL") {
-                    expect(
-                        openShader.invoker(
-                            namespace, mapOf(
-                                "uv" to GlslExpr("uvArg")
-                            )
-                        ).toGlsl("resultVar")
-                    )
-                        .toBe("p0_main(uvArg)")
+                    openShader.invoker(
+                        namespace, mapOf(
+                            "uv" to GlslExpr("uvArg")
+                        )
+                    ).toGlsl("resultVar").shouldBe("p0_main(uvArg)")
                 }
 
                 context("with a type annotation") {
@@ -283,27 +274,24 @@ object PaintShaderSpec : DescribeSpec({
             }
 
             it("generates function declarations") {
-                expect(
-                    openShader.toGlsl(
-                        null,
-                        ShaderSubstitutions(
-                            openShader,
-                            namespace,
-                            mapOf(
-                                "iResolution" to GlslExpr("in_resolution"),
-                                "iMouse" to GlslExpr("in_mouse"),
-                                "iTime" to GlslExpr("in_time"),
-                                "blueness" to GlslExpr("aquamarinity"),
-                                "identity" to GlslExpr("p0_identity"),
-                                "fragCoord" to GlslExpr("gl_FragCoord.xy")
-                            ),
-                            emptyList(),
-                            emptyList()
-                        )
-                    ).trim()
-                )
-                    .toBe(
-                        """
+                openShader.toGlsl(
+                    null,
+                    ShaderSubstitutions(
+                        openShader,
+                        namespace,
+                        mapOf(
+                            "iResolution" to GlslExpr("in_resolution"),
+                            "iMouse" to GlslExpr("in_mouse"),
+                            "iTime" to GlslExpr("in_time"),
+                            "blueness" to GlslExpr("aquamarinity"),
+                            "identity" to GlslExpr("p0_identity"),
+                            "fragCoord" to GlslExpr("gl_FragCoord.xy")
+                        ),
+                        emptyList(),
+                        emptyList()
+                    )
+                ).trim().shouldBe(
+                    """
                         #line 5
                         int p0_someGlobalVar;
                         
@@ -319,12 +307,12 @@ object PaintShaderSpec : DescribeSpec({
                             fragColor = vec4(uv.xy / in_mouse, p0_identity(aquamarinity), 1.);
                         }
                     """.trimIndent()
-                    )
+                )
             }
 
             it("generates invocation GLSL") {
-                expect(openShader.invoker(namespace, mapOf("fragCoord" to GlslExpr("gl_FragCoord.xy"))).toGlsl("resultVar"))
-                    .toBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
+                openShader.invoker(namespace, mapOf("fragCoord" to GlslExpr("gl_FragCoord.xy"))).toGlsl("resultVar")
+                    .shouldBe("p0_mainImage(resultVar, gl_FragCoord.xy)")
             }
         }
     }

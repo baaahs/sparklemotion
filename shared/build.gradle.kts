@@ -91,8 +91,8 @@ kotlin {
 //                implementation("io.insert-koin:koin-test:${Versions.koin}")
                 implementation(libs.kotestFrameworkEngine)
                 implementation(libs.kotestAssertionsCore)
+                implementation(libs.kotestAssertionsJson)
                 implementation(libs.kotestProperty)
-                implementation(libs.atriumApiCommon)
             }
         }
 
@@ -151,7 +151,6 @@ kotlin {
                 runtimeOnly(libs.kotlinReflect)
 
                 implementation(libs.mockk)
-                implementation(libs.atriumApiJvm)
 
                 // For RunOpenGLTests:
                 implementation(libs.junitPlatformLauncher)
@@ -206,7 +205,6 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation(libs.atriumApiJs)
             }
         }
 

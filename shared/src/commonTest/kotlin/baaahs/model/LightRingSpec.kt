@@ -4,9 +4,8 @@ import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlin.math.PI
 import kotlin.math.abs
 
@@ -15,7 +14,7 @@ class LightRingSpec : DescribeSpec({
         val lightRing by value { LightRing("ring", radius = 1f) }
 
         it("should create pixels at the right spots") {
-            expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
+            lightRing.calculatePixelLocalLocations(4).map { it.round() }.shouldBe(
                 listOf(
                     Vector3F(1f, 0f, 0f),
                     Vector3F(0f, -1f, 0f),
@@ -29,7 +28,7 @@ class LightRingSpec : DescribeSpec({
             override(lightRing) { LightRing("ring", radius = 1f, firstPixelRadians = (PI / 2).toFloat()) }
 
             it("should create pixels at the right spots") {
-                expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
+                lightRing.calculatePixelLocalLocations(4).map { it.round() }.shouldBe(
                     listOf(
                         Vector3F(0f, 1f, 0f),
                         Vector3F(1f, 0f, 0f),
@@ -46,7 +45,7 @@ class LightRingSpec : DescribeSpec({
             }
 
             it("should create pixels at the right spots") {
-                expect(lightRing.calculatePixelLocalLocations(4).map { it.round() }).toEqual(
+                lightRing.calculatePixelLocalLocations(4).map { it.round() }.shouldBe(
                     listOf(
                         Vector3F(1f, 0f, 0f),
                         Vector3F(0f, 1f, 0f),

@@ -13,12 +13,10 @@ import baaahs.model.LightBar
 import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.feature
-import ch.tutteli.atrium.api.fluent.en_GB.isA
-import ch.tutteli.atrium.api.fluent.en_GB.its
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.properties.shouldHaveValue
+import io.kotest.matchers.types.shouldBeTypeOf
 
 @Suppress("unused")
 object FixtureMappingSpec : DescribeSpec({
@@ -38,17 +36,15 @@ object FixtureMappingSpec : DescribeSpec({
 
             context("with a mapped entity") {
                 it("creates a fixture for that entity") {
-                    expect(fixture) {
-                        feature { f(it::modelEntity) }.toEqual(entity)
-                        feature { f(it::componentCount) }.toEqual(1)
-                        feature { f(it::fixtureConfig) }.isA<PixelArrayDevice.Config> {
-                            feature { f(it::gammaCorrection) }.toEqual(1f)
-                            feature { f(it::pixelLocations) }.toEqual(EnumeratedPixelLocations())
-                        }
+                    fixture::modelEntity.shouldHaveValue(entity)
+                    fixture::componentCount.shouldHaveValue(1)
+                    fixture.fixtureConfig.shouldBeTypeOf<PixelArrayDevice.Config> {
+                        it::gammaCorrection.shouldHaveValue(1f)
+                        it::pixelLocations.shouldHaveValue(EnumeratedPixelLocations())
                     }
 
-                    expect(fixture.transport.config).isA<DmxTransportConfig> {
-                        feature { f(it::startChannel) }.toEqual(777)
+                    fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                        it::startChannel.shouldHaveValue(777)
                     }
                 }
 
@@ -56,14 +52,14 @@ object FixtureMappingSpec : DescribeSpec({
                     override(entity) { testModelSurface("surface", expectedPixelCount = 123) }
 
                     it("creates a fixture with that config") {
-                        expect(fixture.componentCount) { toEqual(123) }
+                        fixture.componentCount shouldBe 123
                     }
 
                     context("but explicit fixture mapping overrides it") {
                         override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                         it("the mapping's config takes precedence") {
-                            expect(fixture.componentCount) { toEqual(321) }
+                            fixture.componentCount shouldBe 321
                         }
                     }
 
@@ -71,14 +67,14 @@ object FixtureMappingSpec : DescribeSpec({
                         override(controllerDefaultFixtureOptions) { PixelArrayDevice.Options(456) }
 
                         it("the model entity's config takes precedence") {
-                            expect(fixture.componentCount) { toEqual(123) }
+                            fixture.componentCount shouldBe 123
                         }
 
                         context("but explicit fixture mapping overrides it") {
                             override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                             it("the mapping's config takes precedence") {
-                                expect(fixture.componentCount) { toEqual(321) }
+                                fixture.componentCount shouldBe 321
                             }
                         }
                     }
@@ -91,16 +87,13 @@ object FixtureMappingSpec : DescribeSpec({
                     override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 3) }
 
                     it("creates a fixture with that config") {
-                        expect(fixture.componentCount) { toEqual(3) }
-                        expect(fixture.fixtureConfig)
-                            .isA<PixelArrayDevice.Config>()
-                            .its({ pixelLocations }) {
-                                toEqual(
-                                    EnumeratedPixelLocations(
-                                        Vector3F.origin,
-                                        Vector3F(.5f, .5f, .5f),
-                                        Vector3F.unit3d
-                                    )
+                        fixture.componentCount shouldBe 3
+                        fixture.fixtureConfig
+                            .shouldBeTypeOf<PixelArrayDevice.Config> {
+                                it.pixelLocations shouldBe                                     EnumeratedPixelLocations(
+                                    Vector3F.origin,
+                                    Vector3F(.5f, .5f, .5f),
+                                    Vector3F.unit3d
                                 )
                             }
                     }
@@ -110,14 +103,14 @@ object FixtureMappingSpec : DescribeSpec({
                     override(controllerDefaultFixtureOptions) { PixelArrayDevice.Options(456) }
 
                     it("creates a fixture with that config") {
-                        expect(fixture.componentCount) { toEqual(456) }
+                        fixture.componentCount shouldBe 456
                     }
 
                     context("but explicit fixture mapping overrides it") {
                         override(mappingFixtureOptions) { PixelArrayDevice.Options(pixelCount = 321) }
 
                         it("the mapping's config takes precedence") {
-                            expect(fixture.componentCount) { toEqual(321) }
+                            fixture.componentCount shouldBe 321
                         }
                     }
                 }
@@ -126,8 +119,8 @@ object FixtureMappingSpec : DescribeSpec({
                     override(controllerDefaultTransportConfig) { DmxTransportConfig(555) }
 
                     it("the mapping's config takes precedence") {
-                        expect(fixture.transport.config).isA<DmxTransportConfig> {
-                            feature { f(it::startChannel) }.toEqual(777)
+                        fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                            it::startChannel shouldHaveValue 777
                         }
                     }
 
@@ -135,8 +128,8 @@ object FixtureMappingSpec : DescribeSpec({
                         override(mappingTransportConfig) { null }
 
                         it("the default config is used") {
-                            expect(fixture.transport.config).isA<DmxTransportConfig> {
-                                feature { f(it::startChannel) }.toEqual(555)
+                            fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                                it::startChannel shouldHaveValue 555
                             }
                         }
                     }

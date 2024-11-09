@@ -3,10 +3,9 @@ package baaahs.gl
 import baaahs.describe
 import baaahs.kotest.value
 import baaahs.show.Shader
-import ch.tutteli.atrium.api.fluent.en_GB.isNotSameAs
-import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 
 object CachingToolchainSpec : DescribeSpec({
     describe<CachingToolchain> {
@@ -18,13 +17,13 @@ object CachingToolchainSpec : DescribeSpec({
         it("sanity check that the root toolchain doesn't cache") {
             val analysis1 = testToolchain.analyze(someShader)
             val analysis2 = testToolchain.analyze(someShader)
-            expect(analysis1).isNotSameAs(analysis2)
+            analysis1 shouldNotBeSameInstanceAs analysis2
         }
 
         it("caches Shader -> ShaderAnalysis") {
             val analysis1 = cache1.analyze(someShader)
             val analysis2 = cache1.analyze(someShader)
-            expect(analysis1).isSameAs(analysis2)
+            analysis1 shouldBeSameInstanceAs analysis2
         }
 
         context("when there's another layer of caching") {
@@ -33,13 +32,13 @@ object CachingToolchainSpec : DescribeSpec({
             it("caches Shader -> ShaderAnalysis") {
                 val analysis1 = cache1.analyze(someShader)
                 val analysis2 = cache2.analyze(someShader)
-                expect(analysis1).isSameAs(analysis2)
+                analysis1 shouldBeSameInstanceAs analysis2
             }
 
             it("caches at the outermost layer only") {
                 val analysis2 = cache2.analyze(someShader)
                 val analysis1 = cache1.analyze(someShader)
-                expect(analysis1).isNotSameAs(analysis2)
+                analysis1 shouldNotBeSameInstanceAs analysis2
             }
         }
 
@@ -50,7 +49,7 @@ object CachingToolchainSpec : DescribeSpec({
                     cache1.analyze(Shader("Some Other Shader", "void main() { ... }"))
                 }
                 val analysis2 = cache1.analyze(someShader)
-                expect(analysis1).isNotSameAs(analysis2)
+                analysis1 shouldNotBeSameInstanceAs analysis2
             }
         }
     }

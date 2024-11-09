@@ -9,9 +9,8 @@ import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object OpenShaderSpec : DescribeSpec({
@@ -47,8 +46,8 @@ object OpenShaderSpec : DescribeSpec({
             }
 
             it("generates an invocation statement") {
-                expect(invoker.toGlsl("toResultVar"))
-                    .toEqual("p_main(greennessVal)")
+                invoker.toGlsl("toResultVar")
+                    .shouldBe("p_main(greennessVal)")
             }
 
             context("when invoked from an abstract function") {
@@ -71,8 +70,8 @@ object OpenShaderSpec : DescribeSpec({
             }
 
             it("generates an invocation statement") {
-                expect(invoker.toGlsl("toResultVar"))
-                    .toEqual("toResultVar = p_main(greennessVal)")
+                invoker.toGlsl("toResultVar")
+                    .shouldBe("toResultVar = p_main(greennessVal)")
             }
         }
 
@@ -88,8 +87,8 @@ object OpenShaderSpec : DescribeSpec({
             }
 
             it("generates an invocation statement") {
-                expect(invoker.toGlsl("toResultVar"))
-                    .toEqual("p_main(greennessVal, toResultVar)")
+                invoker.toGlsl("toResultVar")
+                    .shouldBe("p_main(greennessVal, toResultVar)")
             }
         }
     }

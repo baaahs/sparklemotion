@@ -23,8 +23,6 @@ junit = "5.11.3"
 junitPlatform = "1.11.3"
 kotest = "5.9.1"
 mockk = "1.12.1"
-atrium = "0.16.0"
-atriumApi = "atrium-fluent-en_GB"
 coroutinesTest = "coroutines"
 
 [libraries]
@@ -62,13 +60,11 @@ kspSymbolProcessingApi = { group = "com.google.devtools.ksp", name = "symbol-pro
 kotestRunnerJunit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotestFrameworkEngine = { group = "io.kotest", name = "kotest-framework-engine", version.ref = "kotest" }
 kotestAssertionsCore = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
+kotestAssertionsJson = { group = "io.kotest", name = "kotest-assertions-json", version.ref = "kotest" }
 kotestProperty = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-atriumApiJvm = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB", version.ref = "atrium" }
-atriumApiJs = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB-js", version.ref = "atrium" }
-atriumApiCommon = { group = "ch.tutteli.atrium", name = "atrium-fluent-en_GB-common", version.ref = "atrium" }
 junitPlatformLauncher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
 
 [plugins]

@@ -11,8 +11,8 @@ import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimDmxDevice
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object DirectDmxControllerSpec : DescribeSpec({
@@ -34,8 +34,8 @@ object DirectDmxControllerSpec : DescribeSpec({
             it("starts there") {
                 controller.beforeFixtureResolution()
                 val transport = fixture.transport as DirectDmxController.DirectDmxTransport
-                expect(transport.startChannel).toEqual(0)
-                expect(transport.endChannel).toEqual(9)
+                transport.startChannel.shouldBe(0)
+                transport.endChannel.shouldBe(9)
             }
         }
     }

@@ -13,10 +13,9 @@ import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("MoveLambdaOutsideParentheses")
 object OpenSceneSpec : DescribeSpec({
@@ -43,7 +42,7 @@ object OpenSceneSpec : DescribeSpec({
 
             context("with no mappings anywhere") {
                 it("returns no mappings") {
-                    expect(relevantMappings).isEmpty()
+                    relevantMappings.shouldBeEmpty()
                 }
             }
 
@@ -52,7 +51,7 @@ object OpenSceneSpec : DescribeSpec({
 //                override(controller) { FakeController("fake", PixelArrayDevice.Config(111), null) }
 //
 //                it("returns the default") {
-//                    expect(relevantMappings).containsExactly(
+//                    expect(relevantMappings).shouldContainExactly(
 //                        FixtureMapping(null, PixelArrayDevice, PixelArrayDevice.Config(111), transportConfig)
 //                    )
 //                }
@@ -62,7 +61,7 @@ object OpenSceneSpec : DescribeSpec({
                 override(controllerFixtureMappingData) { FixtureMappingData(fixtureOptions = PixelArrayDevice.Options(111)) }
 
                 it("returns the correct mappings") {
-                    expect(relevantMappings).containsExactly(
+                    relevantMappings.shouldContainExactly(
                         FixtureMapping(null, PixelArrayDevice.Options(111))
                     )
                 }
@@ -74,7 +73,7 @@ object OpenSceneSpec : DescribeSpec({
                 }
 
                 it("returns the correct mapping") {
-                    expect(relevantMappings).containsExactly(
+                    relevantMappings.shouldContainExactly(
                         FixtureMapping(null, PixelArrayDevice.Options(222), transportConfig)
                     )
                 }
@@ -89,7 +88,7 @@ object OpenSceneSpec : DescribeSpec({
                 }
 
                 it("returns it") {
-                    expect(relevantMappings).containsExactly(
+                    relevantMappings.shouldContainExactly(
                         FixtureMapping(null, PixelArrayDevice.Options(333))
                     )
                 }

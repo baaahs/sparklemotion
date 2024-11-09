@@ -6,7 +6,6 @@ import baaahs.app.ui.editor.PortLinkOption
 import baaahs.describe
 import baaahs.expectEmptyMap
 import baaahs.gl.RootToolchain
-import baaahs.gl.kexpect
 import baaahs.gl.openShader
 import baaahs.gl.override
 import baaahs.gl.preview.PreviewShaderBuilder
@@ -26,14 +25,13 @@ import baaahs.show.mutable.EditingShader.State
 import baaahs.shows.FakeGlContext
 import baaahs.ui.Observer
 import baaahs.ui.addObserver
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.GL_FRAGMENT_SHADER
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -116,7 +114,7 @@ object EditingShaderSpec : DescribeSpec({
 
         context("at initialization") {
             it("is in Building state") {
-                expect(editingShader.state).toBe(State.Building)
+                editingShader.state.shouldBe(State.Building)
             }
 
             it("starts building the shader") {
@@ -124,11 +122,11 @@ object EditingShaderSpec : DescribeSpec({
             }
 
             it("has no gadgets") {
-                expect(editingShader.gadgets).isEmpty()
+                editingShader.gadgets.shouldBeEmpty()
             }
 
             it("should not have notified observers yet") {
-                expect(notifiedStates).isEmpty()
+                notifiedStates.shouldBeEmpty()
             }
 
             it("has no incoming links") {
@@ -145,25 +143,25 @@ object EditingShaderSpec : DescribeSpec({
 
                 context("of a successful build") {
                     it("should notify our observers") {
-                        expect(notifiedStates).containsExactly(State.Success)
+                        notifiedStates.shouldContainExactly(State.Success)
                     }
                 }
 
                 context("that it's still building") {
                     override(builderState) { ShaderBuilder.State.Compiling }
                     it("should not notify our observers") {
-                        expect(notifiedStates).isEmpty()
+                        notifiedStates.shouldBeEmpty()
                     }
                 }
 
                 context("of a failure to build") {
                     override(builderState) { ShaderBuilder.State.Errors }
                     it("should not notify our observers again") {
-                        expect(notifiedStates).containsExactly(State.Errors)
+                        notifiedStates.shouldContainExactly(State.Errors)
                     }
 
                     it("should still return PatchOptions") {
-                        expect(editingShader.getPatchOptions()).notToBeNull()
+                        editingShader.getPatchOptions().shouldNotBeNull()
                     }
                 }
             }
@@ -177,25 +175,26 @@ object EditingShaderSpec : DescribeSpec({
 
             context("when the patch had no previous incoming links") {
                 it("should set some reasonable defaults") {
-                    expect(mutablePatch.incomingLinks.mapValues { (_, port) -> port.title })
-                        .toBe(mapOf(
+                    mutablePatch.incomingLinks.mapValues { (_, port) -> port.title }.shouldBe(
+                        mapOf(
                             "inColor" to "Main Stream",
                             "theScale" to "The Scale Slider",
                             "time" to "Time"
-                        ))
+                        )
+                    )
                 }
 
                 it("should create an appropriate feed") {
-                    expect(mutablePatch.incomingLinks["theScale"])
-                        .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, 0f, 1f)))
+                    mutablePatch.incomingLinks["theScale"]
+                        .shouldBe(MutableFeedPort(SliderFeed("The Scale", 1f, 0f, 1f)))
                 }
 
                 context("when hints are provided") {
                     override(scaleUniform) { "uniform float theScale; // @@Slider min=.25 max=4 default=1" }
 
                     it("should create an appropriate feed") {
-                        expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableFeedPort(SliderFeed("The Scale", 1f, .25f, 4f)))
+                        mutablePatch.incomingLinks["theScale"]
+                            .shouldBe(MutableFeedPort(SliderFeed("The Scale", 1f, .25f, 4f)))
                     }
                 }
 
@@ -203,8 +202,8 @@ object EditingShaderSpec : DescribeSpec({
                     override(scaleUniform) { "uniform float theScale; // @@baaahs.BeatLink:BeatLink" }
 
                     it("should create an appropriate feed") {
-                        expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableFeedPort(beatLinkFeed))
+                        mutablePatch.incomingLinks["theScale"]
+                            .shouldBe(MutableFeedPort(beatLinkFeed))
                     }
                 }
 
@@ -212,8 +211,8 @@ object EditingShaderSpec : DescribeSpec({
                     override(scaleUniform) { "uniform float theScale; // @type beat-link" }
 
                     it("should create an appropriate feed") {
-                        expect(mutablePatch.incomingLinks["theScale"])
-                            .toBe(MutableFeedPort(beatLinkFeed))
+                        mutablePatch.incomingLinks["theScale"]
+                            .shouldBe(MutableFeedPort(beatLinkFeed))
                     }
                 }
             }
@@ -227,12 +226,13 @@ object EditingShaderSpec : DescribeSpec({
                 }
 
                 it("shouldn't change it") {
-                    expect(mutablePatch.incomingLinks["theScale"]!!.title)
-                        .toBe("Custom slider Slider")
+                    mutablePatch.incomingLinks["theScale"]!!.title
+                        .shouldBe("Custom slider Slider")
                 }
 
                 it("should be listed in link options") {
-                    expect(editingShader.linkOptionsFor("theScale").stringify()).toBe("""
+                    editingShader.linkOptionsFor("theScale").stringify().shouldBe(
+                        """
                             Feed:
                             - BeatLink
                             - Custom slider Slider (advanced)
@@ -241,7 +241,8 @@ object EditingShaderSpec : DescribeSpec({
                             - Time
                             Stream:
                             - Main Stream
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
             }
 
@@ -262,8 +263,8 @@ object EditingShaderSpec : DescribeSpec({
                 }
 
                 it("shouldn't modify it") {
-                    expect(mutablePatch.incomingLinks["theScale"]!!.title)
-                        .toBe("custom slider Slider")
+                    mutablePatch.incomingLinks["theScale"]!!.title
+                        .shouldBe("custom slider Slider")
                 }
 
                 // TODO: ... unless its type doesn't make any sense now.
@@ -271,13 +272,13 @@ object EditingShaderSpec : DescribeSpec({
 
             context("incoming link suggestions") {
                 it("suggests link options for each input port") {
-                    expect(editingShader.openShader!!.inputPorts.map { it.id }.toSet())
-                        .toBe(setOf("theScale", "time", "inColor"))
+                    editingShader.openShader!!.inputPorts.map { it.id }.toSet()
+                        .shouldBe(setOf("theScale", "time", "inColor"))
                 }
 
                 it("suggests reasonable link options for scale") {
-                    expect(editingShader.linkOptionsFor("theScale").stringify())
-                        .toBe("""
+                    editingShader.linkOptionsFor("theScale").stringify().shouldBe(
+                        """
                             Feed:
                             - BeatLink
                             - Pixel Distance from Edge
@@ -285,12 +286,13 @@ object EditingShaderSpec : DescribeSpec({
                             - Time
                             Stream:
                             - Main Stream
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
 
                 it("suggests reasonable link options for time") {
-                    expect(editingShader.linkOptionsFor("time").stringify())
-                        .toBe("""
+                    editingShader.linkOptionsFor("time").stringify().shouldBe(
+                        """
                             Feed:
                             - BeatLink (advanced)
                             - Pixel Distance from Edge (advanced)
@@ -298,20 +300,22 @@ object EditingShaderSpec : DescribeSpec({
                             - Time Slider (advanced)
                             Stream:
                             - Main Stream
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
 
                 it("suggests reasonable link options for input color") {
                     // Should never include ourself.
-                    expect(editingShader.linkOptionsFor("inColor").stringify())
-                        .toBe("""
+                    editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                        """
                             Feed:
                             - Date (advanced)
                             - In Color Color Picker
                             - In Color Image
                             Stream:
                             * Main Stream
-                        """.trimIndent())
+                        """.trimIndent()
+                    )
                 }
 
                 context("when another patch has shader on a different stream") {
@@ -322,8 +326,8 @@ object EditingShaderSpec : DescribeSpec({
                     context("and its result type matches this input's type") {
                         it("should include that stream as an option") {
                             // Should never include ourself.
-                            expect(editingShader.linkOptionsFor("inColor").stringify())
-                                .toBe("""
+                            editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                                """
                                     Feed:
                                     - Date (advanced)
                                     - In Color Color Picker
@@ -331,7 +335,8 @@ object EditingShaderSpec : DescribeSpec({
                                     Stream:
                                     * Main Stream
                                     - Other Stream
-                                """.trimIndent())
+                                """.trimIndent()
+                            )
                         }
                     }
 
@@ -339,15 +344,16 @@ object EditingShaderSpec : DescribeSpec({
                         override(shaderForButton) { Shaders.flipY } // distortion
 
                         it("shouldn't include that stream as an option") {
-                            expect(editingShader.linkOptionsFor("inColor").stringify())
-                                .toBe("""
+                            editingShader.linkOptionsFor("inColor").stringify().shouldBe(
+                                """
                                     Feed:
                                     - Date (advanced)
                                     - In Color Color Picker
                                     - In Color Image
                                     Stream:
                                     * Main Stream
-                                """.trimIndent())
+                                """.trimIndent()
+                            )
                         }
                     }
                 }
@@ -371,23 +377,24 @@ object EditingShaderSpec : DescribeSpec({
 
             beforeEach {
                 // Run through the shader building steps.
-                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Analyzing)
-                expect(editingShader.state).toBe(State.Building)
+                editingShader.shaderBuilder.state.shouldBe(ShaderBuilder.State.Analyzing)
+                editingShader.state.shouldBe(State.Building)
                 dispatcher.runCurrent()
 
-                expect(editingShader.shaderBuilder.state).toBe(ShaderBuilder.State.Linked)
-                expect(editingShader.state).toBe(State.Building)
+                editingShader.shaderBuilder.state.shouldBe(ShaderBuilder.State.Linked)
+                editingShader.state.shouldBe(State.Building)
                 editingShader.shaderBuilder.startCompile(renderEngine)
 
-                expect(editingShader.state).toBe(State.Building)
+                editingShader.state.shouldBe(State.Building)
                 dispatcher.runCurrent()
-                expect(editingShader.state).toBe(State.Success)
+                editingShader.state.shouldBe(State.Success)
             }
 
             it("generates valid GLSL") {
                 val fakeProgram = gl.programs[0]
                 val fragShader = fakeProgram.shaders[GL_FRAGMENT_SHADER]?.src
-                kexpect(fragShader).toBe("""
+                fragShader.shouldBe(
+                    """
                     #version 1234
 
                     #ifdef GL_ES
@@ -446,7 +453,8 @@ object EditingShaderSpec : DescribeSpec({
                     }
 
 
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
         }
     }

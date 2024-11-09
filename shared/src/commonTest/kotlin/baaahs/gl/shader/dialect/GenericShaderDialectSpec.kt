@@ -10,12 +10,10 @@ import baaahs.gl.shader.OutputPort
 import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.contains
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
 object GenericShaderDialectSpec : DescribeSpec({
@@ -39,11 +37,11 @@ object GenericShaderDialectSpec : DescribeSpec({
             }
 
             it("is a poor match (so this one acts as a fallback)") {
-                expect(matchLevel).toEqual(MatchLevel.Poor)
+                matchLevel.shouldBe(MatchLevel.Poor)
             }
 
             it("finds the input port") {
-                expect(shaderAnalysis.inputPorts.str()).containsExactly(
+                shaderAnalysis.inputPorts.str().shouldContainExactly(
                     "time time:float (Time)"
                 )
             }
@@ -52,7 +50,7 @@ object GenericShaderDialectSpec : DescribeSpec({
                 override(src) { "void main() { gl_FragColor = vec4(0.); }" }
 
                 it("finds the output port") {
-                    expect(shaderAnalysis.outputPorts).containsExactly(
+                    shaderAnalysis.outputPorts.shouldContainExactly(
                         OutputPort(ContentType.Color, description = "Output Color", id = "gl_FragColor")
                     )
                 }
@@ -62,7 +60,7 @@ object GenericShaderDialectSpec : DescribeSpec({
                 override(src) { "vec4 main() { return vec4(gl_FragCoord.xy, 0., 1.); }" }
 
                 it("includes it as an input port") {
-                    expect(openShader.inputPorts).containsExactly(
+                    openShader.inputPorts.shouldContainExactly(
                         InputPort(
                             "gl_FragCoord", ContentType.UvCoordinate, GlslType.Vec4,
                             "Coordinates", isImplicit = true
@@ -75,11 +73,11 @@ object GenericShaderDialectSpec : DescribeSpec({
                 override(src) { "void main(float intensity) { gl_FragColor = vec4(gl_FragCoord, 0., 1.); };" }
 
                 it("continues to be a match") {
-                    expect(matchLevel).toEqual(MatchLevel.Poor)
+                    matchLevel.shouldBe(MatchLevel.Poor)
                 }
 
                 it("finds the input port") {
-                    expect(openShader.inputPorts.str()).containsExactly(
+                    openShader.inputPorts.str().shouldContainExactly(
                         "gl_FragCoord uv-coordinate:vec4 (Coordinates)",
                         "intensity unknown/float:float (Intensity)"
                     )
@@ -92,9 +90,9 @@ object GenericShaderDialectSpec : DescribeSpec({
                 }
 
                 it("fails to validate") {
-                    expect(shaderAnalysis.isValid).toBe(false)
+                    shaderAnalysis.isValid.shouldBeFalse()
 
-                    expect(shaderAnalysis.errors).contains(
+                    shaderAnalysis.errors.contains(
                         GlslError("Too many output ports found: [fragColor, gl_FragColor, other].", row = 1)
                     )
                 }
@@ -104,7 +102,7 @@ object GenericShaderDialectSpec : DescribeSpec({
         context("a shader without a main() function") {
             override(src) { "void mainImage(void) { ... };" }
             it("is not a match") {
-                expect(matchLevel).toEqual(MatchLevel.NoMatch)
+                matchLevel.shouldBe(MatchLevel.NoMatch)
             }
         }
     }
