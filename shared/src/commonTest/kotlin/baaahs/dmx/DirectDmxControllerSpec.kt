@@ -6,15 +6,16 @@ import baaahs.device.MovingHeadDevice
 import baaahs.fixtures.FixtureMapping
 import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.TransportConfig
+import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimDmxDevice
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object DirectDmxControllerSpec : Spek({
+object DirectDmxControllerSpec : DescribeSpec({
     describe<DirectDmxController> {
         val testAdapter by value { TestMovingHeadAdapter(10) }
         val entity by value<Model.Entity?> { MovingHead("mover", adapter = testAdapter, baseDmxChannel = -1) }

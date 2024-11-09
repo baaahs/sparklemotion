@@ -1,11 +1,12 @@
 package baaahs.show.mutable
 
 import baaahs.describe
+import baaahs.kotest.value
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object MutableLayoutSpec : Spek({
+object MutableLayoutSpec : DescribeSpec({
     describe<MutableLegacyTab> {
         val columns by value { mutableListOf(1.fr, 2.fr) }
         val rows by value { mutableListOf(3.fr, 4.fr) }
@@ -16,7 +17,7 @@ object MutableLayoutSpec : Spek({
         val tab by value { MutableLegacyTab("main", columns, rows, areas) }
 
         context("appending a column") {
-            beforeEachTest { tab.appendColumn() }
+            beforeEach { tab.appendColumn() }
 
             it("should duplicate the last column's dimension and panels") {
                 expect(columns).containsExactly(1.fr, 2.fr, 2.fr)
@@ -29,7 +30,7 @@ object MutableLayoutSpec : Spek({
         }
 
         context("duplicating a column") {
-            beforeEachTest { tab.duplicateColumn(0) }
+            beforeEach { tab.duplicateColumn(0) }
 
             it("should duplicate the specified column's dimension and panels") {
                 expect(columns).containsExactly(1.fr, 1.fr, 2.fr)
@@ -42,7 +43,7 @@ object MutableLayoutSpec : Spek({
         }
 
         context("deleting a column") {
-            beforeEachTest { tab.deleteColumn(0) }
+            beforeEach { tab.deleteColumn(0) }
 
             it("should delete the specified column's dimension and panels") {
                 expect(columns).containsExactly(2.fr)
@@ -55,7 +56,7 @@ object MutableLayoutSpec : Spek({
         }
 
         context("appending a row") {
-            beforeEachTest { tab.appendRow() }
+            beforeEach { tab.appendRow() }
 
             it("should duplicate the last row's dimension and panels") {
                 expect(columns).containsExactly(1.fr, 2.fr)
@@ -69,7 +70,7 @@ object MutableLayoutSpec : Spek({
         }
 
         context("duplicating a row") {
-            beforeEachTest { tab.duplicateRow(0) }
+            beforeEach { tab.duplicateRow(0) }
 
             it("should duplicate the specified row's dimension and panels") {
                 expect(columns).containsExactly(1.fr, 2.fr)
@@ -83,7 +84,7 @@ object MutableLayoutSpec : Spek({
         }
 
         context("deleting a row") {
-            beforeEachTest { tab.deleteRow(0) }
+            beforeEach { tab.deleteRow(0) }
 
             it("should delete the specified row's dimension and panels") {
                 expect(columns).containsExactly(1.fr, 2.fr)

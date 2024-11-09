@@ -3,12 +3,13 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.model.PolyLine.Segment
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object GridSpec : Spek({
+object GridSpec : DescribeSpec({
     describe<Grid> {
         val grid by value {
             Grid(

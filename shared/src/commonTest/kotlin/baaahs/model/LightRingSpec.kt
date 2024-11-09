@@ -3,13 +3,14 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.math.PI
 import kotlin.math.abs
 
-class LightRingSpec : Spek({
+class LightRingSpec : DescribeSpec({
     describe<LightRing> {
         val lightRing by value { LightRing("ring", radius = 1f) }
 

@@ -11,16 +11,16 @@ import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.ShaderSubstitutions
 import baaahs.gl.testToolchain
+import baaahs.kotest.value
 import baaahs.show.Shader
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object PaintShaderSpec : Spek({
+object PaintShaderSpec : DescribeSpec({
     describe<PaintShader> {
         val shaderText by value { toBeSpecified<String>() }
         val shader by value { Shader("Title", shaderText) }

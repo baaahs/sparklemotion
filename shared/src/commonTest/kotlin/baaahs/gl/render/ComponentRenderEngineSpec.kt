@@ -13,6 +13,7 @@ import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.patch.ProgramLinker
 import baaahs.gl.result.ResultStorage
 import baaahs.gl.shader.InputPort
+import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.plugin.SerializerRegistrar
 import baaahs.scene.MutableFixtureOptions
@@ -25,10 +26,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object ComponentRenderEngineSpec : Spek({
+object ComponentRenderEngineSpec : DescribeSpec({
     describe<ComponentRenderEngine> {
         val gl by value { FakeGlContext() }
         val updateMode by value { UpdateMode.ONCE }
@@ -43,7 +44,7 @@ object ComponentRenderEngineSpec : Spek({
         val texture by value { gl.textures.only("texture") }
 
         context("when engine has just been started") {
-            beforeEachTest { renderEngine.run { /* No-op. */ } }
+            beforeEach { renderEngine.run { /* No-op. */ } }
 
             it("should have no feeds open yet") {
                 expect(fixtureFeed.feeds.size).toBe(0)
@@ -52,7 +53,7 @@ object ComponentRenderEngineSpec : Spek({
             }
 
             context("when the engine is released") {
-                beforeEachTest { renderEngine.release() }
+                beforeEach { renderEngine.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
                     expect(fixtureFeed.feeds.all { it.released }).toBe(true)
@@ -83,7 +84,7 @@ object ComponentRenderEngineSpec : Spek({
             val initialProgram by value<Array<GlslProgram?>> { arrayOf(program) } // Array is a workaround for a bug in by value.
             val fakeGlProgram by value { gl.programs.only("program") }
 
-            beforeEachTest { initialProgram.run { } }
+            beforeEach { initialProgram.run { } }
 
             it("should bind EngineFeedContexts for each feed") {
                 expect(fixtureFeed.feeds.size).toBe(1)
@@ -111,7 +112,7 @@ object ComponentRenderEngineSpec : Spek({
             }
 
             context("when the program is released") {
-                beforeEachTest { program.release() }
+                beforeEach { program.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
                     expect(fixtureFeed.feeds.all { it.released }).toBe(false)
@@ -121,7 +122,7 @@ object ComponentRenderEngineSpec : Spek({
             }
 
             context("when the engine is released") {
-                beforeEachTest { renderEngine.release() }
+                beforeEach { renderEngine.release() }
 
                 it("should release EngineFeedContexts") {
                     expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
@@ -151,10 +152,10 @@ object ComponentRenderEngineSpec : Spek({
                     }
                 }
 
-                beforeEachTest { addFixture() }
+                beforeEach { addFixture() }
 
                 context("when two frames are rendered") {
-                    beforeEachTest {
+                    beforeEach {
                         // Two frames so we can observe when uniforms are updated.
                         drawTwoFrames()
                     }
@@ -209,10 +210,10 @@ object ComponentRenderEngineSpec : Spek({
                     }
                 }
 
-                beforeEachTest { addTwoFixtures() }
+                beforeEach { addTwoFixtures() }
 
                 context("when two frames are rendered") {
-                    beforeEachTest {
+                    beforeEach {
                         // Two frames so we can observe when uniforms are updated.
                         drawTwoFrames()
                     }
@@ -276,7 +277,7 @@ object ComponentRenderEngineSpec : Spek({
                             override(initialProgram) { arrayOf<GlslProgram?>(null) }
                             override(drawTwoFrames) { {} }
 
-                            beforeEachTest {
+                            beforeEach {
                                 // This causes program to be compiled finally.
                                 renderEngine.setRenderPlan(renderPlanFor(program, fixture1Target, fixture2Target))
                                 renderEngine.draw()

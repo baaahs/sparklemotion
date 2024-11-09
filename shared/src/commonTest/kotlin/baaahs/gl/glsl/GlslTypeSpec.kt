@@ -2,13 +2,13 @@ package baaahs.gl.glsl
 
 import baaahs.describe
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.Skip
+import io.kotest.core.spec.style.DescribeSpec
 
-object GlslTypeSpec : Spek({
+object GlslTypeSpec : DescribeSpec({
     describe<GlslType> {
         val type by value<GlslType> { toBeSpecified() }
 
@@ -70,10 +70,8 @@ object GlslTypeSpec : Spek({
                     )
                 }
 
-                it(
-                    "#toGlsl generates valid a GLSL declaration",
-                    skip = Skip.Yes("Fix position of array marker in declaration.")
-                ) {
+                // TODO: Fix position of array marker in declaration.
+                xit("#toGlsl generates valid a GLSL declaration") {
                     expect((type as GlslType.Struct).toGlsl(GlslCode.Namespace("pfx"), emptySet()))
                         .toEqual(
                             """

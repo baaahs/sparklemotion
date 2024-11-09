@@ -10,6 +10,7 @@ import baaahs.gl.shader.dialect.ShaderToyShaderDialect
 import baaahs.gl.testPlugins
 import baaahs.gl.testToolchain
 import baaahs.glsl.Shaders
+import baaahs.kotest.value
 import baaahs.plugin.PluginRef
 import baaahs.toBeSpecified
 import baaahs.toEqual
@@ -18,11 +19,11 @@ import ch.tutteli.atrium.api.fluent.en_GB.hasSize
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import org.spekframework.spek2.Spek
 
-object GlslAnalyzerSpec : Spek({
+object GlslAnalyzerSpec : DescribeSpec({
     describe<GlslAnalyzer> {
         context("given some GLSL code") {
             val glslParser by value { GlslParser() }

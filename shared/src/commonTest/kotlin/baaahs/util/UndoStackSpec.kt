@@ -1,11 +1,11 @@
 package baaahs.util
 
+import baaahs.kotest.value
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
-object UndoStackSpec : Spek({
+object UndoStackSpec : DescribeSpec({
     describe("UndoStack") {
         val size by value { 3 }
         val undoStack by value { UndoStack<String>(size) }
@@ -17,7 +17,7 @@ object UndoStackSpec : Spek({
         }
 
         context("when a change is pushed") {
-            beforeEachTest { editor.change("first change") }
+            beforeEach { editor.change("first change") }
 
             it("can be undone") {
                 expect(editor.undo()).toBe(true)
@@ -37,7 +37,7 @@ object UndoStackSpec : Spek({
             }
 
             context("multiple changes") {
-                beforeEachTest {
+                beforeEach {
                     editor.change("second change")
                     editor.change("third change")
                 }
@@ -65,7 +65,7 @@ object UndoStackSpec : Spek({
                 }
 
                 context("when capacity is exceeded") {
-                    beforeEachTest { editor.change("fourth change") }
+                    beforeEach { editor.change("fourth change") }
 
                     it("drops eldest history") {
                         expect(editor.undo()).toBe(true)

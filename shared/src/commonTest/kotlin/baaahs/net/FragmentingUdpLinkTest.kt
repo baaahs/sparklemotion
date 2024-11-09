@@ -1,12 +1,13 @@
 package baaahs.net
 
 import baaahs.describe
+import baaahs.kotest.value
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 import kotlin.random.Random
 
-object FragmentingUdpSocketSpec : Spek({
+object FragmentingUdpSocketSpec : DescribeSpec({
     describe<FragmentingUdpSocket> {
         val port by value { 1234 }
         val mtu by value { 1400 }
@@ -24,7 +25,7 @@ object FragmentingUdpSocketSpec : Spek({
             sendLink.sendTo(recvLink)
         }
 
-        beforeEachTest {
+        beforeEach {
             recvLink.listenFragmentingUdp(port, object : Network.UdpListener {
                 override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
                     receivedPayloads += bytes

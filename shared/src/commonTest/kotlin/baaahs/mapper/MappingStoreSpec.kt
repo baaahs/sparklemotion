@@ -3,12 +3,12 @@ package baaahs.mapper
 import baaahs.describe
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import org.spekframework.spek2.Spek
 
 @Suppress("unused")
-object MappingStoreSpec : Spek({
+object MappingStoreSpec : DescribeSpec({
     describe<MappingStore> {
         it("formats times consistently") {
             val instant = Instant.fromEpochSeconds(1703876061L, 123_456_789)

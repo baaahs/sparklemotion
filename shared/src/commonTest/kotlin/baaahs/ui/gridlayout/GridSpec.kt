@@ -3,11 +3,10 @@ package baaahs.ui.gridlayout
 import baaahs.geom.Vector2I
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object GridSpec : Spek({
+object GridSpec : DescribeSpec({
     describe("test helpers") {
         it("convert from string to layout") {
             expect(

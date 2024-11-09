@@ -6,6 +6,7 @@ import baaahs.gl.override
 import baaahs.gl.patch.ContentType
 import baaahs.gl.shader.InputPort
 import baaahs.gl.shader.OutputPort
+import baaahs.kotest.value
 import baaahs.plugin.PluginRef
 import baaahs.show.Stream
 import baaahs.show.UnknownFeed
@@ -14,11 +15,11 @@ import baaahs.sm.webapi.Severity
 import ch.tutteli.atrium.api.fluent.en_GB.contains
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import org.spekframework.spek2.Spek
 
-object OpenPatchSpec : Spek({
+object OpenPatchSpec : DescribeSpec({
     describe<OpenPatch> {
         val inputPorts by value { listOf<InputPort>() }
         val outputPort by value { OutputPort(ContentType.Color) }

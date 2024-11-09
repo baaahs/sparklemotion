@@ -3,13 +3,14 @@ package baaahs.mapper.migration
 import baaahs.describe
 import baaahs.geom.Matrix4F
 import baaahs.geom.identity
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.serialization.json.*
-import org.spekframework.spek2.Spek
 
 @Suppress("unused", "ClassName")
-object V1_EpochToIso8601AndFixCameraMatrixSpec : Spek({
+object V1_EpochToIso8601AndFixCameraMatrixSpec : DescribeSpec({
     describe<V1_EpochToIso8601AndFixCameraMatrix> {
         val fromJson by value {
             /**language=json*/

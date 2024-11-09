@@ -2,14 +2,15 @@ package baaahs.dmx
 
 import baaahs.describe
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toThrow
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-object DynamicDmxAllocatorSpec : Spek({
+object DynamicDmxAllocatorSpec : DescribeSpec({
     describe<DynamicDmxAllocator> {
         val universeCount by value { 3 }
         val dmxUniverses by value { DmxUniverses(universeCount) }

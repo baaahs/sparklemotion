@@ -3,6 +3,7 @@ package baaahs.model
 import baaahs.describe
 import baaahs.geom.Vector3F
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.model.importers.ObjImporter
 import baaahs.only
 import baaahs.toEqual
@@ -10,10 +11,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.fluent.en_GB.size
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
 @Suppress("unused")
-class ObjImporterSpec : Spek({
+class ObjImporterSpec : DescribeSpec({
     describe<ObjImporter> {
         val objData by value {
             """

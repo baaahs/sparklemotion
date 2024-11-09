@@ -3,10 +3,9 @@ package baaahs.util
 import baaahs.camelize
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
+import io.kotest.core.spec.style.DescribeSpec
 
-object UtilSpec : Spek({
+object UtilSpec : DescribeSpec({
     describe("baaahs.util") {
         describe("String.camelize") {
             it("camelizes") {

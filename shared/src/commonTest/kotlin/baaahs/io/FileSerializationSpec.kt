@@ -1,19 +1,19 @@
 package baaahs.io
 
+import baaahs.kotest.value
 import baaahs.sim.FakeFs
 import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
+import io.kotest.core.spec.style.DescribeSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
 @InternalCoroutinesApi
-object FileSerializationSpec : Spek({
+object FileSerializationSpec : DescribeSpec({
     describe("Remote file serialization") {
         val actualFs1 by value { FakeFs() }
         val actualFile1 by value { actualFs1.resolve("some", "file.txt") }

@@ -2,14 +2,15 @@ package baaahs.glsl
 
 import baaahs.describe
 import baaahs.device.PixelArrayDevice
+import baaahs.kotest.value
 import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeKgl
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object GuruMeditationErrorSpec : Spek({
+object GuruMeditationErrorSpec : DescribeSpec({
     describe<GuruMeditationError> {
         val gl by value { FakeGlContext(FakeKgl()) }
         val guruMeditationError by value { GuruMeditationError(PixelArrayDevice) }

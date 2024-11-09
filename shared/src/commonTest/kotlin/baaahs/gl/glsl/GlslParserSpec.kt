@@ -4,15 +4,15 @@ import baaahs.describe
 import baaahs.gl.expectStatements
 import baaahs.gl.glsl.GlslCode.*
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.only
 import baaahs.toBeSpecified
 import baaahs.toEqual
 import ch.tutteli.atrium.api.fluent.en_GB.*
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.dsl.Skip
+import io.kotest.core.spec.style.DescribeSpec
 
-object GlslParserSpec : Spek({
+object GlslParserSpec : DescribeSpec({
     describe<GlslParser> {
         context("given some GLSL code") {
             val glslParser by value { GlslParser() }
@@ -450,7 +450,8 @@ object GlslParserSpec : Spek({
                         }
                     }
 
-                    context("with nested ifs", skip = Skip.Yes("Test that #elif/#else inside unfollowed branches are ignored.")) {}
+                    // TODO: Test that #elif/#else inside unfollowed branches are ignored.
+                    xcontext("with nested ifs") {}
 
                     context("with unbalanced #endif") {
                         override(shaderText) { "#endif" }

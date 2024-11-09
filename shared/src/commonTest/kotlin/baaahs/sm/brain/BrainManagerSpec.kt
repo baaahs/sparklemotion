@@ -9,6 +9,7 @@ import baaahs.controllers.FakeMappingManager
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
 import baaahs.gl.override
+import baaahs.kotest.value
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
@@ -19,9 +20,9 @@ import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
 import ch.tutteli.atrium.api.fluent.en_GB.feature
 import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
 import ch.tutteli.atrium.api.verbs.expect
-import org.spekframework.spek2.Spek
+import io.kotest.core.spec.style.DescribeSpec
 
-object BrainManagerSpec : Spek({
+object BrainManagerSpec : DescribeSpec({
     describe<BrainManager> {
         val link by value { TestNetwork().link("brainlink") }
         val model by value { modelForTest(entity("surface1")) }
@@ -44,7 +45,7 @@ object BrainManagerSpec : Spek({
             ControllersManager(listOf(brainManager), mappingManager, SceneMonitor(scene), listOf(listener))
         }
 
-        beforeEachTest {
+        beforeEach {
             controllersManager.start()
             brainManager.onConfigChange(controllerConfigs)
         }
@@ -76,7 +77,7 @@ object BrainManagerSpec : Spek({
             }
 
             context("when a brain dials in") {
-                beforeEachTest {
+                beforeEach {
                     brainManager.foundBrain(link.myAddress, BrainHelloMessage("brain1", null))
                 }
 
