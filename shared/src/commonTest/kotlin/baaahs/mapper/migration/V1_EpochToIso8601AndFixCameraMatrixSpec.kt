@@ -4,9 +4,8 @@ import baaahs.describe
 import baaahs.geom.Matrix4F
 import baaahs.geom.identity
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.json.*
 
 @Suppress("unused", "ClassName")
@@ -29,7 +28,7 @@ object V1_EpochToIso8601AndFixCameraMatrixSpec : DescribeSpec({
         fun subject() = V1_EpochToIso8601AndFixCameraMatrix.migrate(fromJsonEl)
 
         it("converts epoch doubles to iso 8601 strings") {
-            expect(subject()).toEqual(
+            subject().shouldBe(
                 buildJsonObject {
                     put("startedAt", JsonPrimitive("2019-08-24T04:14:11.322Z"))
                     put("savedAt", JsonPrimitive("2019-08-24T04:17:43.433Z"))

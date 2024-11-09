@@ -22,11 +22,12 @@ import baaahs.show.Shader
 import baaahs.show.live.LinkedPatch
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.*
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
 object ComponentRenderEngineSpec : DescribeSpec({
@@ -47,17 +48,17 @@ object ComponentRenderEngineSpec : DescribeSpec({
             beforeEach { renderEngine.run { /* No-op. */ } }
 
             it("should have no feeds open yet") {
-                expect(fixtureFeed.feeds.size).toBe(0)
-                expect(fixtureFeed.engineFeeds.size).toBe(0)
-                expect(fixtureFeed.programFeeds.size).toBe(0)
+                fixtureFeed.feeds.size.shouldBe(0)
+                fixtureFeed.engineFeeds.size.shouldBe(0)
+                fixtureFeed.programFeeds.size.shouldBe(0)
             }
 
             context("when the engine is released") {
                 beforeEach { renderEngine.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
-                    expect(fixtureFeed.feeds.all { it.released }).toBe(true)
-                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
+                    fixtureFeed.feeds.all { it.released }.shouldBeTrue()
+                    fixtureFeed.engineFeeds.all { it.released }.shouldBeTrue()
                 }
             }
         }
@@ -87,27 +88,27 @@ object ComponentRenderEngineSpec : DescribeSpec({
             beforeEach { initialProgram.run { } }
 
             it("should bind EngineFeedContexts for each feed") {
-                expect(fixtureFeed.feeds.size).toBe(1)
-                expect(fixtureFeed.engineFeeds.size).toBe(1)
-                expect(fixtureFeed.programFeeds.size).toBe(1)
+                fixtureFeed.feeds.size.shouldBe(1)
+                fixtureFeed.engineFeeds.size.shouldBe(1)
+                fixtureFeed.programFeeds.size.shouldBe(1)
             }
 
             it("should bind program uniforms") {
-                expect(fakeGlProgram.uniformNames()).toBe(setOf("perFixtureData"))
+                fakeGlProgram.uniformNames().shouldBe(setOf("perFixtureData"))
             }
 
             context("when the feed is per-pixel") {
                 override(feed) { pixelFeed }
 
                 it("should allocate a texture to hold per-pixel data") {
-                    expect(texture.width to texture.height).toBe(1 to 1)
-                    expect(texture.internalFormat).toBe(GlContext.GL_R32F)
-                    expect(texture.format).toBe(GL_RED)
-                    expect(texture.type).toBe(GL_FLOAT)
-                    expect(texture.params[GL_TEXTURE_MIN_FILTER]).toBe(GL_NEAREST)
-                    expect(texture.params[GL_TEXTURE_MAG_FILTER]).toBe(GL_NEAREST)
+                    (texture.width to texture.height).shouldBe(1 to 1)
+                    texture.internalFormat.shouldBe(GlContext.GL_R32F)
+                    texture.format.shouldBe(GL_RED)
+                    texture.type.shouldBe(GL_FLOAT)
+                    texture.params[GL_TEXTURE_MIN_FILTER].shouldBe(GL_NEAREST)
+                    texture.params[GL_TEXTURE_MAG_FILTER].shouldBe(GL_NEAREST)
 
-                    expect(texture.buffer?.size).toBe(1)
+                    texture.buffer?.size.shouldBe(1)
                 }
             }
 
@@ -115,9 +116,9 @@ object ComponentRenderEngineSpec : DescribeSpec({
                 beforeEach { program.release() }
 
                 it("should release FeedContexts and EngineFeedContexts") {
-                    expect(fixtureFeed.feeds.all { it.released }).toBe(false)
-                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(false)
-                    expect(fixtureFeed.programFeeds.all { it.released }).toBe(true)
+                    fixtureFeed.feeds.all { it.released }.shouldBeFalse()
+                    fixtureFeed.engineFeeds.all { it.released }.shouldBeFalse()
+                    fixtureFeed.programFeeds.all { it.released }.shouldBeTrue()
                 }
             }
 
@@ -125,14 +126,14 @@ object ComponentRenderEngineSpec : DescribeSpec({
                 beforeEach { renderEngine.release() }
 
                 it("should release EngineFeedContexts") {
-                    expect(fixtureFeed.engineFeeds.all { it.released }).toBe(true)
+                    fixtureFeed.engineFeeds.all { it.released }.shouldBeTrue()
                 }
 
                 context("when the feed is per-pixel") {
                     override(feed) { pixelFeed }
 
                     it("should release the texture") {
-                        expect(texture.isDeleted).toBe(true)
+                        texture.isDeleted.shouldBeTrue()
                     }
                 }
             }
@@ -161,11 +162,11 @@ object ComponentRenderEngineSpec : DescribeSpec({
                     }
 
                     it("should generate a RenderTarget with appropriate rects") {
-                        expect(fixture1Target.component0Index).toEqual(0)
-                        expect(fixture1Target.componentCount).toEqual(maxFramebufferWidth)
+                        fixture1Target.component0Index.shouldBe(0)
+                        fixture1Target.componentCount.shouldBe(maxFramebufferWidth)
 
-                        expect(fixture1Target.rect0Index).toEqual(0)
-                        expect(fixture1Target.rects).toEqual(
+                        fixture1Target.rect0Index.shouldBe(0)
+                        fixture1Target.rects.shouldBe(
                             listOf(
                                 Quad.Rect(0f, 0f, 1f, 64f)
                             )
@@ -176,11 +177,11 @@ object ComponentRenderEngineSpec : DescribeSpec({
                         override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
-                            expect(texture.width to texture.height)
-                                .toBe(64 to 2)
+                            (texture.width to texture.height)
+                                .shouldBe(64 to 2)
 
-                            expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
-                                .containsExactly(
+                            fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer }
+                                .shouldContainExactly(
                                     listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f),
                                     listOf(10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f, 18f, 19f, 20f, 21f, 22f, 23f, 24f, 25f, 26f, 27f, 28f, 29f, 30f, 31f, 32f, 33f, 34f, 35f, 36f, 37f, 38f, 39f, 40f, 41f, 42f, 43f, 44f, 45f, 46f, 47f, 48f, 49f, 50f, 51f, 52f, 53f, 54f, 55f, 56f, 57f, 58f, 59f, 60f, 61f, 62f, 63f, 64f, 65f, 66f, 67f, 68f, 69f, 70f, 71f, 72f, 73f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
 //                                    listOf(10f, 20f, 21f), // First frame, fixture1.
@@ -219,23 +220,23 @@ object ComponentRenderEngineSpec : DescribeSpec({
                     }
 
                     it("should set uniforms appropriately") {
-                        expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                            .containsExactly(0, 0, 0, 0)
+                        fakeGlProgram.renders.map { it.uniforms["perFixtureData"] }
+                            .shouldContainExactly(0, 0, 0, 0)
                     }
 
                     context("when updateMode is per frame") {
                         override(updateMode) { UpdateMode.PER_FRAME }
                         it("should set uniforms appropriately") {
-                            expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                                .containsExactly(0, 0, 1, 1)
+                            fakeGlProgram.renders.map { it.uniforms["perFixtureData"] }
+                                .shouldContainExactly(0, 0, 1, 1)
                         }
                     }
 
                     context("when updateMode is per fixture") {
                         override(updateMode) { UpdateMode.PER_FIXTURE }
                         it("should set uniforms appropriately") {
-                            expect(fakeGlProgram.renders.map { it.uniforms["perFixtureData"] })
-                                .containsExactly(0, 1, 2, 3)
+                            fakeGlProgram.renders.map { it.uniforms["perFixtureData"] }
+                                .shouldContainExactly(0, 1, 2, 3)
                         }
                     }
 
@@ -243,10 +244,10 @@ object ComponentRenderEngineSpec : DescribeSpec({
                         override(feed) { pixelFeed }
 
                         it("should allocate a texture to hold per-pixel data for all fixtures") {
-                            expect(texture.width to texture.height)
-                                .toBe(3 to 1)
-                            expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
-                                .containsExactly(
+                            (texture.width to texture.height)
+                                .shouldBe(3 to 1)
+                            fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer }
+                                .shouldContainExactly(
                                     listOf(10f, 20f, 21f), // First frame, fixture1.
                                     listOf(10f, 20f, 21f), // First frame, fixture2.
                                     listOf(10f, 20f, 21f), // Second frame, fixture1.
@@ -258,10 +259,10 @@ object ComponentRenderEngineSpec : DescribeSpec({
                             override(updateMode) { UpdateMode.PER_FRAME }
 
                             it("should allocate a texture to hold per-pixel data for all fixtures") {
-                                expect(texture.width to texture.height)
-                                    .toBe(3 to 1)
-                                expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
-                                    .containsExactly(
+                                (texture.width to texture.height)
+                                    .shouldBe(3 to 1)
+                                fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer }
+                                    .shouldContainExactly(
                                         // 10f-41f are currently issued when the feed is first bound;
                                         // we could eliminate that overhead but probably not really worth it.
                                         listOf(30f, 40f, 41f), // First frame, fixture1.
@@ -285,10 +286,10 @@ object ComponentRenderEngineSpec : DescribeSpec({
                             }
 
                             it("should allocate a texture to hold per-pixel data for all fixtures") {
-                                expect(texture.width to texture.height)
-                                    .toBe(3 to 1)
-                                expect(fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer })
-                                    .containsExactly(
+                                (texture.width to texture.height)
+                                    .shouldBe(3 to 1)
+                                fakeGlProgram.renders.map { it.findUniformTextureConfig("perPixelDataTexture").buffer }
+                                    .shouldContainExactly(
                                         listOf(10f, 20f, 21f), // First frame, fixture1.
                                         listOf(10f, 20f, 21f), // First frame, fixture2.
                                         listOf(10f, 20f, 21f), // Second frame, fixture1.

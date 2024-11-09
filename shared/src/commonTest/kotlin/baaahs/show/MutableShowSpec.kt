@@ -12,9 +12,10 @@ import baaahs.kotest.value
 import baaahs.only
 import baaahs.show.live.FakeOpenShader
 import baaahs.show.mutable.*
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.collections.set
 
 object MutableShowSpec : DescribeSpec({
@@ -61,18 +62,17 @@ object MutableShowSpec : DescribeSpec({
 //            }
 
             it("has the expected initial shaders") {
-                expect(show.shaders.values.map { it.title }.toSet())
-                    .toBe(setOf("shader 0", "shader 1a", "shader 2a", "shader 2b", "shader 2c"))
+                show.shaders.values.map { it.title }.toSet()
+                    .shouldBe(setOf("shader 0", "shader 1a", "shader 2a", "shader 2b", "shader 2c"))
             }
 
             it("has the expected initial feeds") {
-                expect(show.feeds.values.map { it.title }.toSet())
-                    .toBe(setOf("Time", "Resolution", "Blueness Slider"))
+                show.feeds.values.map { it.title }.toSet().shouldBe(setOf("Time", "Resolution", "Blueness Slider"))
             }
         }
 
         it("leaves everything as-is if no changes are made") {
-            expect(baseShow).toBe(show)
+            baseShow.shouldBe(show)
         }
 
         context("editing a patch") {
@@ -86,8 +86,8 @@ object MutableShowSpec : DescribeSpec({
                 it("should retain them, I guess?") {
                     val id = show.patchIds.only()
                     val patch = show.patches[id]!!
-                    expect(patch.incomingLinks.keys)
-                        .toBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
+                    patch.incomingLinks.keys
+                        .shouldBe(setOf("nonsense", "time", "blueness", "resolution", "gl_FragCoord"))
                 }
             }
 
@@ -101,25 +101,25 @@ object MutableShowSpec : DescribeSpec({
                 val patch by value { MutablePatch(mutableShader, incomingLinks, stream) }
 
                 context("with no input port links") {
-                    it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
+                    it("isn't a filter") { patch.isFilter(openShader).shouldBeFalse() }
                 }
 
                 context("when an input port's content type matches the return content type") {
                     override(inputPorts) { listOf(InputPort("color", ContentType.Color)) }
                     override(incomingLinks) { mapOf("color" to MutableConstPort("foo", GlslType.Vec4)) }
 
-                    it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
+                    it("isn't a filter") { patch.isFilter(openShader).shouldBeFalse() }
 
                     context("linked to a stream") {
                         override(incomingLinks) { mapOf("color" to Stream.Main.toMutable()) }
 
                         context("on the same channel") {
-                            it("is a filter") { expect(patch.isFilter(openShader)).toBe(true) }
+                            it("is a filter") { patch.isFilter(openShader).shouldBeTrue() }
                         }
 
                         context("on a different channel") {
                             override(stream) { Stream("other").toMutable() }
-                            it("isn't a filter") { expect(patch.isFilter(openShader)).toBe(false) }
+                            it("isn't a filter") { patch.isFilter(openShader).shouldBeFalse() }
                         }
                     }
                 }
@@ -127,7 +127,7 @@ object MutableShowSpec : DescribeSpec({
                 context("when the return content type doesn't match any of the input ports") {
                     override(outputPort) { OutputPort(ContentType.XyCoordinate) }
                     it("is a filter") {
-                        expect(patch.isFilter(openShader)).toBe(false)
+                        patch.isFilter(openShader).shouldBeFalse()
                     }
                 }
             }

@@ -4,11 +4,9 @@ import baaahs.Color
 import baaahs.FakeClock
 import baaahs.describe
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.fluent.en_GB.toBeWithErrorTolerance
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.mockk.every
 import io.mockk.mockk
 import org.deepsymmetry.beatlink.Beat
@@ -23,7 +21,7 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
 
         context("beforeAnyBeatsReceived") {
             it("currentBeatIsZero") {
-                expect(beatSource.currentBeat).toBe(BeatData(0.0, 0, confidence = 0f))
+                beatSource.currentBeat.shouldBe(BeatData(0.0, 0, confidence = 0f))
             }
         }
 
@@ -31,7 +29,7 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
             it("beatDataIsUpdated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 1))
-                expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
+                beatSource.currentBeat.shouldBe(BeatData(10.0, 486, confidence = 1f))
             }
         }
 
@@ -39,7 +37,7 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
             it("beatDataIsUpdated") {
                 beatSource.channelsOnAir(hashSetOf(1))
                 beatSource.newBeat(mockBeat(123.4, 2))
-                expect(beatSource.currentBeat).toBe(BeatData(10.0 - 60 / 123.4, 486, confidence = 1f))
+                beatSource.currentBeat.shouldBe(BeatData(10.0 - 60 / 123.4, 486, confidence = 1f))
             }
         }
 
@@ -50,12 +48,12 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
 
                 fakeClock.time += 0.486.seconds
                 beatSource.newBeat(mockBeat(123.4, 2))
-                expect(beatSource.currentBeat).toBe(BeatData(10.0, 486, confidence = 1f))
+                beatSource.currentBeat.shouldBe(BeatData(10.0, 486, confidence = 1f))
 
                 fakeClock.time += 0.490.seconds
                 beatSource.newBeat(mockBeat(123.4, 3))
-                expect(beatSource.currentBeat.measureStartTime).toBeWithErrorTolerance(10.003, 0.0009)
-                expect(beatSource.currentBeat.beatIntervalMs).toBe(486)
+                beatSource.currentBeat.measureStartTime.shouldBeWithinPercentageOf(10.003, 0.009)
+                beatSource.currentBeat.beatIntervalMs.shouldBe(486)
             }
         }
 
@@ -67,8 +65,8 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
                 fakeClock.time += 0.486.seconds
                 beatSource.newBeat(mockBeat(123.5, 2))
                 assertNotEquals(10.0, beatSource.currentBeat.measureStartTime)
-                expect(beatSource.currentBeat.measureStartTime).toBeWithErrorTolerance(10.0, 0.0009)
-                expect(beatSource.currentBeat.beatIntervalMs).toBe(485)
+                beatSource.currentBeat.measureStartTime.shouldBeWithinPercentageOf(10.0, 0.009)
+                beatSource.currentBeat.beatIntervalMs.shouldBe(485)
             }
         }
 
@@ -85,7 +83,7 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
                 }
 
                 it("retains high confidence") {
-                    expect(beatSource.currentBeat.confidence).toBe(1f)
+                    beatSource.currentBeat.confidence.shouldBe(1f)
                 }
             }
 
@@ -96,7 +94,7 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
                 }
 
                 it("reduces the confidence") {
-                    expect(beatSource.currentBeat.confidence).toBe(.99f)
+                    beatSource.currentBeat.confidence.shouldBe(.99f)
                 }
             }
         }
@@ -105,32 +103,30 @@ object BeatLinkBeatSourceSpec : DescribeSpec({
             val playerState by value { PlayerState(encodedWaveform = "074080bf1a111111", waveformScale = 1) }
 
             it("#sampleCount") {
-                expect(playerState.waveform?.sampleCount).toBe(2)
+                playerState.waveform?.sampleCount.shouldBe(2)
             }
 
             it("#totalTimeMs") {
-                expect(playerState.waveform?.totalTimeMs?.roundToInt()).toBe(13)
+                playerState.waveform?.totalTimeMs?.roundToInt().shouldBe(13)
             }
 
             it("encodes compactly") {
-                expect(
-                    PlayerState().withWaveform(1) {
-                        add(7, Color(0x40, 0x80, 0xbf))
-                        add(26, Color(0x11, 0x11, 0x11))
-                    }
-                ).toEqual(playerState)
+                PlayerState().withWaveform(1) {
+                    add(7, Color(0x40, 0x80, 0xbf))
+                    add(26, Color(0x11, 0x11, 0x11))
+                }.shouldBe(playerState)
             }
 
             it("decodes correctly") {
-                expect(playerState.waveform?.heightAt(0))
-                    .toEqual(7)
-                expect(playerState.waveform?.colorAt(0))
-                    .toEqual(baaahs.Color(0x40, 0x80, 0xbf))
+                playerState.waveform?.heightAt(0)
+                    .shouldBe(7)
+                playerState.waveform?.colorAt(0)
+                    .shouldBe(baaahs.Color(0x40, 0x80, 0xbf))
 
-                expect(playerState.waveform?.heightAt(1))
-                    .toEqual(26)
-                expect(playerState.waveform?.colorAt(1))
-                    .toEqual(baaahs.Color(0x11, 0x11, 0x11))
+                playerState.waveform?.heightAt(1)
+                    .shouldBe(26)
+                playerState.waveform?.colorAt(1)
+                    .shouldBe(baaahs.Color(0x11, 0x11, 0x11))
             }
         }
     }

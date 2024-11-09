@@ -3,11 +3,12 @@ package baaahs
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.rpc.CommandPort
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.scopes.DescribeSpecContainerScope
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -121,9 +122,9 @@ object PubSubSpec : DescribeSpec({
 
         context("before connection is made") {
             it("isConnected should return false") {
-                expect(testRig.client1.isConnected).toBe(false)
+                testRig.client1.isConnected.shouldBeFalse()
                 testRig.dispatcher.runCurrent()
-                expect(testRig.client1.isConnected).toBe(true)
+                testRig.client1.isConnected.shouldBeTrue()
             }
         }
 
@@ -138,7 +139,7 @@ object PubSubSpec : DescribeSpec({
         context("when connection is reset") {
             it("should notify listener of state change") {
                 testRig.dispatcher.runCurrent()
-                expect(testRig.client1.isConnected).toBe(true)
+                testRig.client1.isConnected.shouldBeTrue()
 
                 testRig.client1.addStateChangeListener { testRig.client1Log.add("isConnected was changed to ${testRig.client1.isConnected}") }
 
@@ -151,24 +152,24 @@ object PubSubSpec : DescribeSpec({
             }
 
             it("should attempt to reconnect every second") {
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 // trigger a connection reset
                 testRig.client1Network.webSocketListeners[0].reset(testRig.client1Network.tcpConnections[0])
-                expect(testRig.client1.isConnected).toBe(false)
+                testRig.client1.isConnected.shouldBeFalse()
 
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 // don't attempt a new connection until a second has passed
                 testRig.dispatcher.runCurrent()
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 testRig.dispatcher.advanceTimeBy(2000)
                 testRig.dispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
-                expect(testRig.client1Network.tcpConnections.size).toBe(2)
-                expect(testRig.client1.isConnected).toBe(true)
+                testRig.client1Network.tcpConnections.size.shouldBe(2)
+                testRig.client1.isConnected.shouldBeTrue()
             }
 
             it("should resubscribe to topics") {
@@ -179,26 +180,26 @@ object PubSubSpec : DescribeSpec({
                     testRig.serverLog.add("topic1 changed: $it")
                 }
 
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
                 testRig.dispatcher.runCurrent()
                 testRig.client1Log.assertContents("topic1 changed: value")
 
                 // trigger a connection reset
                 testRig.client1Network.webSocketListeners[0].reset(testRig.client1Network.tcpConnections[0])
-                expect(testRig.client1.isConnected).toBe(false)
+                testRig.client1.isConnected.shouldBeFalse()
 
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 // don't attempt a new connection until a second has passed
                 testRig.dispatcher.runCurrent()
-                expect(testRig.client1Network.tcpConnections.size).toBe(1)
+                testRig.client1Network.tcpConnections.size.shouldBe(1)
 
                 testRig.dispatcher.advanceTimeBy(2000)
                 testRig.dispatcher.runCurrent()
 
                 // assert that there was a new outgoing connection
-                expect(testRig.client1Network.tcpConnections.size).toBe(2)
-                expect(testRig.client1.isConnected).toBe(true)
+                testRig.client1Network.tcpConnections.size.shouldBe(2)
+                testRig.client1.isConnected.shouldBeTrue()
 
                 serverTopicObserver.onChange("new value")
                 testRig.dispatcher.runCurrent()
@@ -269,11 +270,11 @@ object PubSubSpec : DescribeSpec({
 
                     it("can handle additional commands meanwhile") {
                         testRig.dispatcher.runCurrent()
-                        expect(result).containsExactly("response: immediate reply for other command")
+                        result.shouldContainExactly("response: immediate reply for other command")
 
                         future.complete("with completion value")
                         testRig.dispatcher.runCurrent()
-                        expect(result).containsExactly(
+                        result.shouldContainExactly(
                             "response: immediate reply for other command",
                             "response: deferred reply for with completion value"
                         )
@@ -297,7 +298,7 @@ object PubSubSpec : DescribeSpec({
                 suspend fun DescribeSpecContainerScope.sharedCommandSpecs() {
                     it("invokes that command on the server and returns the response to the caller") {
                         testRig.dispatcher.runCurrent()
-                        expect(result).containsExactly("response: reply for the command")
+                        result.shouldContainExactly("response: reply for the command")
                     }
 
                     context("and the server throws an exception") {
@@ -307,7 +308,7 @@ object PubSubSpec : DescribeSpec({
 
                         it("returns the response to the caller") {
                             testRig.dispatcher.runCurrent()
-                            expect(result).containsExactly("error: error for the command")
+                            result.shouldContainExactly("error: error for the command")
                         }
                     }
                 }

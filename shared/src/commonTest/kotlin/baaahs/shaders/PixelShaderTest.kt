@@ -2,8 +2,7 @@ package baaahs.shaders
 
 import baaahs.Color
 import baaahs.sm.brain.proto.Pixels
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.matchers.*
 import kotlin.test.Test
 
 class PixelShaderTest {
@@ -26,19 +25,19 @@ class PixelShaderTest {
     @Test
     fun forDirect32Bit_shouldTransmitAndRender() {
         val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_ARGB), fixture)
-        expect(dstBuf.getColors())
-            .toBe("#111111,#333333,#77777777,#cccccc,#00ffffff")
-        expect(render(dstBuf, fixture).getColors())
-            .toBe("#111111,#333333,#77777777,#cccccc,#00ffffff")
+        dstBuf.getColors()
+            .shouldBe("#111111,#333333,#77777777,#cccccc,#00ffffff")
+        render(dstBuf, fixture).getColors()
+            .shouldBe("#111111,#333333,#77777777,#cccccc,#00ffffff")
     }
 
     @Test
     fun forDirect24Bit_shouldTransmitAndRenderIgnoringAlpha() {
         val dstBuf = transmit(directBuffer(argbColors, PixelBrainShader.Encoding.DIRECT_RGB), fixture)
-        expect(dstBuf.getColors())
-            .toBe("#111111,#333333,#777777,#cccccc,#ffffff")
-        expect(render(dstBuf, fixture).getColors())
-            .toBe("#111111,#333333,#777777,#cccccc,#ffffff")
+        dstBuf.getColors()
+            .shouldBe("#111111,#333333,#777777,#cccccc,#ffffff")
+        render(dstBuf, fixture).getColors()
+            .shouldBe("#111111,#333333,#777777,#cccccc,#ffffff")
     }
 
     @Test
@@ -46,15 +45,15 @@ class PixelShaderTest {
         val dstBuf = indexedBuffer(
             arrayOf(Color.BLACK, Color.YELLOW), arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_2
         ) as PixelBrainShader.IndexedBuffer
-        expect(dstBuf.dataBuf.size).toBe(1)
-        expect(dstBuf.byte(0)).toBe(0x00)
+        dstBuf.dataBuf.size.shouldBe(1)
+        dstBuf.byte(0).shouldBe(0x00)
 
         dstBuf[0] = 1
-        expect(dstBuf.byte(0)).toBe(0x80)
+        dstBuf.byte(0).shouldBe(0x80)
         dstBuf[2] = 1
-        expect(dstBuf.byte(0)).toBe(0xA0)
+        dstBuf.byte(0).shouldBe(0xA0)
         dstBuf[4] = 1
-        expect(dstBuf.byte(0)).toBe(0xA8)
+        dstBuf.byte(0).shouldBe(0xA8)
     }
 
     @Test
@@ -64,21 +63,21 @@ class PixelShaderTest {
             arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_4
         ) as PixelBrainShader.IndexedBuffer
 
-        expect(dstBuf.dataBuf.size).toBe(2)
-        expect(dstBuf.bytes()).toBe("00 00")
+        dstBuf.dataBuf.size.shouldBe(2)
+        dstBuf.bytes().shouldBe("00 00")
 
         dstBuf[0] = 1 // orange
-        expect(dstBuf.bytes()).toBe("40 00")
+        dstBuf.bytes().shouldBe("40 00")
 
         dstBuf[2] = 3 // green
-        expect(dstBuf.bytes()).toBe("4c 00")
+        dstBuf.bytes().shouldBe("4c 00")
 
         dstBuf[4] = 2 // yellow
-        expect(dstBuf.bytes()).toBe("4c 80")
+        dstBuf.bytes().shouldBe("4c 80")
 
-        expect(dstBuf.colors[0]).toBe(Color.ORANGE)
-        expect(dstBuf.colors[2]).toBe(Color.GREEN)
-        expect(dstBuf.colors[4]).toBe(Color.YELLOW)
+        dstBuf.colors[0].shouldBe(Color.ORANGE)
+        dstBuf.colors[2].shouldBe(Color.GREEN)
+        dstBuf.colors[4].shouldBe(Color.YELLOW)
     }
 
     @Test
@@ -88,21 +87,21 @@ class PixelShaderTest {
             arrayOf(0, 0, 0, 0, 0), PixelBrainShader.Encoding.INDEXED_16
         ) as PixelBrainShader.IndexedBuffer
 
-        expect(dstBuf.dataBuf.size).toBe(3)
-        expect(dstBuf.bytes()).toBe("00 00 00")
+        dstBuf.dataBuf.size.shouldBe(3)
+        dstBuf.bytes().shouldBe("00 00 00")
 
         dstBuf[0] = 1 // orange
-        expect(dstBuf.bytes()).toBe("10 00 00")
+        dstBuf.bytes().shouldBe("10 00 00")
 
         dstBuf[2] = 3 // green
-        expect(dstBuf.bytes()).toBe("10 30 00")
+        dstBuf.bytes().shouldBe("10 30 00")
 
         dstBuf[4] = 15 // unset, so white
-        expect(dstBuf.bytes()).toBe("10 30 f0")
+        dstBuf.bytes().shouldBe("10 30 f0")
 
-        expect(dstBuf.colors[0]).toBe(Color.ORANGE)
-        expect(dstBuf.colors[2]).toBe(Color.GREEN)
-        expect(dstBuf.colors[4]).toBe(Color.WHITE)
+        dstBuf.colors[0].shouldBe(Color.ORANGE)
+        dstBuf.colors[2].shouldBe(Color.GREEN)
+        dstBuf.colors[4].shouldBe(Color.WHITE)
     }
 
     @Test
@@ -114,26 +113,28 @@ class PixelShaderTest {
                 PixelBrainShader.Encoding.INDEXED_2
             ), fixture
         )
-        expect(dstBuf.getColors())
-            .toBe("#000000,#ffff00,#000000,#ffff00,#000000")
-        expect(render(dstBuf, fixture).getColors())
-            .toBe("#000000,#ffff00,#000000,#ffff00,#000000")
+        dstBuf.getColors()
+            .shouldBe("#000000,#ffff00,#000000,#ffff00,#000000")
+        render(dstBuf, fixture).getColors()
+            .shouldBe("#000000,#ffff00,#000000,#ffff00,#000000")
     }
 
     @Test
     fun whenFewerPixels_shouldTruncate() {
         val pixels = render(directBuffer(rgbColors), fakeFixture(3))
-        expect(pixels.joinToString(",") { it.toHexString() })
-            .toBe("#111111,#333333,#777777")
+        pixels.joinToString(",") { it.toHexString() }
+            .shouldBe("#111111,#333333,#777777")
     }
 
     @Test
     fun whenMorePixels_shouldRepeat() {
         val pixels = render(directBuffer(rgbColors), fakeFixture(12))
-        expect(pixels.joinToString(",") { it.toHexString() })
-            .toBe("#111111,#333333,#777777,#cccccc,#ffffff," +
-                    "#111111,#333333,#777777,#cccccc,#ffffff," +
-                    "#111111,#333333")
+        pixels.joinToString(",") { it.toHexString() }
+            .shouldBe(
+                "#111111,#333333,#777777,#cccccc,#ffffff," +
+                "#111111,#333333,#777777,#cccccc,#ffffff," +
+                "#111111,#333333"
+            )
     }
 
     private fun directBuffer(

@@ -13,8 +13,8 @@ object SliderControlSpec : DescribeSpec({
 
 //        it("allocates a Float channel") {
 //            val channel = sliderControl.allocateChannel("brightness")
-//            expect(channel.id).toEqual("brightness")
-//            expect(channel.initialValue).toEqual(1f)
+//            expect(channel.id).shouldBe("brightness")
+//            expect(channel.initialValue).shouldBe(1f)
 //            expect(channel.serializer).toBe(Float.serializer())
 //        }
     }

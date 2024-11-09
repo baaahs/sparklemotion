@@ -7,10 +7,11 @@ import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.only
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.*
-import ch.tutteli.atrium.api.verbs.expect
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 
 object GlslParserSpec : DescribeSpec({
     describe<GlslParser> {
@@ -156,8 +157,8 @@ object GlslParserSpec : DescribeSpec({
                 }
 
                 it("finds the global variables") {
-                    expect(glslCode.globalVars.toList())
-                        .containsExactly(
+                    glslCode.globalVars.toList()
+                        .shouldContainExactly(
                             GlslVar(
                                 "time", GlslType.Float,
                                 fullText = "uniform float time;", isUniform = true, lineNumber = 5,
@@ -187,8 +188,8 @@ object GlslParserSpec : DescribeSpec({
                 }
 
                 it("finds the functions") {
-                    expect(glslCode.functions.map { it.prettify() })
-                        .containsExactly(
+                    glslCode.functions.map { it.prettify() }
+                        .shouldContainExactly(
                             "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                             "void anotherFunc(in vec3 color[2], in FixtureInfo fixtureInfo)",
                             "void yetAnotherFunc(in vec3 color[4])",
@@ -197,8 +198,8 @@ object GlslParserSpec : DescribeSpec({
                 }
 
                 it("finds the structs") {
-                    expect(glslCode.structs.map { "${it.lineNumber}: ${it.fullText}" })
-                        .containsExactly(
+                    glslCode.structs.map { "${it.lineNumber}: ${it.fullText}" }
+                        .shouldContainExactly(
                             "13: uniform struct FixtureInfo {\n    vec3 position;\n    vec3 rotation;\n} leftEye;"
                         )
                 }
@@ -237,7 +238,7 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("finds the global variables and performs substitutions") {
-                        expect(glslCode.globalVars.toList()).containsExactly(
+                        glslCode.globalVars.toList().shouldContainExactly(
                             GlslVar(
                                 "shouldBeDefined", GlslType.Float,
                                 fullText = "uniform float shouldBeDefined;", isUniform = true, lineNumber = 8
@@ -251,7 +252,7 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("finds the functions and performs substitutions") {
-                        expect(glslCode.functions.map { it.prettify() }).containsExactly(
+                        glslCode.functions.map { it.prettify() }.shouldContainExactly(
                             "void mainFunc(out vec4 fragColor, in vec2 fragCoord)",
                             "void main()"
                         )
@@ -283,19 +284,18 @@ object GlslParserSpec : DescribeSpec({
                                 if (text == "main") Namespace("ns").qualify(text) else text
                             }
 
-                            expect(glsl.trim())
-                                .toBe(
-                                    """
-                                        #line 6
-                                        void ns_main() {
-                                        
-                                        
-                                        
-                                            gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
-                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
-                                        }
-                                    """.trimIndent()
-                                )
+                            glsl.trim().shouldBe(
+                                """
+                                    #line 6
+                                    void ns_main() {
+                                    
+                                    
+                                    
+                                        gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
+                                        gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
+                                    }
+                                """.trimIndent()
+                            )
                         }
                     }
                 }
@@ -312,7 +312,7 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("skips the line") {
-                            expect(glslCode.globalVars.toList()).isEmpty()
+                            glslCode.globalVars.toList().shouldBeEmpty()
                         }
                     }
 
@@ -327,7 +327,7 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("includes the line") {
-                            expect(glslCode.globalVars.map { it.name }).containsExactly("shouldBeDefined")
+                            glslCode.globalVars.map { it.name }.shouldContainExactly("shouldBeDefined")
                         }
                     }
 
@@ -346,7 +346,7 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("includes the line") {
-                            expect(glslCode.globalVars.map { it.name }).containsExactly("oneIsGreaterThanZero")
+                            glslCode.globalVars.map { it.name }.shouldContainExactly("oneIsGreaterThanZero")
                         }
                     }
 
@@ -365,7 +365,7 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("includes the line") {
-                            expect(glslCode.globalVars.map { it.name }).containsExactly("elseClause")
+                            glslCode.globalVars.map { it.name }.shouldContainExactly("elseClause")
                         }
                     }
 
@@ -387,7 +387,7 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("includes the correct line") {
-                            expect(glslCode.globalVars.map { it.name }).containsExactly("valueIsOne")
+                            glslCode.globalVars.map { it.name }.shouldContainExactly("valueIsOne")
                         }
                     }
 
@@ -402,16 +402,16 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: Could not resolve variable 'FOO'") }
-                            }
+                            shouldThrow<AnalysisException> { glslCode }
+                                .message shouldBe("Shader analysis error: Could not resolve variable 'FOO'")
                         }
                     }
+                }
 
-                    context("with defined macros") {
-                        override(shaderText) {
-                            /**language=glsl*/
-                            """
+                context("with defined macros") {
+                    override(shaderText) {
+                        /**language=glsl*/
+                        """
                                 #define iResolution resolution // ignore this comment
                                 #define dividedBy(a,b) (a / b) /* ignore this comment too */
                                 #define circle(U, r) smoothstep(0., 1., abs(length(U)-r)-.02 )
@@ -425,62 +425,57 @@ object GlslParserSpec : DescribeSpec({
                                     gl_FragColor = circle(dividedBy(gl_FragCoord, 1.0), iResolution.x);
                                 }
                             """.trimIndent()
-                        }
-
-                        it("handles nested macro expansions") {
-                            val glslFunction = glslCode.functions.only()
-
-                            val glsl = glslFunction.toGlsl(null) { text ->
-                                if (text == "main") Namespace("ns").qualify(text) else text
-                            }
-
-                            expect(glsl.trim())
-                                .toBe(
-                                    """
-                                        #line 6
-                                        void ns_main() {
-                                        
-                                        
-                                        
-                                            gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
-                                            gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
-                                        }
-                                    """.trimIndent()
-                                )
-                        }
                     }
 
-                    // TODO: Test that #elif/#else inside unfollowed branches are ignored.
-                    xcontext("with nested ifs") {}
+                    it("handles nested macro expansions") {
+                        val glslFunction = glslCode.functions.only()
 
-                    context("with unbalanced #endif") {
-                        override(shaderText) { "#endif" }
-
-                        it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: #endif outside of #if") }
-                            }
+                        val glsl = glslFunction.toGlsl(null) { text ->
+                            if (text == "main") Namespace("ns").qualify(text) else text
                         }
+
+                        glsl.trim().shouldBe(
+                            """
+                                #line 6
+                                void ns_main() {
+                                
+                                
+                                
+                                    gl_FragColor = smoothstep(0., 1., abs(length(gl_FragCoord)-resolution.x)-.02 );
+                                    gl_FragColor = smoothstep(0., 1., abs(length((gl_FragCoord / 1.0))-resolution.x)-.02 );
+                                }
+                            """.trimIndent()
+                        )
                     }
+                }
 
-                    context("with unbalanced #else") {
-                        override(shaderText) { "#else" }
+                // TODO: Test that #elif/#else inside unfollowed branches are ignored.
+                xcontext("with nested ifs") {}
 
-                        it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: #else outside of #if/#endif") }
-                            }
-                        }
+                context("with unbalanced #endif") {
+                    override(shaderText) { "#endif" }
+
+                    it("generates an analysis error") {
+                        shouldThrow<AnalysisException> { glslCode }
+                            .message.shouldBe("Shader analysis error: #endif outside of #if")
                     }
+                }
 
-                    context("with unbalanced #elif") {
-                        override(shaderText) { "#elif FOO" }
+                context("with unbalanced #else") {
+                    override(shaderText) { "#else" }
 
-                        it("generates an analysis error") {
-                            expect { glslCode }.toThrow<AnalysisException>() {
-                                message { toEqual("Shader analysis error: #elif outside of #if/#endif") }
-                            }
-                        }
+                    it("generates an analysis error") {
+                        shouldThrow<AnalysisException> { glslCode }
+                            .message.shouldBe("Shader analysis error: #else outside of #if/#endif")
+                    }
+                }
+
+                context("with unbalanced #elif") {
+                    override(shaderText) { "#elif FOO" }
+
+                    it("generates an analysis error") {
+                        shouldThrow<AnalysisException> { glslCode }
+                            .message.shouldBe("Shader analysis error: #elif outside of #if/#endif")
                     }
                 }
 
@@ -498,7 +493,7 @@ object GlslParserSpec : DescribeSpec({
 
                     it("finds the global variables and performs substitutions") {
                         // Shouldn't throw "analysis error: directive #is ignored"
-                        expect(glslCode.globalVars.toList()).isEmpty()
+                        glslCode.globalVars.toList().shouldBeEmpty()
                     }
                 }
 
@@ -512,8 +507,8 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("finds both functions") {
-                        expect(glslCode.functions.map { it.prettify() })
-                            .containsExactly(
+                        glslCode.functions.map { it.prettify() }
+                            .shouldContainExactly(
                                 "vec3 mod289(in vec3 x)",
                                 "vec4 mod289(in vec4 x)",
                                 "void main()"
@@ -529,8 +524,8 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("ignores the const qualifier") {
-                        expect(glslCode.functions.map { it.prettify() })
-                            .containsExactly(
+                        glslCode.functions.map { it.prettify() }
+                            .shouldContainExactly(
                                 "float foo(in float x, in float y)"
                             )
                     }
@@ -577,8 +572,8 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("finds the comment") {
-                        expect(glslCode.findFunction("main"))
-                            .toEqual(
+                        glslCode.findFunction("main")
+                            .shouldBe(
                                 GlslFunction(
                                     "main", GlslType.Float, emptyList(),
                                     "float main() { return time + sin(time); }", 2,
@@ -599,8 +594,8 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("finds the comment") {
-                            expect(glslCode.findFunction("main"))
-                                .toEqual(
+                            glslCode.findFunction("main")
+                                .shouldBe(
                                     GlslFunction(
                                         "main", GlslType.Float, emptyList(),
                                         "float main() { return time + sin(time); }", 5,
@@ -618,8 +613,8 @@ object GlslParserSpec : DescribeSpec({
                         }
 
                         it("finds the comment") {
-                            expect(glslCode.findFunction("main"))
-                                .toEqual(
+                            glslCode.findFunction("main")
+                                .shouldBe(
                                     GlslFunction(
                                         "main", GlslType.Float, listOf(
                                             GlslParam(
@@ -650,8 +645,8 @@ object GlslParserSpec : DescribeSpec({
                     }
 
                     it("are found and marked as abstract") {
-                        expect(glslCode.functions.map { it.prettify() })
-                            .containsExactly(
+                        glslCode.functions.map { it.prettify() }
+                            .shouldContainExactly(
                                 "vec4 channelA(in vec2 uv) [abstract]",
                                 "vec4 channelB(in vec2 uv) [abstract]",
                                 "void main()"
@@ -665,15 +660,14 @@ object GlslParserSpec : DescribeSpec({
                 val glslCode by value { glslParser.parse(shaderText, fileName) }
 
                 it("handles const initializers") {
-                    expect(glslCode.globalVars.only("global var"))
-                        .toBe(
-                            GlslVar(
-                                "baseColor", GlslType.Vec3, "const vec3 baseColor = vec3(0.0,0.09,0.18);",
-                                isConst = true,
-                                initExpr = " = vec3(0.0,0.09,0.18)",
-                                lineNumber = 1
-                            )
+                    glslCode.globalVars.only("global var").shouldBe(
+                        GlslVar(
+                            "baseColor", GlslType.Vec3, "const vec3 baseColor = vec3(0.0,0.09,0.18);",
+                            isConst = true,
+                            initExpr = " = vec3(0.0,0.09,0.18)",
+                            lineNumber = 1
                         )
+                    )
                 }
             }
         }

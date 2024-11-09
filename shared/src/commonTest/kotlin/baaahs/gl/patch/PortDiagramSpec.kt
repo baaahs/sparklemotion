@@ -10,9 +10,8 @@ import baaahs.show.Shader
 import baaahs.show.Stream
 import baaahs.show.live.OpenPatch
 import baaahs.show.live.fakeShader
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.assertTrue
 
 object PortDiagramSpec : DescribeSpec({
@@ -73,6 +72,6 @@ fun TrackEntry.shouldComeBefore(other: TrackEntry) {
             "but ${if (comparison == 0) "they are equivalent" else "it comes after"}") { comparison == -1 }
 
     // Verify that we're actually sorting using that comparator.
-    expect(PortDiagram.Candidates(listOf(this, other)).iterator().asSequence().toList())
-        .containsExactly(this.openPatch, other.openPatch)
+    PortDiagram.Candidates(listOf(this, other)).iterator().asSequence().toList()
+        .shouldContainExactly(this.openPatch, other.openPatch)
 }

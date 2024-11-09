@@ -6,11 +6,11 @@ import baaahs.gl.undefined
 import baaahs.kotest.value
 import baaahs.only
 import baaahs.plugin.PluginRef
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -75,26 +75,26 @@ object GlslCodeSpec : DescribeSpec({
                 override(text) { "varying vec4 otherColor; // @type color @something else" }
 
                 it("makes hint tags available") {
-                    expect(variable.hint?.tag("type")).toBe("color")
-                    expect(variable.hint?.tag("something")).toBe("else")
+                    variable.hint?.tag("type").shouldBe("color")
+                    variable.hint?.tag("something").shouldBe("else")
                 }
 
                 it("returns null for non-existent tags") {
-                    expect(variable.hint?.tag("nope")).toBe(null)
-                    expect(variable.hint?.tags("nope")).toBe(emptyList())
+                    variable.hint?.tag("nope").shouldBe(null)
+                    variable.hint?.tags("nope").shouldBe(emptyList())
                 }
 
                 context("when tags are repeated") {
                     override(text) { "// @thing abc\n// @thing def\nvec4 otherColor;" }
 
                     it("each is available via tags()") {
-                        expect(variable.hint!!.tags("thing"))
-                            .containsExactly("abc", "def")
+                        variable.hint!!.tags("thing")
+                            .shouldContainExactly("abc", "def")
                     }
 
                     it("tag() returns the first") {
-                        expect(variable.hint!!.tag("thing"))
-                            .toEqual("abc")
+                        variable.hint!!.tag("thing")
+                            .shouldBe("abc")
                     }
                 }
 
@@ -102,16 +102,16 @@ object GlslCodeSpec : DescribeSpec({
                     override(text) { "varying vec4 otherColor; // @@ColorPicker default=orange palette=pastels" }
 
                     it("builds a PluginRef") {
-                        expect(variable.hint?.pluginRef)
-                            .toEqual(PluginRef("baaahs.Core", "ColorPicker"))
+                        variable.hint?.pluginRef
+                            .shouldBe(PluginRef("baaahs.Core", "ColorPicker"))
                     }
 
                     context("when plugin id is fully specified") {
                         override(text) { "varying vec4 otherColor; // @@foo.Plugin:ColorPicker default=orange palette=pastels" }
 
                         it("builds a PluginRef") {
-                            expect(variable.hint?.pluginRef)
-                                .toEqual(PluginRef("foo.Plugin", "ColorPicker"))
+                            variable.hint?.pluginRef
+                                .shouldBe(PluginRef("foo.Plugin", "ColorPicker"))
                         }
                     }
 
@@ -119,8 +119,8 @@ object GlslCodeSpec : DescribeSpec({
                         override(text) { "varying vec4 otherColor; // @@Plugin:ColorPicker default=orange palette=pastels" }
 
                         it("builds a PluginRef") {
-                            expect(variable.hint?.pluginRef)
-                                .toEqual(PluginRef("baaahs.Plugin", "ColorPicker"))
+                            variable.hint?.pluginRef
+                                .shouldBe(PluginRef("baaahs.Plugin", "ColorPicker"))
                         }
                     }
                 }
@@ -129,8 +129,8 @@ object GlslCodeSpec : DescribeSpec({
                     override(text) { "varying vec4 otherColor; // HSB @@ColorPicker default=orange" }
 
                     it("builds a PluginRef") {
-                        expect(variable.hint?.pluginRef)
-                            .toEqual(PluginRef("baaahs.Core", "ColorPicker"))
+                        variable.hint?.pluginRef
+                            .shouldBe(PluginRef("baaahs.Core", "ColorPicker"))
                     }
                 }
             }
@@ -195,7 +195,7 @@ object GlslCodeSpec : DescribeSpec({
                     override(text) { "struct SomeStruct { int a };\nSomeStruct rand(vec2 uv) { return xxx; }" }
 
                     it("has the struct return type") {
-                        expect(function).toBe(
+                        function.shouldBe(
                             GlslCode.GlslFunction(
                                 "rand", GlslType.Struct(expectedStruct),
                                 listOf(GlslCode.GlslParam("uv", GlslType.Vec2, isIn = true, lineNumber = 2)),
@@ -209,7 +209,7 @@ object GlslCodeSpec : DescribeSpec({
                     override(text) { "struct SomeStruct { int a };\nint rand(SomeStruct someStruct) { return xxx; }" }
 
                     it("has the struct return type") {
-                        expect(function).toBe(
+                        function.shouldBe(
                             GlslCode.GlslFunction(
                                 "rand", GlslType.Int,
                                 listOf(GlslCode.GlslParam("someStruct", GlslType.Struct(expectedStruct), isIn = true, lineNumber = 2)),
@@ -250,13 +250,13 @@ object GlslCodeSpec : DescribeSpec({
             }
 
             it("should return a GlslStruct") {
-                expect(struct).toBe(expectedStruct)
-                expect(struct.varName).toBe(null)
+                struct.shouldBe(expectedStruct)
+                struct.varName.shouldBe(null)
             }
 
             it("should apply the same struct type to uniforms") {
-                expect((statements[1] as GlslCode.GlslVar))
-                    .toBe(
+                (statements[1] as GlslCode.GlslVar)
+                    .shouldBe(
                         GlslCode.GlslVar(
                             "movingHead",
                             GlslType.Struct(expectedStruct.copy(lineNumber = 2)),
@@ -268,63 +268,63 @@ object GlslCodeSpec : DescribeSpec({
             }
 
             it("should match structs with the same fields") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHead",
                         GlslType.Field("pan", GlslType.Float),
                         GlslType.Field("tilt", GlslType.Float),
                     )
-                )).toBe(true)
+                ).shouldBeTrue()
             }
 
             it("should match structs with the same fields out of order") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHead",
                         GlslType.Field("tilt", GlslType.Float),
                         GlslType.Field("pan", GlslType.Float),
                     )
-                )).toBe(true)
+                ).shouldBeTrue()
             }
 
             it("should not match structs with the same fields but different types") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHead",
                         GlslType.Field("pan", GlslType.Float),
                         GlslType.Field("tilt", GlslType.Vec2),
                     )
-                )).toBe(false)
+                ).shouldBeFalse()
             }
 
             it("should not match structs with a different name") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHeadz",
                         GlslType.Field("pan", GlslType.Float),
                         GlslType.Field("tilt", GlslType.Float),
                     )
-                )).toBe(false)
+                ).shouldBeFalse()
             }
 
             it("should not match structs with a subset of fields") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHead",
                         GlslType.Field("pan", GlslType.Float),
                     )
-                )).toBe(false)
+                ).shouldBeFalse()
             }
 
             it("should match structs with a superset of fields") {
-                expect(struct.glslType.matches(
+                struct.glslType.matches(
                     GlslType.Struct(
                         "MovingHead",
                         GlslType.Field("pan", GlslType.Float),
                         GlslType.Field("tilt", GlslType.Float),
                         GlslType.Field("dimmer", GlslType.Float),
                     )
-                )).toBe(true)
+                ).shouldBeTrue()
             }
 
             context("also declaring a variable") {
@@ -338,7 +338,7 @@ object GlslCodeSpec : DescribeSpec({
                 }
 
                 it("should return a GlslStruct") {
-                    expect(struct).toBe(
+                    struct.shouldBe(
                         GlslCode.GlslStruct(
                             "MovingHead",
                             mapOf("pan" to GlslType.Float, "tilt" to GlslType.Float),
@@ -363,22 +363,22 @@ object GlslCodeSpec : DescribeSpec({
             }
 
             it("parses hints") {
-                expect(glslVar.hint!!.pluginRef)
-                    .toBe(PluginRef("whatever.package.Plugin", "Thing"))
+                glslVar.hint!!.pluginRef
+                    .shouldBe(PluginRef("whatever.package.Plugin", "Thing"))
 
-                expect(glslVar.hint!!.config)
-                    .toBe(buildJsonObject {
-                        put("key", "value")
-                        put("key2", "value2")
-                    })
+                glslVar.hint!!.config
+                    .shouldBe(buildJsonObject {
+                    put("key", "value")
+                    put("key2", "value2")
+                })
             }
 
             context("when package is unspecified") {
                 override(hintClassStr) { "Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef)
-                        .toBe(PluginRef("baaahs.Core", "Thing"))
+                    glslVar.hint!!.pluginRef
+                        .shouldBe(PluginRef("baaahs.Core", "Thing"))
                 }
             }
 
@@ -386,8 +386,8 @@ object GlslCodeSpec : DescribeSpec({
                 override(hintClassStr) { "FooPlugin:Thing" }
 
                 it("defaults to baaahs.Core") {
-                    expect(glslVar.hint!!.pluginRef)
-                        .toBe(PluginRef("baaahs.FooPlugin", "Thing"))
+                    glslVar.hint!!.pluginRef
+                        .shouldBe(PluginRef("baaahs.FooPlugin", "Thing"))
                 }
             }
 
@@ -400,21 +400,21 @@ object GlslCodeSpec : DescribeSpec({
                 }
 
                 it("parses the PluginRef") {
-                    expect(glslVar.hint!!.pluginRef)
-                        .toBe(PluginRef("whatever.package.Plugin", "Thing"))
+                    glslVar.hint!!.pluginRef
+                        .shouldBe(PluginRef("whatever.package.Plugin", "Thing"))
 
-                    expect(glslVar.hint!!.config)
-                        .toBe(buildJsonObject {
-                            put("key", "value")
-                            put("key2", "value2")
-                        })
+                    glslVar.hint!!.config
+                        .shouldBe(buildJsonObject {
+                        put("key", "value")
+                        put("key2", "value2")
+                    })
                 }
             }
         }
 
         it("englishizes camel case names") {
-            expect(GlslCode.GlslVar("aManAPlanAAARGHPanamaISay", GlslType.Vec3).title)
-                .toBe("A Man A Plan AAARGH Panama I Say")
+            GlslCode.GlslVar("aManAPlanAAARGHPanamaISay", GlslType.Vec3).title
+                .shouldBe("A Man A Plan AAARGH Panama I Say")
         }
     }
 })

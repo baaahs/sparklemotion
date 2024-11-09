@@ -4,9 +4,8 @@ import baaahs.describe
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object GlslTypeSpec : DescribeSpec({
     describe<GlslType> {
@@ -16,8 +15,8 @@ object GlslTypeSpec : DescribeSpec({
             override(type) { GlslType.Int.arrayOf(8) }
 
             it("has valid a GLSL declaration") {
-                expect(type.glslLiteral)
-                    .toEqual("int[8]")
+                type.glslLiteral
+                    .shouldBe("int[8]")
             }
         }
 
@@ -32,8 +31,8 @@ object GlslTypeSpec : DescribeSpec({
             }
 
             it("#toGlsl generates valid a GLSL declaration") {
-                expect((type as GlslType.Struct).toGlsl(GlslCode.Namespace("pfx"), emptySet()))
-                    .toEqual(
+                (type as GlslType.Struct).toGlsl(GlslCode.Namespace("pfx"), emptySet())
+                    .shouldBe(
                         """
                         struct pfx_FixtureInfo {
                             vec3 origin;
@@ -55,8 +54,8 @@ object GlslTypeSpec : DescribeSpec({
                 }
 
                 it("returns a list of distinct structs in the order they should be declared") {
-                    expect(type.collectTransitiveStructs().map { it.name })
-                        .toEqual(listOf("ThingOne", "ThingTwo", "TopLevel"))
+                    type.collectTransitiveStructs().map { it.name }
+                        .shouldBe(listOf("ThingOne", "ThingTwo", "TopLevel"))
                 }
             }
 
@@ -72,8 +71,8 @@ object GlslTypeSpec : DescribeSpec({
 
                 // TODO: Fix position of array marker in declaration.
                 xit("#toGlsl generates valid a GLSL declaration") {
-                    expect((type as GlslType.Struct).toGlsl(GlslCode.Namespace("pfx"), emptySet()))
-                        .toEqual(
+                    (type as GlslType.Struct).toGlsl(GlslCode.Namespace("pfx"), emptySet())
+                        .shouldBe(
                             """
                             struct pfx_FixtureInfo {
                                 vec3 origin[3];

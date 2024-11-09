@@ -9,9 +9,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.glsl.GlslProgramImpl
 import baaahs.kotest.value
 import baaahs.model.MovingHead
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object FixtureInfoFeedSpec : DescribeSpec({
@@ -52,13 +51,13 @@ object FixtureInfoFeedSpec : DescribeSpec({
             val glProgram = testRenderContext.gl.findProgram(program.id)
 
             val originUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.position")
-            expect(originUniform.asVector3F()).toEqual(movingHead.position)
+            originUniform.asVector3F().shouldBe(movingHead.position)
 
             val headingUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.rotation")
-            expect(headingUniform.asEulerAngle()).toEqual(movingHead.rotation)
+            headingUniform.asEulerAngle().shouldBe(movingHead.rotation)
 
             val transformationUniform = glProgram.getUniform<List<Float>>("in_fixtureInfo.transformation")
-            expect(transformationUniform.asMatrix4F()).toEqual(movingHead.transformation)
+            transformationUniform.asMatrix4F().shouldBe(movingHead.transformation)
         }
     }
 })

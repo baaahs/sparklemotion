@@ -6,18 +6,14 @@ import baaahs.gl.testPlugins
 import baaahs.kotest.value
 import baaahs.show.migration.V6_FlattenPatches
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import baaahs.useBetterSpekReporter
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
 @Suppress("ClassName")
 object V6_FlattenPatchesSpec : DescribeSpec({
-    useBetterSpekReporter()
-
     describe<V6_FlattenPatches> {
         val migration by value { V6_FlattenPatches }
         val json by value { Json { serializersModule = testPlugins().serialModule } }
@@ -61,9 +57,10 @@ object V6_FlattenPatchesSpec : DescribeSpec({
             }
 
             it("merges them together into patches") {
-                expect(toJsonObj).toEqual(json.parseToJsonElement(
-                    /**language=json*/
-                    """
+                toJsonObj.shouldBe(
+                    json.parseToJsonElement(
+                        /**language=json*/
+                        """
                         {
                           "title": "Show",
                           "patchIds": ["a"],
@@ -79,7 +76,8 @@ object V6_FlattenPatchesSpec : DescribeSpec({
                           }
                         }
                     """.trimIndent()
-                ).jsonObject)
+                    ).jsonObject
+                )
             }
         }
     }

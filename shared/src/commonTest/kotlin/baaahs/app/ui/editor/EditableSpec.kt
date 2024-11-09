@@ -7,9 +7,8 @@ import baaahs.kotest.value
 import baaahs.show.Panel
 import baaahs.show.mutable.MutablePanel
 import baaahs.show.mutable.MutableShow
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 object EditableSpec : DescribeSpec({
     describe<ControlEditIntent> {
@@ -41,7 +40,7 @@ object EditableSpec : DescribeSpec({
 
             it("provides an appropriate refreshed edit intent for the undo stack") {
                 val newEditIntent = (editableManager.session!!.editIntent as ControlEditIntent)
-                expect(newEditIntent.controlId).toBe("newTitleForButton")
+                newEditIntent.controlId.shouldBe("newTitleForButton")
             }
         }
     }

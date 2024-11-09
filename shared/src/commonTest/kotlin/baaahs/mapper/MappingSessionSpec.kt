@@ -7,9 +7,8 @@ import baaahs.geom.identity
 import baaahs.kotest.value
 import baaahs.show.SampleData
 import baaahs.sim.FakeFs
-import ch.tutteli.atrium.api.fluent.en_GB.its
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 
@@ -47,19 +46,17 @@ class MappingSessionSpec : DescribeSpec({
                 }
 
                 it("deserializes equally") {
-                    expect(decoded)
-                        .its({ startedAt }) { toEqual(Instant.fromEpochMilliseconds(12345600_000)) }
+                    decoded.startedAt shouldBe(Instant.fromEpochMilliseconds(12345600_000))
 
                     val surfaces = decoded.surfaces.only("surface")
-                    expect(surfaces)
-                        .its({ brainId }) { toEqual("brain1234") }
-                        .its({ panelName }) { toEqual("panel1234") }
-                        .its({ pixels }) { toEqual(listOf(
+                    surfaces
+                        surfaces.brainId shouldBe("brain1234")
+                        surfaces.panelName shouldBe("panel1234")
+                        surfaces.pixels shouldBe(listOf(
                             MappingSession.SurfaceData.PixelData(Vector3F(1f, 2f, 3f))
-                        )) }
+                        ))
 
-                    expect(decoded)
-                        .its({ cameraMatrix }) { toEqual(Matrix4F.Companion.identity) }
+                    decoded.cameraMatrix shouldBe(Matrix4F.Companion.identity)
                 }
             }
 

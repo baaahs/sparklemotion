@@ -2,11 +2,10 @@ package baaahs.io
 
 import baaahs.kotest.value
 import baaahs.sim.FakeFs
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -43,14 +42,14 @@ object FileSerializationSpec : DescribeSpec({
         context("server-side serializer") {
             it("sends Fs objects by id ref") {
                 val actualFile1Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile1)
-                expect(actualFile1Json).toBe(buildJsonObject {
+                actualFile1Json.shouldBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", actualFile1.fs.name); put("fsId", 0) })
                     put("pathParts", buildJsonArray { add("some"); add("file.txt") })
                     put("isDirectory", JsonNull)
                 })
 
                 val actualFile2Json = serverJson.encodeToJsonElement(Fs.File.serializer(), actualFile2)
-                expect(actualFile2Json).toBe(buildJsonObject {
+                actualFile2Json.shouldBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", actualFile2.fs.name); put("fsId", 1) })
                     put("pathParts", buildJsonArray { add("another"); add("file.txt") })
                     put("isDirectory", JsonNull)
@@ -58,7 +57,7 @@ object FileSerializationSpec : DescribeSpec({
 
                 val thirdFile = actualFile1.parent!!.resolve("foo.txt")
                 val thirdFileJson = serverJson.encodeToJsonElement(Fs.File.serializer(), thirdFile)
-                expect(thirdFileJson).toBe(buildJsonObject {
+                thirdFileJson.shouldBe(buildJsonObject {
                     put("fs", buildJsonObject { put("name", thirdFile.fs.name); put("fsId", 0) })
                     put("pathParts", buildJsonArray { add("some"); add("foo.txt") })
                     put("isDirectory", JsonNull)
@@ -75,7 +74,7 @@ object FileSerializationSpec : DescribeSpec({
                     put("pathParts", buildJsonArray { add("some"); add("file.txt") })
                     put("isDirectory", JsonNull)
                 })
-                expect(remoteFile1.fullPath).toBe("some/file.txt")
+                remoteFile1.fullPath.shouldBe("some/file.txt")
 
                 val resultFiles = mutableListOf<Fs.File>()
                 CoroutineScope(dispatcher).launch {
@@ -83,7 +82,7 @@ object FileSerializationSpec : DescribeSpec({
                 }
                 dispatcher.runCurrent()
 
-                expect(resultFiles.map { it.fullPath }).containsExactly("fake/response.txt")
+                resultFiles.map { it.fullPath }.shouldContainExactly("fake/response.txt")
             }
         }
 
@@ -94,8 +93,8 @@ object FileSerializationSpec : DescribeSpec({
             val serverSideFile by value { serverJson.decodeFromString(Fs.File.serializer(), jsonFromClient) }
 
             it("converts file to RemoteFs and back again to actual Fs") {
-                expect(serverSideFile.fullPath).toBe(actualFile1.fullPath)
-                expect(serverSideFile.fs).toBe(actualFile1.fs)
+                serverSideFile.fullPath.shouldBe(actualFile1.fullPath)
+                serverSideFile.fs.shouldBe(actualFile1.fs)
             }
         }
     }

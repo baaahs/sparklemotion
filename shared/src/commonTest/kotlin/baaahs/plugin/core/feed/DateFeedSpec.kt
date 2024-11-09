@@ -15,10 +15,9 @@ import baaahs.shows.FakeShowPlayer
 import baaahs.shows.FakeUniform
 import baaahs.shows.StubGlslProgram
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import com.danielgergely.kgl.Kgl
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.datetime.Instant
 
 object DateFeedSpec : DescribeSpec({
@@ -49,13 +48,13 @@ object DateFeedSpec : DescribeSpec({
             override(inputPort) { ShaderToyShaderDialect.wellKnownInputPorts.find { it.id == "iDate" } }
 
             it("builds a feed with zero-based months and one-based days") {
-                expect(feed).toEqual(DateFeed(zeroBasedMonth = true, zeroBasedDay = false))
+                feed.shouldBe(DateFeed(zeroBasedMonth = true, zeroBasedDay = false))
             }
 
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
-                expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 3f, 22f, 35367.793f).toString())
+                uniform.value.toString()
+                    .shouldBe(Vector4F(2021f, 3f, 22f, 35367.793f).toString())
             }
         }
 
@@ -63,13 +62,13 @@ object DateFeedSpec : DescribeSpec({
             override(inputPort) { IsfShaderDialect.wellKnownInputPorts.find { it.id == "DATE" } }
 
             it("builds a feed with zero-based months and zero-based days") {
-                expect(feed).toEqual(DateFeed(zeroBasedMonth = false, zeroBasedDay = false))
+                feed.shouldBe(DateFeed(zeroBasedMonth = false, zeroBasedDay = false))
             }
 
             it("sets correct uniform values") {
                 feedContext.setOnProgram()
-                expect(uniform.value.toString())
-                    .toEqual(Vector4F(2021f, 4f, 22f, 35367.793f).toString())
+                uniform.value.toString()
+                    .shouldBe(Vector4F(2021f, 4f, 22f, 35367.793f).toString())
             }
         }
     }

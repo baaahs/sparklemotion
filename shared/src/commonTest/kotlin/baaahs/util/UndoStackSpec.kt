@@ -1,9 +1,10 @@
 package baaahs.util
 
 import baaahs.kotest.value
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 
 object UndoStackSpec : DescribeSpec({
     describe("UndoStack") {
@@ -12,28 +13,28 @@ object UndoStackSpec : DescribeSpec({
         val editor by value { FakeEditor("base", undoStack) }
 
         it("starts empty") {
-            expect(editor.undo()).toBe(false)
-            expect(editor.redo()).toBe(false)
+            editor.undo().shouldBeFalse()
+            editor.redo().shouldBeFalse()
         }
 
         context("when a change is pushed") {
             beforeEach { editor.change("first change") }
 
             it("can be undone") {
-                expect(editor.undo()).toBe(true)
-                expect(editor.contents).toBe("base")
-                expect(undoStack.canUndo()).toBe(false)
+                editor.undo().shouldBeTrue()
+                editor.contents.shouldBe("base")
+                undoStack.canUndo().shouldBeFalse()
             }
 
             it("redo isn't available") {
-                expect(editor.redo()).toBe(false)
+                editor.redo().shouldBeFalse()
             }
 
             it("can be undone and redone") {
-                expect(editor.undo()).toBe(true)
-                expect(editor.redo()).toBe(true)
-                expect(editor.contents).toBe("first change")
-                expect(editor.redo()).toBe(false)
+                editor.undo().shouldBeTrue()
+                editor.redo().shouldBeTrue()
+                editor.contents.shouldBe("first change")
+                editor.redo().shouldBeFalse()
             }
 
             context("multiple changes") {
@@ -43,36 +44,36 @@ object UndoStackSpec : DescribeSpec({
                 }
 
                 it("can be undone and redone") {
-                    expect(editor.contents).toBe("third change")
-                    expect(editor.undo()).toBe(true)
-                    expect(editor.undo()).toBe(true)
-                    expect(editor.undo()).toBe(true)
-                    expect(editor.contents).toBe("base")
-                    expect(editor.undo()).toBe(false)
-                    expect(editor.redo()).toBe(true)
-                    expect(editor.redo()).toBe(true)
-                    expect(editor.redo()).toBe(true)
-                    expect(editor.contents).toBe("third change")
-                    expect(editor.redo()).toBe(false)
+                    editor.contents.shouldBe("third change")
+                    editor.undo().shouldBeTrue()
+                    editor.undo().shouldBeTrue()
+                    editor.undo().shouldBeTrue()
+                    editor.contents.shouldBe("base")
+                    editor.undo().shouldBeFalse()
+                    editor.redo().shouldBeTrue()
+                    editor.redo().shouldBeTrue()
+                    editor.redo().shouldBeTrue()
+                    editor.contents.shouldBe("third change")
+                    editor.redo().shouldBeFalse()
                 }
 
                 it("changes discard redo") {
-                    expect(editor.undo()).toBe(true)
-                    expect(editor.undo()).toBe(true)
-                    expect(editor.contents).toBe("first change")
+                    editor.undo().shouldBeTrue()
+                    editor.undo().shouldBeTrue()
+                    editor.contents.shouldBe("first change")
                     editor.change("another change")
-                    expect(editor.redo()).toBe(false)
+                    editor.redo().shouldBeFalse()
                 }
 
                 context("when capacity is exceeded") {
                     beforeEach { editor.change("fourth change") }
 
                     it("drops eldest history") {
-                        expect(editor.undo()).toBe(true)
-                        expect(editor.undo()).toBe(true)
-                        expect(editor.undo()).toBe(true)
-                        expect(editor.undo()).toBe(false)
-                        expect(editor.contents).toBe("first change")
+                        editor.undo().shouldBeTrue()
+                        editor.undo().shouldBeTrue()
+                        editor.undo().shouldBeTrue()
+                        editor.undo().shouldBeFalse()
+                        editor.contents.shouldBe("first change")
                     }
                 }
             }
