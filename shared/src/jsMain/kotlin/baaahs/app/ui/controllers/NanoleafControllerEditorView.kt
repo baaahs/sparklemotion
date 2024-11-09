@@ -6,7 +6,7 @@ import baaahs.scene.EditingController
 import baaahs.ui.unaryMinus
 import baaahs.ui.value
 import baaahs.ui.xComponent
-import js.core.jso
+import js.objects.jso
 import mui.material.Container
 import mui.material.TextField
 import mui.system.sx
@@ -42,7 +42,7 @@ private val NanoleafControllerEditorView = xComponent<NanoleafControllerEditorPr
     }
 
     Container {
-        attrs.classes = jso { root = -styles.propertiesEditSection }
+        attrs.className = -styles.propertiesEditSection
         attrs.sx {
             display = Display.flex
             flexDirection = FlexDirection.column

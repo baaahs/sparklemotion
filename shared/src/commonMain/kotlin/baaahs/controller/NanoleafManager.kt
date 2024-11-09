@@ -17,6 +17,7 @@ import baaahs.util.Time
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -63,10 +64,10 @@ class NanoleafManager(
     data class State(
         override val title: String,
         override val address: String,
-        override val onlineSince: Time?,
+        override val onlineSince: Instant?,
         override val firmwareVersion: String? = null,
         override val lastErrorMessage: String? = null,
-        override val lastErrorAt: Time? = null,
+        override val lastErrorAt: Instant? = null,
         val hostName: String,
         val port: Int,
         val deviceId: String,
