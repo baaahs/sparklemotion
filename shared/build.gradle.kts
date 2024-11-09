@@ -192,6 +192,8 @@ kotlin {
 
                 // Used by slider view:
                 implementation(npm("d3-array", "^3.2.4"))
+
+                implementation(devNpm("webpack-bundle-analyzer", "4.10.2"))
             }
         }
         jsTest {
