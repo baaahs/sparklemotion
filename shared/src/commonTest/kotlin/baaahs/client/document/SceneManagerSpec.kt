@@ -12,11 +12,11 @@ import baaahs.io.PubSubRemoteFsClientBackend
 import baaahs.kotest.value
 import baaahs.scene.Scene
 import baaahs.scene.SceneMonitor
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.isSameAs
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(InternalCoroutinesApi::class)
@@ -44,11 +44,11 @@ object SceneManagerSpec : DescribeSpec({
         }
 
         it("starts off with no scene loaded") {
-            expect(sceneManager.file).toBe(null)
-            expect(sceneManager.document).toBe(null)
-            expect(sceneManager.isUnsaved).toBe(false)
-            expect(sceneManager.isLoaded).toBe(false)
-            expect(sceneManager.everSynced).toBe(false)
+            sceneManager.file.shouldBe(null)
+            sceneManager.document.shouldBe(null)
+            sceneManager.isUnsaved.shouldBeFalse()
+            sceneManager.isLoaded.shouldBeFalse()
+            sceneManager.everSynced.shouldBeFalse()
         }
 
         context("when a scene is loaded") {
@@ -59,18 +59,18 @@ object SceneManagerSpec : DescribeSpec({
             }
 
             it("has a scene loaded") {
-                expect(sceneManager.file).toBe(null)
-                expect(sceneManager.document).toEqual(newScene)
-                expect(sceneManager.isUnsaved).toBe(false)
-                expect(sceneManager.isLoaded).toBe(true)
-                expect(sceneManager.everSynced).toBe(true)
+                sceneManager.file.shouldBe(null)
+                sceneManager.document.shouldBe(newScene)
+                sceneManager.isUnsaved.shouldBeFalse()
+                sceneManager.isLoaded.shouldBeTrue()
+                sceneManager.everSynced.shouldBeTrue()
             }
 
             context("while editing the scene") {
                 val mutableScene by value { sceneManager.facade.mutableScene }
 
                 it("creates a mutable scene") {
-                    expect(mutableScene.title).toEqual(newScene.title)
+                    mutableScene.title.shouldBe(newScene.title)
                 }
 
                 context("when an edit is made") {
@@ -80,7 +80,7 @@ object SceneManagerSpec : DescribeSpec({
                     }
 
                     it("should retain the same mutable scene") {
-                        expect(mutableScene).isSameAs(sceneManager.facade.mutableScene)
+                        mutableScene.shouldBeSameInstanceAs(sceneManager.facade.mutableScene)
                     }
                 }
             }

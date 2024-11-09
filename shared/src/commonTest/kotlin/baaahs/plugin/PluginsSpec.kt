@@ -5,9 +5,8 @@ import baaahs.StubPubSub
 import baaahs.describe
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.kotest.value
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 
 @Suppress("unused")
 object PluginsSpec : DescribeSpec({
@@ -15,8 +14,8 @@ object PluginsSpec : DescribeSpec({
         val plugins by value { Plugins.buildForClient(PluginContext(FakeClock(), StubPubSub()), emptyList()) }
 
         it("should resolve content types") {
-            expect(plugins.resolveContentType("color"))
-                .toEqual(Color)
+            plugins.resolveContentType("color")
+                .shouldBe(Color)
         }
     }
 })

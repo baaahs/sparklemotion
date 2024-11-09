@@ -1,5 +1,6 @@
 package baaahs.kotest
 
+import baaahs.kotest.LetValueExtension.Companion.logger
 import baaahs.util.Logger
 import io.kotest.common.TestPath
 import io.kotest.core.listeners.AfterContainerListener
@@ -48,28 +49,28 @@ fun <T> ContainerScope.value(factory: () -> T): LetValue.PropertyCreator<T> {
 }
 
 fun <T> ContainerScope.value(letValue: T, factory: () -> T) {
-    LetValueExtension.Companion.logger.info { "ContainerScope.value override" }
+    logger.debug { "ContainerScope.value override" }
     LetValueGetter.override(RunContext.getContainerScopeNode(this), factory)
 }
 
 
 class LetValueExtension : BeforeContainerListener, BeforeEachListener, AfterEachListener, AfterContainerListener {
     override suspend fun beforeContainer(testCase: TestCase) {
-        logger.info { "LetValueExtension.beforeContainer: ${testCase.descriptor.path()}" }
+        logger.debug { "LetValueExtension.beforeContainer: ${testCase.descriptor.path()}" }
     }
 
     override suspend fun beforeEach(testCase: TestCase) {
-        logger.info { "LetValueExtension.beforeEach: ${testCase.descriptor.path()}" }
+        logger.debug { "LetValueExtension.beforeEach: ${testCase.descriptor.path()}" }
         LetValuesState.currentTestCase = testCase
     }
 
     override suspend fun afterEach(testCase: TestCase, result: TestResult) {
         LetValuesState.currentTestCase = null
-        logger.info { "LetValueExtension.afterEach: ${testCase.descriptor.path()}" }
+        logger.debug { "LetValueExtension.afterEach: ${testCase.descriptor.path()}" }
     }
 
     override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-        logger.info { "LetValueExtension.afterContainer: ${testCase.descriptor.path()}" }
+        logger.debug { "LetValueExtension.afterContainer: ${testCase.descriptor.path()}" }
     }
 
     companion object {
@@ -109,19 +110,19 @@ class RootScopeNode(val rootScope: RootScope) : Node {
         get() = null
 
     override fun beforeGroup(block: TestCase.() -> Unit) {
-        LetValueExtension.Companion.logger.info { "RootScopeNode.beforeGroup ${rootScope}" }
+        logger.debug { "RootScopeNode.beforeGroup ${rootScope}" }
     }
 
     override fun afterGroup(block: TestCase.() -> Unit) {
-        LetValueExtension.Companion.logger.info { "RootScopeNode.afterGroup ${rootScope}" }
+        logger.debug { "RootScopeNode.afterGroup ${rootScope}" }
     }
 
     override fun beforeTest(block: TestCase.() -> Unit) {
-        LetValueExtension.Companion.logger.info { "RootScopeNode.beforeTest ${rootScope}" }
+        logger.debug { "RootScopeNode.beforeTest ${rootScope}" }
     }
 
     override fun afterTest(block: TestCase.(TestResult) -> Unit) {
-        LetValueExtension.Companion.logger.info { "RootScopeNode.afterTest ${rootScope}" }
+        logger.debug { "RootScopeNode.afterTest ${rootScope}" }
     }
 }
 
@@ -133,28 +134,28 @@ class ContainerScopeNode(val containerScope: ContainerScope) : Node {
 
     override fun beforeGroup(block: TestCase.() -> Unit) {
         containerScope.beforeContainer { testCase ->
-            LetValueExtension.Companion.logger.info { "ContainerScopeNode.beforeGroup: ${testCase.descriptor.path()}" }
+            logger.debug { "ContainerScopeNode.beforeGroup: ${testCase.descriptor.path()}" }
             block(testCase)
         }
     }
 
     override fun afterGroup(block: TestCase.() -> Unit) {
         containerScope.afterContainer { (testCase, testResult) ->
-            LetValueExtension.Companion.logger.info { "ContainerScopeNode.afterGroup: ${testCase.descriptor.path()}" }
+            logger.debug { "ContainerScopeNode.afterGroup: ${testCase.descriptor.path()}" }
             block(testCase)
         }
     }
 
     override fun beforeTest(block: TestCase.() -> Unit) {
         containerScope.beforeTest { testCase ->
-            LetValueExtension.Companion.logger.info { "ContainerScopeNode.beforeTest: ${testCase.descriptor.path()}" }
+            logger.debug { "ContainerScopeNode.beforeTest: ${testCase.descriptor.path()}" }
             block(testCase)
         }
     }
 
     override fun afterTest(block: TestCase.(TestResult) -> Unit) {
         containerScope.afterTest { (testCase, testResult) ->
-            LetValueExtension.Companion.logger.info { "ContainerScopeNode.afterTest: ${testCase.descriptor.path()}" }
+            logger.debug { "ContainerScopeNode.afterTest: ${testCase.descriptor.path()}" }
             block(testCase, testResult)
         }
     }
@@ -164,7 +165,7 @@ class LetValueCreator<T>(
     val factory: () -> T, val node: Node, val afterGroupDeclaration: NestLevel.(() -> Unit) -> Unit
 ) : LetValue.PropertyCreator<T> {
     init {
-        LetValueExtension.Companion.logger.info { "LetValueCreator.init at ${node.testPath}" }
+        logger.debug { "LetValueCreator.init at ${node.testPath}" }
     }
 
     override fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T> {
@@ -186,7 +187,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
     private var valueForTest: T? = null
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        LetValueExtension.Companion.logger.info { "LetValueGetter.getValue: $name inTest = ${LetValuesState.inTest} current = ${LetValuesState.current}" }
+        logger.debug { "LetValueGetter.getValue: $name inTest = ${LetValuesState.inTest} current = ${LetValuesState.current}" }
         if (!LetValuesState.inTest) {
             if (LetValuesState.current != null) {
                 throw IllegalStateException("$name can't be used from beforeEach or afterEach")
@@ -214,7 +215,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
     }
 
     fun override(node: Node, factory: () -> T) {
-        LetValueExtension.Companion.logger.info { "LetValueGetter.override: $name for context = ${node.testPath}" }
+        logger.debug { "LetValueGetter.override: $name for context = ${node.testPath}" }
         if (paths.containsKey(node.testCase)) {
             throw IllegalStateException("value already given for $name in $node")
         }
@@ -233,12 +234,12 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
 
     fun beforeInvocation(testCase: TestCase) {
 //        LetValuesState.inTest = true
-        LetValueExtension.Companion.logger.info { "LetValueGetter.beforeInvocation: $name, inTest := ${LetValuesState.inTest}" }
+        logger.debug { "LetValueGetter.beforeInvocation: $name, inTest := ${LetValuesState.inTest}" }
     }
 
     fun afterInvocation(testCase: TestCase) {
         reset()
-        LetValueExtension.Companion.logger.info { "LetValueGetter.afterInvocation: $name, inTest := ${LetValuesState.inTest}" }
+        logger.debug { "LetValueGetter.afterInvocation: $name, inTest := ${LetValuesState.inTest}" }
     }
 
     fun afterExecuteGroup(testCase: TestCase) {

@@ -23,10 +23,9 @@ import baaahs.show.live.LinkedPatch
 import baaahs.show.mutable.MutablePatch
 import baaahs.show.mutable.MutableShader
 import baaahs.show.mutable.editor
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldContainExactly
 
 object AutoWirerSpec : DescribeSpec({
     describe("AutoWirer") {
@@ -67,14 +66,14 @@ object AutoWirerSpec : DescribeSpec({
                 override(portContentType) { ContentType.UvCoordinate }
 
                 it("suggests the shader's channel") {
-                    expect(portLink).toBe(Stream.Main.editor())
+                    portLink.shouldBe(Stream.Main.editor())
                 }
 
                 context("even when it's on on a different channel") {
                     override(stream) { Stream("other") }
 
                     it("suggests the main stream") {
-                        expect(portLink).toBe(Stream.Main.editor())
+                        portLink.shouldBe(Stream.Main.editor())
                     }
                 }
             }
@@ -85,7 +84,7 @@ object AutoWirerSpec : DescribeSpec({
                     override(portContentType) { ContentType.Time }
 
                     it("suggests the feed's channel") {
-                        expect(portLink).toBe(TimeFeed().editor())
+                        portLink.shouldBe(TimeFeed().editor())
                     }
 
                     // TODO: get these working?
@@ -93,14 +92,14 @@ object AutoWirerSpec : DescribeSpec({
                         override(outContentType) { portContentType }
 
                         it("suggests the feed's channel") {
-                            expect(portLink).toBe(TimeFeed().editor())
+                            portLink.shouldBe(TimeFeed().editor())
                         }
 
                         context("and the shader's channel matches the feed's channel") {
                             override(stream) { Stream("time") }
 
                             it("suggests the feed's channel") {
-                                expect(portLink).toBe(TimeFeed().editor())
+                                portLink.shouldBe(TimeFeed().editor())
                             }
                         }
                     }
@@ -111,8 +110,7 @@ object AutoWirerSpec : DescribeSpec({
                     override(portContentType) { ContentType.Float }
 
                     it("suggests a Slider feed channel link") {
-                        expect(portLink)
-                            .toBe(SliderFeed("Brightness", 1f, 0f, 1f).editor())
+                        portLink.shouldBe(SliderFeed("Brightness", 1f, 0f, 1f).editor())
                     }
                 }
 
@@ -131,14 +129,14 @@ object AutoWirerSpec : DescribeSpec({
                 override(outContentType) { portContentType }
 
                 it("suggests pulling from the stream, making it a filter") {
-                    expect(portLink).toBe(Stream.Main.editor())
+                    portLink.shouldBe(Stream.Main.editor())
                 }
 
                 context("when shader is on another stream") {
                     override(stream) { Stream("other") }
 
                     it("suggests pulling from that stream, making it a filter") {
-                        expect(portLink).toBe(Stream("other").editor())
+                        portLink.shouldBe(Stream("other").editor())
                     }
                 }
             }
@@ -152,7 +150,7 @@ object AutoWirerSpec : DescribeSpec({
                 }
 
                 it("suggests pulling from channel") {
-                    expect(portLink).toBe(Stream("main").editor())
+                    portLink.shouldBe(Stream("main").editor())
                 }
             }
         }
@@ -191,40 +189,40 @@ object AutoWirerSpec : DescribeSpec({
             val links by value { rootProgramNode.incomingLinks }
 
             it("picks TimeFeed for time") {
-                expect(mutableLinks["time"])
-                    .toBe(TimeFeed().editor())
+                mutableLinks["time"]
+                    .shouldBe(TimeFeed().editor())
 
-                expect(links["time"])
-                    .toBe(TimeFeed().link("time"))
+                links["time"]
+                    .shouldBe(TimeFeed().link("time"))
             }
 
             it("picks feed for resolution") {
-                expect(mutableLinks["resolution"])
-                    .toBe(ResolutionFeed().editor())
+                mutableLinks["resolution"]
+                    .shouldBe(ResolutionFeed().editor())
 
-                expect(links["resolution"])
-                    .toBe(ResolutionFeed().link("resolution"))
+                links["resolution"]
+                    .shouldBe(ResolutionFeed().link("resolution"))
             }
 
             it("picks a Slider for blueness") {
-                expect(links["blueness"])
-                    .toBe(
+                links["blueness"]
+                    .shouldBe(
                         SliderFeed("Blueness", 1f, 0f, 1f, null)
                             .link("bluenessSlider")
                     )
             }
 
             it("picks Main stream for gl_FragCoord") {
-                expect(mutableLinks["gl_FragCoord"])
-                    .toBe(Stream.Main.editor())
+                mutableLinks["gl_FragCoord"]
+                    .shouldBe(Stream.Main.editor())
 
-                expect(links["gl_FragCoord"])
-                    .toBe(DefaultValueNode(ContentType.UvCoordinate))
+                links["gl_FragCoord"]
+                    .shouldBe(DefaultValueNode(ContentType.UvCoordinate))
             }
 
             it("builds a linked patch") {
-                expect(rootProgramNode.incomingLinks)
-                    .toBe(
+                rootProgramNode.incomingLinks
+                    .shouldBe(
                         mapOf(
                             "gl_FragCoord" to DefaultValueNode(ContentType.UvCoordinate),
                             "time" to TimeFeed().link("time"),
@@ -437,8 +435,8 @@ object AutoWirerSpec : DescribeSpec({
                 }
 
                 it("creates a reasonable guess patch") {
-                    expect(patchSet.mutablePatches)
-                        .containsExactly(
+                    patchSet.mutablePatches
+                        .shouldContainExactly(
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(
@@ -468,8 +466,8 @@ object AutoWirerSpec : DescribeSpec({
                 }
 
                 it("creates a reasonable guess patch") {
-                    expect(patchSet.mutablePatches)
-                        .containsExactly(
+                    patchSet.mutablePatches
+                        .shouldContainExactly(
                             MutablePatch(
                                 MutableShader(mainShader),
                                 hashMapOf(

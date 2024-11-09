@@ -13,10 +13,11 @@ import baaahs.gl.shader.type.PaintShader
 import baaahs.gl.testToolchain
 import baaahs.kotest.value
 import baaahs.show.Shader
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.*
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 
 @Suppress("unused")
 object ShaderToyShaderDialectSpec : DescribeSpec({
@@ -37,34 +38,34 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
 
         context("shaders having a void mainImage(out vec4, in vec2) function") {
             it("is an good match") {
-                expect(matchLevel).toEqual(MatchLevel.Good)
+                matchLevel.shouldBe(MatchLevel.Good)
             }
 
             it("finds the input port") {
-                expect(shaderAnalysis.inputPorts.str()).containsExactly(
+                shaderAnalysis.inputPorts.str().shouldContainExactly(
                     "fragCoord uv-coordinate:vec2 (U/V Coordinates)"
                 )
             }
 
             it("finds the output port") {
-                expect(shaderAnalysis.outputPorts).containsExactly(
+                shaderAnalysis.outputPorts.shouldContainExactly(
                     OutputPort(Color, description = "Output Color", id = "fragColor", isParam = true)
                 )
             }
 
             it("generates an invocation statement") {
-                expect(invocationStatement).toEqual("p_mainImage(toResultVar, fragCoordVal.xy)")
+                invocationStatement.shouldBe("p_mainImage(toResultVar, fragCoordVal.xy)")
             }
 
             context("with the parameters out of order") {
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor) { ... };" }
 
                 it("is an good match") {
-                    expect(matchLevel).toEqual(MatchLevel.Good)
+                    matchLevel.shouldBe(MatchLevel.Good)
                 }
 
                 it("generates an invocation statement") {
-                    expect(invocationStatement).toEqual("p_mainImage(fragCoordVal.xy, toResultVar)")
+                    invocationStatement.shouldBe("p_mainImage(fragCoordVal.xy, toResultVar)")
                 }
             }
 
@@ -72,18 +73,18 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
                 override(src) { "void mainImage(in vec2 fragCoord, out vec4 fragColor, in float intensity) { ... };" }
 
                 it("is an good match") {
-                    expect(matchLevel).toEqual(MatchLevel.Good)
+                    matchLevel.shouldBe(MatchLevel.Good)
                 }
 
                 it("finds the input port") {
-                    expect(shaderAnalysis.inputPorts.str()).containsExactly(
+                    shaderAnalysis.inputPorts.str().shouldContainExactly(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "intensity unknown/float:float (Intensity)"
                     )
                 }
 
                 it("generates an invocation statement") {
-                    expect(invocationStatement).toEqual("p_mainImage(fragCoordVal.xy, toResultVar, intensityVal)")
+                    invocationStatement.shouldBe("p_mainImage(fragCoordVal.xy, toResultVar, intensityVal)")
                 }
             }
 
@@ -93,7 +94,7 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
                 }
 
                 it("finds the input port") {
-                    expect(shaderAnalysis.inputPorts.str()).contains.inAnyOrder.only.values(
+                    shaderAnalysis.inputPorts.str().shouldContainExactlyInAnyOrder(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "intensity unknown/float:float (Intensity)"
                     )
@@ -108,7 +109,7 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
                 }
 
                 it("identifies the uniforms and maps them to the correct content types") {
-                    expect(shaderAnalysis.inputPorts.str()).contains.inAnyOrder.only.values(
+                    shaderAnalysis.inputPorts.str().shouldContainExactlyInAnyOrder(
                         "fragCoord uv-coordinate:vec2 (U/V Coordinates)",
                         "iResolution resolution:vec3 (Resolution)",
                         "iTime time:float (Time)",
@@ -123,9 +124,9 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
                 }
 
                 it("fails to validate") {
-                    expect(shaderAnalysis.isValid).toBe(false)
+                    shaderAnalysis.isValid.shouldBeFalse()
 
-                    expect(shaderAnalysis.errors).contains(
+                    shaderAnalysis.errors.contains(
                         GlslError("Too many output ports found: [fragColor, other].", row = 2)
                     )
                 }
@@ -135,12 +136,12 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
                 override(src) { "void mainImage() { ... };" }
 
                 it("is still a match") {
-                    expect(matchLevel).toEqual(MatchLevel.Good)
+                    matchLevel.shouldBe(MatchLevel.Good)
                 }
 
                 it("fails validation") {
-                    expect(shaderAnalysis.isValid).toBe(false)
-                    expect(shaderAnalysis.errors).containsExactly(
+                    shaderAnalysis.isValid.shouldBeFalse()
+                    shaderAnalysis.errors.shouldContainExactly(
                         GlslError(
                             "Missing arguments. " +
                                     "Signature should be \"void mainImage(in vec2 fragCoord, out vec4 fragColor)\".",
@@ -155,12 +156,12 @@ object ShaderToyShaderDialectSpec : DescribeSpec({
             override(src) { "void main(void) { ... };" }
 
             it("is not a match") {
-                expect(matchLevel).toEqual(MatchLevel.NoMatch)
+                matchLevel.shouldBe(MatchLevel.NoMatch)
             }
 
             it("fails to validate") {
-                expect(shaderAnalysis.isValid).toBe(false)
-                expect(shaderAnalysis.errors).containsExactly(
+                shaderAnalysis.isValid.shouldBeFalse()
+                shaderAnalysis.errors.shouldContainExactly(
                     GlslError("No entry point \"mainImage\" among [main]"),
                     GlslError("No output port found.")
                 )

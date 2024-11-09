@@ -6,7 +6,6 @@ import baaahs.control.OpenButtonControl
 import baaahs.device.PixelArrayDevice
 import baaahs.getBang
 import baaahs.gl.autoWire
-import baaahs.gl.kexpect
 import baaahs.gl.patch.ContentType.Companion.Color
 import baaahs.gl.render.RenderManager
 import baaahs.gl.testToolchain
@@ -25,9 +24,9 @@ import baaahs.show.live.ShowOpener
 import baaahs.show.mutable.*
 import baaahs.shows.FakeGlContext
 import baaahs.shows.FakeShowPlayer
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
 object PatchResolverSpec : DescribeSpec({
@@ -130,7 +129,7 @@ object PatchResolverSpec : DescribeSpec({
                 clickButton("brightness")
                 clickButton("orange")
 
-                kexpect(linkedPatch.toGlsl()).toBe(
+                linkedPatch.toGlsl().shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -272,7 +271,7 @@ object PatchResolverSpec : DescribeSpec({
                     clickButton("orange")
                     clickButton("timeWobble")
 
-                    kexpect(linkedPatch.toGlsl()).toBe(
+                    linkedPatch.toGlsl().shouldBe(
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
@@ -457,7 +456,7 @@ object PatchResolverSpec : DescribeSpec({
             }
 
             it("merges layered patches into a single patch") {
-                kexpect(linkedPatch.toGlsl()).toBe(
+                linkedPatch.toGlsl().shouldBe(
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
@@ -777,7 +776,7 @@ object PatchResolverSpec : DescribeSpec({
                 .sortedBy { it.index }
                 .map { it.toString() }
 
-            expect(linkNodes).containsExactly(
+            linkNodes.shouldContainExactly(
                 "LinkNode(UV Projection, id='uvProjection', maxObservedDepth=7, index=0)",
                 "LinkNode(Ripple, id='ripple', maxObservedDepth=5, index=1)",
                 "LinkNode(Position and Scale patchmod for Ripple, id='positionAndScalePatchmodForRipple', maxObservedDepth=6, index=1, modIndex=0)",
@@ -791,7 +790,7 @@ object PatchResolverSpec : DescribeSpec({
         }
 
         it("generates GLSL with nodes called in the right order") {
-            kexpect(linkedProgram.toGlsl()).toBe(
+            linkedProgram.toGlsl().shouldBe(
                 /**language=glsl*/
                 """
                     #ifdef GL_ES

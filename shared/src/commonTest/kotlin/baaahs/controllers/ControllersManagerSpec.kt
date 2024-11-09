@@ -23,11 +23,14 @@ import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.only
 import baaahs.scene.*
-import baaahs.toEqual
 import baaahs.ui.Observable
-import ch.tutteli.atrium.api.fluent.en_GB.*
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.properties.shouldHaveValue
+import io.kotest.matchers.types.shouldBeSameInstanceAs
+import io.kotest.matchers.types.shouldBeTypeOf
 import kotlinx.datetime.Instant
 import kotlin.random.Random
 
@@ -68,27 +71,27 @@ object ControllersManagerSpec : DescribeSpec({
             beforeEach { controllersManager.start() }
 
             it("starts controllers when start() is called") {
-                expect(fakeControllerMgr.hasStarted).toBe(true)
+                fakeControllerMgr.hasStarted.shouldBeTrue()
             }
 
             it("waits for mapping data before processing controllers from controller managers") {
-                expect(fixtureListener.changes).isEmpty()
+                fixtureListener.changes.shouldBeEmpty()
 
                 sceneMonitor.onChange(scene) // Load model.
-                expect(fixtureListener.changes).isEmpty()
+                fixtureListener.changes.shouldBeEmpty()
 
                 mappingManager.dataHasLoaded = true
-                expect(fixtureListener.changes).size.toEqual(1)
+                fixtureListener.changes.size.shouldBe(1)
             }
 
             it("waits for model before processing controllers from controller managers") {
-                expect(fixtureListener.changes).isEmpty()
+                fixtureListener.changes.shouldBeEmpty()
 
                 mappingManager.dataHasLoaded = true
-                expect(fixtureListener.changes).isEmpty()
+                fixtureListener.changes.shouldBeEmpty()
 
                 sceneMonitor.onChange(scene) // Load model.
-                expect(fixtureListener.changes).size.toEqual(1)
+                fixtureListener.changes.size.shouldBe(1)
             }
 
             it("only starts controller managers once") {
@@ -96,7 +99,7 @@ object ControllersManagerSpec : DescribeSpec({
                 mappingManager.dataHasLoaded = true
                 mappingManager.notifyChanged()
                 mappingManager.notifyChanged()
-                expect(fakeControllerMgr.hasStarted).toBe(true)
+                fakeControllerMgr.hasStarted.shouldBeTrue()
             }
         }
 
@@ -108,7 +111,7 @@ object ControllersManagerSpec : DescribeSpec({
             }
 
             it("calls start() on controller managers") {
-                expect(fakeControllerMgr.hasStarted).toBe(true)
+                fakeControllerMgr.hasStarted.shouldBeTrue()
             }
         }
 
@@ -126,7 +129,7 @@ object ControllersManagerSpec : DescribeSpec({
                 value(legacyMappings) { mapOf(fakeController.controllerId to emptyList()) }
 
                 it("ignores the controller") {
-                    expect(fixtureListener.changes).isEmpty()
+                    fixtureListener.changes.shouldBeEmpty()
                 }
 
                 context("and the controller specifies an anonymous fixture") {
@@ -149,19 +152,15 @@ object ControllersManagerSpec : DescribeSpec({
                     }
 
                     it("adds the anonymous fixture") {
-                        expect(addedFixture.modelEntity).toBe(null)
-                        expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
-                        expect(addedFixture.transport).isSameAs(fakeController.transport)
+                        addedFixture.modelEntity.shouldBe(null)
+                        addedFixture.fixtureType.shouldBe(PixelArrayDevice)
+                        addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                     }
 
                     it("generates pixel positions within the model bounds") {
-                        expect(addedFixture) {
-                            feature(Fixture::componentCount).toBe(3)
-                            feature(Fixture::fixtureConfig)
-                                .isA<PixelArrayDevice.Config> {
-                                    feature(PixelArrayDevice.Config::pixelLocations)
-                                        .toBe(expectedPixelLocations)
-                                }
+                        addedFixture::componentCount.shouldHaveValue(3)
+                        addedFixture.fixtureConfig.shouldBeTypeOf<PixelArrayDevice.Config> {
+                            it.pixelLocations.shouldBe(expectedPixelLocations)
                         }
                     }
                 }
@@ -182,19 +181,22 @@ object ControllersManagerSpec : DescribeSpec({
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture") {
-                    expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.fixtureType).toBe(PixelArrayDevice)
-                    expect(addedFixture.transport).isSameAs(fakeController.transport)
+                    addedFixture.modelEntity.shouldBe(modelEntity)
+                    addedFixture.fixtureType.shouldBe(PixelArrayDevice)
+                    addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                 }
 
                 it("generates pixel positions within the entity bounds") {
-                    expect(addedFixture) {
-                        feature(Fixture::componentCount).toBe(3)
-                        feature(Fixture::fixtureConfig)
-                            .isA<PixelArrayDevice.Config> {
-                                feature(PixelArrayDevice.Config::pixelLocations)
-                                    .toBe(EnumeratedPixelLocations(Vector3F.origin, Vector3F.origin, Vector3F.origin))
-                            }
+                    addedFixture
+                    addedFixture::componentCount.shouldHaveValue(3)
+                    addedFixture.fixtureConfig.shouldBeTypeOf<PixelArrayDevice.Config> {
+                        it.pixelLocations.shouldBe(
+                            EnumeratedPixelLocations(
+                                Vector3F.origin,
+                                Vector3F.origin,
+                                Vector3F.origin
+                            )
+                        )
                     }
                 }
 
@@ -217,20 +219,17 @@ object ControllersManagerSpec : DescribeSpec({
                     }
 
                     it("uses the pixel data") {
-                        expect(addedFixture) {
-                            feature(Fixture::componentCount).toBe(3)
-                            feature(Fixture::fixtureConfig)
-                                .isA<PixelArrayDevice.Config> {
-                                    feature(PixelArrayDevice.Config::pixelLocations)
-                                        .toBe(
-                                            EnumeratedPixelLocations(
-                                                Vector3F(1f, 1f, 1f),
-                                                Vector3F(2f, 2f, 3f),
-                                                Vector3F(3f, 2f, 3f),
-                                            )
-                                        )
-                                }
-                        }
+                        addedFixture::componentCount.shouldHaveValue(3)
+                        addedFixture.fixtureConfig
+                            .shouldBeTypeOf<PixelArrayDevice.Config> {
+                                it.pixelLocations.shouldBe(
+                                    EnumeratedPixelLocations(
+                                        Vector3F(1f, 1f, 1f),
+                                        Vector3F(2f, 2f, 3f),
+                                        Vector3F(3f, 2f, 3f),
+                                    )
+                                )
+                            }
                     }
                 }
             }
@@ -241,17 +240,13 @@ object ControllersManagerSpec : DescribeSpec({
                 }
 
                 it("finds model entity mapping for the controller and creates a fixture with options from the model") {
-                    expect(addedFixture) {
-                        feature(Fixture::modelEntity).toBe(modelEntity)
-                        feature(Fixture::componentCount).toBe(59)
-                        feature(Fixture::fixtureConfig)
-                            .isA<FixtureTypeForTest.Config> {
-                                feature(FixtureTypeForTest.Config::pixelLocations)
-                                    .toBe(EnumeratedPixelLocations())
-                            }
-                        feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
-                        feature(Fixture::transport).isSameAs(fakeController.transport)
+                    addedFixture.modelEntity.shouldBe(modelEntity)
+                    addedFixture.componentCount.shouldBe(59)
+                    addedFixture.fixtureConfig.shouldBeTypeOf<FixtureTypeForTest.Config> {
+                        it.pixelLocations.shouldBe(EnumeratedPixelLocations())
                     }
+                    addedFixture.fixtureType.shouldBe(modelEntity.fixtureType)
+                    addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                 }
 
                 context("and the fixture type also provides a default fixture config") {
@@ -262,17 +257,13 @@ object ControllersManagerSpec : DescribeSpec({
                     }
 
                     it("finds model entity mapping for the controller and creates a fixture with the model's ") {
-                        expect(addedFixture) {
-                            feature(Fixture::modelEntity).toBe(modelEntity)
-                            feature(Fixture::componentCount).toBe(59)
-                            feature(Fixture::fixtureConfig)
-                                .isA<FixtureTypeForTest.Config> {
-                                    feature(FixtureTypeForTest.Config::pixelLocations)
-                                        .toBe(EnumeratedPixelLocations())
-                                }
-                            feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
-                            feature(Fixture::transport).isSameAs(fakeController.transport)
+                        addedFixture.modelEntity.shouldBe(modelEntity)
+                        addedFixture.componentCount.shouldBe(59)
+                        addedFixture.fixtureConfig.shouldBeTypeOf<FixtureTypeForTest.Config> {
+                            it.pixelLocations.shouldBe(EnumeratedPixelLocations())
                         }
+                        addedFixture.fixtureType.shouldBe(modelEntity.fixtureType)
+                        addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                     }
                 }
 
@@ -280,17 +271,13 @@ object ControllersManagerSpec : DescribeSpec({
                     value(fakeController) { FakeController("c1", PixelArrayDevice.Options(4321)) }
 
                     it("ignores it, because we use the most specific fixture type to filter out others") {
-                        expect(addedFixture) {
-                            feature(Fixture::modelEntity).toBe(modelEntity)
-                            feature(Fixture::componentCount).toBe(1)
-                            feature(Fixture::fixtureConfig)
-                                .isA<FixtureTypeForTest.Config> {
-                                    feature(FixtureTypeForTest.Config::pixelLocations)
-                                        .toBe(EnumeratedPixelLocations())
-                                }
-                            feature(Fixture::fixtureType).toBe(modelEntity.fixtureType)
-                            feature(Fixture::transport).isSameAs(fakeController.transport)
+                        addedFixture.modelEntity.shouldBe(modelEntity)
+                        addedFixture.componentCount.shouldBe(1)
+                        addedFixture.fixtureConfig.shouldBeTypeOf<FixtureTypeForTest.Config> {
+                            it.pixelLocations.shouldBe(EnumeratedPixelLocations())
                         }
+                        addedFixture.fixtureType.shouldBe(modelEntity.fixtureType)
+                        addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                     }
                 }
             }
@@ -299,11 +286,11 @@ object ControllersManagerSpec : DescribeSpec({
                 value(modelEntity) { MovingHead("mover", baseDmxChannel = 1, adapter = Shenzarpy) }
 
                 it("creates an appropriate fixture") {
-                    expect(addedFixture.modelEntity).toBe(modelEntity)
-                    expect(addedFixture.componentCount).toBe(1)
-                    expect(addedFixture.fixtureType).toBe(MovingHeadDevice)
-                    expect(addedFixture.fixtureConfig).isA<MovingHeadDevice.Config>()
-                    expect(addedFixture.transport).isSameAs(fakeController.transport)
+                    addedFixture.modelEntity.shouldBe(modelEntity)
+                    addedFixture.componentCount.shouldBe(1)
+                    addedFixture.fixtureType.shouldBe(MovingHeadDevice)
+                    addedFixture.fixtureConfig.shouldBeTypeOf<MovingHeadDevice.Config>()
+                    addedFixture.transport.shouldBeSameInstanceAs(fakeController.transport)
                 }
             }
 
@@ -317,9 +304,9 @@ object ControllersManagerSpec : DescribeSpec({
 
                 it("removes the previously added fixture and controller") {
                     val previouslyAddedFixture = changes.first().added.only("added fixture")
-                    expect(removedFixture).isSameAs(previouslyAddedFixture)
+                    removedFixture.shouldBeSameInstanceAs(previouslyAddedFixture)
 
-                    expect(fakeControllerMgr.controllers).isEmpty()
+                    fakeControllerMgr.controllers.shouldBeEmpty()
                 }
             }
         }

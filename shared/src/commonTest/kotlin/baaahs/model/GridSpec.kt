@@ -5,9 +5,8 @@ import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.model.PolyLine.Segment
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldContainExactly
 
 object GridSpec : DescribeSpec({
     describe<Grid> {
@@ -21,7 +20,7 @@ object GridSpec : DescribeSpec({
         }
 
         it("calculates segments") {
-            expect(grid.segments).containsExactly(
+            grid.segments.shouldContainExactly(
                 Segment(Vector3F(0.0, 0.0, 0.0), Vector3F(3.0, 0.0, 0.0), 4),
                 Segment(Vector3F(3.0, 1.0, 0.0), Vector3F(0.0, 1.0, 0.0), 4),
                 Segment(Vector3F(0.0, 2.0, 0.0), Vector3F(3.0, 2.0, 0.0), 4),
@@ -41,7 +40,7 @@ object GridSpec : DescribeSpec({
             }
 
             it("calculates segments with stagger") {
-                expect(grid.segments).containsExactly(
+                grid.segments.shouldContainExactly(
                     Segment(Vector3F(0.0, 0.0, 0.0), Vector3F(3.0, 0.0, 0.0), 4),
                     Segment(Vector3F(3.5, 1.0, 0.0), Vector3F(0.5, 1.0, 0.0), 4),
                     Segment(Vector3F(0.0, 2.0, 0.0), Vector3F(3.0, 2.0, 0.0), 4),

@@ -13,12 +13,12 @@ import baaahs.plugin.core.feed.TimeFeed
 import baaahs.show.*
 import baaahs.show.mutable.*
 import baaahs.shows.FakeShowPlayer
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.collections.set
 
 object OpenShowSpec : DescribeSpec({
@@ -58,9 +58,9 @@ object OpenShowSpec : DescribeSpec({
 
         context("empty show") {
             it("creates an empty OpenShow") {
-                expect(openShow.title).toBe("Show")
+                openShow.title.shouldBe("Show")
 
-                expect(openShow.buildActivePatchSet().activePatches).isEmpty()
+                openShow.buildActivePatchSet().activePatches.shouldBeEmpty()
             }
         }
 
@@ -74,14 +74,14 @@ object OpenShowSpec : DescribeSpec({
             it("opens feeds") {
                 openShow.run {}
                 val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "feed key")
-                expect(timeFeed.inUse()).toBe(true)
+                timeFeed.inUse().shouldBeTrue()
             }
 
             context("when released") {
                 it("closes feeds") {
                     openShow.onRelease()
                     val timeFeed = showPlayer.feeds.getBang(TimeFeed(), "feed key")
-                    expect(timeFeed.inUse()).toBe(false)
+                    timeFeed.inUse().shouldBeFalse()
                 }
             }
         }
@@ -105,18 +105,16 @@ object OpenShowSpec : DescribeSpec({
             val scenesButtonGroup by value { panel1.first() as OpenButtonGroupControl }
 
             it("creates an OpenShow") {
-                expect(scenesButtonGroup.title)
-                    .toBe("Scenes")
-                expect(scenesButtonGroup.buttons.map { it.title })
-                    .containsExactly("First Scene", "Second Scene")
+                scenesButtonGroup.title.shouldBe("Scenes")
+                scenesButtonGroup.buttons.map { it.title }
+                    .shouldContainExactly("First Scene", "Second Scene")
             }
 
             it("has the first item in the button group selected by default") {
-                expect(scenesButtonGroup.buttons.map { it.isPressed })
-                    .containsExactly(true, false)
+                scenesButtonGroup.buttons.map { it.isPressed }
+                    .shouldContainExactly(true, false)
 
-                expect(openShow.buildActivePatchSet().activePatches)
-                    .toBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
+                openShow.buildActivePatchSet().activePatches.shouldBe(openShow.patches + scenesButtonGroup.buttons[0].patches)
             }
         }
 
@@ -130,15 +128,15 @@ object OpenShowSpec : DescribeSpec({
             }
 
             it("an implicit control is created") {
-                expect(openShow.allControls.size).toEqual(1)
+                openShow.allControls.size.shouldBe(1)
                 val implicitSlider = openShow.allControls.only("control")
                 implicitSlider as OpenSliderControl
-                expect(implicitSlider.slider)
-                    .toEqual(Slider("Slider"))
-                expect(implicitSlider.controlledFeed)
-                    .toEqual(show.feeds.values.only("feed"))
+                implicitSlider.slider
+                    .shouldBe(Slider("Slider"))
+                implicitSlider.controlledFeed
+                    .shouldBe(show.feeds.values.only("feed"))
 
-                expect(openShow.implicitControls).containsExactly(implicitSlider)
+                openShow.implicitControls.shouldContainExactly(implicitSlider)
             }
         }
 
@@ -158,8 +156,7 @@ object OpenShowSpec : DescribeSpec({
             }
 
             it("ignores links to unknown ports") {
-                expect(openShow.patches.only().incomingLinks.keys)
-                    .toBe(setOf("gl_FragCoord", "time"))
+                openShow.patches.only().incomingLinks.keys.shouldBe(setOf("gl_FragCoord", "time"))
             }
         }
     }

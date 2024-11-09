@@ -16,11 +16,10 @@ import baaahs.only
 import baaahs.plugin.PluginRef
 import baaahs.plugin.Plugins
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.serialization.json.buildJsonObject
 
 @Suppress("unused")
@@ -37,7 +36,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                 override(shaderText) { "void main() {}" }
 
                 it("should return none") {
-                    expect(shaderAnalysis.outputPorts).isEmpty()
+                    shaderAnalysis.outputPorts.shouldBeEmpty()
                 }
             }
 
@@ -45,7 +44,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                 override(shaderText) { "vec4 main() { return vec4(1.); }" }
 
                 it("should return it") {
-                    expect(shaderAnalysis.outputPorts).containsExactly(
+                    shaderAnalysis.outputPorts.shouldContainExactly(
                         OutputPort(
                             ContentType.unknown(GlslType.Vec4),
                             id = OutputPort.ReturnValue,
@@ -58,7 +57,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                     override(shaderText) { "// @return color\nvec4 main() { return vec4(1.); }" }
 
                     it("should return it") {
-                        expect(shaderAnalysis.outputPorts).containsExactly(
+                        shaderAnalysis.outputPorts.shouldContainExactly(
                             OutputPort(Color, id = OutputPort.ReturnValue, dataType = GlslType.Vec4)
                         )
                     }
@@ -69,7 +68,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                 override(shaderText) { "void main(out vec4 colorOut) {}" }
 
                 it("should return it") {
-                    expect(shaderAnalysis.outputPorts).containsExactly(
+                    shaderAnalysis.outputPorts.shouldContainExactly(
                         OutputPort(
                             ContentType.unknown(GlslType.Vec4),
                             id = "colorOut", dataType = GlslType.Vec4, isParam = true
@@ -81,7 +80,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                     override(shaderText) { "// @param colorOut color\nvoid main(out vec4 colorOut) {}" }
 
                     it("should return it") {
-                        expect(shaderAnalysis.outputPorts).containsExactly(
+                        shaderAnalysis.outputPorts.shouldContainExactly(
                             OutputPort(Color, id = "colorOut", dataType = GlslType.Vec4, isParam = true)
                         )
                     }
@@ -91,7 +90,7 @@ object HintedShaderDialectSpec : DescribeSpec({
                     override(shaderText) { "void main(\n    out vec4 colorOut // @type color\n) {}" }
 
                     it("should return it") {
-                        expect(shaderAnalysis.outputPorts).containsExactly(
+                        shaderAnalysis.outputPorts.shouldContainExactly(
                             OutputPort(Color, id = "colorOut", dataType = GlslType.Vec4, isParam = true)
                         )
                     }
@@ -105,8 +104,8 @@ object HintedShaderDialectSpec : DescribeSpec({
                 val inputPort by value { shaderAnalysis.inputPorts.only("input port") }
 
                 it("should use the feed's content type") {
-                    expect(inputPort.copy(glslArgSite = null))
-                        .toEqual(
+                    inputPort.copy(glslArgSite = null)
+                        .shouldBe(
                             InputPort(
                                 "arg", Float,
                                 pluginRef = PluginRef("baaahs.Core", "Slider"),

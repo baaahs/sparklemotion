@@ -6,17 +6,12 @@ import baaahs.gl.testPlugins
 import baaahs.kotest.value
 import baaahs.show.migration.V1_UpdateDataSourceRefs
 import baaahs.toBeSpecified
-import baaahs.toEqual
-import baaahs.useBetterSpekReporter
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.json.*
 
 @Suppress("ClassName")
 object V1_UpdateDataSourceRefsSpec : DescribeSpec({
-    useBetterSpekReporter()
-
     describe<V1_UpdateDataSourceRefs> {
         val migration by value { V1_UpdateDataSourceRefs }
         val json by value { Json { serializersModule = testPlugins().serialModule } }
@@ -45,8 +40,8 @@ object V1_UpdateDataSourceRefsSpec : DescribeSpec({
 
             it("fixes feed serial names") {
                 val dataSourcesJson = showJson["dataSources"]!!.jsonObject
-                expect(dataSourcesJson["modelInfo"].type).toEqual("baaahs.Core:ModelInfo")
-                expect(dataSourcesJson["time"].type).toBe("baaahs.Core:Time")
+                dataSourcesJson["modelInfo"].type.shouldBe("baaahs.Core:ModelInfo")
+                dataSourcesJson["time"].type.shouldBe("baaahs.Core:Time")
             }
         }
     }

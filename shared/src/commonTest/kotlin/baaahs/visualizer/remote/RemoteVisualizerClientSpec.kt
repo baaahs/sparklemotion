@@ -21,10 +21,10 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.visualizer.FakeItemVisualizer
 import baaahs.visualizer.FakeVisualizer
-import ch.tutteli.atrium.api.fluent.en_GB.containsExactly
-import ch.tutteli.atrium.api.verbs.expect
 import ext.kotlinx_coroutines_test.TestCoroutineScope
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
@@ -85,7 +85,7 @@ object RemoteVisualizerClientSpec : DescribeSpec({
         }
 
         it("should populate the visualizer with model entities") {
-            expect(fakeVisualizer.itemVisualizers).containsExactly(
+            fakeVisualizer.itemVisualizers.shouldContainExactly(
                 FakeItemVisualizer(entity)
             )
         }
@@ -93,9 +93,9 @@ object RemoteVisualizerClientSpec : DescribeSpec({
         context("receiving pixel array fixture data") {
             it("updates the visualizer with remote config data") {
                 val visualizer = fakeVisualizer.itemVisualizers.only() as FakeItemVisualizer
-                expect(visualizer.fixtureConfig.pixelCount).toEqual(2)
-                expect(visualizer.fixtureConfig.pixelLocations.arrayOfVector3F().toList())
-                    .containsExactly(Vector3F.origin, Vector3F.unit3d)
+                visualizer.fixtureConfig.pixelCount.shouldBe(2)
+                visualizer.fixtureConfig.pixelLocations.arrayOfVector3F().toList()
+                    .shouldContainExactly(Vector3F.origin, Vector3F.unit3d)
             }
         }
 
@@ -111,7 +111,7 @@ object RemoteVisualizerClientSpec : DescribeSpec({
 
             it("updates the visualizer with pixel colors") {
                 val visualizer = fakeVisualizer.itemVisualizers.only() as FakeItemVisualizer
-                expect(visualizer.pixelColors).containsExactly(Color.MAGENTA, Color.GREEN)
+                visualizer.pixelColors.shouldContainExactly(Color.MAGENTA, Color.GREEN)
             }
         }
     }

@@ -1,9 +1,8 @@
 package baaahs.migrator
 
 import baaahs.describe
-import baaahs.toEqual
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -14,8 +13,8 @@ object DataMigratorSpec : DescribeSpec({
     describe<DataMigrator<*>> {
         it("should work with no migrations") {
             val migrator = DataMigrator(Foo.serializer()).Migrate()
-            expect(Json.Default.encodeToJsonElement(migrator, Foo("1234")))
-                .toEqual(buildJsonObject {
+            Json.Default.encodeToJsonElement(migrator, Foo("1234"))
+                .shouldBe(buildJsonObject {
                     put("value", JsonPrimitive("1234"))
                     put("version", JsonPrimitive(0))
                 })

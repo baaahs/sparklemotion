@@ -12,10 +12,9 @@ import baaahs.show.Stream
 import baaahs.show.UnknownFeed
 import baaahs.sm.webapi.Problem
 import baaahs.sm.webapi.Severity
-import ch.tutteli.atrium.api.fluent.en_GB.contains
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -29,25 +28,25 @@ object OpenPatchSpec : DescribeSpec({
 
         context(".isFilter") {
             context("with no input port links") {
-                it("isn't a filter") { expect(instance.isFilter).toBe(false) }
+                it("isn't a filter") { instance.isFilter.shouldBeFalse() }
             }
 
             context("when an input port's content type matches the return content type") {
                 override(inputPorts) { listOf(InputPort("color", ContentType.Color)) }
                 override(links) { mapOf("color" to OpenPatch.ConstLink("foo", GlslType.Vec4)) }
 
-                it("isn't a filter") { expect(instance.isFilter).toBe(false) }
+                it("isn't a filter") { instance.isFilter.shouldBeFalse() }
 
                 context("linked to a stream") {
                     override(links) { mapOf("color" to OpenPatch.StreamLink(Stream.Main)) }
 
                     context("on the same channel") {
-                        it("is a filter") { expect(instance.isFilter).toBe(true) }
+                        it("is a filter") { instance.isFilter.shouldBeTrue() }
                     }
 
                     context("on a different channel") {
                         override(stream) { Stream("other") }
-                        it("isn't a filter") { expect(instance.isFilter).toBe(false) }
+                        it("isn't a filter") { instance.isFilter.shouldBeFalse() }
                     }
                 }
             }
@@ -55,7 +54,7 @@ object OpenPatchSpec : DescribeSpec({
             context("when the return content type doesn't match any of the input ports") {
                 override(outputPort) { OutputPort(ContentType.XyCoordinate) }
                 it("is a filter") {
-                    expect(instance.isFilter).toBe(false)
+                    instance.isFilter.shouldBeFalse()
                 }
             }
         }
@@ -66,7 +65,7 @@ object OpenPatchSpec : DescribeSpec({
 
                 it("fails to validate") {
                     println("problems: ${instance.problems}")
-                    expect(instance.problems.map { it.copy(id = "") })
+                    instance.problems.map { it.copy(id = "") }
                         .contains(
                             Problem(
                                 "Result content type is unknown for shader \"${instance.title}\".",
@@ -92,7 +91,7 @@ object OpenPatchSpec : DescribeSpec({
 
                 it("fails to validate") {
                     println("problems: ${instance.problems}")
-                    expect(instance.problems.map { it.copy(id = "") })
+                    instance.problems.map { it.copy(id = "") }
                         .contains(
                             Problem(
                                 "Unresolved feed for shader \"${instance.title}\".",
