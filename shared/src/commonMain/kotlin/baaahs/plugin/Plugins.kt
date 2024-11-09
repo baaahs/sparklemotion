@@ -537,20 +537,24 @@ sealed class Plugins(
     inner class Controllers {
          val all = openPlugins.flatMap { it.controllerManagers }
 
+        // TODO: register these via each ControllerManager.
         val serialModule = SerializersModule {
             polymorphic(ControllerConfig::class) {
                 subclass(BrainControllerConfig::class, BrainControllerConfig.serializer())
                 subclass(DirectDmxControllerConfig::class, DirectDmxControllerConfig.serializer())
+                subclass(NanoleafControllerConfig::class, NanoleafControllerConfig.serializer())
                 subclass(SacnControllerConfig::class, SacnControllerConfig.serializer())
             }
 
             polymorphic(TransportConfig::class) {
                 subclass(DmxTransportConfig::class, DmxTransportConfig.serializer())
+                subclass(NanoleafTransportConfig::class, NanoleafTransportConfig.serializer())
             }
 
             polymorphic(ControllerState::class) {
                 subclass(BrainManager.State::class, BrainManager.State.serializer())
                 subclass(DirectDmxController.State::class, DirectDmxController.State.serializer())
+                subclass(NanoleafManager.State::class, NanoleafManager.State.serializer())
                 subclass(SacnManager.State::class, SacnManager.State.serializer())
                 subclass(NullController.State::class, NullController.State.serializer())
             }

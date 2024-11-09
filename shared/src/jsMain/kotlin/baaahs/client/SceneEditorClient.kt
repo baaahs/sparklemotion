@@ -19,7 +19,10 @@ class SceneEditorClient(
         pubSub.addStateChangeListener(it)
     }
 
-    private val controllerStates by subscribeProperty(pubSub, Topics.createControllerStates(plugins), emptyMap()) { facade.notifyChanged() }
+    private val controllerStates by subscribeProperty(pubSub, Topics.createControllerStates(plugins), emptyMap()) {
+        println("controllerStates (client) $it")
+        facade.notifyChanged()
+    }
     private val fixtures by subscribeProperty(pubSub, Topics.createFixtures(plugins), emptyList()) { facade.notifyChanged() }
 
     inner class Facade : baaahs.ui.Facade() {

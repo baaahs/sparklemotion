@@ -142,6 +142,9 @@ kotlin {
                 // VideoInPlugin:
                 implementation(libs.webcamCapture)
                 implementation(libs.webcamCaptureDriverNative)
+
+                // Nanoleaf support:
+                implementation("io.github.rowak:nanoleaf-api:0.1.2")
             }
         }
         val jvmTest by getting {

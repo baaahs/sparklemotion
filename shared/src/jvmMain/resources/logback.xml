@@ -12,4 +12,6 @@
     <logger name="io.netty" level="INFO"/>
     <logger name="io.mockk" level="INFO"/>
     <logger name="javax.jmdns.impl" level="ERROR" />
+    <logger name="baaahs.controller.SacnManager" level="DEBUG" />
+    <logger name="baaahs.controller.NanoleafManager" level="DEBUG" />
 </configuration>
