@@ -21,7 +21,7 @@ import baaahs.sim.SimulationEnv
 import baaahs.sm.brain.proto.Ports
 import baaahs.visualizer.FakeItemVisualizer
 import baaahs.visualizer.FakeVisualizer
-import ext.kotlinx_coroutines_test.TestCoroutineScope
+import ext.kotlinx_coroutines_test.createTestCoroutineScope
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
@@ -35,7 +35,7 @@ class RemoteVisualizerClientSpec : DescribeSpec({
         val dispatcher by value { pubSubRig.dispatcher }
         var cleanupTestCoroutines: () -> Unit = {}
         val coroutineScope by value {
-            TestCoroutineScope(dispatcher).also { scope ->
+            createTestCoroutineScope(dispatcher).also { scope ->
                 cleanupTestCoroutines = { scope.cleanupTestCoroutines() }
             }
         }

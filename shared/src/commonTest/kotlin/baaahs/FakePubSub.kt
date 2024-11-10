@@ -2,7 +2,7 @@ package baaahs
 
 import baaahs.sim.FakeNetwork
 import ext.kotlinx_coroutines_test.TestCoroutineDispatcher
-import ext.kotlinx_coroutines_test.TestCoroutineScope
+import ext.kotlinx_coroutines_test.createTestCoroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -29,7 +29,7 @@ class FakePubSub(
 @InternalCoroutinesApi
 class TestRig {
     val dispatcher = TestCoroutineDispatcher()
-    val testCoroutineScope = TestCoroutineScope(dispatcher)
+    val testCoroutineScope = createTestCoroutineScope(dispatcher)
     val network = FakeNetwork(0, coroutineScope = testCoroutineScope)
 
     val serverNetwork = network.link("server")
