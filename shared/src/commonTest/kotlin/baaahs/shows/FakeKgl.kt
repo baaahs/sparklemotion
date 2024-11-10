@@ -243,6 +243,11 @@ class FakeKgl : Kgl {
         activeProgram?.recordRender()
     }
 
+    override fun drawElements(mode: Int, count: Int, type: Int) {
+        checkContext()
+        activeProgram?.recordRender()
+    }
+
     override fun enable(cap: Int) { checkContext() }
 
     override fun enableVertexAttribArray(location: Int) { checkContext() }

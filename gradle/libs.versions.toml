@@ -5,7 +5,7 @@ serializationRuntime = "1.6.3"
 koin = "3.5.3"
 ksp = "2.0.21-1.0.26"
 dokka = "1.7.10"
-kgl = "0.6.2"
+kgl = "0.6.3"
 #jogl = "2.3.2"
 lwjgl = "3.3.1"
 
