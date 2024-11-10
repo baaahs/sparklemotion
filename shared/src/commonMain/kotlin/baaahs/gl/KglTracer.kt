@@ -184,7 +184,7 @@ class KglTracer(private val kgl: Kgl) : Kgl {
 
     override fun drawElements(mode: Int, count: Int, type: Int) {
         log("drawElements", mode, count, type)
-        return kgl.drawArrays(mode, count, type)
+        return kgl.drawElements(mode, count, type)
     }
 
     override fun enable(cap: Int) {
