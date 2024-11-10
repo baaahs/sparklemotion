@@ -12,7 +12,7 @@ import baaahs.nuffin
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object ModelSpec : DescribeSpec({
+class ModelSpec : DescribeSpec({
     describe<Model> {
         context("applying parent transformations") {
             it("multiplies them") {

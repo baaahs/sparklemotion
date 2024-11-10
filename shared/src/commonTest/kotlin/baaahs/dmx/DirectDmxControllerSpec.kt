@@ -15,7 +15,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object DirectDmxControllerSpec : DescribeSpec({
+class DirectDmxControllerSpec : DescribeSpec({
     describe<DirectDmxController> {
         val testAdapter by value { TestMovingHeadAdapter(10) }
         val entity by value<Model.Entity?> { MovingHead("mover", adapter = testAdapter, baseDmxChannel = -1) }

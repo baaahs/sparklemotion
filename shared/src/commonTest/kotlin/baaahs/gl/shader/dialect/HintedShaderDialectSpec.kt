@@ -23,7 +23,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.serialization.json.buildJsonObject
 
 @Suppress("unused")
-object HintedShaderDialectSpec : DescribeSpec({
+class HintedShaderDialectSpec : DescribeSpec({
     describe<HintedShaderAnalyzer> {
         val shaderText by value<String> { toBeSpecified() }
         val plugins by value { testPlugins() }

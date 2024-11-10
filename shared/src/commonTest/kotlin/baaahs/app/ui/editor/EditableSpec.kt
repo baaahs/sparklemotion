@@ -10,7 +10,7 @@ import baaahs.show.mutable.MutableShow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object EditableSpec : DescribeSpec({
+class EditableSpec : DescribeSpec({
     describe<ControlEditIntent> {
         val baseShow by value {
             MutableShow("test show") {

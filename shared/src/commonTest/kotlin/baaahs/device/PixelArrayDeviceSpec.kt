@@ -8,7 +8,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.types.shouldBeTypeOf
 
 @Suppress("unused")
-object PixelArrayDeviceSpec : DescribeSpec({
+class PixelArrayDeviceSpec : DescribeSpec({
     describe<PixelArrayDevice> {
         val defaultOptions by value {
             PixelArrayDevice.Options()

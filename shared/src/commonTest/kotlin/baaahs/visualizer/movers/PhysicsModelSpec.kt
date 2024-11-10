@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-object PhysicsModelSpec: DescribeSpec({
+class PhysicsModelSpec: DescribeSpec({
     describe<PhysicalModel> {
         val movingHeadAdapter by value {
             TestMovingHeadAdapter(

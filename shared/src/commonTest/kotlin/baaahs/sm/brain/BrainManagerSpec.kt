@@ -21,7 +21,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.properties.shouldHaveValue
 
-object BrainManagerSpec : DescribeSpec({
+class BrainManagerSpec : DescribeSpec({
     describe<BrainManager> {
         val link by value { TestNetwork().link("brainlink") }
         val model by value { modelForTest(entity("surface1")) }

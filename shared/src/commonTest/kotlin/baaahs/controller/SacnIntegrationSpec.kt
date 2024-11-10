@@ -27,7 +27,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
 @OptIn(InternalCoroutinesApi::class)
-object SacnIntegrationSpec : DescribeSpec({
+class SacnIntegrationSpec : DescribeSpec({
     describe("SACN integration") {
         val link by value { TestNetwork().link("sacn") }
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }

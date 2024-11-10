@@ -30,7 +30,7 @@ public interface UncaughtExceptionCaptor {
      *
      * @throws Throwable the first uncaught exception, if there are any uncaught exceptions.
      */
-    public fun cleanupTestCoroutines()
+    public fun cleanupTestCoroutinesFromUncaught()
 }
 
 /**
@@ -54,7 +54,7 @@ public class TestCoroutineExceptionHandler :
         get() = synchronized(_exceptions) { _exceptions.toList() }
 
     /** @suppress **/
-    override fun cleanupTestCoroutines() {
+    override fun cleanupTestCoroutinesFromUncaught() {
         synchronized(_exceptions) {
             val exception = _exceptions.firstOrNull() ?: return
             // log the rest

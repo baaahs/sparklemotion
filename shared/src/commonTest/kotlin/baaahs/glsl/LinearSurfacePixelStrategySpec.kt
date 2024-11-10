@@ -13,7 +13,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.random.Random
 
 @Suppress("unused")
-object LinearSurfacePixelStrategySpec : DescribeSpec({
+class LinearSurfacePixelStrategySpec : DescribeSpec({
     describe<LinearSurfacePixelStrategy> {
         val strategy by value { LinearSurfacePixelStrategy(Random(1)) }
         context("#forKnownSurface") {

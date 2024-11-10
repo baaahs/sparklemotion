@@ -7,7 +7,7 @@ import baaahs.toBeSpecified
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object GlslTypeSpec : DescribeSpec({
+class GlslTypeSpec : DescribeSpec({
     describe<GlslType> {
         val type by value<GlslType> { toBeSpecified() }
 

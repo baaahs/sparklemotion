@@ -40,7 +40,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-object StageManagerSpec : DescribeSpec({
+class StageManagerSpec : DescribeSpec({
     describe<StageManager> {
         val plugins by value { testPlugins() }
         val fakeFs by value { FakeFs() }

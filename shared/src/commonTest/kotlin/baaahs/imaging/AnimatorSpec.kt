@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlinx.datetime.Instant
 
-object AnimatorSpec : DescribeSpec({
+class AnimatorSpec : DescribeSpec({
     describe<Animator> {
         context("Given some animation frames") {
             val durations by value { listOf(50, 50, 100, 50) }

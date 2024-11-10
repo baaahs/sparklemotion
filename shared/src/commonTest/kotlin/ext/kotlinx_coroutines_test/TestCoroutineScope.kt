@@ -16,28 +16,15 @@ import kotlin.coroutines.EmptyCoroutineContext
  * A scope which provides detailed control over the execution of coroutines for tests.
  */
 @ExperimentalCoroutinesApi // Since 1.2.1, tentatively till 1.3.0
-public interface TestCoroutineScope: CoroutineScope, UncaughtExceptionCaptor, DelayController {
-    /**
-     * Call after the test completes.
-     * Calls [UncaughtExceptionCaptor.cleanupTestCoroutines] and [DelayController.cleanupTestCoroutines].
-     *
-     * @throws Throwable the first uncaught exception, if there are any uncaught exceptions.
-     * @throws UncompletedCoroutinesError if any pending tasks are active, however it will not throw for suspended
-     * coroutines.
-     */
-    public override fun cleanupTestCoroutines()
-}
-
-private class TestCoroutineScopeImpl (
+class TestCoroutineScope(
     override val coroutineContext: CoroutineContext
-):
-    TestCoroutineScope,
+): CoroutineScope,
     UncaughtExceptionCaptor by coroutineContext.uncaughtExceptionCaptor,
     DelayController by coroutineContext.delayController
 {
-    override fun cleanupTestCoroutines() {
-        coroutineContext.uncaughtExceptionCaptor.cleanupTestCoroutines()
-        coroutineContext.delayController.cleanupTestCoroutines()
+    fun cleanupTestCoroutines() {
+        coroutineContext.uncaughtExceptionCaptor.cleanupTestCoroutinesFromUncaught()
+        coroutineContext.delayController.cleanupTestCoroutinesFromDelay()
     }
 }
 
@@ -52,11 +39,11 @@ private class TestCoroutineScopeImpl (
 @InternalCoroutinesApi
 @Suppress("FunctionName")
 @ExperimentalCoroutinesApi // Since 1.2.1, tentatively till 1.3.0
-public fun TestCoroutineScope(context: CoroutineContext = EmptyCoroutineContext): TestCoroutineScope {
+public fun createTestCoroutineScope(context: CoroutineContext = EmptyCoroutineContext): TestCoroutineScope {
     var safeContext = context
     if (context[ContinuationInterceptor] == null) safeContext += TestCoroutineDispatcher()
     if (context[CoroutineExceptionHandler] == null) safeContext += TestCoroutineExceptionHandler()
-    return TestCoroutineScopeImpl(safeContext)
+    return TestCoroutineScope(safeContext)
 }
 
 private inline val CoroutineContext.uncaughtExceptionCaptor: UncaughtExceptionCaptor

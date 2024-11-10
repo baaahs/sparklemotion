@@ -76,6 +76,11 @@ class ShowRunnerTest {
         dmxEvents.clear()
     }
 
+    // Kotlin native complains if test functions return non-Unit.
+    fun <T> doRunBlocking(block: suspend () -> T) {
+        baaahs.doRunBlocking(block)
+    }
+
     @Test
     @Ignore // TODO
     fun whenNoKnownSurfaces_shouldStillCreateShow() = doRunBlocking {

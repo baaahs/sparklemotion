@@ -1,19 +1,19 @@
 package baaahs.kotest
 
-import baaahs.kotest.LetValueExtension.Companion.logger
+import baaahs.kotest.LetValueExtension.logger
 import baaahs.util.Logger
 import io.kotest.common.TestPath
-import io.kotest.core.listeners.AfterContainerListener
-import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeContainerListener
-import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.spec.style.scopes.ContainerScope
 import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
+
+object LetValueExtension {
+    val logger = Logger<LetValueExtension>()
+}
 
 class NestLevel {
     var level = 0
@@ -54,30 +54,6 @@ fun <T> ContainerScope.value(letValue: T, factory: () -> T) {
 }
 
 
-class LetValueExtension : BeforeContainerListener, BeforeEachListener, AfterEachListener, AfterContainerListener {
-    override suspend fun beforeContainer(testCase: TestCase) {
-        logger.debug { "LetValueExtension.beforeContainer: ${testCase.descriptor.path()}" }
-    }
-
-    override suspend fun beforeEach(testCase: TestCase) {
-        logger.debug { "LetValueExtension.beforeEach: ${testCase.descriptor.path()}" }
-        LetValuesState.currentTestCase = testCase
-    }
-
-    override suspend fun afterEach(testCase: TestCase, result: TestResult) {
-        LetValuesState.currentTestCase = null
-        logger.debug { "LetValueExtension.afterEach: ${testCase.descriptor.path()}" }
-    }
-
-    override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
-        logger.debug { "LetValueExtension.afterContainer: ${testCase.descriptor.path()}" }
-    }
-
-    companion object {
-        val logger = Logger<LetValueExtension>()
-    }
-}
-
 interface LetValue<out T> : ReadOnlyProperty<Any?, LetValue<T>> {
     operator fun invoke(): T
 
@@ -96,11 +72,7 @@ interface Node {
     val testCase: TestCase?
     val testPath: TestPath?
 
-    fun beforeGroup(block: TestCase.() -> Unit)
-    fun afterGroup(block: TestCase.() -> Unit)
-
-    fun beforeTest(block: TestCase.() -> Unit)
-    fun afterTest(block: TestCase.(TestResult) -> Unit)
+    fun listen(listener: LetValueGetter<*>)
 }
 
 class RootScopeNode(val rootScope: RootScope) : Node {
@@ -109,20 +81,8 @@ class RootScopeNode(val rootScope: RootScope) : Node {
     override val testPath: TestPath?
         get() = null
 
-    override fun beforeGroup(block: TestCase.() -> Unit) {
-        logger.debug { "RootScopeNode.beforeGroup ${rootScope}" }
-    }
-
-    override fun afterGroup(block: TestCase.() -> Unit) {
-        logger.debug { "RootScopeNode.afterGroup ${rootScope}" }
-    }
-
-    override fun beforeTest(block: TestCase.() -> Unit) {
-        logger.debug { "RootScopeNode.beforeTest ${rootScope}" }
-    }
-
-    override fun afterTest(block: TestCase.(TestResult) -> Unit) {
-        logger.debug { "RootScopeNode.afterTest ${rootScope}" }
+    override fun listen(listener: LetValueGetter<*>) {
+        // No-op.
     }
 }
 
@@ -131,60 +91,55 @@ class ContainerScopeNode(val containerScope: ContainerScope) : Node {
         get() = containerScope.testCase
     override val testPath: TestPath?
         get() = containerScope.testCase.descriptor.path()
+    private val listeners = mutableListOf<LetValueGetter<*>>()
 
-    override fun beforeGroup(block: TestCase.() -> Unit) {
+    init {
         containerScope.beforeContainer { testCase ->
-            logger.debug { "ContainerScopeNode.beforeGroup: ${testCase.descriptor.path()}" }
-            block(testCase)
+            logger.debug { "ContainerScopeNode.beforeContainer: ${testCase.descriptor.path()}" }
+            listeners.forEach { it.beforeExecuteGroup(testCase) }
         }
-    }
 
-    override fun afterGroup(block: TestCase.() -> Unit) {
-        containerScope.afterContainer { (testCase, testResult) ->
-            logger.debug { "ContainerScopeNode.afterGroup: ${testCase.descriptor.path()}" }
-            block(testCase)
+        containerScope.beforeEach { testCase ->
+            LetValuesState.currentTestCase = testCase
+            logger.debug { "ContainerScopeNode.beforeTest: ${testCase.descriptor.path()} ${testCase.type}" }
+            listeners.forEach { it.beforeInvocation(testCase) }
         }
-    }
 
-    override fun beforeTest(block: TestCase.() -> Unit) {
-        containerScope.beforeTest { testCase ->
-            logger.debug { "ContainerScopeNode.beforeTest: ${testCase.descriptor.path()}" }
-            block(testCase)
-        }
-    }
-
-    override fun afterTest(block: TestCase.(TestResult) -> Unit) {
-        containerScope.afterTest { (testCase, testResult) ->
+        containerScope.afterEach { (testCase, testResult) ->
             logger.debug { "ContainerScopeNode.afterTest: ${testCase.descriptor.path()}" }
-            block(testCase, testResult)
+            listeners.forEach { it.afterInvocation(testCase) }
+            LetValuesState.currentTestCase = null
         }
+
+        containerScope.afterContainer { (testCase, testResult) ->
+            logger.debug { "ContainerScopeNode.afterContainer: ${testCase.descriptor.path()}" }
+            listeners.forEach { it.afterExecuteGroup(testCase) }
+        }
+    }
+
+    override fun listen(listener: LetValueGetter<*>) {
+        listeners.add(listener)
     }
 }
 
 class LetValueCreator<T>(
     val factory: () -> T, val node: Node, val afterGroupDeclaration: NestLevel.(() -> Unit) -> Unit
 ) : LetValue.PropertyCreator<T> {
-    init {
-        logger.debug { "LetValueCreator.init at ${node.testPath}" }
-    }
 
-    override fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T> {
-        return LetValueGetter(factory, node, property.name).also {
-            val letValueGetter = it
-            node.beforeGroup { letValueGetter.beforeExecuteGroup(this) }
-            node.beforeTest { letValueGetter.beforeInvocation(this) }
-            node.afterTest { letValueGetter.afterInvocation(this) }
-            node.afterGroup { letValueGetter.afterExecuteGroup(this) }
-        }
-    }
+    override fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T> =
+        LetValueGetter(factory, node, property.name)
 }
 
 class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : ReadOnlyProperty<Any?, T> {
     private val paths = hashMapOf(node.testCase to baseFactory)
-    private val stack = mutableListOf<TestCase?>()
 
     private var initializedForTest = false
     private var valueForTest: T? = null
+
+    init {
+        node.listen(this)
+        logger.debug { "$name is declared at ${node.testPath}" }
+    }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         logger.debug { "LetValueGetter.getValue: $name inTest = ${LetValuesState.inTest} current = ${LetValuesState.current}" }
@@ -206,6 +161,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
         while (searchPath != null && !paths.containsKey(searchPath)) {
             searchPath = searchPath.parent
         }
+        logger.debug { "For $name, we use value from $searchPath." }
         val fn = paths[searchPath]
             ?: throw IllegalStateException("no let value for ${LetValuesState.currentTestCase}")
         return fn().also {
@@ -219,6 +175,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
         if (paths.containsKey(node.testCase)) {
             throw IllegalStateException("value already given for $name in $node")
         }
+        logger.debug { "$name is overridden at ${node.testPath}" }
         paths[node.testCase] = factory
     }
 
@@ -228,8 +185,6 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
     }
 
     fun beforeExecuteGroup(group: TestCase) {
-        stack.add(group)
-//        currentTestCase = group
     }
 
     fun beforeInvocation(testCase: TestCase) {
@@ -246,8 +201,6 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
         if (LetValuesState.current != null) {
             throw IllegalStateException("$name can't be used from beforeEachGroup or afterEachGroup")
         }
-        stack.removeLast()
-//        currentTestCase = stack.removeAt(stack.size - 1)
     }
 
     companion object {

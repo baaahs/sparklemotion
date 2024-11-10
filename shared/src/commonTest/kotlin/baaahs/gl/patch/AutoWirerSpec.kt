@@ -27,7 +27,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldContainExactly
 
-object AutoWirerSpec : DescribeSpec({
+class AutoWirerSpec : DescribeSpec({
     describe("AutoWirer") {
         val autoWirer by value { AutoWirer(testPlugins()) }
         val toolchain by value { RootToolchain(testPlugins(), autoWirer = autoWirer) }
