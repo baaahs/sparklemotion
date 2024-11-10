@@ -72,16 +72,6 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
         object3D.matrixWorldNeedsUpdate = true
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Matrix4F) return false
-        return nativeMatrix == other.nativeMatrix
-    }
-
-    override fun hashCode(): Int {
-        return nativeMatrix.elements.contentHashCode()
-    }
-
     actual fun inverse(): Matrix4F {
         // Ensure the matrix is invertible (determinant != 0)
         val det = determinant()
@@ -165,6 +155,20 @@ actual class Matrix4F actual constructor(elements: FloatArray?) {
             elements[5] * (elements[2] * elements[11] - elements[3] * elements[10]) +
             elements[9] * (elements[2] * elements[7] - elements[3] * elements[6])
         )
+    }
+
+    actual override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Matrix4F) return false
+        return elements.contentEquals(other.elements)
+    }
+
+    actual override fun hashCode(): Int {
+        return elements.contentHashCode()
+    }
+
+    actual override fun toString(): String {
+        return elements.toList().toString()
     }
 
 }

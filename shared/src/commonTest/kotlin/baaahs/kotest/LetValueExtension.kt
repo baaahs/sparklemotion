@@ -161,7 +161,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
         while (searchPath != null && !paths.containsKey(searchPath)) {
             searchPath = searchPath.parent
         }
-        logger.debug { "For $name, we use value from $searchPath." }
+        logger.debug { "For $name, we use value from ${searchPath?.descriptor?.path()}." }
         val fn = paths[searchPath]
             ?: throw IllegalStateException("no let value for ${LetValuesState.currentTestCase}")
         return fn().also {
