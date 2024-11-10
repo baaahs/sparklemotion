@@ -41,13 +41,8 @@ class Model(
 
     val modelBounds by lazy {
         boundingBox(entities.flatMap { entity ->
-            entity.bounds.let {
-                listOf(
-                    it.first.transform(entity.transformation),
-                    it.second.transform(entity.transformation)
-                )
-            } }
-        )
+            entity.worldBounds.toList()
+        })
     }
     private val modelExtents by lazy { val (min, max) = modelBounds; max - min }
     private val modelCenter by lazy { center(modelBounds.toList()) }
@@ -78,6 +73,9 @@ class Model(
         override val rotation: EulerAngle
         val scale: Vector3F
         override val transformation: Matrix4F
+        val worldBounds get() = bounds.let { (min, max) ->
+            min.transform(transformation) to max.transform(transformation)
+        }
         val containedEntities: List<Entity> get() = listOf(this)
         val problems: Collection<Problem>
         val id: EntityId

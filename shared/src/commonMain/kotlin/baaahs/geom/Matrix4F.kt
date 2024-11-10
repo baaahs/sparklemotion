@@ -23,7 +23,11 @@ expect class Matrix4F(elements: FloatArray? = null) {
     fun withScale(scale: Vector3F): Matrix4F
 
     fun inverse(): Matrix4F
-    fun determinant(): Float 
+    fun determinant(): Float
+
+    override fun equals(other: Any?): Boolean
+    override fun hashCode(): Int
+    override fun toString(): String
 }
 
 val Matrix4F.Companion.identity: Matrix4F
