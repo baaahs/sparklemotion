@@ -5,7 +5,7 @@ import baaahs.gadgets.Slider
 import baaahs.kotest.value
 import io.kotest.core.spec.style.DescribeSpec
 
-object SliderControlSpec : DescribeSpec({
+class SliderControlSpec : DescribeSpec({
     describe<SliderControl> {
         val slider by value { Slider("Brightness", 1f) }
         val feedId by value { "brightnezz" }

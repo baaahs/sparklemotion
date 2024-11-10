@@ -32,7 +32,7 @@ import io.kotest.matchers.booleans.*
 import io.kotest.matchers.collections.*
 import kotlin.random.Random
 
-object FixtureManagerSpec : DescribeSpec({
+class FixtureManagerSpec : DescribeSpec({
     describe<FixtureManager> {
         val modelEntities by value { emptyList<Model.Entity>() }
         val model by value { fakeModel(modelEntities) }

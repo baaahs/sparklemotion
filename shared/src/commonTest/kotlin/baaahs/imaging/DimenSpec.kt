@@ -4,7 +4,7 @@ import baaahs.describe
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object DimenSpec : DescribeSpec({
+class DimenSpec : DescribeSpec({
     describe<Dimen> {
         context("#bestFit") {
             context("when both are the same ratio") {

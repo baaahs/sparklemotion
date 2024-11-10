@@ -20,7 +20,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlinx.datetime.Instant
 
-object DateFeedSpec : DescribeSpec({
+class DateFeedSpec : DescribeSpec({
     describe<DateFeed> {
 
         val builder by value { DateFeed }

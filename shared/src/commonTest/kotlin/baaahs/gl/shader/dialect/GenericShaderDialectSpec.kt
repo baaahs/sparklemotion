@@ -16,7 +16,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
-object GenericShaderDialectSpec : DescribeSpec({
+class GenericShaderDialectSpec : DescribeSpec({
     describe<GenericShaderDialect> {
         val src by value<String> { toBeSpecified() }
         val dialect by value { GenericShaderDialect }

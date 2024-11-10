@@ -48,7 +48,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
 @InternalCoroutinesApi
-object PinkySpec : DescribeSpec({
+class PinkySpec : DescribeSpec({
     describe("Pinky") {
         val fakeGlslContext by value { FakeGlContext() }
         val network by value { TestNetwork(1_000_000) }

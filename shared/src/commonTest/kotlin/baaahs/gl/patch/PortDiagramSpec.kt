@@ -14,7 +14,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.assertTrue
 
-object PortDiagramSpec : DescribeSpec({
+class PortDiagramSpec : DescribeSpec({
     describe<PortDiagram> {
         context("shader prioritization") {
             fun Shader.enliven(links: Map<String, OpenPatch.Link> = emptyMap()) =

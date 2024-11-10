@@ -14,7 +14,7 @@ import kotlin.math.roundToInt
 import kotlin.test.assertNotEquals
 import kotlin.time.Duration.Companion.seconds
 
-object BeatLinkBeatSourceSpec : DescribeSpec({
+class BeatLinkBeatSourceSpec : DescribeSpec({
     describe<BeatLinkBeatSource> {
         val fakeClock by value { FakeClock(10.0) }
         val beatSource by value { BeatLinkBeatSource(fakeClock) }

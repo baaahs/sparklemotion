@@ -8,7 +8,7 @@ import baaahs.model.PolyLine.Segment
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 
-object GridSpec : DescribeSpec({
+class GridSpec : DescribeSpec({
     describe<Grid> {
         val grid by value {
             Grid(

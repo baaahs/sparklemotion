@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlin.math.absoluteValue
 
-object StateSpec : DescribeSpec({
+class StateSpec : DescribeSpec({
     describe<State> {
         val startingState by value { State() }
         val destinationState by value { State(.75f, .75f, .25f, 1f) }

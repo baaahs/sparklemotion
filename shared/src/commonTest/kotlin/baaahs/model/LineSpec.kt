@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlin.math.sqrt
 
-object LineSpec : DescribeSpec({
+class LineSpec : DescribeSpec({
     describe<Model.Line> {
         val vertices by value {
             listOf(

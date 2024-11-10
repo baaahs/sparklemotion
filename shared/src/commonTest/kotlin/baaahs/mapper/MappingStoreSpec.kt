@@ -7,7 +7,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 @Suppress("unused")
-object MappingStoreSpec : DescribeSpec({
+class MappingStoreSpec : DescribeSpec({
     describe<MappingStore> {
         it("formats times consistently") {
             val instant = Instant.fromEpochSeconds(1703876061L, 123_456_789)

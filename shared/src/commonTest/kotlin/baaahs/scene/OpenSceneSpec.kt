@@ -18,7 +18,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("MoveLambdaOutsideParentheses")
-object OpenSceneSpec : DescribeSpec({
+class OpenSceneSpec : DescribeSpec({
     describe<OpenScene> {
         context("#relevantFixtureMappings") {
             val surface123 by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = 123) }

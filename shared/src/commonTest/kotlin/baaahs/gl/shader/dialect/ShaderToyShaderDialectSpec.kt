@@ -20,7 +20,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 
 @Suppress("unused")
-object ShaderToyShaderDialectSpec : DescribeSpec({
+class ShaderToyShaderDialectSpec : DescribeSpec({
     describe<ShaderToyShaderDialectSpec> {
         val src by value { "void mainImage(out vec4 fragColor, in vec2 fragCoord) { ... };" }
         val shader by value { Shader("Title", src) }

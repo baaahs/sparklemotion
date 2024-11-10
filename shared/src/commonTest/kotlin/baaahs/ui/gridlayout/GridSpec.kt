@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object GridSpec : DescribeSpec({
+class GridSpec : DescribeSpec({
     describe("test helpers") {
         it("convert from string to layout") {
             """

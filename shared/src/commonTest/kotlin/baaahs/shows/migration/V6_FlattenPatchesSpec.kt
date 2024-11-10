@@ -13,7 +13,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
 @Suppress("ClassName")
-object V6_FlattenPatchesSpec : DescribeSpec({
+class V6_FlattenPatchesSpec : DescribeSpec({
     describe<V6_FlattenPatches> {
         val migration by value { V6_FlattenPatches }
         val json by value { Json { serializersModule = testPlugins().serialModule } }

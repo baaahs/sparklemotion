@@ -9,7 +9,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object PluginsSpec : DescribeSpec({
+class PluginsSpec : DescribeSpec({
     describe<Plugins> {
         val plugins by value { Plugins.buildForClient(PluginContext(FakeClock(), StubPubSub()), emptyList()) }
 

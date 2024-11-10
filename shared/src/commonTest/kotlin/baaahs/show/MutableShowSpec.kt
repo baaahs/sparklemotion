@@ -18,7 +18,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import kotlin.collections.set
 
-object MutableShowSpec : DescribeSpec({
+class MutableShowSpec : DescribeSpec({
     describe("MutableShow") {
         val shader0 by value { testToolchain.testPatch("shader 0") }
         val shader1a by value { testToolchain.testPatch("shader 1a") }

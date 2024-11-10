@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlin.random.Random
 
-object FragmentingUdpSocketSpec : DescribeSpec({
+class FragmentingUdpSocketSpec : DescribeSpec({
     describe<FragmentingUdpSocket> {
         val port by value { 1234 }
         val mtu by value { 1400 }

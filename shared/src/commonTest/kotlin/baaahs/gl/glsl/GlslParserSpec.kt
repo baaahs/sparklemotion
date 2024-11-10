@@ -13,7 +13,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 
-object GlslParserSpec : DescribeSpec({
+class GlslParserSpec : DescribeSpec({
     describe<GlslParser> {
         context("given some GLSL code") {
             val glslParser by value { GlslParser() }

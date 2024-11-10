@@ -30,7 +30,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
-object ComponentRenderEngineSpec : DescribeSpec({
+class ComponentRenderEngineSpec : DescribeSpec({
     describe<ComponentRenderEngine> {
         val gl by value { FakeGlContext() }
         val updateMode by value { UpdateMode.ONCE }

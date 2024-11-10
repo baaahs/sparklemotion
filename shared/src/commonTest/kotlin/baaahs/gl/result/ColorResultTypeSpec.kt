@@ -6,7 +6,7 @@ import baaahs.kotest.value
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object ColorResultTypeSpec : DescribeSpec({
+class ColorResultTypeSpec : DescribeSpec({
     describe<ColorResultType> {
         context("gamma correction") {
 

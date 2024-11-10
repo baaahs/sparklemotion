@@ -9,7 +9,7 @@ import io.kotest.matchers.*
 import kotlinx.serialization.json.*
 
 @Suppress("unused", "ClassName")
-object V1_EpochToIso8601AndFixCameraMatrixSpec : DescribeSpec({
+class V1_EpochToIso8601AndFixCameraMatrixSpec : DescribeSpec({
     describe<V1_EpochToIso8601AndFixCameraMatrix> {
         val fromJson by value {
             /**language=json*/

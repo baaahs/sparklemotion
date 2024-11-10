@@ -25,7 +25,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlin.test.assertNotNull
 
 @InternalCoroutinesApi
-object PreviewShaderBuilderSpec : DescribeSpec({
+class PreviewShaderBuilderSpec : DescribeSpec({
     describe<PreviewShaderBuilder> {
         val shader by value { Shaders.checkerboard }
         val dispatcher by value { TestCoroutineDispatcher() }

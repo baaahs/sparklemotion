@@ -9,7 +9,7 @@ import baaahs.shows.FakeKgl
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object GuruMeditationErrorSpec : DescribeSpec({
+class GuruMeditationErrorSpec : DescribeSpec({
     describe<GuruMeditationError> {
         val gl by value { FakeGlContext(FakeKgl()) }
         val guruMeditationError by value { GuruMeditationError(PixelArrayDevice) }
