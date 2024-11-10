@@ -6,7 +6,7 @@ import baaahs.only
 import baaahs.show.Shader
 import io.kotest.core.spec.style.DescribeSpec
 
-object ToolchainSpec : DescribeSpec({
+class ToolchainSpec : DescribeSpec({
     describe<Toolchain> {
         val toolchain by value { RootToolchain(testPlugins()) }
         context("analyze") {

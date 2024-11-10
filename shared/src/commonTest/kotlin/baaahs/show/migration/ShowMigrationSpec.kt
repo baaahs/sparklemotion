@@ -11,7 +11,7 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-object ShowMigrationSpec : DescribeSpec({
+class ShowMigrationSpec : DescribeSpec({
     describe<ShowMigrator> {
         val json by value { Json { serializersModule = testPlugins().serialModule } }
 

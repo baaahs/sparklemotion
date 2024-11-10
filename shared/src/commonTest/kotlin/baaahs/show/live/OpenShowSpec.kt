@@ -21,7 +21,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.collections.set
 
-object OpenShowSpec : DescribeSpec({
+class OpenShowSpec : DescribeSpec({
     describe<OpenShow> {
         val mutableShow by value {
             MutableShow("Show") {

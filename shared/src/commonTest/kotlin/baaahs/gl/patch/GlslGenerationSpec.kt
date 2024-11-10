@@ -17,7 +17,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.fail
 
-object GlslGenerationSpec : DescribeSpec({
+class GlslGenerationSpec : DescribeSpec({
     describe("Generation of GLSL from patches") {
         val shaderText by value {
             /**language=glsl*/

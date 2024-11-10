@@ -18,7 +18,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-object OpenPatchSpec : DescribeSpec({
+class OpenPatchSpec : DescribeSpec({
     describe<OpenPatch> {
         val inputPorts by value { listOf<InputPort>() }
         val outputPort by value { OutputPort(ContentType.Color) }

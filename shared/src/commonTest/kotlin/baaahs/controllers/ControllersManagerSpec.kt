@@ -35,7 +35,7 @@ import kotlinx.datetime.Instant
 import kotlin.random.Random
 
 @Suppress("unused")
-object ControllersManagerSpec : DescribeSpec({
+class ControllersManagerSpec : DescribeSpec({
     describe<ControllersManager> {
         val modelFixtureType by value { FixtureTypeForTest() }
         val modelEntity by value<Model.Entity> { FakeModelEntity("panel", modelFixtureType) }

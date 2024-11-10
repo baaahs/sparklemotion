@@ -20,7 +20,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-object EditableManagerSpec : DescribeSpec({
+class EditableManagerSpec : DescribeSpec({
     describe<ShowEditableManager> {
         val showUpdates by value { arrayListOf<Show>() }
         val editableManager by value {

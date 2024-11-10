@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.*
 
 @InternalCoroutinesApi
-object FileSerializationSpec : DescribeSpec({
+class FileSerializationSpec : DescribeSpec({
     describe("Remote file serialization") {
         val actualFs1 by value { FakeFs() }
         val actualFile1 by value { actualFs1.resolve("some", "file.txt") }

@@ -14,7 +14,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-object GlslCodeSpec : DescribeSpec({
+class GlslCodeSpec : DescribeSpec({
     describe("statements") {
         val text by value { undefined<String>() }
         val statements by value { GlslParser().findStatements(text) }

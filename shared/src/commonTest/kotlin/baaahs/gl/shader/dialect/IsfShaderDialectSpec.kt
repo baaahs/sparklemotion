@@ -19,7 +19,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
 @Suppress("unused")
-object IsfShaderDialectSpec : DescribeSpec({
+class IsfShaderDialectSpec : DescribeSpec({
     describe<IsfShaderDialect> {
         val fileName by value<String?> { null }
         val src by value<String> { toBeSpecified() }

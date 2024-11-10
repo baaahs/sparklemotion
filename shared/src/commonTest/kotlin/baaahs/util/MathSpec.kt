@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlin.math.PI
 
-object MathSpec : DescribeSpec({
+class MathSpec : DescribeSpec({
     describe("Math utils") {
         describe("degrees to radians") {
             it("should return a value in (-π, π]") {

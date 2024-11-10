@@ -13,7 +13,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @Suppress("ClassName")
-object V3_UpdateLayoutsSpec : DescribeSpec({
+class V3_UpdateLayoutsSpec : DescribeSpec({
     describe<V3_UpdateLayouts> {
         val migration by value { V3_UpdateLayouts }
         val json by value { Json { serializersModule = testPlugins().serialModule } }

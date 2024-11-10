@@ -6,7 +6,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 
-object UndoStackSpec : DescribeSpec({
+class UndoStackSpec : DescribeSpec({
     describe("UndoStack") {
         val size by value { 3 }
         val undoStack by value { UndoStack<String>(size) }

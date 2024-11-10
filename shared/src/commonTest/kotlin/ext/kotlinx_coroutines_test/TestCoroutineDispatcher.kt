@@ -168,7 +168,7 @@ public class TestCoroutineDispatcher(dispatchImmediately: Boolean = false): Coro
     }
 
     /** @suppress */
-    override fun cleanupTestCoroutines() {
+    override fun cleanupTestCoroutinesFromDelay() {
         // process any pending cancellations or completions, but don't advance time
         doActionsUntil(currentTime)
 

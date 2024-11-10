@@ -20,7 +20,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(InternalCoroutinesApi::class)
-object SceneManagerSpec : DescribeSpec({
+class SceneManagerSpec : DescribeSpec({
     describe<SceneManager> {
         val pubSubRig by value { TestRig() }
         val plugins by value { testPlugins() }

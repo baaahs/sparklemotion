@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.floats.shouldBeLessThan
 import kotlin.math.abs
 
-object DmxTests : DescribeSpec({
+class DmxTests : DescribeSpec({
     describe("Shenzarpy pan") {
         it("should be settable") {
             val shenzarpy = Shenzarpy

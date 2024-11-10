@@ -4,7 +4,7 @@ import baaahs.camelize
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object UtilSpec : DescribeSpec({
+class UtilSpec : DescribeSpec({
     describe("baaahs.util") {
         describe("String.camelize") {
             it("camelizes") {

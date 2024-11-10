@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-object TimeSpec : DescribeSpec({
+class TimeSpec : DescribeSpec({
     describe<Duration> {
         context("toHHMMSS") {
             it("renders correctly") {
