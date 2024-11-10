@@ -352,6 +352,7 @@ tasks.create<ProcessResources>("iosProcessResources") {
     }
 }
 
+// Otherwise the iOS resources copy fails wit duplicates from commonMain/resources.
 tasks.withType<ProcessResources> {
     if (this.name.matches(Regex("ios.*ProcessResources"))) {
         duplicatesStrategy = DuplicatesStrategy.WARN
