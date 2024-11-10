@@ -21,7 +21,7 @@ kotlinWrappers = "1.0.0-pre.804"
 # Test:
 junit = "5.11.3"
 junitPlatform = "1.11.3"
-kotest = "5.9.1"
+kotest = "6.0.0.M1"
 mockk = "1.12.1"
 coroutinesTest = "coroutines"
 
