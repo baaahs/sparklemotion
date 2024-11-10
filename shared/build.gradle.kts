@@ -352,6 +352,12 @@ tasks.create<ProcessResources>("iosProcessResources") {
     }
 }
 
+tasks.withType<ProcessResources> {
+    if (this.name.matches(Regex("ios.*ProcessResources"))) {
+        duplicatesStrategy = DuplicatesStrategy.WARN
+    }
+}
+
 afterEvaluate {
     val jsProcessResourcesTask = tasks.named<ProcessResources>("jsProcessResources")
 
@@ -414,6 +420,15 @@ tasks.create<JavaExec>("runGlslJvmTests") {
 tasks.withType(Test::class) {
     useJUnitPlatform {
         excludeTags("glsl")
+    }
+
+    val outputDir = reports.junitXml.outputLocation
+    reports.junitXml.required.set(false)
+    jvmArgumentProviders += CommandLineArgumentProvider {
+        listOf(
+            "-Djunit.platform.reporting.open.xml.enabled=true",
+            "-Djunit.platform.reporting.output.dir=${outputDir.get().asFile.absolutePath}"
+        )
     }
 }
 
