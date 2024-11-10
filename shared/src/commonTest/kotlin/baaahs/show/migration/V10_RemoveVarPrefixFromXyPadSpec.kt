@@ -7,7 +7,7 @@ import io.kotest.matchers.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 
-object V10_RemoveVarPrefixFromXyPadSpec : DescribeSpec({
+class V10_RemoveVarPrefixFromXyPadSpec : DescribeSpec({
     describe<V10_RemoveVarPrefixFromXyPad> {
         val from by value { /*language=json*/
             """

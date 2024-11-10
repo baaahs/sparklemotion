@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 
-object CachingToolchainSpec : DescribeSpec({
+class CachingToolchainSpec : DescribeSpec({
     describe<CachingToolchain> {
         val cache1 by value { CachingToolchain(testToolchain) }
         val someShader by value {

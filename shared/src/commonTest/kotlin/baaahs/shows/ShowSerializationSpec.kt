@@ -28,7 +28,7 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
 
 @Suppress("unused")
-object ShowSerializationSpec : DescribeSpec({
+class ShowSerializationSpec : DescribeSpec({
     describe("Show serialization") {
         val plugins by value<Plugins> { TestSampleData.plugins }
         val jsonWithDefaults by value { Json(plugins.json) { encodeDefaults = true } }

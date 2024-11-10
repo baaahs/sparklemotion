@@ -18,7 +18,7 @@ import baaahs.util.asInstant
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object CorePluginSpec : DescribeSpec({
+class CorePluginSpec : DescribeSpec({
     describe<TimeFeed> {
         val clock by value { FakeClock(0.0) }
         val feed by value { TimeFeed() }

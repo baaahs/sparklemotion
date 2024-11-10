@@ -18,7 +18,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object PaintShaderSpec : DescribeSpec({
+class PaintShaderSpec : DescribeSpec({
     describe<PaintShader> {
         val shaderText by value { toBeSpecified<String>() }
         val shader by value { Shader("Title", shaderText) }

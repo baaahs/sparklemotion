@@ -8,7 +8,7 @@ import baaahs.show.SampleData
 import baaahs.show.Surfaces
 import io.kotest.core.spec.style.DescribeSpec
 
-object MutableShowVisitorSpec : DescribeSpec({
+class MutableShowVisitorSpec : DescribeSpec({
     val show by value { MutableShow(SampleData.sampleShow) }
 
     describe<MutableShowVisitor> {

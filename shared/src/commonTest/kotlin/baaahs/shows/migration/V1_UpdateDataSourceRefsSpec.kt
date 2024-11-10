@@ -11,7 +11,7 @@ import io.kotest.matchers.*
 import kotlinx.serialization.json.*
 
 @Suppress("ClassName")
-object V1_UpdateDataSourceRefsSpec : DescribeSpec({
+class V1_UpdateDataSourceRefsSpec : DescribeSpec({
     describe<V1_UpdateDataSourceRefs> {
         val migration by value { V1_UpdateDataSourceRefs }
         val json by value { Json { serializersModule = testPlugins().serialModule } }

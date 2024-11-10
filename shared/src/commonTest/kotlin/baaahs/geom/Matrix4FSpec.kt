@@ -10,8 +10,30 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
 
-object Matrix4FSpec : DescribeSpec({
+class Matrix4FSpec : DescribeSpec({
     describe<Matrix4F> {
+        context("default value") {
+            it("should be the identity matrix") {
+                Matrix4F().elements shouldBe listOf(
+                    1f, 0f, 0f, 0f,
+                    0f, 1f, 0f, 0f,
+                    0f, 0f, 1f, 0f,
+                    0f, 0f, 0f, 1f
+                )
+            }
+        }
+
+        context("#identity") {
+            it("should be the identity matrix") {
+                Matrix4F.identity.elements shouldBe listOf(
+                    1f, 0f, 0f, 0f,
+                    0f, 1f, 0f, 0f,
+                    0f, 0f, 1f, 0f,
+                    0f, 0f, 0f, 1f
+                )
+            }
+        }
+
         context("a transformation") {
             val position by value { Vector3F(x = -11f, y = 202.361f, z = 27.5f) }
             val rotation by value {

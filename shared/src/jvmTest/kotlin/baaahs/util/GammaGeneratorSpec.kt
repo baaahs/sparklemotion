@@ -4,7 +4,7 @@ import baaahs.describe
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 
-object GammaGeneratorSpec : DescribeSpec({
+class GammaGeneratorSpec : DescribeSpec({
     describe<GammaGenerator> {
         describe("dithering") {
             it("should dither properly") {

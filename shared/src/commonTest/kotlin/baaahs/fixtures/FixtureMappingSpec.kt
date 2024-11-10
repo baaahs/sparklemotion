@@ -19,7 +19,7 @@ import io.kotest.matchers.properties.shouldHaveValue
 import io.kotest.matchers.types.shouldBeTypeOf
 
 @Suppress("unused")
-object FixtureMappingSpec : DescribeSpec({
+class FixtureMappingSpec : DescribeSpec({
     describe<FixtureMapping> {
         context("buildFixture") {
             val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }

@@ -13,7 +13,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 @Suppress("ClassName")
-object V4_FlattenGadgetControlsSpec : DescribeSpec({
+class V4_FlattenGadgetControlsSpec : DescribeSpec({
     describe<V4_FlattenGadgetControls> {
         val migration by value { V4_FlattenGadgetControls }
         val json by value { Json { serializersModule = testPlugins().serialModule } }

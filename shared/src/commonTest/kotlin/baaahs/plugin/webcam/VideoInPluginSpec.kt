@@ -16,7 +16,7 @@ import com.danielgergely.kgl.TextureResource
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object VideoInPluginSpec : DescribeSpec({
+class VideoInPluginSpec : DescribeSpec({
     describe<VideoInPlugin> {
         val videoProvider by value {
             object : VideoProvider {

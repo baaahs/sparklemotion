@@ -19,7 +19,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-object BeatLinkDataFlowSpec : DescribeSpec({
+class BeatLinkDataFlowSpec : DescribeSpec({
     describe<BeatLinkPlugin> {
         context("data flow") {
             val testRig by value { TestRig() }

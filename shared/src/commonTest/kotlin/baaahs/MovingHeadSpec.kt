@@ -7,7 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 import kotlin.math.PI
 
-object MovingHeadSpec : DescribeSpec({
+class MovingHeadSpec : DescribeSpec({
     describe<MovingHeadParams> {
         val testMovingHead by value { TestMovingHeadAdapter() }
         val channels by value { Dmx.Buffer(ByteArray(16)) }

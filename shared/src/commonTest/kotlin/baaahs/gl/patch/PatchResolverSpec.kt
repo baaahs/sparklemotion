@@ -29,7 +29,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
-object PatchResolverSpec : DescribeSpec({
+class PatchResolverSpec : DescribeSpec({
     fun autoWire(
         vararg shaders: Shader,
         stream: Stream = Stream.Main,

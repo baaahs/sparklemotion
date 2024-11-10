@@ -9,7 +9,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldContainExactly
 
 @Suppress("unused")
-object DynamicDmxAllocatorSpec : DescribeSpec({
+class DynamicDmxAllocatorSpec : DescribeSpec({
     describe<DynamicDmxAllocator> {
         val universeCount by value { 3 }
         val dmxUniverses by value { DmxUniverses(universeCount) }

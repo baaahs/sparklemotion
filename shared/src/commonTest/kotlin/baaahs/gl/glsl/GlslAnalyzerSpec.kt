@@ -22,7 +22,7 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 
-object GlslAnalyzerSpec : DescribeSpec({
+class GlslAnalyzerSpec : DescribeSpec({
     describe<GlslAnalyzer> {
         context("given some GLSL code") {
             val glslParser by value { GlslParser() }

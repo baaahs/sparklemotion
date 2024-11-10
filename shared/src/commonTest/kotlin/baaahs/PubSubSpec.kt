@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-object PubSubSpec : DescribeSpec({
+class PubSubSpec : DescribeSpec({
     describe<PubSub> {
         val testRig by value { TestRig() }
         val topic1 by value { PubSub.Topic("/one", String.serializer()) }

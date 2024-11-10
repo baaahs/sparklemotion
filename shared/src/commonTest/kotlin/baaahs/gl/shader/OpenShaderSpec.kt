@@ -13,7 +13,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object OpenShaderSpec : DescribeSpec({
+class OpenShaderSpec : DescribeSpec({
     describe<OpenShaderSpec> {
         val src by value { toBeSpecified<String>() }
         val openShader by value { testToolchain.openShader(Shader("Title", src)) }

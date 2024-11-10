@@ -7,7 +7,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object LayoutSpec : DescribeSpec({
+class LayoutSpec : DescribeSpec({
     describe<Layout> {
         val layout by value {
             """

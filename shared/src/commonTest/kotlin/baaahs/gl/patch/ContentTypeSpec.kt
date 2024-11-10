@@ -7,7 +7,7 @@ import io.kotest.matchers.*
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 
-object ContentTypeSpec : DescribeSpec({
+class ContentTypeSpec : DescribeSpec({
     describe<ContentType> {
         context("unknown content types") {
             it("constructs an unknown content type from a GLSL type") {

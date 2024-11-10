@@ -7,7 +7,7 @@ import baaahs.kotest.value
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
-object XyPadControlSpec : DescribeSpec({
+class XyPadControlSpec : DescribeSpec({
     describe<XyPad.Helper> {
         val xyPad by value { XyPad("Brightness") }
         val padSize by value { Vector2F(200f, 200f) }

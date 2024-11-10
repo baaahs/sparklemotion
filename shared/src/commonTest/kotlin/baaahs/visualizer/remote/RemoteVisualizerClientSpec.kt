@@ -29,7 +29,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
 @OptIn(InternalCoroutinesApi::class)
-object RemoteVisualizerClientSpec : DescribeSpec({
+class RemoteVisualizerClientSpec : DescribeSpec({
     describe<RemoteVisualizerClient> {
         val pubSubRig by value { TestRig() }
         val dispatcher by value { pubSubRig.dispatcher }

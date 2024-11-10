@@ -13,7 +13,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
 
 @Suppress("unused")
-object FixtureInfoFeedSpec : DescribeSpec({
+class FixtureInfoFeedSpec : DescribeSpec({
     describe<FixtureInfoFeed> {
         val movingHead by value {
             MovingHead(

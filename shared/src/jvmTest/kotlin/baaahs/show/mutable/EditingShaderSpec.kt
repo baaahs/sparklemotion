@@ -43,7 +43,7 @@ import kotlin.collections.set
 // TODO: move back to commonTest when mockk supports multiplatform.
 @Suppress("unused")
 @InternalCoroutinesApi
-object EditingShaderSpec : DescribeSpec({
+class EditingShaderSpec : DescribeSpec({
     describe<EditingShader> {
         val plugins by value {
             Plugins.buildForClient(Plugins.Companion.dummyContext, listOf(BeatLinkPlugin.forTest(FakeBeatSource())))
