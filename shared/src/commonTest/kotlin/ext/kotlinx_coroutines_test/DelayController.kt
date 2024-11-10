@@ -82,12 +82,12 @@ public interface DelayController {
     /**
      * Call after test code completes to ensure that the dispatcher is properly cleaned up.
      *
-     * @throws UncompletedCoroutinesError if any pending tasks are active, however it will not throw for suspended
+     * @throws UnzcompletedCoroutinesError if any pending tasks are active, however it will not throw for suspended
      * coroutines.
      */
     @ExperimentalCoroutinesApi // Since 1.2.1, tentatively till 1.3.0
-    @Throws(UncompletedCoroutinesError::class)
-    public fun cleanupTestCoroutines()
+//    @Throws(UncompletedCoroutinesError::class)
+    public fun cleanupTestCoroutinesFromDelay()
 
     /**
      * Run a block of code in a paused dispatcher.
