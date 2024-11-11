@@ -398,7 +398,7 @@ class EditingShaderSpec : DescribeSpec({
                     #version 1234
 
                     #ifdef GL_ES
-                    precision mediump float;
+                    precision highp float;
                     #endif
 
                     // SparkleMotion-generated GLSL
