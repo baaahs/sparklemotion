@@ -12,6 +12,7 @@ import baaahs.dmx.dmxTransportConfigEditor
 import baaahs.geom.toThreeEuler
 import baaahs.model.Model
 import baaahs.scene.*
+import baaahs.sm.brain.MutableBrainTransportConfig
 import baaahs.ui.Observable
 import baaahs.ui.View
 import baaahs.ui.renderWrapper
@@ -135,6 +136,13 @@ actual val visualizerBuilder: VisualizerBuilder = object : VisualizerBuilder {
 
 
     // TransportConfigs:
+
+    override fun getBrainTransportConfigEditorView(
+        editingController: EditingController<*>,
+        mutableTransportConfig: MutableBrainTransportConfig
+    ): View = renderWrapper {
+        // Nothing is configurable.
+    }
 
     override fun getDmxTransportConfigEditorView(
         editingController: EditingController<*>,

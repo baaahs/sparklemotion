@@ -23,7 +23,7 @@ data class DmxTransportConfig(
     val componentMaySpanUniverses: Boolean? = null
 ) : TransportConfig {
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
 
     override fun edit(): MutableTransportConfig =
         MutableDmxTransportConfig(this)
@@ -49,7 +49,7 @@ data class DmxTransportConfig(
 
 class MutableDmxTransportConfig(config: DmxTransportConfig) : MutableTransportConfig {
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
 
     var startChannel: Int? = config.startChannel
     var fixtureStartsInFreshUniverse: Boolean? = config.fixtureStartsInFreshUniverse

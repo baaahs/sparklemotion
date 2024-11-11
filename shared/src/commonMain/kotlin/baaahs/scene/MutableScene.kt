@@ -9,6 +9,7 @@ import baaahs.device.FixtureType
 import baaahs.dmx.DirectDmxController
 import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
+import baaahs.dmx.DmxTransportType
 import baaahs.fixtures.FixtureOptions
 import baaahs.fixtures.TransportConfig
 import baaahs.fixtures.TransportType
@@ -19,6 +20,7 @@ import baaahs.model.importers.ObjImporter
 import baaahs.show.mutable.MutableDocument
 import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
+import baaahs.sm.brain.BrainTransportType
 import baaahs.sm.webapi.Problem
 import baaahs.ui.View
 
@@ -55,6 +57,7 @@ interface MutableControllerConfig {
     val fixtures: MutableList<MutableFixtureMapping>
     var defaultFixtureOptions: MutableFixtureOptions?
     var defaultTransportConfig: MutableTransportConfig?
+    val supportedTransportTypes: List<TransportType>
 
     fun build(): ControllerConfig
     fun suggestId(): String
@@ -73,6 +76,8 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
         config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
+    override val supportedTransportTypes: List<TransportType>
+        get() = listOf(BrainTransportType)
 
     override fun build(): ControllerConfig =
         BrainControllerConfig(
@@ -99,6 +104,8 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
         config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
+    override val supportedTransportTypes: List<TransportType>
+        get() = listOf(DmxTransportType)
 
     override fun build(): ControllerConfig =
         DirectDmxControllerConfig(
@@ -128,6 +135,8 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
         config.defaultFixtureOptions?.edit()
     override var defaultTransportConfig: MutableTransportConfig? =
         config.defaultTransportConfig?.edit()
+    override val supportedTransportTypes: List<TransportType>
+        get() = listOf(DmxTransportType)
 
     override fun build(): ControllerConfig =
         SacnControllerConfig(

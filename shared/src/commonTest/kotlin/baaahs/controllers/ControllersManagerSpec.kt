@@ -6,8 +6,8 @@ import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.dmx.DmxTransport
 import baaahs.dmx.DmxTransportConfig
+import baaahs.dmx.DmxTransportType
 import baaahs.dmx.Shenzarpy
 import baaahs.fakeModel
 import baaahs.fixtures.*
@@ -398,7 +398,7 @@ class FakeController(
         override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
     }
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
 
     lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
