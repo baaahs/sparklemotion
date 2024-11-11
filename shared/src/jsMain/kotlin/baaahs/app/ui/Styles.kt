@@ -103,8 +103,9 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
     }
 
-    val appToolbar by css {
+    val appBar by css {
         mixIn(theme.mixins.toolbar as Any)
+        width = 100.vw.important
 
         descendants(this@ThemeStyles, ::title) {
             flexGrow = 1.0
@@ -120,6 +121,10 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
         within(appDrawerOpen) { mixIn(drawerOpenShift) }
         within(appDrawerClosed) { mixIn(drawerClosedShift) }
+    }
+
+    val toolbar by css {
+        overflow = Overflow.hidden
     }
 
     val appToolbarTabs by css {
@@ -141,6 +146,8 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
 
     val appToolbarActions by css {
         display = Display.flex
+        position = Position.relative
+        right = 0.px
     }
 
     val appToolbarEditModeActions by css {
