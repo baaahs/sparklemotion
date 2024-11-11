@@ -450,7 +450,7 @@ interface MutableFixtureOptions {
 }
 
 interface MutableTransportConfig {
-    val transportType: TransportType?
+    val transportType: TransportType
 
     fun build(): TransportConfig
     fun getEditorView(editingController: EditingController<*>): View

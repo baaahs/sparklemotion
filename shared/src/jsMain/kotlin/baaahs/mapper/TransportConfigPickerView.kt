@@ -52,6 +52,13 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
                 transportConfig.getEditorView(props.editingController)
                     .render(this)
             }
+        } else {
+            props.editingController.config.defaultTransportConfig?.let { defaultTransportConfig ->
+                +defaultTransportConfig.transportType.title
+                configPreview {
+                    attrs.configPreview = defaultTransportConfig.build().preview()
+                }
+            }
         }
     }
 }
