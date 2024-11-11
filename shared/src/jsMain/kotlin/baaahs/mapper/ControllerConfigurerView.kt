@@ -183,24 +183,24 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
         }
 
-        Box {
-            attrs.className = -styles.propertiesPane
-            if (isSmallScreen) {
-                attrs.sx { width = 100.vw }
-            }
-
-            header {
-                +"Properties"
-                IconButton {
-                    attrs.sx { float = Float.right }
-                    attrs.title = "Close"
-                    attrs.onClick = handleDeselectController
-                    icon(mui.icons.material.Close)
+        selectedController?.let { selectedController ->
+            Box {
+                attrs.className = -styles.propertiesPane
+                if (isSmallScreen) {
+                    attrs.sx { width = 100.vw }
                 }
-            }
 
-            div(+styles.propertiesPaneContent) {
-                selectedController?.let { selectedController ->
+                header {
+                    +"${selectedController.name()} Properties"
+                    IconButton {
+                        attrs.sx { float = Float.right }
+                        attrs.title = "Close"
+                        attrs.onClick = handleDeselectController
+                        icon(mui.icons.material.Close)
+                    }
+                }
+
+                div(+styles.propertiesPaneContent) {
                     controllerConfigEditor {
                         attrs.mutableScene = props.mutableScene
                         attrs.controllerId = selectedController
