@@ -78,11 +78,12 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
     val handleEditModeChange by handler(editMode) { editMode.toggle() }
 
     AppBar {
-        attrs.className = -themeStyles.appToolbar
+        attrs.className = -themeStyles.appBar
         attrs.component = ReactHTML.div
         attrs.position = AppBarPosition.relative
 
         Toolbar {
+            attrs.className = -themeStyles.toolbar
             IconButton {
                 attrs.color = IconButtonColor.inherit
                 attrs.edge = IconButtonEdge.start
