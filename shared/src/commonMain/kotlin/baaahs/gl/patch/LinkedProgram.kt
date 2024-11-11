@@ -14,7 +14,9 @@ class LinkedProgram(
 
         val buf = ProgramBuilder()
         buf.append("#ifdef GL_ES\n")
-        buf.append("precision mediump float;\n")
+        // Mobile devices (e.g. iOS) only use ~10 bits for mediump, which isn't enough for
+        // lots of stuff, e.g. fractional seconds in the time feed get truncated.
+        buf.append("precision highp float;\n")
         buf.append("#endif\n")
         buf.append("\n")
         buf.append("// SparkleMotion-generated GLSL\n")
