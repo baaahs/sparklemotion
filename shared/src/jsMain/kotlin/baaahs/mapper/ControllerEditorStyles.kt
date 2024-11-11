@@ -3,6 +3,7 @@ package baaahs.mapper
 import baaahs.ui.asColor
 import baaahs.ui.selector
 import kotlinx.css.*
+import kotlinx.css.FlexDirection.column
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -26,9 +27,12 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val navigatorPane by css {
-        display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
+        display = Display.flex
+        flexDirection = column
         height = 100.pct
+    }
+    val hideNavigatorPane by css {
+        display = Display.none
     }
     val navigatorPaneContent by css {
         minHeight = 0.px
@@ -37,8 +41,8 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val navigatorPaneActions by css {
         display = Display.grid
         gridTemplateColumns = GridTemplateColumns(
-            GridAutoRows.minContent,
-            GridAutoRows.auto
+            GridAutoRows.auto,
+            GridAutoRows.minContent
         )
         gridTemplateRows = GridTemplateRows.minContent
     }
@@ -117,12 +121,12 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         paddingTop = .75.em
         paddingBottom = .75.em
         display = Display.flex
-        flexDirection = FlexDirection.column
+        flexDirection = column
         gap = 1.em
     }
 
     val expansionPanelDetails by css {
-        flexDirection = FlexDirection.column
+        flexDirection = column
     }
 
     val divider by css {
@@ -133,6 +137,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val configEditorRow by css {
         display = Display.flex
         flexDirection = FlexDirection.row
+        flexWrap = FlexWrap.wrap
         gap = 1.em
     }
 
