@@ -3,15 +3,21 @@ package baaahs.mapper
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
+import baaahs.controller.ControllerState
 import baaahs.controller.SacnManager
 import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
+import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
 import js.objects.jso
+import kotlinx.datetime.Clock
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
+import mui.system.Breakpoint
+import mui.system.Theme
 import mui.system.sx
+import mui.system.useMediaQuery
 import react.*
 import react.dom.div
 import react.dom.header
@@ -19,12 +25,15 @@ import react.dom.html.ReactHTML.span
 import web.cssom.Float
 import web.cssom.Padding
 import web.cssom.em
+import web.cssom.vw
 import web.html.HTMLElement
 
 private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)
     val sceneEditorClient = appContext.sceneEditorClient
     observe(sceneEditorClient)
+
+    val isSmallScreen = useMediaQuery({ theme: Theme -> theme.breakpoints.down(Breakpoint.sm) })
 
     val styles = appContext.allStyles.controllerEditor
 
@@ -58,19 +67,12 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             -styles.editorPanes
         }
 
-        div(+styles.navigatorPane) {
+        div(+styles.navigatorPane and
+                if (isSmallScreen && selectedController != null) +styles.hideNavigatorPane else ""
+        ) {
             header { +"Controllers" }
 
             div(+styles.navigatorPaneActions) {
-                Button {
-                    attrs.className = -styles.button
-                    attrs.color = ButtonColor.secondary
-                    attrs.onClick = handleNewControllerClick
-
-                    attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
-                    +"New…"
-                }
-
                 FormControl {
                     TextField<StandardTextFieldProps> {
                         attrs.autoFocus = true
@@ -87,6 +89,15 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                     }
 
                     FormHelperText { +"Enter stuff to search for!" }
+                }
+
+                Button {
+                    attrs.className = -styles.button
+                    attrs.color = ButtonColor.secondary
+                    attrs.onClick = handleNewControllerClick
+
+                    attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
+                    +"New…"
                 }
             }
 
@@ -172,7 +183,12 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             }
         }
 
-        div(+styles.propertiesPane) {
+        Box {
+            attrs.className = -styles.propertiesPane
+            if (isSmallScreen) {
+                attrs.sx { width = 100.vw }
+            }
+
             header {
                 +"Properties"
                 IconButton {
