@@ -133,7 +133,7 @@ class PatchResolverSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -275,7 +275,7 @@ class PatchResolverSpec : DescribeSpec({
                         /**language=glsl*/
                         """
                             #ifdef GL_ES
-                            precision mediump float;
+                            precision highp float;
                             #endif
 
                             // SparkleMotion-generated GLSL
@@ -460,7 +460,7 @@ class PatchResolverSpec : DescribeSpec({
                     /**language=glsl*/
                     """
                         #ifdef GL_ES
-                        precision mediump float;
+                        precision highp float;
                         #endif
 
                         // SparkleMotion-generated GLSL
@@ -794,7 +794,7 @@ class PatchResolverSpec : DescribeSpec({
                 /**language=glsl*/
                 """
                     #ifdef GL_ES
-                    precision mediump float;
+                    precision highp float;
                     #endif
 
                     // SparkleMotion-generated GLSL
