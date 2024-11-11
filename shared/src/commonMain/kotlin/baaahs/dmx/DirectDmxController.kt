@@ -29,7 +29,7 @@ class DirectDmxController(
     override val defaultFixtureOptions: FixtureOptions?
         get() = null
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
     override val defaultTransportConfig: TransportConfig?
         get() = null
     private val universe = device.asUniverse(universeListener)
@@ -116,13 +116,15 @@ class DirectDmxController(
     }
 }
 
-object DmxTransport : TransportType {
+object DmxTransportType : TransportType {
     override val id: String
         get() = "DMX"
     override val title: String
         get() = "DMX"
     override val emptyConfig: TransportConfig
         get() = DmxTransportConfig()
+    override val isConfigurable: Boolean
+        get() = true
 }
 
 @Serializable

@@ -7,6 +7,7 @@ import baaahs.fixtures.FixtureConfig
 import baaahs.geom.Vector3F
 import baaahs.io.ByteArrayReader
 import baaahs.scene.*
+import baaahs.sm.brain.MutableBrainTransportConfig
 import baaahs.ui.IObservable
 import baaahs.ui.View
 import baaahs.visualizer.VizObj
@@ -81,6 +82,10 @@ interface VisualizerBuilder {
     ): View
 
     // TransportConfigs:
+    fun getBrainTransportConfigEditorView(
+        editingController: EditingController<*>,
+        mutableTransportConfig: MutableBrainTransportConfig
+    ): View
     fun getDmxTransportConfigEditorView(
         editingController: EditingController<*>,
         mutableTransportConfig: MutableDmxTransportConfig

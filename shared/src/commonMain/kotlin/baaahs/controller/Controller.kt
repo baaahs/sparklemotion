@@ -1,6 +1,6 @@
 package baaahs.controller
 
-import baaahs.dmx.DmxTransport
+import baaahs.dmx.DmxTransportType
 import baaahs.fixtures.*
 import baaahs.model.Model
 import kotlinx.datetime.Instant
@@ -37,7 +37,7 @@ open class NullController(
     override val state: ControllerState =
         State("Null Controller", "N/A", null)
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
 
     @Serializable
     class State(

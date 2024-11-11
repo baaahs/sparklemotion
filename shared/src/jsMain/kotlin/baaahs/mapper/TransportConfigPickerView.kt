@@ -2,7 +2,6 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.app.ui.editor.betterSelect
-import baaahs.dmx.DmxTransport
 import baaahs.fixtures.TransportType
 import baaahs.scene.EditingController
 import baaahs.scene.MutableTransportConfig
@@ -27,7 +26,13 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
         props.editingController.onChange()
     }
 
+    val supportedTransportTypes = props.editingController.config.supportedTransportTypes
     val transportConfig = props.mutableTransportConfig
+
+    if (
+        supportedTransportTypes.size == 1 &&
+        !supportedTransportTypes.first().isConfigurable
+    ) return@xComponent
 
     Card {
         attrs.className = -styles.configCardOuter
@@ -35,7 +40,7 @@ private val TransportConfigPickerView = xComponent<TransportConfigPickerProps>("
 
         betterSelect<TransportType?> {
             attrs.label = "Transport Type"
-            attrs.values = listOf(null, DmxTransport)
+            attrs.values = listOf(null) + supportedTransportTypes
             attrs.value = transportConfig?.transportType
             attrs.renderValueOption = { o -> (o?.title ?: "Default").asTextNode() }
             attrs.onChange = handleTransportTypeChange

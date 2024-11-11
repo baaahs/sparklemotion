@@ -5,7 +5,6 @@ import baaahs.Pinky
 import baaahs.controller.*
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.dmx.DmxTransportConfig
 import baaahs.fixtures.*
 import baaahs.glsl.LinearSurfacePixelStrategy
 import baaahs.io.ByteArrayReader
@@ -16,10 +15,11 @@ import baaahs.net.listenFragmentingUdp
 import baaahs.scene.*
 import baaahs.shaders.PixelBrainShader
 import baaahs.sm.brain.proto.*
+import baaahs.ui.View
 import baaahs.util.Clock
 import baaahs.util.Logger
-import baaahs.util.isBefore
 import baaahs.util.unixMillis
+import baaahs.visualizer.entity.visualizerBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
@@ -374,7 +374,9 @@ object BrainTransportType : TransportType {
     override val title: String
         get() = "Brain"
     override val emptyConfig: TransportConfig
-        get() = DmxTransportConfig()
+        get() = BrainTransportConfig()
+    override val isConfigurable: Boolean
+        get() = false
 }
 
 @Serializable
@@ -384,7 +386,7 @@ class BrainTransportConfig() : TransportConfig {
         get() = BrainTransportType
 
     override fun edit(): MutableTransportConfig =
-        TODO("Implement BrainTransportConfig editing.")
+        MutableBrainTransportConfig(this)
 
     override fun plus(other: TransportConfig?): TransportConfig =
         this
@@ -392,4 +394,21 @@ class BrainTransportConfig() : TransportConfig {
     override fun preview(): ConfigPreview = object : ConfigPreview {
         override fun summary(): List<Pair<String, String?>> = emptyList()
     }
+}
+
+class MutableBrainTransportConfig(config: BrainTransportConfig) : MutableTransportConfig {
+    // Nothing is configurable right now.
+
+    override val transportType: TransportType
+        get() = BrainTransportType
+
+    override fun build(): TransportConfig =
+        BrainTransportConfig()
+
+    override fun getEditorView(
+        editingController: EditingController<*>
+    ): View = visualizerBuilder.getBrainTransportConfigEditorView(editingController, this)
+
+    override fun toSummaryString(): String =
+        ""
 }
