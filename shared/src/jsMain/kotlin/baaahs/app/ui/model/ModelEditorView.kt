@@ -4,10 +4,14 @@ import baaahs.app.ui.appContext
 import baaahs.model.EntityData
 import baaahs.model.Model
 import baaahs.scene.MutableEntity
+import baaahs.scene.MutableEntityGroup
 import baaahs.scene.MutableScene
 import baaahs.sim.FakeDmxUniverse
 import baaahs.sim.SimulationEnv
 import baaahs.ui.*
+import baaahs.ui.components.NestedList
+import baaahs.ui.components.Renderer
+import baaahs.ui.components.nestedList
 import baaahs.util.useResizeListener
 import baaahs.visualizer.*
 import baaahs.visualizer.sim.PixelArranger
@@ -18,13 +22,10 @@ import kotlinx.css.padding
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
-import react.Props
-import react.RBuilder
-import react.RHandler
+import react.*
 import react.dom.div
 import react.dom.header
 import react.dom.i
-import react.useContext
 import styled.inlineStyles
 import web.dom.Element
 import web.dom.document
@@ -81,7 +82,15 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         }.also { withCleanup { it.remove() } }
     }
 
+    val nestedList = memo {
+        NestedList(emptyList<MutableEntity>()) {
+            (it as? MutableEntityGroup)?.children ?: emptyList()
+        }
+    }
+    nestedList.update(mutableModel.entities)
+
     val selectedMutableEntity = visualizer.selectedEntity?.let { mutableModel.findById(it.id) }
+    nestedList.select(selectedMutableEntity)
     lastSelectedEntity.current = selectedMutableEntity?.let { visualizer.model.findEntityById(it.id) }
 
     val handleListItemSelect by handler(visualizer) { mutableEntity: MutableEntity? ->
@@ -132,18 +141,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     Paper {
         attrs.className = -styles.editorPanes
         div(+styles.navigatorPane) {
-            header { +"Navigator" }
+            header { +"Model Entities" }
 
             div(+styles.navigatorPaneContent) {
-                List {
-                    attrs.className = -styles.entityList
-                    mutableModel.entities.forEach { mutableEntity ->
-                        entityListItem {
-                            attrs.mutableEntity = mutableEntity
-                            attrs.selectedMutableEntity = selectedMutableEntity
-                            attrs.onSelect = handleListItemSelect
-                        }
-                    }
+                nestedList<MutableEntity> {
+                    attrs.nestedList = nestedList
+                    attrs.renderer = Renderer { item -> +item.item.title }
+                    attrs.onSelect = handleListItemSelect
                 }
             }
         }
@@ -163,8 +167,6 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         }
 
         div(+styles.propertiesPane) {
-            header { +"Properties" }
-
             div(+styles.propertiesPaneContent) {
                 if (editingEntity == null) {
                     div {
