@@ -30,7 +30,7 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
     observe(props.sceneManager)
 
     var selectedTab by state { PageTabs.Model }
-    val handleChangeTab by handler { _: Event, tab: PageTabs ->
+    val handleChangeTab by syntheticEventHandler { _, tab: PageTabs ->
         selectedTab = tab
     }
 
@@ -45,12 +45,12 @@ val SceneEditorView = xComponent<SceneEditorViewProps>("SceneEditorView") { prop
 
             Tabs {
                 attrs.value = selectedTab
-                attrs.onChange = handleChangeTab.asDynamic()
+                attrs.onChange = handleChangeTab
 
-                PageTabs.values().forEach { tab ->
+                PageTabs.entries.forEach { tab ->
                     Tab {
                         attrs.label = buildElement { +tab.name.replace("_", " ") }
-                        attrs.value = tab.asDynamic()
+                        attrs.value = tab
                     }
                 }
             }

@@ -47,34 +47,37 @@ class SharpyVisualizer(
         }
     }
 
-    private val Int.cm: Double get() = units.fromCm(this.toDouble())
+    private val Int.cm: Double get() = units.fromCm(this)
     private val Float.cm: Float get() = units.fromCm(this)
     private val Double.cm: Double get() = units.fromCm(this)
+    private val Int.`in` get() = ModelUnit.Inches.toCm(this)
+    private val Float.`in` get() = ModelUnit.Inches.toCm(this)
+    private val Double.`in` get() = ModelUnit.Inches.toCm(this)
 
     fun updateGeometry(visualizerInfo: MovingHeadAdapter.VisualizerInfo) {
         val canRadius = visualizerInfo.canRadius.cm
         val canLength = visualizerInfo.canLength.cm
+        val canLengthBehindLight = visualizerInfo.canLengthBehindLight.cm
 
         can.geometry = CylinderGeometry(canRadius, canRadius, canLength)
 
-        // TODO: All dimensions should be expressed in cm, then converted to the model's units.
         val narrowGap = 1.cm
         val wideGap = 2.cm
-        val armThickness = 1.5.cm
-        val armWidth = 3.cm
-        val armTopPadding = 2.cm
-        val armLength = (canLength / 2 + armTopPadding + wideGap).cm
+        val armThickness = canRadius * .5
+        val armWidth = canRadius * .8
+        val armTopPadding = 2.`in`
+        val armLength = (canLengthBehindLight + armTopPadding + wideGap)
 
         leftArm.geometry = BoxGeometry(armThickness, armLength, armWidth).apply {
-            translate(-(canRadius + narrowGap + armThickness / 2), armTopPadding - armLength / 2, 0)
+            translate(-(canRadius + narrowGap + armThickness / 2), -(armLength / 2), 0)
         }
         rightArm.geometry = BoxGeometry(armThickness, armLength, armWidth).apply {
-            translate(canRadius + narrowGap + armThickness / 2, armTopPadding - armLength / 2, 0)
+            translate(canRadius + narrowGap + armThickness / 2, -(armLength / 2), 0)
         }
 
         val baseSize = Vector3(
             canRadius * 2 + armWidth,
-            4.0.cm,
+            canRadius,
             canRadius * 2 + armThickness
         )
         armBase.geometry = BoxGeometry(
