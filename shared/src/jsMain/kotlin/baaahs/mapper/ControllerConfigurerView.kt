@@ -3,14 +3,12 @@ package baaahs.mapper
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
 import baaahs.controller.ControllerMatcher
-import baaahs.controller.ControllerState
 import baaahs.controller.SacnManager
 import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
-import baaahs.sm.brain.BrainManager
 import baaahs.ui.*
 import js.objects.jso
-import kotlinx.datetime.Clock
+import kotlinx.css.RuleSet
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
@@ -67,8 +65,9 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             -styles.editorPanes
         }
 
-        div(+styles.navigatorPane and
-                if (isSmallScreen && selectedController != null) +styles.hideNavigatorPane else ""
+        div(+styles.navigatorPane
+                and styleIf(isSmallScreen, styles.screenWidthNavigatorPane)
+                and styleIf(isSmallScreen && selectedController != null, styles.hideNavigatorPane)
         ) {
             header { +"Controllers" }
 
@@ -104,6 +103,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
             div(+styles.navigatorPaneContent) {
                 Table {
                     attrs.className = -styles.controllersTable
+                    attrs.size = Size.small
                     attrs.stickyHeader = true
 
                     TableHead {
@@ -117,7 +117,6 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                             TableCell { +"Status" }
                             TableCell { +"Firmware" }
                             TableCell { +"Last Error" }
-                            TableCell { +"Last Error At" }
                             TableCell { +"Fixtures" }
                         }
                     }
@@ -131,9 +130,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 if (controllerId.controllerType != lastControllerType) {
                                     TableRow {
                                         TableCell {
-                                            attrs.colSpan = 7
+                                            attrs.colSpan = 6
                                             attrs.sx { padding = Padding(0.em, 0.em) }
-                                            header { +controllerId.controllerType }
+                                            header(+styles.navigatorPaneHeader) {
+                                                +controllerId.controllerType }
                                         }
                                     }
 
@@ -160,8 +160,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                         }
                                     }
                                     TableCell { +(state?.firmwareVersion ?: "") }
-                                    TableCell { +(state?.lastErrorMessage ?: "") }
-                                    TableCell { +(state?.lastErrorAt?.toString() ?: "") }
+                                    TableCell {
+                                        +(state?.lastErrorMessage ?: "")
+                                        state?.lastErrorAt?.let { +" at $it" }
+                                    }
 
                                     TableCell {
                                         fixtureInfos[controllerId]?.forEach { fixtureInfo ->
@@ -224,6 +226,10 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
 //            }
         }
     }
+}
+
+fun styleIf(condition: Boolean, style: RuleSet): String {
+    return if (condition) +style else ""
 }
 
 external interface DeviceConfigurerProps : Props {
