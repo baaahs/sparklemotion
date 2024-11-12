@@ -4,6 +4,7 @@ import baaahs.ui.asColor
 import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.FlexDirection.column
+import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -34,6 +35,9 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val hideNavigatorPane by css {
         display = Display.none
     }
+    val screenWidthNavigatorPane by css {
+        width = 100.vw
+    }
     val navigatorPaneContent by css {
         minHeight = 0.px
         overflow = Overflow.scroll
@@ -45,6 +49,9 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
             GridAutoRows.minContent
         )
         gridTemplateRows = GridTemplateRows.minContent
+    }
+    val navigatorPaneHeader by css {
+        lineHeight = 1.5.em.lh
     }
 
     val defaultConfigs by css {
