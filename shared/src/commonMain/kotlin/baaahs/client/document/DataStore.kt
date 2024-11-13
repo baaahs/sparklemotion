@@ -6,6 +6,7 @@ import baaahs.migrator.DataMigrator
 import baaahs.plugin.Plugins
 import baaahs.scene.migration.SceneMigrator
 import baaahs.show.migration.ShowMigrator
+import baaahs.util.Logger
 import kotlinx.serialization.json.JsonElement
 
 val Plugins.mappingSessionStore get() = DataStore(this, MappingSessionMigrator)
@@ -24,9 +25,9 @@ class DataStore<T : Any>(
 
     suspend fun load(file: Fs.File): T? =
         file.read()?.let {
-            println("Loading ${file.fullPath} with ${migrator::class.simpleName}:")
-            println(it)
-            println("------")
+            logger.debug { "Loading ${file.fullPath} with ${migrator::class.simpleName}" }
+//            logger.debug { it }
+//            logger.debug { "------" }
             decode(it, file.toString())
         }
 
@@ -41,4 +42,8 @@ class DataStore<T : Any>(
             encode(content),
             allowOverwrite
         )
+
+    companion object {
+        private val logger = Logger<DataStore<*>>()
+    }
 }

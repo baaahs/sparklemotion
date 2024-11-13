@@ -68,6 +68,7 @@ data class ModelInfoFeed(@Transient val `_`: Boolean = true) : Feed {
                             get() = centerUniform != null && extentsUniform != null
 
                         override fun setOnProgram() {
+                            println("Setting model info: $center, $extents")
                             center?.let { centerUniform?.set(it) }
                             extents?.let { extentsUniform?.set(it) }
                         }

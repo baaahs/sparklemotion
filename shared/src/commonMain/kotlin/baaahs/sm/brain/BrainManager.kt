@@ -32,6 +32,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlin.coroutines.CoroutineContext
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 class BrainManager(
@@ -252,6 +253,11 @@ class BrainManager(
             val message = BrainShaderMessage(pixelBuffer.brainShader, pixelBuffer).toBytes()
             val now = clock.now()
             if (brainController.lastErrorAt?.let { (now - it) >= waitPeriodAfterNetworkError } ?: true) {
+                if (Random.nextInt(100) < 2) {
+                    println("Sending to $brainId: ${message.size} bytes:")
+                    println(message.copyOfRange(0, 31).joinToString(" ") { it.toHexString() })
+                }
+                udpSocket.sendUdp(brainAddress, Ports.BRAIN, PingMessage(generatePongPayload()))
                 try {
                     if (!isSimulatedBrain)
                         udpSocket.sendUdp(brainAddress, Ports.BRAIN, message)

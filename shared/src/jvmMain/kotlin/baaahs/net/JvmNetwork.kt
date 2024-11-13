@@ -90,7 +90,7 @@ class JvmNetwork : Network {
             init {
 //                println("Trying to set send buffer size to ${4*MAX_UDP_SIZE}")
 //                udpSocket.sendBufferSize = 4*MAX_UDP_SIZE;
-                logger.info { "UDP socket bound to ${udpSocket.localAddress}" }
+                logger.info { "UDP socket bound to ${udpSocket.localAddress}:${serverPort}" }
                 logger.info { "Broadcast addresses:" }
                 broadcastAddresses.forEach {
                     logger.info { "  $it" }

@@ -64,6 +64,7 @@ class ProgramResolver(
                             } catch (e: GlslException) {
                                 logger.error(e) { "Error preparing program." }
                                 if (e is CompilationException) {
+                                    logger.error { "Source:\n-----\n{e.source}\n-----" }
                                     source = e.source
                                     e.source?.let { logger.error { it } }
                                 }

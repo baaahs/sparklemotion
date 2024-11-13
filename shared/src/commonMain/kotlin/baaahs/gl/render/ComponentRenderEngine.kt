@@ -212,6 +212,7 @@ class ComponentRenderEngine(
 
                     quad.prepareToRender(program.vertexAttribLocation) {
                         programRenderPlan.renderTargets.forEach { renderTarget ->
+                            println("renderTarget = ${renderTarget.fixture.name}")
                             renderTarget as FixtureRenderTarget
                             renderTarget.usingProgram(program)
                             program.aboutToRenderFixture(renderTarget)
