@@ -8,6 +8,6 @@ abstract class GlManager {
     abstract fun createContext(name: String, trace: Boolean = false): GlContext
 
     protected fun maybeTrace(kgl: Kgl, trace: Boolean): Kgl {
-        return if (trace) KglTracer(kgl) else kgl
+        return if (true || trace) KglTracer(kgl) else kgl
     }
 }

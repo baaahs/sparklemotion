@@ -27,6 +27,9 @@ class FixtureRenderTarget(
     var program: GlslProgram? = null
         private set
 
+    init {
+        println("Quad rects for ${fixture.name}: $rects")
+    }
     val fixtureResults = resultStorage.getFixtureResults(fixture, component0Index)
 
     override fun sendFrame(remoteVisualizers: RemoteVisualizers) {

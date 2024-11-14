@@ -26,7 +26,7 @@ class Quad(private val gl: GlContext, rects: List<Rect>) {
         gl.check { bindVertexArray(vao) }
         gl.check { bindBuffer(GL_ARRAY_BUFFER, quadVertexBuffer) }
         println("vertices.size = ${vertices.size}")
-        println("vertices = ${vertices}")
+        println("vertices = ${vertices.joinToString()}")
         if (vertices.isNotEmpty()) {
             gl.check { bufferData(GL_ARRAY_BUFFER, sourceData, vertices.size, GL_STATIC_DRAW) }
         }

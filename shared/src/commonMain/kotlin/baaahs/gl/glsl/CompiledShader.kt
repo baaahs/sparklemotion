@@ -23,7 +23,7 @@ class CompiledShader(
 
     private fun compile() {
         gl.runInContext {
-            logger.debug { "Compiling shader:\n$source" }
+//            logger.debug { "Compiling shader:\n$source" }
             gl.noCheck { shaderSource(shaderId, source) }
             gl.noCheck { compileShader(shaderId) }
         }

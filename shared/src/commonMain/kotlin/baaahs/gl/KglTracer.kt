@@ -333,7 +333,7 @@ class KglTracer(private val kgl: Kgl) : Kgl {
     }
 
     override fun uniform1fv(location: UniformLocation, value: FloatArray) {
-        log("uniform1fv", location, value)
+        log("uniform1fv", location, value.joinToString(","))
         return kgl.uniform1fv(location, value)
     }
 
@@ -450,10 +450,10 @@ class KglTracer(private val kgl: Kgl) : Kgl {
     }
 
     private fun log(name: String, vararg args: Any?, fn: (() -> Any?)? = null) {
-        logger.info {
+//        logger.info {
             val argsStr = args.joinToString(", ") { stringify(it) }
-            "ctx$id: $id $name($argsStr)${fn?.let { " => ${stringify(fn())}" } ?: ""}"
-        }
+            println("$name($argsStr)${fn?.let { " => ${stringify(fn())}" } ?: ""}")
+//        }
     }
 
     private fun stringify(it: Any?) =

@@ -14,6 +14,7 @@ import baaahs.gl.result.ResultType
 import baaahs.util.Logger
 import com.danielgergely.kgl.GL_COLOR_BUFFER_BIT
 import com.danielgergely.kgl.GL_DEPTH_BUFFER_BIT
+import kotlinx.datetime.Clock
 import kotlin.math.max
 import kotlin.math.min
 
@@ -109,7 +110,11 @@ class ComponentRenderEngine(
 
     override fun render() {
         gl.setViewport(0, 0, arrangement.pixWidth, arrangement.pixHeight)
-        gl.check { clearColor(.1f, .5f, 0f, 1f) }
+        if ((Clock.System.now().epochSeconds * 2).toInt() * 2 == 0) {
+            gl.check { clearColor(.025f / 2, .125f / 2, 0f, 1f) }
+        } else {
+            gl.check { clearColor(0f, 0f, 0f, 1f) }
+        }
         gl.check { clear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) }
 
         arrangement.render()
@@ -166,6 +171,8 @@ class ComponentRenderEngine(
     inner class Arrangement(val componentCount: Int, addedRenderTargets: List<FixtureRenderTarget>) {
         init {
             logger.info { "Creating ${fixtureType::class.simpleName} arrangement with $componentCount components" }
+            println("Creating ${fixtureType::class.simpleName} arrangement with $componentCount components: $")
+            println(Exception().stackTraceToString())
         }
 
         val pixWidth = componentCount.bufWidth
@@ -212,7 +219,7 @@ class ComponentRenderEngine(
 
                     quad.prepareToRender(program.vertexAttribLocation) {
                         programRenderPlan.renderTargets.forEach { renderTarget ->
-                            println("renderTarget = ${renderTarget.fixture.name}")
+//                            println("renderTarget = ${renderTarget.fixture.name}")
                             renderTarget as FixtureRenderTarget
                             renderTarget.usingProgram(program)
                             program.aboutToRenderFixture(renderTarget)

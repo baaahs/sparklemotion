@@ -1,7 +1,10 @@
 package baaahs.gl
 
 actual fun <T : Any?> T.withNote(note: String): T {
-    this?.asDynamic()?._note_ = note
+    try {
+        this?.asDynamic()?._note_ = note
+    } catch (e: Throwable) {
+    }
     return this
 }
 
