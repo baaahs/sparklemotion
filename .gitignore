@@ -1,8 +1,24 @@
-build
-.idea
-.gradle
-node_modules
-.DS_Store
+# Kotlin:
 .kotlin
+
+# Gradle:
+.gradle
+build
+
+# IntelliJ/JetBrains:
+.idea
+
+# Mac:
+.DS_Store
+
+# JDK:
 .java-version
+
+# JS:
+node_modules
+
+# Android
 local.properties
+
+# iOS/Swift/Xcode:
+xcuserdata/
