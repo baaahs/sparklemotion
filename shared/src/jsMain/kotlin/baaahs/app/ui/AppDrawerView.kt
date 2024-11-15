@@ -133,6 +133,10 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
                     ListItemText { +"Settings" }
                 }
             }
+
+            appContext.webClient.additionalDrawerItems.forEach { item ->
+                ListItem { child(item) }
+            }
         }
     }
 }

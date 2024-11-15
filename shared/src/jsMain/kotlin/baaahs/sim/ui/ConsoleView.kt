@@ -14,6 +14,8 @@ import mui.material.Tab
 import mui.material.Tabs
 import mui.material.styles.ThemeProvider
 import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.button
 import react.dom.div
 import react.dom.events.SyntheticEvent
@@ -93,5 +95,5 @@ external interface ConsoleProps : Props {
     var mainWebApp: HostedWebApp
 }
 
-//fun RBuilder.console(handler: RHandler<ConsoleProps>) =
-//    child(ConsoleView, handler = handler)
+fun RBuilder.console(handler: RHandler<ConsoleProps>) =
+    child(ConsoleView, handler = handler)
