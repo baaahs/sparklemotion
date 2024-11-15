@@ -12,16 +12,28 @@ class BrainSimulatorManager(
     private val network: Network,
     private var clock: Clock
 ) {
+    val facade = Facade()
+
     private val brainScope = CoroutineScope(Dispatchers.Main)
     internal val brainSimulators: MutableList<BrainSimulator> = mutableListOf()
 
-    fun createBrain(name: String, pixels: Pixels): BrainSimulator {
+    fun createBrain(entityName: String?, pixels: Pixels): BrainSimulator {
         val brainId = BrainId("brain//${brainSimulators.size}")
-        logger.debug { "Creating simulated brain for $name: $brainId" }
+        if (entityName == null) {
+            logger.debug { "Creating anonymous simulated brain: $brainId" }
+        } else {
+            logger.debug { "Creating simulated brain for $entityName: $brainId" }
+        }
 
         val brain = BrainSimulator(brainId.uuid, network, pixels, clock, brainScope)
         brainSimulators.add(brain)
+        facade.notifyChanged()
         return brain
+    }
+
+    inner class Facade : baaahs.ui.Facade() {
+        val brainSimulators: List<BrainSimulator.Facade>
+            get() = this@BrainSimulatorManager.brainSimulators.map { it.facade }
     }
 
     companion object {

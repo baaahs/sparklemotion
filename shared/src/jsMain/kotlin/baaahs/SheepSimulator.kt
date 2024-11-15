@@ -5,9 +5,11 @@ import baaahs.client.WebClient
 import baaahs.controller.ControllersManager
 import baaahs.midi.MIDIUi
 import baaahs.monitor.MonitorUi
-import baaahs.plugin.SimulatorPlugins
 import baaahs.sim.*
+import baaahs.sim.FixturesSimulator
 import baaahs.sim.ui.LaunchItem
+import baaahs.sm.brain.proto.Pixels
+import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.coroutineExceptionHandler
 import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.coroutineScope
@@ -25,6 +27,7 @@ class SheepSimulator(
 
     private lateinit var pinky: Pinky
     private lateinit var fixturesSimulator: FixturesSimulator
+    private lateinit var brainSimulatorManager: BrainSimulatorManager
 
     init {
         window.asDynamic().simulator = this
@@ -37,6 +40,7 @@ class SheepSimulator(
         pinky = pinkyScope.get()
         val controllersManager = pinkyScope.get<ControllersManager>()
         fixturesSimulator = pinkyScope.get(parameters = { parametersOf(controllersManager) })
+        brainSimulatorManager = pinkyScope.get<BrainSimulatorManager>()
 
         launch(coroutineExceptionHandler) { pinky.startAndRun() }
 
@@ -71,6 +75,11 @@ class SheepSimulator(
     private fun launchItem(title: String, block: () -> HostedWebApp) =
         LaunchItem(title) { Launcher.launch(title, block) }
 
+    fun newAnonymousBrain() {
+        brainSimulatorManager.createBrain(null, Pixels.NullPixels)
+            .start()
+    }
+
     inner class Facade : baaahs.ui.Facade() {
         val pinky: Pinky.Facade
             get() = this@SheepSimulator.pinky.facade
@@ -80,13 +89,20 @@ class SheepSimulator(
             get() = this@SheepSimulator.visualizer.facade
         val fixturesSimulator: FixturesSimulator.Facade
             get() = this@SheepSimulator.fixturesSimulator.facade
+        val brainSimulatorManager: BrainSimulatorManager.Facade
+            get() = this@SheepSimulator.brainSimulatorManager.facade
+
         val launchItems: List<LaunchItem> =
             listOf(
                 launchItem("Web UI") { createWebClientApp() },
                 launchItem("Monitor") { createMonitorApp() },
                 launchItem("MIDIUi") { createMIDIApp() }
             )
+
         val uiSettings: UiSettings
             get() = getKoin().get()
+
+        fun newBrain() =
+            this@SheepSimulator.newAnonymousBrain()
     }
 }
