@@ -10,6 +10,7 @@ import mui.material.Paper
 import mui.material.SlideDirection
 import mui.system.sx
 import react.*
+import react.dom.div
 import react.dom.html.ReactHTML.header
 import react.dom.span
 import web.cssom.VerticalAlign
@@ -83,9 +84,11 @@ private val ListAndDetailView = xComponent<ListAndDetailProps<*>>("ListAndDetail
                     +(cachedDetailHeader ?: "")
                 }
 
-                cachedSelection?.let { selection ->
-                    with (props.detailRenderer) {
-                        render(selection.unsafeCast<Nothing>())
+                div(+styles.detailContent) {
+                    cachedSelection?.let { selection ->
+                        with (props.detailRenderer) {
+                            render(selection.unsafeCast<Nothing>())
+                        }
                     }
                 }
             }
