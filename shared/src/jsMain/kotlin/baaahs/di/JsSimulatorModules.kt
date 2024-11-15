@@ -22,9 +22,10 @@ import baaahs.scene.SceneProvider
 import baaahs.sim.*
 import baaahs.sm.brain.FirmwareDaddy
 import baaahs.sm.brain.PermissiveFirmwareDaddy
+import baaahs.sm.brain.sim.BrainSimulatorManager
+import baaahs.visualizer.Visualizer
 import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.sim.SwirlyPixelArranger
-import baaahs.visualizer.Visualizer
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.Koin
 import org.koin.core.module.Module
@@ -66,10 +67,12 @@ class JsSimulatorModule(
             single<PixelArranger> { SwirlyPixelArranger(pixelDensity, pixelSpacing) }
             single { BridgeClient(bridgeNetwork_, pinkyAddress_) }
             single { Plugins.buildForSimulator(get(), get(named(PluginsModule.Qualifier.ActivePlugins))) }
+            single { BrainSimulatorManager(get(), get()) }
+            single { WledsSimulator(get()) }
             single { (controllersManager: ControllersManager) ->
                 FixturesSimulator(
                     get(), get(), get(), get(named("Fallback")),
-                    get(), get(), get(), controllersManager
+                    get(), get(), get(), controllersManager, get(), get()
                 )
             }
             single(named(SimulatorModule.Qualifier.PinkyLink)) { get<Network>().link("pinky") }
