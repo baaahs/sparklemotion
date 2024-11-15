@@ -127,6 +127,7 @@ object SimulatorStyles : StyleSheet("sim-ui", isStatic = true) {
 
     val statusPanel by css {
         display = Display.flex
+        flexDirection = FlexDirection.column
 
         header {
             background = linearRepeating(headerColor, headerColor.darken(15), 7.5.px)

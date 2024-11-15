@@ -16,6 +16,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
 import org.koin.core.parameter.parametersOf
+import react.buildElement
 
 class SheepSimulator(
     private val network: FakeNetwork,
@@ -48,7 +49,18 @@ class SheepSimulator(
         facade.notifyChanged()
     }
 
-    fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get()
+    fun createWebClientApp(): WebClient = getKoin().createScope<WebClient>().get<WebClient>()
+        .also {
+            it.facade.additionalDrawerItems.add(
+                buildElement {
+                    showSimConsoleSwitch {
+                        attrs.simulator = this@SheepSimulator.facade
+                        attrs.mainWebApp = it
+                    }
+                }
+            )
+            it.facade.notifyChanged()
+        }
     fun createMonitorApp(): MonitorUi = getKoin().createScope<MonitorUi>().get()
     fun createMIDIApp(): MIDIUi = getKoin().createScope<MIDIUi>().get()
 

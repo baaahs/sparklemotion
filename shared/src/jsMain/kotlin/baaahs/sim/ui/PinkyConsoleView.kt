@@ -3,6 +3,7 @@ package baaahs.sim.ui
 import baaahs.SheepSimulator
 import baaahs.app.ui.AllStyles
 import baaahs.app.ui.AppContext
+import baaahs.app.ui.Themes
 import baaahs.app.ui.appContext
 import baaahs.ui.*
 import baaahs.ui.diagnostics.patchDiagnostics
@@ -23,7 +24,8 @@ private val PinkyConsoleView = xComponent<PinkyConsoleProps>("PinkyConsole") { p
 
     val simulatorContext = useContext(simulatorContext)
     val stubAppContext = memo(simulatorContext) {
-        val allStyles = AllStyles(simulatorContext.styles.theme)
+        @Suppress("UNNECESSARY_SAFE_CALL")
+        val allStyles = AllStyles(simulatorContext.styles?.theme ?: Themes.Dark)
         jso<AppContext> {
             this.allStyles = allStyles
         }
