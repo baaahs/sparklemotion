@@ -167,6 +167,8 @@ class WebClient(
 
         val inFullScreenMode get() = this@WebClient.inFullScreenMode
 
+        val additionalDrawerItems: MutableList<ReactElement<*>> = mutableListOf()
+
         fun updateUiSettings(newSettings: UiSettings, saveToStorage: Boolean) {
             this@WebClient.updateUiSettings(newSettings, saveToStorage)
         }

@@ -15,24 +15,28 @@ import styled.css
 import styled.styledDiv
 
 private val BrainsConsoleView = xComponent<BrainsConsoleProps>("BrainsConsole") { props ->
-    val simulator = props.simulator
-    observe(simulator)
-    observe(simulator.fixturesSimulator)
+    val simulator = observe(props.simulator)
+    val brainSimulators = observe(simulator.brainSimulatorManager)
+        .brainSimulators
 
     var selectedBrain by state<BrainSimulator.Facade?> { null }
     val brainSelectionListener by handler { brainSimulator: BrainSimulator.Facade ->
         selectedBrain = brainSimulator
     }
 
-    val handleResetAll by mouseEventHandler() {
-        simulator.fixturesSimulator.brains.forEach { it.reset() }
+    val handleResetAll by mouseEventHandler(brainSimulators) {
+        brainSimulators.forEach { it.reset() }
+    }
+
+    val handleNewBrain by mouseEventHandler(simulator) {
+        simulator.newBrain()
     }
 
     styledDiv {
         css { +SimulatorStyles.consoleContainer }
         b { +"Brains:" }
         div {
-            simulator.fixturesSimulator.brains.forEach { brain ->
+            brainSimulators.forEach { brain ->
                 brainIndicator {
                     attrs.brainSimulator = brain
                     attrs.onSelect = brainSelectionListener
@@ -56,6 +60,11 @@ private val BrainsConsoleView = xComponent<BrainsConsoleProps>("BrainsConsole") 
             simulator.visualizer.selectedEntity?.let {
                 +"Selected: ${it.title}"
             }
+        }
+
+        Button {
+            attrs.onClick = handleNewBrain
+            +"New Brain"
         }
     }
 }
