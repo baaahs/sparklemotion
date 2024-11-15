@@ -8,13 +8,12 @@ import baaahs.net.Network
 import baaahs.randomDelay
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneProvider
-import baaahs.sm.brain.sim.BrainSimulator
 import baaahs.sm.brain.sim.BrainSimulatorManager
 import baaahs.util.Clock
 import baaahs.util.globalLaunch
 import baaahs.visualizer.EntityAdapter
-import baaahs.visualizer.sim.PixelArranger
 import baaahs.visualizer.Visualizer
+import baaahs.visualizer.sim.PixelArranger
 import kotlinx.coroutines.launch
 
 /**
@@ -35,12 +34,12 @@ class FixturesSimulator(
     private val clock: Clock,
     private val pixelArranger: PixelArranger,
     private val simMappingManager: SimMappingManager,
-    private val controllersManager: ControllersManager
+    private val controllersManager: ControllersManager,
+    private val brainSimulatorManager: BrainSimulatorManager,
+    private val wledsSimulator: WledsSimulator
 ) {
     val facade = Facade()
 
-    private val brainSimulatorManager = BrainSimulatorManager(network, clock)
-    private val wledsSimulator = WledsSimulator(network)
 
     private val simulationEnv = SimulationEnv {
         component(brainSimulatorManager)
@@ -135,9 +134,6 @@ class FixturesSimulator(
     inner class Facade : baaahs.ui.Facade() {
         val isStarted: Boolean
             get() = this@FixturesSimulator.isStarted
-
-        val brains: List<BrainSimulator.Facade>
-            get() = this@FixturesSimulator.brainSimulatorManager.brainSimulators.map { it.facade }
 
         fun start() =
             this@FixturesSimulator.start()

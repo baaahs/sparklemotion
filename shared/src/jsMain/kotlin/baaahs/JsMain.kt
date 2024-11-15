@@ -144,15 +144,22 @@ private fun launchSimulator(
     }
     hostedWebApp.onLaunch()
 
-    val props = jso<SimulatorAppProps> {
-        this.simulator = simulator.facade
-        this.hostedWebApp = hostedWebApp
-    }
+    val disableSimulator = queryParams["sim"] == "false"
     val simulatorEl = getElementById("app")!!
 
     GlobalScope.promise {
         createRoot(simulatorEl)
-            .render(createElement(SimulatorAppView, props))
+            .render(
+                if (disableSimulator)
+                    createElement(WebClientWindowView, jso {
+                        this.hostedWebApp = hostedWebApp
+                    })
+                else
+                    createElement(SimulatorAppView, jso<SimulatorAppProps> {
+                        this.simulator = simulator.facade
+                        this.hostedWebApp = hostedWebApp
+                    })
+            )
 
         simulator.start()
     }.catch {
