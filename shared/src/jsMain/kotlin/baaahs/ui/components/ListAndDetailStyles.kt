@@ -29,6 +29,10 @@ class ListAndDetailStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor", 
         zIndex = StyleConstants.Layers.aboveStickyTableHeaders
     }
 
+    val detailContent by css {
+        overflowY = Overflow.scroll
+    }
+
     val detailHeader by css {
         a {
             color = theme.palette.primary.contrastText.asColor().withAlpha(0.5)
