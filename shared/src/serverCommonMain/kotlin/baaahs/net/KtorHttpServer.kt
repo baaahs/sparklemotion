@@ -63,6 +63,7 @@ abstract class AbstractKtorHttpServer(
                         val frame = incoming.receive()
                         if (frame is Frame.Binary) {
                             val bytes = frame.readBytes()
+                            logger.info { "*********** Received ${bytes.size} bytes." }
                             webSocketListener.receive(tcpConnection, bytes)
                         } else {
                             logger.warn { "wait huh? received weird data: $frame" }

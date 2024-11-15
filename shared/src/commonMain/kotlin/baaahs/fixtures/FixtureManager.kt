@@ -73,7 +73,7 @@ class FixtureManagerImpl(
         var anyChanges = false
 
         for ((added, removed) in changedFixtures) {
-            println ( "fixtures changed! ${added.size} added, ${removed.size} removed" )
+            logger.info { "fixtures changed! ${added.size} added, ${removed.size} removed" }
             for (fixture in removed) removeFixture(fixture)
             for (fixture in added) addFixture(fixture)
             anyChanges = true

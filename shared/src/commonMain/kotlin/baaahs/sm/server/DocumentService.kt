@@ -8,6 +8,7 @@ import baaahs.io.Fs
 import baaahs.io.RemoteFsSerializer
 import baaahs.sm.webapi.DocumentCommands
 import baaahs.ui.Observable
+import baaahs.util.Logger
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
 
@@ -21,6 +22,8 @@ abstract class DocumentService<T : Any, TState>(
     serializersModule: SerializersModule,
     val documentType: DocumentType
 ) : Observable() {
+    internal abstract val logger: Logger
+
     var document: T? = null
         private set
     var file: Fs.File? = null
@@ -73,10 +76,13 @@ abstract class DocumentService<T : Any, TState>(
     }
 
     inner class DocumentCommandsHandler : DocumentCommands<T> {
-        override suspend fun new(template: T?) =
+        override suspend fun new(template: T?) {
+            logger.info { "Creating new document" }
             switchTo(template ?: createDocument())
+        }
 
         override suspend fun switchTo(file: Fs.File?) {
+            logger.info { "Switching to $file" }
             if (file != null) {
                 switchTo(load(file), file = file, isUnsaved = false)
             } else {
@@ -85,12 +91,14 @@ abstract class DocumentService<T : Any, TState>(
         }
 
         override suspend fun save() {
+            logger.info { "Saving $file" }
             file?.let { file ->
                 document?.let { document -> doSave(file, document) }
             }
         }
 
         override suspend fun saveAs(file: Fs.File) {
+            logger.info { "Saving as $file" }
             val saveAsFile = dataDir.resolve(file.fullPath)
             document?.let { document -> doSave(saveAsFile, document) }
             onFileChanged(saveAsFile)

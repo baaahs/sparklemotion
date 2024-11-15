@@ -20,6 +20,7 @@ import baaahs.util.Clock
 import baaahs.util.Logger
 import baaahs.util.unixMillis
 import baaahs.visualizer.entity.visualizerBuilder
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
@@ -50,7 +51,7 @@ class BrainManager(
         override fun receive(fromAddress: Network.Address, fromPort: Int, bytes: ByteArray) {
             if (!isStartedUp) return
 
-            CoroutineScope(coroutineContext).launch {
+            CoroutineScope(coroutineContext + CoroutineName("BrainManager Message Handler")).launch {
                 when (val message = parse(bytes)) {
                     is BrainHelloMessage -> foundBrain(fromAddress, message)
                     is PingMessage -> receivedPing(fromAddress, message)

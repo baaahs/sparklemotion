@@ -22,6 +22,7 @@ import baaahs.show.live.OpenShow
 import baaahs.sm.webapi.ClientData
 import baaahs.sm.webapi.Topics
 import baaahs.util.Clock
+import baaahs.util.Logger
 import baaahs.util.globalLaunch
 
 class StageManager(
@@ -130,6 +131,7 @@ class StageManager(
     }
 
     private fun housekeeping() {
+        logger.info { "Housekeeping..." }
         if (checkActivePatchSet) {
             showRunner?.onSelectedPatchesChanged()
             checkActivePatchSet = false
@@ -159,6 +161,8 @@ class StageManager(
         toolchain.plugins.serialModule,
         ShowDocumentType
     ) {
+        override val logger: Logger = Logger<ShowDocumentService>()
+
         private val showProblems = pubSub.publish(Topics.showProblems, emptyList()) {}
 
         override fun createDocument(): Show = buildEmptyShow()
@@ -216,6 +220,8 @@ class StageManager(
         toolchain.plugins.serialModule,
         SceneDocumentType
     ) {
+        override val logger: Logger = Logger<SceneDocumentService>()
+
         override fun createDocument(): Scene = Scene.Empty
 
         override fun onFileChanged(saveAsFile: Fs.File) {

@@ -22,6 +22,7 @@ import baaahs.ui.DialogHolder
 import baaahs.ui.DialogMenuItem
 import baaahs.ui.DialogMenuItem.Divider
 import baaahs.ui.DialogMenuItem.Option
+import baaahs.util.Logger
 
 class ShowManager(
     pubSub: PubSub.Client,
@@ -37,6 +38,8 @@ class ShowManager(
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
+    override val logger: Logger = Logger<ShowManager>()
+
     private var openShow: OpenShow? = null
 
     private val problems = arrayListOf<Problem>().apply {

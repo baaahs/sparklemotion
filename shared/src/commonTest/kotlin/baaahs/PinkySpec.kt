@@ -103,7 +103,7 @@ class PinkySpec : DescribeSpec({
 
             Pinky(
                 clock, PermissiveFirmwareDaddy(), plugins, fakeFs.rootFile, link, httpServer, pubSub,
-                dmxManager, mappingManager, fixtureManager, ImmediateDispatcher, toolchain,
+                dmxManager, mappingManager, fixtureManager, ImmediateDispatcher,
                 stageManager, controllersManager, brainManager,
                 ShaderLibraryManager(plugins, fakeFs, FsServerSideSerializer(), pubSub),
                 Pinky.NetworkStats(), PinkySettings(), serverNotices, PinkyMapperHandlers(mappingStore),
@@ -139,7 +139,9 @@ class PinkySpec : DescribeSpec({
                     fakeFs.renameFile(mappingSessionPath, fakeFs.resolve("mapping/${model.name}/$mappingSessionPath"))
                 }
 
-                pinky.launchStartupJobs()
+                with (pinky) {
+                    TestCoroutineScope().launchStartupJobs()
+                }
             }
         }
 

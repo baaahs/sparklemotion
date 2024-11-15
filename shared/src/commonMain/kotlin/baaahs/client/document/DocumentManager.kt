@@ -11,6 +11,7 @@ import baaahs.plugin.Plugins
 import baaahs.show.mutable.EditHandler
 import baaahs.ui.DialogHolder
 import baaahs.ui.confirm
+import baaahs.util.Logger
 import baaahs.util.UndoStack
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.modules.SerializersModule
@@ -27,6 +28,7 @@ abstract class DocumentManager<T, TState>(
 ) {
     abstract val facade: Facade
     abstract val documentTitle: String?
+    internal abstract val logger: Logger
 
     private val fileType: FileType get() = documentType.fileType
 
@@ -64,6 +66,8 @@ abstract class DocumentManager<T, TState>(
     protected var localState: DocumentState<T, TState>? = null
     protected var editState by
         pubSub.state(topic, null, stateChannels) { incoming ->
+            logger.debug { "Incoming editState: $incoming" }
+            logger
             localState = incoming
             switchTo(incoming, false)
             undoStack.reset(incoming)

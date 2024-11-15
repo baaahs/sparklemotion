@@ -23,9 +23,12 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.io.File
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 class JvmPlatformModule(
     private val clock_: Clock
@@ -75,7 +78,10 @@ class JvmPinkyModule(
         }
 
     override val Scope.pinkyMainDispatcher: CoroutineDispatcher
-        get() = Dispatchers.Default.limitedParallelism(1)
+        get() = Executors.newSingleThreadExecutor { runnable ->
+            Thread(runnable, "Pinky Main")
+        }.asCoroutineDispatcher()
+    // Dispatchers.Default.limitedParallelism(1, "Pinky Main")
     override val Scope.dmxDriver: Dmx.Driver
         get() = JvmFtdiDmxDriver
     override val Scope.midiManager: MidiManager

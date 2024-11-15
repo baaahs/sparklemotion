@@ -17,6 +17,7 @@ import baaahs.ui.DialogMenuItem.Divider
 import baaahs.ui.DialogMenuItem.Option
 import baaahs.ui.IObservable
 import baaahs.ui.Observable
+import baaahs.util.Logger
 
 class SceneManager(
     pubSub: PubSub.Client,
@@ -31,7 +32,7 @@ class SceneManager(
 ), IObservable by Observable() {
     override val facade = Facade()
     override val documentTitle get() = document?.title
-
+    override val logger: Logger = Logger<SceneManager>()
     private var openScene: OpenScene? = null
     private var mutableScene: MutableScene? = null
 

@@ -5,7 +5,6 @@ import baaahs.client.EventManager
 import baaahs.controller.ControllersManager
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.FixtureManager
-import baaahs.gl.Toolchain
 import baaahs.gl.glsl.CompilationException
 import baaahs.io.Fs
 import baaahs.libraries.ShaderLibraryManager
@@ -42,8 +41,7 @@ class Pinky(
     private val dmxManager: DmxManager,
     private val mappingManager: MappingManager,
     internal val fixtureManager: FixtureManager,
-    override val coroutineContext: CoroutineContext,
-    val toolchain: Toolchain,
+    private val coroutineContext: CoroutineContext,
     val stageManager: StageManager,
     private val controllersManager: ControllersManager,
     val brainManager: BrainManager,
@@ -54,7 +52,7 @@ class Pinky(
     private val pinkyMapperHandlers: PinkyMapperHandlers,
     private val pinkyConfigStore: PinkyConfigStore,
     private val eventManager: EventManager,
-) : CoroutineScope {
+) {
     val facade = Facade()
 
     fun switchTo(newShow: Show?, file: Fs.File? = null) {
@@ -87,9 +85,16 @@ class Pinky(
     private var keepRunning = true
 
     suspend fun startAndRun(beforeRun: suspend CoroutineScope.() -> Unit = {}) {
+        logger.info { "Pinky.startAndRun() before withContext..." }
         withContext(coroutineContext) {
-            val startupJobs = launchStartupJobs()
-            val daemonJobs = launchDaemonJobs()
+            logger.info { "Pinky.startAndRun() after withContext..." }
+            val startupJobs = launch(CoroutineName("Pinky Startup Jobs")) {
+                launchStartupJobs()
+            }
+
+            val daemonJobs = launch(CoroutineName("Pinky Daemon Jobs")) {
+                launchDaemonJobs()
+            }
 
             startupJobs.join()
 
@@ -101,6 +106,7 @@ class Pinky(
     }
 
     private suspend fun run() {
+        logger.info { "Pinky run loop..." }
         while (keepRunning) {
             throttle(pinkySettings.targetFramerate) {
                 if (mapperIsRunning || isPaused) {
@@ -129,46 +135,44 @@ class Pinky(
 
     private var mappingResultsLoaderJob: Job? = null
 
-    internal suspend fun launchStartupJobs(): Job {
-        return CoroutineScope(coroutineContext).launch {
-            CoroutineScope(coroutineContext).launch {
-                launch { firmwareDaddy.start() }
+    internal suspend fun CoroutineScope.launchStartupJobs() {
+        launch(CoroutineName("Pre-Mapper Startup Jobs")) {
+            launch { firmwareDaddy.start() }
 
-                mappingResultsLoaderJob = launch { mappingManager.start() }
+            mappingResultsLoaderJob = launch { mappingManager.start() }
 
-                launch {
-                    val config = pinkyConfigStore.load()
+            launch {
+                val config = pinkyConfigStore.load()
 
-                    config?.runningScenePath?.let { path ->
-                        launch { stageManager.sceneDocumentService.load(path) }
-                    }
-
-                    config?.runningShowPath?.let { path ->
-                        launch { stageManager.showDocumentService.load(path) }
-                    }
+                config?.runningScenePath?.let { path ->
+                    launch { stageManager.sceneDocumentService.load(path) }
                 }
 
-                launch { eventManager.start() }
-            }.join()
-
-            brainManager.listenForMapperMessages { message ->
-                logger.info { "Mapper isRunning=${message.isRunning}" }
-                if (pinkyState == PinkyState.Running && message.isRunning) {
-                    pinkyState = PinkyState.Mapping
-                    pinkyStateChannel.onChange(PinkyState.Mapping)
-                    mapperIsRunning = true
-                } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
-                    pinkyState = PinkyState.Running
-                    pinkyStateChannel.onChange(PinkyState.Running)
-                    mapperIsRunning = false
+                config?.runningShowPath?.let { path ->
+                    launch { stageManager.showDocumentService.load(path) }
                 }
             }
 
-            // This needs to go last-ish, otherwise we start getting network traffic too early.
-            controllersManager.start()
+            launch { eventManager.start() }
+        }.join()
 
-            updatePinkyState(PinkyState.Running)
+        brainManager.listenForMapperMessages { message ->
+            logger.info { "Mapper isRunning=${message.isRunning}" }
+            if (pinkyState == PinkyState.Running && message.isRunning) {
+                pinkyState = PinkyState.Mapping
+                pinkyStateChannel.onChange(PinkyState.Mapping)
+                mapperIsRunning = true
+            } else if (pinkyState == PinkyState.Mapping && !message.isRunning) {
+                pinkyState = PinkyState.Running
+                pinkyStateChannel.onChange(PinkyState.Running)
+                mapperIsRunning = false
+            }
         }
+
+        // This needs to go last-ish, otherwise we start getting network traffic too early.
+        controllersManager.start()
+
+        updatePinkyState(PinkyState.Running)
     }
 
     private suspend fun <T : Any> DocumentService<T, *>.load(path: String) {
@@ -199,27 +203,27 @@ class Pinky(
         pinkyStateChannel.onChange(newState)
     }
 
-    private suspend fun launchDaemonJobs(): Job {
-        return CoroutineScope(coroutineContext).launch {
-            launch { shaderLibraryManager.start() }
+    private fun CoroutineScope.launchDaemonJobs() {
+        launch(CoroutineName("Shader Library Manager")) {
+            shaderLibraryManager.start()
+        }
 
-            launch {
-                while (true) {
-                    if (mapperIsRunning) {
-                        logger.info { "Mapping ${brainManager.brainCount} brains." }
-                    } else {
-                        stageManager.logStatus()
-                        controllersManager.logStatus()
-                    }
-                    delay(10000)
+        launch(CoroutineName("Periodic Logging")) {
+            while (true) {
+                if (mapperIsRunning) {
+                    logger.info { "Mapping ${brainManager.brainCount} brains." }
+                } else {
+                    stageManager.logStatus()
+                    controllersManager.logStatus()
                 }
+                delay(10000)
             }
+        }
 
-            launch {
-                while (keepRunning) {
-                    delay(10000)
-                    logger.info { "Framerate: ${facade.framerate.summarize()}" }
-                }
+        launch(CoroutineName("Framerate Logging")) {
+            while (keepRunning) {
+                delay(10000)
+                logger.info { "Framerate: ${facade.framerate.summarize()}" }
             }
         }
     }

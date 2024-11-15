@@ -97,6 +97,6 @@ abstract class BaseShowPlayer(
     }
 
     companion object {
-        private val logger = Logger<BaseShowPlayer>()
+        val logger = Logger<BaseShowPlayer>()
     }
 }

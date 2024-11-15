@@ -50,6 +50,7 @@ import baaahs.sm.server.StageManager
 import baaahs.util.Clock
 import baaahs.util.coroutineExceptionHandler
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -193,7 +194,7 @@ interface PinkyModule : KModule {
             scoped {
                 Pinky(
                     get(), get(), get(), get(Named.dataDir), get(), get(),
-                    get(), get(), get(), get(), get(Named.pinkyContext), get(), get(),
+                    get(), get(), get(), get(), get(Named.pinkyContext), get(),
                     get(), get(), get(), get(), get(), get(),
                     pinkyMapperHandlers, get(), get()
                 )
