@@ -1,6 +1,8 @@
 package baaahs.mapper
 
+import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
+import baaahs.ui.important
 import baaahs.ui.selector
 import kotlinx.css.*
 import kotlinx.css.FlexDirection.column
@@ -43,12 +45,6 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         overflow = Overflow.scroll
     }
     val navigatorPaneActions by css {
-        display = Display.grid
-        gridTemplateColumns = GridTemplateColumns(
-            GridAutoRows.auto,
-            GridAutoRows.minContent
-        )
-        gridTemplateRows = GridTemplateRows.minContent
     }
     val navigatorPaneHeader by css {
         lineHeight = 1.5.em.lh
@@ -71,15 +67,11 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         }
     }
 
-    val fixturesPane by css {
-        position = Position.relative
-        height = 100.pct
-    }
-
     val propertiesPane by css {
         display = Display.grid
         gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         height = 100.pct
+        zIndex = StyleConstants.Layers.aboveStickyTableHeaders
     }
 
     val propertiesPaneContent by css {
@@ -92,8 +84,16 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         descendants(selector(::propertiesPane)) {
             display = Display.none
         }
-        descendants(selector(::fixturesPane)) {
-            display = Display.none
+    }
+
+    val searchBoxFormControl by css {
+        position = Position.absolute
+        right = 1.em
+        top = 4.px
+        flexDirection = FlexDirection.rowReverse
+        width = 15.em
+        fieldset {
+            borderColor = Color.transparent.important
         }
     }
 
