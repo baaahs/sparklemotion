@@ -1,8 +1,12 @@
 package baaahs.mapper
 
+import baaahs.app.ui.StyleConstants
 import baaahs.ui.asColor
+import baaahs.ui.important
 import baaahs.ui.selector
 import kotlinx.css.*
+import kotlinx.css.FlexDirection.column
+import kotlinx.css.properties.lh
 import mui.material.styles.Theme
 import styled.StyleSheet
 
@@ -26,21 +30,24 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     }
 
     val navigatorPane by css {
-        display = Display.grid
-        gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
+        display = Display.flex
+        flexDirection = column
         height = 100.pct
+    }
+    val hideNavigatorPane by css {
+        display = Display.none
+    }
+    val screenWidthNavigatorPane by css {
+        width = 100.vw
     }
     val navigatorPaneContent by css {
         minHeight = 0.px
         overflow = Overflow.scroll
     }
     val navigatorPaneActions by css {
-        display = Display.grid
-        gridTemplateColumns = GridTemplateColumns(
-            GridAutoRows.minContent,
-            GridAutoRows.auto
-        )
-        gridTemplateRows = GridTemplateRows.minContent
+    }
+    val navigatorPaneHeader by css {
+        lineHeight = 1.5.em.lh
     }
 
     val defaultConfigs by css {
@@ -60,15 +67,11 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         }
     }
 
-    val fixturesPane by css {
-        position = Position.relative
-        height = 100.pct
-    }
-
     val propertiesPane by css {
         display = Display.grid
         gridTemplateRows = GridTemplateRows(GridAutoRows.minContent, GridAutoRows.auto)
         height = 100.pct
+        zIndex = StyleConstants.Layers.aboveStickyTableHeaders
     }
 
     val propertiesPaneContent by css {
@@ -81,8 +84,16 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         descendants(selector(::propertiesPane)) {
             display = Display.none
         }
-        descendants(selector(::fixturesPane)) {
-            display = Display.none
+    }
+
+    val searchBoxFormControl by css {
+        position = Position.absolute
+        right = 1.em
+        top = 4.px
+        flexDirection = FlexDirection.rowReverse
+        width = 15.em
+        fieldset {
+            borderColor = Color.transparent.important
         }
     }
 
@@ -117,12 +128,12 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
         paddingTop = .75.em
         paddingBottom = .75.em
         display = Display.flex
-        flexDirection = FlexDirection.column
+        flexDirection = column
         gap = 1.em
     }
 
     val expansionPanelDetails by css {
-        flexDirection = FlexDirection.column
+        flexDirection = column
     }
 
     val divider by css {
@@ -133,6 +144,7 @@ class ControllerEditorStyles(val theme: Theme) : StyleSheet("app-ui-scene-editor
     val configEditorRow by css {
         display = Display.flex
         flexDirection = FlexDirection.row
+        flexWrap = FlexWrap.wrap
         gap = 1.em
     }
 

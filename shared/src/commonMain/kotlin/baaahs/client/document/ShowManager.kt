@@ -37,7 +37,6 @@ class ShowManager(
 ) {
     override val facade = Facade()
     override val documentTitle get() = document?.title
-
     private var openShow: OpenShow? = null
 
     private val problems = arrayListOf<Problem>().apply {
@@ -110,6 +109,8 @@ class ShowManager(
     }
 
     inner class Facade : DocumentManager<Show, ShowState>.Facade() {
+        override val openDocument: OpenDocument?
+            get() = openShow
         val show get() = this@ShowManager.document
         val openShow get() = this@ShowManager.openShow
         val showProblems get() = this@ShowManager.problems

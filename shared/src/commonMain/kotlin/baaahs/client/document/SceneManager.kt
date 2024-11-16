@@ -122,6 +122,8 @@ class SceneManager(
         }
 
     inner class Facade : DocumentManager<Scene, Unit>.Facade() {
+        override val openDocument: OpenDocument?
+            get() = openScene
         val scene get() = this@SceneManager.document
         val openScene get() = this@SceneManager.openScene
         val mutableScene get() = this@SceneManager.edit()

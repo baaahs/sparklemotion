@@ -13,6 +13,7 @@ import baaahs.app.ui.model.ModelEditorStyles
 import baaahs.app.ui.patchmod.PatchModStyles
 import baaahs.mapper.ControllerEditorStyles
 import baaahs.mapper.MapperStyles
+import baaahs.ui.components.ListAndDetailStyles
 import baaahs.ui.components.UiComponentStyles
 import baaahs.ui.diagnostics.DiagnosticsStyles
 import mui.material.styles.Theme
@@ -33,6 +34,7 @@ class AllStyles(val theme: Theme) {
     val shaderLibrary by lazy { inject(ShaderLibraryStyles(theme)) }
     val shaderHelp by lazy { inject(ShaderHelpStyles(theme)) }
     val uiComponents by lazy { inject(UiComponentStyles(theme)) }
+    val listAndDetail by lazy { inject(ListAndDetailStyles(theme)) }
     val fileUploadStyles by lazy { inject(FileUploadStyles(theme)) }
     val diagnosticsStyles by lazy { inject(DiagnosticsStyles(theme)) }
     val patchModStyles by lazy { inject(PatchModStyles(theme)) }

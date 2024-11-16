@@ -16,17 +16,18 @@ import mui.material.Button
 import mui.material.ButtonColor
 import mui.material.Card
 import mui.material.Container
+import mui.material.Typography
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.header
+import react.dom.html.ReactHTML.li
 import react.useContext
 import kotlin.collections.set
 
 private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>("ControllerConfigEditor") { props ->
     val appContext = useContext(appContext)
-    val sceneEditorClient = appContext.sceneEditorClient
-    observe(sceneEditorClient)
+    val sceneEditorClient = observe(appContext.sceneEditorClient)
 
     val styles = appContext.allStyles.controllerEditor
 
@@ -37,7 +38,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
                 .also { props.mutableScene.controllers[props.controllerId] = it }
     }
 
-    val editingController = EditingController(mutableControllerConfig, props.onEdit)
+    val editingController = EditingController(props.controllerId, mutableControllerConfig, props.onEdit)
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
@@ -51,6 +52,17 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
         typographyH5 {
             +mutableControllerConfig.title.ifBlank { "Untitled" }
             +" — ${mutableControllerConfig.controllerMeta.controllerTypeName}"
+        }
+
+        val controllerState = sceneEditorClient.controllerStates[props.controllerId]
+
+        Typography {
+            li { +"Title: ${controllerState?.title}" }
+            li { +"Address: ${controllerState?.address}" }
+            li { +"Online Since: ${controllerState?.onlineSince}" }
+            li { +"Firmware Version: ${controllerState?.firmwareVersion}" }
+            li { +"Last Error Message: ${controllerState?.lastErrorMessage}" }
+            li { +"Last Error At: ${controllerState?.lastErrorAt}" }
         }
     }
 

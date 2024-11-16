@@ -131,6 +131,11 @@ fun CssBuilder.child(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: R
 fun StyleSheet.selector(rule: KProperty0<RuleSet>) =
     ".$name-${rule.name}"
 
+fun CssBuilder.on(vararg selector: String = arrayOf("*"), block: RuleSet): Rule {
+    val selectorString = selector.joinToString { it }
+    return selectorString(block)
+}
+
 fun CssBuilder.descendants(styleSheet: StyleSheet, rule: KProperty0<RuleSet>, block: RuleSet) =
     descendants(".${styleSheet.name}-${rule.name}") { block() }
 
@@ -265,6 +270,8 @@ val Event.clientX: Int get() = asDynamic().clientX as Int
 val Event.clientY: Int get() = asDynamic().clientY as Int
 
 fun web.cssom.Color.asColor(): Color = Color(this.unsafeCast<String>())
+fun kotlinx.css.Color.asColor(): web.cssom.Color = web.cssom.Color(this.value)
+
 
 fun rgba(r: Int, g: Int, b: Int, a: Double): Color =
     Color("rgba($r, $g, $b, $a)")

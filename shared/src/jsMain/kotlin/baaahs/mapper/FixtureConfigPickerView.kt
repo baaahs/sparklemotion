@@ -46,6 +46,13 @@ private val FixtureConfigPickerView = xComponent<FixtureConfigPickerProps>("Fixt
                 fixtureConfig.getEditorView(props.editingController)
                     .render(this)
             }
+        } else {
+            props.editingController.config.defaultFixtureOptions?.let { defaultFixtureOptions ->
+                +defaultFixtureOptions.fixtureType.title
+                configPreview {
+                    attrs.configPreview = defaultFixtureOptions.build().preview()
+                }
+            }
         }
     }
 }
