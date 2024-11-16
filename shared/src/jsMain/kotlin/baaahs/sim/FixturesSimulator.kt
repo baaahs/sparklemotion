@@ -83,8 +83,8 @@ class FixturesSimulator(
             } else {
                 // TODO: create the appropriate controller simulators for fixtures that are mapped.
                 val mappedEntities = buildSet {
-                    newOpenScene.controllers.forEach { (controllerId, controllerConfig) ->
-                        controllerConfig.fixtures.forEach { fixtureMappingData ->
+                    newOpenScene.controllers.forEach { (controllerId, openControllerConfig) ->
+                        openControllerConfig.controllerConfig.fixtures.forEach { fixtureMappingData ->
                             add(fixtureMappingData.entityId)
                         }
                     }

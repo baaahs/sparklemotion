@@ -12,6 +12,7 @@ import baaahs.gl.override
 import baaahs.kotest.value
 import baaahs.model.Model
 import baaahs.modelForTest
+import baaahs.openSceneForModel
 import baaahs.testModelSurface
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -34,7 +35,7 @@ class OpenSceneSpec : DescribeSpec({
             val mappingManager by value {
                 FakeMappingManager(mapOf(controller.controllerId to listOfNotNull(legacyMappingData)))
             }
-            val openScene by value { OpenScene(model, mapOf(controller.controllerId to controllerConfig)) }
+            val openScene by value { model.openSceneForModel(mapOf(controller.controllerId to controllerConfig)) }
 
             val relevantMappings by value {
                 openScene.relevantFixtureMappings(controller, mappingManager)

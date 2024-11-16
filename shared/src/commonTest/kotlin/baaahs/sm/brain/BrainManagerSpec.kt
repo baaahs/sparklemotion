@@ -13,7 +13,6 @@ import baaahs.kotest.value
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
-import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import baaahs.sm.brain.proto.BrainHelloMessage
 import io.kotest.core.spec.style.DescribeSpec
@@ -27,7 +26,7 @@ class BrainManagerSpec : DescribeSpec({
         val model by value { modelForTest(entity("surface1")) }
         val controllerConfigs by value { mapOf<ControllerId, ControllerConfig>() }
         val brain1Id by value { ControllerId(BrainManager.controllerTypeName, "brain1") }
-        val scene by value { OpenScene(model, controllerConfigs) }
+        val scene by value { model.openSceneForModel(controllerConfigs) }
         val brainManager by value {
             BrainManager(
                 PermissiveFirmwareDaddy(),
@@ -46,7 +45,7 @@ class BrainManagerSpec : DescribeSpec({
 
         beforeEach {
             controllersManager.start()
-            brainManager.onConfigChange(controllerConfigs)
+            brainManager.onConfigChange(scene.controllers)
         }
 
         context("with no declared controllers") {

@@ -17,6 +17,7 @@ import baaahs.model.LightBar
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
+import baaahs.scene.OpenControllerConfig
 import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import io.kotest.core.spec.style.DescribeSpec
@@ -33,7 +34,7 @@ class SacnIntegrationSpec : DescribeSpec({
         val model by value { modelForTest(entity("bar1"), entity("bar2")) }
         val controllerConfigs by value { mapOf<ControllerId, ControllerConfig>() }
         val sacn1Id by value { ControllerId(SacnManager.controllerTypeName, "sacn1") }
-        val scene by value { OpenScene(model, controllerConfigs) }
+        val scene by value { model.openSceneForModel(controllerConfigs) }
         val sacnManager by value { SacnManager(link, ImmediateDispatcher, FakeClock()) }
         val listener by value { SpyFixtureListener() }
         val sacn1Fixtures by value { emptyList<FixtureMappingData>() }
@@ -44,7 +45,7 @@ class SacnIntegrationSpec : DescribeSpec({
 
         beforeEach {
             controllersManager.start()
-            sacnManager.onConfigChange(controllerConfigs)
+            sacnManager.onConfigChange(scene.controllers)
         }
 
         context("with no declared controllers") {
@@ -67,7 +68,8 @@ class SacnIntegrationSpec : DescribeSpec({
             val bar2Fixture by value { listener.added[1] }
 
             it("notifies listener of controller") {
-                listener.added.map { it.name }.shouldContainExactly("bar1@SACN:sacn1", "bar2@SACN:sacn1")
+                listener.added.map { it.name }
+                    .shouldContainExactly("bar1@SACN:sacn1", "bar2@SACN:sacn1")
             }
 
             context("when a frame is sent") {

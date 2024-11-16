@@ -69,7 +69,7 @@ class ShowRunnerTest {
             PinkyConfigStore(plugins, fs.rootFile), showMonitor
         )
         stageManager.switchTo(SampleData.sampleShow)
-        stageManager.switchToScene(testSceneData())
+        stageManager.switchToScene(TestSceneData)
         renderTargets = fixtureManager.getRenderTargets_ForTestOnly()
         surface1Messages.clear()
         surface2Messages.clear()

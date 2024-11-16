@@ -6,9 +6,9 @@ import baaahs.controller.ControllerId
 import baaahs.controller.ControllerManager
 import baaahs.controller.ControllerState
 import baaahs.plugin.Plugins
-import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
 import baaahs.scene.MutableDirectDmxControllerConfig
+import baaahs.scene.OpenControllerConfig
 import baaahs.sim.FakeDmxUniverse
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -62,7 +62,7 @@ class DmxManagerImpl(
         }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
     }
 
     override fun stop() {

@@ -22,6 +22,7 @@ import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.only
+import baaahs.openSceneForModel
 import baaahs.scene.*
 import baaahs.ui.Observable
 import io.kotest.core.spec.style.DescribeSpec
@@ -53,9 +54,7 @@ class ControllersManagerSpec : DescribeSpec({
                 listOf(fakeController), emptyList()
             )
         }
-        val scene by value {
-            model?.let { OpenScene(it, controllers = mapOf(fakeController.controllerId to fakeControllerConfig)) }
-        }
+        val scene by value { model?.openSceneForModel(mapOf(fakeController.controllerId to fakeControllerConfig)) }
         val mappingManager by value { FakeMappingManager(legacyMappings, false) }
         val fakeControllerMgr by value { FakeControllerManager() }
         val controllerManagers by value { listOf(fakeControllerMgr) }
@@ -347,14 +346,14 @@ class FakeControllerManager(
         controllers.forEach { notifyListeners { onAdd(it) } }
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
         if (hasStarted) {
             controllers.forEach { notifyListeners { onRemove(it) } }
         }
 
         controllers.clear()
 
-        controllers.addAll(controllerConfigs.values.flatMap { config -> (config as Config).controllers })
+        controllers.addAll(controllerConfigs.values.flatMap { config -> (config.controllerConfig as Config).controllers })
         if (hasStarted) {
             controllers.forEach { notifyListeners { onAdd(it) } }
         }

@@ -1,5 +1,6 @@
 package baaahs
 
+import baaahs.controller.ControllerId
 import baaahs.dmx.Dmx
 import baaahs.dmx.DmxManager
 import baaahs.fixtures.Fixture
@@ -18,6 +19,8 @@ import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.ModelData
 import baaahs.model.SurfaceDataForTest
+import baaahs.scene.ControllerConfig
+import baaahs.scene.OpenControllerConfig
 import baaahs.scene.OpenScene
 import baaahs.scene.Scene
 import baaahs.show.Shader
@@ -96,13 +99,24 @@ fun testModelSurfaceData(
 fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
 fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)
 
-val TestModel = modelForTest(listOf(testModelSurface("Panel")))
-val TestModelData = ModelData("Test Model", listOf(testModelSurfaceData("Panel")))
-fun testScene(model: Model = TestModel) = OpenScene(model)
-fun testSceneData(model: ModelData = TestModelData) = Scene(model)
+val TestModelSurfaceData = testModelSurfaceData("Panel")
+val TestSceneData = Scene(
+    ModelData("Test Model", listOf("panel1")),
+    mapOf("panel1" to TestModelSurfaceData),
+    emptyMap()
+)
+val TestModel = TestSceneData.open().model
 
 fun modelForTest(entities: List<Model.Entity>) = Model("Test Model", entities)
 fun modelForTest(vararg entities: Model.Entity) = Model("Test Model", entities.toList())
+fun Model.openSceneForModel(controllerConfigs: Map<ControllerId, ControllerConfig>) =
+    OpenScene(
+        this,
+        controllerConfigs.entries.associate { (id, config) ->
+            val fixtureMappings = config.fixtures.map { it.open(this) }
+            id to OpenControllerConfig(id, config, fixtureMappings)
+        }
+    )
 
 class TestRenderContext(
     vararg val modelEntities: Model.Entity = arrayOf(FakeModelEntity("device1"))
