@@ -35,7 +35,7 @@ import web.cssom.pct
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
-    val isSmall = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
+    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
     val themeStyles = appContext.allStyles.appUi
 
     val showManager = appContext.showManager
@@ -98,7 +98,7 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 icon(Menu)
             }
 
-            if (!isSmall) {
+            if (!isSmallScreen) {
                 // Otherwise the document info is shown in the drawer.
 
                 Tabs {
