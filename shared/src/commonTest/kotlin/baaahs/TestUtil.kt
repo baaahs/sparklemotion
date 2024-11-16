@@ -15,10 +15,7 @@ import baaahs.gl.patch.ProgramNode
 import baaahs.gl.render.ComponentRenderEngine
 import baaahs.gl.render.RenderTarget
 import baaahs.gl.testToolchain
-import baaahs.model.FakeModelEntity
-import baaahs.model.Model
-import baaahs.model.ModelData
-import baaahs.model.SurfaceDataForTest
+import baaahs.model.*
 import baaahs.scene.ControllerConfig
 import baaahs.scene.OpenControllerConfig
 import baaahs.scene.OpenScene
@@ -95,6 +92,15 @@ fun testModelSurfaceData(
     expectedPixelCount: Int? = 1,
     vertices: List<Vector3F> = emptyList()
 ) = SurfaceDataForTest(name, name, expectedPixelCount = expectedPixelCount, vertices = vertices)
+
+fun entityDataForTest(name: String): EntityData {
+    val entityBuilders: List<() -> EntityData> = listOf(
+        { GridData(name, rows = 2, columns = 2, rowGap = 1f, columnGap = 1f) },
+        { LightRingData(name) },
+        { LightBarData(name, startVertex = Vector3F.origin, endVertex = Vector3F.unit3d) },
+    )
+    return entityBuilders.random().invoke()
+}
 
 fun fakeModel(vararg entities: Model.Entity) = modelForTest(entities.toList())
 fun fakeModel(entities: List<Model.Entity>) = modelForTest(entities)

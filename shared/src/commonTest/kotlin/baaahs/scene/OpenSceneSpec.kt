@@ -18,7 +18,6 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 
-@Suppress("MoveLambdaOutsideParentheses")
 class OpenSceneSpec : DescribeSpec({
     describe<OpenScene> {
         context("#relevantFixtureMappings") {

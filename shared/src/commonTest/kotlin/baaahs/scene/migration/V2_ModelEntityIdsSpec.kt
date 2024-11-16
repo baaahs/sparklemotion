@@ -7,11 +7,8 @@ import baaahs.kotest.value
 import baaahs.toBeSpecified
 import io.kotest.assertions.json.shouldEqualJson
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
-import io.kotest.matchers.equals.shouldBeEqual
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 
 @Suppress("ClassName")
 class V2_ModelEntityIdsSpec : DescribeSpec({
@@ -54,20 +51,20 @@ class V2_ModelEntityIdsSpec : DescribeSpec({
                     """
                         {
                             "model": {
-                                "title": "Scene",
-                                "entities": {
-                                    "djLightbox": {
-                                        "type": "Grid",
-                                        "title": "DJ Lightbox"
-                                    },
-                                    "grid": {
-                                        "type": "Grid",
-                                        "instance": 1
-                                    },
-                                    "grid2": {
-                                        "type": "Grid",
-                                        "instance": 2
-                                    }
+                                "title": "Scene"
+                            },
+                            "entities": {
+                                "djLightbox": {
+                                    "type": "Grid",
+                                    "title": "DJ Lightbox"
+                                },
+                                "grid": {
+                                    "type": "Grid",
+                                    "instance": 1
+                                },
+                                "grid2": {
+                                    "type": "Grid",
+                                    "instance": 2
                                 }
                             }
                         }
