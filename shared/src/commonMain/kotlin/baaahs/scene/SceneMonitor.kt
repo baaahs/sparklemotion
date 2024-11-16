@@ -12,7 +12,9 @@ class SceneMonitor(
     override var openScene: OpenScene? = openScene
         private set
 
-    private val fallbackScene by lazy { OpenScene(Scene.Fallback.model.open(), isFallback = true) }
+    private val fallbackScene by lazy {
+        OpenScene(Scene.Fallback.model.open(emptyMap()), isFallback = true)
+    }
 
     override val openSceneOrFallback: OpenScene
         get() = openScene ?: fallbackScene

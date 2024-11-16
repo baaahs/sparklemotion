@@ -4,7 +4,6 @@ import baaahs.describe
 import baaahs.gl.override
 import baaahs.gl.testPlugins
 import baaahs.kotest.value
-import baaahs.show.migration.V6_FlattenPatches
 import baaahs.toBeSpecified
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.*
@@ -14,12 +13,12 @@ import kotlinx.serialization.json.jsonObject
 
 @Suppress("ClassName")
 class V1_GridDirectionBackwardsSpec : DescribeSpec({
-    describe<V6_FlattenPatches> {
+    describe<V1_GridDirectionBackwards> {
         val migration by value { V1_GridDirectionBackwards }
         val json by value { Json { serializersModule = testPlugins().serialModule } }
         val fromJson by value<String> { toBeSpecified() }
         val fromJsonObj by value { json.parseToJsonElement(fromJson) as JsonObject }
-        val toJsonObj by value { V1_GridDirectionBackwards.migrate(fromJsonObj) }
+        val toJsonObj by value { migration.migrate(fromJsonObj) }
 
         context("migration of default grid direction and zigZag") {
             override(fromJson) {

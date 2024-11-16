@@ -1,9 +1,12 @@
 package baaahs.model
 
+import baaahs.camelize
 import baaahs.dmx.Shenzarpy
 import baaahs.geom.*
+import baaahs.getBang
 import baaahs.io.Fs
 import baaahs.io.getResource
+import baaahs.model.Model.Entity
 import baaahs.model.importers.ObjImporter
 import baaahs.scene.*
 import baaahs.util.Logger
@@ -15,15 +18,35 @@ import kotlinx.serialization.Transient
 @Serializable
 data class ModelData(
     val title: String,
-    val entities: List<EntityData>,
+    val entityIds: List<EntityId> = emptyList(),
     val units: ModelUnit = ModelUnit.Meters,
     val initialViewingAngle: Float = 0f
 ) {
-    fun edit(): MutableModel =
-        MutableModel(this)
+    fun edit(entities: Map<EntityId, EntityData>): MutableModel =
+        MutableModel(this, entities)
 
-    fun open(): Model =
-        Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units, initialViewingAngle)
+    fun open(entitiesData: Map<EntityId, EntityData>): Model {
+        val entityMap = hashMapOf<EntityId, Entity>()
+
+        fun buildEntity(id: EntityId, accumulatedMatrix: Matrix4F): Entity {
+            if (entityMap.containsKey(id))
+                error("Entity \"$id\" already exists in the scene.")
+
+            val entityData = entitiesData.getBang(id, "entities")
+            val currentMatrix = accumulatedMatrix * entityData.transformation
+            return entityData.open(currentMatrix)
+                .also { entityMap[id] = it }
+        }
+
+        return Model(
+            title,
+            entityIds.map { entityId ->
+                buildEntity(entityId, Matrix4F.identity)
+            },
+            units,
+            initialViewingAngle
+        )
+    }
 }
 
 enum class ModelUnit(val display: String, val inCentimeters: Double) {
@@ -56,6 +79,11 @@ sealed interface EntityData {
     val rotation: EulerAngle
     val scale: Vector3F
     @Transient val id: EntityId
+
+    val transformation: Matrix4F
+        get() = Matrix4F.compose(position, rotation, scale)
+
+    fun suggestId(): String = title.camelize()
 
     fun edit(): MutableEntity
 
@@ -234,7 +262,7 @@ data class SurfaceDataForTest(
     override fun edit(): MutableEntity =
         TODO("MutableSurfaceDataForTest not implemented yet!")
 
-    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Surface =
         Model.Surface(
             title, description, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices),
             position, rotation, scale

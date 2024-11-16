@@ -5,6 +5,8 @@ import baaahs.PubSub
 import baaahs.controller.ControllerId
 import baaahs.fixtures.*
 import baaahs.io.RemoteFsSerializer
+import baaahs.model.EntityData
+import baaahs.model.EntityId
 import baaahs.model.GridData
 import baaahs.model.Model
 import baaahs.model.ModelData
@@ -19,20 +21,35 @@ import kotlinx.serialization.modules.SerializersModule
 @Serializable
 data class Scene(
     val model: ModelData,
+    val entities: Map<EntityId, EntityData> = emptyMap(),
     val controllers: Map<ControllerId, ControllerConfig> = emptyMap()
 ) {
     val title get() = model.title
 
     fun edit(): MutableScene = MutableScene(this)
-    fun open(): OpenScene = OpenScene.open(this)
+    fun open(): OpenScene {
+        val openModel = model.open(entities)
+        val openControllersConfig = controllers.mapValues { (controllerId, controllerConfig) ->
+            val openFixtureMappings = controllerConfig.fixtures.map { fixtureMappingData ->
+                fixtureMappingData.open(openModel)
+            }
+            OpenControllerConfig(controllerId, controllerConfig, openFixtureMappings)
+        }
+        return OpenScene(
+            openModel,
+            openControllersConfig,
+            isFallback = this == Fallback
+        )
+    }
 
     companion object {
-        val Empty: Scene = Scene(ModelData("Untitled", emptyList()))
+        val Empty: Scene = Scene(ModelData("Untitled"))
 
         val Fallback = Scene(
-            ModelData("Fallback Scene", listOf(
-                GridData("Grid", columns = 320, rows = 240, columnGap = 1.25f, rowGap = 1.25f, zigZag = true)
-            ), ModelUnit.Centimeters),
+            ModelData("Fallback Scene", listOf("grid"), ModelUnit.Centimeters),
+            mapOf(
+                "grid" to GridData("Grid", columns = 320, rows = 240, columnGap = 1.25f, rowGap = 1.25f, zigZag = true)
+            ),
             emptyMap()
         )
 
