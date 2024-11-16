@@ -7,31 +7,28 @@ import baaahs.controller.SacnManager
 import baaahs.fixtures.FixtureInfo
 import baaahs.scene.MutableScene
 import baaahs.ui.*
+import baaahs.ui.components.DetailRenderer
+import baaahs.ui.components.ListRenderer
+import baaahs.ui.components.listAndDetail
 import js.objects.jso
 import kotlinx.css.RuleSet
 import materialui.icon
 import mui.icons.material.Search
 import mui.material.*
-import mui.system.Breakpoint
-import mui.system.Theme
 import mui.system.sx
-import mui.system.useMediaQuery
 import react.*
 import react.dom.div
 import react.dom.header
 import react.dom.html.ReactHTML.span
-import web.cssom.Float
 import web.cssom.Padding
+import web.cssom.Transition
 import web.cssom.em
-import web.cssom.vw
 import web.html.HTMLElement
+import web.html.HTMLInputElement
 
 private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("ControllerConfigurer") { props ->
     val appContext = useContext(appContext)
-    val sceneEditorClient = appContext.sceneEditorClient
-    observe(sceneEditorClient)
-
-    val isSmallScreen = useMediaQuery({ theme: Theme -> theme.breakpoints.down(Breakpoint.sm) })
+    val sceneEditorClient = observe(appContext.sceneEditorClient)
 
     val styles = appContext.allStyles.controllerEditor
 
@@ -50,7 +47,7 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         val target = event.currentTarget as HTMLElement
         selectedController = ControllerId.fromName(target.dataset["controllerId"] ?: "huh?")
     }
-    val handleDeselectController by mouseEventHandler { event ->
+    val handleDeselectController by handler {
         selectedController = null
     }
 
@@ -58,25 +55,33 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
         selectedController = ControllerId(SacnManager.controllerTypeName, "new")
     }
 
-    Paper {
-        attrs.className = if (selectedController == null) {
-            -styles.editorPanes and styles.noControllerSelected
-        } else {
-            -styles.editorPanes
-        }
+    var searchFieldFocused by state { false }
+    val searchFieldRef = useRef<HTMLElement>()
+    val handleSearchBoxClick by mouseEventHandler { e ->
+        searchFieldFocused = true
+        (searchFieldRef.current?.querySelector("input") as? HTMLInputElement)
+            ?.focus()
+        e.preventDefault()
+    }
 
-        div(+styles.navigatorPane
-                and styleIf(isSmallScreen, styles.screenWidthNavigatorPane)
-                and styleIf(isSmallScreen && selectedController != null, styles.hideNavigatorPane)
-        ) {
-            header { +"Controllers" }
+    listAndDetail<ControllerId> {
+        attrs.listHeader = buildElement {
+            span {
+                +"Controllers"
 
-            div(+styles.navigatorPaneActions) {
                 FormControl {
+                    attrs.className = -styles.searchBoxFormControl
+                    attrs.onClick = handleSearchBoxClick
+
                     TextField<StandardTextFieldProps> {
-                        attrs.autoFocus = true
-                        attrs.fullWidth = true
-//                attrs.label { +props.label }
+                        ref = searchFieldRef
+                        attrs.sx {
+                            val isOpen = searchFieldFocused || controllerMatcher.searchString.isNotBlank()
+                            width = if (isOpen) 15.em else 3.em
+                            backgroundColor = if (isOpen) rgba(0, 0, 0, 0.25).asColor() else rgba(0, 0, 0, 0.0).asColor()
+                            transition = "width 300ms, backgrond-color 300ms".unsafeCast<Transition>()
+                        }
+                        attrs.size = Size.small
                         attrs.InputProps = jso {
                             endAdornment = buildElement { icon(Search) }
                         }
@@ -85,21 +90,16 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                         attrs.onChange = { event ->
                             handleSearchChange(event.target.value)
                         }
+                        attrs.onFocus = { _ -> searchFieldFocused = true }
+                        attrs.onBlur = { _ -> searchFieldFocused = false }
                     }
 
-                    FormHelperText { +"Enter stuff to search for!" }
-                }
-
-                Button {
-                    attrs.className = -styles.button
-                    attrs.color = ButtonColor.secondary
-                    attrs.onClick = handleNewControllerClick
-
-                    attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
-                    +"New…"
+//                    FormHelperText { +"Enter stuff to search for!" }
                 }
             }
-
+        }
+        attrs.listHeaderText = "Controllers".asTextNode()
+        attrs.listRenderer = ListRenderer {
             div(+styles.navigatorPaneContent) {
                 Table {
                     attrs.className = -styles.controllersTable
@@ -133,7 +133,8 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                             attrs.colSpan = 6
                                             attrs.sx { padding = Padding(0.em, 0.em) }
                                             header(+styles.navigatorPaneHeader) {
-                                                +controllerId.controllerType }
+                                                +controllerId.controllerType
+                                            }
                                         }
                                     }
 
@@ -180,56 +181,43 @@ private val ControllerConfigurerView = xComponent<DeviceConfigurerProps>("Contro
                                 }
                             }
                         }
+
+                        TableRow {
+                            TableCell {
+                                attrs.colSpan = 6
+
+                                div(+styles.navigatorPaneActions) {
+                                    Button {
+                                        attrs.className = -styles.button
+                                        attrs.color = ButtonColor.secondary
+                                        attrs.onClick = handleNewControllerClick
+
+                                        attrs.startIcon = buildElement { icon(mui.icons.material.AddCircleOutline) }
+                                        +"New…"
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             }
         }
-
-        selectedController?.let { selectedController ->
-            Box {
-                attrs.className = -styles.propertiesPane
-                if (isSmallScreen) {
-                    attrs.sx { width = 100.vw }
-                }
-
-                header {
-                    +"${selectedController.name()} Properties"
-                    IconButton {
-                        attrs.sx { float = Float.right }
-                        attrs.title = "Close"
-                        attrs.onClick = handleDeselectController
-                        icon(mui.icons.material.Close)
-                    }
-                }
-
-                div(+styles.propertiesPaneContent) {
-                    controllerConfigEditor {
-                        attrs.mutableScene = props.mutableScene
-                        attrs.controllerId = selectedController
-                        attrs.onEdit = props.onEdit
-                    }
-                }
+        attrs.selection = selectedController
+        attrs.detailHeader = selectedController?.name()
+        attrs.detailRenderer = DetailRenderer { controller ->
+            controllerConfigEditor {
+                attrs.mutableScene = props.mutableScene
+                attrs.controllerId = controller
+                attrs.onEdit = props.onEdit
             }
         }
-
-        div(+styles.fixturesPane) {
-            header { +"Fixtures" }
-
-//            div(+styles.viPaneContent) {
-//                selectedController?.let { selectedController ->
-//                    controllerConfigEditor {
-//                        attrs.mutableScene = props.mutableScene
-//                        attrs.controllerId = selectedController
-//                        attrs.onEdit = props.onEdit
-//                    }
-//                }
-//            }
-        }
+        attrs.onDeselect = handleDeselectController
     }
 }
 
-fun styleIf(condition: Boolean, style: RuleSet): String {
-    return if (condition) +style else ""
+fun styleIf(condition: Boolean, style: RuleSet, otherwise: RuleSet? = null): String {
+    return if (condition) +style else otherwise?.let { +it } ?: ""
 }
 
 external interface DeviceConfigurerProps : Props {
