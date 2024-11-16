@@ -292,6 +292,21 @@ class ThemeStyles(val theme: Theme) : StyleSheet("app-ui-theme", isStatic = true
         minWidth = 0.px
     }
 
+    val appDrawerDocInfo by css {
+        color = theme.palette.primary.contrastText.asColor()
+        backgroundColor = theme.palette.primary.main.asColor()
+        marginTop = 5.px
+        paddingTop = .5.em
+        position = Position.relative
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        padding = Padding(1.em)
+    }
+
+    val appDrawerContent by css {
+        overflow = Overflow.auto
+    }
+
     val fullScreenMessagePaper by css {
         height = 100.pct
         display = Display.flex
