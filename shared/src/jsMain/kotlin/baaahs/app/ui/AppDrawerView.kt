@@ -3,25 +3,35 @@ package baaahs.app.ui
 import baaahs.app.ui.document.documentMenu
 import baaahs.client.document.DocumentManager
 import baaahs.ui.*
+import kotlinx.html.unsafe
 import materialui.icon
+import mui.icons.material.Article
 import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
+import mui.system.Breakpoint
 import mui.system.Direction
+import mui.system.useMediaQuery
 import react.*
+import react.dom.b
 import react.dom.div
 import react.dom.events.SyntheticEvent
+import react.dom.i
+import react.dom.span
 
 private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
+    val isSmall = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
     val themeStyles = appContext.allStyles.appUi
+    val documentManager = observe(props.documentManager)
+    val openDocument = documentManager.openDocument
 
     val handleAppModeChange by handler(props.onAppModeChange) { _: SyntheticEvent<*, *>, value: Any ->
         props.onAppModeChange(AppMode.valueOf(value.toString()))
     }
 
-    val editMode = observe(props.documentManager.editMode)
+    val editMode = observe(documentManager.editMode)
     val handleEditModeChange by switchEventHandler(editMode) { _, _ ->
         editMode.toggle()
     }
@@ -54,7 +64,7 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
                 attrs.value = props.appMode.name
                 attrs.onChange = handleAppModeChange
 
-                for (aMode in AppMode.values()) {
+                for (aMode in AppMode.entries) {
                     Tab {
                         attrs.className = -themeStyles.appModeTab
                         attrs.value = aMode.name
@@ -76,11 +86,32 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
             }
         }
 
+        if (isSmall) {
+            // Otherwise the document info is shown in the app toolbar.
+
+            Box {
+                attrs.className = -themeStyles.appDrawerDocInfo
+
+                if (openDocument != null) {
+                    documentManager.file?.let {
+                        div(+themeStyles.titleFooter) {
+                            icon(Article)
+                            span { attrs.unsafe { +"&nbsp;" } }
+                            +it.toString()
+                        }
+                    }
+
+                    b { +openDocument.title }
+                    if (documentManager.isUnsaved) i(+themeStyles.unsaved) { +"* (unsaved)" }
+                }
+            }
+        }
+
         Divider {}
 
         List {
             documentMenu {
-                attrs.documentManager = props.documentManager
+                attrs.documentManager = documentManager
             }
 
             Divider {}

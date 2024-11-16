@@ -20,6 +20,10 @@ import mui.icons.material.Menu
 import mui.material.*
 import mui.material.Link
 import mui.material.Tab
+import mui.material.styles.Theme
+import mui.material.styles.useTheme
+import mui.system.Breakpoint
+import mui.system.useMediaQuery
 import react.*
 import react.dom.div
 import react.dom.h4
@@ -30,7 +34,10 @@ import web.cssom.pct
 
 private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props ->
     val appContext = useContext(appContext)
+    val theme = useTheme<Theme>()
+    val isSmall = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
     val themeStyles = appContext.allStyles.appUi
+
     val showManager = appContext.showManager
     observe(showManager)
 
@@ -91,39 +98,43 @@ private val AppToolbarView = xComponent<AppToolbarProps>("AppToolbar") { props -
                 icon(Menu)
             }
 
-            Tabs {
-                attrs.className = -themeStyles.appToolbarTabs
-                attrs.classes = muiClasses { indicator = -themeStyles.appToolbarTabIndicator }
-                attrs.value = props.appMode
-                attrs.onChange = handleAppModeTabClick
+            if (!isSmall) {
+                // Otherwise the document info is shown in the drawer.
 
-                val tabClasses = muiClasses<TabClasses> {
-                    root = -themeStyles.appToolbarTab
-                    selected = -themeStyles.appToolbarTabSelected
-                }
-                Tab {
-                    attrs.classes = tabClasses
-                    attrs.value = AppMode.Show
-                    attrs.label = buildElement {
-                        appToolbarTab {
-                            attrs.currentAppMode = props.appMode
-                            attrs.value = AppMode.Show
-                            attrs.document = show
-                            attrs.documentManager = showManager
-                            attrs.onEditButtonClick = handleShowEditButtonClick
+                Tabs {
+                    attrs.className = -themeStyles.appToolbarTabs
+                    attrs.classes = muiClasses { indicator = -themeStyles.appToolbarTabIndicator }
+                    attrs.value = props.appMode
+                    attrs.onChange = handleAppModeTabClick
+
+                    val tabClasses = muiClasses<TabClasses> {
+                        root = -themeStyles.appToolbarTab
+                        selected = -themeStyles.appToolbarTabSelected
+                    }
+                    Tab {
+                        attrs.classes = tabClasses
+                        attrs.value = AppMode.Show
+                        attrs.label = buildElement {
+                            appToolbarTab {
+                                attrs.currentAppMode = props.appMode
+                                attrs.value = AppMode.Show
+                                attrs.document = show
+                                attrs.documentManager = showManager
+                                attrs.onEditButtonClick = handleShowEditButtonClick
+                            }
                         }
                     }
-                }
-                Tab {
-                    attrs.classes = tabClasses
-                    attrs.value = AppMode.Scene
-                    attrs.label = buildElement {
-                        appToolbarTab {
-                            attrs.currentAppMode = props.appMode
-                            attrs.value = AppMode.Scene
-                            attrs.document = sceneManager.openScene
-                            attrs.documentManager = sceneManager
-                            attrs.onEditButtonClick = handleSceneEditButtonClick
+                    Tab {
+                        attrs.classes = tabClasses
+                        attrs.value = AppMode.Scene
+                        attrs.label = buildElement {
+                            appToolbarTab {
+                                attrs.currentAppMode = props.appMode
+                                attrs.value = AppMode.Scene
+                                attrs.document = sceneManager.openScene
+                                attrs.documentManager = sceneManager
+                                attrs.onEditButtonClick = handleSceneEditButtonClick
+                            }
                         }
                     }
                 }
