@@ -7,23 +7,19 @@ import baaahs.scene.EditingController
 import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
+import baaahs.scene.mutable.SceneBuilder
 import baaahs.ui.render
 import baaahs.ui.typographyH5
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import materialui.icon
-import mui.material.Button
-import mui.material.ButtonColor
-import mui.material.Card
-import mui.material.Container
-import mui.material.Typography
+import mui.material.*
 import react.Props
 import react.RBuilder
 import react.RHandler
 import react.dom.header
 import react.dom.html.ReactHTML.li
 import react.useContext
-import kotlin.collections.set
 
 private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>("ControllerConfigEditor") { props ->
     val appContext = useContext(appContext)
@@ -95,8 +91,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     header { +"Fixture Mappings" }
 
-    val tempModel = props.mutableScene.model.build().open()
-    val tempController = mutableControllerConfig.build()
+    val sceneBuilder = SceneBuilder()
+    val tempModel = props.mutableScene.build(sceneBuilder).open().model
+    val tempController = mutableControllerConfig.build(sceneBuilder)
     val fixturePreviews = tempController.buildFixturePreviews(tempModel)
     mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
         fixtureMappingEditor {

@@ -22,7 +22,7 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
     val styles = appContext.allStyles.controllerEditor
 
     val allEntities = buildMap {
-        props.mutableScene.model.build().open().visit { entity ->
+        props.mutableScene.build().open().model.visit { entity ->
             put(entity.name, entity)
         }
     }

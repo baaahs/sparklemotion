@@ -29,6 +29,10 @@ import baaahs.ui.View
 class MutableScene(
     baseScene: Scene
 ) : MutableDocument<Scene> {
+    constructor(title: String, block: MutableScene.() -> Unit = {}) : this(Scene(ModelData(title))) {
+        this.block()
+    }
+
     override var title
         get() = model.title
         set(value) { model.title = value }
@@ -45,14 +49,16 @@ class MutableScene(
         )
     )
 
-    override fun build(): Scene {
-        val sceneBuilder = SceneBuilder()
-        val modelData = model.build()
+    fun build(sceneBuilder: SceneBuilder): Scene {
         return Scene(
-            model = modelData,
+            model = model.build(sceneBuilder),
             entities = sceneBuilder.entityIds.all(),
             controllers = controllers.mapValues { (_, v) -> v.build(sceneBuilder) }
         )
+    }
+
+    override fun build(): Scene {
+        return build(SceneBuilder())
     }
 }
 
@@ -176,8 +182,8 @@ class MutableModel(baseModel: ModelData, entities: Map<EntityId, EntityData>) {
     var units = baseModel.units
     var initialViewingAngle = baseModel.initialViewingAngle
 
-    fun build(): ModelData {
-        return ModelData(title, entities.map { it.id }, units, initialViewingAngle)
+    fun build(sceneBuilder: SceneBuilder): ModelData {
+        return ModelData(title, entities.map { sceneBuilder.idFor(it.build()) }, units, initialViewingAngle)
     }
 
     fun findById(id: EntityId): MutableEntity? =

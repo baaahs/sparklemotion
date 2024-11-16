@@ -22,10 +22,13 @@ import kotlinx.css.padding
 import materialui.icon
 import mui.icons.material.Delete
 import mui.material.*
-import react.*
+import react.Props
+import react.RBuilder
+import react.RHandler
 import react.dom.div
 import react.dom.header
 import react.dom.i
+import react.useContext
 import styled.inlineStyles
 import web.dom.Element
 import web.dom.document
@@ -36,7 +39,8 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val styles = appContext.allStyles.modelEditor
     val editMode = observe(appContext.sceneManager.editMode)
 
-    val mutableModel = props.mutableScene.model
+    val mutableScene = props.mutableScene
+    val mutableModel = mutableScene.model
     val domOverlayExtension = memo {
         DomOverlayExtension { itemVisualizer ->
             document.createElement("div").also {
@@ -60,7 +64,8 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
     val lastSelectedEntity = ref<Model.Entity>(null)
 
     val visualizer = memo(entityAdapter, props.onEdit) {
-        ModelVisualEditor(mutableModel, appContext.clock, entityAdapter,
+        ModelVisualEditor(
+            mutableScene, appContext.clock, entityAdapter,
             listOf(extension { domOverlayExtension })
         ) {
             props.onEdit()
@@ -70,8 +75,8 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
             }
         }
     }
-    if (visualizer.mutableModel !== mutableModel) {
-        visualizer.mutableModel = mutableModel
+    if (visualizer.mutableScene !== mutableScene) {
+        visualizer.mutableScene = mutableScene
     }
     visualizer.refresh()
 
@@ -100,13 +105,13 @@ private val ModelEditorView = xComponent<ModelEditorProps>("ModelEditor") { prop
         forceRender()
     }
 
-    val handleAddEntity by handler(mutableModel, props.onEdit) { newEntityData: EntityData ->
+    val handleAddEntity by handler(mutableScene, props.onEdit) { newEntityData: EntityData ->
         val newMutableEntity = newEntityData.edit()
         mutableModel.entities.add(newMutableEntity)
         props.onEdit()
     }
 
-    val handleDeleteEntity by handler(mutableModel, selectedMutableEntity) {
+    val handleDeleteEntity by handler(mutableScene, selectedMutableEntity) {
         selectedMutableEntity?.let { mutableModel.delete(it) }
         visualizer.selectedEntity = null
         props.onEdit()
