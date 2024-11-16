@@ -22,7 +22,7 @@ import react.dom.span
 private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = true) { props ->
     val appContext = useContext(appContext)
     val theme = useTheme<Theme>()
-    val isSmall = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
+    val isSmallScreen = useMediaQuery(theme.breakpoints.down(Breakpoint.sm))
     val themeStyles = appContext.allStyles.appUi
     val documentManager = observe(props.documentManager)
     val openDocument = documentManager.openDocument
@@ -86,7 +86,7 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
             }
         }
 
-        if (isSmall) {
+        if (isSmallScreen) {
             // Otherwise the document info is shown in the app toolbar.
 
             Box {
@@ -110,6 +110,8 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
         Divider {}
 
         List {
+            attrs.dense = isSmallScreen
+
             documentMenu {
                 attrs.documentManager = documentManager
             }
@@ -144,6 +146,8 @@ private val AppDrawerView = xComponent<AppDrawerProps>("AppDrawer", isPure = tru
         Divider {}
 
         List {
+            attrs.dense = isSmallScreen
+
             ListItem {
                 FormControlLabel {
                     attrs.control = buildElement {
