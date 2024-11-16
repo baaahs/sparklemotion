@@ -1,5 +1,6 @@
 package baaahs.scene
 
+import baaahs.controller.ControllerId
 import baaahs.ui.Icon
 import baaahs.ui.View
 import baaahs.visualizer.entity.visualizerBuilder
@@ -12,6 +13,7 @@ abstract class ControllerEditorPanel<T: MutableControllerConfig>(
 }
 
 class EditingController<T: MutableControllerConfig>(
+    val controllerId: ControllerId,
     val config: T,
     val onChange: () -> Unit
 ) {

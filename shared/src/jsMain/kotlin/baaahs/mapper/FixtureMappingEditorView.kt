@@ -73,20 +73,12 @@ private val FixtureMappingEditorView = xComponent<FixtureMappingEditorProps>("Fi
                     attrs.label = buildElement { +"Error: ${fixturePreview.e.message}" }
                 }
             } else {
-                fixturePreview.fixtureOptions.summary().forEach { (title, value) ->
-                    Chip {
-                        attrs.variant = ChipVariant.outlined
-                        attrs.title = title
-                        attrs.label = buildElement { +(value ?: "?") }
-                    }
+                configPreview {
+                    attrs.configPreview = fixturePreview.fixtureOptions
                 }
                 +" | "
-                fixturePreview.transportConfig.summary().forEach { (title, value) ->
-                    Chip {
-                        attrs.variant = ChipVariant.outlined
-                        attrs.title = title
-                        attrs.label = buildElement { +(value ?: "?") }
-                    }
+                configPreview {
+                    attrs.configPreview = fixturePreview.transportConfig
                 }
             }
         }

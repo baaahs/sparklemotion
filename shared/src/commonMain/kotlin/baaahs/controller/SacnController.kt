@@ -25,7 +25,7 @@ class SacnController(
         sacnLink.lastErrorAt
     )
     override val transportType: TransportType
-        get() = DmxTransport
+        get() = DmxTransportType
 
     private val dmxUniverses = DmxUniverses(universeCount)
     private var dynamicDmxAllocator: DynamicDmxAllocator? = null
