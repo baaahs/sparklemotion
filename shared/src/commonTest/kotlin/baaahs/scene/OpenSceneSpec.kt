@@ -1,7 +1,7 @@
 package baaahs.scene
 
 import baaahs.controllers.FakeController
-import baaahs.controllers.FakeControllerManager
+import baaahs.controllers.FakeControllerConfig
 import baaahs.controllers.FakeMappingManager
 import baaahs.describe
 import baaahs.device.PixelArrayDevice
@@ -28,7 +28,7 @@ class OpenSceneSpec : DescribeSpec({
             val controllerFixtureMappingData by value<FixtureMappingData?> { null }
             val controllerFixtures by value { listOfNotNull(controllerFixtureMappingData) }
             val controllerConfig by value<ControllerConfig> {
-                FakeControllerManager.Config(controllers = listOf(controller), fixtures = controllerFixtures)
+                FakeControllerConfig(controllers = listOf(controller), fixtures = controllerFixtures)
             }
             val legacyMappingData by value<FixtureMapping?> { null }
             val mappingManager by value {
