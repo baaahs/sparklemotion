@@ -24,17 +24,15 @@ class OpenSceneSpec : DescribeSpec({
             val surface123 by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = 123) }
             val model by value { modelForTest(listOfNotNull(surface123)) }
             val transportConfig by value<TransportConfig?> { DmxTransportConfig(0) }
-            val controller by value { FakeController("fake", null, null) }
             val controllerFixtureMappingData by value<FixtureMappingData?> { null }
             val controllerFixtures by value { listOfNotNull(controllerFixtureMappingData) }
-            val controllerConfig by value<ControllerConfig> {
-                FakeControllerConfig(controllers = listOf(controller), fixtures = controllerFixtures)
-            }
+            val controllerConfig by value { FakeControllerConfig("fake", fixtures = controllerFixtures) }
             val legacyMappingData by value<FixtureMapping?> { null }
             val mappingManager by value {
-                FakeMappingManager(mapOf(controller.controllerId to listOfNotNull(legacyMappingData)))
+                FakeMappingManager(mapOf(controllerConfig.controllerId to listOfNotNull(legacyMappingData)))
             }
-            val openScene by value { model.openSceneForModel(mapOf(controller.controllerId to controllerConfig)) }
+            val openScene by value { model.openSceneForModel(mapOf(controllerConfig.controllerId to controllerConfig)) }
+            val controller by value { FakeController(controllerConfig.controllerId.id) }
 
             val relevantMappings by value {
                 openScene.relevantFixtureMappings(controller, mappingManager)
