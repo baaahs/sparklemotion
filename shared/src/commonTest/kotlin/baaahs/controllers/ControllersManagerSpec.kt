@@ -1,38 +1,34 @@
 package baaahs.controllers
 
-import baaahs.controller.*
+import baaahs.controller.ControllersManager
 import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.MovingHeadDevice
 import baaahs.device.PixelArrayDevice
 import baaahs.device.PixelFormat
-import baaahs.dmx.DmxTransportConfig
-import baaahs.dmx.DmxTransportType
 import baaahs.dmx.Shenzarpy
 import baaahs.fakeModel
-import baaahs.fixtures.*
+import baaahs.fixtures.Fixture
+import baaahs.fixtures.FixtureListener
+import baaahs.fixtures.FixtureMapping
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.gl.render.FixtureTypeForTest
 import baaahs.glsl.LinearSurfacePixelStrategy
-import baaahs.io.ByteArrayWriter
 import baaahs.kotest.value
-import baaahs.mapping.MappingManager
 import baaahs.model.FakeModelEntity
 import baaahs.model.Model
 import baaahs.model.MovingHead
 import baaahs.only
 import baaahs.openSceneForModel
-import baaahs.scene.*
-import baaahs.ui.Observable
+import baaahs.scene.SceneMonitor
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.properties.shouldHaveValue
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.datetime.Instant
 import kotlin.random.Random
 
 @Suppress("unused")
@@ -49,7 +45,7 @@ class ControllersManagerSpec : DescribeSpec({
             )
         }
         val fakeControllerConfig by value {
-            FakeControllerManager.Config(
+            FakeControllerConfig(
                 fakeController.controllerId.controllerType, fakeController.controllerId.id,
                 listOf(fakeController), emptyList()
             )
@@ -311,125 +307,6 @@ class ControllersManagerSpec : DescribeSpec({
         }
     }
 })
-
-class FakeMappingManager(
-    data: Map<ControllerId, List<FixtureMapping>> = mutableMapOf(),
-    dataHasLoaded: Boolean = true
-) : Observable(), MappingManager {
-    val data = data.toMutableMap()
-    override var dataHasLoaded: Boolean = dataHasLoaded
-        set(value) {
-            field = value
-            notifyChanged()
-        }
-
-    override suspend fun start(): Unit = TODO("not implemented")
-
-    override fun findMappings(controllerId: ControllerId): List<FixtureMapping> {
-        return data[controllerId] ?: emptyList()
-    }
-
-    override fun getAllControllerMappings(): Map<ControllerId, List<FixtureMapping>> {
-        TODO("not implemented")
-    }
-}
-
-class FakeControllerManager(
-    startingControllers: List<FakeController> = emptyList()
-) : BaseControllerManager("FAKE") {
-    var hasStarted: Boolean = false
-    val controllers = startingControllers.toMutableList()
-
-    override fun start() {
-        if (hasStarted) error("Already started!")
-        hasStarted = true
-        controllers.forEach { notifyListeners { onAdd(it) } }
-    }
-
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
-        if (hasStarted) {
-            controllers.forEach { notifyListeners { onRemove(it) } }
-        }
-
-        controllers.clear()
-
-        controllers.addAll(controllerConfigs.values.flatMap { config -> (config.controllerConfig as Config).controllers })
-        if (hasStarted) {
-            controllers.forEach { notifyListeners { onAdd(it) } }
-        }
-    }
-
-    override fun stop() {
-        TODO("not implemented")
-    }
-
-    class Config(
-        override val controllerType: String = "FAKE",
-        override val title: String = "fake controller",
-        val controllers: List<FakeController> = emptyList(),
-        override val fixtures: List<FixtureMappingData> = emptyList(),
-        override val defaultFixtureOptions: FixtureOptions? = null,
-        override val defaultTransportConfig: TransportConfig? = null
-    ) : ControllerConfig {
-        override val emptyTransportConfig: TransportConfig
-            get() = DmxTransportConfig()
-
-        override fun edit(): MutableControllerConfig = TODO("not implemented")
-        override fun createFixturePreview(
-            fixtureOptions: FixtureOptions,
-            transportConfig: TransportConfig
-        ): FixturePreview = TODO("not implemented")
-    }
-}
-
-class FakeController(
-    val name: String,
-    override val defaultFixtureOptions: FixtureOptions? = null,
-    override val defaultTransportConfig: TransportConfig? = null,
-    private val anonymousFixtureMapping: FixtureMapping? = null
-) : Controller {
-    override val state: ControllerState = object : ControllerState() {
-        override val title: String get() = TODO("not implemented")
-        override val address: String get() = TODO("not implemented")
-        override val onlineSince: Instant? get() = TODO("not implemented")
-        override val firmwareVersion: String get() = TODO("not implemented")
-        override val lastErrorMessage: String get() = TODO("Not yet implemented")
-        override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
-    }
-    override val transportType: TransportType
-        get() = DmxTransportType
-
-    lateinit var transport: FakeTransport
-    override val controllerId: ControllerId = ControllerId(type, name)
-    override fun createTransport(
-        entity: Model.Entity?,
-        fixtureConfig: FixtureConfig,
-        transportConfig: TransportConfig?
-    ): Transport = FakeTransport(transportConfig).also { transport = it }
-
-    override fun getAnonymousFixtureMappings(): List<FixtureMapping> = listOfNotNull(anonymousFixtureMapping)
-
-    inner class FakeTransport(
-        override val config: TransportConfig?
-    ) : Transport {
-        override val name: String get() = this@FakeController.name
-        override val controller: Controller
-            get() = this@FakeController
-
-        override fun deliverBytes(byteArray: ByteArray) {}
-
-        override fun deliverComponents(
-            componentCount: Int,
-            bytesPerComponent: Int,
-            fn: (componentIndex: Int, buf: ByteArrayWriter) -> Unit
-        ) {
-        }
-    }
-
-    companion object {
-        const val type = "FAKE"
-    }
-}
 
 class FakeFixtureListener : FixtureListener {
     val changes = mutableListOf<Changes>()

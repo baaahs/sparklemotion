@@ -17,13 +17,11 @@ import baaahs.model.LightBar
 import baaahs.net.TestNetwork
 import baaahs.scene.ControllerConfig
 import baaahs.scene.FixtureMappingData
-import baaahs.scene.OpenControllerConfig
-import baaahs.scene.OpenScene
 import baaahs.scene.SceneMonitor
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @Suppress("unused")
