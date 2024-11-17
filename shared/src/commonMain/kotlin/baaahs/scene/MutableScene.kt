@@ -6,7 +6,6 @@ import baaahs.app.ui.editor.MutableEditable
 import baaahs.camelize
 import baaahs.controller.*
 import baaahs.device.FixtureType
-import baaahs.dmx.DirectDmxController
 import baaahs.dmx.DirectDmxControllerConfig
 import baaahs.dmx.DmxManager
 import baaahs.dmx.DmxTransportType
@@ -70,9 +69,12 @@ interface MutableControllerConfig {
     var defaultTransportConfig: MutableTransportConfig?
     val supportedTransportTypes: List<TransportType>
 
+    fun suggestId(): String =
+        title.camelize()
+    fun matches(controllerMatcher: ControllerMatcher): Boolean =
+        controllerMatcher.matches(title, controllerMeta.controllerTypeName)
+
     fun build(sceneBuilder: SceneBuilder): ControllerConfig
-    fun suggestId(): String
-    fun matches(controllerMatcher: ControllerMatcher): Boolean
     fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>>
 }
 
@@ -95,11 +97,6 @@ class MutableBrainControllerConfig(config: BrainControllerConfig) : MutableContr
             title, address, fixtures.map { it.build() },
             defaultFixtureOptions?.build(), defaultTransportConfig?.build()
         )
-
-    override fun suggestId(): String = title.camelize()
-
-    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
-        controllerMatcher.matches(title, BrainManager.controllerTypeName)
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
         listOf(BrainControllerEditorPanel)
@@ -124,11 +121,6 @@ class MutableDirectDmxControllerConfig(config: DirectDmxControllerConfig) : Muta
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
-
-    override fun suggestId(): String = title.camelize()
-
-    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
-        controllerMatcher.matches(title, DirectDmxController.controllerType)
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
         listOf(DirectDmxControllerEditorPanel)
@@ -155,11 +147,6 @@ class MutableSacnControllerConfig(config: SacnControllerConfig) : MutableControl
             defaultFixtureOptions?.build(),
             defaultTransportConfig?.build()
         )
-
-    override fun suggestId(): String = title.camelize()
-
-    override fun matches(controllerMatcher: ControllerMatcher): Boolean =
-        controllerMatcher.matches(title, SacnManager.controllerTypeName)
 
     override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> =
         listOf(SacnControllerEditorPanel)

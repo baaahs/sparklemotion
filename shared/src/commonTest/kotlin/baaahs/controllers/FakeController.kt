@@ -1,18 +1,12 @@
 package baaahs.controllers
 
-import baaahs.controller.BaseControllerManager
-import baaahs.controller.Controller
-import baaahs.controller.ControllerId
-import baaahs.controller.ControllerState
-import baaahs.dmx.DmxTransportConfig
-import baaahs.dmx.DmxTransportType
+import baaahs.controller.*
 import baaahs.fixtures.*
 import baaahs.io.ByteArrayWriter
 import baaahs.model.Model
-import baaahs.scene.ControllerConfig
-import baaahs.scene.FixtureMappingData
-import baaahs.scene.MutableControllerConfig
-import baaahs.scene.OpenControllerConfig
+import baaahs.scene.*
+import baaahs.scene.mutable.SceneBuilder
+import baaahs.ui.View
 import kotlinx.datetime.Instant
 
 class FakeController(
@@ -30,7 +24,7 @@ class FakeController(
         override val lastErrorAt: Instant? get() = TODO("Not yet implemented")
     }
     override val transportType: TransportType
-        get() = DmxTransportType
+        get() = FakeTransportType
 
     lateinit var transport: FakeTransport
     override val controllerId: ControllerId = ControllerId(type, name)
@@ -64,22 +58,106 @@ class FakeController(
     }
 }
 
+data class FakeTransportConfig(
+    val startChannel: Int? = null
+) : TransportConfig {
+    override val transportType: TransportType
+        get() = FakeTransportType
+
+    override fun edit(): MutableTransportConfig =
+        MutableFakeTransportConfig(this)
+
+    override fun plus(other: TransportConfig?): TransportConfig =
+        if (other == null) this
+        else plus(other as FakeTransportConfig)
+
+    /** Merges two configs, preferring values from [other]. */
+    operator fun plus(other: FakeTransportConfig): FakeTransportConfig = FakeTransportConfig(
+        other.startChannel ?: startChannel
+    )
+
+    override fun preview(): ConfigPreview = object : ConfigPreview {
+        override fun summary(): List<Pair<String, String?>> = listOf(
+            "Start Channel" to startChannel?.toString()
+        )
+    }
+}
+
+class MutableFakeTransportConfig(config: FakeTransportConfig) : MutableTransportConfig {
+    override val transportType: TransportType
+        get() = FakeTransportType
+
+    var startChannel: Int? = config.startChannel
+
+    override fun build(): TransportConfig =
+        FakeTransportConfig(startChannel)
+
+    override fun getEditorView(
+        editingController: EditingController<*>
+    ): View = TODO()
+
+    override fun toSummaryString(): String =
+        "$startChannel"
+}
+
+object FakeTransportType : TransportType {
+    override val id: String
+        get() = "FAKE"
+    override val title: String
+        get() = "Fake"
+    override val emptyConfig: TransportConfig
+        get() = FakeTransportConfig()
+    override val isConfigurable: Boolean
+        get() = true
+}
+
 class FakeControllerConfig(
-    override val controllerType: String = "FAKE",
     override val title: String = "fake controller",
-    val controllers: List<FakeController> = emptyList(),
     override val fixtures: List<FixtureMappingData> = emptyList(),
     override val defaultFixtureOptions: FixtureOptions? = null,
-    override val defaultTransportConfig: TransportConfig? = null
+    override val defaultTransportConfig: TransportConfig? = null,
+    val anonymousFixtureMapping: FixtureMapping? = null
 ) : ControllerConfig {
+    override val controllerType: String
+        get() = FakeControllerManager.controllerTypeName
     override val emptyTransportConfig: TransportConfig
-        get() = DmxTransportConfig()
+        get() = FakeTransportConfig()
 
-    override fun edit(): MutableControllerConfig = TODO("not implemented")
+    val controllerId = ControllerId(controllerType, title)
+
+    override fun edit(): MutableControllerConfig =
+        MutableFakeControllerConfig(this)
+
     override fun createFixturePreview(
         fixtureOptions: FixtureOptions,
         transportConfig: TransportConfig
     ): FixturePreview = TODO("not implemented")
+}
+
+class MutableFakeControllerConfig(
+    config: FakeControllerConfig
+) : MutableControllerConfig {
+    override val controllerMeta: ControllerManager.Meta = FakeControllerManager
+    override var title: String = config.title
+    override val fixtures: MutableList<MutableFixtureMapping> =
+        config.fixtures.map { it.edit() }.toMutableList()
+    override var defaultFixtureOptions: MutableFixtureOptions? =
+        config.defaultFixtureOptions?.edit()
+    override var defaultTransportConfig: MutableTransportConfig? =
+        config.defaultTransportConfig?.edit()
+    override val supportedTransportTypes: List<TransportType>
+        get() = listOf(FakeTransportType)
+
+    override fun build(sceneBuilder: SceneBuilder): FakeControllerConfig =
+        FakeControllerConfig(
+            title, fixtures.map { it.build() },
+            defaultFixtureOptions?.build(),
+            defaultTransportConfig?.build()
+        )
+
+    override fun getEditorPanels(editingController: EditingController<*>): List<ControllerEditorPanel<*>> {
+        TODO("not implemented")
+    }
 }
 
 class FakeControllerManager(
@@ -101,7 +179,11 @@ class FakeControllerManager(
 
         controllers.clear()
 
-        controllers.addAll(controllerConfigs.values.flatMap { config -> (config.controllerConfig as FakeControllerConfig).controllers })
+        controllers.addAll(controllerConfigs.values.map { config ->
+            with (config.controllerConfig as FakeControllerConfig) {
+                FakeController(title, defaultFixtureOptions, defaultTransportConfig, anonymousFixtureMapping)
+            }
+        })
         if (hasStarted) {
             controllers.forEach { notifyListeners { onAdd(it) } }
         }
@@ -109,5 +191,18 @@ class FakeControllerManager(
 
     override fun stop() {
         TODO("not implemented")
+    }
+
+    companion object : ControllerManager.Meta {
+        override val controllerTypeName: String
+            get() = "FAKE"
+
+        override fun createMutableControllerConfigFor(
+            controllerId: ControllerId?,
+            state: ControllerState?
+        ): MutableControllerConfig {
+            val title = state?.title ?: controllerId?.id ?: "Fake"
+            return MutableFakeControllerConfig(FakeControllerConfig(title))
+        }
     }
 }
