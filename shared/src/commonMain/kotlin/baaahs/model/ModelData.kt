@@ -1,7 +1,11 @@
 package baaahs.model
 
+import baaahs.camelize
 import baaahs.dmx.Shenzarpy
-import baaahs.geom.*
+import baaahs.geom.EulerAngle
+import baaahs.geom.Matrix4F
+import baaahs.geom.Vector3F
+import baaahs.geom.compose
 import baaahs.io.Fs
 import baaahs.io.getResource
 import baaahs.model.importers.ObjImporter
@@ -15,16 +19,10 @@ import kotlinx.serialization.Transient
 @Serializable
 data class ModelData(
     val title: String,
-    val entities: List<EntityData>,
+    val entityIds: List<EntityId> = emptyList(),
     val units: ModelUnit = ModelUnit.Meters,
     val initialViewingAngle: Float = 0f
-) {
-    fun edit(): MutableModel =
-        MutableModel(this)
-
-    fun open(): Model =
-        Model(title, entities.map { entity -> entity.open(Matrix4F.identity) }, units, initialViewingAngle)
-}
+)
 
 enum class ModelUnit(val display: String, val inCentimeters: Double) {
     Inches("\"", 2.54),
@@ -49,13 +47,18 @@ enum class ModelUnit(val display: String, val inCentimeters: Double) {
 }
 
 @Polymorphic
-sealed interface EntityData {
+interface EntityData {
     val title: String
     val description: String?
     val position: Vector3F
     val rotation: EulerAngle
     val scale: Vector3F
     @Transient val id: EntityId
+
+    val transformation: Matrix4F
+        get() = Matrix4F.compose(position, rotation, scale)
+
+    fun suggestId(): String = title.camelize()
 
     fun edit(): MutableEntity
 
@@ -232,13 +235,32 @@ data class SurfaceDataForTest(
     val vertices: List<Vector3F> = emptyList()
 ) : EntityData {
     override fun edit(): MutableEntity =
-        TODO("MutableSurfaceDataForTest not implemented yet!")
+        MutableSurfaceDataForTest(title, description, position, rotation, scale, id, expectedPixelCount, vertices.toMutableList())
 
-    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Entity =
+    override fun open(position: Vector3F, rotation: EulerAngle, scale: Vector3F): Model.Surface =
         Model.Surface(
             title, description, expectedPixelCount, emptyList(), emptyList(), Model.Geometry(vertices),
             position, rotation, scale
         )
+}
+
+class MutableSurfaceDataForTest(
+    title: String,
+    description: String?,
+    position: Vector3F,
+    rotation: EulerAngle,
+    scale: Vector3F,
+    id: EntityId,
+    var expectedPixelCount: Int?,
+    var vertices: MutableList<Vector3F>
+) : MutableEntity(title, description, position, rotation, scale, id) {
+
+    override fun build(): SurfaceDataForTest =
+        SurfaceDataForTest(title, description, position, rotation, scale, id, expectedPixelCount, vertices)
+
+    override fun getEditorPanels(): List<EntityEditorPanel<out MutableEntity>> {
+        TODO("not implemented")
+    }
 }
 
 @Polymorphic

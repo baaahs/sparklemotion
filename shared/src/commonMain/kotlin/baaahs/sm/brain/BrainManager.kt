@@ -41,7 +41,7 @@ class BrainManager(
     private val clock: Clock,
     coroutineContext: CoroutineContext
 ) : BaseControllerManager(controllerTypeName) {
-    private val controllerConfigs: MutableMap<ControllerId, ControllerConfig> = mutableMapOf()
+    private val controllerConfigs: MutableMap<ControllerId, OpenControllerConfig<*>> = mutableMapOf()
     private var isStartedUp = false
     private var mapperMessageCallback: ((MapperHelloMessage) -> Unit)? = null
 
@@ -68,7 +68,7 @@ class BrainManager(
         mapperMessageCallback = handler
     }
 
-    override fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>) {
+    override fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>) {
         this.controllerConfigs.clear() // TODO: should apply any changes.
         this.controllerConfigs.putAll(controllerConfigs)
     }
@@ -305,12 +305,13 @@ class BrainManager(
         override fun createMutableControllerConfigFor(
             controllerId: ControllerId?,
             state: ControllerState?
-        ): MutableControllerConfig {
-            val title = state?.title
-                ?: controllerId?.id
-                ?: "brainXXXX"
-            return MutableBrainControllerConfig(BrainControllerConfig(title))
-        }
+        ): MutableControllerConfig =
+            MutableBrainControllerConfig(
+                state?.title
+                    ?: controllerId?.id
+                    ?: "brainXXXX",
+                null, mutableListOf(), null, null
+            )
     }
 }
 
@@ -344,8 +345,10 @@ data class BrainControllerConfig(
     override val emptyTransportConfig: TransportConfig
         get() = BrainTransportConfig()
 
-    override fun edit(): MutableControllerConfig =
-        MutableBrainControllerConfig(this)
+    override fun edit(fixtureMappings: MutableList<MutableFixtureMapping>): MutableControllerConfig =
+        MutableBrainControllerConfig(
+            title, address, fixtureMappings, defaultFixtureOptions?.edit(), defaultTransportConfig?.edit()
+        )
 
     override fun createFixturePreview(fixtureOptions: FixtureOptions, transportConfig: TransportConfig): FixturePreview {
         return object : FixturePreview {

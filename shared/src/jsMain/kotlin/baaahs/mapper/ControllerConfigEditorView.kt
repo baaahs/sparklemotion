@@ -2,38 +2,22 @@ package baaahs.mapper
 
 import baaahs.app.ui.appContext
 import baaahs.controller.ControllerId
-import baaahs.device.PixelArrayDevice
 import baaahs.scene.EditingController
-import baaahs.scene.FixtureMappingData
 import baaahs.scene.MutableFixtureMapping
 import baaahs.scene.MutableScene
+import baaahs.scene.SceneOpener
+import baaahs.scene.mutable.SceneBuilder
 import baaahs.ui.render
 import baaahs.ui.unaryMinus
 import baaahs.ui.xComponent
 import materialui.icon
 import mui.icons.material.ExpandMore
-import mui.material.Accordion
-import mui.material.AccordionDetails
-import mui.material.AccordionSummary
-import mui.material.Button
-import mui.material.ButtonColor
-import mui.material.Container
-import mui.material.Size
-import mui.material.Table
-import mui.material.TableCell
-import mui.material.TableHead
-import mui.material.TableRow
-import mui.material.Typography
+import mui.material.*
 import mui.material.styles.Theme
 import mui.material.styles.useTheme
 import mui.system.sx
-import react.Props
-import react.RBuilder
-import react.RHandler
-import react.create
-import react.useContext
+import react.*
 import web.cssom.em
-import kotlin.collections.set
 
 private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>("ControllerConfigEditor") { props ->
     val appContext = useContext(appContext)
@@ -43,10 +27,9 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
     val styles = appContext.allStyles.controllerEditor
     val theme = useTheme<Theme>()
 
-    val state = sceneEditorClient.controllerStates[props.controllerId]
     val mutableControllerConfig = memo(props.mutableScene, props.controllerId) {
         props.mutableScene.controllers[props.controllerId]
-            ?: sceneEditorClient.createMutableControllerConfigFor(props.controllerId, state)
+            ?: sceneEditorClient.createMutableControllerConfigFor(props.controllerId)
                 .also { props.mutableScene.controllers[props.controllerId] = it }
     }
 
@@ -54,7 +37,7 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
 
     val recentlyAddedFixtureMappingRef = ref<MutableFixtureMapping>(null)
     val handleNewFixtureMappingClick by mouseEventHandler(mutableControllerConfig, props.onEdit) {
-        val newMapping = MutableFixtureMapping(FixtureMappingData(fixtureOptions = PixelArrayDevice.Options()))
+        val newMapping = MutableFixtureMapping(null, null, null)
         mutableControllerConfig.fixtures.add(newMapping)
         recentlyAddedFixtureMappingRef.current = newMapping
         props.onEdit()
@@ -124,9 +107,12 @@ private val ControllerConfigEditorView = xComponent<ControllerConfigEditorProps>
             }
 
             AccordionDetails {
-                val tempModel = props.mutableScene.model.build().open()
-                val tempController = mutableControllerConfig.build()
-                val fixturePreviews = tempController.buildFixturePreviews(tempModel)
+                val sceneBuilder = SceneBuilder()
+    val tempScene = props.mutableScene.build(sceneBuilder)
+                val tempController = mutableControllerConfig.build(sceneBuilder)
+    val sceneOpener = SceneOpener(tempScene)
+        .also { it.open() }
+                val fixturePreviews = tempController.buildFixturePreviews(sceneOpener)
                 mutableControllerConfig.fixtures.zip(fixturePreviews).forEach { (mutableFixtureMapping, fixturePreview) ->
                     fixtureMappingEditor {
                         attrs.mutableScene = props.mutableScene

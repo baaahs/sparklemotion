@@ -32,7 +32,6 @@ import baaahs.sim.BridgeClient
 import baaahs.sm.brain.BrainControllerConfig
 import baaahs.sm.brain.BrainManager
 import baaahs.sm.brain.BrainTransportConfig
-import baaahs.sm.brain.BrainTransportType
 import baaahs.sm.server.PinkyArgs
 import baaahs.util.Clock
 import baaahs.util.Logger
@@ -390,11 +389,13 @@ sealed class Plugins(
             .mapNotNull { plugin -> plugin.getSettingsPanel() }
     }
 
-    fun createMutableControllerConfigFor(controllerId: ControllerId, state: ControllerState?): MutableControllerConfig {
+    fun createMutableControllerConfigFor(
+        controllerId: ControllerId,
+        state: ControllerState?
+    ): MutableControllerConfig {
         val controllerManager = controllers.all.find { it.controllerTypeName == controllerId.controllerType }
             ?: error("Unknown controller type ${controllerId.controllerType}.")
         return controllerManager.createMutableControllerConfigFor(controllerId, state)
-
     }
 
     // TODO: We should report errors back somehow.

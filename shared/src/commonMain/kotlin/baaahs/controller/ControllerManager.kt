@@ -1,8 +1,8 @@
 package baaahs.controller
 
 import baaahs.fixtures.FixtureOptions
-import baaahs.scene.ControllerConfig
 import baaahs.scene.MutableControllerConfig
+import baaahs.scene.OpenControllerConfig
 
 /** A ControllerManager discovers and registers controllers with its [ControllerListener]. */
 interface ControllerManager {
@@ -10,7 +10,7 @@ interface ControllerManager {
 
     fun addListener(controllerListener: ControllerListener)
     fun removeListener(controllerListener: ControllerListener)
-    fun onConfigChange(controllerConfigs: Map<ControllerId, ControllerConfig>)
+    fun onConfigChange(controllerConfigs: Map<ControllerId, OpenControllerConfig<*>>)
     fun start()
     fun reset() {}
     fun stop()

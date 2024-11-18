@@ -2,10 +2,10 @@ package baaahs.fixtures
 
 import baaahs.controller.Controller
 import baaahs.controllers.FakeController
+import baaahs.controllers.FakeTransportConfig
 import baaahs.describe
 import baaahs.device.EnumeratedPixelLocations
 import baaahs.device.PixelArrayDevice
-import baaahs.dmx.DmxTransportConfig
 import baaahs.geom.Vector3F
 import baaahs.gl.override
 import baaahs.kotest.value
@@ -14,8 +14,8 @@ import baaahs.model.Model
 import baaahs.modelForTest
 import baaahs.testModelSurface
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.*
 import io.kotest.matchers.properties.shouldHaveValue
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 
 @Suppress("unused")
@@ -25,7 +25,7 @@ class FixtureMappingSpec : DescribeSpec({
             val entity by value<Model.Entity?> { testModelSurface("surface", expectedPixelCount = null) }
             val model by value { modelForTest(listOfNotNull(entity)) }
             val mappingFixtureOptions by value<FixtureOptions> { PixelArrayDevice.Options() }
-            val mappingTransportConfig by value<TransportConfig?> { DmxTransportConfig(777) }
+            val mappingTransportConfig by value<TransportConfig?> { FakeTransportConfig(777) }
             val mapping by value { FixtureMapping(entity, mappingFixtureOptions, mappingTransportConfig) }
             val controllerDefaultFixtureOptions by value<FixtureOptions?> { null }
             val controllerDefaultTransportConfig by value<TransportConfig?> { null }
@@ -43,7 +43,7 @@ class FixtureMappingSpec : DescribeSpec({
                         it::pixelLocations.shouldHaveValue(EnumeratedPixelLocations())
                     }
 
-                    fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                    fixture.transport.config.shouldBeTypeOf<FakeTransportConfig> {
                         it::startChannel.shouldHaveValue(777)
                     }
                 }
@@ -116,10 +116,10 @@ class FixtureMappingSpec : DescribeSpec({
                 }
 
                 context("whose controller has a default transport config") {
-                    override(controllerDefaultTransportConfig) { DmxTransportConfig(555) }
+                    override(controllerDefaultTransportConfig) { FakeTransportConfig(555) }
 
                     it("the mapping's config takes precedence") {
-                        fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                        fixture.transport.config.shouldBeTypeOf<FakeTransportConfig> {
                             it::startChannel shouldHaveValue 777
                         }
                     }
@@ -128,7 +128,7 @@ class FixtureMappingSpec : DescribeSpec({
                         override(mappingTransportConfig) { null }
 
                         it("the default config is used") {
-                            fixture.transport.config.shouldBeTypeOf<DmxTransportConfig> {
+                            fixture.transport.config.shouldBeTypeOf<FakeTransportConfig> {
                                 it::startChannel shouldHaveValue 555
                             }
                         }
