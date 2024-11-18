@@ -9,6 +9,7 @@ import io.kotest.core.spec.style.scopes.RootScope
 import io.kotest.core.test.TestCase
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 object LetValueExtension {
@@ -36,16 +37,16 @@ object RunContext {
         containerScopeNodes.getOrPut(containerScope) { ContainerScopeNode(containerScope) }
 }
 
-fun <T> RootScope.value(factory: () -> T): LetValue.PropertyCreator<T> {
-    return LetValueCreator(factory, RunContext.getRootScopeNode(this), { finalizers.add(it) })
+inline fun <reified T> RootScope.value(noinline factory: () -> T): LetValue.PropertyCreator<T> {
+    return LetValueCreator(factory, RunContext.getRootScopeNode(this), T::class, { finalizers.add(it) })
 }
 
 fun <T> RootScope.value(letValue: T, factory: () -> T) {
     LetValueGetter.override(RunContext.getRootScopeNode(this), factory)
 }
 
-fun <T> ContainerScope.value(factory: () -> T): LetValue.PropertyCreator<T> {
-    return LetValueCreator(factory, RunContext.getContainerScopeNode(this), { finalizers.add(it) })
+inline fun <reified T> ContainerScope.value(noinline factory: () -> T): LetValue.PropertyCreator<T> {
+    return LetValueCreator(factory, RunContext.getContainerScopeNode(this), T::class, { finalizers.add(it) })
 }
 
 fun <T> ContainerScope.value(letValue: T, factory: () -> T) {
@@ -123,14 +124,22 @@ class ContainerScopeNode(val containerScope: ContainerScope) : Node {
 }
 
 class LetValueCreator<T>(
-    val factory: () -> T, val node: Node, val afterGroupDeclaration: NestLevel.(() -> Unit) -> Unit
+    val factory: () -> T,
+    val node: Node,
+    val valueClass: KClass<*>,
+    val afterGroupDeclaration: NestLevel.(() -> Unit) -> Unit
 ) : LetValue.PropertyCreator<T> {
 
     override fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<Any?, T> =
-        LetValueGetter(factory, node, property.name)
+        LetValueGetter(factory, node, property.name, valueClass)
 }
 
-class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : ReadOnlyProperty<Any?, T> {
+class LetValueGetter<T>(
+    baseFactory: () -> T,
+    node: Node,
+    val name: String,
+    val valueClass: KClass<*>
+) : ReadOnlyProperty<Any?, T> {
     private val paths = hashMapOf(node.testCase to baseFactory)
 
     private var initializedForTest = false
@@ -164,10 +173,20 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
         logger.debug { "For $name, we use value from ${searchPath?.descriptor?.path()}." }
         val fn = paths[searchPath]
             ?: throw IllegalStateException("no let value for ${LetValuesState.currentTestCase}")
-        return fn().also {
-            valueForTest = it
-            initializedForTest = true
+        return try {
+            fn()
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to calculate value for \"$name\"." }
+            throw e
         }
+            .also {
+                valueForTest = it
+                initializedForTest = true
+
+                if (it != null && !valueClass.isInstance(it)) {
+                    throw Exception("Calculated value for \"$name\" is not of type $valueClass")
+                }
+            }
     }
 
     fun override(node: Node, factory: () -> T) {
@@ -212,7 +231,7 @@ class LetValueGetter<T>(baseFactory: () -> T, node: Node, val name: String) : Re
 
 @ThreadLocal
 private object LetValuesState {
-    internal var current: LetValueGetter<*>? = null
+    var current: LetValueGetter<*>? = null
 
     var currentTestCase: TestCase? = null
     val inTest: Boolean get() = currentTestCase != null
